@@ -53,7 +53,9 @@ class ConstGameData {
 @JsonSerializable()
 class BuffActionDetail {
   BuffLimit limit;
+  @JsonKey(fromJson: toEnumListBuffType)
   List<BuffType> plusTypes;
+  @JsonKey(fromJson: toEnumListBuffType)
   List<BuffType> minusTypes;
   int baseParam;
   int baseValue;
@@ -464,7 +466,9 @@ enum BuffAction {
   functionCommandcodeattackAfter,
   functionAttackBefore,
   donotSkillSelect,
+  invisibleBattleChara,
   buffRate,
+  counterFunction,
 }
 
 enum BuffLimit {

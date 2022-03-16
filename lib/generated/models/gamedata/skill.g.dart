@@ -144,7 +144,8 @@ const _$CardTypeEnumMap = {
 
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       funcId: json['funcId'] as int,
-      funcType: $enumDecode(_$FuncTypeEnumMap, json['funcType']),
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
+          FuncType.none,
       funcTargetType:
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
@@ -333,7 +334,8 @@ Buff _$BuffFromJson(Map json) => Buff(
       name: json['name'] as String,
       detail: json['detail'] as String,
       icon: json['icon'] as String?,
-      type: $enumDecode(_$BuffTypeEnumMap, json['type']),
+      type:
+          $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ?? BuffType.none,
       buffGroup: json['buffGroup'] as int? ?? 0,
       script: json['script'] == null
           ? null
@@ -639,6 +641,11 @@ DataVals _$DataValsFromJson(Map json) => DataVals(
       UseTreasureDevice: json['UseTreasureDevice'] as int?,
       SkillReaction: json['SkillReaction'] as int?,
       ApplySupportSvt: json['ApplySupportSvt'] as int?,
+      BehaveAsFamilyBuff: json['BehaveAsFamilyBuff'] as int?,
+      UnSubStateWhileLinkedToOthers:
+          json['UnSubStateWhileLinkedToOthers'] as int?,
+      NotAccompanyWhenLinkedTargetMoveState:
+          json['NotAccompanyWhenLinkedTargetMoveState'] as int?,
       Individuality: json['Individuality'] as int?,
       EventId: json['EventId'] as int?,
       AddCount: json['AddCount'] as int?,
@@ -692,7 +699,8 @@ FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
       funcId: json['funcId'] as int,
-      funcType: $enumDecode(_$FuncTypeEnumMap, json['funcType']),
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
+          FuncType.none,
       funcTargetType:
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:

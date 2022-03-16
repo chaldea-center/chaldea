@@ -92,6 +92,7 @@ const _$QuestAfterClearTypeEnumMap = {
   QuestAfterClearType.repeatFirst: 'repeatFirst',
   QuestAfterClearType.repeatLast: 'repeatLast',
   QuestAfterClearType.resetInterval: 'resetInterval',
+  QuestAfterClearType.closeDisp: 'closeDisp',
 };
 
 QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(

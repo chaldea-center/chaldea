@@ -125,6 +125,7 @@ class Servant with GameCardMixin {
   AscensionAdd ascensionAdd;
   List<ServantTrait> traitAdd;
   List<ServantChange> svtChange;
+  List<ServantLimitImage> ascensionImage;
   Map<int, LvlUpMaterial> ascensionMaterials;
   Map<int, LvlUpMaterial> skillMaterials;
   Map<int, LvlUpMaterial> appendSkillMaterials;
@@ -178,6 +179,7 @@ class Servant with GameCardMixin {
     AscensionAdd? ascensionAdd,
     required this.traitAdd,
     this.svtChange = const [],
+    this.ascensionImage = const [],
     required this.ascensionMaterials,
     required this.skillMaterials,
     required this.appendSkillMaterials,
@@ -628,6 +630,29 @@ class ServantChange {
 
   factory ServantChange.fromJson(Map<String, dynamic> json) =>
       _$ServantChangeFromJson(json);
+}
+
+@JsonSerializable()
+class ServantLimitImage {
+  int limitCount;
+  int priority;
+  int defaultLimitCount;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType;
+  int condTargetId;
+  int condNum;
+
+  ServantLimitImage({
+    required this.limitCount,
+    this.priority = 0,
+    required this.defaultLimitCount,
+    required this.condType,
+    required this.condTargetId,
+    required this.condNum,
+  });
+
+  factory ServantLimitImage.fromJson(Map<String, dynamic> json) =>
+      _$ServantLimitImageFromJson(json);
 }
 
 @JsonSerializable()

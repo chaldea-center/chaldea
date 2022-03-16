@@ -181,6 +181,11 @@ Servant _$ServantFromJson(Map json) => Servant(
                   ServantChange.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      ascensionImage: (json['ascensionImage'] as List<dynamic>?)
+              ?.map((e) => ServantLimitImage.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       ascensionMaterials: (json['ascensionMaterials'] as Map).map(
         (k, e) => MapEntry(int.parse(k as String),
             LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -455,6 +460,15 @@ ServantChange _$ServantChangeFromJson(Map json) => ServantChange(
       limitCount: json['limitCount'] as int,
       flag: json['flag'] as int,
       battleSvtId: json['battleSvtId'] as int,
+    );
+
+ServantLimitImage _$ServantLimitImageFromJson(Map json) => ServantLimitImage(
+      limitCount: json['limitCount'] as int,
+      priority: json['priority'] as int? ?? 0,
+      defaultLimitCount: json['defaultLimitCount'] as int,
+      condType: toEnumCondType(json['condType'] as Object),
+      condTargetId: json['condTargetId'] as int,
+      condNum: json['condNum'] as int,
     );
 
 ServantAppendPassiveSkill _$ServantAppendPassiveSkillFromJson(Map json) =>

@@ -691,6 +691,7 @@ enum QuestAfterClearType {
   repeatFirst,
   repeatLast,
   resetInterval,
+  closeDisp,
 }
 
 enum GiftType {

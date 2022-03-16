@@ -235,7 +235,7 @@ class NiceFunction implements BaseFunction {
 
   NiceFunction({
     required this.funcId,
-    required this.funcType,
+    this.funcType = FuncType.none,
     required this.funcTargetType,
     required this.funcTargetTeam,
     this.funcPopupText = '',
@@ -283,7 +283,7 @@ class Buff {
     required this.name,
     required this.detail,
     this.icon,
-    required this.type,
+    this.type = BuffType.none,
     this.buffGroup = 0,
     BuffScript? script,
     this.vals = const [],
@@ -394,7 +394,12 @@ class DataVals {
   int? CounterOc;
   int? UseTreasureDevice;
   int? SkillReaction;
+  int? BehaveAsFamilyBuff;
+  int? UnSubStateWhileLinkedToOthers;
+  int? NotAccompanyWhenLinkedTargetMoveState;
+
   int? ApplySupportSvt;
+
   int? Individuality;
   int? EventId;
   int? AddCount;
@@ -500,6 +505,9 @@ class DataVals {
     this.UseTreasureDevice,
     this.SkillReaction,
     this.ApplySupportSvt,
+    this.BehaveAsFamilyBuff,
+    this.UnSubStateWhileLinkedToOthers,
+    this.NotAccompanyWhenLinkedTargetMoveState,
     this.Individuality,
     this.EventId,
     this.AddCount,
@@ -601,7 +609,7 @@ class BaseFunction {
 
   BaseFunction({
     required this.funcId,
-    required this.funcType,
+    this.funcType = FuncType.none,
     required this.funcTargetType,
     required this.funcTargetTeam,
     this.funcPopupText = "",
@@ -744,6 +752,10 @@ class RelationOverwriteDetail {
 
   factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) =>
       _$RelationOverwriteDetailFromJson(json);
+}
+
+List<BuffType> toEnumListBuffType(List<dynamic> json) {
+  return json.map((e) => $enumDecode(_$BuffTypeEnumMap, e)).toList();
 }
 
 enum BuffType {

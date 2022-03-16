@@ -53,6 +53,7 @@ class NiceShop {
   // int id;
   // int baseShopId;
   ShopType shopType;
+  List<ShopRelease> releaseConditions;
 
   // int eventId;
   int slot;
@@ -83,6 +84,7 @@ class NiceShop {
     // required this.id,
     // required this.baseShopId,
     this.shopType = ShopType.eventItem,
+    this.releaseConditions = const [],
     // required this.eventId,
     required this.slot,
     required this.priority,
@@ -108,6 +110,32 @@ class NiceShop {
 
   factory NiceShop.fromJson(Map<String, dynamic> json) =>
       _$NiceShopFromJson(json);
+}
+
+@JsonSerializable()
+class ShopRelease {
+  List<int> condValues;
+  // int shopId;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType;
+  int condNum;
+  int priority;
+  bool isClosedDisp;
+  String closedMessage;
+  String closedItemName;
+
+  ShopRelease({
+    this.condValues = const [],
+    required this.condType,
+    required this.condNum,
+    this.priority = 0,
+    required this.isClosedDisp,
+    required this.closedMessage,
+    required this.closedItemName,
+  });
+
+  factory ShopRelease.fromJson(Map<String, dynamic> json) =>
+      _$ShopReleaseFromJson(json);
 }
 
 @JsonSerializable()

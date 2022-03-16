@@ -56,7 +56,9 @@ enum QuestFlag {
   reconstruction,
   enemyImmediateAppear,
   noSupportList,
-  live
+  live,
+  forceDisplayEnemyInfo,
+  alloutBattle,
 }
 // enum StatusRank {}
 
@@ -78,6 +80,7 @@ enum WarFlag {
   dispFirstQuest,
   effectDisappearBanner,
   whiteMarkWithClear,
+  subFolder,
   summerCamp,
   unreleasedStory
 }

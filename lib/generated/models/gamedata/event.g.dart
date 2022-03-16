@@ -56,6 +56,11 @@ const _$PurchaseTypeEnumMap = {
 NiceShop _$NiceShopFromJson(Map json) => NiceShop(
       shopType: $enumDecodeNullable(_$ShopTypeEnumMap, json['shopType']) ??
           ShopType.eventItem,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  ShopRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       slot: json['slot'] as int,
       priority: json['priority'] as int,
       infoMessage: json['infoMessage'] as String? ?? "",
@@ -112,6 +117,19 @@ const _$PayTypeEnumMap = {
   PayType.grailFragments: 'grailFragments',
   PayType.free: 'free',
 };
+
+ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
+      condValues: (json['condValues'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
+      condType: toEnumCondType(json['condType'] as Object),
+      condNum: json['condNum'] as int,
+      priority: json['priority'] as int? ?? 0,
+      isClosedDisp: json['isClosedDisp'] as bool,
+      closedMessage: json['closedMessage'] as String,
+      closedItemName: json['closedItemName'] as String,
+    );
 
 EventReward _$EventRewardFromJson(Map json) => EventReward(
       groupId: json['groupId'] as int,
