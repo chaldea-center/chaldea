@@ -1,10 +1,9 @@
 import 'package:chaldea/models/gamedata/game_card.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/app.dart';
-import '../../utils/atlas.dart';
 import 'common.dart';
 import 'item.dart';
 import 'script.dart';
@@ -273,7 +272,7 @@ class Gift {
       width: width,
       height: height,
       aspectRatio: aspectRatio,
-      text: text ?? (num > 0 ? formatNumber(num) : null),
+      text: text ?? (num > 0 ? num.format() : null),
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,

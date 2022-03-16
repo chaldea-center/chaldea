@@ -413,8 +413,7 @@ class _ArchiveDialogState extends State<_ArchiveDialog> {
               .map((e) => Item.iconBuilder(
                     context: context,
                     itemKey: e.key,
-                    text: formatNumber(e.value,
-                        compact: true, groupSeparator: ''),
+                    text: e.value.format(),
                     height: 42,
                   ))
               .toList(),

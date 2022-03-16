@@ -218,7 +218,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       ));
       int n = _result.block.ids.length;
       String _toPercent(double number) {
-        return formatNumber(number, percent: true, precision: 1);
+        return number.format(percent: true, precision: 1);
       }
 
       children.add(ListTile(

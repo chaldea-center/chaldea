@@ -174,7 +174,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 4),
                                 child: AutoSizeText(
-                                  formatNumber(collection.friendship),
+                                  collection.friendship.format(),
                                   maxLines: 1,
                                   maxFontSize: 14,
                                   minFontSize: 6,
@@ -189,7 +189,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: AutoSizeText(
-                                formatNumber(_getBondNext(svt, collection)),
+                                _getBondNext(svt, collection).format(),
                                 maxLines: 1,
                                 maxFontSize: 14,
                                 minFontSize: 6,

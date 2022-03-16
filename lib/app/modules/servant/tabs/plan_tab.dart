@@ -807,7 +807,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       context: context,
                       item: db2.gameData.items[entry.key],
                       icon: Item.getIcon(entry.key),
-                      text: formatNumber(entry.value, compact: true),
+                      text: entry.value.format(),
                       width: 48,
                       onTap: () {
                         // router will push new route under the dialog

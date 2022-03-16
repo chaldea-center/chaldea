@@ -197,12 +197,12 @@ class NiceFunction {
     if (val.rate == null) return val.value.toString();
     num value = val.value!;
     if (funcType == 'gainNp') {
-      return formatNumber(value / 10000, percent: true);
+      return (value / 10000).format(percent: true);
     }
     if (funcType == 'gainStar') {
       return value.toString();
     }
-    return formatNumber(value / 1000, percent: true);
+    return (value / 1000).format(percent: true);
   }
 
   factory NiceFunction.fromJson(Map<String, dynamic> data) =>

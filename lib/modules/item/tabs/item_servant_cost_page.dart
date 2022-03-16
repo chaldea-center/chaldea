@@ -66,8 +66,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
     if (stat == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    String num2str(int? n) =>
-        formatNumber(n ?? 0, compact: true, minVal: 10000);
+    String num2str(int? n) => (n ?? 0).format();
 
     final counts = stat!.svtItemDetail.getItemCounts();
     final details = stat!.svtItemDetail.getCountByItem();
@@ -104,8 +103,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
             children: <Widget>[
               CustomTile(
                 title: Text(headers[i]),
-                trailing: Text(formatNumber(counts.values[i][itemKey] ?? 0,
-                    minVal: 10000)),
+                trailing: Text((counts.values[i][itemKey] ?? 0).format()),
               ),
               _buildSvtIconGrid(context, details.values[i][itemKey],
                   highlight: false),
@@ -138,7 +136,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
       if (num > 0) {
         Widget avatar = svt.iconBuilder(
           context: context,
-          text: formatNumber(num, compact: true, minVal: 10000),
+          text: num.format(),
           textPadding: const EdgeInsets.only(right: 2, bottom: 12),
         );
         if (shouldHighlight) {

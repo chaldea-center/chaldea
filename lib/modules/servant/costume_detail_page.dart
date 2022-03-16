@@ -93,7 +93,7 @@ class CostumeDetailPage extends StatelessWidget {
                             .map((e) => Item.iconBuilder(
                                   context: context,
                                   itemKey: e.key,
-                                  text: formatNumber(e.value, compact: true),
+                                  text: e.value.format(),
                                   width: 44,
                                 ))
                             .toList(),

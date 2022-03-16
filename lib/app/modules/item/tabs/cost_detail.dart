@@ -19,8 +19,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String num2str(int? n) =>
-        formatNumber(n ?? 0, compact: true, minVal: 10000);
+    String num2str(int? n) => (n ?? 0).format(minVal: 10000);
 
     final stat = db2.itemCenter;
     final details = stat.getItemCostDetail(itemId, matType);
@@ -98,7 +97,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
       if (count > 0) {
         Widget avatar = svt.iconBuilder(
           context: context,
-          text: formatNumber(count, compact: true, minVal: 10000),
+          text: count.format(),
           textPadding: const EdgeInsets.only(right: 2, bottom: 12),
           overrideIcon: svt.customIcon,
         );

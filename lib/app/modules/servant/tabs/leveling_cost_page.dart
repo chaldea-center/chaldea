@@ -99,7 +99,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
               },
             ),
             width: 42,
-            text: formatNumber(itemAmount.amount, compact: true),
+            text: itemAmount.amount.format(),
           ));
         }
       }

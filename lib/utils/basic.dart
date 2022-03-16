@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
+import 'extension.dart';
 
 String joinPaths(
   String part1, [
@@ -158,36 +158,6 @@ class Maths {
   }
 }
 
-/// Format number
-///
-/// If [compact] is true, other parameters are not used.
-String formatNumber(
-  num? number, {
-  bool compact = true,
-  bool percent = false,
-  bool omit = true,
-  int precision = 3,
-  String? groupSeparator = ',',
-  num? minVal = 10000,
-}) {
-  assert(!compact || !percent);
-  if (number == null || (minVal != null && number.abs() < minVal.abs())) {
-    return number.toString();
-  }
-
-  if (compact) {
-    return NumberFormat.compact(locale: 'en').format(number);
-  }
-
-  final pattern = [
-    if (groupSeparator != null) '###' + groupSeparator,
-    '###',
-    if (precision > 0) '.' + (omit ? '#' : '0') * precision,
-    if (percent) '%'
-  ].join();
-  return NumberFormat(pattern).format(number);
-}
-
 class NumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -199,7 +169,7 @@ class NumberInputFormatter extends TextInputFormatter {
     if (value == null) {
       return newValue;
     }
-    String newText = formatNumber(value);
+    String newText = value.format();
     return newValue.copyWith(
         text: newText,
         selection: TextSelection.collapsed(offset: newText.length));

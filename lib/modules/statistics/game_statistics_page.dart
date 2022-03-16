@@ -130,7 +130,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
         CustomTile(
           color: Theme.of(context).cardColor,
           leading: db.getIconImage(Items.qp, height: 56),
-          title: Text(formatNumber(shownItems[Items.qp] ?? 0)),
+          title: Text((shownItems[Items.qp] ?? 0).format()),
           onTap: () =>
               SplitRoute.push(context, ItemDetailPage(itemKey: Items.qp)),
         ),
@@ -246,7 +246,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
         CustomTile(
           color: Theme.of(context).cardColor,
           leading: db.getIconImage(Items.qp, height: 56),
-          title: Text(formatNumber(shownItems[Items.qp] ?? 0)),
+          title: Text((shownItems[Items.qp] ?? 0).format()),
           onTap: () =>
               SplitRoute.push(context, ItemDetailPage(itemKey: Items.qp)),
         ),

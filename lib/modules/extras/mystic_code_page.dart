@@ -224,8 +224,9 @@ class _MysticCodePageState extends State<MysticCodePage> {
               for (int i = row * 5; i < row * 5 + 5; i++)
                 i >= mysticCode.expPoints.length
                     ? '-'
-                    : formatNumber((mysticCode.expPoints.getOrNull(i) ?? 0) -
-                        (mysticCode.expPoints.getOrNull(i - 1) ?? 0)),
+                    : ((mysticCode.expPoints.getOrNull(i) ?? 0) -
+                            (mysticCode.expPoints.getOrNull(i - 1) ?? 0))
+                        .format(),
             ],
             defaults: TableCellData(maxLines: 1),
           ),
@@ -235,7 +236,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
               for (int i = row * 5; i < row * 5 + 5; i++)
                 i >= mysticCode.expPoints.length
                     ? '-'
-                    : formatNumber(mysticCode.expPoints[i]),
+                    : mysticCode.expPoints[i].format(),
             ],
             defaults: TableCellData(maxLines: 1),
           ),

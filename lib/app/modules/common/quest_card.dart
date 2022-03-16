@@ -581,8 +581,7 @@ class _QuestCardState extends State<QuestCard> {
           String v = entry.value >= 1000
               ? entry.value.toInt().toString()
               : entry.value.toStringAsPrecision(4);
-          dropTexts[entry.key] =
-              formatNumber(double.parse(v), groupSeparator: '', precision: 4);
+          dropTexts[entry.key] = double.parse(v).format(precision: 4);
         }
       }
     }
@@ -627,7 +626,7 @@ class _QuestCardState extends State<QuestCard> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: ImageWithText.paintOutline(
-                        text: '×${formatNumber(drop.num, minVal: 1000)}\n' +
+                        text: '×${drop.num.format(minVal: 1000)}\n' +
                             (drop.dropCount / drop.runs).toStringAsPrecision(3),
                         textAlign: TextAlign.end,
                         textStyle: const TextStyle(

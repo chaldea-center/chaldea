@@ -656,7 +656,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                   Item.iconBuilder(
                     context: context,
                     itemKey: entry.key,
-                    text: formatNumber(entry.value, compact: true),
+                    text: entry.value.format(),
                     width: 36,
                   ),
               ],
@@ -806,7 +806,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               ItemDetailPage(itemKey: itemKey),
             ),
             image: db.getIconImage(itemKey),
-            text: formatNumber(number, compact: true),
+            text: number.format(),
             padding: const EdgeInsets.only(right: 3),
           ));
         });

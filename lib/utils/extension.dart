@@ -1,9 +1,38 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
+
+extension NumX on num {
+  String format({
+    bool compact = true,
+    bool percent = false,
+    bool omit = true,
+    int precision = 3,
+    String? groupSeparator,
+    num? minVal = 10000,
+  }) {
+    assert(!compact || !percent);
+
+    if (compact && (minVal == null || abs() > minVal)) {
+      return NumberFormat.compact(locale: 'en').format(this);
+    }
+
+    final pattern = [
+      if (groupSeparator != null && groupSeparator.isNotEmpty)
+        '###' + groupSeparator,
+      '###',
+      if (precision > 0) '.' + (omit ? '#' : '0') * precision,
+      if (percent) '%'
+    ].join();
+    print('pattern: $pattern');
+    return NumberFormat(pattern, 'en').format(this);
+  }
+}
 
 extension IntX on int {
   DateTime sec2date() => DateTime.fromMillisecondsSinceEpoch(this * 1000);

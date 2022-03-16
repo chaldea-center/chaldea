@@ -207,15 +207,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ),
               ListTile(
                 title: Text(Items.qp.lName.l),
-                trailing: Text(formatNumber(user.qp)),
+                trailing: Text(user.qp.format()),
               ),
               ListTile(
                 title: Text(Items.manaPrism.lName.l),
-                trailing: Text(formatNumber(user.mana)),
+                trailing: Text(user.mana.format()),
               ),
               ListTile(
                 title: Text(Items.rarePrism.lName.l),
-                trailing: Text(formatNumber(user.rarePri)),
+                trailing: Text(user.rarePri.format()),
               ),
             ]),
           )

@@ -177,8 +177,8 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           _valToWidget(data.exp5Stages[index].toString(), index == 0),
           _valToWidget(data.exp4Stages[index].toString(), index == 0),
           _valToWidget(data.exp3Stages[index].toString(), index == 0),
-          _valToWidget(formatNumber(data.qpStages[index]), index == 0),
-          _valToWidget(formatNumber(data.grailStages[index]), index == 0),
+          _valToWidget(data.qpStages[index].format(), index == 0),
+          _valToWidget(data.grailStages[index].format(), index == 0),
         ],
       ));
     }

@@ -100,7 +100,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                         child: ImageWithText(
                           image: Item.iconBuilder(
                               context: context, itemKey: entry.key),
-                          text: formatNumber(entry.value, compact: true),
+                          text: entry.value.format(),
                         ),
                       ))
                   .toList(),

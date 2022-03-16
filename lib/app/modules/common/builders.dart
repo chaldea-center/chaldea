@@ -55,7 +55,7 @@ class SharedBuilder {
             GameCardMixin.anyCardItemBuilder(
               context: context,
               id: entry.key,
-              text: formatNumber(entry.value),
+              text: entry.value.format(),
               height: height,
               width: width,
             ),

@@ -462,8 +462,8 @@ class _ItemListTabState extends State<ItemListTab> {
         if (group.focusNode.hasPrimaryFocus) {
           return;
         }
-        final text = formatNumber(db2.curUser.items[item] ?? 0,
-            groupSeparator: item == Items.qpId ? ',' : null);
+        final text = (db2.curUser.items[item] ?? 0)
+            .format(groupSeparator: item == Items.qpId ? ',' : null);
         final selection = group.controller!.value.selection;
         TextSelection? newSelection;
         if (selection.isValid) {
@@ -556,7 +556,7 @@ class _ItemListTabState extends State<ItemListTab> {
             flex: 1,
             child: AutoSizeText(
               '${S.current.item_total_demand}'
-              ' ${formatNumber(db2.itemCenter.statSvtDemands[itemId] ?? 0, compact: false)}',
+              ' ${(db2.itemCenter.statSvtDemands[itemId] ?? 0).format(compact: false)}',
               maxLines: 1,
               minFontSize: 1,
               overflow: TextOverflow.visible,
@@ -565,7 +565,7 @@ class _ItemListTabState extends State<ItemListTab> {
           Expanded(
             flex: 1,
             child: AutoSizeText(
-              '${S.current.item_left} ${formatNumber(db2.itemCenter.itemLeft[itemId] ?? 0, compact: false)}',
+              '${S.current.item_left} ${(db2.itemCenter.itemLeft[itemId] ?? 0).format(compact: false)}',
               maxLines: 1,
               style: highlightStyle,
               minFontSize: 1,

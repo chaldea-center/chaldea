@@ -25,7 +25,7 @@ abstract class CommonBuilder {
                   onTap: onTap == null ? null : () => onTap(entry.key),
                   image: db.getIconImage(entry.key),
                   text: entry.key == Items.qp && entry.value is int
-                      ? formatNumber(entry.value, compact: true)
+                      ? (entry.value as int).format()
                       : entry.value.toString(),
                   padding: const EdgeInsets.symmetric(horizontal: 3),
                 ),
@@ -245,8 +245,7 @@ Widget buildClassifiedItemList({
           itemKey: item.name,
           onTap: onTap == null ? null : () => onTap(item.name),
         ),
-        text: formatNumber(data[item.name]!,
-            compact: compactNum, groupSeparator: ''),
+        text: data[item.name]!.format(compact: compactNum),
         padding: const EdgeInsets.only(right: 3),
       );
     }).toList();

@@ -99,10 +99,11 @@ class _SQTableTabState extends State<SQTableTab> {
               detail.addTicket == 0 ? '' : '+${detail.addTicket}');
         } else if (col == 2) {
           return _accWithAdd(
-              formatNumber(detail.accApple, precision: 1),
+              detail.accApple.format(compact: false, precision: 1),
               detail.addApple == 0.0
                   ? ''
-                  : ('+' + formatNumber(detail.addApple, precision: 1)));
+                  : ('+' +
+                      detail.addApple.format(compact: false, precision: 1)));
         } else if (col == 3) {
           Widget _wrap(
               {required Widget child,
