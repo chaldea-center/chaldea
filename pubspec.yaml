@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.6.8+681
+version: 1.6.9+690
 
 environment:
   sdk: ">=2.16.0 <3.0.0"
@@ -43,7 +43,7 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
   file_picker: ^4.3.2
-  fl_chart: ^0.45.1
+  fl_chart: ^0.46.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
@@ -73,7 +73,7 @@ dependencies:
   photo_view: ^0.13.0
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
-  share_plus: ^3.0.4
+  share_plus: ^4.0.1
   shared_preferences: ^2.0.12
   sliver_tools: ^0.2.5
   smooth_page_indicator: ^1.0.0+2
@@ -84,7 +84,7 @@ dependencies:
   worker_manager: ^4.2.5
   window_size:
     git:
-      url: git://github.com/google/flutter-desktop-embedding.git
+      url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
 
 dev_dependencies:

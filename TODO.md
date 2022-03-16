@@ -13,6 +13,7 @@ There are plenty of work need to do.
 - [ ] Servant-Info tab: np rate: add all if servant has changed np rate
 - [ ] Duplicated servant support
 - [ ] Adding crash log review
+- [ ] Add build time/commit hash to AppInfo
 
 ## Quest Related
 - [ ] add `runs/samples` hint for drop data, both domus-aurea and rayshift
