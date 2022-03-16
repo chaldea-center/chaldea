@@ -4,7 +4,9 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chaldea/components/config.dart' show db;
 import 'package:chaldea/components/wiki_util.dart';
+import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -18,6 +20,7 @@ import 'package:path/path.dart' show join, basename;
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
+import '../../models/paths.dart';
 import '../../packages/network.dart';
 import 'cached_image_option.dart';
 import 'image_actions.dart';
@@ -27,6 +30,9 @@ export 'cached_image_option.dart';
 export 'fullscreen_image_viewer.dart';
 export 'image_actions.dart';
 export 'photo_view_option.dart';
+
+String get _downloadDir =>
+    runChaldeaNext ? db2.paths.downloadDir : db.paths.downloadDir;
 
 class CachedImage extends StatefulWidget {
   final ImageProvider? imageProvider;
@@ -242,7 +248,7 @@ class _CachedImageState extends State<CachedImage> {
             ImageActions.showSaveShare(
               context: context,
               data: data,
-              destFp: join(db2.paths.downloadDir, fn),
+              destFp: join(_downloadDir, fn),
               gallery: true,
               share: true,
             );
@@ -309,7 +315,7 @@ class _CachedImageState extends State<CachedImage> {
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,
-            destFp: join(db2.paths.downloadDir, fn),
+            destFp: join(_downloadDir, fn),
             gallery: true,
             share: true,
             shareText: fn,
