@@ -144,6 +144,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
         didChangeNext(_nextRouteCache!);
         _nextRouteCache!.didChangePrevious(this);
+        // force rebuilding both modal and scope 
+        changedExternalState();
       });
       return Offstage(child: child);
     }
