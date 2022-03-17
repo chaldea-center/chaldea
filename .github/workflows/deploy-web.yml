@@ -27,7 +27,6 @@ jobs:
 
       - run: |
             flutter --version
-            flutter clean
             flutter pub get
 
       - name: Build with default auto web-renderer

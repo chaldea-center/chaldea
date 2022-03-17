@@ -55,7 +55,6 @@ class WikiUtil {
   }
 
   static Future<String?> saveImage(String filename, String savePath) {
-    print('saving $filename (${filenameToUrl(filename)})\n    to $savePath');
     return _downloadImage(filenameToUrl(filename), savePath);
   }
 
@@ -64,7 +63,6 @@ class WikiUtil {
   static final RateLimiter _rateLimiter = RateLimiter();
 
   static Future<String?> _downloadImage(String url, String savePath) async {
-    print('download $url \n   to $savePath');
     if (_downloadTasks[url] != null) return _downloadTasks[url]!.future;
     if (kIsWeb || network.unavailable) return null;
     final completer = _downloadTasks[url] = Completer();

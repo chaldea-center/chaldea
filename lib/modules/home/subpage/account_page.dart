@@ -135,6 +135,7 @@ class _AccountPageState extends State<AccountPage> {
         onSubmit: (v) {
           user.name = v;
           db.notifyAppUpdate();
+          updateData();
         },
       ),
     );
@@ -163,6 +164,7 @@ class _AccountPageState extends State<AccountPage> {
     db.userData.users[newKey] =
         User.fromJson(json.decode(json.encode(db.userData.users[key])))
           ..name = newName;
+    updateData();
     logger.d('Copy user $key($oldName)->$newKey($newName)');
   }
 

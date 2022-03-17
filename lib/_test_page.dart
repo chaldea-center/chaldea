@@ -4,4 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'models/models.dart';
 
-void testFunction([BuildContext? context]) async {}
+void testFunction([BuildContext? context]) async {
+  db2.notifyAppUpdate();
+}

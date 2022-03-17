@@ -419,8 +419,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           onTap: () {
             FullscreenImageViewer.show(
               context: context,
-              urls:
-                  svt.extraAssets.charaFigure.ascension?.values.toList() ?? [],
+              urls: svt.extraAssets.charaGraph.ascension?.values.toList() ?? [],
               // placeholder: (context, url) => db2.getIconImage(svt.cardBackFace),
             );
           },

@@ -32,18 +32,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
       ),
       body: ListView(
         children: [
-          ReorderableListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(
-              4,
-              (index) => ListTile(
-                key: Key('test_tile_$index'),
-                title: Text('List $index'),
-              ),
-            ),
-            onReorder: (_, __) {},
-          ),
           TileGroup(
             header: 'App',
             children: [

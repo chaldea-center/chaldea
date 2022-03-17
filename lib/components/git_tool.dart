@@ -225,7 +225,7 @@ class GitTool {
                   asset.browserDownloadUrl != null) {
                 asset.browserDownloadUrl = asset.browserDownloadUrl!
                     .replaceFirst(RegExp(r'^https://github.com'),
-                        'https://github.com.cnpmjs.org');
+                        'https://download.fastgit.org');
                 // asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
                 //     .replace(queryParameters: {
                 //   'url': asset.browserDownloadUrl,
