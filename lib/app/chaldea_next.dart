@@ -89,6 +89,9 @@ class _ChaldeaNextState extends State<ChaldeaNext> with AfterLayoutMixin {
   }
 
   void onAppUpdate() {
+    for (final _router in rootRouter.appState.children) {
+      _router.forceRebuild();
+    }
     if (mounted) {
       setState(() {});
     }

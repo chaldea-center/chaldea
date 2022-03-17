@@ -68,14 +68,26 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           : null;
 
   @override
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+  UniqueKey _uniqueKey = UniqueKey();
+
+  void forceRebuild() {
+    _uniqueKey = UniqueKey();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (_pages.isEmpty) {
       _pages.add(RouteConfiguration.home().createPage());
     }
-    return Navigator(
-      key: navigatorKey,
-      pages: List.of(_pages),
-      onPopPage: onPopPage,
+    return SizedBox(
+      key: _uniqueKey,
+      child: Navigator(
+        key: navigatorKey,
+        pages: List.of(_pages),
+        onPopPage: onPopPage,
+      ),
     );
   }
 
@@ -165,9 +177,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     }());
     push(url: url, child: child, arguments: arguments, detail: detail);
   }
-
-  @override
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   @override
   Future<void> setNewRoutePath(RouteConfiguration configuration) {
