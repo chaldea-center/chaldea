@@ -149,7 +149,7 @@ class _CacheManager {
     if (expireAfter == null && _memoryCache[key] != null) {
       return false;
     }
-    return (DateTime.now().millisecondsSinceEpoch ~/ 100 - timestamp) >=
+    return (DateTime.now().timestamp - timestamp) >=
         (expireAfter?.inSeconds ?? 0);
   }
 

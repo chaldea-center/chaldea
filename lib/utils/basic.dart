@@ -81,6 +81,7 @@ class Maths {
     }
   }
 
+  /// Make sure [iterable] and [ifAbsent] are the same type, double + int is not allowed
   static T max<T extends num>(Iterable<T> iterable, [T? ifAbsent]) {
     assert(iterable.isNotEmpty || ifAbsent != null);
     if (iterable.isEmpty) return ifAbsent!;

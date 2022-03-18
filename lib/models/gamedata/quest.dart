@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/app.dart';
+import '../db.dart';
 import 'common.dart';
 import 'item.dart';
 import 'script.dart';
@@ -116,6 +117,8 @@ class Quest {
     }
     return lName.l;
   }
+
+  bool get isMainStoryFree => type == QuestType.free && warId < 1000;
 }
 
 @JsonSerializable()
@@ -227,6 +230,11 @@ class Gift {
   bool get isStatItem {
     if (type == GiftType.equip || type == GiftType.eventSvtJoin) return false;
     return true;
+  }
+
+  Item? toItem() {
+    if (type == GiftType.item) return db2.gameData.items[objectId];
+    return null;
   }
 
   Widget iconBuilder({

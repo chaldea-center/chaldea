@@ -59,7 +59,7 @@ class FreeLPSolver {
       EasyLoading.showToast('Invalid inputs');
       return solution;
     }
-    if (Maths.max(params.weights, 0) <= 0) {
+    if (Maths.max(params.weights, 0.0) <= 0) {
       logger.d('after pre processing, params has no positive weights.\n'
           'params=${json.encode(params)}');
       EasyLoading.showToast('At least one weight > 0');

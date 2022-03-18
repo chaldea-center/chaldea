@@ -87,7 +87,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               children: [
                 QuestCard(
                   quest: quest,
-                  simple: false,
+                  region: region,
+                  offline: false,
                 )
               ],
             ),
