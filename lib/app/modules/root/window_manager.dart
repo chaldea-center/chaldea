@@ -30,13 +30,25 @@ class _WindowManagerState extends State<WindowManager> {
       return BootstrapPage();
     }
     return root.appState.showWindowManager
-        ? _multiple(context)
+        ? MultipleWindow(root: root)
         : root.appState.showSidebar && SplitRoute.isSplit(context)
-            ? _wrapSidebar(_one(context))
-            : _one(context);
+            ? WrapSideBar(root: root, child: OneWindow(root: root))
+            : OneWindow(root: root);
   }
+}
 
-  Widget _wrapSidebar(Widget child) {
+class WrapSideBar extends StatelessWidget {
+  const WrapSideBar({
+    Key? key,
+    required this.root,
+    required this.child,
+  }) : super(key: key);
+
+  final RootAppRouterDelegate root;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     Widget listView = ListView.separated(
       padding: const EdgeInsets.all(4),
       itemCount: root.appState.children.length,
@@ -131,8 +143,18 @@ class _WindowManagerState extends State<WindowManager> {
       ],
     );
   }
+}
 
-  Widget _one(BuildContext context) {
+class OneWindow extends StatelessWidget {
+  const OneWindow({
+    Key? key,
+    required this.root,
+  }) : super(key: key);
+
+  final RootAppRouterDelegate root;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: root.appState.activeIndex,
@@ -159,8 +181,18 @@ class _WindowManagerState extends State<WindowManager> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+}
 
-  Widget _multiple(BuildContext context) {
+class MultipleWindow extends StatelessWidget {
+  const MultipleWindow({
+    Key? key,
+    required this.root,
+  }) : super(key: key);
+
+  final RootAppRouterDelegate root;
+
+  @override
+  Widget build(BuildContext context) {
     final windowSize = MediaQuery.of(context).size;
     int crossCount = windowSize.width ~/ 300;
     return Scaffold(
@@ -173,7 +205,7 @@ class _WindowManagerState extends State<WindowManager> {
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 72),
           children: List.generate(
             root.appState.children.length,
-            (index) => _windowThumb(context, index),
+            (index) => WindowThumb(root: root, index: index),
           ),
         ),
       ),
@@ -186,12 +218,24 @@ class _WindowManagerState extends State<WindowManager> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+}
 
-  Widget _windowThumb(BuildContext context, int index) {
+class WindowThumb extends StatelessWidget {
+  const WindowThumb({
+    Key? key,
+    required this.root,
+    required this.index,
+  }) : super(key: key);
+
+  final RootAppRouterDelegate root;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
     final childDelegate = root.appState.children[index];
     final url = childDelegate.currentConfiguration?.url;
 
-    Widget child = Padding(
+    return Padding(
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: () {
@@ -250,6 +294,5 @@ class _WindowManagerState extends State<WindowManager> {
         ),
       ),
     );
-    return child;
   }
 }
