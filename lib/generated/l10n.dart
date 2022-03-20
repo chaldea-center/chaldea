@@ -60,6 +60,28 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `简体中文`
+  String get language {
+    return Intl.message(
+      '简体中文',
+      name: 'language',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Chinese`
+  String get language_en {
+    return Intl.message(
+      'Chinese',
+      name: 'language_en',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `关于`
   String get about_app {
     return Intl.message(
@@ -182,6 +204,17 @@ class S {
     );
   }
 
+  /// `Account`
+  String get account_title {
+    return Intl.message(
+      'Account',
+      name: 'account_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `保有技能`
   String get active_skill {
     return Intl.message(
@@ -297,6 +330,17 @@ class S {
     return Intl.message(
       '灵基',
       name: 'ascension',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ascension Icon`
+  String get ascension_icon {
+    return Intl.message(
+      'Ascension Icon',
+      name: 'ascension_icon',
       desc: '',
       locale: localeName,
       args: [],
@@ -446,6 +490,17 @@ class S {
     );
   }
 
+  /// `Bootstrap Page`
+  String get boostrap_page_title {
+    return Intl.message(
+      'Bootstrap Page',
+      name: 'boostrap_page_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `铜`
   String get bronze {
     return Intl.message(
@@ -545,6 +600,17 @@ class S {
     );
   }
 
+  /// `Chaldea User`
+  String get chaldea_user {
+    return Intl.message(
+      'Chaldea User',
+      name: 'chaldea_user',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `更新历史`
   String get change_log {
     return Intl.message(
@@ -627,6 +693,17 @@ class S {
     return Intl.message(
       '包括卡面语音等',
       name: 'clear_cache_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Clear Data`
+  String get clear_data {
+    return Intl.message(
+      'Clear Data',
+      name: 'clear_data',
       desc: '',
       locale: localeName,
       args: [],
@@ -776,6 +853,28 @@ class S {
     );
   }
 
+  /// `You can add more accounts later in Settings`
+  String get create_account_textfield_helper {
+    return Intl.message(
+      'You can add more accounts later in Settings',
+      name: 'create_account_textfield_helper',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Any name`
+  String get create_account_textfield_hint {
+    return Intl.message(
+      'Any name',
+      name: 'create_account_textfield_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `生成2号机`
   String get create_duplicated_svt {
     return Intl.message(
@@ -831,6 +930,17 @@ class S {
     );
   }
 
+  /// `Current Version`
+  String get current_version {
+    return Intl.message(
+      'Current Version',
+      name: 'current_version',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `深色模式`
   String get dark_mode {
     return Intl.message(
@@ -869,6 +979,28 @@ class S {
     return Intl.message(
       '系统',
       name: 'dark_mode_system',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get database {
+    return Intl.message(
+      'Database',
+      name: 'database',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Database is not downloaded, still continue?`
+  String get database_not_downloaded {
+    return Intl.message(
+      'Database is not downloaded, still continue?',
+      name: 'database_not_downloaded',
       desc: '',
       locale: localeName,
       args: [],
@@ -930,6 +1062,39 @@ class S {
     );
   }
 
+  /// `Debug`
+  String get debug {
+    return Intl.message(
+      'Debug',
+      name: 'debug',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debug FAB`
+  String get debug_fab {
+    return Intl.message(
+      'Debug FAB',
+      name: 'debug_fab',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debug Menu`
+  String get debug_menu {
+    return Intl.message(
+      'Debug Menu',
+      name: 'debug_menu',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `删除`
   String get delete {
     return Intl.message(
@@ -957,6 +1122,17 @@ class S {
     return Intl.message(
       '显示设置',
       name: 'display_setting',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `DONE`
+  String get done {
+    return Intl.message(
+      'DONE',
+      name: 'done',
       desc: '',
       locale: localeName,
       args: [],
@@ -1246,6 +1422,39 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `No network`
+  String get error_no_network {
+    return Intl.message(
+      'No network',
+      name: 'error_no_network',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No version data found`
+  String get error_no_version_data_found {
+    return Intl.message(
+      'No version data found',
+      name: 'error_no_version_data_found',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Required app version: ≥ {version}`
+  String error_required_app_version(Object version) {
+    return Intl.message(
+      'Required app version: ≥ $version',
+      name: 'error_required_app_version',
+      desc: '',
+      locale: localeName,
+      args: [version],
     );
   }
 
@@ -1623,6 +1832,18 @@ class S {
     );
   }
 
+  /// `File {filename} not found or mismatched hash: {hash} - {localHash}`
+  String file_not_found_or_mismatched_hash(
+      Object filename, Object hash, Object localHash) {
+    return Intl.message(
+      'File $filename not found or mismatched hash: $hash - $localHash',
+      name: 'file_not_found_or_mismatched_hash',
+      desc: '',
+      locale: localeName,
+      args: [filename, hash, localHash],
+    );
+  }
+
   /// `文件名`
   String get filename {
     return Intl.message(
@@ -1909,6 +2130,17 @@ class S {
     );
   }
 
+  /// `Game data not found, please download data first`
+  String get game_data_not_found {
+    return Intl.message(
+      'Game data not found, please download data first',
+      name: 'game_data_not_found',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `掉落`
   String get game_drop {
     return Intl.message(
@@ -2093,6 +2325,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `Hash mismatch: {filename}: {hash} - {dataHash}`
+  String hash_mismatch(Object filename, Object hash, Object dataHash) {
+    return Intl.message(
+      'Hash mismatch: $filename: $hash - $dataHash',
+      name: 'hash_mismatch',
+      desc: '',
+      locale: localeName,
+      args: [filename, hash, dataHash],
     );
   }
 
@@ -2679,6 +2922,39 @@ class S {
     );
   }
 
+  /// `Invalid input.`
+  String get invalid_input {
+    return Intl.message(
+      'Invalid input.',
+      name: 'invalid_input',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Invalid startup path!`
+  String get invalid_startup_path {
+    return Intl.message(
+      'Invalid startup path!',
+      name: 'invalid_startup_path',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please, extract zip to non-system path then start the app. "C:\", "C:\Program Files" are not allowed.`
+  String get invalid_startup_path_info {
+    return Intl.message(
+      'Please, extract zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
+      name: 'invalid_startup_path_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `"文件"应用/我的iPhone/Chaldea`
   String get ios_app_path {
     return Intl.message(
@@ -2998,28 +3274,6 @@ class S {
     );
   }
 
-  /// `简体中文`
-  String get language {
-    return Intl.message(
-      '简体中文',
-      name: 'language',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Chinese`
-  String get language_en {
-    return Intl.message(
-      'Chinese',
-      name: 'language_en',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `等级`
   String get level {
     return Intl.message(
@@ -3085,6 +3339,17 @@ class S {
     return Intl.message(
       '请在设置-游戏数据中重新加载默认资源',
       name: 'load_dataset_error_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Loading Data Failed`
+  String get loading_data_failed {
+    return Intl.message(
+      'Loading Data Failed',
+      name: 'loading_data_failed',
       desc: '',
       locale: localeName,
       args: [],
@@ -3322,6 +3587,17 @@ class S {
     );
   }
 
+  /// `Master-Detail width`
+  String get master_detail_width {
+    return Intl.message(
+      'Master-Detail width',
+      name: 'master_detail_width',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `御主任务`
   String get master_mission {
     return Intl.message(
@@ -3432,6 +3708,17 @@ class S {
     );
   }
 
+  /// `NEXT`
+  String get next {
+    return Intl.message(
+      'NEXT',
+      name: 'next',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `下一张`
   String get next_card {
     return Intl.message(
@@ -3514,6 +3801,28 @@ class S {
     return Intl.message(
       '宝具等级',
       name: 'noble_phantasm_level',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Available`
+  String get not_available {
+    return Intl.message(
+      'Not Available',
+      name: 'not_available',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Found`
+  String get not_found {
+    return Intl.message(
+      'Not Found',
+      name: 'not_found',
       desc: '',
       locale: localeName,
       args: [],
@@ -3734,6 +4043,17 @@ class S {
     return Intl.message(
       '规划Free本',
       name: 'planning_free_quest_btn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `PREV`
+  String get prev {
+    return Intl.message(
+      'PREV',
+      name: 'prev',
       desc: '',
       locale: localeName,
       args: [],
@@ -4004,6 +4324,17 @@ class S {
     );
   }
 
+  /// `Restart to take effect`
+  String get restart_to_take_effect {
+    return Intl.message(
+      'Restart to take effect',
+      name: 'restart_to_take_effect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `重启以更新应用，若更新失败，请手动复制source文件夹到destination`
   String get restart_to_upgrade_hint {
     return Intl.message(
@@ -4125,6 +4456,17 @@ class S {
     );
   }
 
+  /// `Select Language`
+  String get select_lang {
+    return Intl.message(
+      'Select Language',
+      name: 'select_lang',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `选择规划`
   String get select_plan {
     return Intl.message(
@@ -4224,6 +4566,17 @@ class S {
     );
   }
 
+  /// `Auto Turn on PlanNotReach`
+  String get setting_auto_turn_on_plan_not_reach {
+    return Intl.message(
+      'Auto Turn on PlanNotReach',
+      name: 'setting_auto_turn_on_plan_not_reach',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `首页-规划列表页`
   String get setting_home_plan_list_page {
     return Intl.message(
@@ -4240,6 +4593,17 @@ class S {
     return Intl.message(
       '仅更改附加技能2',
       name: 'setting_only_change_second_append_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Plans List Page`
+  String get setting_plans_list_page {
+    return Intl.message(
+      'Plans List Page',
+      name: 'setting_plans_list_page',
       desc: '',
       locale: localeName,
       args: [],
@@ -4394,6 +4758,17 @@ class S {
     return Intl.message(
       '分享',
       name: 'share',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Frame Rate`
+  String get show_frame_rate {
+    return Intl.message(
+      'Show Frame Rate',
+      name: 'show_frame_rate',
       desc: '',
       locale: localeName,
       args: [],
@@ -4741,6 +5116,17 @@ class S {
     );
   }
 
+  /// `Toggle Dark Mode`
+  String get toogle_dark_mode {
+    return Intl.message(
+      'Toggle Dark Mode',
+      name: 'toogle_dark_mode',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `刷新轮播图`
   String get tooltip_refresh_sliders {
     return Intl.message(
@@ -4774,6 +5160,28 @@ class S {
     );
   }
 
+  /// `Translations`
+  String get translations {
+    return Intl.message(
+      'Translations',
+      name: 'translations',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unsupported type`
+  String get unsupported_type {
+    return Intl.message(
+      'Unsupported type',
+      name: 'unsupported_type',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `更新`
   String get update {
     return Intl.message(
@@ -4801,6 +5209,17 @@ class S {
     return Intl.message(
       '更新资源包',
       name: 'update_dataset',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Update Now`
+  String get update_now {
+    return Intl.message(
+      'Update Now',
+      name: 'update_now',
       desc: '',
       locale: localeName,
       args: [],
@@ -4928,276 +5347,11 @@ class S {
     );
   }
 
-  /// `{a}{b}`
-  String words_separate(Object a, Object b) {
+  /// `Warning`
+  String get warning {
     return Intl.message(
-      '$a$b',
-      name: 'words_separate',
-      desc: '',
-      locale: localeName,
-      args: [a, b],
-    );
-  }
-
-  /// `是`
-  String get yes {
-    return Intl.message(
-      '是',
-      name: 'yes',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Select Language`
-  String get select_lang {
-    return Intl.message(
-      'Select Language',
-      name: 'select_lang',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Account`
-  String get account_title {
-    return Intl.message(
-      'Account',
-      name: 'account_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Any name`
-  String get create_account_textfield_hint {
-    return Intl.message(
-      'Any name',
-      name: 'create_account_textfield_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `You can add more accounts later in Settings`
-  String get create_account_textfield_helper {
-    return Intl.message(
-      'You can add more accounts later in Settings',
-      name: 'create_account_textfield_helper',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Database`
-  String get database {
-    return Intl.message(
-      'Database',
-      name: 'database',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Database is not downloaded, still continue?`
-  String get database_not_downloaded {
-    return Intl.message(
-      'Database is not downloaded, still continue?',
-      name: 'database_not_downloaded',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Update Now`
-  String get update_now {
-    return Intl.message(
-      'Update Now',
-      name: 'update_now',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Current Version`
-  String get current_version {
-    return Intl.message(
-      'Current Version',
-      name: 'current_version',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `PREV`
-  String get prev {
-    return Intl.message(
-      'PREV',
-      name: 'prev',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `NEXT`
-  String get next {
-    return Intl.message(
-      'NEXT',
-      name: 'next',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `DONE`
-  String get done {
-    return Intl.message(
-      'DONE',
-      name: 'done',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Loading Data Failed`
-  String get loading_data_failed {
-    return Intl.message(
-      'Loading Data Failed',
-      name: 'loading_data_failed',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Not Found`
-  String get not_found {
-    return Intl.message(
-      'Not Found',
-      name: 'not_found',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No network`
-  String get error_no_network {
-    return Intl.message(
-      'No network',
-      name: 'error_no_network',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No version data found`
-  String get error_no_version_data_found {
-    return Intl.message(
-      'No version data found',
-      name: 'error_no_version_data_found',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Required app version: ≥ {version}`
-  String error_required_app_version(Object version) {
-    return Intl.message(
-      'Required app version: ≥ $version',
-      name: 'error_required_app_version',
-      desc: '',
-      locale: localeName,
-      args: [version],
-    );
-  }
-
-  /// `File {filename} not found or mismatched hash: {hash} - {localHash}`
-  String file_not_found_or_mismatched_hash(
-      Object filename, Object hash, Object localHash) {
-    return Intl.message(
-      'File $filename not found or mismatched hash: $hash - $localHash',
-      name: 'file_not_found_or_mismatched_hash',
-      desc: '',
-      locale: localeName,
-      args: [filename, hash, localHash],
-    );
-  }
-
-  /// `Hash mismatch: {filename}: {hash} - {dataHash}`
-  String hash_mismatch(Object filename, Object hash, Object dataHash) {
-    return Intl.message(
-      'Hash mismatch: $filename: $hash - $dataHash',
-      name: 'hash_mismatch',
-      desc: '',
-      locale: localeName,
-      args: [filename, hash, dataHash],
-    );
-  }
-
-  /// `Unsupported type`
-  String get unsupported_type {
-    return Intl.message(
-      'Unsupported type',
-      name: 'unsupported_type',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Invalid startup path!`
-  String get invalid_startup_path {
-    return Intl.message(
-      'Invalid startup path!',
-      name: 'invalid_startup_path',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Please, extract zip to non-system path then start the app. "C:\", "C:\Program Files" are not allowed.`
-  String get invalid_startup_path_info {
-    return Intl.message(
-      'Please, extract zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
-      name: 'invalid_startup_path_info',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Chaldea User`
-  String get chaldea_user {
-    return Intl.message(
-      'Chaldea User',
-      name: 'chaldea_user',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Translations`
-  String get translations {
-    return Intl.message(
-      'Translations',
-      name: 'translations',
+      'Warning',
+      name: 'warning',
       desc: '',
       locale: localeName,
       args: [],
@@ -5215,176 +5369,22 @@ class S {
     );
   }
 
-  /// `Restart to take effect`
-  String get restart_to_take_effect {
+  /// `{a}{b}`
+  String words_separate(Object a, Object b) {
     return Intl.message(
-      'Restart to take effect',
-      name: 'restart_to_take_effect',
+      '$a$b',
+      name: 'words_separate',
       desc: '',
       locale: localeName,
-      args: [],
+      args: [a, b],
     );
   }
 
-  /// `Bootstrap Page`
-  String get boostrap_page_title {
+  /// `是`
+  String get yes {
     return Intl.message(
-      'Bootstrap Page',
-      name: 'boostrap_page_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Not Available`
-  String get not_available {
-    return Intl.message(
-      'Not Available',
-      name: 'not_available',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Debug`
-  String get debug {
-    return Intl.message(
-      'Debug',
-      name: 'debug',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Show Frame Rate`
-  String get show_frame_rate {
-    return Intl.message(
-      'Show Frame Rate',
-      name: 'show_frame_rate',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Debug FAB`
-  String get debug_fab {
-    return Intl.message(
-      'Debug FAB',
-      name: 'debug_fab',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Master-Detail width`
-  String get master_detail_width {
-    return Intl.message(
-      'Master-Detail width',
-      name: 'master_detail_width',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Warning`
-  String get warning {
-    return Intl.message(
-      'Warning',
-      name: 'warning',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Game data not found, please download data first`
-  String get game_data_not_found {
-    return Intl.message(
-      'Game data not found, please download data first',
-      name: 'game_data_not_found',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Clear Data`
-  String get clear_data {
-    return Intl.message(
-      'Clear Data',
-      name: 'clear_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Invalid input.`
-  String get invalid_input {
-    return Intl.message(
-      'Invalid input.',
-      name: 'invalid_input',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Debug Menu`
-  String get debug_menu {
-    return Intl.message(
-      'Debug Menu',
-      name: 'debug_menu',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Toggle Dark Mode`
-  String get toogle_dark_mode {
-    return Intl.message(
-      'Toggle Dark Mode',
-      name: 'toogle_dark_mode',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Ascension Icon`
-  String get ascension_icon {
-    return Intl.message(
-      'Ascension Icon',
-      name: 'ascension_icon',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Auto Turn on PlanNotReach`
-  String get setting_auto_turn_on_plan_not_reach {
-    return Intl.message(
-      'Auto Turn on PlanNotReach',
-      name: 'setting_auto_turn_on_plan_not_reach',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Plans List Page`
-  String get setting_plans_list_page {
-    return Intl.message(
-      'Plans List Page',
-      name: 'setting_plans_list_page',
+      '是',
+      name: 'yes',
       desc: '',
       locale: localeName,
       args: [],

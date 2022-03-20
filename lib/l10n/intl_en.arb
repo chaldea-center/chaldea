@@ -1,5 +1,7 @@
 {
   "@@locale": "en",
+  "language": "English",
+  "language_en": "English",
   "about_app": "About",
   "about_app_declaration_text": "The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n",
   "about_appstore_rating": "App Store Rating",
@@ -290,8 +292,6 @@
   "item_total_demand": "Total",
   "join_beta": "Join Beta Program",
   "jump_to": "Jump to {site}",
-  "language": "English",
-  "language_en": "English",
   "level": "Level",
   "limited_event": "Limited Event",
   "link": "link",
