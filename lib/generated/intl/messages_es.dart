@@ -298,8 +298,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage(
             "Primero descargue o importe los datos de FFO↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
-        "fgo_domus_aurea":
-            MessageLookupByLibrary.simpleMessage("FGO Domus Áurea"),
+        "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
         "filter": MessageLookupByLibrary.simpleMessage("Filtro"),

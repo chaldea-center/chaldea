@@ -260,7 +260,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_missing_data_hint":
             MessageLookupByLibrary.simpleMessage("먼저 FFO데이터를 다운로드하거나 가져오세요↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("동일 서번트"),
-        "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("FGO 도무스 아우레아"),
+        "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("도무스 아우레아"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("파일명"),
         "filter": MessageLookupByLibrary.simpleMessage("필터"),

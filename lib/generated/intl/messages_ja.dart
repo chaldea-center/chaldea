@@ -265,7 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage(
             "最初にFFOリソースをダウンロードまたはインポートしてください↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同じサーヴァント"),
-        "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("FGOアイテム効率劇場"),
+        "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("効率劇場"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("ファイル名"),
         "filter": MessageLookupByLibrary.simpleMessage("フィルター"),

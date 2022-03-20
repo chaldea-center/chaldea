@@ -9,7 +9,8 @@ void main(List<String> args) async {
     final String content = '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 const String kCommitHash = "$hash";
-const int kCommitTimestamp = $date;''';
+const int kCommitTimestamp = $date;
+''';
     File('lib/generated/git_info.dart').writeAsStringSync(content);
   } catch (e, s) {
     if (args.contains('-s')) {

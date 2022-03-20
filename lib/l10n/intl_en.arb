@@ -158,7 +158,7 @@
   "ffo_head": "Head",
   "ffo_missing_data_hint": "Please download or import FFO data first↗",
   "ffo_same_svt": "Same Servant",
-  "fgo_domus_aurea": "FGO Domus Aurea",
+  "fgo_domus_aurea": "Domus Aurea",
   "file_not_found_or_mismatched_hash": "File {filename} not found or mismatched hash: {hash} - {localHash}",
   "filename": "filename",
   "filter": "Filter",

@@ -312,69 +312,48 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
     if (show6th) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '效率剧场\n' +
-                      S.current.game_drop +
-                      (show6th
-                          ? Language.isJP
-                              ? '\n(AP)'
-                              : '(AP)'
-                          : ''),
-                  textAlign: TextAlign.center,
-                ),
-                if (show6th)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: FilterOption(
-                      selected: use6th,
-                      value: '6th',
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Text('6th'),
-                      ),
-                      onChanged: (v) => setState(() {
-                        _use6th = v;
-                      }),
-                      shrinkWrap: true,
-                    ),
+      final sheetData = db2.gameData.dropRate.getSheet(use6th);
+      int runs =
+          sheetData.runs.getOrNull(sheetData.questIds.indexOf(quest.id)) ?? 0;
+      children.add(Column(
+        children: [
+          const SizedBox(height: 3),
+          Wrap(
+            spacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(S.current.fgo_domus_aurea + ' (AP) ($runs runs)'),
+              if (show6th)
+                FilterOption(
+                  selected: use6th,
+                  value: '6th',
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Text('6th'),
                   ),
-              ],
-            ),
-            Expanded(child: Center(child: _getDropsWidget(show6th)))
-          ],
-        ),
+                  onChanged: (v) => setState(() {
+                    _use6th = v;
+                  }),
+                  shrinkWrap: true,
+                ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          _getDropsWidget(show6th),
+          const SizedBox(height: 3),
+        ],
       ));
     }
 
     if (curPhase.drops.isNotEmpty) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Rayshift\n' +
-                  S.current.game_drop +
-                  '\n(${curPhase.drops.first.runs} runs)',
-              textAlign: TextAlign.center,
-            ),
-            Expanded(
-              child: Center(
-                child: _getRayshiftDrops(curPhase.drops),
-              ),
-            )
-          ],
-        ),
+      children.add(Column(
+        children: [
+          const SizedBox(height: 3),
+          Text('Rayshift Drops Rate (${curPhase.drops.first.runs} runs)'),
+          const SizedBox(height: 2),
+          _getRayshiftDrops(curPhase.drops),
+          const SizedBox(height: 3),
+        ],
       ));
     }
     return Column(
