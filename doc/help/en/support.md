@@ -25,9 +25,6 @@ Donation is also welcomed, please leave a message to let me know that's donated 
 ### Alipay/支付宝
 ![Alipay](resource://res/img/md/alipay.webp)
 
-### [Bilibili Charge](https://space.bilibili.com/3785253)
-[![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
-
 
 ## Major Expenditure
 - Apple Developer Program: ¥688/$99 per year

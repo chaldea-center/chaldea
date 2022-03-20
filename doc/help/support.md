@@ -17,9 +17,6 @@
 ### Alipay/支付宝
 ![Alipay](resource://res/img/md/alipay.webp)
 
-### [B站充电](https://space.bilibili.com/3785253)
-[![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
-
 ### [Buy me a coffee](https://ko-fi.com/G2G152BDO)
 [![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
 
