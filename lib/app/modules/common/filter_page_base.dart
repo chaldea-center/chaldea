@@ -92,7 +92,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       List<Widget> actions = const []}) {
     return AlertDialog(
       title: Center(child: title),
-      titlePadding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
+      titlePadding: const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
       contentPadding: EdgeInsets.zero,
       actionsPadding: EdgeInsets.zero,
       actions: actions,
@@ -181,7 +181,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
   Widget getDisplayOptions({String? header, List<Widget> children = const []}) {
     header ??= S.current.filter_shown_type;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

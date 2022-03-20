@@ -15,7 +15,7 @@ class CustomTile extends StatelessWidget {
 
   /// default: if leading is non-null, EdgeInsets.symmetric(horizontal: 6.0)
   /// if null, EdgeInsets.zero
-  final EdgeInsets? titlePadding;
+  final EdgeInsetsGeometry? titlePadding;
   final BoxConstraints? constraints;
   final Color? color;
   final CrossAxisAlignment alignment;
@@ -105,7 +105,7 @@ class CustomTile extends StatelessWidget {
     final EdgeInsetsGeometry resolvedContentPadding = contentPadding ??
         tileTheme.contentPadding ??
         const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-    final EdgeInsets resolvedTitlePadding = titlePadding ??
+    final EdgeInsetsGeometry resolvedTitlePadding = titlePadding ??
         (leading == null
             ? EdgeInsets.zero
             : const EdgeInsets.symmetric(horizontal: 6.0));

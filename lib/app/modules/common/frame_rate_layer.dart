@@ -67,8 +67,8 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
+    return PositionedDirectional(
+      start: 0,
       top: MediaQuery.of(context).padding.top,
       child: IgnorePointer(
         child: Text(

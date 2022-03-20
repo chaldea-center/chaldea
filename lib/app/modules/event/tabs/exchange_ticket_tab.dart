@@ -98,7 +98,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         Expanded(
           flex: 1,
           child: ListTile(
-            contentPadding: const EdgeInsets.only(left: 12),
+            contentPadding: const EdgeInsetsDirectional.only(start: 12),
             title: AutoSizeText(
               ticket.dateStr,
               maxLines: 1,

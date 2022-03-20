@@ -256,10 +256,10 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   Widget _bottom() {
-    return Positioned(
+    return PositionedDirectional(
       bottom: 10.0,
-      left: 10.0,
-      right: 10.0,
+      start: 10.0,
+      end: 10.0,
       child: Row(
         children: <Widget>[
           Container(

@@ -15,7 +15,7 @@ class SvtInfoTab extends StatelessWidget {
     final headerData = TableCellData(isHeader: true, maxLines: 1);
     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: CustomTable(
         children: <Widget>[
           CustomTableRow.fromChildren(
@@ -330,7 +330,7 @@ class SvtInfoTab extends StatelessWidget {
 //     final headerData = TableCellData(isHeader: true, maxLines: 1);
 //     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
 //     return SingleChildScrollView(
-//       padding: const EdgeInsets.only(bottom: 10),
+//       padding: const EdgeInsetsDirectional.only(bottom: 10),
 //       child: CustomTable(
 //         children: <Widget>[
 //           CustomTableRow.fromChildren(

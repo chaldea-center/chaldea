@@ -39,7 +39,7 @@ class FilterGroup<T> extends StatelessWidget {
   static FilterGroup display(
       {required bool useGrid, required ValueChanged<bool?> onChanged}) {
     return FilterGroup<bool>(
-      padding: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsetsDirectional.only(end: 12),
       options: const [false, true],
       values: FilterRadioData(useGrid),
       optionBuilder: (v) => Text(v ? 'Grid' : 'List'),

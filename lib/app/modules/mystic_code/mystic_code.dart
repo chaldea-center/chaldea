@@ -73,7 +73,8 @@ class _MysticCodePageState extends State<MysticCodePage> {
                 Row(
                   children: [
                     Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 2),
+                        padding:
+                            const EdgeInsetsDirectional.only(start: 16, end: 2),
                         child: Text(S.current.level)),
                     SizedBox(
                         width: 20,

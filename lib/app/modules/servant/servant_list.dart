@@ -582,9 +582,9 @@ class ServantListPageState extends State<ServantListPage>
               ),
               if (constraints.maxWidth < 36 * allBtns.length)
                 Padding(
-                  padding: const EdgeInsets.only(left: 6),
+                  padding: const EdgeInsetsDirectional.only(start: 6),
                   child: Icon(
-                    Icons.keyboard_arrow_right,
+                    DirectionalIcons.keyboard_arrow_forward(context),
                     color: Theme.of(context).disabledColor,
                   ),
                 ),
@@ -900,7 +900,7 @@ class ServantListPageState extends State<ServantListPage>
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 8),
+                      padding: EdgeInsetsDirectional.only(start: 8),
                       child: Text('Set All'),
                     ),
                     FilterGroup<bool>(

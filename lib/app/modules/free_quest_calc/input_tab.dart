@@ -68,7 +68,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         Material(
           child: ListTile(
             title: Text(S.of(context).item),
-            contentPadding: const EdgeInsets.only(left: 18, right: 8),
+            contentPadding: const EdgeInsetsDirectional.only(start: 18, end: 8),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -158,7 +158,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           },
         );
         Widget subtitle = Padding(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsetsDirectional.only(start: 8),
           child: Text(
             planOrEff
                 ? S.current.words_separate(
@@ -170,7 +170,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         return CustomTile(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          titlePadding: const EdgeInsets.only(right: 6),
+          titlePadding: const EdgeInsetsDirectional.only(end: 6),
           leading: leading,
           title: title,
           subtitle: subtitle,

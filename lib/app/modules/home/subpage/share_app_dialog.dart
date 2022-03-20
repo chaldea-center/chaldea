@@ -48,7 +48,8 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
   Widget build(BuildContext context) {
     return SimpleCancelOkDialog(
       title: Text(S.current.share),
-      contentPadding: const EdgeInsets.fromLTRB(24.0, 10.0, 24.0, 12.0),
+      contentPadding:
+          const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
       content: TextField(
         controller: _controller,
         maxLines: null,

@@ -202,7 +202,7 @@ class MultipleWindow extends StatelessWidget {
         child: GridView.count(
           crossAxisCount: max(crossCount, 2),
           childAspectRatio: windowSize.aspectRatio,
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 72),
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
           children: List.generate(
             root.appState.children.length,
             (index) => WindowThumb(root: root, index: index),

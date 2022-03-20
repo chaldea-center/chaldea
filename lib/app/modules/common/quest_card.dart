@@ -149,7 +149,7 @@ class _QuestCardState extends State<QuestCard> {
             ],
           ),
         ),
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+        contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
         trailing: IconButton(
           onPressed: () => setState(() => showTrueName = !showTrueName),
           icon: Icon(

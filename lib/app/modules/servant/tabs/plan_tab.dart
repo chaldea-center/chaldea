@@ -380,7 +380,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       children: <Widget>[
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsetsDirectional.only(bottom: 16),
             children: children,
           ),
         ),
@@ -457,7 +457,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         title: title == null
             ? null
             : Padding(
-                padding: const EdgeInsets.only(left: 6, top: 4),
+                padding: const EdgeInsetsDirectional.only(start: 6, top: 4),
                 child: AutoSizeText(title, maxLines: 1),
               ),
         subtitle: SliderTheme(
@@ -513,7 +513,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         );
       }
       return CustomTile(
-        contentPadding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+        contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
         leading: leading,
         title: title == null ? null : AutoSizeText(title, maxLines: 1),
         subtitle: subtitle == null

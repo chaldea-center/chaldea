@@ -465,7 +465,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             // const SizedBox(height: 4),
           ],
         ),
-        titlePadding: const EdgeInsets.only(left: 16),
+        titlePadding: const EdgeInsetsDirectional.only(start: 16),
         subtitle: Wrap(
           spacing: 3,
           runSpacing: 2,
@@ -549,7 +549,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           color: bgColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 2, 8, 4),
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
           child: Text(shownText,
               style: const TextStyle(color: Colors.white, fontSize: 13)),
         ),
