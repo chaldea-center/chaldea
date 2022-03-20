@@ -50,8 +50,8 @@ class MultiDescriptor {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Text(text, style: TextStyle(color: color)),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
+        child: Text(text, style: TextStyle(color: color, fontSize: 14)),
       ),
     );
   }
@@ -188,6 +188,20 @@ class MultiDescriptor {
         );
       })
     ];
+  }
+
+  static List<Widget> svtClass(BuildContext context, List<int> targetIds) {
+    return list(
+      context,
+      targetIds,
+      (context, id) {
+        return inkWell(
+          context: context,
+          onTap: null,
+          text: '[${Transl.svtClass(id).l}]',
+        );
+      },
+    );
   }
 }
 

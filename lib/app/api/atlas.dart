@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:crclib/catalog.dart';
 import 'package:dio/dio.dart';
@@ -94,6 +95,8 @@ class _CacheManager {
     }
   }
 
+  static final RateLimiter _rateLimiter = RateLimiter(maxCalls: 80);
+
   Future<List<int>?> _download(String url) async {
     print('fetching Atlas API: $url');
     final response = await Dio().get<List<int>>(url,
@@ -105,6 +108,8 @@ class _CacheManager {
         logger.e('save cache entry failed', e, s);
       }
       return response.data;
+    } else {
+      print('fetch api [$url] failed: ${response.data}');
     }
     return null;
   }
@@ -172,7 +177,7 @@ class _CacheManager {
         _data.remove(key);
         await file.delete();
       }
-      return _download(url);
+      return _rateLimiter.limited<List<int>?>(() => _download(url));
     } catch (e, s) {
       _data.remove(key);
       logger.e('get api cache failed', e, s);
@@ -187,7 +192,12 @@ class _CacheManager {
       if (result != null) {
         return jsonDecode(utf8.decode(result));
       }
-    } catch (e) {
+    } catch (e, s) {
+      if (e is DioError) {
+        logger.e('fetch $url', e.getShownError());
+      } else {
+        logger.e('fetch $url', e, s);
+      }
       return result;
     }
   }
@@ -229,7 +239,7 @@ class AtlasApi {
       final phaseInDb = db2.gameData.questPhases[questId * 100 + phase];
 
       if (phaseInDb != null) {
-        return phaseInDb;
+        return SynchronousFuture(phaseInDb);
       }
 
       if (quest != null) {
@@ -262,5 +272,24 @@ class AtlasApi {
           (index) => MasterMission.fromJson(data[index])),
       expireAfter: expireAfter,
     );
+  }
+}
+
+extension _DioErrorX on DioError {
+  String getShownError() {
+    final buffer = StringBuffer(message);
+    if (response != null) {
+      buffer.write(' :');
+      if (response!.data is List<int>) {
+        try {
+          buffer.write(utf8.decode(response!.data));
+        } catch (e) {
+          //
+        }
+      } else {
+        buffer.write(response!.data.toString());
+      }
+    }
+    return buffer.toString();
   }
 }

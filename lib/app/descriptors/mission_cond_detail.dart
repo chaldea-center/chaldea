@@ -76,12 +76,24 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           MultiDescriptor.traits(context, targetIds),
         );
       case DetailCondType.defeatServantClass:
-        return Text('Defeat $targetNum servants with class $targetIds');
+        return combineToRich(
+          context,
+          'Defeat $targetNum servants with class ',
+          MultiDescriptor.svtClass(context, targetIds),
+        );
       case DetailCondType.defeatEnemyClass:
-        return Text('Defeat $targetNum enemies with class $targetIds');
+        return combineToRich(
+          context,
+          'Defeat $targetNum enemies with class ',
+          MultiDescriptor.svtClass(context, targetIds),
+        );
       case DetailCondType.defeatEnemyNotServantClass:
-        return Text(
-            'Defeat $targetNum servants with class $targetIds  (excluding Servants and certain bosses)');
+        return combineToRich(
+          context,
+          'Defeat $targetNum enemies with class ',
+          MultiDescriptor.svtClass(context, targetIds),
+          ' (excluding Servants and certain bosses)',
+        );
       case DetailCondType.battleSvtClassInDeck:
         return Text(
             'Put one or more servants with class $targetIds  in your Party and complete any quest $targetNum times');
@@ -108,6 +120,12 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         return Text('Acquire $targetNum embers through battle');
       case DetailCondType.friendPointSummon:
         return Text('Perform $targetNum Friend Point Summons');
+      case DetailCondType.questClearIndividuality:
+        return combineToRich(
+          context,
+          'Clear $targetNum quests with field ',
+          MultiDescriptor.traits(context, targetIds),
+        );
     }
     return Text('Unknown CondDetail: ${detail.missionCondType}');
   }

@@ -53,12 +53,14 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         width: min(380, size.width * 0.8),
         child: ListView(
           shrinkWrap: true,
-          children: List.generate(lvb - lva, (i) {
-            return buildOneLevel(
-              '${_formatLevel(lva + i)} → ${_formatLevel(lva + i + 1)}',
-              widget.costList[lva + i],
-            );
-          }),
+          children: widget.costList.isEmpty
+              ? [const ListTile(title: Text('Nothing needed'))]
+              : List.generate(lvb - lva, (i) {
+                  return buildOneLevel(
+                    '${_formatLevel(lva + i)} → ${_formatLevel(lva + i + 1)}',
+                    widget.costList[lva + i],
+                  );
+                }),
         ),
       ),
       actions: [

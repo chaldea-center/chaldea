@@ -50,6 +50,8 @@ class Transl<K, V> {
   static MappingData get _md => db2.gameData.mappingData;
 
   static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
+  static Transl<int, String> svtClass(int id) =>
+      Transl(_md.svtClass, id, '$id');
 
   static Transl<String, String> itemNames(String jp) =>
       Transl(_md.itemNames, jp, jp);
@@ -154,6 +156,7 @@ class MappingData {
   final Map<String, MappingBase<String>> tdRuby;
   final Map<String, MappingBase<String>> tdDetail;
   final Map<int, MappingBase<String>> trait; // key: trait id
+  final Map<int, MappingBase<String>> svtClass; // key: class id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingBase<Map<int, int>>> skillState;
@@ -186,6 +189,7 @@ class MappingData {
     Map<dynamic, MappingBase>? tdRuby,
     Map<dynamic, MappingBase>? tdDetail,
     Map<dynamic, MappingBase>? trait,
+    Map<dynamic, MappingBase>? svtClass,
     Map<dynamic, MappingBase>? mcDetail,
     Map<dynamic, MappingBase>? costumeDetail,
     Map<dynamic, MappingBase>? skillState,
@@ -216,6 +220,7 @@ class MappingData {
         tdRuby = _cast(tdRuby, Region.jp),
         tdDetail = _cast(tdDetail, Region.jp),
         trait = _cast(trait),
+        svtClass = _cast(svtClass),
         mcDetail = _cast(mcDetail),
         costumeDetail = _cast(costumeDetail),
         skillState = _cast(skillState),

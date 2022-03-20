@@ -5,6 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+import 'solver/custom_mission.dart';
 import 'master_mission.dart';
 
 class MasterMissionListPage extends StatefulWidget {
@@ -20,9 +21,10 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   String? errorMsg;
   bool showOutdated = false;
 
-  void _resolveMissions(Region region) async {
+  Future<void> _resolveMissions(Region region, {bool force = false}) async {
     errorMsg = null;
-    final missions = await AtlasApi.masterMissions(region: region);
+    final missions = await AtlasApi.masterMissions(
+        region: region, expireAfter: force ? Duration.zero : null);
     if (missions == null || missions.isEmpty) {
       errorMsg = 'Nothing found';
     } else {
@@ -55,10 +57,13 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         actions: [
           DropdownButton<Region>(
             value: _region,
-            items: Region.values
-                .map((region) => DropdownMenuItem(
-                    value: region, child: Text(region.toUpper())))
-                .toList(),
+            items: [
+              for (final region in Region.values)
+                DropdownMenuItem(
+                  value: region,
+                  child: Text(region.toUpper()),
+                ),
+            ],
             onChanged: (v) {
               setState(() {
                 if (v != null) {
@@ -75,26 +80,41 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
               showOutdated = !showOutdated;
             },
             tooltip: 'Outdated',
-            icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
+            icon: Icon(
+                showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
           )
         ],
       ),
-      body: errorMsg != null
-          ? Center(child: Text(errorMsg!))
-          : missions.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return ListTile(
-                        title: const Text('Custom Missions'),
-                        onTap: () {},
-                      );
-                    }
-                    return _oneMasterMission(missions[index - 1]);
-                  },
-                  itemCount: missions.length + 1,
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: errorMsg != null
+                ? Center(child: Text(errorMsg!))
+                : missions.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : RefreshIndicator(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return _oneMasterMission(missions[index]);
+                          },
+                          itemCount: missions.length,
+                        ),
+                        onRefresh: () => _resolveMissions(_region, force: true),
+                      ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  router.push(child: CustomMissionPage());
+                },
+                child: const Text('Custom Mission'),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 

@@ -872,4 +872,7 @@ class DetailCondType {
   static const int moreFriendFollower = 27; // 5th Anniversary missions
   static const int mainQuestDone = 28; // 22M Download Campaign
   static const int questClearNumIncludingGrailFront = 31;
+
+  /// custom, only used in app
+  static const int questClearIndividuality = 999;
 }

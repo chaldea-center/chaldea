@@ -77,6 +77,9 @@ class BasicServant with GameCardMixin {
   String get icon => face;
 
   @override
+  String? get borderedIcon => icon;
+
+  @override
   void routeTo() => routeToId(Routes.servant);
 }
 

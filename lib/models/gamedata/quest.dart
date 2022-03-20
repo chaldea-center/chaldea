@@ -118,7 +118,15 @@ class Quest {
     return lName.l;
   }
 
-  bool get isMainStoryFree => type == QuestType.free && warId < 1000;
+  bool get isMainStoryFree =>
+      type == QuestType.free &&
+      afterClear == QuestAfterClearType.repeatLast &&
+      warId < 1000;
+
+  // exclude challenge quest
+  bool get isAnyFree =>
+      afterClear == QuestAfterClearType.repeatLast &&
+      !(consumeType == ConsumeType.ap && consume <= 5);
 }
 
 @JsonSerializable()
@@ -203,6 +211,9 @@ class QuestPhase extends Quest {
         );
 
   int get key => id * 10 + phase;
+
+  List<QuestEnemy> get allEnemies =>
+      [for (final stage in stages) ...stage.enemies];
 
   factory QuestPhase.fromJson(Map<String, dynamic> json) =>
       _$QuestPhaseFromJson(json);

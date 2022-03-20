@@ -28,6 +28,9 @@ There are plenty of work need to do.
 - [ ] EXP demand calculation
 - [ ] Enemy(BaseServant) list and detail page
 - [ ] Saint Quartz estimate
+- [ ] Servant detail
+  - [ ] Voices: from regions and wikis
+  - [ ] Lores: from regions and wikis
 - [ ] Events
   - [ ] Shop
   - [ ] Lottery
@@ -36,11 +39,20 @@ There are plenty of work need to do.
   - [ ] TreasureBox
   - [ ] Mission
   - [ ] War Map
+- [ ] Mission Solver
+  - [ ] choose free quests from event wars or main story
 - [ ] Statistics
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 
-## Servaer side
+## Server side
 - [ ] item/skill recognition
 - [ ] account system: server or cloudflare?
   - [ ] auto-backup user data
+
+
+## Translation
+
+Hey! These files need to be translated:
+- [https://github.com/chaldea-center/chaldea-data/tree/main/mappings](https://github.com/chaldea-center/chaldea-data/tree/main/mappings)
+- [https://github.com/chaldea-center/chaldea/tree/main/lib/l10n](https://github.com/chaldea-center/chaldea/tree/main/lib/l10n)

@@ -13,7 +13,7 @@ class NiceTrait {
   int id;
   bool? negative;
 
-  Trait get name => traitIdMapping[id] ?? Trait.unknown;
+  Trait get name => kTraitIdMapping[id] ?? Trait.unknown;
 
   NiceTrait({
     required this.id,
@@ -33,11 +33,25 @@ class NiceTrait {
     if (negative == true) return 'Not $s';
     return s;
   }
+
+  static bool hasAllTraits(List<NiceTrait> traits, List<int> targets) {
+    assert(targets.isNotEmpty);
+    if (targets.isEmpty) return true;
+    return targets
+        .every((traitId) => traits.any((trait) => trait.id == traitId));
+  }
+
+  static bool hasAnyTrait(List<NiceTrait> traits, List<int> targets) {
+    assert(targets.isNotEmpty);
+    if (targets.isEmpty) return true;
+    return targets.any((traitId) => traits.any((trait) => trait.id == traitId));
+  }
 }
 
 @JsonSerializable()
 class BgmRelease {
   int id;
+  @JsonKey(unknownEnumValue: CondType.none)
   CondType type;
   int condGroup;
   List<int> targetIds;

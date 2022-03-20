@@ -1,7 +1,7 @@
 part of 'common.dart';
 
 CondType toEnumCondType(Object value) {
-  return $enumDecode(_$CondTypeEnumMap, value);
+  return $enumDecode(_$CondTypeEnumMap, value, unknownValue: CondType.none);
 }
 
 CondType? toEnumNullCondType(Object? value) {
@@ -13,7 +13,7 @@ extension TraitX on Trait {
 }
 
 // utils
-const traitIdMapping = <int, Trait>{
+const kTraitIdMapping = <int, Trait>{
   1: Trait.genderMale,
   2: Trait.genderFemale,
   3: Trait.genderUnknown,
@@ -309,4 +309,4 @@ const traitIdMapping = <int, Trait>{
 };
 
 final traitIdMappingReverse =
-    traitIdMapping.map((key, value) => MapEntry(value, key));
+    kTraitIdMapping.map((key, value) => MapEntry(value, key));

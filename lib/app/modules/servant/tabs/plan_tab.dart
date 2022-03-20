@@ -200,12 +200,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           targetVal.costumes[costume.id] = _end;
           updateState();
         },
-        detailPageBuilder: svt.costumeMaterials[costume.battleCharaId] == null
-            ? null
-            : (context) => LevelingCostPage(
-                  costList: {0: svt.costumeMaterials[costume.battleCharaId]!},
-                  title: '${S.current.costume_unlock} - ${costume.lName.l}',
-                ),
+        detailPageBuilder: (context) => LevelingCostPage(
+          costList: svt.costumeMaterials[costume.battleCharaId] == null
+              ? {}
+              : {0: svt.costumeMaterials[costume.battleCharaId]!},
+          title: '${S.current.costume_unlock} - ${costume.lName.l}',
+        ),
       ));
     }
     if (dressWidgets.isNotEmpty) {

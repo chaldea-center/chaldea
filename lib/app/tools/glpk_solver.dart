@@ -10,6 +10,40 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+abstract class BaseLPSolver {
+  final JsEngine engine = JsEngine();
+
+  /// ensure libs loaded
+  Future<void> ensureEngine() async {
+    // only load once
+    // use callback to setState, not Future.
+    print('=========loading js libs=========');
+    await engine.init(() async {
+      print('loading glpk.min.js ...');
+      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
+          name: '<glpk.min.js>');
+      print('loading solver.js ...');
+      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
+          name: '<glpk_solver.js>');
+      print('=========js libs loaded.=========');
+    }).catchError((e, s) async {
+      logger.e('initiate js libs error', e, s);
+      Catcher.reportCheckedError(e, s);
+      EasyLoading.showToast('initiation error\n$e');
+    });
+  }
+
+  Future<Map<int, num>> callSolver(BasicLPParams params) async {
+    await ensureEngine();
+    final resultString = await engine.eval(
+        '''glpk_solver(`${jsonEncode(params)}`)''',
+        name: 'solver_caller');
+    logger.i('result: $resultString');
+    return Map<String, num>.from(jsonDecode(resultString!))
+        .map((key, value) => MapEntry(int.parse(key), value));
+  }
+}
+
 class FreeLPSolver {
   final JsEngine engine = JsEngine();
 

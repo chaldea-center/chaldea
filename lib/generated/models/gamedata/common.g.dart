@@ -13,7 +13,8 @@ NiceTrait _$NiceTraitFromJson(Map json) => NiceTrait(
 
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       id: json['id'] as int,
-      type: $enumDecode(_$CondTypeEnumMap, json['type']),
+      type: $enumDecode(_$CondTypeEnumMap, json['type'],
+          unknownValue: CondType.none),
       condGroup: json['condGroup'] as int,
       targetIds:
           (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),

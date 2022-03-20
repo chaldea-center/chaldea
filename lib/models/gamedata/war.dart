@@ -66,6 +66,8 @@ class NiceWar {
 
   Transl<String, String> get lLongName => Transl.warNames(longName);
 
+  Event? get event => db2.gameData.events[eventId];
+
   String get route => Routes.warI(id);
 
   bool isOutdated() => false;

@@ -111,6 +111,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
+      svtClass: (json['svt_class'] as Map?)?.map(
+        (k, e) => MapEntry(k,
+            MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       mcDetail: (json['mc_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
