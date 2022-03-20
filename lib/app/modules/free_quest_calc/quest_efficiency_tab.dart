@@ -102,7 +102,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.dispName ?? 'Quest $questId'),
+                    title: Text(quest?.lDispName ?? 'Quest $questId'),
                     subtitle: buildRichText(drops.entries),
                     trailing: Column(
                       mainAxisSize: MainAxisSize.min,

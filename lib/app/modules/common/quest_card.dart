@@ -61,7 +61,8 @@ class _QuestCardState extends State<QuestCard> {
       expireAfter = const Duration(days: 7);
     }
 
-    for (final phase in quest.phases) {
+    for (final phase
+        in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
       AtlasApi.questPhase(questId, phase,
               region: region, expireAfter: expireAfter)
           .then((phaseData) {
@@ -164,7 +165,7 @@ class _QuestCardState extends State<QuestCard> {
           _buildPhases(phase),
       if (quest.gifts.isNotEmpty) _questRewards(),
       if (quest.releaseConditions.isNotEmpty) _releaseConditions(),
-      if (quest.type != QuestType.free)
+      if (!quest.isMainStoryFree)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Row(

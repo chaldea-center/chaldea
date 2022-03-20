@@ -14,6 +14,7 @@ class SimpleAccordion extends StatefulWidget {
   final double? elevation;
   final double? expandElevation;
   final BorderSide topBorderSide;
+  final Color? headerTileColor;
 
   SimpleAccordion({
     Key? key,
@@ -27,6 +28,7 @@ class SimpleAccordion extends StatefulWidget {
     this.elevation,
     this.expandElevation,
     this.topBorderSide = BorderSide.none,
+    this.headerTileColor,
   }) : super(key: key);
 
   @override
@@ -67,6 +69,9 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     header = Row(children: [Expanded(child: header), expandIcon]);
     if (widget.canTapOnHeader) {
       header = InkWell(onTap: toggle, child: header);
+    }
+    if (widget.headerTileColor != null) {
+      header = Material(color: widget.headerTileColor, child: header);
     }
     Widget content;
     if (expanded) _onceLoaded = true;

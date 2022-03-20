@@ -95,7 +95,7 @@ class _CacheManager {
     }
   }
 
-  static final RateLimiter _rateLimiter = RateLimiter(maxCalls: 80);
+  static final RateLimiter _rateLimiter = RateLimiter();
 
   Future<List<int>?> _download(String url) async {
     print('fetching Atlas API: $url');

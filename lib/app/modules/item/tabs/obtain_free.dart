@@ -117,7 +117,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 CustomTile(
-                  title: Text(quest?.dispName ?? 'Quest $questId'),
+                  title: Text(quest?.lDispName ?? 'Quest $questId'),
                   subtitle: Text('cost ${dropRateData.apCosts[i]}AP.  ' +
                       (sortByAP
                           ? '${S.current.drop_rate} $dropRateString%.'

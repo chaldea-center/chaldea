@@ -256,6 +256,19 @@ class BasicLPParams {
     bVec.removeAt(index);
   }
 
+  void removeInvalidCells() {
+    for (int row = rowNames.length - 1; row >= 0; row--) {
+      if (bVec[row] <= 0 || AMat[row].every((e) => e == 0)) {
+        removeRow(row);
+      }
+    }
+    for (int col = colNames.length - 1; col >= 0; col--) {
+      if (AMat.every((rowData) => rowData[col] == 0)) {
+        removeCol(col);
+      }
+    }
+  }
+
   factory BasicLPParams.fromJson(Map<String, dynamic> data) =>
       _$BasicLPParamsFromJson(data);
 

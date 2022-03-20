@@ -32,7 +32,7 @@ class _QuestListPageState extends State<QuestListPage> {
               '${index + 1}',
               textAlign: TextAlign.center,
             ),
-            title: Text(quest.dispName),
+            title: Text(quest.lDispName),
             subtitle: Text(quest.lSpot.l),
             horizontalTitleGap: 0,
             onTap: () {

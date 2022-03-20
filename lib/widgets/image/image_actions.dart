@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 // import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../components/config.dart' show db;
 import '../../packages/packages.dart';
 import '../custom_dialogs.dart';
 
@@ -76,7 +78,9 @@ class ImageActions {
               SimpleCancelOkDialog(
                 hideCancel: true,
                 title: Text(S.current.saved),
-                content: Text(db2.paths.convertIosPath(destFp)),
+                content: Text(runChaldeaNext
+                    ? db2.paths.convertIosPath(destFp)
+                    : db.paths.convertIosPath(destFp)),
                 actions: [
                   if (PlatformU.isDesktop)
                     TextButton(
