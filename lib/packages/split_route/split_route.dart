@@ -168,7 +168,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
           final size = MediaQuery.of(context).size;
           final left = size.width * masterRatio / 100 + _kSplitDividerWidth;
           scope = Positioned(
-            left: left,
+            left: Directionality.of(context) == TextDirection.rtl ? 0 : left,
             top: 0,
             child: SizedBox(
               height: size.height,
