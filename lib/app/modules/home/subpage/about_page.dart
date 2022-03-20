@@ -8,6 +8,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -248,6 +249,17 @@ class _AboutProgram extends StatelessWidget {
               version,
               style: Theme.of(context).textTheme.bodyText2,
               textAlign: TextAlign.center,
+            ),
+            Text.rich(
+              TextSpan(
+                text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => launch(AppInfo.commitUrl),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+              ),
             ),
             const SizedBox(height: 12),
             Text(

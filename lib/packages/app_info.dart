@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:chaldea/utils/extension.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
+import '../generated/git_info.dart';
 import '../models/version.dart';
 import '../utils/constants.dart';
 import 'logger.dart';
@@ -250,6 +252,15 @@ class AppInfo {
   }
 
   static AppVersion get version => AppVersion.tryParse(fullVersion)!;
+
+  static const String commmitHash = kCommitHash;
+
+  static const int commmitTimestamp = kCommitTimestamp;
+
+  static String get commitDate => DateFormat.yMd()
+      .format(DateTime.fromMillisecondsSinceEpoch(commmitTimestamp * 1000));
+
+  static String get commitUrl => "$kProjectHomepage/commit/$commmitHash";
 
   /// e.g. "1.2.3"
   static String get versionString => _packageInfo?.version ?? '';
