@@ -273,6 +273,15 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  static Future<NiceWar?> war(int warId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/war/$warId',
+      (data) => NiceWar.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 }
 
 extension _DioErrorX on DioError {

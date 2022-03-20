@@ -7,7 +7,6 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -192,7 +191,7 @@ class _QuestCardState extends State<QuestCard> {
           onPressed: () {
             router.push(
               url: Routes.questI(quest.id),
-              child: QuestDetailPage(quest: quest),
+              child: QuestDetailPage(quest: quest, region: widget.region),
               detail: true,
             );
           },
@@ -388,7 +387,7 @@ class _QuestCardState extends State<QuestCard> {
     if (dropTexts.isNotEmpty) {
       return Wrap(
         spacing: 3,
-        runSpacing: 4,
+        runSpacing: 2,
         children: [
           for (final entry in dropTexts.entries)
             GameCardMixin.anyCardItemBuilder(
@@ -417,7 +416,7 @@ class _QuestCardState extends State<QuestCard> {
     });
     return Wrap(
       spacing: 3,
-      runSpacing: 4,
+      runSpacing: 2,
       children: [
         for (final drop in drops.reversed)
           InkWell(

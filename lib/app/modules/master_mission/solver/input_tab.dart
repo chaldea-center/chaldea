@@ -33,11 +33,19 @@ class MissionInputTab extends StatefulWidget {
 class _MissionInputTabState extends State<MissionInputTab> {
   late ScrollController _scrollController;
   List<CustomMission> missions = [];
+  int warId = 0;
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     missions = List.of(widget.initMissions);
+    warId = widget.initWarId ??
+        Maths.max(
+            db2.gameData.mainStories.values
+                .where(
+                    (war) => war.quests.any((quest) => quest.isMainStoryFree))
+                .map((e) => e.id),
+            0);
   }
 
   @override
@@ -216,11 +224,8 @@ class _MissionInputTabState extends State<MissionInputTab> {
     }
   }
 
-  int? _warId;
-
   Widget get eventSelector {
-    _warId ??= Maths.max(db2.gameData.mainStories.keys, 0);
-    final war = db2.gameData.wars[_warId];
+    final war = db2.gameData.wars[warId];
     String title;
     String leading = S.current.event_title;
     if (war == null) {
@@ -231,7 +236,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     } else {
       title = Transl.eventNames(war.eventName).l;
     }
-    title = '[$_warId] $title';
+    title = '[$warId] $title';
     // title = title.replaceAll('\n', ' ');
     return ListTile(
       leading: Text(leading),
@@ -241,7 +246,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           final result =
               await SplitRoute.push<int?>(context, const EventChooser());
           if (result != null) {
-            _warId = result;
+            warId = result;
           }
           setState(() {});
         },
@@ -251,8 +256,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   bool _isRegionNA = false;
-  bool get isRegionNA =>
-      (_warId == null || _warId! < 1000) ? false : _isRegionNA;
+  bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
 
   Widget get buttonBar {
     return ButtonBar(
@@ -267,7 +271,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 value: isNA,
               ),
           ],
-          onChanged: (_warId == null || _warId! < 1000)
+          onChanged: (warId == null || warId < 1000)
               ? null
               : (v) {
                   setState(() {
@@ -315,12 +319,13 @@ class _MissionInputTabState extends State<MissionInputTab> {
     void _showHint(String hint) =>
         EasyLoading.show(status: hint, maskType: EasyLoadingMaskType.clear);
     _showHint('Solving.');
-    int warId = _warId ?? 0;
     try {
       // TODO: add success/no enemy data/failed count
-      List<QuestPhase?> quests = [];
+      List<QuestPhase> quests = [];
       List<Future> futures = [];
       Map<int, int> phases = {};
+
+      int countSuccess = 0, countError = 0, countNoEnemy = 0;
       if (warId < 1000) {
         for (final war in db2.gameData.wars.values) {
           if (!war.isMainStory || war.id > warId) continue;
@@ -329,20 +334,23 @@ class _MissionInputTabState extends State<MissionInputTab> {
             phases[quest.id] = quest.phases.last;
           }
         }
+        // door quest 10AP
+        phases[94061636] = 1;
       } else {
-        final war = db2.gameData.wars[warId];
+        NiceWar? war = isRegionNA
+            ? await AtlasApi.war(warId, region: Region.na)
+            : db2.gameData.wars[warId];
         if (war == null) {
           EasyLoading.showError('War $warId not found');
           return;
         }
         for (final quest in war.quests) {
           if (!quest.isAnyFree) continue;
-          if (region == Region.jp &&
-              !quest.phasesWithEnemies.contains(quest.phases.last)) {
-            // no enemy data
-            futures.add(Future.value());
-          } else {
+          if (quest.phasesWithEnemies.contains(quest.phases.last)) {
             phases[quest.id] = quest.phases.last;
+          } else {
+            // no enemy data
+            countNoEnemy += 1;
           }
         }
       }
@@ -351,29 +359,35 @@ class _MissionInputTabState extends State<MissionInputTab> {
           entry.key,
           entry.value,
           region: region,
-        ).then((value) async {
-          if (value?.stages.isNotEmpty == true) {
-            quests.add(value);
+        ).then((quest) async {
+          if (quest == null) {
+            countError += 1;
+          } else if (quest.allEnemies.isNotEmpty) {
+            quests.add(quest);
+            countSuccess += 1;
           } else {
-            quests.add(null);
+            countNoEnemy += 1;
           }
-          _showHint('Resolve Quests: ${quests.length}/${futures.length}...');
+          _showHint('Resolve Quests: total ${phases.length + countNoEnemy},'
+              ' $countSuccess success, $countError error, $countNoEnemy no data');
         }));
       }
 
       await Future.wait(futures);
-      if (quests.contains(null)) {
+      if (countError + countNoEnemy > 0) {
         EasyLoading.dismiss();
         final _continue = await showDialog(
           context: context,
           builder: (context) => SimpleCancelOkDialog(
             title: Text(S.current.warning),
             content: Text(
-                'Fetching total ${futures.length} quests, ${quests.where((e) => e == null).length} failed.\n'
+                'Resolve Quests: total ${phases.length + countNoEnemy},'
+                ' $countSuccess success, $countError error, $countNoEnemy no data\n'
                 'Still Continue?'),
           ),
         );
         if (_continue != true) {
+          EasyLoading.dismiss();
           return;
         }
       }
@@ -394,12 +408,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
         region: region,
       );
       widget.onSolved(solution);
+      EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('solve custom mission failed', e, s);
       EasyLoading.showError(e.toString());
-    } finally {
-      await Future.delayed(const Duration(microseconds: 200));
-      EasyLoading.dismiss();
     }
   }
 }
