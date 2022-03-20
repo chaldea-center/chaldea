@@ -35,6 +35,7 @@ abstract class BaseLPSolver {
 
   Future<Map<int, num>> callSolver(BasicLPParams params) async {
     await ensureEngine();
+    params.removeInvalidCells();
     final resultString = await engine.eval(
         '''glpk_solver(`${jsonEncode(params)}`)''',
         name: 'solver_caller');

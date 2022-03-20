@@ -4,6 +4,7 @@ import 'package:chaldea/models/models.dart';
 import 'scheme.dart';
 
 class MissionSolver extends BaseLPSolver {
+  // make sure [missions] is a copy
   Future<Map<int, int>> solve({
     required List<QuestPhase> quests,
     required List<CustomMission> missions,
@@ -19,69 +20,64 @@ class MissionSolver extends BaseLPSolver {
   }) {
     missions
         .removeWhere((mission) => mission.ids.isEmpty || mission.count <= 0);
-    List<int> colNames = quests.map((e) => e.id).toList();
-    List<int> rowNames = missions.map((e) => e.hashCode).toList();
-    List<num> bVec = missions.map((e) => e.count).toList();
-    List<num> cVec = quests.map((e) => e.consume).toList();
 
     List<List<num>> AMat = [];
-    for (final mission in missions) {
+    for (final mission in List.of(missions)) {
       final row = <int>[];
       for (final quest in quests) {
-        int count = 0;
-        switch (mission.type) {
-          case MissionTargetType.trait:
-            count = quest.allEnemies
-                .where((enemy) =>
-                    NiceTrait.hasAllTraits(enemy.traits, mission.ids))
-                .length;
-            break;
-          case MissionTargetType.questTrait:
-            count =
-                NiceTrait.hasAnyTrait(quest.individuality, mission.ids) ? 1 : 0;
-            break;
-          case MissionTargetType.quest:
-            count = mission.ids.contains(quest.id) ? 1 : 0;
-            break;
-          case MissionTargetType.enemy:
-            count = quest.allEnemies
-                .where((enemy) => mission.ids.contains(enemy.svt.id))
-                .length;
-            break;
-          case MissionTargetType.servantClass:
-            count = quest.allEnemies
-                .where((enemy) =>
-                    enemy.traits
-                        .any((trait) => trait.name == Trait.basedOnServant) &&
-                    mission.ids.contains(enemy.svt.className.id))
-                .length;
-            break;
-          case MissionTargetType.enemyClass:
-            count = quest.allEnemies
-                .where((enemy) => mission.ids.contains(enemy.svt.className.id))
-                .length;
-            break;
-          case MissionTargetType.enemyNotServantClass:
-            count = quest.allEnemies
-                .where((enemy) =>
-                    enemy.traits.any(
-                        (trait) => trait.name == Trait.notBasedOnServant) &&
-                    mission.ids.contains(enemy.svt.className.id))
-                .length;
-            break;
-        }
-        row.add(count);
+        row.add(countMissionTarget(mission, quest));
       }
-      AMat.add(row);
+      if (row.any((e) => e > 0)) {
+        AMat.add(row);
+      } else {
+        print(
+            'remove invalid mission: ${mission.type}/${mission.count}/${mission.ids}');
+        missions.remove(mission);
+      }
     }
 
     return BasicLPParams(
-      colNames: colNames,
-      rowNames: rowNames,
+      colNames: quests.map((e) => e.id).toList(),
+      rowNames: missions.map((e) => e.hashCode).toList(),
       AMat: AMat,
-      bVec: bVec,
-      cVec: cVec,
+      bVec: missions.map((e) => e.count).toList(),
+      cVec: quests.map((e) => e.consume).toList(),
       integer: true,
     );
+  }
+
+  static int countMissionTarget(CustomMission mission, QuestPhase quest) {
+    switch (mission.type) {
+      case MissionTargetType.trait:
+        return quest.allEnemies
+            .where((enemy) => NiceTrait.hasAllTraits(enemy.traits, mission.ids))
+            .length;
+      case MissionTargetType.questTrait:
+        return NiceTrait.hasAnyTrait(quest.individuality, mission.ids) ? 1 : 0;
+      case MissionTargetType.quest:
+        return mission.ids.contains(quest.id) ? 1 : 0;
+      case MissionTargetType.enemy:
+        return quest.allEnemies
+            .where((enemy) => mission.ids.contains(enemy.svt.id))
+            .length;
+      case MissionTargetType.servantClass:
+        return quest.allEnemies
+            .where((enemy) =>
+                enemy.traits
+                    .any((trait) => trait.name == Trait.basedOnServant) &&
+                mission.ids.contains(enemy.svt.className.id))
+            .length;
+      case MissionTargetType.enemyClass:
+        return quest.allEnemies
+            .where((enemy) => mission.ids.contains(enemy.svt.className.id))
+            .length;
+      case MissionTargetType.enemyNotServantClass:
+        return quest.allEnemies
+            .where((enemy) =>
+                enemy.traits
+                    .any((trait) => trait.name == Trait.notBasedOnServant) &&
+                mission.ids.contains(enemy.svt.className.id))
+            .length;
+    }
   }
 }

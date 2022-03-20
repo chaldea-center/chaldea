@@ -1,4 +1,6 @@
+import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:flutter/material.dart';
 
 class CustomMission {
   MissionTargetType type;
@@ -17,7 +19,7 @@ class CustomMission {
           cond.detail == null) {
         continue;
       }
-      final type = kMissionDetailCondMapping[cond.detail!.missionCondType];
+      final type = _kDetailCondMapping[cond.detail!.missionCondType];
       if (type == null) continue;
       if (type == MissionTargetType.quest &&
           cond.detail!.targetIds.length == 1 &&
@@ -30,6 +32,41 @@ class CustomMission {
     }
     return null;
   }
+
+  CustomMission copy() {
+    return CustomMission(type: type, count: count, ids: List.of(ids));
+  }
+
+  Widget buildDescriptor(BuildContext context) {
+    CondType condType = CondType.missionConditionDetail;
+    int missionCondType = _kDetailCondMappingReverse[type]!;
+    return CondTargetNumDescriptor(
+      condType: condType,
+      targetNum: count,
+      targetIds: const [0],
+      detail: EventMissionConditionDetail(
+        id: 0,
+        missionTargetId: 0,
+        missionCondType: missionCondType,
+        targetIds: ids,
+        logicType: 0,
+        conditionLinkType: DetailMissionCondLinkType.missionStart,
+      ),
+    );
+  }
+}
+
+class MissionSolution {
+  final Map<int, int> result;
+  final List<CustomMission> missions;
+  final Map<int, QuestPhase> quests;
+  final Region region;
+  MissionSolution({
+    required this.result,
+    required this.missions,
+    required List<QuestPhase> quests,
+    this.region = Region.jp,
+  }) : quests = {for (final quest in quests) quest.id: quest};
 }
 
 enum MissionTargetType {
@@ -42,7 +79,7 @@ enum MissionTargetType {
   enemyNotServantClass
 }
 
-const kMissionDetailCondMapping = {
+const _kDetailCondMapping = {
   DetailCondType.questClearNum1: MissionTargetType.quest,
   DetailCondType.questClearNum2: MissionTargetType.quest,
   DetailCondType.enemyKillNum: MissionTargetType.enemy,
@@ -53,3 +90,6 @@ const kMissionDetailCondMapping = {
   DetailCondType.defeatEnemyNotServantClass:
       MissionTargetType.enemyNotServantClass,
 };
+
+final _kDetailCondMappingReverse =
+    _kDetailCondMapping.map((key, value) => MapEntry(value, key));

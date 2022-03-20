@@ -20,7 +20,6 @@ import 'package:path/path.dart' show join, basename;
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
-import '../../models/paths.dart';
 import '../../packages/network.dart';
 import 'cached_image_option.dart';
 import 'image_actions.dart';

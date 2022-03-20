@@ -12,13 +12,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../api/atlas.dart';
-import '../../../descriptors/cond_target_num.dart';
 import 'scheme.dart';
 
 class MissionInputTab extends StatefulWidget {
-  final List<CustomMission> missions;
+  final List<CustomMission> initMissions;
+  final int? initWarId;
+  final ValueChanged<MissionSolution> onSolved;
 
-  const MissionInputTab({Key? key, this.missions = const []}) : super(key: key);
+  const MissionInputTab({
+    Key? key,
+    this.initMissions = const [],
+    this.initWarId,
+    required this.onSolved,
+  }) : super(key: key);
 
   @override
   State<MissionInputTab> createState() => _MissionInputTabState();
@@ -31,7 +37,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    missions = List.of(widget.missions);
+    missions = List.of(widget.initMissions);
   }
 
   @override
@@ -70,7 +76,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           textAlign: TextAlign.center,
         ),
         horizontalTitleGap: 0,
-        title: _missionToDescriptor(mission),
+        title: mission.buildDescriptor(context),
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -99,9 +105,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
             trailing: SizedBox(
               width: 72,
               child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
                   isDense: true,
+                  hintText: mission.count.toString(),
                 ),
                 textAlign: TextAlign.center,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -190,47 +197,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
     }[type]!;
   }
 
-  Widget _missionToDescriptor(CustomMission mission) {
-    CondType condType = CondType.missionConditionDetail;
-    int? missionCondType;
-    switch (mission.type) {
-      case MissionTargetType.trait:
-        missionCondType = DetailCondType.defeatEnemyIndividuality;
-        break;
-      case MissionTargetType.questTrait:
-        missionCondType = DetailCondType.questClearIndividuality;
-        break;
-      case MissionTargetType.quest:
-        missionCondType = DetailCondType.questClearNum2;
-        break;
-      case MissionTargetType.enemy:
-        missionCondType = DetailCondType.enemyKillNum;
-        break;
-      case MissionTargetType.servantClass:
-        missionCondType = DetailCondType.defeatServantClass;
-        break;
-      case MissionTargetType.enemyClass:
-        missionCondType = DetailCondType.defeatEnemyClass;
-        break;
-      case MissionTargetType.enemyNotServantClass:
-        missionCondType = DetailCondType.defeatEnemyNotServantClass;
-        break;
-    }
-    return CondTargetNumDescriptor(
-      condType: condType,
-      targetNum: mission.count,
-      targetIds: const [0],
-      detail: EventMissionConditionDetail(
-        id: 0,
-        missionTargetId: 0,
-        missionCondType: missionCondType,
-        targetIds: mission.ids,
-        logicType: 0,
-        conditionLinkType: DetailMissionCondLinkType.missionStart,
-      ),
-    );
-  }
-
   String _idDescriptor(MissionTargetType type, int id) {
     switch (type) {
       case MissionTargetType.trait:
@@ -264,7 +230,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     } else {
       title = Transl.eventNames(war.eventName).l;
     }
-    title = '$_warId - $title';
+    title = '[$_warId] $title';
     // title = title.replaceAll('\n', ' ');
     return ListTile(
       leading: Text(leading),
@@ -283,7 +249,9 @@ class _MissionInputTabState extends State<MissionInputTab> {
     );
   }
 
-  bool isRegionNA = false;
+  bool _isRegionNA = false;
+  bool get isRegionNA =>
+      (_warId == null || _warId! < 1000) ? false : _isRegionNA;
 
   Widget get buttonBar {
     return ButtonBar(
@@ -298,11 +266,13 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 value: isNA,
               ),
           ],
-          onChanged: (v) {
-            setState(() {
-              if (v != null) isRegionNA = v;
-            });
-          },
+          onChanged: (_warId == null || _warId! < 1000)
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) _isRegionNA = v;
+                  });
+                },
         ),
         IconButton(
           onPressed: () {
@@ -341,10 +311,12 @@ class _MissionInputTabState extends State<MissionInputTab> {
       return;
     }
     final region = isRegionNA ? Region.na : Region.jp;
-    void _showHint(String hint) => EasyLoading.show(status: hint);
+    void _showHint(String hint) =>
+        EasyLoading.show(status: hint, maskType: EasyLoadingMaskType.clear);
     _showHint('Solving.');
     int warId = _warId ?? 0;
     try {
+      // TODO: add success/no enemy data/failed count
       List<QuestPhase?> quests = [];
       List<Future> futures = [];
       Map<int, int> phases = {};
@@ -363,7 +335,12 @@ class _MissionInputTabState extends State<MissionInputTab> {
           return;
         }
         for (final quest in war.quests) {
-          if (quest.isAnyFree) {
+          if (!quest.isAnyFree) continue;
+          if (region == Region.jp &&
+              !quest.phasesWithEnemies.contains(quest.phases.last)) {
+            // no enemy data
+            futures.add(Future.value());
+          } else {
             phases[quest.id] = quest.phases.last;
           }
         }
@@ -404,14 +381,23 @@ class _MissionInputTabState extends State<MissionInputTab> {
         EasyLoading.showError('No Valid Quests');
         return;
       }
+      final missionsCopy = missions.map((e) => e.copy()).toList();
       final result = await solver.solve(
-          quests: quests.whereType<QuestPhase>().toList(), missions: missions);
-      print(result);
+        quests: validQuests,
+        missions: missionsCopy,
+      );
+      final solution = MissionSolution(
+        result: result,
+        missions: missionsCopy,
+        quests: validQuests,
+        region: region,
+      );
+      widget.onSolved(solution);
     } catch (e, s) {
       logger.e('solve custom mission failed', e, s);
       EasyLoading.showError(e.toString());
     } finally {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(microseconds: 200));
       EasyLoading.dismiss();
     }
   }

@@ -66,7 +66,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.dispName ?? 'Quest ${variable.name}'),
+                    title: Text(quest?.lDispName ?? 'Quest ${variable.name}'),
                     subtitle: buildRichDetails(variable.detail.entries),
                     trailing: Text('${variable.value}*${variable.cost} AP'),
                     onTap: () {

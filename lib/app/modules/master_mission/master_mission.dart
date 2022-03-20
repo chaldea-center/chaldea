@@ -40,7 +40,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
                       .whereType<CustomMission>()
                       .toList();
                   router.push(
-                      child: CustomMissionPage(missions: customMissions));
+                      child: CustomMissionPage(initMissions: customMissions));
                 },
                 icon: const Icon(Icons.search),
                 label: Text(S.current.drop_calc_solve),
@@ -94,7 +94,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
             : IconButton(
                 onPressed: () {
                   router.push(
-                      child: CustomMissionPage(missions: [customMission]));
+                      child: CustomMissionPage(initMissions: [customMission]));
                 },
                 icon: const Icon(Icons.search),
                 color: Theme.of(context).colorScheme.secondary,

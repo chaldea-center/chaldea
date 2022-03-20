@@ -108,14 +108,23 @@ class Quest {
 
   void routeTo() => router.push(url: Routes.questI(id));
 
-  String get dispName {
+  String get lDispName {
     // 群島-10308, 裏山-20314
-    if (type == QuestType.free) {
+    if (isMainStoryFree) {
       return const [10308, 20314].contains(spotId)
           ? '${lSpot.l}(${lName.l})'
           : lSpot.l;
     }
     return lName.l;
+  }
+
+  String get dispName {
+    if (isMainStoryFree) {
+      return const [10308, 20314].contains(spotId)
+          ? '$spotName($name)'
+          : spotName;
+    }
+    return name;
   }
 
   bool get isMainStoryFree =>
