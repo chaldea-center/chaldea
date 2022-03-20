@@ -42,20 +42,21 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       apCount = Maths.sum(solution.result.keys
           .map((e) => solution.quests[e]!.consume * solution.result[e]!));
     }
-    List<int> questIds = solution.result.keys.toList();
+    List<int> questIds = [];
     Map<int, int> targetCounts = {};
 
     if (widget.showResult) {
+      questIds = solution.result.keys.toList();
       questIds.sort2((e) => -solution.result[e]!);
     } else {
-      for (final questId in questIds) {
+      for (final quest in solution.quests.values) {
         int targetCount = 0;
         for (final mission in solution.missions) {
-          targetCount += MissionSolver.countMissionTarget(
-              mission, solution.quests[questId]!);
+          targetCount += MissionSolver.countMissionTarget(mission, quest);
         }
-        targetCounts[questId] = targetCount;
+        if (targetCount > 0) targetCounts[quest.id] = targetCount;
       }
+      questIds = targetCounts.keys.toList();
       questIds.sort2((questId) => -targetCounts[questId]!);
     }
 

@@ -70,6 +70,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   Widget _oneMission(int index) {
     CustomMission mission = missions[index];
     return SimpleAccordion(
+      key: Key('mission_input_${mission.hashCode}'),
       headerBuilder: (context, collapsed) => ListTile(
         leading: Text(
           (index + 1).toString(),
