@@ -14,6 +14,8 @@ class NiceWar {
   String age;
   String name;
   String longName;
+  @JsonKey(fromJson: toEnumListWarFlag)
+  List<WarFlag> flags;
   String? banner;
   String? headerImage;
   int priority;
@@ -39,6 +41,7 @@ class NiceWar {
     required this.age,
     required this.name,
     required this.longName,
+    this.flags = const [],
     this.banner,
     this.headerImage,
     required this.priority,
@@ -239,6 +242,35 @@ class WarAdd {
   });
 
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);
+}
+
+List<WarFlag> toEnumListWarFlag(List<dynamic> flags) {
+  return flags
+      .map((e) => $enumDecode(_$WarFlagEnumMap, e, unknownValue: WarFlag.none))
+      .toList();
+}
+
+@JsonEnum(alwaysCreate: true)
+enum WarFlag {
+  none, // added
+  withMap,
+  showOnMaterial,
+  folderSortPrior,
+  storyShortcut,
+  isEvent,
+  closeAfterClear,
+  mainScenario,
+  isWarIconLeft,
+  clearedReturnToTitle,
+  noClearMarkWithClear,
+  noClearMarkWithComplete,
+  notEntryBannerActive,
+  shop,
+  blackMarkWithClear,
+  dispFirstQuest,
+  effectDisappearBanner,
+  whiteMarkWithClear,
+  subFolder,
 }
 
 enum WarOverwriteType {

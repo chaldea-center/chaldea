@@ -15,6 +15,9 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       age: json['age'] as String,
       name: json['name'] as String,
       longName: json['longName'] as String,
+      flags: json['flags'] == null
+          ? const []
+          : toEnumListWarFlag(json['flags'] as List),
       banner: json['banner'] as String?,
       headerImage: json['headerImage'] as String?,
       priority: json['priority'] as int,
@@ -141,4 +144,26 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.warForceHide: 'warForceHide',
   WarOverwriteType.startType: 'startType',
   WarOverwriteType.noticeDialogText: 'noticeDialogText',
+};
+
+const _$WarFlagEnumMap = {
+  WarFlag.none: 'none',
+  WarFlag.withMap: 'withMap',
+  WarFlag.showOnMaterial: 'showOnMaterial',
+  WarFlag.folderSortPrior: 'folderSortPrior',
+  WarFlag.storyShortcut: 'storyShortcut',
+  WarFlag.isEvent: 'isEvent',
+  WarFlag.closeAfterClear: 'closeAfterClear',
+  WarFlag.mainScenario: 'mainScenario',
+  WarFlag.isWarIconLeft: 'isWarIconLeft',
+  WarFlag.clearedReturnToTitle: 'clearedReturnToTitle',
+  WarFlag.noClearMarkWithClear: 'noClearMarkWithClear',
+  WarFlag.noClearMarkWithComplete: 'noClearMarkWithComplete',
+  WarFlag.notEntryBannerActive: 'notEntryBannerActive',
+  WarFlag.shop: 'shop',
+  WarFlag.blackMarkWithClear: 'blackMarkWithClear',
+  WarFlag.dispFirstQuest: 'dispFirstQuest',
+  WarFlag.effectDisappearBanner: 'effectDisappearBanner',
+  WarFlag.whiteMarkWithClear: 'whiteMarkWithClear',
+  WarFlag.subFolder: 'subFolder',
 };

@@ -19,6 +19,8 @@ class BasicQuest {
   int id;
   String name;
   QuestType type;
+  @JsonKey(fromJson: toEnumListQuestFlag)
+  List<QuestFlag> flags;
   ConsumeType consumeType;
   int consume;
   int spotId;
@@ -32,6 +34,7 @@ class BasicQuest {
     required this.id,
     required this.name,
     required this.type,
+    this.flags = const [],
     required this.consumeType,
     required this.consume,
     required this.spotId,
@@ -51,6 +54,8 @@ class Quest {
   int id;
   String name;
   QuestType type;
+  @JsonKey(fromJson: toEnumListQuestFlag)
+  List<QuestFlag> flags;
   ConsumeType consumeType;
   int consume;
   List<ItemAmount> consumeItem;
@@ -77,6 +82,7 @@ class Quest {
     required this.id,
     required this.name,
     required this.type,
+    this.flags = const [],
     this.consumeType = ConsumeType.ap,
     required this.consume,
     this.consumeItem = const [],
@@ -158,6 +164,7 @@ class QuestPhase extends Quest {
     required int id,
     required String name,
     required QuestType type,
+    List<QuestFlag> flags = const [],
     ConsumeType consumeType = ConsumeType.ap,
     required int consume,
     List<ItemAmount> consumeItem = const [],
@@ -196,6 +203,7 @@ class QuestPhase extends Quest {
           id: id,
           name: name,
           type: type,
+          flags: flags,
           consumeType: consumeType,
           consume: consume,
           consumeItem: consumeItem,
@@ -696,6 +704,13 @@ class QuestPhaseExtraDetail {
       _$QuestPhaseExtraDetailFromJson(json);
 }
 
+List<QuestFlag> toEnumListQuestFlag(List<dynamic> flags) {
+  return flags
+      .map((e) =>
+          $enumDecode(_$QuestFlagEnumMap, e, unknownValue: QuestFlag.none))
+      .toList();
+}
+
 enum QuestType {
   main,
   free,
@@ -719,6 +734,68 @@ enum QuestAfterClearType {
   repeatLast,
   resetInterval,
   closeDisp,
+}
+
+@JsonEnum(alwaysCreate: true)
+enum QuestFlag {
+  none,
+  noBattle,
+  raid,
+  raidConnection,
+  noContinue,
+  noDisplayRemain,
+  raidLastDay,
+  closedHideCostItem,
+  closedHideCostNum,
+  closedHideProgress,
+  closedHideRecommendLv,
+  closedHideTrendClass,
+  closedHideReward,
+  noDisplayConsume,
+  superBoss,
+  noDisplayMissionNotify,
+  hideProgress,
+  dropFirstTimeOnly,
+  chapterSubIdJapaneseNumerals,
+  supportOnlyForceBattle,
+  eventDeckNoSupport,
+  fatigueBattle,
+  supportSelectAfterScript,
+  branch,
+  userEventDeck,
+  noDisplayRaidRemain,
+  questMaxDamageRecord,
+  enableFollowQuest,
+  supportSvtMultipleSet,
+  supportOnlyBattle,
+  actConsumeBattleWin,
+  vote,
+  hideMaster,
+  disableMasterSkill,
+  disableCommandSpeel,
+  supportSvtEditablePosition,
+  branchScenario,
+  questKnockdownRecord,
+  notRetrievable,
+  displayLoopmark,
+  boostItemConsumeBattleWin,
+  playScenarioWithMapscreen,
+  battleRetreatQuestClear,
+  battleResultLoseQuestClear,
+  branchHaving,
+  noDisplayNextIcon,
+  windowOnly,
+  changeMasters,
+  notDisplayResultGetPoint,
+  forceToNoDrop,
+  displayConsumeIcon,
+  harvest,
+  reconstruction,
+  enemyImmediateAppear,
+  noSupportList,
+  live,
+  forceDisplayEnemyInfo,
+  alloutBattle,
 }
 
 enum GiftType {
