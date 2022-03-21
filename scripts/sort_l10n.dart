@@ -21,7 +21,9 @@ class _Language {
 
 const _kFixedKeys = ['@@locale', 'language', 'language_en'];
 
-void main() {
+void main([List<String> args = const []]) {
+  final bool fillNull = args.contains('-f');
+
   Map<String, Map<String, String?>> translations = {};
   for (final lang in _Language.values) {
     if (lang.file.existsSync()) {
@@ -45,7 +47,9 @@ void main() {
     final transl = translations[lang.code]!;
     Map<String, String?> newTransl = {};
     for (final key in keys) {
-      newTransl[key] = transl[key];
+      if (fillNull || transl.containsKey(key)) {
+        newTransl[key] = transl[key];
+      }
     }
     lang.file.writeAsStringSync(_encoder.convert(newTransl));
   }
