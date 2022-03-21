@@ -6,10 +6,12 @@ class CustomMission {
   MissionTargetType type;
   int count;
   List<int> ids;
+  String? originDetail;
   CustomMission({
     required this.type,
     required this.count,
     required this.ids,
+    this.originDetail,
   });
 
   static CustomMission? fromEventMission(EventMission eventMission) {
@@ -28,13 +30,22 @@ class CustomMission {
         continue;
       }
       return CustomMission(
-          type: type, count: cond.targetNum, ids: cond.detail!.targetIds);
+        type: type,
+        count: cond.targetNum,
+        ids: cond.detail!.targetIds,
+        originDetail: cond.conditionMessage,
+      );
     }
     return null;
   }
 
   CustomMission copy() {
-    return CustomMission(type: type, count: count, ids: List.of(ids));
+    return CustomMission(
+      type: type,
+      count: count,
+      ids: List.of(ids),
+      originDetail: originDetail,
+    );
   }
 
   Widget buildDescriptor(BuildContext context) {

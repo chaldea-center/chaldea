@@ -94,7 +94,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         return ListTile(
           title: Text(quest.lDispName),
           subtitle: name == nameJp ? null : Text(nameJp),
-          trailing: Text('× $count'),
+          trailing: Text((widget.showResult ? '×' : '+') + ' $count'),
         );
       },
       contentBuilder: (context) {
@@ -104,7 +104,10 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
           if (count <= 0) continue;
           children.add(ListTile(
             title: mission.buildDescriptor(context),
-            trailing: Text('× $count'),
+            subtitle: mission.originDetail?.isNotEmpty == true
+                ? Text(mission.originDetail!)
+                : null,
+            trailing: Text('+ $count'),
             minVerticalPadding: 0,
             visualDensity: VisualDensity.compact,
             dense: true,

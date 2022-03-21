@@ -138,10 +138,11 @@ class Quest {
       afterClear == QuestAfterClearType.repeatLast &&
       warId < 1000;
 
-  // exclude challenge quest
+  // exclude challenge quest, raid
   bool get isAnyFree =>
       afterClear == QuestAfterClearType.repeatLast &&
-      !(consumeType == ConsumeType.ap && consume <= 5);
+      !(consumeType == ConsumeType.ap && consume <= 5) &&
+      !flags.any((flag) => flag.name.toLowerCase().contains('raid'));
 }
 
 @JsonSerializable()

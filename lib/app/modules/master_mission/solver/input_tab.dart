@@ -90,6 +90,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (mission.originDetail?.isNotEmpty == true)
+            ListTile(
+              title: const Text('OriginMsg'),
+              subtitle: Text(mission.originDetail!),
+            ),
           ListTile(
             leading: const Text('Type'),
             trailing: DropdownButton<MissionTargetType>(
