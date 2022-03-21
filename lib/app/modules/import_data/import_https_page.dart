@@ -319,7 +319,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 : S.current.append_skill_short +
                     ' ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
           ]),
-          if (db2.gameData.servantsById[svt.svtId]!.profile!.costume.isNotEmpty)
+          if (db2.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
             _wrapCellStyle([
               S.current.costume +
                   ' ${cardCollections[svt.svtId]!.costumeIdsTo01()}',

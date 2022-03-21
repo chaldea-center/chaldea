@@ -40,8 +40,8 @@ class SvtInfoTab extends StatelessWidget {
             S.current.info_gender,
           ], defaults: headerData),
           CustomTableRow.fromTexts(texts: [
-            Transl.illustratorNames(svt.profile!.illustrator).l,
-            Transl.cvNames(svt.profile!.cv).l,
+            Transl.illustratorNames(svt.profile.illustrator).l,
+            Transl.cvNames(svt.profile.cv).l,
             EnumUtil.titled(svt.gender),
           ], defaults: contentData),
 
@@ -54,12 +54,12 @@ class SvtInfoTab extends StatelessWidget {
             S.current.info_np
           ], defaults: headerData),
           CustomTableRow.fromTexts(texts: [
-            svt.profile?.stats?.strength ?? '-',
-            svt.profile?.stats?.endurance ?? '-',
-            svt.profile?.stats?.agility ?? '-',
-            svt.profile?.stats?.magic ?? '-',
-            svt.profile?.stats?.luck ?? '-',
-            svt.profile?.stats?.np ?? '-',
+            svt.profile.stats?.strength ?? '-',
+            svt.profile.stats?.endurance ?? '-',
+            svt.profile.stats?.agility ?? '-',
+            svt.profile.stats?.magic ?? '-',
+            svt.profile.stats?.luck ?? '-',
+            svt.profile.stats?.np ?? '-',
           ], defaults: contentData),
 
           CustomTableRow(children: [
@@ -69,8 +69,8 @@ class SvtInfoTab extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
                 text: [
-                  svt.profile!.stats?.policy,
-                  svt.profile!.stats?.personality
+                  svt.profile.stats?.policy,
+                  svt.profile.stats?.personality
                 ].map((e) => EnumUtil.titled(e ?? '-')).join('·'),
                 flex: 2,
                 textAlign: TextAlign.center),

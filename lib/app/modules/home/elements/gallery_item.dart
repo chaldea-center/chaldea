@@ -1,3 +1,5 @@
+import 'package:chaldea/app/modules/creator/cv_list.dart';
+import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -87,8 +89,8 @@ class GalleryItem {
         // costume,
         // gacha,
         // ffo,
-        // cvList,
-        // illustratorList,
+        cvList,
+        illustratorList,
         // enemyList,
         // expCard,
         // statistics,
@@ -207,20 +209,22 @@ class GalleryItem {
 //   page: FreedomOrderPage(),
 //   isDetail: true,
 // );
-// static GalleryItem cvList = GalleryItem(
-//   name: 'cv_list',
-//   titleBuilder: () => S.current.info_cv,
-//   icon: Icons.keyboard_voice,
-//   page: CvListPage(),
-//   isDetail: true,
-// );
-// static GalleryItem illustratorList = GalleryItem(
-//   name: 'illustrator_list',
-//   titleBuilder: () => S.current.illustrator,
-//   icon: FontAwesomeIcons.paintBrush,
-//   page: IllustratorListPage(),
-//   isDetail: true,
-// );
+  static GalleryItem cvList = GalleryItem(
+    name: 'cv_list',
+    titleBuilder: () => S.current.info_cv,
+    icon: Icons.keyboard_voice,
+    url: Routes.cvList,
+    page: CvListPage(),
+    isDetail: true,
+  );
+  static GalleryItem illustratorList = GalleryItem(
+    name: 'illustrator_list',
+    titleBuilder: () => S.current.illustrator,
+    icon: FontAwesomeIcons.paintBrush,
+    url: Routes.illustratorList,
+    page: IllustratorListPage(),
+    isDetail: true,
+  );
 // static GalleryItem enemyList = GalleryItem(
 //   name: 'enemy_list',
 //   titleBuilder: () => S.current.enemy_list,

@@ -196,8 +196,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
-                        text:
-                            Transl.illustratorNames(ce.profile!.illustrator).l,
+                        text: Transl.illustratorNames(ce.profile.illustrator).l,
                         flex: 3,
                         maxLines: 1)
                   ]),

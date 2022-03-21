@@ -389,7 +389,7 @@ class ServantListPageState extends State<ServantListPage>
         for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i],
         for (var i = 0; i < 3; i++)
           svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
-        for (var costume in svt.profile!.costume.values)
+        for (var costume in svt.profile.costume.values)
           (svtPlan.costumes[costume.id] ?? 0) >
               (svtStat.cur.costumes[costume.id] ?? 0),
         svtPlan.grail > svtStat.cur.grail,
@@ -871,7 +871,7 @@ class ServantListPageState extends State<ServantListPage>
                 final costumes = changeTarget ? target.costumes : cur.costumes;
                 costumes
                   ..clear()
-                  ..addAll(Map.fromIterable(svt.profile!.costume.keys,
+                  ..addAll(Map.fromIterable(svt.profile.costume.keys,
                       value: (k) => _changedDress == true ? 1 : 0));
               }
             });
@@ -959,13 +959,13 @@ class ServantListPageState extends State<ServantListPage>
           if (status.cur.appendSkills.any((e) => e > 0))
             Text(
                 status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),
-          if (svt.profile!.costume.isNotEmpty)
+          if (svt.profile.costume.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 db2.getIconImage(Atlas.assetItem(Items.costumeIconId),
                     width: 16, height: 16),
-                Text(svt.profile!.costume.values
+                Text(svt.profile.costume.values
                     .map((e) => status.cur.costumes[e.id] ?? 0)
                     .join('/')),
               ],

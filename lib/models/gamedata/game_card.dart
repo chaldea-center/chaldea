@@ -331,7 +331,7 @@ mixin GameCardMixin {
     } else {
       int svtId = id ~/ 100, costumeId = id % 100;
       final svt = gamedata.servantsById[svtId];
-      final costume = svt?.profile?.costume.values
+      final costume = svt?.profile.costume.values
           .firstWhereOrNull((e) => e.id == costumeId);
       if (svt != null && costume != null) {
         result = onCostume?.call(svt, costume);

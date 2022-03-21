@@ -692,7 +692,7 @@ VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
 
 NiceLore _$NiceLoreFromJson(Map json) => NiceLore(
       cv: json['cv'] as String? ?? '',
-      illustrator: json['illustrator'] as String,
+      illustrator: json['illustrator'] as String? ?? '',
       stats: json['stats'] == null
           ? null
           : LoreStatus.fromJson(

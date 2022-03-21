@@ -321,7 +321,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   if (faces.costume != null) {
                     faces.costume!.forEach((key, value) {
                       _addOne(
-                        svt.profile?.costume[key]?.lName.l ??
+                        svt.profile.costume[key]?.lName.l ??
                             '${S.current.costume} $key',
                         value,
                       );

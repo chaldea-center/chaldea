@@ -56,6 +56,8 @@ class Routes {
   static const String item = '/item';
   static const String items = '/items';
 
+  static const String cvList = '/cvs';
+  static const String illustratorList = '/illustrators';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';

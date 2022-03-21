@@ -173,7 +173,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
     // costume part
     List<Widget> dressWidgets = [];
-    for (final costume in svt.profile!.costume.values) {
+    for (final costume in svt.profile.costume.values) {
       dressWidgets.add(buildPlanRow(
         useSlider: false,
         leading: GestureDetector(

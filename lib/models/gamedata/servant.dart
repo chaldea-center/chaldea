@@ -140,7 +140,7 @@ class Servant with GameCardMixin {
   List<NiceSkill> extraPassive;
   List<ServantAppendPassiveSkill> appendPassive;
   List<NiceTd> noblePhantasms;
-  NiceLore? profile;
+  NiceLore profile;
 
   Servant({
     required this.id,
@@ -194,9 +194,10 @@ class Servant with GameCardMixin {
     required this.extraPassive,
     required this.appendPassive,
     required this.noblePhantasms,
-    this.profile,
+    NiceLore? profile,
   })  : extraAssets = extraAssets ?? ExtraAssets(),
-        ascensionAdd = ascensionAdd ?? AscensionAdd() {
+        ascensionAdd = ascensionAdd ?? AscensionAdd(),
+        profile = profile ?? NiceLore() {
     preprocess();
   }
 
@@ -330,7 +331,7 @@ class CraftEssence with GameCardMixin {
   List<ValentineScript> valentineScript;
   AscensionAdd ascensionAdd;
   List<NiceSkill> skills;
-  NiceLore? profile;
+  NiceLore profile;
 
   CraftEssence({
     required this.id,
@@ -356,9 +357,10 @@ class CraftEssence with GameCardMixin {
     this.valentineScript = const [],
     AscensionAdd? ascensionAdd,
     required this.skills,
-    this.profile,
+    NiceLore? profile,
   })  : extraAssets = extraAssets ?? ExtraAssets(),
-        ascensionAdd = ascensionAdd ?? AscensionAdd();
+        ascensionAdd = ascensionAdd ?? AscensionAdd(),
+        profile = profile ?? NiceLore();
 
   factory CraftEssence.fromJson(Map<String, dynamic> json) =>
       _$CraftEssenceFromJson(json);
@@ -934,7 +936,7 @@ class NiceLore {
 
   NiceLore({
     this.cv = '',
-    required this.illustrator,
+    this.illustrator = '',
     this.stats,
     this.costume = const {},
     this.comments = const [],
