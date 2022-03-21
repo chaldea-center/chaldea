@@ -66,10 +66,10 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      db2.curUser.name,
-                      textScaleFactor: 0.8,
-                    ),
+                    child: db2.onUserData((context, snapshot) => Text(
+                          db2.curUser.name,
+                          textScaleFactor: 0.8,
+                        )),
                   ),
                 ),
               ),

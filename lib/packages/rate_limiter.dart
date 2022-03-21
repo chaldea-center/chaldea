@@ -15,8 +15,8 @@ class RateLimiter {
   DateTime _lastReset;
 
   RateLimiter({
-    this.maxCalls = 50,
-    this.period = const Duration(seconds: 5),
+    this.maxCalls = 5,
+    this.period = const Duration(seconds: 1),
     this.raiseOnLimit = false,
   }) : _lastReset = DateTime.now();
 

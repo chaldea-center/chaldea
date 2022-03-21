@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -232,24 +231,27 @@ class _MissionInputTabState extends State<MissionInputTab> {
       title = 'Invalid Choice';
     } else if (war.isMainStory) {
       leading = 'Free ~ ';
-      title = Transl.warNames(war.name).l;
+      title = Transl.warNames(
+              war.name.trimChar('-').isEmpty ? war.longName : war.name)
+          .l;
     } else {
       title = Transl.eventNames(war.eventName).l;
     }
     title = '[$warId] $title';
-    // title = title.replaceAll('\n', ' ');
+    void _onTap() async {
+      final result = await SplitRoute.push<int?>(
+          context, EventChooser(initTab: warId < 1000 ? 0 : 1));
+      if (result != null) {
+        warId = result;
+      }
+      setState(() {});
+    }
+
     return ListTile(
       leading: Text(leading),
-      title: AutoSizeText(title, maxLines: 3, minFontSize: 10),
+      title: TextButton(onPressed: _onTap, child: Text(title)),
       trailing: IconButton(
-        onPressed: () async {
-          final result =
-              await SplitRoute.push<int?>(context, const EventChooser());
-          if (result != null) {
-            warId = result;
-          }
-          setState(() {});
-        },
+        onPressed: _onTap,
         icon: const Icon(Icons.change_circle_outlined),
       ),
     );
@@ -565,7 +567,8 @@ class __SearchViewState extends State<_SearchView> {
 }
 
 class EventChooser extends StatelessWidget {
-  const EventChooser({Key? key}) : super(key: key);
+  final int initTab;
+  const EventChooser({Key? key, this.initTab = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -581,6 +584,7 @@ class EventChooser extends StatelessWidget {
         (war) => -(db2.gameData.events[war.eventId]?.startedAt ?? war.id));
     return DefaultTabController(
       length: 2,
+      initialIndex: initTab,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Select Free Progress or an Event War'),

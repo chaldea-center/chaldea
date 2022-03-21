@@ -264,7 +264,17 @@ class _CachedImageState extends State<CachedImage> {
   Widget _withCached(String fullUrl) {
     final _cacheManager = cachedOption.cacheManager ??
         (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
-
+    Uri? uri = Uri.tryParse(fullUrl);
+    if (uri != null && uri.host == 'fgo.wiki') {
+      final hashValue = uri.queryParameters['sha1'];
+      if (hashValue != null) {
+        if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
+          fullUrl = '$kStaticHostRoot/${uri.host}/$hashValue';
+        } else {
+          fullUrl = fullUrl.split('?').first;
+        }
+      }
+    }
     if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
       final uri = Uri.tryParse(fullUrl);
       if (uri != null && uri.host == 'fgo.wiki') {

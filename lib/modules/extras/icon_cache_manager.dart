@@ -63,8 +63,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 }
 
 class IconCacheManager {
-  final _limiter =
-      RateLimiter(maxCalls: 10, period: const Duration(seconds: 1));
+  final _limiter = RateLimiter();
 
   bool _running = false;
 
