@@ -428,5 +428,5 @@ const _$EventTypeEnumMap = {
   EventType.warBoard: 'warBoard',
   EventType.combineCosutumeItem: 'combineCosutumeItem',
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
-  EventType.relaxedQuestRequirementCampaign: 'relaxedQuestRequirementCampaign',
+  EventType.interludeCampaign: 'interludeCampaign',
 };

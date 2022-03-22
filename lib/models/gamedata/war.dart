@@ -291,6 +291,7 @@ enum WarOverwriteType {
   warForceHide,
   startType,
   noticeDialogText,
+  clearMark,
 }
 enum WarStartType {
   none,

@@ -144,6 +144,7 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.warForceHide: 'warForceHide',
   WarOverwriteType.startType: 'startType',
   WarOverwriteType.noticeDialogText: 'noticeDialogText',
+  WarOverwriteType.clearMark: 'clearMark',
 };
 
 const _$WarFlagEnumMap = {

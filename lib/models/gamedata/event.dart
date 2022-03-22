@@ -831,7 +831,7 @@ enum EventType {
   warBoard,
   combineCosutumeItem,
   myroomMultipleViewCampaign,
-  relaxedQuestRequirementCampaign,
+  interludeCampaign,
 }
 
 enum DetailMissionCondLinkType {
