@@ -138,83 +138,115 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       controller: scrollController,
       trackVisibility: PlatformU.isDesktopOrWeb,
       child: useGrid
-          ? buildGridView()
+          ? buildGridView(
+              topHint: hintText,
+              bottomHint: hintText,
+            )
           : buildListView(topHint: hintText, bottomHint: hintText),
     );
   }
+
+  double? itemExtent;
+  // TODO: move to func param somewhere
+  bool get prototypeExtent => false;
 
   Widget buildListView({
     Widget? topHint,
     Widget? bottomHint,
     Widget? separator,
   }) {
-    List<Widget> children = [];
+    List<Widget> slivers = [];
+
     if (topHint != null) {
-      children.add(topHint);
+      slivers.add(SliverToBoxAdapter(child: topHint));
     }
-    for (final datum in shownList) {
-      children.add(listItemBuilder(datum));
-    }
-    if (bottomHint != null) {
-      // don't show same hint when nothing shown
-      if (shownList.isNotEmpty || bottomHint != topHint) {
-        children.add(bottomHint);
+    Widget? _itemBuilder(BuildContext context, int index) {
+      if (index >= 0 && index < shownList.length) {
+        return listItemBuilder(shownList[index]);
       }
+      return null;
     }
 
-    ListView listView;
-    if (separator == null) {
-      listView = ListView.builder(
-        controller: scrollController,
-        itemBuilder: (context, index) => children[index],
-        itemCount: children.length,
-      );
+    if (shownList.isEmpty) {
+      // do nothing
+    } else if (itemExtent != null) {
+      slivers.add(SliverFixedExtentList(
+        delegate: SliverChildBuilderDelegate(
+          _itemBuilder,
+          childCount: shownList.length,
+        ),
+        itemExtent: itemExtent!,
+      ));
+    } else if (prototypeExtent == true) {
+      slivers.add(SliverPrototypeExtentList(
+        delegate: SliverChildBuilderDelegate(
+          _itemBuilder,
+          childCount: shownList.length,
+        ),
+        prototypeItem: listItemBuilder(shownList.first),
+      ));
     } else {
-      listView = ListView.separated(
-        controller: scrollController,
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) {
-          if (index == 0 && topHint != null && children.contains(topHint)) {
-            return const Divider(height: 1);
-          }
-          if (index == children.length - 2 &&
-              topHint != null &&
-              children.contains(bottomHint)) {
-            return const Divider(height: 1);
-          }
-          return separator;
-        },
-        itemCount: children.length,
-      );
+      slivers.add(SliverList(
+        delegate: SliverChildBuilderDelegate(
+          _itemBuilder,
+          childCount: shownList.length,
+        ),
+      ));
     }
-    return _wrapButtonBar(listView);
+
+    if (bottomHint != null && (shownList.length > 5 || bottomHint != topHint)) {
+      slivers.add(SliverToBoxAdapter(child: bottomHint));
+    }
+    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 24)));
+
+    return SafeArea(
+      child: _wrapButtonBar(
+        CustomScrollView(
+          controller: scrollController,
+          slivers: slivers,
+        ),
+      ),
+    );
   }
 
   Widget buildGridView({
-    int? crossCount,
-    double childAspectRatio = 130 / 144, //132*144
+    double? maxCrossAxisExtent,
+    double childAspectRatio = 132 / 144, //132*144
+    Widget? topHint,
+    Widget? bottomHint,
   }) {
-    List<Widget> children = [];
-
-    for (final datum in shownList) {
-      children.add(gridItemBuilder(datum));
+    List<Widget> slivers = [];
+    if (topHint != null) {
+      slivers.add(SliverToBoxAdapter(child: topHint));
     }
+    if (shownList.isNotEmpty) {
+      slivers.add(SliverPadding(
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        sliver: SliverGrid.extent(
+          maxCrossAxisExtent: maxCrossAxisExtent ?? 72,
+          mainAxisSpacing: 2,
+          crossAxisSpacing: 2,
+          childAspectRatio: childAspectRatio,
+          children: [
+            for (final datum in shownList) gridItemBuilder(datum),
+          ],
+        ),
+      ));
+    }
+    if (bottomHint != null &&
+        (shownList.length > 20 || bottomHint != topHint)) {
+      slivers.add(SliverToBoxAdapter(child: bottomHint));
+    }
+    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 24)));
 
-    Widget grid = LayoutBuilder(builder: (context, constraints) {
-      int count = crossCount ??
-          (constraints.maxWidth == double.infinity
-              ? 7
-              : constraints.maxWidth ~/ 64);
-      return GridView.builder(
-        controller: scrollController,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: count, childAspectRatio: childAspectRatio),
-        itemBuilder: (context, index) => children[index],
-        itemCount: children.length,
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      );
-    });
-    return _wrapButtonBar(grid);
+    return SafeArea(
+      child: _wrapButtonBar(
+        CustomScrollView(
+          controller: scrollController,
+          slivers: slivers,
+        ),
+      ),
+    );
   }
 
   Widget _wrapButtonBar(Widget child) {

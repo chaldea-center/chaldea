@@ -108,24 +108,21 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   Widget gridItemBuilder(CraftEssence ce) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
-      child: GestureDetector(
-        child: db.getIconImage(ce.icon),
-        onTap: () {
-          SplitRoute.push(
-            context,
-            CraftDetailPage(
-              ce: ce,
-              onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-            ),
-            popDetail: true,
-          );
-          setState(() {
-            selected = ce;
-          });
-        },
-      ),
+    return GestureDetector(
+      child: db.getIconImage(ce.icon),
+      onTap: () {
+        SplitRoute.push(
+          context,
+          CraftDetailPage(
+            ce: ce,
+            onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
+          ),
+          popDetail: true,
+        );
+        setState(() {
+          selected = ce;
+        });
+      },
     );
   }
 

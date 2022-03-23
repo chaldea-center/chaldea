@@ -82,14 +82,11 @@ class _CostumeListPageState extends State<CostumeListPage>
 
   @override
   Widget gridItemBuilder(Costume costume) {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: ImageWithText(
-        image: db.getIconImage(costume.icon, aspectRatio: 132 / 144),
-        onTap: () {
-          SplitRoute.push(context, CostumeDetailPage(costume: costume));
-        },
-      ),
+    return ImageWithText(
+      image: db.getIconImage(costume.icon, aspectRatio: 132 / 144),
+      onTap: () {
+        SplitRoute.push(context, CostumeDetailPage(costume: costume));
+      },
     );
   }
 

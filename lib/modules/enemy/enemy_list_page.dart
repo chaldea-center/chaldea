@@ -87,12 +87,9 @@ class EnemyListPageState extends State<EnemyListPage>
 
   @override
   Widget gridItemBuilder(EnemyDetail enemy) {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: GestureDetector(
-        child: db.getIconImage(enemy.icon),
-        onTap: () => _onTapCard(enemy),
-      ),
+    return GestureDetector(
+      child: db.getIconImage(enemy.icon),
+      onTap: () => _onTapCard(enemy),
     );
   }
 

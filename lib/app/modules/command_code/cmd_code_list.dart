@@ -30,6 +30,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   CmdCodeFilterData get filterData => db2.settings.cmdCodeFilterData;
 
   @override
+  final bool prototypeExtent = true;
+
+  @override
   void initState() {
     super.initState();
     if (db2.settings.autoResetFilter) {
@@ -100,12 +103,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   @override
   Widget gridItemBuilder(CommandCode cc) {
-    return Padding(
-      padding: const EdgeInsets.all(1),
-      child: GestureDetector(
-        child: db2.getIconImage(cc.borderedIcon),
-        onTap: () => _onTapCard(cc),
-      ),
+    return GestureDetector(
+      child: db2.getIconImage(cc.borderedIcon),
+      onTap: () => _onTapCard(cc),
     );
   }
 

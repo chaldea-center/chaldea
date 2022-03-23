@@ -30,6 +30,9 @@ class CraftListPageState extends State<CraftListPage>
   CraftFilterData get filterData => db2.settings.craftFilterData;
 
   @override
+  final bool prototypeExtent = true;
+
+  @override
   void initState() {
     super.initState();
     if (db2.settings.autoResetFilter) {
@@ -111,12 +114,9 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   Widget gridItemBuilder(CraftEssence ce) {
-    return Padding(
-      padding: const EdgeInsets.all(1),
-      child: GestureDetector(
-        child: db2.getIconImage(ce.borderedIcon),
-        onTap: () => _onTapCard(ce),
-      ),
+    return GestureDetector(
+      child: db2.getIconImage(ce.borderedIcon),
+      onTap: () => _onTapCard(ce),
     );
   }
 

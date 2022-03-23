@@ -49,6 +49,9 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   @override
+  bool get prototypeExtent => !widget.planMode;
+
+  @override
   void initState() {
     super.initState();
     if (db2.settings.autoResetFilter) {
@@ -493,7 +496,10 @@ class ServantListPageState extends State<ServantListPage>
     final scrollable = Scrollbar(
       controller: scrollController,
       child: useGrid
-          ? buildGridView()
+          ? buildGridView(
+              topHint: hintText,
+              bottomHint: hintText,
+            )
           : buildListView(
               topHint: hintText,
               bottomHint: hintText,
@@ -692,21 +698,18 @@ class ServantListPageState extends State<ServantListPage>
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(1),
-      child: AspectRatio(
-        aspectRatio: 132 / 144,
-        child: db2.onUserData(
-          (context, snapshot) => ImageWithText(
-            image: db2.getIconImage(svt.customIcon),
-            shadowSize: 4,
-            textBuilder: status.cur.favorite ? textBuilder : null,
-            textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-            shadowColor: Colors.white,
-            alignment: AlignmentDirectional.bottomStart,
-            padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
-            onTap: () => _onTapSvt(svt),
-          ),
+    return db2.onUserData(
+      (context, snapshot) => InkWell(
+        onLongPress: () {},
+        child: ImageWithText(
+          image: db2.getIconImage(svt.customIcon),
+          shadowSize: 4,
+          textBuilder: status.cur.favorite ? textBuilder : null,
+          textStyle: const TextStyle(fontSize: 11, color: Colors.black),
+          shadowColor: Colors.white,
+          alignment: AlignmentDirectional.bottomStart,
+          padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
+          onTap: () => _onTapSvt(svt),
         ),
       ),
     );

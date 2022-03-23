@@ -486,7 +486,10 @@ class ServantListPageState extends State<ServantListPage>
     final scrollable = Scrollbar(
       controller: scrollController,
       child: useGrid
-          ? buildGridView()
+          ? buildGridView(
+              topHint: hintText,
+              bottomHint: hintText,
+            )
           : buildListView(
               topHint: hintText,
               bottomHint: hintText,
@@ -681,21 +684,15 @@ class ServantListPageState extends State<ServantListPage>
         );
       };
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
-      child: AspectRatio(
-        aspectRatio: 132 / 144,
-        child: ImageWithText(
-          image: db.getIconImage(svt.icon),
-          shadowSize: 4,
-          textBuilder: textBuilder,
-          textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-          shadowColor: Colors.white,
-          alignment: AlignmentDirectional.bottomStart,
-          padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
-          onTap: () => _onTapSvt(svt),
-        ),
-      ),
+    return ImageWithText(
+      image: db.getIconImage(svt.icon),
+      shadowSize: 4,
+      textBuilder: textBuilder,
+      textStyle: const TextStyle(fontSize: 11, color: Colors.black),
+      shadowColor: Colors.white,
+      alignment: AlignmentDirectional.bottomStart,
+      padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
+      onTap: () => _onTapSvt(svt),
     );
   }
 

@@ -27,6 +27,9 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   Iterable<MysticCode> get wholeData => db2.gameData.mysticCodes.values;
 
   @override
+  final bool prototypeExtent = true;
+
+  @override
   void initState() {
     super.initState();
   }
@@ -85,12 +88,9 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   @override
   Widget gridItemBuilder(MysticCode mc) {
-    return Padding(
-      padding: const EdgeInsets.all(1),
-      child: GestureDetector(
-        child: db2.getIconImage(mc.borderedIcon),
-        onTap: () => _onTapCard(mc),
-      ),
+    return GestureDetector(
+      child: db2.getIconImage(mc.borderedIcon),
+      onTap: () => _onTapCard(mc),
     );
   }
 
