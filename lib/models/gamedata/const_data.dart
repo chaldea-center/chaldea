@@ -15,7 +15,8 @@ class ConstGameData {
   final Map<SvtClass, int> classAttackRate;
   final Map<SvtClass, Map<SvtClass, int>> classRelation;
   final GameConstants constants;
-  final Map<int, Map<int, GrailCostDetail>> svtGrailCost;
+  final Map<int, Map<int, GrailCostDetail>>
+      svtGrailCost; // <rarity, <grail_count, detail>>
   final Map<int, MasterUserLvDetail> userLevel;
   final Map<int, int> bondLimitQp = {
     11: 10000000,

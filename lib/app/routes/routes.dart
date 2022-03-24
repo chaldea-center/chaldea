@@ -1,5 +1,7 @@
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/creator/cv_list.dart';
+import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
@@ -56,8 +58,8 @@ class Routes {
   static const String item = '/item';
   static const String items = '/items';
 
-  static const String cvList = '/cvs';
-  static const String illustratorList = '/illustrators';
+  static const String cvs = '/cvs';
+  static const String illustrators = '/illustrators';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';
@@ -203,6 +205,10 @@ class RouteConfiguration {
         break;
       case Routes.freeCalc:
         return FreeQuestCalcPage();
+      case Routes.cvs:
+        return CvListPage();
+      case Routes.illustrators:
+        return IllustratorListPage();
     }
     return null;
   }

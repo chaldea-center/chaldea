@@ -474,52 +474,56 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ...getObtainBadges(),
           ],
         ),
-        trailing: db2.onUserData(
-          (context, _) => Tooltip(
-            message: S.of(context).priority,
-            child: DropdownButton<int>(
-              value: status.priority,
-              itemHeight: 64,
-              items: List.generate(5, (index) {
-                final icons = [
-                  Icons.looks_5_outlined,
-                  Icons.looks_4_outlined,
-                  Icons.looks_3_outlined,
-                  Icons.looks_two_outlined,
-                  Icons.looks_one_outlined,
-                ];
-                final int priority = 5 - index;
-                return DropdownMenuItem(
-                  value: priority,
-                  child: SizedBox(
-                    width: 40,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(icons[index],
-                            color: Theme.of(context).colorScheme.secondary),
-                        AutoSizeText(
-                          db2.settings.priorityTags['$priority'] ?? '',
-                          overflow: TextOverflow.visible,
-                          minFontSize: 6,
-                          maxFontSize: 12,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
+        trailing: !svt.isUserSvt
+            ? null
+            : db2.onUserData(
+                (context, _) => Tooltip(
+                  message: S.of(context).priority,
+                  child: DropdownButton<int>(
+                    value: status.priority,
+                    itemHeight: 64,
+                    items: List.generate(5, (index) {
+                      final icons = [
+                        Icons.looks_5_outlined,
+                        Icons.looks_4_outlined,
+                        Icons.looks_3_outlined,
+                        Icons.looks_two_outlined,
+                        Icons.looks_one_outlined,
+                      ];
+                      final int priority = 5 - index;
+                      return DropdownMenuItem(
+                        value: priority,
+                        child: SizedBox(
+                          width: 40,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                icons[index],
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              AutoSizeText(
+                                db2.settings.priorityTags['$priority'] ?? '',
+                                overflow: TextOverflow.visible,
+                                minFontSize: 6,
+                                maxFontSize: 12,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      );
+                    }),
+                    onChanged: (v) {
+                      status.priority = v ?? status.priority;
+                      db2.notifyUserdata();
+                    },
+                    underline: Container(),
+                    icon: Container(),
                   ),
-                );
-              }),
-              onChanged: (v) {
-                status.priority = v ?? status.priority;
-                db2.notifyUserdata();
-              },
-              underline: Container(),
-              icon: Container(),
-            ),
-          ),
-        ),
+                ),
+              ),
       ),
       secondChild: const SizedBox(),
       crossFadeState:

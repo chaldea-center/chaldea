@@ -213,7 +213,7 @@ class GalleryItem {
     name: 'cv_list',
     titleBuilder: () => S.current.info_cv,
     icon: Icons.keyboard_voice,
-    url: Routes.cvList,
+    url: Routes.cvs,
     page: CvListPage(),
     isDetail: true,
   );
@@ -221,7 +221,7 @@ class GalleryItem {
     name: 'illustrator_list',
     titleBuilder: () => S.current.illustrator,
     icon: FontAwesomeIcons.paintBrush,
-    url: Routes.illustratorList,
+    url: Routes.illustrators,
     page: IllustratorListPage(),
     isDetail: true,
   );
