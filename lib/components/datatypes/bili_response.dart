@@ -48,6 +48,7 @@ class BiliTopLogin {
 class BiliCache {
   // deleted: {} // mostly empty
   BiliReplaced replaced;
+  // move all updated to replaced
   BiliUpdated updated;
   DateTime? serverTime;
 
@@ -58,8 +59,11 @@ class BiliCache {
             ? null
             : DateTime.fromMillisecondsSinceEpoch(serverTime * 1000);
 
-  factory BiliCache.fromJson(Map<String, dynamic> data) =>
-      _$BiliCacheFromJson(data);
+  factory BiliCache.fromJson(Map<String, dynamic> data) {
+    (data['replaced'] as Map)
+        .addAll(Map<String, dynamic>.from(data['updated'] ?? {}));
+    return _$BiliCacheFromJson(data);
+  }
 }
 
 @JsonSerializable(createToJson: false)
