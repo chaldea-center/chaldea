@@ -360,6 +360,7 @@ class EventTower {
 class EventLotteryBox {
   // int id;
   int boxIndex;
+  int talkId;
   int no;
   int type;
   List<Gift> gifts;
@@ -375,6 +376,7 @@ class EventLotteryBox {
   EventLotteryBox({
     // required this.id,
     this.boxIndex = 0,
+    this.talkId = 0,
     required this.no,
     this.type = 1,
     this.gifts = const [],
@@ -399,6 +401,7 @@ class EventLottery {
   int priority;
   bool limited;
   List<EventLotteryBox> boxes;
+  List<EventLotteryTalk> talks;
 
   EventLottery({
     required this.id,
@@ -408,6 +411,7 @@ class EventLottery {
     required this.priority,
     required this.limited,
     required this.boxes,
+    this.talks = const [],
   });
 
   factory EventLottery.fromJson(Map<String, dynamic> json) =>
@@ -433,6 +437,28 @@ class EventLottery {
   }
 
   Map<int, int>? _lastBoxItems;
+}
+
+@JsonSerializable()
+class EventLotteryTalk {
+  int talkId;
+  int no;
+  int guideImageId;
+  List<VoiceLine> beforeVoiceLines;
+  List<VoiceLine> afterVoiceLines;
+  bool isRare;
+
+  EventLotteryTalk({
+    required this.talkId,
+    required this.no,
+    required this.guideImageId,
+    this.beforeVoiceLines = const [],
+    this.afterVoiceLines = const [],
+    required this.isRare,
+  });
+
+  factory EventLotteryTalk.fromJson(Map<String, dynamic> json) =>
+      _$EventLotteryTalkFromJson(json);
 }
 
 @JsonSerializable()
@@ -517,12 +543,15 @@ class Event {
   List<int> warIds;
   List<NiceShop> shop;
   List<EventReward> rewards; // point rewards
+  List<EventRewardScene> rewardScenes;
   List<EventPointGroup> pointGroups;
   List<EventPointBuff> pointBuffs;
   List<EventMission> missions;
   List<EventTower> towers;
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
+  List<EventVoicePlay> voicePlays;
+  List<VoiceGroup> voices;
 
   Event({
     required this.id,
@@ -542,12 +571,15 @@ class Event {
     this.warIds = const [],
     this.shop = const [],
     this.rewards = const [],
+    this.rewardScenes = const [],
     this.pointGroups = const [],
     this.pointBuffs = const [],
     this.missions = const [],
     this.towers = const [],
     this.lotteries = const [],
     this.treasureBoxes = const [],
+    this.voicePlays = const [],
+    this.voices = const [],
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
@@ -721,6 +753,85 @@ class Event {
   }
 }
 
+@JsonSerializable()
+class EventRewardSceneGuide {
+  int imageId;
+  int limitCount;
+  int? faceId;
+  String? displayName;
+  int? weight;
+  int? unselectedMax;
+
+  EventRewardSceneGuide({
+    required this.imageId,
+    required this.limitCount,
+    this.faceId,
+    this.displayName,
+    this.weight,
+    this.unselectedMax,
+  });
+
+  factory EventRewardSceneGuide.fromJson(Map<String, dynamic> json) =>
+      _$EventRewardSceneGuideFromJson(json);
+}
+
+@JsonSerializable()
+class EventRewardScene {
+  int slot;
+  int groupId;
+  int type;
+  List<EventRewardSceneGuide> guides;
+  int tabImageId;
+  int imageId;
+  int bgId;
+  int bgmId;
+  int afterBgmId;
+  List<EventRewardSceneFlag> flags;
+  EventRewardScene({
+    required this.slot,
+    required this.groupId,
+    required this.type,
+    this.guides = const [],
+    required this.tabImageId,
+    required this.imageId,
+    required this.bgId,
+    required this.bgmId,
+    required this.afterBgmId,
+    this.flags = const [],
+  });
+
+  factory EventRewardScene.fromJson(Map<String, dynamic> json) =>
+      _$EventRewardSceneFromJson(json);
+}
+
+@JsonSerializable()
+class EventVoicePlay {
+  int slot;
+  int idx;
+  int guideImageId;
+  List<VoiceLine> voiceLines;
+  List<VoiceLine> confirmVoiceLines;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType;
+  int condValue;
+  int startedAt;
+  int endedAt;
+  EventVoicePlay({
+    required this.slot,
+    required this.idx,
+    required this.guideImageId,
+    this.voiceLines = const [],
+    this.confirmVoiceLines = const [],
+    required this.condType,
+    required this.condValue,
+    required this.startedAt,
+    required this.endedAt,
+  });
+
+  factory EventVoicePlay.fromJson(Map<String, dynamic> json) =>
+      _$EventVoicePlayFromJson(json);
+}
+
 enum PurchaseType {
   none,
   item,
@@ -875,4 +986,10 @@ class DetailCondType {
 
   /// custom, only used in app
   static const int questClearIndividuality = 999;
+}
+
+enum EventRewardSceneFlag {
+  npcGuide,
+  isChangeSvtByChangedTab,
+  isHideTab,
 }

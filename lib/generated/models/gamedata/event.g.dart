@@ -286,6 +286,7 @@ EventTower _$EventTowerFromJson(Map json) => EventTower(
 
 EventLotteryBox _$EventLotteryBoxFromJson(Map json) => EventLotteryBox(
       boxIndex: json['boxIndex'] as int? ?? 0,
+      talkId: json['talkId'] as int? ?? 0,
       no: json['no'] as int,
       type: json['type'] as int? ?? 1,
       gifts: (json['gifts'] as List<dynamic>?)
@@ -307,6 +308,28 @@ EventLottery _$EventLotteryFromJson(Map json) => EventLottery(
           .map((e) =>
               EventLotteryBox.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      talks: (json['talks'] as List<dynamic>?)
+              ?.map((e) => EventLotteryTalk.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+EventLotteryTalk _$EventLotteryTalkFromJson(Map json) => EventLotteryTalk(
+      talkId: json['talkId'] as int,
+      no: json['no'] as int,
+      guideImageId: json['guideImageId'] as int,
+      beforeVoiceLines: (json['beforeVoiceLines'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      afterVoiceLines: (json['afterVoiceLines'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      isRare: json['isRare'] as bool,
     );
 
 CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
@@ -371,6 +394,11 @@ Event _$EventFromJson(Map json) => Event(
                   EventReward.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      rewardScenes: (json['rewardScenes'] as List<dynamic>?)
+              ?.map((e) => EventRewardScene.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       pointGroups: (json['pointGroups'] as List<dynamic>?)
               ?.map((e) =>
                   EventPointGroup.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -399,6 +427,16 @@ Event _$EventFromJson(Map json) => Event(
       treasureBoxes: (json['treasureBoxes'] as List<dynamic>?)
               ?.map((e) => EventTreasureBox.fromJson(
                   Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      voicePlays: (json['voicePlays'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      voices: (json['voices'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -430,3 +468,59 @@ const _$EventTypeEnumMap = {
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
   EventType.interludeCampaign: 'interludeCampaign',
 };
+
+EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) =>
+    EventRewardSceneGuide(
+      imageId: json['imageId'] as int,
+      limitCount: json['limitCount'] as int,
+      faceId: json['faceId'] as int?,
+      displayName: json['displayName'] as String?,
+      weight: json['weight'] as int?,
+      unselectedMax: json['unselectedMax'] as int?,
+    );
+
+EventRewardScene _$EventRewardSceneFromJson(Map json) => EventRewardScene(
+      slot: json['slot'] as int,
+      groupId: json['groupId'] as int,
+      type: json['type'] as int,
+      guides: (json['guides'] as List<dynamic>?)
+              ?.map((e) => EventRewardSceneGuide.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      tabImageId: json['tabImageId'] as int,
+      imageId: json['imageId'] as int,
+      bgId: json['bgId'] as int,
+      bgmId: json['bgmId'] as int,
+      afterBgmId: json['afterBgmId'] as int,
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$EventRewardSceneFlagEnumMap, e))
+              .toList() ??
+          const [],
+    );
+
+const _$EventRewardSceneFlagEnumMap = {
+  EventRewardSceneFlag.npcGuide: 'npcGuide',
+  EventRewardSceneFlag.isChangeSvtByChangedTab: 'isChangeSvtByChangedTab',
+  EventRewardSceneFlag.isHideTab: 'isHideTab',
+};
+
+EventVoicePlay _$EventVoicePlayFromJson(Map json) => EventVoicePlay(
+      slot: json['slot'] as int,
+      idx: json['idx'] as int,
+      guideImageId: json['guideImageId'] as int,
+      voiceLines: (json['voiceLines'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      confirmVoiceLines: (json['confirmVoiceLines'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      condType: toEnumCondType(json['condType'] as Object),
+      condValue: json['condValue'] as int,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+    );
