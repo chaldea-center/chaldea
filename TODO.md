@@ -15,6 +15,7 @@ There are plenty of work need to do.
 - [x] Add build time/commit hash to AppInfo
 - [ ] add legacy data of `ConstData.userLevel`
 - [ ] GameData split wiki_data into files
+- [ ] use github issue forms for issue templates
 
 ## Quest Related
 

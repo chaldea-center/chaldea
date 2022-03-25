@@ -24,157 +24,245 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
 
   @override
   Widget build(BuildContext context) {
-    return MappingBase<WidgetBuilder>(
-      // jp: buildJP,
-      // cn: buildCN,
-      // tw: buildTW,
-      na: buildNA,
-      // kr: buildKR,
-    ).l!(context);
-  }
-
-  @override
-  Widget buildCN(BuildContext context) {
-    // TODO: implement buildCN
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildJP(BuildContext context) {
-    // TODO: implement buildJP
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildKR(BuildContext context) {
-    // TODO: implement buildKR
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildNA(BuildContext context) {
     switch (condType) {
       case CondType.none:
-        return const Text('NONE');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => const Text('NONE'),
+          kr: null,
+        );
       case CondType.questClear:
-        return combineToRich(
-          context,
-          'Clear ${targetNum == targetIds.length ? "all" : ""} $targetNum quests of ',
-          MultiDescriptor.quests(context, targetIds),
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Clear ${targetNum == targetIds.length ? "all" : ""} $targetNum quests of ',
+            MultiDescriptor.quests(context, targetIds),
+          ),
+          kr: null,
         );
       case CondType.questClearPhase:
-        return combineToRich(
-          context,
-          'Cleared arrow $targetNum of quest',
-          MultiDescriptor.quests(context, targetIds),
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Cleared arrow $targetNum of quest',
+            MultiDescriptor.quests(context, targetIds),
+          ),
+          kr: null,
         );
       case CondType.questClearNum:
-        return combineToRich(
-          context,
-          '$targetNum runs of quests ',
-          MultiDescriptor.quests(context, targetIds),
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            '$targetNum runs of quests ',
+            MultiDescriptor.quests(context, targetIds),
+          ),
+          kr: null,
         );
       case CondType.svtLimit:
-        return combineToRich(
-          context,
-          null,
-          MultiDescriptor.servants(context, targetIds),
-          ' at ascension $targetNum',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            null,
+            MultiDescriptor.servants(context, targetIds),
+            ' at ascension $targetNum',
+          ),
+          kr: null,
         );
       case CondType.svtFriendship:
-        return combineToRich(
-          context,
-          null,
-          MultiDescriptor.servants(context, targetIds),
-          ' at bond level $targetNum',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            null,
+            MultiDescriptor.servants(context, targetIds),
+            ' at bond level $targetNum',
+          ),
+          kr: null,
         );
       case CondType.svtGet:
-        return combineToRich(
-          context,
-          null,
-          MultiDescriptor.servants(context, targetIds),
-          ' in Spirit Origin Collection',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            null,
+            MultiDescriptor.servants(context, targetIds),
+            ' in Spirit Origin Collection',
+          ),
+          kr: null,
         );
       case CondType.eventEnd:
         final event = db2.gameData.events[targetIds.first];
-        return combineToRich(
-          context,
-          'Event ',
-          [
-            MultiDescriptor.inkWell(
-              context: context,
-              text: event?.lName.l ?? targetIds.first.toString(),
-              onTap: () => event?.routeTo(),
-            )
-          ],
-          ' has ended',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Event ',
+            [
+              MultiDescriptor.inkWell(
+                context: context,
+                text: event?.lName.l ?? targetIds.first.toString(),
+                onTap: () => event?.routeTo(),
+              )
+            ],
+            ' has ended',
+          ),
+          kr: null,
         );
       case CondType.svtHaving:
-        return combineToRich(
-          context,
-          'Presense of Servant ',
-          MultiDescriptor.servants(context, targetIds),
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Presense of Servant ',
+            MultiDescriptor.servants(context, targetIds),
+          ),
+          kr: null,
         );
       case CondType.svtRecoverd:
-        return const Text('Servant Recovered');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => const Text('Servant Recovered'),
+          kr: null,
+        );
       case CondType.limitCountAbove:
-        return combineToRich(
-          context,
-          'Servant',
-          MultiDescriptor.servants(context, targetIds),
-          ' at ascension ≥ $targetNum',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Servant',
+            MultiDescriptor.servants(context, targetIds),
+            ' at ascension ≥ $targetNum',
+          ),
+          kr: null,
         );
       case CondType.limitCountBelow:
-        return combineToRich(
-          context,
-          'Servant',
-          MultiDescriptor.servants(context, targetIds),
-          ' at ascension ≤ $targetNum',
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Servant',
+            MultiDescriptor.servants(context, targetIds),
+            ' at ascension ≤ $targetNum',
+          ),
+          kr: null,
         );
       case CondType.svtLevelClassNum:
-        return Text('Raise $targetNum servants of class_level $targetIds');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => Text('Raise $targetNum servants of class_level $targetIds'),
+          kr: null,
+        );
       case CondType.svtLimitClassNum:
-        return Text(
-            'Raise $targetNum ' + MultiDescriptor.classLimits(targetIds));
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => Text(
+              'Raise $targetNum ' + MultiDescriptor.classLimits(targetIds)),
+          kr: null,
+        );
       case CondType.svtEquipRarityLevelNum:
         break;
       case CondType.eventMissionAchieve:
         final mission = missions[targetIds.first];
-        return Text('Archive mission ${mission?.dispNo}-${mission?.name}');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => Text('Archive mission ${mission?.dispNo}-${mission?.name}'),
+          kr: null,
+        );
       case CondType.eventTotalPoint:
-        return Text('Reach $targetNum event points');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => Text('Reach $targetNum event points'),
+          kr: null,
+        );
       case CondType.eventMissionClear:
         final dispNos = targetIds.map((e) => missions[e]?.dispNo ?? e).toList();
         if (dispNos.length == targetNum) {
-          return Text('Clear all missions of $dispNos');
+          return localized(
+            jp: null,
+            cn: null,
+            tw: null,
+            na: () => Text('Clear all missions of $dispNos'),
+            kr: null,
+          );
         } else {
-          return combineToRich(
-              context, 'Clear $targetNum different missions from ', [
-            MultiDescriptor.collapsed(
-                context, targetIds, 'All ${targetIds.length} missions',
-                (context, id) {
-              final mission = missions[id];
-              return ListTile(
-                  title: Text('${mission?.dispNo} - ${mission?.name}'));
-            }),
-          ]);
+          return localized(
+            jp: null,
+            cn: null,
+            tw: null,
+            na: () => combineToRich(
+              context,
+              'Clear $targetNum different missions from ',
+              [
+                MultiDescriptor.collapsed(
+                    context, targetIds, 'All ${targetIds.length} missions',
+                    (context, id) {
+                  final mission = missions[id];
+                  return ListTile(
+                      title: Text('${mission?.dispNo} - ${mission?.name}'));
+                }),
+              ],
+            ),
+            kr: null,
+          );
         }
       case CondType.missionConditionDetail:
         if (detail == null) break;
         return MissionCondDetailDescriptor(
             targetNum: targetNum, detail: detail!);
       case CondType.date:
-        return Text(
-            'After ${DateTime.fromMillisecondsSinceEpoch(targetNum).toStringShort()}');
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => Text(
+              'After ${DateTime.fromMillisecondsSinceEpoch(targetNum).toStringShort()}'),
+          kr: null,
+        );
       default:
         break;
     }
-    return Text('Unknown: $condType, $targetNum, $targetIds');
-  }
-
-  @override
-  Widget buildTW(BuildContext context) {
-    // TODO: implement buildTW
-    throw UnimplementedError();
+    return localized(
+      jp: null,
+      cn: null,
+      tw: null,
+      na: () => Text('Unknown: $condType, $targetNum, $targetIds'),
+      kr: null,
+    );
   }
 }

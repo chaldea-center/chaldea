@@ -572,7 +572,7 @@ class Event {
     }
     final t = db2.curUser.region == Region.jp
         ? endedAt
-        : extra.endTime.of(db2.curUser.region);
+        : extra.endTime.ofRegion(db2.curUser.region);
     return t != null && t.sec2date().isBefore(DateTime.now().subtract(diff));
   }
 

@@ -34,7 +34,7 @@ class Transl<K, V> {
 
   V get l {
     for (final region in db2.settings.resolvedPreferredRegions) {
-      final v = mapping[key]?.of(region);
+      final v = mapping[key]?.ofRegion(region);
       if (v != null) return v;
     }
     return _default;
@@ -291,13 +291,13 @@ class MappingBase<T> {
 
   T? get l {
     for (final region in db2.settings.resolvedPreferredRegions) {
-      final v = of(region);
+      final v = ofRegion(region);
       if (v != null) return v;
     }
     return null;
   }
 
-  T? of(Region region) {
+  T? ofRegion(Region region) {
     switch (region) {
       case Region.jp:
         return jp;
@@ -310,6 +310,10 @@ class MappingBase<T> {
       case Region.kr:
         return kr;
     }
+  }
+
+  static T? of<T>({T? jp, T? cn, T? tw, T? na, T? kr}) {
+    return MappingBase(jp: jp, cn: cn, tw: tw, na: na, kr: kr).l;
   }
 
   void update(T? value, Region region, [bool skipExist = false]) {

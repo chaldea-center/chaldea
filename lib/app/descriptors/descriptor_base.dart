@@ -2,25 +2,17 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/models.dart';
 
 abstract class DescriptorBase {
-  Widget buildRegion(BuildContext context) {
-    return MappingBase<WidgetBuilder>(
-      jp: buildJP,
-      cn: buildCN,
-      tw: buildTW,
-      na: buildNA,
-      kr: buildKR,
-    ).l!(context);
+  Widget localized({
+    required Widget Function()? jp,
+    required Widget Function()? cn,
+    required Widget Function()? tw,
+    required Widget Function()? na,
+    required Widget Function()? kr,
+  }) {
+    assert(jp != null || cn != null || na != null);
+    return MappingBase.of(jp: jp, cn: cn, tw: tw, na: na, kr: kr)?.call() ??
+        const SizedBox();
   }
-
-  Widget buildJP(BuildContext context);
-
-  Widget buildCN(BuildContext context);
-
-  Widget buildTW(BuildContext context);
-
-  Widget buildNA(BuildContext context);
-
-  Widget buildKR(BuildContext context);
 
   RichText combineToRich(
     BuildContext context,
