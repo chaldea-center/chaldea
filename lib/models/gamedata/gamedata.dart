@@ -51,9 +51,8 @@ class GameData {
   Map<int, BasicServant> entities;
   Map<int, Bgm> bgms;
 
-  Map<String, LimitedSummon> summons;
   Map<int, FixedDrop> fixedDrops;
-  WikiData wikiData;
+  WikiData wiki;
   MappingData mappingData;
   ConstGameData constData;
   DropRateData dropRate;
@@ -73,9 +72,8 @@ class GameData {
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, BasicServant>? entities,
     Map<int, Bgm>? bgms,
-    Map<String, LimitedSummon>? summons,
     Map<int, FixedDrop>? fixedDrops,
-    WikiData? wikiData,
+    WikiData? wiki,
     MappingData? mappingData,
     ConstGameData? constData,
     DropRateData? dropRate,
@@ -93,9 +91,8 @@ class GameData {
         exchangeTickets = exchangeTickets ?? {},
         entities = entities ?? {},
         bgms = bgms ?? {},
-        summons = summons ?? {},
         fixedDrops = fixedDrops ?? {},
-        wikiData = wikiData ?? WikiData(),
+        wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData.empty(),
         dropRate = dropRate ?? DropRateData(),

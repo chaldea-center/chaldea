@@ -395,7 +395,8 @@ class WikiData {
   final Map<int, CommandCodeExtra> commandCodes;
   final Map<int, EventExtra> events;
   final Map<int, WarExtra> wars;
-  final Map<int, int> fsmSvtIdMapping;
+  final Map<String, LimitedSummon> summons;
+  final Map<int, int> webcrowMapping;
 
   WikiData({
     Map<int, ServantExtra>? servants,
@@ -403,11 +404,13 @@ class WikiData {
     Map<int, CommandCodeExtra>? commandCodes,
     Map<int, EventExtra>? events,
     Map<int, WarExtra>? wars,
-    this.fsmSvtIdMapping = const {},
+    Map<String, LimitedSummon>? summons,
+    this.webcrowMapping = const {},
   })  : servants = servants ?? {},
         craftEssences = craftEssences ?? {},
         commandCodes = commandCodes ?? {},
         events = events ?? {},
+        summons = summons ?? {},
         wars = wars ?? {};
 
   factory WikiData.fromJson(Map<String, dynamic> json) =>
@@ -621,11 +624,11 @@ class ExchangeTicket {
 
 @JsonSerializable()
 class FixedDrop {
-  final int key;
+  final int id;
   final Map<int, int> items;
 
   FixedDrop({
-    required this.key,
+    required this.id,
     required this.items,
   });
 

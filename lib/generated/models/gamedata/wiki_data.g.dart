@@ -172,7 +172,11 @@ WikiData _$WikiDataFromJson(Map json) => WikiData(
         (k, e) => MapEntry(int.parse(k as String),
             WarExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      fsmSvtIdMapping: (json['fsmSvtIdMapping'] as Map?)?.map(
+      summons: (json['summons'] as Map?)?.map(
+        (k, e) => MapEntry(k as String,
+            LimitedSummon.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      webcrowMapping: (json['webcrowMapping'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), e as int),
           ) ??
           const {},
@@ -335,7 +339,7 @@ ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
     );
 
 FixedDrop _$FixedDropFromJson(Map json) => FixedDrop(
-      key: json['key'] as int,
+      id: json['id'] as int,
       items: (json['items'] as Map).map(
         (k, e) => MapEntry(int.parse(k as String), e as int),
       ),

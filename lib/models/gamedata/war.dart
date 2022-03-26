@@ -78,7 +78,7 @@ class NiceWar {
   List<Quest> get quests => [for (final spot in spots) ...spot.quests];
 
   WarExtra get extra =>
-      db2.gameData.wikiData.wars.putIfAbsent(id, () => WarExtra(id: id));
+      db2.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
 
   @JsonKey(ignore: true)
   Map<int, int> itemReward = {};

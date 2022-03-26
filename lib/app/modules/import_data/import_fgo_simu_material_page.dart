@@ -235,7 +235,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         svtResult.clear();
         for (final List row in data) {
           if (row.length < 9) continue;
-          int? svtId = db2.gameData.wikiData.fsmSvtIdMapping[row[0]];
+          int? svtId = db2.gameData.wiki.webcrowMapping[row[0]];
           // svtId ??= row[0] < 149 ? row[0] : row[0] + 5;
           final svt = db2.gameData.servants[svtId];
           if (svt == null) continue;

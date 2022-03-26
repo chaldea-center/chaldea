@@ -11,7 +11,7 @@ class SvtSummonTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
-    for (final summon in db2.gameData.summons.values) {
+    for (final summon in db2.gameData.wiki.summons.values) {
       if (summon.allCards(svt: true).contains(svt.collectionNo)) {
         summons.add(summon);
       }

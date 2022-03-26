@@ -345,6 +345,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       await Future.delayed(const Duration(seconds: 3));
       await _loader.reload(updateOnly: true).catchError((e, s) async {
         logger.d('silent background update error');
+        return GameData();
       });
     }
   }

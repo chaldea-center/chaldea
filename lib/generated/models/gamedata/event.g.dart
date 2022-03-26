@@ -488,11 +488,13 @@ EventRewardScene _$EventRewardSceneFromJson(Map json) => EventRewardScene(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      tabImageId: json['tabImageId'] as int,
-      imageId: json['imageId'] as int,
-      bgId: json['bgId'] as int,
-      bgmId: json['bgmId'] as int,
-      afterBgmId: json['afterBgmId'] as int,
+      tabOnImage: json['tabOnImage'] as String,
+      tabOffImage: json['tabOffImage'] as String,
+      image: json['image'] as String?,
+      bg: json['bg'] as String,
+      bgm: BgmEntity.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
+      afterBgm: BgmEntity.fromJson(
+          Map<String, dynamic>.from(json['afterBgm'] as Map)),
       flags: (json['flags'] as List<dynamic>?)
               ?.map((e) => $enumDecode(_$EventRewardSceneFlagEnumMap, e))
               .toList() ??

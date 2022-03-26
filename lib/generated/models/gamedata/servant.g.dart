@@ -681,7 +681,7 @@ const _$SvtVoiceTypeEnumMap = {
 
 VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
       svtId: json['svtId'] as int,
-      voicePrefix: json['voicePrefix'] as int,
+      voicePrefix: json['voicePrefix'] as int? ?? 0,
       type: $enumDecode(_$SvtVoiceTypeEnumMap, json['type']),
       voiceLines: (json['voiceLines'] as List<dynamic>?)
               ?.map((e) =>

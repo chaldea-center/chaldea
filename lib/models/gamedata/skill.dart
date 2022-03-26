@@ -106,9 +106,9 @@ class NiceSkill implements BaseSkill {
   }) : script = script ?? SkillScript();
 
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
-    final baseSkill = GameDataLoader.instance?.gameJson?['baseSkills']
-        ?[json['id'].toString()];
-    if (baseSkill != null) {
+    if (json['type'] == null) {
+      final baseSkill = GameDataLoader
+          .instance!.gameJson!['baseSkills']![json['id'].toString()]!;
       json.addAll(Map.from(baseSkill));
     }
     return _$NiceSkillFromJson(json);
@@ -254,11 +254,12 @@ class NiceFunction implements BaseFunction {
   });
 
   factory NiceFunction.fromJson(Map<String, dynamic> json) {
-    final baseFunction = GameDataLoader.instance?.gameJson?['baseFunctions']
-        ?[json['funcId'].toString()];
-    if (baseFunction != null) {
+    if (json['funcType'] == null) {
+      final baseFunction = GameDataLoader
+          .instance!.gameJson!['baseFunctions']![json['funcId'].toString()]!;
       json.addAll(Map.from(baseFunction));
     }
+
     return _$NiceFunctionFromJson(json);
   }
 }

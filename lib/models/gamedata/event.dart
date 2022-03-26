@@ -584,7 +584,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
-  EventExtra get extra => db2.gameData.wikiData.events
+  EventExtra get extra => db2.gameData.wiki.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
 
   bool get isEmpty =>
@@ -781,22 +781,25 @@ class EventRewardScene {
   int groupId;
   int type;
   List<EventRewardSceneGuide> guides;
-  int tabImageId;
-  int imageId;
-  int bgId;
-  int bgmId;
-  int afterBgmId;
+  String tabOnImage;
+  String tabOffImage;
+  String? image;
+  String bg;
+  BgmEntity bgm;
+  BgmEntity afterBgm;
   List<EventRewardSceneFlag> flags;
+
   EventRewardScene({
     required this.slot,
     required this.groupId,
     required this.type,
     this.guides = const [],
-    required this.tabImageId,
-    required this.imageId,
-    required this.bgId,
-    required this.bgmId,
-    required this.afterBgmId,
+    required this.tabOnImage,
+    required this.tabOffImage,
+    this.image,
+    required this.bg,
+    required this.bgm,
+    required this.afterBgm,
     this.flags = const [],
   });
 

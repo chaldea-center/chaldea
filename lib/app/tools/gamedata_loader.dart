@@ -59,7 +59,7 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly)
-            .then((value) => _completer!.complete(loadedGameData = value)))
+            .then((value)async => _completer!.complete(loadedGameData = value)))
         .catchError((e, s) async {
       logger.e('load gamedata($offline)', e, s);
       error = e;
@@ -95,6 +95,9 @@ class GameDataLoader {
       final String versionString = newVersion.appVersion.versionString;
       throw S.current.error_required_app_version(versionString);
     }
+    if (newVersion.timestamp <= db2.gameData.version.timestamp) {
+      throw S.current.update_already_latest;
+    }
 
     Map<String, dynamic> _gameJson = {};
     int finished = 0;
@@ -114,6 +117,7 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
         }
+        debugPrint('Downloading ${fv.filename}');
         final resp = await dio.get(
           fv.filename,
           // cancelToken: cancelToken,
@@ -133,10 +137,14 @@ class GameDataLoader {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
         fileJson = Map.fromIterable(fileJson, key: l2mFn);
       }
-      if (_gameJson[fv.key] == null) {
-        _gameJson[fv.key] = fileJson;
+      Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
+          ? _gameJson.putIfAbsent('wiki', () => {})
+          : _gameJson;
+      String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
+      if (targetJson[key] == null) {
+        targetJson[key] = fileJson;
       } else {
-        final value = _gameJson[fv.key]!;
+        final value = targetJson[key]!;
         if (value is Map) {
           value.addAll(fileJson);
         } else if (value is List) {
@@ -158,28 +166,35 @@ class GameDataLoader {
       'baseSkills': 'id',
       'bgms': 'id',
       'commandCodes': 'collectionNo',
+      // constData
       'craftEssences': 'collectionNo',
+      // dropRate
       'entities': 'id',
       'events': 'id',
       'exchangeTickets': 'id',
-      'fixedDrops': 'key',
+      'fixedDrops': 'id',
       'items': 'id',
+      // mappingData
       'mysticCodes': 'id',
       // 'questPhases':'',
       'servants': 'collectionNo',
-      'summons': 'id',
       'wars': 'id',
+      'wiki.commandCodes': 'collectionNo',
+      'wiki.craftEssences': 'collectionNo',
+      'wiki.events': 'id',
+      'wiki.servants': 'collectionNo',
+      'wiki.summons': 'id',
+      'wiki.wars': 'id',
+      // 'wiki.webcrowMapping'
     };
 
     for (final fv in newVersion.files.values) {
-      String? l2mKey;
       dynamic Function(dynamic)? l2mFn;
-      l2mKey = keys[fv.key];
       if (fv.key == 'questPhases') {
         l2mFn = (e) => (e['id'] * 100 + e['phase']).toString();
       }
       futures.add(_pool.withResource(
-          () => _downloadCheck(fv, l2mKey: l2mKey, l2mFn: l2mFn)));
+          () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
     if (!offline) {

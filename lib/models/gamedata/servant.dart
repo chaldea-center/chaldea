@@ -255,7 +255,7 @@ class Servant with GameCardMixin {
   @override
   Transl<String, String> get lName => Transl.svtNames(name);
 
-  ServantExtra get extra => db2.gameData.wikiData.servants[collectionNo] ??=
+  ServantExtra get extra => db2.gameData.wiki.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);
 
   Set<Trait> get traitsAll {
@@ -374,7 +374,7 @@ class CraftEssence with GameCardMixin {
   Transl<String, String> get lName => Transl.ceNames(name);
 
   CraftEssenceExtra get extra =>
-      db2.gameData.wikiData.craftEssences[collectionNo] ??=
+      db2.gameData.wiki.craftEssences[collectionNo] ??=
           CraftEssenceExtra(collectionNo: collectionNo);
 
   CraftATKType get atkType {
@@ -916,7 +916,7 @@ class VoiceGroup {
 
   VoiceGroup({
     required this.svtId,
-    required this.voicePrefix,
+    this.voicePrefix = 0,
     required this.type,
     this.voiceLines = const [],
   });

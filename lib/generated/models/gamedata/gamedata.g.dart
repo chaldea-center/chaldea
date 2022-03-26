@@ -55,18 +55,13 @@ GameData _$GameDataFromJson(Map json) => GameData(
         (k, e) => MapEntry(int.parse(k as String),
             Bgm.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      summons: (json['summons'] as Map?)?.map(
-        (k, e) => MapEntry(k as String,
-            LimitedSummon.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
       fixedDrops: (json['fixedDrops'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String),
             FixedDrop.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      wikiData: json['wikiData'] == null
+      wiki: json['wiki'] == null
           ? null
-          : WikiData.fromJson(
-              Map<String, dynamic>.from(json['wikiData'] as Map)),
+          : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
       mappingData: json['mappingData'] == null
           ? null
           : MappingData.fromJson(
