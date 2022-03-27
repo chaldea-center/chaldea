@@ -1,6 +1,6 @@
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../common/filter_group.dart';
@@ -208,49 +208,46 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         groupDivider,
-        // FilterGroup(
-        //   title: Text(LocalizedText.of(
-        //       chs: '效果范围',
-        //       jpn: '効果の範囲',
-        //       eng: 'Scope of Effects',
-        //       kor: '스킬/보구')),
-        //   options: SvtFilterData.buffScope,
-        //   values: filterData.effectScope,
-        //   optionBuilder: (v) => Text([
-        //     S.current.active_skill,
-        //     S.current.noble_phantasm,
-        //     S.current.passive_skill
-        //   ][int.parse(v)]),
-        //   onFilterChanged: (value) {
-        //     update();
-        //   },
-        // ),
-        // FilterGroup(
-        //   title: Text(LocalizedText.of(
-        //     chs: '效果对象',
-        //     jpn: '効果の対象',
-        //     eng: 'Effect Target',
-        //     kor: '효과 대상',
-        //   )),
-        //   options: FuncTargetType.allTypes,
-        //   values: filterData.effectTarget,
-        //   optionBuilder: (v) => Text(FuncTargetType.localizedOf(v)),
-        //   onFilterChanged: (value) {
-        //     update();
-        //   },
-        // ),
-        // FilterGroup(
-        //   title: Text(S.current.filter_effects),
-        //   options: EffectType.svtEffectsMap.keys.toList(),
-        //   values: filterData.effects,
-        //   showMatchAll: true,
-        //   showInvert: true,
-        //   optionBuilder: (v) => Text(EffectType.svtEffectsMap[v]!.shownName),
-        //   onFilterChanged: (value) {
-        //     update();
-        //   },
-        // ),
-        // SFooter(Localized.niceSkillFilterHint.localized)
+        FilterGroup<SvtEffectScope>(
+          title: const Text('Effect Scope'),
+          options: SvtEffectScope.values,
+          values: filterData.effectScope,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup<FuncTargetType>(
+          title: const Text('Effect Target'),
+          options: FuncTargetType.values,
+          values: filterData.funcTarget,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup<FuncType>(
+          title: const Text('FuncType'),
+          options: List.of(FuncType.values)..sort2((e) => e.name),
+          values: filterData.funcType,
+          showMatchAll: true,
+          showInvert: true,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup<BuffType>(
+          title: const Text('BuffType'),
+          options: List.of(BuffType.values)..sort2((e) => e.name),
+          values: filterData.buffType,
+          showMatchAll: true,
+          showInvert: true,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
       ]),
     );
   }

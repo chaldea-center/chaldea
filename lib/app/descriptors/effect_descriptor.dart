@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
-import 'package:chaldea/packages/json_viewer/json_viewer.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
+
+import 'func/vals.dart';
 
 class SkillDescriptor extends StatelessWidget {
   final BaseSkill skill;
@@ -247,75 +247,5 @@ class EffectDescriptor extends StatelessWidget {
       );
       return child;
     });
-  }
-}
-
-class ValListDsc extends StatelessWidget {
-  final BaseFunction func;
-  final List<DataVals> svals;
-  final int? selected;
-  const ValListDsc(
-      {Key? key, required this.func, required this.svals, this.selected})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      int perLine = constraints.maxWidth > 600 ? 10 : 5;
-      List<Widget> rows = [];
-      int rowCount = (svals.length / perLine).ceil();
-      for (int i = 0; i < rowCount; i++) {
-        List<Widget> cols = [];
-        for (int j = i * perLine; j < (i + 1) * perLine; j++) {
-          final vals = svals.getOrNull(j);
-          if (vals == null) {
-            cols.add(const SizedBox());
-          } else {
-            cols.add(ValDsc(func: func, vals: vals));
-          }
-        }
-        rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
-      }
-      if (rows.isEmpty) return const SizedBox();
-      if (rows.length == 1) return rows.first;
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: rows,
-      );
-    });
-  }
-}
-
-class ValDsc extends StatelessWidget {
-  final BaseFunction func;
-  final DataVals vals;
-  const ValDsc({Key? key, required this.func, required this.vals})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Text(
-        vals.Value.toString(),
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontStyle: FontStyle.italic),
-      ),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return Theme(
-              data: ThemeData.light(),
-              child: SimpleCancelOkDialog(
-                title: const Text('Data Vals'),
-                content: JsonViewer(vals.toJson()),
-                scrollable: true,
-                hideCancel: true,
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 }

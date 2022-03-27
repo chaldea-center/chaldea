@@ -460,24 +460,37 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.trait.matchAny(svt.traitsAll)) {
       return false;
     }
-    // bool _isScopeEmpty =
-    //     filterData.effectScope.isEmpty(SvtFilterData.buffScope);
-    // List<NiceFunction> funcs = [
-    //   if (_isScopeEmpty || filterData.effectScope.options['0'] == true)
-    //     for (final skill in svt.niceSkills) ...skill.functions,
-    //   if (_isScopeEmpty || filterData.effectScope.options['1'] == true)
-    //     for (final np in svt.niceNoblePhantasms) ...np.functions,
-    //   if (_isScopeEmpty || filterData.effectScope.options['2'] == true)
-    //     for (final skill in svt.niceClassPassive) ...skill.functions,
-    // ];
-    // funcs.retainWhere((func) {
-    //   return filterData.effectTarget
-    //       .singleValueFilter(FuncTargetType.getType(func.funcTargetType));
-    // });
-    // if (!WithNiceFunctionsMixin.testFunctionsStatic(
-    //     funcs, filterData.effects)) {
-    //   return false;
-    // }
+    if (filterData.funcType.options.isNotEmpty ||
+        filterData.buffType.options.isNotEmpty) {
+      List<NiceFunction> funcs = [
+        if (filterData.effectScope.contain(SvtEffectScope.active))
+          for (final skill in svt.skills) ...skill.functions,
+        if (filterData.effectScope.contain(SvtEffectScope.passive))
+          for (final skill in svt.classPassive) ...skill.functions,
+        if (filterData.effectScope.contain(SvtEffectScope.append))
+          for (final skill in svt.appendPassive) ...skill.skill.functions,
+        if (filterData.effectScope.contain(SvtEffectScope.td))
+          for (final td in svt.noblePhantasms) ...td.functions,
+      ];
+      if (filterData.funcTarget.options.isNotEmpty) {
+        funcs.retainWhere((func) {
+          return filterData.funcTarget.matchOne(func.funcTargetType);
+        });
+      }
+      if (filterData.funcType.options.isNotEmpty) {
+        funcs.retainWhere((func) {
+          return filterData.funcType.matchOne(func.funcType);
+        });
+      }
+      if (filterData.buffType.options.isNotEmpty) {
+        funcs.retainWhere((func) {
+          final buff = func.buffs.getOrNull(0)?.type;
+          if (buff == null) return false;
+          return filterData.buffType.matchOne(buff);
+        });
+      }
+      if (funcs.isEmpty) return false;
+    }
     return true;
   }
 

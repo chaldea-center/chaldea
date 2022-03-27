@@ -53,13 +53,13 @@ class _CachedInfo {
 class _CacheManager {
   bool _initiated = false;
   final String cacheKey;
-  final List<int> statusCodes;
+  final List<int> statusCodes = const [200];
   final Map<String, _CachedInfo> _data = {};
   final Map<String, List<int>> _memoryCache = {};
 
   LazyBox<Uint8List>? _webBox;
 
-  _CacheManager(this.cacheKey, {this.statusCodes = const [200]});
+  _CacheManager(this.cacheKey);
 
   Future<void> init() async {
     _data.clear();

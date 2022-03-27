@@ -309,11 +309,18 @@ class Buff {
 @JsonSerializable(
     createToJson: true, includeIfNull: false, explicitToJson: true)
 class DataVals {
+  /// probability, 1000 -> 100%
   int? Rate;
+
+  /// 3 Turns/3ターン/3回合
   int? Turn;
+
+  /// 3 Times/3回/3次
   int? Count;
   int? Value;
   int? Value2;
+
+  /// probability, 1000 -> 100%
   int? UseRate;
   int? Target;
   int? Correction;

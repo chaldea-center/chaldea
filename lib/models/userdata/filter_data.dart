@@ -11,7 +11,7 @@ typedef _FilterCompare<T> = bool Function(T value, T option);
 class FilterGroupData<T> {
   bool matchAll;
   bool invert;
-  Set<T> options;
+  Set<T> options; //selected
 
   FilterGroupData({
     this.matchAll = false,
@@ -20,6 +20,9 @@ class FilterGroupData<T> {
   }) : options = options ?? {};
 
   T? get radioValue => throw UnimplementedError();
+
+  bool contain(T v) =>
+      options.isEmpty || (invert ? !options.contains(v) : options.contains(v));
 
   bool isEmpty(Iterable<T> values) {
     return options.isEmpty || values.every((e) => !options.contains(e));
@@ -111,6 +114,8 @@ class FilterRadioData<T> extends FilterGroupData<T> {
 /// Servant
 enum SvtCompare { no, className, rarity, atk, hp, priority }
 
+enum SvtEffectScope { active, passive, append, td }
+
 @JsonSerializable(ignoreUnannotated: true)
 class SvtFilterData {
   @JsonKey()
@@ -144,9 +149,11 @@ class SvtFilterData {
   FilterGroupData<Trait> trait = FilterGroupData();
 
   // FilterGroupData special; //not used yet
-  // FilterGroupData effectScope;
-  // FilterGroupData effectTarget;
-  // FilterGroupData effects;
+  FilterGroupData<SvtEffectScope> effectScope =
+      FilterGroupData(options: {SvtEffectScope.active, SvtEffectScope.td});
+  FilterGroupData<FuncTargetType> funcTarget = FilterGroupData();
+  FilterGroupData<FuncType> funcType = FilterGroupData();
+  FilterGroupData<BuffType> buffType = FilterGroupData();
 
   SvtFilterData({
     this.useGrid = false,
@@ -173,7 +180,11 @@ class SvtFilterData {
         alignment1,
         alignment2,
         gender,
-        trait
+        trait,
+        effectScope,
+        funcTarget,
+        funcType,
+        buffType,
       ];
 
   void reset() {
@@ -181,6 +192,7 @@ class SvtFilterData {
     for (var value in _group) {
       value.reset();
     }
+    effectScope.options.addAll({SvtEffectScope.active, SvtEffectScope.td});
   }
 
   factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
