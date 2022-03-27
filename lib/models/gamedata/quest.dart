@@ -814,6 +814,7 @@ enum GiftType {
   eventPointBuff,
   eventBoardGameToken,
 }
+
 enum EnemyRoleType {
   normal,
   danger,

@@ -997,6 +997,7 @@ enum Attribute {
   @JsonValue('void')
   void_,
 }
+
 enum ServantPolicy {
   none,
   neutral,
@@ -1004,6 +1005,7 @@ enum ServantPolicy {
   chaotic,
   unknown,
 }
+
 enum ServantPersonality {
   none,
   good,
@@ -1066,6 +1068,7 @@ enum SvtVoiceType {
   treasureBox,
   sum,
 }
+
 enum Gender {
   male,
   female,

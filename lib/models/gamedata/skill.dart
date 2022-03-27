@@ -1,4 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
+import 'dart:ui';
+
 import 'package:chaldea/utils/basic.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,11 +10,18 @@ import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/skill.g.dart';
 
+abstract class SkillOrTd {
+  String? get unmodifiedDetail;
+  List<NiceFunction> get functions;
+  String? get lDetail;
+}
+
 @JsonSerializable()
-class BaseSkill {
+class BaseSkill implements SkillOrTd {
   int id;
   String name;
   String ruby;
+  @override
   String? unmodifiedDetail; // String? detail;
   SkillType type;
   String? icon;
@@ -22,6 +31,7 @@ class BaseSkill {
   List<ExtraPassive> extraPassive;
   List<SkillAdd> skillAdd;
   Map<AiType, List<int>>? aiIds;
+  @override
   List<NiceFunction> functions;
 
   BaseSkill({
@@ -43,37 +53,21 @@ class BaseSkill {
 
   factory BaseSkill.fromJson(Map<String, dynamic> json) =>
       _$BaseSkillFromJson(json);
+
+  Transl<String, String> get lName => Transl.skillNames(name);
+
+  @override
+  String? get lDetail {
+    if (unmodifiedDetail == null) return null;
+    return Transl.skillDetail(
+            unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
+        .l
+        .replaceAll('{0}', 'Lv.');
+  }
 }
 
 @JsonSerializable()
-class NiceSkill implements BaseSkill {
-  @override
-  int id;
-  @override
-  String name;
-  @override
-  String ruby;
-  @override
-  String? unmodifiedDetail; // String detail
-  @override
-  SkillType type;
-  @override
-  String? icon;
-  @override
-  List<int> coolDown;
-  @override
-  List<NiceTrait> actIndividuality;
-  @override
-  SkillScript script;
-  @override
-  List<ExtraPassive> extraPassive;
-  @override
-  List<SkillAdd> skillAdd;
-  @override
-  Map<AiType, List<int>>? aiIds;
-  @override
-  List<NiceFunction> functions;
-
+class NiceSkill extends BaseSkill {
   int num;
   int strengthStatus;
   int priority;
@@ -83,19 +77,19 @@ class NiceSkill implements BaseSkill {
   int condLimitCount;
 
   NiceSkill({
-    required this.id,
-    required this.name,
-    this.ruby = '',
-    this.unmodifiedDetail,
-    required this.type,
-    this.icon,
-    this.coolDown = const [],
-    this.actIndividuality = const [],
+    required int id,
+    required String name,
+    String ruby = '',
+    String? unmodifiedDetail,
+    required SkillType type,
+    String? icon,
+    List<int> coolDown = const [],
+    List<NiceTrait> actIndividuality = const [],
     SkillScript? script,
-    this.extraPassive = const [],
-    this.skillAdd = const [],
-    this.aiIds,
-    this.functions = const [],
+    List<ExtraPassive> extraPassive = const [],
+    List<SkillAdd> skillAdd = const [],
+    Map<AiType, List<int>>? aiIds,
+    List<NiceFunction> functions = const [],
     this.num = 0,
     this.strengthStatus = 0,
     this.priority = 0,
@@ -103,7 +97,21 @@ class NiceSkill implements BaseSkill {
     this.condQuestPhase = 0,
     this.condLv = 0,
     this.condLimitCount = 0,
-  }) : script = script ?? SkillScript();
+  }) : super(
+          id: id,
+          name: name,
+          ruby: ruby,
+          unmodifiedDetail: unmodifiedDetail,
+          type: type,
+          icon: icon,
+          coolDown: coolDown,
+          actIndividuality: actIndividuality,
+          script: script ?? SkillScript(),
+          extraPassive: extraPassive,
+          skillAdd: skillAdd,
+          aiIds: aiIds,
+          functions: functions,
+        );
 
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
@@ -113,20 +121,10 @@ class NiceSkill implements BaseSkill {
     }
     return _$NiceSkillFromJson(json);
   }
-
-  Transl<String, String> get lName => Transl.skillNames(name);
-
-  String? get lDetail {
-    if (unmodifiedDetail == null) return null;
-    return Transl.skillDetail(unmodifiedDetail!)
-        .l
-        .replaceAll(RegExp(r'\[/?[og]\]'), '')
-        .replaceAll('{0}', 'Lv.');
-  }
 }
 
 @JsonSerializable()
-class NiceTd {
+class NiceTd implements SkillOrTd {
   int id;
   int num;
   CardType card;
@@ -137,6 +135,7 @@ class NiceTd {
   String type;
 
   // String? detail;
+  @override
   String? unmodifiedDetail;
   NpGain npGain;
   List<int> npDistribution;
@@ -146,6 +145,7 @@ class NiceTd {
   int condQuestPhase;
   List<NiceTrait> individuality;
   SkillScript script;
+  @override
   List<NiceFunction> functions;
 
   NiceTd({
@@ -191,11 +191,12 @@ class NiceTd {
     return _damageType ??= NpDamageType.none;
   }
 
+  @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
-    return Transl.tdDetail(unmodifiedDetail!)
+    return Transl.tdDetail(
+            unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
         .l
-        .replaceAll(RegExp(r'\[/?[og]\]'), '')
         .replaceAll('{0}', 'Lv.');
   }
 }
@@ -253,6 +254,14 @@ class NiceFunction implements BaseFunction {
     this.followerVals,
   });
 
+  List<DataVals> ocVals(int lv) {
+    assert(lv >= 0 && lv < svals.length, lv);
+    return [
+      for (final sv in [svals, svals2, svals3, svals4, svals5])
+        if (sv != null) sv[lv]
+    ];
+  }
+
   factory NiceFunction.fromJson(Map<String, dynamic> json) {
     if (json['funcType'] == null) {
       final baseFunction = GameDataLoader
@@ -297,7 +306,8 @@ class Buff {
   factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(
+    createToJson: true, includeIfNull: false, explicitToJson: true)
 class DataVals {
   int? Rate;
   int? Turn;
@@ -519,6 +529,238 @@ class DataVals {
 
   factory DataVals.fromJson(Map<String, dynamic> json) =>
       _$DataValsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DataValsToJson(this);
+
+  @override
+  operator ==(Object? other) {
+    if (other is! DataVals) {
+      return false;
+    }
+    return Rate == other.Rate &&
+        Turn == other.Turn &&
+        Count == other.Count &&
+        Value == other.Value &&
+        Value2 == other.Value2 &&
+        UseRate == other.UseRate &&
+        Target == other.Target &&
+        Correction == other.Correction &&
+        ParamAdd == other.ParamAdd &&
+        ParamMax == other.ParamMax &&
+        HideMiss == other.HideMiss &&
+        OnField == other.OnField &&
+        HideNoEffect == other.HideNoEffect &&
+        Unaffected == other.Unaffected &&
+        ShowState == other.ShowState &&
+        AuraEffectId == other.AuraEffectId &&
+        ActSet == other.ActSet &&
+        ActSetWeight == other.ActSetWeight &&
+        ShowQuestNoEffect == other.ShowQuestNoEffect &&
+        CheckDead == other.CheckDead &&
+        RatioHPHigh == other.RatioHPHigh &&
+        RatioHPLow == other.RatioHPLow &&
+        SetPassiveFrame == other.SetPassiveFrame &&
+        ProcPassive == other.ProcPassive &&
+        ProcActive == other.ProcActive &&
+        HideParam == other.HideParam &&
+        SkillID == other.SkillID &&
+        SkillLV == other.SkillLV &&
+        ShowCardOnly == other.ShowCardOnly &&
+        EffectSummon == other.EffectSummon &&
+        RatioHPRangeHigh == other.RatioHPRangeHigh &&
+        RatioHPRangeLow == other.RatioHPRangeLow &&
+        TargetList == other.TargetList &&
+        OpponentOnly == other.OpponentOnly &&
+        StatusEffectId == other.StatusEffectId &&
+        EndBattle == other.EndBattle &&
+        LoseBattle == other.LoseBattle &&
+        AddIndividualty == other.AddIndividualty &&
+        AddLinkageTargetIndividualty == other.AddLinkageTargetIndividualty &&
+        SameBuffLimitTargetIndividuality ==
+            other.SameBuffLimitTargetIndividuality &&
+        SameBuffLimitNum == other.SameBuffLimitNum &&
+        CheckDuplicate == other.CheckDuplicate &&
+        OnFieldCount == other.OnFieldCount &&
+        TargetRarityList == other.TargetRarityList &&
+        DependFuncId == other.DependFuncId &&
+        InvalidHide == other.InvalidHide &&
+        OutEnemyNpcId == other.OutEnemyNpcId &&
+        InEnemyNpcId == other.InEnemyNpcId &&
+        OutEnemyPosition == other.OutEnemyPosition &&
+        IgnoreIndividuality == other.IgnoreIndividuality &&
+        StarHigher == other.StarHigher &&
+        ChangeTDCommandType == other.ChangeTDCommandType &&
+        ShiftNpcId == other.ShiftNpcId &&
+        DisplayLastFuncInvalidType == other.DisplayLastFuncInvalidType &&
+        AndCheckIndividualityList == other.AndCheckIndividualityList &&
+        WinBattleNotRelatedSurvivalStatus ==
+            other.WinBattleNotRelatedSurvivalStatus &&
+        ForceSelfInstantDeath == other.ForceSelfInstantDeath &&
+        ChangeMaxBreakGauge == other.ChangeMaxBreakGauge &&
+        ParamAddMaxValue == other.ParamAddMaxValue &&
+        ParamAddMaxCount == other.ParamAddMaxCount &&
+        LossHpChangeDamage == other.LossHpChangeDamage &&
+        IncludePassiveIndividuality == other.IncludePassiveIndividuality &&
+        MotionChange == other.MotionChange &&
+        PopLabelDelay == other.PopLabelDelay &&
+        NoTargetNoAct == other.NoTargetNoAct &&
+        CardIndex == other.CardIndex &&
+        CardIndividuality == other.CardIndividuality &&
+        WarBoardTakeOverBuff == other.WarBoardTakeOverBuff &&
+        ParamAddSelfIndividuality == other.ParamAddSelfIndividuality &&
+        ParamAddOpIndividuality == other.ParamAddOpIndividuality &&
+        ParamAddFieldIndividuality == other.ParamAddFieldIndividuality &&
+        ParamAddValue == other.ParamAddValue &&
+        MultipleGainStar == other.MultipleGainStar &&
+        NoCheckIndividualityIfNotUnit == other.NoCheckIndividualityIfNotUnit &&
+        ForcedEffectSpeedOne == other.ForcedEffectSpeedOne &&
+        SetLimitCount == other.SetLimitCount &&
+        CheckEnemyFieldSpace == other.CheckEnemyFieldSpace &&
+        TriggeredFuncPosition == other.TriggeredFuncPosition &&
+        DamageCount == other.DamageCount &&
+        DamageRates == other.DamageRates &&
+        OnPositions == other.OnPositions &&
+        OffPositions == other.OffPositions &&
+        TargetIndiv == other.TargetIndiv &&
+        IncludeIgnoreIndividuality == other.IncludeIgnoreIndividuality &&
+        EvenIfWinDie == other.EvenIfWinDie &&
+        CallSvtEffectId == other.CallSvtEffectId &&
+        ForceAddState == other.ForceAddState &&
+        UnSubState == other.UnSubState &&
+        ForceSubState == other.ForceSubState &&
+        IgnoreIndivUnreleaseable == other.IgnoreIndivUnreleaseable &&
+        OnParty == other.OnParty &&
+        CounterId == other.CounterId &&
+        CounterLv == other.CounterLv &&
+        CounterOc == other.CounterOc &&
+        UseTreasureDevice == other.UseTreasureDevice &&
+        SkillReaction == other.SkillReaction &&
+        ApplySupportSvt == other.ApplySupportSvt &&
+        BehaveAsFamilyBuff == other.BehaveAsFamilyBuff &&
+        UnSubStateWhileLinkedToOthers == other.UnSubStateWhileLinkedToOthers &&
+        NotAccompanyWhenLinkedTargetMoveState ==
+            other.NotAccompanyWhenLinkedTargetMoveState &&
+        Individuality == other.Individuality &&
+        EventId == other.EventId &&
+        AddCount == other.AddCount &&
+        RateCount == other.RateCount &&
+        DropRateCount == other.DropRateCount &&
+        DependFuncVals == other.DependFuncVals;
+  }
+
+  @override
+  int get hashCode {
+    // all elements must be non-iterable
+    return hashList([
+      '_DataVals_',
+      Rate,
+      Turn,
+      Count,
+      Value,
+      Value2,
+      UseRate,
+      Target,
+      Correction,
+      ParamAdd,
+      ParamMax,
+      HideMiss,
+      OnField,
+      HideNoEffect,
+      Unaffected,
+      ShowState,
+      AuraEffectId,
+      ActSet,
+      ActSetWeight,
+      ShowQuestNoEffect,
+      CheckDead,
+      RatioHPHigh,
+      RatioHPLow,
+      SetPassiveFrame,
+      ProcPassive,
+      ProcActive,
+      HideParam,
+      SkillID,
+      SkillLV,
+      ShowCardOnly,
+      EffectSummon,
+      RatioHPRangeHigh,
+      RatioHPRangeLow,
+      hashList(TargetList),
+      OpponentOnly,
+      StatusEffectId,
+      EndBattle,
+      LoseBattle,
+      AddIndividualty,
+      AddLinkageTargetIndividualty,
+      SameBuffLimitTargetIndividuality,
+      SameBuffLimitNum,
+      CheckDuplicate,
+      OnFieldCount,
+      hashList(TargetRarityList),
+      DependFuncId,
+      InvalidHide,
+      OutEnemyNpcId,
+      InEnemyNpcId,
+      OutEnemyPosition,
+      IgnoreIndividuality,
+      StarHigher,
+      ChangeTDCommandType,
+      ShiftNpcId,
+      DisplayLastFuncInvalidType,
+      hashList(AndCheckIndividualityList),
+      WinBattleNotRelatedSurvivalStatus,
+      ForceSelfInstantDeath,
+      ChangeMaxBreakGauge,
+      ParamAddMaxValue,
+      ParamAddMaxCount,
+      LossHpChangeDamage,
+      IncludePassiveIndividuality,
+      MotionChange,
+      PopLabelDelay,
+      NoTargetNoAct,
+      CardIndex,
+      CardIndividuality,
+      WarBoardTakeOverBuff,
+      hashList(ParamAddSelfIndividuality),
+      hashList(ParamAddOpIndividuality),
+      hashList(ParamAddFieldIndividuality),
+      ParamAddValue,
+      MultipleGainStar,
+      NoCheckIndividualityIfNotUnit,
+      ForcedEffectSpeedOne,
+      SetLimitCount,
+      CheckEnemyFieldSpace,
+      TriggeredFuncPosition,
+      DamageCount,
+      hashList(DamageRates),
+      hashList(OnPositions),
+      hashList(OffPositions),
+      TargetIndiv,
+      IncludeIgnoreIndividuality,
+      EvenIfWinDie,
+      CallSvtEffectId,
+      ForceAddState,
+      UnSubState,
+      ForceSubState,
+      IgnoreIndivUnreleaseable,
+      OnParty,
+      CounterId,
+      CounterLv,
+      CounterOc,
+      UseTreasureDevice,
+      SkillReaction,
+      ApplySupportSvt,
+      BehaveAsFamilyBuff,
+      UnSubStateWhileLinkedToOthers,
+      NotAccompanyWhenLinkedTargetMoveState,
+      Individuality,
+      EventId,
+      AddCount,
+      RateCount,
+      DropRateCount,
+      DependFuncVals,
+    ]);
+  }
 }
 
 @JsonSerializable()

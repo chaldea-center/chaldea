@@ -252,6 +252,15 @@ class MappingData {
       _$MappingDataFromJson(json);
 }
 
+/// Shortcut for [MappingBase]
+class M {
+  const M._();
+
+  static T of<T>({T? jp, T? cn, T? tw, T? na, T? kr, T? k}) {
+    return MappingBase(jp: jp, cn: cn, tw: tw, na: na, kr: kr).l ?? k!;
+  }
+}
+
 @JsonSerializable(constructor: 'typed')
 class MappingBase<T> {
   @JsonKey(name: 'JP')

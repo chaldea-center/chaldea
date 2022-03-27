@@ -877,6 +877,7 @@ enum ShopType {
   startUpSummon,
   shop13,
 }
+
 enum MissionProgressType {
   none,
   regist,
@@ -896,11 +897,13 @@ enum MissionType {
   complete,
   random,
 }
+
 enum MissionRewardType {
   gift,
   extra,
   set,
 }
+
 enum PayType {
   stone,
   qp,
@@ -920,6 +923,7 @@ enum PayType {
 enum CommonConsumeType {
   item,
 }
+
 enum EventType {
   none,
   raidBoss,

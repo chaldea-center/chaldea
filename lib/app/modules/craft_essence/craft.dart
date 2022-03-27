@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/effect_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -267,30 +268,7 @@ class CraftDetailBasePage extends StatelessWidget {
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority))
-          CustomTableRow(
-            children: [
-              TableCellData(
-                padding: const EdgeInsets.all(6),
-                flex: 1,
-                child: db2.getIconImage(skill.icon, height: 40),
-              ),
-              TableCellData(
-                flex: 5,
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      Transl.skillNames(skill.name).l,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(Transl.skillDetail(skill.unmodifiedDetail ?? '???').l)
-                  ],
-                ),
-              )
-            ],
-          ),
+          SkillDescriptor(skill: skill),
         CustomTableRow(children: [
           TableCellData(text: S.current.characters_in_card, isHeader: true)
         ]),

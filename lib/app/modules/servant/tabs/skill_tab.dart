@@ -1,3 +1,4 @@
+import 'package:chaldea/app/descriptors/effect_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -19,18 +20,18 @@ class SvtSkillTab extends StatelessWidget {
     }
     children.add(SHeader(S.current.passive_skill));
     for (final skill in svt.classPassive) {
-      children.add(_buildOneSkill(skill));
+      children.add(SkillDescriptor(skill: skill));
     }
     children.add(SHeader(S.current.append_skill));
     svt.appendPassive.sort2((s) => s.num * 100 + s.priority);
     for (final appendSkill in svt.appendPassive) {
-      children.add(_buildOneSkill(appendSkill.skill));
+      children.add(SkillDescriptor(skill: appendSkill.skill));
     }
     return ListView(children: children);
   }
 
   Widget _buildSkill(List<NiceSkill> skills) {
-    if (skills.length == 1) return _buildOneSkill(skills.first);
+    if (skills.length == 1) return SkillDescriptor(skill: skills.first);
     return ValueStatefulBuilder<NiceSkill>(
       initValue: skills.last,
       builder: (context, state) {
@@ -82,38 +83,10 @@ class SvtSkillTab extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            _buildOneSkill(skill),
+            SkillDescriptor(skill: skill),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildOneSkill(NiceSkill skill) {
-    int cd0 = 0, cd1 = 0;
-    if (skill.coolDown.isNotEmpty) {
-      cd0 = skill.coolDown.first;
-      cd1 = skill.coolDown.last;
-    }
-    final header = CustomTile(
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 22, 6),
-      leading: db2.getIconImage(skill.icon, width: 33),
-      title: Text(skill.lName.l),
-      subtitle: Transl.isJP ? null : Text(skill.name),
-      trailing: cd0 <= 0 && cd1 <= 0
-          ? null
-          : cd0 == cd1
-              ? Text('   CD: $cd0')
-              : Text('   CD: $cd0→$cd1'),
-    );
-    return TileGroup(
-      children: [
-        header,
-        SFooter(
-          skill.lDetail ?? '???',
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-        )
-      ],
     );
   }
 }

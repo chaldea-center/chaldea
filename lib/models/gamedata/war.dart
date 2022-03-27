@@ -293,6 +293,7 @@ enum WarOverwriteType {
   noticeDialogText,
   clearMark,
 }
+
 enum WarStartType {
   none,
   script,

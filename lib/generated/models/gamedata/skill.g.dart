@@ -657,6 +657,134 @@ DataVals _$DataValsFromJson(Map json) => DataVals(
               Map<String, dynamic>.from(json['DependFuncVals'] as Map)),
     );
 
+Map<String, dynamic> _$DataValsToJson(DataVals instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('Rate', instance.Rate);
+  writeNotNull('Turn', instance.Turn);
+  writeNotNull('Count', instance.Count);
+  writeNotNull('Value', instance.Value);
+  writeNotNull('Value2', instance.Value2);
+  writeNotNull('UseRate', instance.UseRate);
+  writeNotNull('Target', instance.Target);
+  writeNotNull('Correction', instance.Correction);
+  writeNotNull('ParamAdd', instance.ParamAdd);
+  writeNotNull('ParamMax', instance.ParamMax);
+  writeNotNull('HideMiss', instance.HideMiss);
+  writeNotNull('OnField', instance.OnField);
+  writeNotNull('HideNoEffect', instance.HideNoEffect);
+  writeNotNull('Unaffected', instance.Unaffected);
+  writeNotNull('ShowState', instance.ShowState);
+  writeNotNull('AuraEffectId', instance.AuraEffectId);
+  writeNotNull('ActSet', instance.ActSet);
+  writeNotNull('ActSetWeight', instance.ActSetWeight);
+  writeNotNull('ShowQuestNoEffect', instance.ShowQuestNoEffect);
+  writeNotNull('CheckDead', instance.CheckDead);
+  writeNotNull('RatioHPHigh', instance.RatioHPHigh);
+  writeNotNull('RatioHPLow', instance.RatioHPLow);
+  writeNotNull('SetPassiveFrame', instance.SetPassiveFrame);
+  writeNotNull('ProcPassive', instance.ProcPassive);
+  writeNotNull('ProcActive', instance.ProcActive);
+  writeNotNull('HideParam', instance.HideParam);
+  writeNotNull('SkillID', instance.SkillID);
+  writeNotNull('SkillLV', instance.SkillLV);
+  writeNotNull('ShowCardOnly', instance.ShowCardOnly);
+  writeNotNull('EffectSummon', instance.EffectSummon);
+  writeNotNull('RatioHPRangeHigh', instance.RatioHPRangeHigh);
+  writeNotNull('RatioHPRangeLow', instance.RatioHPRangeLow);
+  writeNotNull('TargetList', instance.TargetList);
+  writeNotNull('OpponentOnly', instance.OpponentOnly);
+  writeNotNull('StatusEffectId', instance.StatusEffectId);
+  writeNotNull('EndBattle', instance.EndBattle);
+  writeNotNull('LoseBattle', instance.LoseBattle);
+  writeNotNull('AddIndividualty', instance.AddIndividualty);
+  writeNotNull(
+      'AddLinkageTargetIndividualty', instance.AddLinkageTargetIndividualty);
+  writeNotNull('SameBuffLimitTargetIndividuality',
+      instance.SameBuffLimitTargetIndividuality);
+  writeNotNull('SameBuffLimitNum', instance.SameBuffLimitNum);
+  writeNotNull('CheckDuplicate', instance.CheckDuplicate);
+  writeNotNull('OnFieldCount', instance.OnFieldCount);
+  writeNotNull('TargetRarityList', instance.TargetRarityList);
+  writeNotNull('DependFuncId', instance.DependFuncId);
+  writeNotNull('InvalidHide', instance.InvalidHide);
+  writeNotNull('OutEnemyNpcId', instance.OutEnemyNpcId);
+  writeNotNull('InEnemyNpcId', instance.InEnemyNpcId);
+  writeNotNull('OutEnemyPosition', instance.OutEnemyPosition);
+  writeNotNull('IgnoreIndividuality', instance.IgnoreIndividuality);
+  writeNotNull('StarHigher', instance.StarHigher);
+  writeNotNull('ChangeTDCommandType', instance.ChangeTDCommandType);
+  writeNotNull('ShiftNpcId', instance.ShiftNpcId);
+  writeNotNull(
+      'DisplayLastFuncInvalidType', instance.DisplayLastFuncInvalidType);
+  writeNotNull('AndCheckIndividualityList', instance.AndCheckIndividualityList);
+  writeNotNull('WinBattleNotRelatedSurvivalStatus',
+      instance.WinBattleNotRelatedSurvivalStatus);
+  writeNotNull('ForceSelfInstantDeath', instance.ForceSelfInstantDeath);
+  writeNotNull('ChangeMaxBreakGauge', instance.ChangeMaxBreakGauge);
+  writeNotNull('ParamAddMaxValue', instance.ParamAddMaxValue);
+  writeNotNull('ParamAddMaxCount', instance.ParamAddMaxCount);
+  writeNotNull('LossHpChangeDamage', instance.LossHpChangeDamage);
+  writeNotNull(
+      'IncludePassiveIndividuality', instance.IncludePassiveIndividuality);
+  writeNotNull('MotionChange', instance.MotionChange);
+  writeNotNull('PopLabelDelay', instance.PopLabelDelay);
+  writeNotNull('NoTargetNoAct', instance.NoTargetNoAct);
+  writeNotNull('CardIndex', instance.CardIndex);
+  writeNotNull('CardIndividuality', instance.CardIndividuality);
+  writeNotNull('WarBoardTakeOverBuff', instance.WarBoardTakeOverBuff);
+  writeNotNull('ParamAddSelfIndividuality', instance.ParamAddSelfIndividuality);
+  writeNotNull('ParamAddOpIndividuality', instance.ParamAddOpIndividuality);
+  writeNotNull(
+      'ParamAddFieldIndividuality', instance.ParamAddFieldIndividuality);
+  writeNotNull('ParamAddValue', instance.ParamAddValue);
+  writeNotNull('MultipleGainStar', instance.MultipleGainStar);
+  writeNotNull(
+      'NoCheckIndividualityIfNotUnit', instance.NoCheckIndividualityIfNotUnit);
+  writeNotNull('ForcedEffectSpeedOne', instance.ForcedEffectSpeedOne);
+  writeNotNull('SetLimitCount', instance.SetLimitCount);
+  writeNotNull('CheckEnemyFieldSpace', instance.CheckEnemyFieldSpace);
+  writeNotNull('TriggeredFuncPosition', instance.TriggeredFuncPosition);
+  writeNotNull('DamageCount', instance.DamageCount);
+  writeNotNull('DamageRates', instance.DamageRates);
+  writeNotNull('OnPositions', instance.OnPositions);
+  writeNotNull('OffPositions', instance.OffPositions);
+  writeNotNull('TargetIndiv', instance.TargetIndiv);
+  writeNotNull(
+      'IncludeIgnoreIndividuality', instance.IncludeIgnoreIndividuality);
+  writeNotNull('EvenIfWinDie', instance.EvenIfWinDie);
+  writeNotNull('CallSvtEffectId', instance.CallSvtEffectId);
+  writeNotNull('ForceAddState', instance.ForceAddState);
+  writeNotNull('UnSubState', instance.UnSubState);
+  writeNotNull('ForceSubState', instance.ForceSubState);
+  writeNotNull('IgnoreIndivUnreleaseable', instance.IgnoreIndivUnreleaseable);
+  writeNotNull('OnParty', instance.OnParty);
+  writeNotNull('CounterId', instance.CounterId);
+  writeNotNull('CounterLv', instance.CounterLv);
+  writeNotNull('CounterOc', instance.CounterOc);
+  writeNotNull('UseTreasureDevice', instance.UseTreasureDevice);
+  writeNotNull('SkillReaction', instance.SkillReaction);
+  writeNotNull('BehaveAsFamilyBuff', instance.BehaveAsFamilyBuff);
+  writeNotNull(
+      'UnSubStateWhileLinkedToOthers', instance.UnSubStateWhileLinkedToOthers);
+  writeNotNull('NotAccompanyWhenLinkedTargetMoveState',
+      instance.NotAccompanyWhenLinkedTargetMoveState);
+  writeNotNull('ApplySupportSvt', instance.ApplySupportSvt);
+  writeNotNull('Individuality', instance.Individuality);
+  writeNotNull('EventId', instance.EventId);
+  writeNotNull('AddCount', instance.AddCount);
+  writeNotNull('RateCount', instance.RateCount);
+  writeNotNull('DropRateCount', instance.DropRateCount);
+  writeNotNull('DependFuncVals', instance.DependFuncVals?.toJson());
+  return val;
+}
+
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       id: json['id'] as int,
       priority: json['priority'] as int,

@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/effect_descriptor.dart';
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -35,7 +36,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
   Widget build(BuildContext context) {
     if (_selected == null) {
       _selected = widget.id ?? (codes.isEmpty ? null : codes.keys.first);
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         _scrollTo(0);
       });
     }
@@ -142,7 +143,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
   }
 
   void _scrollTo(int dx) {
-    print('_selected=$_selected, dx=$dx');
     if (!mounted) return;
     List<int> keys = codes.keys.toList();
     int _curIndex = codes.keys.toList().indexOf(_selected ?? 0);
@@ -199,14 +199,15 @@ class _MysticCodePageState extends State<MysticCodePage> {
         ]),
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        CustomTableRow(children: [
-          TableCellData(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: mysticCode.skills.map((e) => buildSkill(e)).toList(),
-            ),
-          )
-        ]),
+        for (final skill in mysticCode.skills) SkillDescriptor(skill: skill),
+        // CustomTableRow(children: [
+        //   TableCellData(
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: mysticCode.skills.map((e) => buildSkill(e)).toList(),
+        //     ),
+        //   )
+        // ]),
         CustomTableRow(children: [
           TableCellData(text: S.current.game_experience, isHeader: true)
         ]),
