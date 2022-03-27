@@ -54,8 +54,8 @@ class _SummonListPageState extends State<SummonListPage>
           IconButton(
             icon: FaIcon(
               filterData.reversed
-                  ? FontAwesomeIcons.sortAmountDown
-                  : FontAwesomeIcons.sortAmountUp,
+                  ? FontAwesomeIcons.arrowDownWideShort
+                  : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: 'Reversed',

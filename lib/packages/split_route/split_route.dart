@@ -141,7 +141,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         _last == false &&
         _current == true &&
         _nextRouteCache != null) {
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         didChangeNext(_nextRouteCache!);
         _nextRouteCache!.didChangePrevious(this);
         // force rebuilding both modal and scope

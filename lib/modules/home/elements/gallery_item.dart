@@ -139,14 +139,14 @@ class GalleryItem {
   static GalleryItem freeCalculator = GalleryItem(
     name: 'free_calculator',
     titleBuilder: () => S.current.free_quest_calculator_short,
-    icon: FontAwesomeIcons.mapMarked,
+    icon: FontAwesomeIcons.mapLocation,
     page: FreeQuestCalculatorPage(),
     isDetail: true,
   );
   static GalleryItem masterMission = GalleryItem(
     name: 'master_mission',
     titleBuilder: () => S.current.master_mission,
-    icon: FontAwesomeIcons.tasks,
+    icon: FontAwesomeIcons.listCheck,
     page: MasterMissionPage(),
     isDetail: true,
   );
@@ -160,7 +160,7 @@ class GalleryItem {
   static GalleryItem mysticCode = GalleryItem(
     name: 'mystic_code',
     titleBuilder: () => S.current.mystic_code,
-    icon: FontAwesomeIcons.diagnoses,
+    icon: FontAwesomeIcons.personDotsFromLine,
     page: MysticCodePage(),
     isDetail: true,
   );
@@ -174,7 +174,7 @@ class GalleryItem {
   static GalleryItem costume = GalleryItem(
     name: 'costume',
     titleBuilder: () => S.current.costume,
-    icon: FontAwesomeIcons.tshirt,
+    icon: FontAwesomeIcons.shirt,
     page: CostumeListPage(),
     isDetail: false,
   );
@@ -202,7 +202,7 @@ class GalleryItem {
   static GalleryItem illustratorList = GalleryItem(
     name: 'illustrator_list',
     titleBuilder: () => S.current.illustrator,
-    icon: FontAwesomeIcons.paintBrush,
+    icon: FontAwesomeIcons.paintbrush,
     page: IllustratorListPage(),
     isDetail: true,
   );

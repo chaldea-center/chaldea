@@ -360,7 +360,7 @@ class _GameDataPageState extends State<GameDataPage> {
     Directory(db.paths.tempDir)
       ..deleteSync(recursive: true)
       ..createSync(recursive: true);
-    imageCache?.clear();
+    imageCache.clear();
     EasyLoading.showToast(S.current.clear_cache_finish);
   }
 }

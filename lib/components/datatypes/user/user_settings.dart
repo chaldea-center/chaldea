@@ -7,6 +7,7 @@ enum SvtListClassFilterStyle {
   twoRow,
   doNotShow,
 }
+
 enum SvtTab {
   plan,
   skill,
@@ -91,7 +92,7 @@ class AppSetting {
 
   bool get isResolvedDarkMode {
     return themeMode == ThemeMode.dark ||
-        SchedulerBinding.instance!.window.platformBrightness == Brightness.dark;
+        SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
   }
 
   factory AppSetting.fromJson(Map<String, dynamic> data) =>

@@ -128,7 +128,7 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   Widget get languagePage {
     return _IntroPage(
-      icon: FontAwesomeIcons.globeAsia,
+      icon: FontAwesomeIcons.earthAsia,
       title: S.current.select_lang,
       content: ListView.separated(
         itemBuilder: (context, index) {
@@ -169,7 +169,7 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   Widget get darkModePage {
     return _IntroPage(
-      icon: FontAwesomeIcons.adjust,
+      icon: FontAwesomeIcons.circleHalfStroke,
       title: S.current.dark_mode,
       content: ListView.separated(
         itemBuilder: (context, index) {
@@ -586,7 +586,7 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) {
         setState(() {
           shown = true;

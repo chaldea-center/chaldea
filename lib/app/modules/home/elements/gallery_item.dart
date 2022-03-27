@@ -63,14 +63,14 @@ class GalleryItem {
   static GalleryItem edit = GalleryItem(
     name: 'edit',
     titleBuilder: () => '',
-    icon: FontAwesomeIcons.edit,
+    icon: FontAwesomeIcons.penToSquare,
     isDetail: false,
   );
 
   static GalleryItem done = GalleryItem(
     name: 'done',
     titleBuilder: () => '',
-    icon: FontAwesomeIcons.checkCircle,
+    icon: FontAwesomeIcons.circleCheck,
     isDetail: false,
   );
 
@@ -154,7 +154,7 @@ class GalleryItem {
   static GalleryItem freeCalculator = GalleryItem(
     name: 'free_calculator',
     titleBuilder: () => S.current.free_quest_calculator_short,
-    icon: FontAwesomeIcons.mapMarked,
+    icon: FontAwesomeIcons.mapLocation,
     url: Routes.freeCalc,
     page: FreeQuestCalcPage(),
     isDetail: true,
@@ -162,7 +162,7 @@ class GalleryItem {
   static GalleryItem masterMissions = GalleryItem(
     name: 'master_missions',
     titleBuilder: () => S.current.master_mission,
-    icon: FontAwesomeIcons.tasks,
+    icon: FontAwesomeIcons.listCheck,
     page: MasterMissionListPage(),
     isDetail: true,
   );
@@ -176,7 +176,7 @@ class GalleryItem {
   static GalleryItem mysticCodes = GalleryItem(
     name: 'mystic_codes',
     titleBuilder: () => S.current.mystic_code,
-    icon: FontAwesomeIcons.diagnoses,
+    icon: FontAwesomeIcons.personDotsFromLine,
     url: Routes.mysticCodes,
     page: MysticCodeListPage(),
     isDetail: false,
@@ -220,7 +220,7 @@ class GalleryItem {
   static GalleryItem illustratorList = GalleryItem(
     name: 'illustrator_list',
     titleBuilder: () => S.current.illustrator,
-    icon: FontAwesomeIcons.paintBrush,
+    icon: FontAwesomeIcons.paintbrush,
     url: Routes.illustrators,
     page: IllustratorListPage(),
     isDetail: true,

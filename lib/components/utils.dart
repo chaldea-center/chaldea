@@ -209,7 +209,7 @@ class Utils {
   }
 
   static void scheduleFrameCallback(VoidCallback callback) {
-    SchedulerBinding.instance!.scheduleFrameCallback((timeStamp) {
+    SchedulerBinding.instance.scheduleFrameCallback((timeStamp) {
       callback();
     });
   }
@@ -297,7 +297,7 @@ class Utils {
           break;
         default:
           db.appSetting.themeMode =
-              SchedulerBinding.instance!.window.platformBrightness ==
+              SchedulerBinding.instance.window.platformBrightness ==
                       Brightness.light
                   ? ThemeMode.dark
                   : ThemeMode.light;

@@ -217,7 +217,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
       return;
     }
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       double _maxHeight = -1;
       widget.children.forEach((cell) {
         if (cell.fitHeight != true) {

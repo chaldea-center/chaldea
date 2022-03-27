@@ -54,8 +54,8 @@ class _EventListPageState extends State<EventListPage>
           IconButton(
             icon: FaIcon(
               reversed
-                  ? FontAwesomeIcons.sortAmountDown
-                  : FontAwesomeIcons.sortAmountUp,
+                  ? FontAwesomeIcons.arrowDownWideShort
+                  : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: 'Reversed',

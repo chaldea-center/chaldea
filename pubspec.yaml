@@ -27,7 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  archive: ^3.1.9
+  archive: ^3.3.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.2.0
   carousel_slider: ^4.0.0
@@ -43,16 +43,16 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
   file_picker: ^4.3.2
-  fl_chart: ^0.46.0
+  fl_chart: ^0.50.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
   flutter_markdown: ^0.6.8
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   get: any
-  hive: ^2.0.4
+  hive: ^2.1.0
   html: ^0.15.0
   image: ^3.1.1
   image_gallery_saver: ^1.7.1
@@ -73,7 +73,7 @@ dependencies:
   photo_view: ^0.13.0
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
-  share_plus: ^4.0.1
+  share_plus: ^4.0.3
   shared_preferences: ^2.0.12
   sliver_tools: ^0.2.5
   smooth_page_indicator: ^1.0.0+2

@@ -89,7 +89,7 @@ class _CustomMissionPageState extends State<CustomMissionPage>
       setState(() {
         solution = s;
       });
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         _tabController.index = 1;
       });
     }

@@ -88,7 +88,7 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
         solution = s;
       });
       // if change tab index immediately, the second tab won't re-render
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (solution!.destination > 0 && solution!.destination < 3) {
           _tabController.index = solution!.destination;
         } else {

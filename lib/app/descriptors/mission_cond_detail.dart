@@ -203,10 +203,4 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       kr: null,
     );
   }
-
-  @override
-  Widget buildCN(BuildContext context) {
-    // TODO: implement buildCN
-    throw UnimplementedError();
-  }
 }

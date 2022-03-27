@@ -121,7 +121,7 @@ class LocalSettings {
 
   bool get isResolvedDarkMode {
     if (themeMode == ThemeMode.system) {
-      return SchedulerBinding.instance!.window.platformBrightness ==
+      return SchedulerBinding.instance.window.platformBrightness ==
           Brightness.dark;
     }
     return themeMode == ThemeMode.dark;
@@ -258,6 +258,7 @@ enum SvtListClassFilterStyle {
   twoRow,
   doNotShow,
 }
+
 enum SvtTab {
   plan,
   skill,

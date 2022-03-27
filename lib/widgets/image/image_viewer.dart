@@ -380,7 +380,7 @@ class __FadeInState extends State<_FadeIn> {
   @override
   Widget build(BuildContext context) {
     if (opacity == null) return widget.child;
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) {
         setState(() {
           opacity = 1;

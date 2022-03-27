@@ -57,7 +57,6 @@ void main() {
 
   final newMainJsFn = 'main.dart.${mainJs.newHash.substring(0, 8)}.js';
 
-  Map<String, String> newHashes = {};
   for (final file in [
     indexHtml,
     jsMap,

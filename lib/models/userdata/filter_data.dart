@@ -234,6 +234,7 @@ class SvtFilterData {
 /// Craft Essence
 
 enum CraftCompare { no, rarity, atk, hp }
+
 enum CraftATKType { none, hp, atk, mix }
 
 @JsonSerializable(ignoreUnannotated: true)

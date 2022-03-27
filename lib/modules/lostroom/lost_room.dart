@@ -29,7 +29,7 @@ class LostRoomPage extends StatelessWidget {
           ),
           kDefaultDivider,
           ListTile(
-            leading: const FaIcon(FontAwesomeIcons.userFriends),
+            leading: const FaIcon(FontAwesomeIcons.userGroup),
             title: Text(S.current.support_party),
             subtitle: Text(LocalizedText.of(
                 chs: '暂停', jpn: '一時停止', eng: 'Suspended', kor: '일시중단')),
@@ -39,7 +39,7 @@ class LostRoomPage extends StatelessWidget {
           ),
           if (kDebugMode)
             ListTile(
-              leading: const FaIcon(FontAwesomeIcons.userFriends),
+              leading: const FaIcon(FontAwesomeIcons.userGroup),
               title: const Text('Bond Farming'),
               onTap: () {
                 SplitRoute.push(context, const BondFarmingPage());

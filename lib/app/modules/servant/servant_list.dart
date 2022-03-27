@@ -995,16 +995,18 @@ class ServantListPageState extends State<ServantListPage>
     }
     return CustomTile(
       leading: db2.getIconImage(svt.customIcon, width: 56),
-      title: AutoSizeText(
+      title: Text(
         svt.lName.l,
         maxLines: 1,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (!Language.isJP) AutoSizeText(svt.name, maxLines: 1),
+          if (!Language.isJP) Text(svt.name, maxLines: 1),
           Text(
-              'No.${svt.collectionNo} ${EnumUtil.titled(svt.className)}  $additionalText')
+            'No.${svt.collectionNo} ${EnumUtil.titled(svt.className)}  $additionalText',
+            maxLines: 1,
+          )
         ],
       ),
       trailing: db2.onUserData(

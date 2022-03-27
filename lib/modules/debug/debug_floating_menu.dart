@@ -116,7 +116,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
   }
 
   void markNeedRebuild() {
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {});
     });
   }

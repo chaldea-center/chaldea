@@ -52,7 +52,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
           setState(() {
             hideRadio = true;
           });
-          SchedulerBinding.instance!.addPostFrameCallback((timeStamp) async {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
             EasyLoading.show(
                 status: 'Rendering...', maskType: EasyLoadingMaskType.clear);
             try {
@@ -323,7 +323,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
                   popDetail: false,
                 );
               },
-              icon: const FaIcon(FontAwesomeIcons.exchangeAlt, size: 18),
+              icon: const FaIcon(FontAwesomeIcons.rightLeft, size: 18),
               tooltip: 'Change Servant',
             ),
             IconButton(

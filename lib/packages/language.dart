@@ -83,7 +83,7 @@ class Language {
   }
 
   static Locale get systemLocale =>
-      WidgetsBinding.instance!.platformDispatcher.locale;
+      WidgetsBinding.instance.platformDispatcher.locale;
 
   /// used for 5 region game data
   static bool get isZH => isCHS || isCHT;

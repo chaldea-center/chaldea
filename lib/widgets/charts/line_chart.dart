@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -86,7 +87,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                           TextSpan(
                             text: formatter(spot.x, spot.y),
                             style: TextStyle(
-                              color: spot.bar.colors[0],
+                              color: spot.bar.color,
                               fontSize: 14,
                             ),
                           )
@@ -95,7 +96,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                     items.add(LineTooltipItem(
                       formatter(spot.x, spot.y),
                       TextStyle(
-                        color: spot.bar.colors[0],
+                        color: spot.bar.color,
                         // fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -107,45 +108,68 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         ),
         gridData: FlGridData(show: false),
         titlesData: FlTitlesData(
-          bottomTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 22,
-            margin: 10,
-            interval: intervalX,
-            getTextStyles: (context, value) => const TextStyle(
-              // color: Color(0xff72719b),
-              // fontWeight: FontWeight.bold,
-              fontSize: 16,
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: intervalY,
+              reservedSize: 56,
+              getTitlesWidget: (value, titleMeta) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 4),
+                  child: AutoSizeText(
+                    titleMeta.formattedValue,
+                    maxLines: 1,
+                    maxFontSize: 14,
+                    minFontSize: 6,
+                    textAlign: TextAlign.right,
+                  ),
+                );
+              },
             ),
-            getTitles: (value) {
-              if (value.toInt() % 10 == 0) return value.toInt().toString();
-              return '';
-            },
           ),
-          rightTitles: SideTitles(showTitles: true, getTitles: (v) => ''),
-          topTitles: SideTitles(showTitles: true, getTitles: (v) => ''),
-          leftTitles: SideTitles(
-            showTitles: true,
-            margin: 8,
-            interval: intervalY,
-            reservedSize: 36,
-            getTextStyles: (context, value) => const TextStyle(fontSize: 14),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              interval: intervalX,
+              getTitlesWidget: (value, titleMeta) {
+                return Padding(
+                  // You can use any widget here
+                  padding: const EdgeInsets.only(top: 4),
+                  child: AutoSizeText(
+                    titleMeta.formattedValue,
+                    maxLines: 1,
+                    maxFontSize: 14,
+                    minFontSize: 6,
+                  ),
+                );
+              },
+            ),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 16,
+              getTitlesWidget: (_, __) => const Text(''),
+            ),
+          ),
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 16,
+              getTitlesWidget: (_, __) => const Text(''),
+            ),
           ),
         ),
         borderData: FlBorderData(
           show: true,
-          border: Border(
-            bottom: BorderSide(color: Theme.of(context).hintColor, width: 2),
-            left: BorderSide(color: Theme.of(context).hintColor, width: 2),
-            right: const BorderSide(color: Colors.transparent),
-            top: const BorderSide(color: Colors.transparent),
-          ),
+          border: Border.all(color: Theme.of(context).hintColor, width: 2),
         ),
         lineBarsData: List.generate(data.length, (index) {
           final datum = data[index];
           return LineChartBarData(
             isCurved: true,
-            colors: [datum.color ?? colors[index % colors.length]],
+            color: datum.color ?? colors[index % colors.length],
             barWidth: 4,
             isStrokeCapRound: true,
             dotData: FlDotData(show: false),
@@ -169,20 +193,4 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
       swapAnimationDuration: const Duration(milliseconds: 250),
     );
   }
-
-  LineChartBarData get lineChartBarData1_3 => LineChartBarData(
-        isCurved: true,
-        colors: const [Color(0xff27b6fc)],
-        barWidth: 8,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 2.8),
-          FlSpot(3, 1.9),
-          FlSpot(6, 3),
-          FlSpot(10, 1.3),
-          FlSpot(13, 2.5),
-        ],
-      );
 }

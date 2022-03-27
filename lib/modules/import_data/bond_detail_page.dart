@@ -252,8 +252,8 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                 },
                 tooltip: 'Reversed',
                 icon: FaIcon(reversed
-                    ? FontAwesomeIcons.sortAlphaUpAlt
-                    : FontAwesomeIcons.sortAlphaDownAlt),
+                    ? FontAwesomeIcons.arrowUpZA
+                    : FontAwesomeIcons.arrowDownZA),
               )
             ],
           )

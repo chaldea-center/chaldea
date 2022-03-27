@@ -283,7 +283,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     if (justUpdated && !AppInfo.isMacStoreApp) {
       GitTool.fromDb().appReleaseNote().then((releaseNote) {
         if (releaseNote?.isNotEmpty == true) {
-          SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
             SimpleCancelOkDialog(
               title: Text(AppInfo.versionString),
               content: Text(releaseNote!.replaceAll('\r\n', '\n')),

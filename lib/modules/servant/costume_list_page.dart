@@ -38,8 +38,8 @@ class _CostumeListPageState extends State<CostumeListPage>
           IconButton(
             icon: FaIcon(
               reversed
-                  ? FontAwesomeIcons.sortAmountDown
-                  : FontAwesomeIcons.sortAmountUp,
+                  ? FontAwesomeIcons.arrowDownWideShort
+                  : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: 'Reversed',

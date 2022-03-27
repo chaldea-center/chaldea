@@ -278,7 +278,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 value: isNA,
               ),
           ],
-          onChanged: (warId == null || warId < 1000)
+          onChanged: (warId < 1000)
               ? null
               : (v) {
                   setState(() {

@@ -50,9 +50,9 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (_lastTime == null) {
-        SchedulerBinding.instance!
+        SchedulerBinding.instance
             .addPersistentFrameCallback(_registerFrameCallback);
       }
     });

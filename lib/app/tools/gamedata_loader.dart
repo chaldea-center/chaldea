@@ -58,8 +58,8 @@ class GameDataLoader {
     _progress = null;
     error = null;
     cancelToken = CancelToken();
-    Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly)
-            .then((value)async => _completer!.complete(loadedGameData = value)))
+    Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly).then(
+            (value) async => _completer!.complete(loadedGameData = value)))
         .catchError((e, s) async {
       logger.e('load gamedata($offline)', e, s);
       error = e;

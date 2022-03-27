@@ -649,7 +649,7 @@ class _ItemListTabState extends State<ItemListTab> {
     final nextGroup = _shownGroups[nextIndex];
     FocusScope.of(context).requestFocus(nextGroup.focusNode);
     // set selection at next frame, so that auto scroll to make focus visible
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // next frame, the next node is primary focus
       nextGroup.controller!.selection = TextSelection(
           baseOffset: 0, extentOffset: nextGroup.controller!.text.length);
