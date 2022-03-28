@@ -16,25 +16,25 @@ jobs:
       - name: Extract branch name
         id: extract-branch-name
         run: |
-            echo ${GITHUB_REF#refs/heads/}
-            echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+          echo ${GITHUB_REF#refs/heads/}
+          echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.12.0-4.1.pre'
-          channel: 'beta'
+          flutter-version: "2.12.0-4.1.pre"
+          channel: "beta"
           cache: true
 
       - run: |
-            flutter --version
-            flutter pub get
+          flutter --version
+          flutter pub get
 
       - name: Build with default auto web-renderer
         run: |
-            dart ./scripts/generate_git_info.dart
-            flutter build web --source-maps
-            dart ./scripts/patch_web_build.dart
-      
+          dart ./scripts/generate_git_info.dart
+          flutter build web --release
+          dart ./scripts/patch_web_build.dart
+
       - name: Publish to app repo ${{ steps.extract-branch-name.outputs.BRANCH_NAME }} branch
         uses: crazy-max/ghaction-github-pages@v2.2.0
         with:
@@ -43,3 +43,13 @@ jobs:
           build_dir: build/web
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}
+
+      - uses: yizhoumo/setup-ossutil@v1
+        with:
+          ossutil-version: "1.7.9"
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+
+      - name: Publish to OSS
+        run: dart ./scripts/publish_oss.dart ${{ secrets.OSS_BUCKET_NAME }}

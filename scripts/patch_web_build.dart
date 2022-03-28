@@ -32,9 +32,10 @@ void main() {
 
   final mainJs = _FileInfo('main.dart.js'),
       indexHtml = _FileInfo('index.html'),
-      jsMap = _FileInfo('main.dart.js.map'),
+      // jsMap = _FileInfo('main.dart.js.map'),
       sw = _FileInfo('flutter_service_worker.js');
 
+  // change google fonts url for cn
   print('[patch-web] patching "${mainJs.fn}"');
   int patched = 0;
   mainJs.content = mainJs.content.replaceAllMapped(
@@ -55,18 +56,19 @@ void main() {
   mainJs.updateHash();
   print('[patch-web] patched $patched google fonts code lines.');
 
+  // replace all main.dart.js reference to new hashed filename
   final newMainJsFn = 'main.dart.${mainJs.newHash.substring(0, 8)}.js';
 
-  for (final file in [
-    indexHtml,
-    jsMap,
-    sw,
-  ]) {
+  for (final file in [indexHtml, /*jsMap, */ sw]) {
     print('Replacing "main.dart.js" to "$newMainJsFn" in file "${file.fn}"');
     file.content = file.content.replaceAll('main.dart.js', newMainJsFn);
     file.updateHash();
   }
 
+  // remove NOTICE from core cache, which needs to download before app start
+  sw.content = sw.content.replaceFirst('"assets/NOTICES",\n', '');
+
+  // update all cache hash
   sw.content = sw.content
       .replaceAllMapped(RegExp(r'"([^"]+)":\s*"([0-9a-f]{32})"'), (match) {
     final fn = match.group(1)!;
@@ -84,10 +86,10 @@ void main() {
     }
     return match.group(0)!;
   });
+
   indexHtml.save();
   mainJs.save();
-  jsMap.save();
+  // jsMap.save();
   mainJs.file.renameSync('$_buildDir/$newMainJsFn');
   sw.save();
-  // File('build/web/flutter_sw2.js').writeAsStringSync(sw.content);
 }

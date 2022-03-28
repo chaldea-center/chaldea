@@ -1,6 +1,6 @@
 import 'dart:io';
 
-void main(List<String> args) async {
+void main([List<String> args = const []]) async {
   try {
     final gitInfo = (await Process.run(
             'git', ['show', '-s', '--pretty=format:%h-%ct', "HEAD"]))
@@ -16,6 +16,7 @@ const String kCommitHash = "$hash";
 const int kCommitTimestamp = $date;
 ''';
     File('lib/generated/git_info.dart').writeAsStringSync(content);
+    print(content);
   } catch (e, s) {
     if (args.contains('-s')) {
       print(e);
