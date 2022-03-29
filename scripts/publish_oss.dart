@@ -39,8 +39,10 @@ void main(List<String> args) async {
   for (final file in Directory(buildDir).listSync(recursive: true)) {
     if (file is! File) continue;
     if (pathlib.basename(file.path).startsWith('.')) continue;
-    if (_excludedFiles.any(
-        (e) => FileSystemEntity.identicalSync(file.path, e.path))) continue;
+    if (_excludedFiles.any((e) =>
+        e.existsSync() && FileSystemEntity.identicalSync(file.path, e.path))) {
+      continue;
+    }
 
     final key = pathlib.relative(file.path, from: buildDir);
     final hash = md5.convert(file.readAsBytesSync()).toString().toUpperCase();
