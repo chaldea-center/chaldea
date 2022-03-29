@@ -192,6 +192,7 @@ class User {
 
   bool use6thDropRate;
   FreeLPParams freeLPParams;
+  Map<String, Map<int, int>> luckyBagSvtScores;
 
   User({
     this.name = 'Gudako',
@@ -211,6 +212,7 @@ class User {
     Set<String>? summons,
     this.use6thDropRate = true,
     FreeLPParams? freeLPParams,
+    Map<String, Map<int, int>>? luckyBagSvtScores,
   })  : servants = servants ?? {},
         svtPlanGroups = List.generate(
             kSvtPlanMaxNum, (index) => svtPlanGroups?.getOrNull(index) ?? {}),
@@ -227,7 +229,8 @@ class User {
         },
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
-        freeLPParams = freeLPParams ?? FreeLPParams();
+        freeLPParams = freeLPParams ?? FreeLPParams(),
+        luckyBagSvtScores = luckyBagSvtScores ?? {};
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

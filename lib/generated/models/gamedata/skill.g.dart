@@ -142,226 +142,34 @@ const _$CardTypeEnumMap = {
   CardType.strength: 'strength',
 };
 
-NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
-      funcId: json['funcId'] as int,
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.none,
-      funcTargetType:
-          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
-      funcPopupText: json['funcPopupText'] as String? ?? '',
-      funcPopupIcon: json['funcPopupIcon'] as String?,
-      functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) =>
-                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      buffs: (json['buffs'] as List<dynamic>?)
-              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      svals: (json['svals'] as List<dynamic>)
-          .map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      svals2: (json['svals2'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      svals3: (json['svals3'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      svals4: (json['svals4'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      svals5: (json['svals5'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      followerVals: (json['followerVals'] as List<dynamic>?)
-          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
+      id: json['id'] as int,
+      priority: json['priority'] as int,
+      condGroup: json['condGroup'] as int,
+      condType: toEnumCondType(json['condType'] as Object),
+      condId: json['condId'] as int,
+      condNum: json['condNum'] as int,
     );
 
-const _$FuncTypeEnumMap = {
-  FuncType.none: 'none',
-  FuncType.addState: 'addState',
-  FuncType.subState: 'subState',
-  FuncType.damage: 'damage',
-  FuncType.damageNp: 'damageNp',
-  FuncType.gainStar: 'gainStar',
-  FuncType.gainHp: 'gainHp',
-  FuncType.gainNp: 'gainNp',
-  FuncType.lossNp: 'lossNp',
-  FuncType.shortenSkill: 'shortenSkill',
-  FuncType.extendSkill: 'extendSkill',
-  FuncType.releaseState: 'releaseState',
-  FuncType.lossHp: 'lossHp',
-  FuncType.instantDeath: 'instantDeath',
-  FuncType.damageNpPierce: 'damageNpPierce',
-  FuncType.damageNpIndividual: 'damageNpIndividual',
-  FuncType.addStateShort: 'addStateShort',
-  FuncType.gainHpPer: 'gainHpPer',
-  FuncType.damageNpStateIndividual: 'damageNpStateIndividual',
-  FuncType.hastenNpturn: 'hastenNpturn',
-  FuncType.delayNpturn: 'delayNpturn',
-  FuncType.damageNpHpratioHigh: 'damageNpHpratioHigh',
-  FuncType.damageNpHpratioLow: 'damageNpHpratioLow',
-  FuncType.cardReset: 'cardReset',
-  FuncType.replaceMember: 'replaceMember',
-  FuncType.lossHpSafe: 'lossHpSafe',
-  FuncType.damageNpCounter: 'damageNpCounter',
-  FuncType.damageNpStateIndividualFix: 'damageNpStateIndividualFix',
-  FuncType.damageNpSafe: 'damageNpSafe',
-  FuncType.callServant: 'callServant',
-  FuncType.ptShuffle: 'ptShuffle',
-  FuncType.lossStar: 'lossStar',
-  FuncType.changeServant: 'changeServant',
-  FuncType.changeBg: 'changeBg',
-  FuncType.damageValue: 'damageValue',
-  FuncType.withdraw: 'withdraw',
-  FuncType.fixCommandcard: 'fixCommandcard',
-  FuncType.shortenBuffturn: 'shortenBuffturn',
-  FuncType.extendBuffturn: 'extendBuffturn',
-  FuncType.shortenBuffcount: 'shortenBuffcount',
-  FuncType.extendBuffcount: 'extendBuffcount',
-  FuncType.changeBgm: 'changeBgm',
-  FuncType.displayBuffstring: 'displayBuffstring',
-  FuncType.resurrection: 'resurrection',
-  FuncType.gainNpBuffIndividualSum: 'gainNpBuffIndividualSum',
-  FuncType.setSystemAliveFlag: 'setSystemAliveFlag',
-  FuncType.forceInstantDeath: 'forceInstantDeath',
-  FuncType.damageNpRare: 'damageNpRare',
-  FuncType.gainNpFromTargets: 'gainNpFromTargets',
-  FuncType.gainHpFromTargets: 'gainHpFromTargets',
-  FuncType.lossHpPer: 'lossHpPer',
-  FuncType.lossHpPerSafe: 'lossHpPerSafe',
-  FuncType.shortenUserEquipSkill: 'shortenUserEquipSkill',
-  FuncType.quickChangeBg: 'quickChangeBg',
-  FuncType.shiftServant: 'shiftServant',
-  FuncType.damageNpAndCheckIndividuality: 'damageNpAndCheckIndividuality',
-  FuncType.absorbNpturn: 'absorbNpturn',
-  FuncType.overwriteDeadType: 'overwriteDeadType',
-  FuncType.forceAllBuffNoact: 'forceAllBuffNoact',
-  FuncType.breakGaugeUp: 'breakGaugeUp',
-  FuncType.breakGaugeDown: 'breakGaugeDown',
-  FuncType.moveToLastSubmember: 'moveToLastSubmember',
-  FuncType.expUp: 'expUp',
-  FuncType.qpUp: 'qpUp',
-  FuncType.dropUp: 'dropUp',
-  FuncType.friendPointUp: 'friendPointUp',
-  FuncType.eventDropUp: 'eventDropUp',
-  FuncType.eventDropRateUp: 'eventDropRateUp',
-  FuncType.eventPointUp: 'eventPointUp',
-  FuncType.eventPointRateUp: 'eventPointRateUp',
-  FuncType.transformServant: 'transformServant',
-  FuncType.qpDropUp: 'qpDropUp',
-  FuncType.servantFriendshipUp: 'servantFriendshipUp',
-  FuncType.userEquipExpUp: 'userEquipExpUp',
-  FuncType.classDropUp: 'classDropUp',
-  FuncType.enemyEncountCopyRateUp: 'enemyEncountCopyRateUp',
-  FuncType.enemyEncountRateUp: 'enemyEncountRateUp',
-  FuncType.enemyProbDown: 'enemyProbDown',
-  FuncType.getRewardGift: 'getRewardGift',
-  FuncType.sendSupportFriendPoint: 'sendSupportFriendPoint',
-  FuncType.movePosition: 'movePosition',
-  FuncType.revival: 'revival',
-  FuncType.damageNpIndividualSum: 'damageNpIndividualSum',
-  FuncType.damageValueSafe: 'damageValueSafe',
-  FuncType.friendPointUpDuplicate: 'friendPointUpDuplicate',
-  FuncType.moveState: 'moveState',
-  FuncType.changeBgmCostume: 'changeBgmCostume',
-  FuncType.func126: 'func126',
-  FuncType.func127: 'func127',
-  FuncType.updateEntryPositions: 'updateEntryPositions',
-  FuncType.buddyPointUp: 'buddyPointUp',
-};
-
-const _$FuncTargetTypeEnumMap = {
-  FuncTargetType.self: 'self',
-  FuncTargetType.ptOne: 'ptOne',
-  FuncTargetType.ptAnother: 'ptAnother',
-  FuncTargetType.ptAll: 'ptAll',
-  FuncTargetType.enemy: 'enemy',
-  FuncTargetType.enemyAnother: 'enemyAnother',
-  FuncTargetType.enemyAll: 'enemyAll',
-  FuncTargetType.ptFull: 'ptFull',
-  FuncTargetType.enemyFull: 'enemyFull',
-  FuncTargetType.ptOther: 'ptOther',
-  FuncTargetType.ptOneOther: 'ptOneOther',
-  FuncTargetType.ptRandom: 'ptRandom',
-  FuncTargetType.enemyOther: 'enemyOther',
-  FuncTargetType.enemyRandom: 'enemyRandom',
-  FuncTargetType.ptOtherFull: 'ptOtherFull',
-  FuncTargetType.enemyOtherFull: 'enemyOtherFull',
-  FuncTargetType.ptselectOneSub: 'ptselectOneSub',
-  FuncTargetType.ptselectSub: 'ptselectSub',
-  FuncTargetType.ptOneAnotherRandom: 'ptOneAnotherRandom',
-  FuncTargetType.ptSelfAnotherRandom: 'ptSelfAnotherRandom',
-  FuncTargetType.enemyOneAnotherRandom: 'enemyOneAnotherRandom',
-  FuncTargetType.ptSelfAnotherFirst: 'ptSelfAnotherFirst',
-  FuncTargetType.ptSelfBefore: 'ptSelfBefore',
-  FuncTargetType.ptSelfAfter: 'ptSelfAfter',
-  FuncTargetType.ptSelfAnotherLast: 'ptSelfAnotherLast',
-  FuncTargetType.commandTypeSelfTreasureDevice: 'commandTypeSelfTreasureDevice',
-  FuncTargetType.fieldOther: 'fieldOther',
-  FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
-  FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
-  FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
-};
-
-const _$FuncApplyTargetEnumMap = {
-  FuncApplyTarget.player: 'player',
-  FuncApplyTarget.enemy: 'enemy',
-  FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
-};
-
-Buff _$BuffFromJson(Map json) => Buff(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      detail: json['detail'] as String,
-      icon: json['icon'] as String?,
-      type:
-          $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ?? BuffType.none,
-      buffGroup: json['buffGroup'] as int? ?? 0,
-      script: json['script'] == null
+BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
+      checkIndvType: json['checkIndvType'] as int?,
+      CheckOpponentBuffTypes: (json['CheckOpponentBuffTypes'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$BuffTypeEnumMap, e))
+          .toList(),
+      relationId: json['relationId'] == null
           ? null
-          : BuffScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
-      vals: (json['vals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      tvals: (json['tvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      ckSelfIndv: (json['ckSelfIndv'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      ckOpIndv: (json['ckOpIndv'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      maxRate: json['maxRate'] as int,
+          : BuffRelationOverwrite.fromJson(
+              Map<String, dynamic>.from(json['relationId'] as Map)),
+      ReleaseText: json['ReleaseText'] as String?,
+      DamageRelease: json['DamageRelease'] as int?,
+      INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
+          ? null
+          : NiceTrait.fromJson(
+              Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
+      UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      HP_LOWER: json['HP_LOWER'] as int?,
     );
 
 const _$BuffTypeEnumMap = {
@@ -517,6 +325,401 @@ const _$BuffTypeEnumMap = {
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
   BuffType.counterFunction: 'counterFunction',
 };
+
+FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
+      eventId: json['eventId'] as int,
+      baseFuncId: json['baseFuncId'] as int,
+      nameTotal: json['nameTotal'] as String,
+      name: json['name'] as String,
+      icon: json['icon'] as String?,
+      priority: json['priority'] as int,
+      isDispValue: json['isDispValue'] as bool,
+    );
+
+BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
+      funcId: json['funcId'] as int,
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
+          FuncType.none,
+      funcTargetType:
+          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam:
+          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcPopupText: json['funcPopupText'] as String? ?? "",
+      funcPopupIcon: json['funcPopupIcon'] as String?,
+      functvals: (json['functvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      funcGroup: (json['funcGroup'] as List<dynamic>?)
+              ?.map((e) =>
+                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      traitVals: (json['traitVals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      buffs: (json['buffs'] as List<dynamic>?)
+              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+const _$FuncTypeEnumMap = {
+  FuncType.none: 'none',
+  FuncType.addState: 'addState',
+  FuncType.subState: 'subState',
+  FuncType.damage: 'damage',
+  FuncType.damageNp: 'damageNp',
+  FuncType.gainStar: 'gainStar',
+  FuncType.gainHp: 'gainHp',
+  FuncType.gainNp: 'gainNp',
+  FuncType.lossNp: 'lossNp',
+  FuncType.shortenSkill: 'shortenSkill',
+  FuncType.extendSkill: 'extendSkill',
+  FuncType.releaseState: 'releaseState',
+  FuncType.lossHp: 'lossHp',
+  FuncType.instantDeath: 'instantDeath',
+  FuncType.damageNpPierce: 'damageNpPierce',
+  FuncType.damageNpIndividual: 'damageNpIndividual',
+  FuncType.addStateShort: 'addStateShort',
+  FuncType.gainHpPer: 'gainHpPer',
+  FuncType.damageNpStateIndividual: 'damageNpStateIndividual',
+  FuncType.hastenNpturn: 'hastenNpturn',
+  FuncType.delayNpturn: 'delayNpturn',
+  FuncType.damageNpHpratioHigh: 'damageNpHpratioHigh',
+  FuncType.damageNpHpratioLow: 'damageNpHpratioLow',
+  FuncType.cardReset: 'cardReset',
+  FuncType.replaceMember: 'replaceMember',
+  FuncType.lossHpSafe: 'lossHpSafe',
+  FuncType.damageNpCounter: 'damageNpCounter',
+  FuncType.damageNpStateIndividualFix: 'damageNpStateIndividualFix',
+  FuncType.damageNpSafe: 'damageNpSafe',
+  FuncType.callServant: 'callServant',
+  FuncType.ptShuffle: 'ptShuffle',
+  FuncType.lossStar: 'lossStar',
+  FuncType.changeServant: 'changeServant',
+  FuncType.changeBg: 'changeBg',
+  FuncType.damageValue: 'damageValue',
+  FuncType.withdraw: 'withdraw',
+  FuncType.fixCommandcard: 'fixCommandcard',
+  FuncType.shortenBuffturn: 'shortenBuffturn',
+  FuncType.extendBuffturn: 'extendBuffturn',
+  FuncType.shortenBuffcount: 'shortenBuffcount',
+  FuncType.extendBuffcount: 'extendBuffcount',
+  FuncType.changeBgm: 'changeBgm',
+  FuncType.displayBuffstring: 'displayBuffstring',
+  FuncType.resurrection: 'resurrection',
+  FuncType.gainNpBuffIndividualSum: 'gainNpBuffIndividualSum',
+  FuncType.setSystemAliveFlag: 'setSystemAliveFlag',
+  FuncType.forceInstantDeath: 'forceInstantDeath',
+  FuncType.damageNpRare: 'damageNpRare',
+  FuncType.gainNpFromTargets: 'gainNpFromTargets',
+  FuncType.gainHpFromTargets: 'gainHpFromTargets',
+  FuncType.lossHpPer: 'lossHpPer',
+  FuncType.lossHpPerSafe: 'lossHpPerSafe',
+  FuncType.shortenUserEquipSkill: 'shortenUserEquipSkill',
+  FuncType.quickChangeBg: 'quickChangeBg',
+  FuncType.shiftServant: 'shiftServant',
+  FuncType.damageNpAndCheckIndividuality: 'damageNpAndCheckIndividuality',
+  FuncType.absorbNpturn: 'absorbNpturn',
+  FuncType.overwriteDeadType: 'overwriteDeadType',
+  FuncType.forceAllBuffNoact: 'forceAllBuffNoact',
+  FuncType.breakGaugeUp: 'breakGaugeUp',
+  FuncType.breakGaugeDown: 'breakGaugeDown',
+  FuncType.moveToLastSubmember: 'moveToLastSubmember',
+  FuncType.expUp: 'expUp',
+  FuncType.qpUp: 'qpUp',
+  FuncType.dropUp: 'dropUp',
+  FuncType.friendPointUp: 'friendPointUp',
+  FuncType.eventDropUp: 'eventDropUp',
+  FuncType.eventDropRateUp: 'eventDropRateUp',
+  FuncType.eventPointUp: 'eventPointUp',
+  FuncType.eventPointRateUp: 'eventPointRateUp',
+  FuncType.transformServant: 'transformServant',
+  FuncType.qpDropUp: 'qpDropUp',
+  FuncType.servantFriendshipUp: 'servantFriendshipUp',
+  FuncType.userEquipExpUp: 'userEquipExpUp',
+  FuncType.classDropUp: 'classDropUp',
+  FuncType.enemyEncountCopyRateUp: 'enemyEncountCopyRateUp',
+  FuncType.enemyEncountRateUp: 'enemyEncountRateUp',
+  FuncType.enemyProbDown: 'enemyProbDown',
+  FuncType.getRewardGift: 'getRewardGift',
+  FuncType.sendSupportFriendPoint: 'sendSupportFriendPoint',
+  FuncType.movePosition: 'movePosition',
+  FuncType.revival: 'revival',
+  FuncType.damageNpIndividualSum: 'damageNpIndividualSum',
+  FuncType.damageValueSafe: 'damageValueSafe',
+  FuncType.friendPointUpDuplicate: 'friendPointUpDuplicate',
+  FuncType.moveState: 'moveState',
+  FuncType.changeBgmCostume: 'changeBgmCostume',
+  FuncType.func126: 'func126',
+  FuncType.func127: 'func127',
+  FuncType.updateEntryPositions: 'updateEntryPositions',
+  FuncType.buddyPointUp: 'buddyPointUp',
+};
+
+const _$FuncTargetTypeEnumMap = {
+  FuncTargetType.self: 'self',
+  FuncTargetType.ptOne: 'ptOne',
+  FuncTargetType.ptAnother: 'ptAnother',
+  FuncTargetType.ptAll: 'ptAll',
+  FuncTargetType.enemy: 'enemy',
+  FuncTargetType.enemyAnother: 'enemyAnother',
+  FuncTargetType.enemyAll: 'enemyAll',
+  FuncTargetType.ptFull: 'ptFull',
+  FuncTargetType.enemyFull: 'enemyFull',
+  FuncTargetType.ptOther: 'ptOther',
+  FuncTargetType.ptOneOther: 'ptOneOther',
+  FuncTargetType.ptRandom: 'ptRandom',
+  FuncTargetType.enemyOther: 'enemyOther',
+  FuncTargetType.enemyRandom: 'enemyRandom',
+  FuncTargetType.ptOtherFull: 'ptOtherFull',
+  FuncTargetType.enemyOtherFull: 'enemyOtherFull',
+  FuncTargetType.ptselectOneSub: 'ptselectOneSub',
+  FuncTargetType.ptselectSub: 'ptselectSub',
+  FuncTargetType.ptOneAnotherRandom: 'ptOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherRandom: 'ptSelfAnotherRandom',
+  FuncTargetType.enemyOneAnotherRandom: 'enemyOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherFirst: 'ptSelfAnotherFirst',
+  FuncTargetType.ptSelfBefore: 'ptSelfBefore',
+  FuncTargetType.ptSelfAfter: 'ptSelfAfter',
+  FuncTargetType.ptSelfAnotherLast: 'ptSelfAnotherLast',
+  FuncTargetType.commandTypeSelfTreasureDevice: 'commandTypeSelfTreasureDevice',
+  FuncTargetType.fieldOther: 'fieldOther',
+  FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
+  FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
+  FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
+};
+
+const _$FuncApplyTargetEnumMap = {
+  FuncApplyTarget.player: 'player',
+  FuncApplyTarget.enemy: 'enemy',
+  FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
+};
+
+ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
+      num: json['num'] as int,
+      priority: json['priority'] as int,
+      condQuestId: json['condQuestId'] as int? ?? 0,
+      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      condLv: json['condLv'] as int? ?? 0,
+      condLimitCount: json['condLimitCount'] as int? ?? 0,
+      condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
+      eventId: json['eventId'] as int? ?? 0,
+      flag: json['flag'] as int? ?? 0,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+    );
+
+SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
+      NP_HIGHER:
+          (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      NP_LOWER:
+          (json['NP_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      STAR_HIGHER: (json['STAR_HIGHER'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      STAR_LOWER:
+          (json['STAR_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      HP_VAL_HIGHER: (json['HP_VAL_HIGHER'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      additionalSkillActorType:
+          (json['additionalSkillActorType'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList(),
+    );
+
+SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
+      priority: json['priority'] as int,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>)
+          .map((e) =>
+              CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      name: json['name'] as String,
+      ruby: json['ruby'] as String,
+    );
+
+NpGain _$NpGainFromJson(Map json) => NpGain(
+      buster: (json['buster'] as List<dynamic>).map((e) => e as int).toList(),
+      arts: (json['arts'] as List<dynamic>).map((e) => e as int).toList(),
+      quick: (json['quick'] as List<dynamic>).map((e) => e as int).toList(),
+      extra: (json['extra'] as List<dynamic>).map((e) => e as int).toList(),
+      defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
+      np: (json['np'] as List<dynamic>).map((e) => e as int).toList(),
+    );
+
+BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
+    BuffRelationOverwrite(
+      atkSide: (json['atkSide'] as Map).map(
+        (k, e) => MapEntry(
+            $enumDecode(_$SvtClassEnumMap, k),
+            (e as Map).map(
+              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
+            )),
+      ),
+      defSide: (json['defSide'] as Map).map(
+        (k, e) => MapEntry(
+            $enumDecode(_$SvtClassEnumMap, k),
+            (e as Map).map(
+              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
+            )),
+      ),
+    );
+
+const _$SvtClassEnumMap = {
+  SvtClass.saber: 'saber',
+  SvtClass.archer: 'archer',
+  SvtClass.lancer: 'lancer',
+  SvtClass.rider: 'rider',
+  SvtClass.caster: 'caster',
+  SvtClass.assassin: 'assassin',
+  SvtClass.berserker: 'berserker',
+  SvtClass.shielder: 'shielder',
+  SvtClass.ruler: 'ruler',
+  SvtClass.alterEgo: 'alterEgo',
+  SvtClass.avenger: 'avenger',
+  SvtClass.demonGodPillar: 'demonGodPillar',
+  SvtClass.moonCancer: 'moonCancer',
+  SvtClass.foreigner: 'foreigner',
+  SvtClass.pretender: 'pretender',
+  SvtClass.grandCaster: 'grandCaster',
+  SvtClass.beastII: 'beastII',
+  SvtClass.ushiChaosTide: 'ushiChaosTide',
+  SvtClass.beastI: 'beastI',
+  SvtClass.beastIIIR: 'beastIIIR',
+  SvtClass.beastIIIL: 'beastIIIL',
+  SvtClass.beastIV: 'beastIV',
+  SvtClass.beastUnknown: 'beastUnknown',
+  SvtClass.unknown: 'unknown',
+  SvtClass.agarthaPenth: 'agarthaPenth',
+  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
+  SvtClass.salemAbby: 'salemAbby',
+  SvtClass.ALL: 'ALL',
+  SvtClass.EXTRA: 'EXTRA',
+  SvtClass.MIX: 'MIX',
+};
+
+RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) =>
+    RelationOverwriteDetail(
+      damageRate: json['damageRate'] as int,
+      type: $enumDecode(_$ClassRelationOverwriteTypeEnumMap, json['type']),
+    );
+
+const _$ClassRelationOverwriteTypeEnumMap = {
+  ClassRelationOverwriteType.overwriteForce: 'overwriteForce',
+  ClassRelationOverwriteType.overwriteMoreThanTarget: 'overwriteMoreThanTarget',
+  ClassRelationOverwriteType.overwriteLessThanTarget: 'overwriteLessThanTarget',
+};
+
+NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
+      funcId: json['funcId'] as int,
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
+          FuncType.none,
+      funcTargetType:
+          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam:
+          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcPopupText: json['funcPopupText'] as String? ?? '',
+      funcPopupIcon: json['funcPopupIcon'] as String?,
+      functvals: (json['functvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      funcGroup: (json['funcGroup'] as List<dynamic>?)
+              ?.map((e) =>
+                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      traitVals: (json['traitVals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      buffs: (json['buffs'] as List<dynamic>?)
+              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      svals: (json['svals'] as List<dynamic>)
+          .map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      svals2: (json['svals2'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      svals3: (json['svals3'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      svals4: (json['svals4'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      svals5: (json['svals5'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      followerVals: (json['followerVals'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    );
+
+Buff _$BuffFromJson(Map json) => Buff(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      detail: json['detail'] as String,
+      icon: json['icon'] as String?,
+      type:
+          $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ?? BuffType.none,
+      buffGroup: json['buffGroup'] as int? ?? 0,
+      script: json['script'] == null
+          ? null
+          : BuffScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
+      vals: (json['vals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      tvals: (json['tvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      ckSelfIndv: (json['ckSelfIndv'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      ckOpIndv: (json['ckOpIndv'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      maxRate: json['maxRate'] as int,
+    );
 
 DataVals _$DataValsFromJson(Map json) => DataVals(
       Rate: json['Rate'] as int?,
@@ -784,206 +987,3 @@ Map<String, dynamic> _$DataValsToJson(DataVals instance) {
   writeNotNull('DependFuncVals', instance.DependFuncVals?.toJson());
   return val;
 }
-
-CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
-      id: json['id'] as int,
-      priority: json['priority'] as int,
-      condGroup: json['condGroup'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
-      condId: json['condId'] as int,
-      condNum: json['condNum'] as int,
-    );
-
-BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
-      checkIndvType: json['checkIndvType'] as int?,
-      CheckOpponentBuffTypes: (json['CheckOpponentBuffTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$BuffTypeEnumMap, e))
-          .toList(),
-      relationId: json['relationId'] == null
-          ? null
-          : BuffRelationOverwrite.fromJson(
-              Map<String, dynamic>.from(json['relationId'] as Map)),
-      ReleaseText: json['ReleaseText'] as String?,
-      DamageRelease: json['DamageRelease'] as int?,
-      INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
-          ? null
-          : NiceTrait.fromJson(
-              Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
-      UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      HP_LOWER: json['HP_LOWER'] as int?,
-    );
-
-FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
-      eventId: json['eventId'] as int,
-      baseFuncId: json['baseFuncId'] as int,
-      nameTotal: json['nameTotal'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String?,
-      priority: json['priority'] as int,
-      isDispValue: json['isDispValue'] as bool,
-    );
-
-BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
-      funcId: json['funcId'] as int,
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.none,
-      funcTargetType:
-          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
-      funcPopupText: json['funcPopupText'] as String? ?? "",
-      funcPopupIcon: json['funcPopupIcon'] as String?,
-      functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) =>
-                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      buffs: (json['buffs'] as List<dynamic>?)
-              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-    );
-
-ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
-      num: json['num'] as int,
-      priority: json['priority'] as int,
-      condQuestId: json['condQuestId'] as int? ?? 0,
-      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
-      condLv: json['condLv'] as int? ?? 0,
-      condLimitCount: json['condLimitCount'] as int? ?? 0,
-      condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
-      eventId: json['eventId'] as int? ?? 0,
-      flag: json['flag'] as int? ?? 0,
-      startedAt: json['startedAt'] as int,
-      endedAt: json['endedAt'] as int,
-    );
-
-SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
-      NP_HIGHER:
-          (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      NP_LOWER:
-          (json['NP_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      STAR_HIGHER: (json['STAR_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      STAR_LOWER:
-          (json['STAR_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      HP_VAL_HIGHER: (json['HP_VAL_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      additionalSkillActorType:
-          (json['additionalSkillActorType'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList(),
-    );
-
-SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
-      priority: json['priority'] as int,
-      releaseConditions: (json['releaseConditions'] as List<dynamic>)
-          .map((e) =>
-              CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      name: json['name'] as String,
-      ruby: json['ruby'] as String,
-    );
-
-NpGain _$NpGainFromJson(Map json) => NpGain(
-      buster: (json['buster'] as List<dynamic>).map((e) => e as int).toList(),
-      arts: (json['arts'] as List<dynamic>).map((e) => e as int).toList(),
-      quick: (json['quick'] as List<dynamic>).map((e) => e as int).toList(),
-      extra: (json['extra'] as List<dynamic>).map((e) => e as int).toList(),
-      defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
-      np: (json['np'] as List<dynamic>).map((e) => e as int).toList(),
-    );
-
-BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
-    BuffRelationOverwrite(
-      atkSide: (json['atkSide'] as Map).map(
-        (k, e) => MapEntry(
-            $enumDecode(_$SvtClassEnumMap, k),
-            (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
-            )),
-      ),
-      defSide: (json['defSide'] as Map).map(
-        (k, e) => MapEntry(
-            $enumDecode(_$SvtClassEnumMap, k),
-            (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
-            )),
-      ),
-    );
-
-const _$SvtClassEnumMap = {
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
-};
-
-RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) =>
-    RelationOverwriteDetail(
-      damageRate: json['damageRate'] as int,
-      type: $enumDecode(_$ClassRelationOverwriteTypeEnumMap, json['type']),
-    );
-
-const _$ClassRelationOverwriteTypeEnumMap = {
-  ClassRelationOverwriteType.overwriteForce: 'overwriteForce',
-  ClassRelationOverwriteType.overwriteMoreThanTarget: 'overwriteMoreThanTarget',
-  ClassRelationOverwriteType.overwriteLessThanTarget: 'overwriteLessThanTarget',
-};

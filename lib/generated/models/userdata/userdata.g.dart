@@ -128,6 +128,15 @@ User _$UserFromJson(Map json) => $checkedCreate(
               (v) => v == null
                   ? null
                   : FreeLPParams.fromJson(Map<String, dynamic>.from(v as Map))),
+          luckyBagSvtScores: $checkedConvert(
+              'luckyBagSvtScores',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        k as String,
+                        (e as Map).map(
+                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                        )),
+                  )),
         );
         return val;
       },
@@ -159,6 +168,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'summons': instance.summons.toList(),
       'use6thDropRate': instance.use6thDropRate,
       'freeLPParams': instance.freeLPParams.toJson(),
+      'luckyBagSvtScores': instance.luckyBagSvtScores.map(
+          (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
     };
 
 const _$RegionEnumMap = {

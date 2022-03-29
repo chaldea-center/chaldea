@@ -16,7 +16,7 @@ extension NumX on num {
     String? groupSeparator,
     num? minVal = 10000,
   }) {
-    assert(!compact || !percent);
+    if (percent) compact = false;
     if (compact && (minVal == null || abs() > minVal)) {
       return NumberFormat.compact(locale: 'en').format(this);
     }

@@ -23,6 +23,8 @@ import '../modules/event/detail/war_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
+import '../modules/summon/summon_detail_page.dart';
+import '../modules/summon/summon_list_page.dart';
 
 class Routes {
   static const String home = '/';
@@ -58,13 +60,15 @@ class Routes {
   static const String item = '/item';
   static const String items = '/items';
 
+  static String summonI(String id) => '/summon/$id';
+  static const String summon = '/summon';
+  static const String summons = '/summons';
+
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';
-  static const String summons = '/summons';
-  static const String summon = '/summon';
   static const String stats = '/stats';
   static const String importData = '/import_data';
   static const String notFound = '/404';
@@ -202,7 +206,9 @@ class RouteConfiguration {
       case Routes.quest:
         return QuestDetailPage(id: _secondInt);
       case Routes.summons:
-        break;
+        return SummonListPage();
+      case Routes.summon:
+        return SummonDetailPage(id: second);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

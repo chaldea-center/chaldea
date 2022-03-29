@@ -394,3 +394,41 @@ enum FavoriteState {
   owned,
   other,
 }
+
+// summon
+
+@JsonSerializable(checked: true)
+class SummonFilterData {
+  bool favorite;
+  bool reversed;
+  bool showBanner;
+  bool showOutdated;
+  @JsonKey(ignore: true)
+  FilterGroupData<SummonType> category = FilterGroupData();
+
+  SummonFilterData({
+    bool? favorite,
+    bool? reversed,
+    bool? showBanner,
+    bool? showOutdated,
+    FilterGroupData? category,
+  })  : favorite = favorite ?? false,
+        reversed = reversed ?? true,
+        showBanner = showBanner ?? false,
+        showOutdated = showOutdated ?? false;
+
+  List<FilterGroupData> get groupValues => [category];
+
+  void reset() {
+    for (var group in groupValues) {
+      group.reset();
+    }
+    favorite = false;
+    showOutdated = false;
+  }
+
+  factory SummonFilterData.fromJson(Map<String, dynamic> data) =>
+      _$SummonFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
+}

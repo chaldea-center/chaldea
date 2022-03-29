@@ -10,4 +10,12 @@ class DirectionalIcons {
       return Icons.keyboard_arrow_left;
     }
   }
+
+  static IconData keyboard_arrow_back(BuildContext context) {
+    if (Directionality.of(context) == TextDirection.ltr) {
+      return Icons.keyboard_arrow_left;
+    } else {
+      return Icons.keyboard_arrow_right;
+    }
+  }
 }

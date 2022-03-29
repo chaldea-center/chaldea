@@ -15,6 +15,7 @@ import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../servant/servant_list.dart';
+import '../../summon/summon_list_page.dart';
 
 class GalleryItem {
   // instant part
@@ -87,7 +88,7 @@ class GalleryItem {
         mysticCodes,
         // effectSearch,
         // costume,
-        // gacha,
+        summons,
         // ffo,
         cvList,
         illustratorList,
@@ -195,13 +196,14 @@ class GalleryItem {
 //   page: CostumeListPage(),
 //   isDetail: false,
 // );
-// static GalleryItem gacha = GalleryItem(
-//   name: 'gacha',
-//   titleBuilder: () => S.current.summon_title,
-//   icon: FontAwesomeIcons.dice,
-//   page: SummonListPage(),
-//   isDetail: false,
-// );
+  static GalleryItem summons = GalleryItem(
+    name: 'summons',
+    titleBuilder: () => S.current.summon_title,
+    icon: FontAwesomeIcons.dice,
+    url: Routes.summons,
+    page: SummonListPage(),
+    isDetail: false,
+  );
 // static GalleryItem ffo = GalleryItem(
 //   name: 'ffo',
 //   titleBuilder: () => 'Freedom Order',

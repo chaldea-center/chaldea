@@ -1,9 +1,11 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
 import 'servant.dart';
+import 'skill.dart';
 
 part '../../generated/models/gamedata/wiki_data.g.dart';
 
@@ -110,8 +112,12 @@ class Transl<K, V> {
   static Transl<String, String> buffDetail(String jp) =>
       Transl(_md.buffDetail, jp, jp);
 
-  static Transl<String, String> funcPopuptext(String jp) =>
-      Transl(_md.funcPopuptext, jp, jp);
+  static Transl<String, String> funcPopuptext(String jp, [FuncType? type]) {
+    if ({'', '-', 'なし'}.contains(jp) && type != null) {
+      return Transl(_md.funcPopuptext, type.name, type.name);
+    }
+    return Transl(_md.funcPopuptext, jp, jp);
+  }
 
   static Transl<String, String> skillNames(String jp) =>
       Transl(_md.skillNames, jp, jp);
@@ -680,6 +686,12 @@ class LimitedSummon {
   factory LimitedSummon.fromJson(Map<String, dynamic> json) =>
       _$LimitedSummonFromJson(json);
 
+  bool get isLuckyBag => type == SummonType.gssr || type == SummonType.gssrsr;
+
+  String get lName => name.l ?? id;
+
+  String get route => Routes.summon;
+
   List<int> allCards({
     bool svt = false,
     bool ce = false,
@@ -726,6 +738,9 @@ class SubSummon {
 
   factory SubSummon.fromJson(Map<String, dynamic> json) =>
       _$SubSummonFromJson(json);
+
+  Iterable<ProbGroup> get svts => probs.where((e) => e.isSvt);
+  Iterable<ProbGroup> get crafts => probs.where((e) => !e.isSvt);
 }
 
 @JsonSerializable()

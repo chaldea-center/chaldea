@@ -125,3 +125,25 @@ const _$CmdCodeCompareEnumMap = {
   CmdCodeCompare.no: 'no',
   CmdCodeCompare.rarity: 'rarity',
 };
+
+SummonFilterData _$SummonFilterDataFromJson(Map json) => $checkedCreate(
+      'SummonFilterData',
+      json,
+      ($checkedConvert) {
+        final val = SummonFilterData(
+          favorite: $checkedConvert('favorite', (v) => v as bool?),
+          reversed: $checkedConvert('reversed', (v) => v as bool?),
+          showBanner: $checkedConvert('showBanner', (v) => v as bool?),
+          showOutdated: $checkedConvert('showOutdated', (v) => v as bool?),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$SummonFilterDataToJson(SummonFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'reversed': instance.reversed,
+      'showBanner': instance.showBanner,
+      'showOutdated': instance.showOutdated,
+    };

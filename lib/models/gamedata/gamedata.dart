@@ -59,6 +59,7 @@ class GameData {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseFunction> baseFunctions;
 
+  @JsonKey(ignore: true)
   late _ProcessedData others;
 
   GameData({

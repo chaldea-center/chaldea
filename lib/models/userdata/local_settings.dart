@@ -44,32 +44,34 @@ class LocalSettings {
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
   CmdCodeFilterData cmdCodeFilterData;
+  SummonFilterData summonFilterData;
 
-  LocalSettings(
-      {this.beta = false,
-      this.showWindowFab = true,
-      this.showDebugFab = false,
-      this.alwaysOnTop = false,
-      this.windowPosition,
-      this.launchTimes = 1,
-      this.themeMode = ThemeMode.system,
-      String? language,
-      List<Region>? preferredRegions,
-      this.autoUpdateData = true,
-      this.autoUpdateApp = true,
-      this.autoRotate = true,
-      this.autoResetFilter = true,
-      this.useProxy = false,
-      this.favoritePreferred,
-      Map<int, String>? priorityTags,
-      Map<String, bool>? galleries,
-      DisplaySettings? display,
-      CarouselSetting? carousel,
-      TipsSetting? tips,
-      SvtFilterData? svtFilterData,
-      CraftFilterData? craftFilterData,
-      CmdCodeFilterData? cmdCodeFilterData})
-      : _language = language,
+  LocalSettings({
+    this.beta = false,
+    this.showWindowFab = true,
+    this.showDebugFab = false,
+    this.alwaysOnTop = false,
+    this.windowPosition,
+    this.launchTimes = 1,
+    this.themeMode = ThemeMode.system,
+    String? language,
+    List<Region>? preferredRegions,
+    this.autoUpdateData = true,
+    this.autoUpdateApp = true,
+    this.autoRotate = true,
+    this.autoResetFilter = true,
+    this.useProxy = false,
+    this.favoritePreferred,
+    Map<int, String>? priorityTags,
+    Map<String, bool>? galleries,
+    DisplaySettings? display,
+    CarouselSetting? carousel,
+    TipsSetting? tips,
+    SvtFilterData? svtFilterData,
+    CraftFilterData? craftFilterData,
+    CmdCodeFilterData? cmdCodeFilterData,
+    SummonFilterData? summonFilterData,
+  })  : _language = language,
         preferredRegions = preferredRegions == null
             ? null
             : (List.of(Region.values)
@@ -82,7 +84,8 @@ class LocalSettings {
         tips = tips ?? TipsSetting(),
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
-        cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData();
+        cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
+        summonFilterData = summonFilterData ?? SummonFilterData();
 
   String? get language => _language;
 

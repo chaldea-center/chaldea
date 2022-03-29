@@ -190,11 +190,7 @@ class EffectDescriptor extends StatelessWidget {
         func.funcType == FuncType.addStateShort) {
       funcText.write(Transl.buffNames(func.buffs.first.name).l);
     } else {
-      if (['', '-', 'なし'].contains(func.funcPopupText)) {
-        funcText.write(func.funcType.name);
-      } else {
-        funcText.write(Transl.funcPopuptext(func.funcPopupText).l);
-      }
+      funcText.write(Transl.funcPopuptext(func.funcPopupText, func.funcType).l);
     }
 
     final staticVal = func.getStaticVal();
