@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/packages/json_viewer/json_viewer.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
@@ -23,11 +25,22 @@ class SkillDescriptor extends StatelessWidget {
       cd0 = skill.coolDown.first;
       cd1 = skill.coolDown.last;
     }
+    Widget? _wrapSkillAdd(Widget? child, bool translate) {
+      if (child == null) return null;
+      if (skill.skillAdd.isEmpty) return child;
+      return Tooltip(
+        child: child,
+        message: skill.skillAdd
+            .map((e) => translate ? Transl.skillNames(e.name).l : e.name)
+            .join('/'),
+      );
+    }
+
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       leading: db2.getIconImage(skill.icon, width: 33, aspectRatio: 1),
-      title: Text(skill.lName.l),
-      subtitle: Transl.isJP ? null : Text(skill.name),
+      title: _wrapSkillAdd(Text(skill.lName.l), true),
+      subtitle: Transl.isJP ? null : _wrapSkillAdd(Text(skill.name), false),
       trailing: cd0 <= 0 && cd1 <= 0
           ? null
           : cd0 == cd1
@@ -183,8 +196,12 @@ class EffectDescriptor extends StatelessWidget {
         funcText.write(Transl.funcPopuptext(func.funcPopupText).l);
       }
     }
-    int turn = func.svals.first.Turn ?? -1,
-        count = func.svals.first.Count ?? -1;
+
+    final staticVal = func.getStaticVal();
+    final crossVals = func.crossVals;
+    final mutatingVals = func.getMutatingVals(staticVal);
+
+    int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
     if (turn > 0 || count > 0) {
       funcText.write(' (');
       funcText.write([
@@ -203,37 +220,90 @@ class EffectDescriptor extends StatelessWidget {
       ].join(M.of(jp: '・', na: ', ')));
       funcText.write(')');
     }
+    final lvVals = func.svals;
+    final ocVals = func.ocVals(0);
+    final int lvNum = lvVals.toSet().length, ocNum = ocVals.toSet().length;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      int perLine = constraints.maxWidth > 600 ? 10 : 5;
-      Widget? trailing;
-      List<Widget> levels = [];
-      final lvVals = func.svals;
-      final ocVals = func.ocVals(0);
-      final int lvNum = lvVals.toSet().length, ocNum = ocVals.toSet().length;
-      if (lvNum == 0 && ocNum == 0) {
-        //
-      } else if (lvNum == 1 && ocNum == 1) {
-        trailing = ValDsc(func: func, vals: lvVals[0]);
-      }
+    if (func.svals.length == 5) {
       if (lvNum > 1) {
         funcText.write('<Lv>');
-        levels.add(ValListDsc(func: func, svals: lvVals));
       }
       if (ocNum > 1) {
         funcText.write('<OC>');
-        levels.add(ValListDsc(func: func, svals: ocVals));
       }
-      Widget child =
-          Text(funcText.toString(), style: Theme.of(context).textTheme.caption);
-      if (trailing != null) {
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      int perLine =
+          constraints.maxWidth > 600 && func.svals.length > 5 ? 10 : 5;
+      Widget trailing;
+      List<Widget> levels = [];
+      trailing = ValDsc(
+        func: func,
+        vals: staticVal,
+        originVals: func.svals.getOrNull(0),
+      );
+
+      if (mutatingVals.isNotEmpty) {
+        levels.add(ValListDsc(
+          func: func,
+          mutaingVals: mutatingVals,
+          originVals: crossVals,
+        ));
+      }
+      Widget child = Text(
+        funcText.toString(),
+        style: Theme.of(context).textTheme.caption,
+      );
+      if (func.funcPopupIcon != null) {
         child = Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(child: child, flex: perLine - 1),
-            Expanded(child: trailing),
+            db2.getIconImage(func.funcPopupIcon, width: 18),
+            const SizedBox(width: 4),
+            child
           ],
         );
       }
+      child = InkWell(
+        child: child,
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              List<String> _traitList(List<NiceTrait> traits) {
+                return traits.map((e) => Transl.trait(e.id).l).toList();
+              }
+
+              return Theme(
+                data: ThemeData.light(),
+                child: SimpleCancelOkDialog(
+                  title: const Text('Func Detail'),
+                  content: JsonViewer({
+                    "ID": func.funcId,
+                    "Type": func.funcType.name,
+                    "Target": func.funcTargetType.name,
+                    "Team": func.funcTargetTeam.name,
+                    if (func.functvals.isNotEmpty)
+                      "TargetTraits": _traitList(func.functvals),
+                    if (func.funcquestTvals.isNotEmpty)
+                      "FieldTraits": _traitList(func.funcquestTvals),
+                    if (func.traitVals.isNotEmpty)
+                      "RemovalTraits": _traitList(func.traitVals)
+                  }),
+                  scrollable: true,
+                  hideCancel: true,
+                ),
+              );
+            },
+          );
+        },
+      );
+      child = Row(
+        children: [
+          Expanded(child: child, flex: perLine - 1),
+          Expanded(child: trailing),
+        ],
+      );
       if (levels.isNotEmpty) {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.start,

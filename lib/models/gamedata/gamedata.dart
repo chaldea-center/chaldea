@@ -59,6 +59,8 @@ class GameData {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseFunction> baseFunctions;
 
+  late _ProcessedData others;
+
   GameData({
     DataVersion? version,
     Map<int, Servant>? servants,
@@ -99,6 +101,7 @@ class GameData {
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
     preprocess();
+    others = _ProcessedData(this);
   }
 
   @JsonKey(ignore: true)
@@ -222,4 +225,56 @@ class FileVersion {
       _$FileVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileVersionToJson(this);
+}
+
+class _ProcessedData {
+  final GameData gameData;
+  _ProcessedData(this.gameData) {
+    _initFuncBuff();
+  }
+
+  Set<FuncType> svtFuncs = {};
+  Set<BuffType> svtBuffs = {};
+  Set<FuncType> ceFuncs = {};
+  Set<BuffType> ceBuffs = {};
+  Set<FuncType> ccFuncs = {};
+  Set<BuffType> ccBuffs = {};
+
+  void _initFuncBuff() {
+    for (final svt in gameData.servants.values) {
+      for (final skill in [
+        ...svt.skills,
+        ...svt.noblePhantasms,
+        ...svt.classPassive,
+        ...svt.appendPassive.map((e) => e.skill)
+      ]) {
+        for (final func in skill.functions) {
+          if (func.funcTargetTeam != FuncApplyTarget.enemy) {
+            svtFuncs.add(func.funcType);
+            svtBuffs.addAll(func.buffs.map((e) => e.type));
+          }
+        }
+      }
+    }
+    for (final ce in gameData.craftEssences.values) {
+      for (final skill in ce.skills) {
+        for (final func in skill.functions) {
+          if (func.funcTargetTeam != FuncApplyTarget.enemy) {
+            ceFuncs.add(func.funcType);
+            ceBuffs.addAll(func.buffs.map((e) => e.type));
+          }
+        }
+      }
+    }
+    for (final ce in gameData.craftEssences.values) {
+      for (final skill in ce.skills) {
+        for (final func in skill.functions) {
+          if (func.funcTargetTeam != FuncApplyTarget.enemy &&
+              func.buffs.isNotEmpty) {
+            ceBuffs.add(func.buffs.first.type);
+          }
+        }
+      }
+    }
+  }
 }

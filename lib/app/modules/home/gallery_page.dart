@@ -125,7 +125,7 @@ class _GalleryPageState extends State<GalleryPage> {
             const ListTile(
               subtitle: Center(
                   child: AutoSizeText(
-                '~~~~~ (/≧▽≦)/ ~~~~~',
+                '~~~~~ · ~~~~~',
                 maxLines: 1,
               )),
             ),

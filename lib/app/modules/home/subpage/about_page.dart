@@ -250,15 +250,13 @@ class _AboutProgram extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2,
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 3),
             Text.rich(
               TextSpan(
                 text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => launch(AppInfo.commitUrl),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                style: Theme.of(context).textTheme.caption,
               ),
             ),
             const SizedBox(height: 12),

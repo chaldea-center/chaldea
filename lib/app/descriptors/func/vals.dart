@@ -6,26 +6,36 @@ import 'package:flutter/material.dart';
 
 class ValListDsc extends StatelessWidget {
   final BaseFunction func;
-  final List<DataVals> svals;
+  final List<DataVals> mutaingVals;
+  final List<DataVals> originVals;
   final int? selected;
-  const ValListDsc(
-      {Key? key, required this.func, required this.svals, this.selected})
-      : super(key: key);
+  const ValListDsc({
+    Key? key,
+    required this.func,
+    required this.mutaingVals,
+    required this.originVals,
+    this.selected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      int perLine = constraints.maxWidth > 600 ? 10 : 5;
+      int perLine =
+          constraints.maxWidth > 600 && originVals.length > 5 ? 10 : 5;
       List<Widget> rows = [];
-      int rowCount = (svals.length / perLine).ceil();
+      int rowCount = (mutaingVals.length / perLine).ceil();
       for (int i = 0; i < rowCount; i++) {
         List<Widget> cols = [];
         for (int j = i * perLine; j < (i + 1) * perLine; j++) {
-          final vals = svals.getOrNull(j);
+          final vals = mutaingVals.getOrNull(j);
           if (vals == null) {
             cols.add(const SizedBox());
           } else {
-            cols.add(ValDsc(func: func, vals: vals));
+            cols.add(ValDsc(
+              func: func,
+              vals: vals,
+              originVals: originVals.getOrNull(j),
+            ));
           }
         }
         rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
@@ -43,16 +53,25 @@ class ValListDsc extends StatelessWidget {
 class ValDsc extends StatelessWidget {
   final BaseFunction func;
   final DataVals vals;
-  const ValDsc({Key? key, required this.func, required this.vals})
+  final DataVals? originVals;
+
+  ValDsc({Key? key, required this.func, required this.vals, this.originVals})
       : super(key: key);
+
+  final List<String> parts = [];
 
   @override
   Widget build(BuildContext context) {
+    describeFunc();
     return InkWell(
       child: Text(
-        vals.Value.toString(),
+        parts.isEmpty ? vals.Value?.toString() ?? empty : parts.join(', '),
         textAlign: TextAlign.center,
-        style: const TextStyle(fontStyle: FontStyle.italic),
+        style: parts.isEmpty
+            ? TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Theme.of(context).textTheme.caption?.color)
+            : null,
       ),
       onTap: () {
         showDialog(
@@ -62,7 +81,7 @@ class ValDsc extends StatelessWidget {
               data: ThemeData.light(),
               child: SimpleCancelOkDialog(
                 title: const Text('Data Vals'),
-                content: JsonViewer(vals.toJson()),
+                content: JsonViewer((originVals ?? vals).toJson()),
                 scrollable: true,
                 hideCancel: true,
               ),
@@ -73,279 +92,245 @@ class ValDsc extends StatelessWidget {
     );
   }
 
-  String getText() {
-    switch (func.funcType) {
-      case FuncType.none:
-        break;
-      case FuncType.addState:
-      case FuncType.addStateShort:
-        // TODO: Handle this case.
-        break;
-      case FuncType.subState:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damage:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainStar:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainHp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainNp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossNp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.shortenSkill:
-        // TODO: Handle this case.
-        break;
-      case FuncType.extendSkill:
-        // TODO: Handle this case.
-        break;
-      case FuncType.releaseState:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossHp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.instantDeath:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpPierce:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpIndividual:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainHpPer:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpStateIndividual:
-        // TODO: Handle this case.
-        break;
-      case FuncType.hastenNpturn:
-        // TODO: Handle this case.
-        break;
-      case FuncType.delayNpturn:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpHpratioHigh:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpHpratioLow:
-        // TODO: Handle this case.
-        break;
-      case FuncType.cardReset:
-        // TODO: Handle this case.
-        break;
-      case FuncType.replaceMember:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossHpSafe:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpCounter:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpStateIndividualFix:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpSafe:
-        // TODO: Handle this case.
-        break;
-      case FuncType.callServant:
-        // TODO: Handle this case.
-        break;
-      case FuncType.ptShuffle:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossStar:
-        // TODO: Handle this case.
-        break;
-      case FuncType.changeServant:
-        // TODO: Handle this case.
-        break;
-      case FuncType.changeBg:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageValue:
-        // TODO: Handle this case.
-        break;
-      case FuncType.withdraw:
-        // TODO: Handle this case.
-        break;
-      case FuncType.fixCommandcard:
-        // TODO: Handle this case.
-        break;
-      case FuncType.shortenBuffturn:
-        // TODO: Handle this case.
-        break;
-      case FuncType.extendBuffturn:
-        // TODO: Handle this case.
-        break;
-      case FuncType.shortenBuffcount:
-        // TODO: Handle this case.
-        break;
-      case FuncType.extendBuffcount:
-        // TODO: Handle this case.
-        break;
-      case FuncType.changeBgm:
-        // TODO: Handle this case.
-        break;
-      case FuncType.displayBuffstring:
-        // TODO: Handle this case.
-        break;
-      case FuncType.resurrection:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainNpBuffIndividualSum:
-        // TODO: Handle this case.
-        break;
-      case FuncType.setSystemAliveFlag:
-        // TODO: Handle this case.
-        break;
-      case FuncType.forceInstantDeath:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpRare:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainNpFromTargets:
-        // TODO: Handle this case.
-        break;
-      case FuncType.gainHpFromTargets:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossHpPer:
-        // TODO: Handle this case.
-        break;
-      case FuncType.lossHpPerSafe:
-        // TODO: Handle this case.
-        break;
-      case FuncType.shortenUserEquipSkill:
-        // TODO: Handle this case.
-        break;
-      case FuncType.quickChangeBg:
-        // TODO: Handle this case.
-        break;
-      case FuncType.shiftServant:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpAndCheckIndividuality:
-        // TODO: Handle this case.
-        break;
-      case FuncType.absorbNpturn:
-        // TODO: Handle this case.
-        break;
-      case FuncType.overwriteDeadType:
-        // TODO: Handle this case.
-        break;
-      case FuncType.forceAllBuffNoact:
-        // TODO: Handle this case.
-        break;
-      case FuncType.breakGaugeUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.breakGaugeDown:
-        // TODO: Handle this case.
-        break;
-      case FuncType.moveToLastSubmember:
-        // TODO: Handle this case.
-        break;
-      case FuncType.expUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.qpUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.dropUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.friendPointUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.eventDropUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.eventDropRateUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.eventPointUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.eventPointRateUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.transformServant:
-        // TODO: Handle this case.
-        break;
-      case FuncType.qpDropUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.servantFriendshipUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.userEquipExpUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.classDropUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.enemyEncountCopyRateUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.enemyEncountRateUp:
-        // TODO: Handle this case.
-        break;
-      case FuncType.enemyProbDown:
-        // TODO: Handle this case.
-        break;
-      case FuncType.getRewardGift:
-        // TODO: Handle this case.
-        break;
-      case FuncType.sendSupportFriendPoint:
-        // TODO: Handle this case.
-        break;
-      case FuncType.movePosition:
-        // TODO: Handle this case.
-        break;
-      case FuncType.revival:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageNpIndividualSum:
-        // TODO: Handle this case.
-        break;
-      case FuncType.damageValueSafe:
-        // TODO: Handle this case.
-        break;
-      case FuncType.friendPointUpDuplicate:
-        // TODO: Handle this case.
-        break;
-      case FuncType.moveState:
-        // TODO: Handle this case.
-        break;
-      case FuncType.changeBgmCostume:
-        // TODO: Handle this case.
-        break;
-      case FuncType.func126:
-        // TODO: Handle this case.
-        break;
-      case FuncType.func127:
-        // TODO: Handle this case.
-        break;
-      case FuncType.updateEntryPositions:
-        // TODO: Handle this case.
-        break;
-      case FuncType.buddyPointUp:
-        // TODO: Handle this case.
-        break;
+  void _addInt(int? value) {
+    if (value == null) return;
+    parts.add(value.toString());
+  }
+
+  void _addPercent(int? value, int base) {
+    if (value == null) return;
+    int _intValue = value ~/ base;
+    double _floatValue = value / base;
+    if (_intValue.toDouble() == _floatValue) {
+      parts.add('$_intValue%');
+    } else {
+      parts.add(_floatValue.toString().trimCharRight('0') + '%');
     }
-    return vals.Value.toString();
+  }
+
+  // return null if not processed
+  void describeFunc() {
+    parts.clear();
+
+    if (func.funcType == FuncType.addState ||
+        func.funcType == FuncType.addStateShort) {
+      describeBuff(func.buffs.first);
+    } else if (func.funcType == FuncType.absorbNpturn) {
+      // return null;
+    } else if (func.funcType == FuncType.gainHpFromTargets) {
+      // return null;
+    } else if (func.funcType == FuncType.gainNpFromTargets) {
+      // return null;
+    } else {
+      if (vals.Value != null) {
+        switch (func.funcType) {
+          case FuncType.damageNp:
+          case FuncType.damageNpHpratioLow:
+          case FuncType.damageNpIndividual:
+          case FuncType.damageNpIndividualSum:
+          case FuncType.damageNpPierce:
+          case FuncType.damageNpRare:
+          case FuncType.damageNpStateIndividualFix:
+          case FuncType.damageNpCounter:
+          case FuncType.gainHpPer:
+          case FuncType.qpDropUp:
+            _addPercent(vals.Value, 10);
+            break;
+          case FuncType.gainNp:
+          case FuncType.gainNpBuffIndividualSum:
+          case FuncType.lossNp:
+            _addPercent(vals.Value, 100);
+            break;
+          default:
+            parts.add(vals.Value.toString());
+            break;
+        }
+      }
+      if (vals.Value2 != null) {
+        if (func.funcType == FuncType.damageNpIndividualSum) {
+          _addPercent(vals.Value2, 10);
+        }
+      }
+      if (vals.Correction != null) {
+        switch (func.funcType) {
+          case FuncType.damageNpIndividual:
+          case FuncType.damageNpRare:
+          case FuncType.damageNpStateIndividualFix:
+            _addPercent(vals.Correction, 10);
+            break;
+          case FuncType.damageNpIndividualSum:
+            _addPercent(vals.Correction, 10);
+            break;
+          default:
+            parts.add(vals.Correction.toString());
+            break;
+        }
+      }
+      if (vals.Target != null) {
+        switch (func.funcType) {
+          case FuncType.damageNpHpratioLow:
+            _addPercent(vals.Target, 10);
+            break;
+          case FuncType.damageNpIndividual:
+          case FuncType.damageNpRare:
+          case FuncType.damageNpStateIndividualFix:
+          case FuncType.damageNpIndividualSum:
+          case FuncType.servantFriendshipUp:
+            break;
+          default:
+            parts.join(vals.Target.toString());
+            break;
+        }
+      }
+      if (vals.AddCount != null) {
+        parts.add(vals.AddCount.toString());
+      }
+      if (vals.UseRate != null) {
+        _addPercent(vals.UseRate, 10);
+      }
+      if (vals.RateCount != null) {
+        switch (func.funcType) {
+          case FuncType.qpDropUp:
+          case FuncType.servantFriendshipUp:
+          case FuncType.userEquipExpUp:
+          case FuncType.expUp:
+            _addPercent(vals.RateCount, 10);
+            break;
+          default:
+            _addInt(vals.RateCount);
+        }
+      }
+      if (vals.DropRateCount != null) {
+        _addPercent(vals.DropRateCount, 10);
+      }
+    }
+  }
+
+  final empty = '';
+  void describeBuff(Buff buff) {
+    final base = _kBuffValuePercentTypes[buff.type];
+    if (base != null) {
+      _addPercent(vals.Value, base);
+      return;
+    }
+    final trigger = _kBuffValueTriggerTypes[buff.type];
+    if (trigger != null) {
+      final triggerVal = trigger(vals);
+      if (triggerVal.skill != null && triggerVal.level != null) {
+        parts.add('${triggerVal.skill}(${triggerVal.level})');
+      } else if (triggerVal.skill != null) {
+        parts.add(triggerVal.skill.toString());
+      } else if (triggerVal.level != null) {
+        parts.add(triggerVal.level.toString());
+      }
+      return;
+    }
+    if (buff.type == BuffType.changeCommandCardType) {
+      parts.add(empty);
+      return;
+    }
+    if (buff.type == BuffType.fieldIndividuality) {
+      parts.add(Transl.trait(vals.Value!).l);
+      return;
+    }
+    _addInt(vals.Value);
   }
 }
+
+const _kBuffValuePercentTypes = {
+  BuffType.upAtk: 10,
+  BuffType.downAtk: 10,
+  BuffType.upCommandall: 10,
+  BuffType.downCommandall: 10,
+  BuffType.upCommandatk: 10,
+  BuffType.downCommandatk: 10,
+  BuffType.upCriticaldamage: 10,
+  BuffType.downCriticaldamage: 10,
+  BuffType.upCriticalpoint: 10,
+  BuffType.downCriticalpoint: 10,
+  BuffType.upCriticalrate: 10,
+  BuffType.downCriticalrate: 10,
+  BuffType.upCriticalRateDamageTaken: 10,
+  BuffType.downCriticalRateDamageTaken: 10,
+  BuffType.upCriticalStarDamageTaken: 10,
+  BuffType.downCriticalStarDamageTaken: 10,
+  BuffType.upDamage: 10,
+  BuffType.downDamage: 10,
+  BuffType.upDamageIndividualityActiveonly: 10,
+  BuffType.downDamageIndividualityActiveonly: 10,
+  BuffType.upDamageEventPoint: 10,
+  BuffType.upDamagedropnp: 10,
+  BuffType.downDamagedropnp: 10,
+  BuffType.upDefence: 10,
+  BuffType.downDefence: 10,
+  BuffType.upDefencecommandall: 10,
+  BuffType.downDefencecommandall: 10,
+  BuffType.upDropnp: 10,
+  BuffType.downDropnp: 10,
+  BuffType.upFuncHpReduce: 10,
+  BuffType.downFuncHpReduce: 10,
+  BuffType.upGainHp: 10,
+  BuffType.downGainHp: 10,
+  BuffType.upGrantstate: 10,
+  BuffType.downGrantstate: 10,
+  BuffType.upHate: 10,
+  BuffType.upResistInstantdeath: 10,
+  BuffType.upNonresistInstantdeath: 10,
+  BuffType.upGrantInstantdeath: 10,
+  BuffType.downGrantInstantdeath: 10,
+  BuffType.upNpdamage: 10,
+  BuffType.downNpdamage: 10,
+  BuffType.upSpecialdefence: 10,
+  BuffType.downSpecialdefence: 10,
+  BuffType.upDamageSpecial: 10,
+  BuffType.upStarweight: 10,
+  BuffType.downStarweight: 10,
+  BuffType.upTolerance: 10,
+  BuffType.downTolerance: 10,
+  BuffType.upToleranceSubstate: 10,
+  BuffType.downToleranceSubstate: 10,
+  BuffType.upGivegainHp: 10,
+  BuffType.downGivegainHp: 10,
+  BuffType.gutsRatio: 10,
+  BuffType.buffRate: 10,
+  BuffType.regainNp: 100,
+};
+
+class BuffValueTriggerType {
+  final int? skill;
+  final int? level;
+  final int? rate;
+  final int? position;
+  BuffValueTriggerType({
+    required this.skill,
+    required this.level,
+    this.rate,
+    this.position,
+  });
+}
+
+final Map<BuffType, BuffValueTriggerType Function(DataVals)>
+    _kBuffValueTriggerTypes = {
+  BuffType.reflectionFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.attackFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.commandattackFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.commandattackBeforeFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.damageFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.deadFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.delayFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.npattackPrevBuff: (v) => BuffValueTriggerType(
+      skill: v.SkillID, level: v.SkillLV, position: v.Value),
+  BuffType.selfturnendFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.wavestartFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.counterFunction: (v) =>
+      BuffValueTriggerType(skill: v.CounterId, level: v.CounterLv),
+};

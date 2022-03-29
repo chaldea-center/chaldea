@@ -478,10 +478,17 @@ class ServantListPageState extends State<ServantListPage>
         });
       }
       if (filterData.funcType.options.isNotEmpty) {
-        funcs.retainWhere((func) {
-          return filterData.funcType.matchOne(func.funcType);
-        });
+        if (!filterData.funcType.matchAny(funcs.map((e) => e.funcType))) {
+          return false;
+        }
       }
+      if (filterData.buffType.options.isNotEmpty) {
+        if (!filterData.buffType.matchAny(
+            [for (final func in funcs) ...func.buffs.map((e) => e.type)])) {
+          return false;
+        }
+      }
+
       if (filterData.buffType.options.isNotEmpty) {
         funcs.retainWhere((func) {
           final buff = func.buffs.getOrNull(0)?.type;

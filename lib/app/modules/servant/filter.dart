@@ -228,7 +228,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<FuncType>(
           title: const Text('FuncType'),
-          options: List.of(FuncType.values)..sort2((e) => e.name),
+          options: List.of(db2.gameData.others.svtFuncs)..sort2((e) => e.name),
           values: filterData.funcType,
           showMatchAll: true,
           showInvert: true,
@@ -239,7 +239,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<BuffType>(
           title: const Text('BuffType'),
-          options: List.of(BuffType.values)..sort2((e) => e.name),
+          options: List.of(db2.gameData.others.svtBuffs)..sort2((e) => e.name),
           values: filterData.buffType,
           showMatchAll: true,
           showInvert: true,

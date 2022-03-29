@@ -45,6 +45,7 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}
 
       - uses: yizhoumo/setup-ossutil@v1
+        if: github.ref == 'refs/heads/main'
         with:
           ossutil-version: "1.7.9"
           endpoint: ${{ secrets.OSS_ENDPOINT }}
@@ -52,4 +53,5 @@ jobs:
           access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
 
       - name: Publish to OSS
+        if: github.ref == 'refs/heads/main'
         run: dart ./scripts/publish_oss.dart ${{ secrets.OSS_BUCKET_NAME }}
