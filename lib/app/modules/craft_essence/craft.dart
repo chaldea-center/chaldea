@@ -8,6 +8,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/custom_table.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
@@ -154,7 +155,6 @@ class CraftDetailBasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summons = getPickupSummons();
-    // final summons = <LimitedSummon>[];
     return CustomTable(
       children: <Widget>[
         CustomTableRow(children: [
@@ -207,7 +207,7 @@ class CraftDetailBasePage extends StatelessWidget {
                     TableCellData(text: 'COST', isHeader: true),
                     TableCellData(text: ce.cost.toString()),
                   ]),
-                  GestureDetector(
+                  InkWell(
                     onTap: hasGrowth ? () => showGrowthCurves(context) : null,
                     child: CustomTableRow(children: [
                       TableCellData(text: 'ATK', isHeader: true),
@@ -401,26 +401,25 @@ class CraftDetailBasePage extends StatelessWidget {
   bool get hasGrowth => ce.hpMax > ce.hpBase || ce.atkMax > ce.atkBase;
 
   void showGrowthCurves(BuildContext context) {
-    // SplitRoute.push(
-    //   context,
-    //   GrowthCurvePage.fromCard(
-    //     title: '${S.current.growth_curve} - ${ce.lName}',
-    //     atks: List.generate(
-    //         ce.lvMax,
-    //         (index) =>
-    //             (ce.atkMin + (ce.atkMax - ce.atkMin) / (ce.lvMax - 1) * index)
-    //                 .round()),
-    //     hps: List.generate(
-    //         ce.lvMax,
-    //         (index) =>
-    //             (ce.hpMin + (ce.hpMax - ce.hpMin) / (ce.lvMax - 1) * index)
-    //                 .round()),
-    //     avatar: ce.iconBuilder(
-    //       context: context,
-    //       height: 56,
-    //       jumpToDetail: false,
-    //     ),
-    //   ),
-    // );
+    router.push(
+      child: GrowthCurvePage.fromCard(
+        title: '${S.current.growth_curve} - ${ce.lName.l}',
+        atks: List.generate(
+            ce.lvMax,
+            (index) =>
+                (ce.atkBase + (ce.atkMax - ce.atkBase) / (ce.lvMax - 1) * index)
+                    .round()),
+        hps: List.generate(
+            ce.lvMax,
+            (index) =>
+                (ce.hpBase + (ce.hpMax - ce.hpBase) / (ce.lvMax - 1) * index)
+                    .round()),
+        avatar: ce.iconBuilder(
+          context: context,
+          height: 56,
+          jumpToDetail: false,
+        ),
+      ),
+    );
   }
 }

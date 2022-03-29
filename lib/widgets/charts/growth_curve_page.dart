@@ -73,8 +73,8 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
           ),
           if (widget.avatar != null)
             Positioned(
-              left: 56,
-              top: 36,
+              left: 72,
+              top: 28,
               child: widget.avatar!,
             ),
           Positioned.fill(
