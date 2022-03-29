@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
 
@@ -26,7 +31,8 @@ class ChaldeaResponse {
   Map? _cachedJson;
 
   Map? json() {
-    print(response?.data);
+    final _data = (response?.data).toString();
+    print(_data.length > 300 ? _data.substring(0, 300) : _data);
     if (_cachedJson != null) return _cachedJson;
     if (response?.data == null) return null;
     if (response!.data is Map) {
@@ -50,6 +56,38 @@ class ChaldeaResponse {
     var _body = json()?['body'];
     if (_body is T) return _body;
     return null;
+  }
+
+  static Future<void> request({
+    required Future<Response> Function(Dio dio) caller,
+    void Function(ChaldeaResponse)? onSuccess,
+    bool showSuccess = true,
+  }) async {
+    try {
+      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+      var resp = ChaldeaResponse(await caller(db2.apiWorkerDio));
+      if (resp.success) {
+        onSuccess?.call(resp);
+        if (showSuccess) {
+          SimpleCancelOkDialog(
+            title: Text(S.current.success),
+            content: resp.message == null ? null : Text(resp.message!),
+          ).showDialog(null);
+        }
+      } else {
+        SimpleCancelOkDialog(
+          title: Text(S.current.failed),
+          content: Text(resp.message ?? resp.body()),
+        ).showDialog(null);
+      }
+    } catch (e) {
+      SimpleCancelOkDialog(
+        title: Text(S.current.failed),
+        content: Text(e.toString()),
+      ).showDialog(null);
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }
 

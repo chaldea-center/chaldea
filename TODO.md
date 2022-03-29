@@ -14,7 +14,7 @@ There are plenty of work need to do.
 - [ ] Adding crash log review
 - [x] Add build time/commit hash to AppInfo
 - [ ] add legacy data of `ConstData.userLevel`
-- [ ] GameData split wiki_data into files
+- [x] GameData split wiki_data into files
 - [ ] use github issue forms for issue templates
 
 ## Quest Related
@@ -57,11 +57,16 @@ There are plenty of work need to do.
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 
+## Func&Buff
+
+- [ ] add field/trait info
+- [ ] add translation for funcs without popuptext
+
 ## Server side
 
 - [ ] item/skill recognition
-- [ ] account system: server or cloudflare?
-  - [ ] auto-backup user data
+- [x] account system: server or cloudflare?
+  - [ ] ~~auto-backup user data~~: must manually backup
 
 ## Battles
 

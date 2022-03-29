@@ -5,6 +5,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/tools/gamedata_loader.dart';
+import '../db.dart';
 import 'common.dart';
 import 'wiki_data.dart';
 
@@ -61,10 +62,19 @@ class BaseSkill implements SkillOrTd {
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
-    return Transl.skillDetail(
+    String content = Transl.skillDetail(
             unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
-        .l
-        .replaceAll('{0}', 'Lv.');
+        .l;
+    return content.replaceAll('{0}', 'Lv.').replaceFirstMapped(
+      RegExp(r'\[servantName (\d+)\]'),
+      (match) {
+        final svt = db2.gameData.servantsById[int.parse(match.group(1)!)];
+        if (svt != null) {
+          return '${svt.name}(${Transl.svtClass(svt.className.id).l})';
+        }
+        return match.group(0).toString();
+      },
+    );
   }
 }
 

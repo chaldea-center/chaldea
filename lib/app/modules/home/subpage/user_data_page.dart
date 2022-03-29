@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -20,6 +21,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../import_data/home_import_page.dart';
+import 'login_page.dart';
 
 class UserDataPage extends StatefulWidget {
   UserDataPage({Key? key}) : super(key: key);
@@ -245,115 +247,76 @@ class _UserDataPageState extends State<UserDataPage> {
   }
 
   bool checkUserPwd() {
-    // TODO
-    // if () {
-    //   SimpleCancelOkDialog(
-    //     content: Text(S.current.login_first_hint),
-    //     onTapOk: () {
-    //       SplitRoute.push(context, LoginPage());
-    //     },
-    //   ).showDialog(context);
-    //   return false;
-    // } else {
-    //   return true;
-    // }
-    throw UnimplementedError();
+    if (db2.security.get('chaldea_user') == null ||
+        db2.security.get('chaldea_auth') == null) {
+      SimpleCancelOkDialog(
+        content: Text(S.current.login_first_hint),
+        onTapOk: () {
+          SplitRoute.push(context, LoginPage());
+        },
+      ).showDialog(context);
+      return false;
+    } else {
+      return true;
+    }
   }
 
   Future<void> uploadToServer() async {
     if (!checkUserPwd()) return;
-    throw UnimplementedError();
-    // await catchErrorAsync(
-    //   () async {
-    //     EasyLoading.show(
-    //         status: 'uploading', maskType: EasyLoadingMaskType.clear);
-    //     ChaldeaApi.wrap((dio) => dio.post('/user/uploadBackup'));
-    //     final resp = ChaldeaResponse.fromResponse(
-    //         await db.serverDio.post('/user/uploadBackup', data: {
-    //       HttpUtils.usernameKey: db.prefs.userName.get(),
-    //       HttpUtils.passwordKey: db.prefs.userPwd.get(),
-    //       HttpUtils.bodyKey: jsonEncode(db.userData),
-    //     }));
-    //     if (!resp.success) {
-    //       resp.showMsg(context);
-    //       return;
-    //     }
-    //   },
-    //   onSuccess: () {
-    //     EasyLoading.showSuccess('Uploaded');
-    //   },
-    //   onError: (e, s) => EasyLoading.showError(e.toString()),
-    // ).whenComplete(() => EasyLoadingUtil.dismiss());
+    ChaldeaResponse.request(
+      caller: (dio) {
+        final content =
+            base64Encode(gzip.encode(utf8.encode(jsonEncode(db2.userData))));
+        return dio.post('/account/backup/upload', data: {
+          'username': db2.security.get('chaldea_user'),
+          'auth': db2.security.get('chaldea_auth'),
+          'content': content,
+        });
+      },
+    );
   }
 
   Future<void> downloadFromServer() async {
     if (!checkUserPwd()) return;
-    throw UnimplementedError();
-    // await catchErrorAsync(
-    //   () async {
-    //     final resp = ChaldeaResponse.fromResponse(
-    //         await db.serverDio.post('/user/listBackups', data: {
-    //       HttpUtils.usernameKey: db.prefs.userName.get(),
-    //       HttpUtils.passwordKey: db.prefs.userPwd.get(),
-    //     }));
-    //     if (!resp.success) {
-    //       resp.showMsg(context);
-    //       return;
-    //     }
-    //     Map<String, int> body = Map.from(resp.body ?? {});
-    //     String? fn = await showDialog(
-    //       context: context,
-    //       builder: (context) => SimpleDialog(
-    //         title: Text(S.current.userdata_download_choose_backup),
-    //         children: [
-    //           if (body.isEmpty) const ListTile(title: Text('No backup found')),
-    //           for (var entry in body.entries)
-    //             ListTile(
-    //               title: Text(entry.key),
-    //               subtitle: Text(
-    //                   DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
-    //                       .toString()),
-    //               onTap: () {
-    //                 Navigator.pop(context, entry.key);
-    //               },
-    //             ),
-    //           IconButton(
-    //             onPressed: () {
-    //               Navigator.pop(context);
-    //             },
-    //             icon: const Icon(Icons.clear),
-    //           )
-    //         ],
-    //       ),
-    //     );
-    //     if (fn == null) return;
-    //     EasyLoading.show(
-    //         status: 'Downloading', maskType: EasyLoadingMaskType.clear);
-    //     final resp2 = ChaldeaResponse.fromResponse(
-    //         await db.serverDio.post('/user/downloadBackup', data: {
-    //       HttpUtils.usernameKey: db.prefs.userName.get(),
-    //       HttpUtils.passwordKey: db.prefs.userPwd.get(),
-    //       'bak': fn,
-    //     }));
-    //     // print(resp2);
-    //     if (!resp2.success) {
-    //       resp2.showMsg(context);
-    //       return;
-    //     }
-    //     final userdata = UserData.fromJson(jsonDecode(resp2.body));
-    //     db.backupUserdata(disk: true, memory: true);
-    //     // only update UserData.users part
-    //     final newUserdata = db.userData;
-    //     newUserdata.users = userdata.users;
-    //     newUserdata.curUserKey; // ensure _curUserKey is set correctly
-    //     db.loadUserData(newUserdata);
-    //     db.saveUserData();
-    //     db.itemStat.update();
-    //     db.notifyAppUpdate();
-    //     EasyLoading.showSuccess('Import $fn');
-    //   },
-    //   onError: (e, s) => EasyLoading.showError(e.toString()),
-    // ).whenComplete(() => EasyLoadingUtil.dismiss());
+    ChaldeaResponse.request(
+      showSuccess: false,
+      caller: (dio) => dio.post('/account/backup/download', data: {
+        'username': db2.security.get('chaldea_user'),
+        'auth': db2.security.get('chaldea_auth')
+      }),
+      onSuccess: (resp) {
+        final body = List.from(resp.body()).map((e) => Map.from(e)).toList();
+        body.sort2((e) => e['timestamp'] as int, reversed: true);
+        showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: Text(S.current.userdata_download_choose_backup),
+            children: [
+              if (body.isEmpty) const ListTile(title: Text('No backup found')),
+              for (int index = 0; index < body.length; index++)
+                ListTile(
+                  title: Text('Backup ${index + 1}'),
+                  subtitle: Text(DateTime.fromMillisecondsSinceEpoch(
+                          body[index]['timestamp'] as int)
+                      .toString()),
+                  onTap: () {
+                    db2.userData = UserData.fromJson(jsonDecode(utf8.decode(
+                        gzip.decode(base64Decode(body[index]['content'])))));
+                    db2.itemCenter.init();
+                    db2.notifyUserdata();
+                  },
+                ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.clear),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _migrateAndroidData(bool useExternal) async {

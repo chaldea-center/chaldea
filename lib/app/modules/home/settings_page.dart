@@ -20,6 +20,7 @@ import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
+import 'subpage/login_page.dart';
 import 'subpage/share_app_dialog.dart';
 import 'subpage/support_donation_page.dart';
 import 'subpage/translation_setting.dart';
@@ -377,7 +378,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget get userTile {
     return ListTile(
       title: Text(S.current.login_username),
-      trailing: Text(S.current.not_available),
+      trailing: db2.onSettings(
+          (context, snapshot) => Text(db2.security.get('chaldea_user') ?? '')),
+      onTap: () {
+        router.push(child: LoginPage());
+      },
     );
   }
 }

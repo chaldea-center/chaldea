@@ -9,6 +9,7 @@ import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -17,6 +18,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import '../packages/app_info.dart';
+import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
 import '../utils/json_helper.dart';
@@ -31,6 +33,7 @@ class _Database {
   // members
   final paths = PathManager();
   LocalSettings settings = LocalSettings();
+  late final Box security;
   UserData userData = UserData();
   GameData gameData = GameData();
   RuntimeData runtimeData = RuntimeData();
@@ -110,6 +113,7 @@ class _Database {
       Hive.init(paths.hiveDir);
       HttpOverrides.global = CustomHttpOverrides();
     }
+    security = await Hive.openBox('security');
   }
 
   /// return the [UserData] instance, don't assign to [userData]
@@ -224,6 +228,17 @@ class _Database {
     }
     return image;
   }
+
+  Dio get apiWorkerDio => Dio(BaseOptions(
+        baseUrl: 'https://api-worker.narumi.workers.dev',
+        // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+        queryParameters: {
+          'app_ver': AppInfo.versionString,
+          'user_key': AppInfo.uuid,
+          'lang': Language.current.code,
+          'os': PlatformU.operatingSystem
+        },
+      ));
 }
 
 final db2 = _Database();
