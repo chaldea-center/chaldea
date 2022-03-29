@@ -258,6 +258,13 @@ class LvlUpMaterial {
 
   factory LvlUpMaterial.fromJson(Map<String, dynamic> json) =>
       _$LvlUpMaterialFromJson(json);
+
+  Map<int, int> toItemDict() {
+    return {
+      for (final item in items) item.itemId: item.amount,
+      Items.qpId: qp,
+    };
+  }
 }
 
 enum ItemUse {

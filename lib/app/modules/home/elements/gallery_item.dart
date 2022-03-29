@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../command_code/cmd_code_list.dart';
+import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
@@ -87,7 +88,7 @@ class GalleryItem {
         // saintQuartz,
         mysticCodes,
         // effectSearch,
-        // costume,
+        costumes,
         summons,
         // ffo,
         cvList,
@@ -189,13 +190,14 @@ class GalleryItem {
 //   page: EffectSearchPage(),
 //   isDetail: false,
 // );
-// static GalleryItem costume = GalleryItem(
-//   name: 'costume',
-//   titleBuilder: () => S.current.costume,
-//   icon: FontAwesomeIcons.tshirt,
-//   page: CostumeListPage(),
-//   isDetail: false,
-// );
+  static GalleryItem costumes = GalleryItem(
+    name: 'costumes',
+    titleBuilder: () => S.current.costume,
+    icon: FontAwesomeIcons.shirt,
+    url: Routes.costumes,
+    page: CostumeListPage(),
+    isDetail: false,
+  );
   static GalleryItem summons = GalleryItem(
     name: 'summons',
     titleBuilder: () => S.current.summon_title,

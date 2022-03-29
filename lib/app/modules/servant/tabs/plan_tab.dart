@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -176,16 +177,17 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     for (final costume in svt.profile.costume.values) {
       dressWidgets.add(buildPlanRow(
         useSlider: false,
-        leading: GestureDetector(
+        leading: InkWell(
           child: db2.getIconImage(
-              svt.extraAssets.faces.costume?[costume.battleCharaId] ??
-                  Atlas.assetItem(Items.costumeIconId),
-              aspectRatio: 132 / 144,
-              width: 33,
-              placeholder: (ctx) =>
-                  db2.getIconImage(Atlas.assetItem(Items.costumeIconId))),
+            svt.extraAssets.faces.costume?[costume.battleCharaId] ??
+                Atlas.assetItem(Items.costumeIconId),
+            aspectRatio: 132 / 144,
+            width: 33,
+            placeholder: (ctx) =>
+                db2.getIconImage(Atlas.assetItem(Items.costumeIconId)),
+          ),
           onTap: () {
-            // SplitRoute.push(context, CostumeDetailPage(costume: costume));
+            router.push(url: Routes.costumeI(costume.id));
           },
         ),
         title: costume.lName.l,

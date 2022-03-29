@@ -61,6 +61,8 @@ class GameData {
 
   @JsonKey(ignore: true)
   late _ProcessedData others;
+  @JsonKey(ignore: true)
+  Map<int, NiceCostume> costumes = {};
 
   GameData({
     DataVersion? version,
@@ -118,6 +120,11 @@ class GameData {
   late Map<int, CommandCode> commandCodesById;
 
   void preprocess() {
+    costumes = {
+      for (final svt in servants.values)
+        for (final costume in svt.profile.costume.values)
+          costume.costumeCollectionNo: costume
+    };
     for (final war in wars.values) {
       war.calcItems(this);
     }
@@ -231,8 +238,14 @@ class FileVersion {
 class _ProcessedData {
   final GameData gameData;
   _ProcessedData(this.gameData) {
+    for (final svt in gameData.servants.values) {
+      for (final costume in svt.profile.costume.values) {
+        costumeSvtMap[costume.costumeCollectionNo] = svt;
+      }
+    }
     _initFuncBuff();
   }
+  Map<int, Servant> costumeSvtMap = {};
 
   Set<FuncType> svtFuncs = {};
   Set<BuffType> svtBuffs = {};

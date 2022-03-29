@@ -411,7 +411,8 @@ class SvtPlan {
       }
     }
     final _grailLvs = db2.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
-    grail = grail.clamp2(0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
+    grail = grail.clamp2(
+        lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
     fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);
     fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
     bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);

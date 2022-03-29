@@ -18,6 +18,8 @@ import '../modules/command_code/cmd_code.dart';
 import '../modules/command_code/cmd_code_list.dart';
 import '../modules/common/not_found.dart';
 import '../modules/common/splash.dart';
+import '../modules/costume/costume_detail.dart';
+import '../modules/costume/costume_list.dart';
 import '../modules/event/detail/limit_event_detail_page.dart';
 import '../modules/event/detail/war_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
@@ -63,6 +65,10 @@ class Routes {
   static String summonI(String id) => '/summon/$id';
   static const String summon = '/summon';
   static const String summons = '/summons';
+
+  static String costumeI(int id) => '/costume/$id';
+  static const String costume = '/costume';
+  static const String costumes = '/costumes';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -209,6 +215,10 @@ class RouteConfiguration {
         return SummonListPage();
       case Routes.summon:
         return SummonDetailPage(id: second);
+      case Routes.costumes:
+        return CostumeListPage();
+      case Routes.costume:
+        return CostumeDetailPage(id: _secondInt);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

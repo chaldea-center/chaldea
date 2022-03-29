@@ -1,0 +1,184 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/not_found.dart';
+import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+
+class CostumeDetailPage extends StatelessWidget {
+  final int? id;
+  final NiceCostume? _costume;
+
+  const CostumeDetailPage({Key? key, this.id, NiceCostume? costume})
+      : _costume = costume,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final costume = _costume ??
+        db2.gameData.costumes[id] ??
+        db2.gameData.costumes.values
+            .firstWhereOrNull((e) => e.battleCharaId == id);
+    if (costume == null) {
+      return NotFoundPage(
+          url: Routes.costumeI(id ?? 0), title: S.current.costume);
+    }
+    final svt = costume.owner;
+    final List<String?> illustrations = [
+      svt?.extraAssets.charaGraph.costume?[costume.battleCharaId],
+      svt?.extraAssets.charaGraphEx.costume?[costume.battleCharaId],
+      svt?.extraAssets.charaFigure.costume?[costume.battleCharaId],
+      svt?.extraAssets.narrowFigure.costume?[costume.battleCharaId],
+    ];
+    final unlockMats = svt?.costumeMaterials[costume.battleCharaId];
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: AutoSizeText(costume.lName.l, minFontSize: 10, maxLines: 1),
+        titleSpacing: 0,
+      ),
+      body: SingleChildScrollView(
+        child: CustomTable(
+          children: <Widget>[
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  child: db2.getIconImage(costume.icon, height: 90),
+                  flex: 1,
+                  padding: const EdgeInsets.all(3),
+                ),
+                TableCellData(
+                  flex: 3,
+                  padding: EdgeInsets.zero,
+                  child: CustomTable(
+                    hideOutline: true,
+                    children: <Widget>[
+                      CustomTableRow(children: [
+                        TableCellData(
+                          child: Text(
+                            costume.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          isHeader: true,
+                        )
+                      ]),
+                      CustomTableRow(children: [
+                        TableCellData(
+                            text: costume.name, textAlign: TextAlign.center)
+                      ]),
+                      CustomTableRow(children: [
+                        TableCellData(
+                            text: costume.lName.na, textAlign: TextAlign.center)
+                      ]),
+                      CustomTableRow(children: [
+                        TableCellData(
+                            text: 'No. ${costume.costumeCollectionNo}'),
+                        TableCellData(
+                          flex: 2,
+                          child: TextButton(
+                            child: Text(svt?.lName.l ?? '-'),
+                            onPressed: svt == null ? null : () => svt.routeTo(),
+                            style: TextButton.styleFrom(
+                                minimumSize: const Size(24, 28),
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap),
+                          ),
+                        )
+                      ]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            CustomTableRow(children: [
+              TableCellData(text: S.current.item, isHeader: true)
+            ]),
+            CustomTableRow(children: [
+              TableCellData(
+                child: unlockMats == null
+                    ? const Text('-')
+                    : Wrap(
+                        spacing: 4,
+                        runSpacing: 2,
+                        alignment: WrapAlignment.center,
+                        children: unlockMats
+                            .toItemDict()
+                            .entries
+                            .map((e) => Item.iconBuilder(
+                                  context: context,
+                                  itemId: e.key,
+                                  text: e.value.format(),
+                                  width: 44,
+                                  item: null,
+                                ))
+                            .toList(),
+                      ),
+              )
+            ]),
+            // CustomTableRow(children: [
+            //   TableCellData(text: S.current.obtain_methods, isHeader: true)
+            // ]),
+            // CustomTableRow(
+            //     children: [TableCellData(child: Text(costume.lObtain))]),
+            CustomTableRow(children: [
+              TableCellData(text: S.current.card_description, isHeader: true)
+            ]),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: costume.lDetail.l,
+                  alignment: Alignment.centerLeft,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                )
+              ],
+            ),
+            if (costume.lDetail.l != costume.detail)
+              CustomTableRow(
+                children: [
+                  TableCellData(
+                    text: costume.detail,
+                    alignment: Alignment.centerLeft,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  )
+                ],
+              ),
+            CustomTableRow(children: [
+              TableCellData(text: S.current.illustration, isHeader: true)
+            ]),
+            CustomTableRow(children: [
+              TableCellData(
+                child: CarouselSlider(
+                  items: List.generate(
+                    illustrations.length,
+                    (index) => GestureDetector(
+                      child: CachedImage(imageUrl: illustrations[index]),
+                      onTap: () {
+                        FullscreenImageViewer.show(
+                          context: context,
+                          urls: illustrations,
+                          initialPage: index,
+                        );
+                      },
+                    ),
+                  ),
+                  options: CarouselOptions(
+                    height: 400,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: false,
+                  ),
+                ),
+              )
+            ])
+          ],
+        ),
+      ),
+    );
+  }
+}

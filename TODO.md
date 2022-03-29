@@ -9,7 +9,6 @@ There are plenty of work need to do.
       which translation found, then pass that locale
 - [ ] only save game data file(split into multiple files) when loaded successfully
 - [ ] add release progress for different regions: Servant/CE/CC
-- [ ] skills descriptors, actually for `NiceFunction`
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
 - [x] Add build time/commit hash to AppInfo
@@ -36,9 +35,11 @@ There are plenty of work need to do.
 
 ## Adding more pages
 
-- [ ] CV/illustrator: list page and detail page
+- [x] CV/illustrator: list page 
+  - [ ] and detail page
 - [ ] Costume list and detail page
-- [ ] Summon list and detail page, summon plan(?)
+- [x] Summon list and detail page
+  - [ ] summon plan: ?
 - [ ] EXP demand calculation
 - [ ] Enemy(BaseServant) list and detail page
 - [ ] Saint Quartz estimate

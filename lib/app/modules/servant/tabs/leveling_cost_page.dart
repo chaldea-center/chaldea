@@ -57,7 +57,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
               ? [const ListTile(title: Text('Nothing needed'))]
               : List.generate(lvb - lva, (i) {
                   return buildOneLevel(
-                    '${_formatLevel(lva + i)} → ${_formatLevel(lva + i + 1)}',
+                    '${_formatLevel(lva + i)}→${_formatLevel(lva + i + 1)}',
                     widget.costList[lva + i],
                   );
                 }),
@@ -109,7 +109,11 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     return CustomTile(
       leading: SizedBox(
         width: 42,
-        child: AutoSizeText(title, maxLines: 1),
+        child: AutoSizeText(
+          title,
+          maxLines: 2,
+          maxFontSize: 14,
+        ),
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       title: items.isEmpty

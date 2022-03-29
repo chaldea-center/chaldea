@@ -64,6 +64,9 @@ class Transl<K, V> {
   static Transl<String, String> costumeNames(String jp) =>
       Transl(_md.costumeNames, jp, jp);
 
+  static Transl<int, String> costumeDetail(int id) =>
+      Transl(_md.costumeDetail, id, db2.gameData.costumes[id]?.detail ?? '???');
+
   static Transl<String, String> cvNames(String jp) =>
       Transl(_md.cvNames, jp, jp);
 

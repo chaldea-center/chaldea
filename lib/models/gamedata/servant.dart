@@ -813,6 +813,7 @@ class NiceCostume {
       _$NiceCostumeFromJson(json);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
+  Transl<String, String> get lDetail => Transl.costumeNames(detail);
 
   String get face =>
       'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
@@ -823,6 +824,10 @@ class NiceCostume {
 
   String get charaGraph =>
       'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
+
+  Servant? get owner => db2.gameData.others.costumeSvtMap[costumeCollectionNo];
+
+  String get route => Routes.costumeI(costumeCollectionNo);
 }
 
 @JsonSerializable()

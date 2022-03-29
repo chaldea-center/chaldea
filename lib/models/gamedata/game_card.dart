@@ -254,7 +254,7 @@ mixin GameCardMixin {
         text: text,
         padding: padding,
         textPadding: textPadding,
-        onTap: onTap,
+        onTap: onTap ?? () => router.push(url: costume.route),
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         overrideIcon: icon ?? costume.icon,
