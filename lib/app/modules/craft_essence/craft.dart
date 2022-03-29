@@ -302,8 +302,7 @@ class CraftDetailBasePage extends StatelessWidget {
                     dense: true,
                     visualDensity: VisualDensity.compact,
                     onTap: () {
-                      // SplitRoute.push(
-                      //     context, SummonDetailPage(summon: summon));
+                      router.push(url: summon.route);
                     },
                   )
               ],

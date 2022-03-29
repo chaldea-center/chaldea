@@ -693,7 +693,7 @@ class LimitedSummon {
 
   String get lName => name.l ?? id;
 
-  String get route => Routes.summon;
+  String get route => Routes.summonI(id);
 
   List<int> allCards({
     bool svt = false,

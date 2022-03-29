@@ -213,7 +213,7 @@ class EffectDescriptor extends StatelessWidget {
             cn: '$turn回合',
             na: '$turn Turns',
           ),
-      ].join(M.of(jp: '・', na: ', ')));
+      ].join(M.of(jp: '·', na: ', ')));
       funcText.write(')');
     }
     final lvVals = func.svals;
@@ -284,7 +284,12 @@ class EffectDescriptor extends StatelessWidget {
                     if (func.funcquestTvals.isNotEmpty)
                       "FieldTraits": _traitList(func.funcquestTvals),
                     if (func.traitVals.isNotEmpty)
-                      "RemovalTraits": _traitList(func.traitVals)
+                      "RemovalTraits": _traitList(func.traitVals),
+                    if (func.buffs.isNotEmpty) ...{
+                      "BuffId": func.buffs.first.id,
+                      "BuffName": func.buffs.first.name,
+                      "BuffType": func.buffs.first.type.name
+                    }
                   }),
                   scrollable: true,
                   hideCancel: true,

@@ -78,6 +78,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
               .map((e) => '${e.value} ${e.key.name}')
               .join('\n')),
         ),
+        const Divider(thickness: 1),
         for (final mission in masterMission.missions) _oneEventMission(mission)
       ],
     );

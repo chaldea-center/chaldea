@@ -210,7 +210,11 @@ class ValDsc extends StatelessWidget {
   void describeBuff(Buff buff) {
     final base = _kBuffValuePercentTypes[buff.type];
     if (base != null) {
-      _addPercent(vals.Value, base);
+      if (vals.Value == 0 && vals.ParamAddValue != null) {
+        _addPercent(vals.ParamAddValue, base);
+      } else {
+        _addPercent(vals.Value, base);
+      }
       return;
     }
     final trigger = _kBuffValueTriggerTypes[buff.type];
@@ -232,6 +236,13 @@ class ValDsc extends StatelessWidget {
     if (buff.type == BuffType.fieldIndividuality) {
       parts.add(Transl.trait(vals.Value!).l);
       return;
+    }
+    if (vals.ParamAddValue != null) {
+      _addPercent(vals.Rate, 10);
+    }
+    final _jsonVals = vals.toJson().keys.toSet();
+    if (_jsonVals.length == 1 && _jsonVals.first == 'Rate') {
+      _addPercent(vals.Rate, 10);
     }
     _addInt(vals.Value);
   }

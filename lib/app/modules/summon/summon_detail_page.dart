@@ -192,7 +192,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   bool get shouldShowOverview {
-    return summon.subSummons.length > 1;
+    return _summon != null && summon.subSummons.length > 1;
   }
 
   Widget get dropdownButton {

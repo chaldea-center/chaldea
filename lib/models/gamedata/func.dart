@@ -76,9 +76,14 @@ class NiceFunction implements BaseFunction {
     if (allVals.isEmpty) return DataVals();
 
     Map<String, Set> x = {};
-    for (final v in allVals) {
-      v.forEach((key, value) {
-        x.putIfAbsent(key, () => {}).add(value);
+    for (final vals in allVals) {
+      vals.forEach((key, value) {
+        final l = x.putIfAbsent(key, () => {});
+        if (value is List && l.any((e) => e.toString() == value.toString())) {
+          //
+        } else {
+          l.add(value);
+        }
       });
     }
     x.removeWhere((key, value) => value.length > 1);

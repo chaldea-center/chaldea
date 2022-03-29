@@ -37,10 +37,12 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   bool filtrateOutdated = true;
 
   //free tab
+  bool isSvtCoin = false;
 
   @override
   void initState() {
     super.initState();
+    isSvtCoin = db2.gameData.items[widget.itemId]?.type == ItemType.svtCoin;
     _tabController = TabController(
         initialIndex: widget.initialTabIndex, length: 6, vsync: this);
     _tabController.addListener(() {
@@ -61,45 +63,52 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         title: AutoSizeText(Item.getName(widget.itemId), maxLines: 1),
         centerTitle: false,
         titleSpacing: 0,
-        actions: <Widget>[
-          if (curTab == 0 || curTab == 1) viewTypeButton,
-          if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
-          if (curTab == 3) filterOutdatedButton,
-          if (curTab == 0 || curTab == 4) favoriteButton,
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: [
-            Tab(text: S.current.demands),
-            Tab(text: S.current.consumed),
-            Tab(text: S.current.free_quest),
-            Tab(text: S.current.event_title),
-            Tab(text: S.current.interlude_and_rankup),
-            Tab(text: S.current.card_info),
-          ],
-        ),
+        actions: isSvtCoin
+            ? []
+            : <Widget>[
+                if (curTab == 0 || curTab == 1) viewTypeButton,
+                if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
+                if (curTab == 3) filterOutdatedButton,
+                if (curTab == 0 || curTab == 4) favoriteButton,
+              ],
+        bottom: isSvtCoin
+            ? null
+            : TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabs: [
+                  Tab(text: S.current.demands),
+                  Tab(text: S.current.consumed),
+                  Tab(text: S.current.free_quest),
+                  Tab(text: S.current.event_title),
+                  Tab(text: S.current.interlude_and_rankup),
+                  Tab(text: S.current.card_info),
+                ],
+              ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          db2.onUserData((context, _) => ItemCostSvtDetailTab(
-                itemId: widget.itemId,
-                matType: favorite
-                    ? SvtMatCostDetailType.demands
-                    : SvtMatCostDetailType.full,
-              )),
-          db2.onUserData((context, _) => ItemCostSvtDetailTab(
-                itemId: widget.itemId,
-                matType: SvtMatCostDetailType.consumed,
-              )),
-          ItemObtainFreeTab(itemId: widget.itemId),
-          ItemObtainEventTab(
-              itemId: widget.itemId, filtrateOutdated: filtrateOutdated),
-          ItemObtainInterludeTab(itemId: widget.itemId, favorite: favorite),
-          ItemInfoTab(itemId: widget.itemId),
-        ],
-      ),
+      body: isSvtCoin
+          ? ItemInfoTab(itemId: widget.itemId)
+          : TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                db2.onUserData((context, _) => ItemCostSvtDetailTab(
+                      itemId: widget.itemId,
+                      matType: favorite
+                          ? SvtMatCostDetailType.demands
+                          : SvtMatCostDetailType.full,
+                    )),
+                db2.onUserData((context, _) => ItemCostSvtDetailTab(
+                      itemId: widget.itemId,
+                      matType: SvtMatCostDetailType.consumed,
+                    )),
+                ItemObtainFreeTab(itemId: widget.itemId),
+                ItemObtainEventTab(
+                    itemId: widget.itemId, filtrateOutdated: filtrateOutdated),
+                ItemObtainInterludeTab(
+                    itemId: widget.itemId, favorite: favorite),
+                ItemInfoTab(itemId: widget.itemId),
+              ],
+            ),
     );
   }
 

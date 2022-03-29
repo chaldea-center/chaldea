@@ -55,6 +55,14 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     CustomTableRow(children: [
                       TableCellData(text: 'ID', isHeader: true),
                       TableCellData(text: item.id.toString(), flex: 2),
+                      if (svtCoinOwner != null)
+                        TableCellData(
+                          flex: 3,
+                          child: TextButton(
+                            onPressed: () => svtCoinOwner!.routeTo(),
+                            child: Text(svtCoinOwner!.lName.l),
+                          ),
+                        )
                     ]),
                   ],
                 ),
@@ -79,6 +87,17 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    svtCoinOwner = db2.gameData.servants.values
+        .firstWhereOrNull((svt) => svt.coin?.item.id == itemId);
+    if (svtCoinOwner != null) {
+      _summonCoin = svtCoinOwner!.coin!.summonNum;
+    }
+  }
+
+  Servant? svtCoinOwner;
   final validCoins = const [2, 6, 15, 30, 50, 90];
   List<int> bondCoins = <int>[
     ...List.generate(6, (index) => 5),

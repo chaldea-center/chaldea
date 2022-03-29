@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class SvtSummonTab extends StatelessWidget {
         },
       ),
       onTap: () {
-        // SplitRoute.push(context, SummonDetailPage(summon: summon));
+        router.push(url: summon.route);
       },
     );
   }

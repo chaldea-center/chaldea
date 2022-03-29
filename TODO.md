@@ -37,7 +37,7 @@ There are plenty of work need to do.
 
 - [x] CV/illustrator: list page 
   - [ ] and detail page
-- [ ] Costume list and detail page
+- [x] Costume list and detail page
 - [x] Summon list and detail page
   - [ ] summon plan: ?
 - [ ] EXP demand calculation

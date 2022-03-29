@@ -15,8 +15,6 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-// import 'item_detail_page.dart';
-
 class ItemListPage extends StatefulWidget {
   ItemListPage({Key? key}) : super(key: key);
 
@@ -456,14 +454,15 @@ class _ItemListTabState extends State<ItemListTab> {
   }
 
   void setTextController() {
-    _allGroups.forEach((item, group) {
+    _allGroups.forEach((itemId, group) {
       // when will controller be null? should never
       if (group.controller != null) {
         if (group.focusNode.hasPrimaryFocus) {
           return;
         }
-        final text = (db2.curUser.items[item] ?? 0)
-            .format(groupSeparator: item == Items.qpId ? ',' : null);
+        final isQp = itemId == Items.qpId;
+        final text = (db2.curUser.items[itemId] ?? 0)
+            .format(groupSeparator: isQp ? ',' : null, compact: false);
         final selection = group.controller!.value.selection;
         TextSelection? newSelection;
         if (selection.isValid) {
@@ -550,13 +549,17 @@ class _ItemListTabState extends State<ItemListTab> {
       title = Row(
         children: <Widget>[const Text('QP  '), Expanded(child: textField)],
       );
+      final demand = (db2.itemCenter.statSvtDemands[itemId] ?? 0)
+              .format(compact: false, groupSeparator: ','),
+          left = (db2.itemCenter.itemLeft[itemId] ?? 0)
+              .format(compact: false, groupSeparator: ',');
       subtitle = Row(
         children: <Widget>[
           Expanded(
             flex: 1,
             child: AutoSizeText(
               '${S.current.item_total_demand}'
-              ' ${(db2.itemCenter.statSvtDemands[itemId] ?? 0).format(compact: false)}',
+              ' $demand',
               maxLines: 1,
               minFontSize: 1,
               overflow: TextOverflow.visible,
@@ -565,7 +568,7 @@ class _ItemListTabState extends State<ItemListTab> {
           Expanded(
             flex: 1,
             child: AutoSizeText(
-              '${S.current.item_left} ${(db2.itemCenter.itemLeft[itemId] ?? 0).format(compact: false)}',
+              '${S.current.item_left} $left',
               maxLines: 1,
               style: highlightStyle,
               minFontSize: 1,
