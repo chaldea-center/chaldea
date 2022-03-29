@@ -31,8 +31,6 @@ class ChaldeaResponse {
   Map? _cachedJson;
 
   Map? json() {
-    final _data = (response?.data).toString();
-    print(_data.length > 300 ? _data.substring(0, 300) : _data);
     if (_cachedJson != null) return _cachedJson;
     if (response?.data == null) return null;
     if (response!.data is Map) {

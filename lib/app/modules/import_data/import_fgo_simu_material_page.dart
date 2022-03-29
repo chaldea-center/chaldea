@@ -107,7 +107,10 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: _parse, child: const Text('Parse Data')),
+            ElevatedButton(
+              onPressed: _parse,
+              child: const Text('Parse Data'),
+            ),
           ],
         )
       ],
@@ -228,6 +231,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
   void _parse() {
     try {
       final text = _textEditingController.text.trim();
+      if (text.isEmpty) {
+        return;
+      }
       var data = jsonDecode(text);
       if (data is List) {
         // svt: [8,  0,4,  10,10,  8,10,  8,10,  1,0]

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -100,6 +101,24 @@ class _UserDataPageState extends State<UserDataPage> {
             ],
           ),
           TileGroup(
+            header: S.current.userdata_sync + '(Server)',
+            footer: LocalizedText.of(
+                chs: '仅更新账户数据，不包含本地设置',
+                jpn: 'アカウントデータのみを更新し、ローカル設定を含めない ',
+                eng: 'Only update account data, excluding local settings',
+                kor: '계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음'),
+            children: [
+              ListTile(
+                title: Text(S.current.userdata_upload_backup),
+                onTap: uploadToServer,
+              ),
+              ListTile(
+                title: Text(S.current.userdata_download_backup),
+                onTap: downloadFromServer,
+              ),
+            ],
+          ),
+          TileGroup(
             header: S.current.userdata + '(Local)',
             footer: S.current.settings_userdata_footer,
             children: <Widget>[
@@ -146,24 +165,6 @@ class _UserDataPageState extends State<UserDataPage> {
                 onTap: () {
                   SplitRoute.push(context, ImportPageHome(), detail: false);
                 },
-              ),
-            ],
-          ),
-          TileGroup(
-            header: S.current.userdata_sync + '(Server)',
-            footer: LocalizedText.of(
-                chs: '仅更新账户数据，不包含本地设置',
-                jpn: 'アカウントデータのみを更新し、ローカル設定を含めない ',
-                eng: 'Only update account data, excluding local settings',
-                kor: '계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음'),
-            children: [
-              ListTile(
-                title: Text(S.current.userdata_upload_backup),
-                onTap: uploadToServer,
-              ),
-              ListTile(
-                title: Text(S.current.userdata_download_backup),
-                onTap: downloadFromServer,
               ),
             ],
           ),
@@ -265,8 +266,8 @@ class _UserDataPageState extends State<UserDataPage> {
     if (!checkUserPwd()) return;
     ChaldeaResponse.request(
       caller: (dio) {
-        final content =
-            base64Encode(gzip.encode(utf8.encode(jsonEncode(db2.userData))));
+        final content = base64Encode(
+            GZipEncoder().encode(utf8.encode(jsonEncode(db2.userData)))!);
         return dio.post('/account/backup/upload', data: {
           'username': db2.security.get('chaldea_user'),
           'auth': db2.security.get('chaldea_auth'),
@@ -300,10 +301,13 @@ class _UserDataPageState extends State<UserDataPage> {
                           body[index]['timestamp'] as int)
                       .toString()),
                   onTap: () {
+                    Navigator.pop(context);
                     db2.userData = UserData.fromJson(jsonDecode(utf8.decode(
-                        gzip.decode(base64Decode(body[index]['content'])))));
+                        GZipDecoder().decodeBytes(
+                            base64Decode(body[index]['content'])))));
                     db2.itemCenter.init();
                     db2.notifyUserdata();
+                    EasyLoading.showSuccess(S.current.import_data_success);
                   },
                 ),
               IconButton(
