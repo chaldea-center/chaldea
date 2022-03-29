@@ -393,8 +393,8 @@ class ServantListPageState extends State<ServantListPage>
         for (var i = 0; i < 3; i++)
           svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
         for (var costume in svt.profile.costume.values)
-          (svtPlan.costumes[costume.id] ?? 0) >
-              (svtStat.cur.costumes[costume.id] ?? 0),
+          (svtPlan.costumes[costume.battleCharaId] ?? 0) >
+              (svtStat.cur.costumes[costume.battleCharaId] ?? 0),
         svtPlan.grail > svtStat.cur.grail,
         // svtPlan.fouHp > svtStat.cur.fouHp,
         // svtPlan.fouAtk > svtStat.cur.fouAtk,
@@ -989,7 +989,7 @@ class ServantListPageState extends State<ServantListPage>
                 db2.getIconImage(Atlas.assetItem(Items.costumeIconId),
                     width: 16, height: 16),
                 Text(svt.profile.costume.values
-                    .map((e) => status.cur.costumes[e.id] ?? 0)
+                    .map((e) => status.cur.costumes[e.battleCharaId] ?? 0)
                     .join('/')),
               ],
             ),

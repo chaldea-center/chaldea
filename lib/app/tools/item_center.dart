@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:async';
 import 'dart:math';
 
@@ -184,10 +186,9 @@ class ItemCenter {
     }
 
     detail.costume = _sumMat(svt.costumeMaterials, [
-      for (final costumeId in target.costumes.keys)
-        if (target.costumes[costumeId]! > 0 &&
-            (cur.costumes[costumeId] ?? 0) == 0)
-          costumeId
+      for (final charaId in target.costumes.keys)
+        if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0)
+          charaId
     ]);
 
     detail.special = {
@@ -261,16 +262,17 @@ class ItemCenter {
     }
     for (final lottery in event.lotteries) {
       int planBoxNum = plan.lotteries[lottery.id] ?? 0;
-      for (int boxIndex in event.itemLottery.keys) {
+      if (planBoxNum <= 0) continue;
+      final boxItems = event.itemLottery[lottery.id] ?? {};
+      for (int boxIndex in boxItems.keys) {
         if (boxIndex < planBoxNum) {
-          result.addDict(event.itemLottery[lottery.id]?[boxIndex] ?? {});
+          result.addDict(boxItems[boxIndex] ?? {});
         }
-        int maxBoxIndex = Maths.max(event.itemLottery.keys); //0-9,10
-        if (!lottery.limited && planBoxNum > maxBoxIndex) {
-          result.addDict(event.itemLottery[lottery.id]?[maxBoxIndex]
-                  ?.multiple(planBoxNum - maxBoxIndex) ??
-              {});
-        }
+      }
+      int maxBoxIndex = Maths.max(boxItems.keys); //0-9,10
+      if (!lottery.limited && planBoxNum > maxBoxIndex) {
+        result.addDict(
+            boxItems[maxBoxIndex]?.multiple(planBoxNum - maxBoxIndex) ?? {});
       }
     }
     for (final box in event.treasureBoxes) {

@@ -19,6 +19,7 @@ class SharedBuilder {
     bool showCategoryName = false,
     double? width,
     double? height,
+    ValueChanged<int>? onTap,
   }) {
     List<Widget> children = [];
     for (final group in Item.groupItems(items).entries) {
@@ -30,6 +31,7 @@ class SharedBuilder {
           items: group.value.entries,
           width: width,
           height: height,
+          onTap: onTap,
         ),
       ));
     }
@@ -45,7 +47,11 @@ class SharedBuilder {
     required Iterable<MapEntry<int, int>> items,
     double? width,
     double? height,
+    ValueChanged<int>? onTap,
   }) {
+    if (width == null && height == null) {
+      width = 48;
+    }
     return Wrap(
       spacing: 1,
       runSpacing: 1,
@@ -58,6 +64,7 @@ class SharedBuilder {
               text: entry.value.format(),
               height: height,
               width: width,
+              onTap: onTap == null ? null : () => onTap(entry.key),
             ),
       ],
     );

@@ -16,6 +16,7 @@ import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../servant/servant_list.dart';
+import '../../statistics/item_stat.dart';
 import '../../summon/summon_list_page.dart';
 
 class GalleryItem {
@@ -95,7 +96,7 @@ class GalleryItem {
         illustratorList,
         // enemyList,
         // expCard,
-        // statistics,
+        statistics,
         importData,
         // faq,
         // if (kDebugMode) ...[lostRoom, palette],
@@ -243,13 +244,14 @@ class GalleryItem {
 //   page: ExpCardCostPage(),
 //   isDetail: true,
 // );
-// static GalleryItem statistics = GalleryItem(
-//   name: 'statistics',
-//   titleBuilder: () => S.current.statistics_title,
-//   icon: Icons.analytics,
-//   page: GameStatisticsPage(),
-//   isDetail: true,
-// );
+  static GalleryItem statistics = GalleryItem(
+    name: 'statistics',
+    titleBuilder: () => S.current.statistics_title,
+    icon: Icons.analytics,
+    url: Routes.stats,
+    page: GameStatisticsPage(),
+    isDetail: true,
+  );
   static GalleryItem importData = GalleryItem(
     name: 'import_data',
     titleBuilder: () => S.current.import_data,

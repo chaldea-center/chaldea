@@ -354,4 +354,5 @@ const _traitsForFilter = <Trait>[
   Trait.knightsOfTheRound,
   Trait.fairyTaleServant,
   Trait.divineSpirit,
+  Trait.hasCostume,
 ];

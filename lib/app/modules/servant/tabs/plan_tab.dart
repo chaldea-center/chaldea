@@ -187,19 +187,19 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 db2.getIconImage(Atlas.assetItem(Items.costumeIconId)),
           ),
           onTap: () {
-            router.push(url: Routes.costumeI(costume.id));
+            router.push(url: Routes.costumeI(costume.costumeCollectionNo));
           },
         ),
         title: costume.lName.l,
         subtitle: Transl.isJP ? null : costume.name,
-        start: curVal.costumes[costume.id] ?? 0,
-        end: targetVal.costumes[costume.id] ?? 0,
+        start: curVal.costumes[costume.battleCharaId] ?? 0,
+        end: targetVal.costumes[costume.battleCharaId] ?? 0,
         minVal: 0,
         maxVal: 1,
         onValueChanged: (_start, _end) {
           status.cur.favorite = true;
-          curVal.costumes[costume.id] = _start;
-          targetVal.costumes[costume.id] = _end;
+          curVal.costumes[costume.battleCharaId] = _start;
+          targetVal.costumes[costume.battleCharaId] = _end;
           updateState();
         },
         detailPageBuilder: (context) => LevelingCostPage(

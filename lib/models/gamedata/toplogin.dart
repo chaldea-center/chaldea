@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -361,9 +362,15 @@ class UserSvtCollection {
   bool get isOwned => status == 2;
 
   Map<int, int> costumeIdsTo01() {
-    return {
-      for (final costumeId in costumeIds.where((e) => e > 10)) costumeId: 1
-    };
+    Map<int, int> result = {};
+    for (final costumeId in costumeIds) {
+      final costume = db2.gameData.servantsById[svtId]?.profile.costume.values
+          .firstWhereOrNull((e) => e.id == costumeId);
+      if (costume != null) {
+        result[costume.battleCharaId] = 1;
+      }
+    }
+    return result;
   }
 
   factory UserSvtCollection.fromJson(Map<String, dynamic> data) =>

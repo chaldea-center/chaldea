@@ -25,6 +25,7 @@ import '../modules/event/detail/war_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
+import '../modules/statistics/item_stat.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
 
@@ -225,6 +226,8 @@ class RouteConfiguration {
         return CvListPage();
       case Routes.illustrators:
         return IllustratorListPage();
+      case Routes.stats:
+        return GameStatisticsPage();
     }
     return null;
   }
