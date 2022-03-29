@@ -58,13 +58,13 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                 title: Text(S.current.help),
                 scrollable: true,
                 content: Text(LocalizedText.of(
-                        chs: '导入fgosimulator.webcrow.jp的从者和素材数据',
-                        jpn: 'fgosimulator.webcrow.jpのサーヴァントとアイテムをインポートします ',
-                        eng:
-                            'Import servant and item data from fgosimulator.webcrow.jp.',
-                        kor:
-                            'fgosimulator.webcrow.jp에서 재료와 서번트의 데이터를 가져와 주세요.') +
-                    '\n\n"http://fgosimulator.webcrow.jp/Material/" -> My Chaldea -> 引継ぎコード'),
+                      chs: '导入fgosimulator(webcrow)的从者和素材数据',
+                      jpn: 'fgosimulator(webcrow)jpのサーヴァントとアイテムをインポートします ',
+                      eng:
+                          'Import servant and item data from fgosimulator(webcrow)',
+                      kor: 'fgosimulator(webcrow)jp에서 재료와 서번트의 데이터를 가져와 주세요.',
+                    ) +
+                    '\n\n"https://fgosim.github.io/Material/" -> My Chaldea -> 引継ぎコード'),
               ).showDialog(context);
             },
             icon: const Icon(Icons.help),
@@ -95,7 +95,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 helperText:
-                    'Copy servant or item data from fgosimulator.webcrow.jp',
+                    'Copy servant or item data from fgosimulator(webcrow)',
                 helperMaxLines: 5,
               ),
             ),

@@ -144,7 +144,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.compare_arrows),
             title: const Text('FGO Simulator-Material'),
-            subtitle: const Text('http://fgosimulator.webcrow.jp/Material/'),
+            subtitle: const Text('https://fgosim.github.io/Material/'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportFgoSimuMaterialPage(),
