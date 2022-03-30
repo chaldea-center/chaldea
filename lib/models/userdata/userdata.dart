@@ -1,16 +1,17 @@
 library userdata;
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:flutter/material.dart';
 
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
-import '../gamedata/servant.dart';
-import '../gamedata/wiki_data.dart';
 import '_helper.dart';
 import 'glpk.dart';
 
+part 'sq_plan.dart';
 part '../../generated/models/userdata/userdata.g.dart';
 
 /// user data will be shared across devices and cloud
@@ -194,6 +195,8 @@ class User {
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
 
+  SaintQuartzPlan saintQuartzPlan;
+
   User({
     this.name = 'Gudako',
     this.isGirl = true,
@@ -213,6 +216,7 @@ class User {
     this.use6thDropRate = true,
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
+    SaintQuartzPlan? saintQuartzPlan,
   })  : servants = servants ?? {},
         svtPlanGroups = List.generate(
             kSvtPlanMaxNum, (index) => svtPlanGroups?.getOrNull(index) ?? {}),
@@ -230,7 +234,8 @@ class User {
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
         freeLPParams = freeLPParams ?? FreeLPParams(),
-        luckyBagSvtScores = luckyBagSvtScores ?? {};
+        luckyBagSvtScores = luckyBagSvtScores ?? {},
+        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

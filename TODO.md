@@ -54,7 +54,7 @@ There are plenty of work need to do.
 - [ ] Mission Solver
   - [x] choose free quests from event wars or main story
   - [ ] link from Event/Mission part
-- [ ] Statistics
+- [x] Statistics
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 

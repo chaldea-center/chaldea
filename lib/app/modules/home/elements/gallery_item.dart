@@ -2,6 +2,7 @@ import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,11 +11,13 @@ import '../../command_code/cmd_code_list.dart';
 import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
+import '../../exp/exp_card_cost_page.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
+import '../../saint_quartz/sq_main.dart';
 import '../../servant/servant_list.dart';
 import '../../statistics/item_stat.dart';
 import '../../summon/summon_list_page.dart';
@@ -86,7 +89,7 @@ class GalleryItem {
         plans,
         freeCalculator,
         masterMissions,
-        // saintQuartz,
+        saintQuartz,
         mysticCodes,
         // effectSearch,
         costumes,
@@ -95,7 +98,7 @@ class GalleryItem {
         cvList,
         illustratorList,
         // enemyList,
-        // expCard,
+        expCard,
         statistics,
         importData,
         // faq,
@@ -169,13 +172,14 @@ class GalleryItem {
     page: MasterMissionListPage(),
     isDetail: true,
   );
-// static GalleryItem saintQuartz = GalleryItem(
-//   name: 'saint_quartz',
-//   titleBuilder: () => Item.lNameOf(Items.quartz),
-//   icon: FontAwesomeIcons.gem,
-//   page: SaintQuartzPlanning(),
-//   isDetail: true,
-// );
+  static GalleryItem saintQuartz = GalleryItem(
+    name: 'saint_quartz',
+    titleBuilder: () => Item.getName(Items.stoneId),
+    icon: FontAwesomeIcons.gem,
+    url: Routes.sqPlan,
+    page: SaintQuartzPlanning(),
+    isDetail: true,
+  );
   static GalleryItem mysticCodes = GalleryItem(
     name: 'mystic_codes',
     titleBuilder: () => S.current.mystic_code,
@@ -237,13 +241,14 @@ class GalleryItem {
 //   page: EnemyListPage(),
 //   isDetail: false,
 // );
-// static GalleryItem expCard = GalleryItem(
-//   name: 'exp_card',
-//   titleBuilder: () => S.current.exp_card_title,
-//   icon: FontAwesomeIcons.breadSlice,
-//   page: ExpCardCostPage(),
-//   isDetail: true,
-// );
+  static GalleryItem expCard = GalleryItem(
+    name: 'exp_card',
+    titleBuilder: () => S.current.exp_card_title,
+    icon: FontAwesomeIcons.breadSlice,
+    url: Routes.expCard,
+    page: ExpCardCostPage(),
+    isDetail: true,
+  );
   static GalleryItem statistics = GalleryItem(
     name: 'statistics',
     titleBuilder: () => S.current.statistics_title,

@@ -137,6 +137,12 @@ User _$UserFromJson(Map json) => $checkedCreate(
                           (k, e) => MapEntry(int.parse(k as String), e as int),
                         )),
                   )),
+          saintQuartzPlan: $checkedConvert(
+              'saintQuartzPlan',
+              (v) => v == null
+                  ? null
+                  : SaintQuartzPlan.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -170,6 +176,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'freeLPParams': instance.freeLPParams.toJson(),
       'luckyBagSvtScores': instance.luckyBagSvtScores.map(
           (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
+      'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
     };
 
 const _$RegionEnumMap = {
@@ -351,4 +358,48 @@ ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
     <String, dynamic>{
       'counts': instance.counts,
+    };
+
+SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
+      'SaintQuartzPlan',
+      json,
+      ($checkedConvert) {
+        final val = SaintQuartzPlan(
+          curSQ: $checkedConvert('curSQ', (v) => v as int?),
+          curTicket: $checkedConvert('curTicket', (v) => v as int?),
+          curApple: $checkedConvert('curApple', (v) => v as int?),
+          startDate: $checkedConvert('startDate',
+              (v) => v == null ? null : DateTime.parse(v as String)),
+          endDate: $checkedConvert(
+              'endDate', (v) => v == null ? null : DateTime.parse(v as String)),
+          accLogin: $checkedConvert('accLogin', (v) => v as int?),
+          continuousLogin: $checkedConvert('continuousLogin', (v) => v as int?),
+          eventDateDelta: $checkedConvert('eventDateDelta', (v) => v as int?),
+          weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool?),
+          minusPlannedBanner:
+              $checkedConvert('minusPlannedBanner', (v) => v as bool?),
+        );
+        $checkedConvert(
+            'extraMissions',
+            (v) => val.extraMissions = (v as Map).map(
+                  (k, e) => MapEntry(int.parse(k as String), e as bool),
+                ));
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
+    <String, dynamic>{
+      'curSQ': instance.curSQ,
+      'curTicket': instance.curTicket,
+      'curApple': instance.curApple,
+      'startDate': instance.startDate.toIso8601String(),
+      'endDate': instance.endDate.toIso8601String(),
+      'accLogin': instance.accLogin,
+      'continuousLogin': instance.continuousLogin,
+      'eventDateDelta': instance.eventDateDelta,
+      'weeklyMission': instance.weeklyMission,
+      'extraMissions':
+          instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
+      'minusPlannedBanner': instance.minusPlannedBanner,
     };

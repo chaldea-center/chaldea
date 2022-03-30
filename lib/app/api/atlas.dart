@@ -274,6 +274,15 @@ class AtlasApi {
     );
   }
 
+  static Future<MasterMission?> masterMission(int id,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/mm/$id',
+      (data) => MasterMission.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<NiceWar?> war(int warId,
       {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(

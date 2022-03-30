@@ -76,6 +76,8 @@ class Routes {
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';
+  static const String expCard = '/expCard';
+  static const String sqPlan = '/sqPlan';
   static const String stats = '/stats';
   static const String importData = '/import_data';
   static const String notFound = '/404';
