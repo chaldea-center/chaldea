@@ -169,9 +169,9 @@ class _GalleryPageState extends State<GalleryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: divideTiles(<Widget>[
-          const ListTile(
+          ListTile(
             title: Center(
-              child: Text('Test Info Pad', style: TextStyle(fontSize: 18)),
+              child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)),
             ),
           ),
           ListTile(
@@ -179,11 +179,11 @@ class _GalleryPageState extends State<GalleryPage> {
             subtitle: Text(AppInfo.uuid),
           ),
           ListTile(
-            title: const Text('Screen size'),
+            title: Text(S.current.screen_size),
             trailing: Text(MediaQuery.of(context).size.toString()),
           ),
           ListTile(
-            title: const Text('Dataset version'),
+            title: Text(S.current.dataset_version),
             trailing: Text(db2.gameData.version.text()),
           ),
         ]),

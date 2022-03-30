@@ -70,7 +70,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(server) => "同步${server}";
 
-  static String m21(a, b) => "${a}${b}";
+  static String m21(e) => "Update slides failed\n${e}";
+
+  static String m22(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -177,6 +179,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_management": MessageLookupByLibrary.simpleMessage("数据管理"),
         "dataset_type_image": MessageLookupByLibrary.simpleMessage("图片数据包"),
         "dataset_type_text": MessageLookupByLibrary.simpleMessage("文本数据包"),
+        "dataset_version":
+            MessageLookupByLibrary.simpleMessage("Dataset version"),
         "debug": MessageLookupByLibrary.simpleMessage("Debug"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
@@ -490,6 +494,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_x": m15,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("规划Free本"),
+        "preferred_translation":
+            MessageLookupByLibrary.simpleMessage("Preferred Translation"),
+        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
+            "Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages."),
         "prev": MessageLookupByLibrary.simpleMessage("PREV"),
         "preview": MessageLookupByLibrary.simpleMessage("预览"),
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),
@@ -527,6 +535,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
+        "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
         "search": MessageLookupByLibrary.simpleMessage("搜索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基础信息"),
         "search_options": MessageLookupByLibrary.simpleMessage("搜索范围"),
@@ -610,6 +619,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "sync_server": m20,
+        "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "toogle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders":
@@ -624,6 +634,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已经是最新版本"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("更新资源包"),
         "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
+        "update_slides_status_msg_error": m21,
+        "update_slides_status_msg_info":
+            MessageLookupByLibrary.simpleMessage("Not updated"),
+        "update_slides_status_msg_success":
+            MessageLookupByLibrary.simpleMessage("Slides updated"),
         "upload": MessageLookupByLibrary.simpleMessage("上传"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_cleared": MessageLookupByLibrary.simpleMessage("用户数据已清空"),
@@ -639,7 +654,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m21,
+        "words_separate": m22,
         "yes": MessageLookupByLibrary.simpleMessage("是")
       };
 }

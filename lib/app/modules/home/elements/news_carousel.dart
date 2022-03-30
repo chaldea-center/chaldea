@@ -158,17 +158,17 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
-          EasyLoading.showSuccess('slides updated');
+          EasyLoading.showSuccess(S.current.update_slides_status_msg_success);
         }
       } else {
         if (showToast) {
-          EasyLoading.showInfo('Not updated');
+          EasyLoading.showInfo(S.current.update_slides_status_msg_info);
         }
       }
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
       if (showToast) {
-        EasyLoading.showError('update slides failed\n$e');
+        EasyLoading.showError(S.current.update_slides_status_msg_error(e));
       }
     }
   }

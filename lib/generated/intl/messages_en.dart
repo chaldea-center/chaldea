@@ -72,7 +72,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(server) => "Sync with ${server}";
 
-  static String m21(a, b) => "${a} ${b}";
+  static String m21(e) => "Update slides failed\n${e}";
+
+  static String m22(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -197,6 +199,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Icon dataset"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Text dataset"),
+        "dataset_version":
+            MessageLookupByLibrary.simpleMessage("Dataset version"),
         "debug": MessageLookupByLibrary.simpleMessage("Debug"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
@@ -578,6 +582,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_x": m15,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("Planning Quests"),
+        "preferred_translation":
+            MessageLookupByLibrary.simpleMessage("Preferred Translation"),
+        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
+            "Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages."),
         "prev": MessageLookupByLibrary.simpleMessage("PREV"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),
@@ -622,6 +630,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
+        "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Basic"),
         "search_options": MessageLookupByLibrary.simpleMessage("Search Scopes"),
@@ -716,6 +725,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "sync_server": m20,
+        "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "toogle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders":
@@ -731,6 +741,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_dataset":
             MessageLookupByLibrary.simpleMessage("Update Dataset"),
         "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
+        "update_slides_status_msg_error": m21,
+        "update_slides_status_msg_info":
+            MessageLookupByLibrary.simpleMessage("Not updated"),
+        "update_slides_status_msg_success":
+            MessageLookupByLibrary.simpleMessage("Slides updated"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_cleared":
@@ -751,7 +766,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m21,
+        "words_separate": m22,
         "yes": MessageLookupByLibrary.simpleMessage("Yes")
       };
 }

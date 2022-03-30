@@ -14,13 +14,11 @@ class _TranslationSettingState extends State<TranslationSetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Preferred Translation')),
+      appBar: AppBar(title: Text(S.current.preferred_translation)),
       body: ListView(
         children: [
           orderableList,
-          const SFooter('Drag to change the order.\n'
-              'Used for game data description, not UI language. '
-              'Not all game data is translated for all 5 official languages'),
+          SFooter(S.current.preferred_translation_footer),
           Center(
             child: ElevatedButton(
               child: Text(S.current.reset),
