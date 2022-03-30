@@ -70,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(server) => "${server} 서버와 연동";
 
-  static String m21(a, b) => "${a} ${b}";
+  static String m22(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -658,7 +658,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m21,
+        "words_separate": m22,
         "yes": MessageLookupByLibrary.simpleMessage("O")
       };
 }

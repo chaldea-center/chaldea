@@ -70,7 +70,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(server) => "Sincronizar con ${server}";
 
-  static String m21(a, b) => "${a} ${b}";
+  static String m21(e) => "No se han podido actualizar las diapositivas\n${e}";
+
+  static String m22(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -201,6 +203,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conjunto de datos de iconos"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Conjunto de datos de texto"),
+        "dataset_version":
+            MessageLookupByLibrary.simpleMessage("Versión de los datos"),
         "debug": MessageLookupByLibrary.simpleMessage("Depurar"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("FAB de Depuración"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
@@ -594,6 +598,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_x": m15,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("Planificación de Quests"),
+        "preferred_translation":
+            MessageLookupByLibrary.simpleMessage("Traducción preferida"),
+        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
+            "Arrastre para cambiar el orden.\nSe utiliza para la descripción de los datos del juego, no para el idioma de la interfaz de usuario. No todos los datos del juego están traducidos para los 5 idiomas oficiales."),
         "prev": MessageLookupByLibrary.simpleMessage("ANT."),
         "preview": MessageLookupByLibrary.simpleMessage("Vista previa"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Anterior"),
@@ -640,6 +648,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Guardar en Fotos"),
         "saved": MessageLookupByLibrary.simpleMessage("Guardado"),
+        "screen_size":
+            MessageLookupByLibrary.simpleMessage("Tamaño de la pantalla"),
         "search": MessageLookupByLibrary.simpleMessage("Buscar"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Básica"),
         "search_options":
@@ -748,6 +758,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage(
             "Cambiar control deslizante/desplegable"),
         "sync_server": m20,
+        "test_info_pad":
+            MessageLookupByLibrary.simpleMessage("Información de Testeo"),
         "toogle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Alternar tema"),
         "tooltip_refresh_sliders":
@@ -763,6 +775,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_dataset": MessageLookupByLibrary.simpleMessage(
             "Actualizar conjunto de datos"),
         "update_now": MessageLookupByLibrary.simpleMessage("Actualizar Ahora"),
+        "update_slides_status_msg_error": m21,
+        "update_slides_status_msg_info":
+            MessageLookupByLibrary.simpleMessage("No actualizado"),
+        "update_slides_status_msg_success":
+            MessageLookupByLibrary.simpleMessage("Banners actualizados"),
         "upload": MessageLookupByLibrary.simpleMessage("Cargar"),
         "userdata": MessageLookupByLibrary.simpleMessage("Datos del usuario"),
         "userdata_cleared":
@@ -784,7 +801,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m21,
+        "words_separate": m22,
         "yes": MessageLookupByLibrary.simpleMessage("Sí")
       };
 }

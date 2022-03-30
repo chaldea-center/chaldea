@@ -1062,6 +1062,17 @@ class S {
     );
   }
 
+  /// `Dataset version`
+  String get dataset_version {
+    return Intl.message(
+      'Dataset version',
+      name: 'dataset_version',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Debug`
   String get debug {
     return Intl.message(
@@ -4049,6 +4060,28 @@ class S {
     );
   }
 
+  /// `Preferred Translation`
+  String get preferred_translation {
+    return Intl.message(
+      'Preferred Translation',
+      name: 'preferred_translation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages.`
+  String get preferred_translation_footer {
+    return Intl.message(
+      'Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages.',
+      name: 'preferred_translation_footer',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `PREV`
   String get prev {
     return Intl.message(
@@ -4384,6 +4417,17 @@ class S {
     return Intl.message(
       '已保存',
       name: 'saved',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Screen Size`
+  String get screen_size {
+    return Intl.message(
+      'Screen Size',
+      name: 'screen_size',
       desc: '',
       locale: localeName,
       args: [],
@@ -5116,6 +5160,17 @@ class S {
     );
   }
 
+  /// `Test Info Pad`
+  String get test_info_pad {
+    return Intl.message(
+      'Test Info Pad',
+      name: 'test_info_pad',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Toggle Dark Mode`
   String get toogle_dark_mode {
     return Intl.message(
@@ -5220,6 +5275,39 @@ class S {
     return Intl.message(
       'Update Now',
       name: 'update_now',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Update slides failed\n{e}`
+  String update_slides_status_msg_error(Object e) {
+    return Intl.message(
+      'Update slides failed\n$e',
+      name: 'update_slides_status_msg_error',
+      desc: '',
+      locale: localeName,
+      args: [e],
+    );
+  }
+
+  /// `Not updated`
+  String get update_slides_status_msg_info {
+    return Intl.message(
+      'Not updated',
+      name: 'update_slides_status_msg_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Slides updated`
+  String get update_slides_status_msg_success {
+    return Intl.message(
+      'Slides updated',
+      name: 'update_slides_status_msg_success',
       desc: '',
       locale: localeName,
       args: [],
