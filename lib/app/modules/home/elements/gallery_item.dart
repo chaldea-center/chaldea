@@ -174,7 +174,7 @@ class GalleryItem {
   );
   static GalleryItem saintQuartz = GalleryItem(
     name: 'saint_quartz',
-    titleBuilder: () => Item.getName(Items.stoneId),
+    titleBuilder: () => S.current.saint_quartz_plan,
     icon: FontAwesomeIcons.gem,
     url: Routes.sqPlan,
     page: SaintQuartzPlanning(),

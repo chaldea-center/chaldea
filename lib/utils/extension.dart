@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:intl/intl.dart';
 
@@ -16,6 +17,7 @@ extension NumX on num {
     int precision = 3,
     String? groupSeparator,
     num? minVal = 10000,
+    int? maxDigits,
   }) {
     if (percent) compact = false;
     if (compact && (minVal == null || abs() > minVal)) {
@@ -28,7 +30,17 @@ extension NumX on num {
       if (precision > 0) '.' + (omit ? '#' : '0') * precision,
       if (percent) '%'
     ].join();
-    return NumberFormat(pattern, 'en').format(this);
+    String s = NumberFormat(pattern, 'en').format(this);
+    if (maxDigits != null) {
+      s = s.replaceFirstMapped(RegExp(r'^(\d+)\.(\d+)(%?)$'), (match) {
+        String s1 = match.group(1)!, s2 = match.group(2)!, s3 = match.group(3)!;
+        if (s1.length < maxDigits) {
+          s2 = s2.substring(0, min(s2.length, maxDigits - s1.length));
+        }
+        return '$s1.$s2$s3';
+      });
+    }
+    return s;
   }
 }
 

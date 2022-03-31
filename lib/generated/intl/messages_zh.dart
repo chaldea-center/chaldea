@@ -532,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重启以更新应用，若更新失败，请手动复制source文件夹到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),
+        "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("攒石"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),

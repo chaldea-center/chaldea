@@ -62,7 +62,7 @@ class DropRateSheet {
         (i) => List.generate(matrix[i].length, (j) => matrix[i][j]));
   }
 
-  Map<int, double> getQuestDrop(int questId) {
+  Map<int, double> getQuestDropRate(int questId) {
     int questIndex = questIds.indexOf(questId);
     if (questIndex < 0) return {};
     return {
@@ -74,7 +74,7 @@ class DropRateSheet {
 
   Map<int, double> getQuestApRate(int questId) {
     int questIndex = questIds.indexOf(questId);
-    return getQuestDrop(questId)
+    return getQuestDropRate(questId)
         .map((key, value) => MapEntry(key, apCosts[questIndex] / value));
   }
 

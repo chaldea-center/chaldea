@@ -277,7 +277,7 @@ class ImageWithText extends StatelessWidget {
               child: paintOutline(
                 text: text,
                 builder: textBuilder,
-                textAlign: textAlign,
+                textAlign: textAlign ?? TextAlign.end,
                 textStyle: _style,
                 shadowSize: shadowSize,
                 shadowColor:
@@ -302,7 +302,7 @@ class ImageWithText extends StatelessWidget {
       child = FittedBox(fit: boxFit, child: child);
     }
     if (width != null || height != null) {
-      return Container(
+      return ConstrainedBox(
         constraints: BoxConstraints(
             maxWidth: width ?? double.infinity,
             maxHeight: height ?? double.infinity),

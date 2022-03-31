@@ -393,6 +393,7 @@
   "restart_to_take_effect": "Restart to take effect",
   "restart_to_upgrade_hint": "Restart to upgrade. If the update fails, please manually copy the source folder to destination",
   "restore": "Restore",
+  "saint_quartz_plan": "SQ Plan",
   "save": "Save",
   "save_to_photos": "Save to Photos",
   "saved": "Saved",

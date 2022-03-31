@@ -42,6 +42,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           useProxy: $checkedConvert('useProxy', (v) => v as bool? ?? false),
           favoritePreferred: $checkedConvert('favoritePreferred',
               (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
+          preferApRate:
+              $checkedConvert('preferApRate', (v) => v as bool? ?? true),
           priorityTags: $checkedConvert(
               'priorityTags',
               (v) => (v as Map?)?.map(
@@ -117,6 +119,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'autoResetFilter': instance.autoResetFilter,
       'useProxy': instance.useProxy,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
+      'preferApRate': instance.preferApRate,
       'priorityTags':
           instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
       'galleries': instance.galleries,

@@ -4390,6 +4390,17 @@ class S {
     );
   }
 
+  /// `攒石`
+  String get saint_quartz_plan {
+    return Intl.message(
+      '攒石',
+      name: 'saint_quartz_plan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `保存`
   String get save {
     return Intl.message(

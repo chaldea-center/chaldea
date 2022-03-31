@@ -393,6 +393,7 @@
   "restart_to_take_effect": "Restart to take effect",
   "restart_to_upgrade_hint": "重启以更新应用，若更新失败，请手动复制source文件夹到destination",
   "restore": "恢复",
+  "saint_quartz_plan": "攒石",
   "save": "保存",
   "save_to_photos": "保存到相册",
   "saved": "已保存",

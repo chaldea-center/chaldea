@@ -30,6 +30,7 @@ class LocalSettings {
   bool autoResetFilter;
   bool useProxy;
   FavoriteState? favoritePreferred;
+  bool preferApRate;
 
   Map<int, String> priorityTags;
   Map<String, bool> galleries;
@@ -62,6 +63,7 @@ class LocalSettings {
     this.autoResetFilter = true,
     this.useProxy = false,
     this.favoritePreferred,
+    this.preferApRate = true,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
     DisplaySettings? display,

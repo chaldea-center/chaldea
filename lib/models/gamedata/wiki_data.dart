@@ -728,12 +728,12 @@ class LimitedSummon {
     return false;
   }
 
-  List<int> get shownSvts {
-    return [
+  Iterable<int> get shownSvts {
+    return {
       for (final s in subSummons)
         for (final block in s.svts)
           if (block.display) ...block.ids
-    ];
+    };
   }
 }
 

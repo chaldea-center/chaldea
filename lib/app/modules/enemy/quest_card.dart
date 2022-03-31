@@ -36,6 +36,7 @@ class _QuestCardState extends State<QuestCard> {
   Quest get quest => widget.quest;
   bool showTrueName = false;
   bool? _use6th;
+  bool preferApRate = db2.settings.preferApRate;
 
   bool get use6th =>
       quest.type == QuestType.free && (_use6th ?? db2.curUser.use6thDropRate);
@@ -309,6 +310,38 @@ class _QuestCardState extends State<QuestCard> {
         ),
       ));
     }
+    if (show6th || curPhase.drops.isNotEmpty) {
+      children.add(Wrap(
+        spacing: 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(S.current.game_drop + ':'),
+          FilterGroup<bool>(
+            options: const [true, false],
+            values: FilterRadioData(preferApRate),
+            optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
+            combined: true,
+            onFilterChanged: (v) {
+              setState(() {
+                preferApRate = v.radioValue ?? preferApRate;
+              });
+            },
+          ),
+          if (show6th)
+            FilterGroup<bool>(
+              options: const [true],
+              values: FilterRadioData(use6th ? true : null),
+              optionBuilder: (v) => const Text('6th'),
+              combined: true,
+              onFilterChanged: (v) {
+                setState(() {
+                  _use6th = !use6th;
+                });
+              },
+            ),
+        ],
+      ));
+    }
     if (show6th) {
       final sheetData = db2.gameData.dropRate.getSheet(use6th);
       int runs =
@@ -316,28 +349,9 @@ class _QuestCardState extends State<QuestCard> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Wrap(
-            spacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(S.current.fgo_domus_aurea + ' (AP) ($runs runs)'),
-              if (show6th)
-                FilterOption(
-                  selected: use6th,
-                  value: '6th',
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text('6th'),
-                  ),
-                  onChanged: (v) => setState(() {
-                    _use6th = v;
-                  }),
-                  shrinkWrap: true,
-                ),
-            ],
-          ),
+          Text(S.current.fgo_domus_aurea + ' ($runs runs)'),
           const SizedBox(height: 2),
-          _getDropsWidget(show6th),
+          _getDomusAureaWidget(),
           const SizedBox(height: 3),
         ],
       ));
@@ -347,7 +361,7 @@ class _QuestCardState extends State<QuestCard> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('Rayshift Drops Rate (${curPhase.drops.first.runs} runs)'),
+          Text('Rayshift Drops (${curPhase.drops.first.runs} runs)'),
           const SizedBox(height: 2),
           _getRayshiftDrops(curPhase.drops),
           const SizedBox(height: 3),
@@ -364,96 +378,90 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  /// only drops of free quest useApRate
-  Widget _getDropsWidget(bool useDropRate) {
-    // <item, shownText>
-    Map<int, String?> dropTexts = {};
-    if (useDropRate) {
-      final dropRates = db2.gameData.dropRate.getSheet(use6th);
-      Map<int, double> sheetApRates = dropRates.getQuestApRate(widget.quest.id);
-      // not list in glpk
-      if (sheetApRates.isNotEmpty) {
-        final entryList = sheetApRates.entries.toList()
-          ..sort((a, b) => a.value.compareTo(b.value));
-        for (final entry in entryList) {
-          String v = entry.value >= 1000
-              ? entry.value.toInt().toString()
-              : entry.value.toStringAsPrecision(4);
-          dropTexts[entry.key] = double.parse(v).format(precision: 4);
-        }
-      }
+  int _compareItem(int a, int b) {
+    final itemA = db2.gameData.items[a], itemB = db2.gameData.items[b];
+    if (itemA != null && itemB != null) {
+      return itemB.priority.compareTo(itemA.priority);
+    } else if (itemA == null && itemB == null) {
+      return b.compareTo(a);
+    } else {
+      return itemA == null ? 1 : -1;
     }
-    if (dropTexts.isNotEmpty) {
-      return Wrap(
-        spacing: 3,
-        runSpacing: 2,
-        children: [
-          for (final entry in dropTexts.entries)
-            GameCardMixin.anyCardItemBuilder(
-              context: context,
-              id: entry.key,
-              text: entry.value,
-              width: 42,
-            )
-        ],
-      );
-    }
-    return const SizedBox();
   }
 
-  Widget _getRayshiftDrops(List<EnemyDrop> drops) {
-    drops = List.of(drops);
-    drops.sort((a, b) {
-      final itemA = a.toItem(), itemB = b.toItem();
-      if (itemA != null && itemB != null) {
-        return itemA.priority.compareTo(itemB.priority);
-      } else if (itemA == null && itemB == null) {
-        return a.objectId.compareTo(b.objectId);
-      } else {
-        return itemA == null ? -1 : 1;
+  /// only drops of free quest useApRate
+  Widget _getDomusAureaWidget() {
+    final dropRates = db2.gameData.dropRate.getSheet(use6th);
+    Map<int, String?> dropTexts = {};
+    if (preferApRate) {
+      final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
+      drops.sort((a, b) => _compareItem(a.key, b.key));
+      for (final entry in drops) {
+        dropTexts[entry.key] = entry.value > 1000
+            ? entry.value.toInt().toString()
+            : entry.value.format(maxDigits: 4);
       }
-    });
+    } else {
+      final drops =
+          dropRates.getQuestDropRate(widget.quest.id).entries.toList();
+      drops.sort((a, b) => _compareItem(a.key, b.key));
+      for (final entry in drops) {
+        dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 4);
+      }
+    }
+    if (dropTexts.isEmpty) return const Text('-');
     return Wrap(
       spacing: 3,
       runSpacing: 2,
       children: [
-        for (final drop in drops.reversed)
-          InkWell(
-            onTap: () {},
-            child: SizedBox(
-              width: 46,
-              height: 46 / 132 * 144,
-              child: Stack(
-                children: [
-                  drop.iconBuilder(
-                    context: context,
-                    text: '',
-                  ),
-                  Positioned.fill(
-                    right: 2,
-                    bottom: 3,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.bottomRight,
-                      child: ImageWithText.paintOutline(
-                        text: '×${drop.num.format(minVal: 1000)}\n' +
-                            (drop.dropCount / drop.runs)
-                                .format(percent: true, precision: 2),
-                        textAlign: TextAlign.end,
-                        textStyle: const TextStyle(
-                          fontWeight: ui.FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                        shadowColor: Theme.of(context).scaffoldBackgroundColor,
-                        shadowSize: 3,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+        for (final entry in dropTexts.entries)
+          GameCardMixin.anyCardItemBuilder(
+            context: context,
+            id: entry.key,
+            text: entry.value,
+            width: 42,
           )
       ],
+    );
+  }
+
+  Widget _getRayshiftDrops(List<EnemyDrop> drops) {
+    drops = List.of(drops);
+    drops.sort((a, b) => _compareItem(a.objectId, b.objectId));
+    List<Widget> children = [];
+    for (final drop in drops) {
+      String? text;
+      if (drop.runs != 0) {
+        double dropRate = drop.dropCount / drop.runs;
+
+        if (preferApRate) {
+          if (quest.consumeType == ConsumeType.ap &&
+              quest.consume > 0 &&
+              dropRate != 0.0) {
+            double apRate = quest.consume / dropRate;
+            text = apRate >= 1000
+                ? apRate.toInt().toString()
+                : apRate.format(precision: 4, maxDigits: 4);
+          }
+        } else {
+          text = dropRate.format(percent: true, maxDigits: 4);
+        }
+      }
+      if (text != null) {
+        text = '×${drop.num.format()}\n$text';
+      }
+      children.add(GameCardMixin.anyCardItemBuilder(
+        context: context,
+        id: drop.objectId,
+        width: 42,
+        text: text ?? '-',
+        textPadding: const EdgeInsets.only(top: 20),
+      ));
+    }
+    return Wrap(
+      spacing: 3,
+      runSpacing: 2,
+      children: children,
     );
   }
 

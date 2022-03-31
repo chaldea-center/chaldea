@@ -626,6 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Restart to upgrade. If the update fails, please manually copy the source folder to destination"),
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),
+        "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("SQ Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),

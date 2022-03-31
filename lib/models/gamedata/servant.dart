@@ -77,7 +77,10 @@ class BasicServant with GameCardMixin {
   String get icon => face;
 
   @override
-  String? get borderedIcon => icon;
+  String? get borderedIcon {
+    if (type == SvtType.combineMaterial) return super.borderedIcon;
+    return icon;
+  }
 
   @override
   void routeTo() => routeToId(Routes.servant);

@@ -43,6 +43,7 @@ There are plenty of work need to do.
 - [x] EXP demand calculation
 - [ ] Enemy(BaseServant) list and detail page
 - [x] Saint Quartz estimate
+  - [ ] poor performance
 - [ ] Events
   - [ ] Shop
   - [ ] Lottery
