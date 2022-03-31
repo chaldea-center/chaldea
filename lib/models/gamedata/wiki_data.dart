@@ -27,6 +27,8 @@ class Transl<K, V> {
 
   V get kr => mapping[key]?.kr ?? _default;
 
+  MappingBase<V>? get m => mapping[key];
+
   static bool get isJP =>
       db2.settings.resolvedPreferredRegions.first == Region.jp;
 

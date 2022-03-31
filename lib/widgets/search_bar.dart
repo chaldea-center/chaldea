@@ -157,6 +157,7 @@ abstract class SearchOptionsMixin<T> {
   }
 
   String getSummary(T datum);
+  Iterable<String?> getSummary2(T datum) => [];
 
   final Map<int, String> _caches = {};
 

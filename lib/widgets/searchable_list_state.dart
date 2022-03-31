@@ -2,8 +2,10 @@ import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/localized/localized.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/query.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_tile.dart';
@@ -21,11 +23,14 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
 
   /// String Search
   Query query = Query();
+  Query2 query2 = Query2();
 
   SearchOptionsMixin<T>? options;
 
   /// Generate the string summary of datum entry
   String getSummary(T datum);
+
+  Iterable<String?> getSummary2(T datum) => [];
 
   /// Extra filters, string search is executed before calling [filter],
   bool filter(T datum);
@@ -33,14 +38,26 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   void filterShownList({Comparator<T>? compare}) {
     shownList.clear();
     final keyword = searchEditingController.text.trim();
-    query.parse(keyword);
-    for (final T datum in wholeData) {
-      if (keyword.isNotEmpty || (showSearchBar && _allowSummary)) {
-        String summary = getSummary(datum);
-        if (!query.match(summary)) continue;
+    if (runChaldeaNext) {
+      query2.parse(keyword);
+      for (final T datum in wholeData) {
+        if (keyword.isNotEmpty || (showSearchBar && _allowSummary)) {
+          if (!query2.match(getSummary2(datum))) continue;
+        }
+        if (filter(datum)) {
+          shownList.add(datum);
+        }
       }
-      if (filter(datum)) {
-        shownList.add(datum);
+    } else {
+      query.parse(keyword);
+      for (final T datum in wholeData) {
+        if (keyword.isNotEmpty || (showSearchBar && _allowSummary)) {
+          String summary = getSummary(datum);
+          if (!query.match(summary)) continue;
+        }
+        if (filter(datum)) {
+          shownList.add(datum);
+        }
       }
     }
     if (compare != null) shownList.sort(compare);
@@ -71,7 +88,8 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
           showSearchBar = !showSearchBar;
           if (!showSearchBar) searchEditingController.text = '';
           if (showSearchBar && !_allowSummary) {
-            Future.delayed(kThemeAnimationDuration, () {
+            EasyDebounce.debounce('query_string', const Duration(seconds: 1),
+                () {
               if (mounted) {
                 setState(() {
                   _allowSummary = true;

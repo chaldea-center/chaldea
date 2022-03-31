@@ -7,6 +7,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/searchable_list_state.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../common/filter_page_base.dart';
@@ -38,7 +39,9 @@ class CraftListPageState extends State<CraftListPage>
     if (db2.settings.autoResetFilter) {
       filterData.reset();
     }
-    // options = _CraftSearchOptions(onChanged: (_) => safeSetState());
+    options = _CraftSearchOptions(onChanged: (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -68,7 +71,7 @@ class CraftListPageState extends State<CraftListPage>
               ),
             ),
           ),
-          // searchIcon,
+          searchIcon,
         ],
       ),
     );
@@ -122,7 +125,12 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   String getSummary(CraftEssence ce) {
-    return options?.getSummary(ce) ?? '';
+    throw UnimplementedError();
+  }
+
+  @override
+  Iterable<String?> getSummary2(CraftEssence ce) sync* {
+    yield* options?.getSummary2(ce) ?? [];
   }
 
   @override
@@ -167,93 +175,69 @@ class CraftListPageState extends State<CraftListPage>
   }
 }
 
-// class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
-//   bool basic;
-//
-//   bool skill;
-//   bool description;
-//   @override
-//   ValueChanged? onChanged;
-//
-//   _CraftSearchOptions({
-//     this.basic = true,
-//     this.skill = true,
-//     this.description = false,
-//     this.onChanged,
-//   });
-//
-//   @override
-//   Widget builder(BuildContext context, StateSetter setState) {
-//     return Wrap(
-//       children: [
-//         CheckboxWithLabel(
-//           value: basic,
-//           label: Text(S.current.search_option_basic),
-//           onChanged: (v) {
-//             basic = v ?? basic;
-//             setState(() {});
-//             updateParent();
-//           },
-//         ),
-//         CheckboxWithLabel(
-//           value: skill,
-//           label: Text(S.current.skill),
-//           onChanged: (v) {
-//             skill = v ?? skill;
-//             setState(() {});
-//             updateParent();
-//           },
-//         ),
-//         CheckboxWithLabel(
-//           value: description,
-//           label: Text(S.current.card_description),
-//           onChanged: (v) {
-//             description = v ?? description;
-//             setState(() {});
-//             updateParent();
-//           },
-//         ),
-//       ],
-//     );
-//   }
-//
-//   @override
-//   String getSummary(CraftEssence ce) {
-//     StringBuffer buffer = StringBuffer();
-//     if (basic) {
-//       buffer.write(getCache(
-//         ce,
-//         'basic',
-//         () => [
-//           ce.no.toString(),
-//           ce.gameId.toString(),
-//           ce.mcLink,
-//           ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
-//           ...Utils.getSearchAlphabetsForList(ce.illustrators,
-//               [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
-//           ...Utils.getSearchAlphabetsForList(ce.characters),
-//         ],
-//       ));
-//     }
-//     if (skill) {
-//       buffer.write(getCache(
-//         ce,
-//         'skill',
-//         () => [
-//           ...Utils.getSearchAlphabets(ce.skill, null, ce.skillEn),
-//           ...Utils.getSearchAlphabets(ce.skillMax, null, ce.skillMaxEn),
-//           ...Utils.getSearchAlphabetsForList(ce.eventSkills),
-//         ],
-//       ));
-//     }
-//     if (description) {
-//       buffer.write(getCache(
-//         ce,
-//         'description',
-//         () => Utils.getSearchAlphabets(
-//             ce.description, ce.descriptionJp, ce.descriptionEn),
-//       ));
-//     }
-//     return buffer.toString();
-//   }
-// }
+class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
+  bool basic;
+
+  bool skill;
+  @override
+  ValueChanged? onChanged;
+
+  _CraftSearchOptions({
+    this.basic = true,
+    this.skill = true,
+    this.onChanged,
+  });
+
+  @override
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: basic,
+          label: Text(S.current.search_option_basic),
+          onChanged: (v) {
+            basic = v ?? basic;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: skill,
+          label: Text(S.current.skill),
+          onChanged: (v) {
+            skill = v ?? skill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  String getSummary(CraftEssence datum) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Iterable<String?> getSummary2(CraftEssence ce) sync* {
+    if (basic) {
+      yield ce.collectionNo.toString();
+      yield ce.id.toString();
+      yield* SearchUtil.getAllRegion(ce.lName);
+      yield* SearchUtil.getAllRegion(Transl.cvNames(ce.profile.cv));
+      yield* SearchUtil.getAllRegion(
+          Transl.illustratorNames(ce.profile.illustrator));
+    }
+    if (skill) {
+      for (final skill in ce.skills) {
+        yield* SearchUtil.getAllRegion(skill.lName);
+        yield* SearchUtil.getAllRegion(
+            Transl.skillDetail(skill.unmodifiedDetail ?? ''));
+        for (final skillAdd in skill.skillAdd) {
+          yield* SearchUtil.getAllRegion(Transl.skillNames(skillAdd.name));
+        }
+      }
+    }
+  }
+}
