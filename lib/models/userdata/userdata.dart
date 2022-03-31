@@ -337,12 +337,12 @@ class SvtStatus {
 class SvtPlan {
   /// for cur status favorite=owned
   bool favorite;
-  int ascension;
-  List<int> skills;
-  List<int> appendSkills;
-  Map<int, int> costumes; // costume id, 11~
+  int ascension; // 0-4
+  List<int> skills; // 1-10
+  List<int> appendSkills; // 0-10
+  Map<int, int> costumes; // costume battleCharaId
 
-  int grail;
+  int grail; // 0~
 
   // 0-50, only ★4 fou-kun planned
   int fouHp;

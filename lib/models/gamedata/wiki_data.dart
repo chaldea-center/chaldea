@@ -116,7 +116,7 @@ class Transl<K, V> {
       Transl(_md.buffDetail, jp, jp);
 
   static Transl<String, String> funcPopuptext(String jp, [FuncType? type]) {
-    if ({'', '-', 'なし'}.contains(jp) && type != null) {
+    if ({'', '-', 'なし', 'None', 'none'}.contains(jp) && type != null) {
       return Transl(_md.funcPopuptext, type.name, type.name);
     }
     return Transl(_md.funcPopuptext, jp, jp);

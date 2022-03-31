@@ -171,7 +171,8 @@ class _GalleryPageState extends State<GalleryPage> {
         children: divideTiles(<Widget>[
           ListTile(
             title: Center(
-              child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)),
+              child: Text(S.current.test_info_pad,
+                  style: const TextStyle(fontSize: 18)),
             ),
           ),
           ListTile(

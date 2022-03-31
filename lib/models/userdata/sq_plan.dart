@@ -22,6 +22,8 @@ class SaintQuartzPlan {
 
   @JsonKey(ignore: true)
   MasterMission? extraMission;
+  @JsonKey(ignore: true)
+  VoidCallback? onSolved;
 
   SaintQuartzPlan({
     int? curSQ,
@@ -187,6 +189,7 @@ class SaintQuartzPlan {
         ..accTicket = lastDate.accTicket + curDate.addTicket
         ..accApple = lastDate.accApple + curDate.addApple;
     }
+    if (onSolved != null) onSolved!();
     return solution;
   }
 }

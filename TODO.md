@@ -21,7 +21,7 @@ There are plenty of work need to do.
 - [x] add `runs/samples` hint for drop data, both domus-aurea and rayshift
 - [ ] add AP rate and drop rate toggle for both
 - [x] only show last phase for free quest
-- [ ] QuestEnemy detail page
+- [x] QuestEnemy detail page
 - [ ] add AI link
 
 ## Servant
@@ -40,9 +40,9 @@ There are plenty of work need to do.
 - [x] Costume list and detail page
 - [x] Summon list and detail page
   - [ ] summon plan: ?
-- [ ] EXP demand calculation
+- [x] EXP demand calculation
 - [ ] Enemy(BaseServant) list and detail page
-- [ ] Saint Quartz estimate
+- [x] Saint Quartz estimate
 - [ ] Events
   - [ ] Shop
   - [ ] Lottery
@@ -54,6 +54,7 @@ There are plenty of work need to do.
 - [ ] Mission Solver
   - [x] choose free quests from event wars or main story
   - [ ] link from Event/Mission part
+  - [ ] hint for invalid mission
 - [x] Statistics
 - [ ] Buff/Function reversing
 - [ ] Support Party generation

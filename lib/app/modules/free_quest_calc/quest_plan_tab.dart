@@ -4,7 +4,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/l10n.dart';
-import '../common/quest_card.dart';
+import '../enemy/quest_card.dart';
 
 class QuestPlanTab extends StatefulWidget {
   final LPSolution? solution;

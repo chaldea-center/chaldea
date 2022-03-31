@@ -13,10 +13,14 @@ class SvtSkillTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = db2.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
     for (final skills in svt.groupedActiveSkills) {
-      children.add(_buildSkill(skills));
+      children.add(_buildSkill(
+        skills,
+        status.favorite ? status.skills.getOrNull(skills.first.num - 1) : null,
+      ));
     }
     children.add(SHeader(S.current.passive_skill));
     for (final skill in svt.classPassive) {
@@ -25,13 +29,20 @@ class SvtSkillTab extends StatelessWidget {
     children.add(SHeader(S.current.append_skill));
     svt.appendPassive.sort2((s) => s.num * 100 + s.priority);
     for (final appendSkill in svt.appendPassive) {
-      children.add(SkillDescriptor(skill: appendSkill.skill));
+      children.add(SkillDescriptor(
+        skill: appendSkill.skill,
+        level: status.favorite
+            ? status.appendSkills.getOrNull(appendSkill.num - 100)
+            : null,
+      ));
     }
     return ListView(children: children);
   }
 
-  Widget _buildSkill(List<NiceSkill> skills) {
-    if (skills.length == 1) return SkillDescriptor(skill: skills.first);
+  Widget _buildSkill(List<NiceSkill> skills, int? level) {
+    if (skills.length == 1) {
+      return SkillDescriptor(skill: skills.first, level: level);
+    }
     return ValueStatefulBuilder<NiceSkill>(
       initValue: skills.last,
       builder: (context, state) {
@@ -56,7 +67,7 @@ class SvtSkillTab extends StatelessWidget {
                 },
               ),
             ),
-            if (skill.aiIds?.isNotEmpty == true)
+            if (skill.condQuestId > 0)
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(
@@ -83,7 +94,7 @@ class SvtSkillTab extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            SkillDescriptor(skill: skill),
+            SkillDescriptor(skill: skill, level: level),
           ],
         );
       },

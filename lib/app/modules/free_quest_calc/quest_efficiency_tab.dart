@@ -5,7 +5,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-import '../common/quest_card.dart';
+import '../enemy/quest_card.dart';
 
 enum _EfficiencySort {
   item,

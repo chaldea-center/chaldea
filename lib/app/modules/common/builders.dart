@@ -236,4 +236,33 @@ class SharedBuilder {
       ),
     );
   }
+
+  static Widget traitList({
+    required BuildContext context,
+    required List<NiceTrait> traits,
+    TextStyle? style,
+    List<int>? hiddenTraits,
+  }) {
+    hiddenTraits ??= [Trait.canBeInBattle.id!];
+    traits = List.of(traits)
+      ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
+    List<Widget> children = traits
+        .map((e) => InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+              child: Text(
+                e.showName,
+                style: style ??
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+            )))
+        .toList();
+    children = divideTiles(children, divider: const Text('/'));
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
+      children: children,
+    );
+  }
 }

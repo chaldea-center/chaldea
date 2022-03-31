@@ -4,6 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'extra_mission_tab.dart';
 import 'setting_tab.dart';
@@ -26,11 +27,14 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    // not ideal
+    db2.curUser.saintQuartzPlan.onSolved = () {
+      if (mounted) setState(() {});
+    };
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging &&
           _tabController.index == _tabController.length - 1) {
         db2.curUser.saintQuartzPlan.solve();
-        setState(() {});
       }
     });
     AtlasApi.masterMission(10001).then((value) {
@@ -75,9 +79,9 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          KeepAliveBuilder(builder: (context) => SQSettingTab()),
-          KeepAliveBuilder(builder: (context) => ExtraMissionTab()),
-          KeepAliveBuilder(builder: (context) => SQTableTab()),
+          SQSettingTab(),
+          ExtraMissionTab(),
+          SQTableTab(),
         ],
       ),
     );

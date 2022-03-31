@@ -8,7 +8,7 @@ class ValListDsc extends StatelessWidget {
   final BaseFunction func;
   final List<DataVals> mutaingVals;
   final List<DataVals> originVals;
-  final int? selected;
+  final int? selected; // 1-10
   const ValListDsc({
     Key? key,
     required this.func,
@@ -28,15 +28,33 @@ class ValListDsc extends StatelessWidget {
         List<Widget> cols = [];
         for (int j = i * perLine; j < (i + 1) * perLine; j++) {
           final vals = mutaingVals.getOrNull(j);
+          Widget child;
           if (vals == null) {
-            cols.add(const SizedBox());
+            child = const SizedBox();
           } else {
-            cols.add(ValDsc(
+            child = ValDsc(
               func: func,
               vals: vals,
               originVals: originVals.getOrNull(j),
-            ));
+              color: j == 5 || j == 9
+                  ? Theme.of(context).colorScheme.secondary
+                  : null,
+            );
           }
+          if (selected != null && selected! - 1 == j) {
+            child = DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondaryContainer
+                        .withAlpha(180)),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: child,
+            );
+          }
+          cols.add(child);
         }
         rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
       }
@@ -54,24 +72,35 @@ class ValDsc extends StatelessWidget {
   final BaseFunction func;
   final DataVals vals;
   final DataVals? originVals;
+  final bool? ignoreRate;
+  final Color? color;
 
-  ValDsc({Key? key, required this.func, required this.vals, this.originVals})
-      : super(key: key);
+  ValDsc({
+    Key? key,
+    required this.func,
+    required this.vals,
+    this.originVals,
+    this.color,
+    this.ignoreRate,
+  }) : super(key: key);
 
   final List<String> parts = [];
 
   @override
   Widget build(BuildContext context) {
     describeFunc();
+    TextStyle style = TextStyle(color: color);
+    if (parts.isEmpty) {
+      style = style.copyWith(
+        fontStyle: FontStyle.italic,
+        color: Theme.of(context).textTheme.caption?.color,
+      );
+    }
     return InkWell(
       child: Text(
         parts.isEmpty ? vals.Value?.toString() ?? empty : parts.join(', '),
         textAlign: TextAlign.center,
-        style: parts.isEmpty
-            ? TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Theme.of(context).textTheme.caption?.color)
-            : null,
+        style: style,
       ),
       onTap: () {
         showDialog(
@@ -204,6 +233,7 @@ class ValDsc extends StatelessWidget {
         _addPercent(vals.DropRateCount, 10);
       }
     }
+    _maybeAddRate();
   }
 
   final empty = '';
@@ -240,11 +270,16 @@ class ValDsc extends StatelessWidget {
     if (vals.ParamAddValue != null) {
       _addPercent(vals.Rate, 10);
     }
+    _maybeAddRate();
+    _addInt(vals.Value);
+  }
+
+  void _maybeAddRate() {
+    if (ignoreRate == true) return;
     final _jsonVals = vals.toJson().keys.toSet();
     if (_jsonVals.length == 1 && _jsonVals.first == 'Rate') {
       _addPercent(vals.Rate, 10);
     }
-    _addInt(vals.Value);
   }
 }
 

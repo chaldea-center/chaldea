@@ -4,7 +4,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/quest_card.dart';
+import '../../enemy/quest_card.dart';
 
 class ItemObtainFreeTab extends StatefulWidget {
   final int itemId;

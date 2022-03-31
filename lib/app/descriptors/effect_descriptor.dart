@@ -11,11 +11,13 @@ import 'func/vals.dart';
 class SkillDescriptor extends StatelessWidget {
   final BaseSkill skill;
   final FuncApplyTarget targetTeam;
+  final int? level; // 1-10
 
   const SkillDescriptor({
     Key? key,
     required this.skill,
     this.targetTeam = FuncApplyTarget.player,
+    this.level,
   }) : super(key: key);
 
   @override
@@ -47,13 +49,7 @@ class SkillDescriptor extends StatelessWidget {
               ? Text('   CD: $cd0')
               : Text('   CD: $cd0→$cd1'),
     );
-    final divider = Divider(
-      indent: 16,
-      endIndent: 16,
-      height: 2,
-      thickness: 1,
-      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
-    );
+    const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     return TileGroup(
       children: [
         header,
@@ -66,7 +62,7 @@ class SkillDescriptor extends StatelessWidget {
         for (final func in skill.functions)
           if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
               func.funcTargetTeam == targetTeam)
-            EffectDescriptor(func: func),
+            EffectDescriptor(func: func, level: level),
       ],
     );
   }
@@ -75,22 +71,18 @@ class SkillDescriptor extends StatelessWidget {
 class TdDescriptor extends StatelessWidget {
   final NiceTd td;
   final FuncApplyTarget targetTeam;
+  final int? level;
 
   const TdDescriptor({
     Key? key,
     required this.td,
     this.targetTeam = FuncApplyTarget.player,
+    this.level,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final divider = Divider(
-      indent: 16,
-      endIndent: 16,
-      height: 2,
-      thickness: 1,
-      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(150),
-    );
+    const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final header = CustomTile(
       leading: Column(
         children: <Widget>[
@@ -147,7 +139,7 @@ class TdDescriptor extends StatelessWidget {
         for (final func in td.functions)
           if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
               func.funcTargetTeam == targetTeam)
-            EffectDescriptor(func: func),
+            EffectDescriptor(func: func, level: level),
         CustomTable(children: [
           CustomTableRow(children: [
             TableCellData(text: 'Hits', isHeader: true),
@@ -181,7 +173,9 @@ class TdDescriptor extends StatelessWidget {
 
 class EffectDescriptor extends StatelessWidget {
   final NiceFunction func;
-  const EffectDescriptor({Key? key, required this.func}) : super(key: key);
+  final int? level; // 1-10
+  const EffectDescriptor({Key? key, required this.func, this.level})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -237,6 +231,7 @@ class EffectDescriptor extends StatelessWidget {
         func: func,
         vals: staticVal,
         originVals: func.svals.getOrNull(0),
+        ignoreRate: true,
       );
 
       if (mutatingVals.isNotEmpty) {
@@ -244,6 +239,7 @@ class EffectDescriptor extends StatelessWidget {
           func: func,
           mutaingVals: mutatingVals,
           originVals: crossVals,
+          selected: level,
         ));
       }
       Widget child = Text(

@@ -13,7 +13,7 @@ body:
       label: What happened?
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
-      value: "Describe the details and attach screenshots if necessary"
+      value: "Describe the details and upload screenshots if necessary"
     validations:
       required: true
   - type: checkboxes
@@ -30,11 +30,12 @@ body:
         - label: macOS
     validations:
       required: true
-  - type: textarea
-    id: device
+  - type: input
+    id: device-info
     attributes:
-      label: Device Model
-      description: You can also fill more information about your device.
+      label: Device Info
+      description: You can also fill more information about your device and OS.
+      placeholder: iOS 15.2, Windows 10 21H2
   - type: dropdown
     id: region
     attributes:
@@ -46,11 +47,14 @@ body:
         - TW
         - NA
         - KR
-  - type: textarea
+  - type: input
     id: version
     attributes:
       label: App Version
       description: The full version with build number(1.7.0+700) in About page. For web, also paste the commit hash please.
+      placeholder: "1.7.0+700 9d3e35"
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:

@@ -11,7 +11,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-import 'filter_group.dart';
+import '../common/filter_group.dart';
+import 'quest_enemy.dart';
 
 class QuestCard extends StatefulWidget {
   final Quest quest;
@@ -301,10 +302,8 @@ class _QuestCardState extends State<QuestCard> {
           children: <Widget>[
             const Text('Fields'),
             Expanded(
-              child: Text(
-                curPhase.individuality.map((e) => e.showName).join(' / '),
-                textAlign: TextAlign.center,
-              ),
+              child: SharedBuilder.traitList(
+                  context: context, traits: curPhase.individuality),
             )
           ],
         ),
@@ -430,14 +429,16 @@ class _QuestCardState extends State<QuestCard> {
                     context: context,
                     text: '',
                   ),
-                  Positioned(
+                  Positioned.fill(
                     right: 2,
                     bottom: 3,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
+                      alignment: Alignment.bottomRight,
                       child: ImageWithText.paintOutline(
                         text: '×${drop.num.format(minVal: 1000)}\n' +
-                            (drop.dropCount / drop.runs).toStringAsPrecision(3),
+                            (drop.dropCount / drop.runs)
+                                .format(percent: true, precision: 2),
                         textAlign: TextAlign.end,
                         textStyle: const TextStyle(
                           fontWeight: ui.FontWeight.w600,
@@ -660,9 +661,10 @@ class QuestEnemyWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         // goto enemy page
-        if (enemy.svt.collectionNo > 0) {
-          router.push(url: Routes.servantI(enemy.svt.collectionNo));
-        }
+        // if (enemy.svt.collectionNo > 0) {
+        //   router.push(url: Routes.servantI(enemy.svt.collectionNo));
+        // }
+        router.push(child: QuestEnemyDetail(enemy: enemy));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -3,7 +3,7 @@ import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../utils/basic.dart';
+import '../utils/utils.dart';
 
 const Divider kHorizontalDivider = Divider(
     color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
@@ -91,6 +91,25 @@ class CustomTableRow extends StatefulWidget {
               .map((text) => (defaults ?? TableCellData(text: text))
                   .copyWith(text: text, isHeader: isHeader))
               .toList(),
+          color: color,
+          divider: divider,
+        );
+
+  CustomTableRow.fromTextsWithHeader({
+    Key? key,
+    required List<String> texts,
+    TableCellData? defaults,
+    List<bool?>? isHeaders,
+    Color? color,
+    VerticalDivider? divider = kVerticalDivider,
+  }) : this(
+          key: key,
+          children: List.generate(
+              texts.length,
+              (index) => (defaults ?? TableCellData(text: texts[index]))
+                  .copyWith(
+                      text: texts[index],
+                      isHeader: isHeaders?.getOrNull(index))),
           color: color,
           divider: divider,
         );

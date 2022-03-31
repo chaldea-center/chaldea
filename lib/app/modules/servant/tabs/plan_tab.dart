@@ -303,7 +303,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               plan.npLv = _end;
               updateState();
             },
-            detailPageBuilder: null,
+            detailPageBuilder: (context) =>
+                const SimpleCancelOkDialog(title: Text('Not Used yet')),
           ),
         buildPlanRow(
           useSlider: sliderMode,

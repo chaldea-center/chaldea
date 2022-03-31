@@ -89,7 +89,7 @@ class Quest {
     required this.afterClear,
     required this.recommendLv,
     required this.spotId,
-    required this.spotName,
+    required String spotName,
     required this.warId,
     this.warLongName = '',
     this.chapterId = 0,
@@ -104,9 +104,11 @@ class Quest {
     required this.noticeAt,
     required this.openedAt,
     required this.closedAt,
-  });
+  }) : spotName = spotName == '0' ? '' : spotName;
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
+
+  int getPhaseKey(int phase) => id * 100 + phase;
 
   Transl<String, String> get lName => Transl.questNames(name);
 
@@ -228,7 +230,7 @@ class QuestPhase extends Quest {
           closedAt: closedAt,
         );
 
-  int get key => id * 10 + phase;
+  int get key => getPhaseKey(phase);
 
   List<QuestEnemy> get allEnemies =>
       [for (final stage in stages) ...stage.enemies];
@@ -504,10 +506,10 @@ class QuestEnemy {
   int chargeTurn;
   List<NiceTrait> traits;
 
-  // EnemySkill skills;
+  EnemySkill skills;
   EnemyPassive classPassive;
 
-  // EnemyTd noblePhantasm;
+  EnemyTd noblePhantasm;
   EnemyServerMod serverMod;
 
   // EnemyAi ai;
@@ -544,12 +546,11 @@ class QuestEnemy {
     // required this.ai,
     EnemyScript? enemyScript,
     EnemyMisc? misc,
-  })  : classPassive = classPassive ?? EnemyPassive(),
+  })  : skills = skills ?? EnemySkill(),
+        classPassive = classPassive ?? EnemyPassive(),
         enemyScript = enemyScript ?? EnemyScript(),
+        noblePhantasm = noblePhantasm ?? EnemyTd(),
         misc = misc ?? EnemyMisc();
-
-  // skills = skills ?? EnemySkill(),
-  // noblePhantasm = noblePhantasm ?? EnemyTd(),
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
       _$QuestEnemyFromJson(json);

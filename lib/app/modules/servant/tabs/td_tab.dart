@@ -14,14 +14,16 @@ class SvtTdTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+    final status = db2.curUser.svtStatusOf(svt.collectionNo).cur;
     for (final tds in svt.groupedNoblePhantasms) {
-      children.add(_buildTds(context, tds));
+      children
+          .add(_buildTds(context, tds, status.favorite ? status.npLv : null));
     }
     return ListView(children: children);
   }
 
-  Widget _buildTds(BuildContext context, List<NiceTd> tds) {
-    if (tds.length == 1) return TdDescriptor(td: tds.first);
+  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level) {
+    if (tds.length == 1) return TdDescriptor(td: tds.first, level: level);
     return ValueStatefulBuilder<NiceTd>(
       initValue: tds.last,
       builder: (context, state) {
@@ -72,7 +74,7 @@ class SvtTdTab extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            TdDescriptor(td: td),
+            TdDescriptor(td: td, level: level),
           ],
         );
       },

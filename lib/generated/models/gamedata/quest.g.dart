@@ -352,10 +352,18 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
                   NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      skills: json['skills'] == null
+          ? null
+          : EnemySkill.fromJson(
+              Map<String, dynamic>.from(json['skills'] as Map)),
       classPassive: json['classPassive'] == null
           ? null
           : EnemyPassive.fromJson(
               Map<String, dynamic>.from(json['classPassive'] as Map)),
+      noblePhantasm: json['noblePhantasm'] == null
+          ? null
+          : EnemyTd.fromJson(
+              Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       serverMod: EnemyServerMod.fromJson(
           Map<String, dynamic>.from(json['serverMod'] as Map)),
       enemyScript: json['enemyScript'] == null
