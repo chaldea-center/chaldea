@@ -95,6 +95,7 @@
       window.isCNHost =
         "true" === window.localStorage.getItem("useProxy") ||
         _host.startsWith("cn.") ||
+        -1 != "narumi.cc".indexOf(_host) ||
         -1 != ["localhost"].indexOf(_host);
 
       window.flutterConfiguration = {

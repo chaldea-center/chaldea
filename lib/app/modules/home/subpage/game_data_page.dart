@@ -118,14 +118,11 @@ class _GameDataPageState extends State<GameDataPage> {
                       title: Text(S.current.update),
                       subtitle: Text('Progress: $hint', maxLines: 2),
                       onTap: () async {
-                        loader
-                            .reload(
-                                offline: false,
-                                onUpdate: (v) {
-                                  state.value = v;
-                                  state.updateState();
-                                })
-                            .then((value) async {
+                        loader.setOnUpdate((value) {
+                          state.value = value;
+                          state.updateState();
+                        });
+                        loader.reload(offline: false).then((value) async {
                           showDialog(
                             context: kAppKey.currentContext!,
                             builder: (context) {
@@ -143,7 +140,8 @@ class _GameDataPageState extends State<GameDataPage> {
                             },
                           );
                         }).onError((error, stackTrace) async {
-                          EasyLoading.showError('Update dataset failed!');
+                          EasyLoading.showError(
+                              'Update dataset failed!\n$error');
                         }).whenComplete(() {
                           state.updateState();
                         });

@@ -16,8 +16,12 @@ import '../../packages/network.dart';
 import '../../utils/basic.dart';
 import '../../utils/json_helper.dart';
 
+// const dataSourceBaseUrl = 'https://data.chaldea.center/';
+const dataSourceBaseUrl =
+    'https://cdn.jsdelivr.net/gh/chaldea-center/chaldea-data/dist/';
+
 class GameDataLoader {
-  final dio = Dio(BaseOptions(baseUrl: 'https://data.chaldea.center/'));
+  final dio = Dio(BaseOptions(baseUrl: dataSourceBaseUrl));
 
   // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
 
@@ -39,6 +43,12 @@ class GameDataLoader {
   double? _progress;
 
   dynamic error;
+
+  ValueChanged<double>? _onUpdate;
+  void setOnUpdate(ValueChanged<double>? onUpdate) {
+    _onUpdate = onUpdate;
+    _onUpdate?.call(0);
+  }
 
   Future<GameData> reload({
     ValueChanged<double>? onUpdate,
@@ -156,7 +166,7 @@ class GameDataLoader {
       // print('loaded ${fv.filename}');
       finished += 1;
       _progress = finished / (newVersion.files.length + 0.1);
-      onUpdate?.call(_progress!);
+      (onUpdate ?? _onUpdate)?.call(_progress!);
     }
 
     List<Future> futures = [];
@@ -207,7 +217,8 @@ class GameDataLoader {
     final _gamedata = GameData.fromJson(_gameJson);
     _gamedata.version = newVersion;
     _progress = finished / newVersion.files.length;
-    onUpdate?.call(_progress!);
+    (onUpdate ?? _onUpdate)?.call(_progress!);
+    _onUpdate = null;
     return _gamedata;
   }
 }
