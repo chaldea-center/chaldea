@@ -1,6 +1,8 @@
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/gamedata/wiki_data.dart';
+
 const double _kSearchBarPaddingBottom = 8.0;
 
 class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
@@ -72,7 +74,7 @@ class _SearchBarState extends State<SearchBar> {
               style: textStyle,
               // don't set other language
               // placeholder height will change
-              placeholder: 'Search: A +B -C',
+              placeholder: 'Search: A B -C',
               prefixInsets: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               suffixIcon: const Icon(Icons.clear),
@@ -156,7 +158,7 @@ abstract class SearchOptionsMixin<T> {
     }
   }
 
-  String getSummary(T datum);
+  String getSummary(T datum) => '';
   Iterable<String?> getSummary2(T datum) => [];
 
   final Map<int, String> _caches = {};
@@ -165,5 +167,9 @@ abstract class SearchOptionsMixin<T> {
     int key = hashValues(datum, subKey);
     return _caches[key] ??=
         ifAbsent().whereType<String>().toSet().join('\t') + '\t';
+  }
+
+  Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
+    yield* SearchUtil.getAllKeys(transl);
   }
 }

@@ -10,10 +10,10 @@ import '../../event/tabs/exchange_ticket_tab.dart';
 
 class ItemObtainEventTab extends StatefulWidget {
   final int itemId;
-  final bool filtrateOutdated;
+  final bool showOutdated;
 
   const ItemObtainEventTab(
-      {Key? key, required this.itemId, this.filtrateOutdated = true})
+      {Key? key, required this.itemId, this.showOutdated = false})
       : super(key: key);
 
   @override
@@ -41,7 +41,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   bool _whetherToShow(bool planned, bool outdated) {
     if (planned) return true;
-    if (widget.filtrateOutdated && outdated) return false;
+    if (!widget.showOutdated && outdated) return false;
     return true;
   }
 

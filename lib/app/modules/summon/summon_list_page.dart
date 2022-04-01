@@ -32,7 +32,7 @@ class _SummonListPageState extends State<SummonListPage>
   void initState() {
     super.initState();
     filterData.reset();
-    // filterData.reversed = Language.isJP || db.curUser.server == GameServer.jp;
+    filterData.reversed = db2.curUser.region == Region.jp;
   }
 
   @override
@@ -90,7 +90,7 @@ class _SummonListPageState extends State<SummonListPage>
               });
             },
           ),
-          // searchIcon,
+          searchIcon,
         ],
       ),
     );
@@ -118,7 +118,7 @@ class _SummonListPageState extends State<SummonListPage>
         summon.lName,
         maxLines: 2,
         maxFontSize: 14,
-        // style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
+        style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
       );
       String? subtitleText;
       if (db2.curUser.region == Region.cn) {
@@ -171,18 +171,17 @@ class _SummonListPageState extends State<SummonListPage>
   }
 
   @override
-  String getSummary(LimitedSummon summon) {
-    // return Utils.getSearchAlphabets(summon.name, summon.nameJp, summon.nameEn)
-    //     .join('\t');
-    return '';
+  Iterable<String?> getSummary2(LimitedSummon summon) sync* {
+    yield* SearchUtil.getAllKeys(
+        Transl.fromMapping(summon.id, summon.name, summon.id.toString()));
   }
 
   @override
   bool filter(LimitedSummon summon) {
     if (filterData.favorite && !plans.contains(summon.id)) return false;
-    // if (!filterData.showOutdated && summon.isOutdated() && !summon.isStory) {
-    //   return false;
-    // }
+    if (!filterData.showOutdated && summon.isOutdated()) {
+      return false;
+    }
     if (!filterData.category.matchOne(summon.type)) {
       return false;
     }

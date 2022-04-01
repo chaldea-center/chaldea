@@ -5,8 +5,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/custom_tile.dart';
-import 'package:chaldea/widgets/searchable_list_state.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -124,16 +122,6 @@ class CraftListPageState extends State<CraftListPage>
   }
 
   @override
-  String getSummary(CraftEssence ce) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Iterable<String?> getSummary2(CraftEssence ce) sync* {
-    yield* options?.getSummary2(ce) ?? [];
-  }
-
-  @override
   bool filter(CraftEssence ce) {
     if (!filterData.rarity.matchOne(ce.rarity)) {
       return false;
@@ -176,17 +164,12 @@ class CraftListPageState extends State<CraftListPage>
 }
 
 class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
-  bool basic;
-
-  bool skill;
+  bool basic = true;
+  bool skill = true;
   @override
   ValueChanged? onChanged;
 
-  _CraftSearchOptions({
-    this.basic = true,
-    this.skill = true,
-    this.onChanged,
-  });
+  _CraftSearchOptions({this.onChanged});
 
   @override
   Widget builder(BuildContext context, StateSetter setState) {
@@ -215,27 +198,20 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
   }
 
   @override
-  String getSummary(CraftEssence datum) {
-    throw UnimplementedError();
-  }
-
-  @override
   Iterable<String?> getSummary2(CraftEssence ce) sync* {
     if (basic) {
       yield ce.collectionNo.toString();
       yield ce.id.toString();
-      yield* SearchUtil.getAllRegion(ce.lName);
-      yield* SearchUtil.getAllRegion(Transl.cvNames(ce.profile.cv));
-      yield* SearchUtil.getAllRegion(
-          Transl.illustratorNames(ce.profile.illustrator));
+      yield* getAllKeys(ce.lName);
+      yield* getAllKeys(Transl.cvNames(ce.profile.cv));
+      yield* getAllKeys(Transl.illustratorNames(ce.profile.illustrator));
     }
     if (skill) {
       for (final skill in ce.skills) {
-        yield* SearchUtil.getAllRegion(skill.lName);
-        yield* SearchUtil.getAllRegion(
-            Transl.skillDetail(skill.unmodifiedDetail ?? ''));
+        yield* getAllKeys(skill.lName);
+        yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
         for (final skillAdd in skill.skillAdd) {
-          yield* SearchUtil.getAllRegion(Transl.skillNames(skillAdd.name));
+          yield* getAllKeys(Transl.skillNames(skillAdd.name));
         }
       }
     }

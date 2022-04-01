@@ -18,7 +18,7 @@
 class Query {
   String? _searchString;
   bool _caseSensitive = false;
-  final List<String> _optional = [];
+  // final List<String> _optional = [];
   final List<String> _mandatory = [];
   final List<String> _excluded = [];
 
@@ -39,7 +39,7 @@ class Query {
     phrases.removeWhere((item) => ['', '-', '+'].contains(item));
 
     // parse
-    _optional.clear();
+    // _optional.clear();
     _mandatory.clear();
     _excluded.clear();
     phrases.forEach((phrase) {
@@ -51,14 +51,14 @@ class Query {
           _excluded.add(phrase.substring(1));
           break;
         default:
-          _optional.add(phrase);
+          _mandatory.add(phrase);
           break;
       }
     });
   }
 
   bool match(String string) {
-    if (_optional.isEmpty && _mandatory.isEmpty && _excluded.isEmpty) {
+    if (_mandatory.isEmpty && _excluded.isEmpty) {
       return true;
     }
     if (!_caseSensitive) string = string.toLowerCase();
@@ -71,13 +71,7 @@ class Query {
     for (String p in _excluded) {
       if (string.contains(p)) return false;
     }
-    // optional
-    if (_optional.isEmpty) return true;
-    int matchedOptional = 0;
-    for (String p in _optional) {
-      if (string.contains(p)) matchedOptional += 1;
-    }
-    return matchedOptional > 0;
+    return true;
   }
 }
 

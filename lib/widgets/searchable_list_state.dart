@@ -28,9 +28,9 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   SearchOptionsMixin<T>? options;
 
   /// Generate the string summary of datum entry
-  String getSummary(T datum);
+  String getSummary(T datum) => options?.getSummary(datum) ?? '';
 
-  Iterable<String?> getSummary2(T datum) => [];
+  Iterable<String?> getSummary2(T datum) => options?.getSummary2(datum) ?? [];
 
   /// Extra filters, string search is executed before calling [filter],
   bool filter(T datum);

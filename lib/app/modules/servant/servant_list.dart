@@ -69,7 +69,9 @@ class ServantListPageState extends State<ServantListPage>
           ..add(false);
       }
     }
-    // options = _ServantOptions(onChanged: (_) => safeSetState());
+    options = _ServantOptions(onChanged: (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -128,7 +130,7 @@ class ServantListPageState extends State<ServantListPage>
       actions: <Widget>[
         IconButton(
             icon: Icon([
-              Icons.remove_circle, // other
+              Icons.remove_circle_outline, // other
               Icons.favorite, // owned
               Icons.favorite_border, // planned
             ][favoriteState.index]),
@@ -154,7 +156,7 @@ class ServantListPageState extends State<ServantListPage>
             ),
           ),
         ),
-        // searchIcon,
+        searchIcon,
         PopupMenuButton(
           itemBuilder: (context) {
             return [
@@ -1098,22 +1100,15 @@ class ServantListPageState extends State<ServantListPage>
 }
 
 class _ServantOptions with SearchOptionsMixin<Servant> {
-  bool basic;
-  bool activeSkill;
-  bool classPassive;
-  bool appendSkill;
-  bool noblePhantasm;
+  bool basic = true;
+  bool activeSkill = true;
+  bool classPassive = true;
+  bool appendSkill = false;
+  bool noblePhantasm = true;
   @override
   ValueChanged? onChanged;
 
-  _ServantOptions({
-    this.basic = true,
-    this.activeSkill = true,
-    this.classPassive = true,
-    this.appendSkill = true,
-    this.noblePhantasm = true,
-    this.onChanged,
-  });
+  _ServantOptions({this.onChanged});
 
   @override
   Widget builder(BuildContext context, StateSetter setState) {
@@ -1169,96 +1164,47 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
   }
 
   @override
-  String getSummary(Servant svt) {
-    StringBuffer buffer = StringBuffer();
+  Iterable<String?> getSummary2(Servant svt) sync* {
     if (basic) {
-      buffer.write(getCache(
-        svt,
-        'basic',
-        () => [
-          // svt.no.toString(),
-          // svt.svtId.toString(),
-          // svt.mcLink,
-          // ...Utils.getSearchAlphabets(
-          //     svt.info.name, svt.info.nameJp, svt.info.nameEn),
-          // ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-          // ...Utils.getSearchAlphabetsForList(
-          //     svt.info.cv, svt.info.cvJp, svt.info.cvEn),
-          // ...Utils.getSearchAlphabets(svt.info.illustrator,
-          //     svt.info.illustratorJp, svt.info.illustratorEn),
-          // ...svt.info.traits,
-        ],
-      ));
+      yield svt.collectionNo.toString();
+      yield svt.id.toString();
+      yield* getAllKeys(svt.lName);
+      yield* getAllKeys(Transl.cvNames(svt.profile.cv));
+      yield* getAllKeys(Transl.illustratorNames(svt.profile.illustrator));
+      for (final nickname in svt.extra.nameOther) {
+        yield SearchUtil.getCN(nickname);
+      }
     }
-
     if (activeSkill) {
-      buffer.write(getCache(svt, 'activeSkill', () {
-        List<String?> _ss = [];
-        // [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
-        //   activeSkill.skills.forEach((skill) {
-        //     _ss.addAll([
-        //       skill.name,
-        //       skill.nameJp,
-        //       for (var e in skill.effects) e.description
-        //     ]);
-        //   });
-        // });
-        return _ss;
-      }));
+      for (final skill in svt.skills) {
+        yield* _getSkillKeys(skill);
+      }
     }
-
     if (classPassive) {
-      buffer.write(getCache(svt, 'classPassive', () {
-        List<String?> _ss = [];
-        // [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
-        //   _ss.addAll([
-        //     skill.name,
-        //     skill.nameJp,
-        //     skill.nameEn,
-        //     for (var e in skill.effects) ...[
-        //       e.description,
-        //       e.descriptionJp,
-        //       e.descriptionEn,
-        //     ]
-        //   ]);
-        // });
-        return _ss;
-      }));
-    }
-    if (appendSkill) {
-      buffer.write(getCache(svt, 'appendSkill', () {
-        List<String?> _ss = [];
-        // svt.appendSkills.forEach((skill) {
-        //   _ss.addAll([
-        //     skill.name,
-        //     skill.nameJp,
-        //     skill.nameEn,
-        //     for (var e in skill.effects) ...[
-        //       e.description,
-        //       e.descriptionJp,
-        //       e.descriptionEn,
-        //     ]
-        //   ]);
-        // });
-        return _ss;
-      }));
+      for (final skill in svt.classPassive) {
+        yield* _getSkillKeys(skill);
+      }
     }
 
-    if (noblePhantasm) {
-      buffer.write(getCache(svt, 'noblePhantasm', () {
-        List<String?> _ss = [];
-        // [...svt.noblePhantasm, ...svt.noblePhantasmEn].forEach((td) {
-        //   _ss.addAll([
-        //     td.name,
-        //     td.nameJp,
-        //     td.upperName,
-        //     td.upperNameJp,
-        //     for (var e in td.effects) e.description
-        //   ]);
-        // });
-        return _ss;
-      }));
+    if (appendSkill) {
+      for (final skill in svt.appendPassive) {
+        yield* _getSkillKeys(skill.skill);
+      }
     }
-    return buffer.toString();
+    if (noblePhantasm) {
+      for (final td in svt.noblePhantasms) {
+        yield* _getSkillKeys(td);
+      }
+    }
+  }
+
+  Iterable<String?> _getSkillKeys(SkillOrTd skill) sync* {
+    yield* getAllKeys(skill.lName);
+    yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
+    if (skill is BaseSkill) {
+      for (final skillAdd in skill.skillAdd) {
+        yield* getAllKeys(Transl.skillNames(skillAdd.name));
+      }
+    }
   }
 }

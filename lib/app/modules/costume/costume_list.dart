@@ -3,6 +3,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -72,21 +73,14 @@ class _CostumeListPageState extends State<CostumeListPage>
   }
 
   @override
-  String getSummary(NiceCostume costume) {
-    // final svt = db2.gameData.servants[costume];
-    // List<String> searchStrings = [
-    //   costume.no.toString(),
-    //   ...Utils.getSearchAlphabets(costume.name, costume.nameJp, costume.nameEn),
-    //   if (svt != null) ...[
-    //     ...Utils.getSearchAlphabets(
-    //         svt.info.name, svt.info.nameJp, svt.info.nameEn),
-    //     ...Utils.getSearchAlphabetsForList(
-    //         svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
-    //     ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-    //   ]
-    // ];
-    // return searchStrings.toSet().join('\t');
-    return '';
+  Iterable<String?> getSummary2(NiceCostume costume) sync* {
+    final svt = costume.owner;
+    yield costume.costumeCollectionNo.toString();
+    yield costume.battleCharaId.toString();
+    yield* SearchUtil.getAllKeys(costume.lName);
+    if (svt != null) {
+      yield* SearchUtil.getAllKeys(svt.lName);
+    }
   }
 
   @override

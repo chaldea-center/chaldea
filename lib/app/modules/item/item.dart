@@ -34,7 +34,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   bool favorite = true;
 
   // event
-  bool filtrateOutdated = true;
+  bool showOutdated = false;
 
   //free tab
   bool isSvtCoin = false;
@@ -103,7 +103,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                     )),
                 ItemObtainFreeTab(itemId: widget.itemId),
                 ItemObtainEventTab(
-                    itemId: widget.itemId, filtrateOutdated: filtrateOutdated),
+                    itemId: widget.itemId, showOutdated: showOutdated),
                 ItemObtainInterludeTab(
                     itemId: widget.itemId, favorite: favorite),
                 ItemInfoTab(itemId: widget.itemId),
@@ -167,11 +167,12 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   Widget get filterOutdatedButton {
     return IconButton(
-      icon: Icon(filtrateOutdated ? Icons.timer : Icons.timer_off),
+      icon:
+          Icon(showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
       tooltip: 'Outdated',
       onPressed: () {
         setState(() {
-          filtrateOutdated = !filtrateOutdated;
+          showOutdated = !showOutdated;
         });
       },
     );

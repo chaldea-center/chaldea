@@ -14,24 +14,24 @@ class SearchUtil {
 
   static String? getJP(String? words) {
     if (words == null) return null;
-    return _jpKana[words] ??= [
-      words,
-      kanaKit.toRomaji(words),
+    return _jpKana[words] ??= {
+      // not support for Romaji of Chinese characters
+      kanaKit.toRomaji(words).replaceAll(' ', ''),
       kanaKit.toHiragana(words),
-    ].join('\t');
+      words,
+    }.join('\t');
   }
 
   static String? getCN(String? words) {
     if (words == null) return null;
-    return _zhPinyin[words] ??= [
-      // return [
-      words,
-      PinyinHelper.getPinyinE(words),
+    return _zhPinyin[words] ??= {
+      PinyinHelper.getPinyinE(words).replaceAll(' ', ''),
       PinyinHelper.getShortPinyin(words),
-    ].join('\t');
+      words,
+    }.join('\t');
   }
 
-  static Iterable<String?> getAllRegion(Transl<dynamic, String> transl) sync* {
+  static Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
     yield getJP(transl.m?.jp);
     yield getCN(transl.m?.cn);
     yield getCN(transl.m?.tw);
@@ -48,10 +48,10 @@ class SearchUtil {
     region ??= db2.settings.resolvedPreferredRegions.first;
     switch (region) {
       case Region.jp:
-        return getJP(words)!;
+        return getJP(words)!.toLowerCase();
       case Region.cn:
       case Region.tw:
-        return getCN(words)!;
+        return getCN(words)!.toLowerCase();
       case Region.na:
         return words.toLowerCase();
       case Region.kr:

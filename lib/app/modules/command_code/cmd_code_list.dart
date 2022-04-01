@@ -5,8 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/custom_tile.dart';
-import 'package:chaldea/widgets/searchable_list_state.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../common/filter_page_base.dart';
@@ -38,7 +37,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     if (db2.settings.autoResetFilter) {
       filterData.reset();
     }
-    // options = _CraftSearchOptions(onChanged: (_) => safeSetState());
+    options = _CmdCodeSearchOptions(onChanged: (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -68,7 +69,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
               ),
             ),
           ),
-          // searchIcon,
+          searchIcon,
         ],
       ),
     );
@@ -110,11 +111,6 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   }
 
   @override
-  String getSummary(CommandCode cc) {
-    return options?.getSummary(cc) ?? '';
-  }
-
-  @override
   bool filter(CommandCode ccc) {
     if (!filterData.rarity.matchOne(ccc.rarity)) {
       return false;
@@ -138,5 +134,59 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
       selected = cc;
     }
     setState(() {});
+  }
+}
+
+class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
+  bool basic = true;
+  bool skill = true;
+  @override
+  ValueChanged? onChanged;
+
+  _CmdCodeSearchOptions({this.onChanged});
+
+  @override
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: basic,
+          label: Text(S.current.search_option_basic),
+          onChanged: (v) {
+            basic = v ?? basic;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: skill,
+          label: Text(S.current.skill),
+          onChanged: (v) {
+            skill = v ?? skill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Iterable<String?> getSummary2(CommandCode code) sync* {
+    if (basic) {
+      yield code.collectionNo.toString();
+      yield code.id.toString();
+      yield* getAllKeys(code.lName);
+      yield* getAllKeys(Transl.illustratorNames(code.illustrator));
+    }
+    if (skill) {
+      for (final skill in code.skills) {
+        yield* getAllKeys(skill.lName);
+        yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
+        for (final skillAdd in skill.skillAdd) {
+          yield* getAllKeys(Transl.skillNames(skillAdd.name));
+        }
+      }
+    }
   }
 }

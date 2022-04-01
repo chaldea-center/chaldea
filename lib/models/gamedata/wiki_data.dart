@@ -10,24 +10,24 @@ import 'skill.dart';
 part '../../generated/models/gamedata/wiki_data.g.dart';
 
 class Transl<K, V> {
-  final Map<K, MappingBase<V>> mapping;
+  final Map<K, MappingBase<V>> mappings;
   final MappingBase<V>? _m;
   final K key;
   final V _default;
 
-  Transl(this.mapping, this.key, this._default) : _m = mapping[key];
+  Transl(this.mappings, this.key, this._default) : _m = mappings[key];
 
-  V get jp => mapping[key]?.jp ?? _default;
+  V get jp => mappings[key]?.jp ?? _default;
 
-  V get cn => mapping[key]?.cn ?? _default;
+  V get cn => mappings[key]?.cn ?? _default;
 
-  V get tw => mapping[key]?.tw ?? _default;
+  V get tw => mappings[key]?.tw ?? _default;
 
-  V get na => mapping[key]?.na ?? _default;
+  V get na => mappings[key]?.na ?? _default;
 
-  V get kr => mapping[key]?.kr ?? _default;
+  V get kr => mappings[key]?.kr ?? _default;
 
-  MappingBase<V>? get m => mapping[key];
+  MappingBase<V>? get m => mappings[key];
 
   static bool get isJP =>
       db2.settings.resolvedPreferredRegions.first == Region.jp;
@@ -38,7 +38,7 @@ class Transl<K, V> {
 
   V get l {
     for (final region in db2.settings.resolvedPreferredRegions) {
-      final v = mapping[key]?.ofRegion(region);
+      final v = mappings[key]?.ofRegion(region);
       if (v != null) return v;
     }
     return _default;
@@ -52,6 +52,10 @@ class Transl<K, V> {
   }
 
   static MappingData get _md => db2.gameData.mappingData;
+
+  Transl.fromMapping(this.key, MappingBase<V> m, this._default)
+      : _m = m,
+        mappings = {key: m};
 
   static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
   static Transl<int, String> svtClass(int id) =>
@@ -220,7 +224,7 @@ class MappingData {
         entityNames = _cast(entityNames, Region.jp),
         tdTypes = _cast(tdTypes, Region.jp),
         bgmNames = _cast(bgmNames, Region.jp),
-        summonNames = _cast(summonNames, Region.jp),
+        summonNames = _cast(summonNames, Region.cn),
         charaNames = _cast(charaNames, Region.cn),
         buffNames = _cast(buffNames, Region.jp),
         buffDetail = _cast(buffDetail, Region.jp),
@@ -736,6 +740,13 @@ class LimitedSummon {
         for (final block in s.svts)
           if (block.display) ...block.ids
     };
+  }
+
+  bool isOutdated() {
+    final date = startTime.ofRegion(db2.curUser.region)?.sec2date();
+    if (date == null) return false;
+    return date.isBefore(DateTime.now()
+        .subtract(Duration(days: db2.curUser.region == Region.jp ? 365 : 100)));
   }
 }
 

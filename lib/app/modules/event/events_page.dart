@@ -56,7 +56,8 @@ class _EventListPageState extends State<EventListPage>
               });
             },
             tooltip: 'Outdated',
-            icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
+            icon: Icon(
+                showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
           ),
           IconButton(
             icon: FaIcon(

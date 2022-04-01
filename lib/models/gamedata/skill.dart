@@ -14,15 +14,20 @@ part 'vals.dart';
 part '../../generated/models/gamedata/skill.g.dart';
 
 abstract class SkillOrTd {
+  String get name;
+  Transl<String, String> get lName;
+  String get ruby;
   String? get unmodifiedDetail;
-  List<NiceFunction> get functions;
   String? get lDetail;
+  List<NiceFunction> get functions;
 }
 
 @JsonSerializable()
 class BaseSkill implements SkillOrTd {
   int id;
+  @override
   String name;
+  @override
   String ruby;
   @override
   String? unmodifiedDetail; // String? detail;
@@ -57,6 +62,7 @@ class BaseSkill implements SkillOrTd {
   factory BaseSkill.fromJson(Map<String, dynamic> json) =>
       _$BaseSkillFromJson(json);
 
+  @override
   Transl<String, String> get lName => Transl.skillNames(name);
 
   @override
@@ -140,7 +146,9 @@ class NiceTd implements SkillOrTd {
   int id;
   int num;
   CardType card;
+  @override
   String name;
+  @override
   String ruby;
   String? icon;
   String rank;
@@ -202,6 +210,9 @@ class NiceTd implements SkillOrTd {
     }
     return _damageType ??= NpDamageType.none;
   }
+
+  @override
+  Transl<String, String> get lName => Transl.tdNames(name);
 
   @override
   String? get lDetail {
