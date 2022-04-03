@@ -51,24 +51,24 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     ]),
                     if (!Transl.isJP)
                       CustomTableRow.fromTexts(texts: [item.name]),
-                    CustomTableRow.fromTexts(texts: [item.lName.na]),
+                    if (!Transl.isEN)
+                      CustomTableRow.fromTexts(texts: [item.lName.na]),
                     CustomTableRow(children: [
                       TableCellData(text: 'ID', isHeader: true),
                       TableCellData(text: item.id.toString(), flex: 2),
-                      if (svtCoinOwner != null)
-                        TableCellData(
-                          flex: 3,
-                          child: TextButton(
-                            onPressed: () => svtCoinOwner!.routeTo(),
-                            child: Text(svtCoinOwner!.lName.l),
-                          ),
-                        )
                     ]),
                   ],
                 ),
               ),
             ],
           ),
+          if (svtCoinOwner != null)
+            CustomTableRow.fromChildren(children: [
+              TextButton(
+                onPressed: () => svtCoinOwner!.routeTo(),
+                child: Text(svtCoinOwner!.lName.l),
+              )
+            ]),
           CustomTableRow.fromTexts(
               texts: [S.current.card_description], isHeader: true),
           CustomTableRow(

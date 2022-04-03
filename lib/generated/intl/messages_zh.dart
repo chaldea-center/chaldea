@@ -420,11 +420,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请在设置-游戏数据中重新加载默认资源"),
         "loading_data_failed":
             MessageLookupByLibrary.simpleMessage("Loading Data Failed"),
+        "login_change_name": MessageLookupByLibrary.simpleMessage("修改用户名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密码"),
+        "login_confirm_password": MessageLookupByLibrary.simpleMessage("确认密码"),
         "login_first_hint": MessageLookupByLibrary.simpleMessage("请先登陆"),
         "login_forget_pwd": MessageLookupByLibrary.simpleMessage("忘记密码"),
         "login_login": MessageLookupByLibrary.simpleMessage("登陆"),
         "login_logout": MessageLookupByLibrary.simpleMessage("登出"),
+        "login_new_name": MessageLookupByLibrary.simpleMessage("新用户名"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新密码"),
         "login_password": MessageLookupByLibrary.simpleMessage("密码"),
         "login_password_error":

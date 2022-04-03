@@ -93,12 +93,13 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         final name = quest.lDispName, nameJp = quest.dispName;
         return ListTile(
           title: Text(quest.lDispName),
-          subtitle: name == nameJp ? null : Text(nameJp),
+          subtitle:
+              Text('${quest.consume}AP  ' + (name == nameJp ? '' : nameJp)),
           trailing: Text((widget.showResult ? '×' : '+') + ' $count'),
         );
       },
       contentBuilder: (context) {
-        List<Widget> children = [const SHeader('Mission Details')];
+        List<Widget> children = [];
         for (final mission in solution.missions) {
           int count = MissionSolver.countMissionTarget(mission, quest);
           if (count <= 0) continue;
@@ -115,8 +116,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         children = divideTiles(children,
             divider: const Divider(indent: 16, endIndent: 16));
-        children.insert(widget.showResult ? 0 : children.length,
-            QuestCard(quest: quest, region: solution.region));
+        children.add(QuestCard(quest: quest, region: solution.region));
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: children,

@@ -3,6 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/icon_cache_manager.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
@@ -137,6 +138,49 @@ class _GalleryPageState extends State<GalleryPage> {
 
   List<Widget> get notifications {
     List<Widget> children = [];
+    children.add(SimpleAccordion(
+      headerBuilder: (context, expanded) => ListTile(
+        leading: const Icon(Icons.warning_amber_rounded),
+        horizontalTitleGap: 0,
+        title: Text(LocalizedText.of(
+            chs: '大版本更新提示',
+            jpn: 'メジャーバージョン更新通知',
+            eng: 'Notice on Next Major Version')),
+      ),
+      contentBuilder: (context) {
+        Widget child = Column(
+          children: [
+            ListTile(
+              subtitle: Text(
+                LocalizedText.of(
+                  chs: '新版本v2.x进行了部分重构，与旧版存在一定的不兼容，升级前请做好备份，更多请查阅文档。',
+                  jpn:
+                      '新しいバージョンv2.xは部分的にリファクタリングされており、古いバージョンとはある程度の非互換性があります。アップグレードする前にバックアップを作成してください。詳細については、ドキュメントを参照してください。',
+                  eng:
+                      'The new version v2.x has been refactored, and may be incompatibable with current version. Please make a backup before upgrading. For more information, please refer to the docs.',
+                ),
+              ),
+            ),
+            ButtonBar(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    launch(Language.isZH
+                        ? '$kProjectDocRoot/zh/v2_release.html'
+                        : '$kProjectDocRoot/v2_release.html');
+                  },
+                  child: Text(S.current.settings_documents),
+                )
+              ],
+            )
+          ],
+        );
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(end: 8),
+          child: child,
+        );
+      },
+    ));
 
     if (PlatformU.isMacOS && mac1014Alert.get() != false || kDebugMode) {
       children.add(Container(

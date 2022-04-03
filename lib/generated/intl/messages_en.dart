@@ -489,14 +489,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please reload default gamedata in Settings-Gamedata"),
         "loading_data_failed":
             MessageLookupByLibrary.simpleMessage("Loading Data Failed"),
+        "login_change_name":
+            MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("Change Password"),
+        "login_confirm_password":
+            MessageLookupByLibrary.simpleMessage("Confirm Password"),
         "login_first_hint":
             MessageLookupByLibrary.simpleMessage("Please login first"),
         "login_forget_pwd":
             MessageLookupByLibrary.simpleMessage("Forget Password"),
         "login_login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "login_new_name": MessageLookupByLibrary.simpleMessage("New Name"),
         "login_new_password":
             MessageLookupByLibrary.simpleMessage("New Password"),
         "login_password": MessageLookupByLibrary.simpleMessage("Password"),

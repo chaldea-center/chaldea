@@ -3367,11 +3367,33 @@ class S {
     );
   }
 
+  /// `修改用户名`
+  String get login_change_name {
+    return Intl.message(
+      '修改用户名',
+      name: 'login_change_name',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `修改密码`
   String get login_change_password {
     return Intl.message(
       '修改密码',
       name: 'login_change_password',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `确认密码`
+  String get login_confirm_password {
+    return Intl.message(
+      '确认密码',
+      name: 'login_confirm_password',
       desc: '',
       locale: localeName,
       args: [],
@@ -3416,6 +3438,17 @@ class S {
     return Intl.message(
       '登出',
       name: 'login_logout',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `新用户名`
+  String get login_new_name {
+    return Intl.message(
+      '新用户名',
+      name: 'login_new_name',
       desc: '',
       locale: localeName,
       args: [],
