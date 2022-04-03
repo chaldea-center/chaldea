@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +12,6 @@ import 'package:uuid/uuid.dart';
 import '../generated/git_info.dart';
 import '../models/version.dart';
 import '../utils/constants.dart';
-import 'logger.dart';
-import 'platform/platform.dart';
 
 class AppInfo {
   AppInfo._();
@@ -98,11 +97,11 @@ class AppInfo {
     final deviceInfoPlugin = DeviceInfoPlugin();
     String? originId;
     if (PlatformU.isWeb) {
-      originId = null;
-      _uuid = '00000000-0000-0000-0000-000000000000';
-      return;
-    }
-    if (PlatformU.isAndroid) {
+      // // use generated uuid
+      // originId = null;
+      // _uuid = '00000000-0000-0000-0000-000000000000';
+      // return;
+    } else if (PlatformU.isAndroid) {
       originId = (await deviceInfoPlugin.androidInfo).androidId;
     } else if (PlatformU.isIOS) {
       originId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
@@ -175,13 +174,13 @@ class AppInfo {
       throw UnimplementedError(PlatformU.operatingSystem);
     }
     if (originId?.isNotEmpty != true) {
-      var uuidFile = File(pathlib.join(appPath, '.uuid'));
+      var uuidFile = FilePlus(pathlib.join(appPath, '.uuid'));
       if (uuidFile.existsSync()) {
-        originId = uuidFile.readAsStringSync();
+        originId = await uuidFile.readAsString();
       }
       if (originId?.isNotEmpty != true) {
         originId = const Uuid().v1();
-        uuidFile.writeAsStringSync(originId);
+        await uuidFile.writeAsString(originId);
       }
     }
     _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
@@ -211,9 +210,9 @@ class AppInfo {
           pathlib.dirname(executable), '../_MASReceipt/receipt');
       final String fpNotarized =
           pathlib.absolute(pathlib.dirname(executable), '../CodeResources');
-      if (File(fpStore).existsSync()) {
+      if (FilePlus(fpStore).existsSync()) {
         _macAppType = MacAppType.store;
-      } else if (File(fpNotarized).existsSync()) {
+      } else if (FilePlus(fpNotarized).existsSync()) {
         _macAppType = MacAppType.notarized;
       } else {
         _macAppType = MacAppType.debug;

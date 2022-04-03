@@ -22,6 +22,7 @@ import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
 import '../utils/json_helper.dart';
+import '../utils/hive_extention.dart';
 import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
@@ -103,9 +104,6 @@ class _Database {
   // methods
   Future<void> initiate() async {
     await paths.initRootPath();
-    await AppInfo.resolve(paths.appPath);
-    MethodChannelChaldeaNext.configMethodChannel();
-
     if (kIsWeb) {
       setUrlStrategy(PathUrlStrategy());
       await FilePlus.initiate();
@@ -113,7 +111,9 @@ class _Database {
       Hive.init(paths.hiveDir);
       HttpOverrides.global = CustomHttpOverrides();
     }
-    security = await Hive.openBox('security');
+    await AppInfo.resolve(paths.appPath);
+    MethodChannelChaldeaNext.configMethodChannel();
+    security = await Hive.openBoxRetry('security');
   }
 
   /// return the [UserData] instance, don't assign to [userData]

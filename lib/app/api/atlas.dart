@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/rate_limiter.dart';
+import 'package:chaldea/utils/hive_extention.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:crclib/catalog.dart';
 import 'package:dio/dio.dart';
@@ -68,7 +69,7 @@ class _CacheManager {
         : joinPaths(db2.paths.tempDir, 'api_cache/$cacheKey.json');
     try {
       if (kIsWeb) {
-        _webBox = await Hive.openLazyBox('api_cache');
+        _webBox = await Hive.openLazyBoxRetry('api_cache');
       }
       final file = FilePlus(fp);
       if (file.existsSync()) {

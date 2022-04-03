@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:chaldea/utils/hive_extention.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
@@ -25,14 +26,7 @@ class FilePlusWeb implements FilePlus {
 
   static Future<void> initWebFileSystem() async {
     assert(kIsWeb, 'DO NOT init for non-web');
-    try {
-      FilePlusWeb._defaultBox = await Hive.openLazyBox(fsName);
-      logger.d('opened $fsName lazy box');
-    } catch (e, s) {
-      logger.e('initWebFileSystem failed', e, s);
-      await Hive.deleteBoxFromDisk(fsName);
-      FilePlusWeb._defaultBox = await Hive.openLazyBox(fsName);
-    }
+    FilePlusWeb._defaultBox = await Hive.openLazyBoxRetry(fsName);
   }
 
   static Iterable<String> list() => _defaultBox.keys.whereType<String>();

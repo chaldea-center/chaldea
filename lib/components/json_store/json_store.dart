@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/hive_extention.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -40,7 +41,7 @@ class JsonStore<T> {
   Future<void> load() async {
     try {
       if (PlatformU.isWeb) {
-        final box = await Hive.openBox(_boxName);
+        final box = await Hive.openBoxRetry(_boxName);
         final content = box.get(_key) ?? '{}';
         _data = _decode(content);
       } else {
