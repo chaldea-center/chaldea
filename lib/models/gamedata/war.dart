@@ -109,6 +109,7 @@ class NiceMap {
   String? mapImage;
   int mapImageW;
   int mapImageH;
+  // List<NiceMapGimmick> mapGimmicks;
   String? headerImage;
   Bgm bgm;
 

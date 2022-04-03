@@ -473,6 +473,7 @@ EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) =>
     EventRewardSceneGuide(
       imageId: json['imageId'] as int,
       limitCount: json['limitCount'] as int,
+      image: json['image'] as String,
       faceId: json['faceId'] as int?,
       displayName: json['displayName'] as String?,
       weight: json['weight'] as int?,

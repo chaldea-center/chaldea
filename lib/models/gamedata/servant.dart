@@ -455,6 +455,9 @@ class ExtraAssets implements ExtraCCAssets {
   ExtraAssetsUrl equipFace;
   ExtraAssetsUrl image;
   ExtraAssetsUrl spriteModel;
+  ExtraAssetsUrl charaGraphChange;
+  ExtraAssetsUrl narrowFigureChange;
+  ExtraAssetsUrl facesChange;
 
   ExtraAssets({
     this.charaGraph = const ExtraAssetsUrl(),
@@ -470,6 +473,9 @@ class ExtraAssets implements ExtraCCAssets {
     this.equipFace = const ExtraAssetsUrl(),
     this.image = const ExtraAssetsUrl(),
     this.spriteModel = const ExtraAssetsUrl(),
+    this.charaGraphChange = const ExtraAssetsUrl(),
+    this.narrowFigureChange = const ExtraAssetsUrl(),
+    this.facesChange = const ExtraAssetsUrl(),
   });
 
   factory ExtraAssets.fromJson(Map<String, dynamic> json) =>
@@ -488,7 +494,7 @@ class CardDetail {
       _$CardDetailFromJson(json);
 }
 
-// in adapters.dart
+// TODO: manually convert List<NiceTrait>
 @JsonSerializable(constructor: 'typed')
 class AscensionAddEntry<T> {
   final Map<int, T> ascension;
@@ -557,6 +563,10 @@ class AscensionAdd {
   AscensionAddEntry<String> overWriteTDRank;
   AscensionAddEntry<String> overWriteTDTypeText;
   AscensionAddEntry<int> lvMax;
+  AscensionAddEntry<String> charaGraphChange;
+  AscensionAddEntry<String> faceChange;
+  // AscensionAddEntry<List<CommonRelease>> charaGraphChangeCommonRelease;
+  // AscensionAddEntry<List<CommonRelease>> faceChangeCommonRelease;
 
   AscensionAdd({
     AscensionAddEntry? individuality,
@@ -569,6 +579,8 @@ class AscensionAdd {
     AscensionAddEntry? overWriteTDRank,
     AscensionAddEntry? overWriteTDTypeText,
     AscensionAddEntry? lvMax,
+    AscensionAddEntry? charaGraphChange,
+    AscensionAddEntry? faceChange,
   })  : voicePrefix = voicePrefix?.cast<int>() ?? AscensionAddEntry(),
         overWriteServantName =
             overWriteServantName?.cast<String>() ?? AscensionAddEntry(),
@@ -586,7 +598,10 @@ class AscensionAdd {
             overWriteTDRank?.cast<String>() ?? AscensionAddEntry(),
         overWriteTDTypeText =
             overWriteTDTypeText?.cast<String>() ?? AscensionAddEntry(),
-        lvMax = lvMax?.cast<int>() ?? AscensionAddEntry();
+        lvMax = lvMax?.cast<int>() ?? AscensionAddEntry(),
+        charaGraphChange =
+            charaGraphChange?.cast<String>() ?? AscensionAddEntry(),
+        faceChange = faceChange?.cast<String>() ?? AscensionAddEntry();
 
   // AscensionAdd({
   //   this.individuality = const AscensionAddEntry(),

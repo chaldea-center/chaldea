@@ -376,6 +376,18 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
           ? const ExtraAssetsUrl()
           : ExtraAssetsUrl.fromJson(
               Map<String, dynamic>.from(json['spriteModel'] as Map)),
+      charaGraphChange: json['charaGraphChange'] == null
+          ? const ExtraAssetsUrl()
+          : ExtraAssetsUrl.fromJson(
+              Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
+      narrowFigureChange: json['narrowFigureChange'] == null
+          ? const ExtraAssetsUrl()
+          : ExtraAssetsUrl.fromJson(
+              Map<String, dynamic>.from(json['narrowFigureChange'] as Map)),
+      facesChange: json['facesChange'] == null
+          ? const ExtraAssetsUrl()
+          : ExtraAssetsUrl.fromJson(
+              Map<String, dynamic>.from(json['facesChange'] as Map)),
     );
 
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(
@@ -440,6 +452,14 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
           ? null
           : AscensionAddEntry<dynamic>.fromJson(
               Map<String, dynamic>.from(json['lvMax'] as Map)),
+      charaGraphChange: json['charaGraphChange'] == null
+          ? null
+          : AscensionAddEntry<dynamic>.fromJson(
+              Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
+      faceChange: json['faceChange'] == null
+          ? null
+          : AscensionAddEntry<dynamic>.fromJson(
+              Map<String, dynamic>.from(json['faceChange'] as Map)),
     );
 
 ServantChange _$ServantChangeFromJson(Map json) => ServantChange(

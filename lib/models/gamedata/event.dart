@@ -757,6 +757,7 @@ class Event {
 class EventRewardSceneGuide {
   int imageId;
   int limitCount;
+  String image;
   int? faceId;
   String? displayName;
   int? weight;
@@ -765,6 +766,7 @@ class EventRewardSceneGuide {
   EventRewardSceneGuide({
     required this.imageId,
     required this.limitCount,
+    required this.image,
     this.faceId,
     this.displayName,
     this.weight,
