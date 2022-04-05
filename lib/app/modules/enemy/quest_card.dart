@@ -36,10 +36,10 @@ class _QuestCardState extends State<QuestCard> {
   Quest get quest => widget.quest;
   bool showTrueName = false;
   bool? _use6th;
-  bool preferApRate = db2.settings.preferApRate;
+  bool preferApRate = false;
 
   bool get use6th =>
-      quest.type == QuestType.free && (_use6th ?? db2.curUser.use6thDropRate);
+      quest.isMainStoryFree && (_use6th ?? db2.curUser.use6thDropRate);
 
   bool get show6th {
     return db2.gameData.dropRate.getSheet(true).questIds.contains(quest.id);
@@ -49,6 +49,7 @@ class _QuestCardState extends State<QuestCard> {
   void initState() {
     super.initState();
     _use6th = widget.use6th;
+    if (quest.isMainStoryFree) preferApRate = db2.settings.preferApRate;
     if (!widget.offline) _fetchAllPhases();
   }
 
@@ -103,15 +104,22 @@ class _QuestCardState extends State<QuestCard> {
       if (questPhase != null) break;
     }
 
+    String questName = quest.lName.l;
+    if (quest.type == QuestType.main) {
+      String chapter = quest.chapterSubStr.isEmpty
+          ? '第${quest.chapterSubId}节'
+          : quest.chapterSubStr;
+      questName = chapter + ' ' + questName;
+    }
     List<String> names = [
-      quest.lName.l,
+      questName,
       if (!Transl.isJP && quest.name != quest.lName.l) quest.name
     ];
-    String questName;
+    String shownQuestName;
     if (names.any((s) => s.charWidth > 16)) {
-      questName = names.join('\n');
+      shownQuestName = names.join('\n');
     } else {
-      questName = names.join('/');
+      shownQuestName = names.join('/');
     }
     String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
 
@@ -131,7 +139,7 @@ class _QuestCardState extends State<QuestCard> {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               AutoSizeText(
-                questName,
+                shownQuestName,
                 maxLines: 2,
                 maxFontSize: 14,
                 minFontSize: 6,

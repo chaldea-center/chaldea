@@ -69,16 +69,18 @@ class _QuestListPageState extends State<QuestListPage> {
                   ),
                   textAlign: TextAlign.end,
                 );
+          String chapter = quest.type == QuestType.main
+              ? quest.chapterSubStr.isEmpty
+                  ? '第${quest.chapterSubId}节'
+                  : quest.chapterSubStr
+              : '${index + 1}';
 
           return ListTile(
-            leading: Text(
-              '${index + 1}',
-              textAlign: TextAlign.center,
-            ),
+            leading: Text(chapter),
             title: Text(quest.lDispName),
             subtitle: Text(isMainFree ? quest.lName.l : quest.lSpot.l),
             trailing: trailing,
-            horizontalTitleGap: 0,
+            horizontalTitleGap: quest.type == QuestType.main ? null : 0,
             onTap: () {
               router.push(
                 url: Routes.questI(quest.id),
