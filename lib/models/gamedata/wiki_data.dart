@@ -386,6 +386,22 @@ class MappingBase<T> {
     // throw ArgumentError.value(S, 'type', 'Unknown cast type');
   }
 
+  MappingBase<T> copyWith({
+    T? jp,
+    T? cn,
+    T? tw,
+    T? na,
+    T? kr,
+  }) {
+    return MappingBase<T>.typed(
+      jp: jp ?? this.jp,
+      cn: cn ?? this.cn,
+      tw: tw ?? this.tw,
+      na: na ?? this.na,
+      kr: kr ?? this.kr,
+    );
+  }
+
   static T _fromJsonT<T>(Object? obj) {
     if (obj == null) return null as T;
     if (obj is int || obj is double || obj is String) return obj as T;

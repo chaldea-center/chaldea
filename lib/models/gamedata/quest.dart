@@ -155,6 +155,7 @@ class QuestPhase extends Quest {
   int qp;
   int exp;
   int bond;
+  bool isNpcOnly;
   int battleBgId;
   QuestPhaseExtraDetail extraDetail;
   List<ScriptLink> scripts;
@@ -195,6 +196,7 @@ class QuestPhase extends Quest {
     required this.qp,
     required this.exp,
     required this.bond,
+    this.isNpcOnly = false,
     required this.battleBgId,
     required this.extraDetail,
     this.scripts = const [],
@@ -259,7 +261,8 @@ class Gift {
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
   bool get isStatItem {
-    if (type == GiftType.equip || type == GiftType.eventSvtJoin) return false;
+    if ([GiftType.equip, GiftType.eventSvtJoin, GiftType.eventPointBuff]
+        .contains(type)) return false;
     return true;
   }
 

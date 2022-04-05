@@ -5,6 +5,7 @@ There are plenty of work need to do.
 ## Misc
 
 - [ ] Search should be re-designed and improved
+  - [ ] add search for event 
 - [ ] pass locale to `Text` for Region-based gamedata text.
       which translation found, then pass that locale
 - [ ] only save game data file(split into multiple files) when loaded successfully
@@ -15,6 +16,9 @@ There are plenty of work need to do.
 - [ ] add legacy data of `ConstData.userLevel`
 - [x] GameData split wiki_data into files
 - [ ] use github issue forms for issue templates
+- [ ] Clear Cache
+  - [ ] image cache(DefaultCacheManager?)
+  - [ ] Api cache
 
 ## Quest Related
 
@@ -45,16 +49,17 @@ There are plenty of work need to do.
 - [x] Saint Quartz estimate
   - [ ] poor performance
 - [ ] Events
-  - [ ] Shop
+  - [x] Shop
+    - [ ] shop planner?
   - [ ] Lottery
   - [ ] Point
   - [ ] Tower
   - [ ] TreasureBox
-  - [ ] Mission
+  - [x] Mission
   - [ ] War Map
 - [ ] Mission Solver
   - [x] choose free quests from event wars or main story
-  - [ ] link from Event/Mission part
+  - [x] link from Event/Mission part
   - [ ] hint for invalid mission
 - [x] Statistics
 - [ ] Buff/Function reversing

@@ -54,6 +54,7 @@ const _$PurchaseTypeEnumMap = {
 };
 
 NiceShop _$NiceShopFromJson(Map json) => NiceShop(
+      id: json['id'] as int,
       shopType: $enumDecodeNullable(_$ShopTypeEnumMap, json['shopType']) ??
           ShopType.eventItem,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
@@ -63,6 +64,7 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
           const [],
       slot: json['slot'] as int,
       priority: json['priority'] as int,
+      name: json['name'] as String,
       infoMessage: json['infoMessage'] as String? ?? "",
       payType: $enumDecode(_$PayTypeEnumMap, json['payType']),
       cost: ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
@@ -472,9 +474,9 @@ const _$EventTypeEnumMap = {
 EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) =>
     EventRewardSceneGuide(
       imageId: json['imageId'] as int,
-      limitCount: json['limitCount'] as int,
+      limitCount: json['limitCount'] as int? ?? 0,
       image: json['image'] as String,
-      faceId: json['faceId'] as int?,
+      faceId: json['faceId'] as int? ?? 0,
       displayName: json['displayName'] as String?,
       weight: json['weight'] as int?,
       unselectedMax: json['unselectedMax'] as int?,

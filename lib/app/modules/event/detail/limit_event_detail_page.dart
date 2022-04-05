@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -8,8 +9,11 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../common/not_found.dart';
+import 'event_missions.dart';
+import 'event_shops.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
@@ -29,12 +33,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   @override
   void initState() {
     super.initState();
-    _event = widget.event ?? db2.gameData.events[widget.eventId];
-  }
-
-  @override
-  void didUpdateWidget(covariant EventDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
     _event = widget.event ?? db2.gameData.events[widget.eventId];
   }
 
@@ -111,14 +109,14 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
     if (!event.isEmpty) {
       children.add(db2.onUserData(
-        (context, snapshot) => SwitchListTile.adaptive(
+        (context, snapshot) => CheckboxListTile(
           title: const Text('ALL'),
           value: plan.enabled,
           onChanged: (v) {
-            plan.enabled = v;
+            if (v != null) plan.enabled = v;
             event.updateStat();
           },
-          controlAffinity: ListTileControlAffinity.trailing,
+          controlAffinity: ListTileControlAffinity.leading,
         ),
       ));
     }
@@ -157,6 +155,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         },
         title: 'Shop',
         items: event.itemShop,
+        onDetail: () {
+          router.push(child: EventShopsPage(event: event));
+        },
       ));
     }
     if (event.rewards.isNotEmpty) {
@@ -181,6 +182,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         },
         title: 'Mission Rewards',
         items: event.itemMission,
+        onDetail: () {
+          router.push(child: EventMissionsPage(event: event));
+        },
       ));
     }
 
@@ -274,6 +278,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
       ]);
     }
 
+    final eventId = widget.event?.id ?? widget.eventId;
+
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
@@ -291,6 +297,41 @@ class _EventDetailPageState extends State<EventDetailPage> {
               ),
               ...SharedBuilder.noticeLinkPopupMenuItems(
                   noticeLink: event.extra.noticeLink),
+              if (eventId != null && eventId > 0)
+                PopupMenuItem(
+                  child: const Text('Switch Region'),
+                  onTap: () async {
+                    await null;
+                    final jpEvent = db2.gameData.events[eventId];
+                    final startTime = jpEvent?.extra.startTime
+                        .copyWith(jp: jpEvent.startedAt);
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          children: [
+                            for (final region in Region.values)
+                              ListTile(
+                                title: Text(region.name.toUpperCase()),
+                                enabled: startTime?.ofRegion(region) != null,
+                                onTap: () async {
+                                  Navigator.of(context);
+                                  await null;
+                                  _changeRegion(region, eventId);
+                                },
+                              ),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.clear),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
             ],
           ),
         ],
@@ -305,14 +346,27 @@ class _EventDetailPageState extends State<EventDetailPage> {
     required ValueChanged<bool> onChanged,
     required String title,
     required Map<int, int> items,
+    VoidCallback? onDetail,
   }) {
     return [
       db2.onUserData(
-        (context, snapshot) => SwitchListTile.adaptive(
+        (context, snapshot) => CheckboxListTile(
           title: Text(title),
           value: value(),
-          onChanged: enabled() ? onChanged : null,
-          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: enabled()
+              ? (v) {
+                  if (v != null) onChanged(v);
+                }
+              : null,
+          controlAffinity: ListTileControlAffinity.leading,
+          secondary: onDetail == null
+              ? null
+              : IconButton(
+                  tooltip: 'Details',
+                  onPressed: onDetail,
+                  icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
         ),
       ),
       SharedBuilder.groupItems(
@@ -368,5 +422,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
       ],
     );
+  }
+
+  void _changeRegion(Region region, int eventId) async {
+    EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
+    final newEvent = region == Region.jp
+        ? db2.gameData.events[eventId]
+        : await AtlasApi.event(eventId, region: region);
+    newEvent?.calcItems(db2.gameData);
+    _event = newEvent;
+    if (mounted) {
+      setState(() {});
+    }
+    EasyLoading.dismiss();
   }
 }

@@ -292,6 +292,15 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  static Future<Event?> event(int eventId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/event/$eventId',
+      (data) => Event.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 }
 
 extension _DioErrorX on DioError {

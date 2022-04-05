@@ -78,7 +78,9 @@ class BasicServant with GameCardMixin {
 
   @override
   String? get borderedIcon {
-    if (type == SvtType.combineMaterial) return super.borderedIcon;
+    if (type == SvtType.combineMaterial || type == SvtType.statusUp) {
+      return super.borderedIcon;
+    }
     return icon;
   }
 

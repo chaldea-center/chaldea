@@ -251,7 +251,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: null,
           tw: null,
           na: () => Text(
-              'After ${DateTime.fromMillisecondsSinceEpoch(targetNum).toStringShort()}'),
+              'After ${DateTime.fromMillisecondsSinceEpoch(targetNum * 1000).toStringShort()}'),
           kr: null,
         );
       default:

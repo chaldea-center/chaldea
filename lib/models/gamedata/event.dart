@@ -50,7 +50,7 @@ class ItemSet {
 
 @JsonSerializable()
 class NiceShop {
-  // int id;
+  int id;
   // int baseShopId;
   ShopType shopType;
   List<ShopRelease> releaseConditions;
@@ -59,7 +59,7 @@ class NiceShop {
   int slot;
   int priority;
 
-  // String name;
+  String name;
   // String detail;
   String infoMessage;
 
@@ -81,14 +81,14 @@ class NiceShop {
   // int closedAt;
 
   NiceShop({
-    // required this.id,
+    required this.id,
     // required this.baseShopId,
     this.shopType = ShopType.eventItem,
     this.releaseConditions = const [],
     // required this.eventId,
     required this.slot,
     required this.priority,
-    // required this.name,
+    required this.name,
     // required this.detail,
     this.infoMessage = "",
     // this.warningMessage = "",
@@ -664,18 +664,29 @@ class Event {
     // shop
     for (final shopItem in shop) {
       if (shopItem.limitNum == 0) continue;
-      if (shopItem.purchaseType == PurchaseType.item ||
-          shopItem.purchaseType == PurchaseType.servant) {
-        for (final id in shopItem.targetIds) {
-          itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
-        }
-      } else if (shopItem.payType == PurchaseType.setItem) {
+      if (![
+        PurchaseType.item,
+        PurchaseType.servant,
+        PurchaseType.eventSvtGet,
+        PurchaseType.setItem,
+        PurchaseType.costumeRelease,
+        PurchaseType.itemAsPresent,
+        PurchaseType.commandCode,
+        PurchaseType.gift,
+      ].contains(shopItem.purchaseType)) {
+        continue;
+      }
+      if (shopItem.purchaseType == PurchaseType.setItem) {
         for (final set in shopItem.itemSet) {
           if (set.purchaseType == PurchaseType.item ||
               set.purchaseType == PurchaseType.servant) {
             itemShop.addNum(
                 set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
+        }
+      } else {
+        for (final id in shopItem.targetIds) {
+          itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
         }
       }
     }
@@ -765,9 +776,9 @@ class EventRewardSceneGuide {
 
   EventRewardSceneGuide({
     required this.imageId,
-    required this.limitCount,
+    this.limitCount = 0,
     required this.image,
-    this.faceId,
+    this.faceId = 0,
     this.displayName,
     this.weight,
     this.unselectedMax,

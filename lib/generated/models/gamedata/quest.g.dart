@@ -165,6 +165,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       qp: json['qp'] as int,
       exp: json['exp'] as int,
       bond: json['bond'] as int,
+      isNpcOnly: json['isNpcOnly'] as bool? ?? false,
       battleBgId: json['battleBgId'] as int,
       extraDetail: QuestPhaseExtraDetail.fromJson(
           Map<String, dynamic>.from(json['extraDetail'] as Map)),
