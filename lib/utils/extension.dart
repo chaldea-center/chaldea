@@ -19,27 +19,34 @@ extension NumX on num {
     num? minVal = 10000,
     int? maxDigits,
   }) {
-    if (percent) compact = false;
+    num number = this;
+    if (percent) {
+      compact = false;
+      number /= base;
+    }
     if (compact && (minVal == null || abs() > minVal)) {
-      return NumberFormat.compact(locale: 'en').format(this);
+      return NumberFormat.compact(locale: 'en').format(number);
     }
     final pattern = [
       if (groupSeparator != null && groupSeparator.isNotEmpty)
         '###' + groupSeparator,
       '###',
       if (precision > 0) '.' + (omit ? '#' : '0') * precision,
-      if (percent) '%'
+      // if (percent) '%'
     ].join();
-    String s = NumberFormat(pattern, 'en').format(this);
-    if (maxDigits != null) {
-      s = s.replaceFirstMapped(RegExp(r'^(\d+)\.(\d+)(%?)$'), (match) {
-        String s1 = match.group(1)!, s2 = match.group(2)!, s3 = match.group(3)!;
+    String s = NumberFormat(pattern, 'en').format(number);
+    s = s.replaceFirstMapped(RegExp(r'^(\d+)\.(\d+)$'), (match) {
+      String s1 = match.group(1)!, s2 = match.group(2)!;
+      if (maxDigits != null) {
         if (s1.length < maxDigits) {
           s2 = s2.substring(0, min(s2.length, maxDigits - s1.length));
         }
-        return '$s1.$s2$s3';
-      });
-    }
+      } else if (percent && s1.length >= 3) {
+        return s1;
+      }
+      return '$s1.$s2';
+    });
+    if (percent) s += '%';
     return s;
   }
 }

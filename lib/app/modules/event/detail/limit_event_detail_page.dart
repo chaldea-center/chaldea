@@ -14,6 +14,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../common/not_found.dart';
 import 'event_missions.dart';
 import 'event_shops.dart';
+import 'points.dart';
+import 'towers.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
@@ -170,6 +172,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         },
         title: 'Point Rewards',
         items: event.itemPointReward,
+        onDetail: () {
+          router.push(child: EventPointsPage(event: event));
+        },
       ));
     }
     if (event.missions.isNotEmpty) {
@@ -198,6 +203,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         },
         title: 'Tower Rewards',
         items: event.itemTower,
+        onDetail: () {
+          router.push(child: EventTowersPage(event: event));
+        },
       ));
     }
 
@@ -219,6 +227,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               plan.lotteries[lottery.id] = value;
             },
             tag: 'lottery_${lottery.id}',
+            readOnly: !plan.enabled,
           ),
         ),
         SharedBuilder.groupItems(
@@ -271,6 +280,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         .putIfAbsent(box.id, () => {})[itemId] = value;
                   },
                   tag: 'treasure_box_${box.id}_$itemId',
+                  readOnly: !plan.enabled,
                 ),
               )
           ],
@@ -350,16 +360,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }) {
     return [
       db2.onUserData(
-        (context, snapshot) => CheckboxListTile(
+        (context, snapshot) => ListTile(
+          leading: Checkbox(
+            value: value(),
+            onChanged: enabled()
+                ? (v) {
+                    if (v != null) onChanged(v);
+                  }
+                : null,
+          ),
           title: Text(title),
-          value: value(),
-          onChanged: enabled()
-              ? (v) {
-                  if (v != null) onChanged(v);
-                }
-              : null,
-          controlAffinity: ListTileControlAffinity.leading,
-          secondary: onDetail == null
+          trailing: onDetail == null
               ? null
               : IconButton(
                   tooltip: 'Details',
@@ -381,6 +392,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     required int? Function() value,
     required ValueChanged<int> onChanged,
     required String tag,
+    required bool readOnly,
   }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -394,6 +406,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         SizedBox(
           width: 64,
           child: TextField(
+            readOnly: readOnly,
             onChanged: (v) {
               int? n;
               if (v.trim().isEmpty) {

@@ -52,8 +52,8 @@ There are plenty of work need to do.
   - [x] Shop
     - [ ] shop planner?
   - [ ] Lottery
-  - [ ] Point
-  - [ ] Tower
+  - [x] Point
+  - [x] Tower
   - [ ] TreasureBox
   - [x] Mission
   - [ ] War Map
