@@ -272,6 +272,7 @@ enum WarFlag {
   effectDisappearBanner,
   whiteMarkWithClear,
   subFolder,
+  dispEarthPointWithoutMap,
 }
 
 enum WarOverwriteType {

@@ -847,6 +847,7 @@ DataVals _$DataValsFromJson(Map json) => DataVals(
       BehaveAsFamilyBuff: json['BehaveAsFamilyBuff'] as int?,
       UnSubStateWhileLinkedToOthers:
           json['UnSubStateWhileLinkedToOthers'] as int?,
+      AllowSubBgmPlaying: json['AllowSubBgmPlaying'] as int?,
       NotAccompanyWhenLinkedTargetMoveState:
           json['NotAccompanyWhenLinkedTargetMoveState'] as int?,
       Individuality: json['Individuality'] as int?,
@@ -976,6 +977,7 @@ Map<String, dynamic> _$DataValsToJson(DataVals instance) {
   writeNotNull('BehaveAsFamilyBuff', instance.BehaveAsFamilyBuff);
   writeNotNull(
       'UnSubStateWhileLinkedToOthers', instance.UnSubStateWhileLinkedToOthers);
+  writeNotNull('AllowSubBgmPlaying', instance.AllowSubBgmPlaying);
   writeNotNull('NotAccompanyWhenLinkedTargetMoveState',
       instance.NotAccompanyWhenLinkedTargetMoveState);
   writeNotNull('ApplySupportSvt', instance.ApplySupportSvt);

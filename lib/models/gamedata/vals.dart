@@ -110,6 +110,7 @@ class DataVals {
   int? SkillReaction;
   int? BehaveAsFamilyBuff;
   int? UnSubStateWhileLinkedToOthers;
+  int? AllowSubBgmPlaying;
   int? NotAccompanyWhenLinkedTargetMoveState;
   int? ApplySupportSvt;
   int? Individuality;
@@ -219,6 +220,7 @@ class DataVals {
     this.ApplySupportSvt,
     this.BehaveAsFamilyBuff,
     this.UnSubStateWhileLinkedToOthers,
+    this.AllowSubBgmPlaying,
     this.NotAccompanyWhenLinkedTargetMoveState,
     this.Individuality,
     this.EventId,
@@ -339,6 +341,7 @@ class DataVals {
         ApplySupportSvt == other.ApplySupportSvt &&
         BehaveAsFamilyBuff == other.BehaveAsFamilyBuff &&
         UnSubStateWhileLinkedToOthers == other.UnSubStateWhileLinkedToOthers &&
+        AllowSubBgmPlaying == other.AllowSubBgmPlaying &&
         NotAccompanyWhenLinkedTargetMoveState ==
             other.NotAccompanyWhenLinkedTargetMoveState &&
         Individuality == other.Individuality &&
@@ -453,6 +456,7 @@ class DataVals {
       ApplySupportSvt,
       BehaveAsFamilyBuff,
       UnSubStateWhileLinkedToOthers,
+      AllowSubBgmPlaying,
       NotAccompanyWhenLinkedTargetMoveState,
       Individuality,
       EventId,

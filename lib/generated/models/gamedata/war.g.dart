@@ -167,4 +167,5 @@ const _$WarFlagEnumMap = {
   WarFlag.effectDisappearBanner: 'effectDisappearBanner',
   WarFlag.whiteMarkWithClear: 'whiteMarkWithClear',
   WarFlag.subFolder: 'subFolder',
+  WarFlag.dispEarthPointWithoutMap: 'dispEarthPointWithoutMap',
 };
