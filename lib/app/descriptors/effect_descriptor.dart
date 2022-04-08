@@ -3,6 +3,7 @@ import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -182,7 +183,11 @@ class EffectDescriptor extends StatelessWidget {
     StringBuffer funcText = StringBuffer();
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort) {
-      funcText.write(Transl.buffNames(func.buffs.first.name).l);
+      if (func.buffs.first.name.isEmpty) {
+        funcText.write(Transl.buffNames(func.buffs.first.type.name).l);
+      } else {
+        funcText.write(Transl.buffNames(func.buffs.first.name).l);
+      }
     } else {
       funcText.write(Transl.funcPopuptext(func.funcPopupText, func.funcType).l);
     }
@@ -246,14 +251,34 @@ class EffectDescriptor extends StatelessWidget {
         funcText.toString(),
         style: Theme.of(context).textTheme.caption,
       );
+      Widget? icon;
       if (func.funcPopupIcon != null) {
+        icon = db2.getIconImage(func.funcPopupIcon, width: 18);
+      } else if (func.funcType == FuncType.eventDropUp ||
+          func.funcType == FuncType.eventDropRateUp) {
+        int? indiv = func.svals.getOrNull(0)?.Individuality;
+        final item = db2.gameData.items.values.firstWhereOrNull(
+            (item) => item.individuality.any((trait) => trait.id == indiv));
+        if (item != null) {
+          icon = Text.rich(TextSpan(children: [
+            WidgetSpan(
+              child: Item.iconBuilder(context: context, item: item, width: 24),
+              alignment: PlaceholderAlignment.middle,
+            ),
+            TextSpan(
+              text: item.lName.l,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  item.routeTo();
+                },
+            )
+          ]));
+        }
+      }
+      if (icon != null) {
         child = Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            db2.getIconImage(func.funcPopupIcon, width: 18),
-            const SizedBox(width: 4),
-            child
-          ],
+          children: [icon, const SizedBox(width: 4), child],
         );
       }
       child = InkWell(

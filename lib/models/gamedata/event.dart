@@ -680,12 +680,20 @@ class Event {
         for (final set in shopItem.itemSet) {
           if (set.purchaseType == PurchaseType.item ||
               set.purchaseType == PurchaseType.servant) {
+            if (gameData.craftEssencesById[set.targetId]?.flag ==
+                SvtFlag.svtEquipChocolate) {
+              continue;
+            }
             itemShop.addNum(
                 set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
         }
       } else {
         for (final id in shopItem.targetIds) {
+          if (gameData.craftEssencesById[id]?.flag ==
+              SvtFlag.svtEquipChocolate) {
+            continue;
+          }
           itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
         }
       }

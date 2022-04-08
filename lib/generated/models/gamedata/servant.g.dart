@@ -265,10 +265,13 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       hpBase: json['hpBase'] as int,
       hpMax: json['hpMax'] as int,
       growthCurve: json['growthCurve'] as int,
-      atkGrowth:
-          (json['atkGrowth'] as List<dynamic>).map((e) => e as int).toList(),
+      atkGrowth: (json['atkGrowth'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
       hpGrowth:
-          (json['hpGrowth'] as List<dynamic>).map((e) => e as int).toList(),
+          (json['hpGrowth'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
       expGrowth: (json['expGrowth'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??

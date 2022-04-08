@@ -147,6 +147,7 @@ class _QuestCardState extends State<QuestCard> {
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
               AutoSizeText(
+                'Lv.${quest.recommendLv}  '
                 '${S.current.game_kizuna} ${questPhase?.bond ?? "?"}  '
                 '${S.current.game_experience} ${questPhase?.exp ?? "?"}',
                 maxLines: 1,
@@ -303,7 +304,9 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
 
-    if (curPhase.individuality.isNotEmpty) {
+    if (curPhase.individuality.isNotEmpty &&
+        (curPhase.stages.isNotEmpty ||
+            (curPhase.consume != 0 && curPhase.consumeItem.isNotEmpty))) {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(

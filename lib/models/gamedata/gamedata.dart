@@ -125,12 +125,6 @@ class GameData {
         for (final costume in svt.profile.costume.values)
           costume.costumeCollectionNo: costume
     };
-    for (final war in wars.values) {
-      war.calcItems(this);
-    }
-    for (final event in events.values) {
-      event.calcItems(this);
-    }
     mainStories = {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war
@@ -145,6 +139,13 @@ class GameData {
         craftEssences.map((key, value) => MapEntry(value.id, value));
     commandCodesById =
         commandCodes.map((key, value) => MapEntry(value.id, value));
+    // calculation at last
+    for (final war in wars.values) {
+      war.calcItems(this);
+    }
+    for (final event in events.values) {
+      event.calcItems(this);
+    }
   }
 
   factory GameData.fromMergedFile(Map<String, dynamic> data) {

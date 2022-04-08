@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:chaldea/utils/utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -13,12 +14,9 @@ import '../../packages/app_info.dart';
 import '../../packages/file_plus/file_plus.dart';
 import '../../packages/logger.dart';
 import '../../packages/network.dart';
-import '../../utils/basic.dart';
 import '../../utils/json_helper.dart';
 
-// const dataSourceBaseUrl = 'https://data.chaldea.center/';
-const dataSourceBaseUrl =
-    'https://cdn.jsdelivr.net/gh/chaldea-center/chaldea-data/dist/';
+const dataSourceBaseUrl = 'https://data.chaldea.center/';
 
 class GameDataLoader {
   final dio = Dio(BaseOptions(baseUrl: dataSourceBaseUrl));
@@ -98,7 +96,7 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson((await dio.get('version.json')).data);
+      newVersion = DataVersion.fromJson((await dio.get('version.json')).json());
     }
     logger.d('fetch gamedata version: $newVersion');
     if (newVersion.appVersion > AppInfo.version) {

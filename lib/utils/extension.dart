@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart' as material;
@@ -258,5 +259,17 @@ extension DialogShowMethod on material.Widget {
 extension ThemeDataX on ThemeData {
   bool get isDarkMode {
     return brightness == material.Brightness.dark;
+  }
+}
+
+extension ResponseX<T> on Response<T> {
+  Map<String, dynamic> json() {
+    if (data is Map) {
+      return Map.from(data as Map);
+    } else if (data is String) {
+      return jsonDecode(data as String);
+    } else {
+      return {};
+    }
   }
 }

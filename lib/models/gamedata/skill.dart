@@ -76,7 +76,7 @@ class BaseSkill implements SkillOrTd {
       (match) {
         final svt = db2.gameData.servantsById[int.parse(match.group(1)!)];
         if (svt != null) {
-          return '${svt.name}(${Transl.svtClass(svt.className.id).l})';
+          return svt.lName.l;
         }
         return match.group(0).toString();
       },
