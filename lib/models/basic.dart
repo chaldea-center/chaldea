@@ -1,10 +1,4 @@
-import 'package:flutter/foundation.dart';
 
-const _envChaldeaNext = bool.fromEnvironment('CHALDEA_NEXT');
+bool get runChaldeaNext => true;
 
-bool _runChaldeaNext = false;
-
-bool get runChaldeaNext =>
-    _envChaldeaNext || kIsWeb || (kDebugMode && _runChaldeaNext);
-
-set runChaldeaNext(bool v) => _runChaldeaNext = v;
+set runChaldeaNext(bool v) => v;

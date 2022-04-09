@@ -23,7 +23,7 @@ void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
 
-  runChaldeaNext = false;
+  runChaldeaNext = true;
   await _initiateCommon();
   if (runChaldeaNext) {
     await _mainNext();
