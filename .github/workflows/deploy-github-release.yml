@@ -118,6 +118,9 @@ jobs:
           KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
+      - name: Configure Android Preview package name
+        if: matrix.target == 'Android' && github.ref == 'refs/heads/main'
+        run: dart ./scripts/patch_android_preview.dart
 
       - run: flutter pub get
       - run: flutter build ${{ matrix.build_target }} -v --release
