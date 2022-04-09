@@ -15,6 +15,7 @@
 /// }
 /// // prints: true, false, false
 /// ```
+
 class Query {
   String? _searchString;
   bool _caseSensitive = false;
@@ -23,66 +24,6 @@ class Query {
   final List<String> _excluded = [];
 
   Query({String? queryString, bool caseSensitive = false}) {
-    if (queryString != null) {
-      parse(queryString, caseSensitive: caseSensitive);
-    }
-  }
-
-  void parse(String queryString, {bool caseSensitive = false}) {
-    if (queryString == _searchString && caseSensitive == _caseSensitive) return;
-
-    _caseSensitive = caseSensitive;
-    _searchString = queryString;
-
-    if (!caseSensitive) queryString = queryString.toLowerCase();
-    final phrases = queryString.split(RegExp(r'\s+'));
-    phrases.removeWhere((item) => ['', '-', '+'].contains(item));
-
-    // parse
-    // _optional.clear();
-    _mandatory.clear();
-    _excluded.clear();
-    phrases.forEach((phrase) {
-      switch (phrase[0]) {
-        case '+':
-          _mandatory.add(phrase.substring(1));
-          break;
-        case '-':
-          _excluded.add(phrase.substring(1));
-          break;
-        default:
-          _mandatory.add(phrase);
-          break;
-      }
-    });
-  }
-
-  bool match(String string) {
-    if (_mandatory.isEmpty && _excluded.isEmpty) {
-      return true;
-    }
-    if (!_caseSensitive) string = string.toLowerCase();
-
-    // mandatory
-    for (String p in _mandatory) {
-      if (!string.contains(p)) return false;
-    }
-    // excluded
-    for (String p in _excluded) {
-      if (string.contains(p)) return false;
-    }
-    return true;
-  }
-}
-
-class Query2 {
-  String? _searchString;
-  bool _caseSensitive = false;
-  // final List<String> _optional = [];
-  final List<String> _mandatory = [];
-  final List<String> _excluded = [];
-
-  Query2({String? queryString, bool caseSensitive = false}) {
     if (queryString != null) {
       parse(queryString, caseSensitive: caseSensitive);
     }

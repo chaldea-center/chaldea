@@ -2,9 +2,11 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -17,7 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../components/localized/localized_base.dart';
 import '../../app.dart';
 import 'bond_detail_page.dart';
 

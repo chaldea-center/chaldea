@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -61,7 +60,7 @@ class _AboutPageState extends State<AboutPage> {
             },
             child: _AboutProgram(
               name: AppInfo.appName,
-              version: runChaldeaNext ? '2.0.0-alpha' : AppInfo.fullVersion2,
+              version: AppInfo.fullVersion2,
               icon: SizedBox(
                 height: 120,
                 child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
@@ -320,11 +319,10 @@ class _FandomContributorsPage extends StatelessWidget {
 class _GithubMarkdownPage extends StatelessWidget {
   final String title;
   final String? link;
-  final String? data;
   final String? assetKey;
 
   const _GithubMarkdownPage(
-      {Key? key, required this.title, this.link, this.data, this.assetKey})
+      {Key? key, required this.title, this.link, this.assetKey})
       : super(key: key);
 
   @override
@@ -343,10 +341,7 @@ class _GithubMarkdownPage extends StatelessWidget {
             )
         ],
       ),
-      body: MyMarkdownWidget(
-        data: data,
-        assetKey: assetKey,
-      ),
+      body: MyMarkdownWidget(assetKey: assetKey),
     );
   }
 }

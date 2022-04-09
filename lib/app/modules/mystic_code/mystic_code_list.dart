@@ -95,11 +95,6 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   }
 
   @override
-  String getSummary(MysticCode mc) {
-    return options?.getSummary(mc) ?? '';
-  }
-
-  @override
   bool filter(MysticCode mc) => true;
 
   void _onTapCard(MysticCode mc, [bool forcePush = false]) {

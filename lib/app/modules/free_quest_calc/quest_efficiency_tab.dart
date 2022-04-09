@@ -1,4 +1,3 @@
-import 'package:chaldea/components/localized/localized.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -136,11 +135,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         ));
       }
     });
-    children.add(ListTile(
-      subtitle: Center(
-        child: Text(Localized.freeDropRateChangedHint.localized),
-      ),
-    ));
+
     return Column(
       children: [
         ListTile(

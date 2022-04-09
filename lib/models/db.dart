@@ -194,7 +194,6 @@ class _Database {
       );
     } else {
       image = CachedImage(
-        isMCFile: false,
         imageUrl: iconUrl,
         // cacheDir: paths.gameIconDir,
         width: width,

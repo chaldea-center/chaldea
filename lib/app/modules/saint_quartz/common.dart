@@ -1,4 +1,4 @@
-import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/app/tools/localized_base.dart';
 
 class SaintLocalized {
   static String get loginBonus => LocalizedText.of(

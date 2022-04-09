@@ -20,8 +20,7 @@ import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../components/config.dart' show db;
-import '../../components/git_tool.dart';
+import '../../app/tools/git_tool.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
@@ -237,7 +236,7 @@ class ServerFeedbackHandler extends ReportHandler {
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
       'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
-      'dataset': '${db.gameData.version} / ${db2.gameData.version.utc}',
+      'dataset': db2.gameData.version.utc,
       'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
       'locale': await findSystemLocale(),

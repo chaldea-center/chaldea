@@ -1,12 +1,8 @@
-import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chaldea/components/config.dart' show db;
-import 'package:chaldea/components/wiki_util.dart';
-import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -17,7 +13,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' show join, basename;
-import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
 import '../../packages/network.dart';
@@ -30,16 +25,10 @@ export 'fullscreen_image_viewer.dart';
 export 'image_actions.dart';
 export 'photo_view_option.dart';
 
-String get _downloadDir =>
-    runChaldeaNext ? db2.paths.downloadDir : db.paths.downloadDir;
-
 class CachedImage extends StatefulWidget {
   final ImageProvider? imageProvider;
 
   final String? imageUrl;
-
-  /// If [isMCFile] is null, check it is a valid url
-  final bool? isMCFile;
 
   /// Save only if the image is wiki file
   final String? cacheDir;
@@ -59,7 +48,6 @@ class CachedImage extends StatefulWidget {
   const CachedImage({
     Key? key,
     required this.imageUrl,
-    this.isMCFile,
     this.cacheDir,
     this.cacheName,
     this.showSaveOnLongPress = false,
@@ -85,7 +73,6 @@ class CachedImage extends StatefulWidget {
     this.photoViewOption,
     this.onTap,
   })  : imageUrl = null,
-        isMCFile = false,
         cacheDir = null,
         cacheName = null,
         super(key: key);
@@ -136,8 +123,6 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  bool _isMcFile = false;
-
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
 
@@ -161,47 +146,12 @@ class _CachedImageState extends State<CachedImage> {
     return child;
   }
 
-  bool _shouldFadeIn = false;
-
   Widget resolveChild() {
     if (widget.imageProvider != null) {
       return _withProvider(widget.imageProvider!);
     }
     if (widget.imageUrl == null) return _withPlaceholder(context, '');
-    _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
-    if (!_isMcFile) return _withCached(widget.imageUrl!);
-    if (!PlatformU.isWeb && widget.cacheDir != null) {
-      String? savePath;
-      savePath = join(widget.cacheDir!, widget.cacheName ?? widget.imageUrl!);
-      if (_existIcon(savePath)) {
-        Widget child = _withProvider(FileImage(File(savePath)));
-        return _shouldFadeIn ? _FadeIn(child: child) : child;
-      } else {
-        _shouldFadeIn = true;
-        WikiUtil.saveImage(widget.imageUrl!, savePath).then((_url) {
-          if (_url != null && mounted) {
-            setState(() {});
-          }
-        });
-        return _withPlaceholder(context, widget.imageUrl!);
-      }
-    } else {
-      String trueUrl = WikiUtil.filenameToUrl(widget.imageUrl!);
-      return _withCached(trueUrl);
-    }
-  }
-
-  /// Don't check image file exists or not every frame
-  static final HashSet<String> _existsIcons =
-      HashSet(isValidKey: (k) => k != null && k is String);
-
-  bool _existIcon(String fp) {
-    if (_existsIcons.contains(fp)) return true;
-    if (File(fp).existsSync()) {
-      _existsIcons.add(fp);
-      return true;
-    }
-    return false;
+    return _withCached(widget.imageUrl!);
   }
 
   Widget _withProvider(ImageProvider provider) {
@@ -247,7 +197,7 @@ class _CachedImageState extends State<CachedImage> {
             ImageActions.showSaveShare(
               context: context,
               data: data,
-              destFp: join(_downloadDir, fn),
+              destFp: join(db2.paths.downloadDir, fn),
               gallery: true,
               share: true,
             );
@@ -262,8 +212,7 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   Widget _withCached(String fullUrl) {
-    final _cacheManager = cachedOption.cacheManager ??
-        (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
+    final _cacheManager = cachedOption.cacheManager ?? DefaultCacheManager();
     Uri? uri = Uri.tryParse(fullUrl);
     if (uri != null && uri.host == 'fgo.wiki') {
       final hashValue = uri.queryParameters['sha1'];
@@ -324,7 +273,7 @@ class _CachedImageState extends State<CachedImage> {
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,
-            destFp: join(_downloadDir, fn),
+            destFp: join(db2.paths.downloadDir, fn),
             gallery: true,
             share: true,
             shareText: fn,
@@ -347,21 +296,6 @@ class _CachedImageState extends State<CachedImage> {
           ? CachedImage.defaultProgressPlaceholder(context, url)
           : Container(), // TODO: add no-network icon
     );
-  }
-
-  bool _isValidUrl(String str) {
-    if (validator.isURL(str)) {
-      str = str.toLowerCase();
-      if (str.endsWith('.png') ||
-          str.endsWith('.jpg') ||
-          str.endsWith('.mp3') ||
-          str.endsWith('.wav')) {
-        return str.contains('/');
-      }
-      return true;
-    } else {
-      return false;
-    }
   }
 }
 

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/basic.dart' show runChaldeaNext;
 import '../models/db.dart' show db2;
-import '../components/config.dart' show db;
 import '../utils/extension.dart';
 
 class Language {
@@ -27,55 +25,34 @@ class Language {
   static List<Language> get supportLanguages =>
       const [jp, chs, cht, en, ko, es, ar];
 
-  static List<Language> get supportLanguagesLegacy =>
-      const [jp, chs, cht, en, ko];
-
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
   static List<Language> getSortedSupportedLanguage(String? langCode) {
-    if (runChaldeaNext) {
-      switch (getLanguage(langCode)) {
-        case jp:
-          return [jp, chs, cht, en, ko, ar, es];
-        case chs:
-          return [chs, cht, jp, en, ko, ar, es];
-        case cht:
-          return [cht, chs, jp, en, ko, ar, es];
-        case en:
-          return [en, jp, chs, cht, ko, ar, es];
-        case ko:
-          return [ko, jp, chs, cht, en, ar, es];
-        case ar:
-          return [ar, en, jp, chs, cht, ko, es];
-        case es:
-          return [es, en, jp, chs, cht, ko, ar];
-        default:
-          return [en, jp, chs, cht, ko, ar, es];
-      }
-    } else {
-      switch (getLanguage(langCode)) {
-        case jp:
-          return [jp, chs, cht, en, ko];
-        case chs:
-          return [chs, cht, jp, en, ko];
-        case cht:
-          return [cht, chs, jp, en, ko];
-        case en:
-          return [en, jp, chs, cht, ko];
-        case ko:
-          return [ko, jp, chs, cht, en];
-        default:
-          return [en, jp, chs, cht, ko];
-      }
+    switch (getLanguage(langCode)) {
+      case jp:
+        return [jp, chs, cht, en, ko, ar, es];
+      case chs:
+        return [chs, cht, jp, en, ko, ar, es];
+      case cht:
+        return [cht, chs, jp, en, ko, ar, es];
+      case en:
+        return [en, jp, chs, cht, ko, ar, es];
+      case ko:
+        return [ko, jp, chs, cht, en, ar, es];
+      case ar:
+        return [ar, en, jp, chs, cht, ko, es];
+      case es:
+        return [es, en, jp, chs, cht, ko, ar];
+      default:
+        return [en, jp, chs, cht, ko, ar, es];
     }
   }
 
   /// warn that [Intl.canonicalizedLocale] cannot treat script code
   static Language? getLanguage(String? code) {
     code = Intl.canonicalizedLocale(code ??= systemLocale.toString());
-    Language? lang =
-        (runChaldeaNext ? supportLanguages : supportLanguagesLegacy)
-            .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
+    Language? lang = supportLanguages
+        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
     if (lang == null && code.startsWith('zh')) {
       return chs;
     }
@@ -98,16 +75,10 @@ class Language {
 
   static bool get isKO => current == ko;
 
-  static Language get current =>
-      getLanguage(
-          runChaldeaNext ? db2.settings.language : db.appSetting.language) ??
-      en;
+  static Language get current => getLanguage(db2.settings.language) ?? en;
 
   @override
   String toString() {
     return "$runtimeType('$code', '$name')";
   }
-
-  // legacy
-  static bool get isEnOrKr => isEN || isKO;
 }

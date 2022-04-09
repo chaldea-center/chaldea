@@ -1,10 +1,11 @@
-import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../tools/localized_base.dart';
 
 class CarouselSettingPage extends StatefulWidget {
   const CarouselSettingPage({Key? key}) : super(key: key);

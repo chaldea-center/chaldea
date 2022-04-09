@@ -1,4 +1,3 @@
-import 'package:chaldea/components/localized/localized.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -116,11 +115,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             }),
       ));
     });
-    children.add(ListTile(
-      subtitle: Center(
-        child: Text(Localized.freeDropRateChangedHint.localized),
-      ),
-    ));
+
     return Column(
       children: <Widget>[
         Container(

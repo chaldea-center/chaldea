@@ -1,6 +1,6 @@
+import 'package:chaldea/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/constants.dart';
 import '../modules/root/window_manager.dart';
 import 'delegate.dart';
 import 'routes.dart';

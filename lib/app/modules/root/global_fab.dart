@@ -1,13 +1,13 @@
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/modules/debug/theme_palette.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:flutter/material.dart';
 
 import '../../../packages/split_route/split_route.dart';
 import '../../app.dart';
+import '../misc/theme_palette.dart';
 
 class WindowManagerFab extends StatefulWidget {
   const WindowManagerFab({Key? key}) : super(key: key);

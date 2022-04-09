@@ -2,13 +2,11 @@ import 'package:chaldea/models/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../components/git_tool.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;
-  DatasetVersion? latestDatasetVersion;
   double? criticalWidth;
   Set<String> itemRecognizeImageFiles = {};
   Set<String> activeSkillRecognizeImageFiles = {};

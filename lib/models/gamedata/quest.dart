@@ -140,6 +140,9 @@ class Quest {
       afterClear == QuestAfterClearType.repeatLast &&
       warId < 1000;
 
+  bool get isDomusQuest =>
+      isMainStoryFree || db2.gameData.dropRate.newData.questIds.contains(id);
+
   // exclude challenge quest, raid
   bool get isAnyFree =>
       afterClear == QuestAfterClearType.repeatLast &&

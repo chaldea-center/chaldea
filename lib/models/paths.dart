@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../packages/logger.dart';
 import '../packages/platform/platform.dart';
 import '../utils/constants.dart';
-import 'basic.dart';
 
 class PathManager {
   /// [_appPath] root path where app data stored, can be configured by user
@@ -115,9 +114,7 @@ class PathManager {
     if (_appPath == null) {
       throw const OSError('Cannot resolve document folder');
     }
-    if (runChaldeaNext) {
-      _appPath = join(_appPath!, 'next');
-    }
+
     logger.i('appPath: $_appPath');
     // ensure directory exist
     for (String dir in [

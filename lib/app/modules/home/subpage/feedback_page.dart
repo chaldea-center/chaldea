@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/modules/extras/faq_page.dart';
-import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -19,6 +18,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../misc/faq_page.dart';
 
 class FeedbackPage extends StatefulWidget {
   FeedbackPage({Key? key}) : super(key: key);
@@ -285,7 +286,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Map<String, Uint8List> attachFiles = {};
 
   void _addAttachments() async {
-    final result = await CommonBuilder.pickImageOrFiles(
+    final result = await SharedBuilder.pickImageOrFiles(
             context: context, allowMultiple: true, withData: true)
         .catchError((e, s) async {
       logger.e('pick attachment failed', e, s);

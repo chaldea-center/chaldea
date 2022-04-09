@@ -3,33 +3,29 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:catcher/catcher.dart';
-import 'package:chaldea/app/chaldea_next.dart';
-import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/chaldea.dart';
+import 'package:chaldea/app/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_size/window_size.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import 'app/modules/common/blank_page.dart';
-import 'models/basic.dart';
 import 'models/db.dart';
 import 'packages/network.dart';
+import 'packages/packages.dart';
+import 'packages/split_route/split_route.dart';
 import 'utils/catcher/catcher_util.dart';
 
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
 
-  runChaldeaNext = true;
   await _initiateCommon();
-  if (runChaldeaNext) {
-    await _mainNext();
-  } else {
-    await _mainLegacy();
-  }
+  await _mainNext();
 }
 
 Future<void> _mainNext() async {
@@ -52,43 +48,6 @@ Future<void> _mainNext() async {
       onGenerateAttachments: () => {
         'userdata.memory.json':
             Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
-      },
-    ),
-  );
-  if (kDebugMode) {
-    runApp(ChaldeaNext());
-  } else {
-    Catcher(
-      rootWidget: ChaldeaNext(),
-      debugConfig: catcherOptions,
-      profileConfig: catcherOptions,
-      releaseConfig: catcherOptions,
-      navigatorKey: kAppKey,
-      ensureInitialized: true,
-      enableLogger: kDebugMode,
-    );
-  }
-}
-
-Future<void> _mainLegacy() async {
-  await db.initial().catchError((e, s) async {
-    db.initErrorDetail =
-        FlutterErrorDetails(exception: e, stack: s, library: 'initiation');
-    logger.e('db.initial failed', e, s);
-    Future.delayed(const Duration(seconds: 10), () {
-      Catcher.reportCheckedError(e, s);
-    });
-  });
-
-  final catcherOptions = CatcherUtil.getOptions(
-    logPath: db.paths.crashLog,
-    feedbackHandler: ServerFeedbackHandler(
-      screenshotController: db.runtimeData.screenshotController,
-      screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
-      attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],
-      onGenerateAttachments: () => {
-        'userdata.memory.json':
-            Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))
       },
     ),
   );

@@ -171,7 +171,7 @@ class _SummonListPageState extends State<SummonListPage>
   }
 
   @override
-  Iterable<String?> getSummary2(LimitedSummon summon) sync* {
+  Iterable<String?> getSummary(LimitedSummon summon) sync* {
     yield* SearchUtil.getAllKeys(
         Transl.fromMapping(summon.id, summon.name, summon.id.toString()));
   }

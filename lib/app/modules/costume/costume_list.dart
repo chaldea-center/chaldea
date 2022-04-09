@@ -73,7 +73,7 @@ class _CostumeListPageState extends State<CostumeListPage>
   }
 
   @override
-  Iterable<String?> getSummary2(NiceCostume costume) sync* {
+  Iterable<String?> getSummary(NiceCostume costume) sync* {
     final svt = costume.owner;
     yield costume.costumeCollectionNo.toString();
     yield costume.battleCharaId.toString();

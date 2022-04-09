@@ -1,5 +1,13 @@
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/app/tools/localized_base.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
@@ -42,9 +50,11 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
         logger.e('error loading markdown asset ${widget.assetKey}', e, s);
         return 'Loading error';
       }).whenComplete(
-        () => Utils.scheduleFrameCallback(() {
-          if (mounted) setState(() {});
-        }),
+        () {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            if (mounted) setState(() {});
+          });
+        },
       );
     }
   }
@@ -146,10 +156,10 @@ class MarkdownHelpPage extends StatefulWidget {
     Duration? lapse,
   }) async {
     final result = LocalizedText.of(
-      chs: await _loadAsset(join(dir, asset)) ?? '',
-      jpn: await _loadAsset(join(dir, assetJp ?? join('jp', asset))),
-      eng: await _loadAsset(join(dir, assetEn ?? join('en', asset))),
-      kor: await _loadAsset(join(dir, assetEn ?? join('kor', asset))),
+      chs: await _loadAsset(joinPaths(dir, asset)) ?? '',
+      jpn: await _loadAsset(joinPaths(dir, assetJp ?? joinPaths('jp', asset))),
+      eng: await _loadAsset(joinPaths(dir, assetEn ?? joinPaths('en', asset))),
+      kor: await _loadAsset(joinPaths(dir, assetEn ?? joinPaths('kor', asset))),
     );
     if (lapse != null) {
       await Future.delayed(lapse);

@@ -1,9 +1,10 @@
-import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+
+import '../../tools/localized_base.dart';
 
 class CvListPage extends StatefulWidget {
   CvListPage({Key? key}) : super(key: key);
@@ -166,7 +167,7 @@ class _CVOptions with SearchOptionsMixin<String> {
   }
 
   @override
-  Iterable<String?> getSummary2(String cv) sync* {
+  Iterable<String?> getSummary(String cv) sync* {
     if (cvName) {
       yield* getAllKeys(Transl.cvNames(cv));
     }

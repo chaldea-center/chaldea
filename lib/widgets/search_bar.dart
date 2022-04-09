@@ -1,5 +1,7 @@
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../models/gamedata/wiki_data.dart';
 
@@ -158,8 +160,7 @@ abstract class SearchOptionsMixin<T> {
     }
   }
 
-  String getSummary(T datum) => '';
-  Iterable<String?> getSummary2(T datum) => [];
+  Iterable<String?> getSummary(T datum) => [];
 
   final Map<int, String> _caches = {};
 

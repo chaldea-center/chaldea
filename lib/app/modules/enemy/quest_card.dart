@@ -38,8 +38,7 @@ class _QuestCardState extends State<QuestCard> {
   bool? _use6th;
   bool preferApRate = false;
 
-  bool get use6th =>
-      quest.isMainStoryFree && (_use6th ?? db2.curUser.use6thDropRate);
+  bool get use6th => _use6th ?? db2.curUser.use6thDropRate;
 
   bool get show6th {
     return db2.gameData.dropRate.getSheet(true).questIds.contains(quest.id);
@@ -49,7 +48,7 @@ class _QuestCardState extends State<QuestCard> {
   void initState() {
     super.initState();
     _use6th = widget.use6th;
-    if (quest.isMainStoryFree) preferApRate = db2.settings.preferApRate;
+    if (quest.isDomusQuest) preferApRate = db2.settings.preferApRate;
     if (!widget.offline) _fetchAllPhases();
   }
 

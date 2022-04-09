@@ -198,7 +198,7 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
   }
 
   @override
-  Iterable<String?> getSummary2(CraftEssence ce) sync* {
+  Iterable<String?> getSummary(CraftEssence ce) sync* {
     if (basic) {
       yield ce.collectionNo.toString();
       yield ce.id.toString();

@@ -6,7 +6,6 @@ import 'package:chaldea/utils/hive_extention.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-import '../logger.dart';
 import 'file_plus.dart';
 
 const fsName = 'webfs';

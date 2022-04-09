@@ -172,7 +172,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
   }
 
   @override
-  Iterable<String?> getSummary2(CommandCode code) sync* {
+  Iterable<String?> getSummary(CommandCode code) sync* {
     if (basic) {
       yield code.collectionNo.toString();
       yield code.id.toString();

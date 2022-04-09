@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/material.dart';
 
 const _kAspectRatio = 8 / 3;
 const _kMaxHeight = 150.0;

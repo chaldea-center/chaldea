@@ -1,8 +1,8 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/userdata/userdata.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import 'servant.dart';
 import 'skill.dart';

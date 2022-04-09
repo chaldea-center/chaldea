@@ -142,8 +142,8 @@ class _GalleryPageState extends State<GalleryPage> {
 
     final path = db2.paths.appPath.toLowerCase();
     if (PlatformU.isWindows &&
-        (path.contains('appdata\\local\\temp') ||
-            path.contains('c:\\program files'))) {
+        (path.contains(r'appdata\local\temp') ||
+            path.contains(r'c:\\program files'))) {
       children.add(SimpleAccordion(
         expanded: true,
         headerBuilder: (_, __) => ListTile(

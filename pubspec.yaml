@@ -32,8 +32,7 @@ dependencies:
   cached_network_image: ^3.2.0
   carousel_slider: ^4.0.0
   catcher: ^0.6.9
-  connectivity_plus: 1.0.8
-  connectivity_plus_macos: 1.0.2  # 1.1.0: macOS deployment target 10.11 to 10.14
+  connectivity_plus: ^2.2.1
   crclib: ^3.0.0
   crypto: ^3.0.1
   csv: ^5.0.1

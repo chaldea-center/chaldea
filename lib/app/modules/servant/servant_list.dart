@@ -369,11 +369,6 @@ class ServantListPageState extends State<ServantListPage>
   bool? _changedDress;
 
   @override
-  String getSummary(Servant svt) {
-    return options?.getSummary(svt) ?? '';
-  }
-
-  @override
   bool filter(Servant svt) {
     final svtStat = db2.curUser.svtStatusOf(svt.collectionNo);
     final svtPlan = db2.curUser.svtPlanOf(svt.collectionNo);
@@ -1164,7 +1159,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
   }
 
   @override
-  Iterable<String?> getSummary2(Servant svt) sync* {
+  Iterable<String?> getSummary(Servant svt) sync* {
     if (basic) {
       yield svt.collectionNo.toString();
       yield svt.id.toString();

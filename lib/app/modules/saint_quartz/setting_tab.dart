@@ -1,4 +1,4 @@
-import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';

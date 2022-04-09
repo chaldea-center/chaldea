@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
