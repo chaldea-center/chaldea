@@ -9,6 +9,7 @@ import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,7 @@ class _Database {
     await AppInfo.resolve(paths.appPath);
     MethodChannelChaldeaNext.configMethodChannel();
     security = await Hive.openBoxRetry('security');
+    _startSavingLoop();
   }
 
   /// return the [UserData] instance, don't assign to [userData]
@@ -143,6 +145,29 @@ class _Database {
 
   Future<void> saveSettings() =>
       FilePlus(paths.settingsPath).writeAsString(jsonEncode(settings));
+
+  void _startSavingLoop() {
+    String? _lastUserHash;
+    String? _lastSettingHash;
+    String _getHash(Object obj) {
+      return md5.convert(utf8.encode(jsonEncode(obj))).toString();
+    }
+
+    Timer.periodic(const Duration(seconds: 10), (timer) {
+      final _userHash = _getHash(userData);
+      final _settingHash = _getHash(settings);
+      if (_lastUserHash != null && _lastSettingHash != null) {
+        if (_userHash != _lastUserHash) {
+          saveUserData();
+        }
+        if (_settingHash != _lastSettingHash) {
+          saveSettings();
+        }
+      }
+      _lastUserHash = _userHash;
+      _lastSettingHash = _settingHash;
+    });
+  }
 
   Future<List<String>> backupUserdata(
       {bool disk = false, bool memory = true}) async {
