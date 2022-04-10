@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../app/app.dart';
 import 'common.dart';
 import 'game_card.dart';
-import 'wiki_data.dart';
+import 'mappings.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 

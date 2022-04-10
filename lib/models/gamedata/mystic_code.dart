@@ -3,8 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
 import 'game_card.dart';
+import 'mappings.dart';
 import 'skill.dart';
-import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/mystic_code.g.dart';
 

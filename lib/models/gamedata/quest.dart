@@ -7,10 +7,10 @@ import '../../app/app.dart';
 import '../db.dart';
 import 'common.dart';
 import 'item.dart';
+import 'mappings.dart';
 import 'script.dart';
 import 'servant.dart';
 import 'skill.dart';
-import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/quest.g.dart';
 

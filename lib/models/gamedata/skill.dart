@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import 'common.dart';
-import 'wiki_data.dart';
+import 'mappings.dart';
 
 part 'func.dart';
 part 'vals.dart';

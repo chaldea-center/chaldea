@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../app/app.dart';
 import '../db.dart';
 import 'game_card.dart';
+import 'mappings.dart';
 import 'servant.dart';
 import 'skill.dart';
 import 'wiki_data.dart';

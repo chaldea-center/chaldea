@@ -9,6 +9,7 @@ import '../userdata/filter_data.dart';
 import 'common.dart';
 import 'game_card.dart';
 import 'item.dart';
+import 'mappings.dart';
 import 'script.dart';
 import 'skill.dart';
 import 'wiki_data.dart';

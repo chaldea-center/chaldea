@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/tools/gamedata_loader.dart';
 import 'event.dart';
-import 'wiki_data.dart';
+import 'mappings.dart';
 
 part '../../generated/models/gamedata/common.g.dart';
 part 'common_helper.dart';

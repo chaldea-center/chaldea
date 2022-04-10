@@ -3,7 +3,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../models/gamedata/wiki_data.dart';
+import '../models/gamedata/mappings.dart';
+
 
 const double _kSearchBarPaddingBottom = 8.0;
 
