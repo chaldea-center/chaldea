@@ -174,92 +174,85 @@ class MappingData {
   final Map<int, MappingBase<String>> svtClass; // key: class id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
-  final Map<int, MappingBase<Map<int, int>>> skillState;
-  final Map<int, MappingBase<Map<int, int>>> tdState;
+  final Map<int, MappingDict<int>> skillState;
+  final Map<int, MappingDict<int>> tdState;
+  final MappingList<int> svtRelease;
+  final MappingList<int> ceRelease;
+  final MappingList<int> ccRelease;
 
   MappingData({
-    Map<dynamic, MappingBase>? itemNames,
-    Map<dynamic, MappingBase>? mcNames,
-    Map<dynamic, MappingBase>? costumeNames,
-    Map<dynamic, MappingBase>? cvNames,
-    Map<dynamic, MappingBase>? illustratorNames,
-    Map<dynamic, MappingBase>? ccNames,
-    Map<dynamic, MappingBase>? svtNames,
-    Map<dynamic, MappingBase>? ceNames,
-    Map<dynamic, MappingBase>? eventNames,
-    Map<dynamic, MappingBase>? warNames,
-    Map<dynamic, MappingBase>? questNames,
-    Map<dynamic, MappingBase>? spotNames,
-    Map<dynamic, MappingBase>? entityNames,
-    Map<dynamic, MappingBase>? tdTypes,
-    Map<dynamic, MappingBase>? bgmNames,
-    Map<dynamic, MappingBase>? summonNames,
-    Map<dynamic, MappingBase>? charaNames,
-    Map<dynamic, MappingBase>? buffNames,
-    Map<dynamic, MappingBase>? buffDetail,
-    Map<dynamic, MappingBase>? funcPopuptext,
-    Map<dynamic, MappingBase>? skillNames,
-    Map<dynamic, MappingBase>? skillDetail,
-    Map<dynamic, MappingBase>? tdNames,
-    Map<dynamic, MappingBase>? tdRuby,
-    Map<dynamic, MappingBase>? tdDetail,
-    Map<dynamic, MappingBase>? trait,
-    Map<dynamic, MappingBase>? svtClass,
-    Map<dynamic, MappingBase>? mcDetail,
-    Map<dynamic, MappingBase>? costumeDetail,
-    Map<dynamic, MappingBase>? skillState,
-    Map<dynamic, MappingBase>? tdState,
-  })  : itemNames = _cast(itemNames, Region.jp),
-        mcNames = _cast(mcNames, Region.jp),
-        costumeNames = _cast(costumeNames, Region.jp),
-        cvNames = _cast(cvNames, Region.jp),
-        illustratorNames = _cast(illustratorNames, Region.jp),
-        ccNames = _cast(ccNames, Region.jp),
-        svtNames = _cast(svtNames, Region.jp),
-        ceNames = _cast(ceNames, Region.jp),
-        eventNames = _cast(eventNames, Region.jp),
-        warNames = _cast(warNames, Region.jp),
-        questNames = _cast(questNames, Region.jp),
-        spotNames = _cast(spotNames, Region.jp),
-        entityNames = _cast(entityNames, Region.jp),
-        tdTypes = _cast(tdTypes, Region.jp),
-        bgmNames = _cast(bgmNames, Region.jp),
-        summonNames = _cast(summonNames, Region.cn),
-        charaNames = _cast(charaNames, Region.cn),
-        buffNames = _cast(buffNames, Region.jp),
-        buffDetail = _cast(buffDetail, Region.jp),
-        funcPopuptext = _cast(funcPopuptext, Region.jp),
-        skillNames = _cast(skillNames, Region.jp),
-        skillDetail = _cast(skillDetail, Region.jp),
-        tdNames = _cast(tdNames, Region.jp),
-        tdRuby = _cast(tdRuby, Region.jp),
-        tdDetail = _cast(tdDetail, Region.jp),
-        trait = _cast(trait),
-        svtClass = _cast(svtClass),
-        mcDetail = _cast(mcDetail),
-        costumeDetail = _cast(costumeDetail),
-        skillState = _cast(skillState),
-        tdState = _cast(tdState) {
+    this.itemNames = const {},
+    this.mcNames = const {},
+    this.costumeNames = const {},
+    this.cvNames = const {},
+    this.illustratorNames = const {},
+    this.ccNames = const {},
+    this.svtNames = const {},
+    this.ceNames = const {},
+    this.eventNames = const {},
+    this.warNames = const {},
+    this.questNames = const {},
+    this.spotNames = const {},
+    this.entityNames = const {},
+    this.tdTypes = const {},
+    this.bgmNames = const {},
+    this.summonNames = const {},
+    this.charaNames = const {},
+    this.buffNames = const {},
+    this.buffDetail = const {},
+    this.funcPopuptext = const {},
+    Map<String, MappingBase<String>>? skillNames,
+    this.skillDetail = const {},
+    this.tdNames = const {},
+    this.tdRuby = const {},
+    this.tdDetail = const {},
+    this.trait = const {},
+    this.svtClass = const {},
+    this.mcDetail = const {},
+    this.costumeDetail = const {},
+    this.skillState = const {},
+    this.tdState = const {},
+    MappingList<int>? svtRelease,
+    MappingList<int>? ceRelease,
+    MappingList<int>? ccRelease,
+  })  : skillNames = skillNames ?? {},
+        svtRelease = svtRelease ?? MappingList(),
+        ceRelease = ceRelease ?? MappingList(),
+        ccRelease = ccRelease ?? MappingList() {
+    _updateRegion(itemNames, Region.jp);
+    _updateRegion(mcNames, Region.jp);
+    _updateRegion(costumeNames, Region.jp);
+    _updateRegion(cvNames, Region.jp);
+    _updateRegion(illustratorNames, Region.jp);
+    _updateRegion(ccNames, Region.jp);
+    _updateRegion(svtNames, Region.jp);
+    _updateRegion(ceNames, Region.jp);
+    _updateRegion(eventNames, Region.jp);
+    _updateRegion(warNames, Region.jp);
+    _updateRegion(questNames, Region.jp);
+    _updateRegion(spotNames, Region.jp);
+    _updateRegion(entityNames, Region.jp);
+    _updateRegion(tdTypes, Region.jp);
+    _updateRegion(bgmNames, Region.jp);
+    _updateRegion(summonNames, Region.cn);
+    _updateRegion(charaNames, Region.cn);
+    _updateRegion(buffNames, Region.jp);
+    _updateRegion(buffDetail, Region.jp);
+    _updateRegion(funcPopuptext, Region.jp);
+
     this.skillNames
-      ..addAll(this.ceNames)
-      ..addAll(this.ccNames);
+      ..addAll(ceNames)
+      ..addAll(ccNames);
+    _updateRegion(this.skillNames, Region.jp);
+    _updateRegion(skillDetail, Region.jp);
+    _updateRegion(tdNames, Region.jp);
+    _updateRegion(tdRuby, Region.jp);
+    _updateRegion(tdDetail, Region.jp);
   }
 
-  static Map<K, MappingBase<V>> _cast<K, V>(Map<dynamic, MappingBase>? data,
-      [Region? keyRegion]) {
-    if (data == null) return {};
-    return data.map((key, value) {
-      MapEntry<K, MappingBase<V>> entry;
-      if (K == int) {
-        entry = MapEntry(int.parse(key as String) as K, value.cast());
-      } else {
-        entry = MapEntry(key, value.cast());
-      }
-      if (keyRegion != null) {
-        assert(K == V && K == String, 'Only String supported: $K, $V');
-        entry.value.update(entry.key as V, keyRegion, true);
-      }
-      return entry;
+  static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region) {
+    mapping.forEach((key, value) {
+      value.update(key, region);
     });
   }
 
@@ -276,7 +269,11 @@ class M {
   }
 }
 
-@JsonSerializable(constructor: 'typed')
+T _fromJsonT<T>(Object? obj) {
+  return obj as T;
+}
+
+@JsonSerializable(genericArgumentFactories: true)
 class MappingBase<T> {
   @JsonKey(name: 'JP')
   T? jp;
@@ -291,21 +288,7 @@ class MappingBase<T> {
 
   List<T?> get values => [jp, cn, tw, na, kr];
 
-  /// For generator, use dynamic
-  @protected
   MappingBase({
-    dynamic jp,
-    dynamic cn,
-    dynamic tw,
-    dynamic na,
-    dynamic kr,
-  })  : jp = jp as T?,
-        cn = cn as T?,
-        tw = tw as T?,
-        na = na as T?,
-        kr = kr as T?;
-
-  MappingBase.typed({
     this.jp,
     this.cn,
     this.tw,
@@ -363,29 +346,6 @@ class MappingBase<T> {
   factory MappingBase.fromJson(Map<String, dynamic> json) =>
       _$MappingBaseFromJson(json, _fromJsonT);
 
-  MappingBase<S> cast<S>() {
-    if (S == int || S == double || S == String || S == bool) {
-      return MappingBase<S>.typed(
-        jp: jp as S?,
-        cn: cn as S?,
-        tw: tw as S?,
-        na: na as S?,
-        kr: kr as S?,
-      );
-    }
-    // if (S  == Map) {
-    // now only Map<int, int>
-    return MappingBase<Map<int, int>>.typed(
-      jp: (jp as Map?)?.cast<int, int>(),
-      cn: (cn as Map?)?.cast<int, int>(),
-      tw: (tw as Map?)?.cast<int, int>(),
-      na: (na as Map?)?.cast<int, int>(),
-      kr: (kr as Map?)?.cast<int, int>(),
-    ) as MappingBase<S>;
-    // }
-    // throw ArgumentError.value(S, 'type', 'Unknown cast type');
-  }
-
   MappingBase<T> copyWith({
     T? jp,
     T? cn,
@@ -393,7 +353,7 @@ class MappingBase<T> {
     T? na,
     T? kr,
   }) {
-    return MappingBase<T>.typed(
+    return MappingBase<T>(
       jp: jp ?? this.jp,
       cn: cn ?? this.cn,
       tw: tw ?? this.tw,
@@ -401,31 +361,34 @@ class MappingBase<T> {
       kr: kr ?? this.kr,
     );
   }
+}
 
-  static T _fromJsonT<T>(Object? obj) {
-    if (obj == null) return null as T;
-    if (obj is int || obj is double || obj is String) return obj as T;
-    // Map<int,int>
-    if (obj is Map) {
-      if (obj.isEmpty) return Map.from(obj) as T;
-      if (obj.values.first is int) {
-        return <int, int>{for (var e in obj.entries) int.parse(e.key): e.value}
-            as T;
-      }
-    }
-    if (obj is List) {
-      // List<LoreComment>
-      if (obj.isEmpty) return List.from(obj) as T;
-      final _first = obj.first;
-      if (_first is Map &&
-          _first.keys
-              .toSet()
-              .containsAll(['id', 'priority', 'condMessage', 'condType'])) {
-        return obj.map((e) => LoreComment.fromJson(e)).toList() as T;
-      }
-    }
-    return obj as T;
-  }
+@JsonSerializable(genericArgumentFactories: true)
+class MappingList<T> extends MappingBase<List<T>> {
+  MappingList({
+    List<T>? jp,
+    List<T>? cn,
+    List<T>? tw,
+    List<T>? na,
+    List<T>? kr,
+  }) : super(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
+
+  factory MappingList.fromJson(Map<String, dynamic> json) =>
+      _$MappingListFromJson(json, _fromJsonT);
+}
+
+@JsonSerializable(genericArgumentFactories: true)
+class MappingDict<V> extends MappingBase<Map<int, V>> {
+  MappingDict({
+    Map<int, V>? jp,
+    Map<int, V>? cn,
+    Map<int, V>? tw,
+    Map<int, V>? na,
+    Map<int, V>? kr,
+  }) : super(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
+
+  factory MappingDict.fromJson(Map<String, dynamic> json) =>
+      _$MappingDictFromJson(json, _fromJsonT);
 }
 
 @JsonSerializable()
@@ -472,10 +435,10 @@ class ServantExtra {
     this.nameOther = const [],
     this.obtains = const [],
     this.aprilFoolAssets = const [],
-    MappingBase<dynamic>? aprilFoolProfile,
+    MappingBase<String>? aprilFoolProfile,
     this.mcLink,
     this.fandomLink,
-  }) : aprilFoolProfile = aprilFoolProfile?.cast() ?? MappingBase();
+  }) : aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
   factory ServantExtra.fromJson(Map<String, dynamic> json) =>
       _$ServantExtraFromJson(json);
@@ -494,12 +457,12 @@ class CraftEssenceExtra {
   CraftEssenceExtra({
     required this.collectionNo,
     this.obtain = CEObtain.unknown,
-    MappingBase? profile,
+    MappingBase<String>? profile,
     this.characters = const [],
     this.unknownCharacters = const [],
     this.mcLink,
     this.fandomLink,
-  }) : profile = profile?.cast() ?? MappingBase();
+  }) : profile = profile ?? MappingBase();
 
   factory CraftEssenceExtra.fromJson(Map<String, dynamic> json) =>
       _$CraftEssenceExtraFromJson(json);
@@ -516,12 +479,12 @@ class CommandCodeExtra {
 
   CommandCodeExtra({
     required this.collectionNo,
-    MappingBase? profile,
+    MappingBase<String>? profile,
     this.characters = const [],
     this.unknownCharacters = const [],
     this.mcLink,
     this.fandomLink,
-  }) : profile = profile?.cast() ?? MappingBase();
+  }) : profile = profile ?? MappingBase();
 
   factory CommandCodeExtra.fromJson(Map<String, dynamic> json) =>
       _$CommandCodeExtraFromJson(json);
@@ -568,22 +531,22 @@ class EventExtra {
     required this.name,
     this.mcLink,
     this.fandomLink,
-    MappingBase? titleBanner,
-    MappingBase? noticeLink,
+    MappingBase<String>? titleBanner,
+    MappingBase<String>? noticeLink,
     this.huntingQuestIds = const [],
     this.extraItems = const [],
-    MappingBase? startTime,
-    MappingBase? endTime,
+    MappingBase<int>? startTime,
+    MappingBase<int>? endTime,
     this.rarePrism = 0,
     this.grail = 0,
     this.crystal = 0,
     this.grail2crystal = 0,
     this.foukun4 = 0,
     this.relatedSummons = const [],
-  })  : titleBanner = titleBanner?.cast() ?? MappingBase(),
-        noticeLink = noticeLink?.cast() ?? MappingBase(),
-        startTime = startTime?.cast() ?? MappingBase(),
-        endTime = endTime?.cast() ?? MappingBase();
+  })  : titleBanner = titleBanner ?? MappingBase(),
+        noticeLink = noticeLink ?? MappingBase(),
+        startTime = startTime ?? MappingBase(),
+        endTime = endTime ?? MappingBase();
 
   factory EventExtra.fromJson(Map<String, dynamic> json) =>
       _$EventExtraFromJson(json);
@@ -601,10 +564,10 @@ class WarExtra {
     required this.id,
     this.mcLink,
     this.fandomLink,
-    MappingBase? titleBanner,
-    MappingBase? noticeLink,
-  })  : titleBanner = titleBanner?.cast() ?? MappingBase(),
-        noticeLink = noticeLink?.cast() ?? MappingBase();
+    MappingBase<String>? titleBanner,
+    MappingBase<String>? noticeLink,
+  })  : titleBanner = titleBanner ?? MappingBase(),
+        noticeLink = noticeLink ?? MappingBase();
 
   factory WarExtra.fromJson(Map<String, dynamic> json) =>
       _$WarExtraFromJson(json);
@@ -694,19 +657,19 @@ class LimitedSummon {
     required this.id,
     this.mcLink,
     this.fandomLink,
-    MappingBase? name,
-    MappingBase? banner,
-    MappingBase? noticeLink,
-    MappingBase? startTime,
-    MappingBase? endTime,
+    MappingBase<String>? name,
+    MappingBase<String>? banner,
+    MappingBase<String>? noticeLink,
+    MappingBase<int>? startTime,
+    MappingBase<int>? endTime,
     this.type = SummonType.unknown,
     this.rollCount = 11,
     this.subSummons = const [],
-  })  : name = name?.cast() ?? MappingBase(),
-        banner = banner?.cast() ?? MappingBase(),
-        noticeLink = noticeLink?.cast() ?? MappingBase(),
-        startTime = startTime?.cast() ?? MappingBase(),
-        endTime = endTime?.cast() ?? MappingBase();
+  })  : name = name ?? MappingBase(),
+        banner = banner ?? MappingBase(),
+        noticeLink = noticeLink ?? MappingBase(),
+        startTime = startTime ?? MappingBase(),
+        endTime = endTime ?? MappingBase();
 
   factory LimitedSummon.fromJson(Map<String, dynamic> json) =>
       _$LimitedSummonFromJson(json);
