@@ -445,10 +445,12 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.attribute.matchOne(svt.attribute)) {
       return false;
     }
-    if (!filterData.alignment1.matchAny(svt.traitsAll)) {
+    if (!filterData.policy
+        .matchOne(svt.profile.stats?.policy ?? ServantPolicy.none)) {
       return false;
     }
-    if (!filterData.alignment2.matchAny(svt.traitsAll)) {
+    if (!filterData.personality
+        .matchOne(svt.profile.stats?.personality ?? ServantPersonality.none)) {
       return false;
     }
     if (!filterData.gender.matchOne(svt.gender)) {

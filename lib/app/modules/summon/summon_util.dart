@@ -195,8 +195,8 @@ class SummonUtil {
               .l ??
           e;
       if (name2 == e &&
-          db2.gameData.mappingData.svtClass.values
-              .every((cls) => cls.na?.toLowerCase() != e.toLowerCase())) {
+          SvtClass.values
+              .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
         List<String> fragments = e.split('(');
         fragments[0] = fragments[0].trim();
         fragments[0] = db2.gameData.servants.values

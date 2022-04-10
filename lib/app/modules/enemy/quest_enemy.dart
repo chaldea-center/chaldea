@@ -76,7 +76,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
               CustomTableRow.fromTextsWithHeader(
                 texts: [
                   S.current.filter_sort_class,
-                  Transl.svtClass(enemy.svt.className.id).l,
+                  Transl.svtClass(enemy.svt.className).l,
                   S.current.filter_attribute,
                   enemy.svt.attribute.name
                 ],

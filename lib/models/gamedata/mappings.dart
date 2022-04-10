@@ -1,9 +1,11 @@
-
+import 'package:chaldea/models/gamedata/common.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
 import '../userdata/userdata.dart';
+import 'servant.dart';
 import 'skill.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/mappings.g.dart';
 
@@ -56,8 +58,6 @@ class Transl<K, V> {
         mappings = {key: m};
 
   static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
-  static Transl<int, String> svtClass(int id) =>
-      Transl(_md.svtClass, id, '$id');
 
   static Transl<String, String> itemNames(String jp) =>
       Transl(_md.itemNames, jp, jp);
@@ -139,6 +139,25 @@ class Transl<K, V> {
 
   static Transl<String, String> tdDetail(String jp) =>
       Transl(_md.tdDetail, jp, jp);
+
+  static Transl<String, String> svtClass(SvtClass key) =>
+      Transl(_md.enums.svtClass, key.name, key.name);
+  static Transl<String, String> svtClassId(int id) => Transl(_md.enums.svtClass,
+      kSvtClassIds[id]?.name ?? id.toString(), id.toString());
+  static Transl<String, String> svtAttribute(Attribute key) =>
+      Transl(_md.enums.attribute, key.name, key.name);
+  static Transl<String, String> servantPolicy(ServantPolicy key) =>
+      Transl(_md.enums.servantPolicy, key.name, key.name);
+  static Transl<String, String> servantPersonality(ServantPersonality key) =>
+      Transl(_md.enums.servantPersonality, key.name, key.name);
+  static Transl<String, String> gender(Gender key) =>
+      Transl(_md.enums.gender, key.name, key.name);
+  static Transl<String, String> funcTargetType(FuncTargetType key) =>
+      Transl(_md.enums.funcTargetType, key.name, key.name);
+  static Transl<String, String> svtObtain(SvtObtain key) =>
+      Transl(_md.enums.svtObtain, key.name, key.name);
+  static Transl<String, String> ceObtain(CEObtain key) =>
+      Transl(_md.enums.ceObtain, key.name, key.name);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -169,7 +188,6 @@ class MappingData {
   final Map<String, MappingBase<String>> tdRuby;
   final Map<String, MappingBase<String>> tdDetail;
   final Map<int, MappingBase<String>> trait; // key: trait id
-  final Map<int, MappingBase<String>> svtClass; // key: class id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>> skillState;
@@ -177,6 +195,7 @@ class MappingData {
   final MappingList<int> svtRelease;
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
+  final EnumMapping enums;
 
   MappingData({
     this.itemNames = const {},
@@ -205,7 +224,6 @@ class MappingData {
     this.tdRuby = const {},
     this.tdDetail = const {},
     this.trait = const {},
-    this.svtClass = const {},
     this.mcDetail = const {},
     this.costumeDetail = const {},
     this.skillState = const {},
@@ -213,10 +231,12 @@ class MappingData {
     MappingList<int>? svtRelease,
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
+    EnumMapping? enums,
   })  : skillNames = skillNames ?? {},
         svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
-        ccRelease = ccRelease ?? MappingList() {
+        ccRelease = ccRelease ?? MappingList(),
+        enums = enums ?? EnumMapping() {
     _updateRegion(itemNames, Region.jp);
     _updateRegion(mcNames, Region.jp);
     _updateRegion(costumeNames, Region.jp);
@@ -387,4 +407,29 @@ class MappingDict<V> extends MappingBase<Map<int, V>> {
 
   factory MappingDict.fromJson(Map<String, dynamic> json) =>
       _$MappingDictFromJson(json, _fromJsonT);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class EnumMapping {
+  final Map<String, MappingBase<String>> svtClass;
+  final Map<String, MappingBase<String>> attribute;
+  final Map<String, MappingBase<String>> servantPolicy;
+  final Map<String, MappingBase<String>> servantPersonality;
+  final Map<String, MappingBase<String>> gender;
+  final Map<String, MappingBase<String>> funcTargetType;
+  final Map<String, MappingBase<String>> svtObtain;
+  final Map<String, MappingBase<String>> ceObtain;
+  EnumMapping({
+    this.svtClass = const {},
+    this.attribute = const {},
+    this.servantPolicy = const {},
+    this.servantPersonality = const {},
+    this.gender = const {},
+    this.funcTargetType = const {},
+    this.svtObtain = const {},
+    this.ceObtain = const {},
+  });
+
+  factory EnumMapping.fromJson(Map<String, dynamic> json) =>
+      _$EnumMappingFromJson(json);
 }

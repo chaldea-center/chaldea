@@ -133,7 +133,7 @@ class _GameDataPageState extends State<GameDataPage> {
                                     'Latest : ${value.version.text(false)}'),
                                 onTapOk: () {
                                   db2.gameData = value;
-                                  db2.itemCenter.calculate();
+                                  db2.itemCenter.init();
                                   db2.notifyAppUpdate();
                                 },
                               );

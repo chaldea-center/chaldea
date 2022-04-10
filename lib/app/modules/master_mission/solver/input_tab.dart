@@ -224,7 +224,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       case MissionTargetType.servantClass:
       case MissionTargetType.enemyClass:
       case MissionTargetType.enemyNotServantClass:
-        return Transl.svtClass(id).l;
+        return Transl.svtClassId(id).l;
     }
   }
 
@@ -554,13 +554,13 @@ class __SearchViewState extends State<_SearchView> {
   Iterable<String> _getClassStrings(int id) sync* {
     final svtClass = kSvtClassIds[id];
     if (svtClass != null) yield svtClass.name.toLowerCase();
-    final mapping = Transl.svtClass(id);
+    final mapping = Transl.svtClass(svtClass!);
     yield mapping.l;
     yield mapping.jp;
   }
 
   Widget _buildClassTile(int id) {
-    final names = {Transl.svtClass(id).l, Transl.svtClass(id).jp};
+    final names = {Transl.svtClassId(id).l, Transl.svtClassId(id).jp};
     return ListTile(
       title: Text('$id - ${names.join("/")}'),
       subtitle: Text(kSvtClassIds[id]?.name ?? 'Unknown'),

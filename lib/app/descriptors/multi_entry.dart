@@ -198,7 +198,7 @@ class MultiDescriptor {
         return inkWell(
           context: context,
           onTap: null,
-          text: '[${Transl.svtClass(id).l}]',
+          text: '[${Transl.svtClassId(id).l}]',
         );
       },
     );

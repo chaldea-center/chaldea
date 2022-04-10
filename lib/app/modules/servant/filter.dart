@@ -145,7 +145,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtObtain.values,
           values: filterData.obtain,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(Transl.svtObtain(v).l),
           onFilterChanged: (value) {
             filterData.obtain = value;
             update();
@@ -155,43 +155,35 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_attribute, style: textStyle),
           options: Attribute.values.sublist(0, 5),
           values: filterData.attribute,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(Transl.svtAttribute(v).l),
           onFilterChanged: (value) {
             update();
           },
         ),
-        FilterGroup<Trait>(
+        FilterGroup<ServantPolicy>(
           title: Text(S.of(context).info_alignment, style: textStyle),
-          options: const [
-            Trait.alignmentLawful,
-            Trait.alignmentChaotic,
-            Trait.alignmentNeutral,
-          ],
-          values: filterData.alignment1,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          options:
+              ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
+          values: filterData.policy,
+          optionBuilder: (v) => Text(Transl.servantPolicy(v).l),
           onFilterChanged: (value) {
             update();
           },
         ),
-        FilterGroup<Trait>(
-          values: filterData.alignment2,
-          options: const [
-            Trait.alignmentGood,
-            Trait.alignmentEvil,
-            Trait.alignmentBalanced,
-            Trait.alignmentMadness,
-            Trait.alignmentSummer,
-          ],
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+        FilterGroup<ServantPersonality>(
+          values: filterData.personality,
+          options: ServantPersonality.values
+              .sublist(1, ServantPersonality.values.length - 1),
+          optionBuilder: (v) => Text(Transl.servantPersonality(v).l),
           onFilterChanged: (value) {
             update();
           },
         ),
         FilterGroup<Gender>(
           title: Text(S.of(context).filter_gender, style: textStyle),
-          options: Gender.values,
+          options: Gender.values.toList(),
           values: filterData.gender,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(Transl.gender(v).l),
           onFilterChanged: (value) {
             update();
           },
@@ -200,7 +192,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).info_trait, style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) =>
+              Text(v.id != null ? Transl.trait(v.id!).l : v.name),
           showMatchAll: true,
           showInvert: true,
           onFilterChanged: (value) {
@@ -219,9 +212,9 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<FuncTargetType>(
           title: const Text('Effect Target'),
-          options: FuncTargetType.values,
+          options: FuncTargetType.values.toList(),
           values: filterData.funcTarget,
-          optionBuilder: (v) => Text(v.name),
+          optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
           onFilterChanged: (value) {
             update();
           },
@@ -337,7 +330,6 @@ const _traitsForFilter = <Trait>[
   Trait.brynhildsBeloved,
   Trait.greekMythologyMales,
   Trait.threatToHumanity,
-  Trait.argonaut,
   Trait.demonic,
   Trait.giant,
   Trait.superGiant,

@@ -186,13 +186,6 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      svtClass: (json['svt_class'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
-          ) ??
-          const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
@@ -229,6 +222,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ? null
           : MappingList<int>.fromJson(
               Map<String, dynamic>.from(json['cc_release'] as Map)),
+      enums: json['enums'] == null
+          ? null
+          : EnumMapping.fromJson(
+              Map<String, dynamic>.from(json['enums'] as Map)),
     );
 
 MappingBase<T> _$MappingBaseFromJson<T>(
@@ -281,4 +278,63 @@ MappingDict<V> _$MappingDictFromJson<V>(
       kr: (json['KR'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), fromJsonV(e)),
       ),
+    );
+
+EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
+      svtClass: (json['svt_class'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      attribute: (json['attribute'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      servantPolicy: (json['servant_policy'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      servantPersonality: (json['servant_personality'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      gender: (json['gender'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      funcTargetType: (json['func_target_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      svtObtain: (json['svt_obtain'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      ceObtain: (json['ce_obtain'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );

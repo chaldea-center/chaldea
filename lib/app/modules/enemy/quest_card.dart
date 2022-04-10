@@ -104,10 +104,12 @@ class _QuestCardState extends State<QuestCard> {
     }
 
     String questName = quest.lName.l;
-    if (quest.type == QuestType.main) {
-      String chapter = quest.chapterSubStr.isEmpty
-          ? '第${quest.chapterSubId}节'
-          : quest.chapterSubStr;
+    String chapter = quest.type == QuestType.main
+        ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
+            ? '第${quest.chapterSubId}节'
+            : quest.chapterSubStr
+        : '';
+    if (chapter.isNotEmpty) {
       questName = chapter + ' ' + questName;
     }
     List<String> names = [

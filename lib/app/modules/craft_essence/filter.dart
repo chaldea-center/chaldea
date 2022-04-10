@@ -72,7 +72,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: Text(S.current.filter_category),
           options: CEObtain.values,
           values: filterData.obtain,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(Transl.ceObtain(v).l),
           onFilterChanged: (value) {
             update();
           },

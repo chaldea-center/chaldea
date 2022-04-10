@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../models/gamedata/mappings.dart';
 
-
 const double _kSearchBarPaddingBottom = 8.0;
 
 class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {

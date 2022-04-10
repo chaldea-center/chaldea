@@ -143,8 +143,9 @@ class SvtFilterData {
   FilterGroupData<SvtObtain> obtain = FilterGroupData();
   FilterGroupData<CardType> npColor = FilterGroupData();
   FilterGroupData<NpDamageType> npType = FilterGroupData();
-  FilterGroupData<Trait> alignment1 = FilterGroupData(); //秩序 混沌 中庸
-  FilterGroupData<Trait> alignment2 = FilterGroupData(); //善 恶 中立 夏 狂...
+  FilterGroupData<ServantPolicy> policy = FilterGroupData(); //秩序 混沌 中庸
+  FilterGroupData<ServantPersonality> personality =
+      FilterGroupData(); //善 恶 中立 夏 狂...
   FilterGroupData<Gender> gender = FilterGroupData();
   FilterGroupData<Trait> trait = FilterGroupData();
 
@@ -177,8 +178,8 @@ class SvtFilterData {
         obtain,
         npColor,
         npType,
-        alignment1,
-        alignment2,
+        policy,
+        personality,
         gender,
         trait,
         effectScope,

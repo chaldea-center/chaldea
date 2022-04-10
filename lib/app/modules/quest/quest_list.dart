@@ -70,10 +70,11 @@ class _QuestListPageState extends State<QuestListPage> {
                   textAlign: TextAlign.end,
                 );
           String chapter = quest.type == QuestType.main
-              ? quest.chapterSubStr.isEmpty
+              ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
                   ? '第${quest.chapterSubId}节'
                   : quest.chapterSubStr
-              : '${index + 1}';
+              : '';
+          if (chapter.isEmpty) chapter = '${index + 1}';
 
           return ListTile(
             leading: Text(chapter),
