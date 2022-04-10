@@ -3,6 +3,18 @@
 import 'package:flutter/material.dart';
 
 class DirectionalIcons {
+  static IconData of(
+    BuildContext context, {
+    required IconData ltr,
+    required IconData rtl,
+  }) {
+    if (Directionality.of(context) == TextDirection.ltr) {
+      return ltr;
+    } else {
+      return rtl;
+    }
+  }
+
   static IconData keyboard_arrow_forward(BuildContext context) {
     if (Directionality.of(context) == TextDirection.ltr) {
       return Icons.keyboard_arrow_right;

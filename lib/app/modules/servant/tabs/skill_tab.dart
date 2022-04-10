@@ -17,8 +17,14 @@ class SvtSkillTab extends StatelessWidget {
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
     for (final skills in svt.groupedActiveSkills) {
+      List<NiceSkill> shownSkills = [];
+      for (final skill in skills) {
+        if (shownSkills.every((e) => e.id != skill.id)) {
+          shownSkills.add(skill);
+        }
+      }
       children.add(_buildSkill(
-        skills,
+        shownSkills,
         status.favorite ? status.skills.getOrNull(skills.first.num - 1) : null,
       ));
     }

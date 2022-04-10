@@ -503,7 +503,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                               AutoSizeText(
-                                db2.settings.priorityTags['$priority'] ?? '',
+                                db2.settings.priorityTags[priority] ?? '',
                                 overflow: TextOverflow.visible,
                                 minFontSize: 6,
                                 maxFontSize: 12,

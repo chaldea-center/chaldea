@@ -69,6 +69,7 @@ There are plenty of work need to do.
 
 - [ ] add field/trait info
 - [ ] add translation for funcs without popuptext
+- [ ] which func should be shown?
 
 ## Server side
 

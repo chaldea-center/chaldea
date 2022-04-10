@@ -7,18 +7,21 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 
+import '../api/atlas.dart';
 import 'func/vals.dart';
 
 class SkillDescriptor extends StatelessWidget {
   final BaseSkill skill;
   final FuncApplyTarget targetTeam;
   final int? level; // 1-10
+  final bool funcOnly;
 
   const SkillDescriptor({
     Key? key,
     required this.skill,
     this.targetTeam = FuncApplyTarget.player,
     this.level,
+    this.funcOnly = false,
   }) : super(key: key);
 
   @override
@@ -61,8 +64,9 @@ class SkillDescriptor extends StatelessWidget {
         ),
         divider,
         for (final func in skill.functions)
-          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
-              func.funcTargetTeam == targetTeam)
+          if ((func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+                  func.funcTargetTeam == targetTeam) &&
+              func.funcType != FuncType.none)
             EffectDescriptor(func: func, level: level),
       ],
     );
@@ -73,12 +77,14 @@ class TdDescriptor extends StatelessWidget {
   final NiceTd td;
   final FuncApplyTarget targetTeam;
   final int? level;
+  final bool funcOnly;
 
   const TdDescriptor({
     Key? key,
     required this.td,
     this.targetTeam = FuncApplyTarget.player,
     this.level,
+    this.funcOnly = false,
   }) : super(key: key);
 
   @override
@@ -138,8 +144,9 @@ class TdDescriptor extends StatelessWidget {
         ),
         divider,
         for (final func in td.functions)
-          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
-              func.funcTargetTeam == targetTeam)
+          if ((func.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+                  func.funcTargetTeam == targetTeam) &&
+              func.funcType != FuncType.none)
             EffectDescriptor(func: func, level: level),
         CustomTable(children: [
           CustomTableRow(children: [
@@ -175,8 +182,13 @@ class TdDescriptor extends StatelessWidget {
 class EffectDescriptor extends StatelessWidget {
   final NiceFunction func;
   final int? level; // 1-10
-  const EffectDescriptor({Key? key, required this.func, this.level})
-      : super(key: key);
+  final EdgeInsetsGeometry padding;
+  const EffectDescriptor({
+    Key? key,
+    required this.func,
+    this.level,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -247,10 +259,7 @@ class EffectDescriptor extends StatelessWidget {
           selected: level,
         ));
       }
-      Widget child = Text(
-        funcText.toString(),
-        style: Theme.of(context).textTheme.caption,
-      );
+      List<InlineSpan> spans = [];
       Widget? icon;
       if (func.funcPopupIcon != null) {
         icon = db2.getIconImage(func.funcPopupIcon, width: 18);
@@ -260,27 +269,35 @@ class EffectDescriptor extends StatelessWidget {
         final item = db2.gameData.items.values.firstWhereOrNull(
             (item) => item.individuality.any((trait) => trait.id == indiv));
         if (item != null) {
-          icon = Text.rich(TextSpan(children: [
-            WidgetSpan(
-              child: Item.iconBuilder(context: context, item: item, width: 24),
-              alignment: PlaceholderAlignment.middle,
-            ),
-            TextSpan(
-              text: item.lName.l,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  item.routeTo();
-                },
-            )
-          ]));
+          icon = Item.iconBuilder(context: context, item: item, width: 24);
+          spans.add(TextSpan(
+            text: item.lName.l + '  ',
+            style: const TextStyle(fontSize: 13),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                item.routeTo();
+              },
+          ));
+        } else {
+          spans.add(TextSpan(text: indiv.toString() + '  '));
         }
       }
       if (icon != null) {
-        child = Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [icon, const SizedBox(width: 4), child],
+        spans.insert(
+          0,
+          WidgetSpan(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 4),
+                child: icon,
+              ),
+              alignment: PlaceholderAlignment.middle),
         );
       }
+
+      Widget child = Text.rich(
+        TextSpan(children: [...spans, TextSpan(text: funcText.toString())]),
+        style: Theme.of(context).textTheme.caption,
+      );
       child = InkWell(
         child: child,
         onTap: () {
@@ -333,11 +350,110 @@ class EffectDescriptor extends StatelessWidget {
           children: [child, ...levels],
         );
       }
+
+      final trigger = kBuffValueTriggerTypes[func.buffs.getOrNull(0)?.type];
+      if (trigger != null) {
+        child = Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            child,
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).hintColor,
+                  ),
+                  borderRadius: BorderRadius.circular(6)),
+              margin: const EdgeInsets.symmetric(vertical: 2),
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
+              child: _LazyTrigger(
+                trigger: trigger(func.svals.first),
+                isNp: func.svals.first.UseTreasureDevice == 1,
+                team: func.funcTargetType.name.toLowerCase().contains('enemy')
+                    ? FuncApplyTarget.enemy
+                    : FuncApplyTarget.player,
+              ),
+            )
+          ],
+        );
+      }
       child = Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: padding,
         child: child,
       );
       return child;
     });
+  }
+}
+
+class _LazyTrigger extends StatefulWidget {
+  final BuffValueTriggerType trigger;
+  final bool isNp;
+  final FuncApplyTarget team;
+
+  const _LazyTrigger({
+    Key? key,
+    required this.trigger,
+    required this.isNp,
+    required this.team,
+  }) : super(key: key);
+
+  @override
+  State<_LazyTrigger> createState() => __LazyTriggerState();
+}
+
+class __LazyTriggerState extends State<_LazyTrigger> {
+  SkillOrTd? skill;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSkill();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LazyTrigger oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.trigger.skill != oldWidget.trigger.skill) {
+      _fetchSkill();
+    }
+  }
+
+  void _fetchSkill() async {
+    if (widget.trigger.skill == null) {
+      skill = null;
+    } else if (widget.isNp) {
+      skill = await AtlasApi.td(widget.trigger.skill!);
+    } else {
+      skill = await AtlasApi.skill(widget.trigger.skill!);
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String title = '${widget.trigger.skill}';
+    if (skill != null) {
+      title += ': ${skill!.lName.l}';
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          ' $title ',
+          style: Theme.of(context)
+              .textTheme
+              .caption
+              ?.copyWith(decoration: TextDecoration.underline),
+        ),
+        if (skill != null)
+          for (final func in skill!.functions)
+            if (func.funcType != FuncType.none)
+              EffectDescriptor(
+                func: func,
+                level: widget.trigger.level,
+                padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+              )
+      ],
+    );
   }
 }

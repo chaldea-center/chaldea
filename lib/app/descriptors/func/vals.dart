@@ -89,7 +89,7 @@ class ValDsc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     describeFunc();
-    TextStyle style = TextStyle(color: color);
+    TextStyle style = TextStyle(color: color, fontSize: 13);
     if (parts.isEmpty) {
       style = style.copyWith(
         fontStyle: FontStyle.italic,
@@ -126,15 +126,20 @@ class ValDsc extends StatelessWidget {
     parts.add(value.toString());
   }
 
-  void _addPercent(int? value, int base) {
+  void _addPercent(int? value, int base, [String Function(String)? post]) {
     if (value == null) return;
     int _intValue = value ~/ base;
     double _floatValue = value / base;
+    String text;
     if (_intValue.toDouble() == _floatValue) {
-      parts.add('$_intValue%');
+      text = '$_intValue%';
     } else {
-      parts.add(_floatValue.toString().trimCharRight('0') + '%');
+      text = _floatValue.toString().trimCharRight('0') + '%';
     }
+    if (post != null) {
+      text = post(text);
+    }
+    parts.add(text);
   }
 
   // return null if not processed
@@ -144,12 +149,17 @@ class ValDsc extends StatelessWidget {
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort) {
       describeBuff(func.buffs.first);
+      if (vals.UseRate != null) {
+        _addPercent(vals.UseRate, 10, (v) => '$v Chance');
+      }
+      _maybeAddRate();
     } else if (func.funcType == FuncType.absorbNpturn) {
+      // enemy
       // return null;
     } else if (func.funcType == FuncType.gainHpFromTargets) {
-      // return null;
+      _addInt(vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
-      // return null;
+      _addPercent(vals.DependFuncVals?.Value, 100);
     } else {
       if (vals.Value != null) {
         switch (func.funcType) {
@@ -215,13 +225,14 @@ class ValDsc extends StatelessWidget {
         parts.add(vals.AddCount.toString());
       }
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10);
+        _addPercent(vals.UseRate, 10, (v) => '$v Chance');
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
           case FuncType.qpDropUp:
           case FuncType.servantFriendshipUp:
           case FuncType.userEquipExpUp:
+          case FuncType.eventPointUp:
           case FuncType.expUp:
             _addPercent(vals.RateCount, 10);
             break;
@@ -232,8 +243,8 @@ class ValDsc extends StatelessWidget {
       if (vals.DropRateCount != null) {
         _addPercent(vals.DropRateCount, 10);
       }
+      _maybeAddRate();
     }
-    _maybeAddRate();
   }
 
   final empty = '';
@@ -247,11 +258,11 @@ class ValDsc extends StatelessWidget {
       }
       return;
     }
-    final trigger = _kBuffValueTriggerTypes[buff.type];
+    final trigger = kBuffValueTriggerTypes[buff.type];
     if (trigger != null) {
       final triggerVal = trigger(vals);
       if (triggerVal.skill != null && triggerVal.level != null) {
-        parts.add('${triggerVal.skill}(${triggerVal.level})');
+        parts.add(triggerVal.skill.toString());
       } else if (triggerVal.skill != null) {
         parts.add(triggerVal.skill.toString());
       } else if (triggerVal.level != null) {
@@ -270,15 +281,18 @@ class ValDsc extends StatelessWidget {
     if (vals.ParamAddValue != null) {
       _addPercent(vals.Rate, 10);
     }
-    _maybeAddRate();
     _addInt(vals.Value);
   }
 
   void _maybeAddRate() {
     if (ignoreRate == true) return;
     final _jsonVals = vals.toJson().keys.toSet();
-    if (_jsonVals.length == 1 && _jsonVals.first == 'Rate') {
-      _addPercent(vals.Rate, 10);
+    // _jsonVals.removeAll(['Turn', 'Count']);
+    if ((_jsonVals.length == 1 &&
+            _jsonVals.first == 'Rate' &&
+            ignoreRate != true) ||
+        (vals.Rate != null && vals.Rate != 1000 && vals.Rate != 5000)) {
+      _addPercent(vals.Rate, 10, (v) => '$v Chance');
     }
   }
 }
@@ -356,7 +370,7 @@ class BuffValueTriggerType {
 }
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)>
-    _kBuffValueTriggerTypes = {
+    kBuffValueTriggerTypes = {
   BuffType.reflectionFunction: (v) =>
       BuffValueTriggerType(skill: v.Value, level: v.Value2),
   BuffType.attackFunction: (v) =>
@@ -379,4 +393,15 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)>
       BuffValueTriggerType(skill: v.Value, level: v.Value2, rate: v.UseRate),
   BuffType.counterFunction: (v) =>
       BuffValueTriggerType(skill: v.CounterId, level: v.CounterLv),
+  // ?
+  BuffType.commandcodeattackFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.commandcodeattackAfterFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.gutsFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.attackBeforeFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
+  BuffType.entryFunction: (v) =>
+      BuffValueTriggerType(skill: v.Value, level: v.Value2),
 };

@@ -301,6 +301,24 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  static Future<NiceSkill?> skill(int skillId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/skill/$skillId',
+      (data) => NiceSkill.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<NiceTd?> td(int tdId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/NP/$tdId',
+      (data) => NiceTd.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 }
 
 extension _DioErrorX on DioError {

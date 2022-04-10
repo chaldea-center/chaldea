@@ -16,8 +16,14 @@ class SvtTdTab extends StatelessWidget {
     List<Widget> children = [];
     final status = db2.curUser.svtStatusOf(svt.collectionNo).cur;
     for (final tds in svt.groupedNoblePhantasms) {
-      children
-          .add(_buildTds(context, tds, status.favorite ? status.npLv : null));
+      List<NiceTd> shownTds = [];
+      for (final td in tds) {
+        if (shownTds.every((e) => e.id != td.id)) {
+          shownTds.add(td);
+        }
+      }
+      children.add(
+          _buildTds(context, shownTds, status.favorite ? status.npLv : null));
     }
     return ListView(children: children);
   }

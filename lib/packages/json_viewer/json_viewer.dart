@@ -61,8 +61,8 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     for (MapEntry entry in widget.jsonObj.entries) {
       bool ex = isExtensible(entry.value);
       bool ink = isInkWell(entry.value);
-      list.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      list.add(Wrap(
+        crossAxisAlignment: WrapCrossAlignment.start,
         children: <Widget>[
           ex
               ? ((openFlag[entry.key] ?? false)
@@ -136,41 +136,31 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     return true;
   }
 
-  getValueWidget(MapEntry entry) {
+  Widget getValueWidget(MapEntry entry) {
     if (entry.value == null) {
-      return const Expanded(
-        child: Text(
-          'undefined',
-          style: TextStyle(color: Colors.grey),
-        ),
+      return const Text(
+        'undefined',
+        style: TextStyle(color: Colors.grey),
       );
     } else if (entry.value is int) {
-      return Expanded(
-        child: Text(
-          entry.value.toString(),
-          style: const TextStyle(color: Colors.teal),
-        ),
+      return Text(
+        entry.value.toString(),
+        style: const TextStyle(color: Colors.teal),
       );
     } else if (entry.value is String) {
-      return Expanded(
-        child: Text(
-          '"' + entry.value + '"',
-          style: const TextStyle(color: Colors.redAccent),
-        ),
+      return Text(
+        '"' + entry.value + '"',
+        style: const TextStyle(color: Colors.redAccent),
       );
     } else if (entry.value is bool) {
-      return Expanded(
-        child: Text(
-          entry.value.toString(),
-          style: const TextStyle(color: Colors.purple),
-        ),
+      return Text(
+        entry.value.toString(),
+        style: const TextStyle(color: Colors.purple),
       );
     } else if (entry.value is double) {
-      return Expanded(
-        child: Text(
-          entry.value.toString(),
-          style: const TextStyle(color: Colors.teal),
-        ),
+      return Text(
+        entry.value.toString(),
+        style: const TextStyle(color: Colors.teal),
       );
     } else if (entry.value is List) {
       if (entry.value.isEmpty) {

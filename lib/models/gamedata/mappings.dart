@@ -142,8 +142,11 @@ class Transl<K, V> {
 
   static Transl<String, String> svtClass(SvtClass key) =>
       Transl(_md.enums.svtClass, key.name, key.name);
-  static Transl<String, String> svtClassId(int id) => Transl(_md.enums.svtClass,
-      kSvtClassIds[id]?.name ?? id.toString(), id.toString());
+  static Transl<String, String> svtClassId(int id) {
+    final key = kSvtClassIds[id]?.name ?? id.toString();
+    return Transl(_md.enums.svtClass, key, key);
+  }
+
   static Transl<String, String> svtAttribute(Attribute key) =>
       Transl(_md.enums.attribute, key.name, key.name);
   static Transl<String, String> servantPolicy(ServantPolicy key) =>

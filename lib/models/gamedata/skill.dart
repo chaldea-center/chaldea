@@ -202,13 +202,13 @@ class NiceTd implements SkillOrTd {
         if (func.funcTargetType == FuncTargetType.enemyAll) {
           _damageType = NpDamageType.aoe;
         } else if (func.funcTargetType == FuncTargetType.enemy) {
-          _damageType = NpDamageType.indiv;
+          _damageType = NpDamageType.singleTarget;
         } else {
           throw 'Unknown damageType: ${func.funcTargetType}';
         }
       }
     }
-    return _damageType ??= NpDamageType.none;
+    return _damageType ??= NpDamageType.support;
   }
 
   @override
@@ -224,7 +224,7 @@ class NiceTd implements SkillOrTd {
   }
 }
 
-enum NpDamageType { none, indiv, aoe }
+enum NpDamageType { support, singleTarget, aoe }
 
 @JsonSerializable()
 class CommonRelease {
@@ -709,6 +709,10 @@ enum FuncType {
   func127,
   updateEntryPositions,
   buddyPointUp,
+}
+
+extension FuncTargetTypeX on FuncTargetType {
+  bool get isEnemy => name.toLowerCase().contains('enemy');
 }
 
 enum FuncTargetType {
