@@ -46,7 +46,7 @@ class CostumeDetailPage extends StatelessWidget {
             CustomTableRow(
               children: [
                 TableCellData(
-                  child: db2.getIconImage(costume.icon, height: 90),
+                  child: db2.getIconImage(costume.icon, height: 72),
                   flex: 1,
                   padding: const EdgeInsets.all(3),
                 ),
@@ -59,21 +59,24 @@ class CostumeDetailPage extends StatelessWidget {
                       CustomTableRow(children: [
                         TableCellData(
                           child: Text(
-                            costume.name,
+                            costume.lName.l,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           isHeader: true,
                         )
                       ]),
-                      CustomTableRow(children: [
-                        TableCellData(
-                            text: costume.name, textAlign: TextAlign.center)
-                      ]),
-                      CustomTableRow(children: [
-                        TableCellData(
-                            text: costume.lName.na, textAlign: TextAlign.center)
-                      ]),
+                      if (!Transl.isJP)
+                        CustomTableRow(children: [
+                          TableCellData(
+                              text: costume.name, textAlign: TextAlign.center)
+                        ]),
+                      if (!Transl.isEN)
+                        CustomTableRow(children: [
+                          TableCellData(
+                              text: costume.lName.na,
+                              textAlign: TextAlign.center)
+                        ]),
                       CustomTableRow(children: [
                         TableCellData(
                             text: 'No. ${costume.costumeCollectionNo}'),
