@@ -1,4 +1,4 @@
-name: Deploy to Github Release
+name: Github Release
 
 on:
   push:
@@ -7,43 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  draft-release:
-    name: Draft Github release
-    runs-on: ubuntu-latest
-    outputs:
-      release_id: ${{ steps.create_release.outputs.id }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Get Date
-        id: get-date
-        run: echo "::set-output name=date::$(/bin/date)"
-
-      - name: Delete previous canary build
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true
-          tag_name: canary
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
-
-      - name: Draft release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
-        with:
-          tag_name: canary
-          release_name: Chaldea Preview
-          body: Built at ${{ steps.get-date.outputs.date }}
-          draft: true
-          prerelease: true
-
   create-build:
     name: Create ${{ matrix.target }} build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        target: [Windows, Linux, Android]
+        target: [windows, linux, android]
         include:
           # - os: macos-10.15 # Catalina
           #   target: macOS
@@ -52,25 +21,24 @@ jobs:
           #   asset_extension: .zip
           #   asset_content_type: application/zip
           - os: windows-latest
-            target: Windows
+            target: windows
             build_target: windows
             build_path: build\windows\runner\Release
             asset_extension: .zip
             asset_content_type: application/zip
           - os: ubuntu-latest
-            target: Linux
+            target: linux
             build_target: linux
             build_path: build/linux/x64/release/bundle
             asset_extension: .tar.gz
             asset_content_type: application/gzip
           - os: ubuntu-latest
-            target: Android
+            target: android
             build_target: apk
             build_path: build/app/outputs/flutter-apk
             asset_extension: .apk
             asset_content_type: application/vnd.android.package-archive
       fail-fast: false
-    needs: draft-release
     steps:
       - uses: subosito/flutter-action@v2
         with:
@@ -79,19 +47,19 @@ jobs:
           cache: true
 
       - name: Install Linux dependencies
-        if: matrix.target == 'Linux'
+        if: matrix.target == 'linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libx11-dev pkg-config cmake ninja-build libblkid-dev
 
       - name: Install Android dependencies
-        if: matrix.target == 'Android'
+        if: matrix.target == 'android'
         uses: actions/setup-java@v1
         with:
           java-version: "12.x"
 
       - name: Enable desktop support
-        if: matrix.target != 'Android'
+        if: matrix.target != 'android'
         run: |
           flutter config --enable-linux-desktop
           flutter config --enable-macos-desktop
@@ -101,11 +69,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Remove invalid pub packages
-        if: matrix.target == 'Linux'
+        if: matrix.target == 'linux'
         run: sed -i 's/just_audio_libwinmedia/# just_audio_libwinmedia/g' pubspec.yaml
 
       - name: Configure Keystore for Android
-        if: matrix.target == 'Android'
+        if: matrix.target == 'android'
         run: |
           echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
           echo "storeFile=upload-keystore.jks" >> key.properties
@@ -119,7 +87,7 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
       - name: Configure Android Preview package name
-        if: matrix.target == 'Android' && github.ref == 'refs/heads/main'
+        if: matrix.target == 'android' && github.ref == 'refs/heads/main'
         run: dart ./scripts/patch_android_preview.dart
 
       - run: flutter pub get
@@ -127,18 +95,18 @@ jobs:
 
       # Package the build.
       - name: Copy VC redistributables to release directory for Windows
-        if: matrix.target == 'Windows'
+        if: matrix.target == 'windows'
         run: |
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x64\*\msvcp140.dll') .
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x64\*\vcruntime140.dll') .
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x64\*\vcruntime140_1.dll') .
         working-directory: ${{ matrix.build_path }}
       - name: Rename build for Android
-        if: matrix.target == 'Android'
+        if: matrix.target == 'android'
         run: mv app-release.apk $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.apk
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Linux
-        if: matrix.target == 'Linux'
+        if: matrix.target == 'linux'
         run: tar czf $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for macOS
@@ -146,28 +114,46 @@ jobs:
         run: ditto -c -k --sequesterRsrc --keepParent Chaldea.app $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Windows
-        if: matrix.target == 'Windows'
+        if: matrix.target == 'windows'
         run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-preview-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
-      # Upload the build.
-      - name: Add packaged build to release draft
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ needs.draft-release.outputs.upload_url }}
-          asset_path: ./chaldea-preview-${{ matrix.target }}${{ matrix.asset_extension }}
-          asset_name: chaldea-preview-${{ matrix.target }}${{ matrix.asset_extension }}
-          asset_content_type: ${{ matrix.asset_content_type }}
+          name: chaldea-preview-${{ matrix.target }}
+          path: ./chaldea-preview-${{ matrix.target }}${{ matrix.asset_extension }}
 
-  publish-release:
-    needs: [draft-release, create-build]
+
+  publish-canary:
+    name: Publish Canary
+    if: github.ref == 'refs/heads/main'
+    needs: create-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: eregon/publish-release@v1
+      - name: Get Date
+        id: get-date
+        run: echo "::set-output name=date::$(/bin/date)"
+      - uses: actions/download-artifact@v3
+      - run: ls -l -R
+
+      - name: Delete previous canary build
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: canary
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+
+      - name: Publish release
+        id: create_release
+        uses: ncipollo/release-action@v1
         with:
-          release_id: ${{ needs.draft-release.outputs.release_id }}
+          tag: canary
+          name: Chaldea Preview
+          body: Built at ${{ steps.get-date.outputs.date }}
+          draft: false
+          prerelease: true
+          artifacts: "chaldea-preview-*/*"
