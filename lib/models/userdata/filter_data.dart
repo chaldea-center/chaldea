@@ -210,6 +210,11 @@ class SvtFilterData {
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
     }
+    int _classSortKey(SvtClass cls) {
+      int k = SvtClassX.regularAll.indexOf(cls);
+      return k < 0 ? 999 : k;
+    }
+
     for (var i = 0; i < keys.length; i++) {
       int r;
       switch (keys[i]) {
@@ -218,8 +223,7 @@ class SvtFilterData {
           if (r == 0) r = a.id - b.id;
           break;
         case SvtCompare.className:
-          r = SvtClassX.regularAll.indexOf(a.className) -
-              SvtClassX.regularAll.indexOf(b.className);
+          r = _classSortKey(a.className) - _classSortKey(b.className);
           break;
         case SvtCompare.rarity:
           r = a.rarity - b.rarity;

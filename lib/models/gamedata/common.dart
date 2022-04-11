@@ -218,7 +218,11 @@ extension SvtClassX on SvtClass {
   static List<SvtClass> regularAll = [
     ...regular,
     ...extra,
-    SvtClass.beastII,
+  ];
+
+  static List<SvtClass> regularWithBeast = [
+    ...regularAll,
+    ...beasts,
   ];
 
   static const regular = <SvtClass>[
@@ -240,8 +244,8 @@ extension SvtClassX on SvtClass {
     SvtClass.pretender,
   ];
   static const beasts = <SvtClass>[
-    SvtClass.beastII,
     SvtClass.beastI,
+    SvtClass.beastII,
     SvtClass.beastIIIR,
     SvtClass.beastIIIL,
     SvtClass.beastIV,
