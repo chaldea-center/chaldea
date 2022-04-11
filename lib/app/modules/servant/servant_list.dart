@@ -310,8 +310,8 @@ class ServantListPageState extends State<ServantListPage>
     if (hiddenPlanServants.contains(svt)) {
       return Center(child: Text(S.of(context).svt_plan_hidden));
     }
-    // cur.fixDressLength(svt.costumeNos.length);
-    // target.fixDressLength(svt.costumeNos.length);
+    final costumes = svt.profile.costume.values.toList();
+    costumes.sort2((e) => e.id);
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 12,
@@ -337,22 +337,22 @@ class ServantListPageState extends State<ServantListPage>
             for (int i = 0; i < 3; i++)
               _getRange(cur.appendSkills[i], target.appendSkills[i])
           ]),
-          // if (cur.costumes.isNotEmpty)
-          //   for (int row = 0; row < cur.dress.length / 3; row++)
-          //     TableRow(
-          //       children: [
-          //         _getHeader(S.of(context).costume + ':'),
-          //         ...List.generate(3, (col) {
-          //           final dressIndex = row * 3 + col;
-          //           if (dressIndex >= cur.dress.length) {
-          //             return Container();
-          //           } else {
-          //             return _getRange(
-          //                 cur.dress[dressIndex], target.dress[dressIndex]);
-          //           }
-          //         })
-          //       ],
-          //     ),
+          for (int row = 0; row < costumes.length / 3; row++)
+            TableRow(
+              children: [
+                _getHeader(S.of(context).costume + ':'),
+                ...List.generate(3, (col) {
+                  final dressIndex = row * 3 + col;
+                  final costumeId =
+                      costumes.getOrNull(dressIndex)?.battleCharaId;
+                  if (costumeId == null) {
+                    return Container();
+                  }
+                  return _getRange(cur.costumes[costumeId] ?? 0,
+                      target.costumes[costumeId] ?? 0);
+                })
+              ],
+            ),
         ],
       ),
     );

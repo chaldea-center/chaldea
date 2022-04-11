@@ -50,6 +50,7 @@ class _QuestCardState extends State<QuestCard> {
     _use6th = widget.use6th;
     if (quest.isDomusQuest) preferApRate = db2.settings.preferApRate;
     if (!widget.offline) _fetchAllPhases();
+    showTrueName = !Transl.isJP;
   }
 
   Future<void> _fetchAllPhases() async {

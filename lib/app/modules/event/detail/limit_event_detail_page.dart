@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../common/not_found.dart';
+import '../../quest/quest_list.dart';
 import 'event_missions.dart';
 import 'event_shops.dart';
 import 'points.dart';
@@ -29,6 +30,7 @@ class EventDetailPage extends StatefulWidget {
 
 class _EventDetailPageState extends State<EventDetailPage> {
   Event? _event;
+  Region _region = Region.jp;
 
   Event get event => _event!;
 
@@ -55,11 +57,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
       if (banners.isNotEmpty)
         CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
-
-    children.add(CustomTable(children: [
+    List<Widget> rows = [
       CustomTableRow(children: [
         TableCellData(
-          text: event.lName.l,
+          text: event.shownName,
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 14),
           color: TableCellData.resolveHeaderColor(context),
@@ -107,7 +108,59 @@ class _EventDetailPageState extends State<EventDetailPage> {
             ),
           )
         ]),
-    ]));
+    ];
+    String _timeText(Region r, int? start, int? end) =>
+        '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
+        '${end?.toDateTimeString() ?? "?"}';
+    final eventJp = db2.gameData.events[_event?.id];
+    List<String> timeInfo = [
+      _timeText(_region, event.startedAt, event.endedAt),
+      if (_region != db2.curUser.region)
+        _timeText(
+            db2.curUser.region,
+            event.extra.startTime.ofRegion(db2.curUser.region),
+            event.extra.endTime.ofRegion(db2.curUser.region)),
+      if (Region.jp != _region && Region.jp != _region)
+        _timeText(Region.jp, eventJp?.startedAt, eventJp?.endedAt)
+    ];
+    for (final time in timeInfo) {
+      rows.add(CustomTableRow(
+        children: [
+          TableCellData(
+            text: time,
+            maxLines: 1,
+            style: const TextStyle(fontSize: 14),
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+          )
+        ],
+      ));
+    }
+
+    children.add(CustomTable(children: rows));
+
+    if (event.extra.huntingQuestIds.isNotEmpty) {
+      children.add(TileGroup(
+        header: '',
+        children: [
+          ListTile(
+            title: const Text('Hunting Quests'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(
+                child: QuestListPage(
+                  title: 'Event Quest',
+                  quests: event.extra.huntingQuestIds
+                      .map((e) => db2.gameData.quests[e])
+                      .whereType<Quest>()
+                      .toList(),
+                ),
+              );
+            },
+          )
+        ],
+      ));
+    }
 
     if (!event.isEmpty) {
       children.add(db2.onUserData(
@@ -293,7 +346,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
-          event.lName.l.replaceAll('\n', ' '),
+          event.shownName.replaceAll('\n', ' '),
           maxLines: 1,
         ),
         centerTitle: false,
@@ -325,8 +378,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                 title: Text(region.name.toUpperCase()),
                                 enabled: startTime?.ofRegion(region) != null,
                                 onTap: () async {
-                                  Navigator.of(context);
-                                  await null;
+                                  Navigator.pop(context);
                                   _changeRegion(region, eventId);
                                 },
                               ),
@@ -439,10 +491,14 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
   void _changeRegion(Region region, int eventId) async {
     EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
-    final newEvent = region == Region.jp
-        ? db2.gameData.events[eventId]
-        : await AtlasApi.event(eventId, region: region);
-    newEvent?.calcItems(db2.gameData);
+    Event? newEvent;
+    if (region == Region.jp) {
+      newEvent = db2.gameData.events[eventId];
+    } else {
+      newEvent = await AtlasApi.event(eventId, region: region);
+      newEvent?.calcItems(db2.gameData);
+    }
+    _region = region;
     _event = newEvent;
     if (mounted) {
       setState(() {});

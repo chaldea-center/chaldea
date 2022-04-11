@@ -12,7 +12,8 @@ class SHeader extends StatelessWidget {
     this.label, {
     Key? key,
     this.style,
-    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+    this.padding =
+        const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
   }) : super(key: key);
 
   @override

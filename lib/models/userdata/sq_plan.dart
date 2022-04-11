@@ -130,7 +130,7 @@ class SaintQuartzPlan {
       if (event != null) {
         startDate ??= event.startedAt.sec2date();
         items ??= event.statItemFixed;
-        name ??= event.lName.l;
+        name ??= event.shownName;
       }
       items ??= {};
       if (startDate == null) return;

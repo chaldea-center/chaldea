@@ -135,7 +135,7 @@ class _SQTableTabState extends State<SQTableTab> {
               for (final event in detail.events)
                 _wrap(
                   child: Text(
-                    event.lName.l,
+                    event.shownName,
                     textScaleFactor: 0.8,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,

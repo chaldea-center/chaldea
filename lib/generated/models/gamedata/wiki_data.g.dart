@@ -124,7 +124,10 @@ CommandCodeExtra _$CommandCodeExtraFromJson(Map json) => CommandCodeExtra(
 
 EventExtraItems _$EventExtraItemsFromJson(Map json) => EventExtraItems(
       id: json['id'] as int,
-      detail: json['detail'] as String?,
+      detail: json['detail'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['detail'] as Map)),
       items: (json['items'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), e as String),
           ) ??
@@ -144,6 +147,7 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['noticeLink'] as Map)),
+      huntingId: json['huntingId'] as int? ?? 0,
       huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
@@ -161,11 +165,6 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           ? null
           : MappingBase<int>.fromJson(
               Map<String, dynamic>.from(json['endTime'] as Map)),
-      rarePrism: json['rarePrism'] as int? ?? 0,
-      grail: json['grail'] as int? ?? 0,
-      crystal: json['crystal'] as int? ?? 0,
-      grail2crystal: json['grail2crystal'] as int? ?? 0,
-      foukun4: json['foukun4'] as int? ?? 0,
       relatedSummons: (json['relatedSummons'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??

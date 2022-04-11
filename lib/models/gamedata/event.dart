@@ -595,6 +595,7 @@ class Event {
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
       rewards.isEmpty &&
+      extra.huntingQuestIds.isEmpty &&
       extra.extraItems.isEmpty;
 
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
@@ -609,6 +610,13 @@ class Event {
   }
 
   Transl<String, String> get lName => Transl.eventNames(name);
+
+  String get shownName {
+    if (extra.huntingId > 0) {
+      return '${lName.l} ${extra.huntingId}';
+    }
+    return lName.l;
+  }
 
   String get route => Routes.eventI(id);
   void routeTo() => router.push(url: Routes.eventI(id));

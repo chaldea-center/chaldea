@@ -120,7 +120,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             [
               MultiDescriptor.inkWell(
                 context: context,
-                text: event?.lName.l ?? targetIds.first.toString(),
+                text: event?.shownName ?? targetIds.first.toString(),
                 onTap: () => event?.routeTo(),
               )
             ],

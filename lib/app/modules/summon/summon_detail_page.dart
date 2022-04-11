@@ -184,7 +184,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         Icons.flag,
         color: Theme.of(context).colorScheme.primary,
       ),
-      title: Text(event.lName.l),
+      title: Text(event.shownName),
       horizontalTitleGap: 0,
       dense: true,
       onTap: () => router.push(url: event.route),

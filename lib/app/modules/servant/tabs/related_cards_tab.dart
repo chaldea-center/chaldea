@@ -15,11 +15,12 @@ class SvtRelatedCardTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> tabs = [], pages = [];
+    List<String> tabs = [];
+    List<Widget> pages = [];
 
     final bondCE = db2.gameData.craftEssencesById[svt.bondEquip];
     if (bondCE != null) {
-      tabs.add(Tab(text: S.current.bond_craft));
+      tabs.add(S.current.bond_craft);
       pages.add(SingleChildScrollView(
         child: CraftDetailBasePage(ce: bondCE),
       ));
@@ -30,7 +31,7 @@ class SvtRelatedCardTab extends StatelessWidget {
         .whereType<CraftEssence>()
         .toList();
     if (valentineCEs.isNotEmpty) {
-      tabs.add(Tab(text: S.current.valentine_craft));
+      tabs.add(S.current.valentine_craft);
       pages.add(ListView.separated(
         itemCount: valentineCEs.length,
         itemBuilder: (context, index) =>
@@ -46,7 +47,7 @@ class SvtRelatedCardTab extends StatelessWidget {
         .where((cc) => cc.extra.characters.contains(svt.collectionNo))
         .toList();
     if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
-      tabs.add(Tab(text: S.current.svt_related_cards));
+      tabs.add(S.current.svt_related_cards);
       pages.add(ListView(
         children: [
           if (charaCEs.isNotEmpty)
@@ -102,6 +103,13 @@ class SvtRelatedCardTab extends StatelessWidget {
         ],
       ));
     }
+    final tabbar = TabBar(
+      isScrollable: true,
+      tabs: tabs
+          .map((e) =>
+              Tab(child: Text(e, style: Theme.of(context).textTheme.bodyText2)))
+          .toList(),
+    );
 
     return DefaultTabController(
       length: tabs.length,
@@ -110,15 +118,7 @@ class SvtRelatedCardTab extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Expanded(
-                child: SizedBox(
-                  height: 36,
-                  child: TabBar(
-                    isScrollable: true,
-                    tabs: tabs,
-                  ),
-                ),
-              ),
+              Expanded(child: SizedBox(height: 36, child: tabbar)),
             ],
           ),
           Expanded(child: TabBarView(children: pages)),

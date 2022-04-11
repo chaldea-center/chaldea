@@ -110,14 +110,14 @@ class CommandCodeExtra {
 @JsonSerializable()
 class EventExtraItems {
   int id;
-  String? detail;
+  MappingBase<String> detail;
   Map<int, String> items;
 
   EventExtraItems({
     required this.id,
-    this.detail,
+    MappingBase<String>? detail,
     this.items = const {},
-  });
+  }) : detail = detail ?? MappingBase();
 
   factory EventExtraItems.fromJson(Map<String, dynamic> json) =>
       _$EventExtraItemsFromJson(json);
@@ -131,16 +131,12 @@ class EventExtra {
   String? fandomLink;
   MappingBase<String> titleBanner;
   MappingBase<String> noticeLink;
+  int huntingId;
   List<int> huntingQuestIds;
   List<EventExtraItems> extraItems;
 
   MappingBase<int> startTime;
   MappingBase<int> endTime;
-  int rarePrism;
-  int grail;
-  int crystal;
-  int grail2crystal;
-  int foukun4;
   List<String> relatedSummons;
 
   EventExtra({
@@ -150,15 +146,11 @@ class EventExtra {
     this.fandomLink,
     MappingBase<String>? titleBanner,
     MappingBase<String>? noticeLink,
+    this.huntingId = 0,
     this.huntingQuestIds = const [],
     this.extraItems = const [],
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
-    this.rarePrism = 0,
-    this.grail = 0,
-    this.crystal = 0,
-    this.grail2crystal = 0,
-    this.foukun4 = 0,
     this.relatedSummons = const [],
   })  : titleBanner = titleBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
