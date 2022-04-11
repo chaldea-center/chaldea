@@ -1,5 +1,5 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/descriptors/effect_descriptor.dart';
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -133,18 +133,23 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         SkillDescriptor(
           skill: enemy.skills.skill1!,
           level: enemy.skills.skillLv1,
-          targetTeam: FuncApplyTarget.enemy,
+          showEnemy: true,
+          showPlayer: false,
         ),
       if (enemy.skills.skill2 != null)
         SkillDescriptor(
-            skill: enemy.skills.skill2!,
-            level: enemy.skills.skillLv2,
-            targetTeam: FuncApplyTarget.enemy),
+          skill: enemy.skills.skill2!,
+          level: enemy.skills.skillLv2,
+          showEnemy: true,
+          showPlayer: false,
+        ),
       if (enemy.skills.skill3 != null)
         SkillDescriptor(
-            skill: enemy.skills.skill3!,
-            level: enemy.skills.skillLv3,
-            targetTeam: FuncApplyTarget.enemy),
+          skill: enemy.skills.skill3!,
+          level: enemy.skills.skillLv3,
+          showEnemy: true,
+          showPlayer: false,
+        ),
       if (enemy.classPassive.classPassive.isNotEmpty ||
           enemy.classPassive.addPassive.isNotEmpty)
         CustomTableRow.fromTexts(
@@ -152,9 +157,17 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           isHeader: true,
         ),
       for (final skill in enemy.classPassive.classPassive)
-        SkillDescriptor(skill: skill, targetTeam: FuncApplyTarget.enemy),
+        SkillDescriptor(
+          skill: skill,
+          showEnemy: true,
+          showPlayer: false,
+        ),
       for (final skill in enemy.classPassive.addPassive)
-        SkillDescriptor(skill: skill, targetTeam: FuncApplyTarget.enemy),
+        SkillDescriptor(
+          skill: skill,
+          showEnemy: true,
+          showPlayer: false,
+        ),
       CustomTableRow.fromTexts(
         texts: [S.current.noble_phantasm],
         isHeader: true,
@@ -163,7 +176,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         TdDescriptor(
           td: enemy.noblePhantasm.noblePhantasm!,
           level: enemy.noblePhantasm.noblePhantasmLv,
-          targetTeam: FuncApplyTarget.enemy,
+          showEnemy: true,
+          showPlayer: false,
         )
     ]);
   }

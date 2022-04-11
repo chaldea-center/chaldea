@@ -1,4 +1,4 @@
-import 'package:chaldea/app/descriptors/effect_descriptor.dart';
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';

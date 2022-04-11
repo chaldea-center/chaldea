@@ -80,3 +80,17 @@ class AutoUnfocusBuilder extends StatelessWidget {
     );
   }
 }
+
+class CenterWidgetSpan extends WidgetSpan {
+  const CenterWidgetSpan({
+    required Widget child,
+    PlaceholderAlignment alignment = PlaceholderAlignment.middle,
+    TextBaseline? baseline,
+    TextStyle? style,
+  }) : super(
+          child: child,
+          alignment: alignment,
+          baseline: baseline,
+          style: style,
+        );
+}

@@ -4,6 +4,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../../../packages/logger.dart';
+
 class ValListDsc extends StatelessWidget {
   final BaseFunction func;
   final List<DataVals> mutaingVals;
@@ -41,6 +43,10 @@ class ValListDsc extends StatelessWidget {
                   : null,
             );
           }
+          child = Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: child,
+          );
           if (selected != null && selected! - 1 == j) {
             child = DecoratedBox(
               decoration: BoxDecoration(
@@ -73,6 +79,7 @@ class ValDsc extends StatelessWidget {
   final DataVals vals;
   final DataVals? originVals;
   final bool? ignoreRate;
+  final bool ignoreCount;
   final Color? color;
 
   ValDsc({
@@ -82,6 +89,7 @@ class ValDsc extends StatelessWidget {
     this.originVals,
     this.color,
     this.ignoreRate,
+    this.ignoreCount = false,
   }) : super(key: key);
 
   final List<String> parts = [];
@@ -121,13 +129,21 @@ class ValDsc extends StatelessWidget {
     );
   }
 
-  void _addInt(int? value) {
-    if (value == null) return;
-    parts.add(value.toString());
+  void _addInt(int? value, [String Function(String)? post]) {
+    if (value == null || value == 0) return;
+    if (value == 966756) {
+      logger.e(value.toString());
+    }
+    String text = value.toString();
+    if (post != null) text = post(text);
+    parts.add(text);
   }
 
   void _addPercent(int? value, int base, [String Function(String)? post]) {
-    if (value == null) return;
+    if (value == null || value == 0) return;
+    if (value == 966756) {
+      logger.e(value.toString());
+    }
     int _intValue = value ~/ base;
     double _floatValue = value / base;
     String text;
@@ -160,6 +176,12 @@ class ValDsc extends StatelessWidget {
       _addInt(vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       _addPercent(vals.DependFuncVals?.Value, 100);
+    } else if (func.funcType == FuncType.subState) {
+      if (vals.Value2 != null) {
+        _addInt(vals.Value2);
+      } else {
+        parts.add('All');
+      }
     } else {
       if (vals.Value != null) {
         switch (func.funcType) {
@@ -221,8 +243,11 @@ class ValDsc extends StatelessWidget {
             break;
         }
       }
+      if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
+        _addInt(vals.Count, (v) => '$v Times');
+      }
       if (vals.AddCount != null) {
-        parts.add(vals.AddCount.toString());
+        _addInt(vals.AddCount);
       }
       if (vals.UseRate != null) {
         _addPercent(vals.UseRate, 10, (v) => '$v Chance');
@@ -250,16 +275,17 @@ class ValDsc extends StatelessWidget {
   final empty = '';
   void describeBuff(Buff buff) {
     final base = _kBuffValuePercentTypes[buff.type];
-    if (base != null) {
-      if (vals.Value == 0 && vals.ParamAddValue != null) {
-        _addPercent(vals.ParamAddValue, base);
-      } else {
-        _addPercent(vals.Value, base);
-      }
-      return;
-    }
     final trigger = kBuffValueTriggerTypes[buff.type];
-    if (trigger != null) {
+    if (base != null) {
+      _addPercent(vals.Value, base);
+      if (vals.ParamAddValue != null) {
+        _addPercent(vals.ParamAddValue, base);
+      }
+      if (vals.ParamAdd != null) {
+        _addPercent(vals.ParamAdd, base);
+      }
+      // return;
+    } else if (trigger != null) {
       final triggerVal = trigger(vals);
       if (triggerVal.skill != null && triggerVal.level != null) {
         parts.add(triggerVal.skill.toString());
@@ -269,29 +295,33 @@ class ValDsc extends StatelessWidget {
         parts.add(triggerVal.level.toString());
       }
       return;
-    }
-    if (buff.type == BuffType.changeCommandCardType) {
+    } else if (buff.type == BuffType.changeCommandCardType) {
       parts.add(empty);
       return;
-    }
-    if (buff.type == BuffType.fieldIndividuality) {
+    } else if (buff.type == BuffType.fieldIndividuality) {
       parts.add(Transl.trait(vals.Value!).l);
       return;
+    } else {
+      _addInt(vals.Value);
+      if (vals.ParamAddValue != null) {
+        _addInt(vals.ParamAddValue);
+      }
+      if (vals.ParamAdd != null) {
+        _addInt(vals.ParamAdd);
+      }
     }
-    if (vals.ParamAddValue != null) {
-      _addPercent(vals.Rate, 10);
+    if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
+      _addInt(vals.Count, (v) => '$v Times');
     }
-    _addInt(vals.Value);
   }
 
   void _maybeAddRate() {
-    if (ignoreRate == true) return;
     final _jsonVals = vals.toJson().keys.toSet();
     // _jsonVals.removeAll(['Turn', 'Count']);
     if ((_jsonVals.length == 1 &&
             _jsonVals.first == 'Rate' &&
             ignoreRate != true) ||
-        (vals.Rate != null && vals.Rate != 1000 && vals.Rate != 5000)) {
+        (vals.Rate != null && vals.Rate != 1000)) {
       _addPercent(vals.Rate, 10, (v) => '$v Chance');
     }
   }

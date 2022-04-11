@@ -240,6 +240,24 @@ class SharedBuilder {
     );
   }
 
+  static Widget trait({
+    required BuildContext context,
+    required NiceTrait trait,
+    TextStyle? style,
+  }) {
+    return InkWell(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+        child: Text(
+          trait.showName,
+          style: style ??
+              TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+      ),
+    );
+  }
+
   static Widget traitList({
     required BuildContext context,
     required List<NiceTrait> traits,
@@ -249,18 +267,8 @@ class SharedBuilder {
     hiddenTraits ??= [Trait.canBeInBattle.id!];
     traits = List.of(traits)
       ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
-    List<Widget> children = traits
-        .map((e) => InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-              child: Text(
-                e.showName,
-                style: style ??
-                    TextStyle(color: Theme.of(context).colorScheme.secondary),
-              ),
-            )))
-        .toList();
+    List<Widget> children =
+        traits.map((e) => trait(context: context, trait: e)).toList();
     children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
