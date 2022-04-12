@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -55,12 +54,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
     if (subjectController.text.trim().isNotEmpty ||
         bodyController.text.trim().isNotEmpty) {
       final r = await SimpleCancelOkDialog(
-        title: const Text('Warning'),
-        content: Text(LocalizedText.of(
-            chs: '反馈表未提交，仍然退出?',
-            jpn: 'フィードバックフォームは送信されませんが、終了します？',
-            eng: 'Feedback form is not empty, still exist?',
-            kor: '피드백은 전송되지 않습니다만, 종료하시겠습니까?')),
+        title: Text(S.current.warning),
+        content: Text(S.current.feedback_form_alert),
       ).showDialog(context);
       return r == true;
     }
@@ -87,38 +82,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: MarkdownBody(
-                    data: LocalizedText.of(
-                        chs: '''提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:
-- 如何复现/期望表现
-- 应用/数据版本、使用设备系统及版本
-- 附加截图日志
-- 以及最好能够提供联系方式(邮箱等)''',
-                        jpn:
-                            """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
-- 再現方法/期待されるパフォーマンス
-- アプリ/データのバージョン、デバイスシステム/バージョン
-- スクリーンショットとログを添付する
-- そして、連絡先情報（電子メールなど）を提供するのが良いです """,
-                        eng:
-                            '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
-- How to reproduce, expected behaviour
-- App/dataset version, device system and version
-- Attach screenshots and logs
-- It's better to provide contact info (e.g. Email) 
-''',
-                        kor:
-                            '''피드백을 전송하기 전에, <**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
-- 재현 방법/기대하고 있는 퍼포먼스
-- 앱/데이터의 버전, 디바이스 시스템/버전
-- 스크린샷과 로그를 첨부한다
-- 마지막으로, 연락처 정보(전자메일 등)을 적어주시는 것이 좋습니다 ''')),
+                child: MarkdownBody(data: S.current.feedback_info),
               ),
             ),
             TileGroup(
               children: [
                 ListTile(
-                  title: const Text('FAQ'),
+                  title: Text(S.current.faq),
                   trailing: const Icon(Icons.keyboard_arrow_right),
                   onTap: () {
                     SplitRoute.push(context, FAQPage());
@@ -127,7 +97,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ],
             ),
             TileGroup(
-              header: 'Contact',
+              header: S.current.feedback_contact,
               children: [
                 ListTile(
                   title: const Text('Github'),
@@ -142,7 +112,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       launch('https://bbs.nga.cn/read.php?tid=24926789'),
                 ),
                 ListTile(
-                  title: const Text('Email'),
+                  title: Text(S.current.email),
                   subtitle: const Text(kSupportTeamEmailAddress),
                   onTap: () async {
                     String subject =
@@ -158,9 +128,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     if (await canLaunch(uri.toString())) {
                       launch(uri.toString());
                     } else {
-                      const SimpleCancelOkDialog(
-                        title: Text('Send email to'),
-                        content: Text(kSupportTeamEmailAddress),
+                      SimpleCancelOkDialog(
+                        title: Text(S.current.send_email_to),
+                        content: const Text(kSupportTeamEmailAddress),
                       ).showDialog(context);
                     }
                   },
@@ -193,17 +163,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: S.current.email,
                       border: const OutlineInputBorder(),
                       prefixIcon: const Icon(Icons.mail_outline),
-                      hintText:
-                          LocalizedText.of(chs: '邮箱', jpn: 'メール', eng: 'Email'),
-                      helperText: LocalizedText.of(
-                          chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信/手机号！',
-                          jpn: '連絡先情報ないと、返信ができません。',
-                          eng:
-                              'Please fill in email address. Otherwise NO reply.',
-                          kor: '연락처 정보가 없다면 답장이 불가능합니다.'),
+                      hintText: S.current.email,
+                      helperText: S.current.fill_email_warning,
                       helperMaxLines: 3,
                     ),
                     maxLines: 1,
@@ -240,11 +204,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
                 ListTile(
                   title: Text(S.current.attachment),
-                  subtitle: Text(LocalizedText.of(
-                      chs: 'e.g. 截图等文件',
-                      jpn: 'e.g. スクリーンショットとその他のファイル',
-                      eng: 'e.g. screenshots, files.',
-                      kor: 'e.g. 스크린샷, 기타 파일')),
+                  subtitle: Text(S.current.feedback_add_attachments),
                   trailing: IconButton(
                     icon: const Icon(Icons.add),
                     tooltip: S.current.add,
@@ -308,31 +268,19 @@ class _FeedbackPageState extends State<FeedbackPage> {
   void sendEmail() async {
     // print('pixelRatio=${MediaQuery.of(context).devicePixelRatio}');
     if (bodyController.text.trim().isEmpty) {
-      EasyLoading.showInfo(LocalizedText.of(
-          chs: '请填写反馈内容',
-          jpn: 'フィードバックの内容を記入してください',
-          eng: 'Please add feedback details',
-          kor: '피드백 내용을 작성해주세요 '));
+      EasyLoading.showInfo(S.current.add_feedback_details_warning);
       return;
     }
     if (contactController.text.trim().isEmpty) {
       final confirmed = await SimpleCancelOkDialog(
-        title: Text(LocalizedText.of(
-            chs: '联系方式未填写',
-            jpn: '連絡先情報が入力されていません',
-            eng: 'Contact information is not filled in',
-            kor: '연락처 정보가 입력되어있지 않습니다')),
-        content: Text(LocalizedText.of(
-            chs: '将无法无法无法无法无法回复您的问题',
-            jpn: '開発者はあなたのフィードバックに応答することができなくなります',
-            eng: 'The developer will not be able to respond to your feedback',
-            kor: '개발자는 당신의 피드백에 응답할 수 없게 됩니다')),
-        confirmText: LocalizedText.of(
-            chs: '仍然发送', jpn: '送信し続ける', eng: 'Still Send', kor: '계속 보내기'),
+        title: Text(S.current.contact_information_not_filled),
+        content: Text(S.current.contact_information_not_filled_warning),
+        confirmText: S.current.still_send,
       ).showDialog(context);
       if (confirmed != true) return;
     }
-    EasyLoading.show(status: 'Sending', maskType: EasyLoadingMaskType.clear);
+    EasyLoading.show(
+        status: S.current.sending, maskType: EasyLoadingMaskType.clear);
     try {
       String subject = subjectController.text.trim();
       if (subject.isEmpty) subject = defaultSubject;
@@ -353,14 +301,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
         final result = await handler.handle(
             FeedbackReport(contactController.text, bodyController.text), null);
         if (!result) {
-          throw 'Sending failed';
+          throw S.current.sending_failed;
         }
       } else {
         await Future.delayed(const Duration(seconds: 3));
       }
       subjectController.text = '';
       bodyController.text = '';
-      EasyLoading.showSuccess('Sent');
+      EasyLoading.showSuccess(S.current.sent);
     } catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace.toString());

@@ -97,6 +97,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Cuenta"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "add": MessageLookupByLibrary.simpleMessage("Añadir"),
+        "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage(
+            "Por favor, agregue sus comentarios"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Añadir a la lista negra"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
@@ -113,6 +115,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Icono de Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
+        "attach_from_files": MessageLookupByLibrary.simpleMessage("Archivos"),
+        "attach_from_photos": MessageLookupByLibrary.simpleMessage("Imágenes"),
+        "attach_help": MessageLookupByLibrary.simpleMessage(
+            "Si tienes problemas para seleccionar desde Imágenes, utiliza Archivos en su lugar"),
         "attachment": MessageLookupByLibrary.simpleMessage("Archivo adjunto"),
         "auto_reset":
             MessageLookupByLibrary.simpleMessage("Reinicio automático"),
@@ -164,6 +170,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumido"),
+        "contact_information_not_filled": MessageLookupByLibrary.simpleMessage(
+            "La información de contacto no está completa"),
+        "contact_information_not_filled_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "El desarrollador no podrá responder a sus comentarios"),
         "copied": MessageLookupByLibrary.simpleMessage("Copiado"),
         "copy": MessageLookupByLibrary.simpleMessage("Copiar"),
         "copy_plan_menu":
@@ -244,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("20 AP Rate"),
         "efficiency_type_drop":
             MessageLookupByLibrary.simpleMessage("Drop Rate"),
+        "email": MessageLookupByLibrary.simpleMessage("Correo electrónico"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemigos"),
         "enhance": MessageLookupByLibrary.simpleMessage("Mejorar"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
@@ -284,15 +296,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "Seleccionar rango de niveles"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),
         "failed": MessageLookupByLibrary.simpleMessage("Falló"),
+        "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorito"),
         "feedback_add_attachments": MessageLookupByLibrary.simpleMessage(
-            "Agregar capturas de pantalla o archivos adjuntos"),
+            "Ej. capturas de pantalla, archivos"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("Agregar registro de fallas"),
         "feedback_contact":
             MessageLookupByLibrary.simpleMessage("Información de contacto"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("Comentarios o Sugerencias"),
+        "feedback_form_alert": MessageLookupByLibrary.simpleMessage(
+            "El formulario de comentarios no está vacío, ¿todavía existe?"),
+        "feedback_info": MessageLookupByLibrary.simpleMessage(
+            "Consulte las <**FAQ**> antes de enviar comentarios. Los siguientes detalles son deseados:\n- Cómo reproducir el problema, comportamiento esperado\n- Versión de la aplicación/conjunto de datos, sistema del dispositivo y versión\n- Adjunte capturas de pantalla y registros\n- Es mejor proporcionar información de contacto (por ejemplo, correo electrónico)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("Asunto"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("Fondo"),
@@ -305,6 +322,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
+        "fill_email_warning": MessageLookupByLibrary.simpleMessage(
+            "Por favor, rellene la dirección de correo. De lo contrario NO hay respuesta."),
         "filter": MessageLookupByLibrary.simpleMessage("Filtro"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Tipo"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("Atributo"),
@@ -504,14 +523,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Por favor, vuelva a cargar los datos del juego predeterminados en Configuración-Datos del juego"),
         "loading_data_failed":
             MessageLookupByLibrary.simpleMessage("Carga de datos fallida"),
+        "login_change_name":
+            MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("Cambiar contraseña"),
+        "login_confirm_password":
+            MessageLookupByLibrary.simpleMessage("Confirmar contraseña"),
         "login_first_hint": MessageLookupByLibrary.simpleMessage(
             "Por favor, inicie sesión primero"),
         "login_forget_pwd":
             MessageLookupByLibrary.simpleMessage("Contraseña olvidada"),
         "login_login": MessageLookupByLibrary.simpleMessage("Iniciar sesión"),
         "login_logout": MessageLookupByLibrary.simpleMessage("Cerrar sesión"),
+        "login_new_name": MessageLookupByLibrary.simpleMessage("Nuevo nombre"),
         "login_new_password":
             MessageLookupByLibrary.simpleMessage("Nueva contraseña"),
         "login_password": MessageLookupByLibrary.simpleMessage("Contraseña"),
@@ -644,6 +668,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para actualizar. Si la actualización falla, copie manualmente la carpeta de origen en el destino"),
         "restore": MessageLookupByLibrary.simpleMessage("Restaurar"),
+        "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("SQ Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Guardar"),
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Guardar en Fotos"),
@@ -661,6 +686,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_lang":
             MessageLookupByLibrary.simpleMessage("Selecciona un idioma"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Seleccionar Plan"),
+        "send_email_to":
+            MessageLookupByLibrary.simpleMessage("Enviar el correo a"),
+        "sending": MessageLookupByLibrary.simpleMessage("Enviando"),
+        "sending_failed": MessageLookupByLibrary.simpleMessage("Envío fallido"),
+        "sent": MessageLookupByLibrary.simpleMessage("Enviado"),
         "servant": MessageLookupByLibrary.simpleMessage("Servants"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("Servant Coin"),
         "servant_detail_page": MessageLookupByLibrary.simpleMessage(
@@ -726,6 +756,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Incluyendo objetos propios"),
         "statistics_title":
             MessageLookupByLibrary.simpleMessage("Estadísticas"),
+        "still_send":
+            MessageLookupByLibrary.simpleMessage("Enviar de todas formas"),
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("Permiso de almacenamiento"),
         "success": MessageLookupByLibrary.simpleMessage("Éxito"),

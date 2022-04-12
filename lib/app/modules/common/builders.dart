@@ -9,8 +9,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../tools/localized_base.dart';
-
 class SharedBuilder {
   SharedBuilder._();
 
@@ -308,8 +306,7 @@ class SharedBuilder {
           ListTile(
             horizontalTitleGap: 0,
             leading: const Icon(Icons.photo_library),
-            title: Text(LocalizedText.of(
-                chs: '从相册选取', jpn: 'アルバムから', eng: 'From Photos')),
+            title: Text(S.current.attach_from_photos),
             onTap: () {
               fileType = FileType.image;
               Navigator.pop(context);
@@ -318,17 +315,13 @@ class SharedBuilder {
           ListTile(
             horizontalTitleGap: 0,
             leading: const Icon(Icons.file_copy),
-            title: Text(LocalizedText.of(
-                chs: '从文件选取', jpn: 'ファイルから', eng: 'From Files')),
+            title: Text(S.current.attach_from_files),
             onTap: () {
               fileType = FileType.any;
               Navigator.pop(context);
             },
           ),
-          SFooter(LocalizedText.of(
-              chs: '如果图片模式存在问题，请使用文件模式',
-              jpn: 'アルバモードに問題がある場合は、ファイルモードを使用してください ',
-              eng: 'If you have trouble picking images, use files instead')),
+          SFooter(S.current.attach_help),
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.clear),

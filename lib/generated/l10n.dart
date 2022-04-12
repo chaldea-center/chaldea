@@ -237,6 +237,17 @@ class S {
     );
   }
 
+  /// `Please add feedback details`
+  String get add_feedback_details_warning {
+    return Intl.message(
+      'Please add feedback details',
+      name: 'add_feedback_details_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Add to blacklist`
   String get add_to_blacklist {
     return Intl.message(
@@ -363,6 +374,39 @@ class S {
     return Intl.message(
       'Ascension',
       name: 'ascension_up',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `From Files`
+  String get attach_from_files {
+    return Intl.message(
+      'From Files',
+      name: 'attach_from_files',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `From Photos`
+  String get attach_from_photos {
+    return Intl.message(
+      'From Photos',
+      name: 'attach_from_photos',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `If you have trouble picking images, use files instead`
+  String get attach_help {
+    return Intl.message(
+      'If you have trouble picking images, use files instead',
+      name: 'attach_help',
       desc: '',
       locale: localeName,
       args: [],
@@ -759,6 +803,28 @@ class S {
     return Intl.message(
       'Consumed',
       name: 'consumed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Contact information is not filled in`
+  String get contact_information_not_filled {
+    return Intl.message(
+      'Contact information is not filled in',
+      name: 'contact_information_not_filled',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `The developer will not be able to respond to your feedback`
+  String get contact_information_not_filled_warning {
+    return Intl.message(
+      'The developer will not be able to respond to your feedback',
+      name: 'contact_information_not_filled_warning',
       desc: '',
       locale: localeName,
       args: [],
@@ -1392,6 +1458,17 @@ class S {
     );
   }
 
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemies`
   String get enemy_list {
     return Intl.message(
@@ -1689,6 +1766,17 @@ class S {
     );
   }
 
+  /// `FAQ`
+  String get faq {
+    return Intl.message(
+      'FAQ',
+      name: 'faq',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Favorite`
   String get favorite {
     return Intl.message(
@@ -1700,10 +1788,10 @@ class S {
     );
   }
 
-  /// `Add screenshots or file attachments`
+  /// `e.g. screenshots, files.`
   String get feedback_add_attachments {
     return Intl.message(
-      'Add screenshots or file attachments',
+      'e.g. screenshots, files.',
       name: 'feedback_add_attachments',
       desc: '',
       locale: localeName,
@@ -1738,6 +1826,28 @@ class S {
     return Intl.message(
       'Feedback or Suggestion',
       name: 'feedback_content_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Feedback form is not empty, still exist?`
+  String get feedback_form_alert {
+    return Intl.message(
+      'Feedback form is not empty, still exist?',
+      name: 'feedback_form_alert',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It's better to provide contact info (e.g. Email)`
+  String get feedback_info {
+    return Intl.message(
+      'Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)',
+      name: 'feedback_info',
       desc: '',
       locale: localeName,
       args: [],
@@ -1860,6 +1970,17 @@ class S {
     return Intl.message(
       'filename',
       name: 'filename',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please fill in email address. Otherwise NO reply.`
+  String get fill_email_warning {
+    return Intl.message(
+      'Please fill in email address. Otherwise NO reply.',
+      name: 'fill_email_warning',
       desc: '',
       locale: localeName,
       args: [],
@@ -4566,6 +4687,50 @@ class S {
     );
   }
 
+  /// `Send email to`
+  String get send_email_to {
+    return Intl.message(
+      'Send email to',
+      name: 'send_email_to',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sending`
+  String get sending {
+    return Intl.message(
+      'Sending',
+      name: 'sending',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sending failed`
+  String get sending_failed {
+    return Intl.message(
+      'Sending failed',
+      name: 'sending_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sent`
+  String get sent {
+    return Intl.message(
+      'Sent',
+      name: 'sent',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Servant`
   String get servant {
     return Intl.message(
@@ -4956,6 +5121,17 @@ class S {
     return Intl.message(
       'Statistics',
       name: 'statistics_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Still Send`
+  String get still_send {
+    return Intl.message(
+      'Still Send',
+      name: 'still_send',
       desc: '',
       locale: localeName,
       args: [],
