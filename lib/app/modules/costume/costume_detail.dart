@@ -130,27 +130,27 @@ class CostumeDetailPage extends StatelessWidget {
             CustomTableRow(children: [
               TableCellData(text: S.current.card_description, isHeader: true)
             ]),
-            CustomTableRow(
-              children: [
-                TableCellData(
-                  text: costume.lDetail.l,
-                  alignment: Alignment.centerLeft,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                )
-              ],
-            ),
             if (costume.lDetail.l != costume.detail)
               CustomTableRow(
                 children: [
                   TableCellData(
-                    text: costume.detail,
+                    text: costume.lDetail.l,
                     alignment: Alignment.centerLeft,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   )
                 ],
               ),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: costume.detail,
+                  alignment: Alignment.centerLeft,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                )
+              ],
+            ),
             CustomTableRow(children: [
               TableCellData(text: S.current.illustration, isHeader: true)
             ]),

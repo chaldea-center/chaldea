@@ -81,69 +81,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           // ListTile(
-          //   leading: const Icon(Icons.screenshot),
-          //   title: Text(LocalizedText.of(
-          //       chs: '素材截图解析',
-          //       jpn: 'アイテムのスクリーンショット',
-          //       eng: 'Items Screenshots',
-          //       kor: '아이템 스크린샷')),
-          //   subtitle: Text(LocalizedText.of(
-          //       chs: '个人空间 - 道具一览',
-          //       jpn: 'マイルーム - 所持アイテム一覧',
-          //       eng: 'My Room - Item List',
-          //       kor: '마이룸 - 아이템 리스트')),
-          //   trailing: const Icon(Icons.keyboard_arrow_right),
-          //   onTap: () {
-          //     SplitRoute.push(
-          //       context,
-          //       ImportItemScreenshotPage(),
-          //       popDetail: true,
-          //     );
-          //   },
-          // ),
-          // ListTile(
-          //   leading: const Icon(Icons.screenshot),
-          //   title: Text(LocalizedText.of(
-          //       chs: '主动技能截图解析',
-          //       jpn: '保有スキルのスクリーンショット',
-          //       eng: 'Active Skill Screenshots',
-          //       kor: '액티브 스킬 스크린샷')),
-          //   subtitle: Text(LocalizedText.of(
-          //       chs: '强化 - 从者技能强化',
-          //       jpn: '強化 - サーヴァントスキル強化 ',
-          //       eng: 'Enhance - Skill',
-          //       kor: '강화 - 서번트 스킬 강화')),
-          //   trailing: const Icon(Icons.keyboard_arrow_right),
-          //   onTap: () {
-          //     SplitRoute.push(
-          //       context,
-          //       ImportSkillScreenshotPage(),
-          //       popDetail: true,
-          //     );
-          //   },
-          // ),
-          // ListTile(
-          //   leading: const Icon(Icons.screenshot),
-          //   title: Text(LocalizedText.of(
-          //       chs: '附加技能截图解析',
-          //       jpn: 'アペンドスキルのスクリーンショット',
-          //       eng: 'Append Skill Screenshots',
-          //       kor: '어펜드 스킬 스크린샷')),
-          //   subtitle: Text(LocalizedText.of(
-          //       chs: '强化 - 被动技能强化',
-          //       jpn: '強化 - アペンドスキル強化 ',
-          //       eng: 'Enhance - Append Skill',
-          //       kor: '강화 - 어펜드 스킬 강화')),
-          //   trailing: const Icon(Icons.keyboard_arrow_right),
-          //   onTap: () {
-          //     SplitRoute.push(
-          //       context,
-          //       ImportSkillScreenshotPage(isAppendSkill: true),
-          //       popDetail: true,
-          //     );
-          //   },
-          // ),
-          // ListTile(
           //   leading: const Icon(Icons.compare_arrows),
           //   title: Text(LocalizedText.of(
           //       chs: 'Guda数据',
@@ -164,6 +101,56 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             onTap: () {
               router.push(child: ImportFgoSimuMaterialPage());
             },
+          ),
+
+          const SHeader('Coming soon...'),
+          ListTile(
+            enabled: false,
+            leading: const Icon(Icons.screenshot),
+            title: Text(LocalizedText.of(
+                chs: '素材截图解析',
+                jpn: 'アイテムのスクリーンショット',
+                eng: 'Items Screenshots',
+                kor: '아이템 스크린샷')),
+            subtitle: Text(LocalizedText.of(
+                chs: '个人空间 - 道具一览',
+                jpn: 'マイルーム - 所持アイテム一覧',
+                eng: 'My Room - Item List',
+                kor: '마이룸 - 아이템 리스트')),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {},
+          ),
+          ListTile(
+            enabled: false,
+            leading: const Icon(Icons.screenshot),
+            title: Text(LocalizedText.of(
+                chs: '主动技能截图解析',
+                jpn: '保有スキルのスクリーンショット',
+                eng: 'Active Skill Screenshots',
+                kor: '액티브 스킬 스크린샷')),
+            subtitle: Text(LocalizedText.of(
+                chs: '强化 - 从者技能强化',
+                jpn: '強化 - サーヴァントスキル強化 ',
+                eng: 'Enhance - Skill',
+                kor: '강화 - 서번트 스킬 강화')),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {},
+          ),
+          ListTile(
+            enabled: false,
+            leading: const Icon(Icons.screenshot),
+            title: Text(LocalizedText.of(
+                chs: '附加技能截图解析',
+                jpn: 'アペンドスキルのスクリーンショット',
+                eng: 'Append Skill Screenshots',
+                kor: '어펜드 스킬 스크린샷')),
+            subtitle: Text(LocalizedText.of(
+                chs: '强化 - 被动技能强化',
+                jpn: '強化 - アペンドスキル強化 ',
+                eng: 'Enhance - Append Skill',
+                kor: '강화 - 어펜드 스킬 강화')),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {},
           ),
         ], bottom: true),
       ),

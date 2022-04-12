@@ -834,7 +834,7 @@ class NiceCostume {
       _$NiceCostumeFromJson(json);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
-  Transl<String, String> get lDetail => Transl.costumeNames(detail);
+  Transl<int, String> get lDetail => Transl.costumeDetail(costumeCollectionNo);
 
   String get face =>
       'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';

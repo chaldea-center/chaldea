@@ -114,11 +114,6 @@ class LocalSettings {
     }
   }
 
-  void validateSvtTabs() {
-    display.sortedSvtTabs = List.of(SvtTab.values)
-      ..sort2((a) => display.sortedSvtTabs.indexOf(a));
-  }
-
   factory LocalSettings.fromJson(Map<String, dynamic> json) =>
       _$LocalSettingsFromJson(json);
 
@@ -162,7 +157,16 @@ class DisplaySettings {
     this.eventsReversed = true,
     List<SvtTab?>? sortedSvtTabs,
   }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
-            List.of(SvtTab.values);
+            List.of(SvtTab.values) {
+    validateSvtTabs();
+  }
+  void validateSvtTabs() {
+    sortedSvtTabs = List.of(SvtTab.values)
+      ..sort2((a) {
+        int index = sortedSvtTabs.indexOf(a);
+        return index >= 0 ? index : SvtTab.values.indexOf(a);
+      });
+  }
 
   factory DisplaySettings.fromJson(Map<String, dynamic> data) =>
       _$DisplaySettingsFromJson(data);
@@ -269,6 +273,7 @@ enum SvtTab {
   skill,
   np,
   info,
+  lore,
   illustration,
   relatedCards,
   summon,

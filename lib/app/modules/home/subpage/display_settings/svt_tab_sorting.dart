@@ -16,8 +16,6 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
 
   @override
   Widget build(BuildContext context) {
-    db2.settings.validateSvtTabs();
-
     return Scaffold(
       appBar: AppBar(
           title: Text(LocalizedText.of(
@@ -103,6 +101,8 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
         return S.current.noble_phantasm;
       case SvtTab.info:
         return S.current.card_info;
+      case SvtTab.lore:
+        return 'Profile';
       case SvtTab.illustration:
         return S.current.illustration;
       case SvtTab.relatedCards:

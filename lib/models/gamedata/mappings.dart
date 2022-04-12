@@ -29,19 +29,22 @@ class Transl<K, V> {
 
   MappingBase<V>? get m => mappings[key];
 
-  static bool get isJP =>
-      db2.settings.resolvedPreferredRegions.first == Region.jp;
+  static Region get current => db2.settings.resolvedPreferredRegions.first;
 
-  static get isCN => db2.settings.resolvedPreferredRegions.first == Region.cn;
+  static bool get isJP => current == Region.jp;
 
-  static get isEN => db2.settings.resolvedPreferredRegions.first == Region.na;
+  static get isCN => current == Region.cn;
 
-  V get l {
+  static get isEN => current == Region.na;
+
+  V get l => maybeL ?? _default;
+
+  V? get maybeL {
     for (final region in db2.settings.resolvedPreferredRegions) {
       final v = mappings[key]?.ofRegion(region);
       if (v != null) return v;
     }
-    return _default;
+    return null;
   }
 
   List<V?> get all => [_m?.jp, _m?.cn, _m?.tw, _m?.na, _m?.kr];
@@ -325,7 +328,8 @@ class MappingBase<T> {
     return null;
   }
 
-  T? ofRegion(Region region) {
+  T? ofRegion([Region? region]) {
+    region ??= Transl.current;
     switch (region) {
       case Region.jp:
         return jp;

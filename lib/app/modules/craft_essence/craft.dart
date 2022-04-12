@@ -6,7 +6,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/custom_table.dart';
@@ -260,7 +259,7 @@ class CraftDetailBasePage extends StatelessWidget {
         ]),
         CustomTableRow(children: [
           TableCellData(
-            child: Text(EnumUtil.titled(ce.extra.obtain),
+            child: Text(Transl.ceObtain(ce.extra.obtain).l,
                 textAlign: TextAlign.center),
           )
         ]),
@@ -274,19 +273,31 @@ class CraftDetailBasePage extends StatelessWidget {
         ]),
         CustomTableRow(
             children: [TableCellData(child: localizeCharacters(context))]),
-        // CustomTableRow(children: [
-        //   TableCellData(text: S.current.card_description, isHeader: true)
-        // ]),
-        // CustomTableRow(
-        //   children: [
-        //     TableCellData(
-        //       text: ce.profile!.comments.first.comment,
-        //       alignment: Alignment.centerLeft,
-        //       padding:
-        //           const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        //     )
-        //   ],
-        // ),
+        CustomTableRow(children: [
+          TableCellData(text: S.current.card_description, isHeader: true)
+        ]),
+        if (!Transl.isJP && ce.extra.profile.ofRegion(Transl.current) != null)
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: ce.extra.profile.ofRegion(Transl.current) ?? '???',
+                alignment: Alignment.centerLeft,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              )
+            ],
+          ),
+        if (ce.extra.profile.ofRegion(Region.jp) != null)
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: ce.extra.profile.ofRegion(Region.jp) ?? '???',
+                alignment: Alignment.centerLeft,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              )
+            ],
+          ),
         if (showSummon && summons.isNotEmpty) ...[
           CustomTableRow(children: [
             TableCellData(text: S.current.summon, isHeader: true)

@@ -226,6 +226,17 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: S.current.card_description, isHeader: true)
         ]),
+        if (!Transl.isJP && cc.extra.profile.ofRegion(Transl.current) != null)
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: cc.extra.profile.ofRegion(Transl.current) ?? '???',
+                alignment: Alignment.centerLeft,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              )
+            ],
+          ),
         CustomTableRow(
           children: [
             TableCellData(

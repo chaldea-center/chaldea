@@ -302,6 +302,15 @@ class AtlasApi {
     );
   }
 
+  static Future<Servant?> svt(int svtId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/servant/$svtId?lore=true',
+      (data) => Servant.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<NiceSkill?> skill(int skillId,
       {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(

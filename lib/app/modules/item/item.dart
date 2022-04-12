@@ -37,12 +37,19 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   bool showOutdated = false;
 
   //free tab
-  bool isSvtCoin = false;
+  bool onlyShowInfoTab = false;
 
   @override
   void initState() {
     super.initState();
-    isSvtCoin = db2.gameData.items[widget.itemId]?.type == ItemType.svtCoin;
+    final item = db2.gameData.items[widget.itemId];
+    onlyShowInfoTab = [
+      ItemType.svtCoin,
+      ItemType.eventItem,
+      ItemType.eventPoint,
+    ].contains(item?.type);
+    if (item?.uses.contains(ItemUse.ascension) == true) onlyShowInfoTab = false;
+
     _tabController = TabController(
         initialIndex: widget.initialTabIndex, length: 6, vsync: this);
     _tabController.addListener(() {
@@ -63,7 +70,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         title: AutoSizeText(Item.getName(widget.itemId), maxLines: 1),
         centerTitle: false,
         titleSpacing: 0,
-        actions: isSvtCoin
+        actions: onlyShowInfoTab
             ? []
             : <Widget>[
                 if (curTab == 0 || curTab == 1) viewTypeButton,
@@ -71,7 +78,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 if (curTab == 3) filterOutdatedButton,
                 if (curTab == 0 || curTab == 4) favoriteButton,
               ],
-        bottom: isSvtCoin
+        bottom: onlyShowInfoTab
             ? null
             : TabBar(
                 controller: _tabController,
@@ -86,7 +93,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 ],
               ),
       ),
-      body: isSvtCoin
+      body: onlyShowInfoTab
           ? ItemInfoTab(itemId: widget.itemId)
           : TabBarView(
               controller: _tabController,

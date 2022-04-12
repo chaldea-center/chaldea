@@ -187,6 +187,17 @@ class FuncDescriptor extends StatelessWidget {
       DataVals? vals = func.svals.getOrNull(0);
 
       void _addTraits(String? prefix, List<NiceTrait> traits) {
+        if ([BuffType.upCommandall, BuffType.downCommandall]
+            .contains(func.buffs.getOrNull(0)?.type)) {
+          traits = traits
+              .where((e) => ![
+                    Trait.cardQuick,
+                    Trait.cardArts,
+                    Trait.cardBuster,
+                    Trait.cardExtra
+                  ].contains(e.name))
+              .toList();
+        }
         if (traits.isEmpty) return;
         if (prefix != null) spans.add(TextSpan(text: prefix));
         for (final trait in traits) {

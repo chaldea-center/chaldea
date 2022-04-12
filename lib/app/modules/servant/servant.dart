@@ -13,6 +13,7 @@ import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
 import 'tabs/info_tab.dart';
 import 'tabs/plan_tab.dart';
+import 'tabs/profile_tab.dart';
 import 'tabs/quest_tab.dart';
 import 'tabs/related_cards_tab.dart';
 import 'tabs/skill_tab.dart';
@@ -62,7 +63,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
     _svt = widget.svt ??
         db2.gameData.servants[widget.id] ??
         db2.gameData.servantsById[widget.id];
-    db2.settings.validateSvtTabs();
   }
 
   @override
@@ -200,6 +200,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
           tab: tab,
           tabBuilder: () => S.current.card_info,
           viewBuilder: (ctx) => SvtInfoTab(svt: svt),
+        );
+      case SvtTab.lore:
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => 'Profile',
+          viewBuilder: (ctx) => SvtLoreTab(svt: svt),
         );
       case SvtTab.illustration:
         return _SubTabInfo(
@@ -534,7 +540,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   List<Widget> getObtainBadges() {
     const badgeColors = <SvtObtain, Color>{
-      SvtObtain.heroine: Color(0xFFA6A6A6),
+      SvtObtain.heroine: Colors.purple,
       SvtObtain.permanent: Color(0xFF84B63C),
       SvtObtain.story: Color(0xFFA443DF),
       SvtObtain.eventReward: Color(0xFF4487DF),
@@ -545,7 +551,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     return svt.extra.obtains.map((obtain) {
       final bgColor =
           badgeColors[obtain] ?? badgeColors[SvtObtain.unavailable]!;
-      final String shownText = EnumUtil.titled(obtain);
+      final String shownText = Transl.svtObtain(obtain).l;
       return DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(width: 0.5, color: bgColor),

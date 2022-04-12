@@ -289,36 +289,44 @@ class ExpUpData {
         maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0),
         grailCost[key]?.qp ?? 0));
     int lv = startLv;
+    List<int> addedLvs = [];
     while (lv < endLv) {
       coinStages.add(lv >= 100 && lv % 2 == 0 ? 30 : 0);
       int qp = 0, cards = 0, grail = 0;
-      if (grailLvQp[lv] != null) {
+      String stageName;
+      if (!addedLvs.contains(lv) && grailLvQp[lv] != null) {
         qp += grailLvQp[lv]!;
         grail += 1;
-      } else if (ascensionLevels[lv] != null) {
+        addedLvs.add(lv);
+        stageName = lv.toString();
+      } else if (!addedLvs.contains(lv) && ascensionLevels[lv] != null) {
         qp += svt.ascensionMaterials[ascensionLevels[lv]]?.qp ?? 0;
+        addedLvs.add(lv);
+        stageName = lv.toString();
+      } else {
+        int curExp = svt.expGrowth[lv - 1];
+        int nextUpgrade = Maths.min(
+            [...grailLvQp.keys, ...ascensionLevels.keys].where((e) => e > lv),
+            120);
+        if (nextUpgrade > endLv) {
+          nextUpgrade = endLv;
+        }
+        stageName = '$lv->$nextUpgrade';
+        int expDemand = svt.expGrowth[nextUpgrade - 1] - curExp;
+        cards = (expDemand / expPerCard).ceil();
+        int usedCards = 0;
+        while (usedCards < cards) {
+          int _cards = min(20, cards - usedCards);
+          usedCards += _cards;
+          // use ★1 servant data, ★5=6	★4=4	★3=2	★2=1.5  ★1=1
+          qp += (lvQpCostList[lv] * _cards * [1.5, 1, 1.5, 2, 4, 6][rarity])
+              .toInt();
+          int nextExp = curExp + usedCards * expPerCard;
+          lv = svt.expGrowth.indexWhere((e) => e > nextExp);
+          if (lv < 0) lv = 120;
+        }
       }
-      int curExp = svt.expGrowth[lv - 1];
-      int nextUpgrade = Maths.min(
-          [...grailLvQp.keys, ...ascensionLevels.keys].where((e) => e > lv),
-          120);
-      if (nextUpgrade > endLv) {
-        nextUpgrade = endLv;
-      }
-      String stageName = '$lv->$nextUpgrade';
-      int expDemand = svt.expGrowth[nextUpgrade - 1] - curExp;
-      cards = (expDemand / expPerCard).ceil();
-      int usedCards = 0;
-      while (usedCards < cards) {
-        int _cards = min(20, cards - usedCards);
-        usedCards += _cards;
-        // use ★1 servant data, ★5=6	★4=4	★3=2	★2=1.5  ★1=1
-        qp += (lvQpCostList[lv] * _cards * [1.5, 1, 1.5, 2, 4, 6][rarity])
-            .toInt();
-        int nextExp = curExp + usedCards * expPerCard;
-        lv = svt.expGrowth.indexWhere((e) => e > nextExp);
-        if (lv < 0) lv = 120;
-      }
+
       qpStages.add(qp);
       expStages.add(cards);
       grailStages.add(grail);
