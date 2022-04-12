@@ -132,8 +132,8 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 if (data.endLv < lv) {
                   data.endLv = lv;
                   _endController.text = lv.toString();
-                  setState(() {});
                 }
+                setState(() {});
               }
             },
           ),

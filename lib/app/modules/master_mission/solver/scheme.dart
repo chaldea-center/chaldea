@@ -50,7 +50,7 @@ class CustomMission {
 
   Widget buildDescriptor(BuildContext context) {
     CondType condType = CondType.missionConditionDetail;
-    int missionCondType = _kDetailCondMappingReverse[type]!;
+    int missionCondType = _kDetailCondMappingReverse[type] ?? -1;
     return CondTargetNumDescriptor(
       condType: condType,
       targetNum: count,
@@ -102,5 +102,13 @@ const _kDetailCondMapping = {
       MissionTargetType.enemyNotServantClass,
 };
 
-final _kDetailCondMappingReverse =
-    _kDetailCondMapping.map((key, value) => MapEntry(value, key));
+final _kDetailCondMappingReverse = {
+  MissionTargetType.quest: DetailCondType.questClearNum1,
+  MissionTargetType.enemy: DetailCondType.enemyKillNum,
+  MissionTargetType.trait: DetailCondType.defeatEnemyIndividuality,
+  MissionTargetType.servantClass: DetailCondType.defeatServantClass,
+  MissionTargetType.enemyClass: DetailCondType.defeatEnemyClass,
+  MissionTargetType.enemyNotServantClass:
+      DetailCondType.defeatEnemyNotServantClass,
+  MissionTargetType.questTrait: DetailCondType.questClearIndividuality,
+};

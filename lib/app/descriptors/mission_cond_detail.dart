@@ -17,6 +17,18 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   @override
   Widget build(BuildContext context) {
     switch (detail.missionCondType) {
+      case DetailCondType.questClearIndividuality:
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Clear $targetNum quests with traits ',
+            MultiDescriptor.traits(context, targetIds),
+          ),
+          kr: null,
+        );
       case DetailCondType.questClearNum1:
       case DetailCondType.questClearNum2:
         if (targetIds.length == 1 && targetIds.first == 0) {

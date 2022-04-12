@@ -41,6 +41,8 @@ extension NumX on num {
       if (maxDigits != null) {
         if (s1.length < maxDigits) {
           s2 = s2.substring(0, min(s2.length, maxDigits - s1.length));
+        } else {
+          return s1;
         }
       } else if (percent && s1.length >= 3) {
         return s1;
