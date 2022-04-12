@@ -2,13 +2,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
@@ -155,6 +158,50 @@ class _GalleryPageState extends State<GalleryPage> {
             child: Text(S.current.invalid_startup_path_info)),
       ));
     }
+
+    children.add(SimpleAccordion(headerBuilder: (context, _) {
+      return ListTile(
+        leading: const Icon(Icons.translate),
+        horizontalTitleGap: 0,
+        title: Text(M.of(cn: '帮助改善翻译', na: 'Help Translation')),
+      );
+    }, contentBuilder: (context) {
+      String url = 'https://docs.chaldea.center/translation.html';
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(M.of(
+                cn: 'UI文本、游戏文本仍需进一步完善翻译，对5种语言均有一定需求(按需求排序):\n'
+                    '- 日语/繁中/韩语/英语/简中\n'
+                    '如果您能够并希望帮助改善翻译，请通过以下地址联系！',
+                na: 'UI and game texts still need to be improved, all 5 languages are wanted(sort by demand):\n'
+                    '- Japanese/Traditional Chinese/Korean/English/Simplified Chinese\n'
+                    'If you are glad to help with it, please contact me through the following link.')),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextButton(
+              onPressed: () {
+                launch(url);
+              },
+              child: Text(url),
+            ),
+          ),
+          ButtonBar(
+            children: [
+              TextButton(
+                onPressed: () {
+                  launch(url);
+                },
+                child: const Text('Docs'),
+              )
+            ],
+          )
+        ],
+      );
+    }));
 
     return children;
   }

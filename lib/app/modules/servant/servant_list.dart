@@ -89,11 +89,13 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   PreferredSizeWidget? get appBar {
-    Widget title = AutoSizeText(
-      widget.planMode ? db2.curUser.getFriendlyPlanName() : S.current.servant,
-      maxLines: 1,
-      minFontSize: 12,
-      maxFontSize: 18,
+    Widget title = db2.onUserData(
+      (context, snapshot) => AutoSizeText(
+        widget.planMode ? db2.curUser.getFriendlyPlanName() : S.current.servant,
+        maxLines: 1,
+        minFontSize: 12,
+        maxFontSize: 18,
+      ),
     );
     if (widget.planMode) {
       title = Row(
@@ -373,7 +375,7 @@ class ServantListPageState extends State<ServantListPage>
     final svtStat = db2.curUser.svtStatusOf(svt.collectionNo);
     final svtPlan = db2.curUser.svtPlanOf(svt.collectionNo);
     if ((favoriteState == FavoriteState.owned && !svtStat.cur.favorite) ||
-        (favoriteState == FavoriteState.other && svtPlan.favorite)) {
+        (favoriteState == FavoriteState.other && svtStat.cur.favorite)) {
       return false;
     }
 

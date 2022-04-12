@@ -18,7 +18,7 @@ mixin FuncsDescriptor {
     int? level,
     EdgeInsetsGeometry? padding,
   }) {
-    return funcs.where((func) {
+    funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
       if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
         return true;
@@ -28,20 +28,26 @@ mixin FuncsDescriptor {
         player = !player;
       }
       return player ? showPlayer : showEnemy;
-    }).map((func) {
-      return FuncDescriptor(
-        func: func,
+    }).toList();
+    List<Widget> children = [];
+
+    for (int index = 0; index < funcs.length; index++) {
+      children.add(FuncDescriptor(
+        func: funcs[index],
+        lastFuncTarget: funcs.getOrNull(index - 1)?.funcTargetType,
         level: level,
         padding: padding,
         showPlayer: showPlayer,
         showEnemy: showEnemy,
-      );
-    }).toList();
+      ));
+    }
+    return children;
   }
 }
 
 class FuncDescriptor extends StatelessWidget {
   final NiceFunction func;
+  final FuncTargetType? lastFuncTarget;
   final int? level; // 1-10
   final EdgeInsetsGeometry? padding;
   final bool showPlayer;
@@ -49,6 +55,7 @@ class FuncDescriptor extends StatelessWidget {
   const FuncDescriptor({
     Key? key,
     required this.func,
+    this.lastFuncTarget,
     this.level,
     this.padding,
     this.showPlayer = true,
@@ -159,8 +166,34 @@ class FuncDescriptor extends StatelessWidget {
           ),
         );
       }
+      void _addFuncTarget() {
+        if ([
+          FuncType.eventDropUp,
+          FuncType.eventDropRateUp,
+          FuncType.eventPointUp,
+          FuncType.eventPointRateUp,
+        ].contains(func.funcType)) {
+          return;
+        }
+        if (showPlayer && showEnemy) return;
+        if (lastFuncTarget == func.funcTargetType) return;
+        spans.add(TextSpan(
+            text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
+      }
+
+      _addFuncTarget();
+
       spans.add(TextSpan(text: funcText.toString()));
       DataVals? vals = func.svals.getOrNull(0);
+
+      void _addTraits(String? prefix, List<NiceTrait> traits) {
+        if (traits.isEmpty) return;
+        if (prefix != null) spans.add(TextSpan(text: prefix));
+        for (final trait in traits) {
+          spans.add(CenterWidgetSpan(
+              child: SharedBuilder.trait(context: context, trait: trait)));
+        }
+      }
 
       switch (func.funcType) {
         case FuncType.subState:
@@ -191,9 +224,17 @@ class FuncDescriptor extends StatelessWidget {
             ));
           }
           break;
+        case FuncType.addState:
+        case FuncType.addStateShort:
+          final buff = func.buffs.first;
+          _addTraits('  For:', buff.ckSelfIndv);
+          _addTraits('  On:', buff.ckOpIndv);
+          break;
         default:
           break;
       }
+      _addTraits('  On:', func.functvals);
+      _addTraits('  On Field:', func.funcquestTvals);
 
       Widget child = Text.rich(
         TextSpan(children: spans),
@@ -254,20 +295,23 @@ class FuncDescriptor extends StatelessWidget {
 
       final trigger = kBuffValueTriggerTypes[func.buffs.getOrNull(0)?.type];
       if (trigger != null) {
+        final triggerDetail = trigger(
+            func.svals.getOrNull(level == null ? 0 : level! - 1) ??
+                func.svals.first);
+        if (level == null) triggerDetail.level = null;
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             child,
             Container(
               decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).hintColor,
-                  ),
-                  borderRadius: BorderRadius.circular(6)),
+                border: Border.all(color: Theme.of(context).hintColor),
+                borderRadius: BorderRadius.circular(6),
+              ),
               margin: const EdgeInsets.symmetric(vertical: 2),
               padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
               child: _LazyTrigger(
-                trigger: trigger(func.svals.first),
+                trigger: triggerDetail,
                 isNp: func.svals.first.UseTreasureDevice == 1,
                 showPlayer:
                     func.funcTargetType.isEnemy ? showEnemy : showPlayer,
@@ -311,7 +355,10 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   @override
   void initState() {
     super.initState();
-    _fetchSkill();
+    if (!widget.isNp) {
+      skill = db2.gameData.baseSkills[widget.trigger.skill];
+    }
+    if (skill == null) _fetchSkill();
   }
 
   @override
@@ -323,12 +370,13 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   }
 
   void _fetchSkill() async {
-    if (widget.trigger.skill == null) {
+    final skillId = widget.trigger.skill;
+    if (skillId == null) {
       skill = null;
     } else if (widget.isNp) {
-      skill = await AtlasApi.td(widget.trigger.skill!);
+      skill = await AtlasApi.td(skillId);
     } else {
-      skill = await AtlasApi.skill(widget.trigger.skill!);
+      skill = db2.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
     }
     if (mounted) setState(() {});
   }

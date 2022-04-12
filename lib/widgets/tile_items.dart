@@ -396,13 +396,13 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
   }
 }
 
-List<Widget> divideTiles(Iterable<Widget> tiles,
-    {Widget divider = kDefaultDivider, bool top = false, bool bottom = false}) {
+List<T> divideList<T>(Iterable<T> tiles, T divider,
+    {bool top = false, bool bottom = false}) {
   Iterator iterator = tiles.iterator;
   if (!iterator.moveNext()) {
     return [];
   }
-  List<Widget> combined = [];
+  List<T> combined = [];
   if (top) {
     combined.add(divider);
   }
@@ -416,4 +416,9 @@ List<Widget> divideTiles(Iterable<Widget> tiles,
     combined.add(divider);
   }
   return combined;
+}
+
+List<Widget> divideTiles(Iterable<Widget> tiles,
+    {Widget divider = kDefaultDivider, bool top = false, bool bottom = false}) {
+  return divideList(tiles, divider, top: top, bottom: bottom);
 }

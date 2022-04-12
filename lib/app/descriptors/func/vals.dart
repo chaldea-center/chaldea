@@ -388,7 +388,7 @@ const _kBuffValuePercentTypes = {
 
 class BuffValueTriggerType {
   final int? skill;
-  final int? level;
+  int? level;
   final int? rate;
   final int? position;
   BuffValueTriggerType({

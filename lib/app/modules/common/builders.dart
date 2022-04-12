@@ -277,6 +277,23 @@ class SharedBuilder {
     );
   }
 
+  static List<InlineSpan> traitSpans({
+    required BuildContext context,
+    required List<NiceTrait> traits,
+    TextStyle? style,
+    List<int>? hiddenTraits,
+  }) {
+    hiddenTraits ??= [Trait.canBeInBattle.id!];
+    traits = List.of(traits)
+      ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
+    List<InlineSpan> children = divideList(
+      traits.map(
+          (e) => CenterWidgetSpan(child: trait(context: context, trait: e))),
+      TextSpan(text: '/', style: TextStyle(color: Theme.of(context).hintColor)),
+    );
+    return children;
+  }
+
   static Future<FilePickerResult?> pickImageOrFiles({
     required BuildContext context,
     bool allowMultiple = true,

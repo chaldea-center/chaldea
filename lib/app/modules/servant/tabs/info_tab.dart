@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -64,17 +65,22 @@ class SvtInfoTab extends StatelessWidget {
 
           CustomTableRow(children: [
             TableCellData(
-                text: S.current.info_alignment, isHeader: true, flex: 3),
+                text: S.current.info_alignment, isHeader: true, flex: 2),
+            TableCellData(
+                text: S.current.filter_attribute, isHeader: true, flex: 1),
           ]),
           CustomTableRow(children: [
             TableCellData(
-                text: [
-                  svt.profile.stats?.policy,
-                  svt.profile.stats?.personality
-                ].map((e) => EnumUtil.titled(e ?? '-')).join('·'),
-                flex: 2,
-                textAlign: TextAlign.center),
-            TableCellData(text: EnumUtil.titled(svt.attribute), flex: 1),
+              text: [
+                if (svt.profile.stats?.policy != null)
+                  Transl.servantPolicy(svt.profile.stats!.policy!).l,
+                if (svt.profile.stats?.personality != null)
+                  Transl.servantPersonality(svt.profile.stats!.personality!).l,
+              ].join('·'),
+              flex: 2,
+              textAlign: TextAlign.center,
+            ),
+            TableCellData(text: Transl.svtAttribute(svt.attribute).l, flex: 1),
           ]),
           if (svt.isUserSvt) ...[
             CustomTableRow.fromTexts(texts: [
@@ -83,35 +89,33 @@ class SvtInfoTab extends StatelessWidget {
               'Lv.Max',
               'Lv.90',
               'Lv.100',
-              'MAX'
+              'Lv.120'
             ], defaults: headerData),
-            CustomTableRow(children: [
-              TableCellData(text: 'ATK', isHeader: true, maxLines: 1),
-              TableCellData(text: svt.atkBase.toString(), maxLines: 1),
-              TableCellData(text: svt.atkMax.toString(), maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(90)?.toString() ?? '-',
-                  maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(100)?.toString() ?? '-',
-                  maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(120)?.toString() ?? '-',
-                  maxLines: 1),
+            _addAtkHpRow(context, 'ATK', [
+              svt.atkBase,
+              svt.atkMax,
+              svt.atkGrowth.getOrNull(89),
+              svt.atkGrowth.getOrNull(99),
+              svt.atkGrowth.getOrNull(109),
             ]),
-            CustomTableRow(children: [
-              TableCellData(text: 'HP', isHeader: true, maxLines: 1),
-              TableCellData(text: svt.hpBase.toString(), maxLines: 1),
-              TableCellData(text: svt.hpMax.toString(), maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(90)?.toString() ?? '-',
-                  maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(100)?.toString() ?? '-',
-                  maxLines: 1),
-              TableCellData(
-                  text: svt.hpGrowth.getOrNull(120)?.toString() ?? '-',
-                  maxLines: 1),
+            _addAtkHpRow(
+              context,
+              'ATK*',
+              [
+                svt.atkBase,
+                svt.atkMax,
+                svt.atkGrowth.getOrNull(89),
+                svt.atkGrowth.getOrNull(99),
+                svt.atkGrowth.getOrNull(109),
+              ],
+              db2.gameData.constData.classAttackRate[svt.className],
+            ),
+            _addAtkHpRow(context, 'HP', [
+              svt.hpBase,
+              svt.hpMax,
+              svt.hpGrowth.getOrNull(89),
+              svt.hpGrowth.getOrNull(99),
+              svt.hpGrowth.getOrNull(109),
             ]),
             CustomTableRow.fromTexts(
                 texts: [S.current.info_cards], defaults: headerData),
@@ -176,29 +180,23 @@ class SvtInfoTab extends StatelessWidget {
             ),
             CustomTableRow.fromTexts(
                 texts: [S.current.info_trait], defaults: headerData),
-            CustomTableRow.fromTexts(
-              texts: [
-                [
-                  svt.traits.map((e) => Transl.trait(e.id).l).join(', '),
-                  for (final entry
-                      in svt.ascensionAdd.individuality.ascension.entries)
-                    if (entry.value.isNotEmpty)
-                      '${entry.key}: ' +
-                          entry.value
-                              .map((e) => Transl.trait(e.id).l)
-                              .join(', '),
-                  for (final entry
-                      in svt.ascensionAdd.individuality.costume.entries)
-                    if (entry.value.isNotEmpty)
-                      '${entry.key}: ' +
-                          entry.value
-                              .map((e) => Transl.trait(e.id).l)
-                              .join(', '),
-                ].join('\n\n')
-                // TODO: ascension add traits
-              ],
-              defaults: TableCellData(textAlign: TextAlign.start),
-            ),
+            ..._addTraits(context, null, [
+              ...svt.traits,
+              for (final traitAdd in svt.traitAdd)
+                if (traitAdd.idx == 1) ...traitAdd.trait,
+            ]),
+            for (final entry
+                in svt.ascensionAdd.individuality.ascension.entries)
+              ..._addTraits(
+                  context, TextSpan(text: '${entry.key}: '), entry.value),
+            for (final entry in svt.ascensionAdd.individuality.costume.entries)
+              ..._addTraits(
+                context,
+                TextSpan(
+                    text:
+                        '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
+                entry.value,
+              ),
             if (svt.bondGrowth.isNotEmpty) ...[
               CustomTableRow.fromTexts(
                   texts: [S.current.info_bond_points], defaults: headerData),
@@ -241,6 +239,34 @@ class SvtInfoTab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _addTraits(
+      BuildContext context, InlineSpan? prefix, List<NiceTrait> traits) {
+    List<Widget> children = [];
+    if (traits.isEmpty) return children;
+    return [
+      CustomTableRow(children: [
+        TableCellData(
+            child: Text.rich(TextSpan(children: [
+          if (prefix != null) prefix,
+          ...SharedBuilder.traitSpans(context: context, traits: traits),
+        ])))
+      ]),
+    ];
+  }
+
+  Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals,
+      [int? multiplier]) {
+    final texts = vals.map((e) => e == null
+        ? '-'
+        : multiplier == null
+            ? e.toString()
+            : (e * multiplier ~/ 1000).toString());
+    return CustomTableRow(children: [
+      TableCellData(text: header, isHeader: true, maxLines: 1),
+      for (final text in texts) TableCellData(text: text, maxLines: 1),
+    ]);
   }
 }
 

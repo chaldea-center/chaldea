@@ -671,6 +671,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   eng: 'From Text File',
                   kor: '텍스트 파일에서')),
               onTap: () async {
+                Navigator.of(context).pop();
                 try {
                   final result =
                       await FilePicker.platform.pickFiles(withData: true);
@@ -679,10 +680,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   parseResponseBody(bytes);
                   await FilePlus(tmpPath).create(recursive: true);
                   await FilePlus(tmpPath).writeAsBytes(bytes);
-                  Navigator.of(context).pop();
                 } catch (e, s) {
                   logger.e('import http body from text file failed', e, s);
-                  Navigator.of(context).pop(e);
                 }
               },
             ),
