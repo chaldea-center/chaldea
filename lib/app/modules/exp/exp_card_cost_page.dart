@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -207,19 +208,19 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       )
     ];
     Widget _valToWidget(String val, [bool header = false]) {
-      if (val == '0' || val.isEmpty) return Container();
+      if (val == '0' || val.isEmpty) {
+        return const SizedBox();
+      }
       return Center(
-        child: FittedBox(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              val,
-              style: TextStyle(
-                fontWeight: header ? FontWeight.bold : null,
-              ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: AutoSizeText(
+            val,
+            style: TextStyle(
+              fontWeight: header ? FontWeight.bold : null,
             ),
+            maxLines: 1,
           ),
-          fit: BoxFit.scaleDown,
         ),
       );
     }
@@ -291,10 +292,10 @@ class ExpUpData {
     int lv = startLv;
     List<int> addedLvs = [];
     while (lv < endLv) {
-      coinStages.add(lv >= 100 && lv % 2 == 0 ? 30 : 0);
-      int qp = 0, cards = 0, grail = 0;
+      int qp = 0, cards = 0, grail = 0, coin = 0;
       String stageName;
       if (!addedLvs.contains(lv) && grailLvQp[lv] != null) {
+        coin = lv >= 100 && lv % 2 == 0 ? 30 : 0;
         qp += grailLvQp[lv]!;
         grail += 1;
         addedLvs.add(lv);
@@ -311,7 +312,7 @@ class ExpUpData {
         if (nextUpgrade > endLv) {
           nextUpgrade = endLv;
         }
-        stageName = '$lv->$nextUpgrade';
+        stageName = '$lv→$nextUpgrade';
         int expDemand = svt.expGrowth[nextUpgrade - 1] - curExp;
         cards = (expDemand / expPerCard).ceil();
         int usedCards = 0;
@@ -326,7 +327,7 @@ class ExpUpData {
           if (lv < 0) lv = 120;
         }
       }
-
+      coinStages.add(coin);
       qpStages.add(qp);
       expStages.add(cards);
       grailStages.add(grail);

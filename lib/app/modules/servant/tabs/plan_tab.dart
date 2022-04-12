@@ -615,7 +615,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         child: Text(S.current.cancel),
       ));
     } else {
-      buttons.add(IconButton(
+      buttons.add(TextButton(
         onPressed: () {
           final Map<int, int> items = Item.sortMapByPriority(
               db2.itemCenter.calcOneSvt(svt, status.cur, plan).all);
@@ -625,8 +625,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             hideCancel: true,
           );
         },
-        icon: const Icon(Icons.info_outline),
-        tooltip: S.current.item_total_demand,
+        child: Text(S.current.demands),
       ));
       buttons.add(ElevatedButton(
         onPressed: () {

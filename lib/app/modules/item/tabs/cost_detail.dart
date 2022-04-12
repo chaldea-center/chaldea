@@ -7,15 +7,27 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class ItemCostSvtDetailTab extends StatelessWidget {
+class ItemCostSvtDetailTab extends StatefulWidget {
   final int itemId;
-  final SvtMatCostDetailType matType;
+  final SvtMatCostDetailType? matType;
 
   const ItemCostSvtDetailTab({
     Key? key,
     required this.itemId,
-    required this.matType,
+    this.matType,
   }) : super(key: key);
+
+  @override
+  State<ItemCostSvtDetailTab> createState() => _ItemCostSvtDetailTabState();
+}
+
+class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
+  int get itemId => widget.itemId;
+  bool _favorite = true;
+
+  SvtMatCostDetailType get matType =>
+      widget.matType ??
+      (_favorite ? SvtMatCostDetailType.consumed : SvtMatCostDetailType.full);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,28 @@ class ItemCostSvtDetailTab extends StatelessWidget {
     );
 
     /////////////////////////////////////////////////////////
-    List<Widget> children = [header];
+    List<Widget> children = [
+      if (widget.matType == null)
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 4,
+          children: [
+            for (final fav in [true, false])
+              RadioWithLabel<bool>(
+                value: fav,
+                groupValue: _favorite,
+                label: Text(fav ? S.current.favorite : 'All'),
+                onChanged: (v) {
+                  if (v != null) {
+                    _favorite = v;
+                  }
+                  setState(() {});
+                },
+              ),
+          ],
+        ),
+      header
+    ];
     if (db2.settings.display.itemDetailViewType ==
         ItemDetailViewType.separated) {
       // 0 ascension 1 skill 2 dress 3 append 4 extra
@@ -81,7 +114,12 @@ class ItemCostSvtDetailTab extends StatelessWidget {
     } else {
       children.addAll(buildSvtList(context, details));
     }
-    return ListView(children: divideTiles(children));
+    return ListView.separated(
+      itemBuilder: (context, index) => children[index],
+      separatorBuilder: (context, index) =>
+          index == 0 ? const SizedBox() : kDefaultDivider,
+      itemCount: children.length,
+    );
   }
 
   Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,
@@ -149,7 +187,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
 
       final svt = db2.gameData.servants[svtNo];
       bool _planned = db2.curUser.svtStatusOf(svtNo).cur.favorite;
-      final textStyle = _planned
+      final textStyle = _planned && matType == SvtMatCostDetailType.full
           ? TextStyle(color: Theme.of(context).colorScheme.secondary)
           : const TextStyle();
       children.add(CustomTile(
@@ -157,28 +195,8 @@ class ItemCostSvtDetailTab extends StatelessWidget {
         title: Text(svt?.lName.l ?? 'No.$svtNo', style: textStyle, maxLines: 1),
         subtitle: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 240),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Text(
-                  '(${detail.all})',
-                  style: textStyle.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              for (final part in detail.parts)
-                Expanded(
-                  flex: 2,
-                  child: AutoSizeText(
-                    part.toString(),
-                    style: textStyle,
-                    maxLines: 1,
-                    minFontSize: 6,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-            ],
-          ),
+          child: Text('${detail.all} (${detail.parts.join("/")})',
+              style: textStyle),
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {

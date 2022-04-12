@@ -1167,7 +1167,14 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
     if (basic) {
       yield svt.collectionNo.toString();
       yield svt.id.toString();
-      yield* getAllKeys(svt.lName);
+      yield* getAllKeys(Transl.svtNames(svt.name));
+      for (final name
+          in svt.ascensionAdd.overWriteServantName.ascension.values) {
+        yield* getAllKeys(Transl.svtNames(name));
+      }
+      for (final name in svt.ascensionAdd.overWriteServantName.costume.values) {
+        yield* getAllKeys(Transl.svtNames(name));
+      }
       yield* getAllKeys(Transl.cvNames(svt.profile.cv));
       yield* getAllKeys(Transl.illustratorNames(svt.profile.illustrator));
       for (final nickname in svt.extra.nameOther) {

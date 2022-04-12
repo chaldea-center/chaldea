@@ -25,7 +25,7 @@ class SvtSkillTab extends StatelessWidget {
       }
       children.add(_buildSkill(
         shownSkills,
-        status.favorite ? status.skills.getOrNull(skills.first.num - 1) : null,
+        status.favorite ? status.skills.getOrNull(skills.first.num - 1) : -1,
       ));
     }
     children.add(SHeader(S.current.passive_skill));
@@ -39,7 +39,7 @@ class SvtSkillTab extends StatelessWidget {
         skill: appendSkill.skill,
         level: status.favorite
             ? status.appendSkills.getOrNull(appendSkill.num - 100)
-            : null,
+            : -1,
       ));
     }
     return ListView(children: children);

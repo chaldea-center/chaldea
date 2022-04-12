@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
         ),
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
+            elevation: 0,
             currentIndex: _curIndex,
             items: [
               BottomNavigationBarItem(

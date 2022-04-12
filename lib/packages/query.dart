@@ -1,3 +1,5 @@
+import 'package:chaldea/packages/norm_string.dart';
+
 /// Match string with query patterns.
 ///
 /// Supports 3 kinds of query pattern:
@@ -30,6 +32,7 @@ class Query {
   }
 
   void parse(String queryString, {bool caseSensitive = false}) {
+    queryString = queryString.normalize();
     if (queryString == _searchString && caseSensitive == _caseSensitive) return;
 
     _caseSensitive = caseSensitive;

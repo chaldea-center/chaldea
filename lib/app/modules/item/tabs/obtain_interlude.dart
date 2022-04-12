@@ -8,12 +8,10 @@ import '../../enemy/quest_card.dart';
 
 class ItemObtainInterludeTab extends StatefulWidget {
   final int itemId;
-  final bool favorite;
 
   const ItemObtainInterludeTab({
     Key? key,
     required this.itemId,
-    this.favorite = true,
   }) : super(key: key);
 
   @override
@@ -21,13 +19,33 @@ class ItemObtainInterludeTab extends StatefulWidget {
 }
 
 class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
+  bool _favorite = true;
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
+    List<Widget> children = [
+      Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 4,
+        children: [
+          for (final fav in [true, false])
+            RadioWithLabel<bool>(
+              value: fav,
+              groupValue: _favorite,
+              label: Text(fav ? S.current.favorite : 'All'),
+              onChanged: (v) {
+                if (v != null) {
+                  _favorite = v;
+                }
+                setState(() {});
+              },
+            ),
+        ],
+      ),
+    ];
     final sortedServants = sortSvts(db2.gameData.servants.values.toList());
     for (final svt in sortedServants) {
       bool svtFavorite = db2.curUser.svtStatusOf(svt.collectionNo).favorite;
-      if (widget.favorite && !svtFavorite) continue;
+      if (_favorite && !svtFavorite) continue;
       for (final questId in svt.relateQuestIds) {
         final quest = db2.gameData.quests[questId];
         if (quest == null) continue;
@@ -55,7 +73,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     if (children.isEmpty) {
       children.add(ListTile(
         title: Text(S.of(context).no_servant_quest_hint),
-        subtitle: widget.favorite
+        subtitle: _favorite
             ? Text(S.of(context).no_servant_quest_hint_subtitle)
             : null,
       ));

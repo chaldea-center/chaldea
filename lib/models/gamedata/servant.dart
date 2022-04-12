@@ -259,7 +259,8 @@ class Servant with GameCardMixin {
   }
 
   @override
-  Transl<String, String> get lName => Transl.svtNames(name);
+  Transl<String, String> get lName =>
+      Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 
   ServantExtra get extra => db2.gameData.wiki.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);

@@ -30,9 +30,6 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   int get curTab => _tabController.index;
 
-  // all
-  bool favorite = true;
-
   // event
   bool showOutdated = false;
 
@@ -76,7 +73,6 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 if (curTab == 0 || curTab == 1) viewTypeButton,
                 if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
                 if (curTab == 3) filterOutdatedButton,
-                if (curTab == 0 || curTab == 4) favoriteButton,
               ],
         bottom: onlyShowInfoTab
             ? null
@@ -100,9 +96,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               children: <Widget>[
                 db2.onUserData((context, _) => ItemCostSvtDetailTab(
                       itemId: widget.itemId,
-                      matType: favorite
-                          ? SvtMatCostDetailType.demands
-                          : SvtMatCostDetailType.full,
+                      matType: null,
                     )),
                 db2.onUserData((context, _) => ItemCostSvtDetailTab(
                       itemId: widget.itemId,
@@ -111,23 +105,10 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 ItemObtainFreeTab(itemId: widget.itemId),
                 ItemObtainEventTab(
                     itemId: widget.itemId, showOutdated: showOutdated),
-                ItemObtainInterludeTab(
-                    itemId: widget.itemId, favorite: favorite),
+                ItemObtainInterludeTab(itemId: widget.itemId),
                 ItemInfoTab(itemId: widget.itemId),
               ],
             ),
-    );
-  }
-
-  Widget get favoriteButton {
-    return IconButton(
-      icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
-      tooltip: S.of(context).favorite,
-      onPressed: () {
-        setState(() {
-          favorite = !favorite;
-        });
-      },
     );
   }
 

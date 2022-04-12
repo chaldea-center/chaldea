@@ -304,32 +304,11 @@ class FuncDescriptor extends StatelessWidget {
         );
       }
 
-      final trigger = kBuffValueTriggerTypes[func.buffs.getOrNull(0)?.type];
-      if (trigger != null) {
-        final triggerDetail = trigger(
-            func.svals.getOrNull(level == null ? 0 : level! - 1) ??
-                func.svals.first);
-        if (level == null) triggerDetail.level = null;
+      final triggerSkill = _buildTrigger(context);
+      if (triggerSkill != null) {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            child,
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).hintColor),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              margin: const EdgeInsets.symmetric(vertical: 2),
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
-              child: _LazyTrigger(
-                trigger: triggerDetail,
-                isNp: func.svals.first.UseTreasureDevice == 1,
-                showPlayer:
-                    func.funcTargetType.isEnemy ? showEnemy : showPlayer,
-                showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
-              ),
-            )
-          ],
+          children: [child, triggerSkill],
         );
       }
       child = Padding(
@@ -339,6 +318,35 @@ class FuncDescriptor extends StatelessWidget {
       );
       return child;
     });
+  }
+
+  Widget? _buildTrigger(BuildContext context) {
+    final trigger = kBuffValueTriggerTypes[func.buffs.getOrNull(0)?.type];
+    if (trigger == null) return null;
+
+    DataVals? vals;
+    vals = func.svals.getOrNull((level ?? 1) - 1);
+    bool noLevel = vals == null;
+
+    vals ??= func.svals.getOrNull(0);
+    final detail = vals == null ? null : trigger(vals);
+    if (detail == null) return null;
+
+    if (noLevel) detail.level = null;
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).hintColor),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
+      child: _LazyTrigger(
+        trigger: detail,
+        isNp: func.svals.first.UseTreasureDevice == 1,
+        showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
+        showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+      ),
+    );
   }
 }
 
