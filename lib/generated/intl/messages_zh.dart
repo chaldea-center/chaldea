@@ -95,6 +95,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
+        "add_feedback_details_warning":
+            MessageLookupByLibrary.simpleMessage("请填写反馈内容"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名单"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_calc_page_joke":
@@ -109,6 +111,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("灵基再临"),
+        "attach_from_files": MessageLookupByLibrary.simpleMessage("从文件选取"),
+        "attach_from_photos": MessageLookupByLibrary.simpleMessage("从相册选取"),
+        "attach_help":
+            MessageLookupByLibrary.simpleMessage("如果图片模式存在问题，请使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自动重置"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
@@ -146,6 +152,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
         "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
+        "contact_information_not_filled":
+            MessageLookupByLibrary.simpleMessage("联系方式未填写"),
+        "contact_information_not_filled_warning":
+            MessageLookupByLibrary.simpleMessage("将无法无法无法无法无法回复您的问题"),
         "copied": MessageLookupByLibrary.simpleMessage("已复制"),
         "copy": MessageLookupByLibrary.simpleMessage("复制"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("拷贝自其它规划"),
@@ -216,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type": MessageLookupByLibrary.simpleMessage("效率类型"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每场掉率"),
+        "email": MessageLookupByLibrary.simpleMessage("邮箱"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敌人一览"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
@@ -247,13 +258,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("选择起始和目标等级"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("狗粮需求"),
         "failed": MessageLookupByLibrary.simpleMessage("失败"),
+        "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("关注"),
         "feedback_add_attachments":
-            MessageLookupByLibrary.simpleMessage("添加图像或文件附件"),
+            MessageLookupByLibrary.simpleMessage("e.g. 截图等文件"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("添加崩溃日志"),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("联系方式"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("反馈与建议"),
+        "feedback_form_alert":
+            MessageLookupByLibrary.simpleMessage("反馈表未提交，仍然退出?"),
+        "feedback_info": MessageLookupByLibrary.simpleMessage(
+            "提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:\n- 如何复现/期望表现\n- 应用/数据版本、使用设备系统及版本\n- 附加截图日志\n- 以及最好能够提供联系方式(邮箱等)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("发送"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("主题"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),
@@ -266,6 +282,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("效率剧场"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("文件名"),
+        "fill_email_warning": MessageLookupByLibrary.simpleMessage(
+            "建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信/手机号！"),
         "filter": MessageLookupByLibrary.simpleMessage("筛选"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("属性"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("阵营"),
@@ -598,6 +616,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("包含现有素材"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
+        "still_send": MessageLookupByLibrary.simpleMessage("仍然发送"),
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("储存权限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),

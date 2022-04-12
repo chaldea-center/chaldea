@@ -98,6 +98,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "add_feedback_details_warning":
+            MessageLookupByLibrary.simpleMessage("Please add feedback details"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
@@ -114,6 +116,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
+        "attach_from_files": MessageLookupByLibrary.simpleMessage("From Files"),
+        "attach_from_photos":
+            MessageLookupByLibrary.simpleMessage("From Photos"),
+        "attach_help": MessageLookupByLibrary.simpleMessage(
+            "If you have trouble picking images, use files instead"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
@@ -160,6 +167,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
+        "contact_information_not_filled": MessageLookupByLibrary.simpleMessage(
+            "Contact information is not filled in"),
+        "contact_information_not_filled_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "The developer will not be able to respond to your feedback"),
         "copied": MessageLookupByLibrary.simpleMessage("Copied"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
@@ -239,6 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP Rate"),
         "efficiency_type_drop":
             MessageLookupByLibrary.simpleMessage("Drop Rate"),
+        "email": MessageLookupByLibrary.simpleMessage("Email"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
@@ -279,15 +292,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select Level Range"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
+        "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
-        "feedback_add_attachments": MessageLookupByLibrary.simpleMessage(
-            "Add screenshots or file attachments"),
+        "feedback_add_attachments":
+            MessageLookupByLibrary.simpleMessage("e.g. screenshots, files."),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("Add crash log"),
         "feedback_contact":
             MessageLookupByLibrary.simpleMessage("Contact information"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),
+        "feedback_form_alert": MessageLookupByLibrary.simpleMessage(
+            "Feedback form is not empty, still exist?"),
+        "feedback_info": MessageLookupByLibrary.simpleMessage(
+            "Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("Background"),
@@ -300,6 +318,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("filename"),
+        "fill_email_warning": MessageLookupByLibrary.simpleMessage(
+            "Please fill in email address. Otherwise NO reply."),
         "filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Type"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("Attribute"),
@@ -646,6 +666,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select copy source"),
         "select_lang": MessageLookupByLibrary.simpleMessage("Select Language"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),
+        "send_email_to": MessageLookupByLibrary.simpleMessage("Send email to"),
+        "sending": MessageLookupByLibrary.simpleMessage("Sending"),
+        "sending_failed":
+            MessageLookupByLibrary.simpleMessage("Sending failed"),
+        "sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "servant": MessageLookupByLibrary.simpleMessage("Servant"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("Servant Coin"),
         "servant_detail_page":
@@ -702,6 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("Including owned items"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
+        "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("Storage Permission"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),

@@ -94,6 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("保有スキル"),
         "add": MessageLookupByLibrary.simpleMessage("追加"),
+        "add_feedback_details_warning":
+            MessageLookupByLibrary.simpleMessage("フィードバックの内容を記入してください"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("ブラックリストに追加"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_calc_page_joke":
@@ -108,6 +110,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
+        "attach_from_files": MessageLookupByLibrary.simpleMessage("ファイルから"),
+        "attach_from_photos": MessageLookupByLibrary.simpleMessage("アルバムから"),
+        "attach_help": MessageLookupByLibrary.simpleMessage(
+            "アルバモードに問題がある場合は、ファイルモードを使用してください"),
         "attachment": MessageLookupByLibrary.simpleMessage("アタッチメント"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
         "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
@@ -146,6 +152,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "confirm": MessageLookupByLibrary.simpleMessage("確認"),
         "consumed": MessageLookupByLibrary.simpleMessage("消費済"),
+        "contact_information_not_filled":
+            MessageLookupByLibrary.simpleMessage("連絡先情報が入力されていません"),
+        "contact_information_not_filled_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "開発者はあなたのフィードバックに応答することができなくなります"),
         "copied": MessageLookupByLibrary.simpleMessage("コピー済み"),
         "copy": MessageLookupByLibrary.simpleMessage("コピー"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("他のプランからコピー"),
@@ -212,6 +223,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type": MessageLookupByLibrary.simpleMessage("効率タイプ"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP効率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("ドロップ率"),
+        "email": MessageLookupByLibrary.simpleMessage("メール"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("エネミー"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning":
@@ -248,14 +260,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("レベルの範囲を選択"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("種火コスト"),
         "failed": MessageLookupByLibrary.simpleMessage("失敗"),
+        "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("フォロー"),
         "feedback_add_attachments":
-            MessageLookupByLibrary.simpleMessage("画像とファイルを追加"),
+            MessageLookupByLibrary.simpleMessage("e.g. スクリーンショットとその他のファイル"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("クラッシュログを追加"),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("連絡先情報"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("フィードバックと提案"),
+        "feedback_form_alert":
+            MessageLookupByLibrary.simpleMessage("フィードバックフォームは送信されませんが、終了します？"),
+        "feedback_info": MessageLookupByLibrary.simpleMessage(
+            "フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。\n- 再現方法/期待されるパフォーマンス\n- アプリ/データのバージョン、デバイスシステム/バージョン\n- スクリーンショットとログを添付する\n- そして、連絡先情報（電子メールなど）を提供するのが良いです"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("送信"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("件名"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),
@@ -268,6 +285,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("効率劇場"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("ファイル名"),
+        "fill_email_warning":
+            MessageLookupByLibrary.simpleMessage("連絡先情報ないと、返信ができません。"),
         "filter": MessageLookupByLibrary.simpleMessage("フィルター"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("属性"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("相性"),
@@ -609,6 +628,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
+        "still_send": MessageLookupByLibrary.simpleMessage("送信し続ける"),
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("ストレージ権限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),

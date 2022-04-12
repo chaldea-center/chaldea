@@ -93,6 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("보유 스킬"),
         "add": MessageLookupByLibrary.simpleMessage("추가"),
+        "add_feedback_details_warning":
+            MessageLookupByLibrary.simpleMessage("피드백 내용을 작성해주세요"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("블랙리스트 추가"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_calc_page_joke":
@@ -145,6 +147,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("커맨드 코드"),
         "confirm": MessageLookupByLibrary.simpleMessage("확인"),
         "consumed": MessageLookupByLibrary.simpleMessage("소비량"),
+        "contact_information_not_filled":
+            MessageLookupByLibrary.simpleMessage("연락처 정보가 입력되어있지 않습니다"),
+        "contact_information_not_filled_warning":
+            MessageLookupByLibrary.simpleMessage("개발자는 당신의 피드백에 응답할 수 없게 됩니다"),
         "copied": MessageLookupByLibrary.simpleMessage("복사됨"),
         "copy": MessageLookupByLibrary.simpleMessage("복사하기"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("다른 플랜에서 복사"),
@@ -243,14 +249,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "exp_card_select_lvs": MessageLookupByLibrary.simpleMessage("레벨 범위 선택"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("경험치 카드"),
         "failed": MessageLookupByLibrary.simpleMessage("실패"),
+        "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("즐겨찾기"),
         "feedback_add_attachments":
-            MessageLookupByLibrary.simpleMessage("스크린샷 또는 파일 추가"),
+            MessageLookupByLibrary.simpleMessage("e.g. 스크린샷, 기타 파일"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("크래쉬 로그 추가"),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("연락처 정보"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("피드백 또는 제안"),
+        "feedback_form_alert":
+            MessageLookupByLibrary.simpleMessage("피드백은 전송되지 않습니다만, 종료하시겠습니까?"),
+        "feedback_info": MessageLookupByLibrary.simpleMessage(
+            "피드백을 전송하기 전에, <**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.\n- 재현 방법/기대하고 있는 퍼포먼스\n- 앱/데이터의 버전, 디바이스 시스템/버전\n- 스크린샷과 로그를 첨부한다\n- 마지막으로, 연락처 정보(전자메일 등)을 적어주시는 것이 좋습니다"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("전송"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("항목명"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("배경"),
@@ -263,6 +274,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("도무스 아우레아"),
         "file_not_found_or_mismatched_hash": m6,
         "filename": MessageLookupByLibrary.simpleMessage("파일명"),
+        "fill_email_warning":
+            MessageLookupByLibrary.simpleMessage("연락처 정보가 없다면 답장이 불가능합니다."),
         "filter": MessageLookupByLibrary.simpleMessage("필터"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("타입"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("속성"),
@@ -601,6 +614,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("가진 아이템도 포함"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("통계"),
+        "still_send": MessageLookupByLibrary.simpleMessage("계속 보내기"),
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("스토리지 권한"),
         "success": MessageLookupByLibrary.simpleMessage("성공"),
