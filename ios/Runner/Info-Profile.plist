@@ -15,9 +15,11 @@
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>zh</string>
+		<string>zh_TW</string>
 		<string>en</string>
 		<string>ja</string>
 		<string>ko</string>
+		<string>es</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Chaldea</string>

@@ -43,6 +43,10 @@
 		937B17FB276A94B700264B71 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		938F6D7425BAA9C100C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		938F6D7525BAA9C100C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		93C2D0452805369A005903B6 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		93C2D0462805369B005903B6 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		93C2D04928053735005903B6 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		93C2D04A28053735005903B6 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		93CB6326259F163D00EFEE0F /* Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Release.plist"; sourceTree = "<group>"; };
 		93CB6327259F163D00EFEE0F /* Info-Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
 		93CB632A259F166B00EFEE0F /* Info-Profile.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Profile.plist"; sourceTree = "<group>"; };
@@ -197,6 +201,8 @@
 				"zh-Hans",
 				ja,
 				ko,
+				"zh-Hant",
+				es,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -315,6 +321,8 @@
 				938F6D7425BAA9C100C3A1F8 /* zh-Hans */,
 				93D09B2325C34AEB0037A20F /* ja */,
 				937B17FA276A94B700264B71 /* ko */,
+				93C2D0452805369A005903B6 /* zh-Hant */,
+				93C2D04928053735005903B6 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -326,6 +334,8 @@
 				938F6D7525BAA9C100C3A1F8 /* zh-Hans */,
 				93D09B2425C34AEC0037A20F /* ja */,
 				937B17FB276A94B700264B71 /* ko */,
+				93C2D0462805369B005903B6 /* zh-Hant */,
+				93C2D04A28053735005903B6 /* es */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

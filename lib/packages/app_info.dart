@@ -30,7 +30,7 @@ class AppInfo {
   static Future<void> _loadDeviceInfo() async {
     if (PlatformU.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
-      deviceParams.addAll(androidInfo.toMap());
+      deviceParams.addAll(androidInfo.toMap()..remove('systemFeatures'));
       _androidSdk = androidInfo.version.sdkInt;
     } else if (PlatformU.isIOS) {
       final iosInfo = await DeviceInfoPlugin().iosInfo;
