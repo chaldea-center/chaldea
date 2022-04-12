@@ -60,10 +60,10 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `简体中文`
+  /// `English`
   String get language {
     return Intl.message(
-      '简体中文',
+      'English',
       name: 'language',
       desc: '',
       locale: localeName,
@@ -71,10 +71,10 @@ class S {
     );
   }
 
-  /// `Chinese`
+  /// `English`
   String get language_en {
     return Intl.message(
-      'Chinese',
+      'English',
       name: 'language_en',
       desc: '',
       locale: localeName,
@@ -82,10 +82,10 @@ class S {
     );
   }
 
-  /// `关于`
+  /// `About`
   String get about_app {
     return Intl.message(
-      '关于',
+      'About',
       name: 'about_app',
       desc: '',
       locale: localeName,
@@ -93,10 +93,10 @@ class S {
     );
   }
 
-  /// `　本应用所使用数据均来源于游戏及以下网站，游戏图片文本原文等版权属于TYPE MOON/FGO PROJECT。\n　程序功能与界面设计参考微信小程序"素材规划"以及iOS版Guda。`
+  /// `The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n`
   String get about_app_declaration_text {
     return Intl.message(
-      '　本应用所使用数据均来源于游戏及以下网站，游戏图片文本原文等版权属于TYPE MOON/FGO PROJECT。\n　程序功能与界面设计参考微信小程序"素材规划"以及iOS版Guda。',
+      'The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n',
       name: 'about_app_declaration_text',
       desc: '',
       locale: localeName,
@@ -104,10 +104,10 @@ class S {
     );
   }
 
-  /// `App Store评分`
+  /// `App Store Rating`
   String get about_appstore_rating {
     return Intl.message(
-      'App Store评分',
+      'App Store Rating',
       name: 'about_appstore_rating',
       desc: '',
       locale: localeName,
@@ -115,10 +115,10 @@ class S {
     );
   }
 
-  /// `数据来源`
+  /// `Data source`
   String get about_data_source {
     return Intl.message(
-      '数据来源',
+      'Data source',
       name: 'about_data_source',
       desc: '',
       locale: localeName,
@@ -126,10 +126,10 @@ class S {
     );
   }
 
-  /// `若存在未标注的来源或侵权敬请告知`
+  /// `Please inform us if there is unmarked source or infringement.`
   String get about_data_source_footer {
     return Intl.message(
-      '若存在未标注的来源或侵权敬请告知',
+      'Please inform us if there is unmarked source or infringement.',
       name: 'about_data_source_footer',
       desc: '',
       locale: localeName,
@@ -137,10 +137,10 @@ class S {
     );
   }
 
-  /// `请将出错页面的截图以及日志文件发送到以下邮箱:\n {email}\n日志文件路径: {logPath}`
+  /// `Please send screenshot and log file to email:\n {email}\nLog filepath: {logPath}`
   String about_email_dialog(Object email, Object logPath) {
     return Intl.message(
-      '请将出错页面的截图以及日志文件发送到以下邮箱:\n $email\n日志文件路径: $logPath',
+      'Please send screenshot and log file to email:\n $email\nLog filepath: $logPath',
       name: 'about_email_dialog',
       desc: '',
       locale: localeName,
@@ -148,10 +148,10 @@ class S {
     );
   }
 
-  /// `请附上出错页面截图和日志`
+  /// `Please attach screenshot and log file`
   String get about_email_subtitle {
     return Intl.message(
-      '请附上出错页面截图和日志',
+      'Please attach screenshot and log file',
       name: 'about_email_subtitle',
       desc: '',
       locale: localeName,
@@ -159,10 +159,10 @@ class S {
     );
   }
 
-  /// `反馈`
+  /// `Feedback`
   String get about_feedback {
     return Intl.message(
-      '反馈',
+      'Feedback',
       name: 'about_feedback',
       desc: '',
       locale: localeName,
@@ -170,10 +170,10 @@ class S {
     );
   }
 
-  /// `应用更新`
+  /// `App Update`
   String get about_update_app {
     return Intl.message(
-      '应用更新',
+      'App Update',
       name: 'about_update_app',
       desc: '',
       locale: localeName,
@@ -181,10 +181,10 @@ class S {
     );
   }
 
-  /// `请在App Store中检查更新`
+  /// `Please check update in App Store`
   String get about_update_app_alert_ios_mac {
     return Intl.message(
-      '请在App Store中检查更新',
+      'Please check update in App Store',
       name: 'about_update_app_alert_ios_mac',
       desc: '',
       locale: localeName,
@@ -192,11 +192,11 @@ class S {
     );
   }
 
-  /// `当前版本: {curVersion}\n最新版本: {newVersion}\n更新内容:\n{releaseNote}`
+  /// `Current version: {curVersion}\nLatest version: {newVersion}\nRelease Note:\n{releaseNote}`
   String about_update_app_detail(
       Object curVersion, Object newVersion, Object releaseNote) {
     return Intl.message(
-      '当前版本: $curVersion\n最新版本: $newVersion\n更新内容:\n$releaseNote',
+      'Current version: $curVersion\nLatest version: $newVersion\nRelease Note:\n$releaseNote',
       name: 'about_update_app_detail',
       desc: '',
       locale: localeName,
@@ -215,10 +215,10 @@ class S {
     );
   }
 
-  /// `保有技能`
+  /// `Active Skill`
   String get active_skill {
     return Intl.message(
-      '保有技能',
+      'Active Skill',
       name: 'active_skill',
       desc: '',
       locale: localeName,
@@ -226,10 +226,10 @@ class S {
     );
   }
 
-  /// `添加`
+  /// `Add`
   String get add {
     return Intl.message(
-      '添加',
+      'Add',
       name: 'add',
       desc: '',
       locale: localeName,
@@ -237,10 +237,10 @@ class S {
     );
   }
 
-  /// `加入黑名单`
+  /// `Add to blacklist`
   String get add_to_blacklist {
     return Intl.message(
-      '加入黑名单',
+      'Add to blacklist',
       name: 'add_to_blacklist',
       desc: '',
       locale: localeName,
@@ -270,10 +270,10 @@ class S {
     );
   }
 
-  /// `AP计算`
+  /// `AP Calc`
   String get ap_calc_title {
     return Intl.message(
-      'AP计算',
+      'AP Calc',
       name: 'ap_calc_title',
       desc: '',
       locale: localeName,
@@ -281,10 +281,10 @@ class S {
     );
   }
 
-  /// `AP效率`
+  /// `AP rate`
   String get ap_efficiency {
     return Intl.message(
-      'AP效率',
+      'AP rate',
       name: 'ap_efficiency',
       desc: '',
       locale: localeName,
@@ -292,10 +292,10 @@ class S {
     );
   }
 
-  /// `AP溢出时间`
+  /// `Time of AP Full`
   String get ap_overflow_time {
     return Intl.message(
-      'AP溢出时间',
+      'Time of AP Full',
       name: 'ap_overflow_time',
       desc: '',
       locale: localeName,
@@ -303,10 +303,10 @@ class S {
     );
   }
 
-  /// `附加技能`
+  /// `Append Skill`
   String get append_skill {
     return Intl.message(
-      '附加技能',
+      'Append Skill',
       name: 'append_skill',
       desc: '',
       locale: localeName,
@@ -314,10 +314,10 @@ class S {
     );
   }
 
-  /// `附加`
+  /// `Append`
   String get append_skill_short {
     return Intl.message(
-      '附加',
+      'Append',
       name: 'append_skill_short',
       desc: '',
       locale: localeName,
@@ -325,10 +325,10 @@ class S {
     );
   }
 
-  /// `灵基`
+  /// `Ascension`
   String get ascension {
     return Intl.message(
-      '灵基',
+      'Ascension',
       name: 'ascension',
       desc: '',
       locale: localeName,
@@ -347,10 +347,10 @@ class S {
     );
   }
 
-  /// `灵基`
+  /// `Ascen`
   String get ascension_short {
     return Intl.message(
-      '灵基',
+      'Ascen',
       name: 'ascension_short',
       desc: '',
       locale: localeName,
@@ -358,10 +358,10 @@ class S {
     );
   }
 
-  /// `灵基再临`
+  /// `Ascension`
   String get ascension_up {
     return Intl.message(
-      '灵基再临',
+      'Ascension',
       name: 'ascension_up',
       desc: '',
       locale: localeName,
@@ -369,10 +369,10 @@ class S {
     );
   }
 
-  /// `附件`
+  /// `Attachment`
   String get attachment {
     return Intl.message(
-      '附件',
+      'Attachment',
       name: 'attachment',
       desc: '',
       locale: localeName,
@@ -380,10 +380,10 @@ class S {
     );
   }
 
-  /// `自动重置`
+  /// `Auto reset`
   String get auto_reset {
     return Intl.message(
-      '自动重置',
+      'Auto reset',
       name: 'auto_reset',
       desc: '',
       locale: localeName,
@@ -391,10 +391,10 @@ class S {
     );
   }
 
-  /// `自动更新`
+  /// `Auto Update`
   String get auto_update {
     return Intl.message(
-      '自动更新',
+      'Auto Update',
       name: 'auto_update',
       desc: '',
       locale: localeName,
@@ -402,10 +402,10 @@ class S {
     );
   }
 
-  /// `备份`
+  /// `Backup`
   String get backup {
     return Intl.message(
-      '备份',
+      'Backup',
       name: 'backup',
       desc: '',
       locale: localeName,
@@ -413,10 +413,10 @@ class S {
     );
   }
 
-  /// `及！时！备！份！`
+  /// `Timely backup wanted`
   String get backup_data_alert {
     return Intl.message(
-      '及！时！备！份！',
+      'Timely backup wanted',
       name: 'backup_data_alert',
       desc: '',
       locale: localeName,
@@ -424,10 +424,10 @@ class S {
     );
   }
 
-  /// `历史备份`
+  /// `Backup History`
   String get backup_history {
     return Intl.message(
-      '历史备份',
+      'Backup History',
       name: 'backup_history',
       desc: '',
       locale: localeName,
@@ -435,10 +435,10 @@ class S {
     );
   }
 
-  /// `备份成功`
+  /// `Backup successfully`
   String get backup_success {
     return Intl.message(
-      '备份成功',
+      'Backup successfully',
       name: 'backup_success',
       desc: '',
       locale: localeName,
@@ -446,10 +446,10 @@ class S {
     );
   }
 
-  /// `黑名单`
+  /// `Blacklist`
   String get blacklist {
     return Intl.message(
-      '黑名单',
+      'Blacklist',
       name: 'blacklist',
       desc: '',
       locale: localeName,
@@ -457,10 +457,10 @@ class S {
     );
   }
 
-  /// `羁绊`
+  /// `Bond`
   String get bond {
     return Intl.message(
-      '羁绊',
+      'Bond',
       name: 'bond',
       desc: '',
       locale: localeName,
@@ -468,10 +468,10 @@ class S {
     );
   }
 
-  /// `羁绊礼装`
+  /// `Bond Craft`
   String get bond_craft {
     return Intl.message(
-      '羁绊礼装',
+      'Bond Craft',
       name: 'bond_craft',
       desc: '',
       locale: localeName,
@@ -479,10 +479,10 @@ class S {
     );
   }
 
-  /// `羁绊效率`
+  /// `Bond Eff`
   String get bond_eff {
     return Intl.message(
-      '羁绊效率',
+      'Bond Eff',
       name: 'bond_eff',
       desc: '',
       locale: localeName,
@@ -501,10 +501,10 @@ class S {
     );
   }
 
-  /// `铜`
+  /// `Bronze`
   String get bronze {
     return Intl.message(
-      '铜',
+      'Bronze',
       name: 'bronze',
       desc: '',
       locale: localeName,
@@ -512,10 +512,10 @@ class S {
     );
   }
 
-  /// `权重`
+  /// `Wight`
   String get calc_weight {
     return Intl.message(
-      '权重',
+      'Wight',
       name: 'calc_weight',
       desc: '',
       locale: localeName,
@@ -523,10 +523,10 @@ class S {
     );
   }
 
-  /// `计算`
+  /// `Calculate`
   String get calculate {
     return Intl.message(
-      '计算',
+      'Calculate',
       name: 'calculate',
       desc: '',
       locale: localeName,
@@ -534,10 +534,10 @@ class S {
     );
   }
 
-  /// `计算器`
+  /// `Calculator`
   String get calculator {
     return Intl.message(
-      '计算器',
+      'Calculator',
       name: 'calculator',
       desc: '',
       locale: localeName,
@@ -545,10 +545,10 @@ class S {
     );
   }
 
-  /// `纪念活动`
+  /// `Campaign`
   String get campaign_event {
     return Intl.message(
-      '纪念活动',
+      'Campaign',
       name: 'campaign_event',
       desc: '',
       locale: localeName,
@@ -556,10 +556,10 @@ class S {
     );
   }
 
-  /// `取消`
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      '取消',
+      'Cancel',
       name: 'cancel',
       desc: '',
       locale: localeName,
@@ -567,10 +567,10 @@ class S {
     );
   }
 
-  /// `解说`
+  /// `Description`
   String get card_description {
     return Intl.message(
-      '解说',
+      'Description',
       name: 'card_description',
       desc: '',
       locale: localeName,
@@ -578,10 +578,10 @@ class S {
     );
   }
 
-  /// `资料`
+  /// `Info`
   String get card_info {
     return Intl.message(
-      '资料',
+      'Info',
       name: 'card_info',
       desc: '',
       locale: localeName,
@@ -589,10 +589,10 @@ class S {
     );
   }
 
-  /// `轮播设置`
+  /// `Carousel Setting`
   String get carousel_setting {
     return Intl.message(
-      '轮播设置',
+      'Carousel Setting',
       name: 'carousel_setting',
       desc: '',
       locale: localeName,
@@ -611,10 +611,10 @@ class S {
     );
   }
 
-  /// `更新历史`
+  /// `Change Log`
   String get change_log {
     return Intl.message(
-      '更新历史',
+      'Change Log',
       name: 'change_log',
       desc: '',
       locale: localeName,
@@ -622,10 +622,10 @@ class S {
     );
   }
 
-  /// `出场角色`
+  /// `Characters`
   String get characters_in_card {
     return Intl.message(
-      '出场角色',
+      'Characters',
       name: 'characters_in_card',
       desc: '',
       locale: localeName,
@@ -633,10 +633,10 @@ class S {
     );
   }
 
-  /// `检查更新`
+  /// `Check update`
   String get check_update {
     return Intl.message(
-      '检查更新',
+      'Check update',
       name: 'check_update',
       desc: '',
       locale: localeName,
@@ -644,10 +644,10 @@ class S {
     );
   }
 
-  /// `选择Free本`
+  /// `Choose Free Quest`
   String get choose_quest_hint {
     return Intl.message(
-      '选择Free本',
+      'Choose Free Quest',
       name: 'choose_quest_hint',
       desc: '',
       locale: localeName,
@@ -655,10 +655,10 @@ class S {
     );
   }
 
-  /// `清空`
+  /// `Clear`
   String get clear {
     return Intl.message(
-      '清空',
+      'Clear',
       name: 'clear',
       desc: '',
       locale: localeName,
@@ -666,10 +666,10 @@ class S {
     );
   }
 
-  /// `清除缓存`
+  /// `Clear cache`
   String get clear_cache {
     return Intl.message(
-      '清除缓存',
+      'Clear cache',
       name: 'clear_cache',
       desc: '',
       locale: localeName,
@@ -677,10 +677,10 @@ class S {
     );
   }
 
-  /// `缓存已清理`
+  /// `Cache cleared`
   String get clear_cache_finish {
     return Intl.message(
-      '缓存已清理',
+      'Cache cleared',
       name: 'clear_cache_finish',
       desc: '',
       locale: localeName,
@@ -688,10 +688,10 @@ class S {
     );
   }
 
-  /// `包括卡面语音等`
+  /// `Including illustrations, voices`
   String get clear_cache_hint {
     return Intl.message(
-      '包括卡面语音等',
+      'Including illustrations, voices',
       name: 'clear_cache_hint',
       desc: '',
       locale: localeName,
@@ -710,10 +710,10 @@ class S {
     );
   }
 
-  /// `清空用户数据`
+  /// `Clear Userdata`
   String get clear_userdata {
     return Intl.message(
-      '清空用户数据',
+      'Clear Userdata',
       name: 'clear_userdata',
       desc: '',
       locale: localeName,
@@ -721,10 +721,10 @@ class S {
     );
   }
 
-  /// `纹章`
+  /// `Command Code`
   String get cmd_code_title {
     return Intl.message(
-      '纹章',
+      'Command Code',
       name: 'cmd_code_title',
       desc: '',
       locale: localeName,
@@ -732,10 +732,10 @@ class S {
     );
   }
 
-  /// `指令纹章`
+  /// `Command Code`
   String get command_code {
     return Intl.message(
-      '指令纹章',
+      'Command Code',
       name: 'command_code',
       desc: '',
       locale: localeName,
@@ -743,10 +743,10 @@ class S {
     );
   }
 
-  /// `确定`
+  /// `Confirm`
   String get confirm {
     return Intl.message(
-      '确定',
+      'Confirm',
       name: 'confirm',
       desc: '',
       locale: localeName,
@@ -754,10 +754,10 @@ class S {
     );
   }
 
-  /// `已消耗`
+  /// `Consumed`
   String get consumed {
     return Intl.message(
-      '已消耗',
+      'Consumed',
       name: 'consumed',
       desc: '',
       locale: localeName,
@@ -765,10 +765,10 @@ class S {
     );
   }
 
-  /// `已复制`
+  /// `Copied`
   String get copied {
     return Intl.message(
-      '已复制',
+      'Copied',
       name: 'copied',
       desc: '',
       locale: localeName,
@@ -776,10 +776,10 @@ class S {
     );
   }
 
-  /// `复制`
+  /// `Copy`
   String get copy {
     return Intl.message(
-      '复制',
+      'Copy',
       name: 'copy',
       desc: '',
       locale: localeName,
@@ -787,10 +787,10 @@ class S {
     );
   }
 
-  /// `拷贝自其它规划`
+  /// `Copy Plan from...`
   String get copy_plan_menu {
     return Intl.message(
-      '拷贝自其它规划',
+      'Copy Plan from...',
       name: 'copy_plan_menu',
       desc: '',
       locale: localeName,
@@ -798,10 +798,10 @@ class S {
     );
   }
 
-  /// `灵衣`
+  /// `Costume`
   String get costume {
     return Intl.message(
-      '灵衣',
+      'Costume',
       name: 'costume',
       desc: '',
       locale: localeName,
@@ -809,10 +809,10 @@ class S {
     );
   }
 
-  /// `灵衣开放`
+  /// `Costume Unlock`
   String get costume_unlock {
     return Intl.message(
-      '灵衣开放',
+      'Costume Unlock',
       name: 'costume_unlock',
       desc: '',
       locale: localeName,
@@ -820,10 +820,10 @@ class S {
     );
   }
 
-  /// `计数`
+  /// `Counts`
   String get counts {
     return Intl.message(
-      '计数',
+      'Counts',
       name: 'counts',
       desc: '',
       locale: localeName,
@@ -831,10 +831,10 @@ class S {
     );
   }
 
-  /// `概念礼装`
+  /// `Craft Essence`
   String get craft_essence {
     return Intl.message(
-      '概念礼装',
+      'Craft Essence',
       name: 'craft_essence',
       desc: '',
       locale: localeName,
@@ -842,10 +842,10 @@ class S {
     );
   }
 
-  /// `概念礼装`
+  /// `Craft`
   String get craft_essence_title {
     return Intl.message(
-      '概念礼装',
+      'Craft',
       name: 'craft_essence_title',
       desc: '',
       locale: localeName,
@@ -875,10 +875,10 @@ class S {
     );
   }
 
-  /// `生成2号机`
+  /// `Create duplicated`
   String get create_duplicated_svt {
     return Intl.message(
-      '生成2号机',
+      'Create duplicated',
       name: 'create_duplicated_svt',
       desc: '',
       locale: localeName,
@@ -886,10 +886,10 @@ class S {
     );
   }
 
-  /// `暴击`
+  /// `Critical`
   String get critical_attack {
     return Intl.message(
-      '暴击',
+      'Critical',
       name: 'critical_attack',
       desc: '',
       locale: localeName,
@@ -897,10 +897,10 @@ class S {
     );
   }
 
-  /// `当前账号`
+  /// `Current Account`
   String get cur_account {
     return Intl.message(
-      '当前账号',
+      'Current Account',
       name: 'cur_account',
       desc: '',
       locale: localeName,
@@ -908,10 +908,10 @@ class S {
     );
   }
 
-  /// `现有AP`
+  /// `Current AP`
   String get cur_ap {
     return Intl.message(
-      '现有AP',
+      'Current AP',
       name: 'cur_ap',
       desc: '',
       locale: localeName,
@@ -919,10 +919,10 @@ class S {
     );
   }
 
-  /// `当前`
+  /// `Current`
   String get current_ {
     return Intl.message(
-      '当前',
+      'Current',
       name: 'current_',
       desc: '',
       locale: localeName,
@@ -941,10 +941,10 @@ class S {
     );
   }
 
-  /// `深色模式`
+  /// `Dark mode`
   String get dark_mode {
     return Intl.message(
-      '深色模式',
+      'Dark mode',
       name: 'dark_mode',
       desc: '',
       locale: localeName,
@@ -952,10 +952,10 @@ class S {
     );
   }
 
-  /// `深色`
+  /// `Dark`
   String get dark_mode_dark {
     return Intl.message(
-      '深色',
+      'Dark',
       name: 'dark_mode_dark',
       desc: '',
       locale: localeName,
@@ -963,10 +963,10 @@ class S {
     );
   }
 
-  /// `浅色`
+  /// `Light color`
   String get dark_mode_light {
     return Intl.message(
-      '浅色',
+      'Light color',
       name: 'dark_mode_light',
       desc: '',
       locale: localeName,
@@ -974,10 +974,10 @@ class S {
     );
   }
 
-  /// `系统`
+  /// `System`
   String get dark_mode_system {
     return Intl.message(
-      '系统',
+      'System',
       name: 'dark_mode_system',
       desc: '',
       locale: localeName,
@@ -1007,10 +1007,10 @@ class S {
     );
   }
 
-  /// `前往下载页`
+  /// `Goto download webpage`
   String get dataset_goto_download_page {
     return Intl.message(
-      '前往下载页',
+      'Goto download webpage',
       name: 'dataset_goto_download_page',
       desc: '',
       locale: localeName,
@@ -1018,10 +1018,10 @@ class S {
     );
   }
 
-  /// `下载后手动导入`
+  /// `Import after downloaded`
   String get dataset_goto_download_page_hint {
     return Intl.message(
-      '下载后手动导入',
+      'Import after downloaded',
       name: 'dataset_goto_download_page_hint',
       desc: '',
       locale: localeName,
@@ -1029,10 +1029,10 @@ class S {
     );
   }
 
-  /// `数据管理`
+  /// `Data Management`
   String get dataset_management {
     return Intl.message(
-      '数据管理',
+      'Data Management',
       name: 'dataset_management',
       desc: '',
       locale: localeName,
@@ -1040,10 +1040,10 @@ class S {
     );
   }
 
-  /// `图片数据包`
+  /// `Icon dataset`
   String get dataset_type_image {
     return Intl.message(
-      '图片数据包',
+      'Icon dataset',
       name: 'dataset_type_image',
       desc: '',
       locale: localeName,
@@ -1051,10 +1051,10 @@ class S {
     );
   }
 
-  /// `文本数据包`
+  /// `Text dataset`
   String get dataset_type_text {
     return Intl.message(
-      '文本数据包',
+      'Text dataset',
       name: 'dataset_type_text',
       desc: '',
       locale: localeName,
@@ -1106,10 +1106,10 @@ class S {
     );
   }
 
-  /// `删除`
+  /// `Delete`
   String get delete {
     return Intl.message(
-      '删除',
+      'Delete',
       name: 'delete',
       desc: '',
       locale: localeName,
@@ -1117,10 +1117,10 @@ class S {
     );
   }
 
-  /// `需求`
+  /// `Demands`
   String get demands {
     return Intl.message(
-      '需求',
+      'Demands',
       name: 'demands',
       desc: '',
       locale: localeName,
@@ -1128,10 +1128,10 @@ class S {
     );
   }
 
-  /// `显示设置`
+  /// `Display Settings`
   String get display_setting {
     return Intl.message(
-      '显示设置',
+      'Display Settings',
       name: 'display_setting',
       desc: '',
       locale: localeName,
@@ -1150,10 +1150,10 @@ class S {
     );
   }
 
-  /// `下载`
+  /// `Download`
   String get download {
     return Intl.message(
-      '下载',
+      'Download',
       name: 'download',
       desc: '',
       locale: localeName,
@@ -1161,10 +1161,10 @@ class S {
     );
   }
 
-  /// `下载完成`
+  /// `Downloaded`
   String get download_complete {
     return Intl.message(
-      '下载完成',
+      'Downloaded',
       name: 'download_complete',
       desc: '',
       locale: localeName,
@@ -1172,10 +1172,10 @@ class S {
     );
   }
 
-  /// `下载最新数据`
+  /// `Download latest Gamedata`
   String get download_full_gamedata {
     return Intl.message(
-      '下载最新数据',
+      'Download latest Gamedata',
       name: 'download_full_gamedata',
       desc: '',
       locale: localeName,
@@ -1183,10 +1183,10 @@ class S {
     );
   }
 
-  /// `完整zip数据包`
+  /// `Full size zip file`
   String get download_full_gamedata_hint {
     return Intl.message(
-      '完整zip数据包',
+      'Full size zip file',
       name: 'download_full_gamedata_hint',
       desc: '',
       locale: localeName,
@@ -1194,10 +1194,10 @@ class S {
     );
   }
 
-  /// `下载最新数据`
+  /// `Download latest`
   String get download_latest_gamedata {
     return Intl.message(
-      '下载最新数据',
+      'Download latest',
       name: 'download_latest_gamedata',
       desc: '',
       locale: localeName,
@@ -1205,10 +1205,10 @@ class S {
     );
   }
 
-  /// `为确保兼容性，更新前请升级至最新版APP`
+  /// `To ensure compatibility, please upgrade to the latest APP version before updating`
   String get download_latest_gamedata_hint {
     return Intl.message(
-      '为确保兼容性，更新前请升级至最新版APP',
+      'To ensure compatibility, please upgrade to the latest APP version before updating',
       name: 'download_latest_gamedata_hint',
       desc: '',
       locale: localeName,
@@ -1216,10 +1216,10 @@ class S {
     );
   }
 
-  /// `下载源`
+  /// `Download source`
   String get download_source {
     return Intl.message(
-      '下载源',
+      'Download source',
       name: 'download_source',
       desc: '',
       locale: localeName,
@@ -1227,10 +1227,10 @@ class S {
     );
   }
 
-  /// `游戏数据和应用更新`
+  /// `update dataset and app`
   String get download_source_hint {
     return Intl.message(
-      '游戏数据和应用更新',
+      'update dataset and app',
       name: 'download_source_hint',
       desc: '',
       locale: localeName,
@@ -1238,10 +1238,10 @@ class S {
     );
   }
 
-  /// `源{name}`
+  /// `Source {name}`
   String download_source_of(Object name) {
     return Intl.message(
-      '源$name',
+      'Source $name',
       name: 'download_source_of',
       desc: '',
       locale: localeName,
@@ -1249,10 +1249,10 @@ class S {
     );
   }
 
-  /// `已下载`
+  /// `Downloaded`
   String get downloaded {
     return Intl.message(
-      '已下载',
+      'Downloaded',
       name: 'downloaded',
       desc: '',
       locale: localeName,
@@ -1260,10 +1260,10 @@ class S {
     );
   }
 
-  /// `下载中`
+  /// `Downloading`
   String get downloading {
     return Intl.message(
-      '下载中',
+      'Downloading',
       name: 'downloading',
       desc: '',
       locale: localeName,
@@ -1271,10 +1271,10 @@ class S {
     );
   }
 
-  /// `点击 + 添加素材`
+  /// `Click + to add items`
   String get drop_calc_empty_hint {
     return Intl.message(
-      '点击 + 添加素材',
+      'Click + to add items',
       name: 'drop_calc_empty_hint',
       desc: '',
       locale: localeName,
@@ -1282,10 +1282,10 @@ class S {
     );
   }
 
-  /// `最低AP`
+  /// `Min AP`
   String get drop_calc_min_ap {
     return Intl.message(
-      '最低AP',
+      'Min AP',
       name: 'drop_calc_min_ap',
       desc: '',
       locale: localeName,
@@ -1293,10 +1293,10 @@ class S {
     );
   }
 
-  /// `优化`
+  /// `Optimize`
   String get drop_calc_optimize {
     return Intl.message(
-      '优化',
+      'Optimize',
       name: 'drop_calc_optimize',
       desc: '',
       locale: localeName,
@@ -1304,10 +1304,10 @@ class S {
     );
   }
 
-  /// `求解`
+  /// `Solve`
   String get drop_calc_solve {
     return Intl.message(
-      '求解',
+      'Solve',
       name: 'drop_calc_solve',
       desc: '',
       locale: localeName,
@@ -1315,10 +1315,10 @@ class S {
     );
   }
 
-  /// `掉率`
+  /// `Drop rate`
   String get drop_rate {
     return Intl.message(
-      '掉率',
+      'Drop rate',
       name: 'drop_rate',
       desc: '',
       locale: localeName,
@@ -1326,10 +1326,10 @@ class S {
     );
   }
 
-  /// `编辑`
+  /// `Edit`
   String get edit {
     return Intl.message(
-      '编辑',
+      'Edit',
       name: 'edit',
       desc: '',
       locale: localeName,
@@ -1337,10 +1337,10 @@ class S {
     );
   }
 
-  /// `Buff检索`
+  /// `Buff Search`
   String get effect_search {
     return Intl.message(
-      'Buff检索',
+      'Buff Search',
       name: 'effect_search',
       desc: '',
       locale: localeName,
@@ -1348,10 +1348,10 @@ class S {
     );
   }
 
-  /// `效率`
+  /// `Efficiency`
   String get efficiency {
     return Intl.message(
-      '效率',
+      'Efficiency',
       name: 'efficiency',
       desc: '',
       locale: localeName,
@@ -1359,10 +1359,10 @@ class S {
     );
   }
 
-  /// `效率类型`
+  /// `Efficient`
   String get efficiency_type {
     return Intl.message(
-      '效率类型',
+      'Efficient',
       name: 'efficiency_type',
       desc: '',
       locale: localeName,
@@ -1370,10 +1370,10 @@ class S {
     );
   }
 
-  /// `20AP效率`
+  /// `20AP Rate`
   String get efficiency_type_ap {
     return Intl.message(
-      '20AP效率',
+      '20AP Rate',
       name: 'efficiency_type_ap',
       desc: '',
       locale: localeName,
@@ -1381,10 +1381,10 @@ class S {
     );
   }
 
-  /// `每场掉率`
+  /// `Drop Rate`
   String get efficiency_type_drop {
     return Intl.message(
-      '每场掉率',
+      'Drop Rate',
       name: 'efficiency_type_drop',
       desc: '',
       locale: localeName,
@@ -1392,10 +1392,10 @@ class S {
     );
   }
 
-  /// `敌人一览`
+  /// `Enemies`
   String get enemy_list {
     return Intl.message(
-      '敌人一览',
+      'Enemies',
       name: 'enemy_list',
       desc: '',
       locale: localeName,
@@ -1403,10 +1403,10 @@ class S {
     );
   }
 
-  /// `强化`
+  /// `Enhance`
   String get enhance {
     return Intl.message(
-      '强化',
+      'Enhance',
       name: 'enhance',
       desc: '',
       locale: localeName,
@@ -1414,10 +1414,10 @@ class S {
     );
   }
 
-  /// `强化将扣除以下素材`
+  /// `The following items will be consumed for enhancement`
   String get enhance_warning {
     return Intl.message(
-      '强化将扣除以下素材',
+      'The following items will be consumed for enhancement',
       name: 'enhance_warning',
       desc: '',
       locale: localeName,
@@ -1425,10 +1425,10 @@ class S {
     );
   }
 
-  /// `无网络连接`
+  /// `No internet`
   String get error_no_internet {
     return Intl.message(
-      '无网络连接',
+      'No internet',
       name: 'error_no_internet',
       desc: '',
       locale: localeName,
@@ -1469,10 +1469,10 @@ class S {
     );
   }
 
-  /// `所有素材添加到素材仓库，并将该活动移出规划`
+  /// `All items will be added to bag and remove the event out of plan`
   String get event_collect_item_confirm {
     return Intl.message(
-      '所有素材添加到素材仓库，并将该活动移出规划',
+      'All items will be added to bag and remove the event out of plan',
       name: 'event_collect_item_confirm',
       desc: '',
       locale: localeName,
@@ -1480,10 +1480,10 @@ class S {
     );
   }
 
-  /// `收取素材`
+  /// `Collect Items`
   String get event_collect_items {
     return Intl.message(
-      '收取素材',
+      'Collect Items',
       name: 'event_collect_items',
       desc: '',
       locale: localeName,
@@ -1491,10 +1491,10 @@ class S {
     );
   }
 
-  /// `商店/任务/点数/关卡掉落奖励`
+  /// `Shop/Task/Points/Quests`
   String get event_item_default {
     return Intl.message(
-      '商店/任务/点数/关卡掉落奖励',
+      'Shop/Task/Points/Quests',
       name: 'event_item_default',
       desc: '',
       locale: localeName,
@@ -1502,10 +1502,10 @@ class S {
     );
   }
 
-  /// `额外可获取素材`
+  /// `Extra Obtains`
   String get event_item_extra {
     return Intl.message(
-      '额外可获取素材',
+      'Extra Obtains',
       name: 'event_item_extra',
       desc: '',
       locale: localeName,
@@ -1513,10 +1513,10 @@ class S {
     );
   }
 
-  /// `最多{n}池`
+  /// `Max {n} lottery`
   String event_lottery_limit_hint(Object n) {
     return Intl.message(
-      '最多$n池',
+      'Max $n lottery',
       name: 'event_lottery_limit_hint',
       desc: '',
       locale: localeName,
@@ -1524,10 +1524,10 @@ class S {
     );
   }
 
-  /// `有限池`
+  /// `Limited lottery`
   String get event_lottery_limited {
     return Intl.message(
-      '有限池',
+      'Limited lottery',
       name: 'event_lottery_limited',
       desc: '',
       locale: localeName,
@@ -1535,10 +1535,10 @@ class S {
     );
   }
 
-  /// `池`
+  /// `Lottery`
   String get event_lottery_unit {
     return Intl.message(
-      '池',
+      'Lottery',
       name: 'event_lottery_unit',
       desc: '',
       locale: localeName,
@@ -1546,10 +1546,10 @@ class S {
     );
   }
 
-  /// `无限池`
+  /// `Unlimited lottery`
   String get event_lottery_unlimited {
     return Intl.message(
-      '无限池',
+      'Unlimited lottery',
       name: 'event_lottery_unlimited',
       desc: '',
       locale: localeName,
@@ -1557,10 +1557,10 @@ class S {
     );
   }
 
-  /// `活动未列入规划`
+  /// `Event not planned`
   String get event_not_planned {
     return Intl.message(
-      '活动未列入规划',
+      'Event not planned',
       name: 'event_not_planned',
       desc: '',
       locale: localeName,
@@ -1568,10 +1568,10 @@ class S {
     );
   }
 
-  /// `进度`
+  /// `Progress`
   String get event_progress {
     return Intl.message(
-      '进度',
+      'Progress',
       name: 'event_progress',
       desc: '',
       locale: localeName,
@@ -1579,10 +1579,10 @@ class S {
     );
   }
 
-  /// `圣杯替换为传承结晶 {n} 个`
+  /// `Grail to crystal: {n}`
   String event_rerun_replace_grail(Object n) {
     return Intl.message(
-      '圣杯替换为传承结晶 $n 个',
+      'Grail to crystal: $n',
       name: 'event_rerun_replace_grail',
       desc: '',
       locale: localeName,
@@ -1590,10 +1590,10 @@ class S {
     );
   }
 
-  /// `活动`
+  /// `Event`
   String get event_title {
     return Intl.message(
-      '活动',
+      'Event',
       name: 'event_title',
       desc: '',
       locale: localeName,
@@ -1601,10 +1601,10 @@ class S {
     );
   }
 
-  /// `素材交换券`
+  /// `Exchange Ticket`
   String get exchange_ticket {
     return Intl.message(
-      '素材交换券',
+      'Exchange Ticket',
       name: 'exchange_ticket',
       desc: '',
       locale: localeName,
@@ -1612,10 +1612,10 @@ class S {
     );
   }
 
-  /// `交换券`
+  /// `Ticket`
   String get exchange_ticket_short {
     return Intl.message(
-      '交换券',
+      'Ticket',
       name: 'exchange_ticket_short',
       desc: '',
       locale: localeName,
@@ -1623,10 +1623,10 @@ class S {
     );
   }
 
-  /// `等级规划`
+  /// `Levels`
   String get exp_card_plan_lv {
     return Intl.message(
-      '等级规划',
+      'Levels',
       name: 'exp_card_plan_lv',
       desc: '',
       locale: localeName,
@@ -1634,10 +1634,10 @@ class S {
     );
   }
 
-  /// `五星狗粮`
+  /// `5☆ Exp Card`
   String get exp_card_rarity5 {
     return Intl.message(
-      '五星狗粮',
+      '5☆ Exp Card',
       name: 'exp_card_rarity5',
       desc: '',
       locale: localeName,
@@ -1645,10 +1645,10 @@ class S {
     );
   }
 
-  /// `相同职阶`
+  /// `Same Class`
   String get exp_card_same_class {
     return Intl.message(
-      '相同职阶',
+      'Same Class',
       name: 'exp_card_same_class',
       desc: '',
       locale: localeName,
@@ -1656,10 +1656,10 @@ class S {
     );
   }
 
-  /// `选择起始和目标等级`
+  /// `Select Level Range`
   String get exp_card_select_lvs {
     return Intl.message(
-      '选择起始和目标等级',
+      'Select Level Range',
       name: 'exp_card_select_lvs',
       desc: '',
       locale: localeName,
@@ -1667,10 +1667,10 @@ class S {
     );
   }
 
-  /// `狗粮需求`
+  /// `Exp Card`
   String get exp_card_title {
     return Intl.message(
-      '狗粮需求',
+      'Exp Card',
       name: 'exp_card_title',
       desc: '',
       locale: localeName,
@@ -1678,10 +1678,10 @@ class S {
     );
   }
 
-  /// `失败`
+  /// `Failed`
   String get failed {
     return Intl.message(
-      '失败',
+      'Failed',
       name: 'failed',
       desc: '',
       locale: localeName,
@@ -1689,10 +1689,10 @@ class S {
     );
   }
 
-  /// `关注`
+  /// `Favorite`
   String get favorite {
     return Intl.message(
-      '关注',
+      'Favorite',
       name: 'favorite',
       desc: '',
       locale: localeName,
@@ -1700,10 +1700,10 @@ class S {
     );
   }
 
-  /// `添加图像或文件附件`
+  /// `Add screenshots or file attachments`
   String get feedback_add_attachments {
     return Intl.message(
-      '添加图像或文件附件',
+      'Add screenshots or file attachments',
       name: 'feedback_add_attachments',
       desc: '',
       locale: localeName,
@@ -1711,10 +1711,10 @@ class S {
     );
   }
 
-  /// `添加崩溃日志`
+  /// `Add crash log`
   String get feedback_add_crash_log {
     return Intl.message(
-      '添加崩溃日志',
+      'Add crash log',
       name: 'feedback_add_crash_log',
       desc: '',
       locale: localeName,
@@ -1722,10 +1722,10 @@ class S {
     );
   }
 
-  /// `联系方式`
+  /// `Contact information`
   String get feedback_contact {
     return Intl.message(
-      '联系方式',
+      'Contact information',
       name: 'feedback_contact',
       desc: '',
       locale: localeName,
@@ -1733,10 +1733,10 @@ class S {
     );
   }
 
-  /// `反馈与建议`
+  /// `Feedback or Suggestion`
   String get feedback_content_hint {
     return Intl.message(
-      '反馈与建议',
+      'Feedback or Suggestion',
       name: 'feedback_content_hint',
       desc: '',
       locale: localeName,
@@ -1744,10 +1744,10 @@ class S {
     );
   }
 
-  /// `发送`
+  /// `Send`
   String get feedback_send {
     return Intl.message(
-      '发送',
+      'Send',
       name: 'feedback_send',
       desc: '',
       locale: localeName,
@@ -1755,10 +1755,10 @@ class S {
     );
   }
 
-  /// `主题`
+  /// `Subject`
   String get feedback_subject {
     return Intl.message(
-      '主题',
+      'Subject',
       name: 'feedback_subject',
       desc: '',
       locale: localeName,
@@ -1766,10 +1766,10 @@ class S {
     );
   }
 
-  /// `背景`
+  /// `Background`
   String get ffo_background {
     return Intl.message(
-      '背景',
+      'Background',
       name: 'ffo_background',
       desc: '',
       locale: localeName,
@@ -1777,10 +1777,10 @@ class S {
     );
   }
 
-  /// `身体`
+  /// `Body`
   String get ffo_body {
     return Intl.message(
-      '身体',
+      'Body',
       name: 'ffo_body',
       desc: '',
       locale: localeName,
@@ -1788,10 +1788,10 @@ class S {
     );
   }
 
-  /// `裁剪`
+  /// `Crop`
   String get ffo_crop {
     return Intl.message(
-      '裁剪',
+      'Crop',
       name: 'ffo_crop',
       desc: '',
       locale: localeName,
@@ -1799,10 +1799,10 @@ class S {
     );
   }
 
-  /// `头部`
+  /// `Head`
   String get ffo_head {
     return Intl.message(
-      '头部',
+      'Head',
       name: 'ffo_head',
       desc: '',
       locale: localeName,
@@ -1810,10 +1810,10 @@ class S {
     );
   }
 
-  /// `请先下载或导入FFO资源包↗`
+  /// `Please download or import FFO data first↗`
   String get ffo_missing_data_hint {
     return Intl.message(
-      '请先下载或导入FFO资源包↗',
+      'Please download or import FFO data first↗',
       name: 'ffo_missing_data_hint',
       desc: '',
       locale: localeName,
@@ -1821,10 +1821,10 @@ class S {
     );
   }
 
-  /// `同一从者`
+  /// `Same Servant`
   String get ffo_same_svt {
     return Intl.message(
-      '同一从者',
+      'Same Servant',
       name: 'ffo_same_svt',
       desc: '',
       locale: localeName,
@@ -1832,10 +1832,10 @@ class S {
     );
   }
 
-  /// `效率剧场`
+  /// `Domus Aurea`
   String get fgo_domus_aurea {
     return Intl.message(
-      '效率剧场',
+      'Domus Aurea',
       name: 'fgo_domus_aurea',
       desc: '',
       locale: localeName,
@@ -1855,10 +1855,10 @@ class S {
     );
   }
 
-  /// `文件名`
+  /// `filename`
   String get filename {
     return Intl.message(
-      '文件名',
+      'filename',
       name: 'filename',
       desc: '',
       locale: localeName,
@@ -1866,10 +1866,10 @@ class S {
     );
   }
 
-  /// `筛选`
+  /// `Filter`
   String get filter {
     return Intl.message(
-      '筛选',
+      'Filter',
       name: 'filter',
       desc: '',
       locale: localeName,
@@ -1877,10 +1877,10 @@ class S {
     );
   }
 
-  /// `属性`
+  /// `Type`
   String get filter_atk_hp_type {
     return Intl.message(
-      '属性',
+      'Type',
       name: 'filter_atk_hp_type',
       desc: '',
       locale: localeName,
@@ -1888,10 +1888,10 @@ class S {
     );
   }
 
-  /// `阵营`
+  /// `Attribute`
   String get filter_attribute {
     return Intl.message(
-      '阵营',
+      'Attribute',
       name: 'filter_attribute',
       desc: '',
       locale: localeName,
@@ -1899,10 +1899,10 @@ class S {
     );
   }
 
-  /// `分类`
+  /// `Category`
   String get filter_category {
     return Intl.message(
-      '分类',
+      'Category',
       name: 'filter_category',
       desc: '',
       locale: localeName,
@@ -1910,10 +1910,10 @@ class S {
     );
   }
 
-  /// `效果`
+  /// `Effects`
   String get filter_effects {
     return Intl.message(
-      '效果',
+      'Effects',
       name: 'filter_effects',
       desc: '',
       locale: localeName,
@@ -1921,10 +1921,10 @@ class S {
     );
   }
 
-  /// `性别`
+  /// `Gender`
   String get filter_gender {
     return Intl.message(
-      '性别',
+      'Gender',
       name: 'filter_gender',
       desc: '',
       locale: localeName,
@@ -1932,10 +1932,10 @@ class S {
     );
   }
 
-  /// `全匹配`
+  /// `Match All`
   String get filter_match_all {
     return Intl.message(
-      '全匹配',
+      'Match All',
       name: 'filter_match_all',
       desc: '',
       locale: localeName,
@@ -1943,10 +1943,10 @@ class S {
     );
   }
 
-  /// `获取方式`
+  /// `Obtains`
   String get filter_obtain {
     return Intl.message(
-      '获取方式',
+      'Obtains',
       name: 'filter_obtain',
       desc: '',
       locale: localeName,
@@ -1954,10 +1954,10 @@ class S {
     );
   }
 
-  /// `未满`
+  /// `Plan-not-reach`
   String get filter_plan_not_reached {
     return Intl.message(
-      '未满',
+      'Plan-not-reach',
       name: 'filter_plan_not_reached',
       desc: '',
       locale: localeName,
@@ -1965,10 +1965,10 @@ class S {
     );
   }
 
-  /// `已满`
+  /// `Plan-reached`
   String get filter_plan_reached {
     return Intl.message(
-      '已满',
+      'Plan-reached',
       name: 'filter_plan_reached',
       desc: '',
       locale: localeName,
@@ -1976,10 +1976,10 @@ class S {
     );
   }
 
-  /// `反向匹配`
+  /// `Revert`
   String get filter_revert {
     return Intl.message(
-      '反向匹配',
+      'Revert',
       name: 'filter_revert',
       desc: '',
       locale: localeName,
@@ -1987,10 +1987,10 @@ class S {
     );
   }
 
-  /// `显示`
+  /// `Display`
   String get filter_shown_type {
     return Intl.message(
-      '显示',
+      'Display',
       name: 'filter_shown_type',
       desc: '',
       locale: localeName,
@@ -1998,10 +1998,10 @@ class S {
     );
   }
 
-  /// `技能练度`
+  /// `Skills`
   String get filter_skill_lv {
     return Intl.message(
-      '技能练度',
+      'Skills',
       name: 'filter_skill_lv',
       desc: '',
       locale: localeName,
@@ -2009,10 +2009,10 @@ class S {
     );
   }
 
-  /// `排序`
+  /// `Sort`
   String get filter_sort {
     return Intl.message(
-      '排序',
+      'Sort',
       name: 'filter_sort',
       desc: '',
       locale: localeName,
@@ -2020,10 +2020,10 @@ class S {
     );
   }
 
-  /// `职阶`
+  /// `Class`
   String get filter_sort_class {
     return Intl.message(
-      '职阶',
+      'Class',
       name: 'filter_sort_class',
       desc: '',
       locale: localeName,
@@ -2031,10 +2031,10 @@ class S {
     );
   }
 
-  /// `序号`
+  /// `No`
   String get filter_sort_number {
     return Intl.message(
-      '序号',
+      'No',
       name: 'filter_sort_number',
       desc: '',
       locale: localeName,
@@ -2042,10 +2042,10 @@ class S {
     );
   }
 
-  /// `星级`
+  /// `Rarity`
   String get filter_sort_rarity {
     return Intl.message(
-      '星级',
+      'Rarity',
       name: 'filter_sort_rarity',
       desc: '',
       locale: localeName,
@@ -2053,10 +2053,10 @@ class S {
     );
   }
 
-  /// `特殊特性`
+  /// `Special Trait`
   String get filter_special_trait {
     return Intl.message(
-      '特殊特性',
+      'Special Trait',
       name: 'filter_special_trait',
       desc: '',
       locale: localeName,
@@ -2064,10 +2064,10 @@ class S {
     );
   }
 
-  /// `Free效率`
+  /// `Free Efficiency`
   String get free_efficiency {
     return Intl.message(
-      'Free效率',
+      'Free Efficiency',
       name: 'free_efficiency',
       desc: '',
       locale: localeName,
@@ -2075,10 +2075,10 @@ class S {
     );
   }
 
-  /// `Free进度`
+  /// `Quest Limit`
   String get free_progress {
     return Intl.message(
-      'Free进度',
+      'Quest Limit',
       name: 'free_progress',
       desc: '',
       locale: localeName,
@@ -2086,10 +2086,10 @@ class S {
     );
   }
 
-  /// `日服最新`
+  /// `Latest(JP)`
   String get free_progress_newest {
     return Intl.message(
-      '日服最新',
+      'Latest(JP)',
       name: 'free_progress_newest',
       desc: '',
       locale: localeName,
@@ -2097,10 +2097,10 @@ class S {
     );
   }
 
-  /// `Free本`
+  /// `Free Quest`
   String get free_quest {
     return Intl.message(
-      'Free本',
+      'Free Quest',
       name: 'free_quest',
       desc: '',
       locale: localeName,
@@ -2108,10 +2108,10 @@ class S {
     );
   }
 
-  /// `Free速查`
+  /// `Free Quest`
   String get free_quest_calculator {
     return Intl.message(
-      'Free速查',
+      'Free Quest',
       name: 'free_quest_calculator',
       desc: '',
       locale: localeName,
@@ -2119,10 +2119,10 @@ class S {
     );
   }
 
-  /// `Free速查`
+  /// `Free Quest`
   String get free_quest_calculator_short {
     return Intl.message(
-      'Free速查',
+      'Free Quest',
       name: 'free_quest_calculator_short',
       desc: '',
       locale: localeName,
@@ -2130,10 +2130,10 @@ class S {
     );
   }
 
-  /// `首页`
+  /// `Home`
   String get gallery_tab_name {
     return Intl.message(
-      '首页',
+      'Home',
       name: 'gallery_tab_name',
       desc: '',
       locale: localeName,
@@ -2152,10 +2152,10 @@ class S {
     );
   }
 
-  /// `掉落`
+  /// `Drop`
   String get game_drop {
     return Intl.message(
-      '掉落',
+      'Drop',
       name: 'game_drop',
       desc: '',
       locale: localeName,
@@ -2163,10 +2163,10 @@ class S {
     );
   }
 
-  /// `经验`
+  /// `Experience`
   String get game_experience {
     return Intl.message(
-      '经验',
+      'Experience',
       name: 'game_experience',
       desc: '',
       locale: localeName,
@@ -2174,10 +2174,10 @@ class S {
     );
   }
 
-  /// `羁绊`
+  /// `Bond`
   String get game_kizuna {
     return Intl.message(
-      '羁绊',
+      'Bond',
       name: 'game_kizuna',
       desc: '',
       locale: localeName,
@@ -2185,10 +2185,10 @@ class S {
     );
   }
 
-  /// `通关奖励`
+  /// `Rewards`
   String get game_rewards {
     return Intl.message(
-      '通关奖励',
+      'Rewards',
       name: 'game_rewards',
       desc: '',
       locale: localeName,
@@ -2196,10 +2196,10 @@ class S {
     );
   }
 
-  /// `服务器`
+  /// `Game Server`
   String get game_server {
     return Intl.message(
-      '服务器',
+      'Game Server',
       name: 'game_server',
       desc: '',
       locale: localeName,
@@ -2207,10 +2207,10 @@ class S {
     );
   }
 
-  /// `国服`
+  /// `Chinese(Simplified)`
   String get game_server_cn {
     return Intl.message(
-      '国服',
+      'Chinese(Simplified)',
       name: 'game_server_cn',
       desc: '',
       locale: localeName,
@@ -2218,10 +2218,10 @@ class S {
     );
   }
 
-  /// `日服`
+  /// `Japanese`
   String get game_server_jp {
     return Intl.message(
-      '日服',
+      'Japanese',
       name: 'game_server_jp',
       desc: '',
       locale: localeName,
@@ -2229,10 +2229,10 @@ class S {
     );
   }
 
-  /// `美服`
+  /// `English(NA)`
   String get game_server_na {
     return Intl.message(
-      '美服',
+      'English(NA)',
       name: 'game_server_na',
       desc: '',
       locale: localeName,
@@ -2240,10 +2240,10 @@ class S {
     );
   }
 
-  /// `台服`
+  /// `Chinese(Traditional)`
   String get game_server_tw {
     return Intl.message(
-      '台服',
+      'Chinese(Traditional)',
       name: 'game_server_tw',
       desc: '',
       locale: localeName,
@@ -2251,10 +2251,10 @@ class S {
     );
   }
 
-  /// `游戏数据`
+  /// `Gamedata`
   String get gamedata {
     return Intl.message(
-      '游戏数据',
+      'Gamedata',
       name: 'gamedata',
       desc: '',
       locale: localeName,
@@ -2262,10 +2262,10 @@ class S {
     );
   }
 
-  /// `金`
+  /// `Gold`
   String get gold {
     return Intl.message(
-      '金',
+      'Gold',
       name: 'gold',
       desc: '',
       locale: localeName,
@@ -2273,10 +2273,10 @@ class S {
     );
   }
 
-  /// `圣杯`
+  /// `Grail`
   String get grail {
     return Intl.message(
-      '圣杯',
+      'Grail',
       name: 'grail',
       desc: '',
       locale: localeName,
@@ -2284,10 +2284,10 @@ class S {
     );
   }
 
-  /// `圣杯等级`
+  /// `Grail`
   String get grail_level {
     return Intl.message(
-      '圣杯等级',
+      'Grail',
       name: 'grail_level',
       desc: '',
       locale: localeName,
@@ -2295,10 +2295,10 @@ class S {
     );
   }
 
-  /// `圣杯转临`
+  /// `Palingenesis`
   String get grail_up {
     return Intl.message(
-      '圣杯转临',
+      'Palingenesis',
       name: 'grail_up',
       desc: '',
       locale: localeName,
@@ -2306,10 +2306,10 @@ class S {
     );
   }
 
-  /// `成长曲线`
+  /// `Growth Curve`
   String get growth_curve {
     return Intl.message(
-      '成长曲线',
+      'Growth Curve',
       name: 'growth_curve',
       desc: '',
       locale: localeName,
@@ -2317,10 +2317,10 @@ class S {
     );
   }
 
-  /// `Guda素材数据`
+  /// `Guda Item Data`
   String get guda_item_data {
     return Intl.message(
-      'Guda素材数据',
+      'Guda Item Data',
       name: 'guda_item_data',
       desc: '',
       locale: localeName,
@@ -2328,10 +2328,10 @@ class S {
     );
   }
 
-  /// `Guda从者数据`
+  /// `Guda Servant Data`
   String get guda_servant_data {
     return Intl.message(
-      'Guda从者数据',
+      'Guda Servant Data',
       name: 'guda_servant_data',
       desc: '',
       locale: localeName,
@@ -2350,10 +2350,10 @@ class S {
     );
   }
 
-  /// `你好！御主!`
+  /// `Hello! Master!`
   String get hello {
     return Intl.message(
-      '你好！御主!',
+      'Hello! Master!',
       name: 'hello',
       desc: '',
       locale: localeName,
@@ -2361,10 +2361,10 @@ class S {
     );
   }
 
-  /// `帮助`
+  /// `Help`
   String get help {
     return Intl.message(
-      '帮助',
+      'Help',
       name: 'help',
       desc: '',
       locale: localeName,
@@ -2372,10 +2372,10 @@ class S {
     );
   }
 
-  /// `隐藏已过期`
+  /// `Hide Outdated`
   String get hide_outdated {
     return Intl.message(
-      '隐藏已过期',
+      'Hide Outdated',
       name: 'hide_outdated',
       desc: '',
       locale: localeName,
@@ -2383,10 +2383,10 @@ class S {
     );
   }
 
-  /// `无羁绊礼装`
+  /// `No bond craft`
   String get hint_no_bond_craft {
     return Intl.message(
-      '无羁绊礼装',
+      'No bond craft',
       name: 'hint_no_bond_craft',
       desc: '',
       locale: localeName,
@@ -2394,10 +2394,10 @@ class S {
     );
   }
 
-  /// `无情人节礼装`
+  /// `No valentine craft`
   String get hint_no_valentine_craft {
     return Intl.message(
-      '无情人节礼装',
+      'No valentine craft',
       name: 'hint_no_valentine_craft',
       desc: '',
       locale: localeName,
@@ -2405,10 +2405,10 @@ class S {
     );
   }
 
-  /// `图标`
+  /// `Icons`
   String get icons {
     return Intl.message(
-      '图标',
+      'Icons',
       name: 'icons',
       desc: '',
       locale: localeName,
@@ -2416,10 +2416,10 @@ class S {
     );
   }
 
-  /// `忽略`
+  /// `Ignore`
   String get ignore {
     return Intl.message(
-      '忽略',
+      'Ignore',
       name: 'ignore',
       desc: '',
       locale: localeName,
@@ -2427,10 +2427,10 @@ class S {
     );
   }
 
-  /// `卡面`
+  /// `Illustration`
   String get illustration {
     return Intl.message(
-      '卡面',
+      'Illustration',
       name: 'illustration',
       desc: '',
       locale: localeName,
@@ -2438,10 +2438,10 @@ class S {
     );
   }
 
-  /// `画师`
+  /// `Illustrator`
   String get illustrator {
     return Intl.message(
-      '画师',
+      'Illustrator',
       name: 'illustrator',
       desc: '',
       locale: localeName,
@@ -2449,10 +2449,10 @@ class S {
     );
   }
 
-  /// `图像解析`
+  /// `Image analysis`
   String get image_analysis {
     return Intl.message(
-      '图像解析',
+      'Image analysis',
       name: 'image_analysis',
       desc: '',
       locale: localeName,
@@ -2460,10 +2460,10 @@ class S {
     );
   }
 
-  /// `导入`
+  /// `Import`
   String get import_data {
     return Intl.message(
-      '导入',
+      'Import',
       name: 'import_data',
       desc: '',
       locale: localeName,
@@ -2471,10 +2471,10 @@ class S {
     );
   }
 
-  /// `导入失败，Error:\n{error}`
+  /// `Import failed. Error:\n{error}`
   String import_data_error(Object error) {
     return Intl.message(
-      '导入失败，Error:\n$error',
+      'Import failed. Error:\n$error',
       name: 'import_data_error',
       desc: '',
       locale: localeName,
@@ -2482,10 +2482,10 @@ class S {
     );
   }
 
-  /// `成功导入数据`
+  /// `Import data successfully`
   String get import_data_success {
     return Intl.message(
-      '成功导入数据',
+      'Import data successfully',
       name: 'import_data_success',
       desc: '',
       locale: localeName,
@@ -2493,10 +2493,10 @@ class S {
     );
   }
 
-  /// `导入Guda`
+  /// `Guda Data`
   String get import_guda_data {
     return Intl.message(
-      '导入Guda',
+      'Guda Data',
       name: 'import_guda_data',
       desc: '',
       locale: localeName,
@@ -2504,10 +2504,10 @@ class S {
     );
   }
 
-  /// `更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据`
+  /// `Update：remain current userdata and update(Recommended)\nOverride：clear userdata then updatee`
   String get import_guda_hint {
     return Intl.message(
-      '更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据',
+      'Update：remain current userdata and update(Recommended)\nOverride：clear userdata then updatee',
       name: 'import_guda_hint',
       desc: '',
       locale: localeName,
@@ -2515,10 +2515,10 @@ class S {
     );
   }
 
-  /// `导入素材`
+  /// `Import Item`
   String get import_guda_items {
     return Intl.message(
-      '导入素材',
+      'Import Item',
       name: 'import_guda_items',
       desc: '',
       locale: localeName,
@@ -2526,10 +2526,10 @@ class S {
     );
   }
 
-  /// `导入从者`
+  /// `Import Servant`
   String get import_guda_servants {
     return Intl.message(
-      '导入从者',
+      'Import Servant',
       name: 'import_guda_servants',
       desc: '',
       locale: localeName,
@@ -2537,10 +2537,10 @@ class S {
     );
   }
 
-  /// `允许2号机`
+  /// `Duplicated`
   String get import_http_body_duplicated {
     return Intl.message(
-      '允许2号机',
+      'Duplicated',
       name: 'import_http_body_duplicated',
       desc: '',
       locale: localeName,
@@ -2548,10 +2548,10 @@ class S {
     );
   }
 
-  /// `点击右上角导入解密的HTTPS响应包以导入账户数据\n点击帮助以查看如何捕获并解密HTTPS响应内容`
+  /// `Click import button to import decrypted HTTPS response`
   String get import_http_body_hint {
     return Intl.message(
-      '点击右上角导入解密的HTTPS响应包以导入账户数据\n点击帮助以查看如何捕获并解密HTTPS响应内容',
+      'Click import button to import decrypted HTTPS response',
       name: 'import_http_body_hint',
       desc: '',
       locale: localeName,
@@ -2559,10 +2559,10 @@ class S {
     );
   }
 
-  /// `点击从者可隐藏/取消隐藏该从者`
+  /// `Click servant to hide/unhide`
   String get import_http_body_hint_hide {
     return Intl.message(
-      '点击从者可隐藏/取消隐藏该从者',
+      'Click servant to hide/unhide',
       name: 'import_http_body_hint_hide',
       desc: '',
       locale: localeName,
@@ -2570,10 +2570,10 @@ class S {
     );
   }
 
-  /// `仅锁定`
+  /// `Locked Only`
   String get import_http_body_locked {
     return Intl.message(
-      '仅锁定',
+      'Locked Only',
       name: 'import_http_body_locked',
       desc: '',
       locale: localeName,
@@ -2581,10 +2581,10 @@ class S {
     );
   }
 
-  /// `已切换到账号{account}`
+  /// `Switched to account {account}`
   String import_http_body_success_switch(Object account) {
     return Intl.message(
-      '已切换到账号$account',
+      'Switched to account $account',
       name: 'import_http_body_success_switch',
       desc: '',
       locale: localeName,
@@ -2592,10 +2592,10 @@ class S {
     );
   }
 
-  /// `导入{itemNum}个素材,{svtNum}从者到`
+  /// `Import {itemNum} items and {svtNum} svts to`
   String import_http_body_target_account_header(Object itemNum, Object svtNum) {
     return Intl.message(
-      '导入$itemNum个素材,$svtNum从者到',
+      'Import $itemNum items and $svtNum svts to',
       name: 'import_http_body_target_account_header',
       desc: '',
       locale: localeName,
@@ -2603,10 +2603,10 @@ class S {
     );
   }
 
-  /// `导入截图`
+  /// `Import Screenshots`
   String get import_screenshot {
     return Intl.message(
-      '导入截图',
+      'Import Screenshots',
       name: 'import_screenshot',
       desc: '',
       locale: localeName,
@@ -2614,10 +2614,10 @@ class S {
     );
   }
 
-  /// `仅更新识别出的素材`
+  /// `Only update recognized items`
   String get import_screenshot_hint {
     return Intl.message(
-      '仅更新识别出的素材',
+      'Only update recognized items',
       name: 'import_screenshot_hint',
       desc: '',
       locale: localeName,
@@ -2625,10 +2625,10 @@ class S {
     );
   }
 
-  /// `更新素材`
+  /// `Update Items`
   String get import_screenshot_update_items {
     return Intl.message(
-      '更新素材',
+      'Update Items',
       name: 'import_screenshot_update_items',
       desc: '',
       locale: localeName,
@@ -2636,10 +2636,10 @@ class S {
     );
   }
 
-  /// `导入源数据`
+  /// `Import Source File`
   String get import_source_file {
     return Intl.message(
-      '导入源数据',
+      'Import Source File',
       name: 'import_source_file',
       desc: '',
       locale: localeName,
@@ -2647,10 +2647,10 @@ class S {
     );
   }
 
-  /// `敏捷`
+  /// `Agility`
   String get info_agility {
     return Intl.message(
-      '敏捷',
+      'Agility',
       name: 'info_agility',
       desc: '',
       locale: localeName,
@@ -2658,10 +2658,10 @@ class S {
     );
   }
 
-  /// `属性`
+  /// `Alignment`
   String get info_alignment {
     return Intl.message(
-      '属性',
+      'Alignment',
       name: 'info_alignment',
       desc: '',
       locale: localeName,
@@ -2669,10 +2669,10 @@ class S {
     );
   }
 
-  /// `羁绊点数`
+  /// `Bond Points`
   String get info_bond_points {
     return Intl.message(
-      '羁绊点数',
+      'Bond Points',
       name: 'info_bond_points',
       desc: '',
       locale: localeName,
@@ -2680,10 +2680,10 @@ class S {
     );
   }
 
-  /// `点数`
+  /// `Point`
   String get info_bond_points_single {
     return Intl.message(
-      '点数',
+      'Point',
       name: 'info_bond_points_single',
       desc: '',
       locale: localeName,
@@ -2691,10 +2691,10 @@ class S {
     );
   }
 
-  /// `累积`
+  /// `Sum`
   String get info_bond_points_sum {
     return Intl.message(
-      '累积',
+      'Sum',
       name: 'info_bond_points_sum',
       desc: '',
       locale: localeName,
@@ -2702,10 +2702,10 @@ class S {
     );
   }
 
-  /// `配卡`
+  /// `Cards`
   String get info_cards {
     return Intl.message(
-      '配卡',
+      'Cards',
       name: 'info_cards',
       desc: '',
       locale: localeName,
@@ -2713,10 +2713,10 @@ class S {
     );
   }
 
-  /// `暴击权重`
+  /// `Critical Rate`
   String get info_critical_rate {
     return Intl.message(
-      '暴击权重',
+      'Critical Rate',
       name: 'info_critical_rate',
       desc: '',
       locale: localeName,
@@ -2724,10 +2724,10 @@ class S {
     );
   }
 
-  /// `声优`
+  /// `Voice Actor`
   String get info_cv {
     return Intl.message(
-      '声优',
+      'Voice Actor',
       name: 'info_cv',
       desc: '',
       locale: localeName,
@@ -2735,10 +2735,10 @@ class S {
     );
   }
 
-  /// `即死率`
+  /// `Death Rate`
   String get info_death_rate {
     return Intl.message(
-      '即死率',
+      'Death Rate',
       name: 'info_death_rate',
       desc: '',
       locale: localeName,
@@ -2746,10 +2746,10 @@ class S {
     );
   }
 
-  /// `耐久`
+  /// `Endurance`
   String get info_endurance {
     return Intl.message(
-      '耐久',
+      'Endurance',
       name: 'info_endurance',
       desc: '',
       locale: localeName,
@@ -2757,10 +2757,10 @@ class S {
     );
   }
 
-  /// `性别`
+  /// `Gender`
   String get info_gender {
     return Intl.message(
-      '性别',
+      'Gender',
       name: 'info_gender',
       desc: '',
       locale: localeName,
@@ -2768,10 +2768,10 @@ class S {
     );
   }
 
-  /// `身高`
+  /// `Height`
   String get info_height {
     return Intl.message(
-      '身高',
+      'Height',
       name: 'info_height',
       desc: '',
       locale: localeName,
@@ -2779,10 +2779,10 @@ class S {
     );
   }
 
-  /// `人形`
+  /// `Human`
   String get info_human {
     return Intl.message(
-      '人形',
+      'Human',
       name: 'info_human',
       desc: '',
       locale: localeName,
@@ -2790,10 +2790,10 @@ class S {
     );
   }
 
-  /// `幸运`
+  /// `Luck`
   String get info_luck {
     return Intl.message(
-      '幸运',
+      'Luck',
       name: 'info_luck',
       desc: '',
       locale: localeName,
@@ -2801,10 +2801,10 @@ class S {
     );
   }
 
-  /// `魔力`
+  /// `Mana`
   String get info_mana {
     return Intl.message(
-      '魔力',
+      'Mana',
       name: 'info_mana',
       desc: '',
       locale: localeName,
@@ -2812,10 +2812,10 @@ class S {
     );
   }
 
-  /// `宝具`
+  /// `NP`
   String get info_np {
     return Intl.message(
-      '宝具',
+      'NP',
       name: 'info_np',
       desc: '',
       locale: localeName,
@@ -2823,10 +2823,10 @@ class S {
     );
   }
 
-  /// `NP获得率`
+  /// `NP Rate`
   String get info_np_rate {
     return Intl.message(
-      'NP获得率',
+      'NP Rate',
       name: 'info_np_rate',
       desc: '',
       locale: localeName,
@@ -2834,10 +2834,10 @@ class S {
     );
   }
 
-  /// `出星率`
+  /// `Star Rate`
   String get info_star_rate {
     return Intl.message(
-      '出星率',
+      'Star Rate',
       name: 'info_star_rate',
       desc: '',
       locale: localeName,
@@ -2845,10 +2845,10 @@ class S {
     );
   }
 
-  /// `筋力`
+  /// `Strength`
   String get info_strength {
     return Intl.message(
-      '筋力',
+      'Strength',
       name: 'info_strength',
       desc: '',
       locale: localeName,
@@ -2856,10 +2856,10 @@ class S {
     );
   }
 
-  /// `特性`
+  /// `Traits`
   String get info_trait {
     return Intl.message(
-      '特性',
+      'Traits',
       name: 'info_trait',
       desc: '',
       locale: localeName,
@@ -2867,10 +2867,10 @@ class S {
     );
   }
 
-  /// `数值`
+  /// `Value`
   String get info_value {
     return Intl.message(
-      '数值',
+      'Value',
       name: 'info_value',
       desc: '',
       locale: localeName,
@@ -2878,10 +2878,10 @@ class S {
     );
   }
 
-  /// `被EA特攻`
+  /// `Weak to EA`
   String get info_weak_to_ea {
     return Intl.message(
-      '被EA特攻',
+      'Weak to EA',
       name: 'info_weak_to_ea',
       desc: '',
       locale: localeName,
@@ -2889,10 +2889,10 @@ class S {
     );
   }
 
-  /// `体重`
+  /// `Weight`
   String get info_weight {
     return Intl.message(
-      '体重',
+      'Weight',
       name: 'info_weight',
       desc: '',
       locale: localeName,
@@ -2900,10 +2900,10 @@ class S {
     );
   }
 
-  /// `输入无效`
+  /// `Invalid inputs`
   String get input_invalid_hint {
     return Intl.message(
-      '输入无效',
+      'Invalid inputs',
       name: 'input_invalid_hint',
       desc: '',
       locale: localeName,
@@ -2911,10 +2911,10 @@ class S {
     );
   }
 
-  /// `安装`
+  /// `Install`
   String get install {
     return Intl.message(
-      '安装',
+      'Install',
       name: 'install',
       desc: '',
       locale: localeName,
@@ -2922,10 +2922,10 @@ class S {
     );
   }
 
-  /// `幕间&强化`
+  /// `Interlude & Rank Up`
   String get interlude_and_rankup {
     return Intl.message(
-      '幕间&强化',
+      'Interlude & Rank Up',
       name: 'interlude_and_rankup',
       desc: '',
       locale: localeName,
@@ -2966,10 +2966,10 @@ class S {
     );
   }
 
-  /// `"文件"应用/我的iPhone/Chaldea`
+  /// `"Files" app/On My iPhone/Chaldea`
   String get ios_app_path {
     return Intl.message(
-      '"文件"应用/我的iPhone/Chaldea',
+      '"Files" app/On My iPhone/Chaldea',
       name: 'ios_app_path',
       desc: '',
       locale: localeName,
@@ -2977,10 +2977,10 @@ class S {
     );
   }
 
-  /// `常见问题`
+  /// `Issues`
   String get issues {
     return Intl.message(
-      '常见问题',
+      'Issues',
       name: 'issues',
       desc: '',
       locale: localeName,
@@ -2988,10 +2988,10 @@ class S {
     );
   }
 
-  /// `素材`
+  /// `Item`
   String get item {
     return Intl.message(
-      '素材',
+      'Item',
       name: 'item',
       desc: '',
       locale: localeName,
@@ -2999,10 +2999,10 @@ class S {
     );
   }
 
-  /// `{name}已存在`
+  /// `{name} already exist`
   String item_already_exist_hint(Object name) {
     return Intl.message(
-      '$name已存在',
+      '$name already exist',
       name: 'item_already_exist_hint',
       desc: '',
       locale: localeName,
@@ -3010,10 +3010,10 @@ class S {
     );
   }
 
-  /// `职阶棋子`
+  /// `Ascension Items`
   String get item_category_ascension {
     return Intl.message(
-      '职阶棋子',
+      'Ascension Items',
       name: 'item_category_ascension',
       desc: '',
       locale: localeName,
@@ -3021,10 +3021,10 @@ class S {
     );
   }
 
-  /// `铜素材`
+  /// `Bronze Items`
   String get item_category_bronze {
     return Intl.message(
-      '铜素材',
+      'Bronze Items',
       name: 'item_category_bronze',
       desc: '',
       locale: localeName,
@@ -3032,10 +3032,10 @@ class S {
     );
   }
 
-  /// `活动从者灵基再临素材`
+  /// `Event Item`
   String get item_category_event_svt_ascension {
     return Intl.message(
-      '活动从者灵基再临素材',
+      'Event Item',
       name: 'item_category_event_svt_ascension',
       desc: '',
       locale: localeName,
@@ -3043,10 +3043,10 @@ class S {
     );
   }
 
-  /// `辉石`
+  /// `Gem`
   String get item_category_gem {
     return Intl.message(
-      '辉石',
+      'Gem',
       name: 'item_category_gem',
       desc: '',
       locale: localeName,
@@ -3054,10 +3054,10 @@ class S {
     );
   }
 
-  /// `技能石`
+  /// `Skill Items`
   String get item_category_gems {
     return Intl.message(
-      '技能石',
+      'Skill Items',
       name: 'item_category_gems',
       desc: '',
       locale: localeName,
@@ -3065,10 +3065,10 @@ class S {
     );
   }
 
-  /// `金素材`
+  /// `Gold Items`
   String get item_category_gold {
     return Intl.message(
-      '金素材',
+      'Gold Items',
       name: 'item_category_gold',
       desc: '',
       locale: localeName,
@@ -3076,10 +3076,10 @@ class S {
     );
   }
 
-  /// `魔石`
+  /// `Magic Gem`
   String get item_category_magic_gem {
     return Intl.message(
-      '魔石',
+      'Magic Gem',
       name: 'item_category_magic_gem',
       desc: '',
       locale: localeName,
@@ -3087,10 +3087,10 @@ class S {
     );
   }
 
-  /// `金像`
+  /// `Monument`
   String get item_category_monument {
     return Intl.message(
-      '金像',
+      'Monument',
       name: 'item_category_monument',
       desc: '',
       locale: localeName,
@@ -3098,10 +3098,10 @@ class S {
     );
   }
 
-  /// `其他`
+  /// `Others`
   String get item_category_others {
     return Intl.message(
-      '其他',
+      'Others',
       name: 'item_category_others',
       desc: '',
       locale: localeName,
@@ -3109,10 +3109,10 @@ class S {
     );
   }
 
-  /// `银棋`
+  /// `Piece`
   String get item_category_piece {
     return Intl.message(
-      '银棋',
+      'Piece',
       name: 'item_category_piece',
       desc: '',
       locale: localeName,
@@ -3120,10 +3120,10 @@ class S {
     );
   }
 
-  /// `秘石`
+  /// `Secret Gem`
   String get item_category_secret_gem {
     return Intl.message(
-      '秘石',
+      'Secret Gem',
       name: 'item_category_secret_gem',
       desc: '',
       locale: localeName,
@@ -3131,10 +3131,10 @@ class S {
     );
   }
 
-  /// `银素材`
+  /// `Silver Items`
   String get item_category_silver {
     return Intl.message(
-      '银素材',
+      'Silver Items',
       name: 'item_category_silver',
       desc: '',
       locale: localeName,
@@ -3142,10 +3142,10 @@ class S {
     );
   }
 
-  /// `特殊素材`
+  /// `Special Items`
   String get item_category_special {
     return Intl.message(
-      '特殊素材',
+      'Special Items',
       name: 'item_category_special',
       desc: '',
       locale: localeName,
@@ -3153,10 +3153,10 @@ class S {
     );
   }
 
-  /// `普通素材`
+  /// `Items`
   String get item_category_usual {
     return Intl.message(
-      '普通素材',
+      'Items',
       name: 'item_category_usual',
       desc: '',
       locale: localeName,
@@ -3164,10 +3164,10 @@ class S {
     );
   }
 
-  /// `素材效率`
+  /// `Item Eff`
   String get item_eff {
     return Intl.message(
-      '素材效率',
+      'Item Eff',
       name: 'item_eff',
       desc: '',
       locale: localeName,
@@ -3175,10 +3175,10 @@ class S {
     );
   }
 
-  /// `计算规划前，可以设置不同材料的富余量(仅用于Free本规划)`
+  /// `Before planning, you can set exceeded num for items(Only used for free quest planning)`
   String get item_exceed_hint {
     return Intl.message(
-      '计算规划前，可以设置不同材料的富余量(仅用于Free本规划)',
+      'Before planning, you can set exceeded num for items(Only used for free quest planning)',
       name: 'item_exceed_hint',
       desc: '',
       locale: localeName,
@@ -3186,10 +3186,10 @@ class S {
     );
   }
 
-  /// `剩余`
+  /// `Left`
   String get item_left {
     return Intl.message(
-      '剩余',
+      'Left',
       name: 'item_left',
       desc: '',
       locale: localeName,
@@ -3197,10 +3197,10 @@ class S {
     );
   }
 
-  /// `无Free本`
+  /// `No Free Quests`
   String get item_no_free_quests {
     return Intl.message(
-      '无Free本',
+      'No Free Quests',
       name: 'item_no_free_quests',
       desc: '',
       locale: localeName,
@@ -3208,10 +3208,10 @@ class S {
     );
   }
 
-  /// `仅显示不足`
+  /// `Only show lacked`
   String get item_only_show_lack {
     return Intl.message(
-      '仅显示不足',
+      'Only show lacked',
       name: 'item_only_show_lack',
       desc: '',
       locale: localeName,
@@ -3219,10 +3219,10 @@ class S {
     );
   }
 
-  /// `拥有`
+  /// `Owned`
   String get item_own {
     return Intl.message(
-      '拥有',
+      'Owned',
       name: 'item_own',
       desc: '',
       locale: localeName,
@@ -3230,10 +3230,10 @@ class S {
     );
   }
 
-  /// `素材截图`
+  /// `Item Screenshot`
   String get item_screenshot {
     return Intl.message(
-      '素材截图',
+      'Item Screenshot',
       name: 'item_screenshot',
       desc: '',
       locale: localeName,
@@ -3241,10 +3241,10 @@ class S {
     );
   }
 
-  /// `素材`
+  /// `Item`
   String get item_title {
     return Intl.message(
-      '素材',
+      'Item',
       name: 'item_title',
       desc: '',
       locale: localeName,
@@ -3252,10 +3252,10 @@ class S {
     );
   }
 
-  /// `共需`
+  /// `Total`
   String get item_total_demand {
     return Intl.message(
-      '共需',
+      'Total',
       name: 'item_total_demand',
       desc: '',
       locale: localeName,
@@ -3263,10 +3263,10 @@ class S {
     );
   }
 
-  /// `加入Beta版`
+  /// `Join Beta Program`
   String get join_beta {
     return Intl.message(
-      '加入Beta版',
+      'Join Beta Program',
       name: 'join_beta',
       desc: '',
       locale: localeName,
@@ -3274,10 +3274,10 @@ class S {
     );
   }
 
-  /// `跳转到{site}`
+  /// `Jump to {site}`
   String jump_to(Object site) {
     return Intl.message(
-      '跳转到$site',
+      'Jump to $site',
       name: 'jump_to',
       desc: '',
       locale: localeName,
@@ -3285,10 +3285,10 @@ class S {
     );
   }
 
-  /// `等级`
+  /// `Level`
   String get level {
     return Intl.message(
-      '等级',
+      'Level',
       name: 'level',
       desc: '',
       locale: localeName,
@@ -3296,10 +3296,10 @@ class S {
     );
   }
 
-  /// `限时活动`
+  /// `Limited Event`
   String get limited_event {
     return Intl.message(
-      '限时活动',
+      'Limited Event',
       name: 'limited_event',
       desc: '',
       locale: localeName,
@@ -3307,10 +3307,10 @@ class S {
     );
   }
 
-  /// `链接`
+  /// `link`
   String get link {
     return Intl.message(
-      '链接',
+      'link',
       name: 'link',
       desc: '',
       locale: localeName,
@@ -3318,14 +3318,14 @@ class S {
     );
   }
 
-  /// `{first, select, true{已经是第一张} false{已经是最后一张} other{已经到头了}}`
+  /// `{first, select, true{Already the first one} false{Already the last one} other{No more}}`
   String list_end_hint(Object first) {
     return Intl.select(
       first,
       {
-        'true': '已经是第一张',
-        'false': '已经是最后一张',
-        'other': '已经到头了',
+        'true': 'Already the first one',
+        'false': 'Already the last one',
+        'other': 'No more',
       },
       name: 'list_end_hint',
       desc: '',
@@ -3334,10 +3334,10 @@ class S {
     );
   }
 
-  /// `加载数据出错`
+  /// `Error loading dataset`
   String get load_dataset_error {
     return Intl.message(
-      '加载数据出错',
+      'Error loading dataset',
       name: 'load_dataset_error',
       desc: '',
       locale: localeName,
@@ -3345,10 +3345,10 @@ class S {
     );
   }
 
-  /// `请在设置-游戏数据中重新加载默认资源`
+  /// `Please reload default gamedata in Settings-Gamedata`
   String get load_dataset_error_hint {
     return Intl.message(
-      '请在设置-游戏数据中重新加载默认资源',
+      'Please reload default gamedata in Settings-Gamedata',
       name: 'load_dataset_error_hint',
       desc: '',
       locale: localeName,
@@ -3367,10 +3367,10 @@ class S {
     );
   }
 
-  /// `修改用户名`
+  /// `Change Name`
   String get login_change_name {
     return Intl.message(
-      '修改用户名',
+      'Change Name',
       name: 'login_change_name',
       desc: '',
       locale: localeName,
@@ -3378,10 +3378,10 @@ class S {
     );
   }
 
-  /// `修改密码`
+  /// `Change Password`
   String get login_change_password {
     return Intl.message(
-      '修改密码',
+      'Change Password',
       name: 'login_change_password',
       desc: '',
       locale: localeName,
@@ -3389,10 +3389,10 @@ class S {
     );
   }
 
-  /// `确认密码`
+  /// `Confirm Password`
   String get login_confirm_password {
     return Intl.message(
-      '确认密码',
+      'Confirm Password',
       name: 'login_confirm_password',
       desc: '',
       locale: localeName,
@@ -3400,10 +3400,10 @@ class S {
     );
   }
 
-  /// `请先登陆`
+  /// `Please login first`
   String get login_first_hint {
     return Intl.message(
-      '请先登陆',
+      'Please login first',
       name: 'login_first_hint',
       desc: '',
       locale: localeName,
@@ -3411,10 +3411,10 @@ class S {
     );
   }
 
-  /// `忘记密码`
+  /// `Forget Password`
   String get login_forget_pwd {
     return Intl.message(
-      '忘记密码',
+      'Forget Password',
       name: 'login_forget_pwd',
       desc: '',
       locale: localeName,
@@ -3422,10 +3422,10 @@ class S {
     );
   }
 
-  /// `登陆`
+  /// `Login`
   String get login_login {
     return Intl.message(
-      '登陆',
+      'Login',
       name: 'login_login',
       desc: '',
       locale: localeName,
@@ -3433,10 +3433,10 @@ class S {
     );
   }
 
-  /// `登出`
+  /// `Logout`
   String get login_logout {
     return Intl.message(
-      '登出',
+      'Logout',
       name: 'login_logout',
       desc: '',
       locale: localeName,
@@ -3444,10 +3444,10 @@ class S {
     );
   }
 
-  /// `新用户名`
+  /// `New Name`
   String get login_new_name {
     return Intl.message(
-      '新用户名',
+      'New Name',
       name: 'login_new_name',
       desc: '',
       locale: localeName,
@@ -3455,10 +3455,10 @@ class S {
     );
   }
 
-  /// `新密码`
+  /// `New Password`
   String get login_new_password {
     return Intl.message(
-      '新密码',
+      'New Password',
       name: 'login_new_password',
       desc: '',
       locale: localeName,
@@ -3466,10 +3466,10 @@ class S {
     );
   }
 
-  /// `密码`
+  /// `Password`
   String get login_password {
     return Intl.message(
-      '密码',
+      'Password',
       name: 'login_password',
       desc: '',
       locale: localeName,
@@ -3477,10 +3477,10 @@ class S {
     );
   }
 
-  /// `只能包含字母与数字，不少于4位`
+  /// `Can only contain letters and numbers, no less than 4 digits`
   String get login_password_error {
     return Intl.message(
-      '只能包含字母与数字，不少于4位',
+      'Can only contain letters and numbers, no less than 4 digits',
       name: 'login_password_error',
       desc: '',
       locale: localeName,
@@ -3488,10 +3488,10 @@ class S {
     );
   }
 
-  /// `不能与旧密码相同`
+  /// `Cannot be the same as the old password`
   String get login_password_error_same_as_old {
     return Intl.message(
-      '不能与旧密码相同',
+      'Cannot be the same as the old password',
       name: 'login_password_error_same_as_old',
       desc: '',
       locale: localeName,
@@ -3499,10 +3499,10 @@ class S {
     );
   }
 
-  /// `注册`
+  /// `Signup`
   String get login_signup {
     return Intl.message(
-      '注册',
+      'Signup',
       name: 'login_signup',
       desc: '',
       locale: localeName,
@@ -3510,10 +3510,10 @@ class S {
     );
   }
 
-  /// `未登录`
+  /// `Not logged in`
   String get login_state_not_login {
     return Intl.message(
-      '未登录',
+      'Not logged in',
       name: 'login_state_not_login',
       desc: '',
       locale: localeName,
@@ -3521,10 +3521,10 @@ class S {
     );
   }
 
-  /// `用户名`
+  /// `Username`
   String get login_username {
     return Intl.message(
-      '用户名',
+      'Username',
       name: 'login_username',
       desc: '',
       locale: localeName,
@@ -3532,10 +3532,10 @@ class S {
     );
   }
 
-  /// `只能包含字母与数字，字母开头，不少于4位`
+  /// `Can only contain letters and numbers, starting with a letter, no less than 4 digits`
   String get login_username_error {
     return Intl.message(
-      '只能包含字母与数字，字母开头，不少于4位',
+      'Can only contain letters and numbers, starting with a letter, no less than 4 digits',
       name: 'login_username_error',
       desc: '',
       locale: localeName,
@@ -3543,10 +3543,10 @@ class S {
     );
   }
 
-  /// `长按保存`
+  /// `Long press to save`
   String get long_press_to_save_hint {
     return Intl.message(
-      '长按保存',
+      'Long press to save',
       name: 'long_press_to_save_hint',
       desc: '',
       locale: localeName,
@@ -3554,10 +3554,10 @@ class S {
     );
   }
 
-  /// `福袋`
+  /// `Lucky Bag`
   String get lucky_bag {
     return Intl.message(
-      '福袋',
+      'Lucky Bag',
       name: 'lucky_bag',
       desc: '',
       locale: localeName,
@@ -3565,10 +3565,10 @@ class S {
     );
   }
 
-  /// `主线记录`
+  /// `Main Record`
   String get main_record {
     return Intl.message(
-      '主线记录',
+      'Main Record',
       name: 'main_record',
       desc: '',
       locale: localeName,
@@ -3576,10 +3576,10 @@ class S {
     );
   }
 
-  /// `通关奖励`
+  /// `Bonus`
   String get main_record_bonus {
     return Intl.message(
-      '通关奖励',
+      'Bonus',
       name: 'main_record_bonus',
       desc: '',
       locale: localeName,
@@ -3587,10 +3587,10 @@ class S {
     );
   }
 
-  /// `奖励`
+  /// `Bonus`
   String get main_record_bonus_short {
     return Intl.message(
-      '奖励',
+      'Bonus',
       name: 'main_record_bonus_short',
       desc: '',
       locale: localeName,
@@ -3598,10 +3598,10 @@ class S {
     );
   }
 
-  /// `章节`
+  /// `Chapter`
   String get main_record_chapter {
     return Intl.message(
-      '章节',
+      'Chapter',
       name: 'main_record_chapter',
       desc: '',
       locale: localeName,
@@ -3609,10 +3609,10 @@ class S {
     );
   }
 
-  /// `固定掉落`
+  /// `Drops`
   String get main_record_fixed_drop {
     return Intl.message(
-      '固定掉落',
+      'Drops',
       name: 'main_record_fixed_drop',
       desc: '',
       locale: localeName,
@@ -3620,10 +3620,10 @@ class S {
     );
   }
 
-  /// `掉落`
+  /// `Drops`
   String get main_record_fixed_drop_short {
     return Intl.message(
-      '掉落',
+      'Drops',
       name: 'main_record_fixed_drop_short',
       desc: '',
       locale: localeName,
@@ -3642,10 +3642,10 @@ class S {
     );
   }
 
-  /// `御主任务`
+  /// `Master Mission`
   String get master_mission {
     return Intl.message(
-      '御主任务',
+      'Master Mission',
       name: 'master_mission',
       desc: '',
       locale: localeName,
@@ -3653,10 +3653,10 @@ class S {
     );
   }
 
-  /// `关联关卡`
+  /// `Related Quests`
   String get master_mission_related_quest {
     return Intl.message(
-      '关联关卡',
+      'Related Quests',
       name: 'master_mission_related_quest',
       desc: '',
       locale: localeName,
@@ -3664,10 +3664,10 @@ class S {
     );
   }
 
-  /// `方案`
+  /// `Solution`
   String get master_mission_solution {
     return Intl.message(
-      '方案',
+      'Solution',
       name: 'master_mission_solution',
       desc: '',
       locale: localeName,
@@ -3675,10 +3675,10 @@ class S {
     );
   }
 
-  /// `任务列表`
+  /// `Missions`
   String get master_mission_tasklist {
     return Intl.message(
-      '任务列表',
+      'Missions',
       name: 'master_mission_tasklist',
       desc: '',
       locale: localeName,
@@ -3686,10 +3686,10 @@ class S {
     );
   }
 
-  /// `最大AP`
+  /// `Maximum AP`
   String get max_ap {
     return Intl.message(
-      '最大AP',
+      'Maximum AP',
       name: 'max_ap',
       desc: '',
       locale: localeName,
@@ -3697,10 +3697,10 @@ class S {
     );
   }
 
-  /// `更多`
+  /// `More`
   String get more {
     return Intl.message(
-      '更多',
+      'More',
       name: 'more',
       desc: '',
       locale: localeName,
@@ -3708,10 +3708,10 @@ class S {
     );
   }
 
-  /// `下移`
+  /// `Move down`
   String get move_down {
     return Intl.message(
-      '下移',
+      'Move down',
       name: 'move_down',
       desc: '',
       locale: localeName,
@@ -3719,10 +3719,10 @@ class S {
     );
   }
 
-  /// `上移`
+  /// `Move up`
   String get move_up {
     return Intl.message(
-      '上移',
+      'Move up',
       name: 'move_up',
       desc: '',
       locale: localeName,
@@ -3730,10 +3730,10 @@ class S {
     );
   }
 
-  /// `魔术礼装`
+  /// `Mystic Code`
   String get mystic_code {
     return Intl.message(
-      '魔术礼装',
+      'Mystic Code',
       name: 'mystic_code',
       desc: '',
       locale: localeName,
@@ -3741,10 +3741,10 @@ class S {
     );
   }
 
-  /// `新建账号`
+  /// `New account`
   String get new_account {
     return Intl.message(
-      '新建账号',
+      'New account',
       name: 'new_account',
       desc: '',
       locale: localeName,
@@ -3763,10 +3763,10 @@ class S {
     );
   }
 
-  /// `下一张`
+  /// `Next`
   String get next_card {
     return Intl.message(
-      '下一张',
+      'Next',
       name: 'next_card',
       desc: '',
       locale: localeName,
@@ -3796,10 +3796,10 @@ class S {
     );
   }
 
-  /// `否`
+  /// `No`
   String get no {
     return Intl.message(
-      '否',
+      'No',
       name: 'no',
       desc: '',
       locale: localeName,
@@ -3807,10 +3807,10 @@ class S {
     );
   }
 
-  /// `无幕间或强化关卡`
+  /// `There is no interlude or rank up quest`
   String get no_servant_quest_hint {
     return Intl.message(
-      '无幕间或强化关卡',
+      'There is no interlude or rank up quest',
       name: 'no_servant_quest_hint',
       desc: '',
       locale: localeName,
@@ -3818,10 +3818,10 @@ class S {
     );
   }
 
-  /// `点击♡查看所有从者任务`
+  /// `Click ♡ to view all servants' quests`
   String get no_servant_quest_hint_subtitle {
     return Intl.message(
-      '点击♡查看所有从者任务',
+      'Click ♡ to view all servants\' quests',
       name: 'no_servant_quest_hint_subtitle',
       desc: '',
       locale: localeName,
@@ -3829,10 +3829,10 @@ class S {
     );
   }
 
-  /// `宝具`
+  /// `Noble Phantasm`
   String get noble_phantasm {
     return Intl.message(
-      '宝具',
+      'Noble Phantasm',
       name: 'noble_phantasm',
       desc: '',
       locale: localeName,
@@ -3840,10 +3840,10 @@ class S {
     );
   }
 
-  /// `宝具等级`
+  /// `Noble Phantasm`
   String get noble_phantasm_level {
     return Intl.message(
-      '宝具等级',
+      'Noble Phantasm',
       name: 'noble_phantasm_level',
       desc: '',
       locale: localeName,
@@ -3873,10 +3873,10 @@ class S {
     );
   }
 
-  /// `尚未实现`
+  /// `Not yet implemented`
   String get not_implemented {
     return Intl.message(
-      '尚未实现',
+      'Not yet implemented',
       name: 'not_implemented',
       desc: '',
       locale: localeName,
@@ -3884,10 +3884,10 @@ class S {
     );
   }
 
-  /// `获取方式`
+  /// `Obtains`
   String get obtain_methods {
     return Intl.message(
-      '获取方式',
+      'Obtains',
       name: 'obtain_methods',
       desc: '',
       locale: localeName,
@@ -3895,10 +3895,10 @@ class S {
     );
   }
 
-  /// `确定`
+  /// `OK`
   String get ok {
     return Intl.message(
-      '确定',
+      'OK',
       name: 'ok',
       desc: '',
       locale: localeName,
@@ -3906,10 +3906,10 @@ class S {
     );
   }
 
-  /// `打开`
+  /// `Open`
   String get open {
     return Intl.message(
-      '打开',
+      'Open',
       name: 'open',
       desc: '',
       locale: localeName,
@@ -3917,10 +3917,10 @@ class S {
     );
   }
 
-  /// `开发条件`
+  /// `Condition`
   String get open_condition {
     return Intl.message(
-      '开发条件',
+      'Condition',
       name: 'open_condition',
       desc: '',
       locale: localeName,
@@ -3928,10 +3928,10 @@ class S {
     );
   }
 
-  /// `概览`
+  /// `Overview`
   String get overview {
     return Intl.message(
-      '概览',
+      'Overview',
       name: 'overview',
       desc: '',
       locale: localeName,
@@ -3939,10 +3939,10 @@ class S {
     );
   }
 
-  /// `覆盖`
+  /// `Override`
   String get overwrite {
     return Intl.message(
-      '覆盖',
+      'Override',
       name: 'overwrite',
       desc: '',
       locale: localeName,
@@ -3950,10 +3950,10 @@ class S {
     );
   }
 
-  /// `被动技能`
+  /// `Passive Skill`
   String get passive_skill {
     return Intl.message(
-      '被动技能',
+      'Passive Skill',
       name: 'passive_skill',
       desc: '',
       locale: localeName,
@@ -3961,10 +3961,10 @@ class S {
     );
   }
 
-  /// `更新游戏数据`
+  /// `Patch Gamedata`
   String get patch_gamedata {
     return Intl.message(
-      '更新游戏数据',
+      'Patch Gamedata',
       name: 'patch_gamedata',
       desc: '',
       locale: localeName,
@@ -3972,10 +3972,10 @@ class S {
     );
   }
 
-  /// `找不到兼容此APP版本的数据版本`
+  /// `No compatible version with current app version`
   String get patch_gamedata_error_no_compatible {
     return Intl.message(
-      '找不到兼容此APP版本的数据版本',
+      'No compatible version with current app version',
       name: 'patch_gamedata_error_no_compatible',
       desc: '',
       locale: localeName,
@@ -3983,10 +3983,10 @@ class S {
     );
   }
 
-  /// `服务器不存在当前版本，下载完整版资源ing`
+  /// `Cannot found current version on server, downloading full size package`
   String get patch_gamedata_error_unknown_version {
     return Intl.message(
-      '服务器不存在当前版本，下载完整版资源ing',
+      'Cannot found current version on server, downloading full size package',
       name: 'patch_gamedata_error_unknown_version',
       desc: '',
       locale: localeName,
@@ -3994,10 +3994,10 @@ class S {
     );
   }
 
-  /// `打补丁`
+  /// `Only patch downloaded`
   String get patch_gamedata_hint {
     return Intl.message(
-      '打补丁',
+      'Only patch downloaded',
       name: 'patch_gamedata_hint',
       desc: '',
       locale: localeName,
@@ -4005,10 +4005,10 @@ class S {
     );
   }
 
-  /// `已更新数据版本至{version}`
+  /// `Updated dataset to {version}`
   String patch_gamedata_success_to(Object version) {
     return Intl.message(
-      '已更新数据版本至$version',
+      'Updated dataset to $version',
       name: 'patch_gamedata_success_to',
       desc: '',
       locale: localeName,
@@ -4016,10 +4016,10 @@ class S {
     );
   }
 
-  /// `规划`
+  /// `Plan`
   String get plan {
     return Intl.message(
-      '规划',
+      'Plan',
       name: 'plan',
       desc: '',
       locale: localeName,
@@ -4027,10 +4027,10 @@ class S {
     );
   }
 
-  /// `规划最大化(310)`
+  /// `Plan Max(310)`
   String get plan_max10 {
     return Intl.message(
-      '规划最大化(310)',
+      'Plan Max(310)',
       name: 'plan_max10',
       desc: '',
       locale: localeName,
@@ -4038,10 +4038,10 @@ class S {
     );
   }
 
-  /// `规划最大化(999)`
+  /// `Plan Max(999)`
   String get plan_max9 {
     return Intl.message(
-      '规划最大化(999)',
+      'Plan Max(999)',
       name: 'plan_max9',
       desc: '',
       locale: localeName,
@@ -4049,10 +4049,10 @@ class S {
     );
   }
 
-  /// `规划目标`
+  /// `Plan Objective`
   String get plan_objective {
     return Intl.message(
-      '规划目标',
+      'Plan Objective',
       name: 'plan_objective',
       desc: '',
       locale: localeName,
@@ -4060,10 +4060,10 @@ class S {
     );
   }
 
-  /// `规划`
+  /// `Plan`
   String get plan_title {
     return Intl.message(
-      '规划',
+      'Plan',
       name: 'plan_title',
       desc: '',
       locale: localeName,
@@ -4071,10 +4071,10 @@ class S {
     );
   }
 
-  /// `规划{index}`
+  /// `Plan {index}`
   String plan_x(Object index) {
     return Intl.message(
-      '规划$index',
+      'Plan $index',
       name: 'plan_x',
       desc: '',
       locale: localeName,
@@ -4082,10 +4082,10 @@ class S {
     );
   }
 
-  /// `规划Free本`
+  /// `Planning Quests`
   String get planning_free_quest_btn {
     return Intl.message(
-      '规划Free本',
+      'Planning Quests',
       name: 'planning_free_quest_btn',
       desc: '',
       locale: localeName,
@@ -4126,10 +4126,10 @@ class S {
     );
   }
 
-  /// `预览`
+  /// `Preview`
   String get preview {
     return Intl.message(
-      '预览',
+      'Preview',
       name: 'preview',
       desc: '',
       locale: localeName,
@@ -4137,10 +4137,10 @@ class S {
     );
   }
 
-  /// `上一张`
+  /// `Previous`
   String get previous_card {
     return Intl.message(
-      '上一张',
+      'Previous',
       name: 'previous_card',
       desc: '',
       locale: localeName,
@@ -4148,10 +4148,10 @@ class S {
     );
   }
 
-  /// `优先级`
+  /// `Priority`
   String get priority {
     return Intl.message(
-      '优先级',
+      'Priority',
       name: 'priority',
       desc: '',
       locale: localeName,
@@ -4159,10 +4159,10 @@ class S {
     );
   }
 
-  /// `项目主页`
+  /// `Project Homepage`
   String get project_homepage {
     return Intl.message(
-      '项目主页',
+      'Project Homepage',
       name: 'project_homepage',
       desc: '',
       locale: localeName,
@@ -4170,10 +4170,10 @@ class S {
     );
   }
 
-  /// `查询失败`
+  /// `Query failed`
   String get query_failed {
     return Intl.message(
-      '查询失败',
+      'Query failed',
       name: 'query_failed',
       desc: '',
       locale: localeName,
@@ -4181,10 +4181,10 @@ class S {
     );
   }
 
-  /// `关卡`
+  /// `Quest`
   String get quest {
     return Intl.message(
-      '关卡',
+      'Quest',
       name: 'quest',
       desc: '',
       locale: localeName,
@@ -4192,10 +4192,10 @@ class S {
     );
   }
 
-  /// `开放条件`
+  /// `Conditions`
   String get quest_condition {
     return Intl.message(
-      '开放条件',
+      'Conditions',
       name: 'quest_condition',
       desc: '',
       locale: localeName,
@@ -4203,10 +4203,10 @@ class S {
     );
   }
 
-  /// `稀有度`
+  /// `Rarity`
   String get rarity {
     return Intl.message(
-      '稀有度',
+      'Rarity',
       name: 'rarity',
       desc: '',
       locale: localeName,
@@ -4214,10 +4214,10 @@ class S {
     );
   }
 
-  /// `App Store评分`
+  /// `Rate on App Store`
   String get rate_app_store {
     return Intl.message(
-      'App Store评分',
+      'Rate on App Store',
       name: 'rate_app_store',
       desc: '',
       locale: localeName,
@@ -4225,10 +4225,10 @@ class S {
     );
   }
 
-  /// `Google Play评分`
+  /// `Rate on Google Play`
   String get rate_play_store {
     return Intl.message(
-      'Google Play评分',
+      'Rate on Google Play',
       name: 'rate_play_store',
       desc: '',
       locale: localeName,
@@ -4236,10 +4236,10 @@ class S {
     );
   }
 
-  /// `下载页`
+  /// `Release Page`
   String get release_page {
     return Intl.message(
-      '下载页',
+      'Release Page',
       name: 'release_page',
       desc: '',
       locale: localeName,
@@ -4247,10 +4247,10 @@ class S {
     );
   }
 
-  /// `导入成功`
+  /// `Import successfully`
   String get reload_data_success {
     return Intl.message(
-      '导入成功',
+      'Import successfully',
       name: 'reload_data_success',
       desc: '',
       locale: localeName,
@@ -4258,10 +4258,10 @@ class S {
     );
   }
 
-  /// `重新载入预装版本`
+  /// `Reload default`
   String get reload_default_gamedata {
     return Intl.message(
-      '重新载入预装版本',
+      'Reload default',
       name: 'reload_default_gamedata',
       desc: '',
       locale: localeName,
@@ -4269,10 +4269,10 @@ class S {
     );
   }
 
-  /// `导入中`
+  /// `Importing`
   String get reloading_data {
     return Intl.message(
-      '导入中',
+      'Importing',
       name: 'reloading_data',
       desc: '',
       locale: localeName,
@@ -4280,10 +4280,10 @@ class S {
     );
   }
 
-  /// `销毁2号机`
+  /// `Remove duplicated`
   String get remove_duplicated_svt {
     return Intl.message(
-      '销毁2号机',
+      'Remove duplicated',
       name: 'remove_duplicated_svt',
       desc: '',
       locale: localeName,
@@ -4291,10 +4291,10 @@ class S {
     );
   }
 
-  /// `移出黑名单`
+  /// `Remove from blacklist`
   String get remove_from_blacklist {
     return Intl.message(
-      '移出黑名单',
+      'Remove from blacklist',
       name: 'remove_from_blacklist',
       desc: '',
       locale: localeName,
@@ -4302,10 +4302,10 @@ class S {
     );
   }
 
-  /// `重命名`
+  /// `Rename`
   String get rename {
     return Intl.message(
-      '重命名',
+      'Rename',
       name: 'rename',
       desc: '',
       locale: localeName,
@@ -4313,10 +4313,10 @@ class S {
     );
   }
 
-  /// `复刻活动`
+  /// `Rerun`
   String get rerun_event {
     return Intl.message(
-      '复刻活动',
+      'Rerun',
       name: 'rerun_event',
       desc: '',
       locale: localeName,
@@ -4324,10 +4324,10 @@ class S {
     );
   }
 
-  /// `重置`
+  /// `Reset`
   String get reset {
     return Intl.message(
-      '重置',
+      'Reset',
       name: 'reset',
       desc: '',
       locale: localeName,
@@ -4335,10 +4335,10 @@ class S {
     );
   }
 
-  /// `重置规划{n}(所有)`
+  /// `Reset Plan {n}(All)`
   String reset_plan_all(Object n) {
     return Intl.message(
-      '重置规划$n(所有)',
+      'Reset Plan $n(All)',
       name: 'reset_plan_all',
       desc: '',
       locale: localeName,
@@ -4346,10 +4346,10 @@ class S {
     );
   }
 
-  /// `重置规划{n}(已显示)`
+  /// `Reset Plan {n}(Shown)`
   String reset_plan_shown(Object n) {
     return Intl.message(
-      '重置规划$n(已显示)',
+      'Reset Plan $n(Shown)',
       name: 'reset_plan_shown',
       desc: '',
       locale: localeName,
@@ -4357,10 +4357,10 @@ class S {
     );
   }
 
-  /// `已重置`
+  /// `Reset successfully`
   String get reset_success {
     return Intl.message(
-      '已重置',
+      'Reset successfully',
       name: 'reset_success',
       desc: '',
       locale: localeName,
@@ -4368,10 +4368,10 @@ class S {
     );
   }
 
-  /// `重置强化本状态`
+  /// `Reset default skill/NP`
   String get reset_svt_enhance_state {
     return Intl.message(
-      '重置强化本状态',
+      'Reset default skill/NP',
       name: 'reset_svt_enhance_state',
       desc: '',
       locale: localeName,
@@ -4379,10 +4379,10 @@ class S {
     );
   }
 
-  /// `宝具本/技能本恢复成国服状态`
+  /// `Reset rank up of skills and noble phantasm`
   String get reset_svt_enhance_state_hint {
     return Intl.message(
-      '宝具本/技能本恢复成国服状态',
+      'Reset rank up of skills and noble phantasm',
       name: 'reset_svt_enhance_state_hint',
       desc: '',
       locale: localeName,
@@ -4401,10 +4401,10 @@ class S {
     );
   }
 
-  /// `重启以更新应用，若更新失败，请手动复制source文件夹到destination`
+  /// `Restart to upgrade. If the update fails, please manually copy the source folder to destination`
   String get restart_to_upgrade_hint {
     return Intl.message(
-      '重启以更新应用，若更新失败，请手动复制source文件夹到destination',
+      'Restart to upgrade. If the update fails, please manually copy the source folder to destination',
       name: 'restart_to_upgrade_hint',
       desc: '',
       locale: localeName,
@@ -4412,10 +4412,10 @@ class S {
     );
   }
 
-  /// `恢复`
+  /// `Restore`
   String get restore {
     return Intl.message(
-      '恢复',
+      'Restore',
       name: 'restore',
       desc: '',
       locale: localeName,
@@ -4423,10 +4423,10 @@ class S {
     );
   }
 
-  /// `攒石`
+  /// `SQ Plan`
   String get saint_quartz_plan {
     return Intl.message(
-      '攒石',
+      'SQ Plan',
       name: 'saint_quartz_plan',
       desc: '',
       locale: localeName,
@@ -4434,10 +4434,10 @@ class S {
     );
   }
 
-  /// `保存`
+  /// `Save`
   String get save {
     return Intl.message(
-      '保存',
+      'Save',
       name: 'save',
       desc: '',
       locale: localeName,
@@ -4445,10 +4445,10 @@ class S {
     );
   }
 
-  /// `保存到相册`
+  /// `Save to Photos`
   String get save_to_photos {
     return Intl.message(
-      '保存到相册',
+      'Save to Photos',
       name: 'save_to_photos',
       desc: '',
       locale: localeName,
@@ -4456,10 +4456,10 @@ class S {
     );
   }
 
-  /// `已保存`
+  /// `Saved`
   String get saved {
     return Intl.message(
-      '已保存',
+      'Saved',
       name: 'saved',
       desc: '',
       locale: localeName,
@@ -4478,10 +4478,10 @@ class S {
     );
   }
 
-  /// `搜索`
+  /// `Search`
   String get search {
     return Intl.message(
-      '搜索',
+      'Search',
       name: 'search',
       desc: '',
       locale: localeName,
@@ -4489,10 +4489,10 @@ class S {
     );
   }
 
-  /// `基础信息`
+  /// `Basic`
   String get search_option_basic {
     return Intl.message(
-      '基础信息',
+      'Basic',
       name: 'search_option_basic',
       desc: '',
       locale: localeName,
@@ -4500,10 +4500,10 @@ class S {
     );
   }
 
-  /// `搜索范围`
+  /// `Search Scopes`
   String get search_options {
     return Intl.message(
-      '搜索范围',
+      'Search Scopes',
       name: 'search_options',
       desc: '',
       locale: localeName,
@@ -4511,10 +4511,10 @@ class S {
     );
   }
 
-  /// `总计: {total}`
+  /// `Total {total} results`
   String search_result_count(Object total) {
     return Intl.message(
-      '总计: $total',
+      'Total $total results',
       name: 'search_result_count',
       desc: '',
       locale: localeName,
@@ -4522,10 +4522,10 @@ class S {
     );
   }
 
-  /// `总计: {total} (隐藏: {hidden})`
+  /// `Total {total} results ({hidden} hidden)`
   String search_result_count_hide(Object total, Object hidden) {
     return Intl.message(
-      '总计: $total (隐藏: $hidden)',
+      'Total $total results ($hidden hidden)',
       name: 'search_result_count_hide',
       desc: '',
       locale: localeName,
@@ -4533,10 +4533,10 @@ class S {
     );
   }
 
-  /// `选择复制来源`
+  /// `Select copy source`
   String get select_copy_plan_source {
     return Intl.message(
-      '选择复制来源',
+      'Select copy source',
       name: 'select_copy_plan_source',
       desc: '',
       locale: localeName,
@@ -4555,10 +4555,10 @@ class S {
     );
   }
 
-  /// `选择规划`
+  /// `Select Plan`
   String get select_plan {
     return Intl.message(
-      '选择规划',
+      'Select Plan',
       name: 'select_plan',
       desc: '',
       locale: localeName,
@@ -4566,10 +4566,10 @@ class S {
     );
   }
 
-  /// `从者`
+  /// `Servant`
   String get servant {
     return Intl.message(
-      '从者',
+      'Servant',
       name: 'servant',
       desc: '',
       locale: localeName,
@@ -4577,10 +4577,10 @@ class S {
     );
   }
 
-  /// `从者硬币`
+  /// `Servant Coin`
   String get servant_coin {
     return Intl.message(
-      '从者硬币',
+      'Servant Coin',
       name: 'servant_coin',
       desc: '',
       locale: localeName,
@@ -4588,10 +4588,10 @@ class S {
     );
   }
 
-  /// `从者详情页`
+  /// `Servant Detail Page`
   String get servant_detail_page {
     return Intl.message(
-      '从者详情页',
+      'Servant Detail Page',
       name: 'servant_detail_page',
       desc: '',
       locale: localeName,
@@ -4599,10 +4599,10 @@ class S {
     );
   }
 
-  /// `从者列表页`
+  /// `Servant List Page`
   String get servant_list_page {
     return Intl.message(
-      '从者列表页',
+      'Servant List Page',
       name: 'servant_list_page',
       desc: '',
       locale: localeName,
@@ -4610,10 +4610,10 @@ class S {
     );
   }
 
-  /// `从者`
+  /// `Servant`
   String get servant_title {
     return Intl.message(
-      '从者',
+      'Servant',
       name: 'servant_title',
       desc: '',
       locale: localeName,
@@ -4621,10 +4621,10 @@ class S {
     );
   }
 
-  /// `设置规划名称`
+  /// `Set Plan Name`
   String get set_plan_name {
     return Intl.message(
-      '设置规划名称',
+      'Set Plan Name',
       name: 'set_plan_name',
       desc: '',
       locale: localeName,
@@ -4632,10 +4632,10 @@ class S {
     );
   }
 
-  /// `置顶显示`
+  /// `Always On Top`
   String get setting_always_on_top {
     return Intl.message(
-      '置顶显示',
+      'Always On Top',
       name: 'setting_always_on_top',
       desc: '',
       locale: localeName,
@@ -4643,10 +4643,10 @@ class S {
     );
   }
 
-  /// `自动旋转`
+  /// `Auto Rotate`
   String get setting_auto_rotate {
     return Intl.message(
-      '自动旋转',
+      'Auto Rotate',
       name: 'setting_auto_rotate',
       desc: '',
       locale: localeName,
@@ -4665,10 +4665,10 @@ class S {
     );
   }
 
-  /// `首页-规划列表页`
+  /// `Home-Plan List Page`
   String get setting_home_plan_list_page {
     return Intl.message(
-      '首页-规划列表页',
+      'Home-Plan List Page',
       name: 'setting_home_plan_list_page',
       desc: '',
       locale: localeName,
@@ -4676,10 +4676,10 @@ class S {
     );
   }
 
-  /// `仅更改附加技能2`
+  /// `Only Change 2nd Append Skill`
   String get setting_only_change_second_append_skill {
     return Intl.message(
-      '仅更改附加技能2',
+      'Only Change 2nd Append Skill',
       name: 'setting_only_change_second_append_skill',
       desc: '',
       locale: localeName,
@@ -4698,10 +4698,10 @@ class S {
     );
   }
 
-  /// `优先级备注`
+  /// `Priority Tagging`
   String get setting_priority_tagging {
     return Intl.message(
-      '优先级备注',
+      'Priority Tagging',
       name: 'setting_priority_tagging',
       desc: '',
       locale: localeName,
@@ -4709,10 +4709,10 @@ class S {
     );
   }
 
-  /// `从者职阶筛选样式`
+  /// `Servant Class Filter Style`
   String get setting_servant_class_filter_style {
     return Intl.message(
-      '从者职阶筛选样式',
+      'Servant Class Filter Style',
       name: 'setting_servant_class_filter_style',
       desc: '',
       locale: localeName,
@@ -4720,10 +4720,10 @@ class S {
     );
   }
 
-  /// `「关注」按钮默认筛选`
+  /// `Favorite Button Default`
   String get setting_setting_favorite_button_default {
     return Intl.message(
-      '「关注」按钮默认筛选',
+      'Favorite Button Default',
       name: 'setting_setting_favorite_button_default',
       desc: '',
       locale: localeName,
@@ -4731,10 +4731,10 @@ class S {
     );
   }
 
-  /// `首页显示当前账号`
+  /// `Show Account at Homepage`
   String get setting_show_account_at_homepage {
     return Intl.message(
-      '首页显示当前账号',
+      'Show Account at Homepage',
       name: 'setting_show_account_at_homepage',
       desc: '',
       locale: localeName,
@@ -4742,10 +4742,10 @@ class S {
     );
   }
 
-  /// `标签页排序`
+  /// `Tabs Sorting`
   String get setting_tabs_sorting {
     return Intl.message(
-      '标签页排序',
+      'Tabs Sorting',
       name: 'setting_tabs_sorting',
       desc: '',
       locale: localeName,
@@ -4753,10 +4753,10 @@ class S {
     );
   }
 
-  /// `数据`
+  /// `Data`
   String get settings_data {
     return Intl.message(
-      '数据',
+      'Data',
       name: 'settings_data',
       desc: '',
       locale: localeName,
@@ -4764,10 +4764,10 @@ class S {
     );
   }
 
-  /// `数据管理`
+  /// `Data Management`
   String get settings_data_management {
     return Intl.message(
-      '数据管理',
+      'Data Management',
       name: 'settings_data_management',
       desc: '',
       locale: localeName,
@@ -4775,10 +4775,10 @@ class S {
     );
   }
 
-  /// `使用文档`
+  /// `Documents`
   String get settings_documents {
     return Intl.message(
-      '使用文档',
+      'Documents',
       name: 'settings_documents',
       desc: '',
       locale: localeName,
@@ -4786,10 +4786,10 @@ class S {
     );
   }
 
-  /// `通用`
+  /// `General`
   String get settings_general {
     return Intl.message(
-      '通用',
+      'General',
       name: 'settings_general',
       desc: '',
       locale: localeName,
@@ -4797,10 +4797,10 @@ class S {
     );
   }
 
-  /// `语言`
+  /// `Language`
   String get settings_language {
     return Intl.message(
-      '语言',
+      'Language',
       name: 'settings_language',
       desc: '',
       locale: localeName,
@@ -4808,10 +4808,10 @@ class S {
     );
   }
 
-  /// `设置`
+  /// `Settings`
   String get settings_tab_name {
     return Intl.message(
-      '设置',
+      'Settings',
       name: 'settings_tab_name',
       desc: '',
       locale: localeName,
@@ -4819,10 +4819,10 @@ class S {
     );
   }
 
-  /// `使用移动数据下载`
+  /// `Allow mobile network`
   String get settings_use_mobile_network {
     return Intl.message(
-      '使用移动数据下载',
+      'Allow mobile network',
       name: 'settings_use_mobile_network',
       desc: '',
       locale: localeName,
@@ -4830,10 +4830,10 @@ class S {
     );
   }
 
-  /// `更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置`
+  /// `Backup userdata before upgrading application, and move backups to safe locations outside app's document folder`
   String get settings_userdata_footer {
     return Intl.message(
-      '更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置',
+      'Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder',
       name: 'settings_userdata_footer',
       desc: '',
       locale: localeName,
@@ -4841,10 +4841,10 @@ class S {
     );
   }
 
-  /// `分享`
+  /// `Share`
   String get share {
     return Intl.message(
-      '分享',
+      'Share',
       name: 'share',
       desc: '',
       locale: localeName,
@@ -4863,10 +4863,10 @@ class S {
     );
   }
 
-  /// `显示已过期`
+  /// `Show Outdated`
   String get show_outdated {
     return Intl.message(
-      '显示已过期',
+      'Show Outdated',
       name: 'show_outdated',
       desc: '',
       locale: localeName,
@@ -4874,10 +4874,10 @@ class S {
     );
   }
 
-  /// `银`
+  /// `Silver`
   String get silver {
     return Intl.message(
-      '银',
+      'Silver',
       name: 'silver',
       desc: '',
       locale: localeName,
@@ -4885,10 +4885,10 @@ class S {
     );
   }
 
-  /// `模拟器`
+  /// `Simulator`
   String get simulator {
     return Intl.message(
-      '模拟器',
+      'Simulator',
       name: 'simulator',
       desc: '',
       locale: localeName,
@@ -4896,10 +4896,10 @@ class S {
     );
   }
 
-  /// `技能`
+  /// `Skill`
   String get skill {
     return Intl.message(
-      '技能',
+      'Skill',
       name: 'skill',
       desc: '',
       locale: localeName,
@@ -4907,10 +4907,10 @@ class S {
     );
   }
 
-  /// `技能升级`
+  /// `Skill Up`
   String get skill_up {
     return Intl.message(
-      '技能升级',
+      'Skill Up',
       name: 'skill_up',
       desc: '',
       locale: localeName,
@@ -4918,10 +4918,10 @@ class S {
     );
   }
 
-  /// `练度最大化(310)`
+  /// `Skills Max(310)`
   String get skilled_max10 {
     return Intl.message(
-      '练度最大化(310)',
+      'Skills Max(310)',
       name: 'skilled_max10',
       desc: '',
       locale: localeName,
@@ -4929,10 +4929,10 @@ class S {
     );
   }
 
-  /// `模型`
+  /// `Sprites`
   String get sprites {
     return Intl.message(
-      '模型',
+      'Sprites',
       name: 'sprites',
       desc: '',
       locale: localeName,
@@ -4940,10 +4940,10 @@ class S {
     );
   }
 
-  /// `包含现有素材`
+  /// `Including owned items`
   String get statistics_include_checkbox {
     return Intl.message(
-      '包含现有素材',
+      'Including owned items',
       name: 'statistics_include_checkbox',
       desc: '',
       locale: localeName,
@@ -4951,10 +4951,10 @@ class S {
     );
   }
 
-  /// `统计`
+  /// `Statistics`
   String get statistics_title {
     return Intl.message(
-      '统计',
+      'Statistics',
       name: 'statistics_title',
       desc: '',
       locale: localeName,
@@ -4962,10 +4962,10 @@ class S {
     );
   }
 
-  /// `储存权限`
+  /// `Storage Permission`
   String get storage_permission_title {
     return Intl.message(
-      '储存权限',
+      'Storage Permission',
       name: 'storage_permission_title',
       desc: '',
       locale: localeName,
@@ -4973,10 +4973,10 @@ class S {
     );
   }
 
-  /// `成功`
+  /// `Success`
   String get success {
     return Intl.message(
-      '成功',
+      'Success',
       name: 'success',
       desc: '',
       locale: localeName,
@@ -4984,10 +4984,10 @@ class S {
     );
   }
 
-  /// `卡池`
+  /// `Summon`
   String get summon {
     return Intl.message(
-      '卡池',
+      'Summon',
       name: 'summon',
       desc: '',
       locale: localeName,
@@ -4995,10 +4995,10 @@ class S {
     );
   }
 
-  /// `抽卡模拟器`
+  /// `Summon Simulator`
   String get summon_simulator {
     return Intl.message(
-      '抽卡模拟器',
+      'Summon Simulator',
       name: 'summon_simulator',
       desc: '',
       locale: localeName,
@@ -5006,10 +5006,10 @@ class S {
     );
   }
 
-  /// `卡池一览`
+  /// `Summons`
   String get summon_title {
     return Intl.message(
-      '卡池一览',
+      'Summons',
       name: 'summon_title',
       desc: '',
       locale: localeName,
@@ -5017,10 +5017,10 @@ class S {
     );
   }
 
-  /// `支持与捐赠`
+  /// `Support and Donation`
   String get support_chaldea {
     return Intl.message(
-      '支持与捐赠',
+      'Support and Donation',
       name: 'support_chaldea',
       desc: '',
       locale: localeName,
@@ -5028,10 +5028,10 @@ class S {
     );
   }
 
-  /// `助战编制`
+  /// `Support Setup`
   String get support_party {
     return Intl.message(
-      '助战编制',
+      'Support Setup',
       name: 'support_party',
       desc: '',
       locale: localeName,
@@ -5039,10 +5039,10 @@ class S {
     );
   }
 
-  /// `基础资料`
+  /// `Basic Info`
   String get svt_info_tab_base {
     return Intl.message(
-      '基础资料',
+      'Basic Info',
       name: 'svt_info_tab_base',
       desc: '',
       locale: localeName,
@@ -5050,10 +5050,10 @@ class S {
     );
   }
 
-  /// `羁绊故事`
+  /// `Lore`
   String get svt_info_tab_bond_story {
     return Intl.message(
-      '羁绊故事',
+      'Lore',
       name: 'svt_info_tab_bond_story',
       desc: '',
       locale: localeName,
@@ -5061,10 +5061,10 @@ class S {
     );
   }
 
-  /// `未关注`
+  /// `Not favorite`
   String get svt_not_planned {
     return Intl.message(
-      '未关注',
+      'Not favorite',
       name: 'svt_not_planned',
       desc: '',
       locale: localeName,
@@ -5072,10 +5072,10 @@ class S {
     );
   }
 
-  /// `活动赠送`
+  /// `Event`
   String get svt_obtain_event {
     return Intl.message(
-      '活动赠送',
+      'Event',
       name: 'svt_obtain_event',
       desc: '',
       locale: localeName,
@@ -5083,10 +5083,10 @@ class S {
     );
   }
 
-  /// `友情点召唤`
+  /// `FriendPoint`
   String get svt_obtain_friend_point {
     return Intl.message(
-      '友情点召唤',
+      'FriendPoint',
       name: 'svt_obtain_friend_point',
       desc: '',
       locale: localeName,
@@ -5094,10 +5094,10 @@ class S {
     );
   }
 
-  /// `初始获得`
+  /// `Initial`
   String get svt_obtain_initial {
     return Intl.message(
-      '初始获得',
+      'Initial',
       name: 'svt_obtain_initial',
       desc: '',
       locale: localeName,
@@ -5105,10 +5105,10 @@ class S {
     );
   }
 
-  /// `期间限定`
+  /// `Limited`
   String get svt_obtain_limited {
     return Intl.message(
-      '期间限定',
+      'Limited',
       name: 'svt_obtain_limited',
       desc: '',
       locale: localeName,
@@ -5116,10 +5116,10 @@ class S {
     );
   }
 
-  /// `圣晶石常驻`
+  /// `Summon`
   String get svt_obtain_permanent {
     return Intl.message(
-      '圣晶石常驻',
+      'Summon',
       name: 'svt_obtain_permanent',
       desc: '',
       locale: localeName,
@@ -5127,10 +5127,10 @@ class S {
     );
   }
 
-  /// `剧情限定`
+  /// `Story`
   String get svt_obtain_story {
     return Intl.message(
-      '剧情限定',
+      'Story',
       name: 'svt_obtain_story',
       desc: '',
       locale: localeName,
@@ -5138,10 +5138,10 @@ class S {
     );
   }
 
-  /// `无法召唤`
+  /// `Unavailable`
   String get svt_obtain_unavailable {
     return Intl.message(
-      '无法召唤',
+      'Unavailable',
       name: 'svt_obtain_unavailable',
       desc: '',
       locale: localeName,
@@ -5149,10 +5149,10 @@ class S {
     );
   }
 
-  /// `已隐藏`
+  /// `Hidden`
   String get svt_plan_hidden {
     return Intl.message(
-      '已隐藏',
+      'Hidden',
       name: 'svt_plan_hidden',
       desc: '',
       locale: localeName,
@@ -5160,10 +5160,10 @@ class S {
     );
   }
 
-  /// `出场礼装/纹章`
+  /// `Related Cards`
   String get svt_related_cards {
     return Intl.message(
-      '出场礼装/纹章',
+      'Related Cards',
       name: 'svt_related_cards',
       desc: '',
       locale: localeName,
@@ -5171,10 +5171,10 @@ class S {
     );
   }
 
-  /// `重置规划`
+  /// `Reset Plan`
   String get svt_reset_plan {
     return Intl.message(
-      '重置规划',
+      'Reset Plan',
       name: 'svt_reset_plan',
       desc: '',
       locale: localeName,
@@ -5182,10 +5182,10 @@ class S {
     );
   }
 
-  /// `切换滑动条/下拉框`
+  /// `Switch Slider/Dropdown`
   String get svt_switch_slider_dropdown {
     return Intl.message(
-      '切换滑动条/下拉框',
+      'Switch Slider/Dropdown',
       name: 'svt_switch_slider_dropdown',
       desc: '',
       locale: localeName,
@@ -5193,10 +5193,10 @@ class S {
     );
   }
 
-  /// `同步{server}`
+  /// `Sync with {server}`
   String sync_server(Object server) {
     return Intl.message(
-      '同步$server',
+      'Sync with $server',
       name: 'sync_server',
       desc: '',
       locale: localeName,
@@ -5226,10 +5226,10 @@ class S {
     );
   }
 
-  /// `刷新轮播图`
+  /// `Refresh slides`
   String get tooltip_refresh_sliders {
     return Intl.message(
-      '刷新轮播图',
+      'Refresh slides',
       name: 'tooltip_refresh_sliders',
       desc: '',
       locale: localeName,
@@ -5237,10 +5237,10 @@ class S {
     );
   }
 
-  /// `总AP`
+  /// `Total AP`
   String get total_ap {
     return Intl.message(
-      '总AP',
+      'Total AP',
       name: 'total_ap',
       desc: '',
       locale: localeName,
@@ -5248,10 +5248,10 @@ class S {
     );
   }
 
-  /// `总数`
+  /// `Total counts`
   String get total_counts {
     return Intl.message(
-      '总数',
+      'Total counts',
       name: 'total_counts',
       desc: '',
       locale: localeName,
@@ -5281,10 +5281,10 @@ class S {
     );
   }
 
-  /// `更新`
+  /// `Update`
   String get update {
     return Intl.message(
-      '更新',
+      'Update',
       name: 'update',
       desc: '',
       locale: localeName,
@@ -5292,10 +5292,10 @@ class S {
     );
   }
 
-  /// `已经是最新版本`
+  /// `Already the latest version`
   String get update_already_latest {
     return Intl.message(
-      '已经是最新版本',
+      'Already the latest version',
       name: 'update_already_latest',
       desc: '',
       locale: localeName,
@@ -5303,10 +5303,10 @@ class S {
     );
   }
 
-  /// `更新资源包`
+  /// `Update Dataset`
   String get update_dataset {
     return Intl.message(
-      '更新资源包',
+      'Update Dataset',
       name: 'update_dataset',
       desc: '',
       locale: localeName,
@@ -5358,10 +5358,10 @@ class S {
     );
   }
 
-  /// `上传`
+  /// `Upload`
   String get upload {
     return Intl.message(
-      '上传',
+      'Upload',
       name: 'upload',
       desc: '',
       locale: localeName,
@@ -5369,10 +5369,10 @@ class S {
     );
   }
 
-  /// `用户数据`
+  /// `Userdata`
   String get userdata {
     return Intl.message(
-      '用户数据',
+      'Userdata',
       name: 'userdata',
       desc: '',
       locale: localeName,
@@ -5380,10 +5380,10 @@ class S {
     );
   }
 
-  /// `用户数据已清空`
+  /// `Userdata cleared`
   String get userdata_cleared {
     return Intl.message(
-      '用户数据已清空',
+      'Userdata cleared',
       name: 'userdata_cleared',
       desc: '',
       locale: localeName,
@@ -5391,10 +5391,10 @@ class S {
     );
   }
 
-  /// `下载备份`
+  /// `Download Backup`
   String get userdata_download_backup {
     return Intl.message(
-      '下载备份',
+      'Download Backup',
       name: 'userdata_download_backup',
       desc: '',
       locale: localeName,
@@ -5402,10 +5402,10 @@ class S {
     );
   }
 
-  /// `选择一个备份`
+  /// `Choose one backup`
   String get userdata_download_choose_backup {
     return Intl.message(
-      '选择一个备份',
+      'Choose one backup',
       name: 'userdata_download_choose_backup',
       desc: '',
       locale: localeName,
@@ -5413,10 +5413,10 @@ class S {
     );
   }
 
-  /// `同步数据`
+  /// `Data synchronization`
   String get userdata_sync {
     return Intl.message(
-      '同步数据',
+      'Data synchronization',
       name: 'userdata_sync',
       desc: '',
       locale: localeName,
@@ -5424,10 +5424,10 @@ class S {
     );
   }
 
-  /// `上传备份`
+  /// `Upload Backup`
   String get userdata_upload_backup {
     return Intl.message(
-      '上传备份',
+      'Upload Backup',
       name: 'userdata_upload_backup',
       desc: '',
       locale: localeName,
@@ -5435,10 +5435,10 @@ class S {
     );
   }
 
-  /// `情人节礼装`
+  /// `Valentine craft`
   String get valentine_craft {
     return Intl.message(
-      '情人节礼装',
+      'Valentine craft',
       name: 'valentine_craft',
       desc: '',
       locale: localeName,
@@ -5446,10 +5446,10 @@ class S {
     );
   }
 
-  /// `版本`
+  /// `Version`
   String get version {
     return Intl.message(
-      '版本',
+      'Version',
       name: 'version',
       desc: '',
       locale: localeName,
@@ -5457,10 +5457,10 @@ class S {
     );
   }
 
-  /// `查看卡面`
+  /// `View Illustration`
   String get view_illustration {
     return Intl.message(
-      '查看卡面',
+      'View Illustration',
       name: 'view_illustration',
       desc: '',
       locale: localeName,
@@ -5468,10 +5468,10 @@ class S {
     );
   }
 
-  /// `语音`
+  /// `Voice`
   String get voice {
     return Intl.message(
-      '语音',
+      'Voice',
       name: 'voice',
       desc: '',
       locale: localeName,
@@ -5501,10 +5501,10 @@ class S {
     );
   }
 
-  /// `{a}{b}`
+  /// `{a} {b}`
   String words_separate(Object a, Object b) {
     return Intl.message(
-      '$a$b',
+      '$a $b',
       name: 'words_separate',
       desc: '',
       locale: localeName,
@@ -5512,10 +5512,10 @@ class S {
     );
   }
 
-  /// `是`
+  /// `Yes`
   String get yes {
     return Intl.message(
-      '是',
+      'Yes',
       name: 'yes',
       desc: '',
       locale: localeName,
@@ -5529,12 +5529,12 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale.fromSubtags(languageCode: 'zh'),
-      Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'es'),
       Locale.fromSubtags(languageCode: 'ja'),
       Locale.fromSubtags(languageCode: 'ko'),
+      Locale.fromSubtags(languageCode: 'zh'),
       Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
     ];
   }
