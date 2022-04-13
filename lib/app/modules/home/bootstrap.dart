@@ -82,6 +82,8 @@ class _BootstrapPageState extends State<BootstrapPage>
       controller: _pageController,
       children: pages,
       onPageChanged: (i) {
+        FocusScope.of(context)
+            .requestFocus(FocusNode()); //Dismiss keyboard on page change
         setState(() {
           page = i;
         });
@@ -92,10 +94,12 @@ class _BootstrapPageState extends State<BootstrapPage>
       child = Stack(children: [child, _bottom()]);
     }
     return Scaffold(
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 768),
-          child: child,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 768),
+            child: child,
+          ),
         ),
       ),
     );
