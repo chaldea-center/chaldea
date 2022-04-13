@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
-        "boostrap_page_title":
+        "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Página de Arranque"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronce"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Peso"),

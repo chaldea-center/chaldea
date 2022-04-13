@@ -255,7 +255,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text(S.current.boostrap_page_title),
+                title: Text(S.current.bootstrap_page_title),
                 onTap: () {
                   db2.settings.tips.starter = true;
                   rootRouter.appState.dataReady = false;

@@ -126,7 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
-        "boostrap_page_title":
+        "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),

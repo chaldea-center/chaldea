@@ -120,7 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("인연"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("인연예장"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("인연 효율"),
-        "boostrap_page_title":
+        "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("동색"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("몸무게"),

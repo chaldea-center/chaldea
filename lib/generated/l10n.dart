@@ -535,10 +535,10 @@ class S {
   }
 
   /// `Bootstrap Page`
-  String get boostrap_page_title {
+  String get bootstrap_page_title {
     return Intl.message(
       'Bootstrap Page',
-      name: 'boostrap_page_title',
+      name: 'bootstrap_page_title',
       desc: '',
       locale: localeName,
       args: [],
