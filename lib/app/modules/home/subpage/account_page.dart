@@ -125,7 +125,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void moveUser(int key, int dx) {
-    int newIndex = dx < 0 ? key - dx : key + dx - 1;
+    int newIndex = key + dx;
     final user = users.removeAt(key);
     users.insert(newIndex, user);
     db2.userData.curUserKey = users.indexOf(user);

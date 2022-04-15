@@ -43,7 +43,7 @@ class _Database {
   ItemCenter itemCenter = ItemCenter();
 
   // shortcut
-  User get curUser => userData.users[userData.curUserKey];
+  User get curUser => userData.curUser;
 
   Map<int, SvtPlan> get curPlan => curUser.curPlan;
   VoidCallback notifyAppUpdate = _emptyCallback;

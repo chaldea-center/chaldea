@@ -21,11 +21,20 @@ class UserData {
 
   final int version;
 
-  int get curUserKey => _curUserKey;
+  int get curUserKey {
+    if (users.isEmpty) users.add(User());
+    if (_curUserKey < 0 || _curUserKey >= users.length) {
+      _curUserKey = 0;
+    }
+    return _curUserKey;
+  }
+
   int _curUserKey;
   set curUserKey(int v) {
     _curUserKey = v.clamp(0, users.length - 1);
   }
+
+  User get curUser => users[curUserKey];
 
   List<User> users;
   List<int> itemAbundantValue;

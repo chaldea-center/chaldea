@@ -23,7 +23,7 @@ There are plenty of work need to do.
 ## Quest Related
 
 - [x] add `runs/samples` hint for drop data, both domus-aurea and rayshift
-- [ ] add AP rate and drop rate toggle for both
+- [x] add AP rate and drop rate toggle for both
 - [x] only show last phase for free quest
 - [x] QuestEnemy detail page
 - [ ] add AI link
