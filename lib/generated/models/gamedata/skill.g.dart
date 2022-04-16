@@ -666,8 +666,8 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
               ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      svals: (json['svals'] as List<dynamic>)
-          .map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
+      svals: (json['svals'] as List<dynamic>?)
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       svals2: (json['svals2'] as List<dynamic>?)
           ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))

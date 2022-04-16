@@ -171,7 +171,6 @@ class _Database {
 
   Future<List<String>> backupUserdata(
       {bool disk = false, bool memory = true}) async {
-    if (PlatformU.isWeb) return [];
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
 
     List<String> _saved = [];
@@ -185,6 +184,9 @@ class _Database {
       String filename = timeStamp + (obj is FilePlus ? 'd' : 'm') + '.json';
       await FilePlus(joinPaths(paths.backupDir, filename)).writeAsBytes(obj);
       _saved.add(filename);
+    }
+    if (_saved.isNotEmpty) {
+      db2.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     }
     return _saved;
   }

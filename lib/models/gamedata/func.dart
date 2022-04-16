@@ -43,13 +43,13 @@ class NiceFunction implements BaseFunction {
     this.funcGroup = const [],
     this.traitVals = const [],
     this.buffs = const [],
-    required this.svals,
+    List<DataVals>? svals,
     this.svals2,
     this.svals3,
     this.svals4,
     this.svals5,
     this.followerVals,
-  });
+  }) : svals = svals ?? [];
 
   List<List<DataVals>?> get svalsList =>
       [svals, svals2, svals3, svals4, svals5];

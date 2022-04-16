@@ -133,6 +133,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     if (PlatformU.isWindows) {
       MethodChannelChaldeaNext.setWindowPos();
     }
+    if (DateTime.now().millisecondsSinceEpoch ~/ 1000 -
+            db2.settings.lastBackup >
+        24 * 3600) {
+      db2.backupUserdata();
+    }
   }
 }
 

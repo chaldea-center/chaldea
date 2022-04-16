@@ -21,6 +21,7 @@ class LocalSettings {
   bool alwaysOnTop;
   List<int>? windowPosition;
   int launchTimes;
+  int lastBackup;
   ThemeMode themeMode;
   String? _language;
   List<Region>? preferredRegions;
@@ -54,6 +55,7 @@ class LocalSettings {
     this.alwaysOnTop = false,
     this.windowPosition,
     this.launchTimes = 1,
+    this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     String? language,
     List<Region>? preferredRegions,

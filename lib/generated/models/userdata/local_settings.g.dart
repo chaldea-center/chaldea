@@ -21,6 +21,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           windowPosition: $checkedConvert('windowPosition',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 1),
+          lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
           themeMode: $checkedConvert(
               'themeMode',
               (v) =>
@@ -110,6 +111,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'alwaysOnTop': instance.alwaysOnTop,
       'windowPosition': instance.windowPosition,
       'launchTimes': instance.launchTimes,
+      'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'preferredRegions':
           instance.preferredRegions?.map((e) => _$RegionEnumMap[e]).toList(),
