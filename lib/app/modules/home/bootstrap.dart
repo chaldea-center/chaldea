@@ -217,10 +217,10 @@ class _BootstrapPageState extends State<BootstrapPage>
             child: TextField(
               controller: _accountEditing,
               decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: S.current.account_title,
-                  hintText: S.current.create_account_textfield_hint,
-                  helperText: S.current.create_account_textfield_helper),
+                border: const OutlineInputBorder(),
+                labelText: S.current.account_title,
+                helperText: S.current.create_account_textfield_helper,
+              ),
             ),
           ),
           const SizedBox(height: 8),

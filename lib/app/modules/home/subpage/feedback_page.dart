@@ -105,7 +105,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   onTap: () => launch('$kProjectHomepage/issues'),
                 ),
                 ListTile(
-                  title: Text(S.current.nga),
+                  title: const Text('NGA'),
                   subtitle:
                       const Text('https://bbs.nga.cn/read.php?tid=24926789'),
                   onTap: () =>

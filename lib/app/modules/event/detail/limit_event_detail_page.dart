@@ -196,7 +196,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           plan.fixedDrop = v;
           event.updateStat();
         },
-        title: S.current.main_record_fixed_drop,
+        title: S.current.quest_fixed_drop,
         items: event.itemWarDrop,
       ));
     }

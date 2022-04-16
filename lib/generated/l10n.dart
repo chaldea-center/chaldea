@@ -104,17 +104,6 @@ class S {
     );
   }
 
-  /// `App Store Rating`
-  String get about_appstore_rating {
-    return Intl.message(
-      'App Store Rating',
-      name: 'about_appstore_rating',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Data source`
   String get about_data_source {
     return Intl.message(
@@ -137,55 +126,11 @@ class S {
     );
   }
 
-  /// `Please send screenshot and log file to email:\n {email}\nLog filepath: {logPath}`
-  String about_email_dialog(Object email, Object logPath) {
-    return Intl.message(
-      'Please send screenshot and log file to email:\n $email\nLog filepath: $logPath',
-      name: 'about_email_dialog',
-      desc: '',
-      locale: localeName,
-      args: [email, logPath],
-    );
-  }
-
-  /// `Please attach screenshot and log file`
-  String get about_email_subtitle {
-    return Intl.message(
-      'Please attach screenshot and log file',
-      name: 'about_email_subtitle',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Feedback`
   String get about_feedback {
     return Intl.message(
       'Feedback',
       name: 'about_feedback',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `App Update`
-  String get about_update_app {
-    return Intl.message(
-      'App Update',
-      name: 'about_update_app',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Please check update in App Store`
-  String get about_update_app_alert_ios_mac {
-    return Intl.message(
-      'Please check update in App Store',
-      name: 'about_update_app_alert_ios_mac',
       desc: '',
       locale: localeName,
       args: [],
@@ -270,44 +215,11 @@ class S {
     );
   }
 
-  /// `口算不及格的咕朗台.jpg`
-  String get ap_calc_page_joke {
-    return Intl.message(
-      '口算不及格的咕朗台.jpg',
-      name: 'ap_calc_page_joke',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `AP Calc`
-  String get ap_calc_title {
-    return Intl.message(
-      'AP Calc',
-      name: 'ap_calc_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `AP rate`
   String get ap_efficiency {
     return Intl.message(
       'AP rate',
       name: 'ap_efficiency',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Time of AP Full`
-  String get ap_overflow_time {
-    return Intl.message(
-      'Time of AP Full',
-      name: 'ap_overflow_time',
       desc: '',
       locale: localeName,
       args: [],
@@ -457,33 +369,11 @@ class S {
     );
   }
 
-  /// `Timely backup wanted`
-  String get backup_data_alert {
-    return Intl.message(
-      'Timely backup wanted',
-      name: 'backup_data_alert',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Backup History`
   String get backup_history {
     return Intl.message(
       'Backup History',
       name: 'backup_history',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Backup successfully`
-  String get backup_success {
-    return Intl.message(
-      'Backup successfully',
-      name: 'backup_success',
       desc: '',
       locale: localeName,
       args: [],
@@ -561,39 +451,6 @@ class S {
     return Intl.message(
       'Wight',
       name: 'calc_weight',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Calculate`
-  String get calculate {
-    return Intl.message(
-      'Calculate',
-      name: 'calculate',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Calculator`
-  String get calculator {
-    return Intl.message(
-      'Calculator',
-      name: 'calculator',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Campaign`
-  String get campaign_event {
-    return Intl.message(
-      'Campaign',
-      name: 'campaign_event',
       desc: '',
       locale: localeName,
       args: [],
@@ -688,17 +545,6 @@ class S {
     );
   }
 
-  /// `Choose Free Quest`
-  String get choose_quest_hint {
-    return Intl.message(
-      'Choose Free Quest',
-      name: 'choose_quest_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Clear`
   String get clear {
     return Intl.message(
@@ -748,28 +594,6 @@ class S {
     return Intl.message(
       'Clear Data',
       name: 'clear_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Clear Userdata`
-  String get clear_userdata {
-    return Intl.message(
-      'Clear Userdata',
-      name: 'clear_userdata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Command Code`
-  String get cmd_code_title {
-    return Intl.message(
-      'Command Code',
-      name: 'cmd_code_title',
       desc: '',
       locale: localeName,
       args: [],
@@ -908,33 +732,11 @@ class S {
     );
   }
 
-  /// `Craft`
-  String get craft_essence_title {
-    return Intl.message(
-      'Craft',
-      name: 'craft_essence_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `You can add more accounts later in Settings`
   String get create_account_textfield_helper {
     return Intl.message(
       'You can add more accounts later in Settings',
       name: 'create_account_textfield_helper',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Any name`
-  String get create_account_textfield_hint {
-    return Intl.message(
-      'Any name',
-      name: 'create_account_textfield_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -952,33 +754,11 @@ class S {
     );
   }
 
-  /// `Critical`
-  String get critical_attack {
-    return Intl.message(
-      'Critical',
-      name: 'critical_attack',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Current Account`
   String get cur_account {
     return Intl.message(
       'Current Account',
       name: 'cur_account',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Current AP`
-  String get cur_ap {
-    return Intl.message(
-      'Current AP',
-      name: 'cur_ap',
       desc: '',
       locale: localeName,
       args: [],
@@ -1067,61 +847,6 @@ class S {
     return Intl.message(
       'Database is not downloaded, still continue?',
       name: 'database_not_downloaded',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Goto download webpage`
-  String get dataset_goto_download_page {
-    return Intl.message(
-      'Goto download webpage',
-      name: 'dataset_goto_download_page',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Import after downloaded`
-  String get dataset_goto_download_page_hint {
-    return Intl.message(
-      'Import after downloaded',
-      name: 'dataset_goto_download_page_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Data Management`
-  String get dataset_management {
-    return Intl.message(
-      'Data Management',
-      name: 'dataset_management',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Icon dataset`
-  String get dataset_type_image {
-    return Intl.message(
-      'Icon dataset',
-      name: 'dataset_type_image',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Text dataset`
-  String get dataset_type_text {
-    return Intl.message(
-      'Text dataset',
-      name: 'dataset_type_text',
       desc: '',
       locale: localeName,
       args: [],
@@ -1227,50 +952,6 @@ class S {
     );
   }
 
-  /// `Downloaded`
-  String get download_complete {
-    return Intl.message(
-      'Downloaded',
-      name: 'download_complete',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Download latest Gamedata`
-  String get download_full_gamedata {
-    return Intl.message(
-      'Download latest Gamedata',
-      name: 'download_full_gamedata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Full size zip file`
-  String get download_full_gamedata_hint {
-    return Intl.message(
-      'Full size zip file',
-      name: 'download_full_gamedata_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Download latest`
-  String get download_latest_gamedata {
-    return Intl.message(
-      'Download latest',
-      name: 'download_latest_gamedata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `To ensure compatibility, please upgrade to the latest APP version before updating`
   String get download_latest_gamedata_hint {
     return Intl.message(
@@ -1290,28 +971,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `update dataset and app`
-  String get download_source_hint {
-    return Intl.message(
-      'update dataset and app',
-      name: 'download_source_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Source {name}`
-  String download_source_of(Object name) {
-    return Intl.message(
-      'Source $name',
-      name: 'download_source_of',
-      desc: '',
-      locale: localeName,
-      args: [name],
     );
   }
 
@@ -1353,17 +1012,6 @@ class S {
     return Intl.message(
       'Min AP',
       name: 'drop_calc_min_ap',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Optimize`
-  String get drop_calc_optimize {
-    return Intl.message(
-      'Optimize',
-      name: 'drop_calc_optimize',
       desc: '',
       locale: localeName,
       args: [],
@@ -1568,17 +1216,6 @@ class S {
     );
   }
 
-  /// `Shop/Task/Points/Quests`
-  String get event_item_default {
-    return Intl.message(
-      'Shop/Task/Points/Quests',
-      name: 'event_item_default',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Extra Obtains`
   String get event_item_extra {
     return Intl.message(
@@ -1711,33 +1348,11 @@ class S {
     );
   }
 
-  /// `5☆ Exp Card`
-  String get exp_card_rarity5 {
-    return Intl.message(
-      '5☆ Exp Card',
-      name: 'exp_card_rarity5',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Same Class`
   String get exp_card_same_class {
     return Intl.message(
       'Same Class',
       name: 'exp_card_same_class',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Select Level Range`
-  String get exp_card_select_lvs {
-    return Intl.message(
-      'Select Level Range',
-      name: 'exp_card_select_lvs',
       desc: '',
       locale: localeName,
       args: [],
@@ -1793,17 +1408,6 @@ class S {
     return Intl.message(
       'e.g. screenshots, files.',
       name: 'feedback_add_attachments',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Add crash log`
-  String get feedback_add_crash_log {
-    return Intl.message(
-      'Add crash log',
-      name: 'feedback_add_crash_log',
       desc: '',
       locale: localeName,
       args: [],
@@ -2174,28 +1778,6 @@ class S {
     );
   }
 
-  /// `Special Trait`
-  String get filter_special_trait {
-    return Intl.message(
-      'Special Trait',
-      name: 'filter_special_trait',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Free Efficiency`
-  String get free_efficiency {
-    return Intl.message(
-      'Free Efficiency',
-      name: 'free_efficiency',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Quest Limit`
   String get free_progress {
     return Intl.message(
@@ -2328,50 +1910,6 @@ class S {
     );
   }
 
-  /// `Chinese(Simplified)`
-  String get game_server_cn {
-    return Intl.message(
-      'Chinese(Simplified)',
-      name: 'game_server_cn',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Japanese`
-  String get game_server_jp {
-    return Intl.message(
-      'Japanese',
-      name: 'game_server_jp',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `English(NA)`
-  String get game_server_na {
-    return Intl.message(
-      'English(NA)',
-      name: 'game_server_na',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Chinese(Traditional)`
-  String get game_server_tw {
-    return Intl.message(
-      'Chinese(Traditional)',
-      name: 'game_server_tw',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Gamedata`
   String get gamedata {
     return Intl.message(
@@ -2405,17 +1943,6 @@ class S {
     );
   }
 
-  /// `Grail`
-  String get grail_level {
-    return Intl.message(
-      'Grail',
-      name: 'grail_level',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Palingenesis`
   String get grail_up {
     return Intl.message(
@@ -2438,28 +1965,6 @@ class S {
     );
   }
 
-  /// `Guda Item Data`
-  String get guda_item_data {
-    return Intl.message(
-      'Guda Item Data',
-      name: 'guda_item_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Guda Servant Data`
-  String get guda_servant_data {
-    return Intl.message(
-      'Guda Servant Data',
-      name: 'guda_servant_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Hash mismatch: {filename}: {hash} - {dataHash}`
   String hash_mismatch(Object filename, Object hash, Object dataHash) {
     return Intl.message(
@@ -2468,17 +1973,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [filename, hash, dataHash],
-    );
-  }
-
-  /// `Hello! Master!`
-  String get hello {
-    return Intl.message(
-      'Hello! Master!',
-      name: 'hello',
-      desc: '',
-      locale: localeName,
-      args: [],
     );
   }
 
@@ -2498,28 +1992,6 @@ class S {
     return Intl.message(
       'Hide Outdated',
       name: 'hide_outdated',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No bond craft`
-  String get hint_no_bond_craft {
-    return Intl.message(
-      'No bond craft',
-      name: 'hint_no_bond_craft',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No valentine craft`
-  String get hint_no_valentine_craft {
-    return Intl.message(
-      'No valentine craft',
-      name: 'hint_no_valentine_craft',
       desc: '',
       locale: localeName,
       args: [],
@@ -2570,17 +2042,6 @@ class S {
     );
   }
 
-  /// `Image analysis`
-  String get image_analysis {
-    return Intl.message(
-      'Image analysis',
-      name: 'image_analysis',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Import`
   String get import_data {
     return Intl.message(
@@ -2608,50 +2069,6 @@ class S {
     return Intl.message(
       'Import data successfully',
       name: 'import_data_success',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Guda Data`
-  String get import_guda_data {
-    return Intl.message(
-      'Guda Data',
-      name: 'import_guda_data',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Update：remain current userdata and update(Recommended)\nOverride：clear userdata then updatee`
-  String get import_guda_hint {
-    return Intl.message(
-      'Update：remain current userdata and update(Recommended)\nOverride：clear userdata then updatee',
-      name: 'import_guda_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Import Item`
-  String get import_guda_items {
-    return Intl.message(
-      'Import Item',
-      name: 'import_guda_items',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Import Servant`
-  String get import_guda_servants {
-    return Intl.message(
-      'Import Servant',
-      name: 'import_guda_servants',
       desc: '',
       locale: localeName,
       args: [],
@@ -2699,28 +2116,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Switched to account {account}`
-  String import_http_body_success_switch(Object account) {
-    return Intl.message(
-      'Switched to account $account',
-      name: 'import_http_body_success_switch',
-      desc: '',
-      locale: localeName,
-      args: [account],
-    );
-  }
-
-  /// `Import {itemNum} items and {svtNum} svts to`
-  String import_http_body_target_account_header(Object itemNum, Object svtNum) {
-    return Intl.message(
-      'Import $itemNum items and $svtNum svts to',
-      name: 'import_http_body_target_account_header',
-      desc: '',
-      locale: localeName,
-      args: [itemNum, svtNum],
     );
   }
 
@@ -2889,28 +2284,6 @@ class S {
     );
   }
 
-  /// `Height`
-  String get info_height {
-    return Intl.message(
-      'Height',
-      name: 'info_height',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Human`
-  String get info_human {
-    return Intl.message(
-      'Human',
-      name: 'info_human',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Luck`
   String get info_luck {
     return Intl.message(
@@ -2993,28 +2366,6 @@ class S {
     return Intl.message(
       'Value',
       name: 'info_value',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Weak to EA`
-  String get info_weak_to_ea {
-    return Intl.message(
-      'Weak to EA',
-      name: 'info_weak_to_ea',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Weight`
-  String get info_weight {
-    return Intl.message(
-      'Weight',
-      name: 'info_weight',
       desc: '',
       locale: localeName,
       args: [],
@@ -3455,39 +2806,6 @@ class S {
     );
   }
 
-  /// `Error loading dataset`
-  String get load_dataset_error {
-    return Intl.message(
-      'Error loading dataset',
-      name: 'load_dataset_error',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Please reload default gamedata in Settings-Gamedata`
-  String get load_dataset_error_hint {
-    return Intl.message(
-      'Please reload default gamedata in Settings-Gamedata',
-      name: 'load_dataset_error_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Loading Data Failed`
-  String get loading_data_failed {
-    return Intl.message(
-      'Loading Data Failed',
-      name: 'loading_data_failed',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Change Name`
   String get login_change_name {
     return Intl.message(
@@ -3697,55 +3015,11 @@ class S {
     );
   }
 
-  /// `Bonus`
-  String get main_record_bonus {
-    return Intl.message(
-      'Bonus',
-      name: 'main_record_bonus',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Bonus`
-  String get main_record_bonus_short {
-    return Intl.message(
-      'Bonus',
-      name: 'main_record_bonus_short',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Chapter`
   String get main_record_chapter {
     return Intl.message(
       'Chapter',
       name: 'main_record_chapter',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Drops`
-  String get main_record_fixed_drop {
-    return Intl.message(
-      'Drops',
-      name: 'main_record_fixed_drop',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Drops`
-  String get main_record_fixed_drop_short {
-    return Intl.message(
-      'Drops',
-      name: 'main_record_fixed_drop_short',
       desc: '',
       locale: localeName,
       args: [],
@@ -3801,28 +3075,6 @@ class S {
     return Intl.message(
       'Missions',
       name: 'master_mission_tasklist',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Maximum AP`
-  String get max_ap {
-    return Intl.message(
-      'Maximum AP',
-      name: 'max_ap',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `More`
-  String get more {
-    return Intl.message(
-      'More',
-      name: 'more',
       desc: '',
       locale: localeName,
       args: [],
@@ -3895,39 +3147,6 @@ class S {
     );
   }
 
-  /// `NGA`
-  String get nga {
-    return Intl.message(
-      'NGA',
-      name: 'nga',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `NGA-FGO`
-  String get nga_fgo {
-    return Intl.message(
-      'NGA-FGO',
-      name: 'nga_fgo',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No`
-  String get no {
-    return Intl.message(
-      'No',
-      name: 'no',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `There is no interlude or rank up quest`
   String get no_servant_quest_hint {
     return Intl.message(
@@ -3972,17 +3191,6 @@ class S {
     );
   }
 
-  /// `Not Available`
-  String get not_available {
-    return Intl.message(
-      'Not Available',
-      name: 'not_available',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Not Found`
   String get not_found {
     return Intl.message(
@@ -3999,17 +3207,6 @@ class S {
     return Intl.message(
       'Not yet implemented',
       name: 'not_implemented',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Obtains`
-  String get obtain_methods {
-    return Intl.message(
-      'Obtains',
-      name: 'obtain_methods',
       desc: '',
       locale: localeName,
       args: [],
@@ -4060,17 +3257,6 @@ class S {
     );
   }
 
-  /// `Override`
-  String get overwrite {
-    return Intl.message(
-      'Override',
-      name: 'overwrite',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Passive Skill`
   String get passive_skill {
     return Intl.message(
@@ -4079,61 +3265,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Patch Gamedata`
-  String get patch_gamedata {
-    return Intl.message(
-      'Patch Gamedata',
-      name: 'patch_gamedata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No compatible version with current app version`
-  String get patch_gamedata_error_no_compatible {
-    return Intl.message(
-      'No compatible version with current app version',
-      name: 'patch_gamedata_error_no_compatible',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Cannot found current version on server, downloading full size package`
-  String get patch_gamedata_error_unknown_version {
-    return Intl.message(
-      'Cannot found current version on server, downloading full size package',
-      name: 'patch_gamedata_error_unknown_version',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Only patch downloaded`
-  String get patch_gamedata_hint {
-    return Intl.message(
-      'Only patch downloaded',
-      name: 'patch_gamedata_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Updated dataset to {version}`
-  String patch_gamedata_success_to(Object version) {
-    return Intl.message(
-      'Updated dataset to $version',
-      name: 'patch_gamedata_success_to',
-      desc: '',
-      locale: localeName,
-      args: [version],
     );
   }
 
@@ -4189,17 +3320,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Plan {index}`
-  String plan_x(Object index) {
-    return Intl.message(
-      'Plan $index',
-      name: 'plan_x',
-      desc: '',
-      locale: localeName,
-      args: [index],
     );
   }
 
@@ -4291,17 +3411,6 @@ class S {
     );
   }
 
-  /// `Query failed`
-  String get query_failed {
-    return Intl.message(
-      'Query failed',
-      name: 'query_failed',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Quest`
   String get quest {
     return Intl.message(
@@ -4318,6 +3427,50 @@ class S {
     return Intl.message(
       'Conditions',
       name: 'quest_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Drops`
+  String get quest_fixed_drop {
+    return Intl.message(
+      'Drops',
+      name: 'quest_fixed_drop',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Drops`
+  String get quest_fixed_drop_short {
+    return Intl.message(
+      'Drops',
+      name: 'quest_fixed_drop_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Bonus`
+  String get quest_reward {
+    return Intl.message(
+      'Bonus',
+      name: 'quest_reward',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Bonus`
+  String get quest_reward_short {
+    return Intl.message(
+      'Bonus',
+      name: 'quest_reward_short',
       desc: '',
       locale: localeName,
       args: [],
@@ -4351,50 +3504,6 @@ class S {
     return Intl.message(
       'Rate on Google Play',
       name: 'rate_play_store',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Release Page`
-  String get release_page {
-    return Intl.message(
-      'Release Page',
-      name: 'release_page',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Import successfully`
-  String get reload_data_success {
-    return Intl.message(
-      'Import successfully',
-      name: 'reload_data_success',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Reload default`
-  String get reload_default_gamedata {
-    return Intl.message(
-      'Reload default',
-      name: 'reload_default_gamedata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Importing`
-  String get reloading_data {
-    return Intl.message(
-      'Importing',
-      name: 'reloading_data',
       desc: '',
       locale: localeName,
       args: [],
@@ -4475,39 +3584,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [n],
-    );
-  }
-
-  /// `Reset successfully`
-  String get reset_success {
-    return Intl.message(
-      'Reset successfully',
-      name: 'reset_success',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Reset default skill/NP`
-  String get reset_svt_enhance_state {
-    return Intl.message(
-      'Reset default skill/NP',
-      name: 'reset_svt_enhance_state',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Reset rank up of skills and noble phantasm`
-  String get reset_svt_enhance_state_hint {
-    return Intl.message(
-      'Reset rank up of skills and noble phantasm',
-      name: 'reset_svt_enhance_state_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
     );
   }
 
@@ -4629,28 +3705,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Total {total} results`
-  String search_result_count(Object total) {
-    return Intl.message(
-      'Total $total results',
-      name: 'search_result_count',
-      desc: '',
-      locale: localeName,
-      args: [total],
-    );
-  }
-
-  /// `Total {total} results ({hidden} hidden)`
-  String search_result_count_hide(Object total, Object hidden) {
-    return Intl.message(
-      'Total $total results ($hidden hidden)',
-      name: 'search_result_count_hide',
-      desc: '',
-      locale: localeName,
-      args: [total, hidden],
     );
   }
 
@@ -4918,17 +3972,6 @@ class S {
     );
   }
 
-  /// `Data Management`
-  String get settings_data_management {
-    return Intl.message(
-      'Data Management',
-      name: 'settings_data_management',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Documents`
   String get settings_documents {
     return Intl.message(
@@ -4967,17 +4010,6 @@ class S {
     return Intl.message(
       'Settings',
       name: 'settings_tab_name',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Allow mobile network`
-  String get settings_use_mobile_network {
-    return Intl.message(
-      'Allow mobile network',
-      name: 'settings_use_mobile_network',
       desc: '',
       locale: localeName,
       args: [],
@@ -5094,17 +4126,6 @@ class S {
     );
   }
 
-  /// `Including owned items`
-  String get statistics_include_checkbox {
-    return Intl.message(
-      'Including owned items',
-      name: 'statistics_include_checkbox',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Statistics`
   String get statistics_title {
     return Intl.message(
@@ -5121,17 +4142,6 @@ class S {
     return Intl.message(
       'Still Send',
       name: 'still_send',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Storage Permission`
-  String get storage_permission_title {
-    return Intl.message(
-      'Storage Permission',
-      name: 'storage_permission_title',
       desc: '',
       locale: localeName,
       args: [],
@@ -5160,17 +4170,6 @@ class S {
     );
   }
 
-  /// `Summon Simulator`
-  String get summon_simulator {
-    return Intl.message(
-      'Summon Simulator',
-      name: 'summon_simulator',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Summons`
   String get summon_title {
     return Intl.message(
@@ -5193,121 +4192,11 @@ class S {
     );
   }
 
-  /// `Support Setup`
-  String get support_party {
-    return Intl.message(
-      'Support Setup',
-      name: 'support_party',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Basic Info`
-  String get svt_info_tab_base {
-    return Intl.message(
-      'Basic Info',
-      name: 'svt_info_tab_base',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Lore`
-  String get svt_info_tab_bond_story {
-    return Intl.message(
-      'Lore',
-      name: 'svt_info_tab_bond_story',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Not favorite`
   String get svt_not_planned {
     return Intl.message(
       'Not favorite',
       name: 'svt_not_planned',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Event`
-  String get svt_obtain_event {
-    return Intl.message(
-      'Event',
-      name: 'svt_obtain_event',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `FriendPoint`
-  String get svt_obtain_friend_point {
-    return Intl.message(
-      'FriendPoint',
-      name: 'svt_obtain_friend_point',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Initial`
-  String get svt_obtain_initial {
-    return Intl.message(
-      'Initial',
-      name: 'svt_obtain_initial',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Limited`
-  String get svt_obtain_limited {
-    return Intl.message(
-      'Limited',
-      name: 'svt_obtain_limited',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Summon`
-  String get svt_obtain_permanent {
-    return Intl.message(
-      'Summon',
-      name: 'svt_obtain_permanent',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Story`
-  String get svt_obtain_story {
-    return Intl.message(
-      'Story',
-      name: 'svt_obtain_story',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Unavailable`
-  String get svt_obtain_unavailable {
-    return Intl.message(
-      'Unavailable',
-      name: 'svt_obtain_unavailable',
       desc: '',
       locale: localeName,
       args: [],
@@ -5355,17 +4244,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Sync with {server}`
-  String sync_server(Object server) {
-    return Intl.message(
-      'Sync with $server',
-      name: 'sync_server',
-      desc: '',
-      locale: localeName,
-      args: [server],
     );
   }
 
@@ -5523,33 +4401,11 @@ class S {
     );
   }
 
-  /// `Upload`
-  String get upload {
-    return Intl.message(
-      'Upload',
-      name: 'upload',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Userdata`
   String get userdata {
     return Intl.message(
       'Userdata',
       name: 'userdata',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Userdata cleared`
-  String get userdata_cleared {
-    return Intl.message(
-      'Userdata cleared',
-      name: 'userdata_cleared',
       desc: '',
       locale: localeName,
       args: [],
@@ -5674,17 +4530,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [a, b],
-    );
-  }
-
-  /// `Yes`
-  String get yes {
-    return Intl.message(
-      'Yes',
-      name: 'yes',
-      desc: '',
-      locale: localeName,
-      args: [],
     );
   }
 }

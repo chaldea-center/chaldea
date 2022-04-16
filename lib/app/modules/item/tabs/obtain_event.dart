@@ -204,13 +204,13 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           children: [
             if (rewardCount > 0)
               Text(
-                '${S.current.main_record_bonus_short}'
+                '${S.current.quest_reward_short}'
                 ' $rewardCount',
                 style: _textStyle(plan.questReward, record.isOutdated()),
               ),
             if (dropCount > 0)
               Text(
-                '${S.current.main_record_fixed_drop_short}'
+                '${S.current.quest_fixed_drop_short}'
                 ' $dropCount',
                 style: _textStyle(plan.fixedDrop, record.isOutdated()),
               ),

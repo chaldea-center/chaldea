@@ -208,7 +208,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     if (war.itemDrop.isNotEmpty) {
       children.add(
         ListTile(
-          title: Text(S.current.main_record_fixed_drop),
+          title: Text(S.current.quest_fixed_drop),
           trailing: war.isMainStory
               ? db2.onUserData((context, snapshot) => Switch.adaptive(
                     value: plan.fixedDrop,

@@ -20,80 +20,50 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(email, logPath) =>
-      "Por favor, envíe una captura de pantalla y un archivo de registro al correo electrónico:\n ${email}\nRuta del archivo de registro: ${logPath}";
-
-  static String m1(curVersion, newVersion, releaseNote) =>
+  static String m0(curVersion, newVersion, releaseNote) =>
       "Versión actual: ${curVersion}\nÚltima versión: ${newVersion}\nNota de lanzamiento:\n${releaseNote}";
 
-  static String m2(name) => "Fuente ${name}";
-
-  static String m3(version) =>
+  static String m1(version) =>
       "Versión de la aplicación requerida: ≥ ${version}";
 
-  static String m4(n) => "Lotería Máx. ${n}";
+  static String m2(n) => "Lotería Máx. ${n}";
 
-  static String m5(n) => "Griales a Lore: ${n}";
+  static String m3(n) => "Griales a Lore: ${n}";
 
-  static String m6(filename, hash, localHash) =>
+  static String m4(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
-  static String m7(filename, hash, dataHash) =>
+  static String m5(filename, hash, dataHash) =>
       "El hash no coincide: ${filename}: ${hash} - ${dataHash}";
 
-  static String m8(error) => "La importación ha fallado. Error:\n${error}";
+  static String m6(error) => "La importación ha fallado. Error:\n${error}";
 
-  static String m9(account) => "Cambiado a la cuenta ${account}";
+  static String m7(name) => "${name} ya existe";
 
-  static String m10(itemNum, svtNum) =>
-      "Importar ${itemNum} objetos y ${svtNum} servants a";
+  static String m8(site) => "Ir a ${site}";
 
-  static String m11(name) => "${name} ya existe";
-
-  static String m12(site) => "Ir a ${site}";
-
-  static String m13(first) =>
+  static String m9(first) =>
       "{primer, selecciona, verdadero{Ya es el primero} falso{Ya es el último} otro{No más}}";
 
-  static String m14(version) => "Conjunto de datos actualizado a ${version}";
+  static String m10(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m15(index) => "Plan ${index}";
+  static String m11(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m16(n) => "Restablecer plan ${n}(Todo)";
+  static String m12(e) => "No se han podido actualizar las diapositivas\n${e}";
 
-  static String m17(n) => "Restablecer plan ${n} (Mostrado)";
-
-  static String m18(total) => "Resultados totales ${total}";
-
-  static String m19(total, hidden) =>
-      "Resultados totales ${total} (${hidden} ocultos)";
-
-  static String m20(server) => "Sincronizar con ${server}";
-
-  static String m21(e) => "No se han podido actualizar las diapositivas\n${e}";
-
-  static String m22(a, b) => "${a} ${b}";
+  static String m13(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("Acerca de"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
             "Los datos utilizados en esta aplicación provienen del juego Fate/GO y de los siguientes sitios web. Los derechos de autor de los textos, imágenes y voces originales del juego pertenecen a TYPE MOON/FGO PROJECT.\n\nEl diseño del programa se basa en el miniprograma WeChat \"Material Programe\" y la aplicación para iOS \"Guda\".\n"),
-        "about_appstore_rating": MessageLookupByLibrary.simpleMessage(
-            "Clasificación de la App Store"),
         "about_data_source":
             MessageLookupByLibrary.simpleMessage("Fuente de datos"),
         "about_data_source_footer": MessageLookupByLibrary.simpleMessage(
             "Por favor, infórmenos si hay una fuente no acreditada o una infracción"),
-        "about_email_dialog": m0,
-        "about_email_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Por favor, adjunte una captura de pantalla y un archivo de registro"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
-        "about_update_app":
-            MessageLookupByLibrary.simpleMessage("Actualizar Aplicación"),
-        "about_update_app_alert_ios_mac": MessageLookupByLibrary.simpleMessage(
-            "Por favor, compruebe la actualización en la App Store"),
-        "about_update_app_detail": m1,
+        "about_update_app_detail": m0,
         "account_title": MessageLookupByLibrary.simpleMessage("Cuenta"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "add": MessageLookupByLibrary.simpleMessage("Añadir"),
@@ -102,12 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Añadir a la lista negra"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
-        "ap_calc_page_joke":
-            MessageLookupByLibrary.simpleMessage("口算不及格的咕朗台.jpg"),
-        "ap_calc_title": MessageLookupByLibrary.simpleMessage("Calc. AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
-        "ap_overflow_time":
-            MessageLookupByLibrary.simpleMessage("Tiempo para AP full"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
@@ -125,12 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "auto_update":
             MessageLookupByLibrary.simpleMessage("Actualizar automáticamente"),
         "backup": MessageLookupByLibrary.simpleMessage("Respaldo"),
-        "backup_data_alert": MessageLookupByLibrary.simpleMessage(
-            "Se necesita copia de seguridad oportuna"),
         "backup_history": MessageLookupByLibrary.simpleMessage(
             "Historial de copias de seguridad"),
-        "backup_success":
-            MessageLookupByLibrary.simpleMessage("Copia de seguridad exitosa"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Lista negra"),
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
@@ -139,9 +100,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Página de Arranque"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronce"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Peso"),
-        "calculate": MessageLookupByLibrary.simpleMessage("Calcular"),
-        "calculator": MessageLookupByLibrary.simpleMessage("Calculadora"),
-        "campaign_event": MessageLookupByLibrary.simpleMessage("Campaña"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
         "card_description": MessageLookupByLibrary.simpleMessage("Descripción"),
         "card_info": MessageLookupByLibrary.simpleMessage("Información"),
@@ -155,8 +113,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Personajes"),
         "check_update":
             MessageLookupByLibrary.simpleMessage("Comprobar actualización"),
-        "choose_quest_hint":
-            MessageLookupByLibrary.simpleMessage("Elegir Free Quest"),
         "clear": MessageLookupByLibrary.simpleMessage("Borrar"),
         "clear_cache": MessageLookupByLibrary.simpleMessage("Borrar caché"),
         "clear_cache_finish":
@@ -164,9 +120,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage(
             "Incluyendo ilustraciones, voces"),
         "clear_data": MessageLookupByLibrary.simpleMessage("Borrar Datos"),
-        "clear_userdata":
-            MessageLookupByLibrary.simpleMessage("Borrar datos de usuario"),
-        "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Codes"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumido"),
@@ -184,16 +137,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Desbloquear Vestuario"),
         "counts": MessageLookupByLibrary.simpleMessage("Cantidad"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essences"),
-        "craft_essence_title": MessageLookupByLibrary.simpleMessage("Craft"),
         "create_account_textfield_helper": MessageLookupByLibrary.simpleMessage(
             "Puedes agregar más cuentas más tarde en Configuración"),
-        "create_account_textfield_hint":
-            MessageLookupByLibrary.simpleMessage("Nombre tu cuenta"),
         "create_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Crear duplicado"),
-        "critical_attack": MessageLookupByLibrary.simpleMessage("Crítico"),
         "cur_account": MessageLookupByLibrary.simpleMessage("Cuenta Actual"),
-        "cur_ap": MessageLookupByLibrary.simpleMessage("AP Actual"),
         "current_": MessageLookupByLibrary.simpleMessage("Actual"),
         "current_version":
             MessageLookupByLibrary.simpleMessage("Versión Actual"),
@@ -204,16 +152,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "database": MessageLookupByLibrary.simpleMessage("Base de datos"),
         "database_not_downloaded": MessageLookupByLibrary.simpleMessage(
             "La Base de Datos no ha sido descargada, ¿Seguro de que desea continuar?"),
-        "dataset_goto_download_page":
-            MessageLookupByLibrary.simpleMessage("Ir a la página de descarga"),
-        "dataset_goto_download_page_hint": MessageLookupByLibrary.simpleMessage(
-            "Importar después de descargar"),
-        "dataset_management":
-            MessageLookupByLibrary.simpleMessage("Gestión de datos"),
-        "dataset_type_image":
-            MessageLookupByLibrary.simpleMessage("Conjunto de datos de iconos"),
-        "dataset_type_text":
-            MessageLookupByLibrary.simpleMessage("Conjunto de datos de texto"),
         "dataset_version":
             MessageLookupByLibrary.simpleMessage("Versión de los datos"),
         "debug": MessageLookupByLibrary.simpleMessage("Depurar"),
@@ -225,26 +163,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Configuración de pantalla"),
         "done": MessageLookupByLibrary.simpleMessage("FIN."),
         "download": MessageLookupByLibrary.simpleMessage("Descargar"),
-        "download_complete": MessageLookupByLibrary.simpleMessage("Descargado"),
-        "download_full_gamedata": MessageLookupByLibrary.simpleMessage(
-            "Descargar los últimos datos del juego"),
-        "download_full_gamedata_hint": MessageLookupByLibrary.simpleMessage(
-            "Archivo zip de tamaño completo"),
-        "download_latest_gamedata":
-            MessageLookupByLibrary.simpleMessage("Descargar lo último"),
         "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
             "Para garantizar la compatibilidad, actualice a la última versión de la aplicación antes de actualizar"),
         "download_source":
             MessageLookupByLibrary.simpleMessage("Fuente de la descarga"),
-        "download_source_hint": MessageLookupByLibrary.simpleMessage(
-            "actualizar el conjunto de datos y la aplicación"),
-        "download_source_of": m2,
         "downloaded": MessageLookupByLibrary.simpleMessage("Descargado"),
         "downloading": MessageLookupByLibrary.simpleMessage("Descargando"),
         "drop_calc_empty_hint": MessageLookupByLibrary.simpleMessage(
             "Haga clic en + para agregar elementos"),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("AP Mín."),
-        "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("Optimizar"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Resolver"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("Drop rate"),
         "edit": MessageLookupByLibrary.simpleMessage("Editar"),
@@ -265,16 +192,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_network": MessageLookupByLibrary.simpleMessage("Sin red"),
         "error_no_version_data_found": MessageLookupByLibrary.simpleMessage(
             "No se encontró ninguna versión de datos"),
-        "error_required_app_version": m3,
+        "error_required_app_version": m1,
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "Todos los objetos se añadirán al inventario y se eliminará el evento fuera del plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Recoger objetos"),
-        "event_item_default":
-            MessageLookupByLibrary.simpleMessage("Tienda/Tarea/Puntos/Quests"),
         "event_item_extra":
             MessageLookupByLibrary.simpleMessage("Obtenibles adicionales"),
-        "event_lottery_limit_hint": m4,
+        "event_lottery_limit_hint": m2,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("Lotería limitada"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lotería"),
@@ -283,25 +208,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("Evento no planificado"),
         "event_progress": MessageLookupByLibrary.simpleMessage("Progreso"),
-        "event_rerun_replace_grail": m5,
+        "event_rerun_replace_grail": m3,
         "event_title": MessageLookupByLibrary.simpleMessage("Eventos"),
         "exchange_ticket":
             MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("Niveles"),
-        "exp_card_rarity5": MessageLookupByLibrary.simpleMessage("5☆ Exp Card"),
         "exp_card_same_class":
             MessageLookupByLibrary.simpleMessage("Misma Clase"),
-        "exp_card_select_lvs": MessageLookupByLibrary.simpleMessage(
-            "Seleccionar rango de niveles"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),
         "failed": MessageLookupByLibrary.simpleMessage("Falló"),
         "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorito"),
         "feedback_add_attachments": MessageLookupByLibrary.simpleMessage(
             "Ej. capturas de pantalla, archivos"),
-        "feedback_add_crash_log":
-            MessageLookupByLibrary.simpleMessage("Agregar registro de fallas"),
         "feedback_contact":
             MessageLookupByLibrary.simpleMessage("Información de contacto"),
         "feedback_content_hint":
@@ -320,7 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Primero descargue o importe los datos de FFO↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
-        "file_not_found_or_mismatched_hash": m6,
+        "file_not_found_or_mismatched_hash": m4,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
             "Por favor, rellene la dirección de correo. De lo contrario NO hay respuesta."),
@@ -344,10 +264,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_class": MessageLookupByLibrary.simpleMessage("Clase"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("Nº"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rareza"),
-        "filter_special_trait":
-            MessageLookupByLibrary.simpleMessage("Rasgo Especial"),
-        "free_efficiency":
-            MessageLookupByLibrary.simpleMessage("Eficiencia Free"),
         "free_progress":
             MessageLookupByLibrary.simpleMessage("Límite del Quest"),
         "free_progress_newest":
@@ -365,51 +281,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_kizuna": MessageLookupByLibrary.simpleMessage("Bond"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("Recompensas"),
         "game_server": MessageLookupByLibrary.simpleMessage("Servidor"),
-        "game_server_cn":
-            MessageLookupByLibrary.simpleMessage("Chino (Simplificado)"),
-        "game_server_jp": MessageLookupByLibrary.simpleMessage("Japonés"),
-        "game_server_na":
-            MessageLookupByLibrary.simpleMessage("Norteamérica (NA)"),
-        "game_server_tw":
-            MessageLookupByLibrary.simpleMessage("Chino (Tradicional)"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Datos del juego"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "grail": MessageLookupByLibrary.simpleMessage("Grial"),
-        "grail_level": MessageLookupByLibrary.simpleMessage("Grial"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
         "growth_curve":
             MessageLookupByLibrary.simpleMessage("Curva de crecimiento"),
-        "guda_item_data": MessageLookupByLibrary.simpleMessage(
-            "Datos de los objetos de Guda"),
-        "guda_servant_data":
-            MessageLookupByLibrary.simpleMessage("Datos del Servant de Guda"),
-        "hash_mismatch": m7,
-        "hello": MessageLookupByLibrary.simpleMessage("¡Hola, Master!"),
+        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
         "hide_outdated":
             MessageLookupByLibrary.simpleMessage("Ocultar desactualizado"),
-        "hint_no_bond_craft":
-            MessageLookupByLibrary.simpleMessage("Sin bond craft"),
-        "hint_no_valentine_craft":
-            MessageLookupByLibrary.simpleMessage("Sin valentine craft"),
         "icons": MessageLookupByLibrary.simpleMessage("Iconos"),
         "ignore": MessageLookupByLibrary.simpleMessage("Ignorar"),
         "illustration": MessageLookupByLibrary.simpleMessage("Ilustración"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Ilustrador"),
-        "image_analysis":
-            MessageLookupByLibrary.simpleMessage("Análisis de imagen"),
         "import_data": MessageLookupByLibrary.simpleMessage("Importar"),
-        "import_data_error": m8,
+        "import_data_error": m6,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Importar datos con éxito"),
-        "import_guda_data":
-            MessageLookupByLibrary.simpleMessage("Datos de Guda"),
-        "import_guda_hint": MessageLookupByLibrary.simpleMessage(
-            "Actualizar: mantener los datos de usuario actuales y actualizar (recomendado)\nSobreescribir: borrar los datos de usuario y luego actualizar"),
-        "import_guda_items":
-            MessageLookupByLibrary.simpleMessage("Importar Objeto"),
-        "import_guda_servants":
-            MessageLookupByLibrary.simpleMessage("Importar Servant"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("Duplicado"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
@@ -418,8 +307,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Haga clic en el Servant para ocultar/mostrar"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("Solo bloqueado"),
-        "import_http_body_success_switch": m9,
-        "import_http_body_target_account_header": m10,
         "import_screenshot": MessageLookupByLibrary.simpleMessage(
             "Importar capturas de pantalla"),
         "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
@@ -441,8 +328,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_death_rate": MessageLookupByLibrary.simpleMessage("Death Rate"),
         "info_endurance": MessageLookupByLibrary.simpleMessage("Resistencia"),
         "info_gender": MessageLookupByLibrary.simpleMessage("Género"),
-        "info_height": MessageLookupByLibrary.simpleMessage("Altura"),
-        "info_human": MessageLookupByLibrary.simpleMessage("Humano"),
         "info_luck": MessageLookupByLibrary.simpleMessage("Suerte"),
         "info_mana": MessageLookupByLibrary.simpleMessage("Maná"),
         "info_np": MessageLookupByLibrary.simpleMessage("NP"),
@@ -451,8 +336,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_strength": MessageLookupByLibrary.simpleMessage("Fuerza"),
         "info_trait": MessageLookupByLibrary.simpleMessage("Traits"),
         "info_value": MessageLookupByLibrary.simpleMessage("Valor"),
-        "info_weak_to_ea": MessageLookupByLibrary.simpleMessage("Débil a EA"),
-        "info_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Entradas inválidas"),
         "install": MessageLookupByLibrary.simpleMessage("Instalar"),
@@ -468,7 +351,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aplicación \"Archivos\"/En mi iPhone/Caldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Problemas"),
         "item": MessageLookupByLibrary.simpleMessage("Objeto"),
-        "item_already_exist_hint": m11,
+        "item_already_exist_hint": m7,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Objetos de Ascension"),
         "item_category_bronze":
@@ -509,20 +392,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta":
             MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
-        "jump_to": m12,
+        "jump_to": m8,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
         "language_en": MessageLookupByLibrary.simpleMessage("Spanish"),
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event":
             MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_end_hint": m13,
-        "load_dataset_error": MessageLookupByLibrary.simpleMessage(
-            "Error al cargar el conjunto de datos"),
-        "load_dataset_error_hint": MessageLookupByLibrary.simpleMessage(
-            "Por favor, vuelva a cargar los datos del juego predeterminados en Configuración-Datos del juego"),
-        "loading_data_failed":
-            MessageLookupByLibrary.simpleMessage("Carga de datos fallida"),
+        "list_end_hint": m9,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password":
@@ -556,13 +433,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Bolsa de la suerte"),
         "main_record":
             MessageLookupByLibrary.simpleMessage("Historia Principal"),
-        "main_record_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
-        "main_record_bonus_short":
-            MessageLookupByLibrary.simpleMessage("Bonus"),
         "main_record_chapter": MessageLookupByLibrary.simpleMessage("Capítulo"),
-        "main_record_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
-        "main_record_fixed_drop_short":
-            MessageLookupByLibrary.simpleMessage("Drops"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Ancho Master-Detalles"),
         "master_mission":
@@ -573,17 +444,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Solución"),
         "master_mission_tasklist":
             MessageLookupByLibrary.simpleMessage("Misiones"),
-        "max_ap": MessageLookupByLibrary.simpleMessage("AP Máximo"),
-        "more": MessageLookupByLibrary.simpleMessage("Más"),
         "move_down": MessageLookupByLibrary.simpleMessage("Mover hacia abajo"),
         "move_up": MessageLookupByLibrary.simpleMessage("Mover hacia arriba"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("Nueva Cuenta"),
         "next": MessageLookupByLibrary.simpleMessage("SIG."),
         "next_card": MessageLookupByLibrary.simpleMessage("Siguiente"),
-        "nga": MessageLookupByLibrary.simpleMessage("NGA"),
-        "nga_fgo": MessageLookupByLibrary.simpleMessage("NGA-FGO"),
-        "no": MessageLookupByLibrary.simpleMessage("No"),
         "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage(
             "No hay interludio o rank up quest"),
         "no_servant_quest_hint_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -592,34 +458,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "noble_phantasm_level":
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
-        "not_available": MessageLookupByLibrary.simpleMessage("No disponible"),
         "not_found": MessageLookupByLibrary.simpleMessage("No encontrado"),
         "not_implemented":
             MessageLookupByLibrary.simpleMessage("Todavía sin implementar"),
-        "obtain_methods": MessageLookupByLibrary.simpleMessage("Obtiene"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Abrir"),
         "open_condition": MessageLookupByLibrary.simpleMessage("Condición"),
         "overview": MessageLookupByLibrary.simpleMessage("Resumen"),
-        "overwrite": MessageLookupByLibrary.simpleMessage("Sobreescribir"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
-        "patch_gamedata":
-            MessageLookupByLibrary.simpleMessage("Parche de datos del juego"),
-        "patch_gamedata_error_no_compatible": MessageLookupByLibrary.simpleMessage(
-            "No hay versión compatible con la versión actual de la aplicación"),
-        "patch_gamedata_error_unknown_version":
-            MessageLookupByLibrary.simpleMessage(
-                "No se ha encontrado la versión actual en el servidor, descargando el paquete completo"),
-        "patch_gamedata_hint":
-            MessageLookupByLibrary.simpleMessage("Sólo parche descargado"),
-        "patch_gamedata_success_to": m14,
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Máx(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Máx(999)"),
         "plan_objective":
             MessageLookupByLibrary.simpleMessage("Objetivo del Plan"),
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
-        "plan_x": m15,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("Planificación de Quests"),
         "preferred_translation":
@@ -632,22 +484,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("Prioridad"),
         "project_homepage": MessageLookupByLibrary.simpleMessage(
             "Página de inicio del proyecto"),
-        "query_failed":
-            MessageLookupByLibrary.simpleMessage("Consulta fallida"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_condition": MessageLookupByLibrary.simpleMessage("Condiciones"),
+        "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
+        "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
+        "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
+        "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rareza"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Valorar en App Store"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Valorar en Google Play"),
-        "release_page":
-            MessageLookupByLibrary.simpleMessage("Página de lanzamiento"),
-        "reload_data_success":
-            MessageLookupByLibrary.simpleMessage("Importación exitosa"),
-        "reload_default_gamedata":
-            MessageLookupByLibrary.simpleMessage("Recargar predeterminado"),
-        "reloading_data": MessageLookupByLibrary.simpleMessage("Importando"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remover duplicado"),
         "remove_from_blacklist":
@@ -655,14 +502,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m16,
-        "reset_plan_shown": m17,
-        "reset_success":
-            MessageLookupByLibrary.simpleMessage("Reestablecimiento exitoso"),
-        "reset_svt_enhance_state": MessageLookupByLibrary.simpleMessage(
-            "Restablecer Habilidad/NP por defecto"),
-        "reset_svt_enhance_state_hint": MessageLookupByLibrary.simpleMessage(
-            "Restablecer el rango de las habilidades y el noble phantasm"),
+        "reset_plan_all": m10,
+        "reset_plan_shown": m11,
         "restart_to_take_effect": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -679,8 +520,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Básica"),
         "search_options":
             MessageLookupByLibrary.simpleMessage("Alcances de búsqueda"),
-        "search_result_count": m18,
-        "search_result_count_hide": m19,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("Seleccionar fuente de copia"),
         "select_lang":
@@ -726,16 +565,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_tabs_sorting":
             MessageLookupByLibrary.simpleMessage("Orden de las Pestañas"),
         "settings_data": MessageLookupByLibrary.simpleMessage("Datos"),
-        "settings_data_management":
-            MessageLookupByLibrary.simpleMessage("Gestión de Datos"),
         "settings_documents":
             MessageLookupByLibrary.simpleMessage("Documentación"),
         "settings_general": MessageLookupByLibrary.simpleMessage("General"),
         "settings_language": MessageLookupByLibrary.simpleMessage("Idioma"),
         "settings_tab_name":
             MessageLookupByLibrary.simpleMessage("Configuración"),
-        "settings_use_mobile_network":
-            MessageLookupByLibrary.simpleMessage("Permitir red móvil"),
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Realice una copia de seguridad de los datos del usuario antes de actualizar la aplicación y traslade las copias de seguridad a ubicaciones seguras fuera de la carpeta de documentos de la aplicación"),
         "share": MessageLookupByLibrary.simpleMessage("Compartir"),
@@ -750,36 +585,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Máx(310)"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
-        "statistics_include_checkbox":
-            MessageLookupByLibrary.simpleMessage("Incluyendo objetos propios"),
         "statistics_title":
             MessageLookupByLibrary.simpleMessage("Estadísticas"),
         "still_send":
             MessageLookupByLibrary.simpleMessage("Enviar de todas formas"),
-        "storage_permission_title":
-            MessageLookupByLibrary.simpleMessage("Permiso de almacenamiento"),
         "success": MessageLookupByLibrary.simpleMessage("Éxito"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
-        "summon_simulator":
-            MessageLookupByLibrary.simpleMessage("Simulador de Summon"),
         "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Apoyo y Donación"),
-        "support_party": MessageLookupByLibrary.simpleMessage("Support Setup"),
-        "svt_info_tab_base":
-            MessageLookupByLibrary.simpleMessage("Información básica"),
-        "svt_info_tab_bond_story": MessageLookupByLibrary.simpleMessage("Lore"),
         "svt_not_planned":
             MessageLookupByLibrary.simpleMessage("No es favorito"),
-        "svt_obtain_event": MessageLookupByLibrary.simpleMessage("Evento"),
-        "svt_obtain_friend_point":
-            MessageLookupByLibrary.simpleMessage("FriendPoint"),
-        "svt_obtain_initial": MessageLookupByLibrary.simpleMessage("Inicial"),
-        "svt_obtain_limited": MessageLookupByLibrary.simpleMessage("Limitado"),
-        "svt_obtain_permanent": MessageLookupByLibrary.simpleMessage("Summon"),
-        "svt_obtain_story": MessageLookupByLibrary.simpleMessage("Historia"),
-        "svt_obtain_unavailable":
-            MessageLookupByLibrary.simpleMessage("No disponible"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Oculto"),
         "svt_related_cards":
             MessageLookupByLibrary.simpleMessage("Cards relacionadas"),
@@ -787,7 +603,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restablecer plan"),
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage(
             "Cambiar control deslizante/desplegable"),
-        "sync_server": m20,
         "test_info_pad":
             MessageLookupByLibrary.simpleMessage("Información de Testeo"),
         "toogle_dark_mode":
@@ -805,15 +620,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_dataset": MessageLookupByLibrary.simpleMessage(
             "Actualizar conjunto de datos"),
         "update_now": MessageLookupByLibrary.simpleMessage("Actualizar Ahora"),
-        "update_slides_status_msg_error": m21,
+        "update_slides_status_msg_error": m12,
         "update_slides_status_msg_info":
             MessageLookupByLibrary.simpleMessage("No actualizado"),
         "update_slides_status_msg_success":
             MessageLookupByLibrary.simpleMessage("Banners actualizados"),
-        "upload": MessageLookupByLibrary.simpleMessage("Cargar"),
         "userdata": MessageLookupByLibrary.simpleMessage("Datos del usuario"),
-        "userdata_cleared":
-            MessageLookupByLibrary.simpleMessage("Datos de usuario borrados"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage(
             "Descargar copia de seguridad"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage(
@@ -831,7 +643,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m22,
-        "yes": MessageLookupByLibrary.simpleMessage("Sí")
+        "words_separate": m13
       };
 }
