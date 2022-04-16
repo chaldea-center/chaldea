@@ -1,0 +1,36 @@
+name: Analysis
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "beta"
+
+      - run: |
+          flutter --version
+          flutter pub get
+
+      - name: Verify dart formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Dart Analyze
+        if: always()
+        run: dart analyze
+
+      - name: l10n generation
+        if: always()
+        run: flutter pub run intl_utils:generate
+
+
+
