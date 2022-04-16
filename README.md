@@ -7,7 +7,7 @@
 [![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
-Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning materials, servants, events and their trip of taking back the future. 
+Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning materials, servants, events and their trip of taking back the future.
 
 For more details or usage, please check our document: [English](https://docs.chaldea.center)
 | [中文](https://docs.chaldea.center/zh/)
@@ -30,27 +30,27 @@ For more details or usage, please check our document: [English](https://docs.cha
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
-  - from `Guda` app
   - from `fgosimulator.webcrow.jp/Material`
-
 
 ## Support Platforms
 
-Platform  | Minimum Version
-----------|--------------------------------------
-Android   | Android 6.0 (API level 23)
-iOS       | iOS 10.0
-Windows   | Windows 7 SP1 (64-bit), x86-64 based
-macOS     | macOS 10.11
-Linux     | Debian 10 & above
-Web       | Waiting for next V2
+| Platform | Minimum Version                      |
+| -------- | ------------------------------------ |
+| Android  | Android 6.0 (API level 23)           |
+| iOS      | iOS 10.0                             |
+| Windows  | Windows 7 SP1 (64-bit), x86-64 based |
+| macOS    | macOS 10.12.2                        |
+| Linux    | Debian 10 & above                    |
+| Web      | Any modern browser                   |
 
 ## Installation
 
 ### Google Play
+
 [<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="137.5px"/>](https://play.google.com/store/apps/details?id=cc.narumi.chaldea)
 
 ### App Store
+
 [<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-US?size=250x83&amp;releaseDate=1610841600&h=cb0adac232fdd6b88894f78b2f349b6e" alt="Download on the App Store" width="120px">](https://apps.apple.com/us/app/chaldea/id1548713491?itsct=apps_box&itscg=30200)
 
 ### Installer
@@ -58,16 +58,10 @@ Web       | Waiting for next V2
 You can download binary assets in [release](https://github.com/chaldea-center/chaldea/releases)
 page for Android, Windows, macOS and Linux.
 
+### Web
 
-## Dataset
-
-The game dataset is maintained in another repository [chaldea-dataset](https://github.com/chaldea-center/chaldea-dataset). And the builtin dataset should be placed at `res/data/dataset.zip`(for development). 
-
-You can download the latest dataset from the release page then import it in app, or just check update inside app's setting page.
-
-Note that the dataset version defines the minimal compatible app version.
-E.g. 20210502-1.4.0 means that the dataset is created at 2021/05/02 and requires Chaldea app version >= 1.4.0
-
+- [https://chaldea.center](https://chaldea.center)
+- [https://cn.chaldea.center](https://cn.chaldea.center)
 
 ## Donation
 
@@ -75,6 +69,7 @@ If you would like to support or donate for this project, please move
 to [Donation Page](https://docs.chaldea.center/donation.html).
 
 ## Feedback and Contribution
+
 If you have any bug report, feature request, question or want to contribute to this project, feel free to
 
 - File an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
@@ -87,16 +82,19 @@ If you have any bug report, feature request, question or want to contribute to t
 This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://flutter.dev).
 
 Chaldea is greatly inspired from
+
 - iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088)
 - WeChat mini program [FGO material programe](https://github.com/lacus87/fgo)
 
 And the dataset is powered by
+
+- [Atlas Academy](https://atlasacademy.io/)
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
-- [FGO効率劇場](https://sites.google.com/view/fgo-domus-aurea)
-- [Atlas Academy](https://atlasacademy.io/)
+- [FGO 効率劇場](https://sites.google.com/view/fgo-domus-aurea)
 
 Finally thanks to all translators
+
 - Chinese - Mooncell Translators
 - English - Fandom & Reddit Translators
 - Japanese - Google Translate

@@ -187,22 +187,25 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget get forgotPwdBtn => TextButton(
         onPressed: () {
-          SimpleCancelOkDialog(
-            title: Text(S.current.login_forget_pwd),
-            content: const Text(
-                'Please contact developer through feedback page with *Email*'),
-            scrollable: true,
-            hideOk: true,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  router.push(child: FeedbackPage());
-                },
-                child: Text(S.current.about_feedback),
-              )
-            ],
-          ).showDialog(context);
+          showDialog(
+            context: context,
+            builder: (context) => SimpleCancelOkDialog(
+              title: Text(S.current.login_forget_pwd),
+              content: const Text(
+                  'Please contact developer through feedback page with *Email*'),
+              scrollable: true,
+              hideOk: true,
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    router.push(child: FeedbackPage());
+                  },
+                  child: Text(S.current.about_feedback),
+                )
+              ],
+            ),
+          );
         },
         child: Text(S.current.login_forget_pwd),
       );

@@ -21,7 +21,6 @@ class AppInfo {
   static MacAppType _macAppType = MacAppType.unknown;
   static bool _isIPad = false;
   static int? _androidSdk;
-  static AppVersion? _innerVersion;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -63,8 +62,14 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo = await PackageInfo.fromPlatform()
-        .catchError((e) => _loadApplicationInfoFromAsset());
+    _packageInfo =
+        await PackageInfo.fromPlatform().catchError((e) => PackageInfo(
+              appName: kAppName,
+              packageName: kPackageName,
+              version: 'unknown',
+              buildNumber: '0',
+              buildSignature: '',
+            ));
     _packageInfo = PackageInfo(
       appName: _packageInfo!.appName.toTitle(),
       packageName: _packageInfo!.packageName,
@@ -75,21 +80,10 @@ class AppInfo {
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;
     appParams["packageName"] = _packageInfo?.packageName;
+    appParams["commitHash"] = kCommitHash;
+    appParams["commitTimestamp"] = commitDate;
     logger.i('Resolved app version: ${_packageInfo?.packageName}'
         ' ${_packageInfo?.version}+${_packageInfo?.buildNumber}');
-  }
-
-  static Future<PackageInfo> _loadApplicationInfoFromAsset() async {
-    final _v = AppVersion.tryParse(await rootBundle.loadString('res/VERSION'));
-    PackageInfo packageInfo = PackageInfo(
-      appName: kAppName,
-      packageName: kPackageName,
-      version: _v?.versionString ?? 'unknown',
-      buildNumber: _v?.build.toString() ?? '0',
-      buildSignature: '',
-    );
-    logger.i('Fail to read package info, asset instead: $_v');
-    return packageInfo;
   }
 
   static Future<void> _loadUniqueId(String appPath) async {
@@ -187,12 +181,7 @@ class AppInfo {
     logger.i('Unique ID: $_uuid');
   }
 
-  /// resolve when init app, so no need to check null or resolve every time
   static Future<void> resolve(String appPath) async {
-    _innerVersion = AppVersion.tryParse(await rootBundle
-        .loadString('res/VERSION')
-        .catchError((e, s) => Future.value('')));
-    assert(_innerVersion != null);
     await _loadUniqueId(appPath);
     await _loadDeviceInfo();
     await _loadApplicationInfo();
