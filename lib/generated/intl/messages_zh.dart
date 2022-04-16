@@ -581,8 +581,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("首页-规划列表页"),
         "setting_only_change_second_append_skill":
             MessageLookupByLibrary.simpleMessage("仅更改附加技能2"),
-        "setting_plans_list_page":
-            MessageLookupByLibrary.simpleMessage("Plans List Page"),
         "setting_priority_tagging":
             MessageLookupByLibrary.simpleMessage("优先级备注"),
         "setting_servant_class_filter_style":

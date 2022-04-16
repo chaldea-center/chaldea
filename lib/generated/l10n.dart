@@ -4852,17 +4852,6 @@ class S {
     );
   }
 
-  /// `Plans List Page`
-  String get setting_plans_list_page {
-    return Intl.message(
-      'Plans List Page',
-      name: 'setting_plans_list_page',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Priority Tagging`
   String get setting_priority_tagging {
     return Intl.message(

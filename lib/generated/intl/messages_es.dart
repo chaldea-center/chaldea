@@ -712,8 +712,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_only_change_second_append_skill":
             MessageLookupByLibrary.simpleMessage(
                 "Solo cambiar la 2da Append Skill"),
-        "setting_plans_list_page":
-            MessageLookupByLibrary.simpleMessage("Página de lista de Planes"),
         "setting_priority_tagging":
             MessageLookupByLibrary.simpleMessage("Prioridad de las Etiquetas"),
         "setting_servant_class_filter_style":

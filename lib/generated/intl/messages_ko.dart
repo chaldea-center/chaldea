@@ -578,8 +578,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("홈-계획 리스트 페이지"),
         "setting_only_change_second_append_skill":
             MessageLookupByLibrary.simpleMessage("어펜드 스킬 2만 변경"),
-        "setting_plans_list_page":
-            MessageLookupByLibrary.simpleMessage("Plans List Page"),
         "setting_priority_tagging":
             MessageLookupByLibrary.simpleMessage("우선순위 매기기"),
         "setting_servant_class_filter_style":

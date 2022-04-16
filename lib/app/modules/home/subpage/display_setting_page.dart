@@ -126,7 +126,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               SwitchListTile.adaptive(
                 title: Text(S.current.setting_auto_turn_on_plan_not_reach),
-                subtitle: Text(S.current.setting_plans_list_page),
+                subtitle: Text(S.current.setting_home_plan_list_page),
                 value: db2.settings.display.autoTurnOnPlanNotReach,
                 onChanged: (v) {
                   setState(() {
