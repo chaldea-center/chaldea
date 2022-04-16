@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -138,6 +139,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         24 * 3600) {
       db2.backupUserdata();
     }
+  }
+
+  void setOnWindowClose() {
+    if (!PlatformU.isDesktop) return;
+    FlutterWindowClose.setWindowShouldCloseHandler(() async {
+      db2.saveAll();
+      await Future.delayed(const Duration(milliseconds: 200));
+      return true;
+    });
   }
 }
 

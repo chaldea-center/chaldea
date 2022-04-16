@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   catcher
   flutter_qjs
+  flutter_window_close
   libwinmedia
   url_launcher_linux
   window_size

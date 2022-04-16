@@ -49,6 +49,7 @@ dependencies:
   flutter_markdown: ^0.6.8
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
+  flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.1.0
   get: any
   hive: ^2.1.0

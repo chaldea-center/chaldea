@@ -19,11 +19,6 @@ class MethodChannelChaldeaNext {
           print('onWindowRect invalid args=${call.arguments}');
           return;
         }
-      } else if (call.method == 'onCloseWindow') {
-        // not always successful
-        db2.saveAll();
-        // db.cfg.close();
-        print('[dart] onCloseWindow');
       }
     });
   }

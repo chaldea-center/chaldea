@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   catcher
   connectivity_plus_windows
   flutter_qjs
+  flutter_window_close
   libwinmedia
   permission_handler_windows
   url_launcher_windows

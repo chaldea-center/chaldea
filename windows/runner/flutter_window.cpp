@@ -78,11 +78,6 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
           ));
       }
       break;
-    case WM_CLOSE:
-      // WM_CLOSE then WM_DESTROY
-      // std::cout << "[windows] onCloseWindow" << std::endl;
-      chaldea_channel->InvokeMethod("onCloseWindow", nullptr);
-      break;
   }
 
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
