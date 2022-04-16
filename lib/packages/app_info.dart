@@ -20,7 +20,6 @@ class AppInfo {
   static String? _uuid;
   static MacAppType _macAppType = MacAppType.unknown;
   static bool _isIPad = false;
-  static ABIType _abi = ABIType.unknown;
   static int? _androidSdk;
   static AppVersion? _innerVersion;
 
@@ -198,7 +197,6 @@ class AppInfo {
     await _loadDeviceInfo();
     await _loadApplicationInfo();
     _checkMacAppType();
-    await _checkAndroidABI();
   }
 
   static void _checkMacAppType() {
@@ -217,26 +215,6 @@ class AppInfo {
       } else {
         _macAppType = MacAppType.debug;
       }
-    }
-  }
-
-  static Future<void> _checkAndroidABI() async {
-    if (!PlatformU.isAndroid || buildNumber <= 1000 || _innerVersion == null) {
-      _abi = ABIType.unknown;
-      return;
-    }
-    String buildStr = buildNumber.toString();
-    assert(buildStr.endsWith(_innerVersion!.build.toString()),
-        '$buildStr : $_innerVersion');
-    logger.i('build=$buildNumber, inner=$_innerVersion');
-    if (buildStr.startsWith('1')) {
-      _abi = ABIType.armeabiV7a;
-    } else if (buildStr.startsWith('2')) {
-      _abi = ABIType.arm64V8a;
-    } else if (buildStr.startsWith('4')) {
-      _abi = ABIType.x86_64;
-    } else {
-      _abi = ABIType.unknown;
     }
   }
 
@@ -279,8 +257,6 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
-  static ABIType get abi => _abi;
-
   static int? get androidSdk => _androidSdk;
 
   /// e.g. "1.2.3+4"
@@ -295,11 +271,7 @@ class AppInfo {
   static String get fullVersion2 {
     StringBuffer buffer = StringBuffer(versionString);
     if (buildNumber > 0) {
-      buffer.write(' ($buildNumber');
-      if (PlatformU.isAndroid) {
-        buffer.write(', ${abi.toStandardString()}');
-      }
-      buffer.write(')');
+      buffer.write(' ($buildNumber)');
     }
     return buffer.toString();
   }
@@ -329,26 +301,4 @@ enum MacAppType {
   notarized,
   debug,
   notMacApp,
-}
-
-enum ABIType {
-  unknown,
-  arm64V8a,
-  armeabiV7a,
-  x86_64,
-}
-
-extension ABITypeToString on ABIType {
-  String toStandardString() {
-    switch (this) {
-      case ABIType.unknown:
-        return 'unknown';
-      case ABIType.arm64V8a:
-        return 'arm64-v8a';
-      case ABIType.armeabiV7a:
-        return 'armeabi-v7a';
-      case ABIType.x86_64:
-        return 'x86_64';
-    }
-  }
 }
