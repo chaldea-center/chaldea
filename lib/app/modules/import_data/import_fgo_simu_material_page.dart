@@ -328,6 +328,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     for (final bg in rarityBaseMap.keys) {
       final group = mItems[bg]!;
       group.sort2((e) => e.priority);
+      if (group.isEmpty) continue;
       int base = rarityBaseMap[group.first.background]!;
       for (int i = 0; i < group.length; i++) {
         itemMapping[base + i] = group[i].id;

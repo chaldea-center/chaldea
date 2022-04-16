@@ -122,7 +122,9 @@ class _GameDataPageState extends State<GameDataPage> {
                           state.value = value;
                           state.updateState();
                         });
-                        loader.reload(offline: false).then((value) async {
+                        EasyLoading.showInfo('Background Updating...');
+                        try {
+                          final data = await loader.reload(offline: false);
                           showDialog(
                             context: kAppKey.currentContext!,
                             builder: (context) {
@@ -130,22 +132,19 @@ class _GameDataPageState extends State<GameDataPage> {
                                 title: Text(S.current.update_dataset),
                                 content: Text(
                                     'Current: ${db2.gameData.version.text(false)}\n'
-                                    'Latest : ${value.version.text(false)}'),
+                                    'Latest : ${data.version.text(false)}'),
                                 onTapOk: () {
-                                  db2.gameData = value;
+                                  db2.gameData = data;
                                   db2.itemCenter.init();
                                   db2.notifyAppUpdate();
                                 },
                               );
                             },
                           );
-                        }).onError((error, stackTrace) async {
-                          EasyLoading.showError(
-                              'Update dataset failed!\n$error');
-                        }).whenComplete(() {
-                          state.updateState();
-                        });
-                        EasyLoading.showInfo('Background Updating...');
+                        } catch (e) {
+                          EasyLoading.showError('Update dataset failed!\n$e');
+                        }
+                        state.updateState();
                       },
                     );
                   }),

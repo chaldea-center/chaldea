@@ -189,7 +189,6 @@ class SvtFilterData {
       ];
 
   void reset() {
-    favorite = FavoriteState.all;
     for (var value in _group) {
       value.reset();
     }

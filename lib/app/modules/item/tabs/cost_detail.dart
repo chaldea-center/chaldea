@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -27,7 +26,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
 
   SvtMatCostDetailType get matType =>
       widget.matType ??
-      (_favorite ? SvtMatCostDetailType.consumed : SvtMatCostDetailType.full);
+      (_favorite ? SvtMatCostDetailType.demands : SvtMatCostDetailType.full);
 
   @override
   Widget build(BuildContext context) {

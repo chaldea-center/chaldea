@@ -24,7 +24,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () => combineToRich(
             context,
-            'Clear $targetNum quests with traits ',
+            'Clear $targetNum quests with fields ',
             MultiDescriptor.traits(context, targetIds),
           ),
           kr: null,
@@ -192,18 +192,6 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           cn: null,
           tw: null,
           na: () => Text('Perform $targetNum Friend Point Summons'),
-          kr: null,
-        );
-      case DetailCondType.questClearIndividuality:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: null,
-          na: () => combineToRich(
-            context,
-            'Clear $targetNum quests with field ',
-            MultiDescriptor.traits(context, targetIds),
-          ),
           kr: null,
         );
     }

@@ -1,3 +1,4 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -73,8 +74,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                // TODO
-                // SplitRoute.push(context, ServantListPage(), detail: false);
+                router.push(url: Routes.servants);
               },
               child: Text(S.current.preview),
             ),
