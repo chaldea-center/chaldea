@@ -39,10 +39,10 @@ WikiData _$WikiDataFromJson(Map json) => WikiData(
 
 ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
       collectionNo: json['collectionNo'] as int,
-      nameOther: (json['nameOther'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+      nicknames: json['nicknames'] == null
+          ? null
+          : MappingList<String>.fromJson(
+              Map<String, dynamic>.from(json['nicknames'] as Map)),
       obtains: (json['obtains'] as List<dynamic>?)
               ?.map((e) => $enumDecode(_$SvtObtainEnumMap, e))
               .toList() ??

@@ -13,6 +13,7 @@ class SearchUtil {
   static final Map<String, String> _jpKana = {};
   static final Map<String, String> _zhPinyin = {};
   static final Map<String, String> _enNorm = {};
+  static final Map<String, String> _krNorm = {};
 
   static String? getJP(String? words) {
     if (words == null) return null;
@@ -38,12 +39,17 @@ class SearchUtil {
     return _enNorm[words] ??= words.replaceAll(' ', '').normalize();
   }
 
+  static String? getKr(String? words) {
+    if (words == null) return null;
+    return _krNorm[words] ??= words.replaceAll(' ', '');
+  }
+
   static Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
     yield getJP(transl.m?.jp);
     yield getCN(transl.m?.cn);
     yield getCN(transl.m?.tw);
     yield getEn(transl.m?.na);
-    yield transl.m?.kr;
+    yield getKr(transl.m?.kr);
   }
 
   static String getCache(
@@ -62,7 +68,7 @@ class SearchUtil {
       case Region.na:
         return getEn(words)!.toLowerCase();
       case Region.kr:
-        return words.toLowerCase();
+        return getKr(words.toLowerCase())!.toLowerCase();
     }
   }
 }

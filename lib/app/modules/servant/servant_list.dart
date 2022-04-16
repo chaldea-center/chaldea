@@ -1177,9 +1177,11 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       }
       yield* getAllKeys(Transl.cvNames(svt.profile.cv));
       yield* getAllKeys(Transl.illustratorNames(svt.profile.illustrator));
-      for (final nickname in svt.extra.nameOther) {
-        yield SearchUtil.getCN(nickname);
-      }
+      yield* getListKeys(svt.extra.nicknames.cn, (e) => SearchUtil.getCN(e));
+      yield* getListKeys(svt.extra.nicknames.jp, (e) => SearchUtil.getJP(e));
+      yield* getListKeys(svt.extra.nicknames.na, (e) => SearchUtil.getEn(e));
+      yield* getListKeys(svt.extra.nicknames.tw, (e) => SearchUtil.getCN(e));
+      yield* getListKeys(svt.extra.nicknames.kr, (e) => SearchUtil.getKr(e));
     }
     if (activeSkill) {
       for (final skill in svt.skills) {

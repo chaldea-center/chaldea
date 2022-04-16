@@ -173,4 +173,12 @@ abstract class SearchOptionsMixin<T> {
   Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
     yield* SearchUtil.getAllKeys(transl);
   }
+
+  Iterable<String?> getListKeys(
+      List<String>? items, String? Function(String word) getter) sync* {
+    if (items == null) return;
+    for (final item in items) {
+      yield getter(item);
+    }
+  }
 }

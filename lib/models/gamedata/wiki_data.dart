@@ -40,7 +40,7 @@ class WikiData {
 @JsonSerializable()
 class ServantExtra {
   int collectionNo;
-  List<String> nameOther;
+  MappingList<String> nicknames;
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;
@@ -49,13 +49,14 @@ class ServantExtra {
 
   ServantExtra({
     required this.collectionNo,
-    this.nameOther = const [],
+    MappingList<String>? nicknames,
     this.obtains = const [],
     this.aprilFoolAssets = const [],
     MappingBase<String>? aprilFoolProfile,
     this.mcLink,
     this.fandomLink,
-  }) : aprilFoolProfile = aprilFoolProfile ?? MappingBase();
+  })  : nicknames = nicknames ?? MappingList(),
+        aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
   factory ServantExtra.fromJson(Map<String, dynamic> json) =>
       _$ServantExtraFromJson(json);

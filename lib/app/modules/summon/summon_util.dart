@@ -203,7 +203,7 @@ class SummonUtil {
                 .firstWhereOrNull((svt) =>
                     castBracket(svt.extra.mcLink) == fragments[0] ||
                     castBracket(svt.lName.cn) == fragments[0] ||
-                    svt.extra.nameOther.contains(fragments[0]))
+                    svt.extra.nicknames.cn?.contains(fragments[0]) == true)
                 ?.lName
                 .l ??
             e;
