@@ -102,16 +102,18 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                         onRefresh: () => _resolveMissions(_region, force: true),
                       ),
           ),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  router.push(child: CustomMissionPage());
-                },
-                child: const Text('Custom Mission'),
-              )
-            ],
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    router.push(child: CustomMissionPage());
+                  },
+                  child: const Text('Custom Mission'),
+                )
+              ],
+            ),
           )
         ],
       ),

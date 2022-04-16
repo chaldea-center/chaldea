@@ -80,7 +80,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         children: [
           Expanded(child: listView),
           kDefaultDivider,
-          buttonBar,
+          SafeArea(child: buttonBar),
         ],
       ),
     );

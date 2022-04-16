@@ -80,13 +80,15 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
           Positioned.fill(
             bottom: 24,
             child: LayoutBuilder(builder: (context, constraints) {
-              return SimpleLineChart(
-                data: widget.data,
-                minX: 0,
-                minY: 0,
-                intervalX: constraints.maxWidth > 450 ? 10 : 20,
-                intervalY: _resolveIntervalY(),
-                xFormatter: (v) => 'Lv.${v.toInt()}',
+              return SafeArea(
+                child: SimpleLineChart(
+                  data: widget.data,
+                  minX: 0,
+                  minY: 0,
+                  intervalX: constraints.maxWidth > 450 ? 10 : 20,
+                  intervalY: _resolveIntervalY(),
+                  xFormatter: (v) => 'Lv.${v.toInt()}',
+                ),
               );
             }),
           ),

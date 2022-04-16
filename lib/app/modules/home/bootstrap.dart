@@ -94,6 +94,11 @@ class _BootstrapPageState extends State<BootstrapPage>
       child = Stack(children: [child, _bottom()]);
     }
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(

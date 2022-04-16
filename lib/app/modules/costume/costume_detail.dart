@@ -177,7 +177,7 @@ class CostumeDetailPage extends StatelessWidget {
                   ),
                 ),
               )
-            ])
+            ]),
           ],
         ),
       ),

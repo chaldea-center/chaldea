@@ -152,7 +152,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
             ],
           ),
         ),
-        buttonBar,
+        SafeArea(child: buttonBar),
       ],
     );
   }
@@ -162,23 +162,31 @@ class _ItemStatTabState extends State<ItemStatTab> {
       alignment: MainAxisAlignment.center,
       children: [
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: 4,
+          runSpacing: 2,
           alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             FilterGroup<int>(
               options: List.generate(5, (index) => index),
               values: svtParts,
               combined: true,
-              // shrinkWrap: true,
+              shrinkWrap: true,
               optionBuilder: (index) {
-                return Text([
-                  S.current.ascension_short,
-                  S.current.active_skill,
-                  S.current.append_skill_short,
-                  S.current.costume,
-                  'Special',
-                ][index]);
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 32),
+                    child: Text([
+                      S.current.ascension_short,
+                      S.current.active_skill,
+                      S.current.append_skill_short,
+                      S.current.costume,
+                      'Special',
+                    ][index]),
+                  ),
+                );
               },
               onFilterChanged: (v) {
                 setState(() {});

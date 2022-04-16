@@ -39,7 +39,7 @@ class _SQTableTabState extends State<SQTableTab> {
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-      child: table,
+      child: SafeArea(child: table),
     );
   }
 

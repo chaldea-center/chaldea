@@ -234,9 +234,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       child: Text(S.of(context).feedback_send),
                     ),
                   ),
-                )
+                ),
               ],
             ),
+            const SafeArea(child: SizedBox()),
           ],
         ),
       ),

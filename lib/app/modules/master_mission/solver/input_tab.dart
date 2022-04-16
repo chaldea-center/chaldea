@@ -69,7 +69,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         ),
         kDefaultDivider,
         eventSelector,
-        buttonBar,
+        SafeArea(child: buttonBar),
       ],
     );
   }

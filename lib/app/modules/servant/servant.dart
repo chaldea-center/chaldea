@@ -157,13 +157,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
               const Divider(height: 1),
               Expanded(
                 child: TabBarView(
-                  children: builders
-                      .map((e) =>
-                          e.viewBuilder?.call(context) ??
-                          const Center(
-                            child: Text('NotImplemented'),
-                          ))
-                      .toList(),
+                  children: [
+                    for (final builder in builders)
+                      builder.viewBuilder?.call(context) ??
+                          const Center(child: Text('NotImplemented'))
+                  ],
                 ),
               )
             ],

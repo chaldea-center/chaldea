@@ -133,14 +133,16 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           for (bool isSvt in [true, false])
             for (int rarity in [5, 4, 3]) accResultOf(isSvt, rarity),
           kDefaultDivider,
-          Center(
-            child: Text(
-              LocalizedText.of(
-                  chs: '仅供娱乐, 如有雷同, 纯属巧合',
-                  jpn: '娯楽のみ',
-                  eng: 'Just for entertainment'),
-              style: const TextStyle(color: Colors.grey),
-              textAlign: TextAlign.center,
+          SafeArea(
+            child: Center(
+              child: Text(
+                LocalizedText.of(
+                    chs: '仅供娱乐, 如有雷同, 纯属巧合',
+                    jpn: '娯楽のみ',
+                    eng: 'Just for entertainment'),
+                style: const TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
             ),
           )
         ]))

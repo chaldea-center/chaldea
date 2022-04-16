@@ -69,32 +69,33 @@ class _MysticCodePageState extends State<MysticCodePage> {
               children: [
                 buildScrollHeader(),
                 Expanded(
-                    child:
-                        SingleChildScrollView(child: buildDetails(mysticCode))),
-                Row(
-                  children: [
-                    Padding(
-                        padding:
-                            const EdgeInsetsDirectional.only(start: 16, end: 2),
-                        child: Text(S.current.level)),
-                    SizedBox(
-                        width: 20,
-                        child: Center(child: Text(_level.toString()))),
-                    Expanded(
-                      child: Slider(
-                        value: _level.toDouble(),
-                        onChanged: (v) => setState(() =>
-                            db2.curUser.mysticCodes[_selected!] = v.toInt()),
-                        min: 1.0,
-                        max: 10.0,
-                        divisions: 9,
-                        label: _level.toString(),
-                      ),
-                    )
-                  ],
+                  child: SingleChildScrollView(child: buildDetails(mysticCode)),
                 ),
+                SafeArea(child: levelSlider)
               ],
             ),
+    );
+  }
+
+  Widget get levelSlider {
+    return Row(
+      children: [
+        Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16, end: 2),
+            child: Text(S.current.level)),
+        SizedBox(width: 20, child: Center(child: Text(_level.toString()))),
+        Expanded(
+          child: Slider(
+            value: _level.toDouble(),
+            onChanged: (v) =>
+                setState(() => db2.curUser.mysticCodes[_selected!] = v.toInt()),
+            min: 1.0,
+            max: 10.0,
+            divisions: 9,
+            label: _level.toString(),
+          ),
+        )
+      ],
     );
   }
 

@@ -196,14 +196,13 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     if (bottomHint != null && (shownList.length > 5 || bottomHint != topHint)) {
       slivers.add(SliverToBoxAdapter(child: bottomHint));
     }
-    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 24)));
+    slivers.add(
+        const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
 
-    return SafeArea(
-      child: _wrapButtonBar(
-        CustomScrollView(
-          controller: scrollController,
-          slivers: slivers,
-        ),
+    return _wrapButtonBar(
+      CustomScrollView(
+        controller: scrollController,
+        slivers: slivers,
       ),
     );
   }
@@ -236,14 +235,13 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         (shownList.length > 20 || bottomHint != topHint)) {
       slivers.add(SliverToBoxAdapter(child: bottomHint));
     }
-    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 24)));
+    slivers.add(
+        const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
 
-    return SafeArea(
-      child: _wrapButtonBar(
-        CustomScrollView(
-          controller: scrollController,
-          slivers: slivers,
-        ),
+    return _wrapButtonBar(
+      CustomScrollView(
+        controller: scrollController,
+        slivers: slivers,
       ),
     );
   }
@@ -255,7 +253,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       return Column(
         children: [
           Expanded(child: child),
-          buttonBar!,
+          SafeArea(child: buttonBar!),
         ],
       );
     }

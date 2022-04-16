@@ -91,39 +91,43 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               child: CraftDetailBasePage(ce: ce, lang: lang, showSummon: true),
             ),
           ),
-          ButtonBar(alignment: MainAxisAlignment.center, children: [
-            // ProfileLangSwitch(
-            //   primary: lang,
-            //   onChanged: (v) {
-            //     setState(() {
-            //       lang = v;
-            //     });
-            //   },
-            // ),
-            for (var i = 0; i < 2; i++)
-              ElevatedButton(
-                onPressed: () {
-                  CraftEssence? nextCe;
-                  if (widget.onSwitch != null) {
-                    // if navigated from filter list, let filter list decide which is the next one
-                    nextCe = widget.onSwitch!(ce, i == 0);
-                  } else {
-                    nextCe = db2
-                        .gameData.craftEssences[ce.collectionNo + [-1, 1][i]];
-                  }
-                  if (nextCe == null) {
-                    EasyLoading.showToast(S.current.list_end_hint(i == 0));
-                  } else {
-                    setState(() {
-                      _ce = nextCe!;
-                    });
-                  }
-                },
-                child: Text([S.current.previous_card, S.current.next_card][i]),
-                style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontWeight: FontWeight.normal)),
-              ),
-          ])
+          SafeArea(
+            child: ButtonBar(alignment: MainAxisAlignment.center, children: [
+              // ProfileLangSwitch(
+              //   primary: lang,
+              //   onChanged: (v) {
+              //     setState(() {
+              //       lang = v;
+              //     });
+              //   },
+              // ),
+              for (var i = 0; i < 2; i++)
+                ElevatedButton(
+                  onPressed: () {
+                    CraftEssence? nextCe;
+                    if (widget.onSwitch != null) {
+                      // if navigated from filter list, let filter list decide which is the next one
+                      nextCe = widget.onSwitch!(ce, i == 0);
+                    } else {
+                      nextCe = db2
+                          .gameData.craftEssences[ce.collectionNo + [-1, 1][i]];
+                    }
+                    if (nextCe == null) {
+                      EasyLoading.showToast(S.current.list_end_hint(i == 0));
+                    } else {
+                      setState(() {
+                        _ce = nextCe!;
+                      });
+                    }
+                  },
+                  child:
+                      Text([S.current.previous_card, S.current.next_card][i]),
+                  style: ElevatedButton.styleFrom(
+                      textStyle:
+                          const TextStyle(fontWeight: FontWeight.normal)),
+                ),
+            ]),
+          )
         ],
       ),
     );

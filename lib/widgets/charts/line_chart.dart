@@ -112,7 +112,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               interval: intervalY,
-              reservedSize: 56,
+              reservedSize: 48,
               getTitlesWidget: (value, titleMeta) {
                 return Padding(
                   padding: const EdgeInsets.only(left: 8, right: 4),

@@ -51,6 +51,6 @@ void main([List<String> args = const []]) {
         newTransl[key] = transl[key];
       }
     }
-    lang.file.writeAsStringSync(_encoder.convert(newTransl));
+    lang.file.writeAsStringSync(_encoder.convert(newTransl) + '\n');
   }
 }

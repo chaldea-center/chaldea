@@ -383,74 +383,78 @@ class _ItemListTabState extends State<ItemListTab> {
     return Column(children: [
       Expanded(child: listView),
       kDefaultDivider,
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (PlatformU.isMobile)
-              IconButton(
-                onPressed: () {
-                  if (_shownGroups.isEmpty) return;
-                  int focused =
-                      _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-                  if (focused >= 0) {
-                    moveToNext(_shownGroups[focused].focusNode, true);
-                  } else {
-                    FocusScope.of(context)
-                        .requestFocus(_shownGroups.last.focusNode);
-                  }
-                },
-                icon: const Icon(Icons.keyboard_arrow_up),
-                tooltip: 'Previous',
-              ),
-            if (PlatformU.isMobile)
-              IconButton(
-                onPressed: () {
-                  if (_shownGroups.isEmpty) return;
-                  int focused =
-                      _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-                  if (focused >= 0) {
-                    moveToNext(_shownGroups[focused].focusNode);
-                  } else {
-                    FocusScope.of(context)
-                        .requestFocus(_shownGroups.first.focusNode);
-                  }
-                },
-                icon: const Icon(Icons.keyboard_arrow_down),
-                tooltip: 'Next',
-              ),
-            Flexible(
-              child: Center(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.calculate_outlined),
-                  label: Text(S.current.planning_free_quest_btn),
-                  style: ElevatedButton.styleFrom(),
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    widget.onNavToCalculator();
-                  },
-                ),
-              ),
-            ),
-            CheckboxWithLabel(
-              value: db2.itemCenter.includingEvents,
-              label: Text(S.current.event_title),
-              onChanged: (v) {
-                setState(() {
-                  // reset to true in initState or not?
-                  db2.itemCenter.includingEvents =
-                      v ?? db2.itemCenter.includingEvents;
-                  db2.itemCenter.updateLeftItems();
-                  setState(() {});
-                });
-              },
-            ),
-            const SizedBox(width: 6),
-          ],
-        ),
-      ),
+      SafeArea(child: buttonBar),
     ]);
+  }
+
+  Widget get buttonBar {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (PlatformU.isMobile)
+            IconButton(
+              onPressed: () {
+                if (_shownGroups.isEmpty) return;
+                int focused =
+                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                if (focused >= 0) {
+                  moveToNext(_shownGroups[focused].focusNode, true);
+                } else {
+                  FocusScope.of(context)
+                      .requestFocus(_shownGroups.last.focusNode);
+                }
+              },
+              icon: const Icon(Icons.keyboard_arrow_up),
+              tooltip: 'Previous',
+            ),
+          if (PlatformU.isMobile)
+            IconButton(
+              onPressed: () {
+                if (_shownGroups.isEmpty) return;
+                int focused =
+                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                if (focused >= 0) {
+                  moveToNext(_shownGroups[focused].focusNode);
+                } else {
+                  FocusScope.of(context)
+                      .requestFocus(_shownGroups.first.focusNode);
+                }
+              },
+              icon: const Icon(Icons.keyboard_arrow_down),
+              tooltip: 'Next',
+            ),
+          Flexible(
+            child: Center(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.calculate_outlined),
+                label: Text(S.current.planning_free_quest_btn),
+                style: ElevatedButton.styleFrom(),
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  widget.onNavToCalculator();
+                },
+              ),
+            ),
+          ),
+          CheckboxWithLabel(
+            value: db2.itemCenter.includingEvents,
+            label: Text(S.current.event_title),
+            onChanged: (v) {
+              setState(() {
+                // reset to true in initState or not?
+                db2.itemCenter.includingEvents =
+                    v ?? db2.itemCenter.includingEvents;
+                db2.itemCenter.updateLeftItems();
+                setState(() {});
+              });
+            },
+          ),
+          const SizedBox(width: 6),
+        ],
+      ),
+    );
   }
 
   void setTextController() {

@@ -25,7 +25,7 @@ abstract class FilterPage<T> extends StatefulWidget {
           return ConstrainedBox(
             constraints:
                 constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
-            child: builder(context),
+            child: SafeArea(child: builder(context)),
           );
         }),
       );

@@ -18,13 +18,13 @@ class CustomTable extends StatelessWidget {
   /// could hide outline if table inside another table
   final bool hideOutline;
 
-  const CustomTable(
-      {Key? key,
-      required this.children,
-      this.hideOutline = false,
-      this.horizontalDivider = kHorizontalDivider,
-      this.verticalDivider = kVerticalDivider})
-      : super(key: key);
+  const CustomTable({
+    Key? key,
+    required this.children,
+    this.hideOutline = false,
+    this.horizontalDivider = kHorizontalDivider,
+    this.verticalDivider = kVerticalDivider,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +49,14 @@ class CustomTable extends StatelessWidget {
                       verticalDivider.thickness ?? kVerticalDivider.thickness!),
             ),
           );
-    return Container(
-      decoration: outlineDecoration,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _all,
+    return SafeArea(
+      child: DecoratedBox(
+        decoration: outlineDecoration ?? const BoxDecoration(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _all,
+        ),
       ),
     );
   }
@@ -222,10 +224,14 @@ class _CustomTableRowState extends State<CustomTableRow> {
       }
     }
     if (!_needRebuild) _needRebuild = true;
-    return Container(
-      constraints: constraints,
-      child: IntrinsicHeight(child: Row(children: children)),
-    );
+    Widget body = IntrinsicHeight(child: Row(children: children));
+    if (constraints != null) {
+      body = ConstrainedBox(
+        constraints: constraints,
+        child: body,
+      );
+    }
+    return body;
   }
 
   void calculateConstraints() {

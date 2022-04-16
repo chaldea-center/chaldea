@@ -77,23 +77,25 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     return Column(
       children: [
         Expanded(child: ListView(children: children)),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            FilterGroup<Region>(
-              combined: true,
-              options: releasedRegions.toList(),
-              optionBuilder: (v) => Text(v.name.toUpperCase()),
-              values: FilterRadioData(_region),
-              onFilterChanged: (v) {
-                if (v.radioValue != null) {
-                  _region = v.radioValue!;
-                  fetchSvt();
-                }
-                setState(() {});
-              },
-            )
-          ],
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              FilterGroup<Region>(
+                combined: true,
+                options: releasedRegions.toList(),
+                optionBuilder: (v) => Text(v.name.toUpperCase()),
+                values: FilterRadioData(_region),
+                onFilterChanged: (v) {
+                  if (v.radioValue != null) {
+                    _region = v.radioValue!;
+                    fetchSvt();
+                  }
+                  setState(() {});
+                },
+              )
+            ],
+          ),
         )
       ],
     );

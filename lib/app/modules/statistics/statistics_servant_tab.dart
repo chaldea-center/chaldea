@@ -91,16 +91,19 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         },
       ));
     }
-    children.add(const Center(
-      child: Text(
-        'Red: skill >=999',
-        style: TextStyle(color: Colors.grey),
+    children.add(const SafeArea(
+      child: Center(
+        child: Text(
+          'Red: skill >=999',
+          style: TextStyle(color: Colors.grey),
+        ),
       ),
     ));
+    children = divideTiles(children);
     return ListView(
       controller: _scrollController,
       physics: scrollable ? null : const NeverScrollableScrollPhysics(),
-      children: divideTiles(children),
+      children: children,
       padding: const EdgeInsets.symmetric(vertical: 6),
     );
   }

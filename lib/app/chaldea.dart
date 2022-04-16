@@ -45,14 +45,14 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           ? SystemUiOverlayStyle.dark.copyWith(
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-              statusBarIconBrightness: Brightness.light,
-              systemNavigationBarIconBrightness: Brightness.light,
+              // statusBarIconBrightness: Brightness.light,
+              // systemNavigationBarIconBrightness: Brightness.light,
             )
           : SystemUiOverlayStyle.light.copyWith(
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarIconBrightness: Brightness.dark,
+              // statusBarIconBrightness: Brightness.dark,
+              // systemNavigationBarIconBrightness: Brightness.dark,
             ),
       child: Screenshot(
         controller: db2.runtimeData.screenshotController,

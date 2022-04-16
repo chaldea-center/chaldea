@@ -104,14 +104,16 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
           ),
         ),
         kDefaultDivider,
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: _parse,
-              child: const Text('Parse Data'),
-            ),
-          ],
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _parse,
+                child: const Text('Parse Data'),
+              ),
+            ],
+          ),
         )
       ],
     );
@@ -165,21 +167,24 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
           ),
         ),
         kDefaultDivider,
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                svtResult.forEach((record) {
-                  db2.curUser.servants[record.svt.collectionNo] =
-                      SvtStatus(cur: record.cur);
-                  db2.curPlan[record.svt.collectionNo] = record.target;
-                });
-                EasyLoading.showSuccess('Import ${svtResult.length} servants');
-              },
-              child: Text(S.current.import_data),
-            ),
-          ],
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  svtResult.forEach((record) {
+                    db2.curUser.servants[record.svt.collectionNo] =
+                        SvtStatus(cur: record.cur);
+                    db2.curPlan[record.svt.collectionNo] = record.target;
+                  });
+                  EasyLoading.showSuccess(
+                      'Import ${svtResult.length} servants');
+                },
+                child: Text(S.current.import_data),
+              ),
+            ],
+          ),
         )
       ],
     );
@@ -212,17 +217,19 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
           ),
         ),
         kDefaultDivider,
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                db2.curUser.items.addAll(itemResult);
-                EasyLoading.showSuccess('Import ${itemResult.length} items');
-              },
-              child: Text(S.current.import_data),
-            ),
-          ],
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  db2.curUser.items.addAll(itemResult);
+                  EasyLoading.showSuccess('Import ${itemResult.length} items');
+                },
+                child: Text(S.current.import_data),
+              ),
+            ],
+          ),
         )
       ],
     );

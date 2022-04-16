@@ -30,22 +30,24 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
         children: [
           Expanded(child: missionList()),
           kDefaultDivider,
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  final customMissions = masterMission.missions
-                      .map((e) => CustomMission.fromEventMission(e))
-                      .whereType<CustomMission>()
-                      .toList();
-                  router.push(
-                      child: CustomMissionPage(initMissions: customMissions));
-                },
-                icon: const Icon(Icons.search),
-                label: Text(S.current.drop_calc_solve),
-              )
-            ],
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    final customMissions = masterMission.missions
+                        .map((e) => CustomMission.fromEventMission(e))
+                        .whereType<CustomMission>()
+                        .toList();
+                    router.push(
+                        child: CustomMissionPage(initMissions: customMissions));
+                  },
+                  icon: const Icon(Icons.search),
+                  label: Text(S.current.drop_calc_solve),
+                )
+              ],
+            ),
           )
         ],
       ),

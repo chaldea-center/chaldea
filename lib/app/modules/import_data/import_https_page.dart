@@ -144,7 +144,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ),
           ),
           kDefaultDivider,
-          buttonBar,
+          SafeArea(child: buttonBar),
         ],
       ),
     );
@@ -507,8 +507,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       buttonPadding: EdgeInsets.zero,
       children: [
         Wrap(
-          spacing: 6,
-          runSpacing: 3,
+          spacing: 4,
+          runSpacing: 2,
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
