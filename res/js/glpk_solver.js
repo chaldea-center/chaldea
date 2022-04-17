@@ -44,7 +44,7 @@ function glpk_solver(params_str) {
   let row_names = get_param(params, 'rowNames');//m
   let b = get_param(params, 'bVec');//m
   let c = get_param(params, 'cVec');//n
-  let A = get_param(params, 'AMat');
+  let A = get_param(params, 'matA');
   let integer = get_param(params, 'integer', false);
 
   // solver

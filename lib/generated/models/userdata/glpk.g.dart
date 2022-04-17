@@ -138,8 +138,8 @@ BasicLPParams _$BasicLPParamsFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           rowNames: $checkedConvert('rowNames',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          AMat: $checkedConvert(
-              'AMat',
+          matA: $checkedConvert(
+              'matA',
               (v) => (v as List<dynamic>?)
                   ?.map(
                       (e) => (e as List<dynamic>).map((e) => e as num).toList())
@@ -158,7 +158,7 @@ Map<String, dynamic> _$BasicLPParamsToJson(BasicLPParams instance) =>
     <String, dynamic>{
       'colNames': instance.colNames,
       'rowNames': instance.rowNames,
-      'AMat': instance.AMat,
+      'matA': instance.matA,
       'bVec': instance.bVec,
       'cVec': instance.cVec,
       'integer': instance.integer,

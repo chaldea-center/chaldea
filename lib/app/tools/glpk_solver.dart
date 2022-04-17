@@ -104,7 +104,7 @@ class FreeLPSolver {
       BasicLPParams glpkParams = BasicLPParams();
       glpkParams.colNames = data.questIds;
       glpkParams.rowNames = data.itemIds;
-      glpkParams.AMat = data.matrix;
+      glpkParams.matA = data.matrix;
       glpkParams.bVec =
           data.itemIds.map((e) => params.getPlanItemCount(e, 0)).toList();
       glpkParams.cVec = params.costMinimize

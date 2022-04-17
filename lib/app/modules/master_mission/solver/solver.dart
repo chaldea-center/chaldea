@@ -21,14 +21,14 @@ class MissionSolver extends BaseLPSolver {
     missions
         .removeWhere((mission) => mission.ids.isEmpty || mission.count <= 0);
 
-    List<List<num>> AMat = [];
+    List<List<num>> matA = [];
     for (final mission in List.of(missions)) {
       final row = <int>[];
       for (final quest in quests) {
         row.add(countMissionTarget(mission, quest));
       }
       if (row.any((e) => e > 0)) {
-        AMat.add(row);
+        matA.add(row);
       } else {
         print(
             'remove invalid mission: ${mission.type}/${mission.count}/${mission.ids}');
@@ -39,7 +39,7 @@ class MissionSolver extends BaseLPSolver {
     return BasicLPParams(
       colNames: quests.map((e) => e.id).toList(),
       rowNames: missions.map((e) => e.hashCode).toList(),
-      AMat: AMat,
+      matA: matA,
       bVec: missions.map((e) => e.count).toList(),
       cVec: quests.map((e) => e.consume).toList(),
       integer: true,

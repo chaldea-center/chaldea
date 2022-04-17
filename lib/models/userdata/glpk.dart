@@ -213,7 +213,7 @@ Object? _toJsonT<T>(T value) => value.toString();
 class BasicLPParams {
   List<int> colNames; //n
   List<int> rowNames; //m
-  List<List<num>> AMat; // m*n
+  List<List<num>> matA; // m*n
   List<num> bVec; //m
   List<num> cVec; //n
   bool integer;
@@ -221,49 +221,49 @@ class BasicLPParams {
   BasicLPParams({
     List<int>? colNames,
     List<int>? rowNames,
-    List<List<num>>? AMat,
+    List<List<num>>? matA,
     List<num>? bVec,
     List<num>? cVec,
     bool? integer,
   })  : colNames = colNames ?? [],
         rowNames = rowNames ?? [],
-        AMat = AMat ?? [],
+        matA = matA ?? [],
         bVec = bVec ?? [],
         cVec = cVec ?? [],
         integer = integer ?? false;
 
   List<num> getCol(int index) {
-    return AMat.map((e) => e[index]).toList();
+    return matA.map((e) => e[index]).toList();
   }
 
   void addRow(int rowName, List<num> rowOfA, num b) {
     rowNames.add(rowName);
-    AMat.add(rowOfA);
+    matA.add(rowOfA);
     bVec.add(b);
   }
 
   void removeCol(int index) {
     colNames.removeAt(index);
     cVec.removeAt(index);
-    AMat.forEach((row) {
+    matA.forEach((row) {
       row.removeAt(index);
     });
   }
 
   void removeRow(int index) {
     rowNames.removeAt(index);
-    AMat.removeAt(index);
+    matA.removeAt(index);
     bVec.removeAt(index);
   }
 
   void removeInvalidCells() {
     for (int row = rowNames.length - 1; row >= 0; row--) {
-      if (bVec[row] <= 0 || AMat[row].every((e) => e == 0)) {
+      if (bVec[row] <= 0 || matA[row].every((e) => e == 0)) {
         removeRow(row);
       }
     }
     for (int col = colNames.length - 1; col >= 0; col--) {
-      if (AMat.every((rowData) => rowData[col] == 0)) {
+      if (matA.every((rowData) => rowData[col] == 0)) {
         removeCol(col);
       }
     }
