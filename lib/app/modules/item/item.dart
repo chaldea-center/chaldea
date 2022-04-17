@@ -157,7 +157,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return IconButton(
       icon:
           Icon(showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
-      tooltip: 'Outdated',
+      tooltip: S.current.outdated,
       onPressed: () {
         setState(() {
           showOutdated = !showOutdated;

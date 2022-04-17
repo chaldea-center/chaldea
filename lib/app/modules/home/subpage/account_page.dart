@@ -19,7 +19,7 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.cur_account),
+        title: Text(S.current.game_account),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add),

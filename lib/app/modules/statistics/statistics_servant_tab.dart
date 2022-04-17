@@ -80,7 +80,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     for (int i = rarityTotal.length - 1; i >= 0; i--) {
       children.addAll(_oneRarity(
         selected: raritySelected[i],
-        title: '$i☆ ' + S.current.servant,
+        title: '$kStarChar$i ' + S.current.servant,
         skillMax: rarity999[i],
         own: rarityOwn[i],
         total: rarityTotal[i],

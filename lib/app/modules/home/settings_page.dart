@@ -60,11 +60,11 @@ class _SettingsPageState extends State<SettingsPage> {
         controller: _scrollController,
         slivers: [
           SliverTileGroup(
-            header: S.current.chaldea_user,
+            header: S.current.chaldea_account,
             children: [userTile],
           ),
           SliverTileGroup(
-            header: S.current.cur_account,
+            header: S.current.game_account,
             children: [
               ListTile(
                 title: Text(S.current.cur_account),
@@ -78,26 +78,35 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.game_server),
                 trailing: _wrapArrowTrailing(db2.onUserData(
                     (context, snapshot) =>
-                        Text(EnumUtil.upperCase(db2.curUser.region)))),
+                        Text(db2.curUser.region.name.toUpperCase()))),
                 onTap: () {
                   router.push(child: GameServerPage());
                 },
               ),
-            ],
-          ),
-          SliverTileGroup(
-            header: S.current.event_progress,
-            footer:
-                '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
-            children: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ListTile(
-                  title: Text('TODO'),
-                ),
+              ListTile(
+                title: Text(S.current.preferred_translation),
+                trailing: db2.onSettings((context, _) => _wrapArrowTrailing(
+                    Text(db2.settings.resolvedPreferredRegions.first
+                        .toUpper()))),
+                onTap: () {
+                  router.push(child: TranslationSetting());
+                },
               ),
             ],
           ),
+          // SliverTileGroup(
+          //   header: S.current.event_progress,
+          //   footer:
+          //       '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
+          //   children: const [
+          //     Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: 16),
+          //       child: ListTile(
+          //         title: Text('TODO'),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           SliverTileGroup(
             header: S.current.settings_data,
             children: <Widget>[
@@ -148,15 +157,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                 ),
-              ),
-              ListTile(
-                title: Text(S.current.translations),
-                trailing: db2.onSettings((context, _) => _wrapArrowTrailing(
-                    Text(db2.settings.resolvedPreferredRegions.first
-                        .toUpper()))),
-                onTap: () {
-                  router.push(child: TranslationSetting());
-                },
               ),
               ListTile(
                 title: Text(S.current.dark_mode),

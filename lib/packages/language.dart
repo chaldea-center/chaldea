@@ -51,12 +51,11 @@ class Language {
   /// warn that [Intl.canonicalizedLocale] cannot treat script code
   static Language? getLanguage(String? code) {
     code = Intl.canonicalizedLocale(code ??= systemLocale.toString());
-    Language? lang = supportLanguages
-        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
-    if (lang == null && code.startsWith('zh')) {
-      return chs;
+    if (code.startsWith(cht.code)) {
+      return cht;
     }
-    return lang;
+    return supportLanguages
+        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
   }
 
   static Locale get systemLocale =>

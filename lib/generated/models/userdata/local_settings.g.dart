@@ -42,7 +42,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
           autoResetFilter:
               $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
-          useProxy: $checkedConvert('useProxy', (v) => v as bool? ?? false),
           favoritePreferred: $checkedConvert('favoritePreferred',
               (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           preferApRate:
@@ -122,7 +121,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'proxyDataSource': instance.proxyDataSource,
       'autoRotate': instance.autoRotate,
       'autoResetFilter': instance.autoResetFilter,
-      'useProxy': instance.useProxy,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'preferApRate': instance.preferApRate,
       'priorityTags':

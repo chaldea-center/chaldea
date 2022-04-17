@@ -105,7 +105,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           items: List.generate(
             6,
             (index) => DropdownMenuItem(
-              child: Text('${5 - index}☆'),
+              child: Text('${5 - index}$kStarChar'),
               value: 5 - index,
             ),
           ),

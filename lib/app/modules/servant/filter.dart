@@ -69,7 +69,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v☆'),
+          optionBuilder: (v) => Text('$v$kStarChar'),
           onFilterChanged: (value) {
             update();
           },
@@ -78,7 +78,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).noble_phantasm, style: textStyle),
           options: const [CardType.arts, CardType.buster, CardType.quick],
           values: filterData.npColor,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(v.name.toTitle()),
           onFilterChanged: (value) {
             update();
           },
@@ -86,7 +86,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         FilterGroup<NpDamageType>(
           values: filterData.npType,
           options: NpDamageType.values,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(v.name.toTitle()),
           onFilterChanged: (value) {
             update();
           },

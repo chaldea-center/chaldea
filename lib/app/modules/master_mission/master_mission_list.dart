@@ -79,7 +79,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
               setState(() {});
               showOutdated = !showOutdated;
             },
-            tooltip: 'Outdated',
+            tooltip: S.current.outdated,
             icon: Icon(
                 showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
           )

@@ -1,6 +1,5 @@
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
 
 class CommandCardWidget extends StatelessWidget {
@@ -15,7 +14,7 @@ class CommandCardWidget extends StatelessWidget {
     if (![CardType.arts, CardType.buster, CardType.quick].contains(card)) {
       return const SizedBox();
     }
-    final cardName = EnumUtil.shortString(card);
+    final cardName = card.name;
     return SizedBox(
       width: width,
       height: width,

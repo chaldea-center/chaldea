@@ -180,26 +180,6 @@ class NumberInputFormatter extends TextInputFormatter {
 class EnumUtil {
   EnumUtil._();
 
-  static String shortString(Object? enumObj) {
-    if (enumObj == null) return enumObj.toString();
-    assert(enumObj.toString().contains('.'),
-        'The provided object "$enumObj" is not an enum.');
-    return enumObj.toString().split('.').last;
-  }
-
-  static String upperCase(Object? enumObj) {
-    return shortString(enumObj).toUpperCase();
-  }
-
-  static String titled(Object enumObj) {
-    String s = shortString(enumObj);
-    if (s.length > 1) {
-      return s[0].toUpperCase() + s.substring(1);
-    } else {
-      return s;
-    }
-  }
-
   static T next<T>(List<T> values, T e) {
     assert(values.contains(e));
     return values[(values.indexOf(e) + 1) % values.length];

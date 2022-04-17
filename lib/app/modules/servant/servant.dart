@@ -160,7 +160,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   children: [
                     for (final builder in builders)
                       builder.viewBuilder?.call(context) ??
-                          const Center(child: Text('NotImplemented'))
+                          Center(child: Text(S.current.not_implemented))
                   ],
                 ),
               )
@@ -196,13 +196,13 @@ class ServantDetailPageState extends State<ServantDetailPage>
       case SvtTab.info:
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => S.current.card_info,
+          tabBuilder: () => S.current.svt_basic_info,
           viewBuilder: (ctx) => SvtInfoTab(svt: svt),
         );
       case SvtTab.lore:
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => 'Profile',
+          tabBuilder: () => S.current.svt_profile,
           viewBuilder: (ctx) => SvtLoreTab(svt: svt),
         );
       case SvtTab.illustration:
@@ -214,7 +214,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       case SvtTab.relatedCards:
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => 'Cards',
+          tabBuilder: () => S.current.svt_related_ce,
           viewBuilder: (ctx) => SvtRelatedCardTab(svt: svt),
         );
       case SvtTab.summon:
@@ -295,7 +295,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               },
             ),
           PopupMenuItem(
-            child: const Text('Custom Ascension Icon'),
+            child: Text(S.current.svt_ascension_icon),
             onTap: () async {
               await null;
               await showDialog(
@@ -332,7 +332,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     });
                   }
                   return SimpleCancelOkDialog(
-                    title: const Text('Custom Ascension Icon'),
+                    title: Text(S.current.svt_ascension_icon),
                     content: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -432,7 +432,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('No.${svt.collectionNo}  ${EnumUtil.titled(svt.className)}'),
+            Text('No.${svt.collectionNo}  ${Transl.svtClass(svt.className).l}'),
             if (svt.isUserSvt)
               TextButton(
                 onPressed: () {

@@ -32,28 +32,23 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m5(filename, hash, dataHash) =>
-      "Hash mismatch: ${filename}: ${hash} - ${dataHash}";
+  static String m5(error) => "Import failed. Error:\n${error}";
 
-  static String m6(error) => "Import failed. Error:\n${error}";
+  static String m6(name) => "${name} already exist";
 
-  static String m7(name) => "${name} already exist";
+  static String m7(site) => "Jump to ${site}";
 
-  static String m8(site) => "Jump to ${site}";
-
-  static String m9(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': 'Already the first one',
             'false': 'Already the last one',
             'other': 'No more',
           })}";
 
-  static String m10(n) => "Reset Plan ${n}(All)";
+  static String m9(n) => "Reset Plan ${n}(All)";
 
-  static String m11(n) => "Reset Plan ${n}(Shown)";
+  static String m10(n) => "Reset Plan ${n}(Shown)";
 
-  static String m12(e) => "Update slides failed\n${e}";
-
-  static String m13(a, b) => "${a} ${b}";
+  static String m11(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -78,8 +73,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("From Files"),
@@ -106,7 +99,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Carousel Setting"),
-        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
+        "chaldea_account":
+            MessageLookupByLibrary.simpleMessage("Chaldea Account"),
+        "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
+            "A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card":
             MessageLookupByLibrary.simpleMessage("Characters"),
@@ -118,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage(
             "Including illustrations, voices"),
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
+        "coin_summon_num": MessageLookupByLibrary.simpleMessage("Summon Coins"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
@@ -165,6 +162,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "To ensure compatibility, please upgrade to the latest APP version before updating"),
         "download_source":
             MessageLookupByLibrary.simpleMessage("Download source"),
+        "download_source_hint": MessageLookupByLibrary.simpleMessage(
+            "CN endpoint for China mainland"),
         "downloaded": MessageLookupByLibrary.simpleMessage("Downloaded"),
         "downloading": MessageLookupByLibrary.simpleMessage("Downloading"),
         "drop_calc_empty_hint":
@@ -260,6 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_class": MessageLookupByLibrary.simpleMessage("Class"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
+        "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "free_progress": MessageLookupByLibrary.simpleMessage("Quest Limit"),
         "free_progress_newest":
             MessageLookupByLibrary.simpleMessage("Latest(JP)"),
@@ -269,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("Free Quest"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
+        "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage(
             "Game data not found, please download data first"),
         "game_drop": MessageLookupByLibrary.simpleMessage("Drop"),
@@ -277,11 +278,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("Rewards"),
         "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
+        "general_default": MessageLookupByLibrary.simpleMessage("Default"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("Growth Curve"),
-        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
         "icons": MessageLookupByLibrary.simpleMessage("Icons"),
@@ -289,7 +290,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("Illustration"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Illustrator"),
         "import_data": MessageLookupByLibrary.simpleMessage("Import"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Import data successfully"),
         "import_http_body_duplicated":
@@ -343,7 +344,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "\"Files\" app/On My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Issues"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Ascension Items"),
         "item_category_bronze":
@@ -382,13 +383,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("Item"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Join Beta Program"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password":
@@ -406,7 +407,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("New Password"),
         "login_password": MessageLookupByLibrary.simpleMessage("Password"),
         "login_password_error": MessageLookupByLibrary.simpleMessage(
-            "Can only contain letters and numbers, no less than 4 digits"),
+            "6-18 characters, at least one alphabet"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage(
                 "Cannot be the same as the old password"),
@@ -435,8 +436,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
-        "next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "next_card": MessageLookupByLibrary.simpleMessage("Next"),
+        "next_page": MessageLookupByLibrary.simpleMessage("NEXT"),
         "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage(
             "There is no interlude or rank up quest"),
         "no_servant_quest_hint_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -448,9 +449,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented":
             MessageLookupByLibrary.simpleMessage("Not yet implemented"),
+        "not_outdated": MessageLookupByLibrary.simpleMessage("Not Outdated"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
+        "outdated": MessageLookupByLibrary.simpleMessage("Outdated"),
         "overview": MessageLookupByLibrary.simpleMessage("Overview"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
@@ -465,7 +468,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Preferred Translation"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
             "Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages."),
-        "prev": MessageLookupByLibrary.simpleMessage("PREV"),
+        "prev_page": MessageLookupByLibrary.simpleMessage("PREV"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
@@ -489,8 +492,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_take_effect":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -560,18 +563,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
+        "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
         "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
+        "summon_show_banner":
+            MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Support and Donation"),
+        "svt_ascension_icon":
+            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
+        "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
-        "svt_related_cards":
-            MessageLookupByLibrary.simpleMessage("Related Cards"),
+        "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
@@ -582,20 +591,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
-        "translations": MessageLookupByLibrary.simpleMessage("Translations"),
-        "unsupported_type":
-            MessageLookupByLibrary.simpleMessage("Unsupported type"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),
         "update_dataset":
             MessageLookupByLibrary.simpleMessage("Update Dataset"),
-        "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
-        "update_slides_status_msg_error": m12,
-        "update_slides_status_msg_info":
-            MessageLookupByLibrary.simpleMessage("Not updated"),
-        "update_slides_status_msg_success":
-            MessageLookupByLibrary.simpleMessage("Slides updated"),
+        "update_msg_error":
+            MessageLookupByLibrary.simpleMessage("Update failed"),
+        "update_msg_no_update":
+            MessageLookupByLibrary.simpleMessage("No update available"),
+        "update_msg_succuss": MessageLookupByLibrary.simpleMessage("Updated"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("Download Backup"),
@@ -613,6 +618,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m13
+        "words_separate": m11
       };
 }

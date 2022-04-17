@@ -26,10 +26,8 @@ class GameDataLoader {
       {Options? options}) async {
     final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
     try {
-      return await Dio(BaseOptions(connectTimeout: 1000)).get<T>(
-        url,
-        options: Options(receiveTimeout: 5000),
-      );
+      return await Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 5000))
+          .get<T>(url, options: options);
     } catch (e) {
       if (db2.settings.proxyDataSource) {
         // print('download data from CN: $cnUrl');
@@ -147,9 +145,11 @@ class GameDataLoader {
           // cancelToken: cancelToken,
           options: Options(responseType: ResponseType.bytes),
         );
-        final _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
+        final _hash =
+            md5.convert(List.from(resp.data)).toString().toLowerCase();
         if (!_hash.startsWith(fv.hash)) {
-          throw S.current.hash_mismatch(fv.filename, fv.hash, _hash);
+          throw S.current
+              .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
         }
         _file.writeAsBytes(resp.data);
         bytes = resp.data;
@@ -174,7 +174,7 @@ class GameDataLoader {
         } else if (value is List) {
           value.addAll(fileJson);
         } else {
-          throw S.current.unsupported_type + ": ${value.runtimeType}";
+          throw "Unsupported type: ${value.runtimeType}";
         }
       }
       // print('loaded ${fv.filename}');

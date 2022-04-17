@@ -47,7 +47,7 @@ class SvtRelatedCardTab extends StatelessWidget {
         .where((cc) => cc.extra.characters.contains(svt.collectionNo))
         .toList();
     if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
-      tabs.add(S.current.svt_related_cards);
+      tabs.add(S.current.svt_related_ce);
       pages.add(ListView(
         children: [
           if (charaCEs.isNotEmpty)

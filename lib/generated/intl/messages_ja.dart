@@ -32,26 +32,23 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m5(filename, hash, dataHash) =>
-      "Hash mismatch: ${filename}: ${hash} - ${dataHash}";
+  static String m5(error) => "インポートに失敗しました、エラー:\n${error}";
 
-  static String m6(error) => "インポートに失敗しました、エラー:\n${error}";
+  static String m6(name) => "${name}はすでにあります";
 
-  static String m7(name) => "${name}はすでにあります";
+  static String m7(site) => "${site}にジャンプします";
 
-  static String m8(site) => "${site}にジャンプします";
-
-  static String m9(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': '最初のもの',
             'false': '最後のもの',
             'other': '最後のもの',
           })}";
 
-  static String m10(n) => "プラン${n}をリセット(すべて)";
+  static String m9(n) => "プラン${n}をリセット(すべて)";
 
-  static String m11(n) => "プラン${n}をリセット(表示のみ)";
+  static String m10(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m13(a, b) => "${a}${b}";
+  static String m11(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -74,8 +71,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("アペンドスキル"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("アペンド"),
         "ascension": MessageLookupByLibrary.simpleMessage("霊基"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("ファイルから"),
@@ -98,7 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
-        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
+        "chaldea_account":
+            MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "change_log": MessageLookupByLibrary.simpleMessage("更新履歴"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラクター"),
         "check_update": MessageLookupByLibrary.simpleMessage("更新の確認"),
@@ -256,7 +252,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
         "grail_up": MessageLookupByLibrary.simpleMessage("聖杯転臨"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("成長曲線"),
-        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れを非表示"),
         "icons": MessageLookupByLibrary.simpleMessage("アイコン"),
@@ -264,7 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("イラスト"),
         "illustrator": MessageLookupByLibrary.simpleMessage("イラスレーター"),
         "import_data": MessageLookupByLibrary.simpleMessage("インポート"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("インポートは成功しました"),
         "import_http_body_duplicated":
@@ -314,7 +309,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "\"ファイル\"アプリ/My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("FAQ"),
         "item": MessageLookupByLibrary.simpleMessage("アイテム"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("霊基再臨素材"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
@@ -346,13 +341,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("アイテム"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("合計"),
         "join_beta": MessageLookupByLibrary.simpleMessage("ベータ版に参加します"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("日本語"),
         "language_en": MessageLookupByLibrary.simpleMessage("Japanese"),
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("パスワードを変更"),
@@ -366,8 +361,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_new_name": MessageLookupByLibrary.simpleMessage("新しいユーザー名"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新しいパスワード"),
         "login_password": MessageLookupByLibrary.simpleMessage("パスワード"),
-        "login_password_error":
-            MessageLookupByLibrary.simpleMessage("4桁以上の英語文字と数字のみ"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("以前のパスワードと同じのはならない"),
         "login_signup": MessageLookupByLibrary.simpleMessage("登録"),
@@ -393,7 +386,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("アップ"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔術礼装"),
         "new_account": MessageLookupByLibrary.simpleMessage("アカウントの新規登録"),
-        "next": MessageLookupByLibrary.simpleMessage("次へ"),
         "next_card": MessageLookupByLibrary.simpleMessage("次のカード"),
         "no_servant_quest_hint":
             MessageLookupByLibrary.simpleMessage("幕間も強化クエストもはありません"),
@@ -419,7 +411,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("お気に入りの訳文"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
             "ドラッグしてオーダー変更してください。\nUIの言語ではなく、ゲームのデータ記述で使用されます。すべてのゲームデータは、5つの公用語へ翻訳されたことがありません。"),
-        "prev": MessageLookupByLibrary.simpleMessage("前へ"),
         "preview": MessageLookupByLibrary.simpleMessage("プレビュー"),
         "previous_card": MessageLookupByLibrary.simpleMessage("前のカード"),
         "priority": MessageLookupByLibrary.simpleMessage("優先順位"),
@@ -442,8 +433,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("名前変更"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻イベント"),
         "reset": MessageLookupByLibrary.simpleMessage("リセット"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_take_effect":
             MessageLookupByLibrary.simpleMessage("再起動して設定を有効にしてください"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -510,7 +501,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("フォローされていません"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("非表示"),
-        "svt_related_cards": MessageLookupByLibrary.simpleMessage("関連カード"),
+        "svt_related_ce": MessageLookupByLibrary.simpleMessage("関連礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
@@ -520,14 +511,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("スライドを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP合計"),
         "total_counts": MessageLookupByLibrary.simpleMessage("総数"),
-        "translations": MessageLookupByLibrary.simpleMessage("訳文"),
-        "unsupported_type":
-            MessageLookupByLibrary.simpleMessage("サポートされていないタイプ"),
         "update": MessageLookupByLibrary.simpleMessage("アップデート"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("すでに最新バージョンになります"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("データセットをアップデート"),
-        "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
         "userdata": MessageLookupByLibrary.simpleMessage("ユーザーデータ"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("バックアップをダウンロード"),
@@ -542,6 +529,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
         "warning": MessageLookupByLibrary.simpleMessage("ワーニング"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Webレンダラ"),
-        "words_separate": m13
+        "words_separate": m11
       };
 }

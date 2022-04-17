@@ -198,7 +198,7 @@ class NiceTd implements SkillOrTd {
     if (_damageType != null) return _damageType!;
     for (var func in functions) {
       if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
-      if (EnumUtil.shortString(func.funcType).startsWith('damageNp')) {
+      if (func.funcType.name.startsWith('damageNp')) {
         if (func.funcTargetType == FuncTargetType.enemyAll) {
           _damageType = NpDamageType.aoe;
         } else if (func.funcTargetType == FuncTargetType.enemy) {

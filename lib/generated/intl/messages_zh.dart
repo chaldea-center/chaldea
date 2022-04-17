@@ -23,37 +23,32 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "当前版本: ${curVersion}\n最新版本: ${newVersion}\n更新内容:\n${releaseNote}";
 
-  static String m1(version) => "Required app version: ≥ ${version}";
+  static String m1(version) => "App版本需不低于${version}";
 
   static String m2(n) => "最多${n}池";
 
   static String m3(n) => "圣杯替换为传承结晶 ${n} 个";
 
   static String m4(filename, hash, localHash) =>
-      "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
+      "文件${filename}未找到或错误: ${hash} - ${localHash}";
 
-  static String m5(filename, hash, dataHash) =>
-      "Hash mismatch: ${filename}: ${hash} - ${dataHash}";
+  static String m5(error) => "导入失败:\n${error}";
 
-  static String m6(error) => "导入失败，Error:\n${error}";
+  static String m6(name) => "${name}已存在";
 
-  static String m7(name) => "${name}已存在";
+  static String m7(site) => "跳转到${site}";
 
-  static String m8(site) => "跳转到${site}";
-
-  static String m9(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': '已经是第一张',
             'false': '已经是最后一张',
             'other': '已经到头了',
           })}";
 
-  static String m10(n) => "重置规划${n}(所有)";
+  static String m9(n) => "重置规划${n}(所有)";
 
-  static String m11(n) => "重置规划${n}(已显示)";
+  static String m10(n) => "重置规划${n}(已显示)";
 
-  static String m12(e) => "Update slides failed\n${e}";
-
-  static String m13(a, b) => "${a}${b}";
+  static String m11(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -76,8 +71,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("附加技能"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("附加"),
         "ascension": MessageLookupByLibrary.simpleMessage("灵基"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("灵基再临"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("从文件选取"),
@@ -93,15 +86,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
-        "bootstrap_page_title":
-            MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
+        "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引导页"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解说"),
         "card_info": MessageLookupByLibrary.simpleMessage("资料"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("轮播设置"),
-        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
+        "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea账号"),
+        "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
+            "  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
         "change_log": MessageLookupByLibrary.simpleMessage("更新历史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出场角色"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
@@ -110,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_finish": MessageLookupByLibrary.simpleMessage("缓存已清理"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("包括卡面语音等"),
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
+        "coin_summon_num": MessageLookupByLibrary.simpleMessage("召唤所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
         "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
@@ -129,17 +124,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("生成2号机"),
         "cur_account": MessageLookupByLibrary.simpleMessage("当前账号"),
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
-        "current_version":
-            MessageLookupByLibrary.simpleMessage("Current Version"),
+        "current_version": MessageLookupByLibrary.simpleMessage("当前版本"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),
         "dark_mode_system": MessageLookupByLibrary.simpleMessage("系统"),
-        "database": MessageLookupByLibrary.simpleMessage("Database"),
-        "database_not_downloaded": MessageLookupByLibrary.simpleMessage(
-            "Database is not downloaded, still continue?"),
-        "dataset_version":
-            MessageLookupByLibrary.simpleMessage("Dataset version"),
+        "database": MessageLookupByLibrary.simpleMessage("数据库"),
+        "database_not_downloaded":
+            MessageLookupByLibrary.simpleMessage("数据库未下载，仍然继续?"),
+        "dataset_version": MessageLookupByLibrary.simpleMessage("数据版本"),
         "debug": MessageLookupByLibrary.simpleMessage("Debug"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
@@ -151,6 +144,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "download_latest_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("为确保兼容性，更新前请升级至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下载源"),
+        "download_source_hint":
+            MessageLookupByLibrary.simpleMessage("大陆地区请选择CN节点"),
         "downloaded": MessageLookupByLibrary.simpleMessage("已下载"),
         "downloading": MessageLookupByLibrary.simpleMessage("下载中"),
         "drop_calc_empty_hint":
@@ -169,9 +164,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("无网络连接"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("No network"),
+        "error_no_network": MessageLookupByLibrary.simpleMessage("没有网络连接"),
         "error_no_version_data_found":
-            MessageLookupByLibrary.simpleMessage("No version data found"),
+            MessageLookupByLibrary.simpleMessage("未找到数据文件"),
         "error_required_app_version": m1,
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
@@ -232,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_class": MessageLookupByLibrary.simpleMessage("职阶"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("序号"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("星级"),
+        "foukun": MessageLookupByLibrary.simpleMessage("芙芙"),
         "free_progress": MessageLookupByLibrary.simpleMessage("Free进度"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("日服最新"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free本"),
@@ -239,19 +235,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("Free速查"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首页"),
-        "game_data_not_found": MessageLookupByLibrary.simpleMessage(
-            "Game data not found, please download data first"),
+        "game_account": MessageLookupByLibrary.simpleMessage("游戏账号"),
+        "game_data_not_found":
+            MessageLookupByLibrary.simpleMessage("未加载数据库，请先前往游戏数据页面下载"),
         "game_drop": MessageLookupByLibrary.simpleMessage("掉落"),
         "game_experience": MessageLookupByLibrary.simpleMessage("经验"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羁绊"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "game_server": MessageLookupByLibrary.simpleMessage("服务器"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
+        "general_default": MessageLookupByLibrary.simpleMessage("默认"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
         "grail_up": MessageLookupByLibrary.simpleMessage("圣杯转临"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("成长曲线"),
-        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("帮助"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隐藏已过期"),
         "icons": MessageLookupByLibrary.simpleMessage("图标"),
@@ -259,7 +256,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("画师"),
         "import_data": MessageLookupByLibrary.simpleMessage("导入"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功导入数据"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("允许2号机"),
@@ -296,16 +293,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_invalid_hint": MessageLookupByLibrary.simpleMessage("输入无效"),
         "install": MessageLookupByLibrary.simpleMessage("安装"),
         "interlude_and_rankup": MessageLookupByLibrary.simpleMessage("幕间&强化"),
-        "invalid_input": MessageLookupByLibrary.simpleMessage("Invalid input."),
-        "invalid_startup_path":
-            MessageLookupByLibrary.simpleMessage("Invalid startup path!"),
+        "invalid_input": MessageLookupByLibrary.simpleMessage("无效输入"),
+        "invalid_startup_path": MessageLookupByLibrary.simpleMessage("无效启动路径!"),
         "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
-            "Please, extract zip to non-system path then start the app. \"C:\\\", \"C:\\Program Files\" are not allowed."),
+            "请解压文件至非系统目录再重新启动应用。\"C:\\\", \"C:\\Program Files\"等路径为无效路径."),
         "ios_app_path":
             MessageLookupByLibrary.simpleMessage("\"文件\"应用/我的iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("常见问题"),
         "item": MessageLookupByLibrary.simpleMessage("素材"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension": MessageLookupByLibrary.simpleMessage("职阶棋子"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("铜素材"),
         "item_category_event_svt_ascension":
@@ -332,13 +328,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("素材"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("共需"),
         "join_beta": MessageLookupByLibrary.simpleMessage("加入Beta版"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("简体中文"),
         "language_en": MessageLookupByLibrary.simpleMessage("Chinese"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限时活动"),
         "link": MessageLookupByLibrary.simpleMessage("链接"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用户名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密码"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("确认密码"),
@@ -350,7 +346,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_new_password": MessageLookupByLibrary.simpleMessage("新密码"),
         "login_password": MessageLookupByLibrary.simpleMessage("密码"),
         "login_password_error":
-            MessageLookupByLibrary.simpleMessage("只能包含字母与数字，不少于4位"),
+            MessageLookupByLibrary.simpleMessage("6-18位字母和数字，至少包含一个字母"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("不能与旧密码相同"),
         "login_signup": MessageLookupByLibrary.simpleMessage("注册"),
@@ -373,8 +369,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建账号"),
-        "next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "next_card": MessageLookupByLibrary.simpleMessage("下一张"),
+        "next_page": MessageLookupByLibrary.simpleMessage("下一页"),
         "no_servant_quest_hint":
             MessageLookupByLibrary.simpleMessage("无幕间或强化关卡"),
         "no_servant_quest_hint_subtitle":
@@ -383,9 +379,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具等级"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("尚未实现"),
+        "not_outdated": MessageLookupByLibrary.simpleMessage("未过期"),
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),
         "open_condition": MessageLookupByLibrary.simpleMessage("开发条件"),
+        "outdated": MessageLookupByLibrary.simpleMessage("已过期"),
         "overview": MessageLookupByLibrary.simpleMessage("概览"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
@@ -395,11 +393,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_title": MessageLookupByLibrary.simpleMessage("规划"),
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("规划Free本"),
-        "preferred_translation":
-            MessageLookupByLibrary.simpleMessage("Preferred Translation"),
+        "preferred_translation": MessageLookupByLibrary.simpleMessage("首选翻译"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
-            "Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages."),
-        "prev": MessageLookupByLibrary.simpleMessage("PREV"),
+            "拖动以更改顺序。\n用于游戏数据的显示而非应用UI语言。部分语言存在未翻译的部分。"),
+        "prev_page": MessageLookupByLibrary.simpleMessage("上一页"),
         "preview": MessageLookupByLibrary.simpleMessage("预览"),
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),
         "priority": MessageLookupByLibrary.simpleMessage("优先级"),
@@ -419,10 +416,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_take_effect":
-            MessageLookupByLibrary.simpleMessage("Restart to take effect"),
+            MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重启以更新应用，若更新失败，请手动复制source文件夹到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),
@@ -436,8 +433,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "search_options": MessageLookupByLibrary.simpleMessage("搜索范围"),
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("选择复制来源"),
-        "select_lang": MessageLookupByLibrary.simpleMessage("Select Language"),
+        "select_lang": MessageLookupByLibrary.simpleMessage("选择语言"),
         "select_plan": MessageLookupByLibrary.simpleMessage("选择规划"),
+        "send_email_to": MessageLookupByLibrary.simpleMessage("发送邮件到"),
+        "sending": MessageLookupByLibrary.simpleMessage("正在发送..."),
+        "sending_failed": MessageLookupByLibrary.simpleMessage("发送失败"),
+        "sent": MessageLookupByLibrary.simpleMessage("已发送"),
         "servant": MessageLookupByLibrary.simpleMessage("从者"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("从者硬币"),
         "servant_detail_page": MessageLookupByLibrary.simpleMessage("从者详情页"),
@@ -447,7 +448,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_always_on_top": MessageLookupByLibrary.simpleMessage("置顶显示"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自动旋转"),
         "setting_auto_turn_on_plan_not_reach":
-            MessageLookupByLibrary.simpleMessage("Auto Turn on PlanNotReach"),
+            MessageLookupByLibrary.simpleMessage("默认显示\"规划未满\""),
         "setting_home_plan_list_page":
             MessageLookupByLibrary.simpleMessage("首页-规划列表页"),
         "setting_only_change_second_append_skill":
@@ -469,47 +470,44 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
-        "show_frame_rate":
-            MessageLookupByLibrary.simpleMessage("Show Frame Rate"),
+        "show_frame_rate": MessageLookupByLibrary.simpleMessage("显示刷新率"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),
         "silver": MessageLookupByLibrary.simpleMessage("银"),
         "simulator": MessageLookupByLibrary.simpleMessage("模拟器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升级"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
+        "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
         "still_send": MessageLookupByLibrary.simpleMessage("仍然发送"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("卡池"),
+        "summon_show_banner": MessageLookupByLibrary.simpleMessage("显示横幅"),
         "summon_title": MessageLookupByLibrary.simpleMessage("卡池一览"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持与捐赠"),
+        "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("从者头像"),
+        "svt_basic_info": MessageLookupByLibrary.simpleMessage("资料"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
-        "svt_related_cards": MessageLookupByLibrary.simpleMessage("出场礼装/纹章"),
+        "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
+        "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
-        "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
-        "toogle_dark_mode":
-            MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
+        "test_info_pad": MessageLookupByLibrary.simpleMessage("测试信息"),
+        "toogle_dark_mode": MessageLookupByLibrary.simpleMessage("切换深色模式"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("总数"),
-        "translations": MessageLookupByLibrary.simpleMessage("Translations"),
-        "unsupported_type":
-            MessageLookupByLibrary.simpleMessage("Unsupported type"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("已经是最新版本"),
-        "update_dataset": MessageLookupByLibrary.simpleMessage("更新资源包"),
-        "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
-        "update_slides_status_msg_error": m12,
-        "update_slides_status_msg_info":
-            MessageLookupByLibrary.simpleMessage("Not updated"),
-        "update_slides_status_msg_success":
-            MessageLookupByLibrary.simpleMessage("Slides updated"),
+        "update_dataset": MessageLookupByLibrary.simpleMessage("更新数据包"),
+        "update_msg_error": MessageLookupByLibrary.simpleMessage("更新失败"),
+        "update_msg_no_update": MessageLookupByLibrary.simpleMessage("无可用更新"),
+        "update_msg_succuss": MessageLookupByLibrary.simpleMessage("已更新"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("下载备份"),
@@ -522,7 +520,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
-        "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m13
+        "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
+        "words_separate": m11
       };
 }

@@ -21,3 +21,5 @@ const kIndentDivider =
     Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16);
 const kMonoFont = 'RobotoMono';
 const kMonoStyle = TextStyle(fontFamily: kMonoFont);
+
+const kStarChar = '☆';

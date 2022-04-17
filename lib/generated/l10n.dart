@@ -259,17 +259,6 @@ class S {
     );
   }
 
-  /// `Ascension Icon`
-  String get ascension_icon {
-    return Intl.message(
-      'Ascension Icon',
-      name: 'ascension_icon',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Ascen`
   String get ascension_short {
     return Intl.message(
@@ -501,11 +490,22 @@ class S {
     );
   }
 
-  /// `Chaldea User`
-  String get chaldea_user {
+  /// `Chaldea Account`
+  String get chaldea_account {
     return Intl.message(
-      'Chaldea User',
-      name: 'chaldea_user',
+      'Chaldea Account',
+      name: 'chaldea_account',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON'T set frequently used passwords!!!\n  No need to register if you do not need these two features.`
+  String get chaldea_account_system_hint {
+    return Intl.message(
+      'A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features.',
+      name: 'chaldea_account_system_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -594,6 +594,17 @@ class S {
     return Intl.message(
       'Clear Data',
       name: 'clear_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Summon Coins`
+  String get coin_summon_num {
+    return Intl.message(
+      'Summon Coins',
+      name: 'coin_summon_num',
       desc: '',
       locale: localeName,
       args: [],
@@ -968,6 +979,17 @@ class S {
     return Intl.message(
       'Download source',
       name: 'download_source',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `CN endpoint for China mainland`
+  String get download_source_hint {
+    return Intl.message(
+      'CN endpoint for China mainland',
+      name: 'download_source_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -1778,6 +1800,17 @@ class S {
     );
   }
 
+  /// `Fou`
+  String get foukun {
+    return Intl.message(
+      'Fou',
+      name: 'foukun',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Quest Limit`
   String get free_progress {
     return Intl.message(
@@ -1838,6 +1871,17 @@ class S {
     return Intl.message(
       'Home',
       name: 'gallery_tab_name',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Game Account`
+  String get game_account {
+    return Intl.message(
+      'Game Account',
+      name: 'game_account',
       desc: '',
       locale: localeName,
       args: [],
@@ -1921,6 +1965,17 @@ class S {
     );
   }
 
+  /// `Default`
+  String get general_default {
+    return Intl.message(
+      'Default',
+      name: 'general_default',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Gold`
   String get gold {
     return Intl.message(
@@ -1962,17 +2017,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Hash mismatch: {filename}: {hash} - {dataHash}`
-  String hash_mismatch(Object filename, Object hash, Object dataHash) {
-    return Intl.message(
-      'Hash mismatch: $filename: $hash - $dataHash',
-      name: 'hash_mismatch',
-      desc: '',
-      locale: localeName,
-      args: [filename, hash, dataHash],
     );
   }
 
@@ -2916,10 +2960,10 @@ class S {
     );
   }
 
-  /// `Can only contain letters and numbers, no less than 4 digits`
+  /// `6-18 characters, at least one alphabet`
   String get login_password_error {
     return Intl.message(
-      'Can only contain letters and numbers, no less than 4 digits',
+      '6-18 characters, at least one alphabet',
       name: 'login_password_error',
       desc: '',
       locale: localeName,
@@ -3125,22 +3169,22 @@ class S {
     );
   }
 
-  /// `NEXT`
-  String get next {
+  /// `Next`
+  String get next_card {
     return Intl.message(
-      'NEXT',
-      name: 'next',
+      'Next',
+      name: 'next_card',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `Next`
-  String get next_card {
+  /// `NEXT`
+  String get next_page {
     return Intl.message(
-      'Next',
-      name: 'next_card',
+      'NEXT',
+      name: 'next_page',
       desc: '',
       locale: localeName,
       args: [],
@@ -3213,6 +3257,17 @@ class S {
     );
   }
 
+  /// `Not Outdated`
+  String get not_outdated {
+    return Intl.message(
+      'Not Outdated',
+      name: 'not_outdated',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `OK`
   String get ok {
     return Intl.message(
@@ -3240,6 +3295,17 @@ class S {
     return Intl.message(
       'Condition',
       name: 'open_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Outdated`
+  String get outdated {
+    return Intl.message(
+      'Outdated',
+      name: 'outdated',
       desc: '',
       locale: localeName,
       args: [],
@@ -3357,10 +3423,10 @@ class S {
   }
 
   /// `PREV`
-  String get prev {
+  String get prev_page {
     return Intl.message(
       'PREV',
-      name: 'prev',
+      name: 'prev_page',
       desc: '',
       locale: localeName,
       args: [],
@@ -4115,6 +4181,17 @@ class S {
     );
   }
 
+  /// `Sort`
+  String get sort_order {
+    return Intl.message(
+      'Sort',
+      name: 'sort_order',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Sprites`
   String get sprites {
     return Intl.message(
@@ -4170,6 +4247,17 @@ class S {
     );
   }
 
+  /// `Show Banner`
+  String get summon_show_banner {
+    return Intl.message(
+      'Show Banner',
+      name: 'summon_show_banner',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Summons`
   String get summon_title {
     return Intl.message(
@@ -4186,6 +4274,28 @@ class S {
     return Intl.message(
       'Support and Donation',
       name: 'support_chaldea',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ascension Icon`
+  String get svt_ascension_icon {
+    return Intl.message(
+      'Ascension Icon',
+      name: 'svt_ascension_icon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Info`
+  String get svt_basic_info {
+    return Intl.message(
+      'Info',
+      name: 'svt_basic_info',
       desc: '',
       locale: localeName,
       args: [],
@@ -4214,11 +4324,22 @@ class S {
     );
   }
 
-  /// `Related Cards`
-  String get svt_related_cards {
+  /// `Profile`
+  String get svt_profile {
     return Intl.message(
-      'Related Cards',
-      name: 'svt_related_cards',
+      'Profile',
+      name: 'svt_profile',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Related CEs`
+  String get svt_related_ce {
+    return Intl.message(
+      'Related CEs',
+      name: 'svt_related_ce',
       desc: '',
       locale: localeName,
       args: [],
@@ -4302,28 +4423,6 @@ class S {
     );
   }
 
-  /// `Translations`
-  String get translations {
-    return Intl.message(
-      'Translations',
-      name: 'translations',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Unsupported type`
-  String get unsupported_type {
-    return Intl.message(
-      'Unsupported type',
-      name: 'unsupported_type',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Update`
   String get update {
     return Intl.message(
@@ -4357,44 +4456,33 @@ class S {
     );
   }
 
-  /// `Update Now`
-  String get update_now {
+  /// `Update failed`
+  String get update_msg_error {
     return Intl.message(
-      'Update Now',
-      name: 'update_now',
+      'Update failed',
+      name: 'update_msg_error',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `Update slides failed\n{e}`
-  String update_slides_status_msg_error(Object e) {
+  /// `No update available`
+  String get update_msg_no_update {
     return Intl.message(
-      'Update slides failed\n$e',
-      name: 'update_slides_status_msg_error',
-      desc: '',
-      locale: localeName,
-      args: [e],
-    );
-  }
-
-  /// `Not updated`
-  String get update_slides_status_msg_info {
-    return Intl.message(
-      'Not updated',
-      name: 'update_slides_status_msg_info',
+      'No update available',
+      name: 'update_msg_no_update',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `Slides updated`
-  String get update_slides_status_msg_success {
+  /// `Updated`
+  String get update_msg_succuss {
     return Intl.message(
-      'Slides updated',
-      name: 'update_slides_status_msg_success',
+      'Updated',
+      name: 'update_msg_succuss',
       desc: '',
       locale: localeName,
       args: [],

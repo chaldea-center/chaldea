@@ -27,23 +27,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(n) => "聖杯替換為傳承結晶 ${n} 個";
 
-  static String m6(error) => "導入失敗，Error:\n${error}";
+  static String m5(error) => "導入失敗，Error:\n${error}";
 
-  static String m7(name) => "${name}已存在";
+  static String m6(name) => "${name}已存在";
 
-  static String m8(site) => "跳轉到${site}";
+  static String m7(site) => "跳轉到${site}";
 
-  static String m9(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': '已經是第一張',
             'false': '已經是最後一張',
             'other': '已經到頭了',
           })}";
 
-  static String m10(n) => "重置規劃${n}(所有)";
+  static String m9(n) => "重置規劃${n}(所有)";
 
-  static String m11(n) => "重置規劃${n}(已顯示)";
+  static String m10(n) => "重置規劃${n}(已顯示)";
 
-  static String m13(a, b) => "${a}${b}";
+  static String m11(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -66,8 +66,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("附加技能"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("附加"),
         "ascension": MessageLookupByLibrary.simpleMessage("靈基"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("靈基再臨"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("從文件選取"),
@@ -91,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("解說"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("輪播設置"),
-        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
+        "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea帳號"),
         "change_log": MessageLookupByLibrary.simpleMessage("更新歷史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出場角色"),
         "check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
@@ -236,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("畫師"),
         "import_data": MessageLookupByLibrary.simpleMessage("導入"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功導入數據"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("允許2號機"),
@@ -277,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("\"文件\"應用/我的iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("常見問題"),
         "item": MessageLookupByLibrary.simpleMessage("素材"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension": MessageLookupByLibrary.simpleMessage("職階棋子"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
         "item_category_event_svt_ascension":
@@ -304,14 +302,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("素材"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("共需"),
         "join_beta": MessageLookupByLibrary.simpleMessage("加入Beta版"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "language_en":
             MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
         "level": MessageLookupByLibrary.simpleMessage("等級"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限時活動"),
         "link": MessageLookupByLibrary.simpleMessage("連結"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用戶名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密碼"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("確認密碼"),
@@ -322,8 +320,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_new_name": MessageLookupByLibrary.simpleMessage("新用戶名"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新密碼"),
         "login_password": MessageLookupByLibrary.simpleMessage("密碼"),
-        "login_password_error":
-            MessageLookupByLibrary.simpleMessage("只能包含字母與數字，不少於4位"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("不能與舊密碼相同"),
         "login_signup": MessageLookupByLibrary.simpleMessage("註冊"),
@@ -383,8 +379,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻活動"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重啟以更新應用，若更新是百，請手動複製source文件夾到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢復"),
@@ -442,7 +438,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持與捐贈"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未關注"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隱藏"),
-        "svt_related_cards": MessageLookupByLibrary.simpleMessage("出場禮裝/紋章"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置規劃"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切換滾動條/下拉框"),
@@ -465,6 +460,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("語音"),
-        "words_separate": m13
+        "words_separate": m11
       };
 }

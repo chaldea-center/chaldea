@@ -55,7 +55,7 @@ class _EventListPageState extends State<EventListPage>
                 db2.saveSettings();
               });
             },
-            tooltip: 'Outdated',
+            tooltip: S.current.outdated,
             icon: Icon(
                 showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
           ),
@@ -66,7 +66,7 @@ class _EventListPageState extends State<EventListPage>
                   : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
-            tooltip: 'Reversed',
+            tooltip: S.current.sort_order,
             onPressed: () {
               setState(() => db2.settings.display.eventsReversed = !reversed);
               db2.saveSettings();

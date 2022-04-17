@@ -93,11 +93,9 @@ class _LoginPageState extends State<LoginPage> {
             changeNameInput,
             const SizedBox(height: 12),
           ],
-          const Text(
-            'A simple account system for userdata backup to server and multi-device synchronization\n'
-            'NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n'
-            'No need to register if you do not need these two functions.',
-            style: TextStyle(color: Colors.grey, fontSize: 14),
+          Text(
+            S.current.chaldea_account_system_hint,
+            style: Theme.of(context).textTheme.caption,
           ),
           const SizedBox(height: 8),
           mainAction(),

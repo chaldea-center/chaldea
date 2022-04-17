@@ -63,7 +63,6 @@ class _GalleryPageState extends State<GalleryPage> {
                 constraints: const BoxConstraints(
                   minHeight: 36,
                   minWidth: 48,
-                  maxWidth: 64,
                 ),
                 child: Center(
                   child: Padding(

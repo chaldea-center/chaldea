@@ -33,25 +33,20 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
-  static String m5(filename, hash, dataHash) =>
-      "El hash no coincide: ${filename}: ${hash} - ${dataHash}";
+  static String m5(error) => "La importación ha fallado. Error:\n${error}";
 
-  static String m6(error) => "La importación ha fallado. Error:\n${error}";
+  static String m6(name) => "${name} ya existe";
 
-  static String m7(name) => "${name} ya existe";
+  static String m7(site) => "Ir a ${site}";
 
-  static String m8(site) => "Ir a ${site}";
-
-  static String m9(first) =>
+  static String m8(first) =>
       "{primer, selecciona, verdadero{Ya es el primero} falso{Ya es el último} otro{No más}}";
 
-  static String m10(n) => "Restablecer plan ${n}(Todo)";
+  static String m9(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m11(n) => "Restablecer plan ${n} (Mostrado)";
+  static String m10(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m12(e) => "No se han podido actualizar las diapositivas\n${e}";
-
-  static String m13(a, b) => "${a} ${b}";
+  static String m11(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -76,8 +71,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Icono de Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("Archivos"),
@@ -105,7 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("Información"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Configuración del carrusel"),
-        "chaldea_user":
+        "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Usuario de Chaldea"),
         "change_log":
             MessageLookupByLibrary.simpleMessage("Registro de cambios"),
@@ -287,7 +280,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
         "growth_curve":
             MessageLookupByLibrary.simpleMessage("Curva de crecimiento"),
-        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
         "hide_outdated":
             MessageLookupByLibrary.simpleMessage("Ocultar desactualizado"),
@@ -296,7 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("Ilustración"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Ilustrador"),
         "import_data": MessageLookupByLibrary.simpleMessage("Importar"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Importar datos con éxito"),
         "import_http_body_duplicated":
@@ -351,7 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aplicación \"Archivos\"/En mi iPhone/Caldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Problemas"),
         "item": MessageLookupByLibrary.simpleMessage("Objeto"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Objetos de Ascension"),
         "item_category_bronze":
@@ -392,14 +384,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta":
             MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
         "language_en": MessageLookupByLibrary.simpleMessage("Spanish"),
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event":
             MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password":
@@ -416,8 +408,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_new_password":
             MessageLookupByLibrary.simpleMessage("Nueva contraseña"),
         "login_password": MessageLookupByLibrary.simpleMessage("Contraseña"),
-        "login_password_error": MessageLookupByLibrary.simpleMessage(
-            "Sólo puede contener letras y números, no menos de 4 dígitos"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage(
                 "No puede ser la misma que la antigua contraseña"),
@@ -448,7 +438,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("Mover hacia arriba"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("Nueva Cuenta"),
-        "next": MessageLookupByLibrary.simpleMessage("SIG."),
         "next_card": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage(
             "No hay interludio o rank up quest"),
@@ -478,7 +467,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Traducción preferida"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
             "Arrastre para cambiar el orden.\nSe utiliza para la descripción de los datos del juego, no para el idioma de la interfaz de usuario. No todos los datos del juego están traducidos para los 5 idiomas oficiales."),
-        "prev": MessageLookupByLibrary.simpleMessage("ANT."),
         "preview": MessageLookupByLibrary.simpleMessage("Vista previa"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Anterior"),
         "priority": MessageLookupByLibrary.simpleMessage("Prioridad"),
@@ -502,8 +490,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_take_effect": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -597,8 +585,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned":
             MessageLookupByLibrary.simpleMessage("No es favorito"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Oculto"),
-        "svt_related_cards":
-            MessageLookupByLibrary.simpleMessage("Cards relacionadas"),
         "svt_reset_plan":
             MessageLookupByLibrary.simpleMessage("Restablecer plan"),
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage(
@@ -611,20 +597,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualizar diapositivas"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP total"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Cantidad total"),
-        "translations": MessageLookupByLibrary.simpleMessage("Traducciones"),
-        "unsupported_type":
-            MessageLookupByLibrary.simpleMessage("Tipo no soportado"),
         "update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Ya es la última versión"),
         "update_dataset": MessageLookupByLibrary.simpleMessage(
             "Actualizar conjunto de datos"),
-        "update_now": MessageLookupByLibrary.simpleMessage("Actualizar Ahora"),
-        "update_slides_status_msg_error": m12,
-        "update_slides_status_msg_info":
-            MessageLookupByLibrary.simpleMessage("No actualizado"),
-        "update_slides_status_msg_success":
-            MessageLookupByLibrary.simpleMessage("Banners actualizados"),
         "userdata": MessageLookupByLibrary.simpleMessage("Datos del usuario"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage(
             "Descargar copia de seguridad"),
@@ -643,6 +620,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m13
+        "words_separate": m11
       };
 }

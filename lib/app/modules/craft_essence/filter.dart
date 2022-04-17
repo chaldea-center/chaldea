@@ -1,5 +1,5 @@
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/models.dart';
@@ -81,7 +81,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: Text(S.current.filter_atk_hp_type),
           options: CraftATKType.values,
           values: filterData.atkType,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(v.name.toTitle()),
           onFilterChanged: (value) {
             update();
           },
@@ -90,7 +90,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: const Text('Status'),
           options: CraftStatus.values,
           values: filterData.status,
-          optionBuilder: (v) => Text(EnumUtil.titled(v)),
+          optionBuilder: (v) => Text(v.name.toTitle()),
           onFilterChanged: (value) {
             update();
           },

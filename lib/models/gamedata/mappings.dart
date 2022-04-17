@@ -150,6 +150,12 @@ class Transl<K, V> {
     return Transl(_md.enums.svtClass, key, key);
   }
 
+  // enums
+  static Transl<String, String> enums(
+      Enum value, Map<String, MappingBase<String>> mapping) {
+    return Transl(mapping, value.name, value.name);
+  }
+
   static Transl<String, String> svtAttribute(Attribute key) =>
       Transl(_md.enums.attribute, key.name, key.name);
   static Transl<String, String> servantPolicy(ServantPolicy key) =>

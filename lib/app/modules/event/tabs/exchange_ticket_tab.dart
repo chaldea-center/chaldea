@@ -78,7 +78,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         child: Padding(
           padding: const EdgeInsets.all(6),
           child: Text(
-            'Current Server: ${db2.curUser.region.toUpper()}',
+            '${S.current.game_server}: ${db2.curUser.region.toUpper()}',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption,
           ),

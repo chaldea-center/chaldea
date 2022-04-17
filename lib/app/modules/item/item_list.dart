@@ -94,7 +94,7 @@ class ItemListPageState extends State<ItemListPage>
           controller: _tabController,
           isScrollable: true,
           tabs: shownCategories
-              .map((category) => Tab(text: EnumUtil.titled(category)))
+              .map((category) => Tab(text: category.name.toTitle()))
               .toList(),
           onTap: (_) {
             FocusScope.of(context).unfocus();

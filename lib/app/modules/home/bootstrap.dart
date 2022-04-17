@@ -236,7 +236,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                 leading: region == db2.curUser.region
                     ? const Icon(Icons.done)
                     : const SizedBox(),
-                title: Text(EnumUtil.shortString(region).toUpperCase()),
+                title: Text(region.name.toUpperCase()),
                 horizontalTitleGap: 0,
                 onTap: () {
                   setState(() {
@@ -277,7 +277,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             child: page <= 0
                 ? const SizedBox()
                 : TextButton(
-                    child: Text(S.current.prev),
+                    child: Text(S.current.prev_page),
                     onPressed: () {
                       _pageController.previousPage(
                         duration: kTabScrollDuration,
@@ -333,7 +333,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                     },
                   )
                 : TextButton(
-                    child: Text(S.current.next),
+                    child: Text(S.current.next_page),
                     onPressed: () {
                       _pageController.nextPage(
                         duration: kTabScrollDuration,
@@ -456,12 +456,13 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
         ),
         ListTile(
           title: Text(S.current.download_source),
-          subtitle: const Text('大陆地区请选择CN节点'),
+          subtitle: Text(S.current.download_source_hint),
           trailing: DropdownButton<bool>(
             value: db2.settings.proxyDataSource,
-            items: const [
-              DropdownMenuItem(child: Text('Default'), value: false),
-              DropdownMenuItem(child: Text('CN'), value: true),
+            items: [
+              DropdownMenuItem(
+                  child: Text(S.current.general_default), value: false),
+              const DropdownMenuItem(child: Text('CN'), value: true),
             ],
             onChanged: (v) {
               setState(() {
@@ -508,7 +509,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               }
               if (mounted) setState(() {});
             },
-            child: Text(S.current.update_now),
+            child: Text(S.current.update),
           ),
         ),
         Padding(

@@ -100,14 +100,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             header: S.current.servant,
             children: [
               ListTile(
-                title: Text(S.current.ascension_icon),
+                title: Text(S.current.svt_ascension_icon),
                 trailing: DropdownButton<int>(
                   value: db2.userData.svtAscensionIcon,
                   underline: const SizedBox(),
                   items: List.generate(
                     4,
                     (index) => DropdownMenuItem(
-                      child: Text('${index + 1}'),
+                      child: Text('${S.current.ascension} ${index + 1}'),
                       value: index + 1,
                     ),
                   ),

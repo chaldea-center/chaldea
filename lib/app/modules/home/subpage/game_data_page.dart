@@ -70,21 +70,31 @@ class _GameDataPageState extends State<GameDataPage> {
           ),
           TileGroup(
             header: S.current.download_source,
-            footer: '用于App更新, 若国内无法连接Github',
+            footer: S.current.download_source_hint,
             children: [
-              SwitchListTile.adaptive(
-                value: db2.settings.useProxy,
-                title: const Text('Use Proxy'),
-                onChanged: (v) {
-                  setState(() {
-                    db2.settings.useProxy = v;
-                    db2.saveSettings();
-                    if (kIsWeb) {
-                      kPlatformMethods.setLocalStorage(
-                          'useProxy', v.toString());
-                    }
-                  });
-                },
+              ListTile(
+                title: Text(S.current.download_source),
+                subtitle: Text(S.current.download_source_hint),
+                trailing: DropdownButton<bool>(
+                  value: db2.settings.proxyDataSource,
+                  items: [
+                    DropdownMenuItem(
+                        child: Text(S.current.general_default), value: false),
+                    const DropdownMenuItem(child: Text('CN'), value: true),
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) {
+                        db2.settings.proxyDataSource = v;
+                      }
+                      if (kIsWeb) {
+                        kPlatformMethods.setLocalStorage(
+                            'useProxy', v.toString());
+                      }
+                      db2.saveSettings();
+                    });
+                  },
+                ),
               ),
             ],
           ),

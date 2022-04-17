@@ -34,7 +34,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromTexts(texts: [
               'No.${svt.collectionNo}',
               'No. ${svt.id}',
-              EnumUtil.titled(svt.className),
+              Transl.svtClass(svt.className).l,
             ], defaults: contentData),
             CustomTableRow.fromTexts(texts: [
               S.current.illustrator,
@@ -44,7 +44,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromTexts(texts: [
               Transl.illustratorNames(svt.profile.illustrator).l,
               Transl.cvNames(svt.profile.cv).l,
-              EnumUtil.titled(svt.gender),
+              Transl.enums(svt.gender, db2.gameData.mappingData.enums.gender).l,
             ], defaults: contentData),
 
             CustomTableRow.fromTexts(texts: [
@@ -143,8 +143,7 @@ class SvtInfoTab extends StatelessWidget {
                   texts: const ['Hits'], defaults: headerData),
               for (final entry in svt.hitsDistribution.entries)
                 CustomTableRow(children: [
-                  TableCellData(
-                      text: EnumUtil.titled(entry.key), isHeader: true),
+                  TableCellData(text: entry.key.name.toTitle(), isHeader: true),
                   TableCellData(
                     text: entry.value.isEmpty
                         ? '   -'

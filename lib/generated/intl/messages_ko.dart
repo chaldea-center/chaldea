@@ -32,26 +32,23 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m5(filename, hash, dataHash) =>
-      "Hash mismatch: ${filename}: ${hash} - ${dataHash}";
+  static String m5(error) => "불러오기 실패. Error:\n${error}";
 
-  static String m6(error) => "불러오기 실패. Error:\n${error}";
+  static String m6(name) => "${name}은 이미 존재합니다";
 
-  static String m7(name) => "${name}은 이미 존재합니다";
+  static String m7(site) => "${site}(으)로 이동";
 
-  static String m8(site) => "${site}(으)로 이동";
-
-  static String m9(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': '이미 첫번째입니다.',
             'false': '이미 마지막입니다.',
             'other': '마지막입니다.',
           })}";
 
-  static String m10(n) => "계획 초기화 ${n}(모두)";
+  static String m9(n) => "계획 초기화 ${n}(모두)";
 
-  static String m11(n) => "계획 초기화 ${n}(표시된)";
+  static String m10(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m13(a, b) => "${a} ${b}";
+  static String m11(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -74,8 +71,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("어펜드 스킬"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("어펜드"),
         "ascension": MessageLookupByLibrary.simpleMessage("영기"),
-        "ascension_icon":
-            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("영기"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("영기재림"),
         "attachment": MessageLookupByLibrary.simpleMessage("애정"),
@@ -94,7 +89,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "card_info": MessageLookupByLibrary.simpleMessage("정보"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
-        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
         "change_log": MessageLookupByLibrary.simpleMessage("업데이트 내역"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("캐릭터"),
         "check_update": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
@@ -244,7 +238,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("성배"),
         "grail_up": MessageLookupByLibrary.simpleMessage("성배전림"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("성장 곡선"),
-        "hash_mismatch": m5,
         "help": MessageLookupByLibrary.simpleMessage("도움말"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("기간종료 숨기기"),
         "icons": MessageLookupByLibrary.simpleMessage("아이콘"),
@@ -252,7 +245,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("일러스트"),
         "illustrator": MessageLookupByLibrary.simpleMessage("일러스트레이터"),
         "import_data": MessageLookupByLibrary.simpleMessage("불러오기"),
-        "import_data_error": m6,
+        "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("불러오기를 성공했습니다"),
         "import_http_body_duplicated":
@@ -303,7 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "\"Files\" app/On My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("문제"),
         "item": MessageLookupByLibrary.simpleMessage("아이템"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m6,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("영기재림 재료"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("동색 아이템"),
@@ -332,13 +325,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("아이템"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("합계"),
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
-        "jump_to": m8,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("한국어"),
         "language_en": MessageLookupByLibrary.simpleMessage("Korean"),
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
-        "list_end_hint": m9,
+        "list_end_hint": m8,
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("비밀번호 변경"),
         "login_first_hint":
@@ -349,8 +342,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_logout": MessageLookupByLibrary.simpleMessage("로그아웃"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("새 비밀번호"),
         "login_password": MessageLookupByLibrary.simpleMessage("비밀번호"),
-        "login_password_error":
-            MessageLookupByLibrary.simpleMessage("4자리 이상 문자와 숫자만"),
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("이전 비밀번호와 같음"),
         "login_signup": MessageLookupByLibrary.simpleMessage("회원가입"),
@@ -373,7 +364,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("미션"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("마술예장"),
         "new_account": MessageLookupByLibrary.simpleMessage("새 계정 추가"),
-        "next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "next_card": MessageLookupByLibrary.simpleMessage("다음"),
         "no_servant_quest_hint":
             MessageLookupByLibrary.simpleMessage("막간의 이야기 또는 강화 퀘스트가 없습니다"),
@@ -393,7 +383,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_objective": MessageLookupByLibrary.simpleMessage("계획 목표"),
         "plan_title": MessageLookupByLibrary.simpleMessage("계획표"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("퀘스트"),
-        "prev": MessageLookupByLibrary.simpleMessage("PREV"),
         "preview": MessageLookupByLibrary.simpleMessage("미리보기"),
         "previous_card": MessageLookupByLibrary.simpleMessage("이전"),
         "priority": MessageLookupByLibrary.simpleMessage("우선 순위"),
@@ -412,8 +401,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("이름 변경"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "restart_to_take_effect":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -481,7 +470,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("서포트 및 기부하기"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("팔로우 하지않음"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("숨김"),
-        "svt_related_cards": MessageLookupByLibrary.simpleMessage("관련 카드"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdown 전환"),
@@ -491,14 +479,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("슬라이드 갱신"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP 합계"),
         "total_counts": MessageLookupByLibrary.simpleMessage("합계 카운트"),
-        "translations": MessageLookupByLibrary.simpleMessage("Translations"),
-        "unsupported_type":
-            MessageLookupByLibrary.simpleMessage("Unsupported type"),
         "update": MessageLookupByLibrary.simpleMessage("갱신"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("이미 최신버전 입니다"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("게임 데이터 갱신하기"),
-        "update_now": MessageLookupByLibrary.simpleMessage("Update Now"),
         "userdata": MessageLookupByLibrary.simpleMessage("사용자 데이터"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("백업 파일을 다운로드"),
@@ -513,6 +497,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m13
+        "words_separate": m11
       };
 }

@@ -17,7 +17,7 @@ class SummonUtil {
   }) {
     return cardGrid(
       ids: block.ids,
-      header: showRarity ? '☆${block.rarity}' : null,
+      header: showRarity ? '$kStarChar${block.rarity}' : null,
       childBuilder: (id) {
         Widget child;
         if (block.isSvt) {

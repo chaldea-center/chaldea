@@ -54,7 +54,7 @@ class _CostumeListPageState extends State<CostumeListPage>
                   : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
-            tooltip: 'Reversed',
+            tooltip: S.current.sort_order,
             onPressed: () => setState(() => reversed = !reversed),
           ),
           IconButton(

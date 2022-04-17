@@ -60,7 +60,7 @@ class _SummonListPageState extends State<SummonListPage>
                   : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
-            tooltip: 'Reversed',
+            tooltip: S.current.sort_order,
             onPressed: () {
               setState(() {
                 filterData.reversed = !filterData.reversed;

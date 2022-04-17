@@ -28,10 +28,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
       content: getListViewBody(children: [
         SwitchListTile.adaptive(
           value: filterData.showBanner,
-          title: const Text(
-            'Show Banner',
-            style: TextStyle(fontSize: 16),
-          ),
+          title: Text(S.current.summon_show_banner),
           onChanged: (v) {
             filterData.showBanner = v;
             update();
@@ -40,10 +37,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
         ),
         SwitchListTile.adaptive(
           value: filterData.showOutdated,
-          title: Text(
-            S.current.show_outdated,
-            style: const TextStyle(fontSize: 16),
-          ),
+          title: Text(S.current.show_outdated),
           onChanged: (v) {
             filterData.showOutdated = v;
             update();

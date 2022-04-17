@@ -608,7 +608,7 @@ const _regionLanguage = {
 
 extension RegionX on Region {
   String toUpper() {
-    return EnumUtil.upperCase(this);
+    return name.toUpperCase();
   }
 
   Language toLanguage() => _regionLanguage[this]!;

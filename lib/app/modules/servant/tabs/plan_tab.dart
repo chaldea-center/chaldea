@@ -228,7 +228,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               ),
             ),
             title: Text(S.current.servant_coin),
-            subtitle: Text('Summon Num: ${svt.coin?.summonNum}'),
+            subtitle:
+                Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
             trailing: SizedBox(
               width: 60,
               child: TextField(
@@ -313,7 +314,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               item: null,
               icon: Item.getIcon(Items.hpFou4),
               width: 33),
-          title: '✩4 HP Fou',
+          title: '${kStarChar}4 HP ${S.current.foukun}',
           start: curVal.fouHp,
           end: targetVal.fouHp,
           minVal: 0,
@@ -336,7 +337,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               item: null,
               icon: Item.getIcon(Items.atkFou4),
               width: 33),
-          title: '✩4 ATK Fou',
+          title: '${kStarChar}4 ATK ${S.current.foukun}',
           start: curVal.fouAtk,
           end: targetVal.fouAtk,
           minVal: 0,

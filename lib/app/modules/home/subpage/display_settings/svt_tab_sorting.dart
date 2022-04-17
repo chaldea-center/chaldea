@@ -100,13 +100,13 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
       case SvtTab.np:
         return S.current.noble_phantasm;
       case SvtTab.info:
-        return S.current.card_info;
+        return S.current.svt_basic_info;
       case SvtTab.lore:
-        return 'Profile';
+        return S.current.svt_profile;
       case SvtTab.illustration:
         return S.current.illustration;
       case SvtTab.relatedCards:
-        return 'Related Cards';
+        return S.current.svt_related_ce;
       case SvtTab.summon:
         return S.current.summon;
       case SvtTab.voice:
