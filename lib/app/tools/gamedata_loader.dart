@@ -26,7 +26,7 @@ class GameDataLoader {
       {Options? options}) async {
     final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
     try {
-      return await Dio(BaseOptions(connectTimeout: 10000)).get<T>(
+      return await Dio(BaseOptions(connectTimeout: 1000)).get<T>(
         url,
         options: Options(receiveTimeout: 5000),
       );
@@ -147,7 +147,7 @@ class GameDataLoader {
           // cancelToken: cancelToken,
           options: Options(responseType: ResponseType.bytes),
         );
-        final _hash = md5.convert(resp.data).toString().toLowerCase();
+        final _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
         if (!_hash.startsWith(fv.hash)) {
           throw S.current.hash_mismatch(fv.filename, fv.hash, _hash);
         }

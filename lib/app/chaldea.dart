@@ -124,6 +124,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       }
       return null;
     });
+
+    setOnWindowClose();
   }
 
   @override
@@ -144,7 +146,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void setOnWindowClose() {
     if (!PlatformU.isDesktop) return;
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
-      db2.saveAll();
+      await db2.saveAll();
       await Future.delayed(const Duration(milliseconds: 200));
       return true;
     });
