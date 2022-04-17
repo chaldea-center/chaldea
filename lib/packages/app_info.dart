@@ -83,7 +83,7 @@ class AppInfo {
     appParams["commitHash"] = kCommitHash;
     appParams["commitTimestamp"] = commitDate;
     logger.i('Resolved app version: ${_packageInfo?.packageName}'
-        ' ${_packageInfo?.version}+${_packageInfo?.buildNumber}');
+        ' ${_packageInfo?.version}+${_packageInfo?.buildNumber} $kCommitHash - $commitDate');
   }
 
   static Future<void> _loadUniqueId(String appPath) async {

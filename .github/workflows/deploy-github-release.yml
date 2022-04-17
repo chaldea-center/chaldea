@@ -90,6 +90,9 @@ jobs:
         if: matrix.target == 'android' && github.ref == 'refs/heads/main'
         run: dart ./scripts/patch_android_preview.dart
 
+      - name: Generate git info
+        run:  dart ./scripts/generate_git_info.dart
+
       - run: flutter pub get
       - run: flutter build ${{ matrix.build_target }} -v --release
 
