@@ -138,7 +138,7 @@ jobs:
     steps:
       - name: Get Date
         id: get-date
-        run: echo "::set-output name=date::$(/bin/date)"
+        run: echo "::set-output name=date::$(/bin/date -u +"%Y/%m/%d %H:%M:%S %Z")"
       - uses: actions/download-artifact@v3
       - run: ls -l -R
 
