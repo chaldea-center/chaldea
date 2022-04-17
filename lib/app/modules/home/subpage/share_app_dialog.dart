@@ -1,13 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:share_plus/share_plus.dart';
+
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ShareAppDialog extends StatefulWidget {
   ShareAppDialog({Key? key}) : super(key: key);

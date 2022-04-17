@@ -1,6 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -8,10 +13,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../command_code/cmd_code_list.dart';
 import '../../item/item.dart';
 import 'leveling_cost_page.dart';

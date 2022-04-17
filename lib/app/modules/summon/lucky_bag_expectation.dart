@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
 import 'summon_util.dart';
 
 class LuckyBagExpectation extends StatefulWidget {

@@ -1,5 +1,12 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/models.dart';
@@ -8,12 +15,6 @@ import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/after_layout.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../../generated/l10n.dart';
 import '../../../packages/language.dart';
 import '../../../packages/logger.dart';

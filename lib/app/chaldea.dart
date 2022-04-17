@@ -1,13 +1,14 @@
-import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/generated/intl/messages_all.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
 import '../packages/language.dart';

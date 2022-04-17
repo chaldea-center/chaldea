@@ -13,18 +13,20 @@
 ///  • Framework revision 02efffc134, 2021-04-10 03:49:01 -0400
 ///  • Engine revision 8863afff16
 ///  • Dart version 2.13.0 (build 2.13.0-222.0.dev)
+
 import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+import '../../utils/constants.dart' show kAppKey;
 
 import 'package:flutter/cupertino.dart'
     show
         CupertinoFullscreenDialogTransition,
         CupertinoPageTransition,
         CupertinoRouteTransitionMixin;
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-
-import '../../utils/constants.dart' show kAppKey;
 
 part 'master_back_button.dart';
 

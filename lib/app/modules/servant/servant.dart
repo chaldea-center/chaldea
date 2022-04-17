@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -7,8 +10,6 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
 import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
 import 'tabs/info_tab.dart';

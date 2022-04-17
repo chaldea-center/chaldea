@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
 
 class SvtLoreTab extends StatefulWidget {
   final Servant svt;

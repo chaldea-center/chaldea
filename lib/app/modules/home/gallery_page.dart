@@ -1,4 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -7,11 +13,6 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';

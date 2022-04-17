@@ -1,5 +1,6 @@
-import 'package:chaldea/models/models.dart';
 import 'package:flutter/material.dart';
+
+import 'package:chaldea/models/models.dart';
 
 abstract class DescriptorBase {
   Widget localized({

@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -6,9 +10,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../../models/models.dart';
 import '../../app.dart';
 import 'lucky_bag_expectation.dart';

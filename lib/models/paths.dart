@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import '../packages/logger.dart';
 import '../packages/platform/platform.dart';
 import '../utils/constants.dart';

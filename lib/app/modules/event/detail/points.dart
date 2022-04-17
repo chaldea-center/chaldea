@@ -1,6 +1,7 @@
-import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
+
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 
 class EventPointsPage extends StatefulWidget {
   final Event event;

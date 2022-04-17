@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:chaldea/utils/utils.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pool/pool.dart';
 
+import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
 import '../../models/models.dart';
 import '../../packages/app_info.dart';

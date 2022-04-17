@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:chaldea/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'package:chaldea/utils/constants.dart';
 
 class FrameRateLayer extends StatefulWidget {
   static bool showFps = false;

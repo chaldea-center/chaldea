@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:flutter/material.dart';
-
-import 'solver/custom_mission.dart';
 import 'master_mission.dart';
+import 'solver/custom_mission.dart';
 
 class MasterMissionListPage extends StatefulWidget {
   MasterMissionListPage({Key? key}) : super(key: key);

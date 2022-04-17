@@ -1,8 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:json_annotation/json_annotation.dart';
-
 import '../userdata/userdata.dart';
 import 'gamedata.dart';
 

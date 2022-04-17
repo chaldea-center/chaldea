@@ -1,6 +1,6 @@
-import 'package:chaldea/app/routes/routes.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/app/routes/routes.dart';
 import '../db.dart';
 import 'game_card.dart';
 import 'mappings.dart';

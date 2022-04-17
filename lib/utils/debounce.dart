@@ -1,4 +1,5 @@
 /// https://pub.dev/packages/easy_debounce
+
 import 'dart:async';
 
 typedef EasyDebounceCallback = void Function();

@@ -1,10 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:flutter/material.dart';
-
 import '../../routes/root_delegate.dart';
 
 class WindowManager extends StatefulWidget {

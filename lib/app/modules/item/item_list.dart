@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/free_quest_calc/free_calculator_page.dart';
@@ -12,8 +16,6 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 class ItemListPage extends StatefulWidget {
   ItemListPage({Key? key}) : super(key: key);

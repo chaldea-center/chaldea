@@ -1,5 +1,7 @@
 // ignore_for_file: implementation_imports
+
 import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
 import 'package:hive/src/box/default_compaction_strategy.dart';
 import 'package:hive/src/box/default_key_comparator.dart';

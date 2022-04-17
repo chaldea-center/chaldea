@@ -2,17 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:catcher/catcher.dart';
+import 'package:window_size/window_size.dart';
+import 'package:worker_manager/worker_manager.dart';
+
 import 'package:chaldea/app/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:window_size/window_size.dart';
-import 'package:worker_manager/worker_manager.dart';
-
 import 'app/modules/common/blank_page.dart';
 import 'models/db.dart';
 import 'packages/network.dart';
@@ -87,7 +88,7 @@ Future<void> _initiateCommon() async {
     }
   });
   network.init();
-  if (kIsWeb) {
+  if (!kIsWeb) {
     HttpOverrides.global = CustomHttpOverrides();
   }
   SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();

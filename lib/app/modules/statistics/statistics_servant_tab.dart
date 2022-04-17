@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
+import 'package:fl_chart/fl_chart.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 
 class StatisticServantTab extends StatefulWidget {
   StatisticServantTab({Key? key}) : super(key: key);

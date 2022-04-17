@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/material.dart';
 
 class SvtPriorityTagging extends StatefulWidget {
   SvtPriorityTagging({Key? key}) : super(key: key);

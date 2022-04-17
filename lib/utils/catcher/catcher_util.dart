@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:catcher/catcher.dart';
 
 class CatcherUtil {
   CatcherUtil._();

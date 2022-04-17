@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
-import 'package:flutter/material.dart';
 
 class CommandCardWidget extends StatelessWidget {
   final CardType card;

@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:flutter/material.dart';
-
 import '../../app.dart';
 
 class QuestListPage extends StatefulWidget {

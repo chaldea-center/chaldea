@@ -1,6 +1,6 @@
-import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';

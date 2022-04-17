@@ -1,5 +1,6 @@
-import 'package:chaldea/packages/logger.dart';
 import 'package:json_annotation/json_annotation.dart' hide $checkedCreate;
+
+import 'package:chaldea/packages/logger.dart';
 
 export 'package:json_annotation/json_annotation.dart' hide $checkedCreate;
 

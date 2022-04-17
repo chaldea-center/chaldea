@@ -1,8 +1,8 @@
-import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../models/gamedata/mappings.dart';
 
 const double _kSearchBarPaddingBottom = 8.0;

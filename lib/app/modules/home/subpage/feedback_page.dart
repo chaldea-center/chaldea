@@ -1,5 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:path/path.dart' as pathlib;
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -11,13 +19,6 @@ import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:path/path.dart' as pathlib;
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../misc/faq_page.dart';
 
 class FeedbackPage extends StatefulWidget {

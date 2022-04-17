@@ -1,8 +1,9 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:chaldea/packages/logger.dart';
 import 'package:image/image.dart' as lib_image;
+
+import 'package:chaldea/packages/logger.dart';
 
 Uint8List compressToJpg({
   required Uint8List src,

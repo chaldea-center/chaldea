@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:crclib/catalog.dart';
+import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/hive_extention.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:crclib/catalog.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
-import 'package:uuid/uuid.dart';
-
 import '../../models/models.dart';
 
 String _url2uuid(String url) => const Uuid().v5(Uuid.NAMESPACE_URL, url);

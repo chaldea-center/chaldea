@@ -3,6 +3,7 @@ import 'dart:io' show FileMode;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb, protected;
+
 import 'package:hive/hive.dart';
 
 import 'file_plus_io.dart';

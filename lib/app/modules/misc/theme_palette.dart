@@ -1,6 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
+
+import 'package:chaldea/utils/utils.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
   DarkLightThemePalette({Key? key}) : super(key: key);

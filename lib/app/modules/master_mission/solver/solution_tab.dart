@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/modules/enemy/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
 import 'scheme.dart';
 import 'solver.dart';
 

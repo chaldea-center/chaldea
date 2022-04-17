@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
-import 'package:chaldea/utils/extension.dart';
+
 import 'package:flutter/foundation.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/utils/extension.dart';
 import '../version.dart';
 import 'command_code.dart';
 import 'common.dart';

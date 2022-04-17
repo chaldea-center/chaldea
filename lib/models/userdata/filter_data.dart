@@ -1,6 +1,5 @@
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
-
 import '_helper.dart';
 import 'userdata.dart';
 

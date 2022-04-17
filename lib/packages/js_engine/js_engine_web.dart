@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:js' as js; // ignore: avoid_web_libraries_in_flutter
 
 import 'js_engine_interface.dart';
+
+import 'dart:js' as js; // ignore: avoid_web_libraries_in_flutter
 
 class JsEngine implements JsEngineInterface {
   JsEngine();

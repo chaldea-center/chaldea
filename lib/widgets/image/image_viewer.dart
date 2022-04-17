@@ -2,19 +2,20 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/utils.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' show join, basename;
 import 'package:uuid/uuid.dart';
 
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../../packages/network.dart';
 import 'cached_image_option.dart';
 import 'image_actions.dart';

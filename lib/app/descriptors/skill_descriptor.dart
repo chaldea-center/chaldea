@@ -1,9 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/app/modules/common/misc.dart';
-import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
+import 'package:auto_size_text/auto_size_text.dart';
+
+import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'func/func.dart';
 
 class SkillDescriptor extends StatelessWidget with FuncsDescriptor {

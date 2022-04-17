@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -12,9 +16,6 @@ import 'package:chaldea/widgets/custom_table.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import '../common/not_found.dart';
 
 class CraftDetailPage extends StatefulWidget {

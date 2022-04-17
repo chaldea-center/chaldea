@@ -1,6 +1,6 @@
-import 'package:chaldea/models/gamedata/common.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/models/gamedata/common.dart';
 import '../db.dart';
 import '../userdata/userdata.dart';
 import 'servant.dart';

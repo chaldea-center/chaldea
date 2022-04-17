@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
-
 import '../../../descriptors/cond_target_num.dart';
 import '../../master_mission/solver/scheme.dart';
 

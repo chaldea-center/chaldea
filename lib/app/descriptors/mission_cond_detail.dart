@@ -1,6 +1,6 @@
-import 'package:chaldea/models/models.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/models/models.dart';
 import 'descriptor_base.dart';
 import 'multi_entry.dart';
 

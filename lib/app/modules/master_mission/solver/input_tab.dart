@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -6,10 +11,6 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import '../../../api/atlas.dart';
 import 'scheme.dart';
 

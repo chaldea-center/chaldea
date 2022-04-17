@@ -1,3 +1,8 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
@@ -9,10 +14,6 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';

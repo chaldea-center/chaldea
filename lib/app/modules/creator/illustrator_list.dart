@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
 import '../../tools/localized_base.dart';
 
 class IllustratorListPage extends StatefulWidget {

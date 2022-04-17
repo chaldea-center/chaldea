@@ -1,9 +1,12 @@
 /// Since most messages of flutter console are helpless,
 /// Wrap our logs inside a drawn box to make it easy to identify.
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:logger/logger.dart';
+
 import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
 
 /// default logger

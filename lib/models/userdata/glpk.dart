@@ -1,5 +1,4 @@
 import 'package:chaldea/utils/utils.dart';
-
 import '../db.dart';
 import '../gamedata/drop_rate.dart';
 import '_helper.dart';

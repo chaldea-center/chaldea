@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
@@ -10,8 +12,6 @@ import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
-import 'package:flutter/material.dart';
-
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/command_code/cmd_code.dart';

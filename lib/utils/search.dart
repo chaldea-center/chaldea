@@ -1,6 +1,7 @@
-import 'package:chaldea/models/models.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:lpinyin/lpinyin.dart';
+
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/norm_string.dart';
 
 const KanaKit kanaKit = KanaKit();

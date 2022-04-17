@@ -1,9 +1,10 @@
-import 'package:chaldea/app/routes/routes.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/app/routes/routes.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
 import 'common.dart';

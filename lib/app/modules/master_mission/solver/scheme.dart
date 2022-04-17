@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:flutter/material.dart';
 
 class CustomMission {
   MissionTargetType type;

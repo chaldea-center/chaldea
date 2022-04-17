@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
+
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 import 'constants.dart';
 

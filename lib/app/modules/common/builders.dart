@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -5,9 +10,6 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SharedBuilder {
   SharedBuilder._();

@@ -1,25 +1,27 @@
 /// This package is platform-compatibility fix for catcher.
 /// If official support is release, this should be removed.
+
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:math' show min;
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
-import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/packages/file_plus/file_plus.dart';
-import 'package:chaldea/packages/network.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/packages/file_plus/file_plus.dart';
+import 'package:chaldea/packages/network.dart';
 import '../../app/tools/git_tool.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';

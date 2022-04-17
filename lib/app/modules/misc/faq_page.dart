@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
 import '../home/subpage/feedback_page.dart';
 
 class FAQPage extends StatelessWidget {

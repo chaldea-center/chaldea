@@ -1,4 +1,5 @@
 import 'package:args/args.dart';
+
 import 'shared.dart';
 import 'sort_l10n.dart' as sort_l10n;
 

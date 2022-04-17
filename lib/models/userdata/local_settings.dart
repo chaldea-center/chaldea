@@ -1,9 +1,10 @@
-import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
 import 'package:intl/intl.dart';
 
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/extension.dart';
 import '../../packages/language.dart';
 import '_helper.dart';
 import 'filter_data.dart';

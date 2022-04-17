@@ -1,9 +1,9 @@
 library userdata;
 
-import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
@@ -6,8 +8,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-
 import '../common/filter_group.dart';
 import '../item/item.dart';
 import 'statistics_servant_tab.dart';

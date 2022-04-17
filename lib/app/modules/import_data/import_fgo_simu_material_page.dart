@@ -1,14 +1,15 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import '../../../models/models.dart';
 
 class ImportFgoSimuMaterialPage extends StatefulWidget {

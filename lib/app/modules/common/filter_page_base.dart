@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/material.dart';
 
 abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;

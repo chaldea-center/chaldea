@@ -1,7 +1,8 @@
-import 'package:chaldea/models/version.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/models/version.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 

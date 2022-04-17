@@ -1,6 +1,5 @@
 import 'package:chaldea/app/tools/glpk_solver.dart';
 import 'package:chaldea/models/models.dart';
-
 import 'scheme.dart';
 
 class MissionSolver extends BaseLPSolver {

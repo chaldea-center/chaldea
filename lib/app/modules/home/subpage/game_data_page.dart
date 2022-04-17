@@ -1,5 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
@@ -9,11 +16,6 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class GameDataPage extends StatefulWidget {
   GameDataPage({Key? key}) : super(key: key);

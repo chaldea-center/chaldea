@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
-
 import '../common/filter_group.dart';
 
 class SummonFilterPage extends FilterPage<SummonFilterData> {

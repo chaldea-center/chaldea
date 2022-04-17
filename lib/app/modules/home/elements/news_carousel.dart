@@ -1,5 +1,16 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' as parser;
+import 'package:string_validator/string_validator.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:chaldea/app/tools/git_tool.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -9,15 +20,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
-import 'package:dio/dio.dart';
-import 'package:dots_indicator/dots_indicator.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart' as parser;
-import 'package:string_validator/string_validator.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AppNewsCarousel extends StatefulWidget {
   final double? maxWidth;
