@@ -32,7 +32,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
   Widget build(BuildContext context) {
     String num2str(int? n) => (n ?? 0).format(minVal: 10000);
 
-    final stat = db2.itemCenter;
+    final stat = db.itemCenter;
     final details = stat.getItemCostDetail(itemId, matType);
     final svtDemands = SvtMatCostDetail<int>(() => 0);
     for (final svtDetail in details.values) {
@@ -41,7 +41,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
 
     Widget header = CustomTile(
       title: Text('${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
-          '${S.current.item_own} ${num2str(db2.curUser.items[itemId])} '
+          '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
           '${S.current.event_title} ${num2str(stat.statObtain[itemId])}'),
       trailing: Text(
         '${S.current.item_total_demand} ${num2str(svtDemands.all)}\n'
@@ -73,7 +73,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         ),
       header
     ];
-    if (db2.settings.display.itemDetailViewType ==
+    if (db.settings.display.itemDetailViewType ==
         ItemDetailViewType.separated) {
       // 0 ascension 1 skill 2 dress 3 append 4 extra
       final headers = [
@@ -105,7 +105,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
           ));
         }
       }
-    } else if (db2.settings.display.itemDetailViewType ==
+    } else if (db.settings.display.itemDetailViewType ==
         ItemDetailViewType.grid) {
       children.add(_buildSvtIconGrid(
           context, details.map((key, value) => MapEntry(key, value.all)),
@@ -126,11 +126,11 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
-      final svt = db2.gameData.servants[svtNo];
+      final svt = db.gameData.servants[svtNo];
       if (svt == null) return;
       final count = src[svtNo]!;
       bool shouldHighlight =
-          highlight && db2.curUser.svtStatusOf(svtNo).cur.favorite;
+          highlight && db.curUser.svtStatusOf(svtNo).cur.favorite;
       if (count > 0) {
         Widget avatar = svt.iconBuilder(
           context: context,
@@ -184,13 +184,13 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       final detail = details[svtNo]!;
       if (detail.all <= 0) continue;
 
-      final svt = db2.gameData.servants[svtNo];
-      bool _planned = db2.curUser.svtStatusOf(svtNo).cur.favorite;
+      final svt = db.gameData.servants[svtNo];
+      bool _planned = db.curUser.svtStatusOf(svtNo).cur.favorite;
       final textStyle = _planned && matType == SvtMatCostDetailType.full
           ? TextStyle(color: Theme.of(context).colorScheme.secondary)
           : const TextStyle();
       children.add(CustomTile(
-        leading: db2.getIconImage(svt?.borderedIcon, width: 42),
+        leading: db.getIconImage(svt?.borderedIcon, width: 42),
         title: Text(svt?.lName.l ?? 'No.$svtNo', style: textStyle, maxLines: 1),
         subtitle: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 240),
@@ -210,7 +210,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
   List<int> sortSvts(List<int> svts) {
     List<SvtCompare> sortKeys;
     List<bool> sortReversed;
-    switch (db2.settings.display.itemDetailSvtSort) {
+    switch (db.settings.display.itemDetailSvtSort) {
       case ItemDetailSvtSort.collectionNo:
         sortKeys = [SvtCompare.no];
         sortReversed = [true];
@@ -225,8 +225,8 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         break;
     }
     svts.sort((a, b) => SvtFilterData.compare(
-        db2.gameData.servants[a], db2.gameData.servants[b],
-        keys: sortKeys, reversed: sortReversed, user: db2.curUser));
+        db.gameData.servants[a], db.gameData.servants[b],
+        keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }
 }

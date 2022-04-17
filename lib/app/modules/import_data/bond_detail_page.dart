@@ -36,7 +36,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
   void initState() {
     super.initState();
     widget.cardCollections.forEach((key, collection) {
-      final svt = db2.gameData.servantsById[collection.svtId];
+      final svt = db.gameData.servantsById[collection.svtId];
       if (collection.isOwned && svt != null) {
         collections.add(MapEntry(svt, collection));
       }
@@ -108,7 +108,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
       body: Column(
         children: [
           ListTile(
-            leading: db2.getIconImage(null,
+            leading: db.getIconImage(null,
                 aspectRatio: 132 / 144,
                 padding: const EdgeInsets.symmetric(vertical: 4)),
             tileColor: Theme.of(context).cardColor,

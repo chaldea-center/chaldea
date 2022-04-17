@@ -76,7 +76,7 @@ class ImageActions {
               SimpleCancelOkDialog(
                 hideCancel: true,
                 title: Text(S.current.saved),
-                content: Text(db2.paths.convertIosPath(destFp)),
+                content: Text(db.paths.convertIosPath(destFp)),
                 actions: [
                   if (PlatformU.isDesktop)
                     TextButton(
@@ -103,7 +103,7 @@ class ImageActions {
                 String fn = const Uuid()
                         .v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
                     '.png';
-                String tmpFp = join(db2.paths.tempDir, fn);
+                String tmpFp = join(db.paths.tempDir, fn);
                 File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);

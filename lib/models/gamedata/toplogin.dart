@@ -364,7 +364,7 @@ class UserSvtCollection {
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
     for (final costumeId in costumeIds) {
-      final costume = db2.gameData.servantsById[svtId]?.profile.costume.values
+      final costume = db.gameData.servantsById[svtId]?.profile.costume.values
           .firstWhereOrNull((e) => e.id == costumeId);
       if (costume != null) {
         result[costume.battleCharaId] = 1;

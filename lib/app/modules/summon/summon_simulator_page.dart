@@ -48,8 +48,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     for (var block in [...data.svts, ...data.crafts]) {
       for (int i = 0; i < block.ids.length; i++) {
         var card = block.isSvt
-            ? db2.gameData.servants[block.ids[i]]
-            : db2.gameData.craftEssences[block.ids[i]];
+            ? db.gameData.servants[block.ids[i]]
+            : db.gameData.craftEssences[block.ids[i]];
         double value = acc + i * block.weight / block.ids.length;
         if (card != null) probabilityList.add(MapEntry(card, value));
       }
@@ -253,7 +253,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (block.ids.isEmpty || !block.display) return; // should always not
       double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
-        Servant? svt = db2.gameData.servants[id];
+        Servant? svt = db.gameData.servants[id];
         if (svt == null) return;
         svtRow.add(SummonUtil.buildCard(
           context: context,
@@ -268,7 +268,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (block.ids.isEmpty || !block.display) return; // should always not
       double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
-        CraftEssence? ce = db2.gameData.craftEssences[id];
+        CraftEssence? ce = db.gameData.craftEssences[id];
         if (ce == null) return;
         craftRow.add(SummonUtil.buildCard(
           context: context,
@@ -407,7 +407,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: InkWell(
         onTap: () => startGacha(times, quartz),
-        child: db2.getIconImage(
+        child: db.getIconImage(
           'https://static.chaldea.center/images/$fn',
           height: 50,
         ),
@@ -605,9 +605,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // print(s);
   }
 
-  Servant? svtFromId(int id) => db2.gameData.servants[id];
+  Servant? svtFromId(int id) => db.gameData.servants[id];
 
-  CraftEssence? craftFromId(int id) => db2.gameData.craftEssences[id];
+  CraftEssence? craftFromId(int id) => db.gameData.craftEssences[id];
 
   Map<GameCardMixin, double> _addProbMap({
     Map<GameCardMixin, double>? result,
@@ -619,8 +619,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     result ??= {};
     double weight = totalWeight / ids.length;
     for (var id in ids) {
-      var key =
-          (isSvt ? db2.gameData.servants : db2.gameData.craftEssences)[id];
+      var key = (isSvt ? db.gameData.servants : db.gameData.craftEssences)[id];
       if (key == null) continue;
       if (skipExistKey) {
         result.putIfAbsent(key, () => weight);

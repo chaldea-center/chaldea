@@ -57,7 +57,7 @@ class _GalleryPageState extends State<GalleryPage> {
         title: const Text(kAppName),
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         actions: <Widget>[
-          if (db2.settings.display.showAccountAtHome)
+          if (db.settings.display.showAccountAtHome)
             InkWell(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
@@ -67,8 +67,8 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: db2.onUserData((context, snapshot) => Text(
-                          db2.curUser.name,
+                    child: db.onUserData((context, snapshot) => Text(
+                          db.curUser.name,
                           textScaleFactor: 0.8,
                         )),
                   ),
@@ -78,7 +78,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 router.push(child: AccountPage());
               },
             ),
-          if (!PlatformU.isMobile && db2.settings.carousel.enabled)
+          if (!PlatformU.isMobile && db.settings.carousel.enabled)
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: S.current.tooltip_refresh_sliders,
@@ -91,7 +91,7 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
         ],
       ),
-      body: db2.settings.carousel.enabled
+      body: db.settings.carousel.enabled
           ? RefreshIndicator(
               child: body,
               onRefresh: () async {
@@ -115,9 +115,9 @@ class _GalleryPageState extends State<GalleryPage> {
                       PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
               child: Column(
                 children: [
-                  if (db2.settings.carousel.enabled)
+                  if (db.settings.carousel.enabled)
                     AppNewsCarousel(maxWidth: constraints.maxWidth),
-                  if (db2.settings.carousel.enabled)
+                  if (db.settings.carousel.enabled)
                     const Divider(height: 0.5, thickness: 0.5),
                   GridGallery(maxWidth: constraints.maxWidth),
                 ],
@@ -141,7 +141,7 @@ class _GalleryPageState extends State<GalleryPage> {
   List<Widget> get notifications {
     List<Widget> children = [];
 
-    final path = db2.paths.appPath.toLowerCase();
+    final path = db.paths.appPath.toLowerCase();
     if (PlatformU.isWindows &&
         (path.contains(r'appdata\local\temp') ||
             path.contains(r'c:\\program files'))) {
@@ -149,7 +149,7 @@ class _GalleryPageState extends State<GalleryPage> {
         expanded: true,
         headerBuilder: (_, __) => ListTile(
           title: Text(S.current.invalid_startup_path),
-          subtitle: Text(db2.paths.appPath),
+          subtitle: Text(db.paths.appPath),
         ),
         contentBuilder: (context) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -230,7 +230,7 @@ class _GalleryPageState extends State<GalleryPage> {
           ),
           ListTile(
             title: Text(S.current.dataset_version),
-            trailing: Text(db2.gameData.version.text()),
+            trailing: Text(db.gameData.version.text()),
           ),
         ]),
       ),

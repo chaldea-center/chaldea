@@ -36,13 +36,13 @@ class _IllustratorListPageState extends State<IllustratorListPage>
       }
     }
 
-    for (final svt in db2.gameData.servants.values) {
+    for (final svt in db.gameData.servants.values) {
       _update<Servant>(svtMap, svt.profile.illustrator, svt);
     }
-    for (final ce in db2.gameData.craftEssences.values) {
+    for (final ce in db.gameData.craftEssences.values) {
       _update<CraftEssence>(ceMap, ce.profile.illustrator, ce);
     }
-    for (final cc in db2.gameData.commandCodes.values) {
+    for (final cc in db.gameData.commandCodes.values) {
       _update<CommandCode>(codeMap, cc.illustrator, cc);
     }
 

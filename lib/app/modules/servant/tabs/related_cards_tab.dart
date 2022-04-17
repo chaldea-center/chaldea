@@ -18,7 +18,7 @@ class SvtRelatedCardTab extends StatelessWidget {
     List<String> tabs = [];
     List<Widget> pages = [];
 
-    final bondCE = db2.gameData.craftEssencesById[svt.bondEquip];
+    final bondCE = db.gameData.craftEssencesById[svt.bondEquip];
     if (bondCE != null) {
       tabs.add(S.current.bond_craft);
       pages.add(SingleChildScrollView(
@@ -27,7 +27,7 @@ class SvtRelatedCardTab extends StatelessWidget {
     }
 
     final valentineCEs = svt.valentineEquip
-        .map((e) => db2.gameData.craftEssencesById[e])
+        .map((e) => db.gameData.craftEssencesById[e])
         .whereType<CraftEssence>()
         .toList();
     if (valentineCEs.isNotEmpty) {
@@ -40,10 +40,10 @@ class SvtRelatedCardTab extends StatelessWidget {
       ));
     }
 
-    final charaCEs = db2.gameData.craftEssences.values
+    final charaCEs = db.gameData.craftEssences.values
         .where((ce) => ce.extra.characters.contains(svt.collectionNo))
         .toList();
-    final charaCCs = db2.gameData.commandCodes.values
+    final charaCCs = db.gameData.commandCodes.values
         .where((cc) => cc.extra.characters.contains(svt.collectionNo))
         .toList();
     if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
@@ -57,7 +57,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                 for (final ce in charaCEs)
                   ListTile(
                     leading: ImageWithText(
-                        image: db2.getIconImage(ce.borderedIcon,
+                        image: db.getIconImage(ce.borderedIcon,
                             height: 45, width: 45 / 144 * 132)),
                     title: Text(ce.lName.l),
                     onTap: () {
@@ -82,7 +82,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                 for (final cc in charaCCs)
                   ListTile(
                     leading: ImageWithText(
-                        image: db2.getIconImage(cc.icon,
+                        image: db.getIconImage(cc.icon,
                             height: 45, width: 45 / 144 * 132)),
                     title: Text(cc.lName.l),
                     onTap: () {

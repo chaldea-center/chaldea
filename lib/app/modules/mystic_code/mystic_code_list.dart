@@ -24,7 +24,7 @@ class MysticCodeListPage extends StatefulWidget {
 class MysticCodeListPageState extends State<MysticCodeListPage>
     with SearchableListState<MysticCode, MysticCodeListPage> {
   @override
-  Iterable<MysticCode> get wholeData => db2.gameData.mysticCodes.values;
+  Iterable<MysticCode> get wholeData => db.gameData.mysticCodes.values;
 
   @override
   final bool prototypeExtent = true;
@@ -47,9 +47,9 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
         actions: [
           IconButton(
             onPressed: () =>
-                setState(() => db2.curUser.isGirl = !db2.curUser.isGirl),
+                setState(() => db.curUser.isGirl = !db.curUser.isGirl),
             icon: FaIcon(
-              db2.curUser.isGirl
+              db.curUser.isGirl
                   ? FontAwesomeIcons.venus
                   : FontAwesomeIcons.mars,
             ),
@@ -62,7 +62,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   @override
   Widget listItemBuilder(MysticCode mc) {
     return CustomTile(
-      leading: db2.getIconImage(
+      leading: db.getIconImage(
         mc.icon,
         width: 56,
         aspectRatio: 132 / 144,
@@ -89,7 +89,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   @override
   Widget gridItemBuilder(MysticCode mc) {
     return GestureDetector(
-      child: db2.getIconImage(mc.borderedIcon),
+      child: db.getIconImage(mc.borderedIcon),
       onTap: () => _onTapCard(mc),
     );
   }

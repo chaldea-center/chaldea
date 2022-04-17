@@ -252,8 +252,8 @@ class Servant with GameCardMixin {
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
   String? get customIcon {
-    final _icon = db2.userData.customSvtIcon[collectionNo] ??
-        extraAssets.faces.ascension?[db2.userData.svtAscensionIcon] ??
+    final _icon = db.userData.customSvtIcon[collectionNo] ??
+        extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ??
         icon;
     return bordered(_icon);
   }
@@ -262,7 +262,7 @@ class Servant with GameCardMixin {
   Transl<String, String> get lName =>
       Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 
-  ServantExtra get extra => db2.gameData.wiki.servants[collectionNo] ??=
+  ServantExtra get extra => db.gameData.wiki.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);
 
   Set<Trait> get traitsAll {
@@ -281,14 +281,14 @@ class Servant with GameCardMixin {
   Set<Trait>? _traitsAll;
 
   int grailedLv(int grails) {
-    final costs = db2.gameData.constData.svtGrailCost[rarity]?[grails];
+    final costs = db.gameData.constData.svtGrailCost[rarity]?[grails];
     if (costs == null) return lvMax;
     return costs.addLvMax + lvMax;
   }
 
   Map<int, LvlUpMaterial> get grailUpMaterials {
     Map<int, LvlUpMaterial> materials = {};
-    final costs = db2.gameData.constData.svtGrailCost[rarity];
+    final costs = db.gameData.constData.svtGrailCost[rarity];
     if (costs != null) {
       for (final endLv in costs.keys) {
         materials[endLv - 1] = LvlUpMaterial(
@@ -305,7 +305,7 @@ class Servant with GameCardMixin {
   }
 
   void updateStat() {
-    db2.itemCenter.updateSvts(svts: [this]);
+    db.itemCenter.updateSvts(svts: [this]);
   }
 }
 
@@ -381,7 +381,7 @@ class CraftEssence with GameCardMixin {
   Transl<String, String> get lName => Transl.ceNames(name);
 
   CraftEssenceExtra get extra =>
-      db2.gameData.wiki.craftEssences[collectionNo] ??=
+      db.gameData.wiki.craftEssences[collectionNo] ??=
           CraftEssenceExtra(collectionNo: collectionNo);
 
   CraftATKType get atkType {
@@ -847,7 +847,7 @@ class NiceCostume {
   String get charaGraph =>
       'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
 
-  Servant? get owner => db2.gameData.others.costumeSvtMap[costumeCollectionNo];
+  Servant? get owner => db.gameData.others.costumeSvtMap[costumeCollectionNo];
 
   String get route => Routes.costumeI(costumeCollectionNo);
 }

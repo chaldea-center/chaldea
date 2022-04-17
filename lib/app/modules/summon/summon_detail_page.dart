@@ -35,7 +35,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   @override
   void initState() {
     super.initState();
-    _summon = widget.summon ?? db2.gameData.wiki.summons[widget.id];
+    _summon = widget.summon ?? db.gameData.wiki.summons[widget.id];
     init();
   }
 
@@ -61,15 +61,15 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
         titleSpacing: 0,
         actions: [
-          db2.onUserData(
+          db.onUserData(
             (context, _) {
-              bool planned = db2.curUser.summons.contains(summon.id);
+              bool planned = db.curUser.summons.contains(summon.id);
               return IconButton(
                 icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
                 tooltip: S.current.favorite,
                 onPressed: () {
-                  db2.curUser.summons.toggle(summon.id);
-                  db2.notifyUserdata();
+                  db.curUser.summons.toggle(summon.id);
+                  db.notifyUserdata();
                 },
               );
             },
@@ -87,7 +87,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get listView {
-    final relatedEvents = db2.gameData.events.values
+    final relatedEvents = db.gameData.events.values
         .where((event) => event.extra.relatedSummons.contains(summon.id))
         .toList();
     List<Widget> children = [
@@ -298,9 +298,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             children: pickups
                 .map((id) => SummonUtil.svtAvatar(
                       context: context,
-                      card: db2.gameData.servants[id],
+                      card: db.gameData.servants[id],
                       star: summon.hasSinglePickupSvt(id),
-                      favorite: db2.curUser.svtStatusOf(id).favorite,
+                      favorite: db.curUser.svtStatusOf(id).favorite,
                     ))
                 .toList(),
           ),
@@ -332,9 +332,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           children: svtIds.entries
               .map((entry) => SummonUtil.svtAvatar(
                   context: context,
-                  card: db2.gameData.servants[entry.key],
+                  card: db.gameData.servants[entry.key],
                   star: entry.value,
-                  favorite: db2.curUser.svtStatusOf(entry.key).favorite))
+                  favorite: db.curUser.svtStatusOf(entry.key).favorite))
               .toList(),
         ),
       ));
@@ -396,7 +396,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   void moveNext([reversed = false]) {
-    final list = widget.summonList ?? db2.gameData.wiki.summons.values.toList();
+    final list = widget.summonList ?? db.gameData.wiki.summons.values.toList();
     int index = list.indexOf(summon);
     if (index >= 0) {
       int nextIndex = index + (reversed ? -1 : 1);

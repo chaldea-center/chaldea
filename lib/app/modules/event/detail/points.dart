@@ -59,8 +59,7 @@ class _EventPointsPageState extends State<EventPointsPage>
                   if (group == null) return Tab(text: groupId.toString());
                   return Tab(
                     child: Text.rich(TextSpan(children: [
-                      WidgetSpan(
-                          child: db2.getIconImage(group.icon, width: 24)),
+                      WidgetSpan(child: db.getIconImage(group.icon, width: 24)),
                       TextSpan(text: group.name)
                     ])),
                   );
@@ -101,7 +100,7 @@ class _EventPointsPageState extends State<EventPointsPage>
       final buff = pointBuffs[reward.groupId]?[reward.point];
       if (buff == null) continue;
       titles.add(const TextSpan(text: '\n'));
-      titles.add(WidgetSpan(child: db2.getIconImage(buff.icon, width: 36)));
+      titles.add(WidgetSpan(child: db.getIconImage(buff.icon, width: 36)));
       titles.add(TextSpan(text: buff.name + '\n'));
       titles.add(TextSpan(
           text: 'Value: ${buff.value.format(percent: true, base: 100)}'));

@@ -30,24 +30,20 @@ void main() async {
 
 Future<void> _mainNext() async {
   await Executor().warmUp();
-  await db2.initiate();
-  await db2.loadSettings();
-  await db2.loadUserData().then((value) async {
-    if (value != null) db2.userData = value;
+  await db.initiate();
+  await db.loadSettings();
+  await db.loadUserData().then((value) async {
+    if (value != null) db.userData = value;
   });
   final catcherOptions = CatcherUtil.getOptions(
-    logPath: db2.paths.crashLog,
+    logPath: db.paths.crashLog,
     feedbackHandler: ServerFeedbackHandler(
-      screenshotController: db2.runtimeData.screenshotController,
-      screenshotPath: joinPaths(db2.paths.tempDir, 'crash.jpg'),
-      attachments: [
-        db2.paths.appLog,
-        db2.paths.crashLog,
-        db2.paths.userDataPath
-      ],
+      screenshotController: db.runtimeData.screenshotController,
+      screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
+      attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],
       onGenerateAttachments: () => {
         'userdata.memory.json':
-            Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
+            Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))
       },
     ),
   );

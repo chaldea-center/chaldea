@@ -91,17 +91,17 @@ class IconCacheManager {
     }
     _running = true;
     Set<String?> _icons = {};
-    for (final svt in db2.gameData.servants.values) {
+    for (final svt in db.gameData.servants.values) {
       _icons.add(svt.icon);
       _icons.add(svt.customIcon);
     }
-    for (final ce in db2.gameData.craftEssences.values) {
+    for (final ce in db.gameData.craftEssences.values) {
       _icons.add(ce.icon);
     }
-    for (final cc in db2.gameData.commandCodes.values) {
+    for (final cc in db.gameData.commandCodes.values) {
       _icons.add(cc.icon);
     }
-    for (final skill in db2.gameData.baseSkills.values) {
+    for (final skill in db.gameData.baseSkills.values) {
       _icons.add(skill.icon);
     }
     const aaPrefix = 'https://static.atlasacademy.io/';
@@ -119,7 +119,7 @@ class IconCacheManager {
 
     for (int index = 0; index < resolvedIcons.length; index++) {
       String url = resolvedIcons[index];
-      String fp = url.replaceAll(aaPrefix, db2.paths.gameIconDir + '/');
+      String fp = url.replaceAll(aaPrefix, db.paths.gameIconDir + '/');
       if (!await File(fp).exists()) {
         tasks.add(_limiter.limited<void>(() async {
           try {

@@ -30,15 +30,15 @@ class _GameServerPageState extends State<GameServerPage> {
   Widget radioOf(Region region) {
     return RadioListTile<Region>(
       value: region,
-      groupValue: db2.curUser.region,
+      groupValue: db.curUser.region,
       title: Text(region.name.toUpperCase()),
       subtitle: Text(region.toLanguage().name),
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (v) {
         setState(() {
-          if (v != null) db2.curUser.region = v;
+          if (v != null) db.curUser.region = v;
         });
-        db2.notifyUserdata();
+        db.notifyUserdata();
       },
     );
   }

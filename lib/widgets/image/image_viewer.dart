@@ -103,7 +103,7 @@ class CachedImage extends StatefulWidget {
       BuildContext context, String? url, dynamic error) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: Image(image: db2.errorImage),
+      child: Image(image: db.errorImage),
     );
   }
 
@@ -197,7 +197,7 @@ class _CachedImageState extends State<CachedImage> {
             ImageActions.showSaveShare(
               context: context,
               data: data,
-              destFp: join(db2.paths.downloadDir, fn),
+              destFp: join(db.paths.downloadDir, fn),
               gallery: true,
               share: true,
             );
@@ -273,7 +273,7 @@ class _CachedImageState extends State<CachedImage> {
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,
-            destFp: join(db2.paths.downloadDir, fn),
+            destFp: join(db.paths.downloadDir, fn),
             gallery: true,
             share: true,
             shareText: fn,

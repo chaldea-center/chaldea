@@ -78,29 +78,29 @@ class _EventShopsPageState extends State<EventShopsPage>
           title = Item.getName(targetId);
           break;
         case PurchaseType.equip:
-          title = db2.gameData.mysticCodes[targetId]?.lName.l;
+          title = db.gameData.mysticCodes[targetId]?.lName.l;
           break;
         case PurchaseType.friendGacha:
           title = 'Friend Points';
           break;
         case PurchaseType.servant:
-          title = (db2.gameData.servantsById[targetId] ??
-                  db2.gameData.craftEssencesById[targetId])
+          title = (db.gameData.servantsById[targetId] ??
+                  db.gameData.craftEssencesById[targetId])
               ?.lName
               .l;
           break;
         case PurchaseType.quest:
-          final quest = db2.gameData.quests[targetId];
+          final quest = db.gameData.quests[targetId];
           title = 'Quest ${quest?.lName.l ?? targetId}';
           break;
         case PurchaseType.eventSvtJoin:
         case PurchaseType.eventSvtGet:
-          final svt = db2.gameData.servantsById[targetId];
+          final svt = db.gameData.servantsById[targetId];
           title = '${svt?.lName.l ?? targetId} join';
           break;
         case PurchaseType.costumeRelease:
           int svtId = targetId ~/ 100, costumeId = targetId % 100;
-          final svt = db2.gameData.servantsById[svtId];
+          final svt = db.gameData.servantsById[svtId];
           final costume = svt?.profile.costume.values
               .firstWhereOrNull((costume) => costume.id == costumeId);
           title = costume?.lName.l;
@@ -110,7 +110,7 @@ class _EventShopsPageState extends State<EventShopsPage>
           leading = const SizedBox();
           break;
         case PurchaseType.commandCode:
-          title = db2.gameData.commandCodesById[targetId]?.lName.l;
+          title = db.gameData.commandCodesById[targetId]?.lName.l;
           break;
         default:
           break;

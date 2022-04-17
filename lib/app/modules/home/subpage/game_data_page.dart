@@ -36,15 +36,15 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.version),
                 subtitle: Text(S.current.gamedata),
-                trailing: db2.onUserData((context, snapshot) => Text(
-                      db2.gameData.version.text(true),
+                trailing: db.onUserData((context, snapshot) => Text(
+                      db.gameData.version.text(true),
                       textAlign: TextAlign.end,
                     )),
               ),
               // TODO: 不兼容版本提示
               if (loader.loadedGameData != null &&
                   loader.loadedGameData!.version.timestamp >
-                      db2.gameData.version.timestamp)
+                      db.gameData.version.timestamp)
                 ListTile(
                   title:
                       const Text('Update Available, click or restart to load'),
@@ -58,9 +58,9 @@ class _GameDataPageState extends State<GameDataPage> {
                       for (final child in rootRouter.appState.children) {
                         child.popAll();
                       }
-                      db2.gameData = loader.loadedGameData!;
-                      db2.itemCenter.init();
-                      db2.notifyAppUpdate();
+                      db.gameData = loader.loadedGameData!;
+                      db.itemCenter.init();
+                      db.notifyAppUpdate();
                       setState(() {});
                       EasyLoading.showSuccess('Updated');
                     }
@@ -76,7 +76,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text(S.current.download_source),
                 subtitle: Text(S.current.download_source_hint),
                 trailing: DropdownButton<bool>(
-                  value: db2.settings.proxyDataSource,
+                  value: db.settings.proxyDataSource,
                   items: [
                     DropdownMenuItem(
                         child: Text(S.current.general_default), value: false),
@@ -85,13 +85,13 @@ class _GameDataPageState extends State<GameDataPage> {
                   onChanged: (v) {
                     setState(() {
                       if (v != null) {
-                        db2.settings.proxyDataSource = v;
+                        db.settings.proxyDataSource = v;
                       }
                       if (kIsWeb) {
                         kPlatformMethods.setLocalStorage(
                             'useProxy', v.toString());
                       }
-                      db2.saveSettings();
+                      db.saveSettings();
                     });
                   },
                 ),
@@ -103,12 +103,12 @@ class _GameDataPageState extends State<GameDataPage> {
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
               SwitchListTile.adaptive(
-                value: db2.settings.autoUpdateData,
+                value: db.settings.autoUpdateData,
                 title: Text(S.current.auto_update),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.autoUpdateData = v;
-                    db2.saveSettings();
+                    db.settings.autoUpdateData = v;
+                    db.saveSettings();
                   });
                 },
               ),
@@ -141,12 +141,12 @@ class _GameDataPageState extends State<GameDataPage> {
                               return SimpleCancelOkDialog(
                                 title: Text(S.current.update_dataset),
                                 content: Text(
-                                    'Current: ${db2.gameData.version.text(false)}\n'
+                                    'Current: ${db.gameData.version.text(false)}\n'
                                     'Latest : ${data.version.text(false)}'),
                                 onTapOk: () {
-                                  db2.gameData = data;
-                                  db2.itemCenter.init();
-                                  db2.notifyAppUpdate();
+                                  db.gameData = data;
+                                  db.itemCenter.init();
+                                  db.notifyAppUpdate();
                                 },
                               );
                             },
@@ -234,7 +234,7 @@ class _GameDataPageState extends State<GameDataPage> {
   Future<void> clearCache() async {
     await DefaultCacheManager().emptyCache();
     if (!kIsWeb) {
-      Directory(db2.paths.tempDir)
+      Directory(db.paths.tempDir)
         ..deleteSync(recursive: true)
         ..createSync(recursive: true);
     }

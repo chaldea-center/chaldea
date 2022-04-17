@@ -32,7 +32,7 @@ class AppNewsCarousel extends StatefulWidget {
       if (showToast) EasyLoading.showInfo(S.current.error_no_internet);
       return;
     }
-    final carouselSetting = db2.settings.carousel;
+    final carouselSetting = db.settings.carousel;
     carouselSetting.needUpdate = false;
     List<CarouselItem> _getImageLinks({
       required dom.Element? element,
@@ -178,7 +178,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   int _curCarouselIndex = 0;
   final CarouselController _carouselController = CarouselController();
 
-  CarouselSetting get carouselSetting => db2.settings.carousel;
+  CarouselSetting get carouselSetting => db.settings.carousel;
 
   @override
   void initState() {

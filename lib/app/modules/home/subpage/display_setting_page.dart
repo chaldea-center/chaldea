@@ -22,7 +22,7 @@ class DisplaySettingPage extends StatefulWidget {
 }
 
 class _DisplaySettingPageState extends State<DisplaySettingPage> {
-  CarouselSetting get carousel => db2.settings.carousel;
+  CarouselSetting get carousel => db.settings.carousel;
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +37,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               if (PlatformU.isMacOS || PlatformU.isWindows)
                 SwitchListTile.adaptive(
-                  value: db2.settings.alwaysOnTop,
+                  value: db.settings.alwaysOnTop,
                   title: Text(S.current.setting_always_on_top),
                   onChanged: (v) async {
-                    db2.settings.alwaysOnTop = v;
-                    db2.saveSettings();
+                    db.settings.alwaysOnTop = v;
+                    db.saveSettings();
                     MethodChannelChaldeaNext.setAlwaysOnTop(v);
                     setState(() {});
                   },
@@ -50,25 +50,25 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               // on Android, cannot detect phone or mobile
               if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)
                 SwitchListTile.adaptive(
-                  value: db2.settings.autoRotate,
+                  value: db.settings.autoRotate,
                   title: Text(S.current.setting_auto_rotate),
                   onChanged: (v) {
                     setState(() {
-                      db2.settings.autoRotate = v;
-                      db2.saveSettings();
+                      db.settings.autoRotate = v;
+                      db.saveSettings();
                     });
-                    db2.notifyAppUpdate();
+                    db.notifyAppUpdate();
                   },
                 ),
               SwitchListTile.adaptive(
-                value: db2.settings.display.showAccountAtHome,
+                value: db.settings.display.showAccountAtHome,
                 title: Text(S.current.setting_show_account_at_homepage),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.display.showAccountAtHome = v;
-                    db2.saveSettings();
+                    db.settings.display.showAccountAtHome = v;
+                    db.saveSettings();
                   });
-                  db2.notifyUserdata();
+                  db.notifyUserdata();
                 },
               ),
               ListTile(
@@ -86,11 +86,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 '/${S.current.command_code}',
             children: [
               SwitchListTile.adaptive(
-                value: db2.settings.autoResetFilter,
+                value: db.settings.autoResetFilter,
                 title: Text(S.current.auto_reset),
                 onChanged: (v) async {
-                  db2.settings.autoResetFilter = v;
-                  db2.saveSettings();
+                  db.settings.autoResetFilter = v;
+                  db.saveSettings();
                   setState(() {});
                 },
               ),
@@ -102,7 +102,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ListTile(
                 title: Text(S.current.svt_ascension_icon),
                 trailing: DropdownButton<int>(
-                  value: db2.userData.svtAscensionIcon,
+                  value: db.userData.svtAscensionIcon,
                   underline: const SizedBox(),
                   items: List.generate(
                     4,
@@ -113,7 +113,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   ),
                   onChanged: (v) {
                     if (v != null) {
-                      db2.userData.svtAscensionIcon = v;
+                      db.userData.svtAscensionIcon = v;
                     }
                     setState(() {});
                   },
@@ -127,11 +127,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               SwitchListTile.adaptive(
                 title: Text(S.current.setting_auto_turn_on_plan_not_reach),
                 subtitle: Text(S.current.setting_home_plan_list_page),
-                value: db2.settings.display.autoTurnOnPlanNotReach,
+                value: db.settings.display.autoTurnOnPlanNotReach,
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.display.autoTurnOnPlanNotReach = v;
-                    db2.saveSettings();
+                    db.settings.display.autoTurnOnPlanNotReach = v;
+                    db.saveSettings();
                   });
                 },
                 controlAffinity: ListTileControlAffinity.trailing,
@@ -153,11 +153,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               SwitchListTile.adaptive(
                 title: Text(S.current.setting_only_change_second_append_skill),
                 subtitle: Text(S.current.setting_home_plan_list_page),
-                value: db2.settings.display.onlyAppendSkillTwo,
+                value: db.settings.display.onlyAppendSkillTwo,
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.display.onlyAppendSkillTwo = v;
-                    db2.saveSettings();
+                    db.settings.display.onlyAppendSkillTwo = v;
+                    db.saveSettings();
                   });
                 },
               ),

@@ -58,7 +58,7 @@ class SearchUtil {
   }
 
   static String getSortAlphabet(String words, [Region? region]) {
-    region ??= db2.settings.resolvedPreferredRegions.first;
+    region ??= db.settings.resolvedPreferredRegions.first;
     switch (region) {
       case Region.jp:
         return getJP(words)!.toLowerCase();

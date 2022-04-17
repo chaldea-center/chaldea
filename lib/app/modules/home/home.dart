@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        db2.saveAll();
+        db.saveAll();
         if (PlatformU.isAndroid) {
           if (Navigator.of(context).canPop()) {
             return Future.value(true);
@@ -69,11 +69,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
-    if (db2.settings.showWindowFab &&
+    if (db.settings.showWindowFab &&
         !(rootRouter.appState.showSidebar && SplitRoute.isSplit(null))) {
       WindowManagerFab.createOverlay(router.navigatorKey.currentContext!);
     }
-    if (db2.settings.showDebugFab) {
+    if (db.settings.showDebugFab) {
       DebugFab.createOverlay(router.navigatorKey.currentContext!);
     }
   }

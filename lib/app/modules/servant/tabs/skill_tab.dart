@@ -13,7 +13,7 @@ class SvtSkillTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status = db2.curUser.svtStatusOf(svt.collectionNo).cur;
+    final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
     for (final skills in svt.groupedActiveSkills) {

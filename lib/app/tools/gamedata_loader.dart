@@ -25,14 +25,14 @@ class GameDataLoader {
   static Future<Response<T>> _dioGet<T>(String filename,
       {Options? options}) async {
     final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
-    if (!db2.settings.proxyDataSource) {
+    if (!db.settings.proxyDataSource) {
       return await Dio().get<T>(url, options: options);
     }
     try {
       return await Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 5000))
           .get<T>(url, options: options);
     } catch (e) {
-      if (db2.settings.proxyDataSource) {
+      if (db.settings.proxyDataSource) {
         // print('download data from CN: $cnUrl');
         return await Dio().get<T>(cnUrl, options: options);
       }
@@ -96,7 +96,7 @@ class GameDataLoader {
 
   Future<GameData> _loadJson(
       bool offline, ValueChanged<double>? onUpdate, bool updateOnly) async {
-    final _versionFile = FilePlus(joinPaths(db2.paths.gameDir, 'version.json'));
+    final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
     try {
@@ -120,7 +120,7 @@ class GameDataLoader {
       final String versionString = newVersion.appVersion.versionString;
       throw S.current.error_required_app_version(versionString);
     }
-    if (newVersion.timestamp < db2.gameData.version.timestamp) {
+    if (newVersion.timestamp < db.gameData.version.timestamp) {
       throw S.current.update_already_latest;
     }
 
@@ -128,7 +128,7 @@ class GameDataLoader {
     int finished = 0;
     Future<void> _downloadCheck(FileVersion fv,
         {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
-      final _file = FilePlus(joinPaths(db2.paths.gameDir, fv.filename));
+      final _file = FilePlus(joinPaths(db.paths.gameDir, fv.filename));
       Uint8List? bytes;
       String? _localHash;
       if (_file.existsSync()) {

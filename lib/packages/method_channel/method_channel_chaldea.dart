@@ -13,7 +13,7 @@ class MethodChannelChaldeaNext {
       if (call.method == 'onWindowPos') {
         if (call.arguments != null && call.arguments['pos'] != null) {
           // print('onWindowRect: args=${call.arguments}');
-          db2.settings.windowPosition = call.arguments['pos'];
+          db.settings.windowPosition = call.arguments['pos'];
           return;
         } else {
           print('onWindowRect invalid args=${call.arguments}');
@@ -35,7 +35,7 @@ class MethodChannelChaldeaNext {
   /// only available on macOS
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
-      onTop ??= db2.settings.alwaysOnTop;
+      onTop ??= db.settings.alwaysOnTop;
       return kMethodChannel.invokeMethod<bool?>(
         'alwaysOnTop',
         <String, dynamic>{
@@ -47,7 +47,7 @@ class MethodChannelChaldeaNext {
 
   static Future<void> setWindowPos([dynamic rect]) async {
     if (PlatformU.isWindows) {
-      rect ??= db2.settings.windowPosition;
+      rect ??= db.settings.windowPosition;
       print('rect ${rect.runtimeType}: $rect');
       if (rect != null &&
           rect is List &&

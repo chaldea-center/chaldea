@@ -44,7 +44,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromTexts(texts: [
               Transl.illustratorNames(svt.profile.illustrator).l,
               Transl.cvNames(svt.profile.cv).l,
-              Transl.enums(svt.gender, db2.gameData.mappingData.enums.gender).l,
+              Transl.enums(svt.gender, db.gameData.mappingData.enums.gender).l,
             ], defaults: contentData),
 
             CustomTableRow.fromTexts(texts: [
@@ -111,7 +111,7 @@ class SvtInfoTab extends StatelessWidget {
                   svt.atkGrowth.getOrNull(99),
                   svt.atkGrowth.getOrNull(109),
                 ],
-                db2.gameData.constData.classAttackRate[svt.className],
+                db.gameData.constData.classAttackRate[svt.className],
               ),
               _addAtkHpRow(context, 'HP', [
                 svt.hpBase,

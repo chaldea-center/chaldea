@@ -50,7 +50,7 @@ class CommandCode with GameCardMixin {
 
   String? get charaGraph => extraAssets.charaGraph.cc?[id];
 
-  CommandCodeExtra get extra => db2.gameData.wiki.commandCodes[collectionNo] ??=
+  CommandCodeExtra get extra => db.gameData.wiki.commandCodes[collectionNo] ??=
       CommandCodeExtra(collectionNo: collectionNo);
 
   String get route => Routes.commandCodeI(id);

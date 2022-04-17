@@ -175,10 +175,10 @@ class SharedBuilder {
       context: context,
       builder: (context) => SimpleDialog(
         title: Text(S.current.select_plan),
-        children: List.generate(db2.curUser.svtPlanGroups.length, (index) {
+        children: List.generate(db.curUser.svtPlanGroups.length, (index) {
           return ListTile(
-            title: Text(db2.curUser.getFriendlyPlanName(index)),
-            selected: index == db2.curUser.curSvtPlanNo,
+            title: Text(db.curUser.getFriendlyPlanName(index)),
+            selected: index == db.curUser.curSvtPlanNo,
             onTap: () {
               Navigator.of(context).pop();
               if (onChange != null) {
@@ -199,14 +199,14 @@ class SharedBuilder {
         FocusScope.of(context).unfocus();
         showSwitchPlanDialog(context: context, onChange: onChange);
       },
-      tooltip: '${S.current.plan_title} ${db2.curUser.curSvtPlanNo + 1}',
+      tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
       icon: Center(
         child: Stack(
           alignment: Alignment.bottomRight,
           children: [
             const Icon(Icons.list),
             ImageWithText.paintOutline(
-              text: (db2.curUser.curSvtPlanNo + 1).toString(),
+              text: (db.curUser.curSvtPlanNo + 1).toString(),
               shadowSize: 5,
               shadowColor: colorScheme.brightness == Brightness.light
                   ? colorScheme.primary
@@ -219,11 +219,11 @@ class SharedBuilder {
   }
 
   static Widget priorityIcon({required BuildContext context}) {
-    return db2.onUserData(
+    return db.onUserData(
       (context, _) => IconButton(
         icon: Icon(
           Icons.low_priority,
-          color: db2.settings.svtFilterData.priority.isEmpty([1, 2, 3, 4, 5])
+          color: db.settings.svtFilterData.priority.isEmpty([1, 2, 3, 4, 5])
               ? null
               : Colors.yellowAccent,
         ),

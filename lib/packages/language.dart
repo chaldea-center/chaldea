@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/db.dart' show db2;
+import '../models/db.dart' show db;
 import '../utils/extension.dart';
 
 class Language {
@@ -74,7 +74,7 @@ class Language {
 
   static bool get isKO => current == ko;
 
-  static Language get current => getLanguage(db2.settings.language) ?? en;
+  static Language get current => getLanguage(db.settings.language) ?? en;
 
   @override
   String toString() {

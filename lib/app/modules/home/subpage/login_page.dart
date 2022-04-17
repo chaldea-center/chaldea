@@ -31,11 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(
-        text: db2.security.get('chaldea_user')?.toString())
-      ..addListener(() {
-        setState(() {});
-      });
+    _nameController =
+        TextEditingController(text: db.security.get('chaldea_user')?.toString())
+          ..addListener(() {
+            setState(() {});
+          });
     _pwdController = TextEditingController()
       ..addListener(() {
         setState(() {});
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           if (kDebugMode)
             ListTile(
               title: Center(
-                child: Text('Server: ${db2.apiWorkerDio.options.baseUrl}'),
+                child: Text('Server: ${db.apiWorkerDio.options.baseUrl}'),
               ),
             ),
         ],
@@ -422,8 +422,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void doLogout() {
-    db2.security.delete('chaldea_user');
-    db2.security.delete('chaldea_auth');
+    db.security.delete('chaldea_user');
+    db.security.delete('chaldea_auth');
     _nameController.text = '';
     _pwdController.text = '';
     _newPwdController.text = '';
@@ -503,10 +503,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _saveUserInfo(String name, String? auth) {
-    db2.security.put('chaldea_user', name);
+    db.security.put('chaldea_user', name);
     if (auth != null) {
-      db2.security.put('chaldea_auth', auth);
+      db.security.put('chaldea_auth', auth);
     }
-    db2.notifySettings();
+    db.notifySettings();
   }
 }

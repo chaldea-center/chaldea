@@ -42,7 +42,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     final lightTheme = _getThemeData(dark: false);
     final darkTheme = _getThemeData(dark: true);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: db2.settings.isResolvedDarkMode
+      value: db.settings.isResolvedDarkMode
           ? SystemUiOverlayStyle.dark.copyWith(
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
@@ -56,7 +56,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
               // systemNavigationBarIconBrightness: Brightness.dark,
             ),
       child: Screenshot(
-        controller: db2.runtimeData.screenshotController,
+        controller: db.runtimeData.screenshotController,
         child: MaterialApp.router(
           title: kAppName,
           routeInformationParser: routeInformationParser,
@@ -65,15 +65,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           debugShowCheckedModeBanner: false,
           theme: lightTheme,
           darkTheme: darkTheme,
-          themeMode: db2.settings.themeMode,
+          themeMode: db.settings.themeMode,
           scrollBehavior: DraggableScrollBehavior(),
-          locale: Language.getLanguage(db2.settings.language)?.locale,
+          locale: Language.getLanguage(db.settings.language)?.locale,
           localizationsDelegates: const [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates
           ],
           supportedLocales:
-              Language.getSortedSupportedLanguage(db2.settings.language)
+              Language.getSortedSupportedLanguage(db.settings.language)
                   .map((e) => e.locale),
           builder: (context, widget) {
             ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
@@ -108,8 +108,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void initState() {
     debugPrint('initiate $runtimeType');
     super.initState();
-    db2.notifyAppUpdate = onAppUpdate;
-    if (db2.settings.language != null) {
+    db.notifyAppUpdate = onAppUpdate;
+    if (db.settings.language != null) {
       Intl.defaultLocale = Language.current.code;
     }
 
@@ -119,7 +119,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         // Actions when app is resumed
         network.check();
       } else if (msg == AppLifecycleState.inactive.toString()) {
-        db2.saveAll();
+        db.saveAll();
         debugPrint('save userdata before being inactive');
       }
       return null;
@@ -136,17 +136,16 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     if (PlatformU.isWindows) {
       MethodChannelChaldeaNext.setWindowPos();
     }
-    if (DateTime.now().millisecondsSinceEpoch ~/ 1000 -
-            db2.settings.lastBackup >
+    if (DateTime.now().millisecondsSinceEpoch ~/ 1000 - db.settings.lastBackup >
         24 * 3600) {
-      db2.backupUserdata();
+      db.backupUserdata();
     }
   }
 
   void setOnWindowClose() {
     if (!PlatformU.isDesktop) return;
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
-      await db2.saveAll();
+      await db.saveAll();
       await Future.delayed(const Duration(milliseconds: 200));
       return true;
     });

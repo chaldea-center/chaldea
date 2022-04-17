@@ -36,7 +36,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   @override
   void initState() {
     super.initState();
-    _region = db2.curUser.region;
+    _region = db.curUser.region;
     _resolveMissions(_region);
   }
 

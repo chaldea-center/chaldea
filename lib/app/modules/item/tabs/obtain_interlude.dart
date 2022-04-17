@@ -42,12 +42,12 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
         ],
       ),
     ];
-    final sortedServants = sortSvts(db2.gameData.servants.values.toList());
+    final sortedServants = sortSvts(db.gameData.servants.values.toList());
     for (final svt in sortedServants) {
-      bool svtFavorite = db2.curUser.svtStatusOf(svt.collectionNo).favorite;
+      bool svtFavorite = db.curUser.svtStatusOf(svt.collectionNo).favorite;
       if (_favorite && !svtFavorite) continue;
       for (final questId in svt.relateQuestIds) {
-        final quest = db2.gameData.quests[questId];
+        final quest = db.gameData.quests[questId];
         if (quest == null) continue;
         int itemCount = 0;
         for (final gift in quest.gifts) {
@@ -56,7 +56,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           }
         }
         for (int phase in quest.phases) {
-          itemCount += db2.gameData.fixedDrops[questId * 100 + phase]
+          itemCount += db.gameData.fixedDrops[questId * 100 + phase]
                   ?.items[widget.itemId] ??
               0;
         }
@@ -113,7 +113,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
   List<Servant> sortSvts(List<Servant> svts) {
     List<SvtCompare> sortKeys;
     List<bool> sortReversed;
-    switch (db2.settings.display.itemDetailSvtSort) {
+    switch (db.settings.display.itemDetailSvtSort) {
       case ItemDetailSvtSort.collectionNo:
         sortKeys = [SvtCompare.no];
         sortReversed = [true];

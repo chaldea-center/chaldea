@@ -68,26 +68,25 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               ListTile(
                 title: Text(S.current.cur_account),
-                trailing: _wrapArrowTrailing(db2
-                    .onUserData((context, snapshot) => Text(db2.curUser.name))),
+                trailing: _wrapArrowTrailing(db
+                    .onUserData((context, snapshot) => Text(db.curUser.name))),
                 onTap: () {
                   router.push(child: AccountPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.game_server),
-                trailing: _wrapArrowTrailing(db2.onUserData(
+                trailing: _wrapArrowTrailing(db.onUserData(
                     (context, snapshot) =>
-                        Text(db2.curUser.region.name.toUpperCase()))),
+                        Text(db.curUser.region.name.toUpperCase()))),
                 onTap: () {
                   router.push(child: GameServerPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.preferred_translation),
-                trailing: db2.onSettings((context, _) => _wrapArrowTrailing(
-                    Text(db2.settings.resolvedPreferredRegions.first
-                        .toUpper()))),
+                trailing: db.onSettings((context, _) => _wrapArrowTrailing(Text(
+                    db.settings.resolvedPreferredRegions.first.toUpper()))),
                 onTap: () {
                   router.push(child: TranslationSetting());
                 },
@@ -120,9 +119,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: Text(S.current.gamedata),
-                trailing: db2
+                trailing: db
                     .onUserData((context, snapshot) => _wrapArrowTrailing(Text(
-                          db2.gameData.version.text(true),
+                          db.gameData.version.text(true),
                           textAlign: TextAlign.end,
                         ))),
                 onTap: () {
@@ -138,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.settings_language),
                 subtitle:
                     Language.isEN ? const Text('语言') : const Text('Language'),
-                trailing: db2.onSettings(
+                trailing: db.onSettings(
                   (context, snapshot) => DropdownButton<Language>(
                     underline:
                         const Divider(thickness: 0, color: Colors.transparent),
@@ -150,19 +149,19 @@ class _SettingsPageState extends State<SettingsPage> {
                         .toList(),
                     onChanged: (lang) {
                       if (lang == null) return;
-                      db2.settings.setLanguage(lang);
-                      db2.saveSettings();
-                      db2.notifyAppUpdate();
-                      db2.notifySettings();
+                      db.settings.setLanguage(lang);
+                      db.saveSettings();
+                      db.notifyAppUpdate();
+                      db.notifySettings();
                     },
                   ),
                 ),
               ),
               ListTile(
                 title: Text(S.current.dark_mode),
-                trailing: db2.onSettings(
+                trailing: db.onSettings(
                   (context, snapshot) => DropdownButton<ThemeMode>(
-                    value: db2.settings.themeMode,
+                    value: db.settings.themeMode,
                     underline: Container(),
                     items: [
                       DropdownMenuItem(
@@ -177,10 +176,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                     onChanged: (v) {
                       if (v != null) {
-                        db2.settings.themeMode = v;
-                        db2.saveSettings();
-                        db2.notifySettings();
-                        db2.notifyAppUpdate();
+                        db.settings.themeMode = v;
+                        db.saveSettings();
+                        db.notifySettings();
+                        db.notifyAppUpdate();
                       }
                     },
                   ),
@@ -203,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.web_renderer),
                   subtitle: Text(S.current.restart_to_take_effect),
                   trailing: DropdownButton<WebRenderMode>(
-                    value: db2.runtimeData.webRendererCanvasKit ??
+                    value: db.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit
                             ? WebRenderMode.canvaskit
                             : WebRenderMode.html),
@@ -219,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       if (v != null) {
                         kPlatformMethods.setLocalStorage(
                             'flutterWebRenderer', v.name);
-                        db2.runtimeData.webRendererCanvasKit = v;
+                        db.runtimeData.webRendererCanvasKit = v;
                         setState(() {});
                       }
                     },
@@ -233,10 +232,10 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(MaterialLocalizations.of(context)
                     .aboutListTileTitle(AppInfo.appName)),
-                trailing: db2.runtimeData.upgradableVersion == null
+                trailing: db.runtimeData.upgradableVersion == null
                     ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
                     : Text(
-                        db2.runtimeData.upgradableVersion!.versionString + ' ↑',
+                        db.runtimeData.upgradableVersion!.versionString + ' ↑',
                       ),
                 onTap: () => SplitRoute.push(
                   context,
@@ -257,7 +256,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(S.current.bootstrap_page_title),
                 onTap: () {
-                  db2.settings.tips.starter = true;
+                  db.settings.tips.starter = true;
                   rootRouter.appState.dataReady = false;
                 },
               ),
@@ -270,7 +269,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       joinUrl(kProjectDocRoot, (Language.isZH ? '/zh/' : '/')));
                 },
               ),
-              if (!PlatformU.isApple || db2.settings.launchTimes > 5)
+              if (!PlatformU.isApple || db.settings.launchTimes > 5)
                 ListTile(
                   title: Text(S.current.support_chaldea),
                   trailing: const Icon(Icons.favorite),
@@ -305,7 +304,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          if (db2.runtimeData.enableDebugTools)
+          if (db.runtimeData.enableDebugTools)
             SliverTileGroup(
               header: S.current.debug,
               children: <Widget>[
@@ -328,12 +327,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 SwitchListTile.adaptive(
-                  value: db2.settings.showDebugFab,
+                  value: db.settings.showDebugFab,
                   title: Text(S.current.debug_fab),
                   onChanged: (v) {
                     setState(() {
-                      db2.settings.showDebugFab = v;
-                      db2.saveSettings();
+                      db.settings.showDebugFab = v;
+                      db.saveSettings();
                     });
                     if (v) {
                       DebugFab.createOverlay(context);
@@ -346,14 +345,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.master_detail_width),
                   trailing: DropdownButtonHideUnderline(
                     child: DropdownButton<double>(
-                      value: db2.runtimeData.criticalWidth ?? 768,
+                      value: db.runtimeData.criticalWidth ?? 768,
                       items: const <DropdownMenuItem<double>>[
                         DropdownMenuItem(value: 768, child: Text('768')),
                         DropdownMenuItem(value: 600, child: Text('600'))
                       ],
                       onChanged: (v) {
-                        db2.runtimeData.criticalWidth = v;
-                        db2.notifyAppUpdate();
+                        db.runtimeData.criticalWidth = v;
+                        db.notifyAppUpdate();
                       },
                     ),
                   ),
@@ -380,8 +379,8 @@ class _SettingsPageState extends State<SettingsPage> {
       leading: const Icon(Icons.person),
       horizontalTitleGap: 0,
       title: Text(S.current.login_username),
-      trailing: db2.onSettings(
-          (context, snapshot) => Text(db2.security.get('chaldea_user') ?? '')),
+      trailing: db.onSettings(
+          (context, snapshot) => Text(db.security.get('chaldea_user') ?? '')),
       onTap: () {
         router.push(child: LoginPage());
       },

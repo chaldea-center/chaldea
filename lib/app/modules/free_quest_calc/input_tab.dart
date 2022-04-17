@@ -25,7 +25,7 @@ class DropCalcInputTab extends StatefulWidget {
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
   late ScrollController _scrollController;
 
-  FreeLPParams get params => db2.curUser.freeLPParams;
+  FreeLPParams get params => db.curUser.freeLPParams;
 
   // category - itemKey
   final FreeLPSolver solver = FreeLPSolver();
@@ -115,7 +115,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       itemCount: params.rows.length,
       itemBuilder: (context, index) {
         final itemId = params.rows[index];
-        final item = db2.gameData.items[itemId];
+        final item = db.gameData.items[itemId];
         Widget leading = GestureDetector(
           onTap: () {
             if (item != null) {
@@ -124,7 +124,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: db2.getIconImage(
+            child: db.getIconImage(
               itemId == Items.bondPointId
                   ? Items.lantern.icon
                   : itemId == Items.expPointId
@@ -343,7 +343,7 @@ class _ItemSelectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<int, List<Item>> groupedItems = {};
-    for (final item in db2.gameData.items.values) {
+    for (final item in db.gameData.items.values) {
       final key = item.skillUpItemType.index * 10 + item.background.index;
       groupedItems.putIfAbsent(key, () => []).add(item);
     }
@@ -460,7 +460,7 @@ class _ItemSelectPage extends StatelessWidget {
 
 String _getItemName(int itemId, [Item? item]) {
   return item?.lName.l ??
-      db2.gameData.items[itemId]?.lName.l ??
+      db.gameData.items[itemId]?.lName.l ??
       (itemId == Items.bondPointId
           ? S.current.bond
           : itemId == Items.expPointId

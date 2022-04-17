@@ -24,9 +24,9 @@ class CraftListPage extends StatefulWidget {
 class CraftListPageState extends State<CraftListPage>
     with SearchableListState<CraftEssence, CraftListPage> {
   @override
-  Iterable<CraftEssence> get wholeData => db2.gameData.craftEssences.values;
+  Iterable<CraftEssence> get wholeData => db.gameData.craftEssences.values;
 
-  CraftFilterData get filterData => db2.settings.craftFilterData;
+  CraftFilterData get filterData => db.settings.craftFilterData;
 
   @override
   final bool prototypeExtent = true;
@@ -34,7 +34,7 @@ class CraftListPageState extends State<CraftListPage>
   @override
   void initState() {
     super.initState();
-    if (db2.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter) {
       filterData.reset();
     }
     options = _CraftSearchOptions(onChanged: (_) {
@@ -89,7 +89,7 @@ class CraftListPageState extends State<CraftListPage>
         break;
     }
     return CustomTile(
-      leading: db2.getIconImage(
+      leading: db.getIconImage(
         ce.borderedIcon,
         width: 56,
         aspectRatio: 132 / 144,
@@ -116,7 +116,7 @@ class CraftListPageState extends State<CraftListPage>
   @override
   Widget gridItemBuilder(CraftEssence ce) {
     return GestureDetector(
-      child: db2.getIconImage(ce.borderedIcon),
+      child: db.getIconImage(ce.borderedIcon),
       onTap: () => _onTapCard(ce),
     );
   }
@@ -133,7 +133,7 @@ class CraftListPageState extends State<CraftListPage>
       return false;
     }
     if (!filterData.status.matchOne(
-        db2.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet)) {
+        db.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet)) {
       return false;
     }
     //

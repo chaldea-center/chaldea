@@ -29,7 +29,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     super.initState();
     region = widget.region;
     _quest = widget.quest ??
-        (region == Region.jp ? db2.gameData.quests[widget.id] : null);
+        (region == Region.jp ? db.gameData.quests[widget.id] : null);
     questId = _quest?.id ?? widget.id;
     _resolveQuest();
   }

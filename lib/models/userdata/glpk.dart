@@ -99,7 +99,7 @@ class FreeLPParams {
         planItemCounts = Map.of(other.planItemCounts),
         planItemWeights = Map.of(other.planItemWeights);
 
-  DropRateSheet get sheet => db2.gameData.dropRate.getSheet(use6th);
+  DropRateSheet get sheet => db.gameData.dropRate.getSheet(use6th);
 
   void validate() {
     rows.removeWhere((e) => !sheet.itemIds.contains(e));
@@ -107,7 +107,7 @@ class FreeLPParams {
 
   void sortByItem() {
     // rows
-    rows.sort2((id) => db2.gameData.items[id]?.priority ?? id);
+    rows.sort2((id) => db.gameData.items[id]?.priority ?? id);
   }
 
   void removeAt(int index) {

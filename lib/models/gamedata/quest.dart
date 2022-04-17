@@ -141,7 +141,7 @@ class Quest {
       warId < 1000;
 
   bool get isDomusQuest =>
-      isMainStoryFree || db2.gameData.dropRate.newData.questIds.contains(id);
+      isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
 
   // exclude challenge quest, raid
   bool get isAnyFree =>
@@ -270,7 +270,7 @@ class Gift {
   }
 
   Item? toItem() {
-    if (type == GiftType.item) return db2.gameData.items[objectId];
+    if (type == GiftType.item) return db.gameData.items[objectId];
     return null;
   }
 

@@ -25,7 +25,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   @override
   Widget build(BuildContext context) {
-    return db2.onUserData((context, _) {
+    return db.onUserData((context, _) {
       List<Widget> children = [
         _limitEventAccordion,
         _ticketAccordion,
@@ -58,14 +58,14 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   Widget get _limitEventAccordion {
     List<Widget> children = [];
-    final limitEvents = db2.gameData.events.values
+    final limitEvents = db.gameData.events.values
         .where((event) => _whetherToShow(
-            db2.curUser.eventPlanOf(event.id).enabled, event.isOutdated()))
+            db.curUser.eventPlanOf(event.id).enabled, event.isOutdated()))
         .toList();
     limitEvents.sort2((e) => e.startedAt);
     int count = 0;
     for (final event in limitEvents) {
-      final plan = db2.curUser.eventPlanOf(event.id);
+      final plan = db.curUser.eventPlanOf(event.id);
       List<Widget> texts = [];
       int itemFixed = event.statItemFixed[widget.itemId] ?? 0;
       bool hasExtra = event.statItemExtra.contains(widget.itemId);
@@ -77,8 +77,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       if (!_whetherToShow(plan.enabled, event.isOutdated())) {
         continue;
       }
-      int itemGot =
-          db2.itemCenter.calcOneEvent(event, plan)[widget.itemId] ?? 0;
+      int itemGot = db.itemCenter.calcOneEvent(event, plan)[widget.itemId] ?? 0;
       texts.add(Text(
           '$itemGot/$itemFixed' + (hasLottery || hasExtra ? '+' : ''),
           style: const TextStyle(fontWeight: FontWeight.w500)));
@@ -126,7 +125,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   Widget get _ticketAccordion {
     List<Widget> children = [];
-    final exchangeTickets = db2.gameData.exchangeTickets.values.toList();
+    final exchangeTickets = db.gameData.exchangeTickets.values.toList();
     exchangeTickets.sort2((a) => a.id);
     int count = 0;
     for (final ticket in exchangeTickets) {
@@ -135,7 +134,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
 
-      final plan = db2.curUser.ticketOf(ticket.id);
+      final plan = db.curUser.ticketOf(ticket.id);
       if (!_whetherToShow(plan.enabled, ticket.isOutdated())) {
         continue;
       }
@@ -174,7 +173,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
   Widget get _mainRecordAccordion {
     List<Widget> children = [];
-    final mainRecords = db2.gameData.mainStories.values.toList();
+    final mainRecords = db.gameData.mainStories.values.toList();
     mainRecords.sort2((e) => e.id);
     int count = 0;
     for (final record in mainRecords) {
@@ -183,7 +182,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       if (dropCount <= 0 && rewardCount <= 0) {
         continue;
       }
-      final plan = db2.curUser.mainStoryOf(record.id);
+      final plan = db.curUser.mainStoryOf(record.id);
       if (!_whetherToShow(plan.enabled, record.isOutdated())) {
         continue;
       }

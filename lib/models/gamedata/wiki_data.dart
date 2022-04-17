@@ -201,7 +201,7 @@ class ExchangeTicket {
       _$ExchangeTicketFromJson(json);
 
   int get monthDiff {
-    switch (db2.curUser.region) {
+    switch (db.curUser.region) {
       case Region.jp:
         return 0;
       case Region.cn:
@@ -332,15 +332,15 @@ class LimitedSummon {
   }
 
   bool isOutdated() {
-    final date = startTime.ofRegion(db2.curUser.region)?.sec2date();
+    final date = startTime.ofRegion(db.curUser.region)?.sec2date();
     int days;
     if (date != null) {
-      days = db2.curUser.region == Region.jp ? 365 : 30;
+      days = db.curUser.region == Region.jp ? 365 : 30;
       return date.isBefore(DateTime.now().subtract(Duration(days: days)));
     }
     final jpDate = startTime.jp?.sec2date();
     if (jpDate == null) return false;
-    switch (db2.curUser.region) {
+    switch (db.curUser.region) {
       case Region.jp:
         days = 300;
         break;

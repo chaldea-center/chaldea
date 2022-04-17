@@ -38,7 +38,7 @@ class _SplashPageState extends State<SplashPage> with AfterLayoutMixin {
     );
     await Future.delayed(Duration.zero);
     _prepareGameData();
-    if (db2.settings.tips.starter) {
+    if (db.settings.tips.starter) {
       await SplitRoute.push(context, const StarterGuidancePage(), detail: null);
     }
   }

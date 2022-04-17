@@ -17,7 +17,7 @@ class SvtQuestTab extends StatelessWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         final questId = svt.relateQuestIds[index];
-        final quest = db2.gameData.quests[questId];
+        final quest = db.gameData.quests[questId];
         return ListTile(
           title: Text(quest?.lName.l ?? 'Quest $questId'),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

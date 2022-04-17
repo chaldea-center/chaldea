@@ -10,7 +10,7 @@ class ExtraMissionTab extends StatefulWidget {
 }
 
 class _ExtraMissionTabState extends State<ExtraMissionTab> {
-  SaintQuartzPlan get plan => db2.curUser.saintQuartzPlan;
+  SaintQuartzPlan get plan => db.curUser.saintQuartzPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
           ),
         ];
         mission.gifts.forEach((gift) {
-          final item = db2.gameData.items[gift.objectId];
+          final item = db.gameData.items[gift.objectId];
           if (item != null) {
             rewards.add(Row(
               mainAxisSize: MainAxisSize.min,

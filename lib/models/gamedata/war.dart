@@ -69,7 +69,7 @@ class NiceWar {
 
   Transl<String, String> get lLongName => Transl.warNames(longName);
 
-  Event? get event => db2.gameData.events[eventId];
+  Event? get event => db.gameData.events[eventId];
 
   String get route => Routes.warI(id);
 
@@ -78,7 +78,7 @@ class NiceWar {
   List<Quest> get quests => [for (final spot in spots) ...spot.quests];
 
   WarExtra get extra =>
-      db2.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
+      db.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
 
   @JsonKey(ignore: true)
   Map<int, int> itemReward = {};

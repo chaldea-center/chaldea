@@ -64,7 +64,7 @@ class MCAssets {
     required this.female,
   });
 
-  String get masterGender => db2.curUser.isGirl ? female : male;
+  String get masterGender => db.curUser.isGirl ? female : male;
 
   factory MCAssets.fromJson(Map<String, dynamic> json) =>
       _$MCAssetsFromJson(json);

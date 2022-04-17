@@ -9,7 +9,7 @@ import 'extra_mission_tab.dart';
 import 'setting_tab.dart';
 import 'table_tab.dart';
 
-SaintQuartzPlan get _plan => db2.curUser.saintQuartzPlan;
+SaintQuartzPlan get _plan => db.curUser.saintQuartzPlan;
 
 class SaintQuartzPlanning extends StatefulWidget {
   SaintQuartzPlanning({Key? key}) : super(key: key);
@@ -27,18 +27,18 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     // not ideal
-    db2.curUser.saintQuartzPlan.onSolved = () {
+    db.curUser.saintQuartzPlan.onSolved = () {
       if (mounted) setState(() {});
     };
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging &&
           _tabController.index == _tabController.length - 1) {
-        db2.curUser.saintQuartzPlan.solve();
+        db.curUser.saintQuartzPlan.solve();
       }
     });
     AtlasApi.masterMission(10001).then((value) {
-      db2.curUser.saintQuartzPlan.extraMission = value;
-      db2.curUser.saintQuartzPlan.solve();
+      db.curUser.saintQuartzPlan.extraMission = value;
+      db.curUser.saintQuartzPlan.solve();
       if (mounted) setState(() {});
     });
   }

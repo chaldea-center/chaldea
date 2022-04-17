@@ -186,7 +186,7 @@ class _Database {
       _saved.add(filename);
     }
     if (_saved.isNotEmpty) {
-      db2.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      db.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     }
     return _saved;
   }
@@ -267,4 +267,4 @@ class _Database {
       ));
 }
 
-final db2 = _Database();
+final db = _Database();

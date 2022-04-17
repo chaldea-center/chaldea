@@ -21,17 +21,17 @@ class SummonUtil {
       childBuilder: (id) {
         Widget child;
         if (block.isSvt) {
-          final svt = db2.gameData.servants[id];
+          final svt = db.gameData.servants[id];
           if (svt == null) return Text('No.$id');
           child = svtAvatar(
             context: context,
             card: svt,
             weight: showProb ? block.weight / block.ids.length : null,
             star: showStar && block.ids.length == 1,
-            favorite: showFavorite && db2.curUser.svtStatusOf(id).favorite,
+            favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
           );
         } else {
-          final ce = db2.gameData.craftEssences[id];
+          final ce = db.gameData.craftEssences[id];
           if (ce == null) return Text('No.$id');
           child = buildCard(
             context: context,
@@ -161,7 +161,7 @@ class SummonUtil {
         card.routeTo();
       },
       child: ImageWithText(
-        image: db2.getIconImage(card.borderedIcon, aspectRatio: 132 / 144),
+        image: db.getIconImage(card.borderedIcon, aspectRatio: 132 / 144),
         text: texts.join('\n'),
         width: 56,
         textAlign: TextAlign.right,
@@ -187,7 +187,7 @@ class SummonUtil {
     List<String> names =
         castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
     return names.map((e) {
-      String name2 = db2.gameData.servants.values
+      String name2 = db.gameData.servants.values
               .firstWhereOrNull((svt) =>
                   castBracket(svt.extra.mcLink) == e ||
                   castBracket(svt.lName.cn) == e)
@@ -199,7 +199,7 @@ class SummonUtil {
               .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
         List<String> fragments = e.split('(');
         fragments[0] = fragments[0].trim();
-        fragments[0] = db2.gameData.servants.values
+        fragments[0] = db.gameData.servants.values
                 .firstWhereOrNull((svt) =>
                     castBracket(svt.extra.mcLink) == fragments[0] ||
                     castBracket(svt.lName.cn) == fragments[0] ||

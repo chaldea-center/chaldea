@@ -44,19 +44,19 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   @override
   Widget build(BuildContext context) {
     if (widget.id != null) {
-      final ticket = db2.gameData.exchangeTickets[widget.id];
+      final ticket = db.gameData.exchangeTickets[widget.id];
       if (ticket == null) {
         return ListTile(title: Text('${widget.id} NOT FOUND'));
       }
-      return db2.onUserData((context, _) => buildOneMonth(ticket));
+      return db.onUserData((context, _) => buildOneMonth(ticket));
     }
-    final tickets = db2.gameData.exchangeTickets.values.toList();
+    final tickets = db.gameData.exchangeTickets.values.toList();
 
-    return db2.onUserData((context, _) {
+    return db.onUserData((context, _) {
       if (!widget.showOutdated) {
         tickets.removeWhere((ticket) {
           if (!ticket.isOutdated()) return false;
-          final plan = db2.curUser.ticketOf(ticket.id);
+          final plan = db.curUser.ticketOf(ticket.id);
           if (plan.enabled) return false;
           return true;
         });
@@ -78,7 +78,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         child: Padding(
           padding: const EdgeInsets.all(6),
           child: Text(
-            '${S.current.game_server}: ${db2.curUser.region.toUpper()}',
+            '${S.current.game_server}: ${db.curUser.region.toUpper()}',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption,
           ),
@@ -88,7 +88,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {
-    bool planned = db2.curUser.ticketOf(ticket.id).enabled;
+    bool planned = db.curUser.ticketOf(ticket.id).enabled;
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
@@ -113,7 +113,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
             ),
             subtitle: AutoSizeText(
-              db2.curUser.region == Region.jp
+              db.curUser.region == Region.jp
                   ? 'max: ${ticket.days}'
                   : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
               maxLines: 2,
@@ -140,12 +140,12 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTrailing(ExchangeTicket ticket) {
-    final monthPlan = db2.curUser.ticketOf(ticket.id);
+    final monthPlan = db.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
     for (int i = 0; i < 3; i++) {
       final itemId = ticket.items[i];
-      final item = db2.gameData.items[itemId];
-      int leftNum = db2.itemCenter.itemLeft[itemId] ?? 0;
+      final item = db.gameData.items[itemId];
+      int leftNum = db.itemCenter.itemLeft[itemId] ?? 0;
       monthPlan.counts[i] = monthPlan.counts[i].clamp2(0, ticket.days);
       final int maxValue =
           ticket.days - Maths.sum(monthPlan.counts.getRange(0, i));
@@ -156,7 +156,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             onTap: () {
               router.push(url: Routes.itemI(itemId), detail: true);
             },
-            child: db2.getIconImage(Item.getIcon(itemId), width: 42),
+            child: db.getIconImage(Item.getIcon(itemId), width: 42),
           ),
           SizedBox(
             width: 36,
@@ -208,7 +208,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                               Maths.sum(monthPlan.counts.getRange(0, j)));
                       monthPlan.counts[j] = v;
                     }
-                    db2.itemCenter.updateExchangeTickets();
+                    db.itemCenter.updateExchangeTickets();
                   },
                 ).showDialog(context);
               },

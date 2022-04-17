@@ -584,7 +584,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
-  EventExtra get extra => db2.gameData.wiki.events
+  EventExtra get extra => db.gameData.wiki.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
 
   bool get isEmpty =>
@@ -599,13 +599,13 @@ class Event {
       extra.extraItems.isEmpty;
 
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
-    if (db2.curUser.region == Region.jp) {
+    if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) >
           const Duration(days: 31 * 12);
     }
-    final t = db2.curUser.region == Region.jp
+    final t = db.curUser.region == Region.jp
         ? endedAt
-        : extra.endTime.ofRegion(db2.curUser.region);
+        : extra.endTime.ofRegion(db.curUser.region);
     return t != null && t.sec2date().isBefore(DateTime.now().subtract(diff));
   }
 
@@ -648,7 +648,7 @@ class Event {
   Set<int> statItemExtra = {}; // treasureBox, extraItems
 
   void updateStat() {
-    db2.itemCenter.updateEvents(events: [this]);
+    db.itemCenter.updateEvents(events: [this]);
   }
 
   void calcItems(GameData gameData) {

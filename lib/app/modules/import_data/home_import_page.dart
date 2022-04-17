@@ -31,7 +31,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
         children: divideTiles([
           ListTile(
             title: Center(
-                child: Text(S.current.cur_account + ': ' + db2.curUser.name)),
+                child: Text(S.current.cur_account + ': ' + db.curUser.name)),
             onTap: () {
               SplitRoute.push(context, AccountPage(), popDetail: true)
                   .then((_) {

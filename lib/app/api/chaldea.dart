@@ -63,7 +63,7 @@ class ChaldeaResponse {
   }) async {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-      var resp = ChaldeaResponse(await caller(db2.apiWorkerDio));
+      var resp = ChaldeaResponse(await caller(db.apiWorkerDio));
       if (resp.success) {
         onSuccess?.call(resp);
         if (showSuccess) {

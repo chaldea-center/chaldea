@@ -148,8 +148,8 @@ class SaintQuartzPlan {
       if (event != null) detail.events.add(event);
     }
 
-    db2.gameData.events.values.forEach((e) => _checkEvent(event: e));
-    db2.gameData.mainStories.values.forEach((e) => _checkEvent(
+    db.gameData.events.values.forEach((e) => _checkEvent(event: e));
+    db.gameData.mainStories.values.forEach((e) => _checkEvent(
           name: e.lLongName.l,
           items: {...e.itemDrop, ...e.itemReward},
           // startDate: e.extra.
@@ -170,7 +170,7 @@ class SaintQuartzPlan {
       name: 'Extra Mission',
     );
 
-    db2.gameData.wiki.summons.values.forEach((summon) {
+    db.gameData.wiki.summons.values.forEach((summon) {
       DateTime? startDate = summon.startTime.jp?.sec2date();
       if (startDate == null) return;
       startDate = DateUtils.dateOnly(

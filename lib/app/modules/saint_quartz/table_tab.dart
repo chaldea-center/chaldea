@@ -22,7 +22,7 @@ const double _summonHeight = 36;
 class _SQTableTabState extends State<SQTableTab> {
   late ScrollControllers _scrollControllers;
 
-  SaintQuartzPlan get plan => db2.curUser.saintQuartzPlan;
+  SaintQuartzPlan get plan => db.curUser.saintQuartzPlan;
 
   final _tableKey = UniqueKey();
 
@@ -151,7 +151,7 @@ class _SQTableTabState extends State<SQTableTab> {
                       for (final svt in summon.shownSvts)
                         WidgetSpan(
                             child: GameCardMixin.cardIconBuilder(
-                          icon: db2.gameData.servants[svt]?.borderedIcon,
+                          icon: db.gameData.servants[svt]?.borderedIcon,
                           context: context,
                           height: _summonHeight,
                         )),

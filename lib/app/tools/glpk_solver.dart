@@ -82,10 +82,10 @@ class FreeLPSolver {
     final data = params.sheet.copy();
     data.itemIds.addAll([Items.bondPointId, Items.expPointId]);
     data.matrix.add(data.questIds
-        .map((e) => db2.gameData.getQuestPhase(e)?.bond.toDouble() ?? 0.0)
+        .map((e) => db.gameData.getQuestPhase(e)?.bond.toDouble() ?? 0.0)
         .toList());
     data.matrix.add(data.questIds
-        .map((e) => db2.gameData.getQuestPhase(e)?.exp.toDouble() ?? 0.0)
+        .map((e) => db.gameData.getQuestPhase(e)?.exp.toDouble() ?? 0.0)
         .toList());
     _preProcess(data: data, params: params);
     if (params.rows.isEmpty) {

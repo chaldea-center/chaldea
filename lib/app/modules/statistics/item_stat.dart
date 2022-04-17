@@ -42,7 +42,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
 
   @override
   Widget build(BuildContext context) {
-    return db2.onUserData(
+    return db.onUserData(
       (context, _) => Scaffold(
         appBar: AppBar(
           title: Text(S.current.statistics_title),
@@ -50,8 +50,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
             SharedBuilder.buildSwitchPlanButton(
               context: context,
               onChange: (index) {
-                db2.curUser.curSvtPlanNo = index;
-                db2.itemCenter.updateSvts(all: true);
+                db.curUser.curSvtPlanNo = index;
+                db.itemCenter.updateSvts(all: true);
                 setState(() {});
               },
             ),
@@ -133,7 +133,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
             children: [
               CustomTile(
                 color: Theme.of(context).cardColor,
-                leading: db2.getIconImage(Items.qp.borderedIcon, height: 56),
+                leading: db.getIconImage(Items.qp.borderedIcon, height: 56),
                 title: Text((shownItems[Items.qpId] ?? 0)
                     .format(compact: false, groupSeparator: ',')),
                 onTap: () => Items.qp.routeTo(),
@@ -244,14 +244,14 @@ class _ItemStatTabState extends State<ItemStatTab> {
     shownItems.clear();
     final emptyPlan = SvtStatus();
     emptyPlan.cur.favorite = true;
-    db2.curUser.servants.forEach((no, svtStat) {
+    db.curUser.servants.forEach((no, svtStat) {
       if (!svtStat.favorite) return;
-      if (!db2.gameData.servants.containsKey(no)) {
-        print('No $no: ${db2.gameData.servants.length}');
+      if (!db.gameData.servants.containsKey(no)) {
+        print('No $no: ${db.gameData.servants.length}');
         return;
       }
-      final svt = db2.gameData.servants[no]!;
-      final detail = db2.itemCenter.calcOneSvt(svt, emptyPlan.cur, svtStat.cur);
+      final svt = db.gameData.servants[no]!;
+      final detail = db.itemCenter.calcOneSvt(svt, emptyPlan.cur, svtStat.cur);
       Maths.sumDict(
         [
           shownItems,
@@ -267,7 +267,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
         inPlace: true,
       );
     });
-    Maths.sumDict([shownItems, if (includeOwnedItems) db2.curUser.items],
+    Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items],
         inPlace: true);
     shownItems.removeWhere((key, value) {
       return value <= 0;
@@ -277,17 +277,17 @@ class _ItemStatTabState extends State<ItemStatTab> {
   void calculateDemand() {
     shownItems.clear();
     if (svtParts.options.isEmpty) {
-      shownItems = Map.of(db2.itemCenter.statSvtDemands);
+      shownItems = Map.of(db.itemCenter.statSvtDemands);
     } else {
-      db2.curUser.servants.forEach((no, svtStat) {
+      db.curUser.servants.forEach((no, svtStat) {
         if (!svtStat.favorite) return;
-        final svt = db2.gameData.servants[no];
+        final svt = db.gameData.servants[no];
         if (svt == null) {
-          print('No $no: ${db2.gameData.servants.length}');
+          print('No $no: ${db.gameData.servants.length}');
           return;
         }
-        final detail = db2.itemCenter
-            .calcOneSvt(svt, svtStat.cur, db2.curUser.svtPlanOf(no));
+        final detail = db.itemCenter
+            .calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(no));
         Maths.sumDict(
           [
             shownItems,
@@ -304,8 +304,8 @@ class _ItemStatTabState extends State<ItemStatTab> {
     }
     Maths.sumDict([
       shownItems,
-      if (subtractOwnedItems) Maths.multiplyDict(db2.curUser.items, -1),
-      if (subtractEventItems) Maths.multiplyDict(db2.itemCenter.statObtain, -1),
+      if (subtractOwnedItems) Maths.multiplyDict(db.curUser.items, -1),
+      if (subtractEventItems) Maths.multiplyDict(db.itemCenter.statObtain, -1),
     ], inPlace: true);
     shownItems.removeWhere((key, value) {
       return value <= 0;

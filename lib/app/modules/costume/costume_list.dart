@@ -23,7 +23,7 @@ class _CostumeListPageState extends State<CostumeListPage>
 
   @override
   Iterable<NiceCostume> get wholeData => [
-        for (final svt in db2.gameData.servants.values)
+        for (final svt in db.gameData.servants.values)
           ...svt.profile.costume.values
       ];
 
@@ -89,7 +89,7 @@ class _CostumeListPageState extends State<CostumeListPage>
   @override
   Widget gridItemBuilder(NiceCostume costume) {
     return ImageWithText(
-      image: db2.getIconImage(costume.icon, aspectRatio: 132 / 144),
+      image: db.getIconImage(costume.icon, aspectRatio: 132 / 144),
       onTap: () {
         router.push(url: costume.route);
       },
@@ -99,7 +99,7 @@ class _CostumeListPageState extends State<CostumeListPage>
   @override
   Widget listItemBuilder(NiceCostume costume) {
     return ListTile(
-      leading: db2.getIconImage(
+      leading: db.getIconImage(
         costume.icon,
         aspectRatio: 132 / 144,
         // padding: const EdgeInsets.symmetric(vertical: 0),

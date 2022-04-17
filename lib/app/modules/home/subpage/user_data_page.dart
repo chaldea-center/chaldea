@@ -64,7 +64,7 @@ class _UserDataPageState extends State<UserDataPage> {
             children: [
               if (androidExternalDirs.length >= 2)
                 SwitchListTile.adaptive(
-                  value: db2.settings.useAndroidExternal,
+                  value: db.settings.useAndroidExternal,
                   title: Text(LocalizedText.of(
                       chs: '使用外部储存(SD卡)',
                       jpn: '外部ストレージ（SDカード）を使用',
@@ -83,12 +83,12 @@ class _UserDataPageState extends State<UserDataPage> {
                     jpn: 'データフォルダ',
                     eng: 'Data Folder',
                     kor: '데이터 폴더')),
-                subtitle: Text(db2.paths.convertIosPath(db2.paths.appPath)),
+                subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
                   if (PlatformU.isWeb) {
                     EasyLoading.showInfo('Check it in IndexedDB');
                   } else if (PlatformU.isDesktop) {
-                    OpenFile.open(db2.paths.appPath);
+                    OpenFile.open(db.paths.appPath);
                   } else {
                     EasyLoading.showInfo(LocalizedText.of(
                         chs: '请用文件管理器打开',
@@ -180,12 +180,12 @@ class _UserDataPageState extends State<UserDataPage> {
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));
-      db2.backupUserdata();
-      db2.userData = userdata;
-      db2.saveUserData();
+      db.backupUserdata();
+      db.userData = userdata;
+      db.saveUserData();
       EasyLoading.showToast(S.current.import_data_success);
-      db2.notifyDb();
-      db2.notifyAppUpdate();
+      db.notifyDb();
+      db.notifyAppUpdate();
     } catch (e, s) {
       logger.e('import user data failed', e, s);
       EasyLoading.showError(S.of(context).import_data_error(e));
@@ -195,9 +195,9 @@ class _UserDataPageState extends State<UserDataPage> {
   Future backupUserData() async {
     return SimpleCancelOkDialog(
       title: Text(S.current.backup),
-      content: Text(db2.paths.convertIosPath(db2.paths.backupDir)),
+      content: Text(db.paths.convertIosPath(db.paths.backupDir)),
       onTapOk: () async {
-        final fps = await db2.backupUserdata();
+        final fps = await db.backupUserdata();
         String hint = '';
         if (fps.isEmpty) {
           hint += LocalizedText.of(
@@ -237,7 +237,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 TextButton(
                   child: Text(S.current.open),
                   onPressed: () {
-                    OpenFile.open(db2.paths.backupDir);
+                    OpenFile.open(db.paths.backupDir);
                   },
                 ),
             ],
@@ -248,8 +248,8 @@ class _UserDataPageState extends State<UserDataPage> {
   }
 
   bool checkUserPwd() {
-    if (db2.security.get('chaldea_user') == null ||
-        db2.security.get('chaldea_auth') == null) {
+    if (db.security.get('chaldea_user') == null ||
+        db.security.get('chaldea_auth') == null) {
       SimpleCancelOkDialog(
         content: Text(S.current.login_first_hint),
         onTapOk: () {
@@ -267,10 +267,10 @@ class _UserDataPageState extends State<UserDataPage> {
     ChaldeaResponse.request(
       caller: (dio) {
         final content = base64Encode(
-            GZipEncoder().encode(utf8.encode(jsonEncode(db2.userData)))!);
+            GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
         return dio.post('/account/backup/upload', data: {
-          'username': db2.security.get('chaldea_user'),
-          'auth': db2.security.get('chaldea_auth'),
+          'username': db.security.get('chaldea_user'),
+          'auth': db.security.get('chaldea_auth'),
           'content': content,
         });
       },
@@ -282,8 +282,8 @@ class _UserDataPageState extends State<UserDataPage> {
     ChaldeaResponse.request(
       showSuccess: false,
       caller: (dio) => dio.post('/account/backup/download', data: {
-        'username': db2.security.get('chaldea_user'),
-        'auth': db2.security.get('chaldea_auth')
+        'username': db.security.get('chaldea_user'),
+        'auth': db.security.get('chaldea_auth')
       }),
       onSuccess: (resp) {
         final body = List.from(resp.body()).map((e) => Map.from(e)).toList();
@@ -302,11 +302,11 @@ class _UserDataPageState extends State<UserDataPage> {
                       .toString()),
                   onTap: () {
                     Navigator.pop(context);
-                    db2.userData = UserData.fromJson(jsonDecode(utf8.decode(
+                    db.userData = UserData.fromJson(jsonDecode(utf8.decode(
                         GZipDecoder().decodeBytes(
                             base64Decode(body[index]['content'])))));
-                    db2.itemCenter.init();
-                    db2.notifyUserdata();
+                    db.itemCenter.init();
+                    db.notifyUserdata();
                     EasyLoading.showSuccess(S.current.import_data_success);
                   },
                 ),
@@ -348,8 +348,8 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TextButton(
             onPressed: () {
-              db2.settings.useAndroidExternal = useExternal;
-              db2.saveSettings();
+              db.settings.useAndroidExternal = useExternal;
+              db.saveSettings();
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
                 title: const Text('⚠️ Warning'),
@@ -371,7 +371,7 @@ class _UserDataPageState extends State<UserDataPage> {
                   status: 'Moving...', maskType: EasyLoadingMaskType.clear);
               try {
                 await _copyDirectory(from, to);
-                db2.settings.useAndroidExternal = useExternal;
+                db.settings.useAndroidExternal = useExternal;
                 Navigator.of(context).pop();
                 SimpleCancelOkDialog(
                   title: const Text('⚠️ Warning'),
@@ -382,7 +382,7 @@ class _UserDataPageState extends State<UserDataPage> {
                       kor: '설정을 적용 시키기 위해 재기동하여 주십시오')),
                   hideCancel: true,
                 ).showDialog(context);
-                db2.saveSettings();
+                db.saveSettings();
                 EasyLoading.dismiss();
               } catch (e, s) {
                 logger.e('migrate android data to external failed', e, s);
@@ -440,14 +440,14 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
   Future<void> listBackups() async {
     if (PlatformU.isWeb) {
       for (final fp in FilePlusWeb.list()) {
-        if (fp.startsWith(db2.paths.backupDir) &&
+        if (fp.startsWith(db.paths.backupDir) &&
             fp.toLowerCase().contains('.json')) {
           validFiles.add(MapEntry(fp, null));
         }
       }
       validFiles.sort((a, b) => b.key.compareTo(a.key));
     } else {
-      final dir = Directory(db2.paths.backupDir);
+      final dir = Directory(db.paths.backupDir);
       if (await dir.exists()) {
         await for (var entry in dir.list()) {
           if (await FileSystemEntity.isFile(entry.path) &&
@@ -473,11 +473,11 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
             return Card(
               child: InkWell(
                 onTap: PlatformU.isDesktop
-                    ? () => OpenFile.open(db2.paths.backupDir)
+                    ? () => OpenFile.open(db.paths.backupDir)
                     : null,
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: Text(db2.paths.convertIosPath(db2.paths.backupDir)),
+                  child: Text(db.paths.convertIosPath(db.paths.backupDir)),
                 ),
               ),
             );
@@ -492,17 +492,17 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
               onPressed: () {
                 SimpleCancelOkDialog(
                   title: Text(S.current.import_data),
-                  content: Text(db2.paths.convertIosPath(entry.key)),
+                  content: Text(db.paths.convertIosPath(entry.key)),
                   onTapOk: () async {
                     try {
                       final userdata = UserData.fromJson(json
                           .decode(await FilePlus(entry.key).readAsString()));
-                      db2.backupUserdata();
-                      db2.userData = userdata;
+                      db.backupUserdata();
+                      db.userData = userdata;
                       EasyLoading.showToast(S.current.import_data_success);
-                      db2.saveUserData();
-                      db2.notifyDb(recalc: true);
-                      db2.notifyAppUpdate();
+                      db.saveUserData();
+                      db.notifyDb(recalc: true);
+                      db.notifyAppUpdate();
                     } catch (e) {
                       EasyLoading.showError(S.of(context).import_data_error(e));
                     }

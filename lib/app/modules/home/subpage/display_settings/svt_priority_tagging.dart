@@ -15,7 +15,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
   final Map<int, TextEditingController> _controllers = {};
 
   TextEditingController controllerOf(int key) => _controllers[key] ??=
-      TextEditingController(text: db2.settings.priorityTags[key]);
+      TextEditingController(text: db.settings.priorityTags[key]);
 
   @override
   void dispose() {
@@ -53,8 +53,8 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                       textAlign: TextAlign.center,
                       maxLength: 10,
                       onChanged: (s) {
-                        db2.settings.priorityTags[priority] = s;
-                        db2.saveSettings();
+                        db.settings.priorityTags[priority] = s;
+                        db.saveSettings();
                       },
                     ),
                   ),

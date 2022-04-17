@@ -33,9 +33,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   Servant get svt => widget.svt;
 
-  SvtPlan get plan => db2.curUser.svtPlanOf(svt.collectionNo);
+  SvtPlan get plan => db.curUser.svtPlanOf(svt.collectionNo);
 
-  SvtStatus get status => db2.curUser.svtStatusOf(svt.collectionNo);
+  SvtStatus get status => db.curUser.svtStatusOf(svt.collectionNo);
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   @override
   Widget build(BuildContext context) {
     final sliderMode =
-        db2.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
+        db.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
     if (svt.skills.isEmpty) {
       return Center(child: Text('${svt.lName.l} has no skills'));
     }
@@ -108,7 +108,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (skill == null) continue;
       skillWidgets.add(buildPlanRow(
         useSlider: sliderMode,
-        leading: db2.getIconImage(skill.icon, width: 33),
+        leading: db.getIconImage(skill.icon, width: 33),
         title: Transl.skillNames(skill.name).l,
         start: curVal.skills[index],
         end: targetVal.skills[index],
@@ -138,7 +138,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (skill == null) continue;
       appendSkillWidgets.add(buildPlanRow(
         useSlider: sliderMode,
-        leading: db2.getIconImage(skill.icon, width: 33),
+        leading: db.getIconImage(skill.icon, width: 33),
         title: Transl.skillNames(skill.name).l,
         start: curVal.appendSkills[index],
         end: targetVal.appendSkills[index],
@@ -178,13 +178,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       dressWidgets.add(buildPlanRow(
         useSlider: false,
         leading: InkWell(
-          child: db2.getIconImage(
+          child: db.getIconImage(
             svt.extraAssets.faces.costume?[costume.battleCharaId] ??
                 Atlas.assetItem(Items.costumeIconId),
             aspectRatio: 132 / 144,
             width: 33,
             placeholder: (ctx) =>
-                db2.getIconImage(Atlas.assetItem(Items.costumeIconId)),
+                db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
           ),
           onTap: () {
             router.push(url: Routes.costumeI(costume.costumeCollectionNo));
@@ -262,7 +262,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           end: targetVal.grail,
           minVal: 0,
           maxVal: Maths.max(
-              db2.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
+              db.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
           labelFormatter: (v) => svt.grailedLv(v).toString(),
           trailingLabelFormatter: (a, b) => '${svt.grailedLv(a)}→'
                   '${svt.grailedLv(b!)}'
@@ -291,7 +291,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         if (svt.type != SvtType.heroine)
           buildPlanRow(
             useSlider: sliderMode,
-            leading: db2.getIconImage(Atlas.assetItem(Items.npRankUpIconId),
+            leading: db.getIconImage(Atlas.assetItem(Items.npRankUpIconId),
                 width: 33),
             title: S.of(context).noble_phantasm_level,
             start: status.cur.npLv,
@@ -544,7 +544,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: List.generate(svt.cards.length, (index) {
               final code =
-                  db2.gameData.commandCodes[status.equipCmdCodes[index]];
+                  db.gameData.commandCodes[status.equipCmdCodes[index]];
               return TableRow(children: [
                 Center(
                   child: CommandCardWidget(card: svt.cards[index], width: 48),
@@ -565,7 +565,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     );
                     if (mounted) setState(() {});
                   },
-                  child: db2.getIconImage(
+                  child: db.getIconImage(
                       code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
                       height: 48,
                       aspectRatio: 132 / 144,
@@ -620,7 +620,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       buttons.add(TextButton(
         onPressed: () {
           final Map<int, int> items = Item.sortMapByPriority(
-              db2.itemCenter.calcOneSvt(svt, status.cur, plan).all);
+              db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
           _showItemsDialog(
             title: S.current.item_total_demand,
             items: items,
@@ -742,13 +742,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   void updateState() {
     svt.updateStat();
     setState(() {});
-    db2.saveUserData();
+    db.saveUserData();
   }
 
   void _onEnhance() {
     status.cur.favorite = true;
     final Map<int, int> enhanceItems = Item.sortMapByPriority(
-        db2.itemCenter.calcOneSvt(svt, status.cur, enhancePlan).all);
+        db.itemCenter.calcOneSvt(svt, status.cur, enhancePlan).all);
 
     bool hasItem = Maths.sum(enhanceItems.values) > 0;
     _showItemsDialog(
@@ -758,7 +758,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       onConfirm: () {
         if (hasItem) {
           Maths.sumDict(
-              [db2.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
+              [db.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
               inPlace: true);
           status.cur = SvtPlan.fromJson(enhancePlan.toJson());
           enhanceMode = !enhanceMode;
@@ -809,7 +809,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                   for (final entry in items.entries)
                     Item.iconBuilder(
                       context: context,
-                      item: db2.gameData.items[entry.key],
+                      item: db.gameData.items[entry.key],
                       icon: Item.getIcon(entry.key),
                       text: entry.value.format(),
                       width: 48,

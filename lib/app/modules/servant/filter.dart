@@ -221,7 +221,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<FuncType>(
           title: const Text('FuncType'),
-          options: List.of(db2.gameData.others.svtFuncs)..sort2((e) => e.name),
+          options: List.of(db.gameData.others.svtFuncs)..sort2((e) => e.name),
           values: filterData.funcType,
           showMatchAll: true,
           showInvert: true,
@@ -232,7 +232,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<BuffType>(
           title: const Text('BuffType'),
-          options: List.of(db2.gameData.others.svtBuffs)..sort2((e) => e.name),
+          options: List.of(db.gameData.others.svtBuffs)..sort2((e) => e.name),
           values: filterData.buffType,
           showMatchAll: true,
           showInvert: true,
@@ -267,7 +267,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                     children: List.generate(2, (index) {
                       final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
                       return GestureDetector(
-                        child: db2.getIconImage(icon),
+                        child: db.getIconImage(icon),
                         onTap: () {
                           if (index == 0) {
                             filterData.svtClass.options
@@ -292,7 +292,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                       children: SvtClassX.regularAll.map((className) {
                         final selected =
                             filterData.svtClass.options.contains(className);
-                        Widget icon = db2.getIconImage(
+                        Widget icon = db.getIconImage(
                             className.icon(selected ? 5 : 1),
                             aspectRatio: 1);
                         if (className == SvtClass.beastII && !selected) {

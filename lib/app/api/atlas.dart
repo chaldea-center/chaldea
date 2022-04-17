@@ -66,7 +66,7 @@ class _CacheManager {
     _data.clear();
     String fp = kIsWeb
         ? 'api_cache/$cacheKey.json'
-        : joinPaths(db2.paths.tempDir, 'api_cache/$cacheKey.json');
+        : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json');
     try {
       if (kIsWeb) {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
@@ -119,7 +119,7 @@ class _CacheManager {
     return FilePlus(
         kIsWeb
             ? '$cacheKey/$key'
-            : joinPaths(db2.paths.tempDir, '$cacheKey/$key'),
+            : joinPaths(db.paths.tempDir, '$cacheKey/$key'),
         box: _webBox);
   }
 
@@ -235,9 +235,9 @@ class AtlasApi {
       {Region region = Region.jp, Duration? expireAfter}) async {
     // free quests, only phase 3 saved in db
     if (region == Region.jp && expireAfter == null) {
-      final quest = db2.gameData.quests[questId];
+      final quest = db.gameData.quests[questId];
 
-      final phaseInDb = db2.gameData.questPhases[questId * 100 + phase];
+      final phaseInDb = db.gameData.questPhases[questId * 100 + phase];
 
       if (phaseInDb != null) {
         return SynchronousFuture(phaseInDb);

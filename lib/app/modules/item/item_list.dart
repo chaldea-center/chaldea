@@ -45,8 +45,8 @@ class ItemListPageState extends State<ItemListPage>
     _itemRedundantControllers = List.generate(
         3,
         (index) => TextEditingController(
-            text: db2.userData.itemAbundantValue[index].toString()));
-    for (final item in db2.gameData.items.values) {
+            text: db.userData.itemAbundantValue[index].toString()));
+    for (final item in db.gameData.items.values) {
       categorized.putIfAbsent(item.skillUpItemType, () => []).add(item.id);
     }
     categorized[SkillUpItemType.special] = <int>[
@@ -72,8 +72,8 @@ class ItemListPageState extends State<ItemListPage>
           SharedBuilder.buildSwitchPlanButton(
             context: context,
             onChange: (index) async {
-              db2.curUser.curSvtPlanNo = index;
-              db2.itemCenter.updateSvts(all: true);
+              db.curUser.curSvtPlanNo = index;
+              db.itemCenter.updateSvts(all: true);
               setState(() {});
             },
           ),
@@ -126,11 +126,11 @@ class ItemListPageState extends State<ItemListPage>
   void navToDropCalculator() {
     Map<int, int> _getObjective() {
       Map<int, int> objective = {};
-      final itemIds = db2.gameData.dropRate.getSheet(true).itemIds;
-      db2.itemCenter.itemLeft.forEach((itemId, value) {
-        final rarity = db2.gameData.items[itemId]?.rarity ?? -1;
+      final itemIds = db.gameData.dropRate.getSheet(true).itemIds;
+      db.itemCenter.itemLeft.forEach((itemId, value) {
+        final rarity = db.gameData.items[itemId]?.rarity ?? -1;
         if (rarity > 0 && rarity <= 3) {
-          value -= db2.userData.itemAbundantValue[rarity - 1];
+          value -= db.userData.itemAbundantValue[rarity - 1];
         }
         if (itemIds.contains(itemId) && value < 0) {
           objective[itemId] = -value;
@@ -167,11 +167,11 @@ class ItemListPageState extends State<ItemListPage>
                     decoration: const InputDecoration(isDense: true),
                     onChanged: (s) {
                       if (s == '-') {
-                        db2.userData.itemAbundantValue[index] = 0;
+                        db.userData.itemAbundantValue[index] = 0;
                       } else {
-                        db2.userData.itemAbundantValue[index] =
+                        db.userData.itemAbundantValue[index] =
                             int.tryParse(s) ??
-                                db2.userData.itemAbundantValue[index];
+                                db.userData.itemAbundantValue[index];
                       }
                     },
                   ),
@@ -192,8 +192,8 @@ class ItemListPageState extends State<ItemListPage>
         TextButton(
           onPressed: () {
             _itemRedundantControllers.forEach((e) => e.text = '0');
-            db2.userData.itemAbundantValue
-                .fillRange(0, db2.userData.itemAbundantValue.length, 0);
+            db.userData.itemAbundantValue
+                .fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
           child: Text(S.of(context).clear),
         )
@@ -212,7 +212,7 @@ class ItemFilterDialog extends StatefulWidget {
 class _ItemFilterDialogState extends State<ItemFilterDialog> {
   @override
   Widget build(BuildContext context) {
-    final priorityFilter = db2.settings.svtFilterData.priority;
+    final priorityFilter = db.settings.svtFilterData.priority;
     return AlertDialog(
       title: Text(S.of(context).priority),
       actions: [
@@ -221,7 +221,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
               setState(() {
                 priorityFilter.reset();
               });
-              db2.itemCenter.updateSvts(all: true);
+              db.itemCenter.updateSvts(all: true);
             },
             child: Text(S.of(context).clear.toUpperCase())),
         TextButton(
@@ -246,7 +246,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
               setState(() {
                 priorityFilter.options.toggle(priority);
               });
-              db2.itemCenter.updateSvts(all: true);
+              db.itemCenter.updateSvts(all: true);
             },
           );
         }),
@@ -320,7 +320,7 @@ class _ItemListTabState extends State<ItemListTab> {
     final sortedEntries = _allGroups.entries.toList()
       ..sort2((e) => e.key == Items.qpId
           ? -1
-          : db2.gameData.items[e.key]?.priority ?? e.key);
+          : db.gameData.items[e.key]?.priority ?? e.key);
     _allGroups = Map.fromEntries(sortedEntries);
   }
 
@@ -347,10 +347,10 @@ class _ItemListTabState extends State<ItemListTab> {
       onTapOk: () {
         _shownGroups.forEach((group) {
           if (group.data != Items.qpId) {
-            db2.curUser.items[group.data] = 999;
+            db.curUser.items[group.data] = 999;
           }
         });
-        db2.itemCenter.updateLeftItems();
+        db.itemCenter.updateLeftItems();
       },
     ).showDialog(context);
   }
@@ -363,7 +363,7 @@ class _ItemListTabState extends State<ItemListTab> {
     for (var group in _allGroups.values) {
       if (!widget.filtered ||
           group.data == Items.qpId ||
-          (db2.itemCenter.itemLeft[group.data] ?? 0) < 0) {
+          (db.itemCenter.itemLeft[group.data] ?? 0) < 0) {
         _shownGroups.add(group);
         children.add(buildItemTile(group));
       }
@@ -439,14 +439,14 @@ class _ItemListTabState extends State<ItemListTab> {
             ),
           ),
           CheckboxWithLabel(
-            value: db2.itemCenter.includingEvents,
+            value: db.itemCenter.includingEvents,
             label: Text(S.current.event_title),
             onChanged: (v) {
               setState(() {
                 // reset to true in initState or not?
-                db2.itemCenter.includingEvents =
-                    v ?? db2.itemCenter.includingEvents;
-                db2.itemCenter.updateLeftItems();
+                db.itemCenter.includingEvents =
+                    v ?? db.itemCenter.includingEvents;
+                db.itemCenter.updateLeftItems();
                 setState(() {});
               });
             },
@@ -465,7 +465,7 @@ class _ItemListTabState extends State<ItemListTab> {
           return;
         }
         final isQp = itemId == Items.qpId;
-        final text = (db2.curUser.items[itemId] ?? 0)
+        final text = (db.curUser.items[itemId] ?? 0)
             .format(groupSeparator: isQp ? ',' : null, compact: false);
         final selection = group.controller!.value.selection;
         TextSelection? newSelection;
@@ -494,7 +494,7 @@ class _ItemListTabState extends State<ItemListTab> {
     bool isQp = itemId == Items.qpId;
 
     // update when text input
-    bool enough = (db2.itemCenter.itemLeft[itemId] ?? 0) >= 0;
+    bool enough = (db.itemCenter.itemLeft[itemId] ?? 0) >= 0;
     final highlightStyle =
         TextStyle(color: enough ? null : Theme.of(context).errorColor);
     Widget textField = TextField(
@@ -512,13 +512,13 @@ class _ItemListTabState extends State<ItemListTab> {
       onChanged: (v) {
         if (v == '-' || v == '') {
           /// don't change '-' to '0' in [setTextController]
-          db2.curUser.items[itemId] = 0;
+          db.curUser.items[itemId] = 0;
         } else {
-          db2.curUser.items[itemId] = int.tryParse(v.replaceAll(',', '')) ??
-              db2.curUser.items[itemId] ??
+          db.curUser.items[itemId] = int.tryParse(v.replaceAll(',', '')) ??
+              db.curUser.items[itemId] ??
               0;
         }
-        db2.itemCenter.updateLeftItems();
+        db.itemCenter.updateLeftItems();
         setState(() {});
       },
       onTap: () {
@@ -553,9 +553,9 @@ class _ItemListTabState extends State<ItemListTab> {
       title = Row(
         children: <Widget>[const Text('QP  '), Expanded(child: textField)],
       );
-      final demand = (db2.itemCenter.statSvtDemands[itemId] ?? 0)
+      final demand = (db.itemCenter.statSvtDemands[itemId] ?? 0)
               .format(compact: false, groupSeparator: ','),
-          left = (db2.itemCenter.itemLeft[itemId] ?? 0)
+          left = (db.itemCenter.itemLeft[itemId] ?? 0)
               .format(compact: false, groupSeparator: ',');
       subtitle = Row(
         children: <Widget>[
@@ -597,7 +597,7 @@ class _ItemListTabState extends State<ItemListTab> {
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                '  ${db2.itemCenter.itemLeft[itemId] ?? 0}',
+                '  ${db.itemCenter.itemLeft[itemId] ?? 0}',
                 style: highlightStyle.copyWith(fontSize: 14),
                 maxLines: 1,
               ),
@@ -609,7 +609,7 @@ class _ItemListTabState extends State<ItemListTab> {
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              '${S.current.item_total_demand}  ${db2.itemCenter.statSvtDemands[itemId] ?? 0}',
+              '${S.current.item_total_demand}  ${db.itemCenter.statSvtDemands[itemId] ?? 0}',
               maxLines: 1,
             ),
           ),
@@ -619,7 +619,7 @@ class _ItemListTabState extends State<ItemListTab> {
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                '  ${db2.itemCenter.statObtain[itemId] ?? 0}',
+                '  ${db.itemCenter.statObtain[itemId] ?? 0}',
                 style: const TextStyle(fontSize: 14),
                 maxLines: 1,
               ),
@@ -636,7 +636,7 @@ class _ItemListTabState extends State<ItemListTab> {
       },
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
-      leading: db2.getIconImage(Item.getIcon(itemId),
+      leading: db.getIconImage(Item.getIcon(itemId),
           width: 48 / 144 * 132, height: 48),
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),

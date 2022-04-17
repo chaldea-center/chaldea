@@ -13,7 +13,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  List<User> get users => db2.userData.users;
+  List<User> get users => db.userData.users;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +50,10 @@ class _AccountPageState extends State<AccountPage> {
             final user = users[index];
             return RadioListTile<int>(
               value: index,
-              groupValue: db2.userData.curUserKey,
+              groupValue: db.userData.curUserKey,
               onChanged: (v) {
                 if (v != null) {
-                  db2.userData.curUserKey = v;
+                  db.userData.curUserKey = v;
                   updateData(true);
                 }
               },
@@ -99,7 +99,7 @@ class _AccountPageState extends State<AccountPage> {
 
   void addUser(String name) {
     users.add(User(name: name));
-    db2.userData.curUserKey = users.length - 1;
+    db.userData.curUserKey = users.length - 1;
     updateData(true);
   }
 
@@ -128,14 +128,14 @@ class _AccountPageState extends State<AccountPage> {
     int newIndex = key + dx;
     final user = users.removeAt(key);
     users.insert(newIndex, user);
-    db2.userData.curUserKey = users.indexOf(user);
+    db.userData.curUserKey = users.indexOf(user);
     updateData();
   }
 
   void copyUser(int key) {
     final originUser = users[key];
     final newUser = User.fromJson(originUser.toJson());
-    newUser.name = db2.userData.validUsername(newUser.name);
+    newUser.name = db.userData.validUsername(newUser.name);
     users.add(newUser);
     updateData();
   }
@@ -151,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
         user.items.clear();
         user.svtPlanGroups.forEach((e) => e.clear());
         user.mysticCodes.clear();
-        updateData(key == db2.userData.curUserKey);
+        updateData(key == db.userData.curUserKey);
       },
     ).showDialog(context);
   }
@@ -163,9 +163,9 @@ class _AccountPageState extends State<AccountPage> {
     SimpleCancelOkDialog(
       title: Text('${S.current.delete} ${user.name}'),
       onTapOk: () {
-        bool needCalc = key == db2.userData.curUserKey;
+        bool needCalc = key == db.userData.curUserKey;
         users.removeAt(key);
-        db2.userData.validate();
+        db.userData.validate();
         updateData(needCalc);
       },
     ).showDialog(context);
@@ -174,8 +174,8 @@ class _AccountPageState extends State<AccountPage> {
   void updateData([bool needCalc = false]) async {
     if (mounted) setState(() {});
     if (needCalc) {
-      db2.itemCenter.init();
+      db.itemCenter.init();
     }
-    db2.notifyUserdata();
+    db.notifyUserdata();
   }
 }

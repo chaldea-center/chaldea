@@ -55,8 +55,8 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
                   ElevatedButton(
                     onPressed: () {
                       for (final user in users) {
-                        user.name = db2.userData.validUsername(user.name);
-                        db2.userData.users.add(user);
+                        user.name = db.userData.validUsername(user.name);
+                        db.userData.users.add(user);
                       }
                       EasyLoading.showSuccess('Appended data to cur app');
                       router.push(child: AccountPage());
@@ -118,13 +118,13 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
         for (final id in List.of(user.servants.keys)..sort())
           if (user.servants[id]!.favorite)
             () {
-              final svt = db2.gameData.servants[id];
+              final svt = db.gameData.servants[id];
               final status = user.servants[id]!;
               final cur = status.cur;
               final plan = user.svtPlanGroups.getOrNull(_curPlanNo)?[id];
               return ListTile(
-                leading: svt?.iconBuilder(context: context) ??
-                    db2.getIconImage(null),
+                leading:
+                    svt?.iconBuilder(context: context) ?? db.getIconImage(null),
                 subtitle: Text(
                     'ID $id ${S.current.ascension_short} ${cur.ascension} NP ${cur.npLv}\n'
                     '${S.current.active_skill} ${cur.skills.join("/")} -> ${plan?.skills.join("/")} \n'

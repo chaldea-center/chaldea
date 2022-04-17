@@ -22,17 +22,17 @@ class SummonListPage extends StatefulWidget {
 class _SummonListPageState extends State<SummonListPage>
     with SearchableListState<LimitedSummon, SummonListPage> {
   @override
-  Iterable<LimitedSummon> get wholeData => db2.gameData.wiki.summons.values;
+  Iterable<LimitedSummon> get wholeData => db.gameData.wiki.summons.values;
 
-  SummonFilterData get filterData => db2.settings.summonFilterData;
+  SummonFilterData get filterData => db.settings.summonFilterData;
 
-  Set<String> get plans => db2.curUser.summons;
+  Set<String> get plans => db.curUser.summons;
 
   @override
   void initState() {
     super.initState();
     filterData.reset();
-    filterData.reversed = db2.curUser.region == Region.jp;
+    filterData.reversed = db.curUser.region == Region.jp;
   }
 
   @override
@@ -105,7 +105,7 @@ class _SummonListPageState extends State<SummonListPage>
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
           imageUrl:
-              db2.curUser.region == Region.cn || db2.curUser.region == Region.tw
+              db.curUser.region == Region.cn || db.curUser.region == Region.tw
                   ? summon.banner.cn ?? summon.banner.jp
                   : summon.banner.jp ?? summon.banner.cn,
           placeholder: (ctx, url) => Text(summon.lName),
@@ -121,7 +121,7 @@ class _SummonListPageState extends State<SummonListPage>
         style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
       );
       String? subtitleText;
-      if (db2.curUser.region == Region.cn) {
+      if (db.curUser.region == Region.cn) {
         subtitleText = summon.startTime.cn?.sec2date().toDateString();
         if (subtitleText != null) {
           subtitleText = 'CN ' + subtitleText;
@@ -138,17 +138,17 @@ class _SummonListPageState extends State<SummonListPage>
           ? const EdgeInsets.only(right: 8)
           : const EdgeInsets.only(left: 16, right: 8),
       minVerticalPadding: filterData.showBanner ? 0 : null,
-      trailing: db2.onUserData(
+      trailing: db.onUserData(
         (context, snapshot) {
-          final planned = db2.curUser.summons.contains(summon.id);
+          final planned = db.curUser.summons.contains(summon.id);
           return IconButton(
             icon: Icon(
               planned ? Icons.favorite : Icons.favorite_outline,
               color: planned ? Colors.redAccent : null,
             ),
             onPressed: () {
-              db2.curUser.summons.toggle(summon.id);
-              db2.notifyUserdata();
+              db.curUser.summons.toggle(summon.id);
+              db.notifyUserdata();
             },
           );
         },

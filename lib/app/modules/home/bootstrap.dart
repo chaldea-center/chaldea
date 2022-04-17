@@ -39,20 +39,20 @@ class _BootstrapPageState extends State<BootstrapPage>
   void initState() {
     super.initState();
     _pageController = PageController();
-    _accountEditing = TextEditingController(text: db2.curUser.name);
+    _accountEditing = TextEditingController(text: db.curUser.name);
   }
 
   @override
   void afterFirstLayout(BuildContext context) async {
     try {
-      if (!db2.settings.tips.starter) {
-        db2.gameData = await _loader.reload(
+      if (!db.settings.tips.starter) {
+        db.gameData = await _loader.reload(
           offline: true,
           onUpdate: (v) {
             if (mounted) setState(() {});
           },
         );
-        db2.itemCenter.init();
+        db.itemCenter.init();
         onDataReady(true);
       }
     } catch (e, s) {
@@ -65,7 +65,7 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   @override
   Widget build(BuildContext context) {
-    if (db2.settings.tips.starter) {
+    if (db.settings.tips.starter) {
       pages = [
         welcomePage,
         languagePage,
@@ -90,7 +90,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       },
     );
 
-    if (db2.settings.tips.starter || !_offlineLoading) {
+    if (db.settings.tips.starter || !_offlineLoading) {
       child = Stack(children: [child, _bottom()]);
     }
     return Scaffold(
@@ -143,15 +143,15 @@ class _BootstrapPageState extends State<BootstrapPage>
         itemBuilder: (context, index) {
           final lang = Language.supportLanguages[index];
           return ListTile(
-            leading: Language.getLanguage(db2.settings.language) == lang
+            leading: Language.getLanguage(db.settings.language) == lang
                 ? const Icon(Icons.done_rounded)
                 : const SizedBox(),
             title: Text(lang.name),
             horizontalTitleGap: 0,
             onTap: () {
-              db2.settings.setLanguage(lang);
-              db2.saveSettings();
-              db2.notifyAppUpdate();
+              db.settings.setLanguage(lang);
+              db.saveSettings();
+              db.notifyAppUpdate();
             },
           );
         },
@@ -184,15 +184,15 @@ class _BootstrapPageState extends State<BootstrapPage>
         itemBuilder: (context, index) {
           final mode = ThemeMode.values[index];
           return ListTile(
-            leading: db2.settings.themeMode == mode
+            leading: db.settings.themeMode == mode
                 ? const Icon(Icons.done_rounded)
                 : const SizedBox(),
             title: Text(_themeModeName(mode)),
             horizontalTitleGap: 0,
             onTap: () {
-              db2.settings.themeMode = mode;
-              db2.saveSettings();
-              db2.notifyAppUpdate();
+              db.settings.themeMode = mode;
+              db.saveSettings();
+              db.notifyAppUpdate();
             },
           );
         },
@@ -233,14 +233,14 @@ class _BootstrapPageState extends State<BootstrapPage>
             List.generate(Region.values.length, (index) {
               final region = Region.values[index];
               return ListTile(
-                leading: region == db2.curUser.region
+                leading: region == db.curUser.region
                     ? const Icon(Icons.done)
                     : const SizedBox(),
                 title: Text(region.name.toUpperCase()),
                 horizontalTitleGap: 0,
                 onTap: () {
                   setState(() {
-                    db2.curUser.region = region;
+                    db.curUser.region = region;
                   });
                 },
               );
@@ -313,18 +313,18 @@ class _BootstrapPageState extends State<BootstrapPage>
                 ? TextButton(
                     child: Text(S.current.done),
                     onPressed: () {
-                      if (db2.gameData.version.timestamp > 0) {
-                        db2.settings.tips.starter = false;
+                      if (db.gameData.version.timestamp > 0) {
+                        db.settings.tips.starter = false;
                         onDataReady(false);
-                        db2.saveSettings();
+                        db.saveSettings();
                       } else {
                         showDialog(
                           context: context,
                           builder: (context) => SimpleCancelOkDialog(
                             content: Text(S.current.database_not_downloaded),
                             onTapOk: () {
-                              db2.settings.tips.starter = false;
-                              db2.saveSettings();
+                              db.settings.tips.starter = false;
+                              db.saveSettings();
                               onDataReady(false);
                             },
                           ),
@@ -446,11 +446,11 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
       children: [
         SwitchListTile.adaptive(
           title: Text(S.current.auto_update),
-          value: db2.settings.autoUpdateData,
+          value: db.settings.autoUpdateData,
           onChanged: (v) {
             setState(() {
-              db2.settings.autoUpdateData = v;
-              db2.saveSettings();
+              db.settings.autoUpdateData = v;
+              db.saveSettings();
             });
           },
         ),
@@ -458,7 +458,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           title: Text(S.current.download_source),
           subtitle: Text(S.current.download_source_hint),
           trailing: DropdownButton<bool>(
-            value: db2.settings.proxyDataSource,
+            value: db.settings.proxyDataSource,
             items: [
               DropdownMenuItem(
                   child: Text(S.current.general_default), value: false),
@@ -467,9 +467,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             onChanged: (v) {
               setState(() {
                 if (v != null) {
-                  db2.settings.proxyDataSource = v;
+                  db.settings.proxyDataSource = v;
                 }
-                db2.saveSettings();
+                db.saveSettings();
               });
             },
           ),
@@ -477,9 +477,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
         ListTile(
           title: Text(S.current.current_version),
           trailing: Text(
-            db2.gameData.version.timestamp > 0
+            db.gameData.version.timestamp > 0
                 ? DateTime.fromMillisecondsSinceEpoch(
-                        db2.gameData.version.timestamp * 1000)
+                        db.gameData.version.timestamp * 1000)
                     .toStringShort()
                     .replaceFirst(' ', '\n')
                 : S.current.not_found,
@@ -500,8 +500,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                     if (mounted) setState(() {});
                   },
                 );
-                db2.gameData = gamedata;
-                db2.itemCenter.init();
+                db.gameData = gamedata;
+                db.itemCenter.init();
                 success = true;
               } catch (e, s) {
                 logger.e('download gamedata error', e, s);

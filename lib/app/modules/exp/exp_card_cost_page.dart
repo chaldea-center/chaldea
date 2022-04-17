@@ -203,7 +203,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           _cardIcon(expCardRarity),
           _itemIcon(Items.qp),
           _itemIcon(Items.grail),
-          _itemIcon(db2.gameData.servants[2]!.coin!.item),
+          _itemIcon(db.gameData.servants[2]!.coin!.item),
         ],
       )
     ];
@@ -278,14 +278,14 @@ class ExpUpData {
     grailStages.clear();
     coinStages.clear();
 
-    final svt = db2.gameData.servants.values.firstWhere(
+    final svt = db.gameData.servants.values.firstWhere(
         (svt) => svt.rarity == rarity && svt.isUserSvt && svt.collectionNo > 0);
 
     // level->ascension
     final ascensionLevels = svt.ascensionAdd.lvMax.ascension
         .map((key, value) => MapEntry(value, key));
     int maxAscensionLv = Maths.max(ascensionLevels.keys, 0);
-    final grailCost = db2.gameData.constData.svtGrailCost[svt.rarity]!;
+    final grailCost = db.gameData.constData.svtGrailCost[svt.rarity]!;
     Map<int, int> grailLvQp = grailCost.map((key, value) => MapEntry(
         maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0),
         grailCost[key]?.qp ?? 0));

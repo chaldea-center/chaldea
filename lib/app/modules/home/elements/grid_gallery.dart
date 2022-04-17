@@ -20,12 +20,12 @@ class GridGallery extends StatefulWidget {
 class _GridGalleryState extends State<GridGallery> {
   bool _editMode = false;
 
-  Map<String, bool> get galleries => db2.settings.galleries;
+  Map<String, bool> get galleries => db.settings.galleries;
 
   @override
   void initState() {
     super.initState();
-    db2.settings.galleries.removeWhere(
+    db.settings.galleries.removeWhere(
         (key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
@@ -55,7 +55,7 @@ class _GridGalleryState extends State<GridGallery> {
           )
         : _getGrid(crossCount, true);
 
-    if (db2.gameData.version.timestamp <= 0) {
+    if (db.gameData.version.timestamp <= 0) {
       grid = GestureDetector(
         onTap: () {
           SimpleCancelOkDialog(

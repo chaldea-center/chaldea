@@ -38,17 +38,17 @@ class _QuestCardState extends State<QuestCard> {
   bool? _use6th;
   bool preferApRate = false;
 
-  bool get use6th => _use6th ?? db2.curUser.use6thDropRate;
+  bool get use6th => _use6th ?? db.curUser.use6thDropRate;
 
   bool get show6th {
-    return db2.gameData.dropRate.getSheet(true).questIds.contains(quest.id);
+    return db.gameData.dropRate.getSheet(true).questIds.contains(quest.id);
   }
 
   @override
   void initState() {
     super.initState();
     _use6th = widget.use6th;
-    if (quest.isDomusQuest) preferApRate = db2.settings.preferApRate;
+    if (quest.isDomusQuest) preferApRate = db.settings.preferApRate;
     if (!widget.offline) _fetchAllPhases();
     showTrueName = !Transl.isJP;
   }
@@ -100,7 +100,7 @@ class _QuestCardState extends State<QuestCard> {
     QuestPhase? questPhase;
     for (final phase in quest.phases) {
       questPhase ??=
-          _getCachedPhase(phase) ?? db2.gameData.getQuestPhase(quest.id);
+          _getCachedPhase(phase) ?? db.gameData.getQuestPhase(quest.id);
       if (questPhase != null) break;
     }
 
@@ -234,11 +234,11 @@ class _QuestCardState extends State<QuestCard> {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
-      curPhase = db2.gameData.getQuestPhase(quest.id, phase);
+      curPhase = db.gameData.getQuestPhase(quest.id, phase);
     } else {
       curPhase = _getCachedPhase(phase);
       if (widget.region == Region.jp) {
-        curPhase ??= db2.gameData.getQuestPhase(quest.id, phase);
+        curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }
     }
     if (curPhase == null) {
@@ -356,7 +356,7 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
     if (show6th) {
-      final sheetData = db2.gameData.dropRate.getSheet(use6th);
+      final sheetData = db.gameData.dropRate.getSheet(use6th);
       int runs =
           sheetData.runs.getOrNull(sheetData.questIds.indexOf(quest.id)) ?? 0;
       children.add(Column(
@@ -392,7 +392,7 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   int _compareItem(int a, int b) {
-    final itemA = db2.gameData.items[a], itemB = db2.gameData.items[b];
+    final itemA = db.gameData.items[a], itemB = db.gameData.items[b];
     if (itemA != null && itemB != null) {
       return itemB.priority.compareTo(itemA.priority);
     } else if (itemA == null && itemB == null) {
@@ -404,7 +404,7 @@ class _QuestCardState extends State<QuestCard> {
 
   /// only drops of free quest useApRate
   Widget _getDomusAureaWidget() {
-    final dropRates = db2.gameData.dropRate.getSheet(use6th);
+    final dropRates = db.gameData.dropRate.getSheet(use6th);
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
@@ -628,7 +628,7 @@ class QuestEnemyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mp = db2.gameData.mappingData;
+    final mp = db.gameData.mappingData;
     String displayName = showTrueName ? enemy.svt.name : enemy.name;
     displayName = mp.svtNames[displayName]?.l ??
         mp.entityNames[displayName]?.l ??
@@ -666,7 +666,7 @@ class QuestEnemyWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        db2.getIconImage(enemy.svt.className.icon(enemy.svt.rarity), width: 20),
+        db.getIconImage(enemy.svt.className.icon(enemy.svt.rarity), width: 20),
         Flexible(
           child: AutoSizeText(
             '${enemy.svt.className.shortName} ${enemy.hp}',

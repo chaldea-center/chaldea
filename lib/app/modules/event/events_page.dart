@@ -20,9 +20,9 @@ class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  bool get reversed => db2.settings.display.eventsReversed;
+  bool get reversed => db.settings.display.eventsReversed;
 
-  bool get showOutdated => db2.settings.display.eventsShowOutdated;
+  bool get showOutdated => db.settings.display.eventsShowOutdated;
   bool showSpecialRewards = false;
 
   List<String> get tabNames => [
@@ -51,8 +51,8 @@ class _EventListPageState extends State<EventListPage>
           IconButton(
             onPressed: () {
               setState(() {
-                db2.settings.display.eventsShowOutdated = !showOutdated;
-                db2.saveSettings();
+                db.settings.display.eventsShowOutdated = !showOutdated;
+                db.saveSettings();
               });
             },
             tooltip: S.current.outdated,
@@ -68,8 +68,8 @@ class _EventListPageState extends State<EventListPage>
             ),
             tooltip: S.current.sort_order,
             onPressed: () {
-              setState(() => db2.settings.display.eventsReversed = !reversed);
-              db2.saveSettings();
+              setState(() => db.settings.display.eventsReversed = !reversed);
+              db.saveSettings();
             },
           ),
           PopupMenuButton(

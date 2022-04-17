@@ -22,7 +22,7 @@ class ItemCenter {
   /// settings
   bool includingEvents = true;
 
-  User get user => _user ?? db2.curUser;
+  User get user => _user ?? db.curUser;
   final User? _user;
 
   ItemCenter([this._user]);
@@ -49,7 +49,7 @@ class ItemCenter {
   void init() {
     _validItems.clear();
     final List<int> _svtIds = [];
-    for (final item in db2.gameData.items.values) {
+    for (final item in db.gameData.items.values) {
       if (item.skillUpItemType != SkillUpItemType.none) {
         _validItems.add(item.id);
       }
@@ -58,7 +58,7 @@ class ItemCenter {
     _validItems.addAll(Items.specialSvtMat);
     _validItems = _validItems.toSet().toList();
     // svt
-    for (final svt in db2.gameData.servants.values) {
+    for (final svt in db.gameData.servants.values) {
       if (svt.isUserSvt) _svtIds.add(svt.collectionNo);
     }
     _svtCur = _MatrixManager(
@@ -75,7 +75,7 @@ class ItemCenter {
         init: () => SvtMatCostDetail(() => 0));
     // events
     _eventItem = _MatrixManager(
-      dim1: db2.gameData.events.keys.toList(),
+      dim1: db.gameData.events.keys.toList(),
       dim2: _validItems,
       init: () => 0,
     );
@@ -123,7 +123,7 @@ class ItemCenter {
 
   void _updateOneSvt(int svtId, {bool max = false}) {
     final svtIndex = _svtCur._dim1Map[svtId];
-    final svt = db2.gameData.servants[svtId];
+    final svt = db.gameData.servants[svtId];
     if (svt == null || svtIndex == null) return;
     final cur = user.svtStatusOf(svtId).cur;
     final consumed = calcOneSvt(svt, SvtPlan(favorite: cur.favorite), cur,
@@ -155,7 +155,7 @@ class ItemCenter {
       return detail;
     }
     if (priorityFiltered &&
-        !db2.settings.svtFilterData.priority
+        !db.settings.svtFilterData.priority
             .matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
       print(
           'ignore ${svt.lName.l} - p${user.svtStatusOf(svt.collectionNo).priority}');
@@ -206,7 +206,7 @@ class ItemCenter {
 
   void _updateOneEvent(int eventId) {
     final eventIndex = _eventItem._dim1Map[eventId];
-    final event = db2.gameData.events[eventId];
+    final event = db.gameData.events[eventId];
     if (eventIndex == null || event == null) return;
     final eventItems = calcOneEvent(event, user.eventPlanOf(event.id));
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
@@ -298,7 +298,7 @@ class ItemCenter {
 
   void updateMainStory({bool notify = true}) {
     _statMainStory.clear();
-    for (final war in db2.gameData.wars.values) {
+    for (final war in db.gameData.wars.values) {
       if (war.isMainStory) {
         final plan = user.mainStoryOf(war.id);
         if (plan.fixedDrop) _statMainStory.addDict(war.itemDrop);
@@ -312,7 +312,7 @@ class ItemCenter {
 
   void updateExchangeTickets({bool notify = true}) {
     _statTicket.clear();
-    for (final ticket in db2.gameData.exchangeTickets.values) {
+    for (final ticket in db.gameData.exchangeTickets.values) {
       final plan = user.ticketOf(ticket.id);
       for (int i = 0; i < 3; i++) {
         _statTicket.addNum(ticket.items[i], plan.counts[i]);
@@ -335,7 +335,7 @@ class ItemCenter {
       ..addDict(statObtain)
       ..addDict(statSvtDemands.multiple(-1));
     streamController.sink.add(this);
-    db2.notifyUserdata();
+    db.notifyUserdata();
   }
 
   Map<int, SvtMatCostDetail<int>> getItemCostDetail(
@@ -497,7 +497,7 @@ class QpCost {
   static int grail(int rarity, int cur, int target) {
     int qp = 0;
     for (int grail = cur + 1; grail <= target; grail++) {
-      qp += db2.gameData.constData.svtGrailCost[rarity]![grail]?.qp ?? 0;
+      qp += db.gameData.constData.svtGrailCost[rarity]![grail]?.qp ?? 0;
     }
     return qp;
   }
@@ -505,7 +505,7 @@ class QpCost {
   static int bondLimit(int cur, int target) {
     int qp = 0;
     for (int lv = cur + 1; lv <= target; lv++) {
-      qp += db2.gameData.constData.bondLimitQp[lv] ?? 0;
+      qp += db.gameData.constData.bondLimitQp[lv] ?? 0;
     }
     return qp;
   }

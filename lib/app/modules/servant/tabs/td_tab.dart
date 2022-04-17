@@ -14,7 +14,7 @@ class SvtTdTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    final status = db2.curUser.svtStatusOf(svt.collectionNo).cur;
+    final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     for (final tds in svt.groupedNoblePhantasms) {
       List<NiceTd> shownTds = [];
       for (final td in tds) {

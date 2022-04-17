@@ -19,7 +19,7 @@ class MysticCodePage extends StatefulWidget {
 }
 
 class _MysticCodePageState extends State<MysticCodePage> {
-  Map<int, MysticCode> get codes => db2.gameData.mysticCodes;
+  Map<int, MysticCode> get codes => db.gameData.mysticCodes;
 
   int? _selected;
   late ScrollController _scrollController;
@@ -47,16 +47,16 @@ class _MysticCodePageState extends State<MysticCodePage> {
         url: Routes.mysticCodeI(_selected ?? 0),
       );
     }
-    _level = db2.curUser.mysticCodes[_selected]?.clamp(1, 10) ?? 10;
+    _level = db.curUser.mysticCodes[_selected]?.clamp(1, 10) ?? 10;
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.mystic_code),
         actions: [
           IconButton(
             onPressed: () =>
-                setState(() => db2.curUser.isGirl = !db2.curUser.isGirl),
+                setState(() => db.curUser.isGirl = !db.curUser.isGirl),
             icon: FaIcon(
-              db2.curUser.isGirl
+              db.curUser.isGirl
                   ? FontAwesomeIcons.venus
                   : FontAwesomeIcons.mars,
             ),
@@ -88,7 +88,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
           child: Slider(
             value: _level.toDouble(),
             onChanged: (v) =>
-                setState(() => db2.curUser.mysticCodes[_selected!] = v.toInt()),
+                setState(() => db.curUser.mysticCodes[_selected!] = v.toInt()),
             min: 1.0,
             max: 10.0,
             divisions: 9,
@@ -127,7 +127,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
                                 : Colors.transparent)),
                     child: GestureDetector(
                       onTap: () => setState(() => _selected = e.key),
-                      child: db2.getIconImage(code.icon, width: 50, height: 50),
+                      child: db.getIconImage(code.icon, width: 50, height: 50),
                     ),
                   ),
                 );
@@ -314,7 +314,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     }
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 22, 6),
-      leading: db2.getIconImage(skill.icon, width: 33),
+      leading: db.getIconImage(skill.icon, width: 33),
       title: Text(skill.lName.l),
       subtitle: Transl.isJP ? null : Text(skill.name),
       trailing: cd0 <= 0 && cd1 <= 0

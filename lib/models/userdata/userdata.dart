@@ -77,7 +77,7 @@ class UserData {
   factory UserData.fromLegacy(Map<String, dynamic> oldData) {
     List<User> users = [];
     Map<String, int> itemNameMap = {};
-    for (final item in db2.gameData.items.values) {
+    for (final item in db.gameData.items.values) {
       itemNameMap[item.lName.cn] = item.id;
     }
     for (final oldUser
@@ -254,7 +254,7 @@ class User {
 
   void ensurePlanLarger() {
     curPlan.forEach((key, plan) {
-      plan.validate(servants[key]?.cur, db2.gameData.servants[key]);
+      plan.validate(servants[key]?.cur, db.gameData.servants[key]);
     });
   }
 
@@ -424,7 +424,7 @@ class SvtPlan {
         costumes[id] = (costumes[id] ?? 0).clamp2(lower.costumes[id] ?? 0, 1);
       }
     }
-    final _grailLvs = db2.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
+    final _grailLvs = db.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
     grail = grail.clamp2(
         lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
     fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);

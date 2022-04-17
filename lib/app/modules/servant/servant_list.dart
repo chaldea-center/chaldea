@@ -31,11 +31,11 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState extends State<ServantListPage>
     with SearchableListState<Servant, ServantListPage> {
   @override
-  Iterable<Servant> get wholeData => db2.gameData.servants.values;
+  Iterable<Servant> get wholeData => db.gameData.servants.values;
 
   Set<Servant> hiddenPlanServants = {};
 
-  SvtFilterData get filterData => db2.settings.svtFilterData;
+  SvtFilterData get filterData => db.settings.svtFilterData;
 
   FavoriteState get favoriteState =>
       widget.planMode ? filterData.planFavorite : filterData.favorite;
@@ -54,15 +54,15 @@ class ServantListPageState extends State<ServantListPage>
   @override
   void initState() {
     super.initState();
-    if (db2.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter) {
       filterData.reset();
     }
-    if (db2.settings.favoritePreferred != null) {
-      filterData.favorite = db2.settings.favoritePreferred!;
+    if (db.settings.favoritePreferred != null) {
+      filterData.favorite = db.settings.favoritePreferred!;
     }
     if (widget.planMode) {
       filterData.planFavorite = FavoriteState.owned;
-      if (db2.settings.display.autoTurnOnPlanNotReach) {
+      if (db.settings.display.autoTurnOnPlanNotReach) {
         filterData.favorite = FavoriteState.owned;
         filterData.planCompletion.options
           ..clear()
@@ -80,7 +80,7 @@ class ServantListPageState extends State<ServantListPage>
       compare: (a, b) => SvtFilterData.compare(a, b,
           keys: filterData.sortKeys,
           reversed: filterData.sortReversed,
-          user: db2.curUser),
+          user: db.curUser),
     );
     return scrollListener(
       useGrid: widget.planMode ? false : filterData.useGrid,
@@ -89,9 +89,9 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   PreferredSizeWidget? get appBar {
-    Widget title = db2.onUserData(
+    Widget title = db.onUserData(
       (context, snapshot) => AutoSizeText(
-        widget.planMode ? db2.curUser.getFriendlyPlanName() : S.current.servant,
+        widget.planMode ? db.curUser.getFriendlyPlanName() : S.current.servant,
         maxLines: 1,
         minFontSize: 12,
         maxFontSize: 18,
@@ -113,11 +113,11 @@ class ServantListPageState extends State<ServantListPage>
         onTap: () {
           InputCancelOkDialog(
             title: S.current.set_plan_name,
-            text: db2.curUser.planNames[db2.curUser.curSvtPlanNo],
+            text: db.curUser.planNames[db.curUser.curSvtPlanNo],
             onSubmit: (s) {
               setState(() {
                 s = s.trim();
-                db2.curUser.planNames[db2.curUser.curSvtPlanNo] = s;
+                db.curUser.planNames[db.curUser.curSvtPlanNo] = s;
               });
             },
           ).showDialog(context);
@@ -164,7 +164,7 @@ class ServantListPageState extends State<ServantListPage>
             return [
               if (!widget.planMode)
                 PopupMenuItem(
-                  child: Text(db2.curUser.getFriendlyPlanName()),
+                  child: Text(db.curUser.getFriendlyPlanName()),
                   enabled: false,
                 ),
               PopupMenuItem(
@@ -174,9 +174,9 @@ class ServantListPageState extends State<ServantListPage>
                   SharedBuilder.showSwitchPlanDialog(
                     context: context,
                     onChange: (index) {
-                      db2.curUser.curSvtPlanNo = index;
-                      db2.curUser.ensurePlanLarger();
-                      db2.itemCenter.updateSvts(all: true);
+                      db.curUser.curSvtPlanNo = index;
+                      db.curUser.ensurePlanLarger();
+                      db.itemCenter.updateSvts(all: true);
                     },
                   );
                 },
@@ -191,18 +191,18 @@ class ServantListPageState extends State<ServantListPage>
                 ),
                 PopupMenuItem(
                   child: Text(
-                      S.current.reset_plan_shown(db2.curUser.curSvtPlanNo + 1)),
+                      S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current
-                          .reset_plan_shown(db2.curUser.curSvtPlanNo + 1)),
+                          .reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
                         for (final svt in shownList) {
-                          db2.curPlan.remove(svt.collectionNo);
+                          db.curPlan.remove(svt.collectionNo);
                         }
-                        db2.itemCenter.updateSvts(all: true);
+                        db.itemCenter.updateSvts(all: true);
                         setState(() {});
                       },
                     ).showDialog(context);
@@ -210,16 +210,16 @@ class ServantListPageState extends State<ServantListPage>
                 ),
                 PopupMenuItem(
                   child: Text(
-                      S.current.reset_plan_all(db2.curUser.curSvtPlanNo + 1)),
+                      S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current
-                          .reset_plan_all(db2.curUser.curSvtPlanNo + 1)),
+                          .reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
-                        db2.curPlan.clear();
-                        db2.itemCenter.updateSvts(all: true);
+                        db.curPlan.clear();
+                        db.itemCenter.updateSvts(all: true);
                         setState(() {});
                       },
                     ).showDialog(context);
@@ -228,16 +228,16 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuItem(
                   child: Text(
                     'Only change Append 2',
-                    style: db2.settings.display.onlyAppendSkillTwo
+                    style: db.settings.display.onlyAppendSkillTwo
                         ? null
                         : const TextStyle(
                             decoration: TextDecoration.lineThrough),
                   ),
                   onTap: () {
                     setState(() {
-                      db2.settings.display.onlyAppendSkillTwo =
-                          !db2.settings.display.onlyAppendSkillTwo;
-                      db2.saveSettings();
+                      db.settings.display.onlyAppendSkillTwo =
+                          !db.settings.display.onlyAppendSkillTwo;
+                      db.saveSettings();
                     });
                   },
                 ),
@@ -245,11 +245,11 @@ class ServantListPageState extends State<ServantListPage>
                   child: const Text('Show Full Screen'),
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
-                    db2.settings.display.planPageFullScreen =
-                        !db2.settings.display.planPageFullScreen;
-                    db2.saveSettings();
+                    db.settings.display.planPageFullScreen =
+                        !db.settings.display.planPageFullScreen;
+                    db.saveSettings();
                     SplitRoute.of(context)!.detail =
-                        db2.settings.display.planPageFullScreen ? null : false;
+                        db.settings.display.planPageFullScreen ? null : false;
                   },
                 ),
                 PopupMenuItem(
@@ -287,8 +287,8 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   Widget _getDetailTable(Servant svt) {
-    SvtStatus status = db2.curUser.svtStatusOf(svt.collectionNo);
-    SvtPlan cur = status.cur, target = db2.curUser.svtPlanOf(svt.collectionNo);
+    SvtStatus status = db.curUser.svtStatusOf(svt.collectionNo);
+    SvtPlan cur = status.cur, target = db.curUser.svtPlanOf(svt.collectionNo);
     Widget _getRange(int _c, int _t) {
       bool highlight = _t > _c;
       return Center(
@@ -361,7 +361,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   bool isSvtFavorite(Servant svt) {
-    return db2.curUser.svtStatusOf(svt.collectionNo).cur.favorite;
+    return db.curUser.svtStatusOf(svt.collectionNo).cur.favorite;
   }
 
   bool changeTarget = true;
@@ -372,8 +372,8 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   bool filter(Servant svt) {
-    final svtStat = db2.curUser.svtStatusOf(svt.collectionNo);
-    final svtPlan = db2.curUser.svtPlanOf(svt.collectionNo);
+    final svtStat = db.curUser.svtStatusOf(svt.collectionNo);
+    final svtPlan = db.curUser.svtPlanOf(svt.collectionNo);
     if ((favoriteState == FavoriteState.owned && !svtStat.cur.favorite) ||
         (favoriteState == FavoriteState.other && svtStat.cur.favorite)) {
       return false;
@@ -530,7 +530,7 @@ class ServantListPageState extends State<ServantListPage>
                   : null,
             ),
     );
-    if (db2.settings.display.classFilterStyle ==
+    if (db.settings.display.classFilterStyle ==
         SvtListClassFilterStyle.doNotShow) {
       return scrollable;
     }
@@ -555,7 +555,7 @@ class ServantListPageState extends State<ServantListPage>
         _oneClsBtn(clsName),
     ];
     final extraBtn = _oneClsBtn(SvtClass.EXTRA);
-    SvtListClassFilterStyle style = db2.settings.display.classFilterStyle;
+    SvtListClassFilterStyle style = db.settings.display.classFilterStyle;
     // full window mode
     if (SplitRoute.isSplit(context) && SplitRoute.of(context)!.detail == null) {
       style = SvtListClassFilterStyle.singleRowExpanded;
@@ -661,7 +661,7 @@ class ServantListPageState extends State<ServantListPage>
     } else {
       rarity = filterData.svtClass.options.contains(clsName) ? 5 : 1;
     }
-    Widget icon = db2.getIconImage(
+    Widget icon = db.getIconImage(
       clsName.icon(rarity),
       aspectRatio: 1,
       width: 32,
@@ -689,7 +689,7 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget gridItemBuilder(Servant svt) {
-    final status = db2.curUser.svtStatusOf(svt.collectionNo);
+    final status = db.curUser.svtStatusOf(svt.collectionNo);
     Widget textBuilder(TextStyle style) {
       return RichText(
         text: TextSpan(text: '', style: style, children: [
@@ -706,7 +706,7 @@ class ServantListPageState extends State<ServantListPage>
                   )
                 ],
               ),
-              child: db2.getIconImage(
+              child: db.getIconImage(
                   Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'),
                   width: 13,
                   height: 13),
@@ -719,11 +719,11 @@ class ServantListPageState extends State<ServantListPage>
       );
     }
 
-    return db2.onUserData(
+    return db.onUserData(
       (context, snapshot) => InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: db2.getIconImage(svt.customIcon),
+          image: db.getIconImage(svt.customIcon),
           shadowSize: 4,
           textBuilder: status.cur.favorite ? textBuilder : null,
           textStyle: const TextStyle(fontSize: 11, color: Colors.black),
@@ -738,9 +738,9 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget listItemBuilder(Servant svt) {
-    db2.curUser
+    db.curUser
         .svtPlanOf(svt.collectionNo)
-        .validate(db2.curUser.svtStatusOf(svt.collectionNo).cur);
+        .validate(db.curUser.svtStatusOf(svt.collectionNo).cur);
     return widget.planMode
         ? _planListItemBuilder(svt)
         : _usualListItemBuilder(svt);
@@ -770,8 +770,8 @@ class ServantListPageState extends State<ServantListPage>
             if (_changedAscension == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db2.curUser.svtPlanOf(svt.collectionNo);
+                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+                    target = db.curUser.svtPlanOf(svt.collectionNo);
                 if (changeTarget) {
                   target.ascension = max(cur.ascension, _changedAscension!);
                 } else {
@@ -803,8 +803,8 @@ class ServantListPageState extends State<ServantListPage>
             if (_changedSkill == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db2.curUser.svtPlanOf(svt.collectionNo);
+                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+                    target = db.curUser.svtPlanOf(svt.collectionNo);
                 for (int i = 0; i < 3; i++) {
                   if (changeTarget) {
                     if (v == 0) {
@@ -829,7 +829,7 @@ class ServantListPageState extends State<ServantListPage>
         value: _changedAppend,
         icon: Container(),
         hint: Text(S.current.append_skill_short +
-            (db2.settings.display.onlyAppendSkillTwo ? '2' : '')),
+            (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
         items: List.generate(12, (i) {
           if (i == 0) {
             return const DropdownMenuItem(value: -1, child: Text('x + 1'));
@@ -838,7 +838,7 @@ class ServantListPageState extends State<ServantListPage>
               value: i - 1,
               child: Text(S.current.words_separate(
                   S.current.append_skill_short +
-                      (db2.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
+                      (db.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
                   (i - 1).toString())),
             );
           }
@@ -849,9 +849,9 @@ class ServantListPageState extends State<ServantListPage>
             if (_changedAppend == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db2.curUser.svtPlanOf(svt.collectionNo);
-                for (int i in (db2.settings.display.onlyAppendSkillTwo
+                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+                    target = db.curUser.svtPlanOf(svt.collectionNo);
+                for (int i in (db.settings.display.onlyAppendSkillTwo
                     ? [1]
                     : [0, 1, 2])) {
                   if (changeTarget) {
@@ -890,8 +890,8 @@ class ServantListPageState extends State<ServantListPage>
             if (_changedDress == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db2.curUser.svtPlanOf(svt.collectionNo);
+                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+                    target = db.curUser.svtPlanOf(svt.collectionNo);
                 final costumes = changeTarget ? target.costumes : cur.costumes;
                 costumes
                   ..clear()
@@ -963,7 +963,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   Widget _usualListItemBuilder(Servant svt) {
-    final status = db2.curUser.svtStatusOf(svt.collectionNo);
+    final status = db.curUser.svtStatusOf(svt.collectionNo);
     Widget? getStatusText(BuildContext context) {
       if (!status.cur.favorite) return null;
       Widget statusText = Column(
@@ -987,7 +987,7 @@ class ServantListPageState extends State<ServantListPage>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                db2.getIconImage(Atlas.assetItem(Items.costumeIconId),
+                db.getIconImage(Atlas.assetItem(Items.costumeIconId),
                     width: 16, height: 16),
                 Text(svt.profile.costume.values
                     .map((e) => status.cur.costumes[e.battleCharaId] ?? 0)
@@ -1015,7 +1015,7 @@ class ServantListPageState extends State<ServantListPage>
         break;
     }
     return CustomTile(
-      leading: db2.getIconImage(svt.customIcon, width: 56),
+      leading: db.getIconImage(svt.customIcon, width: 56),
       title: Text(
         svt.lName.l,
         maxLines: 1,
@@ -1030,7 +1030,7 @@ class ServantListPageState extends State<ServantListPage>
           )
         ],
       ),
-      trailing: db2.onUserData(
+      trailing: db.onUserData(
           (context, snapshot) => getStatusText(context) ?? const SizedBox()),
       selected: SplitRoute.isSplit(context) && selected == svt,
       onTap: () => _onTapSvt(svt),
@@ -1058,8 +1058,8 @@ class ServantListPageState extends State<ServantListPage>
       },
     );
 
-    return db2.onUserData((context, snapshot) => CustomTile(
-          leading: db2.getIconImage(svt.customIcon, width: 48),
+    return db.onUserData((context, snapshot) => CustomTile(
+          leading: db.getIconImage(svt.customIcon, width: 48),
           subtitle: _getDetailTable(svt),
           trailing: eyeWidget,
           selected: SplitRoute.isSplit(context) && selected == svt,
@@ -1074,21 +1074,21 @@ class ServantListPageState extends State<ServantListPage>
       context: context,
       builder: (context) => SimpleDialog(
         title: Text(S.of(context).select_copy_plan_source),
-        children: List.generate(db2.curUser.svtPlanGroups.length, (index) {
-          bool isCur = index == db2.curUser.curSvtPlanNo;
-          String title = db2.curUser.getFriendlyPlanName(index);
+        children: List.generate(db.curUser.svtPlanGroups.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          String title = db.curUser.getFriendlyPlanName(index);
           if (isCur) title += ' (${S.current.current_})';
           return ListTile(
             title: Text(title),
             onTap: isCur
                 ? null
                 : () {
-                    db2.curUser.curPlan.clear();
-                    db2.curUser.svtPlanGroups[index].forEach((key, plan) {
-                      db2.curUser.curPlan[key] =
+                    db.curUser.curPlan.clear();
+                    db.curUser.svtPlanGroups[index].forEach((key, plan) {
+                      db.curUser.curPlan[key] =
                           SvtPlan.fromJson(jsonDecode(jsonEncode(plan)));
                     });
-                    db2.curUser.ensurePlanLarger();
+                    db.curUser.ensurePlanLarger();
                     Navigator.of(context).pop();
                   },
           );

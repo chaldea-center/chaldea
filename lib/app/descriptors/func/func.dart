@@ -135,11 +135,11 @@ class FuncDescriptor extends StatelessWidget {
       List<InlineSpan> spans = [];
       Widget? icon;
       if (func.funcPopupIcon != null) {
-        icon = db2.getIconImage(func.funcPopupIcon, width: 18);
+        icon = db.getIconImage(func.funcPopupIcon, width: 18);
       } else if (func.funcType == FuncType.eventDropUp ||
           func.funcType == FuncType.eventDropRateUp) {
         int? indiv = func.svals.getOrNull(0)?.Individuality;
-        final item = db2.gameData.items.values.firstWhereOrNull(
+        final item = db.gameData.items.values.firstWhereOrNull(
             (item) => item.individuality.any((trait) => trait.id == indiv));
         if (item != null) {
           icon = Item.iconBuilder(context: context, item: item, width: 24);
@@ -375,7 +375,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   void initState() {
     super.initState();
     if (!widget.isNp) {
-      skill = db2.gameData.baseSkills[widget.trigger.skill];
+      skill = db.gameData.baseSkills[widget.trigger.skill];
     }
     if (skill == null) _fetchSkill();
   }
@@ -395,7 +395,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     } else if (widget.isNp) {
       skill = await AtlasApi.td(skillId);
     } else {
-      skill = db2.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+      skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
     }
     if (mounted) setState(() {});
   }

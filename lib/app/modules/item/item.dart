@@ -39,7 +39,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    final item = db2.gameData.items[widget.itemId];
+    final item = db.gameData.items[widget.itemId];
     onlyShowInfoTab = [
       ItemType.svtCoin,
       ItemType.eventItem,
@@ -94,11 +94,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           : TabBarView(
               controller: _tabController,
               children: <Widget>[
-                db2.onUserData((context, _) => ItemCostSvtDetailTab(
+                db.onUserData((context, _) => ItemCostSvtDetailTab(
                       itemId: widget.itemId,
                       matType: null,
                     )),
-                db2.onUserData((context, _) => ItemCostSvtDetailTab(
+                db.onUserData((context, _) => ItemCostSvtDetailTab(
                       itemId: widget.itemId,
                       matType: SvtMatCostDetailType.consumed,
                     )),
@@ -118,10 +118,10 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       tooltip: S.of(context).filter_shown_type,
       onPressed: () {
         setState(() {
-          db2.settings.display.itemDetailViewType = EnumUtil.next(
+          db.settings.display.itemDetailViewType = EnumUtil.next(
               ItemDetailViewType.values,
-              db2.settings.display.itemDetailViewType);
-          db2.saveSettings();
+              db.settings.display.itemDetailViewType);
+          db.saveSettings();
         });
       },
     );
@@ -130,14 +130,14 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   Widget get sortButton {
     return IconButton(
       icon: const Icon(Icons.sort),
-      tooltip: _getSortTypeText(db2.settings.display.itemDetailSvtSort),
+      tooltip: _getSortTypeText(db.settings.display.itemDetailSvtSort),
       onPressed: () {
         setState(() {
-          db2.settings.display.itemDetailSvtSort = EnumUtil.next(
-              ItemDetailSvtSort.values, db2.settings.display.itemDetailSvtSort);
-          db2.saveSettings();
+          db.settings.display.itemDetailSvtSort = EnumUtil.next(
+              ItemDetailSvtSort.values, db.settings.display.itemDetailSvtSort);
+          db.saveSettings();
           EasyLoading.showToast(
-              _getSortTypeText(db2.settings.display.itemDetailSvtSort));
+              _getSortTypeText(db.settings.display.itemDetailSvtSort));
         });
       },
     );

@@ -38,16 +38,16 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   void initState() {
     super.initState();
     _cc = widget.cc ??
-        db2.gameData.commandCodes[widget.id] ??
-        db2.gameData.commandCodesById[widget.id];
+        db.gameData.commandCodes[widget.id] ??
+        db.gameData.commandCodesById[widget.id];
   }
 
   @override
   void didUpdateWidget(covariant CmdCodeDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _cc = widget.cc ??
-        db2.gameData.commandCodes[widget.id] ??
-        db2.gameData.commandCodesById[widget.id];
+        db.gameData.commandCodes[widget.id] ??
+        db.gameData.commandCodesById[widget.id];
   }
 
   @override
@@ -92,7 +92,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                       // if navigated from filter list, let filter list decide which is the next one
                       nextCc = widget.onSwitch!(cc, i == 0);
                     } else {
-                      nextCc = db2
+                      nextCc = db
                           .gameData.commandCodes[cc.collectionNo + [-1, 1][i]];
                     }
                     if (nextCc == null) {
@@ -161,7 +161,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           children: [
             TableCellData(
               child: InkWell(
-                child: db2.getIconImage(cc.borderedIcon, height: 72),
+                child: db.getIconImage(cc.borderedIcon, height: 72),
                 onTap: () {
                   FullscreenImageViewer.show(
                     context: context,
@@ -257,7 +257,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   Widget localizeCharacters(BuildContext context) {
     List<Widget> children = [];
     for (final svtId in cc.extra.characters) {
-      final svt = db2.gameData.servants[svtId];
+      final svt = db.gameData.servants[svtId];
       if (svt == null) {
         children.add(Text('SVT $svtId'));
       } else {

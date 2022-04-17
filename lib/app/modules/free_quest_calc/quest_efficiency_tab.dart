@@ -59,7 +59,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   }
 
   double getBondEff(LPVariable variable) {
-    final quest = db2.gameData.getQuestPhase(variable.name);
+    final quest = db.gameData.getQuestPhase(variable.name);
     if (quest == null) return double.negativeInfinity;
     return quest.bond / quest.consume;
   }
@@ -82,7 +82,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     solutionVars.forEach((variable) {
       final int questId = variable.name;
       final Map<int, double> drops = variable.detail;
-      final Quest? quest = db2.gameData.getQuestPhase(questId);
+      final Quest? quest = db.gameData.getQuestPhase(questId);
       if (filterItems.isEmpty ||
           (matchAll &&
               filterItems.every((e) => variable.detail.containsKey(e))) ||
@@ -175,7 +175,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         children.add(WidgetSpan(
           child: Opacity(
             opacity: 0.75,
-            child: db2.getIconImage(db2.gameData.items[entry.key]?.borderedIcon,
+            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon,
                 height: 18),
           ),
         ));
@@ -194,7 +194,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   Widget _buildButtonBar() {
     double height = Theme.of(context).iconTheme.size ?? 48;
     List<int> items = allItems.toList()
-      ..sort2((e) => db2.gameData.items[e]?.priority ?? e);
+      ..sort2((e) => db.gameData.items[e]?.priority ?? e);
     List<Widget> children = [];
     items.forEach((itemId) {
       children.add(GestureDetector(
@@ -212,7 +212,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
-              db2.getIconImage(db2.gameData.items[itemId]?.borderedIcon,
+              db.getIconImage(db.gameData.items[itemId]?.borderedIcon,
                   height: height),
               if (filterItems.contains(itemId))
                 Icon(Icons.circle, size: height * 0.53, color: Colors.white),

@@ -21,7 +21,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
   late TextEditingController _accLoginController;
   late TextEditingController _eventDiffController;
 
-  SaintQuartzPlan get plan => db2.curUser.saintQuartzPlan;
+  SaintQuartzPlan get plan => db.curUser.saintQuartzPlan;
 
   @override
   void initState() {

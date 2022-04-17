@@ -84,7 +84,7 @@ class Item {
     bool popDetail = false,
   }) {
     int? _itemId = item?.id ?? itemId;
-    item ??= db2.gameData.items[itemId];
+    item ??= db.gameData.items[itemId];
     icon ??= item?.borderedIcon;
     if (onTap == null && jumpToDetail && _itemId != null) {
       onTap = () {
@@ -113,21 +113,21 @@ class Item {
 
   // include special items(entity)
   static String getName(int id) {
-    return db2.gameData.items[id]?.lName.l ??
-        db2.gameData.entities[id]?.lName.l ??
+    return db.gameData.items[id]?.lName.l ??
+        db.gameData.entities[id]?.lName.l ??
         id.toString();
   }
 
   static String? getIcon(int id) {
-    return db2.gameData.items[id]?.borderedIcon ??
-        db2.gameData.entities[id]?.face;
+    return db.gameData.items[id]?.borderedIcon ??
+        db.gameData.entities[id]?.face;
   }
 
   static Map<int, int> sortMapByPriority(Map<int, int> items) {
     return {
       for (final k
           in items.keys.toList()
-            ..sort2((e) => db2.gameData.items[e]?.priority ?? e))
+            ..sort2((e) => db.gameData.items[e]?.priority ?? e))
         if (items[k]! > 0) k: items[k]!
     };
   }
@@ -137,7 +137,7 @@ class Item {
       for (final type in SkillUpItemType.values) type: {},
     };
     for (int itemId in items.keys) {
-      SkillUpItemType? type = db2.gameData.items[itemId]?.skillUpItemType;
+      SkillUpItemType? type = db.gameData.items[itemId]?.skillUpItemType;
       if (type == null && Items.specialSvtMat.contains(itemId)) {
         type = SkillUpItemType.special;
       }
@@ -159,7 +159,7 @@ class Items {
   static const int expPointId = -10;
   static const int bondPointId = -11;
 
-  static Map<int, Item> get _items => db2.gameData.items;
+  static Map<int, Item> get _items => db.gameData.items;
 
   static int qpId = 1;
   static int stoneId = 2;
@@ -240,7 +240,7 @@ class ItemAmount {
     required this.amount,
   }) : itemId = item?.id ?? itemId!;
 
-  Item get item => db2.gameData.items[itemId]!;
+  Item get item => db.gameData.items[itemId]!;
 
   factory ItemAmount.fromJson(Map<String, dynamic> json) =>
       _$ItemAmountFromJson(json);

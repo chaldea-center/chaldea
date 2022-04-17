@@ -39,16 +39,16 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   void initState() {
     super.initState();
     _ce = widget.ce ??
-        db2.gameData.craftEssences[widget.id] ??
-        db2.gameData.craftEssencesById[widget.id];
+        db.gameData.craftEssences[widget.id] ??
+        db.gameData.craftEssencesById[widget.id];
   }
 
   @override
   void didUpdateWidget(covariant CraftDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _ce = widget.ce ??
-        db2.gameData.craftEssences[widget.id] ??
-        db2.gameData.craftEssencesById[widget.id];
+        db.gameData.craftEssences[widget.id] ??
+        db.gameData.craftEssencesById[widget.id];
   }
 
   @override
@@ -59,7 +59,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
           url: Routes.commandCodeI(widget.id ?? 0));
     }
     final status =
-        db2.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;
+        db.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(ce.lName.l, maxLines: 1),
@@ -70,10 +70,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             //     Localized.craftFilter.of(CraftFilterData.statusTexts[status]),
             onPressed: () {
               setState(() {
-                db2.curUser.craftEssences[ce.collectionNo] = CraftStatus
+                db.curUser.craftEssences[ce.collectionNo] = CraftStatus
                     .values[(status.index + 1) % CraftStatus.values.length];
               });
-              db2.notifyUserdata();
+              db.notifyUserdata();
             },
             icon: status == CraftStatus.owned
                 ? const Icon(Icons.favorite, color: Colors.redAccent)
@@ -109,7 +109,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                       // if navigated from filter list, let filter list decide which is the next one
                       nextCe = widget.onSwitch!(ce, i == 0);
                     } else {
-                      nextCe = db2
+                      nextCe = db
                           .gameData.craftEssences[ce.collectionNo + [-1, 1][i]];
                     }
                     if (nextCe == null) {
@@ -177,7 +177,7 @@ class CraftDetailBasePage extends StatelessWidget {
           children: [
             TableCellData(
               child: InkWell(
-                child: db2.getIconImage(ce.borderedIcon, height: 90),
+                child: db.getIconImage(ce.borderedIcon, height: 90),
                 onTap: () {
                   FullscreenImageViewer.show(
                     context: context,
@@ -331,7 +331,7 @@ class CraftDetailBasePage extends StatelessWidget {
   Widget localizeCharacters(BuildContext context) {
     List<Widget> children = [];
     for (final svtId in ce.extra.characters) {
-      final svt = db2.gameData.servants[svtId];
+      final svt = db.gameData.servants[svtId];
       if (svt == null) {
         children.add(Text('SVT $svtId'));
       } else {
@@ -363,7 +363,7 @@ class CraftDetailBasePage extends StatelessWidget {
 
   List<LimitedSummon> getPickupSummons() {
     List<LimitedSummon> summons = [];
-    db2.gameData.wiki.summons.forEach((key, summon) {
+    db.gameData.wiki.summons.forEach((key, summon) {
       if (summon.allCards(ce: true).contains(ce.collectionNo)) {
         summons.add(summon);
       }
@@ -391,8 +391,8 @@ class CraftDetailBasePage extends StatelessWidget {
 
   List<Widget> _relatedSvt(BuildContext context) {
     List<Widget> children = [];
-    final bondSvt = db2.gameData.servantsById[ce.bondEquipOwner];
-    final valentineSvt = db2.gameData.servantsById[ce.valentineEquipOwner];
+    final bondSvt = db.gameData.servantsById[ce.bondEquipOwner];
+    final valentineSvt = db.gameData.servantsById[ce.valentineEquipOwner];
     for (var svt in [bondSvt, valentineSvt]) {
       if (svt == null) continue;
       children.add(TextButton(

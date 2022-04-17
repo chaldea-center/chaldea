@@ -29,7 +29,7 @@ class Transl<K, V> {
 
   MappingBase<V>? get m => mappings[key];
 
-  static Region get current => db2.settings.resolvedPreferredRegions.first;
+  static Region get current => db.settings.resolvedPreferredRegions.first;
 
   static bool get isJP => current == Region.jp;
 
@@ -40,7 +40,7 @@ class Transl<K, V> {
   V get l => maybeL ?? _default;
 
   V? get maybeL {
-    for (final region in db2.settings.resolvedPreferredRegions) {
+    for (final region in db.settings.resolvedPreferredRegions) {
       final v = mappings[key]?.ofRegion(region);
       if (v != null) return v;
     }
@@ -54,7 +54,7 @@ class Transl<K, V> {
     return '$runtimeType($key)';
   }
 
-  static MappingData get _md => db2.gameData.mappingData;
+  static MappingData get _md => db.gameData.mappingData;
 
   Transl.fromMapping(this.key, MappingBase<V> m, this._default)
       : _m = m,
@@ -72,7 +72,7 @@ class Transl<K, V> {
       Transl(_md.costumeNames, jp, jp);
 
   static Transl<int, String> costumeDetail(int id) =>
-      Transl(_md.costumeDetail, id, db2.gameData.costumes[id]?.detail ?? '???');
+      Transl(_md.costumeDetail, id, db.gameData.costumes[id]?.detail ?? '???');
 
   static Transl<String, String> cvNames(String jp) =>
       Transl(_md.cvNames, jp, jp);
@@ -327,7 +327,7 @@ class MappingBase<T> {
   });
 
   T? get l {
-    for (final region in db2.settings.resolvedPreferredRegions) {
+    for (final region in db.settings.resolvedPreferredRegions) {
       final v = ofRegion(region);
       if (v != null) return v;
     }

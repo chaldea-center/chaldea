@@ -29,13 +29,13 @@ class _WarDetailPageState extends State<WarDetailPage> {
   @override
   void initState() {
     super.initState();
-    _war = widget.war ?? db2.gameData.wars[widget.warId];
+    _war = widget.war ?? db.gameData.wars[widget.warId];
   }
 
   @override
   void didUpdateWidget(covariant WarDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _war = widget.war ?? db2.gameData.wars[widget.warId];
+    _war = widget.war ?? db.gameData.wars[widget.warId];
   }
 
   @override
@@ -47,11 +47,11 @@ class _WarDetailPageState extends State<WarDetailPage> {
       );
     }
     final plan =
-        war.isMainStory ? db2.curUser.mainStoryOf(war.id) : MainStoryPlan();
+        war.isMainStory ? db.curUser.mainStoryOf(war.id) : MainStoryPlan();
     final banners = [
       ...war.extra.titleBanner.values.whereType<String>(),
     ];
-    final eventBanners = db2
+    final eventBanners = db
         .gameData.events[war.eventId]?.extra.titleBanner.values
         .whereType<String>()
         .toList();
@@ -90,7 +90,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
           TableCellData(text: 'Banner', isHeader: true),
           TableCellData(
             flex: 3,
-            child: Center(child: db2.getIconImage(war.banner, height: 48)),
+            child: Center(child: db.getIconImage(war.banner, height: 48)),
           ),
         ]),
       if (war.eventId > 0)
@@ -185,17 +185,17 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ListTile(
           title: Text(S.current.game_rewards),
           trailing: war.isMainStory
-              ? db2.onUserData((context, snapshot) => Switch.adaptive(
+              ? db.onUserData((context, snapshot) => Switch.adaptive(
                     value: plan.questReward,
                     onChanged: (v) {
                       plan.questReward = v;
-                      db2.itemCenter.updateMainStory();
+                      db.itemCenter.updateMainStory();
                     },
                   ))
               : null,
           onTap: () {
             plan.questReward = !plan.questReward;
-            db2.itemCenter.updateMainStory();
+            db.itemCenter.updateMainStory();
           },
         ),
       );
@@ -210,17 +210,17 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ListTile(
           title: Text(S.current.quest_fixed_drop),
           trailing: war.isMainStory
-              ? db2.onUserData((context, snapshot) => Switch.adaptive(
+              ? db.onUserData((context, snapshot) => Switch.adaptive(
                     value: plan.fixedDrop,
                     onChanged: (v) {
                       plan.fixedDrop = v;
-                      db2.itemCenter.updateMainStory();
+                      db.itemCenter.updateMainStory();
                     },
                   ))
               : null,
           onTap: () {
             plan.fixedDrop = !plan.fixedDrop;
-            db2.itemCenter.updateMainStory();
+            db.itemCenter.updateMainStory();
           },
         ),
       );

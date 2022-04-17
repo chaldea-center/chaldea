@@ -40,7 +40,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     missions = List.of(widget.initMissions);
     warId = widget.initWarId ??
         Maths.max(
-            db2.gameData.mainStories.values
+            db.gameData.mainStories.values
                 .where(
                     (war) => war.quests.any((quest) => quest.isMainStoryFree))
                 .map((e) => e.id),
@@ -216,10 +216,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
       case MissionTargetType.questTrait:
         return Transl.trait(id).l;
       case MissionTargetType.quest:
-        return db2.gameData.quests[id]?.lName.l ?? id.toString();
+        return db.gameData.quests[id]?.lName.l ?? id.toString();
       case MissionTargetType.enemy:
-        return db2.gameData.servantsById[id]?.lName.l ??
-            db2.gameData.entities[id]?.lName.l ??
+        return db.gameData.servantsById[id]?.lName.l ??
+            db.gameData.entities[id]?.lName.l ??
             id.toString();
       case MissionTargetType.servantClass:
       case MissionTargetType.enemyClass:
@@ -229,7 +229,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   Widget get eventSelector {
-    final war = db2.gameData.wars[warId];
+    final war = db.gameData.wars[warId];
     String title;
     String leading = S.current.event_title;
     if (war == null) {
@@ -334,7 +334,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
 
       int countSuccess = 0, countError = 0, countNoEnemy = 0;
       if (warId < 1000) {
-        for (final war in db2.gameData.wars.values) {
+        for (final war in db.gameData.wars.values) {
           if (!war.isMainStory || war.id > warId) continue;
           for (final quest in war.quests) {
             if (!quest.isMainStoryFree) continue;
@@ -346,7 +346,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       } else {
         NiceWar? war = isRegionNA
             ? await AtlasApi.war(warId, region: Region.na)
-            : db2.gameData.wars[warId];
+            : db.gameData.wars[warId];
         if (war == null) {
           EasyLoading.showError('War $warId not found');
           return;
@@ -577,16 +577,16 @@ class EventChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainStories = db2.gameData.mainStories.values
+    final mainStories = db.gameData.mainStories.values
         .where((war) => war.quests.any((quest) => quest.isMainStoryFree))
         .toList();
     mainStories.sort2((e) => -e.id);
-    final eventWars = db2.gameData.wars.values
+    final eventWars = db.gameData.wars.values
         .where((war) =>
             !war.isMainStory && war.quests.any((quest) => quest.isAnyFree))
         .toList();
     eventWars.sort2(
-        (war) => -(db2.gameData.events[war.eventId]?.startedAt ?? war.id));
+        (war) => -(db.gameData.events[war.eventId]?.startedAt ?? war.id));
     return DefaultTabController(
       length: 2,
       initialIndex: initTab,

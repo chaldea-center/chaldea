@@ -12,7 +12,7 @@ class SvtTabsSortingSetting extends StatefulWidget {
 }
 
 class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
-  List<SvtTab> get tabs => db2.settings.display.sortedSvtTabs;
+  List<SvtTab> get tabs => db.settings.display.sortedSvtTabs;
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +33,14 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    db2.settings.display.sortedSvtTabs = List.of(SvtTab.values);
-                    db2.saveSettings();
+                    db.settings.display.sortedSvtTabs = List.of(SvtTab.values);
+                    db.saveSettings();
                   });
                 },
                 child: Text(S.current.reset),
               ),
               ElevatedButton(
-                onPressed: db2.gameData.servants.isEmpty
+                onPressed: db.gameData.servants.isEmpty
                     ? null
                     : () {
                         EasyLoading.showError(S.current.not_implemented);

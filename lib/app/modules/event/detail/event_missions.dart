@@ -30,7 +30,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
               .map((e) => CustomMission.fromEventMission(e));
           int? warId;
           for (final int id in widget.event.warIds) {
-            final war = db2.gameData.wars[id];
+            final war = db.gameData.wars[id];
             if (war == null) continue;
             if (war.quests.any((quest) => quest.isAnyFree)) {
               warId = id;

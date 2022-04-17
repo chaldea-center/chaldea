@@ -53,24 +53,24 @@ class ServantDetailPageState extends State<ServantDetailPage>
   List<_SubTabInfo> builders = [];
 
   // store data
-  SvtStatus get status => db2.curUser.svtStatusOf(svt.collectionNo);
+  SvtStatus get status => db.curUser.svtStatusOf(svt.collectionNo);
 
-  SvtPlan get plan => db2.curUser.svtPlanOf(svt.collectionNo);
+  SvtPlan get plan => db.curUser.svtPlanOf(svt.collectionNo);
 
   @override
   void initState() {
     super.initState();
     _svt = widget.svt ??
-        db2.gameData.servants[widget.id] ??
-        db2.gameData.servantsById[widget.id];
+        db.gameData.servants[widget.id] ??
+        db.gameData.servantsById[widget.id];
   }
 
   @override
   void didUpdateWidget(covariant ServantDetailPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _svt = widget.svt ??
-        db2.gameData.servants[widget.id] ??
-        db2.gameData.servantsById[widget.id];
+        db.gameData.servants[widget.id] ??
+        db.gameData.servantsById[widget.id];
   }
 
   @override
@@ -78,7 +78,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (_svt == null) {
       return NotFoundPage(url: Routes.servantI(widget.id ?? 0));
     }
-    builders = db2.settings.display.sortedSvtTabs
+    builders = db.settings.display.sortedSvtTabs
         .map((e) => _getBuilder(e))
         .whereType<_SubTabInfo>()
         .toList();
@@ -93,7 +93,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ),
             actions: <Widget>[
               if (svt.isUserSvt)
-                db2.onUserData(
+                db.onUserData(
                   (context, _) => IconButton(
                     icon: status.favorite
                         ? const Icon(Icons.favorite, color: Colors.redAccent)
@@ -177,7 +177,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           tab: tab,
           tabBuilder: () => S.current.plan,
           viewBuilder: (ctx) =>
-              db2.onUserData((context, _) => SvtPlanTab(svt: svt)),
+              db.onUserData((context, _) => SvtPlanTab(svt: svt)),
         );
       case SvtTab.skill:
         if (svt.skills.isEmpty) return null;
@@ -258,9 +258,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
               SharedBuilder.showSwitchPlanDialog(
                 context: context,
                 onChange: (index) {
-                  db2.curUser.curSvtPlanNo = index;
-                  db2.curUser.ensurePlanLarger();
-                  db2.itemCenter.updateSvts(all: true);
+                  db.curUser.curSvtPlanNo = index;
+                  db.curUser.ensurePlanLarger();
+                  db.itemCenter.updateSvts(all: true);
                 },
               );
             },
@@ -306,11 +306,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     if (icon == null) return;
                     children.add(ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: db2.getIconImage(svt.bordered(icon),
+                      leading: db.getIconImage(svt.bordered(icon),
                           padding: const EdgeInsets.symmetric(vertical: 2)),
                       title: Text(name),
                       onTap: () {
-                        db2.userData.customSvtIcon[svt.collectionNo] = icon;
+                        db.userData.customSvtIcon[svt.collectionNo] = icon;
                         Navigator.pop(context);
                       },
                     ));
@@ -343,7 +343,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     actions: [
                       TextButton(
                         onPressed: () {
-                          db2.userData.customSvtIcon.remove(svt.collectionNo);
+                          db.userData.customSvtIcon.remove(svt.collectionNo);
                           Navigator.pop(context);
                         },
                         child: Text(S.current.reset),
@@ -375,10 +375,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.current.svt_switch_slider_dropdown),
             value: 'switch_slider_dropdown',
             onTap: () {
-              db2.settings.display.svtPlanInputMode = EnumUtil.next(
+              db.settings.display.svtPlanInputMode = EnumUtil.next(
                   SvtPlanInputMode.values,
-                  db2.settings.display.svtPlanInputMode);
-              db2.saveSettings();
+                  db.settings.display.svtPlanInputMode);
+              db.saveSettings();
               setState(() {});
             },
           ),
@@ -480,7 +480,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         ),
         trailing: !svt.isUserSvt
             ? null
-            : db2.onUserData(
+            : db.onUserData(
                 (context, _) => Tooltip(
                   message: S.of(context).priority,
                   child: DropdownButton<int>(
@@ -507,7 +507,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                               AutoSizeText(
-                                db2.settings.priorityTags[priority] ?? '',
+                                db.settings.priorityTags[priority] ?? '',
                                 overflow: TextOverflow.visible,
                                 minFontSize: 6,
                                 maxFontSize: 12,
@@ -521,7 +521,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     }),
                     onChanged: (v) {
                       status.priority = v ?? status.priority;
-                      db2.notifyUserdata();
+                      db.notifyUserdata();
                     },
                     underline: Container(),
                     icon: Container(),

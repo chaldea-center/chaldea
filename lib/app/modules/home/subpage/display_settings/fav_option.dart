@@ -30,19 +30,19 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
             children: [
               RadioListTile<FavoriteState?>(
                 value: null,
-                groupValue: db2.settings.favoritePreferred,
+                groupValue: db.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '记住选择', jpn: '前の選択', eng: 'Remember', kor: '이전 선택')),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.favoritePreferred = null;
-                    db2.saveSettings();
+                    db.settings.favoritePreferred = null;
+                    db.saveSettings();
                   });
                 },
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.owned,
-                groupValue: db2.settings.favoritePreferred,
+                groupValue: db.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示已关注',
                     jpn: 'フォロー表示',
@@ -51,21 +51,21 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 secondary: const Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.favoritePreferred = FavoriteState.owned;
-                    db2.saveSettings();
+                    db.settings.favoritePreferred = FavoriteState.owned;
+                    db.saveSettings();
                   });
                 },
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.all,
-                groupValue: db2.settings.favoritePreferred,
+                groupValue: db.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示全部', jpn: 'すべて表示', eng: 'Show All', kor: '전부 표시')),
                 secondary: const Icon(Icons.remove_circle_outline),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.favoritePreferred = FavoriteState.all;
-                    db2.saveSettings();
+                    db.settings.favoritePreferred = FavoriteState.all;
+                    db.saveSettings();
                   });
                 },
               ),

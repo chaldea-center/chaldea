@@ -24,9 +24,9 @@ class CmdCodeListPage extends StatefulWidget {
 class CmdCodeListPageState extends State<CmdCodeListPage>
     with SearchableListState<CommandCode, CmdCodeListPage> {
   @override
-  Iterable<CommandCode> get wholeData => db2.gameData.commandCodes.values;
+  Iterable<CommandCode> get wholeData => db.gameData.commandCodes.values;
 
-  CmdCodeFilterData get filterData => db2.settings.cmdCodeFilterData;
+  CmdCodeFilterData get filterData => db.settings.cmdCodeFilterData;
 
   @override
   final bool prototypeExtent = true;
@@ -34,7 +34,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   @override
   void initState() {
     super.initState();
-    if (db2.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter) {
       filterData.reset();
     }
     options = _CmdCodeSearchOptions(onChanged: (_) {
@@ -78,7 +78,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   @override
   Widget listItemBuilder(CommandCode cc) {
     return CustomTile(
-      leading: db2.getIconImage(
+      leading: db.getIconImage(
         cc.borderedIcon,
         width: 56,
         aspectRatio: 132 / 144,
@@ -105,7 +105,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   @override
   Widget gridItemBuilder(CommandCode cc) {
     return GestureDetector(
-      child: db2.getIconImage(cc.borderedIcon),
+      child: db.getIconImage(cc.borderedIcon),
       onTap: () => _onTapCard(cc),
     );
   }

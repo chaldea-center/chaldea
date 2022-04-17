@@ -63,7 +63,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   BiliReplaced? get replacedResponse => topLogin?.body;
 
   String get tmpPath =>
-      joinPaths(db2.paths.tempDir, 'http_packages', db2.curUser.name);
+      joinPaths(db.paths.tempDir, 'http_packages', db.curUser.name);
 
   @override
   void initState() {
@@ -255,7 +255,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final item = items[index];
                   return ImageWithText(
-                    image: db2.getIconImage(Item.getIcon(item.itemId),
+                    image: db.getIconImage(Item.getIcon(item.itemId),
                         width: _with),
                     text: item.num.toString(),
                     // width: _with,
@@ -320,7 +320,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 : S.current.append_skill_short +
                     ' ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
           ]),
-          if (db2.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
+          if (db.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
             _wrapCellStyle([
               S.current.costume +
                   ' ${cardCollections[svt.svtId]!.costumeIdsTo01()}',
@@ -354,7 +354,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 6, top: 2),
-                child: db2.gameData.servantsById[svt.svtId]!
+                child: db.gameData.servantsById[svt.svtId]!
                     .iconBuilder(context: context, height: 56),
               ),
               if (svt.locked)
@@ -568,10 +568,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   void didImportData() async {
     bool? confirmed = await SimpleCancelOkDialog(
       title: Text(S.current.import_data),
-      content: Text(S.current.cur_account + ': ' + db2.curUser.name),
+      content: Text(S.current.cur_account + ': ' + db.curUser.name),
     ).showDialog(context);
     if (confirmed != true) return;
-    final user = db2.curUser;
+    final user = db.curUser;
     user.isGirl = replacedResponse!.firstUser!.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
@@ -604,7 +604,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           continue;
         } else {
           status = user
-              .svtStatusOf(db2.gameData.servantsById[svt.svtId]!.collectionNo);
+              .svtStatusOf(db.gameData.servantsById[svt.svtId]!.collectionNo);
         }
         _alreadyAdded.add(svt.svtId);
 
@@ -727,12 +727,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     items = _topLogin.body.userItem
         .where((e) =>
             e.num > 0 &&
-            db2.gameData.items[e.itemId]?.skillUpItemType !=
+            db.gameData.items[e.itemId]?.skillUpItemType !=
                 SkillUpItemType.none)
         .toList();
     crafts.clear();
 
-    items.sort2((e) => db2.gameData.items[e.itemId]?.priority ?? e.itemId);
+    items.sort2((e) => db.gameData.items[e.itemId]?.priority ?? e.itemId);
 
     // collections
     cardCollections = Map.fromEntries(
@@ -740,7 +740,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
     // svt
     _topLogin.body.userSvt.forEach((svt) {
-      if (db2.gameData.servantsById.containsKey(svt.svtId)) {
+      if (db.gameData.servantsById.containsKey(svt.svtId)) {
         // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = false;
         svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
@@ -757,7 +757,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     });
     // svtStorage
     _topLogin.body.userSvtStorage.forEach((svt) {
-      if (db2.gameData.servantsById.containsKey(svt.svtId)) {
+      if (db.gameData.servantsById.containsKey(svt.svtId)) {
         // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = true;
         svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
@@ -773,8 +773,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       }
     });
     servants.sort((a, b) {
-      final aa = db2.gameData.servantsById[a.first.svtId];
-      final bb = db2.gameData.servantsById[b.first.svtId];
+      final aa = db.gameData.servantsById[a.first.svtId];
+      final bb = db.gameData.servantsById[b.first.svtId];
       return SvtFilterData.compare(aa, bb,
           keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
           reversed: [true, false, false]);
@@ -793,7 +793,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       });
     });
     // crafts
-    crafts = db2.gameData.craftEssencesById.map((gameId, craft) {
+    crafts = db.gameData.craftEssencesById.map((gameId, craft) {
       int status = cardCollections[gameId]?.status ?? 0;
       return MapEntry(craft.collectionNo, status);
     });

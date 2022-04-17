@@ -18,7 +18,7 @@ class LimitEventTab extends StatelessWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  Map<int, Event> get limitEvents => db2.gameData.events;
+  Map<int, Event> get limitEvents => db.gameData.events;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class LimitEventTab extends StatelessWidget {
     events.removeWhere((event) => event.isEmpty);
     if (!showOutdated) {
       events.removeWhere(
-          (e) => e.isOutdated() && !db2.curUser.eventPlanOf(e.id).enabled);
+          (e) => e.isOutdated() && !db.curUser.eventPlanOf(e.id).enabled);
     }
 
     events.sort2((e) => e.startedAt, reversed: reversed);
     return ListView(
       controller: scrollController,
       children: events.map((event) {
-        final plan = db2.curUser.eventPlanOf(event.id);
+        final plan = db.curUser.eventPlanOf(event.id);
         bool outdated = event.isOutdated();
         String? subtitle;
         subtitle ??= 'JP ' + event.startedAt.sec2date().toDateString();
@@ -59,7 +59,7 @@ class LimitEventTab extends StatelessWidget {
                   event.lotteries.isNotEmpty ||
                   event.treasureBoxes.isNotEmpty)
                 Icon(Icons.star, color: Colors.yellow[700]),
-              db2.onUserData(
+              db.onUserData(
                 (context, _) => Switch.adaptive(
                   value: plan.enabled,
                   onChanged: (v) {

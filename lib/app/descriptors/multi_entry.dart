@@ -73,7 +73,7 @@ class MultiDescriptor {
     return [
       collapsed(context, targetIds, 'All ${targetIds.length} items',
           (context, id) {
-        final item = db2.gameData.items[id];
+        final item = db.gameData.items[id];
         return ListTile(
           leading: Item.iconBuilder(context: context, item: item),
           title: Text(item?.lName.l ?? 'Item $id'),
@@ -89,8 +89,7 @@ class MultiDescriptor {
         context,
         targetIds,
         (context, id) {
-          final svt =
-              db2.gameData.servantsById[id] ?? db2.gameData.entities[id];
+          final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
           return svt?.iconBuilder(context: context, width: iconSize) ??
               Text('SVT $id');
         },
@@ -99,7 +98,7 @@ class MultiDescriptor {
     return [
       collapsed(context, targetIds, 'All ${targetIds.length} servants',
           (context, id) {
-        final svt = db2.gameData.servantsById[id] ?? db2.gameData.entities[id];
+        final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
         return ListTile(
           leading: svt?.iconBuilder(context: context, width: iconSize),
           title: Text(svt?.lName.l ?? 'Servant $id'),
@@ -135,7 +134,7 @@ class MultiDescriptor {
         context,
         targetIds,
         (context, id) {
-          final quest = db2.gameData.quests[id];
+          final quest = db.gameData.quests[id];
           return inkWell(
             context: context,
             onTap: () => quest?.routeTo(),
@@ -147,8 +146,8 @@ class MultiDescriptor {
     return [
       collapsed(context, targetIds, 'All ${targetIds.length} quests',
           (context, id) {
-        final quest = db2.gameData.quests[id];
-        final phase = db2.gameData.getQuestPhase(id);
+        final quest = db.gameData.quests[id];
+        final phase = db.gameData.getQuestPhase(id);
         final warName =
             Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?")
                 .l

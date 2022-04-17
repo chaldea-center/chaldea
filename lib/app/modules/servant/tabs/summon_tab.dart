@@ -12,7 +12,7 @@ class SvtSummonTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
-    for (final summon in db2.gameData.wiki.summons.values) {
+    for (final summon in db.gameData.wiki.summons.values) {
       if (summon.allCards(svt: true).contains(svt.collectionNo)) {
         summons.add(summon);
       }
@@ -31,7 +31,7 @@ class SvtSummonTab extends StatelessWidget {
   }
 
   Widget summonTile(LimitedSummon summon) {
-    bool planned = db2.curUser.summons.contains(summon.id);
+    bool planned = db.curUser.summons.contains(summon.id);
     return ListTile(
       title: Row(
         children: [
@@ -53,8 +53,8 @@ class SvtSummonTab extends StatelessWidget {
           color: planned ? Colors.redAccent : null,
         ),
         onPressed: () {
-          db2.curUser.summons.toggle(summon.id);
-          db2.notifyUserdata();
+          db.curUser.summons.toggle(summon.id);
+          db.notifyUserdata();
         },
       ),
       onTap: () {

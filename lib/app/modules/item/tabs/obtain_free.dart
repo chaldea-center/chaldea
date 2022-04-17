@@ -16,14 +16,14 @@ class ItemObtainFreeTab extends StatefulWidget {
 }
 
 class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
-  bool get sortByAP => db2.settings.display.itemQuestsSortByAp;
+  bool get sortByAP => db.settings.display.itemQuestsSortByAp;
 
   set sortByAP(bool v) {
-    db2.settings.display.itemQuestsSortByAp = v;
-    db2.saveSettings();
+    db.settings.display.itemQuestsSortByAp = v;
+    db.saveSettings();
   }
 
-  bool use6th = db2.curUser.use6thDropRate;
+  bool use6th = db.curUser.use6thDropRate;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   }
 
   List<Widget> buildQuests() {
-    final dropRateData = db2.gameData.dropRate.getSheet(use6th);
+    final dropRateData = db.gameData.dropRate.getSheet(use6th);
     int rowIndex = dropRateData.itemIds.indexOf(widget.itemId);
     if (rowIndex < 0) {
       return [ListTile(title: Text(S.current.item_no_free_quests))];
@@ -107,7 +107,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           dropRate = dropMatrix[i];
       final dropRateString = (dropRate * 100).toStringAsFixed(2),
           apRateString = apRate.toStringAsFixed(2);
-      final quest = db2.gameData.quests[questId];
+      final quest = db.gameData.quests[questId];
 
       final child = ValueStatefulBuilder<bool>(
           key: quest == null ? null : Key('quest_${quest.id}'),

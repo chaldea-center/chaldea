@@ -24,9 +24,9 @@ class _TranslationSettingState extends State<TranslationSetting> {
               child: Text(S.current.reset),
               onPressed: () {
                 setState(() {
-                  db2.settings.preferredRegions = null;
-                  db2.saveSettings();
-                  db2.notifySettings();
+                  db.settings.preferredRegions = null;
+                  db.saveSettings();
+                  db.notifySettings();
                 });
               },
             ),
@@ -37,7 +37,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
   }
 
   Widget get orderableList {
-    List<Region> regions = db2.settings.resolvedPreferredRegions;
+    List<Region> regions = db.settings.resolvedPreferredRegions;
     return ReorderableListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -62,9 +62,9 @@ class _TranslationSettingState extends State<TranslationSetting> {
           }
           final item = regions.removeAt(oldIndex);
           regions.insert(newIndex, item);
-          db2.settings.preferredRegions = regions;
-          db2.saveSettings();
-          db2.notifySettings();
+          db.settings.preferredRegions = regions;
+          db.saveSettings();
+          db.notifySettings();
         });
       },
     );

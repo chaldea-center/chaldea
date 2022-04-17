@@ -15,7 +15,7 @@ class CarouselSettingPage extends StatefulWidget {
 }
 
 class _CarouselSettingPageState extends State<CarouselSettingPage> {
-  CarouselSetting get carousel => db2.settings.carousel;
+  CarouselSetting get carousel => db.settings.carousel;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
               setState(() {
                 carousel.enabled = v;
                 carousel.needUpdate = true;
-                db2.notifySettings();
+                db.notifySettings();
               });
             },
           ),
@@ -82,7 +82,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
 
   void updateHome() {
     if (SplitRoute.isSplit(context)) {
-      db2.notifySettings();
+      db.notifySettings();
     }
   }
 }

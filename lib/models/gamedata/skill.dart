@@ -74,7 +74,7 @@ class BaseSkill implements SkillOrTd {
     return content.replaceAll('{0}', 'Lv.').replaceFirstMapped(
       RegExp(r'\[servantName (\d+)\]'),
       (match) {
-        final svt = db2.gameData.servantsById[int.parse(match.group(1)!)];
+        final svt = db.gameData.servantsById[int.parse(match.group(1)!)];
         if (svt != null) {
           return svt.lName.l;
         }

@@ -48,12 +48,12 @@ class _QuestListPageState extends State<QuestListPage> {
               ));
             }
           }
-          QuestPhase? phase = db2.gameData.questPhases[quest.getPhaseKey(3)];
+          QuestPhase? phase = db.gameData.questPhases[quest.getPhaseKey(3)];
           if (phase != null) {
             trailings.add(const TextSpan(text: '\n'));
             for (final cls in phase.className) {
               trailings.add(
-                  WidgetSpan(child: db2.getIconImage(cls.icon(3), height: 18)));
+                  WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)));
             }
           }
           Widget trailing = trailings.isEmpty

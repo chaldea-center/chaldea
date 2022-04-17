@@ -68,10 +68,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
   }
 
   Map<int, int> get _svtScores =>
-      db2.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
+      db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
 
   int scoreOf(int id) {
-    return _svtScores[id] ?? (db2.curUser.svtStatusOf(id).favorite ? 1 : 5);
+    return _svtScores[id] ?? (db.curUser.svtStatusOf(id).favorite ? 1 : 5);
   }
 
   Widget get inputTab {
@@ -81,7 +81,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         if (block.rarity == 5 /*|| (block.rarity == 4 && showSR)*/) {
           children.add(SHeader(SummonUtil.summonNameLocalize(data.title)));
           for (final svtId in block.ids) {
-            final svt = db2.gameData.servants[svtId];
+            final svt = db.gameData.servants[svtId];
             if (svt == null) continue;
             children.add(ListTile(
               leading: Padding(
@@ -90,7 +90,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     context: context,
                     card: svt,
                     category: false,
-                    favorite: db2.curUser.svtStatusOf(svtId).favorite),
+                    favorite: db.curUser.svtStatusOf(svtId).favorite),
               ),
               horizontalTitleGap: 0,
               title: Row(
@@ -117,7 +117,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     return Column(
       children: [
         ListTile(
-          leading: db2.getIconImage(null, width: 40),
+          leading: db.getIconImage(null, width: 40),
           tileColor: Theme.of(context).highlightColor,
           horizontalTitleGap: 0,
           shape:
@@ -210,7 +210,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           spacing: 2,
           runSpacing: 2,
           children: _result.block.ids.map((id) {
-            final svt = db2.gameData.servants[id];
+            final svt = db.gameData.servants[id];
             if (svt == null) return Container();
             return SummonUtil.svtAvatar(
                 context: context, card: svt, favorite: true);

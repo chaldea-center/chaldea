@@ -131,7 +131,7 @@ mixin GameCardMixin {
         ? EdgeInsets.zero
         : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
     Widget child = ImageWithText(
-      image: db2.getIconImage(
+      image: db.getIconImage(
         icon,
         aspectRatio: aspectRatio,
         width: width,
@@ -317,7 +317,7 @@ mixin GameCardMixin {
     required T Function() onDefault,
   }) {
     T? result;
-    final gamedata = db2.gameData;
+    final gamedata = db.gameData;
     if (gamedata.items.containsKey(id)) {
       result = onItem?.call(gamedata.items[id]!);
     } else if (gamedata.servantsById.containsKey(id)) {

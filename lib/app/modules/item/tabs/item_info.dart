@@ -19,7 +19,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
 
   @override
   Widget build(BuildContext context) {
-    final item = db2.gameData.items[itemId];
+    final item = db.gameData.items[itemId];
     if (item == null) {
       return ListTile(
         title: Text('NotFound: $itemId'),
@@ -31,7 +31,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
           CustomTableRow(
             children: [
               TableCellData(
-                child: db2.getIconImage(item.borderedIcon, height: 72),
+                child: db.getIconImage(item.borderedIcon, height: 72),
                 flex: 1,
                 padding: const EdgeInsets.all(3),
               ),
@@ -90,7 +90,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   @override
   void initState() {
     super.initState();
-    svtCoinOwner = db2.gameData.servants.values
+    svtCoinOwner = db.gameData.servants.values
         .firstWhereOrNull((svt) => svt.coin?.item.id == itemId);
     if (svtCoinOwner != null) {
       _summonCoin = svtCoinOwner!.coin!.summonNum;

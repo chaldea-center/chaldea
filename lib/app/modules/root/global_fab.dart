@@ -132,10 +132,10 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           horizontalTitleGap: 0,
           onTap: () {
             Navigator.pop(context);
-            db2.settings.themeMode = db2.settings.isResolvedDarkMode
+            db.settings.themeMode = db.settings.isResolvedDarkMode
                 ? ThemeMode.light
                 : ThemeMode.dark;
-            db2.notifyAppUpdate();
+            db.notifyAppUpdate();
           },
         ),
         ListTile(
@@ -144,15 +144,15 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           horizontalTitleGap: 0,
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
-            value: Language.getLanguage(db2.settings.language),
+            value: Language.getLanguage(db.settings.language),
             items: Language.supportLanguages
                 .map((lang) =>
                     DropdownMenuItem(value: lang, child: Text(lang.name)))
                 .toList(),
             onChanged: (lang) {
               if (lang == null) return;
-              db2.settings.setLanguage(lang);
-              db2.notifyAppUpdate();
+              db.settings.setLanguage(lang);
+              db.notifyAppUpdate();
             },
           ),
         ),
@@ -177,8 +177,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           title: const Text('Init ItemCenter'),
           onTap: () {
-            db2.gameData.preprocess();
-            db2.itemCenter.init();
+            db.gameData.preprocess();
+            db.itemCenter.init();
           },
         ),
         ListTile(
@@ -188,7 +188,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           title: const Text('Save User Data'),
           onTap: () {
-            db2.saveAll();
+            db.saveAll();
             Navigator.pop(context);
           },
         ),

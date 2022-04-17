@@ -27,10 +27,10 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   void _calcRarityCounts() {
     if (rarityTotal.every((e) => e == 0)) {
-      db2.gameData.servants.forEach((no, svt) {
+      db.gameData.servants.forEach((no, svt) {
         if (!svt.isUserSvt) return;
         rarityTotal[svt.rarity] += 1;
-        final stat = db2.curUser.svtStatusOf(no);
+        final stat = db.curUser.svtStatusOf(no);
         if (stat.favorite) {
           rarityOwn[svt.rarity] += 1;
         }
@@ -158,8 +158,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   void _calcServantClass() {
     svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA],
         value: (_) => 0);
-    db2.gameData.servants.values.forEach((svt) {
-      if (db2.curUser.svtStatusOf(svt.collectionNo).favorite) {
+    db.gameData.servants.values.forEach((svt) {
+      if (db.curUser.svtStatusOf(svt.collectionNo).favorite) {
         if (raritySelected.contains(true) && !raritySelected[svt.rarity]) {
           return;
         }
@@ -264,7 +264,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       titleStyle: TextStyle(
           color: Colors.white, fontSize: 16 * mag, fontWeight: FontWeight.bold),
       radius: (selected ? 120 : 100) * mag,
-      badgeWidget: db2.getIconImage(
+      badgeWidget: db.getIconImage(
         clsName.icon(5),
         width: 30 * mag,
         height: 30 * mag,

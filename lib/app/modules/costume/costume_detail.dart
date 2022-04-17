@@ -19,8 +19,8 @@ class CostumeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final costume = _costume ??
-        db2.gameData.costumes[id] ??
-        db2.gameData.costumes.values
+        db.gameData.costumes[id] ??
+        db.gameData.costumes.values
             .firstWhereOrNull((e) => e.battleCharaId == id);
     if (costume == null) {
       return NotFoundPage(
@@ -46,7 +46,7 @@ class CostumeDetailPage extends StatelessWidget {
             CustomTableRow(
               children: [
                 TableCellData(
-                  child: db2.getIconImage(costume.icon, height: 72),
+                  child: db.getIconImage(costume.icon, height: 72),
                   flex: 1,
                   padding: const EdgeInsets.all(3),
                 ),

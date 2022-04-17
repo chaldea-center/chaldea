@@ -53,7 +53,7 @@ class _AboutPageState extends State<AboutPage> {
             onLongPress: () async {
               setState(() {
                 showDebugInfo = true;
-                db2.runtimeData.enableDebugTools = true;
+                db.runtimeData.enableDebugTools = true;
               });
               await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
               EasyLoading.showToast('UUID ' + S.current.copied);
@@ -78,13 +78,12 @@ class _AboutPageState extends State<AboutPage> {
             children: [
               if (!AppInfo.isMacStoreApp &&
                   (!PlatformU.isIOS ||
-                      db2.runtimeData.upgradableVersion != null))
+                      db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
-                  trailing: db2.runtimeData.upgradableVersion != null
+                  trailing: db.runtimeData.upgradableVersion != null
                       ? Text(
-                          db2.runtimeData.upgradableVersion!.versionString +
-                              '↑',
+                          db.runtimeData.upgradableVersion!.versionString + '↑',
                           style: const TextStyle(color: Colors.redAccent))
                       : null,
                   onTap: () {
@@ -93,12 +92,12 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
                 SwitchListTile.adaptive(
-                  value: db2.settings.autoUpdateApp,
+                  value: db.settings.autoUpdateApp,
                   title: Text(S.current.auto_update),
                   onChanged: (v) {
                     setState(() {
-                      db2.settings.autoUpdateApp = v;
-                      db2.saveSettings();
+                      db.settings.autoUpdateApp = v;
+                      db.saveSettings();
                     });
                   },
                 ),

@@ -45,14 +45,14 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             children: [
               const Text('Ignored:'),
               ...ignoredItems.map((e) => Item.iconBuilder(
-                  context: context, item: db2.gameData.items[e], width: 32))
+                  context: context, item: db.gameData.items[e], width: 32))
             ],
           ),
         ),
       ));
     }
     widget.solution?.countVars.forEach((variable) {
-      final QuestPhase? quest = db2.gameData.getQuestPhase(variable.name);
+      final QuestPhase? quest = db.gameData.getQuestPhase(variable.name);
       children.add(Container(
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),
@@ -150,7 +150,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         children.add(WidgetSpan(
           child: Opacity(
             opacity: 0.75,
-            child: db2.getIconImage(db2.gameData.items[entry.key]?.borderedIcon,
+            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon,
                 height: 18),
           ),
         ));

@@ -174,9 +174,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               ElevatedButton(
                 onPressed: () {
                   svtResult.forEach((record) {
-                    db2.curUser.servants[record.svt.collectionNo] =
+                    db.curUser.servants[record.svt.collectionNo] =
                         SvtStatus(cur: record.cur);
-                    db2.curPlan[record.svt.collectionNo] = record.target;
+                    db.curPlan[record.svt.collectionNo] = record.target;
                   });
                   EasyLoading.showSuccess(
                       'Import ${svtResult.length} servants');
@@ -223,7 +223,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
             children: [
               ElevatedButton(
                 onPressed: () {
-                  db2.curUser.items.addAll(itemResult);
+                  db.curUser.items.addAll(itemResult);
                   EasyLoading.showSuccess('Import ${itemResult.length} items');
                 },
                 child: Text(S.current.import_data),
@@ -248,9 +248,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         svtResult.clear();
         for (final List row in data) {
           if (row.length < 9) continue;
-          int? svtId = db2.gameData.wiki.webcrowMapping[row[0]];
+          int? svtId = db.gameData.wiki.webcrowMapping[row[0]];
           // svtId ??= row[0] < 149 ? row[0] : row[0] + 5;
-          final svt = db2.gameData.servants[svtId];
+          final svt = db.gameData.servants[svtId];
           if (svt == null) continue;
           svtResult.add(_OneServantData(
             svt: svt,
@@ -299,7 +299,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       ItemBGType.silver: [],
       ItemBGType.gold: [],
     };
-    for (final item in db2.gameData.items.values) {
+    for (final item in db.gameData.items.values) {
       if (item.id >= 6500 && item.id < 6900) {
         mItems[item.background]!.add(item);
       }

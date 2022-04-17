@@ -24,10 +24,10 @@ class MainStoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<NiceWar> mainStories = db2.gameData.mainStories.values.toList();
+    List<NiceWar> mainStories = db.gameData.mainStories.values.toList();
     if (!showOutdated) {
       mainStories.removeWhere((e) {
-        final plan = db2.curUser.mainStoryOf(e.id);
+        final plan = db.curUser.mainStoryOf(e.id);
         return e.isOutdated() && !plan.enabled;
       });
     }
@@ -52,11 +52,11 @@ class MainStoryTab extends StatelessWidget {
             elevation: 1,
           ),
         Expanded(
-          child: db2.onUserData(
+          child: db.onUserData(
             (context, _) => ListView(
               controller: scrollController,
               children: mainStories.map((record) {
-                final plan = db2.curUser.mainStoryOf(record.id);
+                final plan = db.curUser.mainStoryOf(record.id);
                 bool outdated = record.isOutdated();
                 String originTitle = record.lLongName.l.trim();
                 String titleText;
@@ -92,14 +92,14 @@ class MainStoryTab extends StatelessWidget {
                               value: plan.fixedDrop,
                               onChanged: (v) {
                                 plan.fixedDrop = v;
-                                db2.itemCenter.updateMainStory();
+                                db.itemCenter.updateMainStory();
                               },
                             ),
                             Switch.adaptive(
                               value: plan.questReward,
                               onChanged: (v) {
                                 plan.questReward = v;
-                                db2.itemCenter.updateMainStory();
+                                db.itemCenter.updateMainStory();
                               },
                             ),
                           ],

@@ -109,7 +109,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.eventEnd:
-        final event = db2.gameData.events[targetIds.first];
+        final event = db.gameData.events[targetIds.first];
         return localized(
           jp: null,
           cn: null,

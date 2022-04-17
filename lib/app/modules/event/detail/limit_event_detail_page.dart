@@ -37,7 +37,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   @override
   void initState() {
     super.initState();
-    _event = widget.event ?? db2.gameData.events[widget.eventId];
+    _event = widget.event ?? db.gameData.events[widget.eventId];
   }
 
   @override
@@ -48,7 +48,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         url: Routes.eventI(widget.eventId ?? 0),
       );
     }
-    final plan = db2.curUser.eventPlanOf(event.id);
+    final plan = db.curUser.eventPlanOf(event.id);
     final banners = [
       ...event.extra.titleBanner.values.whereType<String>(),
     ];
@@ -80,7 +80,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           TableCellData(text: 'Banner', isHeader: true),
           TableCellData(
             flex: 3,
-            child: Center(child: db2.getIconImage(event.banner, height: 48)),
+            child: Center(child: db.getIconImage(event.banner, height: 48)),
           ),
         ]),
       if (event.warIds.isNotEmpty)
@@ -97,7 +97,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       router.push(url: Routes.warI(warId), detail: true);
                     },
                     child: Text(
-                      db2.gameData.wars[warId]?.lLongName.l ?? 'War $warId',
+                      db.gameData.wars[warId]?.lLongName.l ?? 'War $warId',
                       textAlign: TextAlign.center,
                     ),
                     style: TextButton.styleFrom(
@@ -112,14 +112,14 @@ class _EventDetailPageState extends State<EventDetailPage> {
     String _timeText(Region r, int? start, int? end) =>
         '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
         '${end?.toDateTimeString() ?? "?"}';
-    final eventJp = db2.gameData.events[_event?.id];
+    final eventJp = db.gameData.events[_event?.id];
     List<String> timeInfo = [
       _timeText(_region, event.startedAt, event.endedAt),
-      if (_region != db2.curUser.region)
+      if (_region != db.curUser.region)
         _timeText(
-            db2.curUser.region,
-            event.extra.startTime.ofRegion(db2.curUser.region),
-            event.extra.endTime.ofRegion(db2.curUser.region)),
+            db.curUser.region,
+            event.extra.startTime.ofRegion(db.curUser.region),
+            event.extra.endTime.ofRegion(db.curUser.region)),
       if (Region.jp != _region && Region.jp != _region)
         _timeText(Region.jp, eventJp?.startedAt, eventJp?.endedAt)
     ];
@@ -151,7 +151,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 child: QuestListPage(
                   title: 'Event Quest',
                   quests: event.extra.huntingQuestIds
-                      .map((e) => db2.gameData.quests[e])
+                      .map((e) => db.gameData.quests[e])
                       .whereType<Quest>()
                       .toList(),
                 ),
@@ -163,7 +163,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
 
     if (!event.isEmpty) {
-      children.add(db2.onUserData(
+      children.add(db.onUserData(
         (context, snapshot) => CheckboxListTile(
           title: const Text('ALL'),
           value: plan.enabled,
@@ -365,7 +365,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   child: const Text('Switch Region'),
                   onTap: () async {
                     await null;
-                    final jpEvent = db2.gameData.events[eventId];
+                    final jpEvent = db.gameData.events[eventId];
                     final startTime = jpEvent?.extra.startTime
                         .copyWith(jp: jpEvent.startedAt);
                     showDialog(
@@ -411,7 +411,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     VoidCallback? onDetail,
   }) {
     return [
-      db2.onUserData(
+      db.onUserData(
         (context, snapshot) => ListTile(
           leading: Checkbox(
             value: value(),
@@ -449,7 +449,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        db2.onUserData(
+        db.onUserData(
           (context, snapshot) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(value()?.toString() ?? '0'),
@@ -493,10 +493,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
     EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
     Event? newEvent;
     if (region == Region.jp) {
-      newEvent = db2.gameData.events[eventId];
+      newEvent = db.gameData.events[eventId];
     } else {
       newEvent = await AtlasApi.event(eventId, region: region);
-      newEvent?.calcItems(db2.gameData);
+      newEvent?.calcItems(db.gameData);
     }
     _region = region;
     _event = newEvent;

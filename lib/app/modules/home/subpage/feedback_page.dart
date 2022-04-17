@@ -119,7 +119,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         '$kAppName v${AppInfo.fullVersion} Feedback';
                     String body = "OS: ${PlatformU.operatingSystem}"
                         " ${PlatformU.operatingSystemVersion}\n\n"
-                        "Please attach logs(${db2.paths.logDir})";
+                        "Please attach logs(${db.paths.logDir})";
                     final uri = Uri(
                         scheme: 'mailto',
                         path: kSupportTeamEmailAddress,
@@ -288,13 +288,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
       final handler = ServerFeedbackHandler(
         attachments: [
-          db2.paths.crashLog,
-          db2.paths.appLog,
-          db2.paths.userDataPath,
+          db.paths.crashLog,
+          db.paths.appLog,
+          db.paths.userDataPath,
         ],
         emailTitle: subject,
         senderName: 'Chaldea Feedback',
-        screenshotController: db2.runtimeData.screenshotController,
+        screenshotController: db.runtimeData.screenshotController,
         extraAttachments: Map.of(attachFiles),
       );
 
