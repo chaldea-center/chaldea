@@ -383,9 +383,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: ListView(
+          child: ListView.builder(
             padding: const EdgeInsetsDirectional.only(bottom: 16),
-            children: children,
+            itemCount: children.length,
+            itemBuilder: (context, index) => children[index],
           ),
         ),
         buildButtonBar(targetVal),

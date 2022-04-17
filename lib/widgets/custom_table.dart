@@ -49,14 +49,12 @@ class CustomTable extends StatelessWidget {
                       verticalDivider.thickness ?? kVerticalDivider.thickness!),
             ),
           );
-    return SafeArea(
-      child: DecoratedBox(
-        decoration: outlineDecoration ?? const BoxDecoration(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _all,
-        ),
+    return DecoratedBox(
+      decoration: outlineDecoration ?? const BoxDecoration(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _all,
       ),
     );
   }

@@ -25,7 +25,10 @@ class SvtTdTab extends StatelessWidget {
       children.add(
           _buildTds(context, shownTds, status.favorite ? status.npLv : null));
     }
-    return ListView(children: children);
+    return ListView.builder(
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
+    );
   }
 
   Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level) {

@@ -76,7 +76,12 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
 
     return Column(
       children: [
-        Expanded(child: ListView(children: children)),
+        Expanded(
+          child: ListView.builder(
+            itemCount: children.length,
+            itemBuilder: (context, index) => children[index],
+          ),
+        ),
         SafeArea(
           child: ButtonBar(
             alignment: MainAxisAlignment.center,

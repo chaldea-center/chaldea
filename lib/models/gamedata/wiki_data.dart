@@ -333,9 +333,31 @@ class LimitedSummon {
 
   bool isOutdated() {
     final date = startTime.ofRegion(db2.curUser.region)?.sec2date();
-    if (date == null) return false;
-    return date.isBefore(DateTime.now()
-        .subtract(Duration(days: db2.curUser.region == Region.jp ? 365 : 100)));
+    int days;
+    if (date != null) {
+      days = db2.curUser.region == Region.jp ? 365 : 30;
+      return date.isBefore(DateTime.now().subtract(Duration(days: days)));
+    }
+    final jpDate = startTime.jp?.sec2date();
+    if (jpDate == null) return false;
+    switch (db2.curUser.region) {
+      case Region.jp:
+        days = 300;
+        break;
+      case Region.cn:
+        days = 365;
+        break;
+      case Region.tw:
+        days = 624;
+        break;
+      case Region.na:
+        days = 724;
+        break;
+      case Region.kr:
+        days = 728;
+        break;
+    }
+    return jpDate.isBefore(DateTime.now().subtract(Duration(days: days + 30)));
   }
 }
 

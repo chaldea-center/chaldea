@@ -42,7 +42,10 @@ class SvtSkillTab extends StatelessWidget {
             : -1,
       ));
     }
-    return ListView(children: children);
+    return ListView.builder(
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
+    );
   }
 
   Widget _buildSkill(List<NiceSkill> skills, int? level) {

@@ -15,8 +15,10 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
   @override
   Widget build(BuildContext context) {
     final missions = plan.extraMission?.missions ?? [];
-    return ListView(
-      children: missions.map((mission) {
+    return ListView.builder(
+      itemCount: missions.length,
+      itemBuilder: (context, index) {
+        final mission = missions[index];
         List<Widget> rewards = [
           Text(
             [
@@ -72,7 +74,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
             });
           },
         );
-      }).toList(),
+      },
     );
   }
 }

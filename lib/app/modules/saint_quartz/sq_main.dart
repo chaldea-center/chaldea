@@ -2,6 +2,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import 'extra_mission_tab.dart';
@@ -75,11 +76,11 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
       ),
       body: TabBarView(
         controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
+        // physics: const NeverScrollableScrollPhysics(),
         children: [
           SQSettingTab(),
           ExtraMissionTab(),
-          SQTableTab(),
+          KeepAliveBuilder(builder: (context) => SQTableTab()),
         ],
       ),
     );
