@@ -9,11 +9,9 @@ import 'file_plus_io.dart';
 import 'file_plus_web.dart';
 
 abstract class FilePlus {
-  factory FilePlus(String fp, {LazyBox? box}) {
+  factory FilePlus(String fp, {LazyBox<Uint8List>? box}) {
     if (kIsWeb) {
-      return FilePlusWeb(
-        fp,
-      );
+      return FilePlusWeb(fp, box: box);
     } else {
       return FilePlusNative(fp);
     }

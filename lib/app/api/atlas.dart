@@ -117,10 +117,9 @@ class _CacheManager {
 
   FilePlus _getCacheFile(String key) {
     return FilePlus(
-        kIsWeb
-            ? '$cacheKey/$key'
-            : joinPaths(db.paths.tempDir, '$cacheKey/$key'),
-        box: _webBox);
+      kIsWeb ? '$cacheKey/$key' : joinPaths(db.paths.tempDir, '$cacheKey/$key'),
+      box: _webBox,
+    );
   }
 
   Future<void> _saveEntry(String url, Response<List<int>> response) async {
