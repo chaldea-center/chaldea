@@ -27,6 +27,7 @@ class LocalSettings {
   List<Region>? preferredRegions;
   bool autoUpdateData; // dataset
   bool autoUpdateApp;
+  bool proxyDataSource;
   bool autoRotate;
   bool autoResetFilter;
   bool useProxy;
@@ -60,6 +61,7 @@ class LocalSettings {
     String? language,
     List<Region>? preferredRegions,
     this.autoUpdateData = true,
+    this.proxyDataSource = false,
     this.autoUpdateApp = true,
     this.autoRotate = true,
     this.autoResetFilter = true,

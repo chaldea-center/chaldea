@@ -16,12 +16,28 @@ import '../../packages/logger.dart';
 import '../../packages/network.dart';
 import '../../utils/json_helper.dart';
 
-const dataSourceBaseUrl = 'https://data.chaldea.center/';
+const _dataSource = 'https://data.chaldea.center/';
+const _cnDataSource = 'https://data-cn.chaldea.center/';
 
 class GameDataLoader {
-  final dio = Dio(BaseOptions(baseUrl: dataSourceBaseUrl));
-
   // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
+
+  static Future<Response<T>> _dioGet<T>(String filename,
+      {Options? options}) async {
+    final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
+    try {
+      return await Dio(BaseOptions(connectTimeout: 10000)).get<T>(
+        url,
+        options: Options(receiveTimeout: 5000),
+      );
+    } catch (e) {
+      if (db2.settings.proxyDataSource) {
+        // print('download data from CN: $cnUrl');
+        return await Dio().get<T>(cnUrl, options: options);
+      }
+      rethrow;
+    }
+  }
 
   GameDataLoader._();
 
@@ -96,14 +112,14 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson((await dio.get('version.json')).json());
+      newVersion = DataVersion.fromJson((await _dioGet('version.json')).json());
     }
     logger.d('fetch gamedata version: $newVersion');
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
       throw S.current.error_required_app_version(versionString);
     }
-    if (newVersion.timestamp <= db2.gameData.version.timestamp) {
+    if (newVersion.timestamp < db2.gameData.version.timestamp) {
       throw S.current.update_already_latest;
     }
 
@@ -126,7 +142,7 @@ class GameDataLoader {
               fv.filename, fv.hash, _localHash ?? '');
         }
         debugPrint('Downloading ${fv.filename}');
-        final resp = await dio.get(
+        final resp = await _dioGet(
           fv.filename,
           // cancelToken: cancelToken,
           options: Options(responseType: ResponseType.bytes),

@@ -455,6 +455,25 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           },
         ),
         ListTile(
+          title: Text(S.current.download_source),
+          subtitle: const Text('大陆地区请选择CN节点'),
+          trailing: DropdownButton<bool>(
+            value: db2.settings.proxyDataSource,
+            items: const [
+              DropdownMenuItem(child: Text('Default'), value: false),
+              DropdownMenuItem(child: Text('CN'), value: true),
+            ],
+            onChanged: (v) {
+              setState(() {
+                if (v != null) {
+                  db2.settings.proxyDataSource = v;
+                }
+                db2.saveSettings();
+              });
+            },
+          ),
+        ),
+        ListTile(
           title: Text(S.current.current_version),
           trailing: Text(
             db2.gameData.version.timestamp > 0
