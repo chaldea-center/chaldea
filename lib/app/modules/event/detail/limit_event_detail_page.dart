@@ -371,6 +371,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                         .copyWith(jp: jpEvent.startedAt);
                     showDialog(
                       context: context,
+                      useRootNavigator: false,
                       builder: (context) {
                         return SimpleDialog(
                           children: [

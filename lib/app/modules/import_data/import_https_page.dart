@@ -612,6 +612,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   void importResponseBody() async {
     var fromFile = await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => SimpleDialog(
         title: Text(S.current.import_data),
         children: [

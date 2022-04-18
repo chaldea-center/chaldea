@@ -17,7 +17,7 @@ abstract class FilterPage<T> extends StatefulWidget {
   static void show(
       {required BuildContext context, required WidgetBuilder builder}) {
     if (SplitRoute.isSplit(context)) {
-      showDialog(context: context, builder: builder);
+      showDialog(context: context, builder: builder, useRootNavigator: false);
     } else {
       showModalBottomSheet(
         context: context,

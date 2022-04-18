@@ -91,10 +91,6 @@ class LevelingCostPageState extends State<LevelingCostPage> {
             image: Item.iconBuilder(
               context: context,
               item: itemAmount.item,
-              onTap: () {
-                Navigator.pop(context);
-                itemAmount.item.routeTo();
-              },
             ),
             width: 42,
             text: itemAmount.amount.format(),

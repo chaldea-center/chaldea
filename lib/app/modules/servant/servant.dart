@@ -300,6 +300,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               await null;
               await showDialog(
                 context: context,
+                useRootNavigator: false,
                 builder: (context) {
                   List<Widget> children = [];
                   void _addOne(String name, String? icon) {

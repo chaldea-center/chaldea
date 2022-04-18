@@ -321,6 +321,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                       } else {
                         showDialog(
                           context: context,
+                          useRootNavigator: false,
                           builder: (context) => SimpleCancelOkDialog(
                             content: Text(S.current.database_not_downloaded),
                             onTapOk: () {

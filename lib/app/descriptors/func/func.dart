@@ -256,6 +256,7 @@ class FuncDescriptor extends StatelessWidget {
         onTap: () {
           showDialog(
             context: context,
+            useRootNavigator: false,
             builder: (context) {
               List<String> _traitList(List<NiceTrait> traits) {
                 return traits.map((e) => Transl.trait(e.id).l).toList();

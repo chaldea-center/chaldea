@@ -247,13 +247,14 @@ extension DateTimeX on DateTime {
 extension DialogShowMethod on material.Widget {
   /// Don't use this when dialog children depends on [context]
   Future<T?> showDialog<T>(material.BuildContext? context,
-      {bool barrierDismissible = true}) {
+      {bool barrierDismissible = true, bool useRootNavigator = false}) {
     context ??= kAppKey.currentContext;
     if (context == null) return Future.value();
     return material.showDialog<T>(
       context: context,
       builder: (context) => this,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: useRootNavigator,
     );
   }
 }

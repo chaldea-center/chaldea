@@ -191,6 +191,7 @@ class _UserDataPageState extends State<UserDataPage> {
         }
         showDialog(
           context: context,
+          useRootNavigator: false,
           builder: (context) => SimpleCancelOkDialog(
             title: Text(S.current.backup),
             content: Text(hint),
@@ -261,6 +262,7 @@ class _UserDataPageState extends State<UserDataPage> {
         body.sort2((e) => e['timestamp'] as int, reversed: true);
         showDialog(
           context: context,
+          useRootNavigator: false,
           builder: (context) => SimpleDialog(
             title: Text(S.current.userdata_download_choose_backup),
             children: [
@@ -307,6 +309,7 @@ class _UserDataPageState extends State<UserDataPage> {
     }
     await showDialog(
       context: context,
+      useRootNavigator: false,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(LocalizedText.of(

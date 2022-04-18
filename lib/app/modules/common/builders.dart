@@ -175,6 +175,7 @@ class SharedBuilder {
       {required BuildContext context, ValueChanged<int>? onChange}) {
     return showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => SimpleDialog(
         title: Text(S.current.select_plan),
         children: List.generate(db.curUser.svtPlanGroups.length, (index) {
@@ -233,6 +234,7 @@ class SharedBuilder {
         onPressed: () {
           showDialog(
             context: context,
+            useRootNavigator: false,
             builder: (context) => ItemFilterDialog(),
           );
         },
@@ -302,6 +304,7 @@ class SharedBuilder {
     FileType? fileType;
     await showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => SimpleDialog(
         contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
         children: [

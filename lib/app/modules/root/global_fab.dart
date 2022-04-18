@@ -5,7 +5,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
-import '../../../packages/split_route/split_route.dart';
 import '../../app.dart';
 import '../misc/theme_palette.dart';
 
@@ -162,7 +161,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           title: const Text('Palette'),
           onTap: () {
             Navigator.pop(context);
-            SplitRoute.push(context, DarkLightThemePalette());
+            router.pushPage(DarkLightThemePalette());
           },
         ),
         ListTile(

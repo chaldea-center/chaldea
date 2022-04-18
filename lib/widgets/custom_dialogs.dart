@@ -197,6 +197,7 @@ Future<void> jumpToExternalLinkAlert(
 
   return showDialog(
     context: kAppKey.currentContext!,
+    useRootNavigator: false,
     builder: (context) => SimpleCancelOkDialog(
       title: Text(S.current.jump_to(name ?? S.current.link)),
       content: Text(shownLink,

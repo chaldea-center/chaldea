@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/widgets/after_layout.dart';
 import '../../../models/db.dart';
 import '../../../packages/logger.dart';
@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage> with AfterLayoutMixin {
     await Future.delayed(Duration.zero);
     _prepareGameData();
     if (db.settings.tips.starter) {
-      await SplitRoute.push(context, const StarterGuidancePage(), detail: null);
+      router.pushPage(const StarterGuidancePage(), detail: null);
     }
   }
 

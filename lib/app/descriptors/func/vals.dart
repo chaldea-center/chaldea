@@ -113,6 +113,7 @@ class ValDsc extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
+          useRootNavigator: false,
           builder: (context) {
             return Theme(
               data: ThemeData.light(),

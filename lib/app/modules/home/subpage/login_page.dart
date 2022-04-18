@@ -189,6 +189,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           showDialog(
             context: context,
+            useRootNavigator: false,
             builder: (context) => SimpleCancelOkDialog(
               title: Text(S.current.login_forget_pwd),
               content: const Text(

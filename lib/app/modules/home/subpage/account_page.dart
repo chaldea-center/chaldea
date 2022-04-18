@@ -28,6 +28,7 @@ class _AccountPageState extends State<AccountPage> {
             onPressed: () {
               showDialog(
                 context: context,
+                useRootNavigator: false,
                 builder: (context) {
                   return InputCancelOkDialog(
                     title: S.current.new_account,
@@ -108,6 +109,7 @@ class _AccountPageState extends State<AccountPage> {
     await Future.delayed(Duration.zero);
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => InputCancelOkDialog(
         title: '${S.current.rename} - ${user.name}',
         text: user.name,

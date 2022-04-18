@@ -256,8 +256,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               tooltip: S.of(context).settings_tab_name,
               onPressed: () async {
                 await showDialog(
-                    context: context,
-                    builder: (context) => FreeCalcFilterDialog(params: params));
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => FreeCalcFilterDialog(params: params),
+                );
                 setState(() {});
               },
             ),

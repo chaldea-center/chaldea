@@ -138,6 +138,7 @@ class _GameDataPageState extends State<GameDataPage> {
                           final data = await loader.reload(offline: false);
                           showDialog(
                             context: kAppKey.currentContext!,
+                            useRootNavigator: false,
                             builder: (context) {
                               return SimpleCancelOkDialog(
                                 title: Text(S.current.update_dataset),
@@ -216,6 +217,7 @@ class _GameDataPageState extends State<GameDataPage> {
   void downloadIcons() async {
     showDialog(
       context: context,
+      useRootNavigator: false,
       barrierDismissible: false,
       builder: (context) => IconCacheManagePage(),
     );

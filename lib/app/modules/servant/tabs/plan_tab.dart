@@ -425,8 +425,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       trailingIcon = IconButton(
         icon: Icon(Icons.info_outline,
             color: Theme.of(context).colorScheme.secondary),
-        onPressed: () =>
-            showDialog(context: context, builder: detailPageBuilder),
+        onPressed: () => showDialog(
+          context: context,
+          builder: detailPageBuilder,
+          useRootNavigator: false,
+        ),
       );
     } else {
       trailingIcon = const SizedBox(width: 16);
@@ -799,6 +802,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   }) {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => SimpleCancelOkDialog(
         title: Text(title),
         hideCancel: hideCancel,
@@ -817,7 +821,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       text: entry.value.format(),
                       width: 48,
                       onTap: () {
-                        Navigator.pop(context);
                         router.pushPage(ItemDetailPage(itemId: entry.key));
                       },
                     ),
