@@ -21,29 +21,15 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  ChildBackButtonDispatcher? _backButtonDispatcher;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _backButtonDispatcher = Router.of(context)
-        .backButtonDispatcher
-        ?.createChildBackButtonDispatcher();
-  }
-
-  @override
-  void didUpdateWidget(covariant AppShell oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (widget.active) {
-      _backButtonDispatcher?.takePriority();
-    }
+    final childBackButtonDispatcher = Router.of(context)
+        .backButtonDispatcher
+        ?.createChildBackButtonDispatcher();
+    childBackButtonDispatcher?.takePriority();
     return Router(
       routerDelegate: widget.routerDelegate,
-      backButtonDispatcher: _backButtonDispatcher,
+      backButtonDispatcher: childBackButtonDispatcher,
     );
   }
 }
@@ -98,15 +84,14 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return build(context);
   }
 
+  // only called when [Page] found
   bool onPopPage(Route route, dynamic result) {
     if (!route.didPop(result)) return false;
     if (canPop()) {
       _pages.removeLast();
-      notifyListeners();
-      return true;
-    } else {
-      return false;
     }
+    notifyListeners();
+    return true;
   }
 
   bool canPop() {
@@ -116,17 +101,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   void popAll() {
     _pages.clear();
     notifyListeners();
-  }
-
-  @override
-  Future<bool> popRoute() {
-    if (canPop()) {
-      _pages.removeLast();
-      notifyListeners();
-      return Future.value(true);
-    }
-    // send to background in android
-    return Future.value(false);
   }
 
   void pushPage(

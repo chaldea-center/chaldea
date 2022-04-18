@@ -1,7 +1,7 @@
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 import '../../packages/method_channel/method_channel_chaldea.dart';
 import '../modules/root/window_manager.dart';
@@ -108,14 +108,8 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
           appState.showWindowManager = false;
           return true;
         }
-        if (PlatformU.isAndroid && !appState.activeRouter.canPop()) {
-          db.saveAll();
-          MethodChannelChaldeaNext.sendBackground();
-          return true;
-        }
-        // return appState.activeRouter.onPopPage(route, result);
         notifyListeners();
-        return false;
+        return true;
       },
     );
   }
@@ -134,7 +128,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }
 
   @override
-  Future<bool> popRoute() {
-    return appState.activeRouter.popRoute();
+  Future<bool> popRoute() async {
+    if (PlatformU.isAndroid) {
+      await db.saveAll();
+      MethodChannelChaldeaNext.sendBackground();
+    }
+    return true;
   }
 }

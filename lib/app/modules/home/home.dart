@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/after_layout.dart';
 import '../../../models/db.dart';
