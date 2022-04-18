@@ -129,6 +129,20 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return Future.value(false);
   }
 
+  void pushPage(
+    Widget child, {
+    dynamic arguments,
+    bool? detail,
+    bool popDetail = false,
+  }) {
+    push(
+      child: child,
+      arguments: arguments,
+      detail: detail,
+      popDetail: popDetail,
+    );
+  }
+
   void push({
     String? url,
     Widget? child,

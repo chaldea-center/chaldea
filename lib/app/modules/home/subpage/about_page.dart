@@ -7,11 +7,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -106,8 +106,7 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: const Text('README'),
                 onTap: () async {
-                  SplitRoute.push(
-                    context,
+                  router.pushPage(
                     const _GithubMarkdownPage(
                       title: 'README',
                       link: '$kProjectHomepage/blob/master/README.md',
@@ -120,8 +119,7 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: Text(S.current.change_log),
                 onTap: () async {
-                  SplitRoute.push(
-                    context,
+                  router.pushPage(
                     _GithubMarkdownPage(
                       title: S.current.change_log,
                       link: '$kProjectHomepage/blob/master/CHANGELOG.md',
@@ -153,8 +151,7 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text("Fandom & Reddit Translators"),
                 subtitle: const Text('English Communities'),
                 onTap: () {
-                  SplitRoute.push(
-                    context,
+                  router.pushPage(
                     _FandomContributorsPage(),
                     detail: true,
                   );
@@ -173,13 +170,11 @@ class _AboutPageState extends State<AboutPage> {
                 title: const Text('License'),
                 subtitle: const Text('AGPL-3.0'),
                 onTap: () {
-                  SplitRoute.push(
-                      context,
-                      const _GithubMarkdownPage(
-                        title: 'LICENSE',
-                        link: '$kProjectHomepage/blob/master/LICENSE',
-                        assetKey: 'LICENSE',
-                      ));
+                  router.pushPage(const _GithubMarkdownPage(
+                    title: 'LICENSE',
+                    link: '$kProjectHomepage/blob/master/LICENSE',
+                    assetKey: 'LICENSE',
+                  ));
                 },
               ),
               ListTile(

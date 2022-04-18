@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -395,8 +394,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           //     content: Text('同一从者超过999个上限'),
           //   ).showDialog(context);
           // } else {
-          //   SplitRoute.push(
-          //     context,
+          //    router.pushPage(
           //     ServantDetailPage(newSvt),
           //     detail: true,
           //   );
@@ -440,8 +438,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
                     return;
                   }
-                  SplitRoute.push(
-                    context,
+                  router.pushPage(
                     GrowthCurvePage.fromCard(
                       title: '${S.current.growth_curve} - ${svt.lName.l}',
                       atks: svt.atkGrowth,

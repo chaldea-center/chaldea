@@ -30,12 +30,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
         children: divideTiles([
           ListTile(
             title: Center(
-                child: Text(S.current.cur_account + ': ' + db.curUser.name)),
+                child: db.onUserData((context, snapshot) =>
+                    Text(S.current.cur_account + ': ' + db.curUser.name))),
             onTap: () {
-              SplitRoute.push(context, AccountPage(), popDetail: true)
-                  .then((_) {
-                if (mounted) setState(() {});
-              });
+              router.pushPage(AccountPage(), popDetail: true);
             },
           ),
           ListTile(
@@ -59,7 +57,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.http),
             title: Text(S.current.https_sniff),
-            subtitle: Text(S.current.import_http_body_hint),
+            subtitle: Text(S.current.http_sniff_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               router.push(child: ImportHttpPage());
@@ -75,7 +73,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           //   subtitle: const Text('Guda@iOS'),
           //   trailing: const Icon(Icons.keyboard_arrow_right),
           //   onTap: () {
-          //     SplitRoute.push(context, ImportGudaPage(), popDetail: true);
+          //      router.pushPage(ImportGudaPage(), popDetail: true);
           //   },
           // ),
           ListTile(

@@ -8,13 +8,13 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -92,7 +92,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   title: Text(S.current.faq),
                   trailing: const Icon(Icons.keyboard_arrow_right),
                   onTap: () {
-                    SplitRoute.push(context, FAQPage());
+                    router.pushPage(FAQPage());
                   },
                 ),
               ],

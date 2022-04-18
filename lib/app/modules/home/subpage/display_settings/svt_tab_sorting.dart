@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -45,15 +46,9 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 onPressed: db.gameData.servants.isEmpty
                     ? null
                     : () {
-                        EasyLoading.showError(S.current.not_implemented);
-                        // TODO
-                        // final index =
-                        //     Random().nextInt(db2.gameData.servants.length);
-                        // SplitRoute.push(
-                        //   context,
-                        //   ServantDetailPage(
-                        //       db2.gameData.servants.values.elementAt(index)),
-                        // );
+                        final index =
+                            Random().nextInt(db.gameData.servants.length);
+                        router.push(url: Routes.servantI(index));
                       },
                 child: Text(S.current.preview),
               ),

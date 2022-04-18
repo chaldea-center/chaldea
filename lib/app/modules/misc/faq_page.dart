@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -36,7 +37,7 @@ class FAQPage extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  SplitRoute.push(context, FeedbackPage());
+                  router.pushPage(FeedbackPage());
                 },
                 child: Text(S.current.about_feedback),
               )

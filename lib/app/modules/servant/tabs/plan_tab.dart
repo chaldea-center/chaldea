@@ -815,12 +815,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       text: entry.value.format(),
                       width: 48,
                       onTap: () {
-                        // router will push new route under the dialog
-                        SplitRoute.push(
-                          context,
-                          ItemDetailPage(itemId: entry.key),
-                          detail: true,
-                        );
+                        Navigator.pop(context);
+                        router.pushPage(ItemDetailPage(itemId: entry.key));
                       },
                     ),
                 ],

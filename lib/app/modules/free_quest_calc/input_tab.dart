@@ -6,7 +6,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../tools/glpk_solver.dart';
@@ -145,7 +144,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
           child: Text(_getItemName(itemId, item)),
           onPressed: () {
-            SplitRoute.push(context, _ItemSelectPage(
+            router.push(child: _ItemSelectPage(
               onSelected: (v) {
                 if (params.rows.contains(v)) {
                   EasyLoading.showInfo(
@@ -284,7 +283,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   ),
                   tooltip: 'Add',
                   onPressed: () {
-                    SplitRoute.push(context, _ItemSelectPage(
+                    router.push(child: _ItemSelectPage(
                       onSelected: (v) {
                         if (params.rows.contains(v)) {
                           EasyLoading.showInfo(S.current

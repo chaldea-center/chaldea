@@ -13,12 +13,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -144,7 +144,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 title: Text(S.current.backup_history),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, _BackupHistoryPage());
+                  router.pushPage(_BackupHistoryPage());
                 },
               ),
               ListTile(
@@ -164,7 +164,7 @@ class _UserDataPageState extends State<UserDataPage> {
                     kor: '이외의 불러오는 방법')),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, ImportPageHome(), detail: false);
+                  router.pushPage(ImportPageHome(), detail: false);
                 },
               ),
             ],
@@ -254,7 +254,7 @@ class _UserDataPageState extends State<UserDataPage> {
       SimpleCancelOkDialog(
         content: Text(S.current.login_first_hint),
         onTapOk: () {
-          SplitRoute.push(context, LoginPage());
+          router.pushPage(LoginPage());
         },
       ).showDialog(context);
       return false;

@@ -372,6 +372,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   }
 
   /// A simple form of [pushBuilder]
+  @Deprecated('Use router.push instead')
   static Future<T?> push<T extends Object?>(
     BuildContext context,
     Widget page, {

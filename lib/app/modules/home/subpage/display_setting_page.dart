@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
@@ -75,7 +75,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 title: Text(S.current.carousel_setting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, const CarouselSettingPage());
+                  router.pushPage(const CarouselSettingPage());
                 },
               )
             ],
@@ -140,14 +140,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 title: Text(S.current.setting_setting_favorite_button_default),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, FavOptionSetting());
+                  router.pushPage(FavOptionSetting());
                 },
               ),
               ListTile(
                 title: Text(S.current.setting_servant_class_filter_style),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, ClassFilterStyleSetting());
+                  router.pushPage(ClassFilterStyleSetting());
                 },
               ),
               SwitchListTile.adaptive(
@@ -170,14 +170,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 title: Text(S.current.setting_tabs_sorting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, SvtTabsSortingSetting());
+                  router.pushPage(SvtTabsSortingSetting());
                 },
               ),
               ListTile(
                 title: Text(S.current.setting_priority_tagging),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(context, SvtPriorityTagging());
+                  router.pushPage(SvtPriorityTagging());
                 },
               ),
             ],

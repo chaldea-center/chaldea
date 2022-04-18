@@ -11,7 +11,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../root/global_fab.dart';
@@ -191,11 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  SplitRoute.push(
-                    context,
-                    DisplaySettingPage(),
-                    popDetail: true,
-                  );
+                  router.push(child: DisplaySettingPage());
                 },
               ),
               if (kIsWeb)
@@ -238,20 +233,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     : Text(
                         db.runtimeData.upgradableVersion!.versionString + ' ↑',
                       ),
-                onTap: () => SplitRoute.push(
-                  context,
-                  AboutPage(),
-                  popDetail: true,
-                ).then((_) {
-                  if (mounted) setState(() {});
-                }),
+                onTap: () => router.push(child: AboutPage()),
               ),
               ListTile(
                 title: Text(S.current.about_feedback),
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  SplitRoute.push(context, FeedbackPage(), popDetail: true);
+                  router.push(child: FeedbackPage());
                 },
               ),
               ListTile(
@@ -275,11 +264,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.support_chaldea),
                   trailing: const Icon(Icons.favorite),
                   onTap: () {
-                    SplitRoute.push(
-                      context,
-                      SupportDonationPage(),
-                      popDetail: true,
-                    );
+                    router.push(child: SupportDonationPage());
                   },
                 ),
               if (PlatformU.isApple)
