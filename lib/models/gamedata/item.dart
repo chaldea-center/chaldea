@@ -121,7 +121,7 @@ class Item {
 
   static String? getIcon(int id) {
     return db.gameData.items[id]?.borderedIcon ??
-        db.gameData.entities[id]?.face;
+        db.gameData.entities[id]?.borderedIcon;
   }
 
   static Map<int, int> sortMapByPriority(Map<int, int> items) {

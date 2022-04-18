@@ -60,6 +60,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         controller: db.runtimeData.screenshotController,
         child: MaterialApp.router(
           title: kAppName,
+          onGenerateTitle: (_) => kAppName,
           routeInformationParser: routeInformationParser,
           routerDelegate: rootRouter,
           backButtonDispatcher: backButtonDispatcher,

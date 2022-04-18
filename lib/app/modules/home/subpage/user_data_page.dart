@@ -71,11 +71,7 @@ class _UserDataPageState extends State<UserDataPage> {
                       jpn: '外部ストレージ（SDカード）を使用',
                       eng: 'Use External Storage(SD card)',
                       kor: '외부 스토리지 (SD 카드)를 사용')),
-                  subtitle: Text(LocalizedText.of(
-                      chs: '下次启动生效',
-                      jpn: '次の起動時に有効になります',
-                      eng: 'Take effect at next startup',
-                      kor: '다음 시작 시 적용됩니다')),
+                  subtitle: Text(S.current.restart_to_apply_changes),
                   onChanged: _migrateAndroidData,
                 ),
               ListTile(
@@ -91,11 +87,7 @@ class _UserDataPageState extends State<UserDataPage> {
                   } else if (PlatformU.isDesktop) {
                     OpenFile.open(db.paths.appPath);
                   } else {
-                    EasyLoading.showInfo(LocalizedText.of(
-                        chs: '请用文件管理器打开',
-                        jpn: 'ファイルマネージャで開いてください',
-                        eng: 'Please open with file manager',
-                        kor: '파일 매니저로 열어주십시오'));
+                    EasyLoading.showInfo(S.current.open_in_file_manager);
                   }
                 },
               )
@@ -148,20 +140,12 @@ class _UserDataPageState extends State<UserDataPage> {
                 },
               ),
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '导入备份',
-                    jpn: 'バックアップのインポート',
-                    eng: 'Import Backup',
-                    kor: '백업 불러오기')),
+                title: Text(S.current.import_backup),
                 subtitle: const Text('userdata.json/*.json'),
                 onTap: importUserData,
               ),
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '更多导入方式',
-                    jpn: 'その他のインポート方法',
-                    eng: 'Import from ...',
-                    kor: '이외의 불러오는 방법')),
+                title: Text(S.current.import_userdata_more),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   router.pushPage(ImportPageHome(), detail: false);
@@ -201,23 +185,9 @@ class _UserDataPageState extends State<UserDataPage> {
         final fps = await db.backupUserdata();
         String hint = '';
         if (fps.isEmpty) {
-          hint += LocalizedText.of(
-              chs: '备份失败',
-              jpn: 'バックアップに失敗しました',
-              eng: 'Backup failed',
-              kor: '백업 불러오기를 실패하였습니다');
+          hint += S.current.backup_failed;
         } else {
-          hint += LocalizedText.of(
-                  chs: '已备份至:', jpn: 'バックアップ:', eng: 'Backup to:', kor: '백업:') +
-              '\n${fps[0]}\n';
-          hint += LocalizedText.of(
-              chs: '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！',
-              jpn:
-                  'アプリを削除すると、一時バックアップが削除されます。外部の信頼できるストレージ場所に手動でバックアップすることをお勧めします',
-              eng:
-                  'The backups will be deleted when uninstalling the app. It is recommended to manually backup to an external storage.',
-              kor:
-                  '어플을 소삭제하면 동시에 백업이 삭제됩니다. 신뢰할 수 있는 외부 스토리지에 수동으로 백업하는 것을 추천드립니다');
+          hint += '${fps[0]}\n';
         }
         showDialog(
           context: context,
@@ -376,11 +346,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 Navigator.of(context).pop();
                 SimpleCancelOkDialog(
                   title: const Text('⚠️ Warning'),
-                  content: Text(LocalizedText.of(
-                      chs: '重启以设置生效',
-                      jpn: '設定を有効にするために再起動します',
-                      eng: 'Restart for the settings to take effect',
-                      kor: '설정을 적용 시키기 위해 재기동하여 주십시오')),
+                  content: Text(S.current.restart_to_apply_changes),
                   hideCancel: true,
                 ).showDialog(context);
                 db.saveSettings();

@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -358,6 +361,17 @@ class S {
     );
   }
 
+  /// `Backup failed`
+  String get backup_failed {
+    return Intl.message(
+      'Backup failed',
+      name: 'backup_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Backup History`
   String get backup_history {
     return Intl.message(
@@ -479,6 +493,17 @@ class S {
     );
   }
 
+  /// `Card Name`
+  String get card_name {
+    return Intl.message(
+      'Card Name',
+      name: 'card_name',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Carousel Setting`
   String get carousel_setting {
     return Intl.message(
@@ -520,6 +545,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n{url}\n`
+  String chaldea_share_msg(Object url) {
+    return Intl.message(
+      'Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n$url\n',
+      name: 'chaldea_share_msg',
+      desc: '',
+      locale: localeName,
+      args: [url],
     );
   }
 
@@ -880,6 +916,17 @@ class S {
     return Intl.message(
       'Dataset version',
       name: 'dataset_version',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get date {
+    return Intl.message(
+      'Date',
+      name: 'date',
       desc: '',
       locale: localeName,
       args: [],
@@ -2185,6 +2232,17 @@ class S {
     );
   }
 
+  /// `Import Backup`
+  String get import_backup {
+    return Intl.message(
+      'Import Backup',
+      name: 'import_backup',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Import`
   String get import_data {
     return Intl.message(
@@ -2344,6 +2402,17 @@ class S {
     return Intl.message(
       'Import Source File',
       name: 'import_source_file',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `More import methods`
+  String get import_userdata_more {
+    return Intl.message(
+      'More import methods',
+      name: 'import_userdata_more',
       desc: '',
       locale: localeName,
       args: [],
@@ -2669,6 +2738,17 @@ class S {
     );
   }
 
+  /// `Apple`
+  String get item_apple {
+    return Intl.message(
+      'Apple',
+      name: 'item_apple',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ascension Items`
   String get item_category_ascension {
     return Intl.message(
@@ -2977,6 +3057,29 @@ class S {
     );
   }
 
+  /// `{shown} shown (total {total})`
+  String list_count_shown_all(Object shown, Object total) {
+    return Intl.message(
+      '$shown shown (total $total)',
+      name: 'list_count_shown_all',
+      desc: '',
+      locale: localeName,
+      args: [shown, total],
+    );
+  }
+
+  /// `{shown} shown, {ignore} ignored (total {total})`
+  String list_count_shown_hidden_all(
+      Object shown, Object ignore, Object total) {
+    return Intl.message(
+      '$shown shown, $ignore ignored (total $total)',
+      name: 'list_count_shown_hidden_all',
+      desc: '',
+      locale: localeName,
+      args: [shown, ignore, total],
+    );
+  }
+
   /// `{first, select, true{Already the first one} false{Already the last one} other{No more}}`
   String list_end_hint(Object first) {
     return Intl.select(
@@ -3268,6 +3371,17 @@ class S {
     );
   }
 
+  /// `Weekly Mission`
+  String get master_mission_weekly {
+    return Intl.message(
+      'Weekly Mission',
+      name: 'master_mission_weekly',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Move down`
   String get move_down {
     return Intl.message(
@@ -3460,6 +3574,17 @@ class S {
     return Intl.message(
       'Condition',
       name: 'open_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please open with file manager`
+  String get open_in_file_manager {
+    return Intl.message(
+      'Please open with file manager',
+      name: 'open_in_file_manager',
       desc: '',
       locale: localeName,
       args: [],
@@ -3819,10 +3944,10 @@ class S {
   }
 
   /// `Restart to take effect`
-  String get restart_to_take_effect {
+  String get restart_to_apply_changes {
     return Intl.message(
       'Restart to take effect',
-      name: 'restart_to_take_effect',
+      name: 'restart_to_apply_changes',
       desc: '',
       locale: localeName,
       args: [],
@@ -4379,6 +4504,28 @@ class S {
     );
   }
 
+  /// `21 Fragments = 3 Quartzs`
+  String get sq_fragment_convert {
+    return Intl.message(
+      '21 Fragments = 3 Quartzs',
+      name: 'sq_fragment_convert',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `SQ`
+  String get sq_short {
+    return Intl.message(
+      'SQ',
+      name: 'sq_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Statistics`
   String get statistics_title {
     return Intl.message(
@@ -4423,11 +4570,33 @@ class S {
     );
   }
 
+  /// `Daily`
+  String get summon_daily {
+    return Intl.message(
+      'Daily',
+      name: 'summon_daily',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show Banner`
   String get summon_show_banner {
     return Intl.message(
       'Show Banner',
       name: 'summon_show_banner',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ticket`
+  String get summon_ticket_short {
+    return Intl.message(
+      'Ticket',
+      name: 'summon_ticket_short',
       desc: '',
       locale: localeName,
       args: [],

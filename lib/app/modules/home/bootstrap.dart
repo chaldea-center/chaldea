@@ -608,7 +608,7 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
         '哈嘍',
         '안녕하세요',
         '¡Buenas!',
-        'مرحبا'
+        '\u0645\u0631\u062d\u0628\u0627', // Arabic
       ];
   bool shown = false;
   int index = 0;

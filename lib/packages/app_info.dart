@@ -65,7 +65,7 @@ class AppInfo {
         await PackageInfo.fromPlatform().catchError((e) => PackageInfo(
               appName: kAppName,
               packageName: kPackageName,
-              version: 'unknown',
+              version: '0.0.0',
               buildNumber: '0',
               buildSignature: '',
             ));

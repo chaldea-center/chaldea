@@ -220,8 +220,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Text(LocalizedText.of(
-              chs: '日替: ', jpn: '日替: ', eng: 'Daily: ', kor: '일일: ')),
+          Text(S.current.summon_daily + ': '),
           Flexible(
             child: Container(
               decoration: BoxDecoration(

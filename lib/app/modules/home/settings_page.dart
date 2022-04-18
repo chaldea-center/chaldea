@@ -196,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
               if (kIsWeb)
                 ListTile(
                   title: Text(S.current.web_renderer),
-                  subtitle: Text(S.current.restart_to_take_effect),
+                  subtitle: Text(S.current.restart_to_apply_changes),
                   trailing: DropdownButton<WebRenderMode>(
                     value: db.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit

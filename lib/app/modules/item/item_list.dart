@@ -378,9 +378,10 @@ class _ItemListTabState extends State<ItemListTab> {
         ),
       ));
     }
-    Widget listView = ListView(
+    Widget listView = ListView.builder(
       controller: _scrollController,
-      children: children,
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
     );
     return Column(children: [
       Expanded(child: listView),
@@ -632,18 +633,18 @@ class _ItemListTabState extends State<ItemListTab> {
     }
 
     return ListTile(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        router.push(url: Routes.itemI(itemId));
-      },
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
-      leading: db.getIconImage(Item.getIcon(itemId),
-          width: 48 / 144 * 132, height: 48),
+      leading: Item.iconBuilder(
+          context: context, item: null, icon: Item.getIcon(itemId), height: 48),
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       subtitle: subtitle,
       trailing: isQp ? null : SizedBox(width: 64, child: textField),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        router.push(url: Routes.itemI(itemId));
+      },
     );
   }
 

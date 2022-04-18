@@ -151,9 +151,11 @@ class SummonUtil {
       texts.add(_removeDoubleTrailing(weight) + '%');
     }
     if (showCategory && card is Servant) {
-      if (card.extra.obtains.isNotEmpty &&
-          card.extra.obtains.first != SvtObtain.permanent) {
-        texts.add(card.extra.obtains.first.name);
+      for (final obtain in [SvtObtain.limited, SvtObtain.story]) {
+        if (card.extra.obtains.contains(obtain)) {
+          texts.add(Transl.svtObtain(obtain).l);
+          break;
+        }
       }
     }
 

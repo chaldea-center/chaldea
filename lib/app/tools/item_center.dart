@@ -481,10 +481,9 @@ Map<int, int> _sumMat(Map<int, LvlUpMaterial> matDetail, List<int> lvs) {
   for (int lv in lvs) {
     final lvMat = matDetail[lv];
     if (lvMat != null) {
-      mats[Items.qp.id] = lvMat.qp;
+      mats.addNum(Items.qp.id, lvMat.qp);
       for (final itemAmount in lvMat.items) {
-        mats[itemAmount.item.id] =
-            (mats[itemAmount.item.id] ?? 0) + itemAmount.amount;
+        mats.addNum(itemAmount.item.id, itemAmount.amount);
       }
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:chaldea/app/tools/localized_base.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'common.dart';
@@ -205,16 +206,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
             plan.weeklyMission = v;
             update();
           },
-          title: Text(LocalizedText.of(
-              chs: '周常任务',
-              jpn: 'ウィークリーミッション',
-              eng: 'Weekly Mission',
-              kor: '주간 미션')),
-          subtitle: Text(LocalizedText.of(
-              chs: '21圣晶片=3圣晶石',
-              jpn: '21聖晶片=3聖晶石',
-              eng: '21 Fragments = 3 Quartzs',
-              kor: '21성정편 = 3 성정석')),
+          title: Text(S.current.master_mission_weekly),
+          subtitle: Text(S.current.sq_fragment_convert),
           controlAffinity: ListTileControlAffinity.trailing,
         ),
         Card(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/query.dart';
@@ -273,19 +272,9 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
 
   String defaultHintText(int shown, int total, [int? ignore]) {
     if (ignore == null) {
-      return LocalizedText.of(
-        chs: '显示$shown/总计$total',
-        jpn: '表示$shown/合計$total',
-        eng: '$shown shown (total $total)',
-        kor: '$shown 표시 (합계 $total)',
-      );
+      return S.current.list_count_shown_all(shown, total);
     } else {
-      return LocalizedText.of(
-        chs: '显示$shown/忽略$ignore/总计$total',
-        jpn: '表示$shown/無視$ignore/合計$total',
-        eng: '$shown shown, $ignore ignored (total $total)',
-        kor: '$shown 표시, $ignore 무시 (합계) $total)',
-      );
+      return S.current.list_count_shown_hidden_all(shown, ignore, total);
     }
   }
 

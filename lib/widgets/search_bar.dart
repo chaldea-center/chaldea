@@ -58,7 +58,7 @@ class _SearchBarState extends State<SearchBar> {
         ? colorScheme.onSurface
         : colorScheme.onPrimary;
     return Padding(
-      padding: EdgeInsets.fromLTRB(
+      padding: EdgeInsetsDirectional.fromSTEB(
         16,
         0,
         widget.searchOptionsBuilder == null ? 16 : 0,
@@ -76,7 +76,7 @@ class _SearchBarState extends State<SearchBar> {
               style: textStyle,
               // don't set other language
               // placeholder height will change
-              placeholder: '${S.current.search}: A B -C\u3000',
+              placeholder: 'Search: A B -C',
               prefixInsets: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               suffixIcon: const Icon(Icons.clear),
@@ -141,7 +141,8 @@ class _SearchBarState extends State<SearchBar> {
             ),
             elevation: 4,
             color: Theme.of(context).secondaryHeaderColor,
-          )
+          ),
+          const SafeArea(child: SizedBox())
         ],
       ),
     );

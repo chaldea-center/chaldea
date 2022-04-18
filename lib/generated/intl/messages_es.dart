@@ -23,30 +23,30 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "Versión actual: ${curVersion}\nÚltima versión: ${newVersion}\nNota de lanzamiento:\n${releaseNote}";
 
-  static String m1(version) =>
+  static String m2(version) =>
       "Versión de la aplicación requerida: ≥ ${version}";
 
-  static String m2(n) => "Lotería Máx. ${n}";
+  static String m3(n) => "Lotería Máx. ${n}";
 
-  static String m3(n) => "Griales a Lore: ${n}";
+  static String m4(n) => "Griales a Lore: ${n}";
 
-  static String m4(filename, hash, localHash) =>
+  static String m5(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
-  static String m5(error) => "La importación ha fallado. Error:\n${error}";
+  static String m6(error) => "La importación ha fallado. Error:\n${error}";
 
-  static String m6(name) => "${name} ya existe";
+  static String m7(name) => "${name} ya existe";
 
-  static String m7(site) => "Ir a ${site}";
+  static String m8(site) => "Ir a ${site}";
 
-  static String m8(first) =>
+  static String m11(first) =>
       "{primer, selecciona, verdadero{Ya es el primero} falso{Ya es el último} otro{No más}}";
 
-  static String m9(n) => "Restablecer plan ${n}(Todo)";
+  static String m12(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m10(n) => "Restablecer plan ${n} (Mostrado)";
+  static String m13(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m11(a, b) => "${a} ${b}";
+  static String m14(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -185,14 +185,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_network": MessageLookupByLibrary.simpleMessage("Sin red"),
         "error_no_version_data_found": MessageLookupByLibrary.simpleMessage(
             "No se encontró ninguna versión de datos"),
-        "error_required_app_version": m1,
+        "error_required_app_version": m2,
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "Todos los objetos se añadirán al inventario y se eliminará el evento fuera del plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Recoger objetos"),
         "event_item_extra":
             MessageLookupByLibrary.simpleMessage("Obtenibles adicionales"),
-        "event_lottery_limit_hint": m2,
+        "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("Lotería limitada"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lotería"),
@@ -201,7 +201,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("Evento no planificado"),
         "event_progress": MessageLookupByLibrary.simpleMessage("Progreso"),
-        "event_rerun_replace_grail": m3,
+        "event_rerun_replace_grail": m4,
         "event_title": MessageLookupByLibrary.simpleMessage("Eventos"),
         "exchange_ticket":
             MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
@@ -233,7 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Primero descargue o importe los datos de FFO↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
-        "file_not_found_or_mismatched_hash": m4,
+        "file_not_found_or_mismatched_hash": m5,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
             "Por favor, rellene la dirección de correo. De lo contrario NO hay respuesta."),
@@ -288,7 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("Ilustración"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Ilustrador"),
         "import_data": MessageLookupByLibrary.simpleMessage("Importar"),
-        "import_data_error": m5,
+        "import_data_error": m6,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Importar datos con éxito"),
         "import_http_body_duplicated":
@@ -343,7 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aplicación \"Archivos\"/En mi iPhone/Caldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Problemas"),
         "item": MessageLookupByLibrary.simpleMessage("Objeto"),
-        "item_already_exist_hint": m6,
+        "item_already_exist_hint": m7,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Objetos de Ascension"),
         "item_category_bronze":
@@ -384,14 +384,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta":
             MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
-        "jump_to": m7,
+        "jump_to": m8,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
         "language_en": MessageLookupByLibrary.simpleMessage("Spanish"),
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event":
             MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_end_hint": m8,
+        "list_end_hint": m11,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password":
@@ -490,9 +490,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m9,
-        "reset_plan_shown": m10,
-        "restart_to_take_effect": MessageLookupByLibrary.simpleMessage(
+        "reset_plan_all": m12,
+        "reset_plan_shown": m13,
+        "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para actualizar. Si la actualización falla, copie manualmente la carpeta de origen en el destino"),
@@ -620,6 +620,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m11
+        "words_separate": m14
       };
 }

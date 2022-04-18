@@ -225,7 +225,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: '),
+          Text(S.current.summon_daily + ': ',
               style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(

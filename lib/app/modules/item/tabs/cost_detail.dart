@@ -190,13 +190,15 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       final textStyle = _planned && matType == SvtMatCostDetailType.full
           ? TextStyle(color: Theme.of(context).colorScheme.secondary)
           : const TextStyle();
+      String subtitle = detail.all.format() + ' (';
+      subtitle += detail.parts.map((e) => e.format()).join('/');
+      subtitle += ')';
       children.add(CustomTile(
         leading: db.getIconImage(svt?.borderedIcon, width: 42),
         title: Text(svt?.lName.l ?? 'No.$svtNo', style: textStyle, maxLines: 1),
         subtitle: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 240),
-          child: Text('${detail.all} (${detail.parts.join("/")})',
-              style: textStyle),
+          child: Text(subtitle, style: textStyle),
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {

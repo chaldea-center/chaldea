@@ -23,32 +23,40 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "現在のバージョン：${curVersion} \n最新のバージョン：${newVersion}\n詳細:\n${releaseNote}";
 
-  static String m1(version) => "Required app version: ≥ ${version}";
+  static String m1(url) =>
+      "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n\n詳細はこちら: \n${url}\n";
 
-  static String m2(n) => "最大${n}ボックス";
+  static String m2(version) => "Required app version: ≥ ${version}";
 
-  static String m3(n) => "聖杯は伝承結晶${n}個に置き換わります";
+  static String m3(n) => "最大${n}ボックス";
 
-  static String m4(filename, hash, localHash) =>
+  static String m4(n) => "聖杯は伝承結晶${n}個に置き換わります";
+
+  static String m5(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m5(error) => "インポートに失敗しました、エラー:\n${error}";
+  static String m6(error) => "インポートに失敗しました、エラー:\n${error}";
 
-  static String m6(name) => "${name}はすでにあります";
+  static String m7(name) => "${name}はすでにあります";
 
-  static String m7(site) => "${site}にジャンプします";
+  static String m8(site) => "${site}にジャンプします";
 
-  static String m8(first) => "${Intl.select(first, {
+  static String m9(shown, total) => "表示${shown}/合計${total}";
+
+  static String m10(shown, ignore, total) =>
+      "表示${shown}/無視${ignore}/合計${total}";
+
+  static String m11(first) => "${Intl.select(first, {
             'true': '最初のもの',
             'false': '最後のもの',
             'other': '最後のもの',
           })}";
 
-  static String m9(n) => "プラン${n}をリセット(すべて)";
+  static String m12(n) => "プラン${n}をリセット(すべて)";
 
-  static String m10(n) => "プラン${n}をリセット(表示のみ)";
+  static String m13(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m11(a, b) => "${a}${b}";
+  static String m14(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -81,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "auto_reset": MessageLookupByLibrary.simpleMessage("自動リセット"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
         "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
+        "backup_failed": MessageLookupByLibrary.simpleMessage("バックアップに失敗しました"),
         "backup_history": MessageLookupByLibrary.simpleMessage("バックアップ履歴"),
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
         "bond": MessageLookupByLibrary.simpleMessage("絆"),
@@ -92,9 +101,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("キャセル"),
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
+        "card_name": MessageLookupByLibrary.simpleMessage("カード名"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
+        "chaldea_share_msg": m1,
         "change_log": MessageLookupByLibrary.simpleMessage("更新履歴"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラクター"),
         "check_update": MessageLookupByLibrary.simpleMessage("更新の確認"),
@@ -133,6 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "database_not_downloaded":
             MessageLookupByLibrary.simpleMessage("データベースはダウンロードしませんが、続きますか？"),
         "dataset_version": MessageLookupByLibrary.simpleMessage("データセットのバージョン"),
+        "date": MessageLookupByLibrary.simpleMessage("日付"),
         "debug": MessageLookupByLibrary.simpleMessage("ディバッグ"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
@@ -167,13 +179,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_network": MessageLookupByLibrary.simpleMessage("No network"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("No version data found"),
-        "error_required_app_version": m1,
+        "error_required_app_version": m2,
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "すべてのアイテムを倉庫に追加し、プランからイベントを削除します"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("アイテムの収集"),
         "event_item_extra":
             MessageLookupByLibrary.simpleMessage("他の入手可能のアイテム "),
-        "event_lottery_limit_hint": m2,
+        "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("有限なボックスガチャ"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("ボックス"),
@@ -182,7 +194,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("イベントはプランされていません"),
         "event_progress": MessageLookupByLibrary.simpleMessage("現在のイベント"),
-        "event_rerun_replace_grail": m3,
+        "event_rerun_replace_grail": m4,
         "event_title": MessageLookupByLibrary.simpleMessage("イベント"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),
@@ -211,7 +223,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "まずFFOリソースをダウンロードまたはインポートしてください↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同じサーヴァント"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("効率劇場"),
-        "file_not_found_or_mismatched_hash": m4,
+        "file_not_found_or_mismatched_hash": m5,
         "filename": MessageLookupByLibrary.simpleMessage("ファイル名"),
         "fill_email_warning":
             MessageLookupByLibrary.simpleMessage("連絡先情報がない場合は、返信することはできません。"),
@@ -271,8 +283,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("強化 - アペンドスキル強化"),
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("アペンドスキルのスクリーンショット"),
+        "import_backup": MessageLookupByLibrary.simpleMessage("バックアップのインポート"),
         "import_data": MessageLookupByLibrary.simpleMessage("インポート"),
-        "import_data_error": m5,
+        "import_data_error": m6,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("インポートは成功しました"),
         "import_from_clipboard":
@@ -298,6 +311,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("アイテムをアップデートします"),
         "import_source_file":
             MessageLookupByLibrary.simpleMessage("ソースデータをインポートします"),
+        "import_userdata_more":
+            MessageLookupByLibrary.simpleMessage("その他のインポート方法"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("属性"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("絆ポイント"),
@@ -329,7 +344,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "\"ファイル\"アプリ/My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("FAQ"),
         "item": MessageLookupByLibrary.simpleMessage("アイテム"),
-        "item_already_exist_hint": m6,
+        "item_already_exist_hint": m7,
+        "item_apple": MessageLookupByLibrary.simpleMessage("果実"),
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("霊基再臨素材"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
@@ -361,13 +377,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("アイテム"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("合計"),
         "join_beta": MessageLookupByLibrary.simpleMessage("ベータ版に参加します"),
-        "jump_to": m7,
+        "jump_to": m8,
         "language": MessageLookupByLibrary.simpleMessage("日本語"),
         "language_en": MessageLookupByLibrary.simpleMessage("Japanese"),
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),
-        "list_end_hint": m8,
+        "list_count_shown_all": m9,
+        "list_count_shown_hidden_all": m10,
+        "list_end_hint": m11,
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("パスワードを変更"),
@@ -402,6 +420,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("対策"),
         "master_mission_tasklist":
             MessageLookupByLibrary.simpleMessage("ミッションリスト"),
+        "master_mission_weekly":
+            MessageLookupByLibrary.simpleMessage("ウィークリーミッション"),
         "move_down": MessageLookupByLibrary.simpleMessage("ダウン"),
         "move_up": MessageLookupByLibrary.simpleMessage("アップ"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔術礼装"),
@@ -420,6 +440,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("開く"),
         "open_condition": MessageLookupByLibrary.simpleMessage("開放条件"),
+        "open_in_file_manager":
+            MessageLookupByLibrary.simpleMessage("ファイルマネージャで開いてください"),
         "overview": MessageLookupByLibrary.simpleMessage("概要"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("クラススキル"),
         "plan": MessageLookupByLibrary.simpleMessage("プラン"),
@@ -455,9 +477,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("名前変更"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻イベント"),
         "reset": MessageLookupByLibrary.simpleMessage("リセット"),
-        "reset_plan_all": m9,
-        "reset_plan_shown": m10,
-        "restart_to_take_effect":
+        "reset_plan_all": m12,
+        "reset_plan_shown": m13,
+        "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("再起動して設定を有効にしてください"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "再起動してアプリを更新します。更新に失敗した場合は、手動でsourceフォルダをdestinationへコピーペーストしてください"),
@@ -516,10 +538,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
+        "sq_fragment_convert":
+            MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),
+        "sq_short": MessageLookupByLibrary.simpleMessage("石"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
         "still_send": MessageLookupByLibrary.simpleMessage("送信し続けます"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("ガチャ"),
+        "summon_daily": MessageLookupByLibrary.simpleMessage("日替"),
+        "summon_ticket_short": MessageLookupByLibrary.simpleMessage("呼符"),
         "summon_title": MessageLookupByLibrary.simpleMessage("ガチャ"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("フォローされていません"),
@@ -553,6 +580,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
         "warning": MessageLookupByLibrary.simpleMessage("ワーニング"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Webレンダラ"),
-        "words_separate": m11
+        "words_separate": m14
       };
 }

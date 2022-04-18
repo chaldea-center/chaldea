@@ -4,7 +4,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../tools/localized_base.dart';
 
 class CvListPage extends StatefulWidget {
   CvListPage({Key? key}) : super(key: key);
@@ -154,8 +153,7 @@ class _CVOptions with SearchOptionsMixin<String> {
         ),
         CheckboxWithLabel(
           value: cardName,
-          label: Text(LocalizedText.of(
-              chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name', kor: '카드명')),
+          label: Text(S.current.card_name),
           onChanged: (v) {
             cardName = v ?? cardName;
             setState(() {});

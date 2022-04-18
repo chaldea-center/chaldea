@@ -20,7 +20,8 @@ class Language {
       Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const ko = Language('ko', '한국어', 'Korean', Locale('ko', ''));
-  static const ar = Language('ar', 'عربي', 'Arabic', Locale('ar', ''));
+  static const ar =
+      Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
   static const es = Language('es', 'Español', 'Spanish', Locale('es', ''));
 
   static List<Language> get supportLanguages =>
