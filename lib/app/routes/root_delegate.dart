@@ -1,6 +1,9 @@
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/utils/constants.dart';
+import '../../packages/method_channel/method_channel_chaldea.dart';
 import '../modules/root/window_manager.dart';
 import 'delegate.dart';
 import 'routes.dart';
@@ -103,6 +106,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
         if (!route.didPop(result)) return false;
         if (appState.showWindowManager) {
           appState.showWindowManager = false;
+          return true;
+        }
+        if (PlatformU.isAndroid && !appState.activeRouter.canPop()) {
+          db.saveAll();
+          MethodChannelChaldeaNext.sendBackground();
           return true;
         }
         // return appState.activeRouter.onPopPage(route, result);

@@ -28,41 +28,25 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        db.saveAll();
-        if (PlatformU.isAndroid) {
-          if (Navigator.of(context).canPop()) {
-            return Future.value(true);
-          } else {
-            MethodChannelChaldeaNext.sendBackground();
-            print('sendBackground');
-            return Future.value(false);
-          }
-        } else {
-          return Future.value(true);
-        }
-      },
-      child: Scaffold(
-        body: IndexedStack(
-          index: _curIndex,
-          children: [GalleryPage(), SettingsPage()],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _curIndex,
-          items: [
-            BottomNavigationBarItem(
-                icon: const SafeArea(child: Icon(Icons.layers)),
-                label: S.current.gallery_tab_name),
-            BottomNavigationBarItem(
-                icon: const SafeArea(child: Icon(Icons.settings)),
-                label: S.current.settings_tab_name),
-          ],
-          onTap: (index) {
-            // if (_curIndex != index) db2.saveData();
-            setState(() => _curIndex = index);
-          },
-        ),
+    return Scaffold(
+      body: IndexedStack(
+        index: _curIndex,
+        children: [GalleryPage(), SettingsPage()],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _curIndex,
+        items: [
+          BottomNavigationBarItem(
+              icon: const SafeArea(child: Icon(Icons.layers)),
+              label: S.current.gallery_tab_name),
+          BottomNavigationBarItem(
+              icon: const SafeArea(child: Icon(Icons.settings)),
+              label: S.current.settings_tab_name),
+        ],
+        onTap: (index) {
+          // if (_curIndex != index) db2.saveData();
+          setState(() => _curIndex = index);
+        },
       ),
     );
   }
