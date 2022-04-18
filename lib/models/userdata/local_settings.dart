@@ -147,7 +147,7 @@ class DisplaySettings {
   List<SvtTab> sortedSvtTabs;
 
   DisplaySettings({
-    this.showAccountAtHome = false,
+    this.showAccountAtHome = true,
     this.svtPlanInputMode = SvtPlanInputMode.dropdown,
     this.itemDetailViewType = ItemDetailViewType.separated,
     this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,

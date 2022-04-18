@@ -163,7 +163,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = DisplaySettings(
           showAccountAtHome:
-              $checkedConvert('showAccountAtHome', (v) => v as bool? ?? false),
+              $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
           svtPlanInputMode: $checkedConvert(
               'svtPlanInputMode',
               (v) =>

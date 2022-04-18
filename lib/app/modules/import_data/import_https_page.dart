@@ -47,11 +47,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _showCraft = false;
   final Set<UserSvt> _validSvts = {};
 
-  // mapping, from gamedata, key=game id
-  // late final Map<int, Servant> svtIdMap;
-  // late final Map<int, CraftEssence> craftIdMap;
-  // late final Map<int, Item> itemIdMap;
-
   // from response,key=game id
   Map<int, UserSvtCollection> cardCollections = {};
 
@@ -63,18 +58,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   BiliReplaced? get replacedResponse => topLogin?.body;
 
-  String get tmpPath =>
-      joinPaths(db.paths.tempDir, 'http_packages', db.curUser.name);
+  String tmpPath =
+      joinPaths(db.paths.tempDir, 'http_packages', calcMd5(db.curUser.name));
 
   @override
   void initState() {
     super.initState();
-    // svtIdMap = db2.gameData.servants.map((key, svt) => MapEntry(svt.id, svt));
-    // craftIdMap =
-    // db2.gameData.craftEssences.map((key, craft) => MapEntry(craft.gameId, craft));
-    // itemIdMap = db.gameData.items
-    //     .map((key, item) => MapEntry(item.itemId, item))
-    //   ..removeWhere((key, value) => key < 0);
     load();
   }
 
@@ -82,7 +71,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     try {
       final f = FilePlus(tmpPath);
       if (f.existsSync()) {
-        parseResponseBody(await f.readAsBytes());
+        parseResponseBody(await f.readAsString());
         if (mounted) setState(() {});
       }
     } catch (e, s) {
@@ -96,7 +85,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const Text('HTTPS Sniffing'),
+        title: Text(S.current.https_sniff),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
           IconButton(
@@ -115,11 +104,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     child: Column(
                       children: [
                         Text(
-                          LocalizedText.of(
-                              chs: '使用方法',
-                              jpn: '使用方法について',
-                              eng: 'How to use',
-                              kor: '사용 방법'),
+                          S.current.usage,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -139,7 +124,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                         itemSliver(constraints),
                         svtSliver(false),
                         svtSliver(true),
-                        // craftSliver,
+                        craftSliver,
                       ],
                     ),
                   ),
@@ -170,8 +155,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             leading: const Icon(Icons.supervised_user_circle),
-            title: Text(LocalizedText.of(
-                chs: '账号信息', jpn: 'Account', eng: 'Account', kor: '계정')),
+            title: Text(S.current.account_title),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),
             onTap: () {
               setState(() {
@@ -184,8 +168,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           SliverClip(
             child: MultiSliver(children: [
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '获取时间', jpn: '時間', eng: 'Time', kor: '시간')),
+                title: Text(S.current.obtain_time),
                 trailing:
                     Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
               ),
@@ -196,12 +179,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ListTile(
                 title: Text(S.current.info_gender),
                 trailing: Text(user.genderType == 1
-                    ? '♂' +
-                        LocalizedText.of(
-                            chs: '咕哒夫', jpn: 'ぐだ男', eng: 'Gudao', kor: '구다오')
-                    : '♀' +
-                        LocalizedText.of(
-                            chs: '咕哒子', jpn: 'ぐだ子', eng: 'Gudako', kor: '구다코')),
+                    ? '♂ ' + S.current.guda_male
+                    : '♀ ' + S.current.guda_female),
               ),
               ListTile(
                 title: const Text('ID'),
@@ -255,12 +234,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final item = items[index];
-                  return ImageWithText(
-                    image: db.getIconImage(Item.getIcon(item.itemId),
-                        width: _with),
+                  return Item.iconBuilder(
+                    context: context,
+                    item: null,
+                    itemId: item.itemId,
+                    width: _with,
                     text: item.num.toString(),
-                    // width: _with,
-                    padding: const EdgeInsets.only(right: 2, bottom: 3),
                   );
                 }, childCount: items.length),
                 gridDelegate:
@@ -304,14 +283,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             S.current.grail + ' ${svt.exceedCount}',
           ]),
           _wrapCellStyle([
-            LocalizedText.of(chs: '宝具', jpn: 'NP', eng: 'NP', kor: '보구') +
-                ' ${svt.treasureDeviceLv1}',
+            S.current.np_short + ' ${svt.treasureDeviceLv1}',
             S.current.bond + ' ${cardCollections[svt.svtId]!.friendshipRank}',
-            coin == null
-                ? ''
-                : (LocalizedText.of(
-                        chs: '硬币', jpn: 'コイン', eng: 'Coin', kor: '코인') +
-                    ' $coin'),
+            coin == null ? '' : (S.current.servant_coin_short + ' $coin'),
           ]),
           _wrapCellStyle([
             S.current.active_skill +
@@ -355,8 +329,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 6, top: 2),
-                child: db.gameData.servantsById[svt.svtId]!
-                    .iconBuilder(context: context, height: 56),
+                child: db.gameData.servantsById[svt.svtId]
+                    ?.iconBuilder(context: context, height: 56),
               ),
               if (svt.locked)
                 const Icon(
@@ -416,8 +390,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             title: Text(inStorage
-                ? S.current.servant +
-                    '(${LocalizedText.of(chs: '保管室', jpn: '保管室', eng: 'Second Archive', kor: '영기 보관실')})'
+                ? S.current.servant + '(${S.current.svt_second_archive})'
                 : S.current.servant),
             leading: Checkbox(
               value: inStorage ? _includeSvtStorage : _includeSvt,
@@ -464,6 +437,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get craftSliver {
+    int owned = crafts.values.where((e) => e == CraftStatus.owned).length,
+        met = crafts.values.where((e) => e == CraftStatus.met).length,
+        notMet = crafts.values.where((e) => e == CraftStatus.notMet).length;
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
@@ -486,18 +462,20 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             },
           ),
         ),
-        // if (_showCraft)
-        //   SliverClip(
-        //       child: MultiSliver(children: [
-        //     ListTile(
-        //       leading: const Text(''),
-        //       title: Text(
-        //           '${Localized.craftFilter.of(CraftFilterData.statusTexts[2])}: $own\n'
-        //           '${Localized.craftFilter.of(CraftFilterData.statusTexts[1])}: $meet\n'
-        //           '${Localized.craftFilter.of(CraftFilterData.statusTexts[0])}: $notMeet\n'
-        //           'ALL:   ${crafts.length}'),
-        //     )
-        //   ]))
+        if (_showCraft)
+          SliverClip(
+            child: MultiSliver(
+              children: [
+                ListTile(
+                  leading: const Text(''),
+                  title: Text('Owned: $owned\n'
+                      'Met: $met\n'
+                      'NotMet: $notMet\n'
+                      'ALL:   ${crafts.length}'),
+                )
+              ],
+            ),
+          )
       ],
     );
   }
@@ -526,7 +504,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             CheckboxWithLabel(
               value: _allowDuplicated,
               onChanged: (v) {
-                EasyLoading.showInfo('Not Supported yet');
+                EasyLoading.showInfo(S.current.not_implemented);
                 // setState(() {
                 //   _allowDuplicated = v ?? _allowDuplicated;
                 //   _refreshValidSvts();
@@ -539,8 +517,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ? null
                   : () {
                       router.push(
-                        child:
-                            SvtBondDetailPage(cardCollections: cardCollections),
+                        child: SvtBondDetailPage(
+                          cardCollections: cardCollections,
+                        ),
                       );
                     },
               child: Text(S.current.bond),
@@ -585,9 +564,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         user.items[item.itemId] = item.num;
       });
     }
-    // if (_includeCraft) {
-    //   user.craftEssences = Map.of(crafts);
-    // }
+    if (_includeCraft) {
+      user.craftEssences = Map.of(crafts);
+    }
     // 不删除原本信息
     // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
     HashSet<int> _alreadyAdded = HashSet();
@@ -632,83 +611,60 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   void importResponseBody() async {
+    var fromFile = await showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.import_data),
+        children: [
+          ListTile(
+            leading: const Icon(Icons.paste),
+            title: Text(S.current.import_from_clipboard),
+            onTap: () async {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.file_present),
+            title: Text(S.current.import_from_file),
+            onTap: () async {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.clear),
+          ),
+        ],
+      ),
+    );
     try {
-      final error = await showDialog(
-        context: context,
-        builder: (context) => SimpleDialog(
-          title: Text(S.current.import_data),
-          children: [
-            ListTile(
-              leading: const Icon(Icons.paste),
-              title: Text(LocalizedText.of(
-                  chs: '从剪切板',
-                  jpn: 'クリップボードから',
-                  eng: 'From Clipboard',
-                  kor: '클립보드에서')),
-              onTap: () async {
-                try {
-                  String? text =
-                      (await Clipboard.getData(Clipboard.kTextPlain))?.text;
-                  if (text?.isNotEmpty != true) {
-                    EasyLoading.showError('Clipboard is empty!');
-                  } else {
-                    final bytes = utf8.encode(text!);
-                    parseResponseBody(bytes);
-                    await FilePlus(tmpPath).create(recursive: true);
-                    await FilePlus(tmpPath).writeAsBytes(bytes);
-                  }
-                  Navigator.of(context).pop();
-                } catch (e, s) {
-                  logger.e('import http body from clipboard failed', e, s);
-                  Navigator.of(context).pop(e);
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.file_present),
-              title: Text(LocalizedText.of(
-                  chs: '从文本文件',
-                  jpn: 'テキストファイルから',
-                  eng: 'From Text File',
-                  kor: '텍스트 파일에서')),
-              onTap: () async {
-                Navigator.of(context).pop();
-                try {
-                  final result =
-                      await FilePicker.platform.pickFiles(withData: true);
-                  final bytes = result?.files.first.bytes;
-                  if (bytes == null) return;
-                  parseResponseBody(bytes);
-                  await FilePlus(tmpPath).create(recursive: true);
-                  await FilePlus(tmpPath).writeAsBytes(bytes);
-                } catch (e, s) {
-                  logger.e('import http body from text file failed', e, s);
-                }
-              },
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.clear),
-            ),
-          ],
-        ),
-      );
-      if (error != null) throw error;
+      if (fromFile == true) {
+        final result = await FilePicker.platform.pickFiles(withData: true);
+        final bytes = result?.files.first.bytes;
+        if (bytes == null) return;
+        parseResponseBody(utf8.decode(bytes));
+        await FilePlus(tmpPath).create(recursive: true);
+        await FilePlus(tmpPath).writeAsBytes(bytes);
+      } else if (fromFile == false) {
+        String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+        if (text != null && text.isNotEmpty) {
+          parseResponseBody(text);
+          await FilePlus(tmpPath).create(recursive: true);
+          await FilePlus(tmpPath).writeAsString(text);
+        } else {
+          EasyLoading.showError('Clipboard is empty!');
+        }
+      }
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {
         SimpleCancelOkDialog(
           title: const Text('Error'),
-          content: Text('$e\n\n' +
-              LocalizedText.of(
-                  chs: '请仔细参考教程',
-                  jpn: 'チュートリアルを参照してください',
-                  eng: 'Please refer thr tutorial',
-                  kor: '듀토리얼을 참고해 주세요') +
+          content: Text('$e\n'
               '\nhttps://docs.chaldea.center/import_https/'
-                  '\nhttps://docs.chaldea.center/zh/import_https/'),
+              '\nhttps://docs.chaldea.center/zh/import_https/'),
         ).showDialog(context);
       }
     } finally {
@@ -718,8 +674,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
   }
 
-  void parseResponseBody(List<int> bytes) {
-    BiliTopLogin _topLogin = BiliTopLogin.tryBase64(utf8.decode(bytes));
+  void parseResponseBody(String contents) {
+    BiliTopLogin _topLogin = BiliTopLogin.tryBase64(contents);
 
     // clear before import
     _validSvts.clear();
@@ -745,8 +701,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = false;
         svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
-        // cardCollections[svt.svtId] = _response.userSvtCollection
-        //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(
             (group) => group.any((element) => element.svtId == svt.svtId));
         if (group == null) {
@@ -762,8 +716,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = true;
         svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
-        // cardCollections[svt.svtId] = _response.userSvtCollection
-        //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(
             (group) => group.any((element) => element.svtId == svt.svtId));
         if (group == null) {

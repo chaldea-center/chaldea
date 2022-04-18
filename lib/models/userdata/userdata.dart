@@ -121,7 +121,7 @@ class UserData {
         events: null,
         mainStories: null,
         exchangeTickets: null,
-        craftEssences: null,
+        craftEssences: Map.from(oldUser['crafts'] ?? {}),
         mysticCodes: null,
         summons: null,
         freeLPParams: null,
@@ -196,7 +196,8 @@ class User {
   Map<int, MainStoryPlan> mainStories;
   Map<int, ExchangeTicketPlan> exchangeTickets;
 
-  Map<int, CraftStatus> craftEssences;
+  // 1-met, 2-owned, else 0
+  Map<int, int> craftEssences;
   Map<int, int> mysticCodes;
   Set<String> summons;
 
@@ -219,7 +220,7 @@ class User {
     Map<int, EventPlan>? events,
     Map<int, MainStoryPlan>? mainStories,
     Map<int, ExchangeTicketPlan>? exchangeTickets,
-    Map<int, CraftStatus?>? craftEssences,
+    Map<int, int?>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     this.use6thDropRate = true,
@@ -300,7 +301,14 @@ class User {
   }
 }
 
-enum CraftStatus { owned, met, notMet }
+class CraftStatus {
+  CraftStatus._();
+  static const notMet = 0;
+  static const met = 1;
+  static const owned = 2;
+
+  static const List<int> values = [notMet, met, owned];
+}
 
 @JsonSerializable()
 class SvtStatus {

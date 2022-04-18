@@ -133,8 +133,8 @@ class CraftListPageState extends State<CraftListPage>
     if (!filterData.atkType.matchOne(ce.atkType)) {
       return false;
     }
-    if (!filterData.status.matchOne(
-        db.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet)) {
+    if (!filterData.status
+        .matchOne(db.curUser.craftEssences[ce.collectionNo] ?? 0)) {
       return false;
     }
     //

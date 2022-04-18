@@ -72,7 +72,6 @@ class _GameDataPageState extends State<GameDataPage> {
           ),
           TileGroup(
             header: S.current.download_source,
-            footer: S.current.download_source_hint,
             children: [
               ListTile(
                 title: Text(S.current.download_source),

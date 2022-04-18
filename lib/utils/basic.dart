@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -253,4 +255,8 @@ class Utility {
     }
     return null;
   }
+}
+
+String calcMd5(String input) {
+  return md5.convert(utf8.encode(input)).toString();
 }

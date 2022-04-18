@@ -86,11 +86,11 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             update();
           },
         ),
-        FilterGroup<CraftStatus>(
+        FilterGroup<int>(
           title: const Text('Status'),
           options: CraftStatus.values,
           values: filterData.status,
-          optionBuilder: (v) => Text(v.name.toTitle()),
+          optionBuilder: (v) => Text(['NotMet', 'Met', 'Owned'][v]),
           onFilterChanged: (value) {
             update();
           },

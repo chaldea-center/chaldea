@@ -267,7 +267,7 @@ class CraftFilterData {
   FilterGroupData<int> rarity = FilterGroupData();
   FilterGroupData<CEObtain> obtain = FilterGroupData();
   FilterGroupData<CraftATKType> atkType = FilterGroupData();
-  FilterGroupData<CraftStatus> status = FilterGroupData();
+  FilterGroupData<int> status = FilterGroupData();
 
   CraftFilterData({
     this.useGrid = false,

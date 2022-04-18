@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea账号"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
+        "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea应用备份"),
         "change_log": MessageLookupByLibrary.simpleMessage("更新历史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出场角色"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
@@ -249,15 +250,30 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
         "grail_up": MessageLookupByLibrary.simpleMessage("圣杯转临"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("成长曲线"),
+        "guda_female": MessageLookupByLibrary.simpleMessage("咕哒子"),
+        "guda_male": MessageLookupByLibrary.simpleMessage("咕哒夫"),
         "help": MessageLookupByLibrary.simpleMessage("帮助"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隐藏已过期"),
+        "http_sniff_hint":
+            MessageLookupByLibrary.simpleMessage("(国/台/日/美)账号登陆时的数据"),
+        "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),
         "icons": MessageLookupByLibrary.simpleMessage("图标"),
         "ignore": MessageLookupByLibrary.simpleMessage("忽略"),
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("画师"),
+        "import_active_skill_hint":
+            MessageLookupByLibrary.simpleMessage("强化 - 从者技能强化"),
+        "import_active_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("主动技能截图解析"),
+        "import_append_skill_hint":
+            MessageLookupByLibrary.simpleMessage("强化 - 被动技能强化"),
+        "import_append_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("附加技能截图解析"),
         "import_data": MessageLookupByLibrary.simpleMessage("导入"),
         "import_data_error": m5,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功导入数据"),
+        "import_from_clipboard": MessageLookupByLibrary.simpleMessage("从剪切板"),
+        "import_from_file": MessageLookupByLibrary.simpleMessage("从文件"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("允许2号机"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
@@ -265,6 +281,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_http_body_hint_hide":
             MessageLookupByLibrary.simpleMessage("点击从者可隐藏/取消隐藏该从者"),
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("仅锁定"),
+        "import_item_hint": MessageLookupByLibrary.simpleMessage("个人空间 - 道具一览"),
+        "import_item_screenshots":
+            MessageLookupByLibrary.simpleMessage("素材截图解析"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage("导入截图"),
         "import_screenshot_hint":
             MessageLookupByLibrary.simpleMessage("仅更新识别出的素材"),
@@ -380,6 +399,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("尚未实现"),
         "not_outdated": MessageLookupByLibrary.simpleMessage("未过期"),
+        "np_short": MessageLookupByLibrary.simpleMessage("宝具"),
+        "obtain_time": MessageLookupByLibrary.simpleMessage("时间"),
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),
         "open_condition": MessageLookupByLibrary.simpleMessage("开发条件"),
@@ -441,6 +462,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sent": MessageLookupByLibrary.simpleMessage("已发送"),
         "servant": MessageLookupByLibrary.simpleMessage("从者"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("从者硬币"),
+        "servant_coin_short": MessageLookupByLibrary.simpleMessage("硬币"),
         "servant_detail_page": MessageLookupByLibrary.simpleMessage("从者详情页"),
         "servant_list_page": MessageLookupByLibrary.simpleMessage("从者列表页"),
         "servant_title": MessageLookupByLibrary.simpleMessage("从者"),
@@ -493,6 +515,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
+        "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("测试信息"),
@@ -508,6 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_error": MessageLookupByLibrary.simpleMessage("更新失败"),
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("无可用更新"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("已更新"),
+        "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("下载备份"),

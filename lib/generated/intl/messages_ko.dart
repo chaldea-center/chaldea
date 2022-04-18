@@ -238,16 +238,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("성배"),
         "grail_up": MessageLookupByLibrary.simpleMessage("성배전림"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("성장 곡선"),
+        "guda_female": MessageLookupByLibrary.simpleMessage("구다코"),
+        "guda_male": MessageLookupByLibrary.simpleMessage("구다오"),
         "help": MessageLookupByLibrary.simpleMessage("도움말"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("기간종료 숨기기"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
+            "(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다"),
+        "https_sniff": MessageLookupByLibrary.simpleMessage("Https 스나이핑"),
         "icons": MessageLookupByLibrary.simpleMessage("아이콘"),
         "ignore": MessageLookupByLibrary.simpleMessage("무시"),
         "illustration": MessageLookupByLibrary.simpleMessage("일러스트"),
         "illustrator": MessageLookupByLibrary.simpleMessage("일러스트레이터"),
+        "import_active_skill_hint":
+            MessageLookupByLibrary.simpleMessage("강화 - 서번트 스킬 강화"),
+        "import_active_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("액티브 스킬 스크린샷"),
+        "import_append_skill_hint":
+            MessageLookupByLibrary.simpleMessage("강화 - 어펜드 스킬 강화"),
+        "import_append_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("어펜드 스킬 스크린샷"),
         "import_data": MessageLookupByLibrary.simpleMessage("불러오기"),
         "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("불러오기를 성공했습니다"),
+        "import_from_clipboard": MessageLookupByLibrary.simpleMessage("클립보드에서"),
+        "import_from_file": MessageLookupByLibrary.simpleMessage("파일에서"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("중복 서번트"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
@@ -256,6 +271,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("서번트를 클릭해서 숨기기,표시하기"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("잠금된것만"),
+        "import_item_hint":
+            MessageLookupByLibrary.simpleMessage("마이룸 - 아이템 리스트"),
+        "import_item_screenshots":
+            MessageLookupByLibrary.simpleMessage("아이템 스크린샷"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage("스크린샷 가져오기"),
         "import_screenshot_hint":
             MessageLookupByLibrary.simpleMessage("식별된 자료들만 갱신하기"),
@@ -372,6 +391,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("보구"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("보구 레벨"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
+        "np_short": MessageLookupByLibrary.simpleMessage("보구"),
+        "obtain_time": MessageLookupByLibrary.simpleMessage("시간"),
         "ok": MessageLookupByLibrary.simpleMessage("확인"),
         "open": MessageLookupByLibrary.simpleMessage("열기"),
         "open_condition": MessageLookupByLibrary.simpleMessage("개방 조건"),
@@ -420,6 +441,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("계획 선택"),
         "servant": MessageLookupByLibrary.simpleMessage("서번트"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("서번트 코인"),
+        "servant_coin_short": MessageLookupByLibrary.simpleMessage("코인"),
         "servant_detail_page":
             MessageLookupByLibrary.simpleMessage("서번트 상세 페이지"),
         "servant_list_page":
@@ -471,6 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("팔로우 하지않음"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("숨김"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
+        "svt_second_archive": MessageLookupByLibrary.simpleMessage("영기 보관실"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdown 전환"),
         "toogle_dark_mode":

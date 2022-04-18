@@ -252,16 +252,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
         "grail_up": MessageLookupByLibrary.simpleMessage("聖杯転臨"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("成長曲線"),
+        "guda_female": MessageLookupByLibrary.simpleMessage("ぐだ子"),
+        "guda_male": MessageLookupByLibrary.simpleMessage("ぐだ男"),
         "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れを非表示"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
+            "(JP/NA/CN/TW)アカウントがログインしているときにデータ"),
+        "https_sniff": MessageLookupByLibrary.simpleMessage("Httpsスニッフィング"),
         "icons": MessageLookupByLibrary.simpleMessage("アイコン"),
         "ignore": MessageLookupByLibrary.simpleMessage("無視"),
         "illustration": MessageLookupByLibrary.simpleMessage("イラスト"),
         "illustrator": MessageLookupByLibrary.simpleMessage("イラスレーター"),
+        "import_active_skill_hint":
+            MessageLookupByLibrary.simpleMessage("強化 - サーヴァントスキル強化"),
+        "import_active_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("保有スキルのスクリーンショット"),
+        "import_append_skill_hint":
+            MessageLookupByLibrary.simpleMessage("強化 - アペンドスキル強化"),
+        "import_append_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("アペンドスキルのスクリーンショット"),
         "import_data": MessageLookupByLibrary.simpleMessage("インポート"),
         "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("インポートは成功しました"),
+        "import_from_clipboard":
+            MessageLookupByLibrary.simpleMessage("クリップボードから"),
+        "import_from_file": MessageLookupByLibrary.simpleMessage("ファイルから"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("複数のサーバントはオーケーです"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
@@ -270,6 +286,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "サーバントをクリックして、そちらを非表示/再表示することができます"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("ロックしたもののみ"),
+        "import_item_hint":
+            MessageLookupByLibrary.simpleMessage("マイルーム - 所持アイテム一覧"),
+        "import_item_screenshots":
+            MessageLookupByLibrary.simpleMessage("アイテムのスクリーンショット"),
         "import_screenshot":
             MessageLookupByLibrary.simpleMessage("スクリーンショットをインポートします"),
         "import_screenshot_hint":
@@ -395,6 +415,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具レベル"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("お楽しみに"),
+        "np_short": MessageLookupByLibrary.simpleMessage("NP"),
+        "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("開く"),
         "open_condition": MessageLookupByLibrary.simpleMessage("開放条件"),
@@ -454,6 +476,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("プランを選択"),
         "servant": MessageLookupByLibrary.simpleMessage("サーヴァント"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("サーヴァントコイン"),
+        "servant_coin_short": MessageLookupByLibrary.simpleMessage("コイン"),
         "servant_detail_page":
             MessageLookupByLibrary.simpleMessage("サーヴァント詳細ページ"),
         "servant_list_page":
@@ -503,6 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("非表示"),
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("関連礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
+        "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "toogle_dark_mode":

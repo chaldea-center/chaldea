@@ -111,8 +111,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
           craftEssences: $checkedConvert(
               'craftEssences',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String),
-                        $enumDecodeNullable(_$CraftStatusEnumMap, e)),
+                    (k, e) => MapEntry(int.parse(k as String), e as int?),
                   )),
           mysticCodes: $checkedConvert(
               'mysticCodes',
@@ -167,8 +166,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           .map((k, e) => MapEntry(k.toString(), e.toJson())),
       'exchangeTickets': instance.exchangeTickets
           .map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'craftEssences': instance.craftEssences
-          .map((k, e) => MapEntry(k.toString(), _$CraftStatusEnumMap[e])),
+      'craftEssences':
+          instance.craftEssences.map((k, e) => MapEntry(k.toString(), e)),
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
@@ -185,12 +184,6 @@ const _$RegionEnumMap = {
   Region.tw: 'tw',
   Region.na: 'na',
   Region.kr: 'kr',
-};
-
-const _$CraftStatusEnumMap = {
-  CraftStatus.owned: 'owned',
-  CraftStatus.met: 'met',
-  CraftStatus.notMet: 'notMet',
 };
 
 SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(

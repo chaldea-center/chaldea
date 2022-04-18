@@ -103,6 +103,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
+        "chaldea_backup":
+            MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card":
             MessageLookupByLibrary.simpleMessage("Characters"),
@@ -283,16 +285,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
         "growth_curve": MessageLookupByLibrary.simpleMessage("Growth Curve"),
+        "guda_female": MessageLookupByLibrary.simpleMessage("Gudako"),
+        "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
+            "(NA/JP/CN/TW)Capture the data when logging in"),
+        "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
         "icons": MessageLookupByLibrary.simpleMessage("Icons"),
         "ignore": MessageLookupByLibrary.simpleMessage("Ignore"),
         "illustration": MessageLookupByLibrary.simpleMessage("Illustration"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Illustrator"),
+        "import_active_skill_hint":
+            MessageLookupByLibrary.simpleMessage("Enhance - Skill"),
+        "import_active_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("Active Skill Screenshots"),
+        "import_append_skill_hint":
+            MessageLookupByLibrary.simpleMessage("Enhance - Append Skill"),
+        "import_append_skill_screenshots":
+            MessageLookupByLibrary.simpleMessage("Append Skill Screenshots"),
         "import_data": MessageLookupByLibrary.simpleMessage("Import"),
         "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Import data successfully"),
+        "import_from_clipboard":
+            MessageLookupByLibrary.simpleMessage("From Clipboard"),
+        "import_from_file": MessageLookupByLibrary.simpleMessage("From File"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("Duplicated"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
@@ -301,6 +319,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Click servant to hide/unhide"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("Locked Only"),
+        "import_item_hint":
+            MessageLookupByLibrary.simpleMessage("My Room - Item List"),
+        "import_item_screenshots":
+            MessageLookupByLibrary.simpleMessage("Items Screenshots"),
         "import_screenshot":
             MessageLookupByLibrary.simpleMessage("Import Screenshots"),
         "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
@@ -450,6 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_implemented":
             MessageLookupByLibrary.simpleMessage("Not yet implemented"),
         "not_outdated": MessageLookupByLibrary.simpleMessage("Not Outdated"),
+        "np_short": MessageLookupByLibrary.simpleMessage("NP"),
+        "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
@@ -519,6 +543,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sent": MessageLookupByLibrary.simpleMessage("Sent"),
         "servant": MessageLookupByLibrary.simpleMessage("Servant"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("Servant Coin"),
+        "servant_coin_short": MessageLookupByLibrary.simpleMessage("Coin"),
         "servant_detail_page":
             MessageLookupByLibrary.simpleMessage("Servant Detail Page"),
         "servant_list_page":
@@ -582,6 +607,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
+        "svt_second_archive":
+            MessageLookupByLibrary.simpleMessage("Second Archive"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
@@ -601,6 +628,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_no_update":
             MessageLookupByLibrary.simpleMessage("No update available"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("Updated"),
+        "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("Download Backup"),

@@ -71,8 +71,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             //     Localized.craftFilter.of(CraftFilterData.statusTexts[status]),
             onPressed: () {
               setState(() {
-                db.curUser.craftEssences[ce.collectionNo] = CraftStatus
-                    .values[(status.index + 1) % CraftStatus.values.length];
+                db.curUser.craftEssences[ce.collectionNo] = (status + 1) % 3;
               });
               db.notifyUserdata();
             },

@@ -1,9 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -509,6 +506,17 @@ class S {
     return Intl.message(
       'A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features.',
       name: 'chaldea_account_system_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Chaldea App Backup`
+  String get chaldea_backup {
+    return Intl.message(
+      'Chaldea App Backup',
+      name: 'chaldea_backup',
       desc: '',
       locale: localeName,
       args: [],
@@ -2023,6 +2031,28 @@ class S {
     );
   }
 
+  /// `Gudako`
+  String get guda_female {
+    return Intl.message(
+      'Gudako',
+      name: 'guda_female',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gudao`
+  String get guda_male {
+    return Intl.message(
+      'Gudao',
+      name: 'guda_male',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Help`
   String get help {
     return Intl.message(
@@ -2039,6 +2069,28 @@ class S {
     return Intl.message(
       'Hide Outdated',
       name: 'hide_outdated',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `(NA/JP/CN/TW)Capture the data when logging in`
+  String get http_sniff_hint {
+    return Intl.message(
+      '(NA/JP/CN/TW)Capture the data when logging in',
+      name: 'http_sniff_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Https Sniffing`
+  String get https_sniff {
+    return Intl.message(
+      'Https Sniffing',
+      name: 'https_sniff',
       desc: '',
       locale: localeName,
       args: [],
@@ -2089,6 +2141,50 @@ class S {
     );
   }
 
+  /// `Enhance - Skill`
+  String get import_active_skill_hint {
+    return Intl.message(
+      'Enhance - Skill',
+      name: 'import_active_skill_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Active Skill Screenshots`
+  String get import_active_skill_screenshots {
+    return Intl.message(
+      'Active Skill Screenshots',
+      name: 'import_active_skill_screenshots',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enhance - Append Skill`
+  String get import_append_skill_hint {
+    return Intl.message(
+      'Enhance - Append Skill',
+      name: 'import_append_skill_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Append Skill Screenshots`
+  String get import_append_skill_screenshots {
+    return Intl.message(
+      'Append Skill Screenshots',
+      name: 'import_append_skill_screenshots',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Import`
   String get import_data {
     return Intl.message(
@@ -2116,6 +2212,28 @@ class S {
     return Intl.message(
       'Import data successfully',
       name: 'import_data_success',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `From Clipboard`
+  String get import_from_clipboard {
+    return Intl.message(
+      'From Clipboard',
+      name: 'import_from_clipboard',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `From File`
+  String get import_from_file {
+    return Intl.message(
+      'From File',
+      name: 'import_from_file',
       desc: '',
       locale: localeName,
       args: [],
@@ -2160,6 +2278,28 @@ class S {
     return Intl.message(
       'Locked Only',
       name: 'import_http_body_locked',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `My Room - Item List`
+  String get import_item_hint {
+    return Intl.message(
+      'My Room - Item List',
+      name: 'import_item_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Items Screenshots`
+  String get import_item_screenshots {
+    return Intl.message(
+      'Items Screenshots',
+      name: 'import_item_screenshots',
       desc: '',
       locale: localeName,
       args: [],
@@ -3271,6 +3411,28 @@ class S {
     );
   }
 
+  /// `NP`
+  String get np_short {
+    return Intl.message(
+      'NP',
+      name: 'np_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Time`
+  String get obtain_time {
+    return Intl.message(
+      'Time',
+      name: 'obtain_time',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `OK`
   String get ok {
     return Intl.message(
@@ -3876,6 +4038,17 @@ class S {
     );
   }
 
+  /// `Coin`
+  String get servant_coin_short {
+    return Intl.message(
+      'Coin',
+      name: 'servant_coin_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Servant Detail Page`
   String get servant_detail_page {
     return Intl.message(
@@ -4360,6 +4533,17 @@ class S {
     );
   }
 
+  /// `Second Archive`
+  String get svt_second_archive {
+    return Intl.message(
+      'Second Archive',
+      name: 'svt_second_archive',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Switch Slider/Dropdown`
   String get svt_switch_slider_dropdown {
     return Intl.message(
@@ -4486,6 +4670,17 @@ class S {
     return Intl.message(
       'Updated',
       name: 'update_msg_succuss',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Usage`
+  String get usage {
+    return Intl.message(
+      'Usage',
+      name: 'usage',
       desc: '',
       locale: localeName,
       args: [],

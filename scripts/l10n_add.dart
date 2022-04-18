@@ -3,7 +3,7 @@ import 'package:args/args.dart';
 import 'shared.dart';
 import 'sort_l10n.dart' as sort_l10n;
 
-void main(List<String> args) {
+void main(List<String> args) async {
   final parser = ArgParser();
   parser.addOption('key', abbr: 'k');
   parser.addOption('delete', abbr: 'd');
@@ -23,7 +23,8 @@ void main(List<String> args) {
     if (removeKey != null) {
       data.remove(removeKey);
     } else if (addKey != null) {
-      final v = result[lang.name];
+      String? v = result[lang.name];
+      if (v?.isEmpty == true) v = null;
       data[addKey] = v ?? data[addKey];
     } else if (result.arguments.isNotEmpty &&
         result.arguments.first == 'replace') {
@@ -34,6 +35,8 @@ void main(List<String> args) {
       throw ArgumentError('Unknown arguments:${result.arguments}');
     }
     saveArb(lang, data);
+    // flutter pub run intl_utils:generate
+    // await Process.run('flutter', 'pub run intl_utils:generate'.split(' '));
   }
 
   sort_l10n.main();
