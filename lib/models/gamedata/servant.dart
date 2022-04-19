@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -257,6 +256,34 @@ class Servant with GameCardMixin {
         extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ??
         icon;
     return bordered(_icon);
+  }
+
+  @override
+  Widget iconBuilder(
+      {required BuildContext context,
+      double? width,
+      double? height,
+      double? aspectRatio = 132 / 144,
+      String? text,
+      EdgeInsets? padding,
+      EdgeInsets? textPadding,
+      VoidCallback? onTap,
+      bool jumpToDetail = true,
+      bool popDetail = false,
+      String? overrideIcon}) {
+    return super.iconBuilder(
+      context: context,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
+      padding: padding,
+      textPadding: textPadding,
+      onTap: onTap,
+      jumpToDetail: jumpToDetail,
+      popDetail: popDetail,
+      overrideIcon: overrideIcon ?? customIcon,
+    );
   }
 
   @override

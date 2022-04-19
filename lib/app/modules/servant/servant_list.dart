@@ -724,8 +724,9 @@ class ServantListPageState extends State<ServantListPage>
       (context, snapshot) => InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: db.getIconImage(svt.customIcon),
+          image: svt.iconBuilder(context: context),
           shadowSize: 4,
+          height: 64,
           textBuilder: status.cur.favorite ? textBuilder : null,
           textStyle: const TextStyle(fontSize: 11, color: Colors.black),
           shadowColor: Colors.white,
@@ -1016,7 +1017,7 @@ class ServantListPageState extends State<ServantListPage>
         break;
     }
     return CustomTile(
-      leading: db.getIconImage(svt.customIcon, width: 56),
+      leading: svt.iconBuilder(context: context, height: 64),
       title: Text(
         svt.lName.l,
         maxLines: 1,
@@ -1060,7 +1061,7 @@ class ServantListPageState extends State<ServantListPage>
     );
 
     return db.onUserData((context, snapshot) => CustomTile(
-          leading: db.getIconImage(svt.customIcon, width: 48),
+          leading: svt.iconBuilder(context: context, width: 48),
           subtitle: _getDetailTable(svt),
           trailing: eyeWidget,
           selected: SplitRoute.isSplit(context) && selected == svt,
@@ -1073,6 +1074,7 @@ class ServantListPageState extends State<ServantListPage>
   void copyPlan() {
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (context) => SimpleDialog(
         title: Text(S.of(context).select_copy_plan_source),
         children: List.generate(db.curUser.svtPlanGroups.length, (index) {

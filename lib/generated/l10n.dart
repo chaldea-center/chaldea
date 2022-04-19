@@ -867,10 +867,10 @@ class S {
     );
   }
 
-  /// `Light color`
+  /// `Light`
   String get dark_mode_light {
     return Intl.message(
-      'Light color',
+      'Light',
       name: 'dark_mode_light',
       desc: '',
       locale: localeName,

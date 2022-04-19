@@ -35,7 +35,6 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  PersistentBottomSheetController? _bottomSheetController;
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +84,10 @@ class _SearchBarState extends State<SearchBar> {
           if (widget.searchOptionsBuilder != null)
             InkWell(
               onTap: () {
-                _bottomSheetController = Scaffold.of(context).showBottomSheet(
-                  (context) => _optionIcon(),
-                  backgroundColor: Colors.transparent,
+                 showModalBottomSheet(
+                  context: context,
+                  builder: (context) =>
+                      SafeArea(child: _optionBuilder(context)),
                 );
               },
               child: Tooltip(
@@ -106,43 +106,23 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 
-  Widget _optionIcon() {
+  Widget _optionBuilder(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setState) => Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Material(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      _bottomSheetController?.close();
-                    },
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    tooltip:
-                        MaterialLocalizations.of(context).closeButtonTooltip,
-                  ),
-                  Text(S.current.search_options),
-                ],
-              ),
-            ),
-            borderRadius: const BorderRadius.only(topRight: Radius.circular(8)),
-            elevation: 4,
-            color: Theme.of(context).secondaryHeaderColor,
+          ListTile(
+            leading: const Icon(Icons.keyboard_arrow_down),
+            title: Text(S.current.search_options),
+            horizontalTitleGap: 0,
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
-          Material(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: widget.searchOptionsBuilder!(context, setState),
-            ),
-            elevation: 4,
-            color: Theme.of(context).secondaryHeaderColor,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+            child: widget.searchOptionsBuilder!(context, setState),
           ),
-          const SafeArea(child: SizedBox())
         ],
       ),
     );

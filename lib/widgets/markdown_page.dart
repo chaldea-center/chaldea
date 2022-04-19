@@ -7,12 +7,14 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:chaldea/app/tools/localized_base.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
+import '../models/models.dart';
 
 class MyMarkdownWidget extends StatefulWidget {
   final String? data;
@@ -157,16 +159,32 @@ class MarkdownHelpPage extends StatefulWidget {
     String? assetEn,
     Duration? lapse,
   }) async {
-    final result = LocalizedText.of(
-      chs: await _loadAsset(joinPaths(dir, asset)) ?? '',
-      jpn: await _loadAsset(joinPaths(dir, assetJp ?? joinPaths('jp', asset))),
-      eng: await _loadAsset(joinPaths(dir, assetEn ?? joinPaths('en', asset))),
-      kor: await _loadAsset(joinPaths(dir, assetEn ?? joinPaths('kor', asset))),
-    );
+    String? content;
+    for (final region in db.settings.resolvedPreferredRegions) {
+      switch (region) {
+        case Region.jp:
+          content = await _loadAsset(
+              joinPaths(dir, assetJp ?? joinPaths('jp', asset)));
+          break;
+        case Region.cn:
+          content = await _loadAsset(joinPaths(dir, asset));
+          break;
+        case Region.na:
+          content = await _loadAsset(
+              joinPaths(dir, assetEn ?? joinPaths('en', asset)));
+          break;
+        default:
+          break;
+      }
+      if (content != null) {
+        break;
+      }
+    }
+
     if (lapse != null) {
       await Future.delayed(lapse);
     }
-    return result;
+    return content;
   }
 
   static Future<String?> _loadAsset(String? assetKey) async {
@@ -188,10 +206,7 @@ class MarkdownHelpPage extends StatefulWidget {
   static Widget buildHelpBtn(BuildContext context, String asset) {
     return IconButton(
       onPressed: () {
-        SplitRoute.push(
-          context,
-          MarkdownHelpPage.localized(asset: asset),
-        );
+        router.pushPage(MarkdownHelpPage.localized(asset: asset));
       },
       icon: const Icon(Icons.help_outline),
       tooltip: S.current.help,

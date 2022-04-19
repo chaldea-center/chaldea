@@ -155,7 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Current Version"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
-        "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light color"),
+        "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light"),
         "dark_mode_system": MessageLookupByLibrary.simpleMessage("System"),
         "database": MessageLookupByLibrary.simpleMessage("Database"),
         "database_not_downloaded": MessageLookupByLibrary.simpleMessage(
