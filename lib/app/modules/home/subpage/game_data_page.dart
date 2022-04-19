@@ -9,8 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
-import 'package:chaldea/app/tools/icon_cache_manager.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -162,17 +160,7 @@ class _GameDataPageState extends State<GameDataPage> {
                   }),
               if (!PlatformU.isWeb)
                 ListTile(
-                  title: Text(LocalizedText.of(
-                      chs: '下载图标',
-                      jpn: 'アイコンをダウンロード',
-                      eng: 'Download Icons',
-                      kor: '아이콘 다운로드')),
-                  subtitle: const Text('Icons only'),
-                  onTap: downloadIcons,
-                ),
-              if (!PlatformU.isWeb)
-                ListTile(
-                  title: Text('${S.current.import_data} (dataset*.zip)'),
+                  title: Text(S.current.import_data),
                   subtitle: Text(S.current.not_implemented),
                   onTap: importGamedata,
                 ),
@@ -211,15 +199,6 @@ class _GameDataPageState extends State<GameDataPage> {
           )
         ],
       ),
-    );
-  }
-
-  void downloadIcons() async {
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      barrierDismissible: false,
-      builder: (context) => IconCacheManagePage(),
     );
   }
 

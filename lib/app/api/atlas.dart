@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -58,6 +59,7 @@ class _CacheManager {
   final List<int> statusCodes = const [200];
   final Map<String, _CachedInfo> _data = {};
   final Map<String, List<int>> _memoryCache = {};
+  final Map<String, Completer<List<int>?>> _downloading = {};
 
   LazyBox<Uint8List>? _webBox;
 
@@ -178,7 +180,20 @@ class _CacheManager {
         _data.remove(key);
         await file.delete();
       }
-      return _rateLimiter.limited<List<int>?>(() => _download(url));
+      if (_downloading[url] != null) {
+        return _downloading[url]!.future;
+      } else {
+        Completer<List<int>?> _completer = Completer();
+        _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {
+          _downloading.remove(url);
+          _completer.complete(value);
+        }).catchError((e, s) {
+          _downloading.remove(url);
+          _completer.complete(null);
+        });
+        _downloading[url] = _completer;
+        return _completer.future;
+      }
     } catch (e, s) {
       _data.remove(key);
       logger.e('get api cache failed', e, s);

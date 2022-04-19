@@ -14,7 +14,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';

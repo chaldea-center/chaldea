@@ -13,6 +13,7 @@ import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 
+@protected
 class IconCacheManagePage extends StatefulWidget {
   IconCacheManagePage({Key? key}) : super(key: key);
 
@@ -71,6 +72,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
   }
 }
 
+@protected
 class IconCacheManager {
   final _limiter = RateLimiter();
 

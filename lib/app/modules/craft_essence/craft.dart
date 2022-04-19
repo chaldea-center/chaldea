@@ -150,20 +150,33 @@ class CraftDetailBasePage extends StatelessWidget {
   final CraftEssence ce;
   final Language? lang;
   final bool showSummon;
+  final bool enableLink;
 
-  const CraftDetailBasePage(
-      {Key? key, required this.ce, this.lang, this.showSummon = false})
-      : super(key: key);
+  const CraftDetailBasePage({
+    Key? key,
+    required this.ce,
+    this.lang,
+    this.showSummon = false,
+    this.enableLink = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final summons = getPickupSummons();
+    final name =
+        Text(ce.lName.l, style: const TextStyle(fontWeight: FontWeight.bold));
     return CustomTable(
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(
-            child: Text(ce.lName.l,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: enableLink
+                ? TextButton(
+                    onPressed: () {
+                      ce.routeTo();
+                    },
+                    child: name,
+                  )
+                : name,
             isHeader: true,
           )
         ]),

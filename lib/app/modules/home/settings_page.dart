@@ -83,14 +83,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   router.push(child: GameServerPage());
                 },
               ),
-              ListTile(
-                title: Text(S.current.preferred_translation),
-                trailing: db.onSettings((context, _) => _wrapArrowTrailing(Text(
-                    db.settings.resolvedPreferredRegions.first.toUpper()))),
-                onTap: () {
-                  router.push(child: TranslationSetting());
-                },
-              ),
             ],
           ),
           // SliverTileGroup(
@@ -126,6 +118,17 @@ class _SettingsPageState extends State<SettingsPage> {
                         ))),
                 onTap: () {
                   router.push(child: GameDataPage());
+                },
+              ),
+              ListTile(
+                title: Text(S.current.preferred_translation),
+                trailing: db.onSettings((context, _) {
+                  final region = db.settings.resolvedPreferredRegions.first;
+                  return _wrapArrowTrailing(
+                      Text('${region.toLanguage().name}(${region.toUpper()})'));
+                }),
+                onTap: () {
+                  router.push(child: TranslationSetting());
                 },
               ),
             ],

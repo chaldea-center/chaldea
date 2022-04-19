@@ -60,14 +60,14 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
     );
 
 const _$SvtObtainEnumMap = {
-  SvtObtain.friendPoint: 'friendPoint',
-  SvtObtain.story: 'story',
   SvtObtain.permanent: 'permanent',
-  SvtObtain.heroine: 'heroine',
+  SvtObtain.story: 'story',
   SvtObtain.limited: 'limited',
-  SvtObtain.unavailable: 'unavailable',
   SvtObtain.eventReward: 'eventReward',
+  SvtObtain.friendPoint: 'friendPoint',
   SvtObtain.clearReward: 'clearReward',
+  SvtObtain.heroine: 'heroine',
+  SvtObtain.unavailable: 'unavailable',
   SvtObtain.unknown: 'unknown',
 };
 

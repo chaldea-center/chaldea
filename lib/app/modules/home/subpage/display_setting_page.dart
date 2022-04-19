@@ -124,18 +124,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           TileGroup(
             header: S.current.servant_list_page,
             children: [
-              SwitchListTile.adaptive(
-                title: Text(S.current.setting_auto_turn_on_plan_not_reach),
-                subtitle: Text(S.current.setting_home_plan_list_page),
-                value: db.settings.display.autoTurnOnPlanNotReach,
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.display.autoTurnOnPlanNotReach = v;
-                    db.saveSettings();
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.trailing,
-              ),
               ListTile(
                 title: Text(S.current.setting_setting_favorite_button_default),
                 trailing: const Icon(Icons.keyboard_arrow_right),
@@ -149,6 +137,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   router.pushPage(ClassFilterStyleSetting());
                 },
+              ),
+              SwitchListTile.adaptive(
+                title: Text(S.current.setting_auto_turn_on_plan_not_reach),
+                subtitle: Text(S.current.setting_home_plan_list_page),
+                value: db.settings.display.autoTurnOnPlanNotReach,
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.display.autoTurnOnPlanNotReach = v;
+                    db.saveSettings();
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.trailing,
               ),
               SwitchListTile.adaptive(
                 title: Text(S.current.setting_only_change_second_append_skill),

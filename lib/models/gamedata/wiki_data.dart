@@ -409,14 +409,14 @@ enum SummonType {
 }
 
 enum SvtObtain {
-  friendPoint,
-  story,
   permanent,
-  heroine,
+  story,
   limited,
-  unavailable,
   eventReward,
+  friendPoint,
   clearReward,
+  heroine,
+  unavailable,
   unknown,
 }
 

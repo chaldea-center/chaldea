@@ -22,7 +22,12 @@ class SvtRelatedCardTab extends StatelessWidget {
     if (bondCE != null) {
       tabs.add(S.current.bond_craft);
       pages.add(SingleChildScrollView(
-        child: SafeArea(child: CraftDetailBasePage(ce: bondCE)),
+        child: SafeArea(
+          child: CraftDetailBasePage(
+            ce: bondCE,
+            enableLink: true,
+          ),
+        ),
       ));
     }
 
@@ -34,8 +39,12 @@ class SvtRelatedCardTab extends StatelessWidget {
       tabs.add(S.current.valentine_craft);
       pages.add(ListView.separated(
         itemCount: valentineCEs.length,
-        itemBuilder: (context, index) =>
-            SafeArea(child: CraftDetailBasePage(ce: valentineCEs[index])),
+        itemBuilder: (context, index) => SafeArea(
+          child: CraftDetailBasePage(
+            ce: valentineCEs[index],
+            enableLink: true,
+          ),
+        ),
         separatorBuilder: (_, __) => const SizedBox(height: 16),
       ));
     }
