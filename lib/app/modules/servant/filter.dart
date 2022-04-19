@@ -246,6 +246,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
   }
 
   Widget _buildClassFilter() {
+    final shownClasses = SvtClassX.regularAllWithB2;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -267,11 +268,10 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                     children: List.generate(2, (index) {
                       final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
                       return GestureDetector(
-                        child: db.getIconImage(icon),
+                        child: db.getIconImage(icon, width: 60),
                         onTap: () {
                           if (index == 0) {
-                            filterData.svtClass.options
-                                .addAll(SvtClassX.regularAll);
+                            filterData.svtClass.options.addAll(shownClasses);
                           } else {
                             filterData.svtClass.options.clear();
                           }
@@ -289,7 +289,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                       shrinkWrap: true,
                       childAspectRatio: 1.2,
                       physics: const NeverScrollableScrollPhysics(),
-                      children: SvtClassX.regularAll.map((className) {
+                      children: shownClasses.map((className) {
                         final selected =
                             filterData.svtClass.options.contains(className);
                         Widget icon = db.getIconImage(

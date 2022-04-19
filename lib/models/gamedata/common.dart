@@ -207,10 +207,11 @@ const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
 
 extension SvtClassX on SvtClass {
   int get id => kSvtClassIdsReverse[this]!;
+  int get iconId => kSvtClassIconIds[this] ?? kUnknownClassIconId;
 
   String icon(int rarity) {
     rarity = _kSvtClassRarityMap[rarity] ?? rarity;
-    return Atlas.asset('ClassIcons/class${rarity}_$id.png');
+    return Atlas.asset('ClassIcons/class${rarity}_$iconId.png');
   }
 
   String get shortName => kSvtClassShotName[this] ?? '?';
@@ -218,6 +219,12 @@ extension SvtClassX on SvtClass {
   static List<SvtClass> regularAll = [
     ...regular,
     ...extra,
+  ];
+
+  static List<SvtClass> regularAllWithB2 = [
+    ...regular,
+    ...extra,
+    SvtClass.beastII,
   ];
 
   static List<SvtClass> regularWithBeast = [
@@ -299,6 +306,35 @@ const kSvtClassIds = {
   1003: SvtClass.MIX,
 };
 final kSvtClassIdsReverse = kSvtClassIds.map((k, v) => MapEntry(v, k));
+
+const kUnknownClassIconId = 12;
+const kSvtClassIconIds = {
+  SvtClass.saber: 1,
+  SvtClass.archer: 2,
+  SvtClass.lancer: 3,
+  SvtClass.rider: 4,
+  SvtClass.caster: 5,
+  SvtClass.assassin: 6,
+  SvtClass.berserker: 7,
+  SvtClass.shielder: 8,
+  SvtClass.ruler: 9,
+  SvtClass.alterEgo: 10,
+  SvtClass.avenger: 11,
+  SvtClass.moonCancer: 23,
+  SvtClass.foreigner: 25,
+  SvtClass.grandCaster: 5,
+  SvtClass.beastI: 21,
+  SvtClass.beastII: 20,
+  SvtClass.beastIIIL: 24,
+  SvtClass.beastIIIR: 24,
+  SvtClass.beastUnknown: 26,
+  SvtClass.pretender: 28,
+  SvtClass.beastIV: 29,
+  SvtClass.cccFinaleEmiyaAlter: 124,
+  SvtClass.ALL: 1001,
+  SvtClass.EXTRA: 1002,
+  SvtClass.unknown: 97,
+};
 
 enum Trait {
   unknown,

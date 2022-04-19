@@ -647,8 +647,8 @@ class ServantListPageState extends State<ServantListPage>
     final extraClasses = [...SvtClassX.extra, SvtClass.beastII];
     int rarity = 1;
     if (clsName == SvtClass.ALL) {
-      rarity = filterData.svtClass.isEmpty(SvtClassX.regularAll) ||
-              filterData.svtClass.isAll(SvtClassX.regularAll)
+      rarity = filterData.svtClass.isEmpty(SvtClassX.regularAllWithB2) ||
+              filterData.svtClass.isAll(SvtClassX.regularAllWithB2)
           ? 5
           : 1;
     } else if (clsName == SvtClass.EXTRA) {
@@ -726,7 +726,6 @@ class ServantListPageState extends State<ServantListPage>
         child: ImageWithText(
           image: svt.iconBuilder(context: context),
           shadowSize: 4,
-          height: 64,
           textBuilder: status.cur.favorite ? textBuilder : null,
           textStyle: const TextStyle(fontSize: 11, color: Colors.black),
           shadowColor: Colors.white,
@@ -1025,7 +1024,7 @@ class ServantListPageState extends State<ServantListPage>
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (!Language.isJP) Text(svt.name, maxLines: 1),
+          if (!Language.isJP) Text(svt.lName.jp, maxLines: 1),
           Text(
             'No.${svt.collectionNo} ${Transl.svtClass(svt.className).l}  $additionalText',
             maxLines: 1,
