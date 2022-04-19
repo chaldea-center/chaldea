@@ -10,7 +10,7 @@ class CachedImageOption {
   final PlaceholderWidgetBuilder? placeholder; //2
   final ProgressIndicatorBuilder? progressIndicatorBuilder;
   final LoadingErrorWidgetBuilder? errorWidget;
-  final Duration? fadeOutDuration;
+  final Duration fadeOutDuration;
   final Curve fadeOutCurve;
   final Duration fadeInDuration;
   final Curve fadeInCurve;

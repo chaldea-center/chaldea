@@ -35,7 +35,6 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
 }
 
 class _SearchBarState extends State<SearchBar> {
-
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
@@ -84,7 +83,7 @@ class _SearchBarState extends State<SearchBar> {
           if (widget.searchOptionsBuilder != null)
             InkWell(
               onTap: () {
-                 showModalBottomSheet(
+                showModalBottomSheet(
                   context: context,
                   builder: (context) =>
                       SafeArea(child: _optionBuilder(context)),

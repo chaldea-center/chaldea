@@ -1,19 +1,22 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:path/path.dart' show join, basename;
+import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../packages/network.dart';
@@ -124,6 +127,8 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
+  static final _loader = _AtlasIconLoader();
+
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
 
@@ -151,32 +156,43 @@ class _CachedImageState extends State<CachedImage> {
     if (widget.imageProvider != null) {
       return _withProvider(widget.imageProvider!);
     }
-    if (widget.imageUrl == null) return _withPlaceholder(context, '');
+    String? url = widget.imageUrl;
+    if (url == null) return _withPlaceholder(context, '');
+    if (!kIsWeb &&
+        url.startsWith(Atlas.assetHost) &&
+        url.endsWith('.png') &&
+        !url.contains('merged')) {
+      String? _cachedPath = _loader.getCached(url);
+      if (_cachedPath != null) {
+        return _withProvider(FileImage(File(_cachedPath)));
+      } else if (!_loader.isFailed(url)) {
+        _loader.get(url).then((localPath) {
+          if (mounted) setState(() {});
+        });
+      }
+      return _withPlaceholder(context, url);
+    }
     return _withCached(widget.imageUrl!);
   }
 
   Widget _withProvider(ImageProvider provider) {
-    Widget child = Image(
+    Widget child = FadeInImage(
+      placeholder: const AssetImage('res/img/1x1.png'),
       image: provider,
-      // frameBuilder:null,
-      // loadingBuilder: null,
-      errorBuilder: cachedOption.errorWidget == null
+      imageErrorBuilder: cachedOption.errorWidget == null
           ? (ctx, e, s) => CachedImage.defaultErrorWidget(ctx, '', e)
           : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
-      // semanticLabel:null,
-      // excludeFromSemantics : false,
+      placeholderErrorBuilder: (ctx, e, s) => const SizedBox(),
       // width: widget.width,
       // height: widget.height,
-      color: cachedOption.color,
-      colorBlendMode: cachedOption.colorBlendMode,
       fit: cachedOption.fit,
       alignment: cachedOption.alignment,
       repeat: cachedOption.repeat,
-      // centerSlice:null,
       matchTextDirection: cachedOption.matchTextDirection,
-      // gaplessPlayback : false,
-      // isAntiAlias :false,
-      filterQuality: cachedOption.filterQuality,
+      fadeInCurve: cachedOption.fadeInCurve,
+      fadeOutCurve: cachedOption.fadeOutCurve,
+      fadeInDuration: cachedOption.fadeInDuration,
+      fadeOutDuration: cachedOption.fadeOutDuration,
     );
     if (widget.showSaveOnLongPress) {
       child = GestureDetector(
@@ -198,7 +214,7 @@ class _CachedImageState extends State<CachedImage> {
             ImageActions.showSaveShare(
               context: context,
               data: data,
-              destFp: join(db.paths.downloadDir, fn),
+              destFp: joinPaths(db.paths.downloadDir, fn),
               gallery: true,
               share: true,
             );
@@ -270,11 +286,11 @@ class _CachedImageState extends State<CachedImage> {
         child: child,
         onLongPress: () async {
           File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
-          String fn = basename(file.path);
+          String fn = pathlib.basename(file.path);
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,
-            destFp: join(db.paths.downloadDir, fn),
+            destFp: joinPaths(db.paths.downloadDir, fn),
             gallery: true,
             share: true,
             shareText: fn,
@@ -295,44 +311,79 @@ class _CachedImageState extends State<CachedImage> {
       height: widget.height,
       child: network.available
           ? CachedImage.defaultProgressPlaceholder(context, url)
-          : Container(), // TODO: add no-network icon
+          : const SizedBox(),
     );
   }
 }
 
-class _FadeIn extends StatefulWidget {
-  final Widget child;
+class _AtlasIconLoader extends _CachedLoader<String, String> {
+  @override
+  final Duration failedExpire = const Duration(minutes: 30);
 
-  const _FadeIn({Key? key, required this.child}) : super(key: key);
+  final _rateLimiter = RateLimiter(maxCalls: 20);
 
   @override
-  __FadeInState createState() => __FadeInState();
+  Future<String> caller(String url) async {
+    final localPath = _atlasUrlToFp(url);
+    if (await File(localPath).exists()) {
+      return localPath;
+    }
+    final resp = await _rateLimiter.limited(() =>
+        Dio().get(url, options: Options(responseType: ResponseType.bytes)));
+    File(localPath).createSync(recursive: true);
+    await File(localPath).writeAsBytes(List.from(resp.data));
+    print('download image: $url');
+    return localPath;
+  }
+
+  String _atlasUrlToFp(String url) {
+    assert(url.startsWith(Atlas.assetHost), url);
+    String urlPath = url.replaceFirst(Atlas.assetHost, '');
+    return pathlib.joinAll([
+      db.paths.atlasIconDir,
+      ...urlPath.split('/').where((e) => e.isNotEmpty)
+    ]);
+  }
 }
 
-class __FadeInState extends State<_FadeIn> {
-  double? opacity = 0;
+abstract class _CachedLoader<K, V> {
+  final Map<K, Completer<V?>> _completers = {};
+  final Map<K, V> _success = {};
+  final Map<K, DateTime> _failed = {};
+  Duration get failedExpire;
+  Future<V> caller(K key);
 
-  @override
-  Widget build(BuildContext context) {
-    if (opacity == null) return widget.child;
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      if (mounted) {
-        setState(() {
-          opacity = 1;
-        });
+  V? getCached(K key) {
+    if (_success.containsKey(key)) return _success[key];
+    return null;
+  }
+
+  bool isFailed(K key) {
+    if (_failed[key] != null) {
+      if (_failed[key]!.add(failedExpire).isBefore(DateTime.now())) {
+        _failed.remove(key);
+        return false;
+      } else {
+        return true;
       }
+    }
+    return false;
+  }
+
+  Future<V?> get(K key) async {
+    if (_success.containsKey(key)) return _success[key];
+    if (_completers.containsKey(key)) return _completers[key]?.future;
+    if (isFailed(key)) return null;
+    Completer<V?> _cmpl = Completer();
+    caller(key).then<void>((value) {
+      _success[key] = value;
+      _cmpl.complete(value);
+    }).catchError((e, s) {
+      logger.e('Got $key failed', e, s);
+      _failed[key] = DateTime.now();
+      _cmpl.complete(null);
     });
-    return AnimatedOpacity(
-      opacity: opacity!,
-      duration: const Duration(milliseconds: 300),
-      child: widget.child,
-      onEnd: () {
-        if (mounted) {
-          setState(() {
-            opacity = null;
-          });
-        }
-      },
-    );
+    _completers[key] = _cmpl;
+    return _cmpl.future;
   }
 }

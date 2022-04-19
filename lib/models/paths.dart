@@ -174,6 +174,8 @@ class PathManager {
   /// game/
   String get gameIconDir => join(gameDir, 'icons');
 
+  String get atlasIconDir => join(gameIconDir, 'atlas');
+
   /// user/
   String get settingsPath => join(userDir, 'settings.json');
 

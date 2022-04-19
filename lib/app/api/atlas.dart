@@ -97,7 +97,7 @@ class _CacheManager {
     }
   }
 
-  static final RateLimiter _rateLimiter = RateLimiter();
+  final RateLimiter _rateLimiter = RateLimiter();
 
   Future<List<int>?> _download(String url) async {
     print('fetching Atlas API: $url');
@@ -219,6 +219,8 @@ class _CacheManager {
 class AtlasApi {
   const AtlasApi._();
   static final _CacheManager cacheManager = _CacheManager('atlas_api');
+
+  static RateLimiter get rateLimiter => cacheManager._rateLimiter;
 
   static const String _atlasApiHost = 'https://api.atlasacademy.io';
 
