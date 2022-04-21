@@ -102,6 +102,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   Servant? svtCoinOwner;
   final validCoins = const [2, 6, 15, 30, 50, 90];
   List<int> bondCoins = <int>[
+    0,
     ...List.generate(6, (index) => 5),
     ...List.generate(3, (index) => 10),
     ...List.generate(6, (index) => 20),
@@ -194,10 +195,10 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             6,
             (np) {
               if (np == 0) {
-                return TableCellData(text: 'Lv.${index + 1}');
+                return TableCellData(text: 'Lv.$index');
               }
-              int coins = Maths.sum(bondCoins.sublist(0, index + 1)) +
-                  (np + _baseNp) * _summonCoin;
+              int coins = Maths.sum(bondCoins.sublist(0, index)) +
+                  (np + _baseNp - 1) * _summonCoin;
               return TableCellData(
                 text: coins.toString(),
                 style: coins > 480
