@@ -82,7 +82,11 @@ class WrapSideBar extends StatelessWidget {
         );
       },
     );
-    final mqData = MediaQuery.of(context);
+    final ltr = Directionality.maybeOf(context);
+    final mqData = MediaQuery.of(context).removePadding(
+      removeLeft: ltr == TextDirection.ltr,
+      removeRight: ltr == TextDirection.rtl,
+    );
     final headerIcon = Container(
       color: Theme.of(context).primaryColorDark,
       height: kToolbarHeight,

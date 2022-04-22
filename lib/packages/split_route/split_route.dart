@@ -272,9 +272,18 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     if (!isSplit(context)) {
       return child;
     }
+    final ltr = Directionality.maybeOf(context);
     return Row(
       children: <Widget>[
-        Flexible(flex: masterRatio, child: child),
+        Flexible(
+          flex: masterRatio,
+          child: MediaQuery.removePadding(
+            context: context,
+            child: child,
+            removeLeft: ltr == TextDirection.rtl,
+            removeRight: ltr == TextDirection.ltr,
+          ),
+        ),
         Flexible(
           flex: 100 - masterRatio,
           child: DecoratedBox(
