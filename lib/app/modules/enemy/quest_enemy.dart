@@ -79,9 +79,10 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                   S.current.filter_sort_class,
                   Transl.svtClass(enemy.svt.className).l,
                   S.current.filter_attribute,
-                  enemy.svt.attribute.name
+                  Transl.svtAttribute(enemy.svt.attribute).l,
                 ],
                 isHeaders: const [true, false, true, false],
+                defaults: TableCellData(maxLines: 1),
               ),
               CustomTableRow.fromTextsWithHeader(
                 texts: [

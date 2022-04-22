@@ -673,6 +673,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     buttons.add(IconButton(
       icon: const Icon(Icons.vertical_align_top),
       tooltip: S.of(context).skilled_max10,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      constraints: const BoxConstraints(
+          minHeight: kMinInteractiveDimension, minWidth: 36),
       onPressed: enhanceMode
           ? null
           : () {
@@ -687,10 +690,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[
         const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 8, 4), child: Text('9')),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 2), child: Text('9')),
         IconButton(
           icon: const Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max9,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          constraints: const BoxConstraints(
+              minHeight: kMinInteractiveDimension, minWidth: 36),
           onPressed: () {
             status.cur.favorite = true;
             targetPlan.setMax(skill: 9);
@@ -715,10 +721,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[
         const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 4, 4), child: Text('10')),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 2), child: Text('10')),
         IconButton(
           icon: const Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max10,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          constraints: const BoxConstraints(
+              minHeight: kMinInteractiveDimension, minWidth: 36),
           onPressed: () {
             status.cur.favorite = true;
             targetPlan.setMax(skill: 10);

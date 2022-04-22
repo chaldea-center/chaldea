@@ -28,63 +28,68 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
       );
     }
     return SingleChildScrollView(
-      child: CustomTable(
-        children: <Widget>[
-          CustomTableRow(
-            children: [
-              TableCellData(
-                child: db.getIconImage(item.borderedIcon, height: 72),
-                flex: 1,
-                padding: const EdgeInsets.all(3),
-              ),
-              TableCellData(
-                flex: 3,
-                padding: EdgeInsets.zero,
-                child: CustomTable(
-                  hideOutline: true,
-                  children: <Widget>[
-                    CustomTableRow(children: [
-                      TableCellData(
-                        child: Text(item.lName.l,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        isHeader: true,
-                      )
-                    ]),
-                    if (!Transl.isJP)
-                      CustomTableRow.fromTexts(texts: [item.name]),
-                    if (!Transl.isEN)
-                      CustomTableRow.fromTexts(texts: [item.lName.na]),
-                    CustomTableRow(children: [
-                      TableCellData(text: 'ID', isHeader: true),
-                      TableCellData(text: item.id.toString(), flex: 2),
-                    ]),
-                  ],
+      child: SafeArea(
+        child: CustomTable(
+          children: <Widget>[
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  child: db.getIconImage(item.borderedIcon, height: 72),
+                  flex: 1,
+                  padding: const EdgeInsets.all(3),
                 ),
-              ),
-            ],
-          ),
-          if (svtCoinOwner != null)
-            CustomTableRow.fromChildren(children: [
-              TextButton(
-                onPressed: () => svtCoinOwner!.routeTo(),
-                child: Text(svtCoinOwner!.lName.l),
-              )
-            ]),
-          CustomTableRow.fromTexts(
-              texts: [S.current.card_description], isHeader: true),
-          CustomTableRow(
-            children: [
-              TableCellData(
-                text: item.detail,
-                alignment: Alignment.centerLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              )
-            ],
-          ),
-          if (item.type == ItemType.svtCoin) ..._svtCoinObtain(),
-        ],
+                TableCellData(
+                  flex: 3,
+                  padding: EdgeInsets.zero,
+                  child: CustomTable(
+                    hideOutline: true,
+                    children: <Widget>[
+                      CustomTableRow(children: [
+                        TableCellData(
+                          child: Text(item.lName.l,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          isHeader: true,
+                        )
+                      ]),
+                      if (!Transl.isJP)
+                        CustomTableRow.fromTexts(texts: [item.name]),
+                      if (!Transl.isEN)
+                        CustomTableRow.fromTexts(texts: [item.lName.na]),
+                      CustomTableRow(children: [
+                        TableCellData(text: 'ID', isHeader: true),
+                        TableCellData(text: item.id.toString(), flex: 2),
+                      ]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (svtCoinOwner != null)
+              CustomTableRow(children: [
+                TableCellData(
+                  child: TextButton(
+                    onPressed: () => svtCoinOwner!.routeTo(),
+                    child: Text(svtCoinOwner!.lName.l),
+                  ),
+                  padding: EdgeInsets.zero,
+                )
+              ]),
+            CustomTableRow.fromTexts(
+                texts: [S.current.card_description], isHeader: true),
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  text: item.detail,
+                  alignment: Alignment.centerLeft,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                )
+              ],
+            ),
+            if (item.type == ItemType.svtCoin) ..._svtCoinObtain(),
+          ],
+        ),
       ),
     );
   }
@@ -102,7 +107,6 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   Servant? svtCoinOwner;
   final validCoins = const [2, 6, 15, 30, 50, 90];
   List<int> bondCoins = <int>[
-    0,
     ...List.generate(6, (index) => 5),
     ...List.generate(3, (index) => 10),
     ...List.generate(6, (index) => 20),
@@ -189,7 +193,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
         ],
         isHeader: true,
       ),
-      for (int index = 0; index < bondCoins.length; index++)
+      for (int index = 0; index < bondCoins.length + 1; index++)
         CustomTableRow(
           children: List.generate(
             6,

@@ -127,7 +127,7 @@ class CraftListPageState extends State<CraftListPage>
     if (!filterData.rarity.matchOne(ce.rarity)) {
       return false;
     }
-    if (!filterData.obtain.matchOne(ce.extra.obtain)) {
+    if (!filterData.obtain.matchOne(ce.obtain)) {
       return false;
     }
     if (!filterData.atkType.matchOne(ce.atkType)) {

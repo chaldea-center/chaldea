@@ -228,7 +228,7 @@ class ServantListPageState extends State<ServantListPage>
                 ),
                 PopupMenuItem(
                   child: Text(
-                    'Only change Append 2',
+                    S.current.setting_only_change_second_append_skill,
                     style: db.settings.display.onlyAppendSkillTwo
                         ? null
                         : const TextStyle(

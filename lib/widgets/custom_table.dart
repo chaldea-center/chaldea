@@ -156,7 +156,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
       late Widget _child;
       if (_needRebuild && cell.fitHeight == true) {
         // if fitHeight, render the child at second frame
-        _child = Container();
+        _child = const SizedBox();
       } else {
         if (cell.child != null) {
           _child = cell.child!;
@@ -200,29 +200,39 @@ class _CustomTableRowState extends State<CustomTableRow> {
           }
         }
       }
+      _child = Padding(
+        padding: cell.padding,
+        child: _child,
+      );
+      _child = Align(
+        alignment: cell.alignment,
+        child: _child,
+      );
+      _child = Container(
+        constraints: constraints,
+        color: cell.resolveColor(context) ?? widget.color,
+        child: _child,
+      );
 
-      children.add(Flexible(
+      _child = Flexible(
         key: cell.key,
         flex: cell.flex,
-        child: Container(
-          constraints: constraints,
-          color: cell.resolveColor(context) ?? widget.color,
-          child: Align(
-            alignment: cell.alignment,
-            child: Padding(
-              padding: cell.padding,
-              child: _child,
-            ),
-          ),
-        ),
-      ));
+        child: _child,
+      );
+
+      children.add(_child);
 
       if (index < widget.children.length - 1 && widget.divider != null) {
         children.add(widget.divider!);
       }
     }
     if (!_needRebuild) _needRebuild = true;
-    Widget body = IntrinsicHeight(child: Row(children: children));
+    Widget body = IntrinsicHeight(
+      child: Row(
+        children: children,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      ),
+    );
     if (constraints != null) {
       body = ConstrainedBox(
         constraints: constraints,

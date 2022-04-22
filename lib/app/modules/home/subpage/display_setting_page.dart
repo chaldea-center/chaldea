@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -55,7 +56,12 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   onChanged: (v) {
                     setState(() {
                       db.settings.autoRotate = v;
-                      db.saveSettings();
+                      if (v) {
+                        SystemChrome.setPreferredOrientations([]);
+                      } else {
+                        SystemChrome.setPreferredOrientations(
+                            [DeviceOrientation.portraitUp]);
+                      }
                     });
                     db.notifyAppUpdate();
                   },

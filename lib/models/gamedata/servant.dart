@@ -412,6 +412,12 @@ class CraftEssence with GameCardMixin {
       db.gameData.wiki.craftEssences[collectionNo] ??=
           CraftEssenceExtra(collectionNo: collectionNo);
 
+  CEObtain get obtain => bondEquipOwner != null
+      ? CEObtain.bond
+      : valentineEquipOwner != null
+          ? CEObtain.valentine
+          : extra.obtain;
+
   CraftATKType get atkType {
     return atkMax > 0
         ? hpMax > 0

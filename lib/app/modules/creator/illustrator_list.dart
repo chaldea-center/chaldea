@@ -28,7 +28,8 @@ class _IllustratorListPageState extends State<IllustratorListPage>
     ceMap.clear();
     codeMap.clear();
     void _update<T>(Map<String, List<T>> map, String illust, T card) {
-      final creators = illust.split(RegExp(r'[&＆\s]+')).toSet();
+      final creators =
+          illust.split(RegExp(r'[&＆]+')).map((e) => e.trim()).toSet();
       creators.add(illust);
       for (final creator in creators) {
         map.putIfAbsent(creator.trim(), () => []).add(card);

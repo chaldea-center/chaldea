@@ -280,7 +280,7 @@ class ExpUpData {
     coinStages.clear();
 
     final svt = db.gameData.servants.values.firstWhere(
-        (svt) => svt.rarity == rarity && svt.isUserSvt && svt.collectionNo > 0);
+        (svt) => svt.rarity == rarity && svt.isUserSvt && svt.collectionNo > 1);
 
     // level->ascension
     final ascensionLevels = svt.ascensionAdd.lvMax.ascension

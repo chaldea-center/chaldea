@@ -29,7 +29,7 @@ class _CvListPageState extends State<CvListPage>
     ceMap.clear();
 
     void _update<T>(Map<String, List<T>> map, String cv, T card) {
-      final creators = cv.split(RegExp(r'[&＆\s]+')).toSet();
+      final creators = cv.split(RegExp(r'[&＆]+')).map((e) => e.trim()).toSet();
       creators.add(cv);
       for (final creator in creators) {
         map.putIfAbsent(creator.trim(), () => []).add(card);

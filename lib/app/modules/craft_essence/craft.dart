@@ -178,6 +178,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   )
                 : name,
             isHeader: true,
+            padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
         CustomTableRow(children: [
@@ -276,8 +277,8 @@ class CraftDetailBasePage extends StatelessWidget {
         ]),
         CustomTableRow(children: [
           TableCellData(
-            child: Text(Transl.ceObtain(ce.extra.obtain).l,
-                textAlign: TextAlign.center),
+            child:
+                Text(Transl.ceObtain(ce.obtain).l, textAlign: TextAlign.center),
           )
         ]),
         ..._relatedSvt(context),
@@ -415,10 +416,6 @@ class CraftDetailBasePage extends StatelessWidget {
         child: Text(
           svt.lName.l,
           textAlign: TextAlign.center,
-        ),
-        style: TextButton.styleFrom(
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          padding: const EdgeInsets.all(1),
         ),
       ));
     }
