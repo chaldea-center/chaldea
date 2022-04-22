@@ -464,11 +464,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重启以更新应用，若更新失败，请手动复制source文件夹到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),
+        "results": MessageLookupByLibrary.simpleMessage("结果"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("攒石"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
+        "screenshots": MessageLookupByLibrary.simpleMessage("截图"),
         "search": MessageLookupByLibrary.simpleMessage("搜索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基础信息"),
         "search_options": MessageLookupByLibrary.simpleMessage("搜索范围"),
@@ -556,6 +558,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_error": MessageLookupByLibrary.simpleMessage("更新失败"),
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("无可用更新"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("已更新"),
+        "upload": MessageLookupByLibrary.simpleMessage("上传"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_download_backup":

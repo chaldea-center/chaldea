@@ -33,6 +33,7 @@ targets:
   userdata:
     sources:
       include:
+        - lib/models/api/**
         - lib/models/userdata/**
     builders:
       source_gen|combining_builder:

@@ -3976,6 +3976,17 @@ class S {
     );
   }
 
+  /// `Results`
+  String get results {
+    return Intl.message(
+      'Results',
+      name: 'results',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `SQ Plan`
   String get saint_quartz_plan {
     return Intl.message(
@@ -4025,6 +4036,17 @@ class S {
     return Intl.message(
       'Screen Size',
       name: 'screen_size',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Screenshots`
+  String get screenshots {
+    return Intl.message(
+      'Screenshots',
+      name: 'screenshots',
       desc: '',
       locale: localeName,
       args: [],
@@ -4839,6 +4861,17 @@ class S {
     return Intl.message(
       'Updated',
       name: 'update_msg_succuss',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Upload`
+  String get upload {
+    return Intl.message(
+      'Upload',
+      name: 'upload',
       desc: '',
       locale: localeName,
       args: [],

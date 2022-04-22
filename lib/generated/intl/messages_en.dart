@@ -545,12 +545,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Restart to upgrade. If the update fails, please manually copy the source folder to destination"),
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),
+        "results": MessageLookupByLibrary.simpleMessage("Results"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("SQ Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
+        "screenshots": MessageLookupByLibrary.simpleMessage("Screenshots"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Basic"),
         "search_options": MessageLookupByLibrary.simpleMessage("Search Scopes"),
@@ -655,6 +657,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_no_update":
             MessageLookupByLibrary.simpleMessage("No update available"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("Updated"),
+        "upload": MessageLookupByLibrary.simpleMessage("Upload"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup":

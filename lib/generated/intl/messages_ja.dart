@@ -484,11 +484,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "再起動してアプリを更新します。更新に失敗した場合は、手動でsourceフォルダをdestinationへコピーペーストしてください"),
         "restore": MessageLookupByLibrary.simpleMessage("復元"),
+        "results": MessageLookupByLibrary.simpleMessage("結果"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("貯石計画"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("アルバムに保存"),
         "saved": MessageLookupByLibrary.simpleMessage("保存済み"),
         "screen_size": MessageLookupByLibrary.simpleMessage("画面サイズ"),
+        "screenshots": MessageLookupByLibrary.simpleMessage("スクリーンショット"),
         "search": MessageLookupByLibrary.simpleMessage("検索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基本情報"),
         "search_options": MessageLookupByLibrary.simpleMessage("検索範囲"),

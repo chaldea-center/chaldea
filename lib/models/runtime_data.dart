@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:screenshot/screenshot.dart';
@@ -9,9 +11,9 @@ import '../packages/platform/platform.dart';
 class RuntimeData {
   AppVersion? upgradableVersion;
   double? criticalWidth;
-  Set<String> itemRecognizeImageFiles = {};
-  Set<String> activeSkillRecognizeImageFiles = {};
-  Set<String> appendSkillRecognizeImageFiles = {};
+  Set<Uint8List> recognizerItems = {};
+  Set<Uint8List> recognizerActive = {};
+  Set<Uint8List> recognizerAppend = {};
   bool googlePlayAccess = false;
 
   // debug

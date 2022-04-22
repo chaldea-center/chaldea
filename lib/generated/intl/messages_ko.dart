@@ -451,9 +451,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "업데이트 후 재시작합니다. 만약 업데이트에 실패했다면 수동으로 소스 파일을 다른곳에 옮겨주시기 바랍니다."),
         "restore": MessageLookupByLibrary.simpleMessage("복원"),
+        "results": MessageLookupByLibrary.simpleMessage("결과"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("사진 저장하기"),
         "saved": MessageLookupByLibrary.simpleMessage("저장됨"),
+        "screenshots": MessageLookupByLibrary.simpleMessage("스크린샷"),
         "search": MessageLookupByLibrary.simpleMessage("검색"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("기본 옵션"),
         "search_options": MessageLookupByLibrary.simpleMessage("검색 옵션"),

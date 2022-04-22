@@ -9,6 +9,8 @@ import '../home/subpage/account_page.dart';
 import '../home/subpage/user_data_page.dart';
 import 'import_fgo_simu_material_page.dart';
 import 'import_https_page.dart';
+import 'import_item_screenshot.dart';
+import 'import_skill_screenshot.dart';
 import 'v1_backup.dart';
 
 class ImportPageHome extends StatefulWidget {
@@ -88,20 +90,23 @@ class _ImportPageHomeState extends State<ImportPageHome> {
 
           const SHeader('Coming soon...'),
           ListTile(
-            enabled: false,
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_item_screenshots),
             subtitle: Text(S.current.import_item_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
+            onTap: () {
+              router.pushPage(ImportItemScreenshotPage());
+            },
           ),
           ListTile(
-            enabled: false,
+            // enabled: false,
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_active_skill_screenshots),
             subtitle: Text(S.current.import_active_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
+            onTap: () {
+              router.pushPage(ImportSkillScreenshotPage(isAppend: false));
+            },
           ),
           ListTile(
             enabled: false,
@@ -109,7 +114,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Text(S.current.import_append_skill_screenshots),
             subtitle: Text(S.current.import_append_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
+            onTap: () {
+              router.pushPage(ImportSkillScreenshotPage(isAppend: true));
+            },
           ),
         ], bottom: true),
       ),

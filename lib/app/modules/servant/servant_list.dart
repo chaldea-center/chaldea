@@ -273,7 +273,9 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   void _onTapSvt(Servant svt) {
+    setState(() {});
     if (widget.onSelected != null) {
+      Navigator.pop(context);
       widget.onSelected!(svt);
     } else {
       router.push(
@@ -284,7 +286,6 @@ class ServantListPageState extends State<ServantListPage>
       );
       selected = svt;
     }
-    setState(() {});
   }
 
   Widget _getDetailTable(Servant svt) {
@@ -724,7 +725,7 @@ class ServantListPageState extends State<ServantListPage>
       (context, snapshot) => InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: svt.iconBuilder(context: context),
+          image: svt.iconBuilder(context: context, jumpToDetail: false),
           shadowSize: 4,
           textBuilder: status.cur.favorite ? textBuilder : null,
           textStyle: const TextStyle(fontSize: 11, color: Colors.black),
