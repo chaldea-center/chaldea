@@ -16,18 +16,18 @@ body:
       value: "Describe the details and upload screenshots if necessary"
     validations:
       required: true
-  - type: checkboxes
+  - type: dropdown
     id: platform
     attributes:
       label: Platform
-      description: Which platform the app is running on?
+      description: Which platform(s) the app is running on?
+      multiple: true
       options:
-        - label: web
-        - label: ios
-        - label: android
-        - label: windows
-        - label: linux
-        - label: macOS
+        - web
+        - iOS
+        - Android
+        - Windows
+        - macOS
     validations:
       required: true
   - type: input
