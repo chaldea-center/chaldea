@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:path/path.dart' as pathlib;
 
 import 'extension.dart';
@@ -259,4 +260,9 @@ class Utility {
 
 String calcMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
+}
+
+String escapeDioError(error) {
+  if (error is DioError) return 'DioError [${error.type}]: ${error.message}';
+  return error.toString();
 }

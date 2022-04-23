@@ -306,6 +306,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           throw S.current.sending_failed;
         }
       } else {
+        print('Debugging, skip sending email');
         await Future.delayed(const Duration(seconds: 3));
       }
       subjectController.text = '';
@@ -314,7 +315,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     } catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace.toString());
-      EasyLoading.showError(error.toString());
+      EasyLoading.showError(escapeDioError(error));
     }
   }
 }

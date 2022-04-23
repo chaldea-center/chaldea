@@ -97,7 +97,7 @@ class ChaldeaApi {
   static Dio get dio {
     return Dio(BaseOptions(
       baseUrl: '$kServerRoot/v2/',
-      // baseUrl: kDebugMode ? 'http://localhost:8000/v2/' : kServerRoot,
+      // baseUrl: kDebugMode ? 'http://localhost:8000/' : kServerRoot,
       queryParameters: {
         'key': AppInfo.uuid,
         'ver': AppInfo.versionString,
@@ -126,9 +126,11 @@ class ChaldeaApi {
       if (html != null) 'html': html,
       if (text != null) 'text': text,
       if (subject != null) 'subject': subject,
-      if (senderName != null) 'from': senderName,
-      for (final file in files.entries)
-        file.key: MultipartFile.fromBytes(file.value, filename: file.key),
+      if (senderName != null) 'sender': senderName,
+      'files': [
+        for (final file in files.entries)
+          MultipartFile.fromBytes(file.value, filename: file.key),
+      ]
     });
     return wrap((dio) => dio.post('/feedback', data: formData));
   }

@@ -121,7 +121,8 @@ class UserData {
         events: null,
         mainStories: null,
         exchangeTickets: null,
-        craftEssences: Map.from(oldUser['crafts'] ?? {}),
+        craftEssences: Map<String, int>.from(oldUser['crafts'] ?? {})
+            .map((key, value) => MapEntry(int.parse(key), value)),
         mysticCodes: null,
         summons: null,
         freeLPParams: null,

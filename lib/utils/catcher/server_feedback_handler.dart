@@ -14,7 +14,6 @@ import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:image/image.dart';
-import 'package:intl/intl_standalone.dart';
 import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
@@ -237,11 +236,12 @@ class ServerFeedbackHandler extends ReportHandler {
 
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
-      'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
+      'app':
+          '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commmitHash}-${AppInfo.commitDate}',
       'dataset': db.gameData.version.utc,
       'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
-      'locale': await findSystemLocale(),
+      'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
     };
     for (var entry in summary.entries) {
