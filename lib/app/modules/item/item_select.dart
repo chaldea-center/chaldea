@@ -17,12 +17,12 @@ class ItemSelectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<int, List<Item>> groupedItems = {};
     for (final item in db.gameData.items.values) {
-      final key = item.skillUpItemType.index * 10 + item.background.index;
+      final key = item.category.index * 10 + item.background.index;
       groupedItems.putIfAbsent(key, () => []).add(item);
     }
-    int normal = SkillUpItemType.normal.index,
-        gem = SkillUpItemType.skill.index,
-        ascension = SkillUpItemType.ascension.index;
+    int normal = ItemCategory.normal.index,
+        gem = ItemCategory.skill.index,
+        ascension = ItemCategory.ascension.index;
     int bronze = ItemBGType.bronze.index,
         silver = ItemBGType.silver.index,
         gold = ItemBGType.gold.index;

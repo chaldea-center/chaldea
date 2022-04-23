@@ -845,6 +845,39 @@ class S {
     );
   }
 
+  /// `Custom Mission`
+  String get custom_mission {
+    return Intl.message(
+      'Custom Mission',
+      name: 'custom_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No mission, click + to add mission`
+  String get custom_mission_nothing_hint {
+    return Intl.message(
+      'No mission, click + to add mission',
+      name: 'custom_mission_nothing_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Source Mission`
+  String get custom_mission_source_mission {
+    return Intl.message(
+      'Source Mission',
+      name: 'custom_mission_source_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Dark mode`
   String get dark_mode {
     return Intl.message(
@@ -2028,6 +2061,28 @@ class S {
     return Intl.message(
       'Default',
       name: 'general_default',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Others`
+  String get general_others {
+    return Intl.message(
+      'Others',
+      name: 'general_others',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get general_type {
+    return Intl.message(
+      'Type',
+      name: 'general_type',
       desc: '',
       locale: localeName,
       args: [],
@@ -3382,6 +3437,17 @@ class S {
     );
   }
 
+  /// `Mission`
+  String get mission {
+    return Intl.message(
+      'Mission',
+      name: 'mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Move down`
   String get move_down {
     return Intl.message(
@@ -4504,6 +4570,39 @@ class S {
     );
   }
 
+  /// `Battle Count`
+  String get solution_battle_count {
+    return Intl.message(
+      'Battle Count',
+      name: 'solution_battle_count',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Target Count`
+  String get solution_target_count {
+    return Intl.message(
+      'Target Count',
+      name: 'solution_target_count',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Total {battles} battles, {ap} AP`
+  String solution_total_battles_ap(Object battles, Object ap) {
+    return Intl.message(
+      'Total $battles battles, $ap AP',
+      name: 'solution_total_battles_ap',
+      desc: '',
+      locale: localeName,
+      args: [battles, ap],
+    );
+  }
+
   /// `Sort`
   String get sort_order {
     return Intl.message(
@@ -4751,6 +4850,39 @@ class S {
     return Intl.message(
       'Test Info Pad',
       name: 'test_info_pad',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get time_close {
+    return Intl.message(
+      'Close',
+      name: 'time_close',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `End`
+  String get time_end {
+    return Intl.message(
+      'End',
+      name: 'time_end',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Start`
+  String get time_start {
+    return Intl.message(
+      'Start',
+      name: 'time_start',
       desc: '',
       locale: localeName,
       args: [],

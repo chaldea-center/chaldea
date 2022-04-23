@@ -147,7 +147,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
       } else if (entry.key == Items.expPointId) {
         children.add(const TextSpan(text: 'EXP'));
       } else {
-        children.add(WidgetSpan(
+        children.add(CenterWidgetSpan(
           child: Opacity(
             opacity: 0.75,
             child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon,
@@ -160,12 +160,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
           : entry.value.floor().toString();
       children.add(TextSpan(text: '*$s '));
     }
-    final textTheme = Theme.of(context).textTheme;
-    return RichText(
-      text: TextSpan(
-        children: children,
-        style: textTheme.bodyText2?.copyWith(color: textTheme.caption?.color),
-      ),
+    return Text.rich(
+      TextSpan(children: children),
     );
   }
 }

@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m14(a, b) => "${a} ${b}";
+  static String m15(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -548,6 +548,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m14
+        "words_separate": m15
       };
 }

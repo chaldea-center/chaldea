@@ -146,8 +146,8 @@ class _SQTableTabState extends State<SQTableTab> {
                 ),
               for (final summon in detail.summons)
                 _wrap(
-                  child: RichText(
-                    text: TextSpan(children: [
+                  child: Text.rich(
+                    TextSpan(children: [
                       for (final svt in summon.shownSvts)
                         WidgetSpan(
                             child: GameCardMixin.cardIconBuilder(

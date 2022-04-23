@@ -86,7 +86,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         FilterGroup<NpDamageType>(
           values: filterData.npType,
           options: NpDamageType.values,
-          optionBuilder: (v) => Text(v.name.toTitle()),
+          optionBuilder: (v) =>
+              Text(Transl.enums(v, (enums) => enums.npDamageType).l),
           onFilterChanged: (value) {
             update();
           },

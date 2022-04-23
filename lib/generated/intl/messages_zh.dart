@@ -56,7 +56,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "重置规划${n}(已显示)";
 
-  static String m14(a, b) => "${a}${b}";
+  static String m14(battles, ap) => "总计${battles}次战斗, ${ap} AP";
+
+  static String m15(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -137,6 +139,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("当前账号"),
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
         "current_version": MessageLookupByLibrary.simpleMessage("当前版本"),
+        "custom_mission": MessageLookupByLibrary.simpleMessage("自定义任务"),
+        "custom_mission_nothing_hint":
+            MessageLookupByLibrary.simpleMessage("无任务，点击+添加"),
+        "custom_mission_source_mission":
+            MessageLookupByLibrary.simpleMessage("源任务"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),
@@ -258,6 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server": MessageLookupByLibrary.simpleMessage("服务器"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
         "general_default": MessageLookupByLibrary.simpleMessage("默认"),
+        "general_others": MessageLookupByLibrary.simpleMessage("其他"),
+        "general_type": MessageLookupByLibrary.simpleMessage("类型"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
         "grail_up": MessageLookupByLibrary.simpleMessage("圣杯转临"),
@@ -402,6 +411,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("方案"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任务列表"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("周常任务"),
+        "mission": MessageLookupByLibrary.simpleMessage("任务"),
         "move_down": MessageLookupByLibrary.simpleMessage("下移"),
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
@@ -521,6 +531,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升级"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
+        "solution_battle_count": MessageLookupByLibrary.simpleMessage("次数"),
+        "solution_target_count": MessageLookupByLibrary.simpleMessage("目标数"),
+        "solution_total_battles_ap": m14,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":
@@ -546,6 +559,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("测试信息"),
+        "time_close": MessageLookupByLibrary.simpleMessage("关闭"),
+        "time_end": MessageLookupByLibrary.simpleMessage("结束"),
+        "time_start": MessageLookupByLibrary.simpleMessage("开始"),
         "toogle_dark_mode": MessageLookupByLibrary.simpleMessage("切换深色模式"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
@@ -573,6 +589,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
-        "words_separate": m14
+        "words_separate": m15
       };
 }

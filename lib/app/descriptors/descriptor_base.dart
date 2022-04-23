@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/descriptors/multi_entry.dart';
 import 'package:chaldea/models/models.dart';
+import '../../widgets/widget_builders.dart';
 
 abstract class DescriptorBase {
+  List<int> get targetIds;
+
   Widget localized({
     required Widget Function()? jp,
     required Widget Function()? cn,
@@ -15,7 +19,7 @@ abstract class DescriptorBase {
         const SizedBox();
   }
 
-  RichText combineToRich(
+  Text combineToRich(
     BuildContext context,
     String? text1, [
     List<Widget>? children2,
@@ -23,19 +27,33 @@ abstract class DescriptorBase {
     List<Widget>? children4,
     String? text5,
   ]) {
-    return RichText(
-      text: TextSpan(
+    return Text.rich(
+      TextSpan(
         text: text1,
-        style: Theme.of(context).textTheme.bodyText2,
+        // style: Theme.of(context).textTheme.bodyText2,
         children: [
           if (children2 != null)
-            for (final child in children2) WidgetSpan(child: child),
+            for (final child in children2) CenterWidgetSpan(child: child),
           if (text3 != null) TextSpan(text: text3),
           if (children4 != null)
-            for (final child in children4) WidgetSpan(child: child),
+            for (final child in children4) CenterWidgetSpan(child: child),
           if (text5 != null) TextSpan(text: text5),
         ],
       ),
     );
   }
+
+  List<Widget> quests(BuildContext context) =>
+      MultiDescriptor.quests(context, targetIds);
+  List<Widget> traits(BuildContext context) =>
+      MultiDescriptor.traits(context, targetIds);
+  List<Widget> svtClasses(BuildContext context) =>
+      MultiDescriptor.svtClass(context, targetIds);
+  List<Widget> servants(BuildContext context) =>
+      MultiDescriptor.servants(context, targetIds);
+  List<Widget> items(BuildContext context) =>
+      MultiDescriptor.items(context, targetIds);
+  List<Widget> missionList(
+          BuildContext context, Map<int, EventMission> missions) =>
+      MultiDescriptor.missions(context, targetIds, missions);
 }

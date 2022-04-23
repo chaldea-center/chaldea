@@ -53,10 +53,23 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         actions: [
           DropdownButton<Region>(
             value: region,
-            items: Region.values
-                .map((region) => DropdownMenuItem(
-                    value: region, child: Text(region.toUpper())))
-                .toList(),
+            items: [
+              for (final region in Region.values)
+                DropdownMenuItem(
+                  value: region,
+                  child: Text(region.toUpper()),
+                ),
+            ],
+            selectedItemBuilder: (context) => [
+              for (final region in Region.values)
+                DropdownMenuItem(
+                  child: Text(
+                    region.toUpper(),
+                    style: TextStyle(
+                        color: SharedBuilder.appBarForeground(context)),
+                  ),
+                )
+            ],
             onChanged: (v) {
               setState(() {
                 if (v != null) {

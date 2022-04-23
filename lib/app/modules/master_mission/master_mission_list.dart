@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -20,6 +22,13 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   late Region _region;
   String? errorMsg;
   bool showOutdated = false;
+  final typeOptions = FilterGroupData<MissionType?>();
+
+  final _allMissionTypes = const <MissionType?>[
+    MissionType.weekly,
+    MissionType.limited,
+    null,
+  ];
 
   Future<void> _resolveMissions(Region region, {bool force = false}) async {
     errorMsg = null;
@@ -47,6 +56,8 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       final now = DateTime.now().timestamp;
       missions.removeWhere((e) => e.endedAt < now);
     }
+    missions.removeWhere((mission) => !typeOptions.matchAny(mission.missions
+        .map((e) => _allMissionTypes.contains(e.type) ? e.type : null)));
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
       return a.startedAt.compareTo(b.startedAt);
@@ -63,6 +74,16 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                   value: region,
                   child: Text(region.toUpper()),
                 ),
+            ],
+            selectedItemBuilder: (context) => [
+              for (final region in Region.values)
+                DropdownMenuItem(
+                  child: Text(
+                    region.toUpper(),
+                    style: TextStyle(
+                        color: SharedBuilder.appBarForeground(context)),
+                  ),
+                )
             ],
             onChanged: (v) {
               setState(() {
@@ -102,21 +123,35 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                         onRefresh: () => _resolveMissions(_region, force: true),
                       ),
           ),
-          SafeArea(
-            child: ButtonBar(
-              alignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    router.push(child: CustomMissionPage());
-                  },
-                  child: const Text('Custom Mission'),
-                )
-              ],
-            ),
-          )
+          SafeArea(child: buttonBar)
         ],
       ),
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        FilterGroup<MissionType?>(
+          options: _allMissionTypes,
+          values: typeOptions,
+          combined: true,
+          optionBuilder: (v) {
+            if (v == null) return Text(S.current.general_others);
+            return Text(Transl.enums(v, (enums) => enums.missionType).l);
+          },
+          onFilterChanged: (v) {
+            setState(() {});
+          },
+        ),
+        ElevatedButton(
+          onPressed: () {
+            router.push(child: CustomMissionPage());
+          },
+          child: Text(S.current.custom_mission),
+        )
+      ],
     );
   }
 
@@ -127,7 +162,8 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     }
     String subtitle = 'ID ${masterMission.id}: ';
     categorized.forEach((key, value) {
-      subtitle += ' $value ${key.name}';
+      subtitle +=
+          ' $value ${Transl.enums(key, (enums) => enums.missionType).l}';
     });
     final now = DateTime.now().timestamp;
     return ListTile(

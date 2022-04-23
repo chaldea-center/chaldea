@@ -151,9 +151,10 @@ class Transl<K, V> {
   }
 
   // enums
-  static Transl<String, String> enums(
-      Enum value, Map<String, MappingBase<String>> mapping) {
-    return Transl(mapping, value.name, value.name);
+  static Transl<String, String> enums(Enum value,
+      Map<String, MappingBase<String>> Function(EnumMapping enums) mapping) {
+    return Transl(
+        mapping(db.gameData.mappingData.enums), value.name, value.name);
   }
 
   static Transl<String, String> svtAttribute(Attribute key) =>
@@ -432,6 +433,12 @@ class EnumMapping {
   final Map<String, MappingBase<String>> funcTargetType;
   final Map<String, MappingBase<String>> svtObtain;
   final Map<String, MappingBase<String>> ceObtain;
+  final Map<String, MappingBase<String>> missionProgressType;
+  final Map<String, MappingBase<String>> missionType;
+  final Map<String, MappingBase<String>> itemCategory;
+  final Map<String, MappingBase<String>> customMissionType;
+  final Map<String, MappingBase<String>> npDamageType;
+
   EnumMapping({
     this.svtClass = const {},
     this.attribute = const {},
@@ -441,6 +448,11 @@ class EnumMapping {
     this.funcTargetType = const {},
     this.svtObtain = const {},
     this.ceObtain = const {},
+    this.missionProgressType = const {},
+    this.missionType = const {},
+    this.itemCategory = const {},
+    this.customMissionType = const {},
+    this.npDamageType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>

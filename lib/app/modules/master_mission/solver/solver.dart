@@ -47,30 +47,30 @@ class MissionSolver extends BaseLPSolver {
 
   static int countMissionTarget(CustomMission mission, QuestPhase quest) {
     switch (mission.type) {
-      case MissionTargetType.trait:
+      case CustomMissionType.trait:
         return quest.allEnemies
             .where((enemy) => NiceTrait.hasAllTraits(enemy.traits, mission.ids))
             .length;
-      case MissionTargetType.questTrait:
+      case CustomMissionType.questTrait:
         return NiceTrait.hasAnyTrait(quest.individuality, mission.ids) ? 1 : 0;
-      case MissionTargetType.quest:
+      case CustomMissionType.quest:
         return mission.ids.contains(quest.id) ? 1 : 0;
-      case MissionTargetType.enemy:
+      case CustomMissionType.enemy:
         return quest.allEnemies
             .where((enemy) => mission.ids.contains(enemy.svt.id))
             .length;
-      case MissionTargetType.servantClass:
+      case CustomMissionType.servantClass:
         return quest.allEnemies
             .where((enemy) =>
                 enemy.traits
                     .any((trait) => trait.name == Trait.basedOnServant) &&
                 mission.ids.contains(enemy.svt.className.id))
             .length;
-      case MissionTargetType.enemyClass:
+      case CustomMissionType.enemyClass:
         return quest.allEnemies
             .where((enemy) => mission.ids.contains(enemy.svt.className.id))
             .length;
-      case MissionTargetType.enemyNotServantClass:
+      case CustomMissionType.enemyNotServantClass:
         return quest.allEnemies
             .where((enemy) =>
                 enemy.traits

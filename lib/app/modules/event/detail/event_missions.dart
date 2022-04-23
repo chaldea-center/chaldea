@@ -5,7 +5,7 @@ import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../descriptors/cond_target_num.dart';
+import '../../../descriptors/mission_conds.dart';
 import '../../master_mission/solver/scheme.dart';
 
 class EventMissionsPage extends StatefulWidget {
@@ -77,30 +77,8 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
               ),
       ),
       contentBuilder: (context) => Padding(
-        padding: const EdgeInsetsDirectional.only(start: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final cond in mission.conds) ...[
-              Text(
-                '# ${cond.missionProgressType.name} Condition: ${[
-                  mission.name,
-                  "???"
-                ].contains(cond.conditionMessage) ? "" : cond.conditionMessage}',
-                style: Theme.of(context).textTheme.caption,
-              ),
-              CondTargetNumDescriptor(
-                condType: cond.condType,
-                targetNum: cond.targetNum,
-                targetIds: cond.targetIds,
-                detail: cond.detail,
-                missions: {for (final m in missions) m.id: m},
-              )
-            ],
-            const SizedBox(height: 10),
-          ],
-        ),
+        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+        child: MissionCondsDescriptor(mission: mission, missions: missions),
       ),
     );
   }

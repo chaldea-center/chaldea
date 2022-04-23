@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "重置規劃${n}(已顯示)";
 
-  static String m14(a, b) => "${a}${b}";
+  static String m15(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -460,6 +460,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("語音"),
-        "words_separate": m14
+        "words_separate": m15
       };
 }

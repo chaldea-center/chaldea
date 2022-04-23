@@ -11,13 +11,13 @@ import 'mappings.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
-enum SkillUpItemType {
+enum ItemCategory {
   normal,
   ascension,
   skill,
   special,
   event,
-  none,
+  other,
 }
 
 @JsonSerializable()
@@ -56,17 +56,17 @@ class Item {
     return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
   }
 
-  SkillUpItemType get skillUpItemType {
+  ItemCategory get category {
     // if (type == ItemType.tdLvUp) return SkillUpItemType.ascension;
     // if (type != ItemType.skillLvUp) return SkillUpItemType.none;
-    if (id >= 6000 && id < 6300) return SkillUpItemType.skill;
-    if (id >= 6500 && id < 7000) return SkillUpItemType.normal;
-    if (id >= 7000 && id < 7200) return SkillUpItemType.ascension;
+    if (id >= 6000 && id < 6300) return ItemCategory.skill;
+    if (id >= 6500 && id < 7000) return ItemCategory.normal;
+    if (id >= 7000 && id < 7200) return ItemCategory.ascension;
     if (type == ItemType.eventItem && uses.contains(ItemUse.ascension)) {
-      return SkillUpItemType.event;
+      return ItemCategory.event;
     }
-    if (Items.specialItems.contains(id)) return SkillUpItemType.special;
-    return SkillUpItemType.none;
+    if (Items.specialItems.contains(id)) return ItemCategory.special;
+    return ItemCategory.other;
   }
 
   static Widget iconBuilder({
@@ -133,21 +133,21 @@ class Item {
     };
   }
 
-  static Map<SkillUpItemType, Map<int, int>> groupItems(Map<int, int> items) {
-    Map<SkillUpItemType, Map<int, int>> result = {
-      for (final type in SkillUpItemType.values) type: {},
+  static Map<ItemCategory, Map<int, int>> groupItems(Map<int, int> items) {
+    Map<ItemCategory, Map<int, int>> result = {
+      for (final type in ItemCategory.values) type: {},
     };
     for (int itemId in items.keys) {
-      SkillUpItemType? type = db.gameData.items[itemId]?.skillUpItemType;
+      ItemCategory? type = db.gameData.items[itemId]?.category;
       if (type == null && Items.specialSvtMat.contains(itemId)) {
-        type = SkillUpItemType.special;
+        type = ItemCategory.special;
       }
-      type ??= SkillUpItemType.none;
+      type ??= ItemCategory.other;
       result[type]![itemId] = items[itemId]!;
     }
 
     return {
-      for (final type in SkillUpItemType.values)
+      for (final type in ItemCategory.values)
         type: sortMapByPriority(result[type]!),
     };
   }
@@ -222,7 +222,7 @@ class Items {
   @Deprecated('to be evaluated')
   static bool isStatItem(int itemId) {
     final item = _items[itemId];
-    if (item != null && item.skillUpItemType != SkillUpItemType.none) {
+    if (item != null && item.category != ItemCategory.other) {
       return true;
     }
     if (specialSvtMat.contains(itemId)) return true;

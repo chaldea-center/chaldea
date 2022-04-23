@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -15,6 +14,7 @@ import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
 
+// ignore: unused_element
 bool _defaultValidateStat(int? statusCode) {
   return statusCode != null && statusCode >= 200 && statusCode < 500;
 }

@@ -50,7 +50,7 @@ class ItemCenter {
     _validItems.clear();
     final List<int> _svtIds = [];
     for (final item in db.gameData.items.values) {
-      if (item.skillUpItemType != SkillUpItemType.none) {
+      if (item.category != ItemCategory.other) {
         _validItems.add(item.id);
       }
     }

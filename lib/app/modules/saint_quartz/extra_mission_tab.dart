@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../descriptors/mission_conds.dart';
 
 class ExtraMissionTab extends StatefulWidget {
   ExtraMissionTab({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
   @override
   Widget build(BuildContext context) {
     final missions = plan.extraMission?.missions ?? [];
+    missions.sort2((e) => e.dispNo);
     return ListView.builder(
       itemCount: missions.length,
       itemBuilder: (context, index) {
@@ -32,7 +34,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
             style: kMonoStyle,
           ),
         ];
-        mission.gifts.forEach((gift) {
+        for (final gift in mission.gifts) {
           final item = db.gameData.items[gift.objectId];
           if (item != null) {
             rewards.add(Row(
@@ -48,11 +50,11 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
               ],
             ));
           }
-        });
+        }
         return SwitchListTile.adaptive(
           value: plan.extraMissions[mission.id] ?? false,
           title: Text(
-            mission.name,
+            '${mission.dispNo} - ${mission.name}',
             textScaleFactor: 0.8,
             style: plan.isInRange(mission.startedAt)
                 ? null
@@ -61,11 +63,18 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
                     fontStyle: FontStyle.italic,
                   ),
           ),
-          subtitle: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: rewards,
+          subtitle: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MissionCondsDescriptor(mission: mission, onlyShowClear: true),
+              Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: rewards,
+              )
+            ],
           ),
           controlAffinity: ListTileControlAffinity.trailing,
           onChanged: (v) {

@@ -72,15 +72,19 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       itemCount: questIds.length,
     );
     return Column(children: [
-      widget.showResult
-          ? ListTile(
-              title: Text('Total $battleCount battles, $apCount AP'),
-              trailing: const Text('Battle Count'),
-            )
-          : ListTile(
-              title: Text(S.current.master_mission_related_quest),
-              trailing: const Text('Target Count'),
-            ),
+      Padding(
+        padding: const EdgeInsetsDirectional.only(end: 16),
+        child: widget.showResult
+            ? ListTile(
+                title: Text(
+                    S.current.solution_total_battles_ap(battleCount, apCount)),
+                trailing: Text(S.current.solution_battle_count),
+              )
+            : ListTile(
+                title: Text(S.current.master_mission_related_quest),
+                trailing: Text(S.current.solution_target_count),
+              ),
+      ),
       Expanded(child: listView)
     ]);
   }

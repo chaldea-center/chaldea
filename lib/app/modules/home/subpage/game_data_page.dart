@@ -178,10 +178,9 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 leading: const Icon(Icons.cloud_circle, size: 28),
                 title: const Text('Lanzou/woozooo'),
-                subtitle: RichText(
-                  text: TextSpan(
+                subtitle: Text.rich(
+                  TextSpan(
                     text: 'https://www.lanzouw.com/b01tuahmf\n',
-                    style: const TextStyle(color: Colors.grey),
                     children: [
                       TextSpan(
                         text: 'password: chaldea',

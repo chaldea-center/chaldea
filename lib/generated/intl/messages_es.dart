@@ -46,7 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m14(a, b) => "${a} ${b}";
+  static String m15(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -620,6 +620,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m14
+        "words_separate": m15
       };
 }

@@ -53,7 +53,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromTexts(texts: [
               Transl.illustratorNames(svt.profile.illustrator).l,
               Transl.cvNames(svt.profile.cv).l,
-              Transl.enums(svt.gender, db.gameData.mappingData.enums.gender).l,
+              Transl.enums(svt.gender, (enums) => enums.gender).l,
             ], defaults: contentData),
 
             CustomTableRow.fromTexts(texts: [

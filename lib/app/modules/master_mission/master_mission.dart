@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
+import '../../descriptors/mission_conds.dart';
 import 'solver/custom_mission.dart';
 import 'solver/scheme.dart';
 
@@ -63,21 +63,22 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
     return ListView(
       children: [
         ListTile(
-          title: const Text('Start'),
+          title: Text(S.current.time_start),
           trailing: Text(masterMission.startedAt.toDateTimeString()),
         ),
         ListTile(
-          title: const Text('End'),
+          title: Text(S.current.time_end),
           trailing: Text(masterMission.endedAt.toDateTimeString()),
         ),
         ListTile(
-          title: const Text('Close'),
+          title: Text(S.current.time_close),
           trailing: Text(masterMission.closedAt.toDateTimeString()),
         ),
         ListTile(
-          title: const Text('Missions'),
+          title: Text(S.current.mission),
           trailing: Text(categorized.entries
-              .map((e) => '${e.value} ${e.key.name}')
+              .map((e) =>
+                  '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
               .join('\n')),
         ),
         const Divider(thickness: 1),
@@ -104,27 +105,9 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
               ),
       ),
       contentBuilder: (context) => Padding(
-        padding: const EdgeInsetsDirectional.only(start: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final cond in mission.conds) ...[
-              Text(
-                '${cond.missionProgressType.name} Condition: ${cond.conditionMessage == mission.name ? "" : cond.conditionMessage}',
-                style: Theme.of(context).textTheme.caption,
-              ),
-              CondTargetNumDescriptor(
-                condType: cond.condType,
-                targetNum: cond.targetNum,
-                targetIds: cond.targetIds,
-                detail: cond.detail,
-                missions: {for (final m in masterMission.missions) m.id: m},
-              )
-            ],
-            const SizedBox(height: 10),
-          ],
-        ),
+        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+        child: MissionCondsDescriptor(
+            mission: mission, missions: masterMission.missions),
       ),
     );
   }

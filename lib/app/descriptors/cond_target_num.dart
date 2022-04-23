@@ -9,9 +9,10 @@ import 'multi_entry.dart';
 class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final CondType condType;
   final int targetNum;
+  @override
   final List<int> targetIds;
   final EventMissionConditionDetail? detail;
-  final Map<int, EventMission> missions;
+  final List<EventMission> missions;
 
   const CondTargetNumDescriptor({
     Key? key,
@@ -19,7 +20,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     required this.targetNum,
     required this.targetIds,
     this.detail,
-    this.missions = const {},
+    this.missions = const [],
   }) : super(key: key);
 
   @override
@@ -34,50 +35,55 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.questClear:
+        bool all = targetNum == targetIds.length && targetNum != 1;
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(
+            context,
+            '通关${all ? "所有" : ""}$targetNum个关卡',
+            quests(context),
+          ),
           tw: null,
           na: () => combineToRich(
             context,
-            'Clear ${targetNum == targetIds.length ? "all" : ""} $targetNum quests of ',
-            MultiDescriptor.quests(context, targetIds),
+            'Clear ${all ? "all" : ""} $targetNum quests of ',
+            quests(context),
           ),
           kr: null,
         );
       case CondType.questClearPhase:
         return localized(
           jp: null,
-          cn: null,
+          cn: () =>
+              combineToRich(context, '通关', quests(context), '进度$targetNum'),
           tw: null,
           na: () => combineToRich(
-            context,
-            'Cleared arrow $targetNum of quest',
-            MultiDescriptor.quests(context, targetIds),
-          ),
+              context, 'Cleared arrow $targetNum of quest', quests(context)),
           kr: null,
         );
       case CondType.questClearNum:
         return localized(
           jp: null,
-          cn: null,
+          cn: () =>
+              combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
           tw: null,
           na: () => combineToRich(
             context,
             '$targetNum runs of quests ',
-            MultiDescriptor.quests(context, targetIds),
+            quests(context),
           ),
           kr: null,
         );
       case CondType.svtLimit:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(
+              context, null, servants(context), '达到灵基再临第$targetNum阶段'),
           tw: null,
           na: () => combineToRich(
             context,
             null,
-            MultiDescriptor.servants(context, targetIds),
+            servants(context),
             ' at ascension $targetNum',
           ),
           kr: null,
@@ -85,12 +91,13 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.svtFriendship:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(
+              context, null, servants(context), '的羁绊等级达到$targetNum'),
           tw: null,
           na: () => combineToRich(
             context,
             null,
-            MultiDescriptor.servants(context, targetIds),
+            servants(context),
             ' at bond level $targetNum',
           ),
           kr: null,
@@ -98,46 +105,39 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.svtGet:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, null, servants(context), '正式加入'),
           tw: null,
           na: () => combineToRich(
             context,
             null,
-            MultiDescriptor.servants(context, targetIds),
+            servants(context),
             ' in Spirit Origin Collection',
           ),
           kr: null,
         );
       case CondType.eventEnd:
         final event = db.gameData.events[targetIds.first];
+        final targets = [
+          MultiDescriptor.inkWell(
+            context: context,
+            text: event?.shownName ?? targetIds.toString(),
+            onTap: () => event?.routeTo(),
+          )
+        ];
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '活动', targets, '结束'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Event ',
-            [
-              MultiDescriptor.inkWell(
-                context: context,
-                text: event?.shownName ?? targetIds.first.toString(),
-                onTap: () => event?.routeTo(),
-              )
-            ],
-            ' has ended',
-          ),
+          na: () => combineToRich(context, 'Event ', targets, ' has ended'),
           kr: null,
         );
       case CondType.svtHaving:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '持有从者', servants(context)),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Presense of Servant ',
-            MultiDescriptor.servants(context, targetIds),
-          ),
+          na: () =>
+              combineToRich(context, 'Presense of Servant ', servants(context)),
           kr: null,
         );
       case CondType.svtRecoverd:
@@ -151,12 +151,13 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountAbove:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(
+              context, '从者', servants(context), '的灵基再临 ≥ $targetNum'),
           tw: null,
           na: () => combineToRich(
             context,
             'Servant',
-            MultiDescriptor.servants(context, targetIds),
+            servants(context),
             ' at ascension ≥ $targetNum',
           ),
           kr: null,
@@ -164,12 +165,13 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountBelow:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(
+              context, '从者', servants(context), '的灵基再临 ≤ $targetNum'),
           tw: null,
           na: () => combineToRich(
             context,
             'Servant',
-            MultiDescriptor.servants(context, targetIds),
+            servants(context),
             ' at ascension ≤ $targetNum',
           ),
           kr: null,
@@ -194,49 +196,50 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.svtEquipRarityLevelNum:
         break;
       case CondType.eventMissionAchieve:
-        final mission = missions[targetIds.first];
+        final mission = missions
+            .firstWhereOrNull((mission) => mission.id == targetIds.first);
+        final targets =
+            '${mission?.dispNo}-${mission?.name ?? targetIds.first}';
         return localized(
           jp: null,
-          cn: null,
+          cn: () => Text('完成任务 $targets'),
           tw: null,
-          na: () => Text('Archive mission ${mission?.dispNo}-${mission?.name}'),
+          na: () => Text('Archive mission $targets'),
           kr: null,
         );
       case CondType.eventTotalPoint:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => Text('获得活动点数$targetNum点'),
           tw: null,
           na: () => Text('Reach $targetNum event points'),
           kr: null,
         );
       case CondType.eventMissionClear:
-        final dispNos = targetIds.map((e) => missions[e]?.dispNo ?? e).toList();
+        final missionMap = {for (final m in missions) m.id: m};
+        final dispNos =
+            targetIds.map((e) => missionMap[e]?.dispNo ?? e).toList();
+
         if (dispNos.length == targetNum) {
           return localized(
             jp: null,
-            cn: null,
+            cn: () => combineToRich(
+                context, '完成以下全部任务:', missionList(context, missionMap)),
             tw: null,
-            na: () => Text('Clear all missions of $dispNos'),
+            na: () => combineToRich(context, 'Clear all missions of',
+                missionList(context, missionMap)),
             kr: null,
           );
         } else {
           return localized(
             jp: null,
-            cn: null,
+            cn: () => combineToRich(context, '完成$targetNum个不同的任务',
+                missionList(context, missionMap)),
             tw: null,
             na: () => combineToRich(
               context,
               'Clear $targetNum different missions from ',
-              [
-                MultiDescriptor.collapsed(
-                    context, targetIds, 'All ${targetIds.length} missions',
-                    (context, id) {
-                  final mission = missions[id];
-                  return ListTile(
-                      title: Text('${mission?.dispNo} - ${mission?.name}'));
-                }),
-              ],
+              missionList(context, missionMap),
             ),
             kr: null,
           );
@@ -246,12 +249,13 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         return MissionCondDetailDescriptor(
             targetNum: targetNum, detail: detail!);
       case CondType.date:
+        final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)
+            .toStringShort(omitSec: true);
         return localized(
           jp: null,
-          cn: null,
+          cn: () => Text('$time后开放'),
           tw: null,
-          na: () => Text(
-              'After ${DateTime.fromMillisecondsSinceEpoch(targetNum * 1000).toStringShort()}'),
+          na: () => Text('After $time'),
           kr: null,
         );
       default:
@@ -259,9 +263,9 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     }
     return localized(
       jp: null,
-      cn: null,
+      cn: () => Text('未知条件(${condType.name}): $targetNum, $targetIds'),
       tw: null,
-      na: () => Text('Unknown: $condType, $targetNum, $targetIds'),
+      na: () => Text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
       kr: null,
     );
   }

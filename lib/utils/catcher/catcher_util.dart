@@ -33,17 +33,17 @@ class CatcherUtil {
 
   static Widget errorWidgetBuilder(FlutterErrorDetails details) {
     if (details.silent) return Container();
-    return Center(
-      child: RichText(
-        overflow: TextOverflow.clip,
-        textAlign: TextAlign.center,
-        text: const TextSpan(
+    return const Center(
+      child: Text.rich(
+        TextSpan(
           children: [
             WidgetSpan(
                 child: Icon(Icons.announcement, color: Colors.red, size: 40)),
             TextSpan(text: '\nThere is an Error')
           ],
         ),
+        overflow: TextOverflow.clip,
+        textAlign: TextAlign.center,
       ),
     );
   }

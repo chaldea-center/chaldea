@@ -39,13 +39,13 @@ class _CustomMissionPageState extends State<CustomMissionPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Custom Missions'),
+        title: Text(S.current.custom_mission),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Missions'),
-            Tab(text: 'Solution'),
-            Tab(text: 'Quests')
+          tabs: [
+            Tab(text: S.current.mission),
+            Tab(text: S.current.master_mission_solution),
+            Tab(text: S.current.master_mission_related_quest)
           ],
         ),
         actions: [

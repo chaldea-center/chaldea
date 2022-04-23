@@ -31,13 +31,13 @@ class ItemListPageState extends State<ItemListPage>
   late TabController _tabController;
   late List<TextEditingController> _itemRedundantControllers;
 
-  Map<SkillUpItemType, List<int>> categorized = {};
+  Map<ItemCategory, List<int>> categorized = {};
   final shownCategories = [
-    SkillUpItemType.normal,
-    SkillUpItemType.special,
-    SkillUpItemType.skill,
-    SkillUpItemType.ascension,
-    SkillUpItemType.event,
+    ItemCategory.normal,
+    ItemCategory.special,
+    ItemCategory.skill,
+    ItemCategory.ascension,
+    ItemCategory.event,
   ];
 
   @override
@@ -49,9 +49,9 @@ class ItemListPageState extends State<ItemListPage>
         (index) => TextEditingController(
             text: db.userData.itemAbundantValue[index].toString()));
     for (final item in db.gameData.items.values) {
-      categorized.putIfAbsent(item.skillUpItemType, () => []).add(item.id);
+      categorized.putIfAbsent(item.category, () => []).add(item.id);
     }
-    categorized[SkillUpItemType.special] = <int>[
+    categorized[ItemCategory.special] = <int>[
       ...Items.specialItems,
       ...Items.specialSvtMat
     ];
@@ -95,9 +95,12 @@ class ItemListPageState extends State<ItemListPage>
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
-          tabs: shownCategories
-              .map((category) => Tab(text: category.name.toTitle()))
-              .toList(),
+          tabs: [
+            for (final category in shownCategories)
+              Tab(
+                text: Transl.enums(category, (enums) => enums.itemCategory).l,
+              ),
+          ],
           onTap: (_) {
             FocusScope.of(context).unfocus();
           },
@@ -272,7 +275,7 @@ class InputComponents {
 }
 
 class ItemListTab extends StatefulWidget {
-  final SkillUpItemType category;
+  final ItemCategory category;
   final List<int> items;
   final VoidCallback onNavToCalculator;
   final bool filtered;

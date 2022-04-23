@@ -14,6 +14,14 @@ import 'package:chaldea/widgets/widgets.dart';
 class SharedBuilder {
   SharedBuilder._();
 
+  static Color? appBarForeground(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.appBarTheme.foregroundColor ??
+        (theme.colorScheme.brightness == Brightness.dark
+            ? theme.colorScheme.onSurface
+            : theme.colorScheme.onPrimary);
+  }
+
   static Widget groupItems({
     required BuildContext context,
     required Map<int, int> items,

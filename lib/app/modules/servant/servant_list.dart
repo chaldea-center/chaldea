@@ -426,14 +426,22 @@ class ServantListPageState extends State<ServantListPage>
       return false;
     }
 
-    if (!filterData.npColor
-        .matchAny(svt.noblePhantasms.map((e) => e.card).toList())) {
-      return false;
-    }
-
-    if (!filterData.npType
-        .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
-      return false;
+    if (filterData.npColor.options.isNotEmpty &&
+        filterData.npType.options.isNotEmpty) {
+      if (!svt.noblePhantasms.any((np) =>
+          filterData.npColor.contain(np.card) &&
+          filterData.npType.contain(np.damageType))) {
+        return false;
+      }
+    } else {
+      if (!filterData.npColor
+          .matchAny(svt.noblePhantasms.map((e) => e.card).toList())) {
+        return false;
+      }
+      if (!filterData.npType
+          .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
+        return false;
+      }
     }
 
     // plan status
@@ -693,8 +701,8 @@ class ServantListPageState extends State<ServantListPage>
   Widget gridItemBuilder(Servant svt) {
     final status = db.curUser.svtStatusOf(svt.collectionNo);
     Widget textBuilder(TextStyle style) {
-      return RichText(
-        text: TextSpan(text: '', style: style, children: [
+      return Text.rich(
+        TextSpan(style: style, children: [
           WidgetSpan(
             style: style,
             child: DecoratedBox(

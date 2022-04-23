@@ -216,8 +216,12 @@ extension DateTimeX on DateTime {
     return isAfter(dateTime);
   }
 
-  String toStringShort() {
-    return toString().split('.').first;
+  String toStringShort({bool omitSec = false}) {
+    return toString().replaceFirstMapped(RegExp(r'(:\d+)(\.\d+)(Z?)'), (match) {
+      return omitSec && match.group(1) == "00"
+          ? match.group(3)!
+          : match.group(1)! + match.group(3)!;
+    });
   }
 
   String toDateString([String sep = '-']) {

@@ -60,7 +60,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       children: [
         Expanded(
           child: missions.isEmpty
-              ? const Center(child: Text('No mission, click + to add mission'))
+              ? Center(child: Text(S.current.custom_mission_nothing_hint))
               : ListView.separated(
                   controller: _scrollController,
                   itemBuilder: (context, index) => _oneMission(index),
@@ -93,18 +93,20 @@ class _MissionInputTabState extends State<MissionInputTab> {
         children: [
           if (mission.originDetail?.isNotEmpty == true)
             ListTile(
-              title: const Text('OriginMsg'),
+              title: Text(S.current.custom_mission_source_mission),
               subtitle: Text(mission.originDetail!),
             ),
           ListTile(
-            leading: const Text('Type'),
-            trailing: DropdownButton<MissionTargetType>(
+            leading: Text(S.current.general_type),
+            trailing: DropdownButton<CustomMissionType>(
               value: mission.type,
               items: [
-                for (final type in MissionTargetType.values)
+                for (final type in CustomMissionType.values)
                   DropdownMenuItem(
                     value: type,
-                    child: Text(_getTargetTypeName(type)),
+                    child: Text(
+                        Transl.enums(type, (enums) => enums.customMissionType)
+                            .l),
                   ),
               ],
               onChanged: (v) {
@@ -199,32 +201,20 @@ class _MissionInputTabState extends State<MissionInputTab> {
     );
   }
 
-  String _getTargetTypeName(MissionTargetType type) {
-    return {
-      MissionTargetType.trait: "Enemy Trait",
-      MissionTargetType.questTrait: "Field Trait",
-      MissionTargetType.quest: "Specific Quests",
-      MissionTargetType.enemy: "Specific Enemies",
-      MissionTargetType.servantClass: "Servant Classes",
-      MissionTargetType.enemyClass: "Enemy Classes",
-      MissionTargetType.enemyNotServantClass: "Enemy Classes\n(Not Servant)"
-    }[type]!;
-  }
-
-  String _idDescriptor(MissionTargetType type, int id) {
+  String _idDescriptor(CustomMissionType type, int id) {
     switch (type) {
-      case MissionTargetType.trait:
-      case MissionTargetType.questTrait:
+      case CustomMissionType.trait:
+      case CustomMissionType.questTrait:
         return Transl.trait(id).l;
-      case MissionTargetType.quest:
+      case CustomMissionType.quest:
         return db.gameData.quests[id]?.lName.l ?? id.toString();
-      case MissionTargetType.enemy:
+      case CustomMissionType.enemy:
         return db.gameData.servantsById[id]?.lName.l ??
             db.gameData.entities[id]?.lName.l ??
             id.toString();
-      case MissionTargetType.servantClass:
-      case MissionTargetType.enemyClass:
-      case MissionTargetType.enemyNotServantClass:
+      case CustomMissionType.servantClass:
+      case CustomMissionType.enemyClass:
+      case CustomMissionType.enemyNotServantClass:
         return Transl.svtClassId(id).l;
     }
   }
@@ -303,7 +293,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           onPressed: () {
             setState(() {
               missions.add(CustomMission(
-                  type: MissionTargetType.trait, count: 0, ids: []));
+                  type: CustomMissionType.trait, count: 0, ids: []));
             });
           },
           icon: const Icon(Icons.add_circle_outline),
@@ -425,7 +415,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
 }
 
 class _SearchView extends StatefulWidget {
-  final MissionTargetType targetType;
+  final CustomMissionType targetType;
   const _SearchView({Key? key, required this.targetType}) : super(key: key);
 
   @override
@@ -440,7 +430,7 @@ class __SearchViewState extends State<_SearchView> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController(
-      text: widget.targetType == MissionTargetType.questTrait ? 'field' : null,
+      text: widget.targetType == CustomMissionType.questTrait ? 'field' : null,
     );
   }
 
@@ -454,14 +444,14 @@ class __SearchViewState extends State<_SearchView> {
   Widget build(BuildContext context) {
     List<int> ids = [];
     Widget Function(int id) tileBuilder;
-    if ([MissionTargetType.trait, MissionTargetType.questTrait]
+    if ([CustomMissionType.trait, CustomMissionType.questTrait]
         .contains(widget.targetType)) {
       ids = _searchTraits();
       tileBuilder = _buildTraitTile;
     } else if ([
-      MissionTargetType.servantClass,
-      MissionTargetType.enemyClass,
-      MissionTargetType.enemyNotServantClass
+      CustomMissionType.servantClass,
+      CustomMissionType.enemyClass,
+      CustomMissionType.enemyNotServantClass
     ].contains(widget.targetType)) {
       ids = _searchSvtClasses();
       tileBuilder = _buildClassTile;

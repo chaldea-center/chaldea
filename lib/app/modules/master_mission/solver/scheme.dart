@@ -4,7 +4,7 @@ import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
 
 class CustomMission {
-  MissionTargetType type;
+  CustomMissionType type;
   int count;
   List<int> ids;
   String? originDetail;
@@ -24,7 +24,7 @@ class CustomMission {
       }
       final type = _kDetailCondMapping[cond.detail!.missionCondType];
       if (type == null) continue;
-      if (type == MissionTargetType.quest &&
+      if (type == CustomMissionType.quest &&
           cond.detail!.targetIds.length == 1 &&
           cond.detail!.targetIds.first == 0) {
         // any quest
@@ -81,7 +81,7 @@ class MissionSolution {
   }) : quests = {for (final quest in quests) quest.id: quest};
 }
 
-enum MissionTargetType {
+enum CustomMissionType {
   trait,
   questTrait,
   quest,
@@ -92,24 +92,24 @@ enum MissionTargetType {
 }
 
 const _kDetailCondMapping = {
-  DetailCondType.questClearNum1: MissionTargetType.quest,
-  DetailCondType.questClearNum2: MissionTargetType.quest,
-  DetailCondType.enemyKillNum: MissionTargetType.enemy,
-  DetailCondType.defeatEnemyIndividuality: MissionTargetType.trait,
-  DetailCondType.enemyIndividualityKillNum: MissionTargetType.trait,
-  DetailCondType.defeatServantClass: MissionTargetType.servantClass,
-  DetailCondType.defeatEnemyClass: MissionTargetType.enemyClass,
+  DetailCondType.questClearNum1: CustomMissionType.quest,
+  DetailCondType.questClearNum2: CustomMissionType.quest,
+  DetailCondType.enemyKillNum: CustomMissionType.enemy,
+  DetailCondType.defeatEnemyIndividuality: CustomMissionType.trait,
+  DetailCondType.enemyIndividualityKillNum: CustomMissionType.trait,
+  DetailCondType.defeatServantClass: CustomMissionType.servantClass,
+  DetailCondType.defeatEnemyClass: CustomMissionType.enemyClass,
   DetailCondType.defeatEnemyNotServantClass:
-      MissionTargetType.enemyNotServantClass,
+      CustomMissionType.enemyNotServantClass,
 };
 
 final _kDetailCondMappingReverse = {
-  MissionTargetType.quest: DetailCondType.questClearNum1,
-  MissionTargetType.enemy: DetailCondType.enemyKillNum,
-  MissionTargetType.trait: DetailCondType.defeatEnemyIndividuality,
-  MissionTargetType.servantClass: DetailCondType.defeatServantClass,
-  MissionTargetType.enemyClass: DetailCondType.defeatEnemyClass,
-  MissionTargetType.enemyNotServantClass:
+  CustomMissionType.quest: DetailCondType.questClearNum1,
+  CustomMissionType.enemy: DetailCondType.enemyKillNum,
+  CustomMissionType.trait: DetailCondType.defeatEnemyIndividuality,
+  CustomMissionType.servantClass: DetailCondType.defeatServantClass,
+  CustomMissionType.enemyClass: DetailCondType.defeatEnemyClass,
+  CustomMissionType.enemyNotServantClass:
       DetailCondType.defeatEnemyNotServantClass,
-  MissionTargetType.questTrait: DetailCondType.questClearIndividuality,
+  CustomMissionType.questTrait: DetailCondType.questClearIndividuality,
 };

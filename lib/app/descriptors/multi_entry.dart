@@ -119,7 +119,7 @@ class MultiDescriptor {
       if (clsIds.toSet().equalTo(kSvtIdsPlayable.toSet())) {
         return ' servants to ascension ${limits.first}';
       }
-      return '${clsIds.map((e) => kSvtClassIds[e]?.name ?? e).join(',')} to ascension ${limits.first}';
+      return '${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to ascension ${limits.first}';
     }
     return List.generate(
             clsIds.length,
@@ -201,6 +201,25 @@ class MultiDescriptor {
         );
       },
     );
+  }
+
+  static List<Widget> missions(BuildContext context, List<int> targetIds,
+      Map<int, EventMission> missions) {
+    if (targetIds.length == 1) {
+      return list(context, targetIds, (context, id) {
+        final mission = missions[id];
+        return Text('${mission?.dispNo} - ${mission?.name}');
+      });
+    } else {
+      return [
+        MultiDescriptor.collapsed(
+            context, targetIds, 'All ${targetIds.length} missions',
+            (context, id) {
+          final mission = missions[id];
+          return ListTile(title: Text('${mission?.dispNo} - ${mission?.name}'));
+        }),
+      ];
+    }
   }
 }
 

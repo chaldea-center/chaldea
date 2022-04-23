@@ -56,7 +56,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "Reset Plan ${n}(Shown)";
 
-  static String m14(a, b) => "${a} ${b}";
+  static String m14(battles, ap) => "Total ${battles} battles, ${ap} AP";
+
+  static String m15(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -153,6 +155,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
         "current_version":
             MessageLookupByLibrary.simpleMessage("Current Version"),
+        "custom_mission":
+            MessageLookupByLibrary.simpleMessage("Custom Mission"),
+        "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage(
+            "No mission, click + to add mission"),
+        "custom_mission_source_mission":
+            MessageLookupByLibrary.simpleMessage("Source Mission"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light"),
@@ -293,6 +301,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
         "general_default": MessageLookupByLibrary.simpleMessage("Default"),
+        "general_others": MessageLookupByLibrary.simpleMessage("Others"),
+        "general_type": MessageLookupByLibrary.simpleMessage("Type"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
@@ -474,6 +484,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Missions"),
         "master_mission_weekly":
             MessageLookupByLibrary.simpleMessage("Weekly Mission"),
+        "mission": MessageLookupByLibrary.simpleMessage("Mission"),
         "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
@@ -612,6 +623,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
+        "solution_battle_count":
+            MessageLookupByLibrary.simpleMessage("Battle Count"),
+        "solution_target_count":
+            MessageLookupByLibrary.simpleMessage("Target Count"),
+        "solution_total_battles_ap": m14,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -641,6 +657,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
+        "time_close": MessageLookupByLibrary.simpleMessage("Close"),
+        "time_end": MessageLookupByLibrary.simpleMessage("End"),
+        "time_start": MessageLookupByLibrary.simpleMessage("Start"),
         "toogle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders":
@@ -676,6 +695,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m14
+        "words_separate": m15
       };
 }
