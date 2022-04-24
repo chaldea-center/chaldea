@@ -420,10 +420,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             // status.cur.ascension = 0;
             status.cur.favorite = true;
             if (widget.isAppend) {
-              status.cur.appendSkills = List.unmodifiable(detail.skills);
+              status.cur.appendSkills = List.of(detail.skills, growable: false);
             } else {
               status.cur.skills =
-                  List.unmodifiable(detail.skills.map((e) => max(1, e)));
+                  List.of(detail.skills.map((e) => max(1, e)), growable: false);
             }
           }
         }

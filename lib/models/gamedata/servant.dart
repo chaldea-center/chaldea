@@ -261,18 +261,21 @@ class Servant with GameCardMixin {
   }
 
   @override
-  Widget iconBuilder(
-      {required BuildContext context,
-      double? width,
-      double? height,
-      double? aspectRatio = 132 / 144,
-      String? text,
-      EdgeInsets? padding,
-      EdgeInsets? textPadding,
-      VoidCallback? onTap,
-      bool jumpToDetail = true,
-      bool popDetail = false,
-      String? overrideIcon}) {
+  Widget iconBuilder({
+    required BuildContext context,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    EdgeInsets? textPadding,
+    VoidCallback? onTap,
+    bool jumpToDetail = true,
+    bool popDetail = false,
+    String? overrideIcon,
+    String? name,
+    bool showName = false,
+  }) {
     return super.iconBuilder(
       context: context,
       width: width,
@@ -285,6 +288,8 @@ class Servant with GameCardMixin {
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
       overrideIcon: overrideIcon ?? customIcon,
+      name: name,
+      showName: showName,
     );
   }
 

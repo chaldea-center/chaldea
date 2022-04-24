@@ -79,6 +79,8 @@ mixin GameCardMixin {
     bool jumpToDetail = true,
     bool popDetail = false,
     String? overrideIcon,
+    String? name,
+    bool showName = false,
   }) {
     if (onTap == null && jumpToDetail) {
       if (this is Servant) {
@@ -113,6 +115,7 @@ mixin GameCardMixin {
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,
+      name: showName ? name ?? lName.l : null,
     );
   }
 
@@ -126,6 +129,7 @@ mixin GameCardMixin {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
+    String? name,
   }) {
     final size = Maths.fitSize(width, height, aspectRatio);
     textPadding ??= size == null
@@ -144,6 +148,12 @@ mixin GameCardMixin {
       height: size?.value,
       padding: textPadding,
     );
+    if (name != null) {
+      child = Text.rich(TextSpan(children: [
+        CenterWidgetSpan(child: child),
+        TextSpan(text: ' $name ')
+      ]));
+    }
     if (onTap != null) {
       child = InkWell(
         child: child,
@@ -178,6 +188,8 @@ mixin GameCardMixin {
     VoidCallback? onTap,
     bool jumpToDetail = true,
     bool popDetail = false,
+    String? name,
+    bool showName = false,
   }) {
     return anyCardItem(
       id: id,
@@ -194,6 +206,8 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
+        name: name,
+        showName: showName,
       ),
       onSvt: (svt) => svt.iconBuilder(
         context: context,
@@ -207,6 +221,8 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
+        name: name,
+        showName: showName,
       ),
       onCE: (ce) => ce.iconBuilder(
         context: context,
@@ -220,6 +236,8 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
+        name: name,
+        showName: showName,
       ),
       onCC: (cc) => cc.iconBuilder(
         context: context,
@@ -233,6 +251,8 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
+        name: name,
+        showName: showName,
       ),
       onBasicSvt: (svt) => svt.iconBuilder(
         context: context,
@@ -246,6 +266,8 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
+        name: name,
+        showName: showName,
       ),
       onCostume: (svt, costume) => svt.iconBuilder(
         context: context,
@@ -259,6 +281,8 @@ mixin GameCardMixin {
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         overrideIcon: icon ?? costume.icon,
+        name: name ?? costume.lName.l,
+        showName: showName,
       ),
       onDefault: () {
         if (id == Items.grailToCrystalId) {
@@ -275,6 +299,8 @@ mixin GameCardMixin {
             onTap: onTap,
             jumpToDetail: jumpToDetail,
             popDetail: popDetail,
+            name: name,
+            showName: showName,
           );
         }
         if (icon != null) {
@@ -288,6 +314,7 @@ mixin GameCardMixin {
             padding: padding,
             textPadding: textPadding,
             onTap: onTap,
+            name: name,
           );
         }
         final size = Maths.fitSize(width, height, aspectRatio);
@@ -320,6 +347,19 @@ mixin GameCardMixin {
       onBasicSvt: (obj) => obj.lName,
       onCostume: (svt, costume) => costume.lName,
       onDefault: () => Transl({}, 'No.$id', 'No.$id'),
+    );
+  }
+
+  static String? getRoute(int id) {
+    return anyCardItem(
+      id: id,
+      onItem: (obj) => Routes.itemI(obj.id),
+      onSvt: (obj) => Routes.servantI(obj.id),
+      onCE: (obj) => Routes.craftEssenceI(obj.id),
+      onCC: (obj) => Routes.commandCodeI(obj.id),
+      onBasicSvt: (obj) => Routes.servantI(obj.id),
+      onCostume: (svt, costume) => Routes.costumeI(costume.costumeCollectionNo),
+      onDefault: () => null,
     );
   }
 

@@ -14,10 +14,12 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
-import 'event_missions.dart';
-import 'event_shops.dart';
+import 'lottery.dart';
+import 'mission.dart';
 import 'points.dart';
+import 'shop.dart';
 import 'towers.dart';
+import 'treasure_box.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
@@ -49,6 +51,150 @@ class _EventDetailPageState extends State<EventDetailPage> {
         url: Routes.eventI(widget.eventId ?? 0),
       );
     }
+
+    Map<String, Widget> tabs = {
+      S.current.item: KeepAliveBuilder(
+          builder: (context) =>
+              EventItemsOverview(event: event, region: _region)),
+    };
+    List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
+      ..sort();
+    for (final slot in shopSlots) {
+      tabs[S.current.event_shop + (shopSlots.length > 1 ? ' $slot' : '')] =
+          EventShopsPage(event: event, slot: slot);
+    }
+    List<int> rewardGroups =
+        event.rewards.map((e) => e.groupId).toSet().toList()..sort();
+    for (final groupId in rewardGroups) {
+      EventPointGroup? pointGroup =
+          event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
+      tabs[pointGroup?.name ??
+              (S.current.event_point_reward +
+                  (rewardGroups.length > 1 ? ' $groupId' : ''))] =
+          EventPointsPage(event: event, groupId: groupId);
+    }
+    if (event.missions.isNotEmpty) {
+      tabs[S.current.mission] = EventMissionsPage(event: event);
+    }
+
+    for (final tower in event.towers) {
+      tabs[tower.name] = EventTowersPage(event: event, tower: tower);
+    }
+    for (final lottery in event.lotteries) {
+      tabs[S.current.event_lottery +
+              (event.lotteries.length > 1 ? ' ${lottery.id}' : '')] =
+          EventLotteryTab(event: event, lottery: lottery);
+    }
+    if (event.treasureBoxes.isNotEmpty) {
+      tabs[S.current.event_treasure_box] = EventTreasureBoxTab(event: event);
+    }
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: AutoSizeText(
+            event.shownName.replaceAll('\n', ' '),
+            maxLines: 1,
+          ),
+          centerTitle: false,
+          actions: [popupMenu],
+          bottom: tabs.length > 1
+              ? TabBar(
+                  tabs: tabs.keys.map((e) => Tab(text: e)).toList(),
+                  isScrollable: true,
+                )
+              : null,
+        ),
+        body: TabBarView(children: tabs.values.toList()),
+      ),
+    );
+  }
+
+  Widget get popupMenu {
+    final eventId = widget.event?.id ?? widget.eventId;
+
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        ...SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.dbEvent(event.id),
+          mooncell: event.extra.mcLink,
+          fandom: event.extra.fandomLink,
+        ),
+        ...SharedBuilder.noticeLinkPopupMenuItems(
+            noticeLink: event.extra.noticeLink),
+        if (eventId != null && eventId > 0)
+          PopupMenuItem(
+            child: const Text('Switch Region'),
+            onTap: () async {
+              await null;
+              final jpEvent = db.gameData.events[eventId];
+              final startTime =
+                  jpEvent?.extra.startTime.copyWith(jp: jpEvent.startedAt);
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SimpleDialog(
+                    children: [
+                      for (final region in Region.values)
+                        ListTile(
+                          title: Text(region.name.toUpperCase()),
+                          enabled: startTime?.ofRegion(region) != null,
+                          onTap: () async {
+                            Navigator.pop(context);
+                            _changeRegion(region, eventId);
+                          },
+                        ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.clear),
+                      )
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+      ],
+    );
+  }
+
+  void _changeRegion(Region region, int eventId) async {
+    EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
+    Event? newEvent;
+    if (region == Region.jp) {
+      newEvent = db.gameData.events[eventId];
+    } else {
+      newEvent = await AtlasApi.event(eventId, region: region);
+      newEvent?.calcItems(db.gameData);
+    }
+    _region = region;
+    _event = newEvent;
+    if (mounted) {
+      setState(() {});
+    }
+    EasyLoading.dismiss();
+  }
+}
+
+class EventItemsOverview extends StatefulWidget {
+  final Event event;
+  final Region region;
+  const EventItemsOverview(
+      {Key? key, required this.event, required this.region})
+      : super(key: key);
+
+  @override
+  State<EventItemsOverview> createState() => _EventItemsOverviewState();
+}
+
+class _EventItemsOverviewState extends State<EventItemsOverview> {
+  Event get event => widget.event;
+
+  @override
+  Widget build(BuildContext context) {
     final plan = db.curUser.eventPlanOf(event.id);
     final banners = [
       ...event.extra.titleBanner.values.whereType<String>(),
@@ -113,15 +259,15 @@ class _EventDetailPageState extends State<EventDetailPage> {
     String _timeText(Region r, int? start, int? end) =>
         '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
         '${end?.toDateTimeString() ?? "?"}';
-    final eventJp = db.gameData.events[_event?.id];
+    final eventJp = db.gameData.events[event.id];
     List<String> timeInfo = [
-      _timeText(_region, event.startedAt, event.endedAt),
-      if (_region != db.curUser.region)
+      _timeText(widget.region, event.startedAt, event.endedAt),
+      if (widget.region != db.curUser.region)
         _timeText(
             db.curUser.region,
             event.extra.startTime.ofRegion(db.curUser.region),
             event.extra.endTime.ofRegion(db.curUser.region)),
-      if (Region.jp != _region && Region.jp != _region)
+      if (Region.jp != widget.region && Region.jp != widget.region)
         _timeText(Region.jp, eventJp?.startedAt, eventJp?.endedAt)
     ];
     for (final time in timeInfo) {
@@ -209,11 +355,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
           plan.shop = v;
           event.updateStat();
         },
-        title: 'Shop',
+        title: S.current.event_shop,
         items: event.itemShop,
-        onDetail: () {
-          router.push(child: EventShopsPage(event: event));
-        },
       ));
     }
     if (event.rewards.isNotEmpty) {
@@ -224,11 +367,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
           plan.point = v;
           event.updateStat();
         },
-        title: 'Point Rewards',
+        title: S.current.event_point_reward,
         items: event.itemPointReward,
-        onDetail: () {
-          router.push(child: EventPointsPage(event: event));
-        },
       ));
     }
     if (event.missions.isNotEmpty) {
@@ -239,11 +379,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
           plan.mission = v;
           event.updateStat();
         },
-        title: 'Mission Rewards',
+        title: S.current.mission,
         items: event.itemMission,
-        onDetail: () {
-          router.push(child: EventMissionsPage(event: event));
-        },
       ));
     }
 
@@ -255,11 +392,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
           plan.tower = v;
           event.updateStat();
         },
-        title: 'Tower Rewards',
+        title: S.current.event_tower,
         items: event.itemTower,
-        onDetail: () {
-          router.push(child: EventTowersPage(event: event));
-        },
       ));
     }
 
@@ -318,7 +452,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
       final box = event.treasureBoxes[boxIndex];
       final Map<int, int> boxItems = event.itemTreasureBox[box.id] ?? {};
       children.addAll([
-        ListTile(title: Text('Treasure Box ${boxIndex + 1}')),
+        ListTile(
+            title: Text('${S.current.event_treasure_box} ${boxIndex + 1}')),
         TileGroup(
           children: [
             for (final itemId in boxItems.keys)
@@ -342,65 +477,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
       ]);
     }
 
-    final eventId = widget.event?.id ?? widget.eventId;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: AutoSizeText(
-          event.shownName.replaceAll('\n', ' '),
-          maxLines: 1,
-        ),
-        centerTitle: false,
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              ...SharedBuilder.websitesPopupMenuItems(
-                atlas: Atlas.dbEvent(event.id),
-                mooncell: event.extra.mcLink,
-                fandom: event.extra.fandomLink,
-              ),
-              ...SharedBuilder.noticeLinkPopupMenuItems(
-                  noticeLink: event.extra.noticeLink),
-              if (eventId != null && eventId > 0)
-                PopupMenuItem(
-                  child: const Text('Switch Region'),
-                  onTap: () async {
-                    await null;
-                    final jpEvent = db.gameData.events[eventId];
-                    final startTime = jpEvent?.extra.startTime
-                        .copyWith(jp: jpEvent.startedAt);
-                    showDialog(
-                      context: context,
-                      useRootNavigator: false,
-                      builder: (context) {
-                        return SimpleDialog(
-                          children: [
-                            for (final region in Region.values)
-                              ListTile(
-                                title: Text(region.name.toUpperCase()),
-                                enabled: startTime?.ofRegion(region) != null,
-                                onTap: () async {
-                                  Navigator.pop(context);
-                                  _changeRegion(region, eventId);
-                                },
-                              ),
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.clear),
-                            )
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-            ],
-          ),
-        ],
-      ),
-      body: ListView(children: children),
+    return ListView.builder(
+      itemBuilder: (context, index) => children[index],
+      itemCount: children.length,
     );
   }
 
@@ -410,7 +489,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     required ValueChanged<bool> onChanged,
     required String title,
     required Map<int, int> items,
-    VoidCallback? onDetail,
+    // VoidCallback? onDetail,
   }) {
     return [
       db.onUserData(
@@ -424,14 +503,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 : null,
           ),
           title: Text(title),
-          trailing: onDetail == null
-              ? null
-              : IconButton(
-                  tooltip: 'Details',
-                  onPressed: onDetail,
-                  icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
         ),
       ),
       SharedBuilder.groupItems(
@@ -489,22 +560,5 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
       ],
     );
-  }
-
-  void _changeRegion(Region region, int eventId) async {
-    EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
-    Event? newEvent;
-    if (region == Region.jp) {
-      newEvent = db.gameData.events[eventId];
-    } else {
-      newEvent = await AtlasApi.event(eventId, region: region);
-      newEvent?.calcItems(db.gameData);
-    }
-    _region = region;
-    _event = newEvent;
-    if (mounted) {
-      setState(() {});
-    }
-    EasyLoading.dismiss();
   }
 }

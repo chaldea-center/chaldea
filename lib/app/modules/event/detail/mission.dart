@@ -23,7 +23,6 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
     final missions = widget.event.missions.toList();
     missions.sort2((e) => e.dispNo);
     return Scaffold(
-      appBar: AppBar(title: const Text('Event Missions')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final customMissions = (selected.toList()..sort2((e) => e.dispNo))

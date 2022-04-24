@@ -217,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Collect Items"),
         "event_item_extra":
             MessageLookupByLibrary.simpleMessage("Extra Obtains"),
+        "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),
         "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("Limited lottery"),
@@ -225,9 +226,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("Event not planned"),
+        "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
         "event_progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "event_rerun_replace_grail": m4,
+        "event_shop": MessageLookupByLibrary.simpleMessage("Shops"),
         "event_title": MessageLookupByLibrary.simpleMessage("Event"),
+        "event_tower": MessageLookupByLibrary.simpleMessage("Tower"),
+        "event_treasure_box":
+            MessageLookupByLibrary.simpleMessage("Treasure Box"),
         "exchange_ticket":
             MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),

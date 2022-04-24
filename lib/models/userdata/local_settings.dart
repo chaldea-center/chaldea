@@ -105,7 +105,7 @@ class LocalSettings {
     }
     switch (Language.getLanguage(_language)) {
       case Language.jp:
-        return [Region.jp, Region.cn, Region.na, Region.tw, Region.kr];
+        return [Region.jp, Region.na, Region.cn, Region.tw, Region.kr];
       case Language.chs:
         return [Region.cn, Region.tw, Region.jp, Region.na, Region.kr];
       case Language.cht:

@@ -3,63 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
-class EventShopsPage extends StatefulWidget {
+class EventShopsPage extends StatelessWidget {
   final Event event;
-  const EventShopsPage({Key? key, required this.event}) : super(key: key);
-
-  @override
-  State<EventShopsPage> createState() => _EventShopsPageState();
-}
-
-class _EventShopsPageState extends State<EventShopsPage>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-  Map<int, List<NiceShop>> slotShops = {};
-  @override
-  void initState() {
-    super.initState();
-    for (final shop in widget.event.shop) {
-      slotShops.putIfAbsent(shop.slot, () => []).add(shop);
-    }
-    for (final shops in slotShops.values) {
-      shops.sort2((e) => e.priority);
-    }
-    _tabController = TabController(length: slotShops.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
+  final int slot;
+  const EventShopsPage({Key? key, required this.event, required this.slot})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<int> slots = slotShops.keys.toList();
-    slots.sort();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Shop'),
-        bottom: slotShops.length > 1
-            ? TabBar(
-                controller: _tabController,
-                tabs: slots.map((e) => Tab(text: 'Shop $e')).toList(),
-              )
-            : null,
-      ),
-      body: slotShops.length > 1
-          ? TabBarView(
-              controller: _tabController,
-              children: [
-                for (final slot in slots) shopBuilder(context, slotShops[slot]!)
-              ],
-            )
-          : shopBuilder(
-              context, slotShops.isEmpty ? [] : slotShops.values.first),
-    );
-  }
-
-  Widget shopBuilder(BuildContext context, List<NiceShop> shops) {
+    final shops = event.shop.where((e) => e.slot == slot).toList();
+    shops.sort2((e) => e.priority);
     return ListView.separated(
       itemBuilder: (context, index) => shopItemBuilder(context, shops[index]),
       separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
@@ -147,9 +100,7 @@ class _EventShopsPageState extends State<EventShopsPage>
       leading: leading,
       title: Text(title),
       subtitle: subtitle,
-      trailing: Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
-      // horizontalTitleGap: 0,
-      // contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      trailing: Text(shop.limitNum == 0 ? '∞' : '× ${shop.limitNum}'),
     );
   }
 }

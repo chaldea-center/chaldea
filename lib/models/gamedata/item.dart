@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
 import 'common.dart';
 import 'game_card.dart';
@@ -83,17 +84,20 @@ class Item {
     VoidCallback? onTap,
     bool jumpToDetail = true,
     bool popDetail = false,
+    String? name,
+    bool showName = false,
   }) {
     int? _itemId = item?.id ?? itemId;
     item ??= db.gameData.items[itemId];
     icon ??= item?.borderedIcon;
+    name ??= Item.getName(item?.id ?? itemId ?? -1);
     if (onTap == null && jumpToDetail && _itemId != null) {
       onTap = () {
         router.push(
             url: Routes.itemI(_itemId), popDetail: popDetail, detail: true);
       };
     }
-    return GameCardMixin.cardIconBuilder(
+    Widget child = GameCardMixin.cardIconBuilder(
       context: context,
       icon: icon,
       width: width,
@@ -104,6 +108,17 @@ class Item {
       textPadding: textPadding,
       onTap: onTap,
     );
+    if (showName) {
+      String name = item?.lName.l ?? Item.getName(itemId ?? -1);
+      child = InkWell(
+        onTap: onTap,
+        child: Text.rich(TextSpan(children: [
+          CenterWidgetSpan(child: child),
+          TextSpan(text: ' $name '),
+        ])),
+      );
+    }
+    return child;
   }
 
   Transl<String, String> get lName => Transl.itemNames(name);
@@ -116,7 +131,7 @@ class Item {
   static String getName(int id) {
     return db.gameData.items[id]?.lName.l ??
         db.gameData.entities[id]?.lName.l ??
-        id.toString();
+        'Item $id';
   }
 
   static String? getIcon(int id) {

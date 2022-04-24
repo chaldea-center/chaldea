@@ -288,6 +288,8 @@ class BaseGift {
     VoidCallback? onTap,
     bool jumpToDetail = true,
     bool popDetail = false,
+    String? name,
+    bool showName = false,
   }) {
     switch (type) {
       case GiftType.servant:
@@ -325,7 +327,40 @@ class BaseGift {
       onTap: onTap,
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
+      name: name,
+      showName: showName,
     );
+  }
+
+  void routeTo() {
+    String? route;
+    switch (type) {
+      case GiftType.servant:
+      case GiftType.item:
+      case GiftType.commandCode:
+      case GiftType.eventSvtJoin:
+      case GiftType.eventSvtGet:
+      case GiftType.costumeRelease:
+      case GiftType.costumeGet:
+        break;
+      case GiftType.friendship:
+        break;
+      case GiftType.userExp:
+        break;
+      case GiftType.equip:
+        route = Routes.mysticCodeI(objectId);
+        break;
+      case GiftType.questRewardIcon:
+        break;
+      case GiftType.eventPointBuff:
+        break;
+      case GiftType.eventBoardGameToken:
+        break;
+    }
+    route ??= GameCardMixin.getRoute(objectId);
+    if (route != null) {
+      router.push(url: route);
+    }
   }
 }
 // class NiceGiftAdd(BaseModelORJson):

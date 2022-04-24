@@ -1340,6 +1340,17 @@ class S {
     );
   }
 
+  /// `Lottery`
+  String get event_lottery {
+    return Intl.message(
+      'Lottery',
+      name: 'event_lottery',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Max {n} lottery`
   String event_lottery_limit_hint(Object n) {
     return Intl.message(
@@ -1395,6 +1406,17 @@ class S {
     );
   }
 
+  /// `Points`
+  String get event_point_reward {
+    return Intl.message(
+      'Points',
+      name: 'event_point_reward',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Progress`
   String get event_progress {
     return Intl.message(
@@ -1417,11 +1439,44 @@ class S {
     );
   }
 
+  /// `Shops`
+  String get event_shop {
+    return Intl.message(
+      'Shops',
+      name: 'event_shop',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Event`
   String get event_title {
     return Intl.message(
       'Event',
       name: 'event_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Tower`
+  String get event_tower {
+    return Intl.message(
+      'Tower',
+      name: 'event_tower',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Treasure Box`
+  String get event_treasure_box {
+    return Intl.message(
+      'Treasure Box',
+      name: 'event_treasure_box',
       desc: '',
       locale: localeName,
       args: [],

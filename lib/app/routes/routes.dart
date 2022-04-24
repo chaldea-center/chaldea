@@ -187,6 +187,7 @@ class RouteConfiguration {
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
+        // TODO: add BasicServant
         return ServantDetailPage(id: _secondInt);
       case Routes.plans:
         return ServantListPage(planMode: true);

@@ -3,65 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
-class EventTowersPage extends StatefulWidget {
+class EventTowersPage extends StatelessWidget {
   final Event event;
-  const EventTowersPage({Key? key, required this.event}) : super(key: key);
-
-  @override
-  State<EventTowersPage> createState() => _EventTowersPageState();
-}
-
-class _EventTowersPageState extends State<EventTowersPage>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-  List<EventTower> towers = [];
-  @override
-  void initState() {
-    super.initState();
-    towers = List.of(widget.event.towers);
-    towers.sort2((e) => e.towerId);
-    _tabController = TabController(length: towers.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
+  final EventTower tower;
+  const EventTowersPage({Key? key, required this.event, required this.tower})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tower Rewards'),
-        bottom: towers.length > 1
-            ? TabBar(
-                controller: _tabController,
-                tabs: towers.map((tower) {
-                  return Tab(text: tower.name);
-                }).toList(),
-              )
-            : null,
-      ),
-      body: towers.length > 1
-          ? TabBarView(
-              controller: _tabController,
-              children: [
-                for (final tower in towers) towerRewardsBuilder(context, tower)
-              ],
-            )
-          : towers.isNotEmpty
-              ? towerRewardsBuilder(context, towers.first)
-              : const SizedBox(),
-    );
-  }
-
-  Widget towerRewardsBuilder(BuildContext context, EventTower tower) {
+    final rewards = List.of(tower.rewards)..sort2((e) => e.floor);
     return ListView.separated(
-      itemBuilder: (context, index) =>
-          rewardBuilder(context, tower.rewards[index]),
+      itemBuilder: (context, index) => rewardBuilder(context, rewards[index]),
       separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
-      itemCount: tower.rewards.length,
+      itemCount: rewards.length,
     );
   }
 
