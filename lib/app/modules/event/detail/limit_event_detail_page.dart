@@ -70,7 +70,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       ..sort();
     for (final slot in shopSlots) {
       _addTab(
-        S.current.event_shop + (shopSlots.length > 1 ? ' $slot' : ''),
+        S.current.event_shop + (shopSlots.length > 1 ? ' ${slot + 1}' : ''),
         EventShopsPage(event: event, slot: slot),
       );
     }
@@ -104,11 +104,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
     for (final tower in event.towers) {
       _addTab(tower.name, EventTowersPage(event: event, tower: tower));
     }
-    for (final lottery in event.lotteries) {
+    for (int index = 0; index < event.lotteries.length; index++) {
       _addTab(
         S.current.event_lottery +
-            (event.lotteries.length > 1 ? ' ${lottery.id}' : ''),
-        EventLotteryTab(event: event, lottery: lottery),
+            (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
+        EventLotteryTab(event: event, lottery: event.lotteries[index]),
       );
     }
     if (event.treasureBoxes.isNotEmpty) {
@@ -313,12 +313,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         header: '',
         children: [
           ListTile(
-            title: const Text('Hunting Quests'),
+            title: Text(S.current.hunting_quest),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
               router.push(
                 child: QuestListPage(
-                  title: 'Event Quest',
+                  title: S.current.hunting_quest,
                   quests: event.extra.huntingQuestIds
                       .map((e) => db.gameData.quests[e])
                       .whereType<Quest>()

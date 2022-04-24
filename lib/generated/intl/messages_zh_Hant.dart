@@ -20,30 +20,30 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_Hant';
 
-  static String m0(curVersion, newVersion, releaseNote) =>
+  static String m1(curVersion, newVersion, releaseNote) =>
       "當前版本: ${curVersion}\n最新版本: ${newVersion}\n更新內容:\n${releaseNote}";
 
-  static String m3(n) => "最多${n}池";
+  static String m4(n) => "最多${n}池";
 
-  static String m4(n) => "聖杯替換為傳承結晶 ${n} 個";
+  static String m5(n) => "聖杯替換為傳承結晶 ${n} 個";
 
-  static String m6(error) => "導入失敗，Error:\n${error}";
+  static String m7(error) => "導入失敗，Error:\n${error}";
 
-  static String m7(name) => "${name}已存在";
+  static String m8(name) => "${name}已存在";
 
-  static String m8(site) => "跳轉到${site}";
+  static String m9(site) => "跳轉到${site}";
 
-  static String m11(first) => "${Intl.select(first, {
+  static String m12(first) => "${Intl.select(first, {
             'true': '已經是第一張',
             'false': '已經是最後一張',
             'other': '已經到頭了',
           })}";
 
-  static String m12(n) => "重置規劃${n}(所有)";
+  static String m13(n) => "重置規劃${n}(所有)";
 
-  static String m13(n) => "重置規劃${n}(已顯示)";
+  static String m14(n) => "重置規劃${n}(已顯示)";
 
-  static String m15(a, b) => "${a}${b}";
+  static String m0(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -54,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_data_source_footer":
             MessageLookupByLibrary.simpleMessage("若存在未標註的來源或侵權敬請告知"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("反饋"),
-        "about_update_app_detail": m0,
+        "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
@@ -157,13 +157,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材倉庫，並將該活動移出規劃"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外可獲得素材"),
-        "event_lottery_limit_hint": m3,
+        "event_lottery_limit_hint": m4,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限池"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限池"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活動未列入規劃"),
         "event_progress": MessageLookupByLibrary.simpleMessage("進度"),
-        "event_rerun_replace_grail": m4,
+        "event_rerun_replace_grail": m5,
         "event_title": MessageLookupByLibrary.simpleMessage("活動"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),
@@ -234,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("畫師"),
         "import_data": MessageLookupByLibrary.simpleMessage("導入"),
-        "import_data_error": m6,
+        "import_data_error": m7,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功導入數據"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("允許2號機"),
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("\"文件\"應用/我的iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("常見問題"),
         "item": MessageLookupByLibrary.simpleMessage("素材"),
-        "item_already_exist_hint": m7,
+        "item_already_exist_hint": m8,
         "item_category_ascension": MessageLookupByLibrary.simpleMessage("職階棋子"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
         "item_category_event_svt_ascension":
@@ -302,14 +302,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("素材"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("共需"),
         "join_beta": MessageLookupByLibrary.simpleMessage("加入Beta版"),
-        "jump_to": m8,
+        "jump_to": m9,
         "language": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "language_en":
             MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
         "level": MessageLookupByLibrary.simpleMessage("等級"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限時活動"),
         "link": MessageLookupByLibrary.simpleMessage("連結"),
-        "list_end_hint": m11,
+        "list_end_hint": m12,
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用戶名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密碼"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("確認密碼"),
@@ -379,8 +379,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻活動"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m12,
-        "reset_plan_shown": m13,
+        "reset_plan_all": m13,
+        "reset_plan_shown": m14,
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重啟以更新應用，若更新是百，請手動複製source文件夾到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢復"),
@@ -460,6 +460,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("語音"),
-        "words_separate": m15
+        "words_separate": m0
       };
 }

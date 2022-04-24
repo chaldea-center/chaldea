@@ -1428,6 +1428,17 @@ class S {
     );
   }
 
+  /// `Event Quests`
+  String get event_quest {
+    return Intl.message(
+      'Event Quests',
+      name: 'event_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grail to crystal: {n}`
   String event_rerun_replace_grail(Object n) {
     return Intl.message(
@@ -2254,6 +2265,17 @@ class S {
     );
   }
 
+  /// `Hunting Quests`
+  String get hunting_quest {
+    return Intl.message(
+      'Hunting Quests',
+      name: 'hunting_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Icons`
   String get icons {
     return Intl.message(
@@ -2765,6 +2787,17 @@ class S {
     return Intl.message(
       'Install',
       name: 'install',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Interlude`
+  String get interlude {
+    return Intl.message(
+      'Interlude',
+      name: 'interlude',
       desc: '',
       locale: localeName,
       args: [],
@@ -3420,6 +3453,17 @@ class S {
     return Intl.message(
       'Lucky Bag',
       name: 'lucky_bag',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Main Quests`
+  String get main_quest {
+    return Intl.message(
+      'Main Quests',
+      name: 'main_quest',
       desc: '',
       locale: localeName,
       args: [],

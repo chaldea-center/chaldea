@@ -38,9 +38,16 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return ListTile(
-            title: Text.rich(TextSpan(
-              text: S.current.lottery_cost_per_roll + ': ',
+            subtitle: Text.rich(TextSpan(
               children: [
+                TextSpan(
+                    text: lottery.limited
+                        ? S.current.event_lottery_limited +
+                            ': ' +
+                            S.current.event_lottery_limit_hint(
+                                Maths.max(boxIndices, 0) + 1)
+                        : S.current.event_lottery_unlimited),
+                TextSpan(text: '\n${S.current.lottery_cost_per_roll}: '),
                 CenterWidgetSpan(
                   child: Item.iconBuilder(
                     context: context,

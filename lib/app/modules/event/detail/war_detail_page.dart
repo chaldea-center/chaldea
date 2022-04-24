@@ -137,11 +137,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
         children: [
           if (mainQuests.isNotEmpty)
             ListTile(
-              title: const Text('Main Quest'),
+              title: Text(S.current.main_quest),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 router.push(
-                  child: QuestListPage(title: 'Main Quest', quests: mainQuests),
+                  child: QuestListPage(
+                      title: S.current.main_quest, quests: mainQuests),
                 );
               },
             ),
@@ -158,22 +159,23 @@ class _WarDetailPageState extends State<WarDetailPage> {
             ),
           if (bondQuests.isNotEmpty)
             ListTile(
-              title: const Text('Interlude'),
+              title: Text(S.current.interlude),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 router.push(
-                  child: QuestListPage(title: 'Interlude', quests: bondQuests),
+                  child: QuestListPage(
+                      title: S.current.interlude, quests: bondQuests),
                 );
               },
             ),
           if (eventQuests.isNotEmpty)
             ListTile(
-              title: const Text('Event Quest'),
+              title: Text(S.current.event_quest),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 router.push(
-                  child:
-                      QuestListPage(title: 'Event Quest', quests: eventQuests),
+                  child: QuestListPage(
+                      title: S.current.event_quest, quests: eventQuests),
                 );
               },
             ),
