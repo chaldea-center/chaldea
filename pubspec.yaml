@@ -30,7 +30,7 @@ dependencies:
   archive: ^3.3.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.2.0
-  carousel_slider: ^4.0.0
+  carousel_slider: ^4.1.1
   catcher: ^0.6.9
   connectivity_plus: ^2.2.1
   crclib: ^3.0.0
@@ -46,7 +46,7 @@ dependencies:
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
-  flutter_markdown: ^0.6.8
+  flutter_markdown: ^0.6.10
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
   flutter_window_close: ^0.2.2
@@ -79,7 +79,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
-  url_launcher: ^6.0.18
+  url_launcher: ^6.0.20
   uuid: ^3.0.5
   worker_manager: ^4.2.5
   window_size:
