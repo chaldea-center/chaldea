@@ -314,6 +314,7 @@ class SharedBuilder {
       context: context,
       useRootNavigator: false,
       builder: (context) => SimpleDialog(
+        title: Text(S.current.import_image),
         contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
         children: [
           ListTile(

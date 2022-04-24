@@ -36,7 +36,8 @@ class EventPointsPage extends StatelessWidget {
     for (final gift in reward.gifts) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
       titles.add(CenterWidgetSpan(
-          child: gift.iconBuilder(context: context, width: 36, text: '')));
+          child: gift.iconBuilder(
+              context: context, width: 36, text: '', showName: true)));
       titles.add(TextSpan(
           text: ' ×' + gift.num.format(compact: false, groupSeparator: ',')));
 

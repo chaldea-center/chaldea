@@ -2452,6 +2452,17 @@ class S {
     );
   }
 
+  /// `Import Image`
+  String get import_image {
+    return Intl.message(
+      'Import Image',
+      name: 'import_image',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `My Room - Item List`
   String get import_item_hint {
     return Intl.message(
@@ -3387,6 +3398,17 @@ class S {
     return Intl.message(
       'Long press to save',
       name: 'long_press_to_save_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Cost of 1 roll`
+  String get lottery_cost_per_roll {
+    return Intl.message(
+      'Cost of 1 roll',
+      name: 'lottery_cost_per_roll',
       desc: '',
       locale: localeName,
       args: [],
@@ -4911,6 +4933,17 @@ class S {
     );
   }
 
+  /// `Testing`
+  String get testing {
+    return Intl.message(
+      'Testing',
+      name: 'testing',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Close`
   String get time_close {
     return Intl.message(
@@ -4982,6 +5015,39 @@ class S {
     return Intl.message(
       'Total counts',
       name: 'total_counts',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Drow Cost`
+  String get treasure_box_draw_cost {
+    return Intl.message(
+      'Drow Cost',
+      name: 'treasure_box_draw_cost',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Extra Gifts per box`
+  String get treasure_box_extra_gift {
+    return Intl.message(
+      'Extra Gifts per box',
+      name: 'treasure_box_extra_gift',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Max Draws at once:`
+  String get treasure_box_max_draw_once {
+    return Intl.message(
+      'Max Draws at once:',
+      name: 'treasure_box_max_draw_once',
       desc: '',
       locale: localeName,
       args: [],

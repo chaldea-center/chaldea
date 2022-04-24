@@ -348,6 +348,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Click servant to hide/unhide"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("Locked Only"),
+        "import_image": MessageLookupByLibrary.simpleMessage("Import Image"),
         "import_item_hint":
             MessageLookupByLibrary.simpleMessage("My Room - Item List"),
         "import_item_screenshots":
@@ -475,6 +476,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Can only contain letters and numbers, starting with a letter, no less than 4 digits"),
         "long_press_to_save_hint":
             MessageLookupByLibrary.simpleMessage("Long press to save"),
+        "lottery_cost_per_roll":
+            MessageLookupByLibrary.simpleMessage("Cost of 1 roll"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
         "main_record": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_record_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
@@ -663,6 +666,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
+        "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),
         "time_end": MessageLookupByLibrary.simpleMessage("End"),
         "time_start": MessageLookupByLibrary.simpleMessage("Start"),
@@ -672,6 +676,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
+        "treasure_box_draw_cost":
+            MessageLookupByLibrary.simpleMessage("Drow Cost"),
+        "treasure_box_extra_gift":
+            MessageLookupByLibrary.simpleMessage("Extra Gifts per box"),
+        "treasure_box_max_draw_once":
+            MessageLookupByLibrary.simpleMessage("Max Draws at once:"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),

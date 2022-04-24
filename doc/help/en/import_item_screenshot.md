@@ -10,3 +10,5 @@
     - Don't crop/compress/modify the screenshots
     - The item frame must be fully displayed, otherwise the it may not be recognized
     - You can correct the result after downloading if any recognition mistake
+
+![Item Screenshot Example](https://docs.chaldea.center/images/item_recognition_example.webp)

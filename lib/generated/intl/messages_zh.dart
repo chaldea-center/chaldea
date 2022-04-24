@@ -308,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_http_body_hint_hide":
             MessageLookupByLibrary.simpleMessage("点击从者可隐藏/取消隐藏该从者"),
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("仅锁定"),
+        "import_image": MessageLookupByLibrary.simpleMessage("导入图片"),
         "import_item_hint": MessageLookupByLibrary.simpleMessage("个人空间 - 道具一览"),
         "import_item_screenshots":
             MessageLookupByLibrary.simpleMessage("素材截图解析"),
@@ -405,6 +406,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_username_error":
             MessageLookupByLibrary.simpleMessage("只能包含字母与数字，字母开头，不少于4位"),
         "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage("长按保存"),
+        "lottery_cost_per_roll": MessageLookupByLibrary.simpleMessage("每抽消耗"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
         "main_record": MessageLookupByLibrary.simpleMessage("主线记录"),
         "main_record_chapter": MessageLookupByLibrary.simpleMessage("章节"),
@@ -564,6 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("测试信息"),
+        "testing": MessageLookupByLibrary.simpleMessage("测试ing"),
         "time_close": MessageLookupByLibrary.simpleMessage("关闭"),
         "time_end": MessageLookupByLibrary.simpleMessage("结束"),
         "time_start": MessageLookupByLibrary.simpleMessage("开始"),
@@ -572,6 +575,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("总数"),
+        "treasure_box_draw_cost": MessageLookupByLibrary.simpleMessage("每抽消耗"),
+        "treasure_box_extra_gift":
+            MessageLookupByLibrary.simpleMessage("每箱额外礼物"),
+        "treasure_box_max_draw_once":
+            MessageLookupByLibrary.simpleMessage("单次最多抽数"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("已经是最新版本"),

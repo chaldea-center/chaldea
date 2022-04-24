@@ -88,7 +88,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
 
-          const SHeader('Coming soon...'),
+          SHeader(S.current.testing),
           ListTile(
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_item_screenshots),
@@ -99,7 +99,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            // enabled: false,
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_active_skill_screenshots),
             subtitle: Text(S.current.import_active_skill_hint),
@@ -109,7 +108,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            enabled: false,
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_append_skill_screenshots),
             subtitle: Text(S.current.import_append_skill_hint),

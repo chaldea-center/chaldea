@@ -100,7 +100,7 @@ class EventShopsPage extends StatelessWidget {
       leading: leading,
       title: Text(title),
       subtitle: subtitle,
-      trailing: Text(shop.limitNum == 0 ? '∞' : '× ${shop.limitNum}'),
+      trailing: Text(shop.limitNum == 0 ? '∞' : '×${shop.limitNum}'),
     );
   }
 }

@@ -323,6 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "サーヴァントをクリックして、そちらを非表示/再表示することができます"),
         "import_http_body_locked":
             MessageLookupByLibrary.simpleMessage("ロックしたもののみ"),
+        "import_image": MessageLookupByLibrary.simpleMessage("画像をインポート"),
         "import_item_hint":
             MessageLookupByLibrary.simpleMessage("マイルーム - 所持アイテム一覧"),
         "import_item_screenshots":
@@ -597,6 +598,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("テスト用情報"),
+        "testing": MessageLookupByLibrary.simpleMessage("テスト中"),
         "time_close": MessageLookupByLibrary.simpleMessage("閉じる"),
         "time_end": MessageLookupByLibrary.simpleMessage("エンド"),
         "time_start": MessageLookupByLibrary.simpleMessage("スタート"),

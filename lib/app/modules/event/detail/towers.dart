@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class EventTowersPage extends StatelessWidget {
   final Event event;
@@ -23,8 +24,14 @@ class EventTowersPage extends StatelessWidget {
     List<InlineSpan> titles = [];
     for (final gift in reward.gifts) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
-      titles.add(WidgetSpan(
-          child: gift.iconBuilder(context: context, width: 36, text: '')));
+      titles.add(CenterWidgetSpan(
+        child: gift.iconBuilder(
+          context: context,
+          width: 36,
+          text: '',
+          showName: true,
+        ),
+      ));
       titles.add(TextSpan(
           text: ' ×' + gift.num.format(compact: false, groupSeparator: ',')));
     }

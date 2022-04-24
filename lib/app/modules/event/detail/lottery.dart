@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -37,16 +38,20 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       itemBuilder: (context, index) {
         if (index == 0) {
           return ListTile(
-            title: Text.rich(TextSpan(text: 'Cost of 1 roll: ', children: [
-              CenterWidgetSpan(
-                child: Item.iconBuilder(
-                  context: context,
-                  item: lottery.cost.item,
-                  width: 24,
-                  showName: true,
+            title: Text.rich(TextSpan(
+              text: S.current.lottery_cost_per_roll + ': ',
+              children: [
+                CenterWidgetSpan(
+                  child: Item.iconBuilder(
+                    context: context,
+                    item: lottery.cost.item,
+                    width: 24,
+                    showName: true,
+                  ),
                 ),
-              ),
-            ])),
+                TextSpan(text: ' ×${lottery.cost.amount}')
+              ],
+            )),
           );
         }
         return boxItemBuilder(context, boxes[index - 1]);
@@ -83,12 +88,13 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     Widget? subtitle;
     leading =
         box.gifts.first.iconBuilder(context: context, width: 42, text: '');
-    title = Item.getName(box.gifts.first.objectId);
+    title = GameCardMixin.anyCardItemName(box.gifts.first.objectId).l;
     if (box.gifts.length > 1) {
       subtitle = Text.rich(TextSpan(children: [
         for (final gift in box.gifts.skip(1))
           CenterWidgetSpan(
-              child: gift.iconBuilder(context: context, showName: true))
+            child: gift.iconBuilder(context: context, showName: true),
+          )
       ]));
     }
 
@@ -97,7 +103,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       title: Text(title),
       subtitle: subtitle,
       tileColor: box.isRare ? Colors.yellow.withAlpha(100) : null,
-      trailing: Text('× ' + box.gifts.first.num.format()),
+      trailing: Text('×' + box.gifts.first.num.format()),
       // horizontalTitleGap: 0,
     );
   }

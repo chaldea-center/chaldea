@@ -21,3 +21,5 @@
     - 截图请勿裁剪压缩等修改，请勿分屏
     - 新从者/灵衣数据可能更新不及时，如有未能识别的，请积极反馈
  
+ ![技能截图范例](https://docs.chaldea.center/images/skill_recognition_example.webp)
+ 

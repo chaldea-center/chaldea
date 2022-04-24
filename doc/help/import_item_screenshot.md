@@ -10,3 +10,5 @@
  - 截图请勿裁剪压缩等修改
  - 素材框务必完全显示, 否则对应素材可能识别不到
  - 解析精度有限，下载结果后可自行修正
+
+![素材截图范例](https://docs.chaldea.center/images/item_recognition_example.webp)

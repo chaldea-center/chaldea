@@ -19,3 +19,5 @@
     - The total size of a single upload is limited (~15MB), otherwise a 413 error will occur, please upload and download multiple times
     - Don't crop/compress/modify the screenshots
     - the data of latest servants or costumes may be missing, send feedback to me if so
+
+ ![Skill Screenshot Example](https://docs.chaldea.center/images/skill_recognition_example.webp)

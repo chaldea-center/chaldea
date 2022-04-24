@@ -7,7 +7,6 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
@@ -306,9 +305,16 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             if (_isUploadTab)
               IconButton(
                 onPressed: () {
-                  setState(() {
-                    imageFiles.clear();
-                  });
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.clear),
+                    onTapOk: () {
+                      if (mounted) {
+                        setState(() {
+                          imageFiles.clear();
+                        });
+                      }
+                    },
+                  ).showDialog(context);
                 },
                 icon: const Icon(Icons.clear_all),
                 tooltip: S.current.clear,
@@ -318,7 +324,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             if (_isUploadTab)
               IconButton(
                 onPressed: importImages,
-                icon: const FaIcon(FontAwesomeIcons.image),
+                icon: const Icon(Icons.add_photo_alternate_outlined),
                 tooltip: S.current.import_screenshot,
               ),
             if (_isUploadTab)

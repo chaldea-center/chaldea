@@ -51,42 +51,68 @@ class _EventDetailPageState extends State<EventDetailPage> {
         url: Routes.eventI(widget.eventId ?? 0),
       );
     }
+    List<Tab> tabs = [];
+    List<Widget> views = [];
 
-    Map<String, Widget> tabs = {
-      S.current.item: KeepAliveBuilder(
-          builder: (context) =>
-              EventItemsOverview(event: event, region: _region)),
-    };
+    void _addTab(String tabName, Widget view) {
+      tabs.add(Tab(text: tabName));
+      views.add(view);
+    }
+
+    _addTab(
+      S.current.overview,
+      KeepAliveBuilder(
+        builder: (context) => EventItemsOverview(event: event, region: _region),
+      ),
+    );
+
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
       ..sort();
     for (final slot in shopSlots) {
-      tabs[S.current.event_shop + (shopSlots.length > 1 ? ' $slot' : '')] =
-          EventShopsPage(event: event, slot: slot);
+      _addTab(
+        S.current.event_shop + (shopSlots.length > 1 ? ' $slot' : ''),
+        EventShopsPage(event: event, slot: slot),
+      );
     }
     List<int> rewardGroups =
         event.rewards.map((e) => e.groupId).toSet().toList()..sort();
     for (final groupId in rewardGroups) {
       EventPointGroup? pointGroup =
           event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
-      tabs[pointGroup?.name ??
-              (S.current.event_point_reward +
-                  (rewardGroups.length > 1 ? ' $groupId' : ''))] =
-          EventPointsPage(event: event, groupId: groupId);
+      String? pointName;
+      if (pointGroup != null) {
+        pointName =
+            db.gameData.mappingData.itemNames[pointGroup.name]?.ofRegion() ??
+                pointGroup.name;
+      }
+      pointName ??= S.current.event_point_reward +
+          (rewardGroups.length > 1 ? ' $groupId' : '');
+      tabs.add(Tab(
+        child: Text.rich(TextSpan(children: [
+          if (pointGroup != null)
+            CenterWidgetSpan(
+                child: db.getIconImage(pointGroup.icon, width: 24)),
+          TextSpan(text: pointName),
+        ])),
+      ));
+      views.add(EventPointsPage(event: event, groupId: groupId));
     }
     if (event.missions.isNotEmpty) {
-      tabs[S.current.mission] = EventMissionsPage(event: event);
+      _addTab(S.current.mission, EventMissionsPage(event: event));
     }
 
     for (final tower in event.towers) {
-      tabs[tower.name] = EventTowersPage(event: event, tower: tower);
+      _addTab(tower.name, EventTowersPage(event: event, tower: tower));
     }
     for (final lottery in event.lotteries) {
-      tabs[S.current.event_lottery +
-              (event.lotteries.length > 1 ? ' ${lottery.id}' : '')] =
-          EventLotteryTab(event: event, lottery: lottery);
+      _addTab(
+        S.current.event_lottery +
+            (event.lotteries.length > 1 ? ' ${lottery.id}' : ''),
+        EventLotteryTab(event: event, lottery: lottery),
+      );
     }
     if (event.treasureBoxes.isNotEmpty) {
-      tabs[S.current.event_treasure_box] = EventTreasureBoxTab(event: event);
+      _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
     }
     return DefaultTabController(
       length: tabs.length,
@@ -98,14 +124,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
           ),
           centerTitle: false,
           actions: [popupMenu],
-          bottom: tabs.length > 1
-              ? TabBar(
-                  tabs: tabs.keys.map((e) => Tab(text: e)).toList(),
-                  isScrollable: true,
-                )
-              : null,
+          bottom:
+              tabs.length > 1 ? TabBar(tabs: tabs, isScrollable: true) : null,
         ),
-        body: TabBarView(children: tabs.values.toList()),
+        body: TabBarView(children: views),
       ),
     );
   }

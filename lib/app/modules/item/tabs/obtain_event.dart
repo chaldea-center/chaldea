@@ -87,7 +87,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
             event.statItemLottery[lotteryId]![widget.itemId] ?? 0;
         if (itemPerLottery > 0) {
           texts.add(Text(
-              '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} × $itemPerLottery',
+              '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} ×$itemPerLottery',
               style: const TextStyle(fontWeight: FontWeight.w300)));
         }
       }

@@ -26,30 +26,31 @@ class EventTreasureBoxTab extends StatelessWidget {
     final itemId = box.commonConsume.objectId;
     children.add(ListTile(
         subtitle: Text.rich(TextSpan(
-            text: 'Max Draws at once: ${box.maxDrawNumOnce}\n',
+            text:
+                '${S.current.treasure_box_max_draw_once}: ${box.maxDrawNumOnce}\n',
             children: [
-          const TextSpan(text: 'Dow Cost: '),
+          TextSpan(text: S.current.treasure_box_draw_cost + ': '),
           CenterWidgetSpan(
             child: Item.iconBuilder(
               context: context,
               item: null,
               itemId: itemId,
-              width: 36,
+              width: 32,
               showName: true,
             ),
           ),
-          TextSpan(text: ' × ${box.commonConsume.num}\n'),
-          const TextSpan(text: 'Extra Gifts per box: '),
+          TextSpan(text: ' ×${box.commonConsume.num}\n'),
+          TextSpan(text: '${S.current.treasure_box_extra_gift}: '),
           for (final gift in box.extraGifts) ...[
             CenterWidgetSpan(
               child: gift.iconBuilder(
                 context: context,
                 showName: true,
-                width: 36,
+                width: 32,
                 text: '',
               ),
             ),
-            TextSpan(text: ' × ${gift.num * box.commonConsume.num}')
+            TextSpan(text: ' ×${gift.num * box.commonConsume.num}')
           ]
         ]))));
     children.add(TileGroup(
@@ -58,7 +59,7 @@ class EventTreasureBoxTab extends StatelessWidget {
           for (final gift in gifts.gifts)
             ListTile(
               leading: gift.iconBuilder(context: context, width: 42),
-              title: Text(Item.getName(gift.objectId) + ' × ${gift.num}'),
+              title: Text(Item.getName(gift.objectId) + ' ×${gift.num}'),
               onTap: () {
                 gift.routeTo();
               },
