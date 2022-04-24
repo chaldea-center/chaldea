@@ -220,7 +220,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       ));
     }
     return _getAccordion(
-      title: Text(S.of(context).main_record),
+      title: Text(S.of(context).main_story),
       trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[2],

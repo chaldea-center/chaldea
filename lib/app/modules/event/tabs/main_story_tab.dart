@@ -41,7 +41,7 @@ class MainStoryTab extends StatelessWidget {
         if (!titleOnly)
           Material(
             child: CustomTile(
-              title: Text(S.of(context).main_record_chapter),
+              title: Text(S.of(context).main_story_chapter),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

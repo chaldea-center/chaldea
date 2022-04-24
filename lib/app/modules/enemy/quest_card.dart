@@ -108,7 +108,7 @@ class _QuestCardState extends State<QuestCard> {
     String questName = quest.lName.l;
     String chapter = quest.type == QuestType.main
         ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-            ? '第${quest.chapterSubId}节'
+            ? S.current.quest_chapter_n(quest.chapterSubId)
             : quest.chapterSubStr
         : '';
     if (chapter.isNotEmpty) {
@@ -209,7 +209,7 @@ class _QuestCardState extends State<QuestCard> {
               detail: true,
             );
           },
-          child: const Text('>>> detail >>>'),
+          child: Text('>>> ${S.current.quest_detail_btn} >>>'),
         ),
     ];
 
@@ -635,11 +635,10 @@ class QuestEnemyWidget extends StatelessWidget {
         mp.entityNames[displayName]?.l ??
         displayName;
 
-    Widget face = Image.network(
+    Widget face = db.getIconImage(
       enemy.svt.face,
       width: 42,
-      height: 42,
-      errorBuilder: (_, __, ___) => const SizedBox(),
+      placeholder: (_) => const SizedBox(),
     );
 
     if (enemy.misc.displayType == 2 && !showTrueName) {

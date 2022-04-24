@@ -449,10 +449,10 @@ class S {
     );
   }
 
-  /// `Wight`
+  /// `Weight`
   String get calc_weight {
     return Intl.message(
-      'Wight',
+      'Weight',
       name: 'calc_weight',
       desc: '',
       locale: localeName,
@@ -3482,10 +3482,10 @@ class S {
   }
 
   /// `Main Record`
-  String get main_record {
+  String get main_story {
     return Intl.message(
       'Main Record',
-      name: 'main_record',
+      name: 'main_story',
       desc: '',
       locale: localeName,
       args: [],
@@ -3493,10 +3493,10 @@ class S {
   }
 
   /// `Chapter`
-  String get main_record_chapter {
+  String get main_story_chapter {
     return Intl.message(
       'Chapter',
-      name: 'main_record_chapter',
+      name: 'main_story_chapter',
       desc: '',
       locale: localeName,
       args: [],
@@ -3976,11 +3976,33 @@ class S {
     );
   }
 
+  /// `Section {n}`
+  String quest_chapter_n(Object n) {
+    return Intl.message(
+      'Section $n',
+      name: 'quest_chapter_n',
+      desc: '',
+      locale: localeName,
+      args: [n],
+    );
+  }
+
   /// `Conditions`
   String get quest_condition {
     return Intl.message(
       'Conditions',
       name: 'quest_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `details`
+  String get quest_detail_btn {
+    return Intl.message(
+      'details',
+      name: 'quest_detail_btn',
       desc: '',
       locale: localeName,
       args: [],

@@ -144,6 +144,8 @@ class _GameDataPageState extends State<GameDataPage> {
                                 content: Text(
                                     'Current: ${db.gameData.version.text(false)}\n'
                                     'Latest : ${data.version.text(false)}'),
+                                hideOk: data.version.timestamp <=
+                                    db.gameData.version.timestamp,
                                 onTapOk: () {
                                   db.gameData = data;
                                   db.itemCenter.init();

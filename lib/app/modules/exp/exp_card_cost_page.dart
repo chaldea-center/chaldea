@@ -100,7 +100,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 4,
       children: [
-        Text(S.current.words_separate(S.current.servant, S.current.rarity)),
+        Text(S.current.servant),
         DropdownButton<int>(
           value: data.rarity,
           items: List.generate(
@@ -114,7 +114,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             data.rarity = v ?? data.rarity;
           }),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 16),
         Text(S.current.exp_card_plan_lv),
         SizedBox(
           width: 48,

@@ -29,6 +29,10 @@ mixin GameCardMixin {
     return icon.replaceAll('.png', '_bordered.png');
   }
 
+  static int bsgColor(int rarity) {
+    return const {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3}[rarity] ?? 3;
+  }
+
   @protected
   void routeToId(String path) {
     router.push(url: '$path/$id');
@@ -37,35 +41,6 @@ mixin GameCardMixin {
   void routeTo();
 
   Transl<String, String> get lName;
-
-  // Widget charactersToButtons(BuildContext context, List<String> characters) {
-  //   if (characters.isEmpty) return const Text('-');
-  //   List<Widget> children = [];
-  //   for (final name in characters) {
-  //     final svt =
-  //         db2.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == name);
-  //     if (svt == null) {
-  //       children.add(Text(name));
-  //     } else {
-  //       children.add(InkWell(
-  //         child: Text(
-  //           svt.info.localizedName,
-  //           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-  //         ),
-  //         onTap: () => svt.pushDetail(context),
-  //       ));
-  //     }
-  //   }
-  //   children = divideTiles(children, divider: const Text('/'));
-  //   return Wrap(
-  //     spacing: 4,
-  //     runSpacing: 4,
-  //     alignment: WrapAlignment.center,
-  //     runAlignment: WrapAlignment.center,
-  //     crossAxisAlignment: WrapCrossAlignment.center,
-  //     children: children,
-  //   );
-  // }
 
   Widget iconBuilder({
     required BuildContext context,

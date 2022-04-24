@@ -175,6 +175,10 @@ class CraftDetailBasePage extends StatelessWidget {
                       ce.routeTo();
                     },
                     child: name,
+                    style: TextButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
                   )
                 : name,
             isHeader: true,
@@ -386,21 +390,9 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   Widget placeholder(BuildContext context, String? url) {
-    return const SizedBox();
-    // String color;
-    // switch (ce.rarity) {
-    //   case 5:
-    //   case 4:
-    //     color = '金';
-    //     break;
-    //   case 1:
-    //   case 2:
-    //     color = '铜';
-    //     break;
-    //   default:
-    //     color = '银';
-    // }
-    // return db2.getIconImage('礼装$color卡背');
+    // class_b_103, class_s_103, class_g_103
+    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(ce.rarity)];
+    return db.getIconImage(Atlas.asset('ClassCard/class_${color}_103.png'));
   }
 
   List<Widget> _relatedSvt(BuildContext context) {
@@ -416,6 +408,10 @@ class CraftDetailBasePage extends StatelessWidget {
         child: Text(
           svt.lName.l,
           textAlign: TextAlign.center,
+        ),
+        style: TextButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
         ),
       ));
     }

@@ -42,9 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m12(first) =>
       "{primer, selecciona, verdadero{Ya es el primero} falso{Ya es el último} otro{No más}}";
 
-  static String m13(n) => "Restablecer plan ${n}(Todo)";
+  static String m14(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m14(n) => "Restablecer plan ${n} (Mostrado)";
+  static String m15(n) => "Restablecer plan ${n} (Mostrado)";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -421,9 +421,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage(
             "Mantenga presionado para guardar"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Bolsa de la suerte"),
-        "main_record":
+        "main_story":
             MessageLookupByLibrary.simpleMessage("Historia Principal"),
-        "main_record_chapter": MessageLookupByLibrary.simpleMessage("Capítulo"),
+        "main_story_chapter": MessageLookupByLibrary.simpleMessage("Capítulo"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Ancho Master-Detalles"),
         "master_mission":
@@ -490,8 +490,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m13,
-        "reset_plan_shown": m14,
+        "reset_plan_all": m14,
+        "reset_plan_shown": m15,
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

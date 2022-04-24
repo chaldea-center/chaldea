@@ -260,6 +260,29 @@ class Servant with GameCardMixin {
     return bordered(_icon);
   }
 
+  String? get classCard {
+    const suffixes = {
+      SvtClass.saber: "1@1",
+      SvtClass.archer: "1@2",
+      SvtClass.lancer: "3@1",
+      SvtClass.rider: "3@2",
+      SvtClass.caster: "5@1",
+      SvtClass.assassin: "5@2",
+      SvtClass.berserker: "7@1",
+      SvtClass.shielder: "13@1",
+      SvtClass.ruler: "7@2",
+      SvtClass.alterEgo: "11@2",
+      SvtClass.avenger: "11@1",
+      SvtClass.moonCancer: "23@1",
+      SvtClass.foreigner: "25@1",
+      SvtClass.pretender: "27@1",
+    };
+    final suffix =
+        collectionNo == 285 ? "123@1" : suffixes[className] ?? "13@1";
+    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
+    return Atlas.asset('ClassCard/class_${color}_$suffix.png');
+  }
+
   @override
   Widget iconBuilder({
     required BuildContext context,

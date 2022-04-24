@@ -28,7 +28,7 @@ class _EventListPageState extends State<EventListPage>
 
   List<String> get tabNames => [
         S.current.limited_event,
-        S.current.main_record,
+        S.current.main_story,
         S.current.exchange_ticket,
       ];
   List<ScrollController> scrollControllers = [];

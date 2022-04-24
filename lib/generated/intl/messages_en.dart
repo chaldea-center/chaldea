@@ -52,11 +52,13 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': 'No more',
           })}";
 
-  static String m13(n) => "Reset Plan ${n}(All)";
+  static String m13(n) => "Section ${n}";
 
-  static String m14(n) => "Reset Plan ${n}(Shown)";
+  static String m14(n) => "Reset Plan ${n}(All)";
 
-  static String m15(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m15(n) => "Reset Plan ${n}(Shown)";
+
+  static String m16(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -104,7 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
-        "calc_weight": MessageLookupByLibrary.simpleMessage("Wight"),
+        "calc_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),
@@ -485,8 +487,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cost of 1 roll"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
-        "main_record": MessageLookupByLibrary.simpleMessage("Main Record"),
-        "main_record_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
+        "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
+        "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission":
@@ -547,7 +549,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "project_homepage":
             MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
+        "quest_chapter_n": m13,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
+        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("details"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
@@ -564,8 +568,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
-        "reset_plan_all": m13,
-        "reset_plan_shown": m14,
+        "reset_plan_all": m14,
+        "reset_plan_shown": m15,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -642,7 +646,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m15,
+        "solution_total_battles_ap": m16,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":

@@ -52,9 +52,9 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '마지막입니다.',
           })}";
 
-  static String m13(n) => "계획 초기화 ${n}(모두)";
+  static String m14(n) => "계획 초기화 ${n}(모두)";
 
-  static String m14(n) => "계획 초기화 ${n}(표시된)";
+  static String m15(n) => "계획 초기화 ${n}(표시된)";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -391,8 +391,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "long_press_to_save_hint":
             MessageLookupByLibrary.simpleMessage("길게 눌러서 저장"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("복주머니"),
-        "main_record": MessageLookupByLibrary.simpleMessage("메인 스토리"),
-        "main_record_chapter": MessageLookupByLibrary.simpleMessage("챕터"),
+        "main_story": MessageLookupByLibrary.simpleMessage("메인 스토리"),
+        "main_story_chapter": MessageLookupByLibrary.simpleMessage("챕터"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("마스터 미션"),
@@ -444,8 +444,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("이름 변경"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
-        "reset_plan_all": m13,
-        "reset_plan_shown": m14,
+        "reset_plan_all": m14,
+        "reset_plan_shown": m15,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

@@ -52,11 +52,13 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '已经到头了',
           })}";
 
-  static String m13(n) => "重置规划${n}(所有)";
+  static String m13(n) => "第${n}节";
 
-  static String m14(n) => "重置规划${n}(已显示)";
+  static String m14(n) => "重置规划${n}(所有)";
 
-  static String m15(battles, ap) => "总计${battles}次战斗, ${ap} AP";
+  static String m15(n) => "重置规划${n}(已显示)";
+
+  static String m16(battles, ap) => "总计${battles}次战斗, ${ap} AP";
 
   static String m0(a, b) => "${a}${b}";
 
@@ -71,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_feedback": MessageLookupByLibrary.simpleMessage("反馈"),
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("账户"),
-        "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
+        "active_skill": MessageLookupByLibrary.simpleMessage("主动技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("请填写反馈内容"),
@@ -209,7 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("宝箱"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交换券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交换券"),
-        "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等级规划"),
+        "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等级"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("相同职阶"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("狗粮需求"),
         "failed": MessageLookupByLibrary.simpleMessage("失败"),
@@ -413,8 +415,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "lottery_cost_per_roll": MessageLookupByLibrary.simpleMessage("每抽消耗"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
         "main_quest": MessageLookupByLibrary.simpleMessage("主线关卡"),
-        "main_record": MessageLookupByLibrary.simpleMessage("主线记录"),
-        "main_record_chapter": MessageLookupByLibrary.simpleMessage("章节"),
+        "main_story": MessageLookupByLibrary.simpleMessage("主线记录"),
+        "main_story_chapter": MessageLookupByLibrary.simpleMessage("章节"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("御主任务"),
@@ -465,7 +467,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("优先级"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("项目主页"),
         "quest": MessageLookupByLibrary.simpleMessage("关卡"),
+        "quest_chapter_n": m13,
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
+        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("详情"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),
@@ -479,8 +483,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m13,
-        "reset_plan_shown": m14,
+        "reset_plan_all": m14,
+        "reset_plan_shown": m15,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -545,7 +549,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次数"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目标数"),
-        "solution_total_battles_ap": m15,
+        "solution_total_battles_ap": m16,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":

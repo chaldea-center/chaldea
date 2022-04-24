@@ -138,12 +138,12 @@ class _MissionInputTabState extends State<MissionInputTab> {
             ),
           ),
           ListTile(
-            leading: const Text('IDs'),
             title: Wrap(
               spacing: 2,
               runSpacing: 2,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
+                const Text('IDs   '),
                 for (final id in mission.ids)
                   InkWell(
                     onTap: () {
@@ -585,7 +585,7 @@ class EventChooser extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Select Free Progress or an Event War'),
           bottom: TabBar(tabs: [
-            Tab(text: S.current.main_record),
+            Tab(text: S.current.main_story),
             Tab(text: S.current.event_title),
           ]),
         ),

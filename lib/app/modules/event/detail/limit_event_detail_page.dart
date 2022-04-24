@@ -511,20 +511,18 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     required ValueChanged<bool> onChanged,
     required String title,
     required Map<int, int> items,
-    // VoidCallback? onDetail,
   }) {
     return [
       db.onUserData(
-        (context, snapshot) => ListTile(
-          leading: Checkbox(
-            value: value(),
-            onChanged: enabled()
-                ? (v) {
-                    if (v != null) onChanged(v);
-                  }
-                : null,
-          ),
+        (context, snapshot) => CheckboxListTile(
+          value: value(),
+          onChanged: enabled()
+              ? (v) {
+                  if (v != null) onChanged(v);
+                }
+              : null,
           title: Text(title),
+          controlAffinity: ListTileControlAffinity.leading,
         ),
       ),
       SharedBuilder.groupItems(

@@ -39,9 +39,9 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '已經到頭了',
           })}";
 
-  static String m13(n) => "重置規劃${n}(所有)";
+  static String m14(n) => "重置規劃${n}(所有)";
 
-  static String m14(n) => "重置規劃${n}(已顯示)";
+  static String m15(n) => "重置規劃${n}(已顯示)";
 
   static String m0(a, b) => "${a}${b}";
 
@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_feedback": MessageLookupByLibrary.simpleMessage("反饋"),
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
-        "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
+        "active_skill": MessageLookupByLibrary.simpleMessage("主动技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("請填寫反饋內容"),
@@ -167,7 +167,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_title": MessageLookupByLibrary.simpleMessage("活動"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),
-        "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等級規劃"),
+        "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等級"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("相同職階"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("狗糧需求"),
         "failed": MessageLookupByLibrary.simpleMessage("失敗"),
@@ -329,8 +329,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("只能包含字母與數字，字母開頭，不少於4位"),
         "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage("長按保存"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
-        "main_record": MessageLookupByLibrary.simpleMessage("主線記錄"),
-        "main_record_chapter": MessageLookupByLibrary.simpleMessage("章節"),
+        "main_story": MessageLookupByLibrary.simpleMessage("主線記錄"),
+        "main_story_chapter": MessageLookupByLibrary.simpleMessage("章節"),
         "master_mission": MessageLookupByLibrary.simpleMessage("御主任務"),
         "master_mission_related_quest":
             MessageLookupByLibrary.simpleMessage("關聯關卡"),
@@ -379,8 +379,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻活動"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m13,
-        "reset_plan_shown": m14,
+        "reset_plan_all": m14,
+        "reset_plan_shown": m15,
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "重啟以更新應用，若更新是百，請手動複製source文件夾到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢復"),
