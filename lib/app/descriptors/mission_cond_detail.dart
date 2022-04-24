@@ -100,7 +100,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.defeatServantClass:
         return localized(
           jp: () => combineToRich(
-              context, null,　svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
+              context, null, svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
           cn: () => combineToRich(
               context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种从者'),
           tw: null,
@@ -111,7 +111,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.defeatEnemyClass:
         return localized(
           jp: () => combineToRich(
-              context, null,　svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
+              context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
           cn: () => combineToRich(
               context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人'),
           tw: null,
