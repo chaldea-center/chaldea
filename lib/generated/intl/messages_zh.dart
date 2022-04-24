@@ -70,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("若存在未标注的来源或侵权敬请告知"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("反馈"),
         "about_update_app_detail": m0,
-        "account_title": MessageLookupByLibrary.simpleMessage("Account"),
+        "account_title": MessageLookupByLibrary.simpleMessage("账户"),
         "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_feedback_details_warning":
@@ -117,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache": MessageLookupByLibrary.simpleMessage("清除缓存"),
         "clear_cache_finish": MessageLookupByLibrary.simpleMessage("缓存已清理"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("包括卡面语音等"),
-        "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
+        "clear_data": MessageLookupByLibrary.simpleMessage("清除数据"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召唤所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
@@ -159,7 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
-        "done": MessageLookupByLibrary.simpleMessage("DONE"),
+        "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
         "download_latest_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("为确保兼容性，更新前请升级至最新版APP"),
@@ -262,7 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首页"),
         "game_account": MessageLookupByLibrary.simpleMessage("游戏账号"),
         "game_data_not_found":
-            MessageLookupByLibrary.simpleMessage("未加载数据库，请先前往游戏数据页面下载"),
+            MessageLookupByLibrary.simpleMessage("未加载数据包，请先前往游戏数据页面下载"),
         "game_drop": MessageLookupByLibrary.simpleMessage("掉落"),
         "game_experience": MessageLookupByLibrary.simpleMessage("经验"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羁绊"),
@@ -484,7 +484,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
-        "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
+        "screen_size": MessageLookupByLibrary.simpleMessage("屏幕尺寸"),
         "screenshots": MessageLookupByLibrary.simpleMessage("截图"),
         "search": MessageLookupByLibrary.simpleMessage("搜索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基础信息"),
@@ -592,7 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
-        "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
         "words_separate": m15
       };
