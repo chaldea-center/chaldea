@@ -20,7 +20,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.questClearIndividuality:
         return localized(
           jp: () => combineToRich(
-              context, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
+              context, null, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(
               context, '通关$targetNum次场地为', traits(context), '的关卡'),
           tw: null,
@@ -74,7 +74,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.enemyKillNum:
         return localized(
           jp: () => 
-              combineToRich(context, servants(context), 'のサーヴァントを$targetNum体倒せ'),
+              combineToRich(context, null, servants(context), 'のサーヴァントを$targetNum体倒せ'),
           cn: () =>
               combineToRich(context, '击败$targetNum个敌人:', servants(context)),
           tw: null,
@@ -89,7 +89,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.enemyIndividualityKillNum:
         return localized(
           jp: () => combineToRich(
-              context, traits(context), '特性を持つ敵を$targetNum体倒せ'),
+              context, null, traits(context), '特性を持つ敵を$targetNum体倒せ'),
           cn: () => combineToRich(
               context, '击败$targetNum个持有', traits(context), '特性的敌人'),
           tw: null,
@@ -100,7 +100,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.defeatServantClass:
         return localized(
           jp: () => combineToRich(
-              context,　svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
+              context, null,　svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
           cn: () => combineToRich(
               context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种从者'),
           tw: null,
@@ -111,7 +111,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.defeatEnemyClass:
         return localized(
           jp: () => combineToRich(
-              context,　svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
+              context, null,　svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
           cn: () => combineToRich(
               context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人'),
           tw: null,
@@ -124,7 +124,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.defeatEnemyNotServantClass:
         return localized(
-          jp: () => combineToRich(context, svtClasses(context),
+          jp: () => combineToRich(context, null, svtClasses(context),
               'クラスの敵を$targetNum骑倒せ(サーヴァント及び一部ボスなどは除く)'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context),
               '职阶中任意一种敌人(从者及部分首领级敌方除外)'),
@@ -139,7 +139,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.battleSvtClassInDeck:
         return localized(
-          jp: () => combineToRich(context, svtClasses(context),
+          jp: () => combineToRich(context, null, svtClasses(context),
               'クラスのサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍中编入至少1骑以上', svtClasses(context),
               '职阶从者，并完成任意关卡$targetNum次'),
@@ -156,7 +156,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.itemGetTotal:
         return localized(
           jp: () =>
-              combineToRich(context, '戦利品で', items(context)t, 'のアイテムを$targetNum個集めろ'),
+              combineToRich(context, '戦利品で', items(context), 'のアイテムを$targetNum個集めろ'),
           cn: () =>
               combineToRich(context, '通过战利品获得$targetNum个道具', items(context)),
           tw: null,
@@ -170,7 +170,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.battleSvtIndividualityInDeck:
         return localized(
-          jp: () => combineToRich(context, traits(context),
+          jp: () => combineToRich(context, null, traits(context),
               '属性を持つサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入至少1骑以上持有', traits(context),
               '属性的从者，并完成任意关卡$targetNum次'),
@@ -186,7 +186,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.battleSvtIdInDeck1:
       case DetailCondType.battleSvtIdInDeck2:
         return localized(
-          jp: () => combineToRich(context, servants(context),
+          jp: () => combineToRich(context, null, servants(context),
               'のサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入至少1骑以上', servants(context),
               '从者，并完成任意关卡$targetNum次'),
@@ -197,8 +197,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.svtGetBattle:
         return localized(
-          jp: () =>
-              combineToRich(context, '戦利品で種火を$targetNum個集めろ'),
+          jp: () => Text('戦利品で種火を$targetNum個集めろ'),
           cn: () => Text('获取$targetNum个种火作为战利品'),
           tw: null,
           na: () => Text('Acquire $targetNum embers through battle'),
