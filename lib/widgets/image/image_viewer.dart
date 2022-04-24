@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -8,16 +7,15 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../app/tools/icon_cache_manager.dart';
 import '../../packages/network.dart';
 import 'cached_image_option.dart';
 import 'image_actions.dart';
@@ -126,7 +124,7 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  static final _loader = _AtlasIconLoader();
+  static final _loader = AtlasIconLoader();
 
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
@@ -312,77 +310,5 @@ class _CachedImageState extends State<CachedImage> {
           ? CachedImage.defaultProgressPlaceholder(context, url)
           : const SizedBox(),
     );
-  }
-}
-
-class _AtlasIconLoader extends _CachedLoader<String, String> {
-  @override
-  final Duration failedExpire = const Duration(minutes: 30);
-
-  final _rateLimiter = RateLimiter(maxCalls: 20);
-
-  @override
-  Future<String> caller(String url) async {
-    final localPath = _atlasUrlToFp(url);
-    if (await File(localPath).exists()) {
-      return localPath;
-    }
-    final resp = await _rateLimiter.limited(() =>
-        Dio().get(url, options: Options(responseType: ResponseType.bytes)));
-    File(localPath).createSync(recursive: true);
-    await File(localPath).writeAsBytes(List.from(resp.data));
-    print('download image: $url');
-    return localPath;
-  }
-
-  String _atlasUrlToFp(String url) {
-    assert(url.startsWith(Atlas.assetHost), url);
-    String urlPath = url.replaceFirst(Atlas.assetHost, '');
-    return pathlib.joinAll([
-      db.paths.atlasIconDir,
-      ...urlPath.split('/').where((e) => e.isNotEmpty)
-    ]);
-  }
-}
-
-abstract class _CachedLoader<K, V> {
-  final Map<K, Completer<V?>> _completers = {};
-  final Map<K, V> _success = {};
-  final Map<K, DateTime> _failed = {};
-  Duration get failedExpire;
-  Future<V> caller(K key);
-
-  V? getCached(K key) {
-    if (_success.containsKey(key)) return _success[key];
-    return null;
-  }
-
-  bool isFailed(K key) {
-    if (_failed[key] != null) {
-      if (_failed[key]!.add(failedExpire).isBefore(DateTime.now())) {
-        _failed.remove(key);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Future<V?> get(K key) async {
-    if (_success.containsKey(key)) return _success[key];
-    if (_completers.containsKey(key)) return _completers[key]?.future;
-    if (isFailed(key)) return null;
-    Completer<V?> _cmpl = Completer();
-    caller(key).then<void>((value) {
-      _success[key] = value;
-      _cmpl.complete(value);
-    }).catchError((e, s) {
-      logger.e('Got $key failed', e, s);
-      _failed[key] = DateTime.now();
-      _cmpl.complete(null);
-    });
-    _completers[key] = _cmpl;
-    return _cmpl.future;
   }
 }

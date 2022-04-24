@@ -90,6 +90,7 @@
   "display_setting": "화면 설정",
   "done": "DONE",
   "download": "다운로드",
+  "download_icons": null,
   "download_latest_gamedata_hint": "호환성을 보장하려면 업데이트 전에 최신 APP 버전으로 업그레이드하십시오.",
   "download_source": "다운로드 소스",
   "download_source_hint": null,

@@ -161,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
+        "download_icons": MessageLookupByLibrary.simpleMessage("下载图标"),
         "download_latest_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("为确保兼容性，更新前请升级至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下载源"),

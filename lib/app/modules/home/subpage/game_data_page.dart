@@ -14,6 +14,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../tools/icon_cache_manager.dart';
 
 class GameDataPage extends StatefulWidget {
   GameDataPage({Key? key}) : super(key: key);
@@ -163,6 +164,18 @@ class _GameDataPageState extends State<GameDataPage> {
                   title: Text(S.current.import_data),
                   subtitle: Text(S.current.not_implemented),
                   onTap: importGamedata,
+                ),
+              if (!PlatformU.isWeb)
+                ListTile(
+                  title: Text(S.current.download_icons),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      useRootNavigator: false,
+                      builder: (context) => IconCacheManagePage(),
+                    );
+                  },
                 ),
               ListTile(
                 title: Text(S.current.clear_cache),

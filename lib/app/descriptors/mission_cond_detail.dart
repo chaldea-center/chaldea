@@ -44,7 +44,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         } else {
           return localized(
             jp: () => combineToRich(
-              context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
+                context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
             cn: () =>
                 combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
             tw: null,
@@ -73,8 +73,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.enemyKillNum:
         return localized(
-          jp: () => 
-              combineToRich(context, null, servants(context), 'のサーヴァントを$targetNum体倒せ'),
+          jp: () => combineToRich(
+              context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () =>
               combineToRich(context, '击败$targetNum个敌人:', servants(context)),
           tw: null,
@@ -156,7 +156,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.itemGetTotal:
         return localized(
           jp: () =>
-              combineToRich(context, '戦利品で', items(context), 'のアイテムを$targetNum個集めろ'),
+              combineToRich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () =>
               combineToRich(context, '通过战利品获得$targetNum个道具', items(context)),
           tw: null,
@@ -213,7 +213,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
     }
     return localized(
-      jp: () => Text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
+      jp: () =>
+          Text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
       cn: () => Text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),
       tw: null,
       na: () => Text(

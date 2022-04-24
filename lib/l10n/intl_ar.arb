@@ -90,6 +90,7 @@
   "display_setting": "إعدادات العرض",
   "done": null,
   "download": "تحميل ",
+  "download_icons": null,
   "download_latest_gamedata_hint": "لضمان التوافق الرجاء تحديث آخر نسخة من التطبيق قبل تحديث البيانات ",
   "download_source": "مصدر التحميل",
   "download_source_hint": "تحديث حزمة البيانات والتطبيق",

@@ -90,6 +90,7 @@
   "display_setting": "設定表示",
   "done": "完成",
   "download": "ダウンロード",
+  "download_icons": null,
   "download_latest_gamedata_hint": "互換性を確保するために、更新する前にアプリの最新バージョンにアップデードしてください",
   "download_source": "ダウンロードソース",
   "download_source_hint": "中国大陸ならCNエンドポイントを選択",

@@ -90,6 +90,7 @@
   "display_setting": "顯示設置",
   "done": null,
   "download": "下載",
+  "download_icons": null,
   "download_latest_gamedata_hint": "為確保兼容性，更新前請升級至最新版APP",
   "download_source": "下載源",
   "download_source_hint": null,

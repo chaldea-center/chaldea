@@ -180,6 +180,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Settings"),
         "done": MessageLookupByLibrary.simpleMessage("DONE"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
+        "download_icons":
+            MessageLookupByLibrary.simpleMessage("Download Icons"),
         "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
             "To ensure compatibility, please upgrade to the latest APP version before updating"),
         "download_source":

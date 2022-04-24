@@ -1054,6 +1054,17 @@ class S {
     );
   }
 
+  /// `Download Icons`
+  String get download_icons {
+    return Intl.message(
+      'Download Icons',
+      name: 'download_icons',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `To ensure compatibility, please upgrade to the latest APP version before updating`
   String get download_latest_gamedata_hint {
     return Intl.message(
