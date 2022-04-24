@@ -107,7 +107,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       num: json['num'] as int,
       card: $enumDecode(_$CardTypeEnumMap, json['card']),
       name: json['name'] as String,
-      ruby: json['ruby'] as String,
+      ruby: json['ruby'] as String? ?? "",
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,

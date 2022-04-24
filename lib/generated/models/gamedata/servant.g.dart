@@ -104,7 +104,7 @@ Servant _$ServantFromJson(Map json) => Servant(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,
       name: json['name'] as String,
-      ruby: json['ruby'] as String,
+      ruby: json['ruby'] as String? ?? "",
       className: $enumDecode(_$SvtClassEnumMap, json['className']),
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
@@ -139,6 +139,10 @@ Servant _$ServantFromJson(Map json) => Servant(
       hpBase: json['hpBase'] as int,
       hpMax: json['hpMax'] as int,
       relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
+      trialQuestIds: (json['trialQuestIds'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
           const [],
@@ -251,6 +255,7 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,
       name: json['name'] as String,
+      ruby: json['ruby'] as String? ?? "",
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
       rarity: json['rarity'] as int,

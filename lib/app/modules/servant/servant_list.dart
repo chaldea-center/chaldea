@@ -1179,6 +1179,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       yield svt.collectionNo.toString();
       yield svt.id.toString();
       yield* getAllKeys(Transl.svtNames(svt.name));
+      yield SearchUtil.getJP(svt.ruby);
       for (final name
           in svt.ascensionAdd.overWriteServantName.ascension.values) {
         yield* getAllKeys(Transl.svtNames(name));
@@ -1219,6 +1220,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
 
   Iterable<String?> _getSkillKeys(SkillOrTd skill) sync* {
     yield* getAllKeys(skill.lName);
+    yield SearchUtil.getJP(skill.ruby);
     yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
     if (skill is BaseSkill) {
       for (final skillAdd in skill.skillAdd) {

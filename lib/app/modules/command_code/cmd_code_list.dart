@@ -178,11 +178,13 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       yield code.collectionNo.toString();
       yield code.id.toString();
       yield* getAllKeys(code.lName);
+      yield SearchUtil.getJP(code.ruby);
       yield* getAllKeys(Transl.illustratorNames(code.illustrator));
     }
     if (skill) {
       for (final skill in code.skills) {
         yield* getAllKeys(skill.lName);
+        yield SearchUtil.getJP(skill.ruby);
         yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
         for (final skillAdd in skill.skillAdd) {
           yield* getAllKeys(Transl.skillNames(skillAdd.name));

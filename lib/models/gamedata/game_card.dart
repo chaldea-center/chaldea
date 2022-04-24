@@ -261,6 +261,22 @@ mixin GameCardMixin {
         overrideIcon: icon ?? costume.icon,
       ),
       onDefault: () {
+        if (id == Items.grailToCrystalId) {
+          return Item.iconBuilder(
+            context: context,
+            item: db.gameData.items[Items.grail],
+            icon: Atlas.assetItem(id),
+            width: width,
+            height: height,
+            aspectRatio: aspectRatio,
+            text: text,
+            padding: padding,
+            textPadding: textPadding,
+            onTap: onTap,
+            jumpToDetail: jumpToDetail,
+            popDetail: popDetail,
+          );
+        }
         if (icon != null) {
           return cardIconBuilder(
             context: context,

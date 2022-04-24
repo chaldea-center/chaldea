@@ -259,6 +259,7 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = EventPlan(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
+          rerunGrails: $checkedConvert('rerunGrails', (v) => v as int? ?? 0),
           shop: $checkedConvert('shop', (v) => v as bool? ?? true),
           shopExcludeItem: $checkedConvert('shopExcludeItem',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
@@ -301,6 +302,7 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
       'enabled': instance.enabled,
+      'rerunGrails': instance.rerunGrails,
       'shop': instance.shop,
       'shopExcludeItem': instance.shopExcludeItem.toList(),
       'point': instance.point,

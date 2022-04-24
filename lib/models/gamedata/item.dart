@@ -167,10 +167,12 @@ class Items {
   static int manaPrismId = 3;
   static int purePrismId = 46;
   static int rarePrismId = 18;
+  static int grailToCrystalId = 19;
   static int summonTicketId = 4001;
   static int bronzeAppleId = 102;
   static int silverAppleId = 101;
   static int goldAppleId = 100;
+  static int crystalId = 6999;
   static int grailFragId = 7998;
   static int grailId = 7999;
   static int lanternId = 1000;
@@ -196,6 +198,8 @@ class Items {
   static Item get silverApple => _items[silverAppleId]!;
 
   static Item get goldApple => _items[goldAppleId]!;
+
+  static Item get crystal => _items[crystalId]!;
 
   static Item get grailFrag => _items[grailFragId]!;
 

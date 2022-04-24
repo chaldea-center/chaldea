@@ -228,7 +228,7 @@ const _$SvtClassEnumMap = {
   SvtClass.MIX: 'MIX',
 };
 
-Gift _$GiftFromJson(Map json) => Gift(
+BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
       type:
           $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
       objectId: json['objectId'] as int,
@@ -250,6 +250,29 @@ const _$GiftTypeEnumMap = {
   GiftType.eventPointBuff: 'eventPointBuff',
   GiftType.eventBoardGameToken: 'eventBoardGameToken',
 };
+
+GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
+      priority: json['priority'] as int,
+      replacementGiftIcon: json['replacementGiftIcon'] as String,
+      condType: toEnumCondType(json['condType'] as Object),
+      targetId: json['targetId'] as int,
+      targetNum: json['targetNum'] as int,
+      replacementGifts: (json['replacementGifts'] as List<dynamic>)
+          .map((e) => BaseGift.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    );
+
+Gift _$GiftFromJson(Map json) => Gift(
+      type:
+          $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
+      objectId: json['objectId'] as int,
+      num: json['num'] as int,
+      giftAdds: (json['giftAdds'] as List<dynamic>?)
+              ?.map(
+                  (e) => GiftAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
 
 Stage _$StageFromJson(Map json) => Stage(
       wave: json['wave'] as int,

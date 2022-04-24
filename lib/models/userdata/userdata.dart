@@ -477,6 +477,7 @@ class SvtPlan {
 @JsonSerializable()
 class EventPlan {
   bool enabled;
+  int rerunGrails;
 
   bool shop;
   Set<int> shopExcludeItem;
@@ -493,6 +494,7 @@ class EventPlan {
 
   EventPlan({
     this.enabled = false,
+    this.rerunGrails = 0,
     this.shop = true,
     Set<int>? shopExcludeItem,
     this.point = true,

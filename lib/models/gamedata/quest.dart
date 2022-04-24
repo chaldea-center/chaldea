@@ -246,7 +246,7 @@ class QuestPhase extends Quest {
 }
 
 @JsonSerializable()
-class Gift {
+class BaseGift {
   // int id;
   GiftType type;
   int objectId;
@@ -254,7 +254,7 @@ class Gift {
   // int priority;
   int num;
 
-  Gift({
+  BaseGift({
     // required this.id,
     this.type = GiftType.item,
     required this.objectId,
@@ -262,7 +262,8 @@ class Gift {
     required this.num,
   });
 
-  factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
+  factory BaseGift.fromJson(Map<String, dynamic> json) =>
+      _$BaseGiftFromJson(json);
 
   bool get isStatItem {
     if ([GiftType.equip, GiftType.eventSvtJoin, GiftType.eventPointBuff]
@@ -325,6 +326,74 @@ class Gift {
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
     );
+  }
+}
+// class NiceGiftAdd(BaseModelORJson):
+//     priority: int
+//     replacementGiftIcon: HttpUrl
+//     condType: NiceCondType
+//     targetId: int
+//     targetNum: int
+//     replacementGifts: list[NiceBaseGift]
+
+@JsonSerializable()
+class GiftAdd {
+  int priority;
+  String replacementGiftIcon;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType;
+  int targetId;
+  int targetNum;
+  List<BaseGift> replacementGifts;
+
+  GiftAdd({
+    required this.priority,
+    required this.replacementGiftIcon,
+    required this.condType,
+    required this.targetId,
+    required this.targetNum,
+    required this.replacementGifts,
+  });
+
+  factory GiftAdd.fromJson(Map<String, dynamic> json) =>
+      _$GiftAddFromJson(json);
+}
+
+@JsonSerializable()
+class Gift extends BaseGift {
+  List<GiftAdd> giftAdds;
+  Gift({
+    // required this.id,
+    GiftType type = GiftType.item,
+    required int objectId,
+    // required this.priority,
+    required int num,
+    this.giftAdds = const [],
+  }) : super(type: type, objectId: objectId, num: num);
+
+  factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
+
+  static void checkAddGifts(Map<int, int> stat, List<Gift> gifts,
+      [int setNum = 1]) {
+    Map<int, int> repls = {};
+    if (gifts.any((gift) => gift.giftAdds.isNotEmpty)) {
+      final giftAdd =
+          gifts.firstWhere((e) => e.giftAdds.isNotEmpty).giftAdds.first;
+      final replGifts = giftAdd.replacementGifts;
+      for (final gift in replGifts) {
+        if (giftAdd.replacementGiftIcon.endsWith('Items/19.png') &&
+            gift.objectId == Items.crystalId) {
+          repls.addNum(Items.grailToCrystalId, gift.num * setNum);
+          repls.addNum(Items.grailId, -gift.num * setNum);
+        } else if (gift.objectId == Items.rarePrismId) {
+          repls.addNum(gift.objectId, gift.num * setNum);
+        }
+      }
+    }
+    for (final gift in gifts) {
+      if (gift.isStatItem) stat.addNum(gift.objectId, gift.num * setNum);
+    }
+    stat.addDict(repls);
   }
 }
 
@@ -438,7 +507,7 @@ class SupportServant {
 }
 
 @JsonSerializable()
-class EnemyDrop extends Gift {
+class EnemyDrop extends BaseGift {
   int dropCount;
   int runs;
 

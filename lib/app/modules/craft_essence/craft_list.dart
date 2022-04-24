@@ -204,12 +204,14 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
       yield ce.collectionNo.toString();
       yield ce.id.toString();
       yield* getAllKeys(ce.lName);
+      yield SearchUtil.getJP(ce.ruby);
       yield* getAllKeys(Transl.cvNames(ce.profile.cv));
       yield* getAllKeys(Transl.illustratorNames(ce.profile.illustrator));
     }
     if (skill) {
       for (final skill in ce.skills) {
         yield* getAllKeys(skill.lName);
+        yield SearchUtil.getJP(skill.ruby);
         yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
         for (final skillAdd in skill.skillAdd) {
           yield* getAllKeys(Transl.skillNames(skillAdd.name));

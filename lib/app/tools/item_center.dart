@@ -293,6 +293,12 @@ class ItemCenter {
         result.addDict(plan.extraItems[idx]!);
       }
     }
+    int grailToCrystal = result[Items.grailToCrystalId] ?? 0;
+    if (grailToCrystal > 0) {
+      plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystal);
+      result.addNum(Items.grailId, plan.rerunGrails);
+      result.addNum(Items.crystalId, grailToCrystal - plan.rerunGrails);
+    }
     return result;
   }
 

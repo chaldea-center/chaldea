@@ -88,11 +88,18 @@ class NiceWar {
   void calcItems(GameData gameData) {
     itemReward.clear();
     itemDrop.clear();
+
     for (final spot in spots) {
       for (final quest in spot.quests) {
-        for (final gift in quest.gifts) {
-          if (gift.isStatItem) itemReward.addNum(gift.objectId, gift.num);
+        // special cases
+        // 1 - 復刻:Servant・Summer・Festival！ ライト版
+        if (id == 9069 &&
+            quest.releaseConditions
+                .any((cond) => cond.type == CondType.notQuestClearPhase)) {
+          continue;
         }
+
+        Gift.checkAddGifts(itemReward, quest.gifts);
         for (final phase in quest.phases) {
           final fixedDrop = gameData.fixedDrops[quest.id * 100 + phase];
           if (fixedDrop == null) continue;

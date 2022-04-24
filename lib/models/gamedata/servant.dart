@@ -120,6 +120,7 @@ class Servant with GameCardMixin {
   int hpBase;
   int hpMax;
   List<int> relateQuestIds;
+  List<int> trialQuestIds;
   int growthCurve;
   List<int> atkGrowth;
   List<int> hpGrowth;
@@ -152,7 +153,7 @@ class Servant with GameCardMixin {
     required this.id,
     required this.collectionNo,
     required this.name,
-    required this.ruby,
+    this.ruby = "",
     required this.className,
     required this.type,
     required this.flag,
@@ -174,6 +175,7 @@ class Servant with GameCardMixin {
     required this.hpBase,
     required this.hpMax,
     this.relateQuestIds = const [],
+    this.trialQuestIds = const [],
     required this.growthCurve,
     required this.atkGrowth,
     required this.hpGrowth,
@@ -345,6 +347,7 @@ class CraftEssence with GameCardMixin {
   int collectionNo;
   @override
   String name;
+  String ruby;
   SvtType type;
   SvtFlag flag;
   @override
@@ -372,6 +375,7 @@ class CraftEssence with GameCardMixin {
     required this.id,
     required this.collectionNo,
     required this.name,
+    this.ruby = "",
     required this.type,
     required this.flag,
     required this.rarity,

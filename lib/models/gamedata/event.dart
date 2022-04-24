@@ -711,9 +711,7 @@ class Event {
     // point rewards
     itemPointReward.clear();
     for (final point in rewards) {
-      for (final gift in point.gifts) {
-        if (gift.isStatItem) itemPointReward.addNum(gift.objectId, gift.num);
-      }
+      Gift.checkAddGifts(itemPointReward, point.gifts);
     }
     statItemFixed.addDict(itemPointReward);
 
@@ -722,9 +720,7 @@ class Event {
     for (final mission in missions) {
       if (mission.type == MissionType.random) continue;
       if (mission.rewardType == MissionRewardType.gift) {
-        for (final gift in mission.gifts) {
-          if (gift.isStatItem) itemMission.addNum(gift.objectId, gift.num);
-        }
+        Gift.checkAddGifts(itemMission, mission.gifts);
       }
     }
     statItemFixed.addDict(itemMission);
@@ -733,9 +729,7 @@ class Event {
     itemTower.clear();
     for (final tower in towers) {
       for (final reward in tower.rewards) {
-        for (final gift in reward.gifts) {
-          if (gift.isStatItem) itemTower.addNum(gift.objectId, gift.num);
-        }
+        Gift.checkAddGifts(itemTower, reward.gifts);
       }
     }
     statItemFixed.addDict(itemTower);
@@ -750,13 +744,13 @@ class Event {
       }
       for (final box in lottery.boxes) {
         for (final gift in box.gifts) {
+          final itemLotBox = itemLottery
+              .putIfAbsent(lottery.id, () => {})
+              .putIfAbsent(box.boxIndex, () => {});
+          Gift.checkAddGifts(itemLotBox, box.gifts, box.maxNum);
           if (gift.isStatItem) {
-            itemLottery
-                .putIfAbsent(lottery.id, () => {})
-                .putIfAbsent(box.boxIndex, () => {})
-                .addNum(gift.objectId, gift.num * box.maxNum);
             if (lottery.limited || !_lastBoxItems.containsKey(gift.objectId)) {
-              statItemFixed.addNum(gift.objectId, gift.num * box.maxNum);
+              Gift.checkAddGifts(statItemFixed, [gift], box.maxNum);
             }
           }
         }
@@ -767,11 +761,10 @@ class Event {
     itemTreasureBox.clear();
     for (final box in treasureBoxes) {
       for (final boxGifts in box.treasureBoxGifts) {
+        final itemBox = itemTreasureBox.putIfAbsent(box.id, () => {});
         for (final gift in boxGifts.gifts) {
           if (gift.isStatItem) {
-            itemTreasureBox
-                .putIfAbsent(box.id, () => {})
-                .addNum(gift.objectId, gift.num);
+            itemBox.addNum(gift.objectId, gift.num);
             statItemExtra.add(gift.objectId);
           }
         }

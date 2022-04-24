@@ -174,7 +174,7 @@ class NiceTd implements SkillOrTd {
     required this.num,
     required this.card,
     required this.name,
-    required this.ruby,
+    this.ruby = "",
     this.icon,
     required this.rank,
     required this.type,

@@ -97,6 +97,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           style: TextStyle(fontWeight: FontWeight.w300),
         ));
       }
+
       count += itemGot;
       children.add(ListTile(
         title: AutoSizeText(event.shownName,

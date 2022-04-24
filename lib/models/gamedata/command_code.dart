@@ -19,6 +19,7 @@ class CommandCode with GameCardMixin {
   int collectionNo;
   @override
   String name;
+  String ruby;
   @override
   int rarity;
   ExtraCCAssets extraAssets;
@@ -30,6 +31,7 @@ class CommandCode with GameCardMixin {
     required this.id,
     required this.collectionNo,
     required this.name,
+    this.ruby = "",
     required this.rarity,
     required this.extraAssets,
     required this.skills,
