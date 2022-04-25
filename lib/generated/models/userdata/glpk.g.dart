@@ -11,15 +11,15 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = FreeLPParams(
-          use6th: $checkedConvert('use6th', (v) => v as bool?),
+          use6th: $checkedConvert('use6th', (v) => v as bool? ?? true),
           rows: $checkedConvert('rows',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          progress: $checkedConvert('progress', (v) => v as int? ?? -1),
           blacklist: $checkedConvert('blacklist',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           minCost: $checkedConvert('minCost', (v) => v as int? ?? 0),
           costMinimize:
               $checkedConvert('costMinimize', (v) => v as bool? ?? true),
-          maxColNum: $checkedConvert('maxColNum', (v) => v as int? ?? -1),
           extraCols: $checkedConvert('extraCols',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           integerResult:
@@ -49,10 +49,10 @@ Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) =>
           instance.planItemCounts.map((k, e) => MapEntry(k.toString(), e)),
       'planItemWeights':
           instance.planItemWeights.map((k, e) => MapEntry(k.toString(), e)),
+      'progress': instance.progress,
       'blacklist': instance.blacklist.toList(),
       'minCost': instance.minCost,
       'costMinimize': instance.costMinimize,
-      'maxColNum': instance.maxColNum,
       'extraCols': instance.extraCols,
       'integerResult': instance.integerResult,
       'useAP20': instance.useAP20,

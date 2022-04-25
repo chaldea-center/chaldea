@@ -249,10 +249,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             IconButton(
               icon: const Icon(Icons.settings),
               color: params.minCost > 0 ||
-                      params.maxColNum > 0 ||
+                      db.gameData.mainStories[params.progress] != null ||
                       params.blacklist.isNotEmpty ||
                       !params.use6th
-                  ? Colors.red
+                  ? Theme.of(context).errorColor
                   : Theme.of(context).colorScheme.primary,
               tooltip: S.of(context).settings_tab_name,
               onPressed: () async {

@@ -206,11 +206,14 @@ DropRateSheet _preProcess(
   final objective = params.objectiveCounts;
 
   // free quests for different server
-  List<int> cols = data.questIds.sublist(
-      0,
-      params.maxColNum > 0
-          ? params.maxColNum.clamp(0, data.questIds.length)
-          : null);
+  final wars = Map.of(db.gameData.mainStories);
+  wars.removeWhere((key, value) => !value.quests.any((q) => q.isMainStoryFree));
+  List<int> cols = data.questIds.where((questId) {
+    if (!wars.containsKey(params.progress)) return true;
+    final warId = db.gameData.quests[questId]?.warId;
+    // some error that db not loaded
+    return warId == null || warId <= params.progress;
+  }).toList();
   // only append extra columns having drop data in gpk matrix
   params.extraCols.forEach((col) {
     if (data.questIds.contains(col)) cols.add(col);

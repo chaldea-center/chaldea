@@ -485,7 +485,7 @@ class _QuestCardState extends State<QuestCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(S.current.game_rewards),
+          Text(S.current.quest_reward_short),
           Expanded(
             child: Center(
               child: SharedBuilder.giftGrid(

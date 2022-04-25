@@ -20,9 +20,12 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
   Widget build(BuildContext context) {
     final params = widget.params;
     params.minCost = params.minCost.clamp2(0, 19);
-    // if (!params.sheet.freeCounts.values.contains(params.maxColNum)) {
-    //   params.maxColNum = -1;
-    // }
+    final wars = db.gameData.mainStories.values
+        .where((e) => e.quests.any((q) => q.isMainStoryFree))
+        .toList();
+    wars.sort2((e) => -e.id);
+    NiceWar? progress =
+        wars.firstWhereOrNull((war) => war.id == params.progress);
     return SimpleDialog(
       title: Text(S.of(context).settings_tab_name),
       children: [
@@ -36,6 +39,30 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
               params.use6th = v;
             });
           },
+        ),
+        ListTile(
+          title: Text(S.of(context).free_progress),
+          trailing: DropdownButton<NiceWar?>(
+            value: progress,
+            items: [
+              DropdownMenuItem(
+                value: null,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 180),
+                  child: Text(S.current.free_progress_newest, maxLines: 1),
+                ),
+              ),
+              for (final war in wars)
+                DropdownMenuItem(
+                  value: war,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 180),
+                    child: Text(war.lShortName, maxLines: 1),
+                  ),
+                )
+            ],
+            onChanged: (v) => setState(() => params.progress = v?.id ?? -1),
+          ),
         ),
         ListTile(
           title: Text(S.of(context).drop_calc_min_ap),

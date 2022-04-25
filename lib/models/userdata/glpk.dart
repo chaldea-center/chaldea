@@ -20,6 +20,8 @@ class FreeLPParams {
 
   List<double> get weights => rows.map((e) => getPlanItemWeight(e)).toList();
 
+  int progress;
+
   Set<int> blacklist; // questIds
 
   /// generated from [rows] and [counts], only used when processing data
@@ -34,9 +36,6 @@ class FreeLPParams {
   /// false: minimum battle num = sum(x_i)
   /// transferred to js
   bool costMinimize;
-
-  /// for free quests, [maxColNum] = [cnMaxColNum] or [jpMaxColNum]
-  int maxColNum;
 
   /// for event quests, [extraCols]>[jpMaxColNum]
   /// not used
@@ -62,36 +61,30 @@ class FreeLPParams {
       planItemWeights[id] ??= _default ?? 1.0;
 
   FreeLPParams({
-    bool? use6th,
+    this.use6th = true,
     List<int>? rows,
+    this.progress = -1,
     Set<int>? blacklist,
-    int? minCost = 0,
-    bool? costMinimize = true,
-    int? maxColNum = -1,
+    this.minCost = 0,
+    this.costMinimize = true,
     List<int>? extraCols,
-    bool? integerResult = false,
-    bool? useAP20 = true,
+    this.integerResult = false,
+    this.useAP20 = true,
     Map<int, int>? planItemCounts,
     Map<int, double>? planItemWeights,
-  })  : use6th = use6th ?? true,
-        rows = rows ?? [],
+  })  : rows = rows ?? [],
         blacklist = blacklist ?? {},
-        minCost = minCost ?? 0,
-        costMinimize = costMinimize ?? true,
-        maxColNum = maxColNum ?? -1,
         extraCols = extraCols ?? [],
-        integerResult = integerResult ?? false,
-        useAP20 = useAP20 ?? true,
         planItemCounts = planItemCounts ?? {},
         planItemWeights = planItemWeights ?? {};
 
   FreeLPParams.from(FreeLPParams other)
       : use6th = other.use6th,
         rows = List.of(other.rows),
+        progress = other.progress,
         blacklist = Set.of(other.blacklist),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
-        maxColNum = other.maxColNum,
         extraCols = List.of(other.extraCols),
         integerResult = other.integerResult,
         useAP20 = other.useAP20,

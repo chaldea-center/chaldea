@@ -1,6 +1,6 @@
 import 'dart:io';
 
-void main([List<String> args = const []]) async {
+Future<void> main([List<String> args = const []]) async {
   try {
     final gitInfo = (await Process.run(
             'git', ['show', '-s', '--pretty=format:%h-%ct', "HEAD"]))

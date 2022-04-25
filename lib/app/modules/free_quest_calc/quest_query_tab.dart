@@ -30,7 +30,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
       scrollController: _scrollController,
       showOutdated: true,
       showSpecialRewards: false,
-      reversed: false,
+      reversed: true,
       titleOnly: true,
     );
   }

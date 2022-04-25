@@ -69,6 +69,8 @@ class NiceWar {
 
   Transl<String, String> get lLongName => Transl.warNames(longName);
 
+  String get lShortName => lLongName.l.split('\n').first;
+
   Event? get event => db.gameData.events[eventId];
 
   String get route => Routes.warI(id);
