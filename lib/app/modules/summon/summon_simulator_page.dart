@@ -411,6 +411,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         child: db.getIconImage(
           'https://static.chaldea.center/images/$fn',
           height: 50,
+          placeholder: (context) => ElevatedButton(
+            onPressed: () => startGacha(times, quartz),
+            child: Text('Gacha $times'),
+          ),
         ),
       ),
     );
@@ -451,6 +455,43 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     //         ' ${_percent(c3)}');
     //   }
     // }
+    // Monte Carlo test
+    // 100(11000000) = 1.03640 + 3.11976 + 39.80255 + 4.15877 + 12.48025 + 39.40226
+    // standards: 1+3+40+4+12+40
+    
+    // // SSR, SSR+SR
+    // Map<int, int> counts = {};
+    // int cycles = 1000000;
+    // StringBuffer buffer=StringBuffer('Statistics:\nTotal: $cycles x11\n');
+    // for (int i = 0; i < cycles; i++) {
+    //   final cards = summonWithGuarantee(11);
+    //   int s5 = cards.where((e) => e is Servant && e.rarity == 5).length;
+    //   int s4 = cards.where((e) => e is Servant && e.rarity == 4).length;
+    //   int key = s5 * 10 + s4;
+    //   counts[key] = (counts[key] ?? 0) + 1;
+    //   if ((i + 1) % 10000 == 0) {
+    //     print('progress: ${i + 1}/$cycles');
+    //   }
+    // }
+    // String _percent(int x) => (x / cycles * 100).toStringAsFixed(5);
+    // List<int> counts5 = List.generate(11, (index) {
+    //   int c = 0;
+    //   counts.forEach((key, value) {
+    //     if (key ~/ 10 == index) {
+    //       c += value;
+    //     }
+    //   });
+    //   return c;
+    // });
+    // buffer.writeln('R5:');
+    // for (int index = 0; index < counts5.length; index++) {
+    //   buffer.writeln('  $index:  ${_percent(counts5[index])} ${counts5[index]}');
+    // }
+    // buffer.writeln('R45');
+    // for (final key in counts.keys.toList()..sort()) {
+    //   buffer.writeln('  $key:  ${_percent(counts[key]!)} ${counts[key]}');
+    // }
+    // print(buffer.toString());
     // return;
     List<GameCardMixin> newAdded = summonWithGuarantee(times);
     newAdded.shuffle(random);
@@ -496,8 +537,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           newResults.addAll(randomSummon(svtProbs((r) => r == 5), 1));
         }
         if (summon.type == SummonType.gssrsr) {
-          final s4 =
-              results.firstWhereOrNull((e) => e is Servant && e.rarity >= 4);
+          final s4 = results.firstWhereOrNull((e) =>
+              e is Servant &&
+              e.rarity >= 4 &&
+              e.extra.obtains.contains(SvtObtain.limited));
           if (s4 != null) {
             results.remove(s4);
             newResults.add(s4);

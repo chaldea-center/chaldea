@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,7 +17,7 @@ class JsonHelper {
   static Future<T> loadModel<T>({
     required String fp,
     required T Function(dynamic data) fromJson,
-    T Function()? onError,
+    FutureOr<T> Function()? onError,
   }) async {
     final file = FilePlus(fp);
     if (!file.existsSync()) {

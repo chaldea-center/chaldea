@@ -121,7 +121,7 @@ class _Database {
 
   /// return the [UserData] instance, don't assign to [userData]
   Future<UserData?> loadUserData([String? fp]) async {
-    return JsonHelper.loadModel<UserData?>(
+    return _loadWithBak<UserData?>(
       fp: fp ?? paths.userDataPath,
       fromJson: (data) => UserData.fromJson(data),
       onError: () => null,
@@ -129,10 +129,28 @@ class _Database {
   }
 
   Future<LocalSettings> loadSettings([String? fp]) async {
-    return settings = await JsonHelper.loadModel<LocalSettings>(
+    return settings = await _loadWithBak<LocalSettings>(
       fp: fp ?? paths.settingsPath,
       fromJson: (data) => LocalSettings.fromJson(data),
       onError: () => LocalSettings(),
+    );
+  }
+
+  static const _backSuffix = '.bak';
+
+  Future<T> _loadWithBak<T>({
+    required String fp,
+    required T Function(dynamic) fromJson,
+    T Function()? onError,
+  }) async {
+    return JsonHelper.loadModel<T>(
+      fp: fp,
+      fromJson: fromJson,
+      onError: () => JsonHelper.loadModel<T>(
+        fp: fp + _backSuffix,
+        fromJson: fromJson,
+        onError: onError,
+      ),
     );
   }
 
@@ -141,11 +159,15 @@ class _Database {
     await saveSettings();
   }
 
-  Future<void> saveUserData() =>
-      FilePlus(paths.userDataPath).writeAsString(jsonEncode(userData));
+  Future<void> saveUserData() => _saveWithBak(paths.userDataPath, userData);
 
-  Future<void> saveSettings() =>
-      FilePlus(paths.settingsPath).writeAsString(jsonEncode(settings));
+  Future<void> saveSettings() => _saveWithBak(paths.settingsPath, settings);
+
+  Future<void> _saveWithBak(String fp, Object obj) async {
+    String content = jsonEncode(obj);
+    await FilePlus(fp).writeAsString(content, flush: true);
+    await FilePlus(fp + _backSuffix).writeAsString(content, flush: true);
+  }
 
   void _startSavingLoop() {
     String? _lastUserHash;
