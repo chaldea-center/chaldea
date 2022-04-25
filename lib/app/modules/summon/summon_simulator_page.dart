@@ -458,7 +458,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // Monte Carlo test
     // 100(11000000) = 1.03640 + 3.11976 + 39.80255 + 4.15877 + 12.48025 + 39.40226
     // standards: 1+3+40+4+12+40
-    
+
     // // SSR, SSR+SR
     // Map<int, int> counts = {};
     // int cycles = 1000000;

@@ -246,10 +246,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
     return ListTile(
       leading: Text(leading),
       title: TextButton(onPressed: _onTap, child: Text(title)),
-      trailing: IconButton(
-        onPressed: _onTap,
-        icon: const Icon(Icons.change_circle_outlined),
-      ),
     );
   }
 

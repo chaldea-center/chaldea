@@ -94,3 +94,21 @@ class CenterWidgetSpan extends WidgetSpan {
           style: style,
         );
 }
+
+mixin ScrollControllerMixin<T extends StatefulWidget> on State<T> {
+  late ScrollController _scrollController;
+
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+}

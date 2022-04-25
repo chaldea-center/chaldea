@@ -12,6 +12,7 @@ import 'package:chaldea/generated/intl/messages_all.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
 import '../packages/language.dart';
+import '../packages/logger.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
@@ -147,6 +148,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void setOnWindowClose() {
     if (!PlatformU.isDesktop) return;
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
+      logger.i('closing desktop app...');
       await db.saveAll();
       await Future.delayed(const Duration(milliseconds: 200));
       return true;

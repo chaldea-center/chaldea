@@ -9,8 +9,8 @@ import '../home/subpage/account_page.dart';
 import '../home/subpage/user_data_page.dart';
 import 'import_fgo_simu_material_page.dart';
 import 'import_https_page.dart';
-import 'import_item_screenshot.dart';
-import 'import_skill_screenshot.dart';
+import 'item_screenshots.dart';
+import 'skill_screenshots.dart';
 import 'v1_backup.dart';
 
 class ImportPageHome extends StatefulWidget {
