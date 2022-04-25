@@ -60,7 +60,12 @@ class Transl<K, V> {
       : _m = m,
         mappings = {key: m};
 
-  static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
+  static Transl<int, String> trait(int id) {
+    if (!_md.trait.containsKey(id)) {
+      id = _md.traitRedirect[id] ?? id;
+    }
+    return Transl(_md.trait, id, '$id');
+  }
 
   static Transl<String, String> itemNames(String jp) =>
       Transl(_md.itemNames, jp, jp);
@@ -201,6 +206,7 @@ class MappingData {
   final Map<String, MappingBase<String>> tdRuby;
   final Map<String, MappingBase<String>> tdDetail;
   final Map<int, MappingBase<String>> trait; // key: trait id
+  final Map<int, int> traitRedirect; // key: trait id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>> skillState;
@@ -237,6 +243,7 @@ class MappingData {
     this.tdRuby = const {},
     this.tdDetail = const {},
     this.trait = const {},
+    this.traitRedirect = const {},
     this.mcDetail = const {},
     this.costumeDetail = const {},
     this.skillState = const {},

@@ -186,6 +186,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      traitRedirect: (json['trait_redirect'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), e as int),
+          ) ??
+          const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),

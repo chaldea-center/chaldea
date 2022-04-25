@@ -343,6 +343,7 @@ class FuncDescriptor extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
       child: _LazyTrigger(
         trigger: detail,
+        buff: func.buffs.first,
         isNp: func.svals.first.UseTreasureDevice == 1,
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
@@ -353,6 +354,7 @@ class FuncDescriptor extends StatelessWidget {
 
 class _LazyTrigger extends StatefulWidget {
   final BuffValueTriggerType trigger;
+  final Buff buff;
   final bool isNp;
   final bool showPlayer;
   final bool showEnemy;
@@ -360,6 +362,7 @@ class _LazyTrigger extends StatefulWidget {
   const _LazyTrigger({
     Key? key,
     required this.trigger,
+    required this.buff,
     required this.isNp,
     required this.showPlayer,
     required this.showEnemy,
@@ -410,13 +413,17 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          ' $title ',
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              ?.copyWith(decoration: TextDecoration.underline),
-        ),
+        Text.rich(TextSpan(
+          style: Theme.of(context).textTheme.caption,
+          children: [
+            TextSpan(
+              text: '  $title ',
+              style: const TextStyle(decoration: TextDecoration.underline),
+            ),
+            TextSpan(
+                text: ' [${Transl.funcPopuptext(widget.buff.type.name).l}]')
+          ],
+        )),
         ...describeFunctions(
           funcs: skill?.functions ?? [],
           showPlayer: widget.showPlayer,
