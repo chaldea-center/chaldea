@@ -7,13 +7,20 @@ import 'package:screenshot/screenshot.dart';
 import 'package:chaldea/models/version.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
+import 'api/recognizer.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;
   double? criticalWidth;
+
   Set<Uint8List> recognizerItems = {};
   Set<Uint8List> recognizerActive = {};
   Set<Uint8List> recognizerAppend = {};
+
+  ItemResult? recognizerItemResult;
+  SkillResult? recognizerActiveResult;
+  SkillResult? recognizerAppendResult;
+
   bool googlePlayAccess = false;
 
   // debug

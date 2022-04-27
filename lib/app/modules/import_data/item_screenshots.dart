@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -30,10 +32,11 @@ class ImportItemScreenshotPage extends StatefulWidget {
 class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  ItemResult? output;
   late Dio _dio;
 
   Set<Uint8List> get imageFiles => db.runtimeData.recognizerItems;
+  ItemResult? get result => db.runtimeData.recognizerItemResult;
+  set result(ItemResult? v) => db.runtimeData.recognizerItemResult = v;
 
   @override
   void initState() {
@@ -84,7 +87,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
               debugServerRoot: _dio.options.baseUrl,
             ),
           ),
-          KeepAliveBuilder(builder: (ctx) => ItemResultTab(result: output)),
+          KeepAliveBuilder(builder: (ctx) => ItemResultTab(result: result)),
           if (AppInfo.isDebugDevice)
             KeepAliveBuilder(
               builder: (ctx) => RecognizerViewerTab(type: RecognizerType.item),
@@ -108,7 +111,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         var bytes = imageFiles.elementAt(index);
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {
-          bytes = compressToJpg(
+          bytes = await compressToJpgAsync(
               src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
         }
         files.add(MultipartFile.fromBytes(bytes, filename: 'file$index'));
@@ -116,7 +119,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       map['files'] = files;
       var formData = FormData.fromMap(map);
       final resp2 = await _dio.post('recognizer/item', data: formData);
-      output = ItemResult.fromJson(resp2.data);
+      result = ItemResult.fromJson(resp2.data);
+      logger.i('received recognized: ${result?.details.length} items');
       if (mounted) {
         setState(() {});
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {

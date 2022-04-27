@@ -40,6 +40,17 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       ? db.runtimeData.recognizerAppend
       : db.runtimeData.recognizerActive;
 
+  SkillResult? get result => widget.isAppend
+      ? db.runtimeData.recognizerAppendResult
+      : db.runtimeData.recognizerActiveResult;
+  set result(SkillResult? v) {
+    if (widget.isAppend) {
+      db.runtimeData.recognizerAppendResult = v;
+    } else {
+      db.runtimeData.recognizerActiveResult = v;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -117,18 +128,16 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         var bytes = imageFiles.elementAt(index);
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {
-          bytes = compressToJpg(
+          bytes = await compressToJpgAsync(
               src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
         }
         files.add(MultipartFile.fromBytes(bytes, filename: 'file$index'));
       }
       map['files'] = files;
       var formData = FormData.fromMap(map);
-      final t = StopwatchX('recognizer');
       final resp2 = await _dio.post('recognizer/skill', data: formData);
       output = SkillResult.fromJson(resp2.data);
-      t.log('full');
-      print('calc: ${output?.lapse}');
+      logger.i('received recognized: ${output?.details.length} servants');
 
       if (mounted) {
         setState(() {});

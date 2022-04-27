@@ -2,15 +2,34 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:image/image.dart' as lib_image;
+import 'package:worker_manager/worker_manager.dart';
 
 import 'package:chaldea/packages/logger.dart';
+
+Future<Uint8List> compressToJpgAsync({
+  required Uint8List src,
+  int quality = 90,
+  int? maxWidth,
+  int? maxHeight,
+}) async {
+  return Executor().execute(
+      fun4: _compressToJpg,
+      arg1: src,
+      arg2: quality,
+      arg3: maxWidth,
+      arg4: maxHeight);
+}
 
 Uint8List compressToJpg({
   required Uint8List src,
   int quality = 90,
   int? maxWidth,
   int? maxHeight,
-}) {
+}) =>
+    _compressToJpg(src, quality, maxWidth, maxHeight);
+
+Uint8List _compressToJpg(
+    Uint8List src, int quality, int? maxWidth, int? maxHeight) {
   assert(maxWidth == null || maxWidth > 0);
   assert(maxHeight == null || maxHeight > 0);
   lib_image.Image? srcImage = lib_image.decodeImage(src);
