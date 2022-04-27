@@ -686,6 +686,7 @@ VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
     );
 
 const _$SvtVoiceTypeEnumMap = {
+  SvtVoiceType.unknown: 'unknown',
   SvtVoiceType.home: 'home',
   SvtVoiceType.groeth: 'groeth',
   SvtVoiceType.firstGet: 'firstGet',
@@ -704,13 +705,16 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.eventDailyPoint: 'eventDailyPoint',
   SvtVoiceType.tddamage: 'tddamage',
   SvtVoiceType.treasureBox: 'treasureBox',
+  SvtVoiceType.warBoard: 'warBoard',
+  SvtVoiceType.eventDigging: 'eventDigging',
   SvtVoiceType.sum: 'sum',
 };
 
 VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
       svtId: json['svtId'] as int,
       voicePrefix: json['voicePrefix'] as int? ?? 0,
-      type: $enumDecode(_$SvtVoiceTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$SvtVoiceTypeEnumMap, json['type']) ??
+          SvtVoiceType.unknown,
       voiceLines: (json['voiceLines'] as List<dynamic>?)
               ?.map((e) =>
                   VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))

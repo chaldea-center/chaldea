@@ -1010,7 +1010,7 @@ class VoiceGroup {
   VoiceGroup({
     required this.svtId,
     this.voicePrefix = 0,
-    required this.type,
+    this.type = SvtVoiceType.unknown,
     this.voiceLines = const [],
   });
 
@@ -1141,6 +1141,7 @@ enum VoiceCondType {
 }
 
 enum SvtVoiceType {
+  unknown,
   home,
   groeth,
   firstGet,
@@ -1159,6 +1160,8 @@ enum SvtVoiceType {
   eventDailyPoint,
   tddamage,
   treasureBox,
+  warBoard,
+  eventDigging,
   sum,
 }
 
