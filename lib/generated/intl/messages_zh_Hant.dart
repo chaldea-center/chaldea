@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_experience": MessageLookupByLibrary.simpleMessage("經驗"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羈絆"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("通關獎勵"),
-        "game_server": MessageLookupByLibrary.simpleMessage("服務器"),
+        "game_server": MessageLookupByLibrary.simpleMessage("游戏区服"),
         "gamedata": MessageLookupByLibrary.simpleMessage("遊戲數據"),
         "general_default": MessageLookupByLibrary.simpleMessage("默認"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),

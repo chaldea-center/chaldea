@@ -460,7 +460,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           title: Text(S.current.download_source),
           subtitle: Text(S.current.download_source_hint),
           trailing: DropdownButton<bool>(
-            value: db.settings.proxyDataSource,
+            value: db.settings.proxyServer,
             items: [
               DropdownMenuItem(
                   child: Text(S.current.general_default), value: false),
@@ -469,7 +469,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             onChanged: (v) {
               setState(() {
                 if (v != null) {
-                  db.settings.proxyDataSource = v;
+                  db.settings.proxyServer = v;
                 }
                 db.saveSettings();
               });

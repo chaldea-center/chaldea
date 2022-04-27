@@ -96,8 +96,8 @@ class ChaldeaApi {
 
   static Dio get dio {
     return Dio(BaseOptions(
-      baseUrl: '$kServerRoot/v2/',
-      // baseUrl: kDebugMode ? 'http://localhost:8000/' : '$kServerRoot/v2/',
+      baseUrl: '${db.serverRoot}/v2/',
+      // baseUrl: kDebugMode ? 'http://localhost:8000/' : '${db.serverRoot}/v2/',
       queryParameters: {
         'key': AppInfo.uuid,
         'ver': AppInfo.versionString,

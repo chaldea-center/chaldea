@@ -289,17 +289,7 @@ class _Database {
         },
       ));
 
-  @Deprecated('message')
-  Dio get apiDio => Dio(BaseOptions(
-        // baseUrl: 'https://api.chaldea.center/v2/',
-        baseUrl: kDebugMode ? 'http://localhost:8000/v2/' : kServerRoot,
-        queryParameters: {
-          'app_ver': AppInfo.versionString,
-          'user_key': AppInfo.uuid,
-          'lang': Language.current.code,
-          'os': PlatformU.operatingSystem
-        },
-      ));
+  String get serverRoot => settings.proxyServer ? kServerRootCN : kServerRoot;
 }
 
 final db = _Database();

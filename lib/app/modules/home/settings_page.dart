@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/_test_page.dart';
@@ -61,7 +62,35 @@ class _SettingsPageState extends State<SettingsPage> {
         slivers: [
           SliverTileGroup(
             header: S.current.chaldea_account,
-            children: [userTile],
+            children: [
+              userTile,
+              ListTile(
+                leading: const FaIcon(FontAwesomeIcons.server, size: 18),
+                title: Text(S.current.chaldea_server),
+                // subtitle: Text(S.current.chaldea_server_hint),
+                horizontalTitleGap: 0,
+                trailing: DropdownButton<bool>(
+                  value: db.settings.proxyServer,
+                  items: [
+                    DropdownMenuItem(
+                        child: Text(S.current.general_default), value: false),
+                    const DropdownMenuItem(child: Text('CN'), value: true),
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) {
+                        db.settings.proxyServer = v;
+                      }
+                      if (kIsWeb) {
+                        kPlatformMethods.setLocalStorage(
+                            'useProxy', v.toString());
+                      }
+                      db.saveSettings();
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           SliverTileGroup(
             header: S.current.game_account,

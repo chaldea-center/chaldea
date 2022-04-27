@@ -245,7 +245,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_experience": MessageLookupByLibrary.simpleMessage("경험치"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("몽화"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("보상"),
-        "game_server": MessageLookupByLibrary.simpleMessage("서버"),
         "gamedata": MessageLookupByLibrary.simpleMessage("게임 데이터"),
         "gold": MessageLookupByLibrary.simpleMessage("금색"),
         "grail": MessageLookupByLibrary.simpleMessage("성배"),

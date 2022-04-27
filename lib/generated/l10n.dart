@@ -548,6 +548,28 @@ class S {
     );
   }
 
+  /// `Server`
+  String get chaldea_server {
+    return Intl.message(
+      'Server',
+      name: 'chaldea_server',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Used for game data and screenshots recognizer`
+  String get chaldea_server_hint {
+    return Intl.message(
+      'Used for game data and screenshots recognizer',
+      name: 'chaldea_server_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n{url}\n`
   String chaldea_share_msg(Object url) {
     return Intl.message(

@@ -44,6 +44,8 @@
   "chaldea_account": null,
   "chaldea_account_system_hint": null,
   "chaldea_backup": null,
+  "chaldea_server": null,
+  "chaldea_server_hint": null,
   "chaldea_share_msg": null,
   "change_log": "سجل التغييرات ",
   "characters_in_card": "حروف",

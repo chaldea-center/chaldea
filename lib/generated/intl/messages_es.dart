@@ -273,7 +273,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_experience": MessageLookupByLibrary.simpleMessage("Experiencia"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("Bond"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("Recompensas"),
-        "game_server": MessageLookupByLibrary.simpleMessage("Servidor"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Datos del juego"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "grail": MessageLookupByLibrary.simpleMessage("Grial"),

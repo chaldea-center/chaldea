@@ -70,35 +70,6 @@ class _GameDataPageState extends State<GameDataPage> {
             ],
           ),
           TileGroup(
-            header: S.current.download_source,
-            children: [
-              ListTile(
-                title: Text(S.current.download_source),
-                subtitle: Text(S.current.download_source_hint),
-                trailing: DropdownButton<bool>(
-                  value: db.settings.proxyDataSource,
-                  items: [
-                    DropdownMenuItem(
-                        child: Text(S.current.general_default), value: false),
-                    const DropdownMenuItem(child: Text('CN'), value: true),
-                  ],
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) {
-                        db.settings.proxyDataSource = v;
-                      }
-                      if (kIsWeb) {
-                        kPlatformMethods.setLocalStorage(
-                            'useProxy', v.toString());
-                      }
-                      db.saveSettings();
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-          TileGroup(
             header: S.current.gamedata,
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[

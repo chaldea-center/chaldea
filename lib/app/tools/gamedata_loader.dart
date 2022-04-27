@@ -26,14 +26,14 @@ class GameDataLoader {
   static Future<Response<T>> _dioGet<T>(String filename,
       {Options? options}) async {
     final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
-    if (!db.settings.proxyDataSource) {
+    if (!db.settings.proxyServer) {
       return await Dio().get<T>(url, options: options);
     }
     try {
       return await Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 5000))
           .get<T>(url, options: options);
     } catch (e) {
-      if (db.settings.proxyDataSource) {
+      if (db.settings.proxyServer) {
         // print('download data from CN: $cnUrl');
         return await Dio().get<T>(cnUrl, options: options);
       }

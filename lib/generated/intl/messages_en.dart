@@ -121,6 +121,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
+        "chaldea_server": MessageLookupByLibrary.simpleMessage("Server"),
+        "chaldea_server_hint": MessageLookupByLibrary.simpleMessage(
+            "Used for game data and screenshots recognizer"),
         "chaldea_share_msg": m2,
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card":

@@ -113,6 +113,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea应用备份"),
+        "chaldea_server": MessageLookupByLibrary.simpleMessage("服务器"),
+        "chaldea_server_hint":
+            MessageLookupByLibrary.simpleMessage("用于游戏数据和截图识别"),
         "chaldea_share_msg": m2,
         "change_log": MessageLookupByLibrary.simpleMessage("更新历史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出场角色"),
@@ -273,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_experience": MessageLookupByLibrary.simpleMessage("经验"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羁绊"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("通关奖励"),
-        "game_server": MessageLookupByLibrary.simpleMessage("服务器"),
+        "game_server": MessageLookupByLibrary.simpleMessage("游戏区服"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
         "general_default": MessageLookupByLibrary.simpleMessage("默认"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
