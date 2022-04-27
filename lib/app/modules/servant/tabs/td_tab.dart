@@ -83,6 +83,7 @@ class SvtTdTab extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 4),
             toggle,
             TdDescriptor(td: td, level: level),
           ],

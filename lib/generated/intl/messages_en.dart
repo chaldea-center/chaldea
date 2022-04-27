@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
+  static String m17(n) => "Profile ${n}";
+
   static String m0(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -669,6 +671,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "svt_profile_info":
+            MessageLookupByLibrary.simpleMessage("Character Info"),
+        "svt_profile_n": m17,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":

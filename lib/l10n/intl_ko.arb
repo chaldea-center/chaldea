@@ -444,6 +444,8 @@
   "svt_not_planned": "팔로우 하지않음",
   "svt_plan_hidden": "숨김",
   "svt_profile": null,
+  "svt_profile_info": null,
+  "svt_profile_n": null,
   "svt_related_ce": null,
   "svt_reset_plan": "계획 초기화",
   "svt_second_archive": "영기 보관실",

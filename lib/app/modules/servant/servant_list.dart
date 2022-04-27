@@ -756,6 +756,18 @@ class ServantListPageState extends State<ServantListPage>
         : _usualListItemBuilder(svt);
   }
 
+  void _batchChange(
+      void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
+    for (final svt in shownList) {
+      if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+        final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+            target = db.curUser.svtPlanOf(svt.collectionNo);
+        onChanged(svt, cur, target);
+      }
+    }
+    db.itemCenter.updateSvts(all: true);
+  }
+
   @override
   PreferredSizeWidget? get buttonBar {
     if (!widget.planMode) return null;
@@ -778,15 +790,11 @@ class ServantListPageState extends State<ServantListPage>
           setState(() {
             _changedAscension = v;
             if (_changedAscension == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db.curUser.svtPlanOf(svt.collectionNo);
-                if (changeTarget) {
-                  target.ascension = max(cur.ascension, _changedAscension!);
-                } else {
-                  cur.ascension = _changedAscension!;
-                }
+            _batchChange((svt, cur, target) {
+              if (changeTarget) {
+                target.ascension = max(cur.ascension, _changedAscension!);
+              } else {
+                cur.ascension = _changedAscension!;
               }
             });
           });
@@ -811,23 +819,19 @@ class ServantListPageState extends State<ServantListPage>
           setState(() {
             _changedSkill = v;
             if (_changedSkill == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db.curUser.svtPlanOf(svt.collectionNo);
-                for (int i = 0; i < 3; i++) {
-                  if (changeTarget) {
-                    if (v == 0) {
-                      target.skills[i] = min(10, cur.skills[i] + 1);
-                    } else {
-                      target.skills[i] = max(cur.skills[i], _changedSkill!);
-                    }
+            _batchChange((svt, cur, target) {
+              for (int i = 0; i < 3; i++) {
+                if (changeTarget) {
+                  if (v == 0) {
+                    target.skills[i] = min(10, cur.skills[i] + 1);
                   } else {
-                    if (v == 0) {
-                      cur.skills[i] = min(10, cur.skills[i] + 1);
-                    } else {
-                      cur.skills[i] = _changedSkill!;
-                    }
+                    target.skills[i] = max(cur.skills[i], _changedSkill!);
+                  }
+                } else {
+                  if (v == 0) {
+                    cur.skills[i] = min(10, cur.skills[i] + 1);
+                  } else {
+                    cur.skills[i] = _changedSkill!;
                   }
                 }
               }
@@ -857,26 +861,22 @@ class ServantListPageState extends State<ServantListPage>
           setState(() {
             _changedAppend = v;
             if (_changedAppend == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db.curUser.svtPlanOf(svt.collectionNo);
-                for (int i in (db.settings.display.onlyAppendSkillTwo
-                    ? [1]
-                    : [0, 1, 2])) {
-                  if (changeTarget) {
-                    if (v == -1) {
-                      target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                    } else {
-                      target.appendSkills[i] =
-                          max(cur.appendSkills[i], _changedAppend!);
-                    }
+            _batchChange((svt, cur, target) {
+              for (int i in (db.settings.display.onlyAppendSkillTwo
+                  ? [1]
+                  : [0, 1, 2])) {
+                if (changeTarget) {
+                  if (v == -1) {
+                    target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
                   } else {
-                    if (v == -1) {
-                      cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                    } else {
-                      cur.appendSkills[i] = _changedAppend!;
-                    }
+                    target.appendSkills[i] =
+                        max(cur.appendSkills[i], _changedAppend!);
+                  }
+                } else {
+                  if (v == -1) {
+                    cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                  } else {
+                    cur.appendSkills[i] = _changedAppend!;
                   }
                 }
               }
@@ -898,16 +898,11 @@ class ServantListPageState extends State<ServantListPage>
           setState(() {
             _changedDress = v;
             if (_changedDress == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-                    target = db.curUser.svtPlanOf(svt.collectionNo);
-                final costumes = changeTarget ? target.costumes : cur.costumes;
-                costumes
-                  ..clear()
-                  ..addAll(Map.fromIterable(svt.profile.costume.keys,
-                      value: (k) => _changedDress == true ? 1 : 0));
-              }
+            _batchChange((svt, cur, target) {
+              final costumes = changeTarget ? target.costumes : cur.costumes;
+              costumes.clear();
+              costumes.addAll(Map.fromIterable(svt.profile.costume.keys,
+                  value: (k) => _changedDress == true ? 1 : 0));
             });
           });
         },

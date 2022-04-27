@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(battles, ap) => "总计${battles}次战斗, ${ap} AP";
 
+  static String m17(n) => "个人资料${n}";
+
   static String m0(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -569,6 +571,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
+        "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色详情"),
+        "svt_profile_n": m17,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),

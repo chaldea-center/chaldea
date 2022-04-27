@@ -15,7 +15,8 @@ class SvtSummonTab extends StatelessWidget {
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
-      if (summon.allCards(svt: true).contains(svt.collectionNo)) {
+      if (summon.allCards(svt: true).contains(svt.collectionNo) &&
+          summon.startTime.jp != null) {
         summons.add(summon);
       }
     }
@@ -25,6 +26,7 @@ class SvtSummonTab extends StatelessWidget {
         title: Text('No related summons'),
       );
     }
+    summons.sort2((e) => e.startTime.jp!, reversed: true);
     return ListView.separated(
       itemBuilder: (context, index) => summonTile(summons[index]),
       separatorBuilder: (context, index) => kDefaultDivider,

@@ -623,8 +623,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     } else {
       buttons.add(TextButton(
         onPressed: () {
-          print(status.cur.toJson());
-          print(plan.toJson());
           final Map<int, int> items = Item.sortMapByPriority(
               db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
           _showItemsDialog(

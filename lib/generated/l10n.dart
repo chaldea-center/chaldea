@@ -4955,6 +4955,28 @@ class S {
     );
   }
 
+  /// `Character Info`
+  String get svt_profile_info {
+    return Intl.message(
+      'Character Info',
+      name: 'svt_profile_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Profile {n}`
+  String svt_profile_n(Object n) {
+    return Intl.message(
+      'Profile $n',
+      name: 'svt_profile_n',
+      desc: '',
+      locale: localeName,
+      args: [n],
+    );
+  }
+
   /// `Related CEs`
   String get svt_related_ce {
     return Intl.message(

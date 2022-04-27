@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 const String kAppName = 'Chaldea';
@@ -23,3 +25,6 @@ const kMonoFont = 'RobotoMono';
 const kMonoStyle = TextStyle(fontFamily: kMonoFont);
 
 const kStarChar = '☆';
+// 0x01ffffff
+final kOnePixel = base64.decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');

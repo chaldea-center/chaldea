@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -108,8 +110,8 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
 class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
-  static AtlasIconLoader? _instance;
-  factory AtlasIconLoader() => _instance ?? AtlasIconLoader._();
+  static final AtlasIconLoader _instance = AtlasIconLoader._();
+  factory AtlasIconLoader() => _instance;
 
   @override
   final Duration failedExpire = const Duration(minutes: 30);
@@ -117,8 +119,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   final _rateLimiter = RateLimiter(maxCalls: 20);
 
   @override
-  Future<String> download(String url, {RateLimiter? limiter}) async {
+  Future<String?> download(String url, {RateLimiter? limiter}) async {
     final localPath = _atlasUrlToFp(url);
+    if (localPath == null) return null;
     if (await File(localPath).exists()) {
       return localPath;
     }
@@ -130,8 +133,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     return localPath;
   }
 
-  String _atlasUrlToFp(String url) {
-    assert(url.startsWith(Atlas.assetHost), url);
+  String? _atlasUrlToFp(String url) {
+    if (!url.startsWith(Atlas.assetHost)) return null;
     String urlPath = url.replaceFirst(Atlas.assetHost, '');
     return pathlib.joinAll([
       db.paths.atlasIconDir,
@@ -145,7 +148,7 @@ abstract class _CachedLoader<K, V> {
   final Map<K, V> _success = {};
   final Map<K, DateTime> _failed = {};
   Duration get failedExpire;
-  Future<V> download(K key);
+  Future<V?> download(K key);
 
   V? getCached(K key) {
     if (_success.containsKey(key)) return _success[key];
@@ -170,7 +173,7 @@ abstract class _CachedLoader<K, V> {
     if (isFailed(key)) return null;
     Completer<V?> _cmpl = Completer();
     download(key).then<void>((value) {
-      _success[key] = value;
+      if (value != null) _success[key] = value;
       _cmpl.complete(value);
     }).catchError((e, s) {
       logger.e('Got $key failed', e, s);
@@ -180,4 +183,65 @@ abstract class _CachedLoader<K, V> {
     _completers[key] = _cmpl;
     return _cmpl.future;
   }
+}
+
+@immutable
+class MyCacheImage extends ImageProvider<MyCacheImage> {
+  /// Creates an object that decodes a [File] as an image.
+  ///
+  /// The arguments must not be null.
+  const MyCacheImage(this.url, {this.scale = 1.0});
+
+  /// The file to decode into an image.
+  final String url;
+
+  /// The scale to place in the [ImageInfo] object of the image.
+  final double scale;
+
+  @override
+  Future<MyCacheImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<MyCacheImage>(this);
+  }
+
+  @override
+  ImageStreamCompleter load(MyCacheImage key, DecoderCallback decode) {
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key, decode),
+      scale: key.scale,
+      debugLabel: key.url,
+      informationCollector: () => <DiagnosticsNode>[
+        ErrorDescription('Url: $url'),
+      ],
+    );
+  }
+
+  Future<ui.Codec> _loadAsync(MyCacheImage key, DecoderCallback decode) async {
+    assert(key == this);
+
+    final localPath = await AtlasIconLoader._instance.get(key.url);
+    if (localPath == null) {
+      throw StateError('${key.url} cannot be cached to local');
+    }
+    final bytes = await File(localPath).readAsBytes();
+    if (bytes.lengthInBytes == 0) {
+      // The file may become available later.
+      PaintingBinding.instance.imageCache.evict(key);
+      throw StateError('$localPath is empty and cannot be loaded as an image.');
+    }
+
+    return decode(bytes);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is MyCacheImage && other.url == url && other.scale == scale;
+  }
+
+  @override
+  int get hashCode => Object.hash(url, scale);
+
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'MyCacheImage')}("$url", scale: $scale)';
 }

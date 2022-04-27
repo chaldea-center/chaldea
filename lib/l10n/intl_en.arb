@@ -444,6 +444,8 @@
   "svt_not_planned": "Not favorite",
   "svt_plan_hidden": "Hidden",
   "svt_profile": "Profile",
+  "svt_profile_info": "Character Info",
+  "svt_profile_n": "Profile {n}",
   "svt_related_ce": "Related CEs",
   "svt_reset_plan": "Reset Plan",
   "svt_second_archive": "Second Archive",

@@ -444,6 +444,8 @@
   "svt_not_planned": "غير مفضل",
   "svt_plan_hidden": "مخفي",
   "svt_profile": null,
+  "svt_profile_info": null,
+  "svt_profile_n": null,
   "svt_related_ce": null,
   "svt_reset_plan": "إعادة ضبط الخطة",
   "svt_second_archive": null,

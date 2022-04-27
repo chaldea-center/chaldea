@@ -444,6 +444,8 @@
   "svt_not_planned": "未フォロー",
   "svt_plan_hidden": "非表示",
   "svt_profile": "プロフィール",
+  "svt_profile_info": null,
+  "svt_profile_n": null,
   "svt_related_ce": "関連礼装",
   "svt_reset_plan": "プランをリセット",
   "svt_second_archive": "保管室",

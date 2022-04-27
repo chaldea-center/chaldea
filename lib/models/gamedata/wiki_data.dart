@@ -301,7 +301,7 @@ class LimitedSummon {
     List<int> cards = [];
     for (final sub in subSummons) {
       for (final prob in sub.probs) {
-        if (includeGSSR && prob.rarity == 5) {
+        if (includeGSSR && prob.rarity == 5 && prob.isSvt) {
           cards.addAll(prob.ids);
           continue;
         }

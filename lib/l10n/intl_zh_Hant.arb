@@ -444,6 +444,8 @@
   "svt_not_planned": "未關注",
   "svt_plan_hidden": "已隱藏",
   "svt_profile": null,
+  "svt_profile_info": null,
+  "svt_profile_n": null,
   "svt_related_ce": null,
   "svt_reset_plan": "重置規劃",
   "svt_second_archive": null,

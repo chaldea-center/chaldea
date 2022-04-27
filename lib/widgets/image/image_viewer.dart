@@ -174,7 +174,7 @@ class _CachedImageState extends State<CachedImage> {
 
   Widget _withProvider(ImageProvider provider) {
     Widget child = FadeInImage(
-      placeholder: const AssetImage('res/img/1x1.png'),
+      placeholder: MemoryImage(kOnePixel),
       image: provider,
       imageErrorBuilder: cachedOption.errorWidget == null
           ? (ctx, e, s) => CachedImage.defaultErrorWidget(ctx, '', e)
@@ -216,7 +216,7 @@ class _CachedImageState extends State<CachedImage> {
               share: true,
             );
           });
-          widget.imageProvider!.resolve(ImageConfiguration.empty)
+          provider.resolve(ImageConfiguration.empty)
             ..removeListener(_imageStreamListener!)
             ..addListener(_imageStreamListener!);
         },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -54,6 +55,14 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     List<LoreComment> comments = List.of(svt?.profile.comments ?? []);
     comments.sort2((e) => e.id * 100 + e.priority);
     for (final lore in comments) {
+      String title;
+      if ([168, 240].contains(svt?.collectionNo)) {
+        title = S.current.svt_profile_n(lore.id);
+      } else {
+        title = lore.id == 1
+            ? S.current.svt_profile_info
+            : S.current.svt_profile_n(lore.id - 1);
+      }
       children.add(Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         color: Theme.of(context).cardColor.withOpacity(0.975),
@@ -62,7 +71,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             CustomTile(
-              title: Text(lore.id.toString()),
+              title: Text(title),
               subtitle:
                   lore.condMessage.isEmpty ? null : Text(lore.condMessage),
             ),

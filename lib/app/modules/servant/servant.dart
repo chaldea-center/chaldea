@@ -1,9 +1,13 @@
+import 'dart:ui';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -44,8 +48,6 @@ class ServantDetailPage extends StatefulWidget {
 
 class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
-  bool _showHeader = true;
-
   Servant? _svt;
 
   Servant get svt => _svt!;
@@ -85,87 +87,249 @@ class ServantDetailPageState extends State<ServantDetailPage>
     return DefaultTabController(
       length: builders.length,
       child: Scaffold(
-          appBar: AppBar(
-            titleSpacing: 0,
-            title: AutoSizeText(
-              svt.lName.l,
-              maxLines: 1,
+        body: NestedScrollView(
+          headerSliverBuilder: _sliverBuilder,
+          body: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: tabBarView,
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
+    final ascensions = svt.extraAssets.charaGraph.ascension;
+    final ascension = ascensions?[db.userData.svtAscensionIcon] ??
+        ascensions?.values.toList().getOrNull(0);
+    return [
+      SliverAppBar(
+        title: AutoSizeText(svt.lName.l, maxLines: 1),
+        elevation: 0,
+        actions: [
+          if (svt.isUserSvt)
+            db.onUserData(
+              (context, _) => IconButton(
+                icon: status.favorite
+                    ? const Icon(Icons.favorite, color: Colors.redAccent)
+                    : const Icon(Icons.favorite_border),
+                tooltip: S.of(context).favorite,
+                onPressed: () {
+                  setState(() {
+                    status.cur.favorite = !status.cur.favorite;
+                  });
+                  svt.updateStat();
+                },
+              ),
             ),
-            actions: <Widget>[
-              if (svt.isUserSvt)
-                db.onUserData(
-                  (context, _) => IconButton(
-                    icon: status.favorite
-                        ? const Icon(Icons.favorite, color: Colors.redAccent)
-                        : const Icon(Icons.favorite_border),
-                    tooltip: S.of(context).favorite,
-                    onPressed: () {
-                      setState(() {
-                        status.cur.favorite = !status.cur.favorite;
-                      });
-                      svt.updateStat();
-                    },
+          _popupButton,
+        ],
+        pinned: true,
+        expandedHeight: 160,
+        flexibleSpace: FlexibleSpaceBar(
+          background: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  color: Colors.grey,
+                  // child: const SizedBox.expand(),
+                ),
+              ),
+              if (ascension != null)
+                Positioned.fill(
+                  child: FadeInImage(
+                    placeholder: MemoryImage(kOnePixel),
+                    image: kIsWeb
+                        ? NetworkImage(ascension) as ImageProvider
+                        : MyCacheImage(ascension),
+                    fit: BoxFit.fitWidth,
+                    alignment: const Alignment(0.0, -0.8),
                   ),
                 ),
-              _popupButton,
+              if (ascension != null)
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
+                    child: Container(
+                      color: Colors.grey[800]?.withOpacity(
+                          Theme.of(context).isDarkMode ? 0.75 : 0.65),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+                child: SafeArea(child: header),
+              ),
             ],
           ),
-          body: Column(
-            children: <Widget>[
-              _buildHeader(),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        height: 36,
-                        child: TabBar(
-                          labelColor: Theme.of(context).colorScheme.secondary,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          labelPadding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                          unselectedLabelColor: Colors.grey,
-                          isScrollable: true,
-                          tabs: builders
-                              .map((e) => Tab(
-                                  child: Text(e.tabBuilder(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2)))
-                              .toList(),
-                        ),
-                      ),
+        ),
+        bottom: tabBar,
+      ),
+    ];
+  }
+
+  Widget get header {
+    return CustomTile(
+      leading: InkWell(
+        child: svt.iconBuilder(
+          context: context,
+          height: 72,
+          jumpToDetail: false,
+          overrideIcon: svt.customIcon,
+        ),
+        onTap: () {
+          FullscreenImageViewer.show(
+            context: context,
+            urls: svt.extraAssets.charaGraph.allUrls.toList(),
+            placeholder: (context, url) {
+              final card = svt.classCard;
+              return card == null ? const SizedBox() : db.getIconImage(card);
+            },
+          );
+        },
+      ),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'No.${svt.collectionNo}  ${Transl.svtClass(svt.className).l}',
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          if (svt.isUserSvt)
+            TextButton(
+              onPressed: () {
+                if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
+                  return;
+                }
+                router.pushPage(
+                  GrowthCurvePage.fromCard(
+                    title: '${S.current.growth_curve} - ${svt.lName.l}',
+                    atks: svt.atkGrowth,
+                    hps: svt.hpGrowth,
+                    avatar: CachedImage(
+                      imageUrl:
+                          svt.extraAssets.status.ascension?[1] ?? svt.icon,
+                      height: 90,
+                      placeholder: (_, __) => Container(),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      _showHeader
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      color: Theme.of(context).highlightColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _showHeader = !_showHeader;
-                      });
-                    },
-                  )
-                ],
+                );
+              },
+              child: Text(
+                'ATK ${svt.atkMax}  HP ${svt.hpMax}',
+                // style: Theme.of(context).textTheme.caption,
+                textScaleFactor: 0.9,
               ),
-              const Divider(height: 1),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    for (final builder in builders)
-                      builder.viewBuilder?.call(context) ??
-                          Center(child: Text(S.current.not_implemented))
-                  ],
-                ),
+              style: TextButton.styleFrom(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                minimumSize: const Size(48, 26),
+              ),
+            ),
+          const SizedBox(height: 4),
+        ],
+      ),
+      titlePadding: const EdgeInsetsDirectional.only(start: 16),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+      subtitle: SizedBox(
+        height: 22,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: <Widget>[
+            // more tags/info here
+            for (final badge in getObtainBadges())
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 4),
+                child: badge,
               )
-            ],
-          )),
+          ],
+        ),
+      ),
+      trailing: !svt.isUserSvt
+          ? null
+          : SizedBox(
+              height: 64,
+              child: db.onUserData(
+                (context, _) => Tooltip(
+                  message: S.current.priority,
+                  child: DropdownButton<int>(
+                    value: status.priority,
+                    itemHeight: 64,
+                    items: List.generate(5, (index) {
+                      final icons = [
+                        Icons.looks_5_outlined,
+                        Icons.looks_4_outlined,
+                        Icons.looks_3_outlined,
+                        Icons.looks_two_outlined,
+                        Icons.looks_one_outlined,
+                      ];
+                      final int priority = 5 - index;
+                      return DropdownMenuItem(
+                        value: priority,
+                        child: SizedBox(
+                          width: 40,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                icons[index],
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              AutoSizeText(
+                                db.settings.priorityTags[priority] ?? '',
+                                overflow: TextOverflow.visible,
+                                minFontSize: 6,
+                                maxFontSize: 12,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                    onChanged: (v) {
+                      status.priority = v ?? status.priority;
+                      db.notifyUserdata();
+                    },
+                    underline: Container(),
+                    icon: Container(),
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+
+  PreferredSizeWidget get tabBar {
+    return PreferredSize(
+      preferredSize: const Size(double.infinity, 36),
+      child: SizedBox(
+        height: 36,
+        child: TabBar(
+          // labelColor: Theme.of(context).colorScheme.secondary,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+          // unselectedLabelColor: Colors.grey,
+          isScrollable: true,
+          tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget get tabBarView {
+    return TabBarView(
+      children: [
+        for (final builder in builders)
+          builder.viewBuilder?.call(context) ??
+              Center(child: Text(S.current.not_implemented))
+      ],
     );
   }
 
@@ -407,134 +571,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
           // Navigator.pop(context);
         }
       },
-    );
-  }
-
-  Widget _buildHeader() {
-    return AnimatedCrossFade(
-      firstChild: CustomTile(
-        leading: InkWell(
-          child: svt.iconBuilder(
-            context: context,
-            height: 72,
-            jumpToDetail: false,
-            overrideIcon: svt.customIcon,
-          ),
-          onTap: () {
-            FullscreenImageViewer.show(
-              context: context,
-              urls: svt.extraAssets.charaGraph.ascension?.values.toList() ?? [],
-              placeholder: (context, url) {
-                final card = svt.classCard;
-                return card == null ? const SizedBox() : db.getIconImage(card);
-              },
-            );
-          },
-        ),
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('No.${svt.collectionNo}  ${Transl.svtClass(svt.className).l}'),
-            if (svt.isUserSvt)
-              TextButton(
-                onPressed: () {
-                  if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
-                    return;
-                  }
-                  router.pushPage(
-                    GrowthCurvePage.fromCard(
-                      title: '${S.current.growth_curve} - ${svt.lName.l}',
-                      atks: svt.atkGrowth,
-                      hps: svt.hpGrowth,
-                      avatar: CachedImage(
-                        imageUrl:
-                            svt.extraAssets.status.ascension?[1] ?? svt.icon,
-                        height: 90,
-                        placeholder: (_, __) => Container(),
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  'ATK ${svt.atkMax}  HP ${svt.hpMax}',
-                  // style: Theme.of(context).textTheme.caption,
-                  textScaleFactor: 0.9,
-                ),
-                style: TextButton.styleFrom(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  minimumSize: const Size(48, 26),
-                ),
-              ),
-            // const SizedBox(height: 4),
-          ],
-        ),
-        titlePadding: const EdgeInsetsDirectional.only(start: 16),
-        subtitle: Wrap(
-          spacing: 3,
-          runSpacing: 2,
-          children: <Widget>[
-            // more tags/info here
-            ...getObtainBadges(),
-          ],
-        ),
-        trailing: !svt.isUserSvt
-            ? null
-            : db.onUserData(
-                (context, _) => Tooltip(
-                  message: S.of(context).priority,
-                  child: DropdownButton<int>(
-                    value: status.priority,
-                    itemHeight: 64,
-                    items: List.generate(5, (index) {
-                      final icons = [
-                        Icons.looks_5_outlined,
-                        Icons.looks_4_outlined,
-                        Icons.looks_3_outlined,
-                        Icons.looks_two_outlined,
-                        Icons.looks_one_outlined,
-                      ];
-                      final int priority = 5 - index;
-                      return DropdownMenuItem(
-                        value: priority,
-                        child: SizedBox(
-                          width: 40,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                icons[index],
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              AutoSizeText(
-                                db.settings.priorityTags[priority] ?? '',
-                                overflow: TextOverflow.visible,
-                                minFontSize: 6,
-                                maxFontSize: 12,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                    onChanged: (v) {
-                      status.priority = v ?? status.priority;
-                      db.notifyUserdata();
-                    },
-                    underline: Container(),
-                    icon: Container(),
-                  ),
-                ),
-              ),
-      ),
-      secondChild: const SizedBox(),
-      crossFadeState:
-          _showHeader ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      duration: const Duration(milliseconds: 200),
     );
   }
 
