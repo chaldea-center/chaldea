@@ -83,6 +83,10 @@ class BaseSkill implements SkillOrTd {
       },
     );
   }
+
+  bool isEventSkill(int eventId) {
+    return functions.any((func) => func.svals.getOrNull(0)?.EventId == eventId);
+  }
 }
 
 @JsonSerializable()

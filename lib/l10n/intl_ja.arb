@@ -116,6 +116,7 @@
   "error_no_network": "ネットワークに接続できません",
   "error_no_version_data_found": "バージョンデータが見つかりません",
   "error_required_app_version": "最低限のアプリバージョン: ≥ {version}",
+  "event_bonus": null,
   "event_collect_item_confirm": "すべてのアイテムを倉庫に追加し、プランからこのイベントを削除します",
   "event_collect_items": "アイテム収集",
   "event_item_extra": "他の入手可能の素材",
@@ -481,6 +482,7 @@
   "version": "バージョン",
   "view_illustration": "イラストを表示します",
   "voice": "ボイス",
+  "war_title": null,
   "warning": "警告",
   "web_renderer": "Webレンダラ",
   "words_separate": "{a}{b}"

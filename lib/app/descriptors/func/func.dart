@@ -17,6 +17,26 @@ mixin FuncsDescriptor {
     bool showNone = false,
     int? level,
     EdgeInsetsGeometry? padding,
+    bool showBuffDetail = false,
+  }) =>
+      describe(
+        funcs: funcs,
+        showPlayer: showPlayer,
+        showEnemy: showEnemy,
+        showNone: showNone,
+        level: level,
+        padding: padding,
+        showBuffDetail: showBuffDetail,
+      );
+
+  static List<Widget> describe({
+    required List<NiceFunction> funcs,
+    required bool showPlayer,
+    required bool showEnemy,
+    bool showNone = false,
+    int? level,
+    EdgeInsetsGeometry? padding,
+    bool showBuffDetail = false,
   }) {
     funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
@@ -39,6 +59,7 @@ mixin FuncsDescriptor {
         padding: padding,
         showPlayer: showPlayer,
         showEnemy: showEnemy,
+        showBuffDetail: showBuffDetail,
       ));
     }
     return children;
@@ -52,6 +73,7 @@ class FuncDescriptor extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool showPlayer;
   final bool showEnemy;
+  final bool showBuffDetail;
   const FuncDescriptor({
     Key? key,
     required this.func,
@@ -60,6 +82,7 @@ class FuncDescriptor extends StatelessWidget {
     this.padding,
     this.showPlayer = true,
     this.showEnemy = false,
+    this.showBuffDetail = false,
   }) : super(key: key);
 
   @override
@@ -67,10 +90,14 @@ class FuncDescriptor extends StatelessWidget {
     StringBuffer funcText = StringBuffer();
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort) {
-      if (func.buffs.first.name.isEmpty) {
-        funcText.write(Transl.buffNames(func.buffs.first.type.name).l);
+      if (showBuffDetail) {
+        funcText.write(Transl.buffDetail(func.buffs.first.detail).l);
       } else {
-        funcText.write(Transl.buffNames(func.buffs.first.name).l);
+        if (func.buffs.first.name.isEmpty) {
+          funcText.write(Transl.buffNames(func.buffs.first.type.name).l);
+        } else {
+          funcText.write(Transl.buffNames(func.buffs.first.name).l);
+        }
       }
     } else {
       funcText.write(Transl.funcPopuptext(func.funcPopupText, func.funcType).l);
@@ -137,7 +164,8 @@ class FuncDescriptor extends StatelessWidget {
       if (func.funcPopupIcon != null) {
         icon = db.getIconImage(func.funcPopupIcon, width: 18);
       } else if (func.funcType == FuncType.eventDropUp ||
-          func.funcType == FuncType.eventDropRateUp) {
+          func.funcType == FuncType.eventDropRateUp ||
+          func.funcType == FuncType.eventPointUp) {
         int? indiv = func.svals.getOrNull(0)?.Individuality;
         final item = db.gameData.items.values.firstWhereOrNull(
             (item) => item.individuality.any((trait) => trait.id == indiv));

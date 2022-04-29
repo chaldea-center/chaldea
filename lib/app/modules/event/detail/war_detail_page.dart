@@ -64,6 +64,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
       if (banners.isNotEmpty)
         CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
+    String warName = war.name;
+    String longName = war.longName;
     children.add(CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
@@ -76,12 +78,15 @@ class _WarDetailPageState extends State<WarDetailPage> {
       if (!Transl.isJP)
         CustomTableRow(children: [
           TableCellData(
-            text: war.longName,
+            text: longName,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
+      if (warName != longName) CustomTableRow.fromTexts(texts: [war.lName.l]),
+      if (warName != longName && !Transl.isJP)
+        CustomTableRow.fromTexts(texts: [warName]),
       CustomTableRow(children: [
         TableCellData(text: 'Age', isHeader: true),
         TableCellData(text: war.age, flex: 3),

@@ -290,7 +290,7 @@ class MappingData {
 
   static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region) {
     mapping.forEach((key, value) {
-      value.update(key, region);
+      value.update(key, region, true);
     });
   }
 

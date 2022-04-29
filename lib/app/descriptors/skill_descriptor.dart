@@ -13,6 +13,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showPlayer;
   final bool showEnemy;
   final bool showNone;
+  final bool hideDetail;
+  final bool showBuffDetail;
 
   const SkillDescriptor({
     Key? key,
@@ -21,6 +23,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showPlayer = true,
     this.showEnemy = false,
     this.showNone = false,
+    this.hideDetail = false,
+    this.showBuffDetail = false,
   }) : super(key: key);
 
   @override
@@ -45,7 +49,9 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       leading: db.getIconImage(skill.icon, width: 33, aspectRatio: 1),
       title: _wrapSkillAdd(Text(skill.lName.l), true),
-      subtitle: Transl.isJP ? null : _wrapSkillAdd(Text(skill.name), false),
+      subtitle: Transl.isJP || hideDetail
+          ? null
+          : _wrapSkillAdd(Text(skill.name), false),
       trailing: cd0 <= 0 && cd1 <= 0
           ? null
           : cd0 == cd1
@@ -56,18 +62,21 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     return TileGroup(
       children: [
         header,
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-          child: Text(skill.lDetail ?? '???',
-              style: Theme.of(context).textTheme.caption),
-        ),
-        divider,
+        if (!hideDetail) ...[
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
+            child: Text(skill.lDetail ?? '???',
+                style: Theme.of(context).textTheme.caption),
+          ),
+          divider,
+        ],
         ...describeFunctions(
           funcs: skill.functions,
           level: level,
           showPlayer: showPlayer,
           showEnemy: showEnemy,
           showNone: showNone,
+          showBuffDetail: showBuffDetail,
         )
       ],
     );

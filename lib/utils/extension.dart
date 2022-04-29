@@ -184,6 +184,12 @@ extension StringX on String {
     }
     return s;
   }
+
+  String setMaxLines([int n = 1]) {
+    final lines = split('\n');
+    if (lines.length <= n) return this;
+    return [lines.sublist(0, n).join('\n'), ...lines.skip(n)].join(' ');
+  }
 }
 
 extension DateTimeX on DateTime {

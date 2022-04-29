@@ -529,7 +529,7 @@ class Event {
   int id;
   EventType type;
   String name;
-  String shortName;
+  String? _shortName;
   String detail;
   String? noticeBanner;
   String? banner;
@@ -557,7 +557,7 @@ class Event {
     required this.id,
     this.type = EventType.none,
     required this.name,
-    this.shortName = "",
+    String shortName = "",
     required this.detail,
     this.noticeBanner,
     this.banner,
@@ -580,9 +580,15 @@ class Event {
     this.treasureBoxes = const [],
     this.voicePlays = const [],
     this.voices = const [],
-  });
+  }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+
+  String get shortName => lShortName.jp;
+  Transl<String, String> get lShortName {
+    if (_shortName != null) return Transl.warNames(_shortName!);
+    return lName;
+  }
 
   EventExtra get extra => db.gameData.wiki.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
@@ -615,7 +621,7 @@ class Event {
     if (extra.huntingId > 0) {
       return '${lName.l} ${extra.huntingId}';
     }
-    return lName.l;
+    return lName.l.setMaxLines(2);
   }
 
   String get route => Routes.eventI(id);

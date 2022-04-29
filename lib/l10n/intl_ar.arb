@@ -116,6 +116,7 @@
   "error_no_network": null,
   "error_no_version_data_found": null,
   "error_required_app_version": null,
+  "event_bonus": null,
   "event_collect_item_confirm": null,
   "event_collect_items": null,
   "event_item_extra": null,
@@ -481,6 +482,7 @@
   "version": "النسخة",
   "view_illustration": "عرض الرسومية",
   "voice": "صوت",
+  "war_title": null,
   "warning": null,
   "web_renderer": null,
   "words_separate": "{a} {b}"

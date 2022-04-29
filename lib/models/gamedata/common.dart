@@ -582,7 +582,8 @@ enum Trait {
   buffStrongAgainstDragon,
   fairyTaleServant,
   classBeastIV,
-  havingAnimalsCharacteristics
+  havingAnimalsCharacteristics,
+  like,
 }
 
 enum CondType {

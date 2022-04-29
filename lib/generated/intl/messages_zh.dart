@@ -196,6 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("未找到数据文件"),
         "error_required_app_version": m3,
+        "event_bonus": MessageLookupByLibrary.simpleMessage("加成"),
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
@@ -616,6 +617,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
+        "war_title": MessageLookupByLibrary.simpleMessage("关卡配置"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
         "words_separate": m0

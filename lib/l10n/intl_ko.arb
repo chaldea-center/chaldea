@@ -116,6 +116,7 @@
   "error_no_network": "No network",
   "error_no_version_data_found": "No version data found",
   "error_required_app_version": "Required app version: ≥ {version}",
+  "event_bonus": null,
   "event_collect_item_confirm": "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다",
   "event_collect_items": "아이템 수집",
   "event_item_extra": "기타 아이템",
@@ -481,6 +482,7 @@
   "version": "버전",
   "view_illustration": "일러스트 보기",
   "voice": "음성",
+  "war_title": null,
   "warning": "Warning",
   "web_renderer": "Web Renderer",
   "words_separate": "{a} {b}"

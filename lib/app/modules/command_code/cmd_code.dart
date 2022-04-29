@@ -216,9 +216,6 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.filter_category, isHeader: true)
-        ]),
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in cc.skills..sort2((e) => e.num * 100 + e.priority))

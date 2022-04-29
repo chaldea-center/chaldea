@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +16,7 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
+import 'bonus.dart';
 import 'lottery.dart';
 import 'mission.dart';
 import 'points.dart';
@@ -65,6 +68,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
         builder: (context) => EventItemsOverview(event: event, region: _region),
       ),
     );
+    if (db.gameData.craftEssences.values
+            .any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
+        db.gameData.servants.values
+            .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
+      _addTab(S.current.event_bonus, EventBonusTab(event: event));
+    }
 
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
       ..sort();
@@ -244,39 +253,14 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
-      if (event.banner != null)
-        CustomTableRow(children: [
-          TableCellData(text: 'Banner', isHeader: true),
-          TableCellData(
-            flex: 3,
-            child: Center(child: db.getIconImage(event.banner, height: 48)),
-          ),
-        ]),
-      if (event.warIds.isNotEmpty)
-        CustomTableRow(children: [
-          TableCellData(isHeader: true, text: 'Wars'),
-          TableCellData(
-            flex: 3,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final warId in event.warIds)
-                  TextButton(
-                    onPressed: () {
-                      router.push(url: Routes.warI(warId), detail: true);
-                    },
-                    child: Text(
-                      db.gameData.wars[warId]?.lLongName.l ?? 'War $warId',
-                      textAlign: TextAlign.center,
-                    ),
-                    style: TextButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  )
-              ],
-            ),
-          )
-        ]),
+      // if (event.banner != null)
+      //   CustomTableRow(children: [
+      //     TableCellData(text: 'Banner', isHeader: true),
+      //     TableCellData(
+      //       flex: 3,
+      //       child: Center(child: db.getIconImage(event.banner, height: 48)),
+      //     ),
+      //   ]),
     ];
     String _timeText(Region r, int? start, int? end) =>
         '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
@@ -308,27 +292,44 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     children.add(CustomTable(children: rows));
 
+    List<Widget> warTiles = [];
+    for (final warId in event.warIds) {
+      warTiles.add(LayoutBuilder(builder: (context, constraints) {
+        final war = db.gameData.wars[warId];
+        String title = war == null ? 'War $warId' : war.lLongName.l;
+        final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
+        return ListTile(
+          leading: war?.banner == null
+              ? null
+              : db.getIconImage(war!.banner, height: height),
+          horizontalTitleGap: 8,
+          title: Text(title, maxLines: 1, textScaleFactor: 0.8),
+          onTap: () {
+            router.push(url: Routes.warI(warId));
+          },
+        );
+      }));
+    }
     if (event.extra.huntingQuestIds.isNotEmpty) {
-      children.add(TileGroup(
-        header: '',
-        children: [
-          ListTile(
-            title: Text(S.current.hunting_quest),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.push(
-                child: QuestListPage(
-                  title: S.current.hunting_quest,
-                  quests: event.extra.huntingQuestIds
-                      .map((e) => db.gameData.quests[e])
-                      .whereType<Quest>()
-                      .toList(),
-                ),
-              );
-            },
-          )
-        ],
+      warTiles.add(ListTile(
+        title: Text(S.current.hunting_quest),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.push(
+            child: QuestListPage(
+              title: S.current.hunting_quest,
+              quests: event.extra.huntingQuestIds
+                  .map((e) => db.gameData.quests[e])
+                  .whereType<Quest>()
+                  .toList(),
+            ),
+          );
+        },
       ));
+    }
+
+    if (warTiles.isNotEmpty) {
+      children.add(TileGroup(header: S.current.war_title, children: warTiles));
     }
 
     if (!event.isEmpty) {

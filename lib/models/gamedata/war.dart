@@ -12,8 +12,8 @@ class NiceWar {
   int id;
   List<List<double>> coordinates;
   String age;
-  String name;
-  String longName;
+  String? _name;
+  String? _longName;
   @JsonKey(fromJson: toEnumListWarFlag)
   List<WarFlag> flags;
   String? banner;
@@ -39,8 +39,8 @@ class NiceWar {
     required this.id,
     required this.coordinates,
     required this.age,
-    required this.name,
-    required this.longName,
+    required String name,
+    required String longName,
     this.flags = const [],
     this.banner,
     this.headerImage,
@@ -60,16 +60,28 @@ class NiceWar {
     this.maps = const [],
     this.spots = const [],
     this.spotRoads = const [],
-  });
+  })  : _name = ['', '-'].contains(name) ? null : name,
+        _longName = ['', '-'].contains(longName) ? null : longName;
 
   factory NiceWar.fromJson(Map<String, dynamic> json) =>
       _$NiceWarFromJson(json);
 
+  String get name => lName.jp;
+  String get longName => lLongName.jp;
+
+  Transl<String, String> get lLongName {
+    final warName = flags.contains(WarFlag.subFolder) ? _name : _longName;
+    if (warName != null) return Transl.warNames(warName);
+    return Transl.eventNames(event?.shortName ?? 'War $id');
+  }
+
+  Transl<String, String> get lName {
+    final warName = _name ?? _longName;
+    if (warName != null) return Transl.warNames(warName);
+    return Transl.eventNames(event?.shortName ?? 'War $id');
+  }
+
   bool get isMainStory => id >= 100 && id < 1000;
-
-  Transl<String, String> get lLongName => Transl.warNames(longName);
-
-  String get lShortName => lLongName.l.split('\n').first;
 
   Event? get event => db.gameData.events[eventId];
 

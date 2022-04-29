@@ -116,6 +116,7 @@
   "error_no_network": "没有网络连接",
   "error_no_version_data_found": "未找到数据文件",
   "error_required_app_version": "App版本需不低于{version}",
+  "event_bonus": "加成",
   "event_collect_item_confirm": "所有素材添加到素材仓库，并将该活动移出规划",
   "event_collect_items": "收取素材",
   "event_item_extra": "额外可获取素材",
@@ -481,6 +482,7 @@
   "version": "版本",
   "view_illustration": "查看卡面",
   "voice": "语音",
+  "war_title": "关卡配置",
   "warning": "警告",
   "web_renderer": "Web渲染器",
   "words_separate": "{a}{b}"

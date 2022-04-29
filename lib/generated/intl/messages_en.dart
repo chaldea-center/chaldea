@@ -220,6 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("No version data found"),
         "error_required_app_version": m3,
+        "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":
@@ -727,6 +728,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
+        "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
         "words_separate": m0

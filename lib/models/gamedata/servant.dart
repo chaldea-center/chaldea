@@ -365,6 +365,11 @@ class Servant with GameCardMixin {
   void updateStat() {
     db.itemCenter.updateSvts(svts: [this]);
   }
+
+  Iterable<NiceSkill> eventSkills(int eventId) {
+    return extraPassive.where((skill) => skill.functions
+        .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
+  }
 }
 
 @JsonSerializable()
@@ -458,6 +463,11 @@ class CraftEssence with GameCardMixin {
         : hpMax > 0
             ? CraftATKType.hp
             : CraftATKType.none;
+  }
+
+  Iterable<NiceSkill> eventSkills(int eventId) {
+    return skills.where((skill) => skill.functions
+        .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
   }
 
   String get route => '${Routes.craftEssence}/$collectionNo';

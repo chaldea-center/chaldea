@@ -1340,6 +1340,17 @@ class S {
     );
   }
 
+  /// `Bonus`
+  String get event_bonus {
+    return Intl.message(
+      'Bonus',
+      name: 'event_bonus',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `All items will be added to bag and remove the event out of plan`
   String get event_collect_item_confirm {
     return Intl.message(
@@ -5356,6 +5367,17 @@ class S {
     return Intl.message(
       'Voice',
       name: 'voice',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Wars`
+  String get war_title {
+    return Intl.message(
+      'Wars',
+      name: 'war_title',
       desc: '',
       locale: localeName,
       args: [],

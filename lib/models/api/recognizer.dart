@@ -146,6 +146,12 @@ class SkillDetail {
     } catch (e, s) {
       logger.e('decode base64 failed: $svtId', e, s);
     }
+    int _valid(int v, int lower, int upper) =>
+        v >= lower && v <= upper ? v : -1;
+    ascension = _valid(ascension, -1, 4);
+    skill1 = _valid(skill1, -1, 10);
+    skill2 = _valid(skill2, -1, 10);
+    skill3 = _valid(skill3, -1, 10);
   }
 
   factory SkillDetail.fromJson(Map<String, dynamic> json) =>

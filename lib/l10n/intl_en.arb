@@ -116,6 +116,7 @@
   "error_no_network": "No network",
   "error_no_version_data_found": "No version data found",
   "error_required_app_version": "Required app version: ≥ {version}",
+  "event_bonus": "Bonus",
   "event_collect_item_confirm": "All items will be added to bag and remove the event out of plan",
   "event_collect_items": "Collect Items",
   "event_item_extra": "Extra Obtains",
@@ -481,6 +482,7 @@
   "version": "Version",
   "view_illustration": "View Illustration",
   "voice": "Voice",
+  "war_title": "Wars",
   "warning": "Warning",
   "web_renderer": "Web Renderer",
   "words_separate": "{a} {b}"
