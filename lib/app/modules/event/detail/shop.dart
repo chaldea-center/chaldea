@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
-class EventShopsPage extends StatelessWidget {
+class EventShopsPage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   final int slot;
   const EventShopsPage({Key? key, required this.event, required this.slot})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final shops = event.shop.where((e) => e.slot == slot).toList();
     shops.sort2((e) => e.priority);
     return ListView.separated(

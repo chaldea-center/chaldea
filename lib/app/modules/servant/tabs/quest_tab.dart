@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../../app.dart';
 
-class SvtQuestTab extends StatelessWidget {
+class SvtQuestTab extends StatelessWidget with PrimaryScrollMixin {
   final Servant svt;
 
   SvtQuestTab({
@@ -13,7 +14,7 @@ class SvtQuestTab extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) {
         final questId = svt.relateQuestIds[index];

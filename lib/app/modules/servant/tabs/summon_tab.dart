@@ -5,14 +5,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
-class SvtSummonTab extends StatelessWidget {
+class SvtSummonTab extends StatelessWidget with PrimaryScrollMixin {
   final Servant svt;
 
   const SvtSummonTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
       if (summon.allCards(svt: true).contains(svt.collectionNo) &&

@@ -7,13 +7,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class SvtInfoTab extends StatelessWidget {
+class SvtInfoTab extends StatelessWidget with PrimaryScrollMixin {
   final Servant svt;
 
   const SvtInfoTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final headerData = TableCellData(isHeader: true, maxLines: 1);
     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     return SingleChildScrollView(

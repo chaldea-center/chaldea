@@ -112,3 +112,31 @@ mixin ScrollControllerMixin<T extends StatefulWidget> on State<T> {
     _scrollController.dispose();
   }
 }
+
+class PrimaryScrollBuilder extends StatefulWidget {
+  final WidgetBuilder builder;
+  const PrimaryScrollBuilder({Key? key, required this.builder})
+      : super(key: key);
+
+  @override
+  State<PrimaryScrollBuilder> createState() => _PrimaryScrollBuilderState();
+}
+
+class _PrimaryScrollBuilderState extends State<PrimaryScrollBuilder> {
+  final ScrollController controller = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryScrollController(
+        controller: controller, child: widget.builder(context));
+  }
+}
+
+mixin PrimaryScrollMixin on StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryScrollBuilder(builder: (contex) => buildContent(context));
+  }
+
+  Widget buildContent(BuildContext context);
+}

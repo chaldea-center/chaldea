@@ -7,7 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventBonusTab extends StatelessWidget {
+class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   const EventBonusTab({Key? key, required this.event}) : super(key: key);
 
@@ -55,7 +55,7 @@ class EventBonusTab extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     List<Widget> children = [];
     final eventCEs = db.gameData.craftEssences.values
         .where((e) => e.eventSkills(event.id).isNotEmpty)

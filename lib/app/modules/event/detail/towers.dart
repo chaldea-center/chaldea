@@ -4,14 +4,14 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventTowersPage extends StatelessWidget {
+class EventTowersPage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   final EventTower tower;
   const EventTowersPage({Key? key, required this.event, required this.tower})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final rewards = List.of(tower.rewards)..sort2((e) => e.floor);
     return ListView.separated(
       itemBuilder: (context, index) => rewardBuilder(context, rewards[index]),

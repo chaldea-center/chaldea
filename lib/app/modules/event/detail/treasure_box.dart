@@ -4,12 +4,12 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventTreasureBoxTab extends StatelessWidget {
+class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   const EventTreasureBoxTab({Key? key, required this.event}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final boxes = List.of(event.treasureBoxes);
     return ListView.separated(
       itemBuilder: (context, index) =>

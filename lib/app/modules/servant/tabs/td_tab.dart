@@ -7,13 +7,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class SvtTdTab extends StatelessWidget {
+class SvtTdTab extends StatelessWidget with PrimaryScrollMixin {
   final Servant svt;
 
   const SvtTdTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     for (final tds in svt.groupedNoblePhantasms) {

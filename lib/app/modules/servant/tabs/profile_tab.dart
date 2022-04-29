@@ -17,6 +17,7 @@ class SvtLoreTab extends StatefulWidget {
 }
 
 class _SvtLoreTabState extends State<SvtLoreTab> {
+  final _scrollController = ScrollController();
   late Region _region;
   Set<Region> releasedRegions = {};
 
@@ -88,6 +89,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
       children: [
         Expanded(
           child: ListView.builder(
+            controller: _scrollController,
             itemCount: children.length,
             itemBuilder: (context, index) => children[index],
           ),
