@@ -14,6 +14,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../api/hosts.dart';
 
 @protected
 class IconCacheManagePage extends StatefulWidget {
@@ -125,6 +126,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (await File(localPath).exists()) {
       return localPath;
     }
+    if (Hosts.cn) {
+      url = Atlas.proxyAssetUrl(url);
+    }
     final resp = await (limiter ?? _rateLimiter).limited(() =>
         Dio().get(url, options: Options(responseType: ResponseType.bytes)));
     File(localPath).createSync(recursive: true);
@@ -134,8 +138,14 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 
   String? _atlasUrlToFp(String url) {
-    if (!url.startsWith(Atlas.assetHost)) return null;
-    String urlPath = url.replaceFirst(Atlas.assetHost, '');
+    String urlPath;
+    if (url.startsWith(Hosts.kAtlasAssetHostGlobal)) {
+      urlPath = url.replaceFirst(Hosts.kAtlasAssetHostGlobal, '');
+    } else if (url.startsWith(Hosts.kAtlasAssetHostCN)) {
+      urlPath = url.replaceFirst(Hosts.kAtlasAssetHostCN, '');
+    } else {
+      return null;
+    }
     return pathlib.joinAll([
       db.paths.atlasIconDir,
       ...urlPath.split('/').where((e) => e.isNotEmpty)
@@ -176,7 +186,9 @@ abstract class _CachedLoader<K, V> {
       if (value != null) _success[key] = value;
       _cmpl.complete(value);
     }).catchError((e, s) {
-      logger.e('Got $key failed', e, s);
+      if (e is! DioError || e.response?.statusCode == 403) {
+        logger.e('Got $key failed', e, s);
+      }
       _failed[key] = DateTime.now();
       _cmpl.complete(null);
     });

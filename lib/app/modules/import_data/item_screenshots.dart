@@ -116,7 +116,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       }
       map['files'] = files;
       var formData = FormData.fromMap(map);
-      final resp2 = await _dio.post('recognizer/item', data: formData);
+      final resp2 = await _dio.post('/recognizer/item', data: formData);
       result = ItemResult.fromJson(resp2.data);
       logger.i('received recognized: ${result?.details.length} items');
       if (mounted) {

@@ -135,7 +135,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       }
       map['files'] = files;
       var formData = FormData.fromMap(map);
-      final resp2 = await _dio.post('recognizer/skill', data: formData);
+      final resp2 = await _dio.post('/recognizer/skill', data: formData);
       output = SkillResult.fromJson(resp2.data);
       logger.i('received recognized: ${output?.details.length} servants');
 

@@ -155,8 +155,9 @@ class _CachedImageState extends State<CachedImage> {
     }
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
+    url = Atlas.proxyAssetUrl(url);
     if (!kIsWeb &&
-        url.startsWith(Atlas.assetHost) &&
+        Atlas.isAtlasAsset(url) &&
         url.endsWith('.png') &&
         !url.contains('merged')) {
       String? _cachedPath = _loader.getCached(url);
@@ -169,7 +170,7 @@ class _CachedImageState extends State<CachedImage> {
       }
       return _withPlaceholder(context, url);
     }
-    return _withCached(widget.imageUrl!);
+    return _withCached(url);
   }
 
   Widget _withProvider(ImageProvider provider) {

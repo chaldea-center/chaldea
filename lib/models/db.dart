@@ -19,6 +19,7 @@ import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+import '../app/api/hosts.dart';
 import '../packages/app_info.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
@@ -279,8 +280,8 @@ class _Database {
   }
 
   Dio get apiWorkerDio => Dio(BaseOptions(
-        baseUrl: 'https://api-worker.narumi.workers.dev',
-        // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+        baseUrl: Hosts.workerHost,
+        // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
         queryParameters: {
           'app_ver': AppInfo.versionString,
           'user_key': AppInfo.uuid,
@@ -288,8 +289,6 @@ class _Database {
           'os': PlatformU.operatingSystem
         },
       ));
-
-  String get serverRoot => settings.proxyServer ? kServerRootCN : kServerRoot;
 }
 
 final db = _Database();

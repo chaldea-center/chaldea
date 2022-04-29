@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -14,6 +13,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
+import 'hosts.dart';
 
 // ignore: unused_element
 bool _defaultValidateStat(int? statusCode) {
@@ -66,6 +66,7 @@ class ChaldeaResponse {
   }) async {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+      print('apiWorkerDio: ${db.apiWorkerDio.options.baseUrl}');
       var resp = ChaldeaResponse(await caller(db.apiWorkerDio));
       if (resp.success) {
         onSuccess?.call(resp);
@@ -97,8 +98,8 @@ class ChaldeaApi {
 
   static Dio get dio {
     return Dio(BaseOptions(
-      // baseUrl: '${db.serverRoot}/v2/',
-      baseUrl: kDebugMode ? 'http://localhost:8000/' : '${db.serverRoot}/v2/',
+      baseUrl: Hosts.apiHost,
+      // baseUrl: kDebugMode ? 'http://localhost:8000/' : Apis.apiRoot,
       queryParameters: {
         'key': AppInfo.uuid,
         'ver': AppInfo.versionString,

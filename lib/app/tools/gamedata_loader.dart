@@ -8,6 +8,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:pool/pool.dart';
 
+import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
 import '../../models/models.dart';
@@ -17,15 +18,13 @@ import '../../packages/logger.dart';
 import '../../packages/network.dart';
 import '../../utils/json_helper.dart';
 
-const _dataSource = 'https://data.chaldea.center/';
-const _cnDataSource = 'https://data-cn.chaldea.center/';
-
 class GameDataLoader {
   // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
 
   static Future<Response<T>> _dioGet<T>(String filename,
       {Options? options}) async {
-    final url = '$_dataSource$filename', cnUrl = '$_cnDataSource$filename';
+    final url = '${Hosts.kDataHostGlobal}/$filename',
+        cnUrl = '${Hosts.kDataHostCN}/$filename';
     if (!db.settings.proxyServer) {
       return await Dio().get<T>(url, options: options);
     }

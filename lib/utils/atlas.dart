@@ -1,12 +1,24 @@
+import '../app/api/hosts.dart';
 import '../models/models.dart';
 
 class Atlas {
   Atlas._();
 
-  static const String assetHost = 'https://static.atlasacademy.io/';
+  static String get assetHost => Hosts.atlasAssetHost;
   static const String appHost = 'https://apps.atlasacademy.io/db/';
   static const String _dbAssetHost =
       'https://cdn.jsdelivr.net/gh/atlasacademy/apps/packages/db/src/Assets/';
+
+  static bool isAtlasAsset(String url) {
+    return url.startsWith(Hosts.kAtlasAssetHostGlobal) ||
+        url.startsWith(Hosts.kAtlasAssetHostCN);
+  }
+
+  static String proxyAssetUrl(String url) {
+    return Hosts.cn && url.startsWith(Hosts.kAtlasAssetHostGlobal)
+        ? url.replaceFirst(Hosts.kAtlasAssetHostGlobal, Hosts.kAtlasAssetHostCN)
+        : url;
+  }
 
   /// db link
   static String dbUrl(String path, int id, [Region region = Region.jp]) {
@@ -45,11 +57,11 @@ class Atlas {
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
-    return '$assetHost${region.toUpper()}/$path';
+    return '$assetHost/${region.toUpper()}/$path';
   }
 
   static String assetItem(int id, [Region region = Region.jp]) {
-    return '$assetHost${region.toUpper()}/Items/$id.png';
+    return '$assetHost/${region.toUpper()}/Items/$id.png';
   }
 
   static String dbAsset(String path) {

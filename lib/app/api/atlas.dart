@@ -15,6 +15,7 @@ import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/hive_extention.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../models/models.dart';
+import 'hosts.dart';
 
 String _url2uuid(String url) => const Uuid().v5(Uuid.NAMESPACE_URL, url);
 
@@ -62,27 +63,46 @@ class _CacheManager {
   final Map<String, Completer<List<int>?>> _downloading = {};
 
   LazyBox<Uint8List>? _webBox;
+  late final FilePlus _infoFile;
 
   _CacheManager(this.cacheKey);
 
+  Completer? _initCompleter;
   Future<void> init() async {
-    _data.clear();
-    String fp = kIsWeb
-        ? 'api_cache/$cacheKey.json'
-        : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json');
+    if (_initCompleter != null) return _initCompleter!.future;
+    _initCompleter = Completer();
     try {
+      _data.clear();
+      _infoFile = FilePlus(kIsWeb
+          ? 'api_cache/$cacheKey.json'
+          : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
       if (kIsWeb) {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
       }
-      final file = FilePlus(fp);
-      if (file.existsSync()) {
-        for (final jsonData in jsonDecode(await file.readAsString())) {
-          final entry = _CachedInfo.fromJson(jsonData);
-          _data[entry.key] = entry;
-        }
+      if (_infoFile.existsSync()) {
+        Map.from(jsonDecode(await _infoFile.readAsString()))
+            .forEach((key, value) {
+          _data[key] = _CachedInfo.fromJson(value);
+        });
       }
     } catch (e, s) {
       logger.e('init api cache manager ($cacheKey)', e, s);
+    } finally {
+      _initCompleter!.complete();
+    }
+  }
+
+  void saveCacheInfo() {
+    EasyDebounce.debounce('_CacheManager_saveCacheInfo',
+        const Duration(seconds: 10), _saveCacheInfo);
+  }
+
+  Future<void> _saveCacheInfo() async {
+    try {
+      await _infoFile.create(recursive: true);
+      await _infoFile.writeAsString(jsonEncode(_data));
+    } catch (e, s) {
+      logger.e('Save Api Cache info failed', e, s);
     }
   }
 
@@ -93,6 +113,7 @@ class _CacheManager {
       if (fp != null) {
         await _getCacheFile(key).delete();
         _data.remove(key);
+        saveCacheInfo();
       }
     } catch (e, s) {
       logger.e('failed to remove api cache: $url', e, s);
@@ -144,6 +165,7 @@ class _CacheManager {
       timestamp: DateTime.now().timestamp,
       fp: fp,
     );
+    saveCacheInfo();
   }
 
   /// [expireAfter]
@@ -178,7 +200,7 @@ class _CacheManager {
           }
         }
         _data.remove(key);
-        await file.delete();
+        await file.delete().catchError((e, s) => null);
       }
       if (_downloading[url] != null) {
         return _downloading[url]!.future;
@@ -237,7 +259,7 @@ class AtlasApi {
 
   static RateLimiter get rateLimiter => cacheManager._rateLimiter;
 
-  static const String _atlasApiHost = 'https://api.atlasacademy.io';
+  static String get _atlasApiHost => Hosts.atlasApiHost;
 
   static Future<Quest?> quest(int questId,
       {Region region = Region.jp, Duration? expireAfter}) {
@@ -252,7 +274,7 @@ class AtlasApi {
       {Region region = Region.jp, Duration? expireAfter}) async {
     // free quests, only phase 3 saved in db
     if (region == Region.jp && expireAfter == null) {
-      final quest = db.gameData.quests[questId];
+      final questJP = db.gameData.quests[questId];
 
       final phaseInDb = db.gameData.questPhases[questId * 100 + phase];
 
@@ -260,18 +282,19 @@ class AtlasApi {
         return SynchronousFuture(phaseInDb);
       }
 
-      if (quest != null) {
+      if (questJP != null) {
         final now = DateTime.now().timestamp;
         // main story's main quest:
         //  if just released in 1 month, only cache for 1 day, otherwise 7 days
-        if (quest.type == QuestType.main &&
-            quest.closedAt > kNeverClosedTimestamp) {
+        if (questJP.type == QuestType.main &&
+            questJP.closedAt > kNeverClosedTimestamp) {
           expireAfter =
-              now - quest.openedAt < const Duration(days: 30).inSeconds
+              now - questJP.openedAt < const Duration(days: 30).inSeconds
                   ? const Duration(days: 1)
                   : const Duration(days: 7);
-        } else if (now - quest.closedAt > const Duration(days: 30).inSeconds) {
-          expireAfter = const Duration(days: 30);
+        } else if (now - questJP.closedAt >
+            const Duration(days: 30).inSeconds) {
+          expireAfter = const Duration(days: 15);
         }
       }
     }
