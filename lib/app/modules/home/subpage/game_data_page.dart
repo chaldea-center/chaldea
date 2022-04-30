@@ -132,15 +132,15 @@ class _GameDataPageState extends State<GameDataPage> {
                       },
                     );
                   }),
+              // if (!PlatformU.isWeb)
+              //   ListTile(
+              //     title: Text(S.current.import_data),
+              //     subtitle: Text(S.current.not_implemented),
+              //     onTap: importGamedata,
+              //   ),
               if (!PlatformU.isWeb)
                 ListTile(
-                  title: Text(S.current.import_data),
-                  subtitle: Text(S.current.not_implemented),
-                  onTap: importGamedata,
-                ),
-              if (!PlatformU.isWeb)
-                ListTile(
-                  title: Text(S.current.download_icons),
+                  title: Text(S.current.cache_icons),
                   onTap: () {
                     showDialog(
                       context: context,

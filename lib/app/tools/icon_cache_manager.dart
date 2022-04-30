@@ -26,7 +26,8 @@ class IconCacheManagePage extends StatefulWidget {
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
   final _loader = AtlasIconLoader();
-  final _limiter = RateLimiter(maxCalls: 5, raiseOnLimit: false);
+  final _limiter = RateLimiter(
+      maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
   bool canceled = false;
 
@@ -41,7 +42,9 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ratio = (success / tasks.length * 100).toStringAsFixed(1);
+    final ratio =
+        tasks.isEmpty ? '0' : (success / tasks.length * 100).toStringAsFixed(1);
+    final finished = tasks.isNotEmpty && success + failed >= tasks.length;
     return AlertDialog(
       title: Text(S.current.icons),
       content: Text(
@@ -51,17 +54,27 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
         style: kMonoStyle,
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            _limiter.cancelAll();
-            Navigator.of(context).pop();
-          },
-          child: Text(S.current.cancel),
-        ),
-        TextButton(
-          onPressed: tasks.isNotEmpty ? null : _startCaching,
-          child: Text(S.current.download),
-        ),
+        if (!finished)
+          TextButton(
+            onPressed: () {
+              _limiter.cancelAll();
+              Navigator.of(context).pop();
+            },
+            child: Text(S.current.cancel),
+          ),
+        if (!finished)
+          TextButton(
+            onPressed: tasks.isNotEmpty ? null : _startCaching,
+            child: Text(S.current.download),
+          ),
+        if (finished)
+          TextButton(
+            onPressed: () {
+              _limiter.cancelAll();
+              Navigator.of(context).pop();
+            },
+            child: Text(S.current.confirm),
+          ),
       ],
     );
   }
@@ -88,14 +101,22 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
         mc.extraAssets.item.female,
         mc.extraAssets.item.male,
       ],
+      for (final func in db.gameData.baseFunctions.values) ...[
+        func.funcPopupIcon,
+        for (final buff in func.buffs) buff.icon
+      ]
     };
+    _loader._failed.removeWhere((key, value) => !value.neverRetry);
     for (final url in urls) {
       if (url == null || url.isEmpty) continue;
-      tasks.add(_loader.download(url, limiter: _limiter).then((res) {
-        print('downloaded $url -> $res');
-        success += 1;
+      tasks.add(_loader.get(url, limiter: _limiter).then((res) {
+        if (res != null) {
+          success += 1;
+        } else {
+          failed += 1;
+        }
         return res;
-      }).catchError((e) {
+      }).catchError((e) async {
         if (e is! RateLimitCancelError) {
           failed += 1;
           print('failed $url: ${escapeDioError(e)}');
@@ -113,10 +134,6 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
   static final AtlasIconLoader _instance = AtlasIconLoader._();
   factory AtlasIconLoader() => _instance;
-
-  @override
-  final Duration failedExpire = const Duration(minutes: 30);
-
   final _rateLimiter = RateLimiter(maxCalls: 20);
 
   @override
@@ -153,12 +170,21 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 }
 
+class _FailedDetail {
+  DateTime time;
+  Duration? retryAfter;
+
+  _FailedDetail({required this.time, this.retryAfter});
+
+  bool get neverRetry => retryAfter == null || retryAfter!.inSeconds <= 0;
+}
+
 abstract class _CachedLoader<K, V> {
   final Map<K, Completer<V?>> _completers = {};
   final Map<K, V> _success = {};
-  final Map<K, DateTime> _failed = {};
-  Duration get failedExpire;
-  Future<V?> download(K key);
+  final Map<K, _FailedDetail> _failed = {};
+
+  Future<V?> download(K key, {RateLimiter? limiter});
 
   V? getCached(K key) {
     if (_success.containsKey(key)) return _success[key];
@@ -166,31 +192,42 @@ abstract class _CachedLoader<K, V> {
   }
 
   bool isFailed(K key) {
-    if (_failed[key] != null) {
-      if (_failed[key]!.add(failedExpire).isBefore(DateTime.now())) {
-        _failed.remove(key);
-        return false;
-      } else {
+    final detail = _failed[key];
+    if (detail != null) {
+      if (detail.neverRetry) {
         return true;
       }
+      return detail.time.add(detail.retryAfter!).isAfter(DateTime.now());
     }
     return false;
   }
 
-  Future<V?> get(K key) async {
+  Future<V?> get(K key, {RateLimiter? limiter}) async {
     if (_success.containsKey(key)) return _success[key];
     if (_completers.containsKey(key)) return _completers[key]?.future;
     if (isFailed(key)) return null;
     Completer<V?> _cmpl = Completer();
-    download(key).then<void>((value) {
+    download(key, limiter: limiter).then<void>((value) {
       if (value != null) _success[key] = value;
+      _failed.remove(key);
       _cmpl.complete(value);
     }).catchError((e, s) {
-      if (e is! DioError || e.response?.statusCode == 403) {
-        logger.e('Got $key failed', e, s);
-      }
-      _failed[key] = DateTime.now();
       _cmpl.complete(null);
+      if (e is! DioError || e.response?.statusCode == 403) {
+        _failed[key] ??= _FailedDetail(time: DateTime.now());
+        return;
+      }
+      logger.e('Got $key failed', e, s);
+
+      final detail = _failed[key];
+      if (detail == null) {
+        _failed[key] = _FailedDetail(
+            time: DateTime.now(), retryAfter: const Duration(seconds: 30));
+      } else if (detail.neverRetry) {
+        return;
+      } else {
+        detail.retryAfter = Duration(seconds: detail.retryAfter!.inSeconds * 2);
+      }
     });
     _completers[key] = _cmpl;
     return _cmpl.future;

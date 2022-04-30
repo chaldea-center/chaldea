@@ -108,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
+        "cache_icons": MessageLookupByLibrary.simpleMessage("Cache Icons"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
@@ -187,8 +188,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Settings"),
         "done": MessageLookupByLibrary.simpleMessage("DONE"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
-        "download_icons":
-            MessageLookupByLibrary.simpleMessage("Download Icons"),
         "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
             "To ensure compatibility, please upgrade to the latest APP version before updating"),
         "download_source":

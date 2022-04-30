@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_eff": MessageLookupByLibrary.simpleMessage("羈絆效率"),
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),
         "bronze": MessageLookupByLibrary.simpleMessage("銅"),
+        "cache_icons": MessageLookupByLibrary.simpleMessage("緩存圖標"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("權重"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解說"),
@@ -163,7 +164,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下載"),
-        "download_icons": MessageLookupByLibrary.simpleMessage("下載圖標"),
         "download_latest_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("為確保兼容性，更新前請升級至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下載源"),

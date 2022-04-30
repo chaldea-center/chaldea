@@ -449,6 +449,17 @@ class S {
     );
   }
 
+  /// `Cache Icons`
+  String get cache_icons {
+    return Intl.message(
+      'Cache Icons',
+      name: 'cache_icons',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Weight`
   String get calc_weight {
     return Intl.message(
@@ -1070,17 +1081,6 @@ class S {
     return Intl.message(
       'Download',
       name: 'download',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Download Icons`
-  String get download_icons {
-    return Intl.message(
-      'Download Icons',
-      name: 'download_icons',
       desc: '',
       locale: localeName,
       args: [],

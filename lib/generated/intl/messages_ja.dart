@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_eff": MessageLookupByLibrary.simpleMessage("絆効率"),
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("ガイドページ"),
         "bronze": MessageLookupByLibrary.simpleMessage("銅"),
+        "cache_icons": MessageLookupByLibrary.simpleMessage("キャッシュアイコン"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("構成比"),
         "cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
@@ -167,7 +168,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "display_setting": MessageLookupByLibrary.simpleMessage("設定表示"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
-        "download_icons": MessageLookupByLibrary.simpleMessage("アイコンをダウンロード"),
         "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
             "互換性を確保するために、更新する前にアプリの最新バージョンにアップデードしてください"),
         "download_source": MessageLookupByLibrary.simpleMessage("ダウンロードソース"),

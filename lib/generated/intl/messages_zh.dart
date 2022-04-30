@@ -103,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引导页"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),
+        "cache_icons": MessageLookupByLibrary.simpleMessage("缓存图标"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解说"),
@@ -168,7 +169,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
-        "download_icons": MessageLookupByLibrary.simpleMessage("下载图标"),
         "download_latest_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("为确保兼容性，更新前请升级至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下载源"),
