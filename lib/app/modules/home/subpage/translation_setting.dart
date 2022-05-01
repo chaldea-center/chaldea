@@ -51,7 +51,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
           child: ListTile(
             leading: Text((index + 1).toString()),
             horizontalTitleGap: 0,
-            title: Text(region.toUpper()),
+            title: Text(region.localName),
             subtitle: Text(region.toLanguage().name),
           ),
         );

@@ -82,16 +82,16 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: Text(S.current.filter_atk_hp_type),
           options: CraftATKType.values,
           values: filterData.atkType,
-          optionBuilder: (v) => Text(v.name.toTitle()),
+          optionBuilder: (v) => Text(_getHpAtkType(v)),
           onFilterChanged: (value) {
             update();
           },
         ),
         FilterGroup<int>(
-          title: const Text('Status'),
+          title: Text(S.current.ce_status),
           options: CraftStatus.values,
           values: filterData.status,
-          optionBuilder: (v) => Text(['NotMet', 'Met', 'Owned'][v]),
+          optionBuilder: (v) => Text(CraftStatus.shownText(v)),
           onFilterChanged: (value) {
             update();
           },
@@ -120,5 +120,18 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         // SFooter(Localized.niceSkillFilterHint.localized)
       ]),
     );
+  }
+
+  String _getHpAtkType(CraftATKType type) {
+    switch (type) {
+      case CraftATKType.none:
+        return S.current.ce_type_none_hp_atk;
+      case CraftATKType.hp:
+        return S.current.ce_type_pure_hp;
+      case CraftATKType.atk:
+        return S.current.ce_type_pure_atk;
+      case CraftATKType.mix:
+        return S.current.ce_type_mix_hp_atk;
+    }
   }
 }

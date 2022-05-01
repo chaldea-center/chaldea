@@ -85,6 +85,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
+        "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
+        "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage(
+            "Use External Storage(SD card)"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
@@ -112,11 +115,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "cache_icons": MessageLookupByLibrary.simpleMessage("Cache Icons"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "card_asset_chara_figure":
+            MessageLookupByLibrary.simpleMessage("Figure"),
+        "card_asset_command":
+            MessageLookupByLibrary.simpleMessage("Command Card"),
+        "card_asset_face": MessageLookupByLibrary.simpleMessage("Thumbnail"),
+        "card_asset_narrow_figure":
+            MessageLookupByLibrary.simpleMessage("Formation"),
+        "card_asset_status":
+            MessageLookupByLibrary.simpleMessage("Status Icon"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),
         "card_name": MessageLookupByLibrary.simpleMessage("Card Name"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Carousel Setting"),
+        "ce_status": MessageLookupByLibrary.simpleMessage("Status"),
+        "ce_status_met": MessageLookupByLibrary.simpleMessage("Met"),
+        "ce_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
+        "ce_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
+        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
@@ -454,6 +474,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_own": MessageLookupByLibrary.simpleMessage("Owned"),
         "item_screenshot":
             MessageLookupByLibrary.simpleMessage("Item Screenshot"),
+        "item_stat_include_owned":
+            MessageLookupByLibrary.simpleMessage("Include Owned"),
+        "item_stat_sub_event":
+            MessageLookupByLibrary.simpleMessage("Subtract Event"),
+        "item_stat_sub_owned":
+            MessageLookupByLibrary.simpleMessage("Subtract Owned"),
         "item_title": MessageLookupByLibrary.simpleMessage("Item"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Join Beta Program"),
@@ -498,6 +524,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "lottery_cost_per_roll":
             MessageLookupByLibrary.simpleMessage("Cost of 1 roll"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
+        "lucky_bag_expectation":
+            MessageLookupByLibrary.simpleMessage("Expectation"),
+        "lucky_bag_expectation_short":
+            MessageLookupByLibrary.simpleMessage("Exp."),
+        "lucky_bag_rating": MessageLookupByLibrary.simpleMessage("Rating"),
+        "lucky_bag_tooltip_unwanted":
+            MessageLookupByLibrary.simpleMessage("Unwanted"),
+        "lucky_bag_tooltip_wanted":
+            MessageLookupByLibrary.simpleMessage("Wanted"),
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
@@ -513,6 +548,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Missions"),
         "master_mission_weekly":
             MessageLookupByLibrary.simpleMessage("Weekly Mission"),
+        "migrate_external_storage_btn_no":
+            MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),
+        "migrate_external_storage_btn_yes":
+            MessageLookupByLibrary.simpleMessage("MIGRATE"),
+        "migrate_external_storage_manual_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "Please move the data manually, otherwise the data will be empty after startup."),
+        "migrate_external_storage_title":
+            MessageLookupByLibrary.simpleMessage("Migrate Data"),
         "mission": MessageLookupByLibrary.simpleMessage("Mission"),
         "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
@@ -544,6 +588,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
+        "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),
+        "plan_list_set_all_current":
+            MessageLookupByLibrary.simpleMessage("Current"),
+        "plan_list_set_all_target":
+            MessageLookupByLibrary.simpleMessage("Target"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Max(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Max(999)"),
         "plan_objective":
@@ -559,6 +608,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
+        "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
+            "Tags should not be too long, otherwise it cannot be shown completely"),
         "project_homepage":
             MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
@@ -574,6 +625,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
+        "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
+        "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
+        "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
+        "region_na": MessageLookupByLibrary.simpleMessage("NA"),
+        "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remove duplicated"),
         "remove_from_blacklist":
@@ -646,8 +702,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "show_carousel": MessageLookupByLibrary.simpleMessage("Show Carousel"),
         "show_frame_rate":
             MessageLookupByLibrary.simpleMessage("Show Frame Rate"),
+        "show_fullscreen":
+            MessageLookupByLibrary.simpleMessage("Show Fullscreen"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
@@ -670,6 +729,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("Daily"),
+        "summon_expectation_btn":
+            MessageLookupByLibrary.simpleMessage("Expectation"),
+        "summon_gacha_footer":
+            MessageLookupByLibrary.simpleMessage("Just for entertainment"),
+        "summon_gacha_result": MessageLookupByLibrary.simpleMessage("Results"),
         "summon_show_banner":
             MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
@@ -679,6 +743,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
+        "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
+        "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Hidden"),
+        "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage(
+            "<Extra Class> Collapsed\\nSingle Row"),
+        "svt_class_filter_single_row_expanded":
+            MessageLookupByLibrary.simpleMessage(
+                "<Extra Class> Expanded\\nSingle Row"),
+        "svt_class_filter_two_row":
+            MessageLookupByLibrary.simpleMessage("<Extra Class> in Second Row"),
+        "svt_fav_btn_remember":
+            MessageLookupByLibrary.simpleMessage("Remember"),
+        "svt_fav_btn_show_all":
+            MessageLookupByLibrary.simpleMessage("Show All"),
+        "svt_fav_btn_show_favorite":
+            MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -689,6 +768,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
             MessageLookupByLibrary.simpleMessage("Second Archive"),
+        "svt_stat_own_total":
+            MessageLookupByLibrary.simpleMessage("(SkillMax) Owned/Total"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
@@ -725,8 +806,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Download Backup"),
         "userdata_download_choose_backup":
             MessageLookupByLibrary.simpleMessage("Choose one backup"),
+        "userdata_local":
+            MessageLookupByLibrary.simpleMessage("Userdata (Local)"),
         "userdata_sync":
             MessageLookupByLibrary.simpleMessage("Data synchronization"),
+        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage(
+            "Only update account data, not include local settings"),
+        "userdata_sync_server": MessageLookupByLibrary.simpleMessage(
+            "Data synchronization(Server)"),
         "userdata_upload_backup":
             MessageLookupByLibrary.simpleMessage("Upload Backup"),
         "valentine_craft":

@@ -57,14 +57,18 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               for (final region in Region.values)
                 DropdownMenuItem(
                   value: region,
-                  child: Text(region.toUpper()),
+                  child: Text(region.localName),
                 ),
             ],
+            icon: Icon(
+              Icons.arrow_drop_down,
+              color: SharedBuilder.appBarForeground(context),
+            ),
             selectedItemBuilder: (context) => [
               for (final region in Region.values)
                 DropdownMenuItem(
                   child: Text(
-                    region.toUpper(),
+                    region.localName,
                     style: TextStyle(
                         color: SharedBuilder.appBarForeground(context)),
                   ),

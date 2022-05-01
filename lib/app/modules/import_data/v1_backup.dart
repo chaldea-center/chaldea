@@ -87,7 +87,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
         ),
         ListTile(
           title: const Text('Region'),
-          trailing: Text(user.region.toUpper()),
+          trailing: Text(user.region.localName),
         ),
         ListTile(title: Text(S.current.item)),
         Padding(

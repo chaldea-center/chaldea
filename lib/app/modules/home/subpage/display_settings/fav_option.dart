@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
@@ -19,12 +18,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(LocalizedText.of(
-        chs: '「关注」按钮默认筛选',
-        jpn: '「フォロー」ボタンディフォルト',
-        eng: '「Favorite」Button Default',
-        kor: '「즐겨찾기」 버튼 디폴트',
-      ))),
+          title: Text(S.current.setting_setting_favorite_button_default)),
       body: ListView(
         children: [
           TileGroup(
@@ -32,8 +26,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               RadioListTile<FavoriteState?>(
                 value: null,
                 groupValue: db.settings.favoritePreferred,
-                title: Text(LocalizedText.of(
-                    chs: '记住选择', jpn: '前の選択', eng: 'Remember', kor: '이전 선택')),
+                title: Text(S.current.svt_fav_btn_remember),
                 onChanged: (v) {
                   setState(() {
                     db.settings.favoritePreferred = null;
@@ -44,11 +37,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.owned,
                 groupValue: db.settings.favoritePreferred,
-                title: Text(LocalizedText.of(
-                    chs: '显示已关注',
-                    jpn: 'フォロー表示',
-                    eng: 'Show Favorite',
-                    kor: '즐겨찾기 표시')),
+                title: Text(S.current.svt_fav_btn_show_favorite),
                 secondary: const Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
@@ -60,8 +49,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.all,
                 groupValue: db.settings.favoritePreferred,
-                title: Text(LocalizedText.of(
-                    chs: '显示全部', jpn: 'すべて表示', eng: 'Show All', kor: '전부 표시')),
+                title: Text(S.current.svt_fav_btn_show_all),
                 secondary: const Icon(Icons.remove_circle_outline),
                 onChanged: (v) {
                   setState(() {

@@ -240,6 +240,28 @@ class S {
     );
   }
 
+  /// `Data Folder`
+  String get app_data_folder {
+    return Intl.message(
+      'Data Folder',
+      name: 'app_data_folder',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Use External Storage(SD card)`
+  String get app_data_use_external_storage {
+    return Intl.message(
+      'Use External Storage(SD card)',
+      name: 'app_data_use_external_storage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Append Skill`
   String get append_skill {
     return Intl.message(
@@ -493,6 +515,61 @@ class S {
     );
   }
 
+  /// `Figure`
+  String get card_asset_chara_figure {
+    return Intl.message(
+      'Figure',
+      name: 'card_asset_chara_figure',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Command Card`
+  String get card_asset_command {
+    return Intl.message(
+      'Command Card',
+      name: 'card_asset_command',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Thumbnail`
+  String get card_asset_face {
+    return Intl.message(
+      'Thumbnail',
+      name: 'card_asset_face',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Formation`
+  String get card_asset_narrow_figure {
+    return Intl.message(
+      'Formation',
+      name: 'card_asset_narrow_figure',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Status Icon`
+  String get card_asset_status {
+    return Intl.message(
+      'Status Icon',
+      name: 'card_asset_status',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Description`
   String get card_description {
     return Intl.message(
@@ -531,6 +608,94 @@ class S {
     return Intl.message(
       'Carousel Setting',
       name: 'carousel_setting',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get ce_status {
+    return Intl.message(
+      'Status',
+      name: 'ce_status',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Met`
+  String get ce_status_met {
+    return Intl.message(
+      'Met',
+      name: 'ce_status_met',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Met`
+  String get ce_status_not_met {
+    return Intl.message(
+      'Not Met',
+      name: 'ce_status_not_met',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Owned`
+  String get ce_status_owned {
+    return Intl.message(
+      'Owned',
+      name: 'ce_status_owned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `MIX`
+  String get ce_type_mix_hp_atk {
+    return Intl.message(
+      'MIX',
+      name: 'ce_type_mix_hp_atk',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `ATK`
+  String get ce_type_none_hp_atk {
+    return Intl.message(
+      'ATK',
+      name: 'ce_type_none_hp_atk',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `ATK`
+  String get ce_type_pure_atk {
+    return Intl.message(
+      'ATK',
+      name: 'ce_type_pure_atk',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `HP`
+  String get ce_type_pure_hp {
+    return Intl.message(
+      'HP',
+      name: 'ce_type_pure_hp',
       desc: '',
       locale: localeName,
       args: [],
@@ -3255,6 +3420,39 @@ class S {
     );
   }
 
+  /// `Include Owned`
+  String get item_stat_include_owned {
+    return Intl.message(
+      'Include Owned',
+      name: 'item_stat_include_owned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Subtract Event`
+  String get item_stat_sub_event {
+    return Intl.message(
+      'Subtract Event',
+      name: 'item_stat_sub_event',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Subtract Owned`
+  String get item_stat_sub_owned {
+    return Intl.message(
+      'Subtract Owned',
+      name: 'item_stat_sub_owned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Item`
   String get item_title {
     return Intl.message(
@@ -3580,6 +3778,61 @@ class S {
     );
   }
 
+  /// `Expectation`
+  String get lucky_bag_expectation {
+    return Intl.message(
+      'Expectation',
+      name: 'lucky_bag_expectation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Exp.`
+  String get lucky_bag_expectation_short {
+    return Intl.message(
+      'Exp.',
+      name: 'lucky_bag_expectation_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Rating`
+  String get lucky_bag_rating {
+    return Intl.message(
+      'Rating',
+      name: 'lucky_bag_rating',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unwanted`
+  String get lucky_bag_tooltip_unwanted {
+    return Intl.message(
+      'Unwanted',
+      name: 'lucky_bag_tooltip_unwanted',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Wanted`
+  String get lucky_bag_tooltip_wanted {
+    return Intl.message(
+      'Wanted',
+      name: 'lucky_bag_tooltip_wanted',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Main Quests`
   String get main_quest {
     return Intl.message(
@@ -3673,6 +3926,50 @@ class S {
     return Intl.message(
       'Weekly Mission',
       name: 'master_mission_weekly',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NOT MIGRATE`
+  String get migrate_external_storage_btn_no {
+    return Intl.message(
+      'NOT MIGRATE',
+      name: 'migrate_external_storage_btn_no',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `MIGRATE`
+  String get migrate_external_storage_btn_yes {
+    return Intl.message(
+      'MIGRATE',
+      name: 'migrate_external_storage_btn_yes',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please move the data manually, otherwise the data will be empty after startup.`
+  String get migrate_external_storage_manual_warning {
+    return Intl.message(
+      'Please move the data manually, otherwise the data will be empty after startup.',
+      name: 'migrate_external_storage_manual_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Migrate Data`
+  String get migrate_external_storage_title {
+    return Intl.message(
+      'Migrate Data',
+      name: 'migrate_external_storage_title',
       desc: '',
       locale: localeName,
       args: [],
@@ -3954,6 +4251,39 @@ class S {
     );
   }
 
+  /// `Set All`
+  String get plan_list_set_all {
+    return Intl.message(
+      'Set All',
+      name: 'plan_list_set_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Current`
+  String get plan_list_set_all_current {
+    return Intl.message(
+      'Current',
+      name: 'plan_list_set_all_current',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Target`
+  String get plan_list_set_all_target {
+    return Intl.message(
+      'Target',
+      name: 'plan_list_set_all_target',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Plan Max(310)`
   String get plan_max10 {
     return Intl.message(
@@ -4069,6 +4399,17 @@ class S {
     return Intl.message(
       'Priority',
       name: 'priority',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Tags should not be too long, otherwise it cannot be shown completely`
+  String get priority_tagging_hint {
+    return Intl.message(
+      'Tags should not be too long, otherwise it cannot be shown completely',
+      name: 'priority_tagging_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -4201,6 +4542,61 @@ class S {
     return Intl.message(
       'Rate on Google Play',
       name: 'rate_play_store',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `CN`
+  String get region_cn {
+    return Intl.message(
+      'CN',
+      name: 'region_cn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `JP`
+  String get region_jp {
+    return Intl.message(
+      'JP',
+      name: 'region_jp',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `KR`
+  String get region_kr {
+    return Intl.message(
+      'KR',
+      name: 'region_kr',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NA`
+  String get region_na {
+    return Intl.message(
+      'NA',
+      name: 'region_na',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `TW`
+  String get region_tw {
+    return Intl.message(
+      'TW',
+      name: 'region_tw',
       desc: '',
       locale: localeName,
       args: [],
@@ -4768,11 +5164,33 @@ class S {
     );
   }
 
+  /// `Show Carousel`
+  String get show_carousel {
+    return Intl.message(
+      'Show Carousel',
+      name: 'show_carousel',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show Frame Rate`
   String get show_frame_rate {
     return Intl.message(
       'Show Frame Rate',
       name: 'show_frame_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Fullscreen`
+  String get show_fullscreen {
+    return Intl.message(
+      'Show Fullscreen',
+      name: 'show_fullscreen',
       desc: '',
       locale: localeName,
       args: [],
@@ -4977,6 +5395,39 @@ class S {
     );
   }
 
+  /// `Expectation`
+  String get summon_expectation_btn {
+    return Intl.message(
+      'Expectation',
+      name: 'summon_expectation_btn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Just for entertainment`
+  String get summon_gacha_footer {
+    return Intl.message(
+      'Just for entertainment',
+      name: 'summon_gacha_footer',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Results`
+  String get summon_gacha_result {
+    return Intl.message(
+      'Results',
+      name: 'summon_gacha_result',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show Banner`
   String get summon_show_banner {
     return Intl.message(
@@ -5037,6 +5488,94 @@ class S {
     return Intl.message(
       'Info',
       name: 'svt_basic_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Auto`
+  String get svt_class_filter_auto {
+    return Intl.message(
+      'Auto',
+      name: 'svt_class_filter_auto',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Hidden`
+  String get svt_class_filter_hide {
+    return Intl.message(
+      'Hidden',
+      name: 'svt_class_filter_hide',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `<Extra Class> Collapsed\nSingle Row`
+  String get svt_class_filter_single_row {
+    return Intl.message(
+      '<Extra Class> Collapsed\\nSingle Row',
+      name: 'svt_class_filter_single_row',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `<Extra Class> Expanded\nSingle Row`
+  String get svt_class_filter_single_row_expanded {
+    return Intl.message(
+      '<Extra Class> Expanded\\nSingle Row',
+      name: 'svt_class_filter_single_row_expanded',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `<Extra Class> in Second Row`
+  String get svt_class_filter_two_row {
+    return Intl.message(
+      '<Extra Class> in Second Row',
+      name: 'svt_class_filter_two_row',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Remember`
+  String get svt_fav_btn_remember {
+    return Intl.message(
+      'Remember',
+      name: 'svt_fav_btn_remember',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show All`
+  String get svt_fav_btn_show_all {
+    return Intl.message(
+      'Show All',
+      name: 'svt_fav_btn_show_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Favorite`
+  String get svt_fav_btn_show_favorite {
+    return Intl.message(
+      'Show Favorite',
+      name: 'svt_fav_btn_show_favorite',
       desc: '',
       locale: localeName,
       args: [],
@@ -5125,6 +5664,17 @@ class S {
     return Intl.message(
       'Second Archive',
       name: 'svt_second_archive',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `(SkillMax) Owned/Total`
+  String get svt_stat_own_total {
+    return Intl.message(
+      '(SkillMax) Owned/Total',
+      name: 'svt_stat_own_total',
       desc: '',
       locale: localeName,
       args: [],
@@ -5395,11 +5945,44 @@ class S {
     );
   }
 
+  /// `Userdata (Local)`
+  String get userdata_local {
+    return Intl.message(
+      'Userdata (Local)',
+      name: 'userdata_local',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Data synchronization`
   String get userdata_sync {
     return Intl.message(
       'Data synchronization',
       name: 'userdata_sync',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Only update account data, not include local settings`
+  String get userdata_sync_hint {
+    return Intl.message(
+      'Only update account data, not include local settings',
+      name: 'userdata_sync_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Data synchronization(Server)`
+  String get userdata_sync_server {
+    return Intl.message(
+      'Data synchronization(Server)',
+      name: 'userdata_sync_server',
       desc: '',
       locale: localeName,
       args: [],

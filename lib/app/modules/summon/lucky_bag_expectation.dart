@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:chaldea/app/tools/localized_base.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -47,14 +47,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(
-              text: LocalizedText.of(
-                  chs: '打分', jpn: 'スコアリング', eng: 'Rating', kor: '스코어링'),
-            ),
-            Tab(
-              text: LocalizedText.of(
-                  chs: '期望值', jpn: '期待値', eng: 'Expectation', kor: '기대치'),
-            )
+            Tab(text: S.current.lucky_bag_rating),
+            Tab(text: S.current.lucky_bag_expectation)
           ],
         ),
       ),
@@ -149,17 +143,12 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
   String _scoreTooltip(int score) {
     switch (score) {
       case 1:
-        return LocalizedText.of(
-            chs: '非常不想要',
-            jpn: '本当に不要',
-            eng: 'Really Unwanted',
-            kor: '정말로 불필요함');
+        return S.current.lucky_bag_tooltip_unwanted;
       // case 2:
       // case 3:
       // case 4:
       case 5:
-        return LocalizedText.of(
-            chs: '非常想要！', jpn: 'とても欲しい', eng: 'Really Wanted', kor: '정말로 원함');
+        return S.current.lucky_bag_tooltip_wanted;
       default:
         return score.toString();
     }
@@ -290,8 +279,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                       });
                     },
                     child: Text(
-                      LocalizedText.of(
-                          chs: '期望', jpn: '期待値', eng: 'Exp.', kor: '기대치'),
+                      S.current.lucky_bag_expectation_short,
                       maxLines: 1,
                       overflow: TextOverflow.visible,
                     ),

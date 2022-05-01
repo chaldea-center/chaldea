@@ -109,6 +109,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "card_name": MessageLookupByLibrary.simpleMessage("卡牌名稱"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("輪播設置"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea帳號"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),

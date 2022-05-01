@@ -14,7 +14,6 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
@@ -66,20 +65,12 @@ class _UserDataPageState extends State<UserDataPage> {
               if (androidExternalDirs.length >= 2)
                 SwitchListTile.adaptive(
                   value: db.settings.useAndroidExternal,
-                  title: Text(LocalizedText.of(
-                      chs: '使用外部储存(SD卡)',
-                      jpn: '外部ストレージ（SDカード）を使用',
-                      eng: 'Use External Storage(SD card)',
-                      kor: '외부 스토리지 (SD 카드)를 사용')),
+                  title: Text(S.current.app_data_use_external_storage),
                   subtitle: Text(S.current.restart_to_apply_changes),
                   onChanged: _migrateAndroidData,
                 ),
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '数据目录',
-                    jpn: 'データフォルダ',
-                    eng: 'Data Folder',
-                    kor: '데이터 폴더')),
+                title: Text(S.current.app_data_folder),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
                   if (PlatformU.isWeb) {
@@ -94,12 +85,8 @@ class _UserDataPageState extends State<UserDataPage> {
             ],
           ),
           TileGroup(
-            header: S.current.userdata_sync + '(Server)',
-            footer: LocalizedText.of(
-                chs: '仅更新账户数据，不包含本地设置',
-                jpn: 'アカウントデータのみを更新し、ローカル設定を含めない ',
-                eng: 'Only update account data, excluding local settings',
-                kor: '계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음'),
+            header: S.current.userdata_sync_server,
+            footer: S.current.userdata_sync_hint,
             children: [
               ListTile(
                 title: Text(S.current.userdata_upload_backup),
@@ -112,22 +99,9 @@ class _UserDataPageState extends State<UserDataPage> {
             ],
           ),
           TileGroup(
-            header: S.current.userdata + '(Local)',
+            header: S.current.userdata_local,
             footer: S.current.settings_userdata_footer,
             children: <Widget>[
-              // ListTile(
-              //   title: Text(S.of(context).clear),
-              //   onTap: () {
-              //     SimpleCancelOkDialog(
-              //       title: Text(S.of(context).clear_userdata),
-              //       onTapOk: () async {
-              //         await db.clearData(user: true, game: false);
-              //         db.notifyDbUpdate(true);
-              //         EasyLoading.showToast(S.of(context).userdata_cleared);
-              //       },
-              //     ).show(context);
-              //   },
-              // ),
               ListTile(
                 title: Text(S.current.backup),
                 onTap: backupUserData,
@@ -165,7 +139,7 @@ class _UserDataPageState extends State<UserDataPage> {
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));
-      db.backupUserdata();
+      await db.backupUserdata();
       db.userData = userdata;
       db.saveUserData();
       EasyLoading.showToast(S.current.import_data_success);
@@ -312,8 +286,7 @@ class _UserDataPageState extends State<UserDataPage> {
       useRootNavigator: false,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(LocalizedText.of(
-            chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data', kor: '데이터 이동')),
+        title: Text(S.current.migrate_external_storage_title),
         content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
         actions: [
           TextButton(
@@ -326,18 +299,13 @@ class _UserDataPageState extends State<UserDataPage> {
               db.saveSettings();
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
-                title: const Text('⚠️ Warning'),
-                content: Text(LocalizedText.of(
-                    chs: '请手动移动数据，否则启动后为空数据。',
-                    jpn: 'データを手動で移動してください。そうしないと、起動後にデータが空になります。',
-                    eng:
-                        'Please move the data manually, otherwise the data will be empty after startup.',
-                    kor: '데이터를 수동으로 이동시켜주세요. 그렇지않으면 기동 후에 데이터가 날아가버립니다.')),
+                title: Text('⚠️ ' + S.current.warning),
+                content:
+                    Text(S.current.migrate_external_storage_manual_warning),
                 hideCancel: true,
               ).showDialog(context);
             },
-            child: Text(LocalizedText.of(
-                chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE', kor: '이동시키지 않음')),
+            child: Text(S.current.migrate_external_storage_btn_no),
           ),
           TextButton(
             onPressed: () async {
@@ -364,8 +332,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 EasyLoading.dismiss();
               }
             },
-            child: Text(LocalizedText.of(
-                chs: '迁移', jpn: '移行', eng: 'MIGRATE', kor: '이동')),
+            child: Text(S.current.migrate_external_storage_btn_yes),
           ),
         ],
       ),
@@ -467,7 +434,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                     try {
                       final userdata = UserData.fromJson(json
                           .decode(await FilePlus(entry.key).readAsString()));
-                      db.backupUserdata();
+                      await db.backupUserdata();
                       db.userData = userdata;
                       EasyLoading.showToast(S.current.import_data_success);
                       db.saveUserData();

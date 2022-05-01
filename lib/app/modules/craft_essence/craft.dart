@@ -80,6 +80,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                 : status == CraftStatus.met
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_outline),
+            tooltip: CraftStatus.shownText(status),
           ),
           _popupButton,
         ],

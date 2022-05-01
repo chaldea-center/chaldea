@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
@@ -126,8 +125,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             expanded: true,
             headerBuilder: (context, _) => ListTile(
               dense: true,
-              title: Text(
-                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results')),
+              title: Text(S.current.summon_gacha_result),
             ),
             contentBuilder: (context) => curResult(),
           ),
@@ -137,10 +135,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           SafeArea(
             child: Center(
               child: Text(
-                LocalizedText.of(
-                    chs: '仅供娱乐, 如有雷同, 纯属巧合',
-                    jpn: '娯楽のみ',
-                    eng: 'Just for entertainment'),
+                S.current.summon_gacha_footer,
                 style: const TextStyle(color: Colors.grey),
                 textAlign: TextAlign.center,
               ),

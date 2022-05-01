@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -28,11 +27,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(LocalizedText.of(
-            chs: '优先级备注',
-            jpn: '優先順位ノート',
-            eng: 'Priority Tagging',
-            kor: '우선순위 매기기')),
+        title: Text(S.current.setting_priority_tagging),
       ),
       body: ListView(
         children: [
@@ -63,13 +58,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                 ],
               ),
             ),
-          SFooter(LocalizedText.of(
-            chs: '建议备注不要太长，否则可能显示不全',
-            jpn: 'コメントは長すぎないようにすることをお勧めします。長すぎると、表示が不完全になります。',
-            eng:
-                'Tags should not be too long, otherwise it cannot be shown completely',
-            kor: '태그는 짧게 해주세요. 너무 길면 전부 표시되지 않습니다',
-          )),
+          SFooter(S.current.priority_tagging_hint),
         ],
       ),
     );

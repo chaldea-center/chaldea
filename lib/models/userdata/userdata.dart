@@ -309,6 +309,16 @@ class CraftStatus {
   static const owned = 2;
 
   static const List<int> values = [notMet, met, owned];
+
+  static String shownText(int status) {
+    assert(values.contains(status), status);
+    return [
+          S.current.ce_status_not_met,
+          S.current.ce_status_met,
+          S.current.ce_status_owned
+        ].getOrNull(status) ??
+        status.toString();
+  }
 }
 
 @JsonSerializable()
@@ -620,6 +630,21 @@ const _regionLanguage = {
 extension RegionX on Region {
   String toUpper() {
     return name.toUpperCase();
+  }
+
+  String get localName {
+    switch (this) {
+      case Region.jp:
+        return S.current.region_jp;
+      case Region.cn:
+        return S.current.region_cn;
+      case Region.tw:
+        return S.current.region_tw;
+      case Region.na:
+        return S.current.region_na;
+      case Region.kr:
+        return S.current.region_kr;
+    }
   }
 
   Language toLanguage() => _regionLanguage[this]!;

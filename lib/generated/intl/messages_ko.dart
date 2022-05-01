@@ -76,6 +76,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("블랙리스트 추가"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP 효율"),
+        "app_data_folder": MessageLookupByLibrary.simpleMessage("데이터 폴더"),
+        "app_data_use_external_storage":
+            MessageLookupByLibrary.simpleMessage("부 스토리지 (SD 카드)를 사용"),
         "append_skill": MessageLookupByLibrary.simpleMessage("어펜드 스킬"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("어펜드"),
         "ascension": MessageLookupByLibrary.simpleMessage("영기"),
@@ -100,6 +103,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("정보"),
         "card_name": MessageLookupByLibrary.simpleMessage("카드명"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("중국"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("국제성"),
         "chaldea_share_msg": m2,
@@ -359,6 +365,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("부족한 것만 표시"),
         "item_own": MessageLookupByLibrary.simpleMessage("소유"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("아이템 캡처"),
+        "item_stat_include_owned":
+            MessageLookupByLibrary.simpleMessage("재고 포함"),
+        "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("이벤트 제외"),
+        "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("재고 제외"),
         "item_title": MessageLookupByLibrary.simpleMessage("아이템"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("합계"),
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
@@ -392,6 +402,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "long_press_to_save_hint":
             MessageLookupByLibrary.simpleMessage("길게 눌러서 저장"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("복주머니"),
+        "lucky_bag_expectation": MessageLookupByLibrary.simpleMessage("기대치"),
+        "lucky_bag_expectation_short":
+            MessageLookupByLibrary.simpleMessage("기대치"),
+        "lucky_bag_rating": MessageLookupByLibrary.simpleMessage("스코어링"),
+        "lucky_bag_tooltip_unwanted":
+            MessageLookupByLibrary.simpleMessage("정말로 불필요함"),
+        "lucky_bag_tooltip_wanted":
+            MessageLookupByLibrary.simpleMessage("정말로 원함"),
         "main_story": MessageLookupByLibrary.simpleMessage("메인 스토리"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("챕터"),
         "master_detail_width":
@@ -402,6 +420,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("풀이"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("미션"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("주간 미션"),
+        "migrate_external_storage_btn_no":
+            MessageLookupByLibrary.simpleMessage("이동시키지 않음"),
+        "migrate_external_storage_btn_yes":
+            MessageLookupByLibrary.simpleMessage("이동"),
+        "migrate_external_storage_manual_warning":
+            MessageLookupByLibrary.simpleMessage(
+                "데이터를 수동으로 이동시켜주세요. 그렇지않으면 기동 후에 데이터가 날아가버립니다."),
+        "migrate_external_storage_title":
+            MessageLookupByLibrary.simpleMessage("데이터 이동"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("마술예장"),
         "new_account": MessageLookupByLibrary.simpleMessage("새 계정 추가"),
         "next_card": MessageLookupByLibrary.simpleMessage("다음"),
@@ -430,6 +457,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "preview": MessageLookupByLibrary.simpleMessage("미리보기"),
         "previous_card": MessageLookupByLibrary.simpleMessage("이전"),
         "priority": MessageLookupByLibrary.simpleMessage("우선 순위"),
+        "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
+            "태그는 짧게 해주세요. 너무 길면 전부 표시되지 않습니다"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("프로젝트 홈페이지"),
         "quest": MessageLookupByLibrary.simpleMessage("퀘스트"),
         "quest_condition": MessageLookupByLibrary.simpleMessage("개방 조건"),
@@ -500,6 +529,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "앱 업데이트 전에 유저 데이터를 백업하시고,앱 폴더외의 안전한 공간에 보관하십시오"),
         "share": MessageLookupByLibrary.simpleMessage("공유"),
+        "show_carousel": MessageLookupByLibrary.simpleMessage("배너 표시"),
         "show_frame_rate":
             MessageLookupByLibrary.simpleMessage("Show Frame Rate"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("기간종료 보이기"),
@@ -516,9 +546,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "still_send": MessageLookupByLibrary.simpleMessage("계속 보내기"),
         "success": MessageLookupByLibrary.simpleMessage("성공"),
         "summon": MessageLookupByLibrary.simpleMessage("가챠"),
+        "summon_expectation_btn":
+            MessageLookupByLibrary.simpleMessage("기대치 계산"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("호부"),
         "summon_title": MessageLookupByLibrary.simpleMessage("가챠"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("서포트 및 기부하기"),
+        "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage(
+            "계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음"),
+        "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("숨김"),
+        "svt_class_filter_single_row":
+            MessageLookupByLibrary.simpleMessage("「Extra 클래스」전개, 첫째 줄"),
+        "svt_class_filter_single_row_expanded":
+            MessageLookupByLibrary.simpleMessage("「Extra 클래스」전개, 첫째 줄"),
+        "svt_class_filter_two_row":
+            MessageLookupByLibrary.simpleMessage("「Extra 클래스」전개, 첫째 줄"),
+        "svt_fav_btn_remember": MessageLookupByLibrary.simpleMessage("이전 선택"),
+        "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("전부 표시"),
+        "svt_fav_btn_show_favorite":
+            MessageLookupByLibrary.simpleMessage("즐겨찾기 표시"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("팔로우 하지않음"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("숨김"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
@@ -541,6 +586,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_choose_backup":
             MessageLookupByLibrary.simpleMessage("백업 파일을 선택"),
         "userdata_sync": MessageLookupByLibrary.simpleMessage("데이터 동기화"),
+        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage(
+            "계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음"),
         "userdata_upload_backup":
             MessageLookupByLibrary.simpleMessage("백업 파일을 업로드"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("발렌타인 예장"),

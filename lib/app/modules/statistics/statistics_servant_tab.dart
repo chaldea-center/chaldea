@@ -64,7 +64,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     children.add(pieChart());
     children.add(ListTile(
       title: Text(S.current.rarity),
-      trailing: const Text('(skillMax)  own/total'),
+      trailing: Text(S.current.svt_stat_own_total),
       // dense: true,
     ));
     children.addAll(_oneRarity(

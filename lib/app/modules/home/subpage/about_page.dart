@@ -28,9 +28,9 @@ class _AboutPageState extends State<AboutPage> {
 
   Map<String, String> get references => {
         'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
+        'Atlas Academy': 'https://atlasacademy.io',
         'Mooncell': 'https://fgo.wiki',
         'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki/',
-        'Atlas Academy': 'https://atlasacademy.io',
         'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
         S.current.fgo_domus_aurea:
             'https://sites.google.com/view/fgo-domus-aurea',
@@ -39,6 +39,7 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(MaterialLocalizations.of(context)
@@ -71,7 +72,7 @@ class _AboutPageState extends State<AboutPage> {
               legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
               debugInfo: showDebugInfo
                   ? 'UUID\n${AppInfo.uuid}\n'
-                      'Width: ${MediaQuery.of(context).size.width}'
+                      'Size: ${size.width.toInt()}x${size.height.toInt()}'
                   : null,
             ),
           ),
@@ -104,28 +105,34 @@ class _AboutPageState extends State<AboutPage> {
                   },
                 ),
               ListTile(
-                title: const Text('README'),
-                onTap: () async {
-                  router.pushPage(
-                    const _GithubMarkdownPage(
-                      title: 'README',
-                      link: '$kProjectHomepage/blob/master/README.md',
-                      assetKey: 'README.md',
-                    ),
-                  );
-                  // launch('$kProjectHomepage/blob/master/CHANGELOG.md');
-                },
-              ),
-              ListTile(
                 title: Text(S.current.change_log),
                 onTap: () async {
                   router.pushPage(
                     _GithubMarkdownPage(
                       title: S.current.change_log,
-                      link: '$kProjectHomepage/blob/master/CHANGELOG.md',
+                      link: '$kProjectHomepage/blob/main/CHANGELOG.md',
                       assetKey: 'CHANGELOG.md',
                     ),
                   );
+                },
+              ),
+              ListTile(
+                title: const Text('README'),
+                onTap: () async {
+                  router.pushPage(
+                    const _GithubMarkdownPage(
+                      title: 'README',
+                      link: '$kProjectHomepage/blob/main/README.md',
+                      assetKey: 'README.md',
+                    ),
+                  );
+                  // launch('$kProjectHomepage/blob/main/CHANGELOG.md');
+                },
+              ),
+              ListTile(
+                title: const Text('CONTRIBUTORS'),
+                onTap: () async {
+                  launch('$kProjectHomepage/blob/main/CONTRIBUTORS');
                 },
               ),
             ],
@@ -172,7 +179,7 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () {
                   router.pushPage(const _GithubMarkdownPage(
                     title: 'LICENSE',
-                    link: '$kProjectHomepage/blob/master/LICENSE',
+                    link: '$kProjectHomepage/blob/main/LICENSE',
                     assetKey: 'LICENSE',
                   ));
                 },

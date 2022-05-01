@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -20,12 +19,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(LocalizedText.of(
-              chs: '从者详情页排序',
-              jpn: 'サーヴァントページ表示順序',
-              eng: 'Servant Tabs Sorting',
-              kor: '서번트 페이지 표시 순서'))),
+      appBar: AppBar(title: Text(S.current.setting_tabs_sorting)),
       body: ListView(
         children: [
           reorderableList(),

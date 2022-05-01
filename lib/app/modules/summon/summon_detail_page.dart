@@ -4,7 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/modules/common/not_found.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
@@ -365,11 +364,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             ElevatedButton(
               onPressed: () =>
                   router.push(child: LuckyBagExpectation(summon: summon)),
-              child: Text(LocalizedText.of(
-                  chs: '期望计算',
-                  jpn: '期待値計算',
-                  eng: 'Expectation',
-                  kor: '기대치 계산')),
+              child: Text(S.current.summon_expectation_btn),
             ),
           ],
         ),

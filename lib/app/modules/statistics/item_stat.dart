@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -161,45 +160,40 @@ class _ItemStatTabState extends State<ItemStatTab> {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
+        FilterGroup<int>(
+          options: List.generate(5, (index) => index),
+          values: svtParts,
+          combined: true,
+          shrinkWrap: true,
+          optionBuilder: (index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 32),
+                child: Text([
+                  S.current.ascension_short,
+                  S.current.active_skill,
+                  S.current.append_skill_short,
+                  S.current.costume,
+                  S.current.general_special,
+                ][index]),
+              ),
+            );
+          },
+          onFilterChanged: (v) {
+            setState(() {});
+          },
+        ),
         Wrap(
           spacing: 4,
           runSpacing: 2,
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            FilterGroup<int>(
-              options: List.generate(5, (index) => index),
-              values: svtParts,
-              combined: true,
-              shrinkWrap: true,
-              optionBuilder: (index) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 32),
-                    child: Text([
-                      S.current.ascension_short,
-                      S.current.active_skill,
-                      S.current.append_skill_short,
-                      S.current.costume,
-                      S.current.general_special,
-                    ][index]),
-                  ),
-                );
-              },
-              onFilterChanged: (v) {
-                setState(() {});
-              },
-            ),
             if (!demandMode)
               CheckboxWithLabel(
                 value: includeOwnedItems,
-                label: Text(LocalizedText.of(
-                    chs: '包含库存',
-                    jpn: '在庫を含める',
-                    eng: 'Include Owned',
-                    kor: '재고 포함')),
+                label: Text(S.current.item_stat_include_owned),
                 onChanged: (v) {
                   setState(() {
                     if (v != null) includeOwnedItems = v;
@@ -209,11 +203,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
             if (demandMode) ...[
               CheckboxWithLabel(
                 value: subtractOwnedItems,
-                label: Text(LocalizedText.of(
-                    chs: '减去库存',
-                    jpn: '在庫を差し引く',
-                    eng: 'Subtract Owned',
-                    kor: '재고 제외')),
+                label: Text(S.current.item_stat_sub_owned),
                 onChanged: (v) {
                   setState(() {
                     subtractOwnedItems = v ?? subtractOwnedItems;
@@ -222,11 +212,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
               ),
               CheckboxWithLabel(
                 value: subtractEventItems,
-                label: Text(LocalizedText.of(
-                    chs: '减去活动所得',
-                    jpn: '活動収入を差し引く',
-                    eng: 'Subtract Event',
-                    kor: '이벤트 제외')),
+                label: Text(S.current.item_stat_sub_event),
                 onChanged: (v) {
                   setState(() {
                     subtractEventItems = v ?? subtractEventItems;

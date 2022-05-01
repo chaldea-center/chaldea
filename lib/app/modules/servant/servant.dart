@@ -394,12 +394,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
-        // if (svt) return null;
-        return _SubTabInfo(
-          tab: tab,
-          tabBuilder: () => S.current.voice,
-          // viewBuilder: (ctx) => SvtVoiceTab(parent: this),
-        );
+        return null;
+      // return _SubTabInfo(
+      //   tab: tab,
+      //   tabBuilder: () => S.current.voice,
+      //   // viewBuilder: (ctx) => SvtVoiceTab(parent: this),
+      // );
       case SvtTab.quest:
         if (svt.relateQuestIds.isEmpty) return null;
         return _SubTabInfo(

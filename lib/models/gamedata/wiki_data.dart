@@ -136,6 +136,7 @@ class EventExtra {
   MappingBase<String> noticeLink;
   int huntingId;
   List<int> huntingQuestIds;
+  @protected
   List<EventExtraItems> extraItems;
   List<EventExtraItems> extraItems2;
 

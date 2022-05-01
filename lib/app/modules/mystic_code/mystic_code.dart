@@ -269,9 +269,9 @@ class _MysticCodePageState extends State<MysticCodePage> {
           .addAll([assets.masterFigure.female, assets.masterFigure.male]);
     }
     children.addAll([
-      _oneGroup('item', items, 80),
-      _oneGroup('masterFace', masterFaces, 120),
-      _oneGroup('masterFigure', masterFigures, 300),
+      _oneGroup(S.current.icons, items, 80),
+      _oneGroup(S.current.card_asset_face, masterFaces, 120),
+      _oneGroup(S.current.illustration, masterFigures, 300),
     ].whereType<Widget>());
 
     return children;

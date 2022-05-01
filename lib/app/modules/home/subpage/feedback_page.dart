@@ -35,12 +35,23 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   final String defaultSubject = 'Chaldea v${AppInfo.fullVersion} Feedback';
 
+  bool _changed = false;
+
+  void _onTextFieldChanged() {
+    if (_changed) return;
+    _changed = true;
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     contactController = TextEditingController();
     subjectController = TextEditingController();
     bodyController = TextEditingController();
+    contactController.addListener(_onTextFieldChanged);
+    subjectController.addListener(_onTextFieldChanged);
+    bodyController.addListener(_onTextFieldChanged);
   }
 
   @override
@@ -65,184 +76,185 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _alertPopPage,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).about_feedback),
-          leading: BackButton(onPressed: () async {
-            if (await _alertPopPage()) Navigator.of(context).pop();
-          }),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            // if (Language.isCN)
-            Card(
-              elevation: 4,
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: MarkdownBody(data: S.current.feedback_info),
+    Widget child = Scaffold(
+      appBar: AppBar(
+        title: Text(S.of(context).about_feedback),
+        leading: BackButton(onPressed: () async {
+          if (await _alertPopPage() && mounted) Navigator.of(context).pop();
+        }),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          Card(
+            elevation: 4,
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: MarkdownBody(data: S.current.feedback_info),
+            ),
+          ),
+          TileGroup(
+            children: [
+              ListTile(
+                title: Text(S.current.faq),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  router.pushPage(FAQPage());
+                },
               ),
-            ),
-            TileGroup(
-              children: [
-                ListTile(
-                  title: Text(S.current.faq),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    router.pushPage(FAQPage());
-                  },
+            ],
+          ),
+          TileGroup(
+            header: S.current.feedback_contact,
+            children: [
+              ListTile(
+                title: const Text('Github'),
+                subtitle: const Text(kProjectHomepage),
+                onTap: () => launch('$kProjectHomepage/issues'),
+              ),
+              ListTile(
+                title: const Text('NGA'),
+                subtitle:
+                    const Text('https://bbs.nga.cn/read.php?tid=24926789'),
+                onTap: () => launch('https://bbs.nga.cn/read.php?tid=24926789'),
+              ),
+              ListTile(
+                title: Text(S.current.email),
+                subtitle: const Text(kSupportTeamEmailAddress),
+                onTap: () async {
+                  String subject = '$kAppName v${AppInfo.fullVersion} Feedback';
+                  String body = "OS: ${PlatformU.operatingSystem}"
+                      " ${PlatformU.operatingSystemVersion}\n\n"
+                      "Please attach logs(${db.paths.logDir})";
+                  final uri = Uri(
+                      scheme: 'mailto',
+                      path: kSupportTeamEmailAddress,
+                      query: 'subject=$subject&body=$body');
+                  print(uri);
+                  if (await canLaunch(uri.toString())) {
+                    launch(uri.toString());
+                  } else {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.send_email_to),
+                      content: const Text(kSupportTeamEmailAddress),
+                    ).showDialog(context);
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('QQ频道'),
+                onTap: () {
+                  launch(
+                      'https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5');
+                },
+              ),
+              ListTile(
+                title: const Text('Discord'),
+                subtitle: const Text('https://discord.gg/5M6w5faqjP'),
+                onTap: () {
+                  launch('https://discord.gg/5M6w5faqjP');
+                },
+              ),
+            ],
+          ),
+          TileGroup(
+            header: S.current.about_feedback,
+            // divider: Container(),
+            innerDivider: false,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: TextField(
+                  controller: contactController,
+                  decoration: InputDecoration(
+                    labelText: S.current.email,
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.mail_outline),
+                    hintText: S.current.email,
+                    helperText: S.current.fill_email_warning,
+                    helperMaxLines: 3,
+                  ),
+                  maxLines: 1,
                 ),
-              ],
-            ),
-            TileGroup(
-              header: S.current.feedback_contact,
-              children: [
-                ListTile(
-                  title: const Text('Github'),
-                  subtitle: const Text(kProjectHomepage),
-                  onTap: () => launch('$kProjectHomepage/issues'),
-                ),
-                ListTile(
-                  title: const Text('NGA'),
-                  subtitle:
-                      const Text('https://bbs.nga.cn/read.php?tid=24926789'),
-                  onTap: () =>
-                      launch('https://bbs.nga.cn/read.php?tid=24926789'),
-                ),
-                ListTile(
-                  title: Text(S.current.email),
-                  subtitle: const Text(kSupportTeamEmailAddress),
-                  onTap: () async {
-                    String subject =
-                        '$kAppName v${AppInfo.fullVersion} Feedback';
-                    String body = "OS: ${PlatformU.operatingSystem}"
-                        " ${PlatformU.operatingSystemVersion}\n\n"
-                        "Please attach logs(${db.paths.logDir})";
-                    final uri = Uri(
-                        scheme: 'mailto',
-                        path: kSupportTeamEmailAddress,
-                        query: 'subject=$subject&body=$body');
-                    print(uri);
-                    if (await canLaunch(uri.toString())) {
-                      launch(uri.toString());
-                    } else {
-                      SimpleCancelOkDialog(
-                        title: Text(S.current.send_email_to),
-                        content: const Text(kSupportTeamEmailAddress),
-                      ).showDialog(context);
-                    }
-                  },
-                ),
-                ListTile(
-                  title: const Text('QQ频道'),
-                  onTap: () {
-                    launch(
-                        'https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5');
-                  },
-                ),
-                ListTile(
-                  title: const Text('Discord'),
-                  subtitle: const Text('https://discord.gg/5M6w5faqjP'),
-                  onTap: () {
-                    launch('https://discord.gg/5M6w5faqjP');
-                  },
-                ),
-              ],
-            ),
-            TileGroup(
-              header: S.current.about_feedback,
-              // divider: Container(),
-              innerDivider: false,
-              children: [
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: contactController,
-                    decoration: InputDecoration(
-                      labelText: S.current.email,
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.mail_outline),
-                      hintText: S.current.email,
-                      helperText: S.current.fill_email_warning,
-                      helperMaxLines: 3,
-                    ),
-                    maxLines: 1,
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: TextField(
+                  controller: subjectController,
+                  decoration: InputDecoration(
+                    labelText: S.current.feedback_subject,
+                    border: const OutlineInputBorder(),
+                    hintText: defaultSubject,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: TextField(
-                    controller: subjectController,
-                    decoration: InputDecoration(
-                      labelText: S.current.feedback_subject,
-                      border: const OutlineInputBorder(),
-                      hintText: defaultSubject,
-                    ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                height: 200,
+                child: TextField(
+                  controller: bodyController,
+                  decoration: InputDecoration(
+                    labelText: S.of(context).feedback_content_hint,
+                    border: const OutlineInputBorder(),
+                    alignLabelWithHint: true,
                   ),
+                  expands: true,
+                  maxLines: null,
+                  textAlignVertical: TextAlignVertical.top,
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  height: 200,
-                  child: TextField(
-                    controller: bodyController,
-                    decoration: InputDecoration(
-                      labelText: S.of(context).feedback_content_hint,
-                      border: const OutlineInputBorder(),
-                      alignLabelWithHint: true,
-                    ),
-                    expands: true,
-                    maxLines: null,
-                    textAlignVertical: TextAlignVertical.top,
-                  ),
+              ),
+              ListTile(
+                title: Text(S.current.attachment),
+                subtitle: Text(S.current.feedback_add_attachments),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add),
+                  tooltip: S.current.add,
+                  onPressed: _addAttachments,
                 ),
+              ),
+              for (String fn in attachFiles.keys)
                 ListTile(
-                  title: Text(S.current.attachment),
-                  subtitle: Text(S.current.feedback_add_attachments),
+                  leading: const Icon(Icons.attach_file),
+                  title: Text(pathlib.basename(fn)),
                   trailing: IconButton(
-                    icon: const Icon(Icons.add),
-                    tooltip: S.current.add,
-                    onPressed: _addAttachments,
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        attachFiles.remove(fn);
+                      });
+                    },
                   ),
                 ),
-                for (String fn in attachFiles.keys)
-                  ListTile(
-                    leading: const Icon(Icons.attach_file),
-                    title: Text(pathlib.basename(fn)),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          attachFiles.remove(fn);
-                        });
-                      },
-                    ),
-                  ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: ElevatedButton(
-                      onPressed: sendEmail,
-                      child: Text(S.of(context).feedback_send),
-                    ),
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ElevatedButton(
+                    onPressed: sendEmail,
+                    child: Text(S.of(context).feedback_send),
                   ),
                 ),
-              ],
-            ),
-            const SafeArea(child: SizedBox()),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SafeArea(child: SizedBox()),
+        ],
       ),
     );
+    if (_changed) {
+      child = WillPopScope(
+        onWillPop: _alertPopPage,
+        child: child,
+      );
+    }
+    return child;
   }
 
   Map<String, Uint8List> attachFiles = {};

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -243,7 +244,7 @@ class ServantListPageState extends State<ServantListPage>
                   },
                 ),
                 PopupMenuItem(
-                  child: const Text('Show Full Screen'),
+                  child: Text(S.current.show_fullscreen),
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
                     db.settings.display.planPageFullScreen =
@@ -256,12 +257,8 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuItem(
                   child: Text(S.current.help),
                   onTap: () async {
-                    await null;
-                    SimpleCancelOkDialog(
-                      title: Text(S.current.help),
-                      scrollable: true,
-                      content: const Text('Help msg'),
-                    ).showDialog(context);
+                    launch(HttpUrlHelper.projectDocUrl(
+                        'servant_plan.html', Language.isZH));
                   },
                 ),
               ]
@@ -924,9 +921,9 @@ class ServantListPageState extends State<ServantListPage>
                   spacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    const Padding(
-                      padding: EdgeInsetsDirectional.only(start: 8),
-                      child: Text('Set All'),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 8),
+                      child: Text(S.current.plan_list_set_all),
                     ),
                     FilterGroup<bool>(
                       combined: true,
@@ -941,7 +938,9 @@ class ServantListPageState extends State<ServantListPage>
                           _changedDress = null;
                         });
                       },
-                      optionBuilder: (s) => Text(s ? 'Target' : 'Current'),
+                      optionBuilder: (s) => Text(s
+                          ? S.current.plan_list_set_all_target
+                          : S.current.plan_list_set_all_current),
                     ),
                     IconButton(
                       onPressed: () {

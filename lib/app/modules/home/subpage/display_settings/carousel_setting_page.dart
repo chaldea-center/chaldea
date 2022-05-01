@@ -5,7 +5,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
-import '../../../../tools/localized_base.dart';
 
 class CarouselSettingPage extends StatefulWidget {
   const CarouselSettingPage({Key? key}) : super(key: key);
@@ -25,11 +24,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
         children: [
           SwitchListTile.adaptive(
             value: carousel.enabled,
-            title: Text(LocalizedText.of(
-                chs: '显示轮播图',
-                jpn: 'カルーセルを表示',
-                eng: 'Show Carousel',
-                kor: '배너 표시')),
+            title: Text(S.current.show_carousel),
             onChanged: (v) {
               setState(() {
                 carousel.enabled = v;

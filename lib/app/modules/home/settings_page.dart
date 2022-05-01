@@ -158,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: db.onSettings((context, _) {
                   final region = db.settings.resolvedPreferredRegions.first;
                   return _wrapArrowTrailing(
-                      Text('${region.toLanguage().name}(${region.toUpper()})'));
+                      Text('${region.toLanguage().name}(${region.localName})'));
                 }),
                 onTap: () {
                   router.push(child: TranslationSetting());

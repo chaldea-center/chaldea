@@ -65,19 +65,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.push(child: ImportHttpPage());
             },
           ),
-          // ListTile(
-          //   leading: const Icon(Icons.compare_arrows),
-          //   title: Text(LocalizedText.of(
-          //       chs: 'Guda数据',
-          //       jpn: 'Gudaデータ',
-          //       eng: 'Guda Data',
-          //       kor: '구다 데이터')),
-          //   subtitle: const Text('Guda@iOS'),
-          //   trailing: const Icon(Icons.keyboard_arrow_right),
-          //   onTap: () {
-          //      router.pushPage(ImportGudaPage(), popDetail: true);
-          //   },
-          // ),
           ListTile(
             leading: const Icon(Icons.compare_arrows),
             title: const Text('FGO Simulator-Material'),
@@ -87,7 +74,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.push(child: ImportFgoSimuMaterialPage());
             },
           ),
-
           SHeader(S.current.testing),
           ListTile(
             leading: const Icon(Icons.screenshot),
