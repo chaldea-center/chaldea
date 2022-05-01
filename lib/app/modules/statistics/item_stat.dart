@@ -183,7 +183,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
                       S.current.active_skill,
                       S.current.append_skill_short,
                       S.current.costume,
-                      'Special',
+                      S.current.general_special,
                     ][index]),
                   ),
                 );

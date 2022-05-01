@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
   Widget get signupBtn => ElevatedButton(
-        onPressed: isLoginAvailable() ? doSignUp : null,
+        onPressed: isSignUpAvailable() ? doSignUp : null,
         child: Text(S.current.login_signup),
       );
 
@@ -391,6 +391,13 @@ class _LoginPageState extends State<LoginPage> {
         _validateName(name) == null &&
         pwd.isNotEmpty &&
         _validatePwd(pwd) == null;
+  }
+
+  bool isSignUpAvailable([String? name, String? pwd, String? confirmPwd]) {
+    name ??= _nameController.text;
+    pwd ??= _pwdController.text;
+    confirmPwd ??= _confirmPwdController.text;
+    return isLoginAvailable(name, pwd) && confirmPwd == pwd;
   }
 
   bool isChangePasswordAvailable([String? name, String? pwd, String? newPwd]) {

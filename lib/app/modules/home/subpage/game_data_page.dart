@@ -199,6 +199,7 @@ class _GameDataPageState extends State<GameDataPage> {
   }
 
   Future<void> clearCache() async {
+    AtlasIconLoader.instance.clearFailed();
     await DefaultCacheManager().emptyCache();
     if (!kIsWeb) {
       Directory(db.paths.tempDir)

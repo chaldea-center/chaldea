@@ -1,5 +1,7 @@
+import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../generated/l10n.dart';
 import '_helper.dart';
 import 'userdata.dart';
 
@@ -115,6 +117,43 @@ enum SvtCompare { no, className, rarity, atk, hp, priority }
 
 enum SvtEffectScope { active, passive, append, td }
 
+enum EffectTarget {
+  self,
+  ptAll, //ptFull
+  ptOne,
+  ptOther, //ptOtherFull
+  enemy,
+  enemyAll,
+  special,
+}
+
+const _funcEffectMapping = {
+  FuncTargetType.self: EffectTarget.self,
+  FuncTargetType.ptAll: EffectTarget.ptAll,
+  FuncTargetType.ptFull: EffectTarget.ptAll,
+  FuncTargetType.ptOne: EffectTarget.ptOne,
+  FuncTargetType.ptOther: EffectTarget.ptOther,
+  FuncTargetType.ptOtherFull: EffectTarget.ptOther,
+  FuncTargetType.enemy: EffectTarget.enemy,
+  FuncTargetType.enemyAll: EffectTarget.enemyAll,
+};
+
+extension EffectTargetX on EffectTarget {
+  static const List<EffectTarget> svtTargets = EffectTarget.values;
+  static EffectTarget fromFunc(FuncTargetType funcTarget) {
+    return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
+  }
+
+  String get shownName {
+    for (final entry in _funcEffectMapping.entries) {
+      if (entry.value == this) {
+        return Transl.funcTargetType(entry.key).l;
+      }
+    }
+    return S.current.general_special;
+  }
+}
+
 @JsonSerializable(ignoreUnannotated: true)
 class SvtFilterData {
   @JsonKey()
@@ -151,9 +190,8 @@ class SvtFilterData {
   // FilterGroupData special; //not used yet
   FilterGroupData<SvtEffectScope> effectScope =
       FilterGroupData(options: {SvtEffectScope.active, SvtEffectScope.td});
-  FilterGroupData<FuncTargetType> funcTarget = FilterGroupData();
-  FilterGroupData<FuncType> funcType = FilterGroupData();
-  FilterGroupData<BuffType> buffType = FilterGroupData();
+  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
+  FilterGroupData<SkillEffect> effectType = FilterGroupData();
 
   SvtFilterData({
     this.useGrid = false,
@@ -182,9 +220,8 @@ class SvtFilterData {
         gender,
         trait,
         effectScope,
-        funcTarget,
-        funcType,
-        buffType,
+        effectTarget,
+        effectType,
       ];
 
   void reset() {
@@ -268,6 +305,8 @@ class CraftFilterData {
   FilterGroupData<CEObtain> obtain = FilterGroupData();
   FilterGroupData<CraftATKType> atkType = FilterGroupData();
   FilterGroupData<int> status = FilterGroupData();
+  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
+  FilterGroupData<SkillEffect> effectType = FilterGroupData();
 
   CraftFilterData({
     this.useGrid = false,
@@ -281,7 +320,14 @@ class CraftFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [rarity, obtain, atkType, status];
+  List<FilterGroupData> get _group => [
+        rarity,
+        obtain,
+        atkType,
+        status,
+        effectTarget,
+        effectType,
+      ];
 
   void reset() {
     favorite = false;
@@ -340,6 +386,8 @@ class CmdCodeFilterData {
 
   // filter
   FilterGroupData<int> rarity = FilterGroupData();
+  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
+  FilterGroupData<SkillEffect> effectType = FilterGroupData();
 
   CmdCodeFilterData({
     this.useGrid = false,
@@ -355,7 +403,7 @@ class CmdCodeFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [rarity];
+  List<FilterGroupData> get _group => [rarity, effectTarget, effectType];
 
   void reset() {
     favorite = false;

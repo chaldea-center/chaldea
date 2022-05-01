@@ -117,7 +117,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       itemBuilder: (context, index) {
         final itemId = params.rows[index];
         final item = db.gameData.items[itemId];
-        Widget leading = GestureDetector(
+        Widget leading = InkWell(
           onTap: () {
             if (item != null) {
               router.push(url: item.route);
@@ -131,7 +131,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   : itemId == Items.expPointId
                       ? null
                       : item?.borderedIcon,
-              height: 48,
+              width: 36,
+              aspectRatio: 132 / 144,
             ),
           ),
         );

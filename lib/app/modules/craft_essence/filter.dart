@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
@@ -27,7 +28,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.of(context).filter_shown_type, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
             onChanged: (v) {
@@ -63,7 +64,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: Text(S.current.rarity),
           options: const [1, 2, 3, 4, 5],
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v★'),
+          optionBuilder: (v) => Text('$v$kStarChar'),
           onFilterChanged: (value) {
             update();
           },
@@ -95,17 +96,27 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             update();
           },
         ),
-        // FilterGroup(
-        //   title: Text(S.current.filter_effects),
-        //   options: EffectType.craftEffectsMap.keys.toList(),
-        //   values: filterData.effects,
-        //   showMatchAll: true,
-        //   showInvert: true,
-        //   optionBuilder: (v) => Text(EffectType.craftEffectsMap[v]!.shownName),
-        //   onFilterChanged: (value) {
-        //     update();
-        //   },
-        // ),
+        FilterGroup<EffectTarget>(
+          title: Text(S.current.effect_target),
+          options: EffectTarget.values,
+          values: filterData.effectTarget,
+          optionBuilder: (v) => Text(v.shownName),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup<SkillEffect>(
+          title: Text(S.current.effect_type),
+          options: List.of(SkillEffect.values
+              .where((v) => !SkillEffect.ceIgnores.contains(v))),
+          values: filterData.effectType,
+          showMatchAll: true,
+          showInvert: false,
+          optionBuilder: (v) => Text(v.transl.l),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
         // SFooter(Localized.niceSkillFilterHint.localized)
       ]),
     );

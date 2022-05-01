@@ -65,6 +65,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
         Expanded(
           child: DropdownButton<int>(
             value: selected,
+            underline: const SizedBox(),
             items: recentFiles.isEmpty
                 ? const [
                     DropdownMenuItem(
@@ -112,7 +113,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
     try {
       EasyLoading.show();
       recentFiles = List.from((await ChaldeaApi.dio.get(
-              'recognizer/viewer/${widget.type.name}/list',
+              '/recognizer/viewer/${widget.type.name}/list',
               queryParameters: {"count": count}))
           .data);
       EasyLoading.dismiss();
@@ -127,7 +128,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
     try {
       EasyLoading.show();
       final resp = await ChaldeaApi.dio.get(
-          'recognizer/viewer/${widget.type.name}/result',
+          '/recognizer/viewer/${widget.type.name}/result',
           queryParameters: {"filename": filename});
       switch (widget.type) {
         case RecognizerType.item:

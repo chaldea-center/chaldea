@@ -82,7 +82,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         S.current.active_skill,
         S.current.append_skill,
         S.current.costume_unlock,
-        'Special'
+        S.current.general_special
       ];
       for (int i = 0; i < headers.length; i++) {
         Map<int, int> partDetail = {};

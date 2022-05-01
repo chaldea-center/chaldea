@@ -137,6 +137,7 @@ class EventExtra {
   int huntingId;
   List<int> huntingQuestIds;
   List<EventExtraItems> extraItems;
+  List<EventExtraItems> extraItems2;
 
   MappingBase<int> startTime;
   MappingBase<int> endTime;
@@ -151,12 +152,15 @@ class EventExtra {
     MappingBase<String>? noticeLink,
     this.huntingId = 0,
     this.huntingQuestIds = const [],
-    this.extraItems = const [],
+    List<EventExtraItems>? extraItems,
+    List<EventExtraItems>? extraItems2,
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
     this.relatedSummons = const [],
   })  : titleBanner = titleBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
+        extraItems = extraItems2 ?? extraItems ?? [],
+        extraItems2 = [],
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
 

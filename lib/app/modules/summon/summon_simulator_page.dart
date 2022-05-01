@@ -197,7 +197,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       expanded: rarity > 3,
       headerBuilder: (context, _) => ListTile(
         dense: true,
-        title: Text('★$rarity ' +
+        title: Text('$kStarChar$rarity ' +
             (isSvt ? S.current.servant : S.current.craft_essence)),
         trailing: Text(totalCount.toString()),
       ),

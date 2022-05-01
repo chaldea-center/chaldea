@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../common/filter_group.dart';
@@ -203,47 +204,50 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         groupDivider,
         FilterGroup<SvtEffectScope>(
-          title: const Text('Effect Scope'),
+          title: Text(S.current.effect_scope),
           options: SvtEffectScope.values,
           values: filterData.effectScope,
-          optionBuilder: (v) => Text(v.name),
+          optionBuilder: (v) => Text(_getEffectScopeName(v)),
           onFilterChanged: (value) {
             update();
           },
         ),
-        FilterGroup<FuncTargetType>(
-          title: const Text('Effect Target'),
-          options: FuncTargetType.values.toList(),
-          values: filterData.funcTarget,
-          optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
+        FilterGroup<EffectTarget>(
+          title: Text(S.current.effect_target),
+          options: EffectTargetX.svtTargets,
+          values: filterData.effectTarget,
+          optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value) {
             update();
           },
         ),
-        FilterGroup<FuncType>(
-          title: const Text('FuncType'),
-          options: List.of(db.gameData.others.svtFuncs)..sort2((e) => e.name),
-          values: filterData.funcType,
+        FilterGroup<SkillEffect>(
+          title: Text(S.current.effect_type),
+          options: List.of(SkillEffect.values
+              .where((v) => !SkillEffect.svtIgnores.contains(v))),
+          values: filterData.effectType,
           showMatchAll: true,
-          showInvert: true,
-          optionBuilder: (v) => Text(v.name),
-          onFilterChanged: (value) {
-            update();
-          },
-        ),
-        FilterGroup<BuffType>(
-          title: const Text('BuffType'),
-          options: List.of(db.gameData.others.svtBuffs)..sort2((e) => e.name),
-          values: filterData.buffType,
-          showMatchAll: true,
-          showInvert: true,
-          optionBuilder: (v) => Text(v.name),
+          showInvert: false,
+          optionBuilder: (v) => Text(v.transl.l),
           onFilterChanged: (value) {
             update();
           },
         ),
       ]),
     );
+  }
+
+  String _getEffectScopeName(SvtEffectScope scope) {
+    switch (scope) {
+      case SvtEffectScope.active:
+        return S.current.active_skill_short;
+      case SvtEffectScope.passive:
+        return S.current.passive_skill_short;
+      case SvtEffectScope.append:
+        return S.current.append_skill_short;
+      case SvtEffectScope.td:
+        return S.current.np_short;
+    }
   }
 
   Widget _buildClassFilter() {

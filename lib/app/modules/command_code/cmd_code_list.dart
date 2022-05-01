@@ -112,9 +112,34 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   }
 
   @override
-  bool filter(CommandCode ccc) {
-    if (!filterData.rarity.matchOne(ccc.rarity)) {
+  bool filter(CommandCode cc) {
+    if (!filterData.rarity.matchOne(cc.rarity)) {
       return false;
+    }
+
+    if (filterData.effectType.options.isNotEmpty) {
+      List<NiceFunction> funcs = [
+        for (final skill in cc.skills)
+          ...skill.filteredFunction(includeTrigger: true),
+      ];
+      if (filterData.effectTarget.options.isNotEmpty) {
+        funcs.retainWhere((func) {
+          return filterData.effectTarget
+              .matchOne(EffectTargetX.fromFunc(func.funcTargetType));
+        });
+      }
+      if (funcs.isEmpty) return false;
+      if (filterData.effectType.matchAll) {
+        if (!filterData.effectType.options
+            .every((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      } else {
+        if (!filterData.effectType.options
+            .any((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      }
     }
     return true;
   }

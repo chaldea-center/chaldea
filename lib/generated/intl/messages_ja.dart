@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("アカウント"),
         "active_skill": MessageLookupByLibrary.simpleMessage("保有スキル"),
+        "active_skill_short": MessageLookupByLibrary.simpleMessage("保有"),
         "add": MessageLookupByLibrary.simpleMessage("追加"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("フィードバックの内容を記入してください"),
@@ -114,6 +115,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "ユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。"),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea バックアップ"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中国"),
+        "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),
         "chaldea_share_msg": m2,
         "change_log": MessageLookupByLibrary.simpleMessage("更新履歴"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラ"),
@@ -172,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "互換性を確保するために、更新する前にアプリの最新バージョンにアップデードしてください"),
         "download_source": MessageLookupByLibrary.simpleMessage("ダウンロードソース"),
         "download_source_hint":
-            MessageLookupByLibrary.simpleMessage("中国大陸ならCNエンドポイントを選択"),
+            MessageLookupByLibrary.simpleMessage("中国大陸なら中国エンドポイントを選択"),
         "downloaded": MessageLookupByLibrary.simpleMessage("ダウンロード済み"),
         "downloading": MessageLookupByLibrary.simpleMessage("ダウンロード中"),
         "drop_calc_empty_hint":
@@ -480,6 +483,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "outdated": MessageLookupByLibrary.simpleMessage("期限切れ"),
         "overview": MessageLookupByLibrary.simpleMessage("概要"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("クラススキル"),
+        "passive_skill_short": MessageLookupByLibrary.simpleMessage("クラス"),
         "plan": MessageLookupByLibrary.simpleMessage("プラン"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("プラン最大化(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("プラン最大化(999)"),

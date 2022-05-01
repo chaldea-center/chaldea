@@ -376,4 +376,25 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      effectType: (json['effect_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      funcType: (json['func_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      buffType: (json['buff_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );

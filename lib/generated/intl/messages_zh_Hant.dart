@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("帳號"),
         "active_skill": MessageLookupByLibrary.simpleMessage("主動技能"),
+        "active_skill_short": MessageLookupByLibrary.simpleMessage("主動"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("請填寫反饋內容"),
@@ -112,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea應用備份"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("大陸"),
+        "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),
         "chaldea_share_msg": m2,
         "change_log": MessageLookupByLibrary.simpleMessage("更新歷史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出場角色"),
@@ -168,7 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("為確保兼容性，更新前請升級至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下載源"),
         "download_source_hint":
-            MessageLookupByLibrary.simpleMessage("大陸地區請選擇CN節點"),
+            MessageLookupByLibrary.simpleMessage("大陸地區請選擇大陸節點"),
         "downloaded": MessageLookupByLibrary.simpleMessage("已下載"),
         "downloading": MessageLookupByLibrary.simpleMessage("下載中"),
         "drop_calc_empty_hint":
@@ -451,6 +454,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "outdated": MessageLookupByLibrary.simpleMessage("已過期"),
         "overview": MessageLookupByLibrary.simpleMessage("概覽"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("被動技能"),
+        "passive_skill_short": MessageLookupByLibrary.simpleMessage("被動"),
         "plan": MessageLookupByLibrary.simpleMessage("規劃"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("規劃最大化(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("規劃最大化(999)"),

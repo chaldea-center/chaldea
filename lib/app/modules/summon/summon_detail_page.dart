@@ -158,7 +158,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           child: Row(
             children: [
               Text(
-                '★ ',
+                '$kStarChar ',
                 style: Theme.of(context)
                     .textTheme
                     .caption

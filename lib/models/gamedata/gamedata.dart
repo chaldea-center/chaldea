@@ -267,31 +267,28 @@ class _ProcessedData {
         ...svt.classPassive,
         ...svt.appendPassive.map((e) => e.skill)
       ]) {
-        for (final func in skill.functions) {
-          if (func.funcTargetTeam != FuncApplyTarget.enemy) {
-            svtFuncs.add(func.funcType);
-            svtBuffs.addAll(func.buffs.map((e) => e.type));
-          }
+        for (final func in NiceFunction.filterFuncs(
+            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+          svtFuncs.add(func.funcType);
+          svtBuffs.addAll(func.buffs.map((e) => e.type));
         }
       }
     }
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
-        for (final func in skill.functions) {
-          if (func.funcTargetTeam != FuncApplyTarget.enemy) {
-            ceFuncs.add(func.funcType);
-            ceBuffs.addAll(func.buffs.map((e) => e.type));
-          }
+        for (final func in NiceFunction.filterFuncs(
+            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+          ceFuncs.add(func.funcType);
+          ceBuffs.addAll(func.buffs.map((e) => e.type));
         }
       }
     }
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
-        for (final func in skill.functions) {
-          if (func.funcTargetTeam != FuncApplyTarget.enemy &&
-              func.buffs.isNotEmpty) {
-            ceBuffs.add(func.buffs.first.type);
-          }
+        for (final func in NiceFunction.filterFuncs(
+            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+          ccFuncs.add(func.funcType);
+          ceBuffs.addAll(func.buffs.map((e) => e.type));
         }
       }
     }

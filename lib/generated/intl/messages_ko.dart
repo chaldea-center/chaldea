@@ -100,6 +100,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("정보"),
         "card_name": MessageLookupByLibrary.simpleMessage("카드명"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("중국"),
+        "chaldea_server_global": MessageLookupByLibrary.simpleMessage("국제성"),
         "chaldea_share_msg": m2,
         "change_log": MessageLookupByLibrary.simpleMessage("업데이트 내역"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("캐릭터"),

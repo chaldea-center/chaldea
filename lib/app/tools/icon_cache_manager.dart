@@ -25,7 +25,7 @@ class IconCacheManagePage extends StatefulWidget {
 }
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
-  final _loader = AtlasIconLoader();
+  final _loader = AtlasIconLoader.instance;
   final _limiter = RateLimiter(
       maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
@@ -132,8 +132,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
 class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
-  static final AtlasIconLoader _instance = AtlasIconLoader._();
-  factory AtlasIconLoader() => _instance;
+  static final AtlasIconLoader instance = AtlasIconLoader._();
   final _rateLimiter = RateLimiter(maxCalls: 20);
 
   @override
@@ -202,6 +201,10 @@ abstract class _CachedLoader<K, V> {
     return false;
   }
 
+  void clearFailed() {
+    _failed.clear();
+  }
+
   Future<V?> get(K key, {RateLimiter? limiter}) async {
     if (_success.containsKey(key)) return _success[key];
     if (_completers.containsKey(key)) return _completers[key]?.future;
@@ -267,7 +270,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
   Future<ui.Codec> _loadAsync(MyCacheImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    final localPath = await AtlasIconLoader._instance.get(key.url);
+    final localPath = await AtlasIconLoader.instance.get(key.url);
     if (localPath == null) {
       throw StateError('${key.url} cannot be cached to local');
     }

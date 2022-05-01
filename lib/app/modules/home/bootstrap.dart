@@ -352,7 +352,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   void onDataReady(bool needCheckUpdate) async {
     print('onDataReady: $needCheckUpdate');
     rootRouter.appState.dataReady = true;
-    if (needCheckUpdate && network.available) {
+    if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));
       await _loader.reload(updateOnly: true).catchError((e, s) async {
         logger.d('silent background update error');
@@ -463,8 +463,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             value: db.settings.proxyServer,
             items: [
               DropdownMenuItem(
-                  child: Text(S.current.general_default), value: false),
-              const DropdownMenuItem(child: Text('CN'), value: true),
+                  child: Text(S.current.chaldea_server_global), value: false),
+              DropdownMenuItem(
+                  child: Text(S.current.chaldea_server_cn), value: true),
             ],
             onChanged: (v) {
               setState(() {

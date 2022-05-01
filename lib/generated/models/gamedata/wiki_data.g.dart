@@ -153,10 +153,13 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
               .toList() ??
           const [],
       extraItems: (json['extraItems'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+          ?.map((e) =>
+              EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      extraItems2: (json['extraItems2'] as List<dynamic>?)
+          ?.map((e) =>
+              EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       startTime: json['startTime'] == null
           ? null
           : MappingBase<int>.fromJson(

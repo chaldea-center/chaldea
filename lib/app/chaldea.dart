@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/generated/intl/messages_all.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
 import '../packages/language.dart';
@@ -17,7 +18,6 @@ import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import '../utils/catcher/catcher_util.dart';
-import '../utils/constants.dart';
 import '../widgets/after_layout.dart';
 import 'app.dart';
 import 'routes/parser.dart';
@@ -139,8 +139,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     if (PlatformU.isWindows) {
       MethodChannelChaldeaNext.setWindowPos();
     }
-    if (DateTime.now().millisecondsSinceEpoch ~/ 1000 - db.settings.lastBackup >
-        24 * 3600) {
+    if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();
     }
   }

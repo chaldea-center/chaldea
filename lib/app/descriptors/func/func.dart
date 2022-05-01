@@ -235,12 +235,6 @@ class FuncDescriptor extends StatelessWidget {
       }
 
       switch (func.funcType) {
-        case FuncType.subState:
-          for (final trait in func.traitVals) {
-            spans.add(CenterWidgetSpan(
-                child: SharedBuilder.trait(context: context, trait: trait)));
-          }
-          break;
         case FuncType.damageNpIndividual:
         case FuncType.damageNpStateIndividualFix:
           int? indiv = vals?.Target;
@@ -272,7 +266,12 @@ class FuncDescriptor extends StatelessWidget {
         default:
           break;
       }
-      _addTraits('  On:', func.functvals);
+      _addTraits('  For:', func.traitVals);
+      if (func.funcType != FuncType.subState ||
+          func.traitVals.map((e) => e.id).join(',') !=
+              func.functvals.map((e) => e.id).join(',')) {
+        _addTraits('  On:', func.functvals);
+      }
       _addTraits('  On Field:', func.funcquestTvals);
 
       Widget child = Text.rich(

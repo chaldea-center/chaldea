@@ -174,6 +174,17 @@ class S {
     );
   }
 
+  /// `Active`
+  String get active_skill_short {
+    return Intl.message(
+      'Active',
+      name: 'active_skill_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Add`
   String get add {
     return Intl.message(
@@ -564,6 +575,28 @@ class S {
     return Intl.message(
       'Server',
       name: 'chaldea_server',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `CN`
+  String get chaldea_server_cn {
+    return Intl.message(
+      'CN',
+      name: 'chaldea_server_cn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Global`
+  String get chaldea_server_global {
+    return Intl.message(
+      'Global',
+      name: 'chaldea_server_global',
       desc: '',
       locale: localeName,
       args: [],
@@ -1197,11 +1230,44 @@ class S {
     );
   }
 
+  /// `Effect Scope`
+  String get effect_scope {
+    return Intl.message(
+      'Effect Scope',
+      name: 'effect_scope',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Buff Search`
   String get effect_search {
     return Intl.message(
       'Buff Search',
       name: 'effect_search',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Effect Target`
+  String get effect_target {
+    return Intl.message(
+      'Effect Target',
+      name: 'effect_target',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Effect Type`
+  String get effect_type {
+    return Intl.message(
+      'Effect Type',
+      name: 'effect_type',
       desc: '',
       locale: localeName,
       args: [],
@@ -2182,6 +2248,17 @@ class S {
     return Intl.message(
       'Others',
       name: 'general_others',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Special`
+  String get general_special {
+    return Intl.message(
+      'Special',
+      name: 'general_special',
       desc: '',
       locale: localeName,
       args: [],
@@ -3855,6 +3932,17 @@ class S {
     );
   }
 
+  /// `Passive`
+  String get passive_skill_short {
+    return Intl.message(
+      'Passive',
+      name: 'passive_skill_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Plan`
   String get plan {
     return Intl.message(
@@ -5153,10 +5241,10 @@ class S {
     );
   }
 
-  /// `Drow Cost`
+  /// `Draw Cost`
   String get treasure_box_draw_cost {
     return Intl.message(
-      'Drow Cost',
+      'Draw Cost',
       name: 'treasure_box_draw_cost',
       desc: '',
       locale: localeName,

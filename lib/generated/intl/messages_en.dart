@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
+        "active_skill_short": MessageLookupByLibrary.simpleMessage("Active"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("Please add feedback details"),
@@ -123,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Server"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("CN"),
+        "chaldea_server_global": MessageLookupByLibrary.simpleMessage("Global"),
         "chaldea_server_hint": MessageLookupByLibrary.simpleMessage(
             "Used for game data and screenshots recognizer"),
         "chaldea_share_msg": m2,
@@ -202,7 +205,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Solve"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("Drop rate"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+        "effect_scope": MessageLookupByLibrary.simpleMessage("Effect Scope"),
         "effect_search": MessageLookupByLibrary.simpleMessage("Buff Search"),
+        "effect_target": MessageLookupByLibrary.simpleMessage("Effect Target"),
+        "effect_type": MessageLookupByLibrary.simpleMessage("Effect Type"),
         "efficiency": MessageLookupByLibrary.simpleMessage("Efficiency"),
         "efficiency_type": MessageLookupByLibrary.simpleMessage("Efficient"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP Rate"),
@@ -318,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
         "general_default": MessageLookupByLibrary.simpleMessage("Default"),
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
+        "general_special": MessageLookupByLibrary.simpleMessage("Special"),
         "general_type": MessageLookupByLibrary.simpleMessage("Type"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
@@ -535,6 +542,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "outdated": MessageLookupByLibrary.simpleMessage("Outdated"),
         "overview": MessageLookupByLibrary.simpleMessage("Overview"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
+        "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Max(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Max(999)"),
@@ -695,7 +703,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
         "treasure_box_draw_cost":
-            MessageLookupByLibrary.simpleMessage("Drow Cost"),
+            MessageLookupByLibrary.simpleMessage("Draw Cost"),
         "treasure_box_extra_gift":
             MessageLookupByLibrary.simpleMessage("Extra Gifts per box"),
         "treasure_box_max_draw_once":

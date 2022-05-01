@@ -471,43 +471,39 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.trait.matchAny(svt.traitsAll)) {
       return false;
     }
-    if (filterData.funcType.options.isNotEmpty ||
-        filterData.buffType.options.isNotEmpty) {
+    if (filterData.effectType.options.isNotEmpty) {
       List<NiceFunction> funcs = [
         if (filterData.effectScope.contain(SvtEffectScope.active))
-          for (final skill in svt.skills) ...skill.functions,
+          for (final skill in svt.skills)
+            ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.passive))
-          for (final skill in svt.classPassive) ...skill.functions,
+          for (final skill in svt.classPassive)
+            ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.append))
-          for (final skill in svt.appendPassive) ...skill.skill.functions,
+          for (final skill in svt.appendPassive)
+            ...skill.skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.td))
-          for (final td in svt.noblePhantasms) ...td.functions,
+          for (final td in svt.noblePhantasms)
+            ...td.filteredFunction(includeTrigger: true),
       ];
-      if (filterData.funcTarget.options.isNotEmpty) {
+      if (filterData.effectTarget.options.isNotEmpty) {
         funcs.retainWhere((func) {
-          return filterData.funcTarget.matchOne(func.funcTargetType);
-        });
-      }
-      if (filterData.funcType.options.isNotEmpty) {
-        if (!filterData.funcType.matchAny(funcs.map((e) => e.funcType))) {
-          return false;
-        }
-      }
-      if (filterData.buffType.options.isNotEmpty) {
-        if (!filterData.buffType.matchAny(
-            [for (final func in funcs) ...func.buffs.map((e) => e.type)])) {
-          return false;
-        }
-      }
-
-      if (filterData.buffType.options.isNotEmpty) {
-        funcs.retainWhere((func) {
-          final buff = func.buffs.getOrNull(0)?.type;
-          if (buff == null) return false;
-          return filterData.buffType.matchOne(buff);
+          return filterData.effectTarget
+              .matchOne(EffectTargetX.fromFunc(func.funcTargetType));
         });
       }
       if (funcs.isEmpty) return false;
+      if (filterData.effectType.matchAll) {
+        if (!filterData.effectType.options
+            .every((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      } else {
+        if (!filterData.effectType.options
+            .any((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      }
     }
     return true;
   }

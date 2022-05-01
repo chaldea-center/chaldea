@@ -287,7 +287,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             coin == null ? '' : (S.current.servant_coin_short + ' $coin'),
           ]),
           _wrapCellStyle([
-            S.current.active_skill +
+            S.current.active_skill_short +
                 ' ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}',
             svt.appendLvs == null
                 ? ''

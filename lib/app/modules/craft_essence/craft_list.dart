@@ -137,11 +137,31 @@ class CraftListPageState extends State<CraftListPage>
         .matchOne(db.curUser.craftEssences[ce.collectionNo] ?? 0)) {
       return false;
     }
-    //
-    // if (ce.niceSkills
-    //     .every((skill) => !skill.testFunctions(filterData.effects))) {
-    //   return false;
-    // }
+
+    if (filterData.effectType.options.isNotEmpty) {
+      List<NiceFunction> funcs = [
+        for (final skill in ce.skills)
+          ...skill.filteredFunction(includeTrigger: true),
+      ];
+      if (filterData.effectTarget.options.isNotEmpty) {
+        funcs.retainWhere((func) {
+          return filterData.effectTarget
+              .matchOne(EffectTargetX.fromFunc(func.funcTargetType));
+        });
+      }
+      if (funcs.isEmpty) return false;
+      if (filterData.effectType.matchAll) {
+        if (!filterData.effectType.options
+            .every((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      } else {
+        if (!filterData.effectType.options
+            .any((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      }
+    }
     return true;
   }
 

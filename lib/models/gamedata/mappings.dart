@@ -54,105 +54,105 @@ class Transl<K, V> {
     return '$runtimeType($key)';
   }
 
-  static MappingData get _md => db.gameData.mappingData;
+  static MappingData get md => db.gameData.mappingData;
 
   Transl.fromMapping(this.key, MappingBase<V> m, this._default)
       : _m = m,
         mappings = {key: m};
 
   static Transl<int, String> trait(int id) {
-    if (!_md.trait.containsKey(id)) {
-      id = _md.traitRedirect[id] ?? id;
+    if (!md.trait.containsKey(id)) {
+      id = md.traitRedirect[id] ?? id;
     }
-    return Transl(_md.trait, id, '$id');
+    return Transl(md.trait, id, '$id');
   }
 
   static Transl<String, String> itemNames(String jp) =>
-      Transl(_md.itemNames, jp, jp);
+      Transl(md.itemNames, jp, jp);
 
   static Transl<String, String> mcNames(String jp) =>
-      Transl(_md.mcNames, jp, jp);
+      Transl(md.mcNames, jp, jp);
 
   static Transl<String, String> costumeNames(String jp) =>
-      Transl(_md.costumeNames, jp, jp);
+      Transl(md.costumeNames, jp, jp);
 
   static Transl<int, String> costumeDetail(int id) =>
-      Transl(_md.costumeDetail, id, db.gameData.costumes[id]?.detail ?? '???');
+      Transl(md.costumeDetail, id, db.gameData.costumes[id]?.detail ?? '???');
 
   static Transl<String, String> cvNames(String jp) =>
-      Transl(_md.cvNames, jp, jp);
+      Transl(md.cvNames, jp, jp);
 
   static Transl<String, String> illustratorNames(String jp) =>
-      Transl(_md.illustratorNames, jp, jp);
+      Transl(md.illustratorNames, jp, jp);
 
   static Transl<String, String> ccNames(String jp) =>
-      Transl(_md.ccNames, jp, jp);
+      Transl(md.ccNames, jp, jp);
 
   static Transl<String, String> svtNames(String jp) =>
-      Transl(_md.svtNames, jp, jp);
+      Transl(md.svtNames, jp, jp);
 
   static Transl<String, String> ceNames(String jp) =>
-      Transl(_md.ceNames, jp, jp);
+      Transl(md.ceNames, jp, jp);
 
   static Transl<String, String> eventNames(String jp) =>
-      Transl(_md.eventNames, jp, jp);
+      Transl(md.eventNames, jp, jp);
 
   static Transl<String, String> warNames(String jp) =>
-      Transl(_md.warNames, jp, jp);
+      Transl(md.warNames, jp, jp);
 
   static Transl<String, String> questNames(String jp) =>
-      Transl(_md.questNames, jp, jp);
+      Transl(md.questNames, jp, jp);
 
   static Transl<String, String> spotNames(String jp) =>
-      Transl(_md.spotNames, jp, jp);
+      Transl(md.spotNames, jp, jp);
 
   static Transl<String, String> entityNames(String jp) =>
-      Transl(_md.entityNames, jp, jp);
+      Transl(md.entityNames, jp, jp);
 
   static Transl<String, String> tdTypes(String jp) =>
-      Transl(_md.tdTypes, jp, jp);
+      Transl(md.tdTypes, jp, jp);
 
   static Transl<String, String> bgmNames(String jp) =>
-      Transl(_md.bgmNames, jp, jp);
+      Transl(md.bgmNames, jp, jp);
 
   static Transl<String, String> summonNames(String jp) =>
-      Transl(_md.summonNames, jp, jp);
+      Transl(md.summonNames, jp, jp);
 
   static Transl<String, String> charaNames(String cn) =>
-      Transl(_md.charaNames, cn, cn);
+      Transl(md.charaNames, cn, cn);
 
   static Transl<String, String> buffNames(String jp) =>
-      Transl(_md.buffNames, jp, jp);
+      Transl(md.buffNames, jp, jp);
 
   static Transl<String, String> buffDetail(String jp) =>
-      Transl(_md.buffDetail, jp, jp);
+      Transl(md.buffDetail, jp, jp);
 
   static Transl<String, String> funcPopuptext(String jp, [FuncType? type]) {
     if ({'', '-', 'なし', 'None', 'none'}.contains(jp) && type != null) {
-      return Transl(_md.funcPopuptext, type.name, type.name);
+      return Transl(md.funcPopuptext, type.name, type.name);
     }
-    return Transl(_md.funcPopuptext, jp, jp);
+    return Transl(md.funcPopuptext, jp, jp);
   }
 
   static Transl<String, String> skillNames(String jp) =>
-      Transl(_md.skillNames, jp, jp);
+      Transl(md.skillNames, jp, jp);
 
   static Transl<String, String> skillDetail(String jp) =>
-      Transl(_md.skillDetail, jp, jp);
+      Transl(md.skillDetail, jp, jp);
 
   static Transl<String, String> tdNames(String jp) =>
-      Transl(_md.tdNames, jp, jp);
+      Transl(md.tdNames, jp, jp);
 
-  static Transl<String, String> tdRuby(String jp) => Transl(_md.tdRuby, jp, jp);
+  static Transl<String, String> tdRuby(String jp) => Transl(md.tdRuby, jp, jp);
 
   static Transl<String, String> tdDetail(String jp) =>
-      Transl(_md.tdDetail, jp, jp);
+      Transl(md.tdDetail, jp, jp);
 
   static Transl<String, String> svtClass(SvtClass key) =>
-      Transl(_md.enums.svtClass, key.name, key.name);
+      Transl(md.enums.svtClass, key.name, key.name);
   static Transl<String, String> svtClassId(int id) {
     final key = kSvtClassIds[id]?.name ?? id.toString();
-    return Transl(_md.enums.svtClass, key, key);
+    return Transl(md.enums.svtClass, key, key);
   }
 
   // enums
@@ -163,19 +163,23 @@ class Transl<K, V> {
   }
 
   static Transl<String, String> svtAttribute(Attribute key) =>
-      Transl(_md.enums.attribute, key.name, key.name);
+      Transl(md.enums.attribute, key.name, key.name);
   static Transl<String, String> servantPolicy(ServantPolicy key) =>
-      Transl(_md.enums.servantPolicy, key.name, key.name);
+      Transl(md.enums.servantPolicy, key.name, key.name);
   static Transl<String, String> servantPersonality(ServantPersonality key) =>
-      Transl(_md.enums.servantPersonality, key.name, key.name);
+      Transl(md.enums.servantPersonality, key.name, key.name);
   static Transl<String, String> gender(Gender key) =>
-      Transl(_md.enums.gender, key.name, key.name);
+      Transl(md.enums.gender, key.name, key.name);
   static Transl<String, String> funcTargetType(FuncTargetType key) =>
-      Transl(_md.enums.funcTargetType, key.name, key.name);
+      Transl(md.enums.funcTargetType, key.name, key.name);
   static Transl<String, String> svtObtain(SvtObtain key) =>
-      Transl(_md.enums.svtObtain, key.name, key.name);
+      Transl(md.enums.svtObtain, key.name, key.name);
   static Transl<String, String> ceObtain(CEObtain key) =>
-      Transl(_md.enums.ceObtain, key.name, key.name);
+      Transl(md.enums.ceObtain, key.name, key.name);
+  static Transl<String, String> buffType(BuffType key) =>
+      Transl(md.enums.buffType, key.name, key.name);
+  static Transl<String, String> funcType(FuncType key) =>
+      Transl(md.enums.funcType, key.name, key.name);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -445,6 +449,9 @@ class EnumMapping {
   final Map<String, MappingBase<String>> itemCategory;
   final Map<String, MappingBase<String>> customMissionType;
   final Map<String, MappingBase<String>> npDamageType;
+  final Map<String, MappingBase<String>> effectType;
+  final Map<String, MappingBase<String>> funcType;
+  final Map<String, MappingBase<String>> buffType;
 
   EnumMapping({
     this.svtClass = const {},
@@ -460,6 +467,9 @@ class EnumMapping {
     this.itemCategory = const {},
     this.customMissionType = const {},
     this.npDamageType = const {},
+    this.effectType = const {},
+    this.funcType = const {},
+    this.buffType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>

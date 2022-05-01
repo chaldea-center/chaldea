@@ -83,6 +83,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
             child: content,
           ),
         ),
+        const SafeArea(child: SizedBox()),
       ],
     );
   }

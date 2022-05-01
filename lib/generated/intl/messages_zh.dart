@@ -76,6 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_update_app_detail": m1,
         "account_title": MessageLookupByLibrary.simpleMessage("账户"),
         "active_skill": MessageLookupByLibrary.simpleMessage("主动技能"),
+        "active_skill_short": MessageLookupByLibrary.simpleMessage("主动"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("请填写反馈内容"),
@@ -115,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea应用备份"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("服务器"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("国内"),
+        "chaldea_server_global": MessageLookupByLibrary.simpleMessage("海外"),
         "chaldea_server_hint":
             MessageLookupByLibrary.simpleMessage("用于游戏数据和截图识别"),
         "chaldea_share_msg": m2,
@@ -173,7 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("为确保兼容性，更新前请升级至最新版APP"),
         "download_source": MessageLookupByLibrary.simpleMessage("下载源"),
         "download_source_hint":
-            MessageLookupByLibrary.simpleMessage("大陆地区请选择CN节点"),
+            MessageLookupByLibrary.simpleMessage("大陆地区请选择国内节点"),
         "downloaded": MessageLookupByLibrary.simpleMessage("已下载"),
         "downloading": MessageLookupByLibrary.simpleMessage("下载中"),
         "drop_calc_empty_hint":
@@ -182,7 +185,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+        "effect_scope": MessageLookupByLibrary.simpleMessage("效果范围"),
         "effect_search": MessageLookupByLibrary.simpleMessage("Buff检索"),
+        "effect_target": MessageLookupByLibrary.simpleMessage("效果对象"),
+        "effect_type": MessageLookupByLibrary.simpleMessage("效果类型"),
         "efficiency": MessageLookupByLibrary.simpleMessage("效率"),
         "efficiency_type": MessageLookupByLibrary.simpleMessage("效率类型"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),
@@ -281,6 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
         "general_default": MessageLookupByLibrary.simpleMessage("默认"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
+        "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
         "general_type": MessageLookupByLibrary.simpleMessage("类型"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
@@ -457,6 +464,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "outdated": MessageLookupByLibrary.simpleMessage("已过期"),
         "overview": MessageLookupByLibrary.simpleMessage("概览"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
+        "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("规划最大化(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("规划最大化(999)"),
