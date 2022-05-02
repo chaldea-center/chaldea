@@ -17,8 +17,7 @@ There are plenty of work need to do.
 - [x] GameData split wiki_data into files
 - [ ] use github issue forms for issue templates
 - [ ] Clear Cache
-  - [ ] image cache(DefaultCacheManager?)
-  - [ ] Api cache
+- [ ] userdata and gamedata, use getter+setter and update itemCenter 
 
 ## Quest Related
 
@@ -51,10 +50,10 @@ There are plenty of work need to do.
 - [ ] Events
   - [x] Shop
     - [ ] shop planner?
-  - [ ] Lottery
+  - [x] Lottery
   - [x] Point
   - [x] Tower
-  - [ ] TreasureBox
+  - [x] TreasureBox
   - [x] Mission
   - [ ] War Map
 - [ ] Mission Solver
@@ -70,6 +69,7 @@ There are plenty of work need to do.
 - [ ] add field/trait info
 - [ ] add translation for funcs without popuptext
 - [ ] which func should be shown?
+- [ ] show trigger name
 
 ## Server side
 

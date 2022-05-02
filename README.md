@@ -25,7 +25,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 - free quest solution
   - calculate the best solution of least AP or battle times according to item demands
   - compare free quest efficiency by define items' weight
-  - master mission/weekly mission solver, customization is supported
+  - master mission/weekly mission/event mission solver, customization is supported
 - summon/gacha simulator
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
@@ -81,6 +81,9 @@ If you have any bug report, feature request, question or want to contribute to t
 
 This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://flutter.dev).
 
+Thanks all contributors and translators help developing the app!
+- [CONTRIBUTORS](./CONTRIBUTORS)
+
 Chaldea is greatly inspired from
 
 - iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088)
@@ -92,13 +95,5 @@ And the dataset is powered by
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
 - [FGO 効率劇場](https://sites.google.com/view/fgo-domus-aurea)
-
-Finally thanks to all translators
-
-- Chinese - Mooncell Translators
-- English - Fandom & Reddit Translators
-- Japanese - Google Translate
-- Korean - M.Gallery & Cafe Translators
-- Spanish - [Abilio Da Silva](https://github.com/abiliodasilva)
 
 Thanks for all above communities and contributors.
