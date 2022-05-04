@@ -406,6 +406,8 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   void initState() {
     super.initState();
     if (!widget.isNp) {
+      skill = db.gameData.baseTds[widget.trigger.skill];
+    } else {
       skill = db.gameData.baseSkills[widget.trigger.skill];
     }
     if (skill == null) _fetchSkill();
@@ -424,7 +426,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     if (skillId == null) {
       skill = null;
     } else if (widget.isNp) {
-      skill = await AtlasApi.td(skillId);
+      skill = db.gameData.baseTds[skillId] ?? await AtlasApi.td(skillId);
     } else {
       skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
     }

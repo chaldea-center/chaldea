@@ -155,7 +155,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             noticeLink: event.extra.noticeLink),
         if (eventId != null && eventId > 0)
           PopupMenuItem(
-            child: const Text('Switch Region'),
+            child: Text(S.current.switch_region),
             onTap: () async {
               await null;
               final jpEvent = db.gameData.events[eventId];
@@ -169,7 +169,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                     children: [
                       for (final region in Region.values)
                         ListTile(
-                          title: Text(region.name.toUpperCase()),
+                          title: Text(region.localName),
                           enabled: startTime?.ofRegion(region) != null,
                           onTap: () async {
                             Navigator.pop(context);

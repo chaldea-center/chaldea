@@ -5692,6 +5692,17 @@ class S {
     );
   }
 
+  /// `Switch Region`
+  String get switch_region {
+    return Intl.message(
+      'Switch Region',
+      name: 'switch_region',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Test Info Pad`
   String get test_info_pad {
     return Intl.message(

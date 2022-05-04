@@ -96,7 +96,7 @@ class _ItemResultTabState extends State<ItemResultTab>
       children: [
         item.imgThumb == null
             ? const SizedBox(width: 56, height: 56)
-            : Image.memory(item.imgThumb!, width: 56, height: 56),
+            : Image.memory(item.imgThumb!, width: 56, height: 48),
         const SizedBox(width: 8),
         Item.iconBuilder(
             context: context, item: null, itemId: item.itemId, width: 48),
@@ -119,6 +119,7 @@ class _ItemResultTabState extends State<ItemResultTab>
             child: Text(
               Item.getName(item.itemId),
               textAlign: TextAlign.center,
+              maxLines: 2,
               style: TextStyle(
                 color: item.valid && item.checked
                     ? null
@@ -133,7 +134,7 @@ class _ItemResultTabState extends State<ItemResultTab>
             : Image.memory(item.imgNum!, width: 56),
         const SizedBox(width: 8),
         SizedBox(
-          width: 80,
+          width: 50,
           child: TextField(
             controller: _ctrl,
             textAlign: TextAlign.center,

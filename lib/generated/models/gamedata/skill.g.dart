@@ -102,6 +102,43 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       condLimitCount: json['condLimitCount'] as int? ?? 0,
     );
 
+BaseTd _$BaseTdFromJson(Map json) => BaseTd(
+      id: json['id'] as int,
+      card: $enumDecode(_$CardTypeEnumMap, json['card']),
+      name: json['name'] as String,
+      ruby: json['ruby'] as String? ?? "",
+      icon: json['icon'] as String?,
+      rank: json['rank'] as String,
+      type: json['type'] as String,
+      unmodifiedDetail: json['unmodifiedDetail'] as String?,
+      npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
+      npDistribution: (json['npDistribution'] as List<dynamic>)
+          .map((e) => e as int)
+          .toList(),
+      individuality: (json['individuality'] as List<dynamic>)
+          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      script: json['script'] == null
+          ? null
+          : SkillScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
+      functions: (json['functions'] as List<dynamic>)
+          .map(
+              (e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    );
+
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+};
+
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       id: json['id'] as int,
       num: json['num'] as int,
@@ -123,24 +160,15 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       individuality: (json['individuality'] as List<dynamic>)
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      script: SkillScript.fromJson(
-          Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null
+          ? null
+          : SkillScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
       functions: (json['functions'] as List<dynamic>)
           .map(
               (e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
 
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       id: json['id'] as int,

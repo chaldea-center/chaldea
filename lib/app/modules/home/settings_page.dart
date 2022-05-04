@@ -70,6 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 horizontalTitleGap: 0,
                 trailing: DropdownButton<bool>(
                   value: db.settings.proxyServer,
+                  underline: const SizedBox(),
                   items: [
                     DropdownMenuItem(
                       child: Text(S.current.chaldea_server_global),

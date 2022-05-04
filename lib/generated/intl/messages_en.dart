@@ -772,6 +772,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("(SkillMax) Owned/Total"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
+        "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),

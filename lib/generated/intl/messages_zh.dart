@@ -656,6 +656,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("(999)拥有/总计"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
+        "switch_region": MessageLookupByLibrary.simpleMessage("切换区服"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("测试信息"),
         "testing": MessageLookupByLibrary.simpleMessage("测试ing"),
         "time_close": MessageLookupByLibrary.simpleMessage("关闭"),

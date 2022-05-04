@@ -602,7 +602,7 @@ class Event {
       towers.isEmpty &&
       rewards.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
-      extra.extraItems.isEmpty;
+      extra.extraItems2.isEmpty;
 
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
     if (db.curUser.region == Region.jp) {

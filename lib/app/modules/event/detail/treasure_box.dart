@@ -58,7 +58,7 @@ class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
         for (final gifts in box.treasureBoxGifts)
           for (final gift in gifts.gifts)
             ListTile(
-              leading: gift.iconBuilder(context: context, width: 42),
+              leading: gift.iconBuilder(context: context, width: 42, text: ''),
               title: Text(Item.getName(gift.objectId) + ' ×${gift.num}'),
               onTap: () {
                 gift.routeTo();

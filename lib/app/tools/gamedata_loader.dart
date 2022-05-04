@@ -191,6 +191,7 @@ class GameDataLoader {
     Map<String, String> keys = {
       'baseFunctions': 'funcId',
       'baseSkills': 'id',
+      'baseTds': 'id',
       'bgms': 'id',
       'commandCodes': 'collectionNo',
       // constData

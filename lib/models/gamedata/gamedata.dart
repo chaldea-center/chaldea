@@ -61,6 +61,7 @@ class GameData {
   ConstGameData constData;
   DropRateData dropRate;
   Map<int, BaseSkill> baseSkills;
+  Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
 
   @JsonKey(ignore: true)
@@ -86,6 +87,7 @@ class GameData {
     MappingData? mappingData,
     ConstGameData? constData,
     DropRateData? dropRate,
+    Map<int, BaseTd>? baseTds,
     Map<int, BaseSkill>? baseSkills,
     Map<int, BaseFunction>? baseFunctions,
   })  : version = version ?? DataVersion(),
@@ -105,6 +107,7 @@ class GameData {
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData.empty(),
         dropRate = dropRate ?? DropRateData(),
+        baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
     preprocess();

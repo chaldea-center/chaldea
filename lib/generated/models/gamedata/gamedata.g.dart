@@ -74,6 +74,10 @@ GameData _$GameDataFromJson(Map json) => GameData(
           ? null
           : DropRateData.fromJson(
               Map<String, dynamic>.from(json['dropRate'] as Map)),
+      baseTds: (json['baseTds'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String),
+            BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       baseSkills: (json['baseSkills'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String),
             BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),

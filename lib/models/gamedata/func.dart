@@ -151,7 +151,7 @@ class NiceFunction implements BaseFunction {
           kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
       if (trigger == null) continue;
       final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
-          ? null // db.gameData.baseTd
+          ? db.gameData.baseTds[trigger.skill]
           : db.gameData.baseSkills[trigger.skill];
       if (skill == null) continue;
       funcs.addAll(filterFuncs(
@@ -303,6 +303,10 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)>
       skill: v.Value, level: v.Value2),
   BuffType.deadFunction: (v) => BuffValueTriggerType(BuffType.deadFunction,
       skill: v.Value, level: v.Value2),
+  BuffType.deadattackFunction: (v) => BuffValueTriggerType(
+      BuffType.deadattackFunction,
+      skill: v.Value,
+      level: v.Value2),
   BuffType.delayFunction: (v) => BuffValueTriggerType(BuffType.delayFunction,
       skill: v.Value, level: v.Value2),
   BuffType.npattackPrevBuff: (v) => BuffValueTriggerType(

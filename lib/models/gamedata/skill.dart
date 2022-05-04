@@ -162,9 +162,8 @@ class NiceSkill extends BaseSkill {
 }
 
 @JsonSerializable()
-class NiceTd extends SkillOrTd {
+class BaseTd extends SkillOrTd {
   int id;
-  int num;
   CardType card;
   @override
   String name;
@@ -179,18 +178,13 @@ class NiceTd extends SkillOrTd {
   String? unmodifiedDetail;
   NpGain npGain;
   List<int> npDistribution;
-  int strengthStatus;
-  int priority;
-  int condQuestId;
-  int condQuestPhase;
   List<NiceTrait> individuality;
   SkillScript script;
   @override
   List<NiceFunction> functions;
 
-  NiceTd({
+  BaseTd({
     required this.id,
-    required this.num,
     required this.card,
     required this.name,
     this.ruby = "",
@@ -201,16 +195,12 @@ class NiceTd extends SkillOrTd {
     this.unmodifiedDetail,
     required this.npGain,
     required this.npDistribution,
-    this.strengthStatus = 0,
-    required this.priority,
-    this.condQuestId = 0,
-    this.condQuestPhase = 0,
     required this.individuality,
-    required this.script,
+    SkillScript? script,
     required this.functions,
-  });
+  }) : script = script ?? SkillScript();
 
-  factory NiceTd.fromJson(Map<String, dynamic> json) => _$NiceTdFromJson(json);
+  factory BaseTd.fromJson(Map<String, dynamic> json) => _$BaseTdFromJson(json);
 
   NpDamageType? _damageType;
 
@@ -241,6 +231,60 @@ class NiceTd extends SkillOrTd {
             unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
         .l
         .replaceAll('{0}', 'Lv.');
+  }
+}
+
+@JsonSerializable()
+class NiceTd extends BaseTd {
+  int num;
+  int strengthStatus;
+  int priority;
+  int condQuestId;
+  int condQuestPhase;
+
+  NiceTd({
+    required int id,
+    required this.num,
+    required CardType card,
+    required String name,
+    String ruby = "",
+    String? icon,
+    required String rank,
+    required String type,
+    // this.detail,
+    String? unmodifiedDetail,
+    required NpGain npGain,
+    required List<int> npDistribution,
+    this.strengthStatus = 0,
+    required this.priority,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    required List<NiceTrait> individuality,
+    SkillScript? script,
+    required List<NiceFunction> functions,
+  }) : super(
+          id: id,
+          card: card,
+          name: name,
+          ruby: ruby,
+          icon: icon,
+          rank: rank,
+          type: type,
+          unmodifiedDetail: unmodifiedDetail,
+          npGain: npGain,
+          npDistribution: npDistribution,
+          individuality: individuality,
+          script: script,
+          functions: functions,
+        );
+
+  factory NiceTd.fromJson(Map<String, dynamic> json) {
+    if (json['type'] == null) {
+      final baseTd = GameDataLoader
+          .instance!.gameJson!['baseTds']![json['id'].toString()]!;
+      json.addAll(Map.from(baseTd));
+    }
+    return _$NiceTdFromJson(json);
   }
 }
 

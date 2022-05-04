@@ -171,7 +171,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ),
         ),
       if (relatedEvents.isNotEmpty) ...[
-        const SHeader('Related Event'),
+        SHeader(S.current.event_title),
         for (Event event in relatedEvents) associateEvent(event)
       ],
     ];
