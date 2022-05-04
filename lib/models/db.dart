@@ -38,8 +38,24 @@ class _Database {
   final paths = PathManager();
   LocalSettings settings = LocalSettings();
   late final Box security;
-  UserData userData = UserData();
-  GameData gameData = GameData();
+  UserData _userData = UserData();
+
+  UserData get userData => _userData;
+
+  set userData(UserData userData) {
+    _userData = userData;
+    _userData.validate();
+  }
+
+  GameData _gameData = GameData();
+
+  GameData get gameData => _gameData;
+
+  set gameData(GameData gameData) {
+    _gameData = gameData;
+    _userData.validate();
+  }
+
   RuntimeData runtimeData = RuntimeData();
   CacheManager cacheManager = CacheManager(Config('chaldea'));
   ItemCenter itemCenter = ItemCenter();

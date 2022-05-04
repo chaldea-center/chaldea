@@ -109,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
+        "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
         "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
@@ -371,6 +372,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("Append Skill Screenshots"),
         "import_backup": MessageLookupByLibrary.simpleMessage("Import Backup"),
+        "import_csv_export_all":
+            MessageLookupByLibrary.simpleMessage("All servants"),
+        "import_csv_export_empty":
+            MessageLookupByLibrary.simpleMessage("Empty template"),
+        "import_csv_export_favorite":
+            MessageLookupByLibrary.simpleMessage("Only favorite servants"),
+        "import_csv_export_template":
+            MessageLookupByLibrary.simpleMessage("Export Template"),
+        "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("Load CSV"),
+        "import_csv_title":
+            MessageLookupByLibrary.simpleMessage("CSV Template"),
         "import_data": MessageLookupByLibrary.simpleMessage("Import"),
         "import_data_error": m7,
         "import_data_success":

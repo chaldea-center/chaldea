@@ -105,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
+        "bond_limit": MessageLookupByLibrary.simpleMessage("羁绊上限"),
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引导页"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("缓存图标"),
@@ -331,6 +332,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("附加技能截图解析"),
         "import_backup": MessageLookupByLibrary.simpleMessage("导入备份"),
+        "import_csv_export_all": MessageLookupByLibrary.simpleMessage("所有从者"),
+        "import_csv_export_empty": MessageLookupByLibrary.simpleMessage("空模板"),
+        "import_csv_export_favorite":
+            MessageLookupByLibrary.simpleMessage("仅关注从者"),
+        "import_csv_export_template":
+            MessageLookupByLibrary.simpleMessage("导出模板"),
+        "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("载入CSV"),
+        "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV模板"),
         "import_data": MessageLookupByLibrary.simpleMessage("导入"),
         "import_data_error": m7,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功导入数据"),

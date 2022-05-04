@@ -10,6 +10,7 @@ import '../home/subpage/user_data_page.dart';
 import 'import_fgo_simu_material_page.dart';
 import 'import_https_page.dart';
 import 'item_screenshots.dart';
+import 'sheet/import_csv.dart';
 import 'skill_screenshots.dart';
 import 'v1_backup.dart';
 
@@ -102,6 +103,13 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.pushPage(ImportSkillScreenshotPage(isAppend: true));
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.table_view),
+            title: Text(S.current.import_csv_title),
+            onTap: () {
+              router.pushPage(const ImportCSVPage());
+            },
+          )
         ], bottom: true),
       ),
     );

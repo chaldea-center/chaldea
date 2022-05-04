@@ -283,12 +283,13 @@ class User {
     }
     curSvtPlanNo = curSvtPlanNo.clamp2(0, svtPlanGroups.length - 1);
     servants.values.forEach((e) => e.validate());
-    for (final status in servants.values) {
-      status.validate();
+    for (final key in servants.keys) {
+      servants[key]!.validate(db.gameData.servants[key]);
     }
     for (final group in svtPlanGroups) {
       for (final plan in group.entries) {
-        plan.value.validate(servants[plan.key]?.cur);
+        plan.value
+            .validate(servants[plan.key]?.cur, db.gameData.servants[plan.key]);
       }
     }
   }
@@ -346,12 +347,12 @@ class SvtStatus {
 
   Map<String, dynamic> toJson() => _$SvtStatusToJson(this);
 
-  void validate() {
+  void validate([Servant? svt]) {
     bond = bond.clamp2(0, 15);
     coin = coin.clamp2(0);
     priority = priority.clamp2(1, 5);
     cur.bondLimit = cur.bondLimit.clamp2(bond, 15);
-    cur.validate();
+    cur.validate(null, svt);
     // equipCmdCodes
   }
 
@@ -435,8 +436,12 @@ class SvtPlan {
     for (int i = 0; i < appendSkills.length; i++) {
       appendSkills[i] = appendSkills[i].clamp2(lower?.appendSkills[i] ?? 0, 10);
     }
+    if (svt != null) {
+      costumes
+          .removeWhere((key, value) => !svt.profile.costume.keys.contains(key));
+    }
     for (final id in costumes.keys.toList()) {
-      costumes[id] = costumes[id] == 0 ? 0 : 1;
+      costumes[id] = costumes[id] == 1 ? 1 : 0;
     }
     if (lower != null) {
       for (final id in lower.costumes.keys.toList()) {

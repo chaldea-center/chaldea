@@ -460,6 +460,17 @@ class S {
     );
   }
 
+  /// `Bond Limit`
+  String get bond_limit {
+    return Intl.message(
+      'Bond Limit',
+      name: 'bond_limit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bootstrap Page`
   String get bootstrap_page_title {
     return Intl.message(
@@ -2655,6 +2666,72 @@ class S {
     return Intl.message(
       'Import Backup',
       name: 'import_backup',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `All servants`
+  String get import_csv_export_all {
+    return Intl.message(
+      'All servants',
+      name: 'import_csv_export_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Empty template`
+  String get import_csv_export_empty {
+    return Intl.message(
+      'Empty template',
+      name: 'import_csv_export_empty',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Only favorite servants`
+  String get import_csv_export_favorite {
+    return Intl.message(
+      'Only favorite servants',
+      name: 'import_csv_export_favorite',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Export Template`
+  String get import_csv_export_template {
+    return Intl.message(
+      'Export Template',
+      name: 'import_csv_export_template',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Load CSV`
+  String get import_csv_load_csv {
+    return Intl.message(
+      'Load CSV',
+      name: 'import_csv_load_csv',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `CSV Template`
+  String get import_csv_title {
+    return Intl.message(
+      'CSV Template',
+      name: 'import_csv_title',
       desc: '',
       locale: localeName,
       args: [],
