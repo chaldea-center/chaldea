@@ -249,7 +249,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
             // dense: true,
             onChanged: (v) {
               setState(() {
-                priorityFilter.options.toggle(priority);
+                priorityFilter.toggle(priority);
               });
               db.itemCenter.updateSvts(all: true);
             },

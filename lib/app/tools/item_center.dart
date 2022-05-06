@@ -157,8 +157,6 @@ class ItemCenter {
     if (priorityFiltered &&
         !db.settings.svtFilterData.priority
             .matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
-      print(
-          'ignore ${svt.lName.l} - p${user.svtStatusOf(svt.collectionNo).priority}');
       return detail;
     }
     detail.ascension = _sumMat(svt.ascensionMaterials,

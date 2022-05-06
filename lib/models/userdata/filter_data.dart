@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
+import '../db.dart';
 import '_helper.dart';
 import 'userdata.dart';
 
@@ -10,15 +13,43 @@ part '../../generated/models/userdata/filter_data.g.dart';
 typedef _FilterCompare<T> = bool Function(T value, T option);
 
 class FilterGroupData<T> {
-  bool matchAll;
-  bool invert;
-  Set<T> options; //selected
+  bool _matchAll;
+
+  bool get matchAll => _matchAll;
+
+  set matchAll(bool matchAll) {
+    _matchAll = matchAll;
+    onChanged?.call();
+  }
+
+  bool _invert;
+
+  bool get invert => _invert;
+
+  set invert(bool invert) {
+    _invert = invert;
+    onChanged?.call();
+  }
+
+  Set<T> _options;
+
+  Set<T> get options => _options;
+
+  set options(Set<T> options) {
+    _options = Set.from(options);
+    onChanged?.call();
+  }
+
+  VoidCallback? onChanged;
 
   FilterGroupData({
-    this.matchAll = false,
-    this.invert = false,
+    bool matchAll = false,
+    bool invert = false,
     Set<T>? options,
-  }) : options = options ?? {};
+    this.onChanged,
+  })  : _matchAll = matchAll,
+        _invert = invert,
+        _options = options ?? {};
 
   T? get radioValue => throw UnimplementedError();
 
@@ -35,11 +66,13 @@ class FilterGroupData<T> {
 
   void toggle(T value) {
     options.toggle(value);
+    onChanged?.call();
   }
 
   void reset() {
     matchAll = invert = false;
     options.clear();
+    onChanged?.call();
   }
 
   bool _match(
@@ -177,7 +210,9 @@ class SvtFilterData {
   FilterGroupData<bool> planCompletion = FilterGroupData();
 
   // FilterGroupData skillLevel;
-  FilterGroupData<int> priority = FilterGroupData();
+  FilterGroupData<int> priority = FilterGroupData(onChanged: () {
+    db.itemCenter.updateSvts(all: true);
+  });
   FilterGroupData<SvtObtain> obtain = FilterGroupData();
   FilterGroupData<CardType> npColor = FilterGroupData();
   FilterGroupData<NpDamageType> npType = FilterGroupData();
@@ -211,7 +246,7 @@ class SvtFilterData {
         rarity,
         attribute,
         planCompletion,
-        priority,
+        // priority,
         obtain,
         npColor,
         npType,
@@ -228,7 +263,7 @@ class SvtFilterData {
     for (var value in _group) {
       value.reset();
     }
-    effectScope.options.addAll({SvtEffectScope.active, SvtEffectScope.td});
+    effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
   }
 
   factory SvtFilterData.fromJson(Map<String, dynamic> data) =>

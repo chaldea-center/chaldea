@@ -295,6 +295,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     }),
                     onChanged: (v) {
                       status.priority = v ?? status.priority;
+                      svt.updateStat();
                       db.notifyUserdata();
                     },
                     underline: Container(),

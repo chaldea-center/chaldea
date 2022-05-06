@@ -66,9 +66,7 @@ class ServantListPageState extends State<ServantListPage>
       filterData.planFavorite = FavoriteState.owned;
       if (db.settings.display.autoTurnOnPlanNotReach) {
         filterData.favorite = FavoriteState.owned;
-        filterData.planCompletion.options
-          ..clear()
-          ..add(false);
+        filterData.planCompletion.options = {false};
       }
     }
     options = _ServantOptions(onChanged: (_) {
@@ -678,12 +676,12 @@ class ServantListPageState extends State<ServantListPage>
         child: icon,
       ),
       onTap: () {
-        filterData.svtClass.options.clear();
         if (clsName == SvtClass.ALL) {
+          filterData.svtClass.options = {};
         } else if (clsName == SvtClass.EXTRA) {
-          filterData.svtClass.options.addAll(extraClasses);
+          filterData.svtClass.options = Set.from(extraClasses);
         } else {
-          filterData.svtClass.options.add(clsName);
+          filterData.svtClass.options = {clsName};
         }
         setState(() {});
       },

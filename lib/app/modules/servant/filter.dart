@@ -67,6 +67,14 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ]),
         _buildClassFilter(),
         FilterGroup<int>(
+          title: Text(S.of(context).priority, style: textStyle),
+          options: const [1, 2, 3, 4, 5],
+          values: filterData.priority,
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],
           values: filterData.rarity,
@@ -134,14 +142,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //     update();
         //   },
         // ),
-        FilterGroup<int>(
-          title: Text(S.of(context).priority, style: textStyle),
-          options: const [1, 2, 3, 4, 5],
-          values: filterData.priority,
-          onFilterChanged: (value) {
-            update();
-          },
-        ),
         groupDivider,
         FilterGroup<SvtObtain>(
           title: Text(S.of(context).filter_obtain, style: textStyle),
@@ -275,11 +275,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                       return GestureDetector(
                         child: db.getIconImage(icon, width: 60),
                         onTap: () {
-                          if (index == 0) {
-                            filterData.svtClass.options.addAll(shownClasses);
-                          } else {
-                            filterData.svtClass.options.clear();
-                          }
+                          filterData.svtClass.options =
+                              index == 0 ? shownClasses.toSet() : {};
                           update();
                         },
                       );
