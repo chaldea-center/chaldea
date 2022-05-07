@@ -271,8 +271,6 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
-          treasureBox:
-              $checkedConvert('treasureBox', (v) => v as bool? ?? true),
           treasureBoxItems: $checkedConvert(
               'treasureBoxItems',
               (v) => (v as Map?)?.map(
@@ -285,7 +283,6 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
           questReward:
               $checkedConvert('questReward', (v) => v as bool? ?? true),
-          extra: $checkedConvert('extra', (v) => v as bool? ?? true),
           extraItems: $checkedConvert(
               'extraItems',
               (v) => (v as Map?)?.map(
@@ -309,12 +306,10 @@ Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
       'mission': instance.mission,
       'tower': instance.tower,
       'lotteries': instance.lotteries.map((k, e) => MapEntry(k.toString(), e)),
-      'treasureBox': instance.treasureBox,
       'treasureBoxItems': instance.treasureBoxItems.map((k, e) =>
           MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
       'fixedDrop': instance.fixedDrop,
       'questReward': instance.questReward,
-      'extra': instance.extra,
       'extraItems': instance.extraItems.map((k, e) =>
           MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
     };

@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "Lotería Máx. ${n}";
 
-  static String m5(n) => "Griales a Lore: ${n}";
+  static String m5(n, total) => "Griales a Lore: ${n}/${total}";
 
   static String m6(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";

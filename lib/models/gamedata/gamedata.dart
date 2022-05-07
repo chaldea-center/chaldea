@@ -127,6 +127,16 @@ class GameData {
   late Map<int, CommandCode> commandCodesById;
 
   void preprocess() {
+    items[Items.grailToCrystalId] = Item(
+      id: Items.grailToCrystalId,
+      name: '聖杯→伝承結晶',
+      type: ItemType.none,
+      detail: '既にクリアした復刻イベントで、聖杯がクリア報酬だったクエストでは、報酬が伝承結晶に置き換わる。',
+      icon: 'https://static.atlasacademy.io/JP/Items/19.png',
+      background: ItemBGType.zero,
+      priority: 299,
+      dropPriority: 8900,
+    );
     costumes = {
       for (final svt in servants.values)
         for (final costume in svt.profile.costume.values)

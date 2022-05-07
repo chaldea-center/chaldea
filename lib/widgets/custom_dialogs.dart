@@ -144,7 +144,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = <Widget>[
-      if (onTapCancel != null || !hideCancel)
+      if (!hideCancel)
         TextButton(
           child: Text(S.of(context).cancel),
           onPressed: () {
@@ -155,7 +155,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
           },
         ),
       ...actions,
-      if (onTapOk != null || !hideOk)
+      if (!hideOk)
         TextButton(
           child: Text(confirmText ?? S.of(context).confirm),
           onPressed: () {

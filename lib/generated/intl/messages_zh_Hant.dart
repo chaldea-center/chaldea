@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "最多${n}池";
 
-  static String m5(n) => "聖杯替換為傳承結晶 ${n} 個";
+  static String m5(n, total) => "聖杯替換為傳承結晶 ${n}/${total} 個";
 
   static String m6(filename, hash, localHash) =>
       "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
@@ -114,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea帳號"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
-            "  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
+            "  與V1數據不互通。\n  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea應用備份"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("大陸"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),

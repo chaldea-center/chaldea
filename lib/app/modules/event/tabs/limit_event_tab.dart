@@ -57,7 +57,7 @@ class LimitEventTab extends StatelessWidget {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (event.extra.extraItems2.isNotEmpty ||
+              if (event.extra.extraItems.isNotEmpty ||
                   event.lotteries.isNotEmpty ||
                   event.treasureBoxes.isNotEmpty)
                 Icon(Icons.star, color: Colors.yellow[700]),

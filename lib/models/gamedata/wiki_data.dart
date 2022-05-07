@@ -114,7 +114,7 @@ class CommandCodeExtra {
 class EventExtraItems {
   int id;
   MappingBase<String> detail;
-  Map<int, String> items;
+  Map<int, MappingBase<String>> items;
 
   EventExtraItems({
     required this.id,
@@ -136,9 +136,7 @@ class EventExtra {
   MappingBase<String> noticeLink;
   int huntingId;
   List<int> huntingQuestIds;
-  @protected
   List<EventExtraItems> extraItems;
-  List<EventExtraItems> extraItems2;
 
   MappingBase<int> startTime;
   MappingBase<int> endTime;
@@ -153,15 +151,12 @@ class EventExtra {
     MappingBase<String>? noticeLink,
     this.huntingId = 0,
     this.huntingQuestIds = const [],
-    List<EventExtraItems>? extraItems,
-    List<EventExtraItems>? extraItems2,
+    this.extraItems = const [],
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
     this.relatedSummons = const [],
   })  : titleBanner = titleBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
-        extraItems = extraItems2 ?? extraItems ?? [],
-        extraItems2 = [],
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
 

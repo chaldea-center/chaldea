@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "Max ${n} lottery";
 
-  static String m5(n) => "Grail to crystal: ${n}";
+  static String m5(n, total) => "Grail to crystal: ${n}/${total}";
 
   static String m6(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
@@ -141,7 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
-            "A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
+            "  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Server"),
@@ -478,6 +478,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "Before planning, you can set exceeded num for items(Only used for free quest planning)"),
+        "item_grail2crystal": MessageLookupByLibrary.simpleMessage(
+            "Holy Grail to Crystallized Lore"),
         "item_left": MessageLookupByLibrary.simpleMessage("Left"),
         "item_no_free_quests":
             MessageLookupByLibrary.simpleMessage("No Free Quests"),

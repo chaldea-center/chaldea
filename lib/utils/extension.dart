@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 import 'constants.dart';
 
@@ -189,6 +189,39 @@ extension StringX on String {
     final lines = split('\n');
     if (lines.length <= n) return this;
     return [lines.sublist(0, n).join('\n'), ...lines.skip(n)].join(' ');
+  }
+
+  Text toText({
+    Key? key,
+    TextStyle? style,
+    StrutStyle? strutStyle,
+    TextAlign? textAlign,
+    TextDirection? textDirection,
+    Locale? locale,
+    bool? softWrap,
+    TextOverflow? overflow,
+    double? textScaleFactor,
+    int? maxLines,
+    String? semanticsLabel,
+    TextWidthBasis? textWidthBasis,
+    TextHeightBehavior? textHeightBehavior,
+  }) {
+    return Text(
+      this,
+      key: key,
+      style: style,
+      strutStyle: strutStyle,
+      textAlign: textAlign,
+      textDirection: textDirection,
+      locale: locale,
+      softWrap: softWrap,
+      overflow: overflow,
+      textScaleFactor: textScaleFactor,
+      maxLines: maxLines,
+      semanticsLabel: semanticsLabel,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+    );
   }
 }
 

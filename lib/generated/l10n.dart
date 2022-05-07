@@ -724,10 +724,10 @@ class S {
     );
   }
 
-  /// `A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON'T set frequently used passwords!!!\n  No need to register if you do not need these two features.`
+  /// `  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON'T set frequently used passwords!!!\n  No need to register if you do not need these two features.`
   String get chaldea_account_system_hint {
     return Intl.message(
-      'A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features.',
+      '  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features.',
       name: 'chaldea_account_system_hint',
       desc: '',
       locale: localeName,
@@ -1725,14 +1725,14 @@ class S {
     );
   }
 
-  /// `Grail to crystal: {n}`
-  String event_rerun_replace_grail(Object n) {
+  /// `Grail to crystal: {n}/{total}`
+  String event_rerun_replace_grail(Object n, Object total) {
     return Intl.message(
-      'Grail to crystal: $n',
+      'Grail to crystal: $n/$total',
       name: 'event_rerun_replace_grail',
       desc: '',
       locale: localeName,
-      args: [n],
+      args: [n, total],
     );
   }
 
@@ -3436,6 +3436,17 @@ class S {
     return Intl.message(
       'Before planning, you can set exceeded num for items(Only used for free quest planning)',
       name: 'item_exceed_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Holy Grail to Crystallized Lore`
+  String get item_grail2crystal {
+    return Intl.message(
+      'Holy Grail to Crystallized Lore',
+      name: 'item_grail2crystal',
       desc: '',
       locale: localeName,
       args: [],

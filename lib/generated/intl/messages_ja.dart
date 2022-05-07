@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "最大${n}ボックス";
 
-  static String m5(n) => "聖杯は伝承結晶${n}個に置き換わります";
+  static String m5(n, total) => "聖杯は伝承結晶${n}/${total}個に置き換わります";
 
   static String m6(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
@@ -121,7 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea アカウント"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
-            "ユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。"),
+            "V1データとの互換性はありません。\nユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。"),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea バックアップ"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中国"),

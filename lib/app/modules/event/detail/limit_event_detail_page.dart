@@ -332,6 +332,33 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       children.add(TileGroup(header: S.current.war_title, children: warTiles));
     }
 
+    int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;
+    if (grailToCrystalCount > 0) {
+      children.add(db.onUserData(
+        (context, snapshot) {
+          plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystalCount);
+          var replacedGrails = grailToCrystalCount - plan.rerunGrails;
+          return ListTile(
+            title: Text(S.current.rerun_event),
+            subtitle: Text(S.current.event_rerun_replace_grail(
+                replacedGrails, grailToCrystalCount)),
+            trailing: DropdownButton<int>(
+              value: plan.rerunGrails,
+              items: List.generate(grailToCrystalCount + 1, (index) {
+                return DropdownMenuItem(
+                    child: Text((grailToCrystalCount - index).toString()),
+                    value: index);
+              }),
+              onChanged: (v) {
+                if (v != null) plan.rerunGrails = v;
+                event.updateStat();
+              },
+            ),
+          );
+        },
+      ));
+    }
+
     if (!event.isEmpty) {
       children.add(db.onUserData(
         (context, snapshot) => CheckboxListTile(
@@ -345,7 +372,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         ),
       ));
     }
-
     if (event.itemWarReward.isNotEmpty) {
       children.addAll(_buildSwitchGroup(
         value: () => plan.questReward,
@@ -438,7 +464,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               plan.lotteries[lottery.id] = value;
             },
             tag: 'lottery_${lottery.id}',
-            readOnly: !plan.enabled,
+            showValue: true,
           ),
         ),
         SharedBuilder.groupItems(
@@ -492,12 +518,37 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                         .putIfAbsent(box.id, () => {})[itemId] = value;
                   },
                   tag: 'treasure_box_${box.id}_$itemId',
-                  readOnly: !plan.enabled,
                 ),
               )
           ],
         )
       ]);
+    }
+
+    for (final extraItems in event.extra.extraItems) {
+      children.add(ListTile(
+        title: Text('${S.current.event_item_extra} ${extraItems.id}'),
+        subtitle: extraItems.detail.l?.toText(),
+      ));
+      children.add(TileGroup(
+        children: [
+          for (final itemId in extraItems.items.keys)
+            ListTile(
+              leading: Item.iconBuilder(
+                  context: context, item: null, itemId: itemId, width: 36),
+              title: Text(Item.getName(itemId)),
+              subtitle: extraItems.items[itemId]?.l?.toText(),
+              trailing: _inputGroup(
+                value: () => plan.extraItems[extraItems.id]?[itemId],
+                onChanged: (value) {
+                  plan.extraItems.putIfAbsent(extraItems.id, () => {})[itemId] =
+                      value;
+                },
+                tag: 'extra_item_${extraItems.id}_$itemId',
+              ),
+            )
+        ],
+      ));
     }
 
     return ListView.builder(
@@ -538,48 +589,54 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     required int? Function() value,
     required ValueChanged<int> onChanged,
     required String tag,
-    required bool readOnly,
+    bool showValue = false,
+    // required bool readOnly,
   }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        db.onUserData(
-          (context, snapshot) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(value()?.toString() ?? '0'),
-          ),
+    Widget child = SizedBox(
+      width: 64,
+      child: TextField(
+        // readOnly: readOnly,
+        onChanged: (v) {
+          int? n;
+          if (v.trim().isEmpty) {
+            n = 0;
+          } else {
+            n = int.tryParse(v);
+          }
+          if (n != null && n >= 0) {
+            EasyDebounce.debounce(
+              tag,
+              const Duration(milliseconds: 500),
+              () {
+                onChanged(n!);
+                event.updateStat();
+              },
+            );
+          }
+        },
+        textAlign: TextAlign.center,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          isDense: true,
         ),
-        SizedBox(
-          width: 64,
-          child: TextField(
-            readOnly: readOnly,
-            onChanged: (v) {
-              int? n;
-              if (v.trim().isEmpty) {
-                n = 0;
-              } else {
-                n = int.tryParse(v);
-              }
-              if (n != null && n >= 0) {
-                EasyDebounce.debounce(
-                  tag,
-                  const Duration(milliseconds: 500),
-                  () {
-                    onChanged(n!);
-                    event.updateStat();
-                  },
-                );
-              }
-            },
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              isDense: true,
-            ),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          ),
-        ),
-      ],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      ),
     );
+    if (showValue) {
+      child = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showValue)
+            db.onUserData(
+              (context, snapshot) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(value()?.toString() ?? '0'),
+              ),
+            ),
+          child,
+        ],
+      );
+    }
+    return child;
   }
 }

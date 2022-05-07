@@ -602,12 +602,12 @@ class Event {
       towers.isEmpty &&
       rewards.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
-      extra.extraItems2.isEmpty;
+      extra.extraItems.isEmpty;
 
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
     if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) >
-          const Duration(days: 31 * 12);
+          const Duration(days: 31 * 13);
     }
     final t = db.curUser.region == Region.jp
         ? endedAt
@@ -658,6 +658,7 @@ class Event {
   }
 
   void calcItems(GameData gameData) {
+    final extra = gameData.wiki.events[id];
     statItemFixed.clear();
     statItemLottery.clear();
     statItemExtra.clear();
@@ -774,6 +775,11 @@ class Event {
             statItemExtra.add(gift.objectId);
           }
         }
+      }
+    }
+    if (extra != null) {
+      for (final e in extra.extraItems) {
+        statItemExtra.addAll(e.items.keys);
       }
     }
   }

@@ -79,23 +79,21 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
       int itemGot = db.itemCenter.calcOneEvent(event, plan)[widget.itemId] ?? 0;
+      TextStyle style = TextStyle(
+          color: plan.enabled
+              ? Theme.of(context).colorScheme.secondaryContainer
+              : null);
       texts.add(Text(
           '$itemGot/$itemFixed' + (hasLottery || hasExtra ? '+' : ''),
-          style: const TextStyle(fontWeight: FontWeight.w500)));
+          style: style.copyWith(fontWeight: FontWeight.w500)));
       for (final lotteryId in event.statItemLottery.keys) {
         int itemPerLottery =
             event.statItemLottery[lotteryId]![widget.itemId] ?? 0;
         if (itemPerLottery > 0) {
           texts.add(Text(
               '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} ×$itemPerLottery',
-              style: const TextStyle(fontWeight: FontWeight.w300)));
+              style: style.copyWith(fontWeight: FontWeight.w300)));
         }
-      }
-      if (hasExtra) {
-        texts.add(const Text(
-          'Extra × n',
-          style: TextStyle(fontWeight: FontWeight.w300),
-        ));
       }
 
       count += itemGot;

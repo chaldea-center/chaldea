@@ -285,11 +285,11 @@ class ItemCenter {
     if (plan.questReward) {
       result.addDict(event.itemWarReward);
     }
-    if (plan.extra) {
-      // check event.extra.extraItems;
-      for (final idx in plan.extraItems.keys) {
-        result.addDict(plan.extraItems[idx]!);
-      }
+    for (final extraItems in event.extra.extraItems) {
+      result.addDict({
+        for (final itemId in extraItems.items.keys)
+          itemId: plan.extraItems[extraItems.id]?[itemId] ?? 0,
+      });
     }
     int grailToCrystal = result[Items.grailToCrystalId] ?? 0;
     if (grailToCrystal > 0) {

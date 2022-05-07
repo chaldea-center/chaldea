@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "最多${n}池";
 
-  static String m5(n) => "圣杯替换为传承结晶 ${n} 个";
+  static String m5(n, total) => "圣杯替换为传承结晶 ${n}/${total} 个";
 
   static String m6(filename, hash, localHash) =>
       "文件${filename}未找到或错误: ${hash} - ${localHash}";
@@ -131,7 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea账号"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
-            "  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
+            "  与V1数据不互通。\n  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea应用备份"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("服务器"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("国内"),
@@ -414,6 +414,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_eff": MessageLookupByLibrary.simpleMessage("素材效率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "计算规划前，可以设置不同材料的富余量(仅用于Free本规划)"),
+        "item_grail2crystal": MessageLookupByLibrary.simpleMessage("圣杯转传承结晶"),
         "item_left": MessageLookupByLibrary.simpleMessage("剩余"),
         "item_no_free_quests": MessageLookupByLibrary.simpleMessage("无Free本"),
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("仅显示不足"),

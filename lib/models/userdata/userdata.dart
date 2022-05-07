@@ -500,11 +500,9 @@ class EventPlan {
   bool mission;
   bool tower;
   Map<int, int> lotteries;
-  bool treasureBox;
   Map<int, Map<int, int>> treasureBoxItems;
   bool fixedDrop;
   bool questReward;
-  bool extra;
   Map<int, Map<int, int>> extraItems;
 
   EventPlan({
@@ -516,11 +514,9 @@ class EventPlan {
     this.mission = true,
     this.tower = true,
     Map<int, int>? lotteries,
-    this.treasureBox = true,
     Map<int, Map<int, int>>? treasureBoxItems,
     this.fixedDrop = true,
     this.questReward = true,
-    this.extra = true,
     Map<int, Map<int, int>>? extraItems,
   })  : shopExcludeItem = shopExcludeItem ?? {},
         lotteries = lotteries ?? {},
@@ -540,7 +536,6 @@ class EventPlan {
     mission = true;
     tower = true;
     lotteries.clear();
-    treasureBox = true;
     treasureBoxItems.clear();
     fixedDrop = true;
     questReward = true;
@@ -555,7 +550,6 @@ class EventPlan {
     mission = true;
     tower = true;
     // lotteries.clear();
-    treasureBox = true;
     // treasureBoxItems.clear();
     fixedDrop = true;
     questReward = true;
@@ -571,12 +565,10 @@ class EventPlan {
       mission: mission,
       tower: tower,
       lotteries: Map.of(lotteries),
-      treasureBox: treasureBox,
       treasureBoxItems:
           treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
       fixedDrop: fixedDrop,
       questReward: questReward,
-      extra: extra,
       extraItems: extraItems.map((key, value) => MapEntry(key, Map.of(value))),
     );
   }

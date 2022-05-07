@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -53,7 +54,7 @@ class Item {
       background == ItemBGType.questClearQPReward ? 0 : background.index;
 
   String get borderedIcon {
-    if (type == ItemType.svtCoin) return icon;
+    if (type == ItemType.svtCoin || id == Items.grailToCrystalId) return icon;
     return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
   }
 
@@ -92,10 +93,65 @@ class Item {
     icon ??= item?.borderedIcon;
     name ??= Item.getName(item?.id ?? itemId ?? -1);
     if (onTap == null && jumpToDetail && _itemId != null) {
-      onTap = () {
-        router.push(
-            url: Routes.itemI(_itemId), popDetail: popDetail, detail: true);
-      };
+      if (_itemId == Items.grailToCrystalId) {
+        onTap = () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              return SimpleDialog(
+                title: Text(S.current.item_grail2crystal, maxLines: 1),
+                children: [
+                  ListTile(
+                    leading: db.getIconImage(item?.icon),
+                    title: Text(item?.lName.l ?? ""),
+                    onTap: () {
+                      Navigator.pop(context);
+                      router.push(
+                        url: Routes.itemI(Items.grailToCrystalId),
+                        popDetail: popDetail,
+                        detail: true,
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: db.getIconImage(Items.grail.borderedIcon),
+                    title: Text(Items.grail.lName.l),
+                    onTap: () {
+                      Navigator.pop(context);
+                      router.push(
+                        url: Routes.itemI(Items.grailId),
+                        popDetail: popDetail,
+                        detail: true,
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: db.getIconImage(Items.crystal.borderedIcon),
+                    title: Text(Items.crystal.lName.l),
+                    onTap: () {
+                      Navigator.pop(context);
+                      router.push(
+                        url: Routes.itemI(Items.crystalId),
+                        popDetail: popDetail,
+                        detail: true,
+                      );
+                    },
+                  )
+                ],
+              );
+            },
+          );
+        };
+      } else {
+        onTap = () {
+          router.push(
+            url: Routes.itemI(_itemId),
+            popDetail: popDetail,
+            detail: true,
+          );
+        };
+      }
     }
     Widget child = GameCardMixin.cardIconBuilder(
       context: context,
@@ -294,6 +350,7 @@ enum ItemUse {
 }
 
 enum ItemType {
+  none, // custom
   qp,
   stone,
   apRecover,

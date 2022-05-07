@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n) => "최대 ${n}회 제한";
 
-  static String m5(n) => "전승결정으로 대체되는 성배의 개수 : ${n}";
+  static String m5(n, total) => "전승결정으로 대체되는 성배의 개수 : ${n}/${total}";
 
   static String m6(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
