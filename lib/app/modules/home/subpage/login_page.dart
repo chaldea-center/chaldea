@@ -336,7 +336,7 @@ class _LoginPageState extends State<LoginPage> {
     if (name.isEmpty) return null; // don't hint when input
     if (RegExp(r'^\d+$').hasMatch(name)) {
       return 'number only name is not allowed';
-    } else if (!RegExp(r'^[a-zA-Z0-9_]{6,18}$').hasMatch(name)) {
+    } else if (!RegExp(r'^[a-zA-Z0-9_]{4,18}$').hasMatch(name)) {
       return S.current.login_username_error;
     }
     return null;
