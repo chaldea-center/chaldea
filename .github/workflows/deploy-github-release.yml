@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
 jobs:
@@ -45,7 +47,16 @@ jobs:
           flutter-version: "2.13.0-0.1.pre"
           channel: "beta"
           cache: true
-
+      - name: Get Version
+        shell: bash
+        run: |
+          if [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
+              echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+          else
+              echo "VERSION=preview" >> $GITHUB_ENV
+          fi
+      - run: echo "VERSION = $VERSION"
+        shell: bash
       - name: Install Linux dependencies
         if: matrix.target == 'linux'
         run: |
@@ -106,31 +117,32 @@ jobs:
         working-directory: ${{ matrix.build_path }}
       - name: Rename build for Android
         if: matrix.target == 'android'
-        run: mv app-release.apk $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.apk
+        run: mv app-release.apk $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.apk
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Linux
         if: matrix.target == 'linux'
-        run: tar czf $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.tar.gz *
+        run: tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for macOS
         if: matrix.target == 'macOS'
-        run: ditto -c -k --sequesterRsrc --keepParent Chaldea.app $GITHUB_WORKSPACE/chaldea-preview-${{ matrix.target }}.zip
+        run: ditto -c -k --sequesterRsrc --keepParent Chaldea.app $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Windows
         if: matrix.target == 'windows'
-        run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-preview-${{ matrix.target }}.zip
+        run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
+      - name: Generate SHA1
+        run: dart ./scripts/generate_sha1.dart ./chaldea-${{ env.VERSION }}-${{ matrix.target }}${{ matrix.asset_extension }}
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: chaldea-preview-${{ matrix.target }}
-          path: ./chaldea-preview-${{ matrix.target }}${{ matrix.asset_extension }}
+          name: chaldea-${{ env.VERSION }}-${{ matrix.target }}
+          if-no-files-found: error
+          path: ./chaldea-${{ env.VERSION }}-${{ matrix.target }}${{ matrix.asset_extension }}*
 
-
-  publish-canary:
-    name: Publish Canary
-    if: github.ref == 'refs/heads/main'
+  publish-release:
+    name: Publish Release
     needs: create-build
     runs-on: ubuntu-latest
     permissions:
@@ -143,6 +155,7 @@ jobs:
       - run: ls -l -R
 
       - name: Delete previous canary build
+        if: github.ref == 'refs/heads/main'
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
@@ -150,8 +163,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
 
-      - name: Publish release
-        id: create_release
+      - name: Publish Canary
+        if: github.ref == 'refs/heads/main'
         uses: ncipollo/release-action@v1
         with:
           tag: canary
@@ -160,3 +173,10 @@ jobs:
           draft: false
           prerelease: true
           artifacts: "chaldea-preview-*/*"
+
+      - name: Publish ${GITHUB_REF/refs\/tags\/v/}
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          body: Built at ${{ steps.get-date.outputs.date }}
+          artifacts: "chaldea-*/*"
