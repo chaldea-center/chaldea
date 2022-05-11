@@ -27,6 +27,7 @@ Item _$ItemFromJson(Map json) => Item(
     );
 
 const _$ItemTypeEnumMap = {
+  ItemType.none: 'none',
   ItemType.qp: 'qp',
   ItemType.stone: 'stone',
   ItemType.apRecover: 'apRecover',
@@ -58,6 +59,7 @@ const _$ItemTypeEnumMap = {
   ItemType.svtCoin: 'svtCoin',
   ItemType.friendshipUpItem: 'friendshipUpItem',
   ItemType.pp: 'pp',
+  ItemType.tradeAp: 'tradeAp',
 };
 
 const _$ItemUseEnumMap = {

@@ -102,6 +102,7 @@ const _$ShopTypeEnumMap = {
   ShopType.svtCostume: 'svtCostume',
   ShopType.startUpSummon: 'startUpSummon',
   ShopType.shop13: 'shop13',
+  ShopType.tradeAp: 'tradeAp',
 };
 
 const _$PayTypeEnumMap = {
@@ -118,6 +119,7 @@ const _$PayTypeEnumMap = {
   PayType.item: 'item',
   PayType.grailFragments: 'grailFragments',
   PayType.free: 'free',
+  PayType.commonConsume: 'commonConsume',
 };
 
 ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(

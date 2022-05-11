@@ -910,6 +910,7 @@ enum ShopType {
   svtCostume,
   startUpSummon,
   shop13,
+  tradeAp,
 }
 
 enum MissionProgressType {
@@ -952,10 +953,12 @@ enum PayType {
   item,
   grailFragments,
   free,
+  commonConsume,
 }
 
 enum CommonConsumeType {
   item,
+  ap,
 }
 
 enum EventType {

@@ -382,6 +382,7 @@ enum ItemType {
   svtCoin,
   friendshipUpItem,
   pp,
+  tradeAp,
 }
 
 enum ItemBGType {
