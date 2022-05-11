@@ -111,8 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(S.current.game_server),
                 trailing: _wrapArrowTrailing(db.onUserData(
-                    (context, snapshot) =>
-                        Text(db.curUser.region.name.toUpperCase()))),
+                    (context, snapshot) => Text(db.curUser.region.localName))),
                 onTap: () {
                   router.push(child: GameServerPage());
                 },

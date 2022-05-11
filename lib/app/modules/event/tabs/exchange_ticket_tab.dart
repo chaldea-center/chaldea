@@ -64,12 +64,14 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         });
       }
       tickets.sort2((e) => e.id, reversed: widget.reversed);
-      return ListView(
+      List<Widget> children = [
+        hintText,
+        for (var ticket in tickets) buildOneMonth(ticket),
+      ];
+      return ListView.builder(
         controller: _scrollController,
-        children: [
-          hintText,
-          for (var ticket in tickets) buildOneMonth(ticket),
-        ],
+        itemCount: children.length,
+        itemBuilder: (context, index) => children[index],
       );
     });
   }

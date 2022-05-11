@@ -32,7 +32,7 @@ class _GameServerPageState extends State<GameServerPage> {
     return RadioListTile<Region>(
       value: region,
       groupValue: db.curUser.region,
-      title: Text(region.name.toUpperCase()),
+      title: Text(region.localName),
       subtitle: Text(region.toLanguage().name),
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (v) {

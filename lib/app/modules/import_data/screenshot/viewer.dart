@@ -79,6 +79,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
                         '${index + 1} - ${recentFiles[index]}',
                         maxLines: 1,
                         textScaleFactor: 0.8,
+                        softWrap: false,
                       ),
                       value: index,
                     );

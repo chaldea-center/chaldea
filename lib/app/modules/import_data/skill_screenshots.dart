@@ -151,7 +151,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       logger.e('upload item screenshots to server error', e, s);
       SimpleCancelOkDialog(
         title: const Text('Error'),
-        content: Text(e.toString()),
+        content: Text(escapeDioError(e)),
         hideCancel: true,
       ).showDialog(context);
     } finally {

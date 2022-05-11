@@ -73,7 +73,7 @@ class GameDataLoader {
   }) async {
     assert(!(offline && updateOnly), [offline, updateOnly]);
     if (!offline && network.unavailable) {
-      throw S.current.error_no_network;
+      throw UpdateError(S.current.error_no_network);
     }
     if (_completer != null && !_completer!.isCompleted) {
       return _completer!.future;
@@ -108,7 +108,7 @@ class GameDataLoader {
     if (offline) {
       // if not exist, raise error
       if (oldVersion == null) {
-        throw S.current.error_no_version_data_found;
+        throw UpdateError(S.current.error_no_version_data_found);
       }
       newVersion = oldVersion;
     } else {
@@ -118,10 +118,10 @@ class GameDataLoader {
     logger.d('fetch gamedata version: $newVersion');
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
-      throw S.current.error_required_app_version(versionString);
+      throw UpdateError(S.current.error_required_app_version(versionString));
     }
-    if (newVersion.timestamp < db.gameData.version.timestamp) {
-      throw S.current.update_already_latest;
+    if (newVersion.timestamp <= db.gameData.version.timestamp) {
+      throw UpdateError(S.current.update_already_latest);
     }
 
     Map<String, dynamic> _gameJson = {};
@@ -238,5 +238,15 @@ class GameDataLoader {
     (onUpdate ?? _onUpdate)?.call(_progress!);
     _onUpdate = null;
     return _gamedata;
+  }
+}
+
+class UpdateError extends Error {
+  final String message;
+  UpdateError([this.message = ""]);
+
+  @override
+  String toString() {
+    return message;
   }
 }

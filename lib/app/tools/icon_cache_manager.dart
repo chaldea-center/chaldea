@@ -134,12 +134,14 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
   static final AtlasIconLoader instance = AtlasIconLoader._();
   final _rateLimiter = RateLimiter(maxCalls: 20);
+  final _fsLimiter =
+      RateLimiter(maxCalls: 5, period: const Duration(milliseconds: 50));
 
   @override
   Future<String?> download(String url, {RateLimiter? limiter}) async {
     final localPath = _atlasUrlToFp(url);
     if (localPath == null) return null;
-    if (await File(localPath).exists()) {
+    if (await _fsLimiter.limited(() => File(localPath).exists())) {
       return localPath;
     }
     if (Hosts.cn) {

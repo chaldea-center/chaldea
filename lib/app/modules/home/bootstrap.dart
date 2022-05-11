@@ -58,7 +58,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       }
     } catch (e, s) {
       _offlineLoading = false;
-      logger.e('init data error', e, s);
+      if (e is! UpdateError) logger.e('init data error', e, s);
     } finally {
       if (mounted) setState(() {});
     }
@@ -237,7 +237,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                 leading: region == db.curUser.region
                     ? const Icon(Icons.done)
                     : const SizedBox(),
-                title: Text(region.name.toUpperCase()),
+                title: Text(region.localName),
                 horizontalTitleGap: 0,
                 onTap: () {
                   setState(() {
@@ -355,7 +355,7 @@ class _BootstrapPageState extends State<BootstrapPage>
     if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));
       await _loader.reload(updateOnly: true).catchError((e, s) async {
-        logger.d('silent background update error');
+        if (e is! UpdateError) logger.d('silent background update error');
         return GameData();
       });
     }
@@ -494,7 +494,6 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             onPressed: () async {
               try {
                 setState(() {
-                  // error = null;
                   success = false;
                 });
                 final gamedata = await _loader.reload(
@@ -506,9 +505,10 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 db.gameData = gamedata;
                 db.itemCenter.init();
                 success = true;
+              } on UpdateError {
+                //
               } catch (e, s) {
                 logger.e('download gamedata error', e, s);
-                // error = e;
               }
               if (mounted) setState(() {});
             },
@@ -552,7 +552,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
         if (_loader.error != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(child: Text(_loader.error.toString())),
+            child: Center(child: Text(escapeDioError(_loader.error))),
           ),
       ],
     );

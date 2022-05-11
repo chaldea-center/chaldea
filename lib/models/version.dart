@@ -39,14 +39,8 @@ class AppVersion implements Comparable<AppVersion> {
 
   static AppVersion? tryParse(String versionString, [int? build]) {
     versionString = versionString.trim();
-    if (!_fullVersionRegex.hasMatch(versionString)) {
-      if (versionString.isNotEmpty &&
-          !['svt_icons', 'ffo-data'].contains(versionString)) {
-        print('invalid version string');
-      }
-      return null;
-    }
-    Match match = _fullVersionRegex.firstMatch(versionString)!;
+    Match? match = _fullVersionRegex.firstMatch(versionString);
+    if (match == null) return null;
     int major = int.parse(match.group(1)!);
     int minor = int.parse(match.group(2)!);
     int patch = int.parse(match.group(3)!);

@@ -85,7 +85,7 @@ class ChaldeaResponse {
     } catch (e) {
       SimpleCancelOkDialog(
         title: Text(S.current.failed),
-        content: Text(e.toString()),
+        content: Text(escapeDioError(e)),
       ).showDialog(null);
     } finally {
       EasyLoading.dismiss();

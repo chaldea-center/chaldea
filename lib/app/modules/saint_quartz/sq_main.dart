@@ -36,7 +36,8 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
         db.curUser.saintQuartzPlan.solve();
       }
     });
-    AtlasApi.masterMission(10001).then((value) {
+    AtlasApi.masterMission(10001, expireAfter: const Duration(days: 30))
+        .then((value) {
       db.curUser.saintQuartzPlan.extraMission = value;
       db.curUser.saintQuartzPlan.solve();
       if (mounted) setState(() {});

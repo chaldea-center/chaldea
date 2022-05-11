@@ -44,7 +44,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
             ),
           ),
           kDefaultDivider,
-          buttonBar,
+          SafeArea(child: buttonBar),
         ],
       ),
     );

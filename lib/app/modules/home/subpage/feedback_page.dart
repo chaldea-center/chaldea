@@ -324,10 +324,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
       subjectController.text = '';
       bodyController.text = '';
       EasyLoading.showSuccess(S.current.sent);
-    } catch (error, stacktrace) {
-      print(error.toString());
-      print(stacktrace.toString());
-      EasyLoading.showError(escapeDioError(error));
+    } catch (e, s) {
+      logger.e('send feedback failed', e, s);
+      EasyLoading.showError(escapeDioError(e));
     }
   }
 }

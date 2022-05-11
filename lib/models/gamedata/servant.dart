@@ -580,6 +580,8 @@ class AscensionAddEntry<T> {
   final Map<int, T> ascension;
   final Map<int, T> costume;
 
+  Map<int, T> get all => {...ascension, ...costume};
+
   @protected
   AscensionAddEntry({
     Map<dynamic, dynamic> ascension = const {},

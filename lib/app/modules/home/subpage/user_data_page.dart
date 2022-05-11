@@ -312,9 +312,9 @@ class _UserDataPageState extends State<UserDataPage> {
               EasyLoading.show(
                   status: 'Moving...', maskType: EasyLoadingMaskType.clear);
               try {
+                Navigator.of(context).pop();
                 await _copyDirectory(from, to);
                 db.settings.useAndroidExternal = useExternal;
-                Navigator.of(context).pop();
                 SimpleCancelOkDialog(
                   title: const Text('⚠️ Warning'),
                   content: Text(S.current.restart_to_apply_changes),

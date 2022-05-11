@@ -16,6 +16,10 @@ class SvtInfoTab extends StatelessWidget with PrimaryScrollMixin {
   Widget buildContent(BuildContext context) {
     final headerData = TableCellData(isHeader: true, maxLines: 1);
     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
+    Set<String> names = {
+      svt.name,
+      for (final name in svt.ascensionAdd.overWriteServantName.all.values) name
+    };
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: SafeArea(
@@ -23,15 +27,26 @@ class SvtInfoTab extends StatelessWidget with PrimaryScrollMixin {
           children: <Widget>[
             CustomTableRow.fromChildren(
               children: [
-                Text(svt.lName.l,
-                    style: const TextStyle(fontWeight: FontWeight.bold))
+                Text(
+                  names.map((e) => Transl.svtNames(e).l).join(' / '),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                )
               ],
-              defaults: headerData,
+              defaults: headerData.copyWith(maxLines: names.length),
             ),
-            CustomTableRow.fromTexts(
-                texts: [svt.lName.jp], defaults: contentData),
-            CustomTableRow.fromTexts(
-                texts: [svt.lName.na], defaults: contentData),
+            if (!Transl.isJP)
+              CustomTableRow.fromTexts(
+                texts: [names.join(' / ')],
+                defaults: TableCellData(textAlign: TextAlign.center),
+              ),
+            if (!Transl.isEN)
+              CustomTableRow.fromTexts(
+                texts: [
+                  names.map((e) => Transl.svtNames(e).na).join(' / '),
+                ],
+                defaults: TableCellData(textAlign: TextAlign.center),
+              ),
             CustomTableRow.fromChildren(
               children: [
                 Text('No.${svt.collectionNo}',

@@ -16,42 +16,64 @@ class SvtTdTab extends StatelessWidget with PrimaryScrollMixin {
   Widget buildContent(BuildContext context) {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
+    final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);
     for (final tds in svt.groupedNoblePhantasms) {
       List<NiceTd> shownTds = [];
+      List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {
         if (shownTds.every((e) => e.id != td.id)) {
           shownTds.add(td);
+          overrideTds.add(null);
         }
       }
-      children.add(
-          _buildTds(context, shownTds, status.favorite ? status.npLv : null));
+      // not secure
+      if (overrideData.isNotEmpty && tds.isNotEmpty) {
+        for (final oTd in overrideData) {
+          shownTds.add(tds.last);
+          overrideTds.add(oTd);
+        }
+      }
+      children.add(_buildTds(context, shownTds,
+          status.favorite ? status.npLv : null, overrideTds));
     }
+
     return ListView.builder(
       itemCount: children.length,
       itemBuilder: (context, index) => children[index],
     );
   }
 
-  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level) {
-    if (tds.length == 1) return TdDescriptor(td: tds.first, level: level);
-    return ValueStatefulBuilder<NiceTd>(
-      initValue: tds.last,
+  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level,
+      List<OverrideTDData?> overrideTds) {
+    assert(tds.length == overrideTds.length);
+    if (tds.length == 1) {
+      return TdDescriptor(
+        td: tds.first,
+        level: level,
+        overrideData: overrideTds.getOrNull(0),
+      );
+    }
+    return ValueStatefulBuilder<int>(
+      initValue: tds.length - 1,
       builder: (context, state) {
-        final td = state.value;
+        final tdIndex = state.value;
+        final td = tds[tdIndex];
         final toggle = Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: FilterGroup<NiceTd>(
+              child: FilterGroup<int>(
                 shrinkWrap: true,
                 combined: true,
-                options: tds,
+                options: List.generate(tds.length, (index) => index),
                 optionBuilder: (v) => Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Text(Transl.tdNames(v.name).l),
+                  child: Text(Transl.tdNames(
+                          overrideTds.getOrNull(v)?.tdName ?? tds[v].name)
+                      .l),
                 ),
-                values: FilterRadioData(td),
+                values: FilterRadioData(tdIndex),
                 onFilterChanged: (v) {
                   state.value = v.radioValue!;
                   state.updateState();
@@ -85,7 +107,11 @@ class SvtTdTab extends StatelessWidget with PrimaryScrollMixin {
           children: [
             const SizedBox(height: 4),
             toggle,
-            TdDescriptor(td: td, level: level),
+            TdDescriptor(
+              td: td,
+              level: level,
+              overrideData: overrideTds.getOrNull(tdIndex),
+            ),
           ],
         );
       },

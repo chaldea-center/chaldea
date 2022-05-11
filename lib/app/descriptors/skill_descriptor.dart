@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'func/func.dart';
 
@@ -83,12 +84,55 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   }
 }
 
+class OverrideTDData {
+  final String? tdName;
+  final String? tdRuby;
+  final String? tdFileName;
+  final String? tdRank;
+  final String? tdTypeText;
+
+  final List<int> keys;
+
+  OverrideTDData({
+    required this.tdName,
+    required this.tdRuby,
+    required this.tdFileName,
+    required this.tdRank,
+    required this.tdTypeText,
+  }) : keys = [];
+
+  static List<OverrideTDData> fromAscensionAdd(AscensionAdd data) {
+    List<OverrideTDData> tds = [];
+    for (final key in data.overWriteTDName.all.keys) {
+      final v = OverrideTDData(
+        tdName: data.overWriteTDName.all[key],
+        tdRuby: data.overWriteTDRuby.all[key],
+        tdFileName: data.overWriteTDFileName.all[key],
+        tdRank: data.overWriteTDRank.all[key],
+        tdTypeText: data.overWriteTDTypeText.all[key],
+      );
+      v.keys.add(key);
+      final td = tds.firstWhereOrNull((e) => e._hashCode == v._hashCode);
+      if (td == null) {
+        tds.add(v);
+      } else {
+        td.keys.add(key);
+      }
+    }
+    return tds;
+  }
+
+  int get _hashCode =>
+      Object.hash(tdName, tdRuby, tdFileName, tdRank, tdTypeText);
+}
+
 class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final NiceTd td;
   final int? level;
   final bool showPlayer;
   final bool showEnemy;
   final bool showNone;
+  final OverrideTDData? overrideData;
 
   const TdDescriptor({
     Key? key,
@@ -97,10 +141,15 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showPlayer = true,
     this.showEnemy = false,
     this.showNone = false,
+    this.overrideData,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
+    final tdRank = overrideData?.tdRank ?? td.rank;
+    final tdName = Transl.tdNames(overrideData?.tdName ?? td.name);
+    final tdRuby = Transl.tdRuby(overrideData?.tdRuby ?? td.ruby);
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final header = CustomTile(
       leading: Column(
@@ -109,7 +158,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(
-              '${td.type} ${td.rank}',
+              '${tdType.l} $tdRank',
               style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -120,29 +169,31 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           AutoSizeText(
-            Transl.tdRuby(td.ruby).l,
+            tdRuby.l,
             style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).textTheme.caption?.color),
             maxLines: 1,
           ),
           AutoSizeText(
-            Transl.tdNames(td.name).l,
+            tdName.l,
             style: const TextStyle(fontWeight: FontWeight.w600),
             maxLines: 2,
           ),
-          AutoSizeText(
-            td.ruby,
-            style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).textTheme.caption?.color),
-            maxLines: 1,
-          ),
-          AutoSizeText(
-            td.name,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-            maxLines: 1,
-          ),
+          if (!Transl.isJP) ...[
+            AutoSizeText(
+              tdRuby.jp,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.caption?.color),
+              maxLines: 1,
+            ),
+            AutoSizeText(
+              tdName.jp,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              maxLines: 1,
+            ),
+          ]
         ],
       ),
     );
