@@ -44,7 +44,6 @@ jobs:
     steps:
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "2.13.0-0.1.pre"
           channel: "beta"
           cache: true
       - name: Get Version
