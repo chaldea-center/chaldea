@@ -21,6 +21,7 @@ class MyMarkdownWidget extends StatefulWidget {
   final bool selectable;
   final bool scrollable;
   final md.ExtensionSet? extensionSet;
+  final bool disableMd;
 
   const MyMarkdownWidget({
     Key? key,
@@ -29,6 +30,7 @@ class MyMarkdownWidget extends StatefulWidget {
     this.selectable = false,
     this.scrollable = true,
     this.extensionSet,
+    this.disableMd = false,
   })  : assert(
             (data != null || assetKey != null) &&
                 (data == null || assetKey == null),
@@ -67,6 +69,14 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
     final data = widget.data ?? assetData;
     if (data == null) {
       return const Center(child: CircularProgressIndicator());
+    }
+    if (widget.disableMd) {
+      return SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(data),
+        ),
+      );
     }
     if (widget.scrollable) {
       return Markdown(

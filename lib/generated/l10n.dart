@@ -2144,10 +2144,10 @@ class S {
     );
   }
 
-  /// `Plan-not-reach`
+  /// `Plan Not Reach`
   String get filter_plan_not_reached {
     return Intl.message(
-      'Plan-not-reach',
+      'Plan Not Reach',
       name: 'filter_plan_not_reached',
       desc: '',
       locale: localeName,
@@ -2881,10 +2881,10 @@ class S {
     );
   }
 
-  /// `Only update recognized items`
+  /// `Only update recognized results`
   String get import_screenshot_hint {
     return Intl.message(
-      'Only update recognized items',
+      'Only update recognized results',
       name: 'import_screenshot_hint',
       desc: '',
       locale: localeName,
@@ -4559,6 +4559,17 @@ class S {
     );
   }
 
+  /// `Fields`
+  String get quest_fields {
+    return Intl.message(
+      'Fields',
+      name: 'quest_fields',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Drops`
   String get quest_fixed_drop {
     return Intl.message(
@@ -4677,6 +4688,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `{region} Notice`
+  String region_notice(Object region) {
+    return Intl.message(
+      '$region Notice',
+      name: 'region_notice',
+      desc: '',
+      locale: localeName,
+      args: [region],
     );
   }
 
@@ -6137,6 +6159,28 @@ class S {
     return Intl.message(
       'Voice',
       name: 'voice',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Age`
+  String get war_age {
+    return Intl.message(
+      'Age',
+      name: 'war_age',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Banner`
+  String get war_banner {
+    return Intl.message(
+      'Banner',
+      name: 'war_banner',
       desc: '',
       locale: localeName,
       args: [],

@@ -66,7 +66,12 @@ class ServantListPageState extends State<ServantListPage>
       filterData.planFavorite = FavoriteState.owned;
       if (db.settings.display.autoTurnOnPlanNotReach) {
         filterData.favorite = FavoriteState.owned;
-        filterData.planCompletion.options = {false};
+        filterData.planCompletion.options = {
+          SvtPlanScope.ascension,
+          SvtPlanScope.active,
+          SvtPlanScope.append,
+          SvtPlanScope.costume
+        };
       }
     }
     options = _ServantOptions(onChanged: (_) {
@@ -383,20 +388,32 @@ class ServantListPageState extends State<ServantListPage>
 
     if (filterData.planCompletion.options.isNotEmpty) {
       if (!svtStat.favorite) return false;
-      bool planCompletion = !<bool>[
-        svtPlan.ascension > svtStat.cur.ascension,
-        for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i],
-        for (var i = 0; i < 3; i++)
-          svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
-        for (var costume in svt.profile.costume.values)
-          (svtPlan.costumes[costume.battleCharaId] ?? 0) >
-              (svtStat.cur.costumes[costume.battleCharaId] ?? 0),
-        svtPlan.grail > svtStat.cur.grail,
-        // svtPlan.fouHp > svtStat.cur.fouHp,
-        // svtPlan.fouAtk > svtStat.cur.fouAtk,
-        // svtPlan.bondLimit > svtStat.cur.bondLimit,
-      ].contains(true);
-      if (!filterData.planCompletion.matchOne(planCompletion)) return false;
+      final planCompletion = <SvtPlanScope>[
+        if (svtPlan.ascension > svtStat.cur.ascension) SvtPlanScope.ascension,
+        if ([
+          for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i]
+        ].any((e) => e))
+          SvtPlanScope.active,
+        if ([
+          for (var i = 0; i < 3; i++)
+            svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]
+        ].any((e) => e))
+          SvtPlanScope.append,
+        if ([
+          for (var costume in svt.profile.costume.values)
+            (svtPlan.costumes[costume.battleCharaId] ?? 0) >
+                (svtStat.cur.costumes[costume.battleCharaId] ?? 0)
+        ].any((e) => e))
+          SvtPlanScope.costume,
+        if ([
+          svtPlan.grail > svtStat.cur.grail,
+          svtPlan.fouHp > svtStat.cur.fouHp,
+          svtPlan.fouAtk > svtStat.cur.fouAtk,
+          svtPlan.bondLimit > svtStat.cur.bondLimit,
+        ].any((e) => e))
+          SvtPlanScope.misc,
+      ];
+      if (!filterData.planCompletion.matchAny(planCompletion)) return false;
     }
     // svt data filter
     // skill level

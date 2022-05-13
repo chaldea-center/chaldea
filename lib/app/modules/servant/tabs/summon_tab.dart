@@ -16,7 +16,9 @@ class SvtSummonTab extends StatelessWidget with PrimaryScrollMixin {
   Widget buildContent(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
-      if (summon.allCards(svt: true).contains(svt.collectionNo) &&
+      if (summon
+              .allCards(svt: true, includeGSSR: true)
+              .contains(svt.collectionNo) &&
           summon.startTime.jp != null) {
         summons.add(summon);
       }

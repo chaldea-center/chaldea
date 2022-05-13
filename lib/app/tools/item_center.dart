@@ -28,6 +28,7 @@ class ItemCenter {
   ItemCenter([this._user]);
 
   List<int> _validItems = [];
+  List<int> get validItems => List.unmodifiable(_validItems);
   late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtCur; //0->cur
   late _MatrixManager<int, int, SvtMatCostDetail<int>>
       _svtDemands; //cur->target
@@ -239,7 +240,8 @@ class ItemCenter {
   }
 
   /// shop/point rewards/mission rewards/Tower rewards/lottery/treasureBox/fixedDrop/wars rewards
-  Map<int, int> calcOneEvent(Event event, EventPlan plan) {
+  Map<int, int> calcOneEvent(Event event, EventPlan plan,
+      {bool includingGrailToLore = true}) {
     Map<int, int> result = {};
     // shop
     if (!plan.enabled) return result;
@@ -292,7 +294,7 @@ class ItemCenter {
       });
     }
     int grailToCrystal = result[Items.grailToCrystalId] ?? 0;
-    if (grailToCrystal > 0) {
+    if (grailToCrystal > 0 && includingGrailToLore) {
       plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystal);
       result.addNum(Items.grailId, plan.rerunGrails);
       result.addNum(Items.crystalId, grailToCrystal - plan.rerunGrails);

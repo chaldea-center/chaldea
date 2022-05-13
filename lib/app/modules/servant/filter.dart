@@ -121,13 +121,32 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //     });
         //   },
         // ),
-        FilterGroup<bool>(
-          title: Text(S.of(context).plan, style: textStyle),
-          options: const [false, true],
+        FilterGroup<SvtPlanScope>(
+          title: Text(S.current.filter_plan_not_reached, style: textStyle),
+          options: SvtPlanScope.values,
           values: filterData.planCompletion,
-          optionBuilder: (v) => Text(v
-              ? S.of(context).filter_plan_reached
-              : S.of(context).filter_plan_not_reached),
+          showMatchAll: true,
+          optionBuilder: (v) {
+            String text;
+            switch (v) {
+              case SvtPlanScope.ascension:
+                text = S.current.ascension_short;
+                break;
+              case SvtPlanScope.active:
+                text = S.current.active_skill_short;
+                break;
+              case SvtPlanScope.append:
+                text = S.current.append_skill_short;
+                break;
+              case SvtPlanScope.costume:
+                text = S.current.costume;
+                break;
+              case SvtPlanScope.misc:
+                text = S.current.general_others;
+                break;
+            }
+            return Text(text);
+          },
           onFilterChanged: (value) {
             update();
           },

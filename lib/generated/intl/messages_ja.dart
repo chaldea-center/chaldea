@@ -54,11 +54,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "第${n}節";
 
-  static String m14(n) => "プラン${n}をリセット(すべて)";
+  static String m15(n) => "プラン${n}をリセット(すべて)";
 
-  static String m15(n) => "プラン${n}をリセット(表示のみ)";
+  static String m16(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m16(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m17(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m0(a, b) => "${a}${b}";
 
@@ -270,7 +270,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_gender": MessageLookupByLibrary.simpleMessage("性别"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("全て"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("入手方法"),
-        "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("未完成"),
+        "filter_plan_not_reached":
+            MessageLookupByLibrary.simpleMessage("プラン未完成"),
         "filter_plan_reached": MessageLookupByLibrary.simpleMessage("達成"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("逆選択"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("表示"),
@@ -348,7 +349,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_screenshot":
             MessageLookupByLibrary.simpleMessage("スクショをインポートします"),
         "import_screenshot_hint":
-            MessageLookupByLibrary.simpleMessage("識別されたアイテムのみをアップデートします"),
+            MessageLookupByLibrary.simpleMessage("識別された結果のみをアップデートします"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("素材更新"),
         "import_source_file":
@@ -551,8 +552,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("名前変更"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻イベント"),
         "reset": MessageLookupByLibrary.simpleMessage("リセット"),
-        "reset_plan_all": m14,
-        "reset_plan_shown": m15,
+        "reset_plan_all": m15,
+        "reset_plan_shown": m16,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("再起動して設定を有効にしてください"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -618,7 +619,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m16,
+        "solution_total_battles_ap": m17,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert":

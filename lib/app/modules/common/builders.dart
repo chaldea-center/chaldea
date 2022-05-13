@@ -137,46 +137,26 @@ class SharedBuilder {
     if (noticeLink.cn != null) {
       assert(int.parse(noticeLink.cn!) > 0);
     }
-    return [
-      if (noticeLink.jp != null)
-        PopupMenuItem<T>(
-          child: const Text('JP Notice'),
+    List<PopupMenuItem<T>> items = [];
+    for (final region in Region.values) {
+      final v = noticeLink.ofRegion(region);
+      if (v != null) {
+        items.add(PopupMenuItem<T>(
+          child: Text(S.current.region_notice(region.localName)),
           onTap: () {
-            launch(noticeLink.jp!);
+            if (region == Region.cn) {
+              final url = PlatformU.isTargetMobile
+                  ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
+                  : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
+              launch(url);
+            } else {
+              launch(v);
+            }
           },
-        ),
-      if (noticeLink.cn != null)
-        PopupMenuItem<T>(
-          child: const Text('CN Notice'),
-          onTap: () {
-            final url = PlatformU.isTargetMobile
-                ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=${noticeLink.cn}'
-                : 'https://game.bilibili.com/fgo/news.html#!news/0/1/${noticeLink.cn}';
-            launch(url);
-          },
-        ),
-      if (noticeLink.na != null)
-        PopupMenuItem<T>(
-          child: const Text('NA Notice'),
-          onTap: () {
-            launch(noticeLink.na!);
-          },
-        ),
-      if (noticeLink.tw != null)
-        PopupMenuItem<T>(
-          child: const Text('TW Notice'),
-          onTap: () {
-            launch(noticeLink.tw!);
-          },
-        ),
-      if (noticeLink.kr != null)
-        PopupMenuItem<T>(
-          child: const Text('KR Notice'),
-          onTap: () {
-            launch(noticeLink.kr!);
-          },
-        ),
-    ];
+        ));
+      }
+    }
+    return items;
   }
 
   static Future showSwitchPlanDialog(

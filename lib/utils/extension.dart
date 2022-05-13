@@ -25,7 +25,7 @@ extension NumX on num {
       compact = false;
       number /= base;
     }
-    if (compact && (minVal == null || abs() > minVal)) {
+    if (compact && (minVal == null || abs() >= minVal)) {
       return NumberFormat.compact(locale: 'en').format(number);
     }
     final pattern = [

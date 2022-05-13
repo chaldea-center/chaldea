@@ -231,7 +231,8 @@ class _GalleryPageState extends State<GalleryPage> {
           ),
           ListTile(
             title: Text(S.current.dataset_version),
-            trailing: Text(db.gameData.version.text()),
+            trailing:
+                Text(db.gameData.version.text(), textAlign: TextAlign.end),
           ),
         ]),
       ),

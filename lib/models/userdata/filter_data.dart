@@ -160,6 +160,14 @@ enum EffectTarget {
   special,
 }
 
+enum SvtPlanScope {
+  ascension,
+  active,
+  append,
+  costume,
+  misc, //fou, grail, bond
+}
+
 const _funcEffectMapping = {
   FuncTargetType.self: EffectTarget.self,
   FuncTargetType.ptAll: EffectTarget.ptAll,
@@ -207,7 +215,7 @@ class SvtFilterData {
 
   // FilterGroupData svtDuplicated= FilterGroupData();
 
-  FilterGroupData<bool> planCompletion = FilterGroupData();
+  FilterGroupData<SvtPlanScope> planCompletion = FilterGroupData();
 
   // FilterGroupData skillLevel;
   FilterGroupData<int> priority = FilterGroupData(onChanged: () {

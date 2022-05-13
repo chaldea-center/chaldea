@@ -272,22 +272,19 @@ class _BootstrapPageState extends State<BootstrapPage>
       end: 10.0,
       child: Row(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 4,
-            child: page <= 0
-                ? const SizedBox()
-                : TextButton(
-                    child: Text(S.current.prev_page),
-                    onPressed: () {
-                      _pageController.previousPage(
-                        duration: kTabScrollDuration,
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                  ),
-          ),
+          page <= 0
+              ? const SizedBox()
+              : TextButton(
+                  child: Text(S.current.prev_page),
+                  onPressed: () {
+                    _pageController.previousPage(
+                      duration: kTabScrollDuration,
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
           Expanded(
+            flex: 2,
             child: Center(
               child: SmoothPageIndicator(
                 controller: _pageController,
@@ -307,43 +304,39 @@ class _BootstrapPageState extends State<BootstrapPage>
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / 4,
-            child: page >= pages.length - 1
-                ? TextButton(
-                    child: Text(S.current.done),
-                    onPressed: () {
-                      if (db.gameData.version.timestamp > 0) {
-                        db.settings.tips.starter = false;
-                        onDataReady(false);
-                        db.saveSettings();
-                      } else {
-                        showDialog(
-                          context: context,
-                          useRootNavigator: false,
-                          builder: (context) => SimpleCancelOkDialog(
-                            content: Text(S.current.database_not_downloaded),
-                            onTapOk: () {
-                              db.settings.tips.starter = false;
-                              db.saveSettings();
-                              onDataReady(false);
-                            },
-                          ),
-                        );
-                      }
-                    },
-                  )
-                : TextButton(
-                    child: Text(S.current.next_page),
-                    onPressed: () {
-                      _pageController.nextPage(
-                        duration: kTabScrollDuration,
-                        curve: Curves.easeInOut,
+          page >= pages.length - 1
+              ? TextButton(
+                  child: Text(S.current.done),
+                  onPressed: () {
+                    if (db.gameData.version.timestamp > 0) {
+                      db.settings.tips.starter = false;
+                      onDataReady(false);
+                      db.saveSettings();
+                    } else {
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => SimpleCancelOkDialog(
+                          content: Text(S.current.database_not_downloaded),
+                          onTapOk: () {
+                            db.settings.tips.starter = false;
+                            db.saveSettings();
+                            onDataReady(false);
+                          },
+                        ),
                       );
-                    },
-                  ),
-          ),
+                    }
+                  },
+                )
+              : TextButton(
+                  child: Text(S.current.next_page),
+                  onPressed: () {
+                    _pageController.nextPage(
+                      duration: kTabScrollDuration,
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
         ],
       ),
     );

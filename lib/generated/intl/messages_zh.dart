@@ -54,13 +54,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "第${n}节";
 
-  static String m14(n) => "重置规划${n}(所有)";
+  static String m14(region) => "${region}公告";
 
-  static String m15(n) => "重置规划${n}(已显示)";
+  static String m15(n) => "重置规划${n}(所有)";
 
-  static String m16(battles, ap) => "总计${battles}次战斗, ${ap} AP";
+  static String m16(n) => "重置规划${n}(已显示)";
 
-  static String m17(n) => "个人资料${n}";
+  static String m17(battles, ap) => "总计${battles}次战斗, ${ap} AP";
+
+  static String m18(n) => "个人资料${n}";
 
   static String m0(a, b) => "${a}${b}";
 
@@ -277,7 +279,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_gender": MessageLookupByLibrary.simpleMessage("性别"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("全匹配"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("获取方式"),
-        "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("未满"),
+        "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("规划未满"),
         "filter_plan_reached": MessageLookupByLibrary.simpleMessage("已满"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("反向匹配"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("显示"),
@@ -358,7 +360,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("素材截图解析"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage("导入截图"),
         "import_screenshot_hint":
-            MessageLookupByLibrary.simpleMessage("仅更新识别出的素材"),
+            MessageLookupByLibrary.simpleMessage("仅更新识别成功的結果"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("更新素材"),
         "import_source_file": MessageLookupByLibrary.simpleMessage("导入源数据"),
@@ -535,6 +537,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_chapter_n": m13,
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("详情"),
+        "quest_fields": MessageLookupByLibrary.simpleMessage("场地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),
@@ -547,14 +550,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韩服"),
         "region_na": MessageLookupByLibrary.simpleMessage("美服"),
+        "region_notice": m14,
         "region_tw": MessageLookupByLibrary.simpleMessage("台服"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("销毁2号机"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("移出黑名单"),
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
-        "reset_plan_all": m14,
-        "reset_plan_shown": m15,
+        "reset_plan_all": m15,
+        "reset_plan_shown": m16,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -621,7 +625,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次数"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目标数"),
-        "solution_total_battles_ap": m16,
+        "solution_total_battles_ap": m17,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":
@@ -658,7 +662,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色详情"),
-        "svt_profile_n": m17,
+        "svt_profile_n": m18,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),

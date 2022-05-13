@@ -52,9 +52,9 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '마지막입니다.',
           })}";
 
-  static String m14(n) => "계획 초기화 ${n}(모두)";
+  static String m15(n) => "계획 초기화 ${n}(모두)";
 
-  static String m15(n) => "계획 초기화 ${n}(표시된)";
+  static String m16(n) => "계획 초기화 ${n}(표시된)";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -297,8 +297,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_item_screenshots":
             MessageLookupByLibrary.simpleMessage("아이템 스크린샷"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage("스크린샷 가져오기"),
-        "import_screenshot_hint":
-            MessageLookupByLibrary.simpleMessage("식별된 자료들만 갱신하기"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("갱신소재"),
         "import_source_file":
@@ -474,8 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("이름 변경"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
-        "reset_plan_all": m14,
-        "reset_plan_shown": m15,
+        "reset_plan_all": m15,
+        "reset_plan_shown": m16,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

@@ -48,8 +48,9 @@ class MissionCondsDescriptor extends StatelessWidget {
     if (!onlyShowClear) {
       children.add(const SizedBox(height: 10));
     }
-    return DefaultTextStyle(
-      style: const TextStyle(fontSize: 14),
+    final mq = MediaQuery.of(context);
+    return MediaQuery(
+      data: mq.copyWith(textScaleFactor: mq.textScaleFactor * 0.85),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

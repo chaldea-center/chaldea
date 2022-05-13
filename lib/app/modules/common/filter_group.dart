@@ -216,7 +216,7 @@ class FilterOption<T> extends StatelessWidget {
           primary: selected || darkMode ? Colors.white : Colors.black,
           backgroundColor:
               selected ? selectedColor ?? Colors.blue : unselectedColor,
-          minimumSize: shrinkWrap ? const Size(2, 2) : null,
+          minimumSize: shrinkWrap ? const Size(2, 2) : const Size(48, 36),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
           tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,

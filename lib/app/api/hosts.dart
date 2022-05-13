@@ -9,8 +9,8 @@ class Hosts {
   static String get apiHost => cn ? kApiHostCN : kApiHostGlobal;
 
   static const kWorkerHostGlobal = 'https://worker.chaldea.center';
-  static const kWokerHostCN = 'https://worker-cn.chaldea.center';
-  static String get workerHost => cn ? kWokerHostCN : kWorkerHostGlobal;
+  static const kWorkerHostCN = 'https://worker-cn.chaldea.center';
+  static String get workerHost => cn ? kWorkerHostCN : kWorkerHostGlobal;
 
   static const kDataHostGlobal = 'https://data.chaldea.center';
   static const kDataHostCN = 'https://data-cn.chaldea.center';

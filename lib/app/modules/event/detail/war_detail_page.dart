@@ -88,12 +88,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
       if (warName != longName && !Transl.isJP)
         CustomTableRow.fromTexts(texts: [warName]),
       CustomTableRow(children: [
-        TableCellData(text: 'Age', isHeader: true),
+        TableCellData(text: S.current.war_age, isHeader: true),
         TableCellData(text: war.age, flex: 3),
       ]),
       if (war.banner != null)
         CustomTableRow(children: [
-          TableCellData(text: 'Banner', isHeader: true),
+          TableCellData(text: S.current.war_banner, isHeader: true),
           TableCellData(
             flex: 3,
             child: Center(child: db.getIconImage(war.banner, height: 48)),

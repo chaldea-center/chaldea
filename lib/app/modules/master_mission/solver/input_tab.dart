@@ -605,7 +605,7 @@ class EventChooser extends StatelessWidget {
                   ListTile(
                     title: Text(Transl.eventNames(war.eventName).l),
                     subtitle: Text(
-                        'War id ${war.id}: ${war.event?.startedAt.sec2date().toDateString()} (JP)'),
+                        'War ${war.id}: ${war.event?.startedAt.sec2date().toDateString()} (JP)'),
                     onTap: () {
                       Navigator.pop(context, war.id);
                     },

@@ -143,9 +143,14 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
   Widget get popupMenu {
     final eventId = widget.event?.id ?? widget.eventId;
-
-    return PopupMenuButton(
+    return PopupMenuButton<dynamic>(
       itemBuilder: (context) => [
+        PopupMenuItem(
+          child: Text('No.$eventId', textScaleFactor: 0.9),
+          enabled: false,
+          height: 32,
+        ),
+        const PopupMenuDivider(),
         ...SharedBuilder.websitesPopupMenuItems(
           atlas: Atlas.dbEvent(event.id),
           mooncell: event.extra.mcLink,
@@ -551,9 +556,21 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ));
     }
 
-    return ListView.builder(
-      itemBuilder: (context, index) => children[index],
-      itemCount: children.length,
+    return Scaffold(
+      body: ListView.builder(
+        itemBuilder: (context, index) => children[index],
+        itemCount: children.length,
+      ),
+      floatingActionButton: db.onUserData(
+        (context, snapshot) => FloatingActionButton(
+          child: const Icon(Icons.archive_outlined),
+          backgroundColor: plan.enabled ? null : Colors.grey,
+          onPressed: plan.enabled
+              ? () => _ArchiveEventDialog(event: event, initPlan: plan)
+                  .showDialog(context)
+              : null,
+        ),
+      ),
     );
   }
 
@@ -638,5 +655,177 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       );
     }
     return child;
+  }
+}
+
+class _ArchiveEventDialog extends StatefulWidget {
+  final Event event;
+  final EventPlan initPlan;
+  const _ArchiveEventDialog(
+      {Key? key, required this.event, required this.initPlan})
+      : super(key: key);
+
+  @override
+  State<_ArchiveEventDialog> createState() => __ArchiveEventDialogState();
+}
+
+class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
+  late final EventPlan plan;
+  Map<int, int> items = {};
+
+  Map<int, bool> lotteries = {};
+  Map<int, bool> treasureBoxes = {};
+  Map<int, bool> extraItems = {};
+  Event get event => widget.event;
+  @override
+  void initState() {
+    super.initState();
+    plan = widget.initPlan.copy();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    calcItems();
+    List<Widget> children = [];
+    void _addOption({
+      required String title,
+      required bool value,
+      required ValueChanged<bool> onChanged,
+      String? subtitle,
+    }) {
+      children.add(CheckboxListTile(
+        title: Text(title),
+        subtitle: subtitle?.toText(),
+        value: value,
+        onChanged: (v) {
+          setState(() {
+            if (v != null) onChanged(v);
+          });
+        },
+      ));
+    }
+
+    if (event.itemWarReward.isNotEmpty) {
+      _addOption(
+        title: S.current.game_rewards,
+        value: plan.questReward,
+        onChanged: (v) => plan.questReward = v,
+      );
+    }
+    if (event.itemWarDrop.isNotEmpty) {
+      _addOption(
+        title: S.current.quest_fixed_drop,
+        value: plan.fixedDrop,
+        onChanged: (v) => plan.fixedDrop = v,
+      );
+    }
+    if (event.shop.isNotEmpty) {
+      _addOption(
+        title: S.current.event_shop,
+        value: plan.shop,
+        onChanged: (v) => plan.shop = v,
+      );
+    }
+    if (event.rewards.isNotEmpty) {
+      _addOption(
+        title: S.current.event_point_reward,
+        value: plan.point,
+        onChanged: (v) => plan.point = v,
+      );
+    }
+    if (event.missions.isNotEmpty) {
+      _addOption(
+        title: S.current.mission,
+        value: plan.mission,
+        onChanged: (v) => plan.mission = v,
+      );
+    }
+    if (event.towers.isNotEmpty) {
+      _addOption(
+        title: S.current.event_tower,
+        value: plan.tower,
+        onChanged: (v) => plan.tower = v,
+      );
+    }
+    for (final lottery in event.lotteries) {
+      _addOption(
+        title: (lottery.limited
+                ? S.current.event_lottery_limited
+                : S.current.event_lottery_unlimited) +
+            ' ${lottery.id}',
+        subtitle:
+            '${plan.lotteries[lottery.id] ?? 0}/${lottery.limited ? lottery.maxBoxIndex : "∞"}',
+        value: lotteries[lottery.id] ?? false,
+        onChanged: (v) => lotteries[lottery.id] = v,
+      );
+    }
+    for (int boxIndex = 0; boxIndex < event.treasureBoxes.length; boxIndex++) {
+      final box = event.treasureBoxes[boxIndex];
+      _addOption(
+        title: S.current.event_treasure_box + ' ${boxIndex + 1}(${box.id})',
+        value: treasureBoxes[box.id] ?? false,
+        onChanged: (v) => treasureBoxes[box.id] = v,
+      );
+    }
+    for (final detail in event.extra.extraItems) {
+      _addOption(
+        title: S.current.event_item_extra + ' ${detail.id}',
+        value: extraItems[detail.id] ?? false,
+        onChanged: (v) => extraItems[detail.id] = v,
+      );
+    }
+    if (items.values.any((v) => v != 0)) {
+      children.add(
+          SharedBuilder.groupItems(context: context, items: items, width: 36));
+    } else {
+      children.add(const ListTile(title: Text('No item')));
+    }
+    children.add(const SFooter('GrailToLore: not included'));
+
+    return SimpleCancelOkDialog(
+      contentPadding:
+          const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 24.0),
+      title: Text(S.current.event_collect_items),
+      content: SingleChildScrollView(
+        child: Column(children: children),
+      ),
+      scrollable: true,
+      onTapOk: archiveItems,
+    );
+  }
+
+  void calcItems() {
+    final plan2 = plan.copy();
+    plan2.enabled = true;
+    plan2.lotteries.removeWhere((key, value) => lotteries[key] != true);
+    plan2.treasureBoxItems
+        .removeWhere((key, value) => treasureBoxes[key] != true);
+    plan2.extraItems.removeWhere((key, value) => extraItems[key] != true);
+    items =
+        db.itemCenter.calcOneEvent(event, plan2, includingGrailToLore: false);
+    final validItems = db.itemCenter.validItems;
+    items.removeWhere((key, value) => !validItems.contains(key));
+  }
+
+  void archiveItems() {
+    if (plan.fixedDrop) widget.initPlan.fixedDrop = false;
+    if (plan.questReward) widget.initPlan.questReward = false;
+    if (plan.shop) widget.initPlan.shop = false;
+    if (plan.point) widget.initPlan.point = false;
+    if (plan.mission) widget.initPlan.mission = false;
+    if (plan.tower) widget.initPlan.tower = false;
+    lotteries.forEach((key, value) {
+      if (value) widget.initPlan.lotteries[key] = 0;
+    });
+    treasureBoxes.forEach((key, value) {
+      if (value) widget.initPlan.treasureBoxItems[key]?.clear();
+    });
+    extraItems.forEach((key, value) {
+      if (value) widget.initPlan.extraItems[key]?.clear();
+    });
+    db.curUser.items.addDict(items);
+    event.updateStat();
+    EasyLoading.showSuccess(
+        S.current.success + ': ' + S.current.event_collect_items);
   }
 }

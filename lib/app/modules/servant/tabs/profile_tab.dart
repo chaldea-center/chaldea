@@ -22,6 +22,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   Set<Region> releasedRegions = {};
 
   Servant? svt;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -46,7 +47,10 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   }
 
   void fetchSvt() async {
+    _loading = true;
+    if (mounted) setState(() {});
     svt = await AtlasApi.svt(widget.svt.id, region: _region);
+    _loading = false;
     if (mounted) setState(() {});
   }
 
@@ -81,7 +85,9 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         ),
       ));
     }
-    if (comments.isEmpty) {
+    if (comments.isEmpty && _loading) {
+      children.add(const Center(child: CircularProgressIndicator()));
+    } else if (comments.isEmpty) {
       children.add(const Center(child: Text('...')));
     }
 

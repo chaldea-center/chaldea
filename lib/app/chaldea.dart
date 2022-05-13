@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,9 @@ import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
@@ -132,7 +135,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  void afterFirstLayout(BuildContext context) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
       MethodChannelChaldeaNext.setAlwaysOnTop();
     }
@@ -141,6 +144,22 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
     if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();
+    }
+    if (PlatformU.isMobile && !AppInfo.isIPad) {
+      if (!db.settings.autoRotate) {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      }
+    }
+
+    if (db.settings.autoUpdateApp && !kIsWeb) {
+      await Future.delayed(const Duration(seconds: 5));
+      if (PlatformU.isIOS) {
+        AppUpdater.checkAppStoreUpdate();
+      } else if (PlatformU.isAndroid ||
+          PlatformU.isWindows ||
+          PlatformU.isLinux) {
+        AppUpdater.backgroundUpdate();
+      }
     }
   }
 

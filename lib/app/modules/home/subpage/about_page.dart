@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -77,7 +77,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
           ),
           TileGroup(
-            header: S.current.update,
+            header: S.current.about_app,
             children: [
               if (!AppInfo.isMacStoreApp &&
                   (!PlatformU.isIOS ||
@@ -89,8 +89,33 @@ class _AboutPageState extends State<AboutPage> {
                           db.runtimeData.upgradableVersion!.versionString + '↑',
                           style: const TextStyle(color: Colors.redAccent))
                       : null,
-                  onTap: () {
-                    EasyLoading.showInfo('NotImplemented');
+                  onTap: () async {
+                    // if (PlatformU.isApple) {
+                    //   launch(kAppStoreLink);
+                    //   return;
+                    // }
+                    AppUpdateDetail? detail = db.runtimeData.releaseDetail;
+                    if (detail == null) {
+                      EasyLoading.showToast('Checking update...');
+                      detail = await AppUpdater.check();
+                    }
+                    if (detail == null) {
+                      EasyLoading.showInfo('No Update Found');
+                      return;
+                    }
+                    final update = await AppUpdater.showUpdateAlert(
+                        detail.release.version!, detail.release.body);
+                    if (update != true) return;
+                    EasyLoading.showInfo('Background downloading...');
+                    final savePath = await AppUpdater.download(detail);
+                    if (savePath == null) {
+                      EasyLoading.showError('Download app update failed');
+                      return;
+                    }
+                    final install = await AppUpdater.showInstallAlert(
+                        detail.release.version!);
+                    if (install != true) return;
+                    await AppUpdater.installUpdate(savePath);
                   },
                 ),
               if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
@@ -107,13 +132,7 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: Text(S.current.change_log),
                 onTap: () async {
-                  router.pushPage(
-                    _GithubMarkdownPage(
-                      title: S.current.change_log,
-                      link: '$kProjectHomepage/blob/main/CHANGELOG.md',
-                      assetKey: 'CHANGELOG.md',
-                    ),
-                  );
+                  launch('$kProjectHomepage/releases');
                 },
               ),
               ListTile(
@@ -132,7 +151,14 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: const Text('CONTRIBUTORS'),
                 onTap: () async {
-                  launch('$kProjectHomepage/blob/main/CONTRIBUTORS');
+                  router.pushPage(
+                    const _GithubMarkdownPage(
+                      title: 'CONTRIBUTORS',
+                      link: '$kProjectHomepage/blob/main/CONTRIBUTORS',
+                      assetKey: 'CONTRIBUTORS',
+                      disableMd: true,
+                    ),
+                  );
                 },
               ),
             ],
@@ -153,20 +179,6 @@ class _AboutPageState extends State<AboutPage> {
               const ListTile(
                 title: Text('icyalala@NGA'),
                 subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
-              ),
-              ListTile(
-                title: const Text("Fandom & Reddit Translators"),
-                subtitle: const Text('English Communities'),
-                onTap: () {
-                  router.pushPage(
-                    _FandomContributorsPage(),
-                    detail: true,
-                  );
-                },
-              ),
-              const ListTile(
-                title: Text('M.Gallery & Cafe Translators'),
-                subtitle: Text('Korean Communities'),
               ),
             ],
           ),
@@ -256,8 +268,8 @@ class _AboutProgram extends StatelessWidget {
             Text.rich(
               TextSpan(
                 text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => launch(AppInfo.commitUrl),
+                // recognizer: TapGestureRecognizer()
+                //   ..onTap = () => launch(AppInfo.commitUrl),
                 style: Theme.of(context).textTheme.caption,
               ),
             ),
@@ -283,50 +295,19 @@ class _AboutProgram extends StatelessWidget {
   }
 }
 
-class _FandomContributorsPage extends StatelessWidget {
-  _FandomContributorsPage({Key? key}) : super(key: key);
-
-  final Map<String, String> data = const {
-    'Fandom FGO Team': 'https://fategrandorder.fandom.com/wiki/',
-    'Chaldeum Translations': 'https://chaldeum.wordpress.com',
-    'aabisector': 'https://www.reddit.com/user/aabisector',
-    'ComunCoutinho': 'https://www.reddit.com/user/ComunCoutinho',
-    'newworldfool': 'https://www.reddit.com/user/newworldfool',
-    'kanramori': 'https://www.reddit.com/user/kanramori',
-    'Kairosity': 'https://twitter.com/paradigmkai',
-    'Konchew': 'https://www.reddit.com/user/Konchew',
-    'PkFreezeAlpha': 'https://www.reddit.com/user/PkFreezeAlpha',
-    'shinyklefkey': 'https://www.reddit.com/user/shinyklefkey',
-    'uragiruhito': 'https://www.reddit.com/user/uragiruhito',
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = [];
-    data.forEach((name, link) {
-      children.add(ListTile(
-        title: Text(name),
-        // subtitle: Text(link),
-        onTap: () {
-          launch(link);
-        },
-      ));
-    });
-    return Scaffold(
-      appBar: AppBar(title: const Text('Fandom Contributors')),
-      body: ListView(children: children),
-    );
-  }
-}
-
 class _GithubMarkdownPage extends StatelessWidget {
   final String title;
   final String? link;
   final String? assetKey;
+  final bool disableMd;
 
-  const _GithubMarkdownPage(
-      {Key? key, required this.title, this.link, this.assetKey})
-      : super(key: key);
+  const _GithubMarkdownPage({
+    Key? key,
+    required this.title,
+    this.link,
+    this.assetKey,
+    this.disableMd = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +325,7 @@ class _GithubMarkdownPage extends StatelessWidget {
             )
         ],
       ),
-      body: MyMarkdownWidget(assetKey: assetKey),
+      body: MyMarkdownWidget(assetKey: assetKey, disableMd: disableMd),
     );
   }
 }

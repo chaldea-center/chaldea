@@ -52,13 +52,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "Sección ${n}";
 
-  static String m14(n) => "Restablecer plan ${n}(Todo)";
+  static String m15(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m15(n) => "Restablecer plan ${n} (Mostrado)";
+  static String m16(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m16(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m17(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
-  static String m17(n) => "Perfil ${n}";
+  static String m18(n) => "Perfil ${n}";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -377,8 +377,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Captura de pantalla de los objetos"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage(
             "Importar capturas de pantalla"),
-        "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
-            "Actualizar solo elementos reconocidos"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("Actualizar elementos"),
         "import_source_file":
@@ -590,8 +588,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m14,
-        "reset_plan_shown": m15,
+        "reset_plan_all": m15,
+        "reset_plan_shown": m16,
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -680,7 +678,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m16,
+        "solution_total_battles_ap": m17,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -708,7 +706,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Perfil"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Info del personaje"),
-        "svt_profile_n": m17,
+        "svt_profile_n": m18,
         "svt_related_ce":
             MessageLookupByLibrary.simpleMessage("CE Relacionadas"),
         "svt_reset_plan":

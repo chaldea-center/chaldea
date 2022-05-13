@@ -305,6 +305,10 @@ class BaseGift {
       case GiftType.userExp:
         break;
       case GiftType.equip:
+        icon ??= db.gameData.mysticCodes[objectId]?.icon;
+        onTap ??= () {
+          router.push(url: Routes.mysticCodeI(objectId));
+        };
         break;
       case GiftType.questRewardIcon:
         icon ??= Atlas.assetItem(9);

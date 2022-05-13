@@ -268,6 +268,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
                     : Text(
                         db.runtimeData.upgradableVersion!.versionString + ' ↑',
+                        style: TextStyle(
+                            color: Theme.of(context).errorColor.withAlpha(200)),
                       ),
                 onTap: () => router.push(child: AboutPage()),
               ),

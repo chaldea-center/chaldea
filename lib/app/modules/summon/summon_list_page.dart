@@ -109,7 +109,10 @@ class _SummonListPageState extends State<SummonListPage>
               db.curUser.region == Region.cn || db.curUser.region == Region.tw
                   ? summon.banner.cn ?? summon.banner.jp
                   : summon.banner.jp ?? summon.banner.cn,
-          placeholder: (ctx, url) => Text(summon.lName),
+          placeholder: (ctx, url) => Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16),
+            child: Text(summon.lName),
+          ),
           cachedOption: CachedImageOption(
               errorWidget: (ctx, url, error) => Text(summon.lName)),
         ),

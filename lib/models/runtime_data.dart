@@ -5,12 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/models/version.dart';
+import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'api/recognizer.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;
+  AppUpdateDetail? releaseDetail;
+
   double? criticalWidth;
 
   Set<Uint8List> recognizerItems = {};

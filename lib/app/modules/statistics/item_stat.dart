@@ -172,7 +172,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
                 constraints: const BoxConstraints(minHeight: 32),
                 child: Text([
                   S.current.ascension_short,
-                  S.current.active_skill,
+                  S.current.active_skill_short,
                   S.current.append_skill_short,
                   S.current.costume,
                   S.current.general_special,

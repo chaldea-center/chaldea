@@ -130,7 +130,8 @@ class SimpleCancelOkDialog extends StatelessWidget {
     Key? key,
     this.title,
     this.content,
-    this.contentPadding = const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
+    this.contentPadding =
+        const EdgeInsetsDirectional.fromSTEB(24.0, 20.0, 24.0, 24.0),
     this.confirmText,
     this.onTapOk,
     this.onTapCancel,

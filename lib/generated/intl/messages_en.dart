@@ -54,13 +54,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "Section ${n}";
 
-  static String m14(n) => "Reset Plan ${n}(All)";
+  static String m14(region) => "${region} Notice";
 
-  static String m15(n) => "Reset Plan ${n}(Shown)";
+  static String m15(n) => "Reset Plan ${n}(All)";
 
-  static String m16(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m16(n) => "Reset Plan ${n}(Shown)";
 
-  static String m17(n) => "Profile ${n}";
+  static String m17(battles, ap) => "Total ${battles} battles, ${ap} AP";
+
+  static String m18(n) => "Profile ${n}";
 
   static String m0(a, b) => "${a} ${b}";
 
@@ -314,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_match_all": MessageLookupByLibrary.simpleMessage("Match All"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("Obtains"),
         "filter_plan_not_reached":
-            MessageLookupByLibrary.simpleMessage("Plan-not-reach"),
+            MessageLookupByLibrary.simpleMessage("Plan Not Reach"),
         "filter_plan_reached":
             MessageLookupByLibrary.simpleMessage("Plan-reached"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("Revert"),
@@ -406,7 +408,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_screenshot":
             MessageLookupByLibrary.simpleMessage("Import Screenshots"),
         "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
-            "Only update recognized items"),
+            "Only update recognized results"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("Update Items"),
         "import_source_file":
@@ -630,6 +632,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_chapter_n": m13,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("details"),
+        "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
@@ -643,6 +646,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
+        "region_notice": m14,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remove duplicated"),
@@ -651,8 +655,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
-        "reset_plan_all": m14,
-        "reset_plan_shown": m15,
+        "reset_plan_all": m15,
+        "reset_plan_shown": m16,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -732,7 +736,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m16,
+        "solution_total_battles_ap": m17,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -777,7 +781,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Character Info"),
-        "svt_profile_n": m17,
+        "svt_profile_n": m18,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
@@ -837,6 +841,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
+        "war_age": MessageLookupByLibrary.simpleMessage("Age"),
+        "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
         "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),

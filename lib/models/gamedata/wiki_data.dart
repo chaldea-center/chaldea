@@ -119,8 +119,10 @@ class EventExtraItems {
   EventExtraItems({
     required this.id,
     MappingBase<String>? detail,
-    this.items = const {},
-  }) : detail = detail ?? MappingBase();
+    Map<int, MappingBase<String>?> items = const {},
+  })  : detail = detail ?? MappingBase(),
+        items =
+            items.map((key, value) => MapEntry(key, value ?? MappingBase()));
 
   factory EventExtraItems.fromJson(Map<String, dynamic> json) =>
       _$EventExtraItemsFromJson(json);
@@ -296,7 +298,7 @@ class LimitedSummon {
     bool svt = false,
     bool ce = false,
     bool includeHidden = false,
-    bool includeGSSR = true,
+    bool includeGSSR = false,
   }) {
     List<int> cards = [];
     for (final sub in subSummons) {

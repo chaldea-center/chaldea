@@ -177,7 +177,7 @@ class _QuestCardState extends State<QuestCard> {
             in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
           _buildPhases(phase),
       if (quest.gifts.isNotEmpty) _questRewards(),
-      if (quest.releaseConditions.isNotEmpty) _releaseConditions(),
+      // if (quest.releaseConditions.isNotEmpty) _releaseConditions(),
       if (!quest.isMainStoryFree)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -315,7 +315,7 @@ class _QuestCardState extends State<QuestCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text('Fields'),
+            Text(S.current.quest_fields),
             Expanded(
               child: SharedBuilder.traitList(
                   context: context, traits: curPhase.individuality),
