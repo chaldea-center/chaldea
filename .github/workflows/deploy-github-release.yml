@@ -78,10 +78,6 @@ jobs:
       - name: Checkout chaldea code
         uses: actions/checkout@v2
 
-      - name: Remove invalid pub packages
-        if: matrix.target == 'linux'
-        run: sed -i 's/just_audio_libwinmedia/# just_audio_libwinmedia/g' pubspec.yaml
-
       - name: Configure Keystore for Android
         if: matrix.target == 'android'
         run: |
@@ -96,13 +92,12 @@ jobs:
           KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
-      - name: Configure Android Preview package name
-        if: matrix.target == 'android' && github.ref == 'refs/heads/main'
-        run: dart ./scripts/patch_android_preview.dart
 
       - name: Generate git info
         run:  dart ./scripts/generate_git_info.dart
 
+      - run: flutter pub get
+      - run: dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}
       - run: flutter pub get
       - run: flutter build ${{ matrix.build_target }} -v --release
 
@@ -171,7 +166,7 @@ jobs:
           body: Built at ${{ steps.get-date.outputs.date }}
           draft: false
           prerelease: true
-          artifacts: "chaldea-preview-*/*"
+          artifacts: "chaldea-*/*"
 
       - name: Publish ${GITHUB_REF/refs\/tags\/v/}
         if: startsWith(github.ref, 'refs/tags/v')
