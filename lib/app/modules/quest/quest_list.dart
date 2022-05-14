@@ -74,14 +74,21 @@ class _QuestListPageState extends State<QuestListPage> {
                   ? '第${quest.chapterSubId}节'
                   : quest.chapterSubStr
               : '';
-          if (chapter.isEmpty) chapter = '${index + 1}';
+          chapter = chapter.trim();
+          if (chapter.isNotEmpty) chapter += ' ';
+
+          final spot = db.gameData.spots[quest.spotId];
+          final leading = spot == null || spot.image == null
+              ? const SizedBox(width: 56)
+              : db.getIconImage(spot.image, width: 56);
 
           return ListTile(
-            leading: Text(chapter),
-            title: Text(quest.lDispName),
+            leading: leading,
+            title: Text(chapter + quest.lDispName),
             subtitle: Text(isMainFree ? quest.lName.l : quest.lSpot.l),
             trailing: trailing,
-            horizontalTitleGap: quest.type == QuestType.main ? null : 0,
+            contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
+            horizontalTitleGap: 8,
             onTap: () {
               router.push(
                 url: Routes.questI(quest.id),

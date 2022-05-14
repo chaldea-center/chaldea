@@ -602,6 +602,8 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     ];
   }
 
+  final Map<String, TextEditingController> _controllers = {};
+
   Widget _inputGroup({
     required int? Function() value,
     required ValueChanged<int> onChanged,
@@ -613,6 +615,8 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       width: 64,
       child: TextField(
         // readOnly: readOnly,
+        controller: _controllers[tag] ??=
+            TextEditingController(text: value()?.toString()),
         onChanged: (v) {
           int? n;
           if (v.trim().isEmpty) {
@@ -621,11 +625,11 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             n = int.tryParse(v);
           }
           if (n != null && n >= 0) {
+            onChanged(n);
             EasyDebounce.debounce(
               tag,
               const Duration(milliseconds: 500),
               () {
-                onChanged(n!);
                 event.updateStat();
               },
             );
@@ -635,6 +639,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           isDense: true,
+          // hintText: value()?.toString(),
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       ),
@@ -655,6 +660,14 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       );
     }
     return child;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
   }
 }
 

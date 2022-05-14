@@ -266,23 +266,25 @@ class _QuestCardState extends State<QuestCard> {
     }
     String spotJp = curPhase.spotName;
     String spot = curPhase.lSpot.l;
-
-    children.add(Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(children: <Widget>[
+    final spotImage = db.gameData.spots[curPhase.spotId]?.image;
+    final shownSpotName = spotJp == spot ? spot : '$spot\n$spotJp';
+    children.add(Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
         Text('  ${curPhase.phase}/${curPhase.phases.length}  '),
         Expanded(flex: 1, child: Center(child: Text('AP ${curPhase.consume}'))),
         Expanded(
           flex: 4,
-          child: Center(
-            child: AutoSizeText(
-              spotJp == spot ? spot : '$spot/$spotJp',
-              maxLines: 1,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+          child: AutoSizeText(
+            shownSpotName,
+            maxLines: shownSpotName.split('\n').length,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
           ),
         ),
-      ]),
+        if (spotImage != null)
+          Expanded(child: db.getIconImage(spotImage, height: 36))
+      ],
     ));
     for (int j = 0; j < curPhase.stages.length; j++) {
       children.add(Row(

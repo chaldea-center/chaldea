@@ -50,6 +50,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           isHeader: true,
+                          textAlign: TextAlign.center,
                         )
                       ]),
                       if (!Transl.isJP)

@@ -117,6 +117,8 @@ class GameData {
   @JsonKey(ignore: true)
   late Map<int, NiceWar> mainStories;
   @JsonKey(ignore: true)
+  late Map<int, NiceSpot> spots;
+  @JsonKey(ignore: true)
   late Map<int, Quest> quests;
 
   @JsonKey(ignore: true)
@@ -146,10 +148,13 @@ class GameData {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war
     };
-    quests = {
+    spots = {
       for (final war in wars.values)
-        for (final spot in war.spots)
-          for (final quest in spot.quests) quest.id: quest
+        for (final spot in war.spots) spot.id: spot
+    };
+    quests = {
+      for (final spot in spots.values)
+        for (final quest in spot.quests) quest.id: quest
     };
     servantsById = servants.map((key, value) => MapEntry(value.id, value));
     craftEssencesById =
