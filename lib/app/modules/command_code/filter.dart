@@ -67,6 +67,15 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
             update();
           },
         ),
+        FilterGroup<Region>(
+          title: Text(S.current.game_server, style: textStyle),
+          options: Region.values,
+          values: filterData.region,
+          optionBuilder: (v) => Text(v.localName),
+          onFilterChanged: (v) {
+            update();
+          },
+        ),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: EffectTarget.values,

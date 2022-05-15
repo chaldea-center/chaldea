@@ -127,6 +127,13 @@ class CraftListPageState extends State<CraftListPage>
     if (!filterData.rarity.matchOne(ce.rarity)) {
       return false;
     }
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      final released = db.gameData.mappingData.ceRelease.ofRegion(region);
+      if (released?.contains(ce.collectionNo) != true) {
+        return false;
+      }
+    }
     if (!filterData.obtain.matchOne(ce.obtain)) {
       return false;
     }

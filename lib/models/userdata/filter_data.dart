@@ -221,6 +221,7 @@ class SvtFilterData {
   FilterGroupData<int> priority = FilterGroupData(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
+  FilterRadioData<Region> region = FilterRadioData();
   FilterGroupData<SvtObtain> obtain = FilterGroupData();
   FilterGroupData<CardType> npColor = FilterGroupData();
   FilterGroupData<NpDamageType> npType = FilterGroupData();
@@ -255,6 +256,7 @@ class SvtFilterData {
         attribute,
         planCompletion,
         // priority,
+        region,
         obtain,
         npColor,
         npType,
@@ -345,6 +347,7 @@ class CraftFilterData {
 
   // filter
   FilterGroupData<int> rarity = FilterGroupData();
+  FilterRadioData<Region> region = FilterRadioData();
   FilterGroupData<CEObtain> obtain = FilterGroupData();
   FilterGroupData<CraftATKType> atkType = FilterGroupData();
   FilterGroupData<int> status = FilterGroupData();
@@ -365,6 +368,7 @@ class CraftFilterData {
 
   List<FilterGroupData> get _group => [
         rarity,
+        region,
         obtain,
         atkType,
         status,
@@ -429,6 +433,7 @@ class CmdCodeFilterData {
 
   // filter
   FilterGroupData<int> rarity = FilterGroupData();
+  FilterRadioData<Region> region = FilterRadioData();
   FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
   FilterGroupData<SkillEffect> effectType = FilterGroupData();
 
@@ -446,7 +451,8 @@ class CmdCodeFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [rarity, effectTarget, effectType];
+  List<FilterGroupData> get _group =>
+      [rarity, region, effectTarget, effectType];
 
   void reset() {
     favorite = false;

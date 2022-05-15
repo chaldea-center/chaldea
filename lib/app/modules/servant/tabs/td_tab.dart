@@ -7,13 +7,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class SvtTdTab extends StatelessWidget with PrimaryScrollMixin {
+class SvtTdTab extends StatelessWidget {
   final Servant svt;
 
   const SvtTdTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);

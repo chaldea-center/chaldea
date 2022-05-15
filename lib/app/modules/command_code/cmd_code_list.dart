@@ -116,7 +116,13 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     if (!filterData.rarity.matchOne(cc.rarity)) {
       return false;
     }
-
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      final released = db.gameData.mappingData.ccRelease.ofRegion(region);
+      if (released?.contains(cc.collectionNo) != true) {
+        return false;
+      }
+    }
     if (filterData.effectType.options.isNotEmpty) {
       List<NiceFunction> funcs = [
         for (final skill in cc.skills)

@@ -78,6 +78,15 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             update();
           },
         ),
+        FilterGroup<Region>(
+          title: Text(S.current.game_server, style: textStyle),
+          options: Region.values,
+          values: filterData.region,
+          optionBuilder: (v) => Text(v.localName),
+          onFilterChanged: (v) {
+            update();
+          },
+        ),
         FilterGroup<CraftATKType>(
           title: Text(S.current.filter_atk_hp_type),
           options: CraftATKType.values,

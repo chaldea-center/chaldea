@@ -462,6 +462,14 @@ class ServantListPageState extends State<ServantListPage>
     }
     // end plan status
 
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      final released = db.gameData.mappingData.svtRelease.ofRegion(region);
+      if (released?.contains(svt.collectionNo) != true) {
+        return false;
+      }
+    }
+
     if (!filterData.obtain.matchAny(svt.extra.obtains)) {
       return false;
     }

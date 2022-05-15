@@ -8,13 +8,13 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../command_code/cmd_code.dart';
 
-class SvtRelatedCardTab extends StatelessWidget with PrimaryScrollMixin {
+class SvtRelatedCardTab extends StatelessWidget {
   final Servant svt;
 
   const SvtRelatedCardTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     List<String> tabs = [];
     List<Widget> pages = [];
 

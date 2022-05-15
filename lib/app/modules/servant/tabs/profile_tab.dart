@@ -22,7 +22,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   Set<Region> releasedRegions = {};
 
   Servant? svt;
-  bool _loading = false;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -48,6 +48,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
 
   void fetchSvt() async {
     _loading = true;
+    svt = null;
     if (mounted) setState(() {});
     svt = await AtlasApi.svt(widget.svt.id, region: _region);
     _loading = false;
@@ -85,21 +86,22 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         ),
       ));
     }
-    if (comments.isEmpty && _loading) {
-      children.add(const Center(child: CircularProgressIndicator()));
-    } else if (comments.isEmpty) {
-      children.add(const Center(child: Text('...')));
+    Widget view;
+    if (comments.isNotEmpty) {
+      view = ListView.builder(
+        controller: _scrollController,
+        itemCount: children.length,
+        itemBuilder: (context, index) => children[index],
+      );
+    } else if (_loading) {
+      view = const Center(child: CircularProgressIndicator());
+    } else {
+      view = const Center(child: Text('???'));
     }
 
     return Column(
       children: [
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: children.length,
-            itemBuilder: (context, index) => children[index],
-          ),
-        ),
+        Expanded(child: view),
         SafeArea(
           child: ButtonBar(
             alignment: MainAxisAlignment.center,

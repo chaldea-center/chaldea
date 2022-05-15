@@ -7,13 +7,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class SvtSkillTab extends StatelessWidget with PrimaryScrollMixin {
+class SvtSkillTab extends StatelessWidget {
   final Servant svt;
 
   const SvtSkillTab({Key? key, required this.svt}) : super(key: key);
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));

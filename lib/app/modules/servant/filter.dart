@@ -162,13 +162,21 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //   },
         // ),
         groupDivider,
+        FilterGroup<Region>(
+          title: Text(S.current.game_server, style: textStyle),
+          options: Region.values,
+          values: filterData.region,
+          optionBuilder: (v) => Text(v.localName),
+          onFilterChanged: (v) {
+            update();
+          },
+        ),
         FilterGroup<SvtObtain>(
           title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtObtain.values,
           values: filterData.obtain,
           optionBuilder: (v) => Text(Transl.svtObtain(v).l),
           onFilterChanged: (value) {
-            filterData.obtain = value;
             update();
           },
         ),

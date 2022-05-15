@@ -5,7 +5,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../app.dart';
 
-class SvtQuestTab extends StatelessWidget with PrimaryScrollMixin {
+class SvtQuestTab extends StatelessWidget {
   final Servant svt;
 
   SvtQuestTab({
@@ -14,7 +14,7 @@ class SvtQuestTab extends StatelessWidget with PrimaryScrollMixin {
   }) : super(key: key);
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) {
         final questId = svt.relateQuestIds[index];
