@@ -204,10 +204,12 @@ class _CustomTableRowState extends State<CustomTableRow> {
         padding: cell.padding,
         child: _child,
       );
-      _child = Align(
-        alignment: cell.alignment,
-        child: _child,
-      );
+      if (cell.alignment != null) {
+        _child = Align(
+          alignment: cell.alignment!,
+          child: _child,
+        );
+      }
       _child = Container(
         constraints: constraints,
         color: cell.resolveColor(context) ?? widget.color,
@@ -278,7 +280,7 @@ class TableCellData {
   TextStyle? style;
   Color? color;
   int? maxLines;
-  Alignment alignment;
+  Alignment? alignment;
   TextAlign? textAlign;
   EdgeInsets padding;
 
@@ -334,7 +336,7 @@ class TableCellData {
     int? maxLines,
     List<int>? maxLinesList,
     Alignment? alignment,
-    List<Alignment>? alignmentList,
+    List<Alignment?>? alignmentList,
     TextAlign? textAlign,
     List<TextAlign>? textAlignList,
     EdgeInsets? padding,

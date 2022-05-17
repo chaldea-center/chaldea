@@ -20,43 +20,43 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ko';
 
-  static String m1(curVersion, newVersion, releaseNote) =>
+  static String m0(curVersion, newVersion, releaseNote) =>
       "현재 버전 : ${curVersion}\nL최신 버전 : ${newVersion}\n개발 노트:\n${releaseNote}";
 
-  static String m2(url) =>
+  static String m10(url) =>
       "Chaldea - 멀티 플랫폼의 Fate/GO 아이템 계획 어플. 게임정보의 열람 및 서번트/이벤트/아이템 계획, 마스터 미션 계획, 가챠 시뮬레이터 등의 기능을 서포트합니다.\n\n자세히 보기: \n${url}\n";
 
-  static String m3(version) => "Required app version: ≥ ${version}";
+  static String m11(version) => "Required app version: ≥ ${version}";
 
-  static String m4(n) => "최대 ${n}회 제한";
+  static String m1(n) => "최대 ${n}회 제한";
 
-  static String m5(n, total) => "전승결정으로 대체되는 성배의 개수 : ${n}/${total}";
+  static String m2(n, total) => "전승결정으로 대체되는 성배의 개수 : ${n}/${total}";
 
-  static String m6(filename, hash, localHash) =>
+  static String m12(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m7(error) => "불러오기 실패. Error:\n${error}";
+  static String m3(error) => "불러오기 실패. Error:\n${error}";
 
-  static String m8(name) => "${name}은 이미 존재합니다";
+  static String m4(name) => "${name}은 이미 존재합니다";
 
-  static String m9(site) => "${site}(으)로 이동";
+  static String m5(site) => "${site}(으)로 이동";
 
-  static String m10(shown, total) => "${shown} 표시 (합계 ${total})";
+  static String m13(shown, total) => "${shown} 표시 (합계 ${total})";
 
-  static String m11(shown, ignore, total) =>
+  static String m14(shown, ignore, total) =>
       "${shown} 표시, ${ignore} 무시 (합계 ${total})";
 
-  static String m12(first) => "${Intl.select(first, {
+  static String m6(first) => "${Intl.select(first, {
             'true': '이미 첫번째입니다.',
             'false': '이미 마지막입니다.',
             'other': '마지막입니다.',
           })}";
 
-  static String m15(n) => "계획 초기화 ${n}(모두)";
+  static String m7(n) => "계획 초기화 ${n}(모두)";
 
-  static String m16(n) => "계획 초기화 ${n}(표시된)";
+  static String m8(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m0(a, b) => "${a} ${b}";
+  static String m9(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -67,7 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_data_source_footer": MessageLookupByLibrary.simpleMessage(
             "출처가 표시되어 있지 않거나 침해가 있는 경우 알려주세요"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("피드백"),
-        "about_update_app_detail": m1,
+        "about_update_app_detail": m0,
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("보유 스킬"),
         "add": MessageLookupByLibrary.simpleMessage("추가"),
@@ -108,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("중국"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("국제성"),
-        "chaldea_share_msg": m2,
+        "chaldea_share_msg": m10,
         "change_log": MessageLookupByLibrary.simpleMessage("업데이트 내역"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("캐릭터"),
         "check_update": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
@@ -176,12 +176,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_network": MessageLookupByLibrary.simpleMessage("No network"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("No version data found"),
-        "error_required_app_version": m3,
+        "error_required_app_version": m11,
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("아이템 수집"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("기타 아이템"),
-        "event_lottery_limit_hint": m4,
+        "event_lottery_limit_hint": m1,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("제한된 룰렛"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("룰렛"),
         "event_lottery_unlimited":
@@ -189,7 +189,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("이벤트가 계획되지 않았습니다"),
         "event_progress": MessageLookupByLibrary.simpleMessage("진행 중인 이벤트"),
-        "event_rerun_replace_grail": m5,
+        "event_rerun_replace_grail": m2,
         "event_title": MessageLookupByLibrary.simpleMessage("이벤트"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("교환 티켓"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("티켓"),
@@ -218,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("먼저 FFO데이터를 다운로드하거나 가져오세요↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("동일 서번트"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("도무스 아우레아"),
-        "file_not_found_or_mismatched_hash": m6,
+        "file_not_found_or_mismatched_hash": m12,
         "filename": MessageLookupByLibrary.simpleMessage("파일명"),
         "fill_email_warning":
             MessageLookupByLibrary.simpleMessage("연락처 정보가 없다면 답장이 불가능합니다."),
@@ -279,7 +279,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("어펜드 스킬 스크린샷"),
         "import_backup": MessageLookupByLibrary.simpleMessage("백업 불러오기"),
         "import_data": MessageLookupByLibrary.simpleMessage("불러오기"),
-        "import_data_error": m7,
+        "import_data_error": m3,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("불러오기를 성공했습니다"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("클립보드에서"),
@@ -336,7 +336,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "\"Files\" app/On My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("문제"),
         "item": MessageLookupByLibrary.simpleMessage("아이템"),
-        "item_already_exist_hint": m8,
+        "item_already_exist_hint": m4,
         "item_apple": MessageLookupByLibrary.simpleMessage("사과"),
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("영기재림 재료"),
@@ -370,15 +370,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_title": MessageLookupByLibrary.simpleMessage("아이템"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("합계"),
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
-        "jump_to": m9,
+        "jump_to": m5,
         "language": MessageLookupByLibrary.simpleMessage("한국어"),
         "language_en": MessageLookupByLibrary.simpleMessage("Korean"),
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
-        "list_count_shown_all": m10,
-        "list_count_shown_hidden_all": m11,
-        "list_end_hint": m12,
+        "list_count_shown_all": m13,
+        "list_count_shown_hidden_all": m14,
+        "list_end_hint": m6,
         "login_change_password":
             MessageLookupByLibrary.simpleMessage("비밀번호 변경"),
         "login_first_hint":
@@ -472,8 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("이름 변경"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
-        "reset_plan_all": m15,
-        "reset_plan_shown": m16,
+        "reset_plan_all": m7,
+        "reset_plan_shown": m8,
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -594,6 +594,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m0
+        "words_separate": m9
       };
 }

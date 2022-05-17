@@ -273,7 +273,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       child: Row(
         children: <Widget>[
           page <= 0
-              ? const SizedBox()
+              ? const SizedBox(width: 64)
               : TextButton(
                   child: Text(S.current.prev_page),
                   onPressed: () {

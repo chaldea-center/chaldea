@@ -443,6 +443,7 @@
   "search_option_basic": "Básica",
   "search_options": "Alcances de búsqueda",
   "select_copy_plan_source": "Seleccionar fuente de copia",
+  "select_item_title": null,
   "select_lang": "Selecciona un idioma",
   "select_plan": "Seleccionar Plan",
   "send_email_to": "Enviar el correo a",

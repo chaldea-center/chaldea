@@ -131,8 +131,10 @@ EventExtraItems _$EventExtraItemsFromJson(Map json) => EventExtraItems(
       items: (json['items'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+                e == null
+                    ? null
+                    : MappingBase<String>.fromJson(
+                        Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
     );

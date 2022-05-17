@@ -443,6 +443,7 @@
   "search_option_basic": "기본 옵션",
   "search_options": "검색 옵션",
   "select_copy_plan_source": "복사할 파일을 선택",
+  "select_item_title": null,
   "select_lang": "Select Language",
   "select_plan": "계획 선택",
   "send_email_to": null,

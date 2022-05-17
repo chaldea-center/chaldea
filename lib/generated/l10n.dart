@@ -4944,6 +4944,17 @@ class S {
     );
   }
 
+  /// `Select Item`
+  String get select_item_title {
+    return Intl.message(
+      'Select Item',
+      name: 'select_item_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Select Language`
   String get select_lang {
     return Intl.message(

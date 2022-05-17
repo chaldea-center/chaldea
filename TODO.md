@@ -8,16 +8,17 @@ There are plenty of work need to do.
   - [ ] add search for event 
 - [ ] pass locale to `Text` for Region-based gamedata text.
       which translation found, then pass that locale
-- [ ] only save game data file(split into multiple files) when loaded successfully
-- [ ] add release progress for different regions: Servant/CE/CC
+- [x] only save game data file(split into multiple files) when loaded successfully
+- [x] add release progress for different regions: Servant/CE/CC
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
 - [x] Add build time/commit hash to AppInfo
 - [ ] add legacy data of `ConstData.userLevel`
 - [x] GameData split wiki_data into files
-- [ ] use github issue forms for issue templates
+- [x] use github issue forms for issue templates
 - [ ] Clear Cache
-- [ ] userdata and gamedata, use getter+setter and update itemCenter 
+- [x] userdata and gamedata, use getter+setter and update itemCenter 
+- [ ] Auto update for android/windows/linux: pending tests
 
 ## Quest Related
 
@@ -30,9 +31,11 @@ There are plenty of work need to do.
 ## Servant
 
 - [ ] Duplicated servant support
-- [ ] Servant-Info tab: np rate: add all if servant has changed np rate
+- [x] Servant-Info tab: np rate: add all if servant has changed np rate
 - [ ] Voices: from regions and wikis
-- [ ] Lores: from regions and wikis
+- [ ] Lores: 
+  - [x] from regions 
+  - [ ] and wikis
 - [ ] Plan:
   - [ ] support TextField input
 
@@ -63,17 +66,16 @@ There are plenty of work need to do.
 - [x] Statistics
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
+- [ ] Fate/Freedom Order
 
 ## Func&Buff
 
-- [ ] add field/trait info
-- [ ] add translation for funcs without popuptext
-- [ ] which func should be shown?
-- [ ] show trigger name
+- more dialog details
+
 
 ## Server side
 
-- [ ] item/skill recognition
+- [x] item/skill recognition
 - [x] account system: server or cloudflare?
   - [ ] ~~auto-backup user data~~: must manually backup
 

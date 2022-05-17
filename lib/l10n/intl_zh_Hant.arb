@@ -443,6 +443,7 @@
   "search_option_basic": "基礎信息",
   "search_options": "搜索範圍",
   "select_copy_plan_source": "選擇複製來源",
+  "select_item_title": null,
   "select_lang": "選擇語言",
   "select_plan": "選擇規劃",
   "send_email_to": "發送郵件到",

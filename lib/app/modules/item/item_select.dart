@@ -83,7 +83,7 @@ class ItemSelectPage extends StatelessWidget {
       }
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Select One Item')),
+      appBar: AppBar(title: Text(S.current.select_item_title)),
       body: ListView(children: children),
     );
   }

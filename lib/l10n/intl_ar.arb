@@ -443,6 +443,7 @@
   "search_option_basic": "اساسي",
   "search_options": "نطاق البحث",
   "select_copy_plan_source": "تحديد مصدر النسخ",
+  "select_item_title": null,
   "select_lang": null,
   "select_plan": "تحديد خطة",
   "send_email_to": null,

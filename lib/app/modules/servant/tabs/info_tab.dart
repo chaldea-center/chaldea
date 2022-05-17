@@ -20,6 +20,11 @@ class SvtInfoTab extends StatelessWidget {
       svt.name,
       for (final name in svt.ascensionAdd.overWriteServantName.all.values) name
     };
+    final baseTraits = [
+      ...svt.traits,
+      for (final traitAdd in svt.traitAdd)
+        if (traitAdd.idx == 1) ...traitAdd.trait,
+    ];
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: SafeArea(
@@ -187,16 +192,7 @@ class SvtInfoTab extends StatelessWidget {
                 'NP',
                 'Def'
               ], defaults: TableCellData(isHeader: true, maxLines: 1)),
-              CustomTableRow.fromTexts(
-                  texts: [
-                    svt.noblePhantasms.last.npGain.buster,
-                    svt.noblePhantasms.last.npGain.arts,
-                    svt.noblePhantasms.last.npGain.quick,
-                    svt.noblePhantasms.last.npGain.extra,
-                    svt.noblePhantasms.last.npGain.np,
-                    svt.noblePhantasms.last.npGain.defence,
-                  ].map((e) => '${e.first / 100}%').toList(),
-                  defaults: contentData),
+              ..._npRates(),
               CustomTableRow.fromTexts(texts: [
                 S.current.info_star_rate,
                 S.current.info_death_rate,
@@ -212,15 +208,20 @@ class SvtInfoTab extends StatelessWidget {
               ),
               CustomTableRow.fromTexts(
                   texts: [S.current.info_trait], defaults: headerData),
-              ..._addTraits(context, null, [
-                ...svt.traits,
-                for (final traitAdd in svt.traitAdd)
-                  if (traitAdd.idx == 1) ...traitAdd.trait,
-              ]),
+              ..._addTraits(
+                context,
+                null,
+                baseTraits,
+                [],
+              ),
               for (final entry
                   in svt.ascensionAdd.individuality.ascension.entries)
                 ..._addTraits(
-                    context, TextSpan(text: '${entry.key}: '), entry.value),
+                    context,
+                    TextSpan(
+                        text: '${S.current.ascension_short} ${entry.key}: '),
+                    entry.value,
+                    baseTraits),
               for (final entry
                   in svt.ascensionAdd.individuality.costume.entries)
                 ..._addTraits(
@@ -229,6 +230,7 @@ class SvtInfoTab extends StatelessWidget {
                       text:
                           '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
                   entry.value,
+                  baseTraits,
                 ),
               if (svt.bondGrowth.isNotEmpty) ...[
                 CustomTableRow.fromTexts(
@@ -276,16 +278,65 @@ class SvtInfoTab extends StatelessWidget {
   }
 
   List<Widget> _addTraits(
-      BuildContext context, InlineSpan? prefix, List<NiceTrait> traits) {
+    BuildContext context,
+    InlineSpan? prefix,
+    List<NiceTrait> traits, [
+    List<NiceTrait> baseTraits = const [],
+  ]) {
     List<Widget> children = [];
     if (traits.isEmpty) return children;
+    List<NiceTrait> shownTraits = [];
+    bool showMore = false;
+    final baseTraitIds = baseTraits.map((e) => e.unsignedId).toSet();
+    for (final trait in traits) {
+      if (trait.id == Trait.canBeInBattle.id) continue;
+      if (baseTraitIds.contains(trait.unsignedId)) {
+        showMore = true;
+        continue;
+      }
+      shownTraits.add(trait);
+    }
     return [
       CustomTableRow(children: [
         TableCellData(
-            child: Text.rich(TextSpan(children: [
-          if (prefix != null) prefix,
-          ...SharedBuilder.traitSpans(context: context, traits: traits),
-        ])))
+          alignment: null,
+          child: Text.rich(
+            TextSpan(
+              children: [
+                if (prefix != null) prefix,
+                ...SharedBuilder.traitSpans(
+                    context: context, traits: shownTraits),
+                if (showMore)
+                  CenterWidgetSpan(
+                      child: InkWell(
+                    child: const Icon(Icons.more_outlined, size: 16),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) {
+                          return SimpleCancelOkDialog(
+                            title: Text.rich(TextSpan(
+                              text: S.current.info_trait,
+                              children: prefix == null
+                                  ? null
+                                  : [const TextSpan(text: ' '), prefix],
+                            )),
+                            hideCancel: true,
+                            content: SharedBuilder.traitList(
+                              context: context,
+                              traits: traits,
+                              alignment: WrapAlignment.start,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ))
+              ],
+            ),
+          ),
+        )
       ]),
     ];
   }
@@ -301,5 +352,20 @@ class SvtInfoTab extends StatelessWidget {
       TableCellData(text: header, isHeader: true, maxLines: 1),
       for (final text in texts) TableCellData(text: text, maxLines: 1),
     ]);
+  }
+
+  List<Widget> _npRates() {
+    List<Widget> rows = [];
+    List<List<int?>> values = [];
+    for (final td in svt.noblePhantasms) {
+      final v = td.npGain.firstValues;
+      if (values.any((e) => e.toString() == v.toString())) continue;
+      values.add(v);
+      rows.add(CustomTableRow.fromTexts(
+        texts: v.map((e) => '${(e ?? 0) / 100}%').toList(),
+        defaults: TableCellData(textAlign: TextAlign.center, maxLines: 1),
+      ));
+    }
+    return rows;
   }
 }

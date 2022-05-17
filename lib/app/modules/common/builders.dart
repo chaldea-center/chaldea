@@ -253,6 +253,7 @@ class SharedBuilder {
     required List<NiceTrait> traits,
     TextStyle? style,
     List<int>? hiddenTraits,
+    WrapAlignment alignment = WrapAlignment.center,
   }) {
     hiddenTraits ??= [Trait.canBeInBattle.id!];
     traits = List.of(traits)
@@ -262,7 +263,7 @@ class SharedBuilder {
     children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.center,
+      alignment: alignment,
       children: children,
     );
   }
@@ -273,7 +274,7 @@ class SharedBuilder {
     TextStyle? style,
     List<int>? hiddenTraits,
   }) {
-    hiddenTraits ??= [Trait.canBeInBattle.id!];
+    hiddenTraits ??= []; //[Trait.canBeInBattle.id!];
     traits = List.of(traits)
       ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
     List<InlineSpan> children = divideList(

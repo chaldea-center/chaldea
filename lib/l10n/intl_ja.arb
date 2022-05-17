@@ -443,6 +443,7 @@
   "search_option_basic": "基本情報",
   "search_options": "検索範囲",
   "select_copy_plan_source": "コピー元を選択",
+  "select_item_title": null,
   "select_lang": "言語を選択",
   "select_plan": "プランを選択",
   "send_email_to": "こちらにメールを送信",

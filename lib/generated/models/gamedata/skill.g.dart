@@ -239,8 +239,8 @@ NpGain _$NpGainFromJson(Map json) => NpGain(
       arts: (json['arts'] as List<dynamic>).map((e) => e as int).toList(),
       quick: (json['quick'] as List<dynamic>).map((e) => e as int).toList(),
       extra: (json['extra'] as List<dynamic>).map((e) => e as int).toList(),
-      defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
       np: (json['np'] as List<dynamic>).map((e) => e as int).toList(),
+      defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
 BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>

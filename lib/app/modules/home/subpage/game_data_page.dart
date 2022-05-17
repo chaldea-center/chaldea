@@ -152,7 +152,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 ),
               ListTile(
                 title: Text(S.current.clear_cache),
-                subtitle: Text(S.current.clear_cache_hint),
+                // subtitle: Text(S.current.clear_cache_hint),
                 onTap: clearCache,
               ),
             ],

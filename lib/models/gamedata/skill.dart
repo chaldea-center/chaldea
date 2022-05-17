@@ -399,17 +399,26 @@ class NpGain {
   List<int> arts;
   List<int> quick;
   List<int> extra;
-  List<int> defence;
   List<int> np;
+  List<int> defence;
 
   NpGain({
     required this.buster,
     required this.arts,
     required this.quick,
     required this.extra,
-    required this.defence,
     required this.np,
+    required this.defence,
   });
+
+  List<int?> get firstValues => [
+        buster.getOrNull(0),
+        arts.getOrNull(0),
+        quick.getOrNull(0),
+        extra.getOrNull(0),
+        defence.getOrNull(0),
+        np.getOrNull(0),
+      ];
 
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);
 }

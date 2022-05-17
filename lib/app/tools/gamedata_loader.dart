@@ -115,7 +115,6 @@ class GameDataLoader {
       oldVersion ??= DataVersion();
       newVersion = DataVersion.fromJson((await _dioGet('version.json')).json());
     }
-    logger.d('fetch gamedata version: $newVersion');
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
       throw UpdateError(S.current.error_required_app_version(versionString));
@@ -125,6 +124,7 @@ class GameDataLoader {
     }
 
     Map<String, dynamic> _gameJson = {};
+    Map<FilePlus, List<int>> _dataToWrite = {};
     int finished = 0;
     Future<void> _downloadCheck(FileVersion fv,
         {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
@@ -142,7 +142,6 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
         }
-        debugPrint('Downloading ${fv.filename}');
         final resp = await _dioGet(
           fv.filename,
           // cancelToken: cancelToken,
@@ -154,7 +153,7 @@ class GameDataLoader {
           throw S.current
               .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
         }
-        _file.writeAsBytes(resp.data);
+        _dataToWrite[_file] = List.from(resp.data);
         bytes = resp.data;
       }
       if (updateOnly) return;
@@ -234,6 +233,10 @@ class GameDataLoader {
     gameJson = _gameJson;
     final _gamedata = GameData.fromJson(_gameJson);
     _gamedata.version = newVersion;
+
+    for (final entry in _dataToWrite.entries) {
+      await entry.key.writeAsBytes(entry.value);
+    }
     _progress = finished / newVersion.files.length;
     (onUpdate ?? _onUpdate)?.call(_progress!);
     _onUpdate = null;
