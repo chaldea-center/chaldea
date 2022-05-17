@@ -34,8 +34,8 @@ class _UserScrollListenerState extends State<UserScrollListener>
   @override
   Widget build(BuildContext context) {
     return NotificationListener<UserScrollNotification>(
-      child: widget.builder(context, controller),
       onNotification: onNotification,
+      child: widget.builder(context, controller),
     );
   }
 

@@ -121,11 +121,11 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                       });
                     }
                   },
-                  child:
-                      Text([S.current.previous_card, S.current.next_card][i]),
                   style: ElevatedButton.styleFrom(
                       textStyle:
                           const TextStyle(fontWeight: FontWeight.normal)),
+                  child:
+                      Text([S.current.previous_card, S.current.next_card][i]),
                 ),
             ]),
           )
@@ -175,11 +175,11 @@ class CraftDetailBasePage extends StatelessWidget {
                     onPressed: () {
                       ce.routeTo();
                     },
-                    child: name,
                     style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
                     ),
+                    child: name,
                   )
                 : name,
             isHeader: true,
@@ -406,13 +406,13 @@ class CraftDetailBasePage extends StatelessWidget {
         onPressed: () {
           router.push(url: svt.route);
         },
-        child: Text(
-          svt.lName.l,
-          textAlign: TextAlign.center,
-        ),
         style: TextButton.styleFrom(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,
+        ),
+        child: Text(
+          svt.lName.l,
+          textAlign: TextAlign.center,
         ),
       ));
     }

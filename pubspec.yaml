@@ -28,21 +28,22 @@ dependencies:
     sdk: flutter
 
   archive: ^3.3.0
+  args: ^2.3.1
   auto_size_text: ^3.0.0
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.1
   carousel_slider: ^4.1.1
   catcher: ^0.6.9
   connectivity_plus: ^2.2.1
   crclib: ^3.0.0
-  crypto: ^3.0.1
+  crypto: ^3.0.2
   csv: ^5.0.1
   cupertino_icons: ^1.0.4
   device_info_plus: ^3.2.1
-  dio: ^4.0.6
+  dio: 4.0.4
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
   file_picker: ^4.3.2
-  fl_chart: ^0.50.1
+  fl_chart: ^0.50.6
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
@@ -51,35 +52,36 @@ dependencies:
   flutter_qjs: ^0.3.6
   flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.1.0
-  get: any
   hive: ^2.1.0
   html: ^0.15.0
   image: ^3.1.1
   image_gallery_saver: ^1.7.1
   intl: ^0.17.0
-  json_annotation: ^4.4.0
-  just_audio: ^0.9.18
+  json_annotation: ^4.5.0
+  just_audio: ^0.9.21
   # comment in linux
   just_audio_libwinmedia: ^0.0.4
   kana_kit: ^2.0.0
   logger: ^1.1.0
   lpinyin: ^2.0.3
+  markdown: ^5.0.0
   modal_bottom_sheet: ^2.0.0
   open_file: ^3.2.1
   package_info_plus: ^1.4.2
-  path_provider: ^2.0.8
+  path: ^1.8.1
+  path_provider: ^2.0.10
   permission_handler: ^9.2.0
   pool: ^1.5.0
   photo_view: ^0.13.0
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
   share_plus: ^4.0.3
-  shared_preferences: ^2.0.12
-  sliver_tools: ^0.2.5
+  shared_preferences: ^2.0.15
+  sliver_tools: ^0.2.6
   smooth_page_indicator: ^1.0.0+2
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
-  url_launcher: ^6.0.20
+  url_launcher: ^6.1.2
   uuid: ^3.0.5
   worker_manager: ^4.2.5
   window_size:
@@ -90,10 +92,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.0.4
-  dart_code_metrics: ^4.14.0
-  flutter_lints: ^1.0.4
-  json_serializable: ^6.1.4
+  build_runner: ^2.0.11
+  dart_code_metrics: ^4.15.2
+  flutter_lints: ^2.0.1
+  json_serializable: ^6.2.0
   import_sorter: ^4.6.0
   intl_utils: # ^2.6.1
     git:

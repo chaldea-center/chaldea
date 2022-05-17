@@ -218,16 +218,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   ),
                 );
               },
-              child: Text(
-                'ATK ${svt.atkMax}  HP ${svt.hpMax}',
-                // style: Theme.of(context).textTheme.caption,
-                textScaleFactor: 0.9,
-              ),
               style: TextButton.styleFrom(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 padding: EdgeInsets.zero,
                 visualDensity: VisualDensity.compact,
                 minimumSize: const Size(48, 26),
+              ),
+              child: Text(
+                'ATK ${svt.atkMax}  HP ${svt.hpMax}',
+                // style: Theme.of(context).textTheme.caption,
+                textScaleFactor: 0.9,
               ),
             ),
           const SizedBox(height: 4),
@@ -416,7 +416,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
       itemBuilder: (context) {
         return [
           PopupMenuItem(
-            child: Text(S.of(context).select_plan),
             value: 'plan', // dialog
             onTap: () async {
               await null;
@@ -429,13 +428,14 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 },
               );
             },
+            child: Text(S.of(context).select_plan),
           ),
           if (svt.isUserSvt)
             PopupMenuItem<String>(
-              child: Text(S.of(context).reset),
               value: 'reset', // dialog
               onTap: () async {
                 await null;
+                if (!mounted) return;
                 SimpleCancelOkDialog(
                   title: Text(S.of(context).reset),
                   onTapOk: () {
@@ -447,10 +447,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   },
                 ).showDialog(context);
               },
+              child: Text(S.of(context).reset),
             ),
           if (svt.isUserSvt)
             PopupMenuItem<String>(
-              child: Text(S.current.svt_reset_plan),
               value: 'reset_plan',
               onTap: () {
                 setState(() {
@@ -458,6 +458,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   svt.updateStat();
                 });
               },
+              child: Text(S.current.svt_reset_plan),
             ),
           PopupMenuItem(
             child: Text(S.current.svt_ascension_icon),
@@ -485,7 +486,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   final faces = svt.extraAssets.faces;
                   if (faces.ascension != null) {
                     faces.ascension!.forEach((key, value) {
-                      _addOne(S.current.ascension + ' $key', value);
+                      _addOne('${S.current.ascension} $key', value);
                     });
                   }
                   if (faces.costume != null) {
@@ -538,7 +539,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
           //   ),
           // if (_tabController.index == 0)
           PopupMenuItem<String>(
-            child: Text(S.current.svt_switch_slider_dropdown),
             value: 'switch_slider_dropdown',
             onTap: () {
               db.settings.display.svtPlanInputMode = EnumUtil.next(
@@ -547,6 +547,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               db.saveSettings();
               setState(() {});
             },
+            child: Text(S.current.svt_switch_slider_dropdown),
           ),
         ];
       },

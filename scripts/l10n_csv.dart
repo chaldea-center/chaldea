@@ -65,7 +65,7 @@ void _csv2l10n(String source) {
   }
   for (final lang in langCodes) {
     _getL10n(lang).writeAsStringSync(
-        const JsonEncoder.withIndent('  ').convert(l10n[lang]!) + '\n');
+        '${const JsonEncoder.withIndent('  ').convert(l10n[lang]!)}\n');
   }
 }
 

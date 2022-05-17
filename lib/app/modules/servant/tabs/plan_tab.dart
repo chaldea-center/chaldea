@@ -417,7 +417,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     labelFormatter ??= (v) => v.toString();
     trailingLabelFormatter ??= (a, b) {
       String s = labelFormatter!(a).padLeft(2);
-      if (b != null) s += '→' + labelFormatter(b).padRight(2);
+      if (b != null) s += '→${labelFormatter(b).padRight(2)}';
       return s;
     };
     Widget trailingIcon;
@@ -743,8 +743,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: ButtonBar(
-              children: buttons,
               buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
+              children: buttons,
             ),
           ),
         ),

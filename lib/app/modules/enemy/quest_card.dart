@@ -112,7 +112,7 @@ class _QuestCardState extends State<QuestCard> {
             : quest.chapterSubStr
         : '';
     if (chapter.isNotEmpty) {
-      questName = chapter + ' ' + questName;
+      questName = '$chapter $questName';
     }
     List<String> names = [
       questName,
@@ -331,7 +331,7 @@ class _QuestCardState extends State<QuestCard> {
         spacing: 2,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text(S.current.game_drop + ':'),
+          Text('${S.current.game_drop}:'),
           FilterGroup<bool>(
             options: const [true, false],
             values: FilterRadioData(preferApRate),
@@ -365,7 +365,7 @@ class _QuestCardState extends State<QuestCard> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text(S.current.fgo_domus_aurea + ' ($runs runs)'),
+          Text('${S.current.fgo_domus_aurea} ($runs runs)'),
           const SizedBox(height: 2),
           _getDomusAureaWidget(),
           const SizedBox(height: 3),
@@ -501,7 +501,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget _releaseConditions() {
+  Widget releaseConditions() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -510,7 +510,7 @@ class _QuestCardState extends State<QuestCard> {
           child: Text(S.of(context).quest_condition,
               style: const TextStyle(fontWeight: FontWeight.w500)),
         ),
-        Text(quest.releaseConditions.length.toString() + ' conditions',
+        Text('${quest.releaseConditions.length} conditions',
             textAlign: TextAlign.center)
       ],
     );

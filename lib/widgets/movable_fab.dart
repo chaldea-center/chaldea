@@ -63,8 +63,8 @@ class _MovableFabState extends State<MovableFab> {
           child: FloatingActionButton(
             mini: true,
             onPressed: widget.enabled ? widget.onPressed : null,
-            child: widget.icon,
             backgroundColor: widget.backgroundColor,
+            child: widget.icon,
           ),
         ),
       ),

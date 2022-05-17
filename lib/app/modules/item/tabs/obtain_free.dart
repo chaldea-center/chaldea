@@ -40,14 +40,14 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 FilterOption(
                   selected: use6th,
                   value: '6th',
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text('6th'),
-                  ),
                   onChanged: (v) => setState(() {
                     use6th = v;
                   }),
                   shrinkWrap: true,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Text('6th'),
+                  ),
                 )
               ],
             ),
@@ -118,10 +118,8 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
               children: <Widget>[
                 CustomTile(
                   title: Text(quest?.lDispName ?? 'Quest $questId'),
-                  subtitle: Text('cost ${dropRateData.apCosts[i]}AP.  ' +
-                      (sortByAP
-                          ? '${S.current.drop_rate} $dropRateString%.'
-                          : '${S.current.ap_efficiency} $apRateString AP.')),
+                  subtitle: Text(
+                      'cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
                   trailing:
                       Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
                   onTap: quest == null

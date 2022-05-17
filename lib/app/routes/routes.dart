@@ -121,7 +121,7 @@ class RouteConfiguration {
   String? get first {
     if (uri == null) return url;
     if (uri!.path.isEmpty || uri!.path == Routes.home) return Routes.home;
-    return '/' + uri!.pathSegments.first;
+    return '/${uri!.pathSegments.first}';
   }
 
   String? get second => uri?.pathSegments.getOrNull(1);

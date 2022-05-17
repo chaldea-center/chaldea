@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -169,8 +168,8 @@ class ServantListPageState extends State<ServantListPage>
             return [
               if (!widget.planMode)
                 PopupMenuItem(
-                  child: Text(db.curUser.getFriendlyPlanName()),
                   enabled: false,
+                  child: Text(db.curUser.getFriendlyPlanName()),
                 ),
               PopupMenuItem(
                 child: Text(S.current.select_plan),
@@ -199,6 +198,7 @@ class ServantListPageState extends State<ServantListPage>
                       S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
+                    if (!mounted) return;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current
@@ -218,6 +218,7 @@ class ServantListPageState extends State<ServantListPage>
                       S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
+                    if (!mounted) return;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current
@@ -247,7 +248,6 @@ class ServantListPageState extends State<ServantListPage>
                   },
                 ),
                 PopupMenuItem(
-                  child: Text(S.current.show_fullscreen),
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
                     db.settings.display.planPageFullScreen =
@@ -256,6 +256,7 @@ class ServantListPageState extends State<ServantListPage>
                     SplitRoute.of(context)!.detail =
                         db.settings.display.planPageFullScreen ? null : false;
                   },
+                  child: Text(S.current.show_fullscreen),
                 ),
                 PopupMenuItem(
                   child: Text(S.current.help),
@@ -326,25 +327,25 @@ class ServantListPageState extends State<ServantListPage>
         // border: TableBorder.all(),
         children: [
           TableRow(children: [
-            _getHeader(S.of(context).ascension + ':'),
+            _getHeader('${S.of(context).ascension}:'),
             _getRange(cur.ascension, target.ascension),
-            _getHeader(S.of(context).grail + ':'),
+            _getHeader('${S.of(context).grail}:'),
             _getRange(cur.grail, target.grail),
           ]),
           TableRow(children: [
-            _getHeader(S.of(context).skill + ':'),
+            _getHeader('${S.of(context).skill}:'),
             for (int i = 0; i < 3; i++)
               _getRange(cur.skills[i], target.skills[i])
           ]),
           TableRow(children: [
-            _getHeader(S.current.append_skill_short + ':'),
+            _getHeader('${S.current.append_skill_short}:'),
             for (int i = 0; i < 3; i++)
               _getRange(cur.appendSkills[i], target.appendSkills[i])
           ]),
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
               children: [
-                _getHeader(S.of(context).costume + ':'),
+                _getHeader('${S.of(context).costume}:'),
                 ...List.generate(3, (col) {
                   final dressIndex = row * 3 + col;
                   final costumeId =
@@ -740,7 +741,7 @@ class ServantListPageState extends State<ServantListPage>
           ),
           TextSpan(text: status.cur.npLv.toString()),
           TextSpan(
-              text: '\n${status.cur.ascension}-' + status.cur.skills.join('/'))
+              text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}')
         ]),
       );
     }
@@ -906,9 +907,9 @@ class ServantListPageState extends State<ServantListPage>
         hint: Text(S.current.costume),
         items: [
           DropdownMenuItem(
-              value: false, child: Text(S.of(context).costume + '×')),
+              value: false, child: Text('${S.of(context).costume}×')),
           DropdownMenuItem(
-              value: true, child: Text(S.of(context).costume + '√'))
+              value: true, child: Text('${S.of(context).costume}√'))
         ],
         onChanged: (v) {
           setState(() {
@@ -925,6 +926,7 @@ class ServantListPageState extends State<ServantListPage>
       ),
     ];
     return PreferredSize(
+      preferredSize: const Size.fromHeight(64),
       child: Container(
         decoration: BoxDecoration(
             border: Border(top: Divider.createBorderSide(context, width: 0.5))),
@@ -981,7 +983,6 @@ class ServantListPageState extends State<ServantListPage>
           ),
         ),
       ),
-      preferredSize: const Size.fromHeight(64),
     );
   }
 
@@ -1000,9 +1001,7 @@ class ServantListPageState extends State<ServantListPage>
           //     Text(status.npLv.toString()),
           //   ],
           // ),
-          Text(status.cur.ascension.toString() +
-              '-' +
-              status.cur.skills.join('/')),
+          Text('${status.cur.ascension}-${status.cur.skills.join('/')}'),
           if (status.cur.appendSkills.any((e) => e > 0))
             Text(
                 status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),

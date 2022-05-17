@@ -172,7 +172,7 @@ class FuncDescriptor extends StatelessWidget {
         if (item != null) {
           icon = Item.iconBuilder(context: context, item: item, width: 24);
           spans.add(TextSpan(
-            text: item.lName.l + '  ',
+            text: '${item.lName.l}  ',
             style: const TextStyle(fontSize: 13),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
@@ -180,7 +180,7 @@ class FuncDescriptor extends StatelessWidget {
               },
           ));
         } else {
-          spans.add(TextSpan(text: indiv.toString() + '  '));
+          spans.add(TextSpan(text: '$indiv  '));
         }
       }
       if (icon != null) {
@@ -320,7 +320,7 @@ class FuncDescriptor extends StatelessWidget {
       );
       child = Row(
         children: [
-          Expanded(child: child, flex: perLine - 1),
+          Expanded(flex: perLine - 1, child: child),
           Expanded(child: trailing),
         ],
       );

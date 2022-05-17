@@ -40,6 +40,7 @@ class MainStoryTab extends StatelessWidget {
       children: <Widget>[
         if (!titleOnly)
           Material(
+            elevation: 1,
             child: CustomTile(
               title: Text(S.of(context).main_story_chapter),
               trailing: Row(
@@ -51,7 +52,6 @@ class MainStoryTab extends StatelessWidget {
                 ],
               ),
             ),
-            elevation: 1,
           ),
         Expanded(
           child: db.onUserData(

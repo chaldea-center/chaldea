@@ -261,8 +261,8 @@ class _MissionInputTabState extends State<MissionInputTab> {
           items: [
             for (final isNA in [false, true])
               DropdownMenuItem(
-                child: Text(isNA ? 'NA' : 'JP'),
                 value: isNA,
+                child: Text(isNA ? 'NA' : 'JP'),
               ),
           ],
           onChanged: (warId < 1000)

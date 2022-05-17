@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/utils/utils.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
@@ -90,7 +89,6 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: Text(S.of(context).ok),
           onPressed: validation
               ? () {
                   String _value = _controller!.text;
@@ -105,6 +103,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                   });
                 }
               : null,
+          child: Text(S.of(context).ok),
         )
       ],
     );

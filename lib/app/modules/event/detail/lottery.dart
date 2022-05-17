@@ -42,10 +42,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
               children: [
                 TextSpan(
                     text: lottery.limited
-                        ? S.current.event_lottery_limited +
-                            ': ' +
-                            S.current.event_lottery_limit_hint(
-                                Maths.max(boxIndices, 0) + 1)
+                        ? '${S.current.event_lottery_limited}: ${S.current.event_lottery_limit_hint(Maths.max(boxIndices, 0) + 1)}'
                         : S.current.event_lottery_unlimited),
                 TextSpan(text: '\n${S.current.lottery_cost_per_roll}: '),
                 CenterWidgetSpan(
@@ -99,7 +96,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       String titleText =
           GameCardMixin.anyCardItemName(box.gifts.first.objectId).l;
       if (box.gifts.first.num != 1) {
-        titleText += ' ×' + box.gifts.first.num.format();
+        titleText += ' ×${box.gifts.first.num.format()}';
       }
       title = Text(titleText);
     } else {
@@ -116,7 +113,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       leading: leading,
       title: title,
       tileColor: box.isRare ? Colors.yellow.withAlpha(100) : null,
-      trailing: Text('×' + box.maxNum.format()),
+      trailing: Text('×${box.maxNum.format()}'),
       // horizontalTitleGap: 0,
     );
   }

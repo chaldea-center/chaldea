@@ -456,9 +456,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             value: db.settings.proxyServer,
             items: [
               DropdownMenuItem(
-                  child: Text(S.current.chaldea_server_global), value: false),
+                  value: false, child: Text(S.current.chaldea_server_global)),
               DropdownMenuItem(
-                  child: Text(S.current.chaldea_server_cn), value: true),
+                  value: true, child: Text(S.current.chaldea_server_cn)),
             ],
             onChanged: (v) {
               setState(() {
@@ -523,7 +523,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 ),
               if (_loader.progress != null && _loader.progress! < 1.0)
                 Text(
-                  (_loader.progress! * 100).toInt().toString() + '%',
+                  '${(_loader.progress! * 100).toInt()}%',
                   style: const TextStyle(fontSize: 24),
                 ),
               Center(

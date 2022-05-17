@@ -299,7 +299,7 @@ class _UserDataPageState extends State<UserDataPage> {
               db.saveSettings();
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
-                title: Text('⚠️ ' + S.current.warning),
+                title: Text('⚠️ ${S.current.warning}'),
                 content:
                     Text(S.current.migrate_external_storage_manual_warning),
                 hideCancel: true,
@@ -315,11 +315,13 @@ class _UserDataPageState extends State<UserDataPage> {
                 Navigator.of(context).pop();
                 await _copyDirectory(from, to);
                 db.settings.useAndroidExternal = useExternal;
-                SimpleCancelOkDialog(
-                  title: const Text('⚠️ Warning'),
-                  content: Text(S.current.restart_to_apply_changes),
-                  hideCancel: true,
-                ).showDialog(context);
+                if (mounted) {
+                  SimpleCancelOkDialog(
+                    title: const Text('⚠️ Warning'),
+                    content: Text(S.current.restart_to_apply_changes),
+                    hideCancel: true,
+                  ).showDialog(context);
+                }
                 db.saveSettings();
                 EasyLoading.dismiss();
               } catch (e, s) {

@@ -148,7 +148,7 @@ class SummonUtil {
     if (card == null) return Container();
     List<String> texts = [];
     if (weight != null) {
-      texts.add(_removeDoubleTrailing(weight) + '%');
+      texts.add('${_removeDoubleTrailing(weight)}%');
     }
     if (showCategory && card is Servant) {
       for (final obtain in [SvtObtain.limited, SvtObtain.story]) {

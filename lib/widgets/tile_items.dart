@@ -221,8 +221,8 @@ class TileGroup extends StatelessWidget {
     if (scrollable) {
       return ListView(
         shrinkWrap: shrinkWrap,
-        children: _children,
         padding: padding ?? const EdgeInsets.only(bottom: 8),
+        children: _children,
       );
     } else {
       return Padding(

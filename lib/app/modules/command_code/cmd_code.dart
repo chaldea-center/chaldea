@@ -104,11 +104,11 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                       });
                     }
                   },
-                  child:
-                      Text([S.current.previous_card, S.current.next_card][i]),
                   style: ElevatedButton.styleFrom(
                       textStyle:
                           const TextStyle(fontWeight: FontWeight.normal)),
+                  child:
+                      Text([S.current.previous_card, S.current.next_card][i]),
                 ),
             ]),
           )

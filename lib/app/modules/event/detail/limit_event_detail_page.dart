@@ -146,9 +146,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     return PopupMenuButton<dynamic>(
       itemBuilder: (context) => [
         PopupMenuItem(
-          child: Text('No.$eventId', textScaleFactor: 0.9),
           enabled: false,
           height: 32,
+          child: Text('No.$eventId', textScaleFactor: 0.9),
         ),
         const PopupMenuDivider(),
         ...SharedBuilder.websitesPopupMenuItems(
@@ -351,8 +351,8 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               value: plan.rerunGrails,
               items: List.generate(grailToCrystalCount + 1, (index) {
                 return DropdownMenuItem(
-                    child: Text((grailToCrystalCount - index).toString()),
-                    value: index);
+                    value: index,
+                    child: Text((grailToCrystalCount - index).toString()));
               }),
               onChanged: (v) {
                 if (v != null) plan.rerunGrails = v;
@@ -563,12 +563,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ),
       floatingActionButton: db.onUserData(
         (context, snapshot) => FloatingActionButton(
-          child: const Icon(Icons.archive_outlined),
           backgroundColor: plan.enabled ? null : Colors.grey,
           onPressed: plan.enabled
               ? () => _ArchiveEventDialog(event: event, initPlan: plan)
                   .showDialog(context)
               : null,
+          child: const Icon(Icons.archive_outlined),
         ),
       ),
     );
@@ -762,10 +762,8 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     }
     for (final lottery in event.lotteries) {
       _addOption(
-        title: (lottery.limited
-                ? S.current.event_lottery_limited
-                : S.current.event_lottery_unlimited) +
-            ' ${lottery.id}',
+        title:
+            '${lottery.limited ? S.current.event_lottery_limited : S.current.event_lottery_unlimited} ${lottery.id}',
         subtitle:
             '${plan.lotteries[lottery.id] ?? 0}/${lottery.limited ? lottery.maxBoxIndex : "∞"}',
         value: lotteries[lottery.id] ?? false,
@@ -775,14 +773,14 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     for (int boxIndex = 0; boxIndex < event.treasureBoxes.length; boxIndex++) {
       final box = event.treasureBoxes[boxIndex];
       _addOption(
-        title: S.current.event_treasure_box + ' ${boxIndex + 1}(${box.id})',
+        title: '${S.current.event_treasure_box} ${boxIndex + 1}(${box.id})',
         value: treasureBoxes[box.id] ?? false,
         onChanged: (v) => treasureBoxes[box.id] = v,
       );
     }
     for (final detail in event.extra.extraItems) {
       _addOption(
-        title: S.current.event_item_extra + ' ${detail.id}',
+        title: '${S.current.event_item_extra} ${detail.id}',
         value: extraItems[detail.id] ?? false,
         onChanged: (v) => extraItems[detail.id] = v,
       );
@@ -839,6 +837,6 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     db.curUser.items.addDict(items);
     event.updateStat();
     EasyLoading.showSuccess(
-        S.current.success + ': ' + S.current.event_collect_items);
+        '${S.current.success}: ${S.current.event_collect_items}');
   }
 }

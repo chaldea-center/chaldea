@@ -139,9 +139,9 @@ class WrapSideBar extends StatelessWidget {
         ),
         Expanded(
           child: MediaQuery(
-            child: child,
             data: mqData.copyWith(
                 size: Size(mqData.size.width - 48, mqData.size.height)),
+            child: child,
           ),
         ),
       ],
@@ -282,7 +282,7 @@ class WindowThumb extends StatelessWidget {
                 ),
                 child: ListTile(
                   dense: true,
-                  title: Text('[$index] ' + (url == null ? '' : ': $url')),
+                  title: Text('[$index] ${url == null ? '' : ': $url'}'),
                   trailing: IconButton(
                     onPressed: () {
                       if (root.appState.children.length <= 1) return;

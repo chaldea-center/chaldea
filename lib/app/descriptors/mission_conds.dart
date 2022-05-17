@@ -24,10 +24,7 @@ class MissionCondsDescriptor extends StatelessWidget {
       }
       if (!onlyShowClear) {
         children.add(Text(
-          '~~~ ' +
-              Transl.enums(cond.missionProgressType,
-                  (enums) => enums.missionProgressType).l +
-              ' ~~~',
+          '~~~ ${Transl.enums(cond.missionProgressType, (enums) => enums.missionProgressType).l} ~~~',
           textAlign: TextAlign.center,
         ));
       }

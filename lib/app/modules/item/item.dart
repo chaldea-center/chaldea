@@ -146,13 +146,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   }
 
   String _getSortTypeText(ItemDetailSvtSort type) {
-    return S.current.filter_sort +
-        '-' +
-        [
-          S.current.filter_sort_number,
-          S.current.filter_sort_class,
-          S.current.rarity
-        ][type.index];
+    return '${S.current.filter_sort}-${[
+      S.current.filter_sort_number,
+      S.current.filter_sort_class,
+      S.current.rarity
+    ][type.index]}';
   }
 
   Widget get filterOutdatedButton {

@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/widgets.dart';
 
 class SvtSummonTab extends StatelessWidget {
   final Servant svt;

@@ -113,8 +113,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   items: List.generate(
                     4,
                     (index) => DropdownMenuItem(
-                      child: Text('${S.current.ascension} ${index + 1}'),
                       value: index + 1,
+                      child: Text('${S.current.ascension} ${index + 1}'),
                     ),
                   ),
                   onChanged: (v) {

@@ -169,7 +169,13 @@ class ServerFeedbackHandler extends ReportHandler {
   List<String>? _blockedErrors;
 
   Future<bool> _isBlockedError(Report report) async {
-    if (_blockedErrors == null) {
+    if (kIsWeb) {
+      if (['TypeError: Failed to fetch', 'Bad state: Future already completed']
+          .contains((report.error ?? report.errorDetails).toString())) {
+        return true;
+      }
+    }
+    if (_blockedErrors == null && !kIsWeb) {
       final String content = await GitTool.giteeWikiPage('blocked_error');
       _blockedErrors = [];
       content.trim().split('\n\n').forEach((line) {

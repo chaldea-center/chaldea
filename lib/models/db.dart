@@ -9,7 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -30,6 +29,8 @@ import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
 import 'userdata/userdata.dart';
+
+import 'package:flutter_web_plugins/url_strategy.dart'; // ignore: depend_on_referenced_packages
 
 void _emptyCallback() {}
 
@@ -221,7 +222,7 @@ class _Database {
       if (memory) utf8.encode(jsonEncode(userData)),
     ];
     for (var obj in objs) {
-      String filename = timeStamp + (obj is FilePlus ? 'd' : 'm') + '.json';
+      String filename = '$timeStamp${obj is FilePlus ? 'd' : 'm'}.json';
       await FilePlus(joinPaths(paths.backupDir, filename)).writeAsBytes(obj);
       _saved.add(filename);
     }

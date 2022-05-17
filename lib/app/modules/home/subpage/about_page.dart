@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/app_update.dart';
@@ -12,7 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
@@ -59,7 +58,7 @@ class _AboutPageState extends State<AboutPage> {
                 db.runtimeData.enableDebugTools = true;
               });
               await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
-              EasyLoading.showToast('UUID ' + S.current.copied);
+              EasyLoading.showToast('UUID ${S.current.copied}');
             },
             child: _AboutProgram(
               name: AppInfo.appName,
@@ -86,7 +85,7 @@ class _AboutPageState extends State<AboutPage> {
                   title: Text(S.current.check_update),
                   trailing: db.runtimeData.upgradableVersion != null
                       ? Text(
-                          db.runtimeData.upgradableVersion!.versionString + '↑',
+                          '${db.runtimeData.upgradableVersion!.versionString}↑',
                           style: const TextStyle(color: Colors.redAccent))
                       : null,
                   onTap: () async {

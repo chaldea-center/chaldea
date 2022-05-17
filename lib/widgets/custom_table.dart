@@ -231,8 +231,8 @@ class _CustomTableRowState extends State<CustomTableRow> {
     if (!_needRebuild) _needRebuild = true;
     Widget body = IntrinsicHeight(
       child: Row(
-        children: children,
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
       ),
     );
     if (constraints != null) {

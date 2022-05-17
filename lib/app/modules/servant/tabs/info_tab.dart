@@ -31,6 +31,7 @@ class SvtInfoTab extends StatelessWidget {
         child: CustomTable(
           children: <Widget>[
             CustomTableRow.fromChildren(
+              defaults: headerData.copyWith(maxLines: names.length),
               children: [
                 Text(
                   names.map((e) => Transl.svtNames(e).l).join(' / '),
@@ -38,7 +39,6 @@ class SvtInfoTab extends StatelessWidget {
                   textAlign: TextAlign.center,
                 )
               ],
-              defaults: headerData.copyWith(maxLines: names.length),
             ),
             if (!Transl.isJP)
               CustomTableRow.fromTexts(
@@ -61,7 +61,7 @@ class SvtInfoTab extends StatelessWidget {
                   CenterWidgetSpan(
                       child: db.getIconImage(svt.className.icon(svt.rarity),
                           width: 20, aspectRatio: 1)),
-                  TextSpan(text: ' ' + Transl.svtClass(svt.className).l)
+                  TextSpan(text: ' ${Transl.svtClass(svt.className).l}')
                 ])),
               ],
             ),

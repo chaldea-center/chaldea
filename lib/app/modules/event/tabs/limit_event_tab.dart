@@ -38,7 +38,7 @@ class LimitEventTab extends StatelessWidget {
         final plan = db.curUser.eventPlanOf(event.id);
         bool outdated = event.isOutdated();
         String? subtitle;
-        subtitle ??= 'JP ' + event.startedAt.sec2date().toDateString();
+        subtitle ??= 'JP ${event.startedAt.sec2date().toDateString()}';
         Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
         Widget tile = ListTile(
           title: AutoSizeText(

@@ -290,8 +290,8 @@ class ImageWithText extends StatelessWidget {
     );
     if (onTap != null) {
       child = GestureDetector(
-        child: child,
         onTap: onTap,
+        child: child,
       );
     }
     return child;

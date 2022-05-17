@@ -34,14 +34,10 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
     }
     if (children.isEmpty) return null;
     StringBuffer subtitle = StringBuffer(Transl.ceObtain(ce.extra.obtain).l);
-    subtitle.write(' HP ' +
-        (ce.hpBase == ce.hpMax
-            ? ce.hpBase.toString()
-            : '${ce.hpBase}/${ce.hpMax}'));
-    subtitle.write(' ATK ' +
-        (ce.atkBase == ce.atkMax
-            ? ce.atkBase.toString()
-            : '${ce.atkBase}/${ce.atkMax}'));
+    subtitle.write(
+        ' HP ${ce.hpBase == ce.hpMax ? ce.hpBase.toString() : '${ce.hpBase}/${ce.hpMax}'}');
+    subtitle.write(
+        ' ATK ${ce.atkBase == ce.atkMax ? ce.atkBase.toString() : '${ce.atkBase}/${ce.atkMax}'}');
     children.insert(
       0,
       ListTile(
@@ -99,11 +95,11 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
           GridView.extent(
             maxCrossAxisExtent: 72,
             childAspectRatio: 132 / 144,
-            children:
-                group.map((e) => e.iconBuilder(context: context)).toList(),
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsetsDirectional.only(start: 16, end: 10),
+            children:
+                group.map((e) => e.iconBuilder(context: context)).toList(),
           ),
         ],
       ));

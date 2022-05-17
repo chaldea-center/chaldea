@@ -108,12 +108,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
               onPressed: () {
                 router.push(url: Routes.eventI(war.eventId), detail: true);
               },
+              style: TextButton.styleFrom(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
               child: Text(
                 Transl.eventNames(war.eventName).l,
                 textAlign: TextAlign.center,
-              ),
-              style: TextButton.styleFrom(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           )

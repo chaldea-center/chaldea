@@ -73,7 +73,7 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
       top: MediaQuery.of(context).padding.top,
       child: IgnorePointer(
         child: Text(
-          fps.toStringAsFixed(2).padLeft(6) + ' ',
+          '${fps.toStringAsFixed(2).padLeft(6)} ',
           style: const TextStyle(
             backgroundColor: Colors.black26,
             color: Colors.white70,

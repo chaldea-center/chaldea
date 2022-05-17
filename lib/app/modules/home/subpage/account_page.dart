@@ -68,14 +68,14 @@ class _AccountPageState extends State<AccountPage> {
                     onTap: () => renameUser(user),
                   ),
                   PopupMenuItem(
-                    child: Text(S.current.move_up),
                     enabled: index != 0,
                     onTap: () => moveUser(index, -1),
+                    child: Text(S.current.move_up),
                   ),
                   PopupMenuItem(
-                    child: Text(S.current.move_down),
                     enabled: index != users.length - 1,
                     onTap: () => moveUser(index, 1),
+                    child: Text(S.current.move_down),
                   ),
                   PopupMenuItem(
                     child: Text(S.current.copy),
@@ -86,9 +86,9 @@ class _AccountPageState extends State<AccountPage> {
                     onTap: () => clearUser(index),
                   ),
                   PopupMenuItem(
-                    child: Text(S.current.delete),
                     enabled: users.length > 1,
                     onTap: () => deleteUser(index),
+                    child: Text(S.current.delete),
                   ),
                 ],
               ),
@@ -145,7 +145,8 @@ class _AccountPageState extends State<AccountPage> {
 
   void clearUser(int key) async {
     final user = users[key];
-    await Future.delayed(Duration.zero);
+    await null;
+    if (!mounted) return;
     SimpleCancelOkDialog(
       title: Text(S.current.clear_data),
       content: Text('${S.current.account_title}: ${user.name}'),
@@ -160,9 +161,10 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void deleteUser(int key) async {
-    await Future.delayed(Duration.zero);
+    await null;
     print('delete user key $key...');
     final user = users[key];
+    if (!mounted) return;
     SimpleCancelOkDialog(
       title: Text('${S.current.delete} ${user.name}'),
       onTapOk: () {

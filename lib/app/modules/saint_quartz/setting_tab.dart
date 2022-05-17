@@ -169,8 +169,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
             items: List.generate(
               7,
               (index) => DropdownMenuItem(
-                child: Text((index + 1).toString()),
                 value: index + 1,
+                child: Text((index + 1).toString()),
               ),
             ),
             onChanged: (v) {

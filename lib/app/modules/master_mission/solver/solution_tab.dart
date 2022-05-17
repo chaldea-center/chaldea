@@ -98,9 +98,8 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         final name = quest.lDispName, nameJp = quest.dispName;
         return ListTile(
           title: Text(quest.lDispName),
-          subtitle:
-              Text('${quest.consume}AP  ' + (name == nameJp ? '' : nameJp)),
-          trailing: Text((widget.showResult ? '×' : '+') + ' $count'),
+          subtitle: Text('${quest.consume}AP  ${name == nameJp ? '' : nameJp}'),
+          trailing: Text('${widget.showResult ? '×' : '+'} $count'),
         );
       },
       contentBuilder: (context) {

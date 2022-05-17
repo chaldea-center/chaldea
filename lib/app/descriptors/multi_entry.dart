@@ -156,7 +156,7 @@ class MultiDescriptor {
         return ListTile(
           title: Text(quest?.lName.l ?? 'Quest $id'),
           subtitle:
-              Text('$id  $spotName' + (warName.isEmpty ? "" : "\n$warName")),
+              Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
           onTap: quest == null ? null : () => quest.routeTo(),
         );
       })

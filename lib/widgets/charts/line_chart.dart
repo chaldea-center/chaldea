@@ -82,7 +82,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                   final spot = spots[index];
                   final formatter = data[spot.barIndex].tooltipFormatter;
                   if (index == 0 && xFormatter != null) {
-                    items.add(LineTooltipItem(xFormatter!(spot.x) + '\n',
+                    items.add(LineTooltipItem('${xFormatter!(spot.x)}\n',
                         const TextStyle(fontSize: 14),
                         children: [
                           TextSpan(

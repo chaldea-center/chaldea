@@ -55,6 +55,11 @@ class FullscreenImageViewer extends StatefulWidget {
         // fullscreenDialog: true,
         // add transition
         pageBuilder: (context, _, __) => FullscreenImageViewer(
+          galleryOption: PhotoViewGalleryOption(
+            pageController: initialPage == null
+                ? null
+                : PageController(initialPage: initialPage),
+          ),
           children: List.generate(
             urls.length,
             (index) => CachedImage(
@@ -67,11 +72,6 @@ class FullscreenImageViewer extends StatefulWidget {
                 },
               ),
             ),
-          ),
-          galleryOption: PhotoViewGalleryOption(
-            pageController: initialPage == null
-                ? null
-                : PageController(initialPage: initialPage),
           ),
         ),
       ),

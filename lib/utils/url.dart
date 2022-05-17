@@ -1,3 +1,5 @@
+import 'package:url_launcher/url_launcher.dart' as launcher;
+
 import 'constants.dart';
 
 class HttpUrlHelper {
@@ -7,4 +9,12 @@ class HttpUrlHelper {
         (isZh ? '/zh/' : '/') +
         (path.startsWith('/') ? path.substring(1) : path);
   }
+}
+
+Future<bool> launch(String url) {
+  return launcher.launchUrl(Uri.parse(url));
+}
+
+Future<bool> canLaunch(String url) {
+  return launcher.canLaunchUrl(Uri.parse(url));
 }

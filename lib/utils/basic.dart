@@ -28,7 +28,7 @@ String joinUrl(String part1, String part2, [String? part3]) {
   for (final part in [part2, part3]) {
     if (part == null) continue;
     if (!s.endsWith('/') && !part.startsWith('/')) {
-      s += '/' + part;
+      s += '/$part';
     } else if (s.endsWith('/') && part.startsWith('/')) {
       s += part.substring(1);
     } else {

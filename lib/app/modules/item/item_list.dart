@@ -596,7 +596,7 @@ class _ItemListTabState extends State<ItemListTab> {
               maxLines: 1,
             ),
           ),
-          Text('  ' + S.current.item_left,
+          Text('  ${S.current.item_left}',
               style: const TextStyle(fontSize: 14)),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 36),

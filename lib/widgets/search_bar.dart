@@ -38,11 +38,11 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
+      preferredSize: widget.preferredSize,
       child: SizedBox.fromSize(
         size: widget.preferredSize,
         child: _realBuild(context),
       ),
-      preferredSize: widget.preferredSize,
     );
   }
 
@@ -147,7 +147,7 @@ abstract class SearchOptionsMixin<T> {
   String getCache(T datum, String subKey, List<String?> Function() ifAbsent) {
     int key = hashValues(datum, subKey);
     return _caches[key] ??=
-        ifAbsent().whereType<String>().toSet().join('\t') + '\t';
+        '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
   }
 
   Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {

@@ -118,10 +118,9 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       return [
         ...extraActions,
         TextButton(
+          onPressed: onTapReset,
           child: Text(S.of(context).reset.toUpperCase(),
               style: const TextStyle(color: Colors.redAccent)),
-          // textColor: Colors.redAccent,
-          onPressed: onTapReset,
         ),
         if (showOk)
           TextButton(
@@ -226,7 +225,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       ),
       items: items.entries
           .map((e) => DropdownMenuItem(
-              child: Text(e.value, style: textStyle), value: e.key))
+              value: e.key, child: Text(e.value, style: textStyle)))
           .toList(),
       onChanged: onSortAttr,
     );

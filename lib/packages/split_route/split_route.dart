@@ -279,9 +279,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
           flex: masterRatio,
           child: MediaQuery.removePadding(
             context: context,
-            child: child,
             removeLeft: ltr == TextDirection.rtl,
             removeRight: ltr == TextDirection.ltr,
+            child: child,
           ),
         ),
         Flexible(

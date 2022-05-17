@@ -24,7 +24,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.master_mission + ' ${masterMission.id}'),
+        title: Text('${S.current.master_mission} ${masterMission.id}'),
       ),
       body: Column(
         children: [

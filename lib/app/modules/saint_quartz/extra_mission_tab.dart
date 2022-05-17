@@ -25,7 +25,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
         List<Widget> rewards = [
           Text(
             [
-              mission.startedAt.sec2date().toDateString() + '(JP)',
+              '${mission.startedAt.sec2date().toDateString()}(JP)',
               DateUtils.addDaysToDate(
                       mission.startedAt.sec2date(), plan.eventDateDelta)
                   .toDateString()

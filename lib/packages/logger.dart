@@ -114,7 +114,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       if (printEmojis) {
         errorStr = (PrettyPrinter.levelEmojis[event.level] ?? '') + errorStr;
       }
-      buffer.add('├ ' + errorStr);
+      buffer.add('├ $errorStr');
     }
     buffer.add('├ [$timeStr][$levelStr] $messageStr');
     buffer.add('└'.padRight(lineLength, '-'));

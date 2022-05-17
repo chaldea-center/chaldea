@@ -85,12 +85,12 @@ class CostumeDetailPage extends StatelessWidget {
                         TableCellData(
                           flex: 2,
                           child: TextButton(
-                            child: Text(svt?.lName.l ?? '-'),
                             onPressed: svt == null ? null : () => svt.routeTo(),
                             style: TextButton.styleFrom(
                                 minimumSize: const Size(24, 28),
                                 tapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap),
+                            child: Text(svt?.lName.l ?? '-'),
                           ),
                         )
                       ]),

@@ -39,10 +39,10 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       if (child == null) return null;
       if (skill.skillAdd.isEmpty) return child;
       return Tooltip(
-        child: child,
         message: skill.skillAdd
             .map((e) => translate ? Transl.skillNames(e.name).l : e.name)
             .join('/'),
+        child: child,
       );
     }
 

@@ -4,13 +4,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/constants.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/markdown_page.dart';
 
 class SupportDonationPage extends StatelessWidget {

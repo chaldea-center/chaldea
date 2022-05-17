@@ -143,10 +143,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ]),
         if (summon.isLuckyBag)
           CustomTableRow.fromTexts(texts: [
-            S.current.lucky_bag +
-                '(' +
-                (summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR') +
-                ')'
+            '${S.current.lucky_bag}(${summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR'})'
           ])
       ]),
       if (summon.subSummons.length > 1) dropdownButton,
@@ -199,27 +196,27 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<DropdownMenuItem<int>> items = [];
     if (shouldShowOverview) {
       items.add(DropdownMenuItem(
+        value: -1,
         child: Text(
           S.current.overview,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        value: -1,
       ));
     }
     items.addAll(summon.subSummons.map((e) => DropdownMenuItem(
+          value: summon.subSummons.indexOf(e),
           child: AutoSizeText(
             SummonUtil.summonNameLocalize(e.title),
             maxLines: 2,
             maxFontSize: 14,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          value: summon.subSummons.indexOf(e),
         )));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Text(S.current.summon_daily + ': '),
+          Text('${S.current.summon_daily}: '),
           Flexible(
             child: Container(
               decoration: BoxDecoration(

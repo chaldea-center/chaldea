@@ -131,8 +131,8 @@ mixin GameCardMixin {
     }
     if (onTap != null) {
       child = InkWell(
-        child: child,
         onTap: onTap,
+        child: child,
       );
     }
     return child;

@@ -39,14 +39,14 @@ class EventPointsPage extends StatelessWidget with PrimaryScrollMixin {
           child: gift.iconBuilder(
               context: context, width: 36, text: '', showName: true)));
       titles.add(TextSpan(
-          text: ' ×' + gift.num.format(compact: false, groupSeparator: ',')));
+          text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
 
       final buff = pointBuffs[reward.point];
       if (buff == null) continue;
       titles.add(const TextSpan(text: '\n'));
       titles
           .add(CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 36)));
-      titles.add(TextSpan(text: buff.name + '\n'));
+      titles.add(TextSpan(text: '${buff.name}\n'));
       titles.add(TextSpan(
           text: 'Value: ${buff.value.format(percent: true, base: 100)}'));
     }

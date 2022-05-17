@@ -142,8 +142,8 @@ class _CachedImageState extends State<CachedImage> {
     );
     if (widget.onTap != null) {
       child = GestureDetector(
-        child: child,
         onTap: widget.onTap,
+        child: child,
       );
     }
     return child;
@@ -206,9 +206,8 @@ class _CachedImageState extends State<CachedImage> {
             }
             if (!mounted) return;
             // some sha1 hash value for same data
-            String fn = const Uuid()
-                    .v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
-                '.png';
+            String fn =
+                '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString())}.png';
             ImageActions.showSaveShare(
               context: context,
               data: data,

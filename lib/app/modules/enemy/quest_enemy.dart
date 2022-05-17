@@ -186,5 +186,5 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 }
 
 String _dscPercent(int v, int base) {
-  return (v / base).toString().replaceFirst(RegExp(r'\.0+$'), '') + '%';
+  return '${(v / base).toString().replaceFirst(RegExp(r'\.0+$'), '')}%';
 }

@@ -169,11 +169,11 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     return GridView.extent(
       maxCrossAxisExtent: 72,
       childAspectRatio: 132 / 144,
-      children: children,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       padding: const EdgeInsetsDirectional.only(
           start: 16, top: 3, bottom: 3, end: 10),
+      children: children,
     );
   }
 
@@ -190,7 +190,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       final textStyle = _planned && matType == SvtMatCostDetailType.full
           ? TextStyle(color: Theme.of(context).colorScheme.secondary)
           : const TextStyle();
-      String subtitle = detail.all.format() + ' (';
+      String subtitle = '${detail.all.format()} (';
       subtitle += detail.parts.map((e) => e.format()).join('/');
       subtitle += ')';
       children.add(CustomTile(

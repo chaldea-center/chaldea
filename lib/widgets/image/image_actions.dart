@@ -102,9 +102,8 @@ class ImageActions {
                 await Share.shareFiles([srcFp], text: shareText);
               } else if (data != null) {
                 // Although, it may not be PNG
-                String fn = const Uuid()
-                        .v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
-                    '.png';
+                String fn =
+                    '${const Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString())}.png';
                 String tmpFp = join(db.paths.tempDir, fn);
                 File(tmpFp)
                   ..createSync(recursive: true)

@@ -109,8 +109,7 @@ class _SQTableTabState extends State<SQTableTab> {
               detail.accApple.format(compact: false, precision: 1),
               detail.addApple == 0.0
                   ? ''
-                  : ('+' +
-                      detail.addApple.format(compact: false, precision: 1)));
+                  : ('+${detail.addApple.format(compact: false, precision: 1)}'));
         } else if (col == 3) {
           Widget _wrap(
               {required Widget child,

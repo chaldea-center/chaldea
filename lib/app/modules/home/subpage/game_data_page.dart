@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
@@ -90,7 +89,7 @@ class _GameDataPageState extends State<GameDataPage> {
                     if (state.value == null) {
                       hint = 'not started';
                     } else {
-                      hint = (state.value! * 100).toStringAsFixed(2) + '%';
+                      hint = '${(state.value! * 100).toStringAsFixed(2)}%';
                     }
                     if (loader.error != null) {
                       hint = loader.error!.toString();

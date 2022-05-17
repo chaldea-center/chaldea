@@ -33,7 +33,7 @@ class EventTowersPage extends StatelessWidget with PrimaryScrollMixin {
         ),
       ));
       titles.add(TextSpan(
-          text: ' ×' + gift.num.format(compact: false, groupSeparator: ',')));
+          text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
     }
 
     return ListTile(

@@ -128,11 +128,11 @@ class _SummonListPageState extends State<SummonListPage>
       if (db.curUser.region == Region.cn) {
         subtitleText = summon.startTime.cn?.sec2date().toDateString();
         if (subtitleText != null) {
-          subtitleText = 'CN ' + subtitleText;
+          subtitleText = 'CN $subtitleText';
         }
       }
       subtitleText ??=
-          'JP ' + (summon.startTime.jp?.sec2date().toDateString() ?? '???');
+          'JP ${summon.startTime.jp?.sec2date().toDateString() ?? '???'}';
       subtitle = Text(subtitleText);
     }
     return ListTile(

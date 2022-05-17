@@ -213,28 +213,28 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                 value: sortType,
                 items: [
                   const DropdownMenuItem(
-                    child: Text('No.'),
                     value: _SortType.no,
+                    child: Text('No.'),
                   ),
                   DropdownMenuItem(
-                    child: Text(S.current.filter_sort_class),
                     value: _SortType.cls,
+                    child: Text(S.current.filter_sort_class),
                   ),
                   DropdownMenuItem(
-                    child: Text(S.current.filter_sort_rarity),
                     value: _SortType.rarity,
+                    child: Text(S.current.filter_sort_rarity),
                   ),
                   const DropdownMenuItem(
-                    child: Text('Rank'),
                     value: _SortType.bondRank,
+                    child: Text('Rank'),
                   ),
                   const DropdownMenuItem(
-                    child: Text('Total'),
                     value: _SortType.bondTotal,
+                    child: Text('Total'),
                   ),
                   const DropdownMenuItem(
-                    child: Text('Next'),
                     value: _SortType.bondNext,
+                    child: Text('Next'),
                   ),
                 ],
                 onChanged: (v) {

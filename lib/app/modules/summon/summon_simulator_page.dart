@@ -109,10 +109,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Center(
                 child: FittedBox(
+                  fit: BoxFit.contain,
                   child: Row(
                       children:
                           summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
-                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -192,8 +192,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       expanded: rarity > 3,
       headerBuilder: (context, _) => ListTile(
         dense: true,
-        title: Text('$kStarChar$rarity ' +
-            (isSvt ? S.current.servant : S.current.craft_essence)),
+        title: Text(
+            '$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
         trailing: Text(totalCount.toString()),
       ),
       contentBuilder: (context) => Padding(
@@ -208,19 +208,19 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.subSummons.map((e) => DropdownMenuItem(
+          value: summon.subSummons.indexOf(e),
           child: AutoSizeText(
             SummonUtil.summonNameLocalize(e.title),
             maxLines: 2,
             maxFontSize: 14,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          value: summon.subSummons.indexOf(e),
         )));
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text(S.current.summon_daily + ': ',
+          Text('${S.current.summon_daily}: ',
               style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(
@@ -315,8 +315,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       );
       if (data.isNotEmpty) {
         child = FittedBox(
-          child: child,
           fit: BoxFit.contain,
+          child: child,
         );
       }
       return child;

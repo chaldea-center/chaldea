@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
@@ -73,12 +71,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   underline: const SizedBox(),
                   items: [
                     DropdownMenuItem(
-                      child: Text(S.current.chaldea_server_global),
                       value: false,
+                      child: Text(S.current.chaldea_server_global),
                     ),
                     DropdownMenuItem(
-                      child: Text(S.current.chaldea_server_cn),
                       value: true,
+                      child: Text(S.current.chaldea_server_cn),
                     ),
                   ],
                   onChanged: (v) {
@@ -201,14 +199,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     underline: Container(),
                     items: [
                       DropdownMenuItem(
-                          child: Text(S.current.dark_mode_system),
-                          value: ThemeMode.system),
+                          value: ThemeMode.system,
+                          child: Text(S.current.dark_mode_system)),
                       DropdownMenuItem(
-                          child: Text(S.current.dark_mode_light),
-                          value: ThemeMode.light),
+                          value: ThemeMode.light,
+                          child: Text(S.current.dark_mode_light)),
                       DropdownMenuItem(
-                          child: Text(S.current.dark_mode_dark),
-                          value: ThemeMode.dark),
+                          value: ThemeMode.dark,
+                          child: Text(S.current.dark_mode_dark)),
                     ],
                     onChanged: (v) {
                       if (v != null) {
@@ -242,8 +240,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     items: [
                       for (final value in WebRenderMode.values)
                         DropdownMenuItem(
-                          child: Text(value.name, textAlign: TextAlign.end),
                           value: value,
+                          child: Text(value.name, textAlign: TextAlign.end),
                         ),
                     ],
                     onChanged: (v) {
@@ -267,7 +265,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: db.runtimeData.upgradableVersion == null
                     ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
                     : Text(
-                        db.runtimeData.upgradableVersion!.versionString + ' ↑',
+                        '${db.runtimeData.upgradableVersion!.versionString} ↑',
                         style: TextStyle(
                             color: Theme.of(context).errorColor.withAlpha(200)),
                       ),

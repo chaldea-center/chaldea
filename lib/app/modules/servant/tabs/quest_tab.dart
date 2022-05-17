@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/widgets.dart';
 import '../../../app.dart';
 
 class SvtQuestTab extends StatelessWidget {

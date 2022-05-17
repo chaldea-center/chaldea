@@ -67,6 +67,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return Column(
       children: <Widget>[
         Material(
+          elevation: 1,
           child: ListTile(
             title: Text(S.of(context).item),
             contentPadding: const EdgeInsetsDirectional.only(start: 18, end: 8),
@@ -97,7 +98,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               ],
             ),
           ),
-          elevation: 1,
         ),
         if (params.rows.isEmpty)
           ListTile(

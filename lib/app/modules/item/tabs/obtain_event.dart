@@ -83,8 +83,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           color: plan.enabled
               ? Theme.of(context).colorScheme.secondaryContainer
               : null);
-      texts.add(Text(
-          '$itemGot/$itemFixed' + (hasLottery || hasExtra ? '+' : ''),
+      texts.add(Text('$itemGot/$itemFixed${hasLottery || hasExtra ? '+' : ''}',
           style: style.copyWith(fontWeight: FontWeight.w500)));
       for (final lotteryId in event.statItemLottery.keys) {
         int itemPerLottery =

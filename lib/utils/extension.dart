@@ -30,9 +30,9 @@ extension NumX on num {
     }
     final pattern = [
       if (groupSeparator != null && groupSeparator.isNotEmpty)
-        '###' + groupSeparator,
+        '###$groupSeparator',
       '###',
-      if (precision > 0) '.' + (omit ? '#' : '0') * precision,
+      if (precision > 0) '.${(omit ? '#' : '0') * precision}',
       // if (percent) '%'
     ].join();
     String s = NumberFormat(pattern, 'en').format(number);

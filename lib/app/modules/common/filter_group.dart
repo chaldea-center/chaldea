@@ -74,8 +74,6 @@ class FilterGroup<T> extends StatelessWidget {
       _optionChildren.add(FilterOption(
         selected: values.options.contains(key),
         value: key,
-        child:
-            optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
         shrinkWrap: shrinkWrap,
         borderRadius: combined
             ? BorderRadius.horizontal(
@@ -89,6 +87,8 @@ class FilterGroup<T> extends StatelessWidget {
             onFilterChanged!(values);
           }
         },
+        child:
+            optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
       ));
     }
 

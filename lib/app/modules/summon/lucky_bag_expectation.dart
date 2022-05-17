@@ -253,12 +253,12 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     Widget _underline(Widget child, bool underline) {
       if (!underline) return child;
       return Container(
-        child: child,
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
+        child: child,
       );
     }
 

@@ -10,7 +10,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
@@ -178,8 +177,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ListTile(
                 title: Text(S.current.info_gender),
                 trailing: Text(user.genderType == 1
-                    ? '♂ ' + S.current.guda_male
-                    : '♀ ' + S.current.guda_female),
+                    ? '♂ ${S.current.guda_male}'
+                    : '♀ ${S.current.guda_female}'),
               ),
               ListTile(
                 title: const Text('ID'),
@@ -278,37 +277,34 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         List<Widget> infoRows = [
           _wrapCellStyle([
             'Lv.${svt.lv}',
-            S.current.ascension_short + ' ${svt.limitCount}',
-            S.current.grail + ' ${svt.exceedCount}',
+            '${S.current.ascension_short} ${svt.limitCount}',
+            '${S.current.grail} ${svt.exceedCount}',
           ]),
           _wrapCellStyle([
-            S.current.np_short + ' ${svt.treasureDeviceLv1}',
-            S.current.bond + ' ${cardCollections[svt.svtId]!.friendshipRank}',
-            coin == null ? '' : (S.current.servant_coin_short + ' $coin'),
+            '${S.current.np_short} ${svt.treasureDeviceLv1}',
+            '${S.current.bond} ${cardCollections[svt.svtId]!.friendshipRank}',
+            coin == null ? '' : ('${S.current.servant_coin_short} $coin'),
           ]),
           _wrapCellStyle([
-            S.current.active_skill_short +
-                ' ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}',
+            '${S.current.active_skill_short} ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}',
             svt.appendLvs == null
                 ? ''
-                : S.current.append_skill_short +
-                    ' ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
+                : '${S.current.append_skill_short} ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
           ]),
           if (db.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
             _wrapCellStyle([
-              S.current.costume +
-                  ' ${cardCollections[svt.svtId]!.costumeIdsTo01()}',
+              '${S.current.costume} ${cardCollections[svt.svtId]!.costumeIdsTo01()}',
             ]),
           if (group.length > 1)
             CustomTableRow.fromChildren(
+              defaults: TableCellData(padding: EdgeInsets.zero),
+              divider: null,
               children: [
                 Text(
                   DateFormat('yyyy-MM-dd').format(svt.createdAt),
                   style: TextStyle(color: Theme.of(context).errorColor),
                 )
               ],
-              defaults: TableCellData(padding: EdgeInsets.zero),
-              divider: null,
             ),
         ];
 
@@ -348,12 +344,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           title: DefaultTextStyle(
               style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12),
               child: CustomTable(
-                children: infoRows,
                 hideOutline: true,
                 verticalDivider:
                     const VerticalDivider(width: 0, color: Colors.transparent),
                 horizontalDivider:
                     const Divider(height: 0, color: Colors.transparent),
+                children: infoRows,
               )),
           onTap: _onTapSvt,
         );
@@ -368,12 +364,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 child: child,
               ),
               GestureDetector(
+                onTap: _onTapSvt,
                 child: Icon(
                   Icons.clear_rounded,
                   color: Colors.red,
                   size: _height * 0.8,
                 ),
-                onTap: _onTapSvt,
               )
             ],
           );
@@ -389,7 +385,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             title: Text(inStorage
-                ? S.current.servant + '(${S.current.svt_second_archive})'
+                ? '${S.current.servant}(${S.current.svt_second_archive})'
                 : S.current.servant),
             leading: Checkbox(
               value: inStorage ? _includeSvtStorage : _includeSvt,
@@ -547,7 +543,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   void didImportData() async {
     bool? confirmed = await SimpleCancelOkDialog(
       title: Text(S.current.import_data),
-      content: Text(S.current.cur_account + ': ' + db.curUser.name),
+      content: Text('${S.current.cur_account}: ${db.curUser.name}'),
     ).showDialog(context);
     if (confirmed != true) return;
     final user = db.curUser;

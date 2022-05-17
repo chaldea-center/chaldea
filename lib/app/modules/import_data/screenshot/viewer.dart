@@ -69,19 +69,19 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
             items: recentFiles.isEmpty
                 ? const [
                     DropdownMenuItem(
-                      child: Text('No result'),
                       value: 0,
+                      child: Text('No result'),
                     )
                   ]
                 : List.generate(recentFiles.length, (index) {
                     return DropdownMenuItem(
+                      value: index,
                       child: Text(
                         '${index + 1} - ${recentFiles[index]}',
                         maxLines: 1,
                         textScaleFactor: 0.8,
                         softWrap: false,
                       ),
-                      value: index,
                     );
                   }),
             onChanged: (v) {

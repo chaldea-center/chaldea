@@ -22,14 +22,14 @@ class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
   Widget rewardBuilder(BuildContext context, EventTreasureBox box, int index) {
     List<Widget> children = [];
     children.add(
-        ListTile(title: Text(S.current.event_treasure_box + ' ${index + 1}')));
+        ListTile(title: Text('${S.current.event_treasure_box} ${index + 1}')));
     final itemId = box.commonConsume.objectId;
     children.add(ListTile(
         subtitle: Text.rich(TextSpan(
             text:
                 '${S.current.treasure_box_max_draw_once}: ${box.maxDrawNumOnce}\n',
             children: [
-          TextSpan(text: S.current.treasure_box_draw_cost + ': '),
+          TextSpan(text: '${S.current.treasure_box_draw_cost}: '),
           CenterWidgetSpan(
             child: Item.iconBuilder(
               context: context,
@@ -59,7 +59,7 @@ class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
           for (final gift in gifts.gifts)
             ListTile(
               leading: gift.iconBuilder(context: context, width: 42, text: ''),
-              title: Text(Item.getName(gift.objectId) + ' ×${gift.num}'),
+              title: Text('${Item.getName(gift.objectId)} ×${gift.num}'),
               onTap: () {
                 gift.routeTo();
               },

@@ -19,5 +19,5 @@ Map<String, String?> loadArb(ArbLang lang) {
 
 void saveArb(ArbLang lang, Map<String, String?> data) {
   File('lib/l10n/intl_${lang.name}.arb').writeAsStringSync(
-      const JsonEncoder.withIndent('  ').convert(data) + '\n');
+      '${const JsonEncoder.withIndent('  ').convert(data)}\n');
 }

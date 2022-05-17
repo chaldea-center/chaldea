@@ -82,7 +82,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     for (int i = rarityTotal.length - 1; i >= 0; i--) {
       children.addAll(_oneRarity(
         selected: raritySelected[i],
-        title: '$kStarChar$i ' + S.current.servant,
+        title: '$kStarChar$i ${S.current.servant}',
         skillMax: rarity999[i],
         own: rarityOwn[i],
         total: rarityTotal[i],
@@ -105,8 +105,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     return ListView(
       controller: _scrollController,
       physics: scrollable ? null : const NeverScrollableScrollPhysics(),
-      children: children,
       padding: const EdgeInsets.symmetric(vertical: 6),
+      children: children,
     );
   }
 
@@ -129,7 +129,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           children: [
             Expanded(child: Text(title)),
             Text(
-              '($skillMax) ' + '$own/$total'.padLeft(7),
+              '($skillMax) ${'$own/$total'.padLeft(7)}',
               style: kMonoStyle,
             )
           ],
@@ -138,19 +138,19 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       Row(
         children: [
           Expanded(
-            child: Container(height: 8, color: Colors.red[400]),
             flex: skillMax,
+            child: Container(height: 8, color: Colors.red[400]),
           ),
           Expanded(
+            flex: own - skillMax,
             child: Container(
               height: 8,
               color: Colors.blue,
             ),
-            flex: own - skillMax,
           ),
           Expanded(
-            child: Container(height: 8, color: Colors.grey[300]),
             flex: total - own,
+            child: Container(height: 8, color: Colors.grey[300]),
           ),
         ],
       ),
@@ -261,7 +261,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     return PieChartSectionData(
       value: count.toDouble(),
       title: selected
-          ? '$count\n(${(ratio * 100).toStringAsFixed(0) + '%'})'
+          ? '$count\n(${'${(ratio * 100).toStringAsFixed(0)}%'})'
           : count.toString(),
       titleStyle: TextStyle(
           color: Colors.white, fontSize: 16 * mag, fontWeight: FontWeight.bold),

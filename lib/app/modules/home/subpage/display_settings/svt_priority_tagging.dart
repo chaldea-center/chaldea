@@ -39,7 +39,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                 children: [
                   Expanded(
                     child: ListTile(
-                      title: Text(S.current.priority + ' $priority'),
+                      title: Text('${S.current.priority} $priority'),
                     ),
                   ),
                   SizedBox(

@@ -151,7 +151,7 @@ class ValDsc extends StatelessWidget {
     if (_intValue.toDouble() == _floatValue) {
       text = '$_intValue%';
     } else {
-      text = _floatValue.toString().trimCharRight('0') + '%';
+      text = '${_floatValue.toString().trimCharRight('0')}%';
     }
     if (post != null) {
       text = post(text);

@@ -126,7 +126,7 @@ class _SkillResultTabState extends State<SkillResultTab>
               ), detail: false);
             },
             child: Text(
-              '${item.svtId} - ' + (svt == null ? 'Unknown' : svt.lName.l),
+              '${item.svtId} - ${svt == null ? 'Unknown' : svt.lName.l}',
               style: TextStyle(
                 color: item.valid && item.checked
                     ? null

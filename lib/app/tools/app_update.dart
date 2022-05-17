@@ -9,7 +9,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -258,7 +257,7 @@ class _Asset {
 
   String get proxyUrl {
     return browserDownloadUrl.replaceFirst('https://github.com/',
-        Hosts.kWorkerHostCN + '/proxy/github/github.com/');
+        '${Hosts.kWorkerHostCN}/proxy/github/github.com/');
   }
 
   factory _Asset.fromJson(Map data) {

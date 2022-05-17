@@ -190,7 +190,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: null,
           tw: null,
           na: () => Text(
-              'Raise $targetNum ' + MultiDescriptor.classLimits(targetIds)),
+              'Raise $targetNum ${MultiDescriptor.classLimits(targetIds)}'),
           kr: null,
         );
       case CondType.svtEquipRarityLevelNum:
