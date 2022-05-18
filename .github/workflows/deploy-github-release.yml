@@ -46,6 +46,7 @@ jobs:
         with:
           channel: "stable"
           cache: true
+          cache-key: flutter-stable-${{ matrix.os }}
       - name: Get Version
         shell: bash
         run: |
