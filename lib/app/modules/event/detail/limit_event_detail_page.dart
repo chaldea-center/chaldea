@@ -229,9 +229,10 @@ class EventItemsOverview extends StatefulWidget {
 class _EventItemsOverviewState extends State<EventItemsOverview> {
   Event get event => widget.event;
 
+  LimitEventPlan get plan => db.curUser.limitEventPlanOf(event.id);
+
   @override
   Widget build(BuildContext context) {
-    final plan = db.curUser.eventPlanOf(event.id);
     final banners = [
       ...event.extra.titleBanner.values.whereType<String>(),
     ];
@@ -673,7 +674,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
 class _ArchiveEventDialog extends StatefulWidget {
   final Event event;
-  final EventPlan initPlan;
+  final LimitEventPlan initPlan;
   const _ArchiveEventDialog(
       {Key? key, required this.event, required this.initPlan})
       : super(key: key);
@@ -683,7 +684,7 @@ class _ArchiveEventDialog extends StatefulWidget {
 }
 
 class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
-  late final EventPlan plan;
+  late final LimitEventPlan plan;
   Map<int, int> items = {};
 
   Map<int, bool> lotteries = {};

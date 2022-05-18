@@ -61,12 +61,12 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     List<Widget> children = [];
     final limitEvents = db.gameData.events.values
         .where((event) => _whetherToShow(
-            db.curUser.eventPlanOf(event.id).enabled, event.isOutdated()))
+            db.curUser.limitEventPlanOf(event.id).enabled, event.isOutdated()))
         .toList();
     limitEvents.sort2((e) => e.startedAt);
     int count = 0;
     for (final event in limitEvents) {
-      final plan = db.curUser.eventPlanOf(event.id);
+      final plan = db.curUser.limitEventPlanOf(event.id);
       List<Widget> texts = [];
       int itemFixed = event.statItemFixed[widget.itemId] ?? 0;
       bool hasExtra = event.statItemExtra.contains(widget.itemId);

@@ -1,11 +1,16 @@
+import 'dart:convert';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/builders.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
@@ -45,7 +50,16 @@ class _EventListPageState extends State<EventListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.event_title),
+        title: db.onUserData((context, snapshot) {
+          String planName = db.curUser.sameEventPlan
+              ? '${S.current.plan} X'
+              : db.curUser.getFriendlyPlanName();
+          return AutoSizeText(
+            '${S.current.event_title} ($planName)',
+            minFontSize: 12,
+            maxLines: 1,
+          );
+        }),
         titleSpacing: 0,
         leading: const MasterBackButton(),
         actions: <Widget>[
@@ -76,6 +90,27 @@ class _EventListPageState extends State<EventListPage>
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
+                child: Text(S.current.select_plan),
+                onTap: () async {
+                  await null;
+                  SharedBuilder.showSwitchPlanDialog(
+                    context: context,
+                    onChange: (index) {
+                      db.curUser.curSvtPlanNo = index;
+                      db.curUser.ensurePlanLarger();
+                      db.itemCenter.calculate();
+                    },
+                  );
+                },
+              ),
+              PopupMenuItem(
+                child: Text(S.current.copy_plan_menu),
+                onTap: () async {
+                  await null;
+                  copyPlan();
+                },
+              ),
+              PopupMenuItem(
                 child: Text(
                   showSpecialRewards
                       ? 'Hide Special Rewards'
@@ -96,29 +131,31 @@ class _EventListPageState extends State<EventListPage>
           tabs: tabNames.map((name) => Tab(text: name)).toList(),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          KeepAliveBuilder(
-            builder: (_) => LimitEventTab(
-              reversed: reversed,
-              showOutdated: showOutdated,
-              showSpecialRewards: showSpecialRewards,
-              scrollController: scrollControllers[0],
+      body: db.onUserData(
+        (context, snapshot) => TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+            KeepAliveBuilder(
+              builder: (_) => LimitEventTab(
+                reversed: reversed,
+                showOutdated: showOutdated,
+                showSpecialRewards: showSpecialRewards,
+                scrollController: scrollControllers[0],
+              ),
             ),
-          ),
-          KeepAliveBuilder(
-            builder: (_) => MainStoryTab(
-              reversed: reversed,
-              showOutdated: showOutdated,
-              showSpecialRewards: showSpecialRewards,
-              scrollController: scrollControllers[1],
+            KeepAliveBuilder(
+              builder: (_) => MainStoryTab(
+                reversed: reversed,
+                showOutdated: showOutdated,
+                showSpecialRewards: showSpecialRewards,
+                scrollController: scrollControllers[1],
+              ),
             ),
-          ),
-          KeepAliveBuilder(
-              builder: (_) => ExchangeTicketTab(
-                  reversed: reversed, showOutdated: showOutdated)),
-        ],
+            KeepAliveBuilder(
+                builder: (_) => ExchangeTicketTab(
+                    reversed: reversed, showOutdated: showOutdated)),
+          ],
+        ),
       ),
     );
   }
@@ -130,5 +167,39 @@ class _EventListPageState extends State<EventListPage>
     for (var controller in scrollControllers) {
       controller.dispose();
     }
+  }
+
+  void copyPlan() {
+    if (db.curUser.sameEventPlan) {
+      EasyLoading.showInfo(S.current.same_event_plan);
+      return;
+    }
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.select_copy_plan_source),
+        children: List.generate(db.curUser.plans.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          String title = db.curUser.getFriendlyPlanName(index);
+          if (isCur) title += ' (${S.current.current_})';
+          return ListTile(
+            title: Text(title),
+            onTap: isCur
+                ? null
+                : () {
+                    final src = UserPlan.fromJson(
+                        jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    db.curPlan_
+                      ..limitEvents = src.limitEvents
+                      ..mainStories = src.mainStories
+                      ..tickets = src.tickets;
+                    db.itemCenter.calculate();
+                    Navigator.of(context).pop();
+                  },
+          );
+        }),
+      ),
+    );
   }
 }

@@ -28,14 +28,14 @@ class LimitEventTab extends StatelessWidget {
     events.removeWhere((event) => event.isEmpty);
     if (!showOutdated) {
       events.removeWhere(
-          (e) => e.isOutdated() && !db.curUser.eventPlanOf(e.id).enabled);
+          (e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
     }
 
     events.sort2((e) => e.startedAt, reversed: reversed);
     return ListView(
       controller: scrollController,
       children: events.map((event) {
-        final plan = db.curUser.eventPlanOf(event.id);
+        final plan = db.curUser.limitEventPlanOf(event.id);
         bool outdated = event.isOutdated();
         String? subtitle;
         subtitle ??= 'JP ${event.startedAt.sec2date().toDateString()}';
@@ -61,14 +61,12 @@ class LimitEventTab extends StatelessWidget {
                   event.lotteries.isNotEmpty ||
                   event.treasureBoxes.isNotEmpty)
                 Icon(Icons.star, color: Colors.yellow[700]),
-              db.onUserData(
-                (context, _) => Switch.adaptive(
-                  value: plan.enabled,
-                  onChanged: (v) {
-                    plan.enabled = v;
-                    event.updateStat();
-                  },
-                ),
+              Switch.adaptive(
+                value: plan.enabled,
+                onChanged: (v) {
+                  plan.enabled = v;
+                  event.updateStat();
+                },
               )
             ],
           ),

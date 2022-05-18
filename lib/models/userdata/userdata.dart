@@ -17,7 +17,7 @@ part '../../generated/models/userdata/userdata.g.dart';
 /// user data will be shared across devices and cloud
 @JsonSerializable()
 class UserData {
-  static const int modelVersion = 3;
+  static const int modelVersion = 4;
 
   final int version;
 
@@ -70,6 +70,21 @@ class UserData {
   factory UserData.fromJson(Map<String, dynamic> json) {
     if (json['version'] == 2) {
       return UserData.fromLegacy(json);
+    } else if (json['version'] == 3) {
+      List users = json['users'] ?? [];
+      for (final Map user in users) {
+        List svtPlans = user['svtPlanGroups'] ?? [];
+        if (svtPlans.isNotEmpty) {
+          user['plans'] = svtPlans.map((e) => {'servants': e}).toList();
+        } else {
+          user['plans'] = {};
+        }
+        final Map plan = user['plans'][0];
+        plan['limitEvents'] = user['events'];
+        plan['mainStories'] = user['mainStories'];
+        plan['tickets'] = user['exchangeTickets'];
+      }
+      return _$UserDataFromJson(json);
     }
     return _$UserDataFromJson(json);
   }
@@ -83,7 +98,7 @@ class UserData {
     for (final oldUser
         in Map<String, Map<String, dynamic>>.from(oldData['users']!).values) {
       Map<int, SvtStatus> statuses = {};
-      List<Map<int, SvtPlan>> svtPlanGroups = [];
+      List<UserPlan> plans = [];
       for (final String idStr in Map.from(oldUser['servants'] ?? {}).keys) {
         final id = int.parse(idStr);
         final oldStatus =
@@ -99,8 +114,9 @@ class UserData {
           'user ${oldUser['name']}: ${oldUser['servantPlans']?.length} plans');
       for (final svtPlans
           in List<Map<String, dynamic>>.from((oldUser['servantPlans'] ?? []))) {
-        svtPlanGroups.add(svtPlans.map((key, value) =>
-            MapEntry(int.parse(key), _convertLegacyPlan(value, null))));
+        plans.add(UserPlan(
+            servants: svtPlans.map((key, value) =>
+                MapEntry(int.parse(key), _convertLegacyPlan(value, null)))));
       }
       final user = User(
         name: oldUser['name'] ?? 'unknown',
@@ -114,13 +130,9 @@ class UserData {
             }[oldUser['server']] ??
             Region.jp,
         servants: statuses,
-        svtPlanGroups: svtPlanGroups,
+        plans: plans,
         curSvtPlanNo: 0,
-        planNames: null,
         items: {},
-        events: null,
-        mainStories: null,
-        exchangeTickets: null,
         craftEssences: Map<String, int>.from(oldUser['crafts'] ?? {})
             .map((key, value) => MapEntry(int.parse(key), value)),
         mysticCodes: null,
@@ -181,21 +193,15 @@ class User {
 
   Region region;
   Map<int, SvtStatus> servants;
-  List<Map<int, SvtPlan>> svtPlanGroups;
+  List<UserPlan> plans;
+  bool sameEventPlan;
 
-  int get curSvtPlanNo => _curSvtPlanNo.clamp(0, svtPlanGroups.length - 1);
+  int get curSvtPlanNo => _curSvtPlanNo.clamp(0, plans.length - 1);
   int _curSvtPlanNo;
 
-  set curSvtPlanNo(int v) =>
-      _curSvtPlanNo = v.clamp(0, svtPlanGroups.length - 1);
-  Map<int, String> planNames;
+  set curSvtPlanNo(int v) => _curSvtPlanNo = v.clamp(0, plans.length - 1);
 
   Map<int, int> items;
-
-  //  events, main story, tickets
-  Map<int, EventPlan> events;
-  Map<int, MainStoryPlan> mainStories;
-  Map<int, ExchangeTicketPlan> exchangeTickets;
 
   // 1-met, 2-owned, else 0
   Map<int, int> craftEssences;
@@ -214,13 +220,10 @@ class User {
     this.use6thDrops = true,
     this.region = Region.jp,
     Map<int, SvtStatus>? servants,
-    List<Map<int, SvtPlan>>? svtPlanGroups,
+    List<UserPlan>? plans,
+    this.sameEventPlan = true,
     int curSvtPlanNo = 0,
-    Map<int, String>? planNames,
     Map<int, int>? items,
-    Map<int, EventPlan>? events,
-    Map<int, MainStoryPlan>? mainStories,
-    Map<int, ExchangeTicketPlan>? exchangeTickets,
     Map<int, int?>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
@@ -229,14 +232,10 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
   })  : servants = servants ?? {},
-        svtPlanGroups = List.generate(
-            kSvtPlanMaxNum, (index) => svtPlanGroups?.getOrNull(index) ?? {}),
+        plans = List.generate(
+            kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
         _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
-        planNames = planNames ?? {},
         items = items ?? {},
-        events = events ?? {},
-        mainStories = mainStories ?? {},
-        exchangeTickets = exchangeTickets ?? {},
         craftEssences = {
           if (craftEssences != null)
             for (final e in craftEssences.entries)
@@ -252,42 +251,44 @@ class User {
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  Map<int, SvtPlan> get curPlan => svtPlanGroups[curSvtPlanNo];
+  UserPlan get curPlan_ => plans[curSvtPlanNo];
+  Map<int, SvtPlan> get curSvtPlan => curPlan_.servants;
+  UserPlan get _curEventPlan => plans[sameEventPlan ? 0 : curSvtPlanNo];
 
   void ensurePlanLarger() {
-    curPlan.forEach((key, plan) {
+    curSvtPlan.forEach((key, plan) {
       plan.validate(servants[key]?.cur, db.gameData.servants[key]);
     });
   }
 
   SvtPlan svtPlanOf(int no) =>
-      curPlan.putIfAbsent(no, () => SvtPlan())..validate();
+      curSvtPlan.putIfAbsent(no, () => SvtPlan())..validate();
 
   SvtStatus svtStatusOf(int no) {
     final status = servants.putIfAbsent(no, () => SvtStatus())..cur.validate();
     return status;
   }
 
-  EventPlan eventPlanOf(int eventId) =>
-      events.putIfAbsent(eventId, () => EventPlan());
+  LimitEventPlan limitEventPlanOf(int eventId) =>
+      _curEventPlan.limitEvents.putIfAbsent(eventId, () => LimitEventPlan());
 
   MainStoryPlan mainStoryOf(int warId) =>
-      mainStories.putIfAbsent(warId, () => MainStoryPlan());
+      _curEventPlan.mainStories.putIfAbsent(warId, () => MainStoryPlan());
 
   ExchangeTicketPlan ticketOf(int key) =>
-      exchangeTickets.putIfAbsent(key, () => ExchangeTicketPlan());
+      _curEventPlan.tickets.putIfAbsent(key, () => ExchangeTicketPlan());
 
   void validate() {
-    if (svtPlanGroups.isEmpty) {
-      svtPlanGroups.add(<int, SvtPlan>{});
+    if (plans.isEmpty) {
+      plans.add(UserPlan());
     }
-    curSvtPlanNo = curSvtPlanNo.clamp2(0, svtPlanGroups.length - 1);
+    curSvtPlanNo = curSvtPlanNo.clamp2(0, plans.length - 1);
     servants.values.forEach((e) => e.validate());
     for (final key in servants.keys) {
       servants[key]!.validate(db.gameData.servants[key]);
     }
-    for (final group in svtPlanGroups) {
-      for (final plan in group.entries) {
+    for (final group in plans) {
+      for (final plan in group.servants.entries) {
         plan.value
             .validate(servants[plan.key]?.cur, db.gameData.servants[plan.key]);
       }
@@ -297,28 +298,9 @@ class User {
   String getFriendlyPlanName([int? planNo]) {
     planNo ??= curSvtPlanNo;
     String name = '${S.current.plan} ${planNo + 1}';
-    String? customName = planNames[planNo];
+    String? customName = plans.getOrNull(planNo)?.title;
     if (customName != null && customName.isNotEmpty) name += ' - $customName';
     return name;
-  }
-}
-
-class CraftStatus {
-  CraftStatus._();
-  static const notMet = 0;
-  static const met = 1;
-  static const owned = 2;
-
-  static const List<int> values = [notMet, met, owned];
-
-  static String shownText(int status) {
-    assert(values.contains(status), status);
-    return [
-          S.current.ce_status_not_met,
-          S.current.ce_status_met,
-          S.current.ce_status_owned
-        ].getOrNull(status) ??
-        status.toString();
   }
 }
 
@@ -360,6 +342,37 @@ class SvtStatus {
   bool get favorite => cur.favorite;
 
   set favorite(bool v) => cur.favorite = v;
+}
+
+@JsonSerializable()
+class UserPlan {
+  String title;
+  Map<int, SvtPlan> servants;
+  Map<int, LimitEventPlan> limitEvents;
+  Map<int, MainStoryPlan> mainStories;
+  Map<int, ExchangeTicketPlan> tickets;
+  UserPlan({
+    this.title = '',
+    Map<int, SvtPlan>? servants,
+    Map<int, LimitEventPlan>? limitEvents,
+    Map<int, MainStoryPlan>? mainStories,
+    Map<int, ExchangeTicketPlan>? tickets,
+  })  : servants = servants ?? {},
+        limitEvents = limitEvents ?? {},
+        mainStories = mainStories ?? {},
+        tickets = tickets ?? {};
+
+  factory UserPlan.fromJson(Map<String, dynamic> json) =>
+      _$UserPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserPlanToJson(this);
+
+  void clear() {
+    servants.clear();
+    limitEvents.clear();
+    mainStories.clear();
+    tickets.clear();
+  }
 }
 
 @JsonSerializable()
@@ -490,7 +503,7 @@ class SvtPlan {
 }
 
 @JsonSerializable()
-class EventPlan {
+class LimitEventPlan {
   bool enabled;
   int rerunGrails;
 
@@ -505,7 +518,7 @@ class EventPlan {
   bool questReward;
   Map<int, Map<int, int>> extraItems;
 
-  EventPlan({
+  LimitEventPlan({
     this.enabled = false,
     this.rerunGrails = 0,
     this.shop = true,
@@ -523,10 +536,10 @@ class EventPlan {
         treasureBoxItems = treasureBoxItems ?? {},
         extraItems = extraItems ?? {};
 
-  factory EventPlan.fromJson(Map<String, dynamic> json) =>
-      _$EventPlanFromJson(json);
+  factory LimitEventPlan.fromJson(Map<String, dynamic> json) =>
+      _$LimitEventPlanFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EventPlanToJson(this);
+  Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
 
   void reset() {
     enabled = false;
@@ -556,8 +569,8 @@ class EventPlan {
     // extraItems.clear();
   }
 
-  EventPlan copy() {
-    return EventPlan(
+  LimitEventPlan copy() {
+    return LimitEventPlan(
       enabled: enabled,
       shop: shop,
       shopExcludeItem: Set.of(shopExcludeItem),
@@ -645,4 +658,23 @@ extension RegionX on Region {
   }
 
   Language toLanguage() => _regionLanguage[this]!;
+}
+
+class CraftStatus {
+  CraftStatus._();
+  static const notMet = 0;
+  static const met = 1;
+  static const owned = 2;
+
+  static const List<int> values = [notMet, met, owned];
+
+  static String shownText(int status) {
+    assert(values.contains(status), status);
+    return [
+          S.current.ce_status_not_met,
+          S.current.ce_status_met,
+          S.current.ce_status_owned
+        ].getOrNull(status) ??
+        status.toString();
+  }
 }

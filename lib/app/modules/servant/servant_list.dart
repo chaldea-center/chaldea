@@ -117,11 +117,11 @@ class ServantListPageState extends State<ServantListPage>
         onTap: () {
           InputCancelOkDialog(
             title: S.current.set_plan_name,
-            text: db.curUser.planNames[db.curUser.curSvtPlanNo],
+            text: db.curUser.curPlan_.title,
             onSubmit: (s) {
               setState(() {
                 s = s.trim();
-                db.curUser.planNames[db.curUser.curSvtPlanNo] = s;
+                db.curUser.curPlan_.title = s;
               });
             },
           ).showDialog(context);
@@ -180,7 +180,7 @@ class ServantListPageState extends State<ServantListPage>
                     onChange: (index) {
                       db.curUser.curSvtPlanNo = index;
                       db.curUser.ensurePlanLarger();
-                      db.itemCenter.updateSvts(all: true);
+                      db.itemCenter.calculate();
                     },
                   );
                 },
@@ -205,7 +205,7 @@ class ServantListPageState extends State<ServantListPage>
                           .reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
                         for (final svt in shownList) {
-                          db.curPlan.remove(svt.collectionNo);
+                          db.curSvtPlan.remove(svt.collectionNo);
                         }
                         db.itemCenter.updateSvts(all: true);
                         setState(() {});
@@ -224,7 +224,7 @@ class ServantListPageState extends State<ServantListPage>
                       content: Text(S.current
                           .reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
-                        db.curPlan.clear();
+                        db.curSvtPlan.clear();
                         db.itemCenter.updateSvts(all: true);
                         setState(() {});
                       },
@@ -1097,7 +1097,7 @@ class ServantListPageState extends State<ServantListPage>
       useRootNavigator: false,
       builder: (context) => SimpleDialog(
         title: Text(S.of(context).select_copy_plan_source),
-        children: List.generate(db.curUser.svtPlanGroups.length, (index) {
+        children: List.generate(db.curUser.plans.length, (index) {
           bool isCur = index == db.curUser.curSvtPlanNo;
           String title = db.curUser.getFriendlyPlanName(index);
           if (isCur) title += ' (${S.current.current_})';
@@ -1106,12 +1106,11 @@ class ServantListPageState extends State<ServantListPage>
             onTap: isCur
                 ? null
                 : () {
-                    db.curUser.curPlan.clear();
-                    db.curUser.svtPlanGroups[index].forEach((key, plan) {
-                      db.curUser.curPlan[key] =
-                          SvtPlan.fromJson(jsonDecode(jsonEncode(plan)));
-                    });
+                    final src = UserPlan.fromJson(
+                        jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    db.curPlan_.servants = src.servants;
                     db.curUser.ensurePlanLarger();
+                    db.itemCenter.calculate();
                     Navigator.of(context).pop();
                   },
           );

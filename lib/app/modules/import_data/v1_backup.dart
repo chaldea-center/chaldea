@@ -105,7 +105,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
               DropdownButton<int>(
                 value: _curPlanNo,
                 items: List.generate(
-                  user.svtPlanGroups.length,
+                  user.plans.length,
                   (index) => DropdownMenuItem(
                       value: index, child: Text('Plan ${index + 1}')),
                 ),
@@ -123,7 +123,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
               final svt = db.gameData.servants[id];
               final status = user.servants[id]!;
               final cur = status.cur;
-              final plan = user.svtPlanGroups.getOrNull(_curPlanNo)?[id];
+              final plan = user.plans.getOrNull(_curPlanNo)?.servants[id];
               return ListTile(
                 leading:
                     svt?.iconBuilder(context: context) ?? db.getIconImage(null),

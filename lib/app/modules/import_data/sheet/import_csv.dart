@@ -131,7 +131,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                           db.curUser.servants
                             ..clear()
                             ..addAll(statuses);
-                          db.curUser.curPlan
+                          db.curUser.curSvtPlan
                             ..clear()
                             ..addAll(plans);
                           db.itemCenter.init();

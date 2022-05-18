@@ -4845,6 +4845,17 @@ class S {
     );
   }
 
+  /// `Keep Same Event Plan`
+  String get same_event_plan {
+    return Intl.message(
+      'Keep Same Event Plan',
+      name: 'same_event_plan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Save`
   String get save {
     return Intl.message(

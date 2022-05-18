@@ -566,6 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),
         "results": MessageLookupByLibrary.simpleMessage("结果"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("攒石"),
+        "same_event_plan": MessageLookupByLibrary.simpleMessage("保持相同活动规划"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),

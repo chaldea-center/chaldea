@@ -424,7 +424,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 onChange: (index) {
                   db.curUser.curSvtPlanNo = index;
                   db.curUser.ensurePlanLarger();
-                  db.itemCenter.updateSvts(all: true);
+                  db.itemCenter.calculate();
                 },
               );
             },

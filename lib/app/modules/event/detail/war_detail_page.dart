@@ -39,6 +39,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     _war = widget.war ?? db.gameData.wars[widget.warId];
   }
 
+  MainStoryPlan get plan => db.curUser.mainStoryOf(war.id);
   @override
   Widget build(BuildContext context) {
     if (_war == null) {
@@ -47,8 +48,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
         url: Routes.warI(widget.warId ?? 0),
       );
     }
-    final plan =
-        war.isMainStory ? db.curUser.mainStoryOf(war.id) : MainStoryPlan();
     final banners = [
       ...war.extra.titleBanner.values.whereType<String>(),
     ];

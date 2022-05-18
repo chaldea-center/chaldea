@@ -664,6 +664,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),
         "results": MessageLookupByLibrary.simpleMessage("Results"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("SQ Plan"),
+        "same_event_plan":
+            MessageLookupByLibrary.simpleMessage("Keep Same Event Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),

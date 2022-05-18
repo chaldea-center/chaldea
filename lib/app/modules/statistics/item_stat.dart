@@ -50,7 +50,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
               context: context,
               onChange: (index) {
                 db.curUser.curSvtPlanNo = index;
-                db.itemCenter.updateSvts(all: true);
+                db.itemCenter.calculate();
                 setState(() {});
               },
             ),

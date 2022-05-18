@@ -75,7 +75,7 @@ class ItemListPageState extends State<ItemListPage>
             context: context,
             onChange: (index) async {
               db.curUser.curSvtPlanNo = index;
-              db.itemCenter.updateSvts(all: true);
+              db.itemCenter.calculate();
               setState(() {});
             },
           ),

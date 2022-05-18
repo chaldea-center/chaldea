@@ -207,7 +207,7 @@ class ItemCenter {
     final eventIndex = _eventItem._dim1Map[eventId];
     final event = db.gameData.events[eventId];
     if (eventIndex == null || event == null) return;
-    final eventItems = calcOneEvent(event, user.eventPlanOf(event.id));
+    final eventItems = calcOneEvent(event, user.limitEventPlanOf(event.id));
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
       _eventItem._matrix[eventIndex][itemIndex] =
           eventItems[_validItems[itemIndex]] ?? 0;
@@ -240,7 +240,7 @@ class ItemCenter {
   }
 
   /// shop/point rewards/mission rewards/Tower rewards/lottery/treasureBox/fixedDrop/wars rewards
-  Map<int, int> calcOneEvent(Event event, EventPlan plan,
+  Map<int, int> calcOneEvent(Event event, LimitEventPlan plan,
       {bool includingGrailToLore = true}) {
     Map<int, int> result = {};
     // shop

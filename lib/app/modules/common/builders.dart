@@ -163,10 +163,20 @@ class SharedBuilder {
     return showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleDialog(
-        title: Text(S.current.select_plan),
-        children: List.generate(db.curUser.svtPlanGroups.length, (index) {
-          return ListTile(
+      builder: (context) {
+        List<Widget> children = [];
+        children.add(db.onUserData(
+          (context, snapshot) => CheckboxListTile(
+            value: db.curUser.sameEventPlan,
+            title: Text(S.current.same_event_plan),
+            onChanged: (v) {
+              if (v != null) db.curUser.sameEventPlan = v;
+              db.itemCenter.calculate();
+            },
+          ),
+        ));
+        for (int index = 0; index < db.curUser.plans.length; index++) {
+          children.add(ListTile(
             title: Text(db.curUser.getFriendlyPlanName(index)),
             selected: index == db.curUser.curSvtPlanNo,
             onTap: () {
@@ -175,9 +185,13 @@ class SharedBuilder {
                 onChange(index);
               }
             },
-          );
-        }),
-      ),
+          ));
+        }
+        return SimpleDialog(
+          title: Text(S.current.select_plan),
+          children: children,
+        );
+      },
     );
   }
 
