@@ -127,6 +127,7 @@ class _Database {
     await paths.initRootPath();
     if (kIsWeb) {
       setUrlStrategy(PathUrlStrategy());
+      Hive.init(null);
       await FilePlus.initiate();
     } else {
       Hive.init(paths.hiveDir);

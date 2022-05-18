@@ -573,7 +573,7 @@ packages:
       name: hive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   hive_generator:
     dependency: "direct dev"
     description:
