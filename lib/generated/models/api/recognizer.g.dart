@@ -115,3 +115,21 @@ Map<String, dynamic> _$SkillDetailToJson(SkillDetail instance) =>
       'imageId': instance.imageId,
       'score': instance.score,
     };
+
+UserDataBackup _$UserDataBackupFromJson(Map json) => $checkedCreate(
+      'UserDataBackup',
+      json,
+      ($checkedConvert) {
+        final val = UserDataBackup(
+          timestamp: $checkedConvert('timestamp', (v) => v as int),
+          content: $checkedConvert('content', (v) => v as String),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$UserDataBackupToJson(UserDataBackup instance) =>
+    <String, dynamic>{
+      'timestamp': instance.timestamp.toIso8601String(),
+      'content': instance.content?.toJson(),
+    };

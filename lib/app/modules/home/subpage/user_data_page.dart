@@ -15,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -232,39 +233,60 @@ class _UserDataPageState extends State<UserDataPage> {
         'auth': db.security.get('chaldea_auth')
       }),
       onSuccess: (resp) {
-        final body = List.from(resp.body()).map((e) => Map.from(e)).toList();
-        body.sort2((e) => e['timestamp'] as int, reversed: true);
+        List<UserDataBackup> backups = [];
+        try {
+          backups = List.from(resp.body())
+              .map((e) => UserDataBackup.fromJson(e))
+              .toList();
+          backups.sort2((e) => e.timestamp, reversed: true);
+        } catch (e, s) {
+          logger.e('decode server backup response failed', e, s);
+          EasyLoading.showError(e.toString());
+          return;
+        }
+
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder: (context) => SimpleDialog(
-            title: Text(S.current.userdata_download_choose_backup),
-            children: [
-              if (body.isEmpty) const ListTile(title: Text('No backup found')),
-              for (int index = 0; index < body.length; index++)
-                ListTile(
-                  title: Text('Backup ${index + 1}'),
-                  subtitle: Text(DateTime.fromMillisecondsSinceEpoch(
-                          body[index]['timestamp'] as int)
-                      .toString()),
-                  onTap: () {
+          builder: (context) {
+            List<Widget> children = [];
+            if (backups.isEmpty) {
+              children.add(const ListTile(title: Text('No backup found')));
+            }
+            for (int index = 0; index < backups.length; index++) {
+              final backup = backups[index];
+              String title = '${S.current.backup} ${index + 1}';
+              if (backup.content == null) {
+                title += ' (Error)';
+              }
+              children.add(ListTile(
+                title: Text(title),
+                subtitle: Text(backup.timestamp.toString()),
+                enabled: backup.content != null,
+                onTap: backup.content == null
+                    ? null
+                    : () {
+                        Navigator.pop(context);
+                        db.userData = backup.content!;
+                        db.itemCenter.init();
+                        db.notifyUserdata();
+                        EasyLoading.showSuccess(S.current.import_data_success);
+                      },
+              ));
+            }
+            return SimpleDialog(
+              title: Text(S.current.userdata_download_choose_backup),
+              children: [
+                ...children,
+                IconButton(
+                  onPressed: () {
                     Navigator.pop(context);
-                    db.userData = UserData.fromJson(jsonDecode(utf8.decode(
-                        GZipDecoder().decodeBytes(
-                            base64Decode(body[index]['content'])))));
-                    db.itemCenter.init();
-                    db.notifyUserdata();
-                    EasyLoading.showSuccess(S.current.import_data_success);
                   },
-                ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.clear),
-              )
-            ],
-          ),
+                  icon: const Icon(Icons.clear),
+                )
+              ],
+            );
+          },
         );
       },
     );

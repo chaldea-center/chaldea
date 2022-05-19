@@ -29,8 +29,19 @@ class GameDataLoader {
       return await Dio().get<T>(url, options: options);
     }
     try {
-      return await Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 5000))
-          .get<T>(url, options: options);
+      Completer<Response<T>> _completer = Completer();
+      Timer(const Duration(seconds: 4), () {
+        if (!_completer.isCompleted) {
+          _completer.completeError(TimeoutException('CF connection timeout'));
+        }
+      });
+      scheduleMicrotask(() {
+        Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
+            .get<T>(url, options: options)
+            .then<void>((value) => _completer.complete(value))
+            .catchError(_completer.completeError);
+      });
+      return await _completer.future;
     } catch (e) {
       if (db.settings.proxyServer) {
         // print('download data from CN: $cnUrl');
@@ -72,6 +83,11 @@ class GameDataLoader {
     bool silent = false,
   }) async {
     assert(!(offline && updateOnly), [offline, updateOnly]);
+    if (!offline &&
+        loadedGameData != null &&
+        loadedGameData!.version.timestamp > db.gameData.version.timestamp) {
+      return loadedGameData!;
+    }
     if (!offline && network.unavailable) {
       throw UpdateError(S.current.error_no_network);
     }

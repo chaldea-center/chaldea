@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
+
 import '../../packages/logger.dart';
 import '../userdata/_helper.dart';
+import '../userdata/userdata.dart';
 
 part '../../generated/models/api/recognizer.g.dart';
 
@@ -158,4 +161,30 @@ class SkillDetail {
       _$SkillDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillDetailToJson(this);
+}
+
+// user data backup
+
+@JsonSerializable()
+class UserDataBackup {
+  final DateTime timestamp;
+  UserData? content;
+
+  UserDataBackup({
+    required int timestamp,
+    required String content,
+  })  : timestamp = DateTime.fromMillisecondsSinceEpoch(timestamp),
+        content = null {
+    try {
+      this.content = UserData.fromJson(jsonDecode(
+          utf8.decode(GZipDecoder().decodeBytes(base64Decode(content)))));
+    } catch (e, s) {
+      logger.e('decode server backup failed', e, s);
+    }
+  }
+
+  factory UserDataBackup.fromJson(Map<String, dynamic> json) =>
+      _$UserDataBackupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserDataBackupToJson(this);
 }

@@ -42,13 +42,13 @@ class UserData {
   Map<int, String?> customSvtIcon;
 
   UserData({
-    this.version = UserData.modelVersion,
     int curUserKey = 0,
     List<User>? users,
     List<int?>? itemAbundantValue,
     this.svtAscensionIcon = 1,
     Map<int, String?>? customSvtIcon,
-  })  : _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
+  })  : version = UserData.modelVersion,
+        _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(
             3, (index) => itemAbundantValue?.getOrNull(index) ?? 0,
@@ -77,7 +77,7 @@ class UserData {
         if (svtPlans.isNotEmpty) {
           user['plans'] = svtPlans.map((e) => {'servants': e}).toList();
         } else {
-          user['plans'] = {};
+          user['plans'] = [{}];
         }
         final Map plan = user['plans'][0];
         plan['limitEvents'] = user['events'];
