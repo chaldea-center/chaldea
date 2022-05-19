@@ -746,10 +746,10 @@ class S {
     );
   }
 
-  /// `Server`
+  /// `Chaldea Server`
   String get chaldea_server {
     return Intl.message(
-      'Server',
+      'Chaldea Server',
       name: 'chaldea_server',
       desc: '',
       locale: localeName,

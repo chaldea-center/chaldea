@@ -62,7 +62,7 @@
   "chaldea_account": "Usuario de Chaldea",
   "chaldea_account_system_hint": "Un sistema de cuenta simple para la copia de seguridad de los datos de usuario en el servidor y la sincronización de múltiples dispositivos\n  SIN garantía de seguridad, ¡POR FAVOR NO establezca contraseñas de uso frecuente!\n  No es necesario registrarse si no necesita estas dos funciones.",
   "chaldea_backup": "Copia de seguridad de Chaldea",
-  "chaldea_server": "Servidor",
+  "chaldea_server": "Chaldea Servidor",
   "chaldea_server_cn": null,
   "chaldea_server_global": null,
   "chaldea_server_hint": "Se utiliza para los datos del juego y el reconocedor de capturas de pantalla.",

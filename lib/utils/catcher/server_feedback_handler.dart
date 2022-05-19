@@ -110,9 +110,8 @@ class ServerFeedbackHandler extends ReportHandler {
 
     if (await _isBlockedError(report)) return false;
 
-    String reportSummary = _getReportShortSummary(report);
     // don't send email repeatedly
-    if (_sentReports.contains(reportSummary)) {
+    if (_sentReports.contains(report.shownError)) {
       logger.fine('"${report.error}" has been sent before');
       return true;
     }
@@ -159,6 +158,7 @@ class ServerFeedbackHandler extends ReportHandler {
     );
     if (!response.success) {
       logger_.logger.e('failed to send mail', response.message);
+      _sentReports.add(report.shownError);
     }
     return response.success;
   }
@@ -171,7 +171,7 @@ class ServerFeedbackHandler extends ReportHandler {
   Future<bool> _isBlockedError(Report report) async {
     if (kIsWeb) {
       if (['TypeError: Failed to fetch', 'Bad state: Future already completed']
-          .contains((report.error ?? report.errorDetails).toString())) {
+          .contains(report.shownError)) {
         return true;
       }
     }
@@ -185,7 +185,7 @@ class ServerFeedbackHandler extends ReportHandler {
       // logger_.logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
-    final error = (report.error ?? report.errorDetails).toString();
+    final error = report.shownError;
     final stackTrace = report.stackTrace.toString();
     bool? shouldIgnore =
         _blockedErrors?.any((e) => error.contains(e) || stackTrace.contains(e));
@@ -315,4 +315,8 @@ class FeedbackReport extends Report {
   FeedbackReport(this.contactInfo, this.body)
       : super(null, '', DateTime.now(), AppInfo.deviceParams, AppInfo.appParams,
             {}, null, PlatformType.unknown, null);
+}
+
+extension _ReportX on Report {
+  String get shownError => (error ?? errorDetails?.exception).toString();
 }

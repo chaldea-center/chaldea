@@ -79,19 +79,23 @@ class _CustomPrettyPrinter extends PrettyPrinter {
   @override
   List<String> log(LogEvent event) {
     String messageStr = stringifyMessage(event.message);
+    StackTrace _fmtStackTrace(Object? s) {
+      final lines = (s ?? StackTrace.current).toString().split('\n');
+      lines.removeWhere((line) =>
+          line.contains('chaldea/packages/logger.dart') ||
+          line == '<asynchronous suspension>');
+      return StackTrace.fromString(lines.join('\n'));
+    }
 
     String? stackTraceStr;
     if (event.stackTrace == null) {
       if (methodCount > 0) {
-        final lines = StackTrace.current.toString().split('\n');
-        lines.removeWhere((line) =>
-            line.contains('chaldea/packages/logger.dart') ||
-            line == '<asynchronous suspension>');
-        stackTraceStr = formatStackTrace(
-            StackTrace.fromString(lines.join('\n')), methodCount);
+        stackTraceStr =
+            formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
       }
     } else if (errorMethodCount > 0) {
-      stackTraceStr = formatStackTrace(event.stackTrace, errorMethodCount);
+      stackTraceStr =
+          formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
 
     String? errorStr = event.error?.toString();

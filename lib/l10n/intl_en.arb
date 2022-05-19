@@ -62,7 +62,7 @@
   "chaldea_account": "Chaldea Account",
   "chaldea_account_system_hint": "  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON'T set frequently used passwords!!!\n  No need to register if you do not need these two features.",
   "chaldea_backup": "Chaldea App Backup",
-  "chaldea_server": "Server",
+  "chaldea_server": "Chaldea Server",
   "chaldea_server_cn": "CN",
   "chaldea_server_global": "Global",
   "chaldea_server_hint": "Used for game data and screenshots recognizer",
