@@ -66,7 +66,7 @@ class ChaldeaResponse {
   }) async {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-      print('apiWorkerDio: ${db.apiWorkerDio.options.baseUrl}');
+      // print('apiWorkerDio: ${db.apiWorkerDio.options.baseUrl}');
       var resp = ChaldeaResponse(await caller(db.apiWorkerDio));
       if (resp.success) {
         onSuccess?.call(resp);

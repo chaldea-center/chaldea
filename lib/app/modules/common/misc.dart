@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/atlas.dart';
 
 class CommandCardWidget extends StatelessWidget {
   final CardType card;
@@ -29,16 +28,16 @@ class CommandCardWidget extends StatelessWidget {
               right: width * 0.1,
               top: width * 0.1,
               bottom: width * 0.1,
-              child: Image.network(
-                Atlas.dbAsset('card_bg_$cardName.png'),
+              child: Image.asset(
+                'res/assets/card_bg_$cardName.png',
                 // width: 100,
                 // height: 100,
                 fit: BoxFit.fill,
               ),
             ),
             Positioned.fill(
-              child: Image.network(
-                Atlas.dbAsset('card_icon_$cardName.png'),
+              child: Image.asset(
+                'res/assets/card_icon_$cardName.png',
                 fit: BoxFit.fitWidth,
               ),
             ),
@@ -46,8 +45,8 @@ class CommandCardWidget extends StatelessWidget {
               left: 6,
               right: 6,
               bottom: 0,
-              child: Image.network(
-                Atlas.dbAsset('card_txt_$cardName.png'),
+              child: Image.asset(
+                'res/assets/card_txt_$cardName.png',
                 fit: BoxFit.fitWidth,
               ),
             ),

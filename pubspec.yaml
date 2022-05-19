@@ -129,6 +129,7 @@ flutter:
   assets:
     - doc/help/
     - doc/license/
+    - res/assets/
     - res/img/
     - res/img/launcher_icon/app_icon_logo.png
     - res/img/md/
