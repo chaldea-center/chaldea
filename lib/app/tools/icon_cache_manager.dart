@@ -25,7 +25,7 @@ class IconCacheManagePage extends StatefulWidget {
 }
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
-  final _loader = AtlasIconLoader.instance;
+  final _loader = AtlasIconLoader.i;
   final _limiter = RateLimiter(
       maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
@@ -132,14 +132,14 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
 class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
-  static final AtlasIconLoader instance = AtlasIconLoader._();
+  static final AtlasIconLoader i = AtlasIconLoader._();
   final _rateLimiter = RateLimiter(maxCalls: 20);
   final _fsLimiter =
       RateLimiter(maxCalls: 5, period: const Duration(milliseconds: 50));
 
   @override
   Future<String?> download(String url, {RateLimiter? limiter}) async {
-    final localPath = _atlasUrlToFp(url);
+    final localPath = atlasUrlToFp(url);
     if (localPath == null) return null;
     if (await _fsLimiter.limited(() => File(localPath).exists())) {
       return localPath;
@@ -155,7 +155,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     return localPath;
   }
 
-  String? _atlasUrlToFp(String url) {
+  String? atlasUrlToFp(String url) {
     String urlPath;
     if (url.startsWith(Hosts.kAtlasAssetHostGlobal)) {
       urlPath = url.replaceFirst(Hosts.kAtlasAssetHostGlobal, '');
@@ -165,7 +165,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       return null;
     }
     return pathlib.joinAll([
-      db.paths.atlasIconDir,
+      db.paths.atlasAssetsDir,
       ...urlPath.split('/').where((e) => e.isNotEmpty)
     ]);
   }
@@ -272,7 +272,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
   Future<ui.Codec> _loadAsync(MyCacheImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    final localPath = await AtlasIconLoader.instance.get(key.url);
+    final localPath = await AtlasIconLoader.i.get(key.url);
     if (localPath == null) {
       throw StateError('${key.url} cannot be cached to local');
     }

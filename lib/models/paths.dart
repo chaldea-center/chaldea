@@ -128,7 +128,8 @@ class PathManager {
       backupDir,
       logDir,
       hiveDir,
-      gameIconDir,
+      assetsDir,
+      atlasAssetsDir,
     ]) {
       Directory(dir).createSync(recursive: true);
     }
@@ -172,9 +173,9 @@ class PathManager {
   String get hiveDir => join(appPath, 'hive');
 
   /// game/
-  String get gameIconDir => join(gameDir, 'icons');
+  String get assetsDir => join(appPath, 'assets');
 
-  String get atlasIconDir => join(gameIconDir, 'atlas');
+  String get atlasAssetsDir => join(assetsDir, 'atlas');
 
   /// user/
   String get settingsPath => join(userDir, 'settings.json');

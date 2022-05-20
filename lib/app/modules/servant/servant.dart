@@ -23,6 +23,7 @@ import 'tabs/related_cards_tab.dart';
 import 'tabs/skill_tab.dart';
 import 'tabs/summon_tab.dart';
 import 'tabs/td_tab.dart';
+import 'tabs/voice_tab.dart';
 
 class _SubTabInfo {
   final SvtTab tab;
@@ -377,6 +378,14 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => ExtraAssetsPage(assets: svt.extraAssets),
         );
       case SvtTab.relatedCards:
+        if (svt.bondEquip == 0 &&
+            svt.valentineEquip.isEmpty &&
+            db.gameData.craftEssences.values
+                .every((e) => !e.extra.characters.contains(svt.collectionNo)) &&
+            db.gameData.commandCodes.values
+                .every((e) => !e.extra.characters.contains(svt.collectionNo))) {
+          return null;
+        }
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.svt_related_ce,
@@ -395,12 +404,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
-        return null;
-      // return _SubTabInfo(
-      //   tab: tab,
-      //   tabBuilder: () => S.current.voice,
-      //   // viewBuilder: (ctx) => SvtVoiceTab(parent: this),
-      // );
+        if (!svt.isUserSvt) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.voice,
+          viewBuilder: (ctx) => SvtVoiceTab(svt: svt),
+        );
       case SvtTab.quest:
         if (svt.relateQuestIds.isEmpty) return null;
         return _SubTabInfo(

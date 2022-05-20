@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/db.dart';
@@ -77,6 +78,10 @@ class AppState extends ChangeNotifier {
 
   set dataReady(bool v) {
     _dataReady = v;
+    // If data not loaded, only show home page
+    if (db.gameData.version.timestamp == 0) {
+      activeRouter.popAll();
+    }
     notifyListeners();
   }
 }
@@ -132,7 +137,8 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (PlatformU.isAndroid) {
       await db.saveAll();
       MethodChannelChaldeaNext.sendBackground();
+      return false;
     }
-    return true;
+    return SynchronousFuture(true);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
@@ -325,7 +326,10 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                             className.icon(selected ? 5 : 1),
                             aspectRatio: 1);
                         if (className == SvtClass.beastII && !selected) {
-                          icon = Opacity(opacity: 0.5, child: icon);
+                          icon = ColorFiltered(
+                            colorFilter: ImageUtil.greyscalBeast,
+                            child: icon,
+                          );
                         }
                         return GestureDetector(
                           child: icon,

@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:flutter/painting.dart';
+
 import 'package:image/image.dart' as lib_image;
 import 'package:worker_manager/worker_manager.dart';
 
@@ -57,4 +59,16 @@ Uint8List _compressToJpg(
       ' ${srcImage.width}x${srcImage.height} ->'
       ' ${dest.length ~/ 1024}KB ${destImage.width}x${destImage.height}');
   return dest;
+}
+
+class ImageUtil {
+  const ImageUtil._();
+
+  static const ColorFilter greyscalBeast = ColorFilter.matrix(<double>[
+    // grey scale for beast icon
+    0.8, 0.15, 0.05, 0, 0,
+    0.8, 0.15, 0.05, 0, 0,
+    0.8, 0.15, 0.05, 0, 0,
+    0, 0, 0, 1, 0,
+  ]);
 }

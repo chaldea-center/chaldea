@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -7,10 +8,40 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class SvtSkillTab extends StatelessWidget {
+class SvtSkillTab extends StatefulWidget {
   final Servant svt;
 
   const SvtSkillTab({Key? key, required this.svt}) : super(key: key);
+
+  @override
+  State<SvtSkillTab> createState() => _SvtSkillTabState();
+}
+
+class _SvtSkillTabState extends State<SvtSkillTab> {
+  Servant get svt => widget.svt;
+
+  Map<int, List<NiceSkill>> skillRankUps = {};
+
+  @override
+  void initState() {
+    super.initState();
+    svt.script.skillRankUp?.forEach((key, skillIds) async {
+      final skills = skillRankUps.putIfAbsent(key, () => []);
+      for (final skillId in skillIds.toSet()) {
+        if (skillId == key) continue;
+        var skill = db.gameData.baseSkills[skillId]?.toNice();
+        if (skill != null) {
+          skills.add(skill);
+        } else {
+          skill = await AtlasApi.skill(skillId);
+          if (skill != null) {
+            skills.add(skill);
+            if (mounted) setState(() {});
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +53,7 @@ class SvtSkillTab extends StatelessWidget {
       for (final skill in skills) {
         if (shownSkills.every((e) => e.id != skill.id)) {
           shownSkills.add(skill);
+          shownSkills.addAll(skillRankUps[skill.id] ?? []);
         }
       }
       children.add(_buildSkill(
@@ -53,8 +85,10 @@ class SvtSkillTab extends StatelessWidget {
     if (skills.length == 1) {
       return SkillDescriptor(skill: skills.first, level: level);
     }
+
     return ValueStatefulBuilder<NiceSkill>(
-      initValue: skills.last,
+      initValue: skills.reversed
+          .firstWhere((e) => e.num > 0, orElse: () => skills.last),
       builder: (context, state) {
         final skill = state.value;
         final toggle = Row(

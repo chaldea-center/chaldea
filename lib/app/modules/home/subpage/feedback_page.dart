@@ -306,7 +306,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ],
         emailTitle: subject,
         senderName: 'Chaldea Feedback',
-        screenshotController: db.runtimeData.screenshotController,
+        // screenshotController: db.runtimeData.screenshotController,
         extraAttachments: Map.of(attachFiles),
       );
 

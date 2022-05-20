@@ -38,6 +38,9 @@ There are plenty of work need to do.
   - [ ] and wikis
 - [ ] Plan:
   - [ ] support TextField input
+- [ ] skill RankUp(Kiara)
+- [ ] skill/np/quest condition
+- [ ] summon prob calc
 
 ## Adding more pages
 

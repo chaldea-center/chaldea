@@ -102,6 +102,31 @@ class BaseSkill extends SkillOrTd {
   bool isEventSkill(int eventId) {
     return functions.any((func) => func.svals.getOrNull(0)?.EventId == eventId);
   }
+
+  NiceSkill toNice() {
+    return NiceSkill(
+      id: id,
+      name: name,
+      ruby: ruby,
+      unmodifiedDetail: unmodifiedDetail,
+      type: type,
+      icon: icon,
+      coolDown: coolDown,
+      actIndividuality: actIndividuality,
+      script: script,
+      extraPassive: extraPassive,
+      skillAdd: skillAdd,
+      aiIds: aiIds,
+      functions: functions,
+      num: -1,
+      strengthStatus: 0,
+      priority: 0,
+      condQuestId: 0,
+      condQuestPhase: 0,
+      condLv: 0,
+      condLimitCount: 0,
+    );
+  }
 }
 
 @JsonSerializable()

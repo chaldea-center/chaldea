@@ -11,6 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../common/filter_group.dart';
@@ -693,8 +694,12 @@ class ServantListPageState extends State<ServantListPage>
       aspectRatio: 1,
       width: 32,
     );
-    if (rarity != 3 && clsName == SvtClass.beastII) {
-      icon = Opacity(opacity: 0.5, child: icon);
+    if (rarity != 5 && clsName == SvtClass.beastII) {
+      icon = ColorFiltered(
+        colorFilter: ImageUtil.greyscalBeast,
+        child: icon,
+      );
+      // icon = Opacity(opacity: 0.7, child: icon);
     }
     return InkWell(
       child: Padding(

@@ -124,7 +124,7 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  static final _loader = AtlasIconLoader.instance;
+  static final _loader = AtlasIconLoader.i;
 
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
