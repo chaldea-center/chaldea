@@ -219,10 +219,23 @@ class CraftDetailBasePage extends StatelessWidget {
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
-                        text: Transl.illustratorNames(ce.profile.illustrator).l,
-                        flex: 3,
-                        maxLines: 1)
+                      text: Transl.illustratorNames(ce.profile.illustrator).l,
+                      flex: 3,
+                    )
                   ]),
+                  if (ce.profile.cv.isNotEmpty)
+                    CustomTableRow(children: [
+                      TableCellData(
+                        text: S.current.info_cv,
+                        isHeader: true,
+                        textAlign: TextAlign.center,
+                      ),
+                      TableCellData(
+                        text: Transl.cvNames(ce.profile.cv).l,
+                        flex: 3,
+                        textAlign: TextAlign.center,
+                      )
+                    ]),
                   CustomTableRow(children: [
                     TableCellData(text: S.current.rarity, isHeader: true),
                     TableCellData(text: ce.rarity.toString()),

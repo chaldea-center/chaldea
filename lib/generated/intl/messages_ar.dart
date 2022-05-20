@@ -147,8 +147,6 @@ class MessageLookup extends MessageLookupByLibrary {
             " ستتم إضافة جميع العناصر إلى الحقيبة وإزالة الحدث خارج الخطة "),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("تجميع موارد"),
-        "event_item_extra":
-            MessageLookupByLibrary.simpleMessage("محصلات اضافيه "),
         "event_lottery_limit_hint": m1,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("يانصيب محدود"),

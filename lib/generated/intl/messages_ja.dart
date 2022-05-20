@@ -213,7 +213,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "すべてのアイテムを倉庫に追加し、プランからこのイベントを削除します"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("アイテム収集"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("他の入手可能の素材"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("ボックス"),
         "event_lottery_limit_hint": m1,
         "event_lottery_limited":

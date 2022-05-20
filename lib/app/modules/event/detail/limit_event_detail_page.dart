@@ -531,6 +531,20 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ]);
     }
 
+    for (final extraItems in event.extra.extraFixedItems) {
+      children.addAll(_buildSwitchGroup(
+        value: () => plan.extraFixedItems[extraItems.id] ?? false,
+        enabled: () => plan.enabled,
+        onChanged: (v) {
+          plan.extraFixedItems[extraItems.id] = v;
+          event.updateStat();
+        },
+        title: '${S.current.event_item_fixed_extra} ${extraItems.id}',
+        subtitle: extraItems.detail.l,
+        items: extraItems.items,
+      ));
+    }
+
     for (final extraItems in event.extra.extraItems) {
       children.add(ListTile(
         title: Text('${S.current.event_item_extra} ${extraItems.id}'),
@@ -580,6 +594,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     required bool Function() enabled,
     required ValueChanged<bool> onChanged,
     required String title,
+    String? subtitle,
     required Map<int, int> items,
   }) {
     return [
@@ -592,6 +607,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                 }
               : null,
           title: Text(title),
+          subtitle: subtitle?.toText(),
           controlAffinity: ListTileControlAffinity.leading,
         ),
       ),
@@ -779,6 +795,13 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
         onChanged: (v) => treasureBoxes[box.id] = v,
       );
     }
+    for (final detail in event.extra.extraFixedItems) {
+      _addOption(
+        title: '${S.current.event_item_fixed_extra} ${detail.id}',
+        value: plan.extraFixedItems[detail.id] ?? false,
+        onChanged: (v) => plan.extraFixedItems[detail.id] = v,
+      );
+    }
     for (final detail in event.extra.extraItems) {
       _addOption(
         title: '${S.current.event_item_extra} ${detail.id}',
@@ -831,6 +854,9 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     });
     treasureBoxes.forEach((key, value) {
       if (value) widget.initPlan.treasureBoxItems[key]?.clear();
+    });
+    plan.extraFixedItems.forEach((key, value) {
+      if (value) widget.initPlan.extraFixedItems[key] = false;
     });
     extraItems.forEach((key, value) {
       if (value) widget.initPlan.extraItems[key]?.clear();

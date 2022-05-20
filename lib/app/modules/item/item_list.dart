@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -631,6 +632,16 @@ class _ItemListTabState extends State<ItemListTab> {
               ),
             ),
           ),
+        ],
+      );
+    }
+    if (kDebugMode && itemId != Items.qpId) {
+      subtitle = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          subtitle,
+          Text(itemId.toString(), textScaleFactor: 0.85),
         ],
       );
     }

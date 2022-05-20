@@ -139,6 +139,18 @@ EventExtraItems _$EventExtraItemsFromJson(Map json) => EventExtraItems(
           const {},
     );
 
+EventExtraFixedItems _$EventExtraFixedItemsFromJson(Map json) =>
+    EventExtraFixedItems(
+      id: json['id'] as int,
+      detail: json['detail'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['detail'] as Map)),
+      items: (json['items'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), e as int),
+      ),
+    );
+
 EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       id: json['id'] as int,
       name: json['name'] as String,
@@ -155,6 +167,11 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       huntingId: json['huntingId'] as int? ?? 0,
       huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>?)
               ?.map((e) => e as int)
+              .toList() ??
+          const [],
+      extraFixedItems: (json['extraFixedItems'] as List<dynamic>?)
+              ?.map((e) => EventExtraFixedItems.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       extraItems: (json['extraItems'] as List<dynamic>?)

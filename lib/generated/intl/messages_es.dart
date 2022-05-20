@@ -228,8 +228,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Todos los objetos se añadirán al inventario y se eliminará el evento fuera del plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Recoger objetos"),
-        "event_item_extra":
-            MessageLookupByLibrary.simpleMessage("Obtenibles adicionales"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lotería"),
         "event_lottery_limit_hint": m1,
         "event_lottery_limited":

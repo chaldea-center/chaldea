@@ -51,12 +51,17 @@ class _EventListPageState extends State<EventListPage>
     return Scaffold(
       appBar: AppBar(
         title: db.onUserData((context, snapshot) {
-          String planName = db.curUser.sameEventPlan
-              ? '${S.current.plan} X'
-              : db.curUser.getFriendlyPlanName();
-          return AutoSizeText(
-            '${S.current.event_title} ($planName)',
-            minFontSize: 12,
+          return AutoSizeText.rich(
+            TextSpan(
+              text: S.current.event_title,
+              children: [
+                if (db.curUser.sameEventPlan)
+                  TextSpan(
+                    text: ' (${db.curUser.getFriendlyPlanName()})',
+                    style: const TextStyle(fontSize: 14),
+                  )
+              ],
+            ),
             maxLines: 1,
           );
         }),

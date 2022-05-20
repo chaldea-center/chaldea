@@ -129,6 +129,23 @@ class EventExtraItems {
 }
 
 @JsonSerializable()
+class EventExtraFixedItems {
+  int id;
+  MappingBase<String> detail;
+  Map<int, int> items;
+
+  EventExtraFixedItems({
+    required this.id,
+    MappingBase<String>? detail,
+    Map<int, int>? items,
+  })  : detail = detail ?? MappingBase(),
+        items = items ?? {};
+
+  factory EventExtraFixedItems.fromJson(Map<String, dynamic> json) =>
+      _$EventExtraFixedItemsFromJson(json);
+}
+
+@JsonSerializable()
 class EventExtra {
   int id;
   String name;
@@ -138,6 +155,7 @@ class EventExtra {
   MappingBase<String> noticeLink;
   int huntingId;
   List<int> huntingQuestIds;
+  List<EventExtraFixedItems> extraFixedItems;
   List<EventExtraItems> extraItems;
 
   MappingBase<int> startTime;
@@ -153,6 +171,7 @@ class EventExtra {
     MappingBase<String>? noticeLink,
     this.huntingId = 0,
     this.huntingQuestIds = const [],
+    this.extraFixedItems = const [],
     this.extraItems = const [],
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,

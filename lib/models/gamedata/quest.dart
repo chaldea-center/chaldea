@@ -202,13 +202,14 @@ class QuestPhase extends Quest {
     required this.bond,
     this.isNpcOnly = false,
     required this.battleBgId,
-    required this.extraDetail,
+    QuestPhaseExtraDetail? extraDetail,
     this.scripts = const [],
     this.messages = const [],
     this.supportServants = const [],
     this.stages = const [],
     this.drops = const [],
-  }) : super(
+  })  : extraDetail = extraDetail ?? QuestPhaseExtraDetail(),
+        super(
           id: id,
           name: name,
           type: type,

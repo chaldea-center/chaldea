@@ -516,6 +516,7 @@ class LimitEventPlan {
   Map<int, Map<int, int>> treasureBoxItems;
   bool fixedDrop;
   bool questReward;
+  Map<int, bool> extraFixedItems;
   Map<int, Map<int, int>> extraItems;
 
   LimitEventPlan({
@@ -530,10 +531,12 @@ class LimitEventPlan {
     Map<int, Map<int, int>>? treasureBoxItems,
     this.fixedDrop = true,
     this.questReward = true,
+    Map<int, bool>? extraFixedItems,
     Map<int, Map<int, int>>? extraItems,
   })  : shopExcludeItem = shopExcludeItem ?? {},
         lotteries = lotteries ?? {},
         treasureBoxItems = treasureBoxItems ?? {},
+        extraFixedItems = extraFixedItems ?? {},
         extraItems = extraItems ?? {};
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> json) =>
@@ -582,6 +585,7 @@ class LimitEventPlan {
           treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
       fixedDrop: fixedDrop,
       questReward: questReward,
+      extraFixedItems: Map.of(extraFixedItems),
       extraItems: extraItems.map((key, value) => MapEntry(key, Map.of(value))),
     );
   }

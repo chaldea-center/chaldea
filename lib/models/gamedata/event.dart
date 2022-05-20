@@ -602,6 +602,7 @@ class Event {
       towers.isEmpty &&
       rewards.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
+      extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
 
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
@@ -778,6 +779,9 @@ class Event {
       }
     }
     if (extra != null) {
+      for (final e in extra.extraFixedItems) {
+        statItemFixed.addDict(e.items);
+      }
       for (final e in extra.extraItems) {
         statItemExtra.addAll(e.items.keys);
       }

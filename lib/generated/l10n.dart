@@ -1615,11 +1615,22 @@ class S {
     );
   }
 
-  /// `Extra Obtains`
+  /// `Extra Items`
   String get event_item_extra {
     return Intl.message(
-      'Extra Obtains',
+      'Extra Items',
       name: 'event_item_extra',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Extra Fixed Items`
+  String get event_item_fixed_extra {
+    return Intl.message(
+      'Extra Fixed Items',
+      name: 'event_item_fixed_extra',
       desc: '',
       locale: localeName,
       args: [],

@@ -167,8 +167,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       bond: json['bond'] as int,
       isNpcOnly: json['isNpcOnly'] as bool? ?? false,
       battleBgId: json['battleBgId'] as int,
-      extraDetail: QuestPhaseExtraDetail.fromJson(
-          Map<String, dynamic>.from(json['extraDetail'] as Map)),
+      extraDetail: json['extraDetail'] == null
+          ? null
+          : QuestPhaseExtraDetail.fromJson(
+              Map<String, dynamic>.from(json['extraDetail'] as Map)),
       scripts: (json['scripts'] as List<dynamic>?)
               ?.map((e) =>
                   ScriptLink.fromJson(Map<String, dynamic>.from(e as Map)))

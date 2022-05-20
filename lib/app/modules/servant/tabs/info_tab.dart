@@ -74,7 +74,7 @@ class SvtInfoTab extends StatelessWidget {
               Transl.illustratorNames(svt.profile.illustrator).l,
               Transl.cvNames(svt.profile.cv).l,
               Transl.enums(svt.gender, (enums) => enums.gender).l,
-            ], defaults: contentData),
+            ], defaults: TableCellData(textAlign: TextAlign.center)),
 
             CustomTableRow.fromTexts(texts: [
               S.current.info_strength,

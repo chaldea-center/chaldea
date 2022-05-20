@@ -254,8 +254,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Collect Items"),
-        "event_item_extra":
-            MessageLookupByLibrary.simpleMessage("Extra Obtains"),
+        "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
+        "event_item_fixed_extra":
+            MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),
         "event_lottery_limit_hint": m1,
         "event_lottery_limited":

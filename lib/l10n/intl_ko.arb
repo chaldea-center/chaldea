@@ -142,6 +142,7 @@
   "event_collect_item_confirm": "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다",
   "event_collect_items": "아이템 수집",
   "event_item_extra": "기타 아이템",
+  "event_item_fixed_extra": null,
   "event_lottery": null,
   "event_lottery_limit_hint": "최대 {n}회 제한",
   "event_lottery_limited": "제한된 룰렛",

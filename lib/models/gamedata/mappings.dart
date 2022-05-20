@@ -131,6 +131,9 @@ class Transl<K, V> {
     if ({'', '-', 'なし', 'None', 'none'}.contains(jp) && type != null) {
       return Transl(md.funcPopuptext, type.name, type.name);
     }
+    if (md.buffNames.containsKey(jp) && !md.funcPopuptext.containsKey(jp)) {
+      return Transl(md.buffNames, jp, jp);
+    }
     return Transl(md.funcPopuptext, jp, jp);
   }
 

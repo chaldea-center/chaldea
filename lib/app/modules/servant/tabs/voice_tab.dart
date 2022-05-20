@@ -13,7 +13,6 @@ import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -134,7 +133,6 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                 .add('${S.current.ascension_short} ${ascensions.join("&")}');
           }
           for (final costumeId in costumes) {
-            // id: 11
             final costume = _svt.profile.costume.values
                 .firstWhereOrNull((e) => e.battleCharaId == costumeId);
             if (costume == null) {

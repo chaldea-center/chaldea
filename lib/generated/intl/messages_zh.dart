@@ -226,7 +226,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("额外可获取素材"),
+        "event_item_extra": MessageLookupByLibrary.simpleMessage("额外素材"),
+        "event_item_fixed_extra":
+            MessageLookupByLibrary.simpleMessage("额外固定素材"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("奖池"),
         "event_lottery_limit_hint": m1,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限池"),

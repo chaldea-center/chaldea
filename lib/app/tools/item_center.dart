@@ -287,6 +287,11 @@ class ItemCenter {
     if (plan.questReward) {
       result.addDict(event.itemWarReward);
     }
+    for (final extraItems in event.extra.extraFixedItems) {
+      if (plan.extraFixedItems[extraItems.id] == true) {
+        result.addDict(extraItems.items);
+      }
+    }
     for (final extraItems in event.extra.extraItems) {
       result.addDict({
         for (final itemId in extraItems.items.keys)

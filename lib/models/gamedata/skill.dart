@@ -197,8 +197,7 @@ class BaseTd extends SkillOrTd {
   String? icon;
   String rank;
   String type;
-
-  // String? detail;
+  List<TdEffectFlag> effectFlags;
   @override
   String? unmodifiedDetail;
   NpGain npGain;
@@ -216,6 +215,7 @@ class BaseTd extends SkillOrTd {
     this.icon,
     required this.rank,
     required this.type,
+    this.effectFlags = const [],
     // this.detail,
     this.unmodifiedDetail,
     required this.npGain,
@@ -276,6 +276,7 @@ class NiceTd extends BaseTd {
     String? icon,
     required String rank,
     required String type,
+    List<TdEffectFlag> effectFlags = const [],
     // this.detail,
     String? unmodifiedDetail,
     required NpGain npGain,
@@ -295,6 +296,7 @@ class NiceTd extends BaseTd {
           icon: icon,
           rank: rank,
           type: type,
+          effectFlags: effectFlags,
           unmodifiedDetail: unmodifiedDetail,
           npGain: npGain,
           npDistribution: npDistribution,
@@ -483,6 +485,12 @@ List<BuffType> toEnumListBuffType(List<dynamic> json) {
 enum SkillType {
   active,
   passive,
+}
+
+enum TdEffectFlag {
+  support,
+  attackEnemyAll,
+  attackEnemyOne,
 }
 
 enum ClassRelationOverwriteType {
