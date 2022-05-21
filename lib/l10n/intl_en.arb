@@ -226,6 +226,7 @@
   "guda_male": "Gudao",
   "help": "Help",
   "hide_outdated": "Hide Outdated",
+  "hide_unreleased_card": "Hide Unreleased Card",
   "http_sniff_hint": "(NA/JP/CN/TW)Capture the data when logging in",
   "https_sniff": "Https Sniffing",
   "hunting_quest": "Hunting Quests",

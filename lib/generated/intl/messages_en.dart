@@ -359,6 +359,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
+        "hide_unreleased_card":
+            MessageLookupByLibrary.simpleMessage("Hide Unreleased Card"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
             "(NA/JP/CN/TW)Capture the data when logging in"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),

@@ -47,8 +47,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m14(shown, ignore, total) =>
       "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
-  static String m6(first) =>
-      "{primer, selecciona, verdadero{Ya es el primero} falso{Ya es el último} otro{No más}}";
+  static String m6(first) => "${Intl.select(first, {
+            'true': 'Ya es el primero',
+            'false': 'Ya es el último',
+            'other': 'No más',
+          })}";
 
   static String m15(n) => "Sección ${n}";
 

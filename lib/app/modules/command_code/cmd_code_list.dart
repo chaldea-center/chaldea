@@ -38,6 +38,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
+    if (db.settings.hideUnreleasedCard && db.curUser.region != Region.jp) {
+      filterData.region.toggle(db.curUser.region);
+    }
     options = _CmdCodeSearchOptions(onChanged: (_) {
       if (mounted) setState(() {});
     });
@@ -105,8 +108,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   @override
   Widget gridItemBuilder(CommandCode cc) {
-    return GestureDetector(
-      child: db.getIconImage(cc.borderedIcon),
+    return cc.iconBuilder(
+      context: context,
+      width: 72,
       onTap: () => _onTapCard(cc),
     );
   }

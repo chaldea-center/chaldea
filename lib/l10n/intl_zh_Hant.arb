@@ -226,6 +226,7 @@
   "guda_male": "咕噠夫",
   "help": "幫助",
   "hide_outdated": "隱藏已過期",
+  "hide_unreleased_card": null,
   "http_sniff_hint": "(陸/台/日/美)帳號登陸時的數據",
   "https_sniff": "Https抓包",
   "hunting_quest": "狩獵關卡",

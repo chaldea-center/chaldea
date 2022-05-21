@@ -59,6 +59,9 @@ class ServantListPageState extends State<ServantListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
+    if (db.settings.hideUnreleasedCard && db.curUser.region != Region.jp) {
+      filterData.region.toggle(db.curUser.region);
+    }
     if (db.settings.favoritePreferred != null) {
       filterData.favorite = db.settings.favoritePreferred!;
     }
@@ -755,7 +758,8 @@ class ServantListPageState extends State<ServantListPage>
       (context, snapshot) => InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: svt.iconBuilder(context: context, jumpToDetail: false),
+          image:
+              svt.iconBuilder(context: context, jumpToDetail: false, width: 72),
           shadowSize: 4,
           textBuilder: status.cur.favorite ? textBuilder : null,
           textStyle: const TextStyle(fontSize: 11, color: Colors.black),

@@ -38,6 +38,9 @@ class CraftListPageState extends State<CraftListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
+    if (db.settings.hideUnreleasedCard && db.curUser.region != Region.jp) {
+      filterData.region.toggle(db.curUser.region);
+    }
     options = _CraftSearchOptions(onChanged: (_) {
       if (mounted) setState(() {});
     });
@@ -116,8 +119,9 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   Widget gridItemBuilder(CraftEssence ce) {
-    return GestureDetector(
-      child: db.getIconImage(ce.borderedIcon),
+    return ce.iconBuilder(
+      context: context,
+      width: 72,
       onTap: () => _onTapCard(ce),
     );
   }

@@ -133,7 +133,8 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
   static final AtlasIconLoader i = AtlasIconLoader._();
-  final _rateLimiter = RateLimiter(maxCalls: 20);
+  final _rateLimiter =
+      RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 500));
   final _fsLimiter =
       RateLimiter(maxCalls: 5, period: const Duration(milliseconds: 50));
 

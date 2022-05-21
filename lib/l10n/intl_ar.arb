@@ -226,6 +226,7 @@
   "guda_male": null,
   "help": "مساعدة",
   "hide_outdated": "اخفي المنتهية",
+  "hide_unreleased_card": null,
   "http_sniff_hint": null,
   "https_sniff": null,
   "hunting_quest": null,

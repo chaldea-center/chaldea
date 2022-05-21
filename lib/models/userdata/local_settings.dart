@@ -31,6 +31,7 @@ class LocalSettings {
   bool proxyServer;
   bool autoRotate;
   bool autoResetFilter;
+  bool hideUnreleasedCard;
   FavoriteState? favoritePreferred;
   bool preferApRate;
 
@@ -65,6 +66,7 @@ class LocalSettings {
     this.autoUpdateApp = true,
     this.autoRotate = true,
     this.autoResetFilter = true,
+    this.hideUnreleasedCard = false,
     this.favoritePreferred,
     this.preferApRate = true,
     Map<int, String>? priorityTags,

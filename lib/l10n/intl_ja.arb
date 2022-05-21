@@ -226,6 +226,7 @@
   "guda_male": "ぐだ男",
   "help": "ヘルプ",
   "hide_outdated": "期限切れを非表示",
+  "hide_unreleased_card": null,
   "http_sniff_hint": "(JP/NA/CN/TW)アカウントがログインしているときにデータ",
   "https_sniff": "Httpsスニッフィング",
   "hunting_quest": "ハンティングクエスト",

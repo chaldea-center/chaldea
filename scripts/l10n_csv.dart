@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart' as csv;
 
-const langCodes = ['en', 'zh', 'zh_Hant', 'ja', 'ko', 'es', 'ar'];
+import 'shared.dart';
 
 /// Usage:
 ///   * dart l10n_csv.dart output.csv
@@ -17,16 +16,13 @@ void main(List<String> args) {
 }
 
 void _l10n2csv(String target) {
-  Map<String, Map<String, String?>> l10n = {};
-  for (final lang in langCodes) {
-    l10n[lang] = Map.from(jsonDecode(_getL10n(lang).readAsStringSync()));
-  }
+  final manager = ArbManager()..load();
 
   List<List> rows = [];
-  rows.add(['key', ...langCodes]);
+  rows.add(['key', ...ArbLang.values.map((e) => e.name)]);
 
-  for (final key in l10n['en']!.keys) {
-    rows.add([key, ...langCodes.map((e) => l10n[e]![key] ?? "")]);
+  for (final key in manager.en.keys) {
+    rows.add([key, ...ArbLang.values.map((e) => manager.data[e]![key] ?? "")]);
   }
 
   const converter = csv.ListToCsvConverter(eol: '\n');
@@ -34,21 +30,20 @@ void _l10n2csv(String target) {
 }
 
 void _csv2l10n(String source) {
-  Map<String, Map<String, String?>> l10n = {};
-  for (final lang in langCodes) {
-    l10n[lang] = Map.from(jsonDecode(_getL10n(lang).readAsStringSync()));
-  }
+  final manager = ArbManager()..load();
   const converter = csv.CsvToListConverter(eol: '\r\n');
   final rows = converter.convert(File(source).readAsStringSync());
-  assert(rows.first.skip(1).toList().toString() == langCodes.toString(),
+  assert(
+      rows.first.skip(1).toList().toString() ==
+          ArbLang.values.map((e) => e.name).toList().toString(),
       rows.first);
-  final headers = rows.first.skip(1).toList();
+  final headers = rows.first.skip(1).toList().cast<String>();
   final langMap = {
     for (int i = 0; i < headers.length; i++) i + 1: headers[i],
   };
   print(rows.first.toList());
   for (final row in rows.skip(1)) {
-    assert(row.length == langCodes.length + 1);
+    assert(row.length == ArbLang.values.length + 1);
     final key = row[0];
     for (int col = 1; col < row.length; col++) {
       String s = row[col];
@@ -60,13 +55,8 @@ void _csv2l10n(String source) {
       if (s.contains('"')) {
         print(s);
       }
-      l10n[lang]![key] = s;
+      manager.data[lang]![key] = s;
     }
   }
-  for (final lang in langCodes) {
-    _getL10n(lang).writeAsStringSync(
-        '${const JsonEncoder.withIndent('  ').convert(l10n[lang]!)}\n');
-  }
+  manager.save();
 }
-
-File _getL10n(String lang) => File('lib/l10n/intl_$lang.arb');

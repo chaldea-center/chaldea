@@ -2551,6 +2551,17 @@ class S {
     );
   }
 
+  /// `Hide Unreleased Card`
+  String get hide_unreleased_card {
+    return Intl.message(
+      'Hide Unreleased Card',
+      name: 'hide_unreleased_card',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `(NA/JP/CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(

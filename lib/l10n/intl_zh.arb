@@ -226,6 +226,7 @@
   "guda_male": "咕哒夫",
   "help": "帮助",
   "hide_outdated": "隐藏已过期",
+  "hide_unreleased_card": "隐藏未实装卡牌",
   "http_sniff_hint": "(国/台/日/美)账号登陆时的数据",
   "https_sniff": "Https抓包",
   "hunting_quest": "狩猎关卡",

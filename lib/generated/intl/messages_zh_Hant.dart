@@ -319,6 +319,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
         "help": MessageLookupByLibrary.simpleMessage("幫助"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隱藏已過期"),
+        "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隐藏未实装卡牌"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(陸/台/日/美)帳號登陸時的數據"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),

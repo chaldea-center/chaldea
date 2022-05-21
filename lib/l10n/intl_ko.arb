@@ -226,6 +226,7 @@
   "guda_male": "구다오",
   "help": "도움말",
   "hide_outdated": "기간종료 숨기기",
+  "hide_unreleased_card": null,
   "http_sniff_hint": "(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다",
   "https_sniff": "Https 스나이핑",
   "hunting_quest": null,
