@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with default auto web-renderer
         run: |
-          dart ./scripts/generate_git_info.dart
+          dart ./scripts/gen_git_info.dart
           flutter build web --release --source-maps
           dart ./scripts/patch_web_build.dart
 

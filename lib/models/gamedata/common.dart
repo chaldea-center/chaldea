@@ -20,7 +20,7 @@ class NiceTrait {
     this.negative,
   });
 
-  int get unsignedId => negative == true ? -id : id;
+  int get signedId => negative == true ? -id : id;
 
   factory NiceTrait.fromJson(Map<String, dynamic> json) =>
       _$NiceTraitFromJson(json);

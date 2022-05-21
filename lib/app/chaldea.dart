@@ -46,48 +46,52 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   Widget build(BuildContext context) {
     final lightTheme = _getThemeData(dark: false);
     final darkTheme = _getThemeData(dark: true);
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: db.settings.isResolvedDarkMode
-          ? SystemUiOverlayStyle.dark.copyWith(
-              statusBarColor: Colors.transparent,
-              systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-              statusBarIconBrightness: Brightness.light,
-              systemNavigationBarIconBrightness: Brightness.light,
-            )
-          : SystemUiOverlayStyle.light.copyWith(
-              statusBarColor: Colors.transparent,
-              systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarIconBrightness: Brightness.dark,
-            ),
-      child: Screenshot(
-        controller: db.runtimeData.screenshotController,
-        child: MaterialApp.router(
-          title: kAppName,
-          onGenerateTitle: (_) => kAppName,
-          routeInformationParser: routeInformationParser,
-          routerDelegate: rootRouter,
-          backButtonDispatcher: backButtonDispatcher,
-          debugShowCheckedModeBanner: false,
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: db.settings.themeMode,
-          scrollBehavior: DraggableScrollBehavior(),
-          locale: Language.getLanguage(db.settings.language)?.locale,
-          localizationsDelegates: const [
-            S.delegate,
-            ...GlobalMaterialLocalizations.delegates
-          ],
-          supportedLocales:
-              Language.getSortedSupportedLanguage(db.settings.language)
-                  .map((e) => e.locale),
-          builder: (context, widget) {
-            ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
-            return FlutterEasyLoading(child: widget);
-          },
-        ),
+    Widget child = Screenshot(
+      controller: db.runtimeData.screenshotController,
+      child: MaterialApp.router(
+        title: kAppName,
+        onGenerateTitle: (_) => kAppName,
+        routeInformationParser: routeInformationParser,
+        routerDelegate: rootRouter,
+        backButtonDispatcher: backButtonDispatcher,
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: db.settings.themeMode,
+        scrollBehavior: DraggableScrollBehavior(),
+        locale: Language.getLanguage(db.settings.language)?.locale,
+        localizationsDelegates: const [
+          S.delegate,
+          ...GlobalMaterialLocalizations.delegates
+        ],
+        supportedLocales:
+            Language.getSortedSupportedLanguage(db.settings.language)
+                .map((e) => e.locale),
+        builder: (context, widget) {
+          ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
+          return FlutterEasyLoading(child: widget);
+        },
       ),
     );
+    if (PlatformU.isAndroid) {
+      child = AnnotatedRegion<SystemUiOverlayStyle>(
+        value: db.settings.isResolvedDarkMode
+            ? SystemUiOverlayStyle.dark.copyWith(
+                statusBarColor: Colors.transparent,
+                systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
+                statusBarIconBrightness: Brightness.light,
+                systemNavigationBarIconBrightness: Brightness.light,
+              )
+            : SystemUiOverlayStyle.light.copyWith(
+                statusBarColor: Colors.transparent,
+                systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
+                statusBarIconBrightness: Brightness.dark,
+                systemNavigationBarIconBrightness: Brightness.dark,
+              ),
+        child: child,
+      );
+    }
+    return child;
   }
 
   ThemeData _getThemeData({required bool dark}) {

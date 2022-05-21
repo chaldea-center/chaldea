@@ -287,10 +287,10 @@ class SvtInfoTab extends StatelessWidget {
     if (traits.isEmpty) return children;
     List<NiceTrait> shownTraits = [];
     bool showMore = false;
-    final baseTraitIds = baseTraits.map((e) => e.unsignedId).toSet();
+    final baseTraitIds = baseTraits.map((e) => e.signedId).toSet();
     for (final trait in traits) {
       if (trait.id == Trait.canBeInBattle.id) continue;
-      if (baseTraitIds.contains(trait.unsignedId)) {
+      if (baseTraitIds.contains(trait.signedId)) {
         showMore = true;
         continue;
       }

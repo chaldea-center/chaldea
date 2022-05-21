@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage(
-            "Use External Storage(SD card)"),
+            "Use External Storage (SD card)"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
@@ -770,10 +770,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage(
-            "<Extra Class> Collapsed\\nSingle Row"),
+            "<Extra Class> Collapsed\nSingle Row"),
         "svt_class_filter_single_row_expanded":
             MessageLookupByLibrary.simpleMessage(
-                "<Extra Class> Expanded\\nSingle Row"),
+                "<Extra Class> Expanded\nSingle Row"),
         "svt_class_filter_two_row":
             MessageLookupByLibrary.simpleMessage("<Extra Class> in Second Row"),
         "svt_fav_btn_remember":

@@ -95,7 +95,7 @@ jobs:
         working-directory: android
 
       - name: Generate git info
-        run:  dart ./scripts/generate_git_info.dart
+        run:  dart ./scripts/gen_git_info.dart
 
       - run: flutter pub get
       - run: dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}
@@ -128,7 +128,7 @@ jobs:
         working-directory: ${{ matrix.build_path }}
 
       - name: Generate SHA1
-        run: dart ./scripts/generate_sha1.dart ./chaldea-${{ env.VERSION }}-${{ matrix.target }}${{ matrix.asset_extension }}
+        run: dart ./scripts/gen_sha1.dart ./chaldea-${{ env.VERSION }}-${{ matrix.target }}${{ matrix.asset_extension }}
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:

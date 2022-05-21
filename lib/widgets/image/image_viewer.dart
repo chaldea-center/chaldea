@@ -234,22 +234,14 @@ class _CachedImageState extends State<CachedImage> {
         if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
           fullUrl = '$kStaticHostRoot/${uri.host}/$hashValue';
         } else {
-          fullUrl = fullUrl.split('?').first;
+          fullUrl = fullUrl.split('?sha1').first;
         }
-      }
-    }
-    if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
-      final uri = Uri.tryParse(fullUrl);
-      if (uri != null && uri.host == 'fgo.wiki') {
-        final hashValue = uri.queryParameters['sha1'];
-        if (hashValue != null && hashValue.length == 40) {
-          fullUrl = '$kStaticHostRoot/${uri.host}/$hashValue';
-        }
+        uri = Uri.tryParse(fullUrl);
       }
     }
 
     Widget child = CachedNetworkImage(
-      imageUrl: fullUrl,
+      imageUrl: uri?.toString() ?? fullUrl,
       httpHeaders: cachedOption.httpHeaders,
       imageBuilder: cachedOption.imageBuilder,
       placeholder: _withPlaceholder,

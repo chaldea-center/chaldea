@@ -251,10 +251,10 @@ class S {
     );
   }
 
-  /// `Use External Storage(SD card)`
+  /// `Use External Storage (SD card)`
   String get app_data_use_external_storage {
     return Intl.message(
-      'Use External Storage(SD card)',
+      'Use External Storage (SD card)',
       name: 'app_data_use_external_storage',
       desc: '',
       locale: localeName,
@@ -5662,7 +5662,7 @@ class S {
   /// `<Extra Class> Collapsed\nSingle Row`
   String get svt_class_filter_single_row {
     return Intl.message(
-      '<Extra Class> Collapsed\\nSingle Row',
+      '<Extra Class> Collapsed\nSingle Row',
       name: 'svt_class_filter_single_row',
       desc: '',
       locale: localeName,
@@ -5673,7 +5673,7 @@ class S {
   /// `<Extra Class> Expanded\nSingle Row`
   String get svt_class_filter_single_row_expanded {
     return Intl.message(
-      '<Extra Class> Expanded\\nSingle Row',
+      '<Extra Class> Expanded\nSingle Row',
       name: 'svt_class_filter_single_row_expanded',
       desc: '',
       locale: localeName,
