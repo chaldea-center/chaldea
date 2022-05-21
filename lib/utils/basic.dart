@@ -78,6 +78,8 @@ void fillListValue<T>(List<T> list, int length, T Function(int index) fill) {
 }
 
 class Maths {
+  const Maths._();
+
   static T _convertNum<T extends num>(num a) {
     if (T == int) {
       return a.toInt() as T;
@@ -97,6 +99,12 @@ class Maths {
     assert(iterable.isNotEmpty || ifAbsent != null);
     if (iterable.isEmpty) return ifAbsent!;
     return iterable.reduce((v, e) => math.min(v, e));
+  }
+
+  static T findMax<T, S extends num>(
+      Iterable<T> iterable, S Function(T e) key) {
+    assert(iterable.isNotEmpty);
+    return iterable.reduce((v, e) => key(e) > key(v) ? e : v);
   }
 
   static T sum<T extends num>(Iterable<T?> iterable) {

@@ -53,8 +53,9 @@ class SvtTdTab extends StatelessWidget {
         overrideData: overrideTds.getOrNull(0),
       );
     }
+    NiceTd initTd = _getDefaultTd(tds) ?? tds.last;
     return ValueStatefulBuilder<int>(
-      initValue: tds.length - 1,
+      initValue: tds.indexOf(initTd),
       builder: (context, state) {
         final tdIndex = state.value;
         final td = tds[tdIndex];
@@ -116,5 +117,20 @@ class SvtTdTab extends StatelessWidget {
         );
       },
     );
+  }
+
+  NiceTd? _getDefaultTd(List<NiceTd> tds) {
+    tds = tds.where((e) => e.num > 0).toList();
+    final priorities =
+        db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(db.curUser.region);
+    if (svt.collectionNo == 1) {
+      tds = tds.where((e) => priorities?[e.id] != null).toList();
+    }
+    if (tds.isEmpty) return null;
+    if (db.curUser.region == Region.jp) {
+      return Maths.findMax<NiceTd, int>(tds, (e) => e.priority);
+    } else {
+      return Maths.findMax<NiceTd, int>(tds, (e) => priorities?[e.id] ?? -1);
+    }
   }
 }

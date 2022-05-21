@@ -216,8 +216,9 @@ class MappingData {
   final Map<int, int> traitRedirect; // key: trait id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
-  final Map<int, MappingDict<int>> skillState;
-  final Map<int, MappingDict<int>> tdState;
+  final Map<int, MappingDict<int>>
+      skillPriority; // <svtId, <skillId, priority>>
+  final Map<int, MappingDict<int>> tdPriority; // <svtId, <tdId, priority>>
   final MappingList<int> svtRelease;
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
@@ -253,8 +254,8 @@ class MappingData {
     this.traitRedirect = const {},
     this.mcDetail = const {},
     this.costumeDetail = const {},
-    this.skillState = const {},
-    this.tdState = const {},
+    this.skillPriority = const {},
+    this.tdPriority = const {},
     MappingList<int>? svtRelease,
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,

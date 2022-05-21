@@ -204,12 +204,12 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      skillState: (json['skill_state'] as Map?)?.map(
+      skillPriority: (json['skill_priority'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      tdState: (json['td_state'] as Map?)?.map(
+      tdPriority: (json['td_priority'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
