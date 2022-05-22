@@ -724,6 +724,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
+        "war_age": MessageLookupByLibrary.simpleMessage("年代"),
+        "war_banner": MessageLookupByLibrary.simpleMessage("标题图"),
         "war_title": MessageLookupByLibrary.simpleMessage("关卡配置"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
