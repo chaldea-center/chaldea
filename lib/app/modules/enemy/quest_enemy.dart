@@ -50,7 +50,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         if (enemy.svt.collectionNo == 0)
           TextButton(
             onPressed: () {
-              //
+              router.push(url: Routes.enemyI(enemy.svt.id));
             },
             child: Text('Enemy No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
           ),
@@ -69,7 +69,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 texts: [
                   'Lv',
                   '${enemy.lv}',
-                  'Charge',
+                  S.current.info_charge,
                   enemy.chargeTurn.toString(),
                 ],
                 isHeaders: const [true, false, true, false],
@@ -107,13 +107,17 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         )
       ]),
       CustomTableRow.fromTexts(
-        texts: const ['NP Gain Mod', 'Def NP Gain Mod', 'Crit Star Mod'],
+        texts: [
+          S.current.np_gain_mod,
+          S.current.def_np_gain_mod,
+          S.current.crit_star_mod,
+        ],
         isHeader: true,
       ),
       CustomTableRow.fromTexts(
         texts: [
           _dscPercent(enemy.serverMod.tdRate, 10),
-          _dscPercent(enemy.serverMod.tdRate, 10),
+          _dscPercent(enemy.serverMod.tdAttackRate, 10),
           _dscPercent(enemy.serverMod.starRate, 10),
         ],
       ),

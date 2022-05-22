@@ -72,7 +72,13 @@ class BasicServant with GameCardMixin {
       _$BasicServantFromJson(json);
 
   @override
-  Transl<String, String> get lName => Transl.entityNames(name);
+  Transl<String, String> get lName {
+    if (Transl.md.svtNames.containsKey(name)) {
+      return Transl.svtNames(name);
+    } else {
+      return Transl.entityNames(name);
+    }
+  }
 
   @override
   String get icon => face;
@@ -86,7 +92,13 @@ class BasicServant with GameCardMixin {
   }
 
   @override
-  void routeTo() => routeToId(Routes.servant);
+  void routeTo() {
+    if (collectionNo > 0) {
+      routeToId(Routes.servant);
+    } else {
+      routeToId(Routes.enemy);
+    }
+  }
 }
 
 @JsonSerializable()
@@ -254,6 +266,7 @@ class Servant with GameCardMixin {
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
   String? get customIcon {
+    if (collectionNo <= 0) return icon;
     final _icon = db.userData.customSvtIcon[collectionNo] ??
         extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ??
         icon;

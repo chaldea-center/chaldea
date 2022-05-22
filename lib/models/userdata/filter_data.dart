@@ -532,3 +532,30 @@ class SummonFilterData {
 
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
+
+class EnemyFilterData {
+  bool useGrid;
+  bool onlyShowQuestEnemy;
+  // filter
+  FilterGroupData<SvtClass> svtClass = FilterGroupData();
+  FilterGroupData<Attribute> attribute = FilterGroupData();
+  FilterGroupData<Trait> trait = FilterGroupData();
+
+  EnemyFilterData({
+    this.useGrid = false,
+    this.onlyShowQuestEnemy = true,
+  });
+
+  List<FilterGroupData> get _group => [svtClass, attribute, trait];
+
+  void reset() {
+    for (var value in _group) {
+      value.reset();
+    }
+  }
+
+  // factory EnemyFilterData.fromJson(Map<String, dynamic> data) =>
+  //     _$EnemyFilterDataFromJson(data);
+
+  // Map<String, dynamic> toJson() => _$EnemyFilterDataToJson(this);
+}

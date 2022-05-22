@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -10,8 +11,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/widgets/after_layout.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -35,16 +38,32 @@ class _BootstrapPageState extends State<BootstrapPage>
   List<Widget> pages = [];
   final _loader = GameDataLoader();
   bool _offlineLoading = true;
-
+  bool invalidStartup = false;
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _accountEditing = TextEditingController(text: db.curUser.name);
+
+    if (PlatformU.isWindows) {
+      final startupPath = db.paths.appPath.toLowerCase();
+      if (startupPath.contains(r'appdata\local\temp') ||
+          startupPath.contains(r'c:\program files')) {
+        invalidStartup = true;
+      }
+      try {
+        File(joinPaths(db.paths.appPath, 'chaldea.ignore'))
+          ..writeAsStringSync('  ')
+          ..deleteSync();
+      } catch (e) {
+        invalidStartup = true;
+      }
+    }
   }
 
   @override
   void afterFirstLayout(BuildContext context) async {
+    if (invalidStartup) return;
     try {
       if (!db.settings.tips.starter) {
         db.gameData = await _loader.reload(
@@ -66,7 +85,15 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   @override
   Widget build(BuildContext context) {
-    if (db.settings.tips.starter) {
+    if (invalidStartup) {
+      pages = [
+        StartupFailedPage(
+          error: '${S.current.invalid_startup_path}\n'
+              '${db.paths.appPath}\n\n'
+              '${S.current.invalid_startup_path_info}',
+        )
+      ];
+    } else if (db.settings.tips.starter) {
       pages = [
         welcomePage,
         languagePage,
@@ -91,7 +118,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       },
     );
 
-    if (db.settings.tips.starter || !_offlineLoading) {
+    if (!invalidStartup && (db.settings.tips.starter || !_offlineLoading)) {
       child = Stack(children: [child, _bottom()]);
     }
     return Scaffold(
@@ -369,42 +396,9 @@ class _OfflineLoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget img = const Image(
-      image: AssetImage("res/img/chaldea.png"),
-      filterQuality: FilterQuality.high,
-      height: 240,
-    );
-    if (Utility.isDarkMode(context)) {
-      // assume r=g=b
-      int b = Theme.of(context).scaffoldBackgroundColor.blue;
-      if (!kIsWeb) {
-        double v = (255 - b) / 255;
-        img = ColorFiltered(
-          colorFilter: ColorFilter.matrix([
-            //R G  B  A  Const
-            -v, 0, 0, 0, 255,
-            0, -v, 0, 0, 255,
-            0, 0, -v, 0, 255,
-            0, 0, 0, 0.8, 0,
-          ]),
-          child: img,
-        );
-      } else {
-        img = ColorFiltered(
-          colorFilter: const ColorFilter.matrix([
-            // R    G       B       A  Const
-            0.2126, 0.5152, 0.0722, 0, 0,
-            0.2126, 0.5152, 0.0722, 0, 0,
-            0.2126, 0.5152, 0.0722, 0, 0,
-            0, 0, 0, 1, 0,
-          ]),
-          child: img,
-        );
-      }
-    }
-    img = Padding(
+    Widget img = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: img,
+      child: ImageUtil.getChaldeaBackground(context),
     );
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -641,6 +635,31 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
           textAlign: TextAlign.center,
         ),
       ),
+    );
+  }
+}
+
+class StartupFailedPage extends StatelessWidget {
+  final dynamic error;
+  final StackTrace? stackTrace;
+  const StartupFailedPage({Key? key, required this.error, this.stackTrace})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsetsDirectional.all(24),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: ImageUtil.getChaldeaBackground(context),
+        ),
+        const SizedBox(height: 48),
+        Text('Error: $error', style: Theme.of(context).textTheme.subtitle1),
+        if (stackTrace != null)
+          Text('\n\n$stackTrace', style: Theme.of(context).textTheme.caption),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }

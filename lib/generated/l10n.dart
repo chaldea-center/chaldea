@@ -1054,6 +1054,17 @@ class S {
     );
   }
 
+  /// `Crit Star Mod`
+  String get crit_star_mod {
+    return Intl.message(
+      'Crit Star Mod',
+      name: 'crit_star_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Current Account`
   String get cur_account {
     return Intl.message(
@@ -1235,6 +1246,17 @@ class S {
     return Intl.message(
       'Debug Menu',
       name: 'debug_menu',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Def NP Gain Mod`
+  String get def_np_gain_mod {
+    return Intl.message(
+      'Def NP Gain Mod',
+      name: 'def_np_gain_mod',
       desc: '',
       locale: localeName,
       args: [],
@@ -1499,6 +1521,17 @@ class S {
     return Intl.message(
       'Email',
       name: 'email',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Trait filter is only used for enemies in Main Story's free quests`
+  String get enemy_filter_trait_hint {
+    return Intl.message(
+      'Trait filter is only used for enemies in Main Story\'s free quests',
+      name: 'enemy_filter_trait_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -3013,6 +3046,17 @@ class S {
     );
   }
 
+  /// `Charge`
+  String get info_charge {
+    return Intl.message(
+      'Charge',
+      name: 'info_charge',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Critical Rate`
   String get info_critical_rate {
     return Intl.message(
@@ -4240,6 +4284,17 @@ class S {
     );
   }
 
+  /// `NP Gain Mod`
+  String get np_gain_mod {
+    return Intl.message(
+      'NP Gain Mod',
+      name: 'np_gain_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `NP`
   String get np_short {
     return Intl.message(
@@ -4575,6 +4630,17 @@ class S {
     return Intl.message(
       'details',
       name: 'quest_detail_btn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait.`
+  String get quest_enemy_summary_hint {
+    return Intl.message(
+      'A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait.',
+      name: 'quest_enemy_summary_hint',
       desc: '',
       locale: localeName,
       args: [],

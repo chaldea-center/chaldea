@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+import '../../../models/models.dart';
 
 abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;
@@ -228,6 +230,77 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
               value: e.key, child: Text(e.value, style: textStyle)))
           .toList(),
       onChanged: onSortAttr,
+    );
+  }
+
+  Widget buildClassFilter(FilterGroupData<SvtClass> data,
+      {VoidCallback? onChanged}) {
+    final shownClasses = SvtClassX.regularAllWithB2;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(S.of(context).filter_sort_class, style: textStyle),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: GridView.count(
+                    crossAxisCount: 1,
+                    childAspectRatio: 1.2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: List.generate(2, (index) {
+                      final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
+                      return GestureDetector(
+                        child: db.getIconImage(icon, width: 60),
+                        onTap: () {
+                          data.options = index == 0 ? shownClasses.toSet() : {};
+                          update();
+                          onChanged?.call();
+                        },
+                      );
+                    }),
+                  ),
+                ),
+                Container(width: 10),
+                Expanded(
+                  flex: 8,
+                  child: GridView.count(
+                    crossAxisCount: 8,
+                    shrinkWrap: true,
+                    childAspectRatio: 1.2,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: shownClasses.map((className) {
+                      final selected = data.options.contains(className);
+                      Widget icon = db.getIconImage(
+                          className.icon(selected ? 5 : 1),
+                          aspectRatio: 1);
+                      if (className == SvtClass.beastII && !selected) {
+                        icon = ColorFiltered(
+                          colorFilter: ImageUtil.greyscalBeast,
+                          child: icon,
+                        );
+                      }
+                      return GestureDetector(
+                        child: icon,
+                        onTap: () {
+                          data.toggle(className);
+                          update();
+                        },
+                      );
+                    }).toList(),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

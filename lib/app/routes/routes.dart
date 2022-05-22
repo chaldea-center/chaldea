@@ -4,6 +4,8 @@ import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
+import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
+import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
@@ -36,6 +38,10 @@ class Routes {
   static String servantI(int id) => '/servant/$id';
   static const String servant = '/servant';
   static const String servants = '/servants';
+
+  static String enemyI(int id) => '/enemy/$id';
+  static const String enemy = '/enemy';
+  static const String enemies = '/enemies';
 
   static String craftEssenceI(int id) => '/craft-essence/$id';
   static const String craftEssence = '/craft-essence';
@@ -187,8 +193,12 @@ class RouteConfiguration {
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
-        // TODO: add BasicServant
         return ServantDetailPage(id: _secondInt);
+      case Routes.enemies:
+        return EnemyListPage();
+      case Routes.enemy:
+        if (_secondInt == null) break;
+        return EnemyDetailPage(id: _secondInt);
       case Routes.plans:
         return ServantListPage(planMode: true);
       case Routes.craftEssences:

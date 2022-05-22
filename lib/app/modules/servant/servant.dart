@@ -196,7 +196,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'No.${svt.collectionNo}  ${Transl.svtClass(svt.className).l}',
+            'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
+            '  ${Transl.svtClass(svt.className).l}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           if (svt.isUserSvt)
@@ -313,13 +314,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
       preferredSize: const Size(double.infinity, 36),
       child: SizedBox(
         height: 36,
-        child: TabBar(
-          // labelColor: Theme.of(context).colorScheme.secondary,
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-          // unselectedLabelColor: Colors.grey,
-          isScrollable: true,
-          tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TabBar(
+            // labelColor: Theme.of(context).colorScheme.secondary,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+            // unselectedLabelColor: Colors.grey,
+            isScrollable: true,
+            tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+          ),
         ),
       ),
     );
@@ -424,22 +428,22 @@ class ServantDetailPageState extends State<ServantDetailPage>
     return PopupMenuButton(
       itemBuilder: (context) {
         return [
-          PopupMenuItem(
-            value: 'plan', // dialog
-            onTap: () async {
-              await null;
-              SharedBuilder.showSwitchPlanDialog(
-                context: context,
-                onChange: (index) {
-                  db.curUser.curSvtPlanNo = index;
-                  db.curUser.ensurePlanLarger();
-                  db.itemCenter.calculate();
-                },
-              );
-            },
-            child: Text(S.of(context).select_plan),
-          ),
-          if (svt.isUserSvt)
+          if (svt.isUserSvt) ...[
+            PopupMenuItem(
+              value: 'plan', // dialog
+              onTap: () async {
+                await null;
+                SharedBuilder.showSwitchPlanDialog(
+                  context: context,
+                  onChange: (index) {
+                    db.curUser.curSvtPlanNo = index;
+                    db.curUser.ensurePlanLarger();
+                    db.itemCenter.calculate();
+                  },
+                );
+              },
+              child: Text(S.of(context).select_plan),
+            ),
             PopupMenuItem<String>(
               value: 'reset', // dialog
               onTap: () async {
@@ -458,7 +462,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
               },
               child: Text(S.of(context).reset),
             ),
-          if (svt.isUserSvt)
             PopupMenuItem<String>(
               value: 'reset_plan',
               onTap: () {
@@ -469,68 +472,69 @@ class ServantDetailPageState extends State<ServantDetailPage>
               },
               child: Text(S.current.svt_reset_plan),
             ),
-          PopupMenuItem(
-            child: Text(S.current.svt_ascension_icon),
-            onTap: () async {
-              await null;
-              await showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) {
-                  List<Widget> children = [];
-                  void _addOne(String name, String? icon) {
-                    if (icon == null) return;
-                    children.add(ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: db.getIconImage(svt.bordered(icon),
-                          padding: const EdgeInsets.symmetric(vertical: 2)),
-                      title: Text(name),
-                      onTap: () {
-                        db.userData.customSvtIcon[svt.collectionNo] = icon;
-                        Navigator.pop(context);
-                      },
-                    ));
-                  }
-
-                  final faces = svt.extraAssets.faces;
-                  if (faces.ascension != null) {
-                    faces.ascension!.forEach((key, value) {
-                      _addOne('${S.current.ascension} $key', value);
-                    });
-                  }
-                  if (faces.costume != null) {
-                    faces.costume!.forEach((key, value) {
-                      _addOne(
-                        svt.profile.costume[key]?.lName.l ??
-                            '${S.current.costume} $key',
-                        value,
-                      );
-                    });
-                  }
-                  return SimpleCancelOkDialog(
-                    title: Text(S.current.svt_ascension_icon),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: children,
-                      ),
-                    ),
-                    hideOk: true,
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          db.userData.customSvtIcon.remove(svt.collectionNo);
+            PopupMenuItem(
+              child: Text(S.current.svt_ascension_icon),
+              onTap: () async {
+                await null;
+                await showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) {
+                    List<Widget> children = [];
+                    void _addOne(String name, String? icon) {
+                      if (icon == null) return;
+                      children.add(ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: db.getIconImage(svt.bordered(icon),
+                            padding: const EdgeInsets.symmetric(vertical: 2)),
+                        title: Text(name),
+                        onTap: () {
+                          db.userData.customSvtIcon[svt.collectionNo] = icon;
                           Navigator.pop(context);
                         },
-                        child: Text(S.current.reset),
+                      ));
+                    }
+
+                    final faces = svt.extraAssets.faces;
+                    if (faces.ascension != null) {
+                      faces.ascension!.forEach((key, value) {
+                        _addOne('${S.current.ascension} $key', value);
+                      });
+                    }
+                    if (faces.costume != null) {
+                      faces.costume!.forEach((key, value) {
+                        _addOne(
+                          svt.profile.costume[key]?.lName.l ??
+                              '${S.current.costume} $key',
+                          value,
+                        );
+                      });
+                    }
+                    return SimpleCancelOkDialog(
+                      title: Text(S.current.svt_ascension_icon),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: children,
+                        ),
                       ),
-                    ],
-                  );
-                },
-              );
-              if (mounted) setState(() {});
-            },
-          ),
+                      hideOk: true,
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            db.userData.customSvtIcon.remove(svt.collectionNo);
+                            Navigator.pop(context);
+                          },
+                          child: Text(S.current.reset),
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (mounted) setState(() {});
+              },
+            ),
+          ],
           ...SharedBuilder.websitesPopupMenuItems(
             atlas: Atlas.dbServant(svt.id),
             mooncell: svt.extra.mcLink,
@@ -547,17 +551,18 @@ class ServantDetailPageState extends State<ServantDetailPage>
           //     value: 'delete_duplicated', //pop cur page
           //   ),
           // if (_tabController.index == 0)
-          PopupMenuItem<String>(
-            value: 'switch_slider_dropdown',
-            onTap: () {
-              db.settings.display.svtPlanInputMode = EnumUtil.next(
-                  SvtPlanInputMode.values,
-                  db.settings.display.svtPlanInputMode);
-              db.saveSettings();
-              setState(() {});
-            },
-            child: Text(S.current.svt_switch_slider_dropdown),
-          ),
+          if (svt.isUserSvt)
+            PopupMenuItem<String>(
+              value: 'switch_slider_dropdown',
+              onTap: () {
+                db.settings.display.svtPlanInputMode = EnumUtil.next(
+                    SvtPlanInputMode.values,
+                    db.settings.display.svtPlanInputMode);
+                db.saveSettings();
+                setState(() {});
+              },
+              child: Text(S.current.svt_switch_slider_dropdown),
+            ),
         ];
       },
       onSelected: (select) {

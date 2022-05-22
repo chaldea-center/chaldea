@@ -75,7 +75,6 @@ class SvtInfoTab extends StatelessWidget {
               Transl.cvNames(svt.profile.cv).l,
               Transl.enums(svt.gender, (enums) => enums.gender).l,
             ], defaults: TableCellData(textAlign: TextAlign.center)),
-
             CustomTableRow.fromTexts(texts: [
               S.current.info_strength,
               S.current.info_endurance,
@@ -92,12 +91,13 @@ class SvtInfoTab extends StatelessWidget {
               svt.profile.stats?.luck ?? '-',
               svt.profile.stats?.np ?? '-',
             ], defaults: contentData),
-
             CustomTableRow(children: [
               TableCellData(
                   text: S.current.info_alignment, isHeader: true, flex: 2),
               TableCellData(
-                  text: S.current.filter_attribute, isHeader: true, flex: 1),
+                  text: S.current.filter_attribute, isHeader: true, flex: 2),
+              TableCellData(
+                  text: S.current.general_type, isHeader: true, flex: 2),
             ]),
             CustomTableRow(children: [
               TableCellData(
@@ -108,169 +108,159 @@ class SvtInfoTab extends StatelessWidget {
                     Transl.servantPersonality(svt.profile.stats!.personality!)
                         .l,
                 ].join('·'),
-                flex: 2,
                 textAlign: TextAlign.center,
               ),
-              TableCellData(
-                  text: Transl.svtAttribute(svt.attribute).l, flex: 1),
+              TableCellData(text: Transl.svtAttribute(svt.attribute).l),
+              TableCellData(text: svt.type.name),
             ]),
-            if (svt.isUserSvt) ...[
-              CustomTableRow.fromTexts(texts: [
-                S.current.info_value,
-                'Lv.1',
-                'Lv.Max',
-                'Lv.90',
-                'Lv.100',
-                'Lv.120'
-              ], defaults: headerData),
-              _addAtkHpRow(context, 'ATK', [
+            CustomTableRow.fromTexts(texts: [
+              S.current.info_value,
+              'Lv.1',
+              'Lv.Max',
+              'Lv.90',
+              'Lv.100',
+              'Lv.120'
+            ], defaults: headerData),
+            _addAtkHpRow(context, 'ATK', [
+              svt.atkBase,
+              svt.atkMax,
+              svt.atkGrowth.getOrNull(89),
+              svt.atkGrowth.getOrNull(99),
+              svt.atkGrowth.getOrNull(109),
+            ]),
+            _addAtkHpRow(
+              context,
+              'ATK*',
+              [
                 svt.atkBase,
                 svt.atkMax,
                 svt.atkGrowth.getOrNull(89),
                 svt.atkGrowth.getOrNull(99),
                 svt.atkGrowth.getOrNull(109),
-              ]),
-              _addAtkHpRow(
-                context,
-                'ATK*',
-                [
-                  svt.atkBase,
-                  svt.atkMax,
-                  svt.atkGrowth.getOrNull(89),
-                  svt.atkGrowth.getOrNull(99),
-                  svt.atkGrowth.getOrNull(109),
-                ],
-                db.gameData.constData.classAttackRate[svt.className],
-              ),
-              _addAtkHpRow(context, 'HP', [
-                svt.hpBase,
-                svt.hpMax,
-                svt.hpGrowth.getOrNull(89),
-                svt.hpGrowth.getOrNull(99),
-                svt.hpGrowth.getOrNull(109),
-              ]),
-              CustomTableRow.fromTexts(
-                  texts: [S.current.info_cards], defaults: headerData),
-              CustomTableRow(children: [
-                if (svt.noblePhantasms.isNotEmpty)
-                  TableCellData(
-                    child: CommandCardWidget(
-                        card: svt.noblePhantasms.first.card, width: 55),
-                    flex: 1,
-                  ),
+              ],
+              db.gameData.constData.classAttackRate[svt.className],
+            ),
+            _addAtkHpRow(context, 'HP', [
+              svt.hpBase,
+              svt.hpMax,
+              svt.hpGrowth.getOrNull(89),
+              svt.hpGrowth.getOrNull(99),
+              svt.hpGrowth.getOrNull(109),
+            ]),
+            CustomTableRow.fromTexts(
+                texts: [S.current.info_cards], defaults: headerData),
+            CustomTableRow(children: [
+              if (svt.noblePhantasms.isNotEmpty)
                 TableCellData(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: svt.cards
-                        .map((e) => CommandCardWidget(card: e, width: 44))
-                        .toList(),
-                  ),
-                  flex: 3,
+                  child: CommandCardWidget(
+                      card: svt.noblePhantasms.first.card, width: 55),
+                  flex: 1,
+                ),
+              TableCellData(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: svt.cards
+                      .map((e) => CommandCardWidget(card: e, width: 44))
+                      .toList(),
+                ),
+                flex: 3,
+              )
+            ]),
+            CustomTableRow.fromTexts(
+                texts: const ['Hits'], defaults: headerData),
+            for (final entry in svt.hitsDistribution.entries)
+              CustomTableRow(children: [
+                TableCellData(text: entry.key.name.toTitle(), isHeader: true),
+                TableCellData(
+                  text: entry.value.isEmpty
+                      ? '   -'
+                      : '   ${entry.value.length} Hits '
+                          '(${entry.value.join(', ')})',
+                  flex: 5,
+                  alignment: Alignment.centerLeft,
                 )
               ]),
-              CustomTableRow.fromTexts(
-                  texts: const ['Hits'], defaults: headerData),
-              for (final entry in svt.hitsDistribution.entries)
-                CustomTableRow(children: [
-                  TableCellData(text: entry.key.name.toTitle(), isHeader: true),
-                  TableCellData(
-                    text: entry.value.isEmpty
-                        ? '   -'
-                        : '   ${entry.value.length} Hits '
-                            '(${entry.value.join(', ')})',
-                    flex: 5,
-                    alignment: Alignment.centerLeft,
-                  )
-                ]),
-              CustomTableRow.fromTexts(
-                  texts: [S.current.info_np_rate], defaults: headerData),
-              CustomTableRow.fromTexts(texts: const [
-                'Buster',
-                'Arts',
-                'Quick',
-                'Extra',
-                'NP',
-                'Def'
-              ], defaults: TableCellData(isHeader: true, maxLines: 1)),
-              ..._npRates(),
-              CustomTableRow.fromTexts(texts: [
-                S.current.info_star_rate,
-                S.current.info_death_rate,
-                S.current.info_critical_rate
-              ], defaults: headerData),
-              CustomTableRow.fromTexts(
-                texts: [
-                  '${svt.starGen / 10}%',
-                  '${svt.instantDeathChance / 10}%',
-                  svt.starAbsorb.toString(),
-                ],
-                defaults: contentData,
-              ),
-              CustomTableRow.fromTexts(
-                  texts: [S.current.info_trait], defaults: headerData),
+            CustomTableRow.fromTexts(
+                texts: [S.current.info_np_rate], defaults: headerData),
+            CustomTableRow.fromTexts(
+                texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
+                defaults: TableCellData(isHeader: true, maxLines: 1)),
+            ..._npRates(),
+            CustomTableRow.fromTexts(texts: [
+              S.current.info_star_rate,
+              S.current.info_death_rate,
+              S.current.info_critical_rate
+            ], defaults: headerData),
+            CustomTableRow.fromTexts(
+              texts: [
+                '${svt.starGen / 10}%',
+                '${svt.instantDeathChance / 10}%',
+                svt.starAbsorb.toString(),
+              ],
+              defaults: contentData,
+            ),
+            CustomTableRow.fromTexts(
+                texts: [S.current.info_trait], defaults: headerData),
+            ..._addTraits(
+              context,
+              null,
+              baseTraits,
+              [],
+            ),
+            for (final entry
+                in svt.ascensionAdd.individuality.ascension.entries)
+              ..._addTraits(
+                  context,
+                  TextSpan(text: '${S.current.ascension_short} ${entry.key}: '),
+                  entry.value,
+                  baseTraits),
+            for (final entry in svt.ascensionAdd.individuality.costume.entries)
               ..._addTraits(
                 context,
-                null,
+                TextSpan(
+                    text:
+                        '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
+                entry.value,
                 baseTraits,
-                [],
               ),
-              for (final entry
-                  in svt.ascensionAdd.individuality.ascension.entries)
-                ..._addTraits(
-                    context,
-                    TextSpan(
-                        text: '${S.current.ascension_short} ${entry.key}: '),
-                    entry.value,
-                    baseTraits),
-              for (final entry
-                  in svt.ascensionAdd.individuality.costume.entries)
-                ..._addTraits(
-                  context,
-                  TextSpan(
-                      text:
-                          '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
-                  entry.value,
-                  baseTraits,
-                ),
-              if (svt.bondGrowth.isNotEmpty) ...[
+            if (svt.bondGrowth.isNotEmpty) ...[
+              CustomTableRow.fromTexts(
+                  texts: [S.current.info_bond_points], defaults: headerData),
+              for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
                 CustomTableRow.fromTexts(
-                    texts: [S.current.info_bond_points], defaults: headerData),
-                for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
-                  CustomTableRow.fromTexts(
-                    texts: [
-                      'Lv.',
-                      for (int i = row * 5; i < row * 5 + 5; i++)
-                        (i + 1).toString()
-                    ],
-                    defaults: TableCellData(
-                        color: TableCellData.resolveHeaderColor(context)
-                            .withOpacity(0.5)),
-                  ),
-                  CustomTableRow.fromTexts(
-                    texts: [
-                      S.of(context).info_bond_points_single,
-                      for (int i = row * 5; i < row * 5 + 5; i++)
-                        i >= svt.bondGrowth.length
-                            ? '-'
-                            : ((svt.bondGrowth.getOrNull(i) ?? 0) -
-                                    (svt.bondGrowth.getOrNull(i - 1) ?? 0))
-                                .toString(),
-                    ],
-                    defaults: TableCellData(maxLines: 1),
-                  ),
-                  CustomTableRow.fromTexts(
-                    texts: [
-                      S.of(context).info_bond_points_sum,
-                      for (int i = row * 5; i < row * 5 + 5; i++)
-                        i >= svt.bondGrowth.length
-                            ? '-'
-                            : svt.bondGrowth[i].toString(),
-                    ],
-                    defaults: TableCellData(maxLines: 1),
-                  ),
-                ],
-              ]
-            ] //end available svts
+                  texts: [
+                    'Lv.',
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      (i + 1).toString()
+                  ],
+                  defaults: TableCellData(
+                      color: TableCellData.resolveHeaderColor(context)
+                          .withOpacity(0.5)),
+                ),
+                CustomTableRow.fromTexts(
+                  texts: [
+                    S.of(context).info_bond_points_single,
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      i >= svt.bondGrowth.length
+                          ? '-'
+                          : ((svt.bondGrowth.getOrNull(i) ?? 0) -
+                                  (svt.bondGrowth.getOrNull(i - 1) ?? 0))
+                              .toString(),
+                  ],
+                  defaults: TableCellData(maxLines: 1),
+                ),
+                CustomTableRow.fromTexts(
+                  texts: [
+                    S.of(context).info_bond_points_sum,
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      i >= svt.bondGrowth.length
+                          ? '-'
+                          : svt.bondGrowth[i].toString(),
+                  ],
+                  defaults: TableCellData(maxLines: 1),
+                ),
+              ],
+            ]
           ],
         ),
       ),

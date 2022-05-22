@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -184,9 +185,16 @@ class _Database {
   Future<void> saveSettings() => _saveWithBak(paths.settingsPath, settings);
 
   Future<void> _saveWithBak(String fp, Object obj) async {
-    String content = jsonEncode(obj);
-    await FilePlus(fp).writeAsString(content, flush: true);
-    await FilePlus(fp + _backSuffix).writeAsString(content, flush: true);
+    try {
+      String content = jsonEncode(obj);
+      await FilePlus(fp).writeAsString(content, flush: true);
+      await FilePlus(fp + _backSuffix).writeAsString(content, flush: true);
+    } catch (e, s) {
+      if (kAppKey.currentContext != null) {
+        EasyLoading.showError(e.toString());
+      }
+      logger.e('saving file failed', e, s);
+    }
   }
 
   void _startSavingLoop() {

@@ -127,7 +127,7 @@ class OverrideTDData {
 }
 
 class TdDescriptor extends StatelessWidget with FuncsDescriptor {
-  final NiceTd td;
+  final BaseTd td;
   final int? level;
   final bool showPlayer;
   final bool showEnemy;

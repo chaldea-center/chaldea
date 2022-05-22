@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,6 +8,8 @@ import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -340,5 +344,156 @@ class SharedBuilder {
     if (fileType == null) return null;
     return FilePicker.platform.pickFiles(
         type: fileType!, allowMultiple: allowMultiple, withData: withData);
+  }
+
+  static Widget topSvtClassFilter({
+    required BuildContext context,
+    required double maxWidth,
+    required FilterGroupData<SvtClass> data,
+    VoidCallback? onChanged,
+  }) {
+    Widget _oneClsBtn(SvtClass clsName) {
+      final extraClasses = [...SvtClassX.extra, SvtClass.beastII];
+      int rarity = 1;
+      if (clsName == SvtClass.ALL) {
+        rarity = data.isEmpty(SvtClassX.regularAllWithB2) ||
+                data.isAll(SvtClassX.regularAllWithB2)
+            ? 5
+            : 1;
+      } else if (clsName == SvtClass.EXTRA) {
+        if (data.isAll(extraClasses)) {
+          rarity = 5;
+        } else if (data.isEmpty(extraClasses)) {
+          rarity = 1;
+        } else {
+          rarity = 3;
+        }
+      } else {
+        rarity = data.options.contains(clsName) ? 5 : 1;
+      }
+      Widget icon = db.getIconImage(
+        clsName.icon(rarity),
+        aspectRatio: 1,
+        width: 32,
+      );
+      if (rarity != 5 && clsName == SvtClass.beastII) {
+        icon = ColorFiltered(
+          colorFilter: ImageUtil.greyscalBeast,
+          child: icon,
+        );
+        // icon = Opacity(opacity: 0.7, child: icon);
+      }
+      return InkWell(
+        child: Padding(
+          padding: const EdgeInsets.all(1),
+          child: icon,
+        ),
+        onTap: () {
+          if (clsName == SvtClass.ALL) {
+            data.options = {};
+          } else if (clsName == SvtClass.EXTRA) {
+            data.options = Set.from(extraClasses);
+          } else {
+            data.options = {clsName};
+          }
+          onChanged?.call();
+        },
+      );
+    }
+
+    final clsRegularBtns = [
+      _oneClsBtn(SvtClass.ALL),
+      for (var clsName in SvtClassX.regular) _oneClsBtn(clsName),
+    ];
+    final clsExtraBtns = [
+      for (var clsName in [...SvtClassX.extra, SvtClass.beastII])
+        _oneClsBtn(clsName),
+    ];
+    final extraBtn = _oneClsBtn(SvtClass.EXTRA);
+    SvtListClassFilterStyle style = db.settings.display.classFilterStyle;
+    // full window mode
+    if (SplitRoute.isSplit(context) && SplitRoute.of(context)!.detail == null) {
+      style = SvtListClassFilterStyle.singleRowExpanded;
+    }
+    if (style == SvtListClassFilterStyle.auto) {
+      double height = MediaQuery.of(context).size.height;
+      if (height < 600) {
+        // one row
+        if (maxWidth < 32 * 10) {
+          // fixed
+          style = SvtListClassFilterStyle.singleRow;
+        } else {
+          // expand, scrollable
+          style = SvtListClassFilterStyle.singleRowExpanded;
+        }
+      } else {
+        // two rows ok
+        if (maxWidth < 32 * 10) {
+          // two row
+          style = SvtListClassFilterStyle.twoRow;
+        } else {
+          // expand, scrollable
+          style = SvtListClassFilterStyle.singleRowExpanded;
+        }
+      }
+    }
+    switch (style) {
+      case SvtListClassFilterStyle.auto: // already resolved
+        return Container();
+      case SvtListClassFilterStyle.singleRow:
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 40),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [...clsRegularBtns, extraBtn]
+                .map((e) => Expanded(child: e))
+                .toList(),
+          ),
+        );
+      case SvtListClassFilterStyle.singleRowExpanded:
+        final allBtns = [...clsRegularBtns, ...clsExtraBtns];
+        return SizedBox(
+          height: 40,
+          child: Row(
+            children: [
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: allBtns,
+                ),
+              ),
+              if (maxWidth < 36 * allBtns.length)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 6),
+                  child: Icon(
+                    DirectionalIcons.keyboard_arrow_forward(context),
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
+            ],
+          ),
+        );
+      case SvtListClassFilterStyle.twoRow:
+        int crossCount = max(clsRegularBtns.length, clsExtraBtns.length);
+        clsRegularBtns.addAll(List.generate(
+            crossCount - clsRegularBtns.length, (index) => Container()));
+        clsExtraBtns.addAll(List.generate(
+            crossCount - clsExtraBtns.length, (index) => Container()));
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final btns in [clsRegularBtns, clsExtraBtns])
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 40),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: btns.map((e) => Expanded(child: e)).toList(),
+                ),
+              ),
+          ],
+        );
+      case SvtListClassFilterStyle.doNotShow:
+        return const SizedBox();
+    }
   }
 }

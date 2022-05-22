@@ -66,7 +66,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               },
             ),
         ]),
-        _buildClassFilter(),
+        buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.of(context).priority, style: textStyle),
           options: const [1, 2, 3, 4, 5],
@@ -276,76 +276,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
       case SvtEffectScope.td:
         return S.current.np_short;
     }
-  }
-
-  Widget _buildClassFilter() {
-    final shownClasses = SvtClassX.regularAllWithB2;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(S.of(context).filter_sort_class, style: textStyle),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: GridView.count(
-                    crossAxisCount: 1,
-                    childAspectRatio: 1.2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: List.generate(2, (index) {
-                      final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
-                      return GestureDetector(
-                        child: db.getIconImage(icon, width: 60),
-                        onTap: () {
-                          filterData.svtClass.options =
-                              index == 0 ? shownClasses.toSet() : {};
-                          update();
-                        },
-                      );
-                    }),
-                  ),
-                ),
-                Container(width: 10),
-                Expanded(
-                    flex: 8,
-                    child: GridView.count(
-                      crossAxisCount: 8,
-                      shrinkWrap: true,
-                      childAspectRatio: 1.2,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: shownClasses.map((className) {
-                        final selected =
-                            filterData.svtClass.options.contains(className);
-                        Widget icon = db.getIconImage(
-                            className.icon(selected ? 5 : 1),
-                            aspectRatio: 1);
-                        if (className == SvtClass.beastII && !selected) {
-                          icon = ColorFiltered(
-                            colorFilter: ImageUtil.greyscalBeast,
-                            child: icon,
-                          );
-                        }
-                        return GestureDetector(
-                          child: icon,
-                          onTap: () {
-                            filterData.svtClass.toggle(className);
-                            update();
-                          },
-                        );
-                      }).toList(),
-                    ))
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

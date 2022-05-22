@@ -186,6 +186,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "You can add more accounts later in Settings"),
         "create_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Create duplicated"),
+        "crit_star_mod": MessageLookupByLibrary.simpleMessage("Crit Star Mod"),
         "cur_account": MessageLookupByLibrary.simpleMessage("Current Account"),
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
         "current_version":
@@ -209,6 +210,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug": MessageLookupByLibrary.simpleMessage("Debug"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
+        "def_np_gain_mod":
+            MessageLookupByLibrary.simpleMessage("Def NP Gain Mod"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "display_setting":
@@ -239,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_drop":
             MessageLookupByLibrary.simpleMessage("Drop Rate"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage(
+            "Trait filter is only used for enemies in Main Story\'s free quests"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
@@ -426,6 +431,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Point"),
         "info_bond_points_sum": MessageLookupByLibrary.simpleMessage("Sum"),
         "info_cards": MessageLookupByLibrary.simpleMessage("Cards"),
+        "info_charge": MessageLookupByLibrary.simpleMessage("Charge"),
         "info_critical_rate":
             MessageLookupByLibrary.simpleMessage("Critical Rate"),
         "info_cv": MessageLookupByLibrary.simpleMessage("Voice Actor"),
@@ -596,6 +602,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_implemented":
             MessageLookupByLibrary.simpleMessage("Not yet implemented"),
         "not_outdated": MessageLookupByLibrary.simpleMessage("Not Outdated"),
+        "np_gain_mod": MessageLookupByLibrary.simpleMessage("NP Gain Mod"),
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
@@ -636,6 +643,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_chapter_n": m15,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("details"),
+        "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
+            "A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait."),
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),

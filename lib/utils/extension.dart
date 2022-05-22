@@ -97,6 +97,11 @@ extension ListX<T> on List<T> {
       sort((a, b) => compare(a).compareTo(compare(b)));
     }
   }
+
+  List<T> sortReturn([int Function(T a, T b)? compare]) {
+    sort(compare);
+    return this;
+  }
 }
 
 extension IterableX<E> on Iterable<E> {
