@@ -4,7 +4,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
+import 'package:dio/dio.dart';
 import 'package:image/image.dart';
 import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
@@ -88,19 +88,6 @@ class ServerFeedbackHandler extends ReportHandler {
   /// store html message that has already be sent
   final HashSet<String> _sentReports = HashSet();
 
-  /// the same error may have different StackTrace
-  String _getReportShortSummary(Report report) {
-    StringBuffer buffer = StringBuffer();
-    buffer.writeln(report.error.toString());
-    final lines = report.stackTrace.toString().split('\n');
-    int index =
-        lines.lastIndexWhere((line) => line.contains('package:chaldea'));
-    if (lines.isNotEmpty) {
-      buffer.writeAll(lines.take(index < 0 ? 3 : min(index + 1, 20)), '\n');
-    }
-    return buffer.toString();
-  }
-
   Future<bool> _sendMail(
     Report report, {
     Uint8List? screenshotBytes,
@@ -169,9 +156,16 @@ class ServerFeedbackHandler extends ReportHandler {
   List<String>? _blockedErrors;
 
   Future<bool> _isBlockedError(Report report) async {
+    if (report.error is DioError) return true;
     if (kIsWeb) {
       if (['TypeError: Failed to fetch', 'Bad state: Future already completed']
           .contains(report.shownError)) {
+        return true;
+      }
+    }
+    if (!kIsWeb) {
+      if (report.stackTrace != null &&
+          !report.stackTrace.toString().contains('chaldea')) {
         return true;
       }
     }

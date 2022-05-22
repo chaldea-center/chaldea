@@ -12,6 +12,18 @@ enum ArbLang {
   ar,
 }
 
+ArbLang parseArbLang(String lang) {
+  return {
+    'en': ArbLang.en,
+    'zh': ArbLang.zh,
+    'zh_Hant': ArbLang.zh_Hant,
+    'ja': ArbLang.ja,
+    'ko': ArbLang.ko,
+    'es': ArbLang.es,
+    'ar': ArbLang.ar,
+  }[lang]!;
+}
+
 Map<String, String?> loadArb(ArbLang lang) {
   return Map.from(
       jsonDecode(File('lib/l10n/intl_${lang.name}.arb').readAsStringSync()));

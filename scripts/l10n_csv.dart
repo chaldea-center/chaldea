@@ -55,7 +55,8 @@ void _csv2l10n(String source) {
       if (s.contains('"')) {
         print(s);
       }
-      manager.data[lang]![key] = s;
+      ArbLang.values;
+      manager.data[parseArbLang(lang)]![key] = s;
     }
   }
   manager.save();

@@ -11,7 +11,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../common/filter_group.dart';

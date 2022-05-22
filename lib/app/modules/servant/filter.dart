@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';

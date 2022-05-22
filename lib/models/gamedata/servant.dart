@@ -84,9 +84,9 @@ class BasicServant with GameCardMixin {
   String get icon => face;
 
   @override
-  String? get borderedIcon {
+  String get borderedIcon {
     if (type == SvtType.combineMaterial || type == SvtType.statusUp) {
-      return super.borderedIcon;
+      return super.borderedIcon!;
     }
     return icon;
   }
@@ -259,9 +259,10 @@ class Servant with GameCardMixin {
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
   @override
-  String? get icon =>
-      extraAssets.faces.ascension?[1] ??
-      extraAssets.faces.ascension?.values.toList().getOrNull(0);
+  String? get icon => extraAssets.faces.ascension?.values.toList().getOrNull(0);
+
+  @override
+  String? get borderedIcon => collectionNo > 0 ? super.borderedIcon : icon;
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 

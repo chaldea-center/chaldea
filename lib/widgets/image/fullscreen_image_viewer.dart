@@ -111,7 +111,12 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
       },
       child: Scaffold(
         // appBar: AppBar(leading: BackButton()),
-        body: gallery,
+        body: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: gallery,
+        ),
       ),
     );
   }

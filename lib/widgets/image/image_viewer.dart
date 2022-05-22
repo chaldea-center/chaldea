@@ -167,8 +167,11 @@ class _CachedImageState extends State<CachedImage> {
         _loader.get(url).then((localPath) {
           if (mounted) setState(() {});
         });
+        return _withPlaceholder(context, url);
+      } else {
+        return cachedOption.errorWidget?.call(context, url, null) ??
+            const SizedBox();
       }
-      return _withPlaceholder(context, url);
     }
     return _withCached(url);
   }
