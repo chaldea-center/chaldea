@@ -15,13 +15,13 @@ void main(List<String> args) {
 }
 
 void _patchWindows() {
-  print('patching quickjs.c');
-  final qjs = File(
-      r'windows\flutter\ephemeral\.plugin_symlinks\flutter_qjs\cxx\quickjs\quickjs.c');
-  String contents = qjs.readAsStringSync();
-  contents = contents.replaceFirst('#pragma function (floor)',
-      '#pragma function (floor)\n#pragma function (log2)');
-  qjs.writeAsStringSync(contents);
+  // print('patching quickjs.c');
+  // final qjs = File(
+  //     r'windows\flutter\ephemeral\.plugin_symlinks\flutter_qjs\cxx\quickjs\quickjs.c');
+  // String contents = qjs.readAsStringSync();
+  // contents = contents.replaceFirst('#pragma function (floor)',
+  //     '#pragma function (floor)\n#pragma function (log2)');
+  // qjs.writeAsStringSync(contents);
 }
 
 void _patchLinux() {
