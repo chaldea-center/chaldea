@@ -370,6 +370,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtInfoTab(svt: svt),
         );
       case SvtTab.lore:
+        if (svt.collectionNo == 0 && svt.profile.comments.isEmpty) {
+          break;
+        }
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.svt_profile,

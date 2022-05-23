@@ -610,10 +610,21 @@ class Event {
       return DateTime.now().difference(startedAt.sec2date()) >
           const Duration(days: 31 * 13);
     }
-    final t = db.curUser.region == Region.jp
+    int? _end = db.curUser.region == Region.jp
         ? endedAt
         : extra.endTime.ofRegion(db.curUser.region);
-    return t != null && t.sec2date().isBefore(DateTime.now().subtract(diff));
+    final neverClosed =
+        DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
+    if (_end != null && _end > neverClosed) {
+      final _start = db.curUser.region == Region.jp
+          ? startedAt
+          : extra.startTime.ofRegion(db.curUser.region);
+      if (_start != null) {
+        _end = _start + 3600 * 24 * 30;
+      }
+    }
+    return _end != null &&
+        _end.sec2date().isBefore(DateTime.now().subtract(diff));
   }
 
   Transl<String, String> get lName => Transl.eventNames(name);
