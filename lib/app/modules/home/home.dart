@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/import_data/home_import_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/widgets/after_layout.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/db.dart';
 import '../../app.dart';
 import '../root/global_fab.dart';
@@ -51,6 +52,22 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
+    if (db.userData.previousVersion == 2) {
+      showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: const Text('From Chaldea v1?'),
+            content: const Text(
+                'Please go to **Import-v1 backup** to restore v1 data'),
+            onTapOk: () {
+              router.pushPage(ImportPageHome());
+            },
+          );
+        },
+      );
+    }
     if (db.settings.showWindowFab &&
         !(rootRouter.appState.showSidebar && SplitRoute.isSplit(null))) {
       WindowManagerFab.createOverlay(router.navigatorKey.currentContext!);

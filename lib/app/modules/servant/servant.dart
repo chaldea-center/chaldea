@@ -425,6 +425,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtQuestTab(svt: svt),
         );
     }
+    return null;
   }
 
   Widget get _popupButton {

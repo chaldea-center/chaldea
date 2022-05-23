@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -28,14 +27,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
       length: users.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Backup from V1'),
-          actions: [
-            IconButton(
-              onPressed: _importFile,
-              icon: const FaIcon(FontAwesomeIcons.fileImport),
-              tooltip: S.current.import_source_file,
-            ),
-          ],
+          title: Text('${S.current.chaldea_backup} (v1)'),
           bottom: users.isEmpty
               ? null
               : TabBar(
@@ -50,25 +42,31 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
                   children: List.generate(
                       users.length, (index) => _buildOneUser(users[index]))),
             ),
-            if (users.isNotEmpty)
-              ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      for (final user in users) {
-                        user.name = db.userData.validUsername(user.name);
-                        db.userData.users.add(user);
-                      }
-                      EasyLoading.showSuccess('Appended data to cur app');
-                      router.push(child: AccountPage());
-                    },
-                    child: Text(
-                      S.current.import_data,
-                    ),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _importFile,
+                  child: const Text('v1 userdata.json'),
+                ),
+                ElevatedButton(
+                  onPressed: users.isEmpty
+                      ? null
+                      : () {
+                          for (final user in users) {
+                            user.name = db.userData.validUsername(user.name);
+                            db.userData.users.add(user);
+                          }
+                          db.userData.curUserKey = db.userData.users.length - 1;
+                          EasyLoading.showSuccess('Appended data to cur app');
+                          router.push(child: AccountPage());
+                        },
+                  child: Text(
+                    S.current.import_data,
                   ),
-                ],
-              )
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -82,11 +80,11 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
     return ListView(
       children: [
         ListTile(
-          title: const Text('Name'),
+          title: Text(S.current.game_account),
           trailing: Text(user.name),
         ),
         ListTile(
-          title: const Text('Region'),
+          title: Text(S.current.game_server),
           trailing: Text(user.region.localName),
         ),
         ListTile(title: Text(S.current.item)),
@@ -107,7 +105,8 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
                 items: List.generate(
                   user.plans.length,
                   (index) => DropdownMenuItem(
-                      value: index, child: Text('Plan ${index + 1}')),
+                      value: index,
+                      child: Text('${S.current.plan} ${index + 1}')),
                 ),
                 onChanged: (v) {
                   _curPlanNo = v ?? _curPlanNo;

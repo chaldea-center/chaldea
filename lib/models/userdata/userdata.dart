@@ -20,6 +20,8 @@ class UserData {
   static const int modelVersion = 4;
 
   final int version;
+  @JsonKey(ignore: true)
+  int previousVersion;
 
   int get curUserKey {
     if (users.isEmpty) users.add(User());
@@ -42,12 +44,14 @@ class UserData {
   Map<int, String?> customSvtIcon;
 
   UserData({
+    int? previousVersion,
     int curUserKey = 0,
     List<User>? users,
     List<int?>? itemAbundantValue,
     this.svtAscensionIcon = 1,
     Map<int, String?>? customSvtIcon,
   })  : version = UserData.modelVersion,
+        previousVersion = previousVersion ?? UserData.modelVersion,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(
@@ -68,9 +72,11 @@ class UserData {
   }
 
   factory UserData.fromJson(Map<String, dynamic> json) {
-    if (json['version'] == 2) {
-      return UserData.fromLegacy(json);
-    } else if (json['version'] == 3) {
+    final previousVersion = json['version'];
+    UserData userData;
+    if (previousVersion == 2) {
+      userData = UserData.fromLegacy(json);
+    } else if (previousVersion == 3) {
       List users = json['users'] ?? [];
       for (final Map user in users) {
         List svtPlans = user['svtPlanGroups'] ?? [];
@@ -84,9 +90,14 @@ class UserData {
         plan['mainStories'] = user['mainStories'];
         plan['tickets'] = user['exchangeTickets'];
       }
-      return _$UserDataFromJson(json);
+      userData = _$UserDataFromJson(json);
+    } else {
+      userData = _$UserDataFromJson(json);
     }
-    return _$UserDataFromJson(json);
+    if (previousVersion is int) {
+      userData.previousVersion = previousVersion;
+    }
+    return userData;
   }
 
   factory UserData.fromLegacy(Map<String, dynamic> oldData) {

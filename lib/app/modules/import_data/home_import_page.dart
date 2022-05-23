@@ -41,7 +41,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ),
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
-            title: Text('${S.current.chaldea_backup} (V2)'),
+            title: Text('${S.current.chaldea_backup} (v2)'),
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
@@ -50,7 +50,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ),
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
-            title: Text('${S.current.chaldea_backup} (V1)'),
+            title: Text('${S.current.chaldea_backup} (v1)'),
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
