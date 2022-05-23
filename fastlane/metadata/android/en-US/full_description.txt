@@ -1,0 +1,29 @@
+Chaldea is a cross-platform material planning tool for Fate/Grand Order, supporting Android, iOS, Windows, macOS, Linux and Web. Chaldea will help masters plan their servants, events and materials.
+
+<h3>Features</h3>
+<ul>
+<li><strong>Cross platform:</strong> Android, iOS, Windows, macOS, Linux and Web</li>
+<li><strong>Multi-language:</strong> Simplified Chinese, Traditional Chinese, English, Japanese and Korean</li>
+<li><strong>Detailed Game Data:</strong> Servant, CE, Command Code, Mystic Code and so on</li>
+<strong>Material Planning</strong><ul>
+<li>Servant rank up: ascension, active skill, append skill, costume, palingenesis, fou-kun and servant coin</li>
+<li>Event plan: limited event, main story and exchange ticket</li>
+<li>Material/Item management, find the quests with best drop rate</li>
+</ul></li>
+<li><strong>Free Quest Solver</strong><ul><li>Get the best quest farming solution on item demands</li>
+<li>Compare the efficiency of each quest with custom item weight</li>
+<li>Support <strong>Item+Bond+EXP</strong> planning</li>
+<li><strong>Support Master Mission/Weekly Mission/Event Mission/Custom Mission</strong>: custom mission target</li>
+</ul></li>
+<li><strong>Summon details</strong> and <strong>Summon Simulator</strong></li>
+<li><strong>SQ Planning</strong>: Currently support predictable parts of SQs/tickets/fruits</li>
+<li><strong>Import Data</strong><ul><li>Recognition for item/active skill/append skill screenshots(Improved performance by doorholez)</li>
+<li>Parsing all game data by sniffing the client's login https traffic, don't need manual input. Support <strong>NA/JP/CN/TW</strong>.</li>
+<li>From <a href="http://fgosimulator.webcrow.jp/Material">FGO Simulator-Material</a></li>
+</ul></li>
+<li><strong>Others</strong><ul><li><strong>EXP card cost calculator</strong></li>
+<li><strong>Statistics on item demands, consumed items and servant collection</strong></li>
+<li><s><strong>Fate/Freedom Order：</strong> 2021 April Fool's mini game</s> Unavailable now.</li>
+<li>Illustrator and CV list</li>
+</ul></li>
+</ul>
