@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:ui';
-
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:chaldea/utils/utils.dart';
