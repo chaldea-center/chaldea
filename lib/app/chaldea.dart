@@ -159,9 +159,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       await Future.delayed(const Duration(seconds: 5));
       if (PlatformU.isIOS) {
         AppUpdater.checkAppStoreUpdate();
-      } else if (PlatformU.isAndroid ||
-          PlatformU.isWindows ||
-          PlatformU.isLinux) {
+      } else if (PlatformU.isAndroid) {
+        if (AppInfo.isFDroid) {
+          // skip
+        } else {
+          AppUpdater.backgroundUpdate();
+        }
+      } else if (PlatformU.isWindows || PlatformU.isLinux) {
         AppUpdater.backgroundUpdate();
       }
     }

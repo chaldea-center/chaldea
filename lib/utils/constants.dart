@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 const String kAppName = 'Chaldea';
 const String kPackageName = 'cc.narumi.chaldea';
+const String kPackageNameFDroid = 'cc.narumi.chaldea.fdroid';
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea@narumi.cc';

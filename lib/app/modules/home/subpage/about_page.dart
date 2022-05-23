@@ -89,10 +89,14 @@ class _AboutPageState extends State<AboutPage> {
                           style: const TextStyle(color: Colors.redAccent))
                       : null,
                   onTap: () async {
-                    // if (PlatformU.isApple) {
-                    //   launch(kAppStoreLink);
-                    //   return;
-                    // }
+                    if (PlatformU.isApple) {
+                      launch(kAppStoreLink);
+                      return;
+                    } else if (AppInfo.isFDroid) {
+                      launch(
+                          'https://f-droid.org/packages/$kPackageNameFDroid');
+                      return;
+                    }
                     AppUpdateDetail? detail = db.runtimeData.releaseDetail;
                     if (detail == null) {
                       EasyLoading.showToast('Checking update...');
@@ -117,7 +121,9 @@ class _AboutPageState extends State<AboutPage> {
                     await AppUpdater.installUpdate(savePath);
                   },
                 ),
-              if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
+              if (!PlatformU.isIOS &&
+                  !AppInfo.isMacStoreApp &&
+                  !AppInfo.isFDroid)
                 SwitchListTile.adaptive(
                   value: db.settings.autoUpdateApp,
                   title: Text(S.current.auto_update),

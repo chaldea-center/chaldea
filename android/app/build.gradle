@@ -63,6 +63,14 @@ android {
         // }
     }
 
+    flavorDimensions "app"
+    productFlavors {
+        fdroid {
+            dimension "app"
+            applicationId "cc.narumi.chaldea.fdroid"
+        }
+    }
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']

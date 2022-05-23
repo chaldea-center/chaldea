@@ -282,6 +282,9 @@ class AppInfo {
   static MacAppType get macAppType => _macAppType;
 
   static bool get isMacStoreApp => _macAppType == MacAppType.store;
+
+  static bool get isFDroid =>
+      PlatformU.isAndroid && packageName == kPackageNameFDroid;
 }
 
 enum MacAppType {
