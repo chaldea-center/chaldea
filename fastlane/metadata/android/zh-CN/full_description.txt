@@ -1,0 +1,28 @@
+Chaldea是一款用于Fate/Grand Order/命运-冠位指定的规划软件，支持Android、iOS、Windows、macOS、Linux和Web平台。Chaldea可以帮助Master规划从者练度、素材和活动等。
+
+<h3>主要功能/特性</h3>
+<ul>
+<li><strong>多平台支持：</strong> Android、iOS、Windows、macOS、Linux和Web</li>
+<li><strong>多语种支持：</strong> 简体中文、繁体中文、英文、日文、韩语</li>
+<li><strong>资料查询：</strong> 从者、概念礼装、指令纹章、魔术礼装等。</li>
+<li><strong>素材规划</strong><ul><li>从者练度规划：灵基再临、主动技能、附加技能、灵衣、圣杯、芙芙、从者硬币等</li>
+<li>活动规划：限时活动、主线记录、素材交换券</li>
+<li>素材库存管理</li>
+</ul></li>
+<li><strong>Free本规划</strong><ul><li>根据素材需求规划AP或打本次数最优的方案</li>
+<li>自定义素材权重对比Free本<strong>综合效率</strong></li>
+<li>同时支持<strong>素材+羁绊+御主经验</strong>规划</li>
+<li><strong>御主任务/周常规划/活动任务/自定义任务</strong></li>
+</ul></li>
+<li><strong>卡池详情</strong>与<strong>抽卡模拟器</strong></li>
+<li><strong>攒石规划：</strong> 初版仅支持登陆奖励等可预测部分</li>
+<li><strong>数据导入</strong><ul><li>借助抓包工具一键导入素材从者所有数据，无需手动输入，支持<strong>国服、台服、日服和美服</strong></li>
+<li>素材数量、主动/附加技能等级的截图识别 (性能大幅度优化 by doorholez)</li>
+<li><a href="http://fgosimulator.webcrow.jp/Material">FGO Simulator-Material</a>数据</li>
+</ul></li>
+<li><strong>杂七杂八</strong><ul><li><strong>狗粮需求计算</strong></li>
+<li><strong>从者统计、已消耗素材统计</strong></li>
+<li><s><strong>Fate/Freedom Order</strong>: 2021愚人节小游戏，接头霸王</s> 暂时不可用</li>
+<li>画师、声优一览</li>
+</ul></li>
+</ul>
