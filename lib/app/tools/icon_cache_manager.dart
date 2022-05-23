@@ -134,7 +134,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
   static final AtlasIconLoader i = AtlasIconLoader._();
   final _rateLimiter =
-      RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 500));
+      RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
   final _fsLimiter =
       RateLimiter(maxCalls: 5, period: const Duration(milliseconds: 50));
 

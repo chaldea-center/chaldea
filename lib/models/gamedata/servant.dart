@@ -72,13 +72,7 @@ class BasicServant with GameCardMixin {
       _$BasicServantFromJson(json);
 
   @override
-  Transl<String, String> get lName {
-    if (Transl.md.svtNames.containsKey(name)) {
-      return Transl.svtNames(name);
-    } else {
-      return Transl.entityNames(name);
-    }
-  }
+  Transl<String, String> get lName => Transl.svtNames(name);
 
   @override
   String get icon => face;

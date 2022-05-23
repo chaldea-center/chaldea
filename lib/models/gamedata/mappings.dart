@@ -88,8 +88,10 @@ class Transl<K, V> {
   static Transl<String, String> ccNames(String jp) =>
       Transl(md.ccNames, jp, jp);
 
-  static Transl<String, String> svtNames(String jp) =>
-      Transl(md.svtNames, jp, jp);
+  static Transl<String, String> svtNames(String jp) {
+    if (md.svtNames.containsKey(jp)) return Transl(md.svtNames, jp, jp);
+    return Transl(md.entityNames, jp, jp);
+  }
 
   static Transl<String, String> ceNames(String jp) =>
       Transl(md.ceNames, jp, jp);
@@ -106,8 +108,10 @@ class Transl<K, V> {
   static Transl<String, String> spotNames(String jp) =>
       Transl(md.spotNames, jp, jp);
 
-  static Transl<String, String> entityNames(String jp) =>
-      Transl(md.entityNames, jp, jp);
+  static Transl<String, String> entityNames(String jp) {
+    if (md.entityNames.containsKey(jp)) return Transl(md.entityNames, jp, jp);
+    return Transl(md.svtNames, jp, jp);
+  }
 
   static Transl<String, String> tdTypes(String jp) =>
       Transl(md.tdTypes, jp, jp);

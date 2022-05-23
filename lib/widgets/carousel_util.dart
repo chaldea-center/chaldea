@@ -110,9 +110,11 @@ class CarouselUtil {
         .map((e) => CachedImage(
               imageUrl: e,
               cachedOption: CachedImageOption(
-                  imageBuilder: (context, image) =>
-                      FittedBox(child: Image(image: image))),
-              placeholder: (_, __) => Container(),
+                imageBuilder: (context, image) =>
+                    FittedBox(child: Image(image: image)),
+                errorWidget: (context, url, error) => const SizedBox(),
+              ),
+              placeholder: (_, __) => const SizedBox(),
             ))
         .toList();
     if (items.isEmpty) return const SizedBox();

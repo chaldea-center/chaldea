@@ -93,13 +93,14 @@ class SvtInfoTab extends StatelessWidget {
             ], defaults: contentData),
             CustomTableRow(children: [
               TableCellData(
-                  text: S.current.info_alignment, isHeader: true, flex: 2),
-              TableCellData(
                   text: S.current.filter_attribute, isHeader: true, flex: 2),
+              TableCellData(
+                  text: S.current.info_alignment, isHeader: true, flex: 2),
               TableCellData(
                   text: S.current.general_type, isHeader: true, flex: 2),
             ]),
             CustomTableRow(children: [
+              TableCellData(text: Transl.svtAttribute(svt.attribute).l),
               TableCellData(
                 text: [
                   if (svt.profile.stats?.policy != null)
@@ -110,7 +111,6 @@ class SvtInfoTab extends StatelessWidget {
                 ].join('·'),
                 textAlign: TextAlign.center,
               ),
-              TableCellData(text: Transl.svtAttribute(svt.attribute).l),
               TableCellData(text: svt.type.name),
             ]),
             CustomTableRow.fromTexts(texts: [
