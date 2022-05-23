@@ -29,6 +29,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 
   Map<int, int> itemResult = {};
   List<_OneServantData> svtResult = [];
+  final List _ignoredItemIds = [];
+  final List _ignoredSvtIds = [];
 
   @override
   void initState() {
@@ -125,6 +127,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     if (svtResult.isEmpty) {
       children.add(const Center(child: Text('Nothing yet')));
     }
+    if (_ignoredSvtIds.isNotEmpty) {
+      children.add(ListTile(
+        title: Text('${S.current.ignore}: $_ignoredSvtIds'),
+      ));
+    }
+
     svtResult.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
         keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
     Widget _getSummary(SvtPlan plan) {
@@ -146,6 +154,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            _showId(
+                realId: record.svt.collectionNo, webcrowId: record.webcrowId),
             Expanded(child: _getSummary(record.cur)),
             const Text(' → '),
             Expanded(child: _getSummary(record.target)),
@@ -196,10 +206,24 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     if (itemResult.isEmpty) {
       children.add(const Center(child: Text('Nothing yet')));
     }
+    if (_ignoredItemIds.isNotEmpty) {
+      children.add(ListTile(
+        title: Text('${S.current.ignore}: $_ignoredItemIds'),
+      ));
+    }
+    final _itemMappingReverse =
+        itemMapping.map((key, value) => MapEntry(value, key));
     itemResult.forEach((itemId, value) {
       children.add(ListTile(
         leading: Item.iconBuilder(context: context, item: null, itemId: itemId),
-        title: Text(Item.getName(itemId)),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _showId(realId: itemId, webcrowId: _itemMappingReverse[itemId]),
+            const SizedBox(width: 8),
+            Text(Item.getName(itemId)),
+          ],
+        ),
         trailing: Text(value.toString()),
       ));
     });
@@ -236,6 +260,26 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     );
   }
 
+  Widget _showId(
+      {required int realId, required dynamic webcrowId, double width = 36}) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: width),
+      child: Text.rich(
+        TextSpan(
+          text: realId.toString(),
+          children: [
+            TextSpan(
+              text: '\n($webcrowId)',
+              style: const TextStyle(fontSize: 12),
+            )
+          ],
+        ),
+        textAlign: TextAlign.center,
+        textScaleFactor: 0.9,
+      ),
+    );
+  }
+
   void _parse() {
     try {
       final text = _textEditingController.text.trim();
@@ -246,14 +290,21 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       if (data is List) {
         // svt: [8,  0,4,  10,10,  8,10,  8,10,  1,0]
         //       0   1 2   3  4    5 6    7 8    9 10
+        _ignoredSvtIds.clear();
         svtResult.clear();
         for (final List row in data) {
-          if (row.length < 9) continue;
-          int? svtId = db.gameData.wiki.webcrowMapping[row[0]];
-          // svtId ??= row[0] < 149 ? row[0] : row[0] + 5;
+          final int webcrowId = row[0];
+          int? svtId = db.gameData.wiki.webcrowMapping[webcrowId];
+          if (webcrowId < 149) {
+            svtId ??= webcrowId;
+          }
           final svt = db.gameData.servants[svtId];
-          if (svt == null) continue;
+          if (svt == null || row.length < 9) {
+            _ignoredSvtIds.add(webcrowId);
+            continue;
+          }
           svtResult.add(_OneServantData(
+            webcrowId: webcrowId,
             svt: svt,
             cur: SvtPlan(
               favorite: true,
@@ -274,10 +325,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         });
       } else if (data is Map) {
         // item
+        _ignoredItemIds.clear();
         itemResult.clear();
         data.forEach((key, value) {
           int? srcId = int.tryParse(key);
           if (srcId == null || itemMapping[srcId] == null || value is! int) {
+            _ignoredItemIds.add(key);
             return;
           }
           itemResult[itemMapping[srcId]!] = value;
@@ -339,9 +392,14 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 }
 
 class _OneServantData {
+  int webcrowId;
   Servant svt;
   SvtPlan cur;
   SvtPlan target;
 
-  _OneServantData({required this.svt, required this.cur, required this.target});
+  _OneServantData(
+      {required this.webcrowId,
+      required this.svt,
+      required this.cur,
+      required this.target});
 }
