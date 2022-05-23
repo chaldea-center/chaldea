@@ -382,7 +382,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.illustration,
-          viewBuilder: (ctx) => ExtraAssetsPage(assets: svt.extraAssets),
+          viewBuilder: (ctx) => ExtraAssetsPage(
+            assets: svt.extraAssets,
+            aprilFoolAssets: svt.extra.aprilFoolAssets,
+          ),
         );
       case SvtTab.relatedCards:
         if (svt.bondEquip == 0 &&

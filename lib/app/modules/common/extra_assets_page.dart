@@ -6,30 +6,37 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
+  final List<String> aprilFoolAssets;
 
-  const ExtraAssetsPage({Key? key, required this.assets}) : super(key: key);
+  const ExtraAssetsPage(
+      {Key? key, required this.assets, this.aprilFoolAssets = const []})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 48),
       children: <Widget?>[
-        _oneGroup(S.current.illustration, assets.charaGraph, 300),
-        _oneGroup(S.current.card_asset_face, assets.faces, 80),
-        _oneGroup(S.current.card_asset_status, assets.status, 120),
-        _oneGroup(S.current.card_asset_command, assets.commands, 120),
-        _oneGroup(S.current.card_asset_chara_figure, assets.charaFigure, 300),
-        _oneGroup(S.current.card_asset_narrow_figure, assets.narrowFigure, 300),
-        _oneGroup('equipFace', assets.equipFace, 50),
+        _oneGroup(S.current.illustration,
+            [...assets.charaGraph.allUrls, ...aprilFoolAssets], 300),
+        _oneGroup(S.current.card_asset_face, assets.faces.allUrls, 80),
+        _oneGroup(S.current.card_asset_status, assets.status.allUrls, 120),
+        _oneGroup(S.current.card_asset_command, assets.commands.allUrls, 120),
+        _oneGroup(
+            S.current.card_asset_chara_figure, assets.charaFigure.allUrls, 300),
+        _oneGroup(S.current.card_asset_narrow_figure,
+            assets.narrowFigure.allUrls, 300),
+        _oneGroup('equipFace', assets.equipFace.allUrls, 50),
         // _oneGroup('Status', assets?.status),
       ].whereType<Widget>().toList(),
     );
   }
 
-  Widget? _oneGroup(String title, ExtraAssetsUrl assetsUrl, double height,
+  Widget? _oneGroup(String title, Iterable<String> urls, double height,
       [bool expanded = true]) {
-    final urls = assetsUrl.allUrls.toList();
-    if (urls.isEmpty) return null;
+    // final urls = assetsUrl.allUrls.toList();
+    final _urls = urls.toList();
+    if (_urls.isEmpty) return null;
     return SimpleAccordion(
       expanded: expanded,
       headerBuilder: (context, _) => Text(title),
@@ -41,12 +48,12 @@ class ExtraAssetsPage extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            itemCount: urls.length,
+            itemCount: _urls.length,
             itemBuilder: (context, index) => CachedImage(
-              imageUrl: urls[index],
+              imageUrl: _urls[index],
               onTap: () {
                 FullscreenImageViewer.show(
-                    context: context, urls: urls, initialPage: index);
+                    context: context, urls: _urls, initialPage: index);
               },
               showSaveOnLongPress: true,
             ),
