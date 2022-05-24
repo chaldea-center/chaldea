@@ -14,7 +14,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 ## Features
 
-- support all platform: Android, iOS, Windows, macOS and Linux. Web support is Working In Progress.
+- support all platform: Android, iOS, Windows, macOS, Linux and Web.
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
   **Items** and **Summons**
 - item/material planning
@@ -49,6 +49,8 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 [<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="137.5px"/>](https://play.google.com/store/apps/details?id=cc.narumi.chaldea)
 
+> MUST Uninstall v1.x then install v2.x
+
 ### App Store
 
 [<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-US?size=250x83&amp;releaseDate=1610841600&h=cb0adac232fdd6b88894f78b2f349b6e" alt="Download on the App Store" width="120px">](https://apps.apple.com/us/app/chaldea/id1548713491?itsct=apps_box&itscg=30200)
@@ -56,7 +58,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 ### Installer
 
 You can download binary assets in [release](https://github.com/chaldea-center/chaldea/releases)
-page for Android, Windows, macOS and Linux.
+page for Android, Windows and Linux.
 
 ### Web
 

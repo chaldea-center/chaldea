@@ -32,13 +32,15 @@ There are plenty of work need to do.
 
 - [ ] Duplicated servant support
 - [x] Servant-Info tab: np rate: add all if servant has changed np rate
-- [ ] Voices: from regions and wikis
+- [ ] Voices: 
+  - [x] from AA
+  - [ ] and wikis
 - [ ] Lores: 
-  - [x] from regions 
+  - [x] from AA 
   - [ ] and wikis
 - [ ] Plan:
   - [ ] support TextField input
-- [ ] skill RankUp(Kiara)
+- [x] skill RankUp(Kiara)
 - [ ] skill/np/quest condition
 - [ ] summon prob calc
 
@@ -50,7 +52,7 @@ There are plenty of work need to do.
 - [x] Summon list and detail page
   - [ ] summon plan: ?
 - [x] EXP demand calculation
-- [ ] Enemy(BaseServant) list and detail page
+- [x] Enemy(BaseServant) list and detail page
 - [x] Saint Quartz estimate
   - [ ] poor performance
 - [ ] Events

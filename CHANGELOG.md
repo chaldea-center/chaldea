@@ -1,3 +1,16 @@
+## 2.0.1
+- improve memory usage
+- add MC april fool illustration and sprite models
+- added to F-Droid
+- minor fixes
+
+## 2.0.0
+- The new age for v2.x
+- support all 5 official regions: JP/CN/TW/NA/KR
+
+## 1.7.0
+- last build for v1.x
+
 ## 1.6.7
 
 - fix planner give wrong solution if containing ignored items
