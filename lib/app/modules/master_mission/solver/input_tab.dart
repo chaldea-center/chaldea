@@ -120,7 +120,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             leading: Text(S.current.counts),
             trailing: SizedBox(
               width: 72,
-              child: TextField(
+              child: TextFormField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   isDense: true,
@@ -461,7 +461,7 @@ class __SearchViewState extends State<_SearchView> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
+        title: TextFormField(
           controller: _textEditingController,
           decoration: InputDecoration(hintText: S.current.search),
           onChanged: (s) {

@@ -96,7 +96,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
         ),
         SizedBox(
           width: 72,
-          child: TextField(
+          child: TextFormField(
             textAlign: TextAlign.center,
             decoration: InputDecoration(hintText: count.toString()),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],

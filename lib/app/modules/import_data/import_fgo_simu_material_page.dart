@@ -90,7 +90,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextField(
+            child: TextFormField(
               controller: _textEditingController,
               expands: true,
               maxLines: null,

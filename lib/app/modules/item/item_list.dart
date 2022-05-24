@@ -166,7 +166,7 @@ class ItemListPageState extends State<ItemListPage>
                 ][index]),
                 SizedBox(
                   width: 40,
-                  child: TextField(
+                  child: TextFormField(
                     controller: _itemRedundantControllers[index],
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
@@ -504,7 +504,7 @@ class _ItemListTabState extends State<ItemListTab> {
     bool enough = (db.itemCenter.itemLeft[itemId] ?? 0) >= 0;
     final highlightStyle =
         TextStyle(color: enough ? null : Theme.of(context).errorColor);
-    Widget textField = TextField(
+    Widget textField = TextFormField(
       maxLength: isQp ? 20 : 5,
       controller: group.controller,
       focusNode: group.focusNode,
@@ -535,7 +535,7 @@ class _ItemListTabState extends State<ItemListTab> {
               baseOffset: 0, extentOffset: group.controller!.text.length);
         }
       },
-      onSubmitted: (s) {
+      onFieldSubmitted: (s) {
         print('onSubmit: ${group.focusNode.debugLabel}');
         // move scrollbar for ios
         if (PlatformU.isIOS) {

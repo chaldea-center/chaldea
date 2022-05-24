@@ -118,7 +118,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         Text(S.current.exp_card_plan_lv),
         SizedBox(
           width: 48,
-          child: TextField(
+          child: TextFormField(
             controller: _startController,
             decoration: const InputDecoration(
               counter: SizedBox(),
@@ -144,7 +144,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         // Text(' ${data.startLv} -> ${data.endLv} '),
         SizedBox(
           width: 48,
-          child: TextField(
+          child: TextFormField(
             controller: _endController,
             decoration: const InputDecoration(
               counter: SizedBox(),

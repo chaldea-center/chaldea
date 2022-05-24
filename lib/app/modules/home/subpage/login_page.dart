@@ -247,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
   Widget get nameInput {
-    return TextField(
+    return TextFormField(
       controller: _nameController,
       autocorrect: false,
       decoration: InputDecoration(
@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget get pwdInput {
-    return TextField(
+    return TextFormField(
       controller: _pwdController,
       autocorrect: false,
       obscureText: obscurePwd,
@@ -275,7 +275,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget get changePwdInput {
-    return TextField(
+    return TextFormField(
       controller: _newPwdController,
       autocorrect: false,
       obscureText: obscurePwd,
@@ -290,7 +290,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget get changeNameInput {
-    return TextField(
+    return TextFormField(
       controller: _newNameController,
       autocorrect: false,
       decoration: InputDecoration(
@@ -303,7 +303,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget get confirmPwdInput {
-    return TextField(
+    return TextFormField(
       controller: _confirmPwdController,
       autocorrect: false,
       obscureText: obscurePwd,

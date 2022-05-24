@@ -57,7 +57,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
               chs: '持有圣晶石', jpn: '所持聖晶石', eng: 'Held SQ', kor: '가지고 있는 성정석')),
           trailing: SizedBox(
             width: 60,
-            child: TextField(
+            child: TextFormField(
               controller: _curSQController,
               onChanged: (s) {
                 plan.curSQ = int.tryParse(s) ?? plan.curSQ;
@@ -75,7 +75,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
               chs: '持有呼符', jpn: '所持呼符', eng: 'Held Ticket', kor: '가지고 있는 호부')),
           trailing: SizedBox(
             width: 60,
-            child: TextField(
+            child: TextFormField(
               controller: _curTicketController,
               onChanged: (s) {
                 plan.curTicket = int.tryParse(s) ?? plan.curTicket;
@@ -93,7 +93,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
               chs: '持有苹果', jpn: '所持果実', eng: 'Held Apple', kor: '가지고 있는 사과')),
           trailing: SizedBox(
             width: 60,
-            child: TextField(
+            child: TextFormField(
               controller: _curAppleController,
               onChanged: (s) {
                 plan.curApple = int.tryParse(s) ?? plan.curApple;
@@ -148,7 +148,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           title: Text(SaintLocalized.accLogin),
           trailing: SizedBox(
             width: 60,
-            child: TextField(
+            child: TextFormField(
               controller: _accLoginController,
               onChanged: (s) {
                 plan.accLogin = int.tryParse(s) ?? plan.accLogin;
@@ -187,7 +187,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
               kor: '일본 서버와의 날짜 차이(일)')),
           trailing: SizedBox(
             width: 60,
-            child: TextField(
+            child: TextFormField(
               controller: _eventDiffController,
               onChanged: (s) {
                 plan.eventDateDelta = int.tryParse(s) ?? plan.eventDateDelta;

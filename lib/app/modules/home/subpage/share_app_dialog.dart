@@ -41,7 +41,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
       title: Text(S.current.share),
       contentPadding:
           const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
-      content: TextField(
+      content: TextFormField(
         controller: _controller,
         maxLines: null,
         minLines: 5,

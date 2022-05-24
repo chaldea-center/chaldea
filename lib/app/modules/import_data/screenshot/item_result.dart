@@ -135,7 +135,7 @@ class _ItemResultTabState extends State<ItemResultTab>
         const SizedBox(width: 8),
         SizedBox(
           width: 50,
-          child: TextField(
+          child: TextFormField(
             controller: _ctrl,
             textAlign: TextAlign.center,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],

@@ -630,7 +630,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
   }) {
     Widget child = SizedBox(
       width: 64,
-      child: TextField(
+      child: TextFormField(
         // readOnly: readOnly,
         controller: _controllers[tag] ??=
             TextEditingController(text: value()?.toString()),

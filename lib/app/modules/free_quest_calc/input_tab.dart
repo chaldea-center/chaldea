@@ -181,7 +181,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             children: [
               SizedBox(
                 width: 65,
-                child: TextField(
+                child: TextFormField(
                   key: Key('calc_input_$itemId'),
                   controller: TextEditingController(
                       text: planOrEff

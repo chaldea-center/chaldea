@@ -233,7 +233,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
             trailing: SizedBox(
               width: 60,
-              child: TextField(
+              child: TextFormField(
                 controller: _coinEditController,
                 buildCounter: (context,
                         {required int currentLength,

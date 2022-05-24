@@ -44,7 +44,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                   ),
                   SizedBox(
                     width: 88,
-                    child: TextField(
+                    child: TextFormField(
                       controller: controllerOf(priority),
                       textAlign: TextAlign.center,
                       maxLength: 10,

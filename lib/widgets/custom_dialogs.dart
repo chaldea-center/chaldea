@@ -61,7 +61,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
     validation = _validate(_controller!.text);
     return AlertDialog(
       title: widget.title == null ? null : Text(widget.title!),
-      content: TextField(
+      content: TextFormField(
         controller: _controller,
         autofocus: true,
         autocorrect: false,
@@ -75,7 +75,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
             });
           }
         },
-        onSubmitted: (v) {
+        onFieldSubmitted: (v) {
           FocusScope.of(context).unfocus();
           Navigator.pop(context);
           if (widget.onSubmit != null) {

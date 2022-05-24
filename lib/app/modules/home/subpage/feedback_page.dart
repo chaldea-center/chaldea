@@ -166,7 +166,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: TextField(
+                child: TextFormField(
                   controller: contactController,
                   decoration: InputDecoration(
                     labelText: S.current.email,
@@ -183,7 +183,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: TextField(
+                child: TextFormField(
                   controller: subjectController,
                   decoration: InputDecoration(
                     labelText: S.current.feedback_subject,
@@ -196,7 +196,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 height: 200,
-                child: TextField(
+                child: TextFormField(
                   controller: bodyController,
                   decoration: InputDecoration(
                     labelText: S.of(context).feedback_content_hint,
