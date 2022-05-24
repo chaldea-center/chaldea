@@ -22,24 +22,28 @@ jobs:
           #   build_path: build/macos/Build/Products/Release
           #   asset_extension: .zip
           #   asset_content_type: application/zip
+          #   build_options: 
           - os: windows-latest
             target: windows
             build_target: windows
             build_path: build\windows\runner\Release
             asset_extension: .zip
             asset_content_type: application/zip
+            build_options: 
           - os: ubuntu-latest
             target: linux
             build_target: linux
             build_path: build/linux/x64/release/bundle
             asset_extension: .tar.gz
             asset_content_type: application/gzip
+            build_options: 
           - os: ubuntu-latest
             target: android
             build_target: apk
             build_path: build/app/outputs/flutter-apk
             asset_extension: .apk
             asset_content_type: application/vnd.android.package-archive
+            build_options: --flavor=play
       fail-fast: false
     steps:
       - uses: subosito/flutter-action@v2
@@ -100,7 +104,7 @@ jobs:
       - run: flutter pub get
       - run: dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}
       - run: flutter pub get
-      - run: flutter build ${{ matrix.build_target }} -v --release
+      - run: flutter build ${{ matrix.build_target }} -v --release ${{ matrix.build_options }}
 
       # Package the build.
       - name: Copy VC redistributables to release directory for Windows
@@ -112,7 +116,7 @@ jobs:
         working-directory: ${{ matrix.build_path }}
       - name: Rename build for Android
         if: matrix.target == 'android'
-        run: mv app-release.apk $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.apk
+        run: mv app-play-release.apk $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.apk
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Linux
         if: matrix.target == 'linux'
