@@ -138,7 +138,6 @@
   "enhance": "強化",
   "enhance_warning": "強化將扣除以下素材",
   "error_no_internet": "無網絡連接",
-  "error_no_network": "沒有網絡連接",
   "error_no_version_data_found": "未找到數據文件",
   "error_required_app_version": "App版本需不低於{version}",
   "event_bonus": "加成",

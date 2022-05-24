@@ -138,7 +138,6 @@
   "enhance": "強化",
   "enhance_warning": "強化すると、次のアイテムが控除されます",
   "error_no_internet": "インターネットに接続できません",
-  "error_no_network": "ネットワークに接続できません",
   "error_no_version_data_found": "バージョンデータが見つかりません",
   "error_required_app_version": "最低限のアプリバージョン: ≥ {version}",
   "event_bonus": null,

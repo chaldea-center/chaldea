@@ -142,7 +142,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("تطوير"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             " سيتم استهلاك العناصر التالية للتطوير"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("لا انترنت"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             " ستتم إضافة جميع العناصر إلى الحقيبة وإزالة الحدث خارج الخطة "),
         "event_collect_items":

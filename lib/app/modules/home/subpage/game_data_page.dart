@@ -103,30 +103,27 @@ class _GameDataPageState extends State<GameDataPage> {
                           state.updateState();
                         });
                         EasyLoading.showInfo('Background Updating...');
-                        try {
-                          final data = await loader.reload(offline: false);
-                          showDialog(
-                            context: kAppKey.currentContext!,
-                            useRootNavigator: false,
-                            builder: (context) {
-                              return SimpleCancelOkDialog(
-                                title: Text(S.current.update_dataset),
-                                content: Text(
-                                    'Current: ${db.gameData.version.text(false)}\n'
-                                    'Latest : ${data.version.text(false)}'),
-                                hideOk: data.version.timestamp <=
-                                    db.gameData.version.timestamp,
-                                onTapOk: () {
-                                  db.gameData = data;
-                                  db.itemCenter.init();
-                                  db.notifyAppUpdate();
-                                },
-                              );
-                            },
-                          );
-                        } catch (e) {
-                          EasyLoading.showError('Update dataset failed!\n$e');
-                        }
+                        final data = await loader.reload(offline: false);
+                        if (data == null) return;
+                        showDialog(
+                          context: kAppKey.currentContext!,
+                          useRootNavigator: false,
+                          builder: (context) {
+                            return SimpleCancelOkDialog(
+                              title: Text(S.current.update_dataset),
+                              content: Text(
+                                  'Current: ${db.gameData.version.text(false)}\n'
+                                  'Latest : ${data.version.text(false)}'),
+                              hideOk: data.version.timestamp <=
+                                  db.gameData.version.timestamp,
+                              onTapOk: () {
+                                db.gameData = data;
+                                db.itemCenter.init();
+                                db.notifyAppUpdate();
+                              },
+                            );
+                          },
+                        );
                         state.updateState();
                       },
                     );

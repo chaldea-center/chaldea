@@ -205,8 +205,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("強化すると、次のアイテムが控除されます"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("インターネットに接続できません"),
-        "error_no_network":
-            MessageLookupByLibrary.simpleMessage("ネットワークに接続できません"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("バージョンデータが見つかりません"),
         "error_required_app_version": m11,

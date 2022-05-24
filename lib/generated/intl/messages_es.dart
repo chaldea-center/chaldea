@@ -154,7 +154,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Copia de seguridad de Chaldea"),
         "chaldea_server":
             MessageLookupByLibrary.simpleMessage("Chaldea Servidor"),
-        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("CN"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("Global"),
         "chaldea_server_hint": MessageLookupByLibrary.simpleMessage(
             "Se utiliza para los datos del juego y el reconocedor de capturas de pantalla."),
@@ -256,7 +255,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Los siguientes objetos se consumirán para mejorar"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("Sin internet"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("Sin red"),
         "error_no_version_data_found": MessageLookupByLibrary.simpleMessage(
             "No se encontró ninguna versión de datos"),
         "error_required_app_version": m11,

@@ -138,7 +138,6 @@
   "enhance": "강화",
   "enhance_warning": "강화하게 되면 다음 아이템이 소비됩니다",
   "error_no_internet": "인터넷 연결 없음",
-  "error_no_network": "No network",
   "error_no_version_data_found": "No version data found",
   "error_required_app_version": "Required app version: ≥ {version}",
   "event_bonus": "보너스",

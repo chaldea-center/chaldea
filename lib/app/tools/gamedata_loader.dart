@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pool/pool.dart';
 
 import 'package:chaldea/app/api/hosts.dart';
@@ -27,7 +28,7 @@ class GameDataLoader {
 
   factory GameDataLoader() => instance;
 
-  Completer<GameData>? _completer;
+  Completer<GameData?>? _completer;
   CancelToken? cancelToken;
 
   _GameLoadingTempData tmp = _GameLoadingTempData();
@@ -44,21 +45,28 @@ class GameDataLoader {
     _onUpdate?.call(0);
   }
 
-  Future<GameData> reload({
+  Future<GameData?> reload({
     ValueChanged<double>? onUpdate,
     bool offline = false,
     bool updateOnly = false,
     bool silent = false,
   }) async {
     assert(!(offline && updateOnly), [offline, updateOnly]);
+    void _showError(Object? e) {
+      error = escapeDioError(e);
+      if (!offline) EasyLoading.showInfo(error);
+    }
+
     if (!offline &&
         loadedGameData != null &&
         loadedGameData!.version.timestamp > db.gameData.version.timestamp) {
       return loadedGameData!;
     }
-    if (!offline && network.unavailable) {
-      throw UpdateError(S.current.error_no_network);
+    if (network.unavailable) {
+      _showError(S.current.error_no_internet);
+      return null;
     }
+
     if (_completer != null && !_completer!.isCompleted) {
       return _completer!.future;
     }
@@ -67,13 +75,16 @@ class GameDataLoader {
     _progress = null;
     error = null;
     cancelToken = CancelToken();
-    Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly).then(
-            (value) async => _completer!.complete(loadedGameData = value)))
-        .catchError((e, s) async {
-      logger.e('load gamedata($offline)', e, s);
-      error = e;
-      _completer!.completeError(e, s);
-    });
+    try {
+      final result = await _loadJson(offline, onUpdate, updateOnly);
+      loadedGameData = result;
+      _completer!.complete(result);
+    } catch (e, s) {
+      if (e is! UpdateError) logger.e('load gamedata($offline)', e, s);
+      error = escapeDioError(e);
+      _showError(error);
+      _completer!.complete(null);
+    }
     tmp.clear();
     return _completer!.future;
   }

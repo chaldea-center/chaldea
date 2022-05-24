@@ -216,7 +216,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("강화하게 되면 다음 아이템이 소비됩니다"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("인터넷 연결 없음"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("No network"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("No version data found"),
         "error_required_app_version": m11,

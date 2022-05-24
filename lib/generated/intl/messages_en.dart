@@ -148,7 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
         "chaldea_server":
             MessageLookupByLibrary.simpleMessage("Chaldea Server"),
-        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("CN"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("China"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("Global"),
         "chaldea_server_hint": MessageLookupByLibrary.simpleMessage(
             "Used for game data and screenshots recognizer"),
@@ -250,7 +250,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "The following items will be consumed for enhancement"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("No internet"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("No network"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("No version data found"),
         "error_required_app_version": m11,

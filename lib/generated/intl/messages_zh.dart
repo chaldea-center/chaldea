@@ -222,7 +222,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("无网络连接"),
-        "error_no_network": MessageLookupByLibrary.simpleMessage("没有网络连接"),
         "error_no_version_data_found":
             MessageLookupByLibrary.simpleMessage("未找到数据文件"),
         "error_required_app_version": m11,

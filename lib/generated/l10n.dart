@@ -757,10 +757,10 @@ class S {
     );
   }
 
-  /// `CN`
+  /// `China`
   String get chaldea_server_cn {
     return Intl.message(
-      'CN',
+      'China',
       name: 'chaldea_server_cn',
       desc: '',
       locale: localeName,
@@ -1576,17 +1576,6 @@ class S {
     return Intl.message(
       'No internet',
       name: 'error_no_internet',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `No network`
-  String get error_no_network {
-    return Intl.message(
-      'No network',
-      name: 'error_no_network',
       desc: '',
       locale: localeName,
       args: [],

@@ -66,14 +66,19 @@ class _BootstrapPageState extends State<BootstrapPage>
     if (invalidStartup) return;
     try {
       if (!db.settings.tips.starter) {
-        db.gameData = await _loader.reload(
+        final data = await _loader.reload(
           offline: true,
           onUpdate: (v) {
             if (mounted) setState(() {});
           },
         );
-        db.itemCenter.init();
-        onDataReady(true);
+        if (data != null) {
+          db.gameData = data;
+          db.itemCenter.init();
+          onDataReady(true);
+        } else {
+          _offlineLoading = false;
+        }
       }
     } catch (e, s) {
       _offlineLoading = false;
@@ -242,7 +247,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: TextField(
+            child: TextFormField(
               controller: _accountEditing,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
@@ -374,10 +379,7 @@ class _BootstrapPageState extends State<BootstrapPage>
     rootRouter.appState.dataReady = true;
     if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));
-      await _loader.reload(updateOnly: true).catchError((e, s) async {
-        if (e is! UpdateError) logger.d('silent background update error');
-        return GameData();
-      });
+      await _loader.reload(updateOnly: true);
     }
   }
 
@@ -489,9 +491,11 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                     if (mounted) setState(() {});
                   },
                 );
-                db.gameData = gamedata;
-                db.itemCenter.init();
-                success = true;
+                if (gamedata != null) {
+                  db.gameData = gamedata;
+                  db.itemCenter.init();
+                  success = true;
+                }
               } on UpdateError {
                 //
               } catch (e, s) {
