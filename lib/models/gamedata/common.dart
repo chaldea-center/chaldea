@@ -10,21 +10,23 @@ part 'common_helper.dart';
 
 @JsonSerializable()
 class NiceTrait {
-  int id;
-  bool? negative;
+  static final Map<int, NiceTrait> _instances = {};
+
+  final int id;
+  final bool negative;
 
   Trait get name => kTraitIdMapping[id] ?? Trait.unknown;
 
-  NiceTrait({
-    required this.id,
-    this.negative,
-  });
+  const NiceTrait._({required this.id, this.negative = false});
 
-  NiceTrait.signed(int id)
-      : id = id.abs(),
-        negative = id < 0;
+  factory NiceTrait({required int id, bool negative = false}) =>
+      _instances.putIfAbsent(
+          negative ? -id : id, () => NiceTrait._(id: id, negative: negative));
 
-  int get signedId => negative == true ? -id : id;
+  factory NiceTrait.signed(int sid) => _instances.putIfAbsent(
+      sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));
+
+  int get signedId => negative ? -id : id;
 
   factory NiceTrait.fromJson(Map<String, dynamic> json) =>
       _$NiceTraitFromJson(json);
@@ -127,7 +129,7 @@ class Bgm {
 
   factory Bgm.fromJson(Map<String, dynamic> json) {
     final bgm =
-        GameDataLoader.instance?.gameJson?['bgms']?[json['id'].toString()];
+        GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
     if (bgm != null) {
       json.addAll(Map.from(bgm));
     }

@@ -4,28 +4,31 @@ part of 'skill.dart';
 
 @JsonSerializable()
 class NiceFunction implements BaseFunction {
+  BaseFunction _baseFunc;
+
   @override
-  int funcId;
+  int get funcId => _baseFunc.funcId;
   @override
-  FuncType funcType;
+  FuncType get funcType => _baseFunc.funcType;
   @override
-  FuncTargetType funcTargetType;
+  FuncTargetType get funcTargetType => _baseFunc.funcTargetType;
   @override
-  FuncApplyTarget funcTargetTeam;
+  FuncApplyTarget get funcTargetTeam => _baseFunc.funcTargetTeam;
   @override
-  String funcPopupText;
+  String get funcPopupText => _baseFunc.funcPopupText;
   @override
-  String? funcPopupIcon;
+  String? get funcPopupIcon => _baseFunc.funcPopupIcon;
   @override
-  List<NiceTrait> functvals;
+  List<NiceTrait> get functvals => _baseFunc.functvals;
   @override
-  List<NiceTrait> funcquestTvals;
+  List<NiceTrait> get funcquestTvals => _baseFunc.funcquestTvals;
   @override
-  List<FuncGroup> funcGroup;
+  List<FuncGroup> get funcGroup => _baseFunc.funcGroup;
   @override
-  List<NiceTrait> traitVals;
+  List<NiceTrait> get traitVals => _baseFunc.traitVals;
   @override
-  List<Buff> buffs;
+  List<Buff> get buffs => _baseFunc.buffs;
+
   List<DataVals> svals;
   List<DataVals>? svals2;
   List<DataVals>? svals3;
@@ -34,24 +37,37 @@ class NiceFunction implements BaseFunction {
   List<DataVals>? followerVals;
 
   NiceFunction({
-    required this.funcId,
-    this.funcType = FuncType.none,
-    required this.funcTargetType,
-    required this.funcTargetTeam,
-    this.funcPopupText = '',
-    this.funcPopupIcon,
-    this.functvals = const [],
-    this.funcquestTvals = const [],
-    this.funcGroup = const [],
-    this.traitVals = const [],
-    this.buffs = const [],
+    required int funcId,
+    FuncType funcType = FuncType.none,
+    required FuncTargetType funcTargetType,
+    required FuncApplyTarget funcTargetTeam,
+    String funcPopupText = '',
+    String? funcPopupIcon,
+    List<NiceTrait> functvals = const [],
+    List<NiceTrait> funcquestTvals = const [],
+    List<FuncGroup> funcGroup = const [],
+    List<NiceTrait> traitVals = const [],
+    List<Buff> buffs = const [],
     List<DataVals>? svals,
     this.svals2,
     this.svals3,
     this.svals4,
     this.svals5,
     this.followerVals,
-  }) : svals = svals ?? [];
+  })  : _baseFunc = BaseFunction(
+          funcId: funcId,
+          funcType: funcType,
+          funcTargetType: funcTargetType,
+          funcTargetTeam: funcTargetTeam,
+          funcPopupText: funcPopupText,
+          funcPopupIcon: funcPopupIcon,
+          functvals: functvals,
+          funcquestTvals: funcquestTvals,
+          funcGroup: funcGroup,
+          traitVals: traitVals,
+          buffs: buffs,
+        ),
+        svals = svals ?? [];
 
   List<List<DataVals>?> get svalsList =>
       [svals, svals2, svals3, svals4, svals5];
@@ -119,7 +135,7 @@ class NiceFunction implements BaseFunction {
   factory NiceFunction.fromJson(Map<String, dynamic> json) {
     if (json['funcType'] == null) {
       final baseFunction = GameDataLoader
-          .instance!.gameJson!['baseFunctions']![json['funcId'].toString()]!;
+          .instance.tmp.gameJson!['baseFunctions']![json['funcId'].toString()]!;
       json.addAll(Map.from(baseFunction));
     }
 
@@ -168,6 +184,67 @@ class NiceFunction implements BaseFunction {
 }
 
 @JsonSerializable()
+class BaseFunction {
+  final int funcId;
+  final FuncType funcType;
+  final FuncTargetType funcTargetType;
+  final FuncApplyTarget funcTargetTeam;
+  final String funcPopupText;
+  final String? funcPopupIcon;
+  final List<NiceTrait> functvals;
+  final List<NiceTrait> funcquestTvals;
+  final List<FuncGroup> funcGroup;
+  final List<NiceTrait> traitVals;
+  final List<Buff> buffs;
+
+  const BaseFunction.create({
+    required this.funcId,
+    this.funcType = FuncType.none,
+    required this.funcTargetType,
+    required this.funcTargetTeam,
+    this.funcPopupText = "",
+    this.funcPopupIcon,
+    this.functvals = const [],
+    this.funcquestTvals = const [],
+    this.funcGroup = const [],
+    this.traitVals = const [],
+    this.buffs = const [],
+  });
+
+  factory BaseFunction({
+    required int funcId,
+    FuncType funcType = FuncType.none,
+    required FuncTargetType funcTargetType,
+    required FuncApplyTarget funcTargetTeam,
+    String funcPopupText = '',
+    String? funcPopupIcon,
+    List<NiceTrait> functvals = const [],
+    List<NiceTrait> funcquestTvals = const [],
+    List<FuncGroup> funcGroup = const [],
+    List<NiceTrait> traitVals = const [],
+    List<Buff> buffs = const [],
+  }) =>
+      GameDataLoader.instance.tmp.baseFuncs.putIfAbsent(
+          funcId,
+          () => BaseFunction.create(
+                funcId: funcId,
+                funcType: funcType,
+                funcTargetType: funcTargetType,
+                funcTargetTeam: funcTargetTeam,
+                funcPopupText: funcPopupText,
+                funcPopupIcon: funcPopupIcon,
+                functvals: functvals,
+                funcquestTvals: funcquestTvals,
+                funcGroup: funcGroup,
+                traitVals: traitVals,
+                buffs: buffs,
+              ));
+
+  factory BaseFunction.fromJson(Map<String, dynamic> json) =>
+      _$BaseFunctionFromJson(json);
+}
+
+@JsonSerializable()
 class FuncGroup {
   int eventId;
   int baseFuncId;
@@ -192,82 +269,81 @@ class FuncGroup {
 }
 
 @JsonSerializable()
-class BaseFunction {
-  int funcId;
-  FuncType funcType;
-  FuncTargetType funcTargetType;
-  FuncApplyTarget funcTargetTeam;
-  String funcPopupText;
-  String? funcPopupIcon;
-  List<NiceTrait> functvals;
-  List<NiceTrait> funcquestTvals;
-  List<FuncGroup> funcGroup;
-  List<NiceTrait> traitVals;
-  List<Buff> buffs;
-
-  BaseFunction({
-    required this.funcId,
-    this.funcType = FuncType.none,
-    required this.funcTargetType,
-    required this.funcTargetTeam,
-    this.funcPopupText = "",
-    this.funcPopupIcon,
-    this.functvals = const [],
-    this.funcquestTvals = const [],
-    this.funcGroup = const [],
-    this.traitVals = const [],
-    this.buffs = const [],
-  });
-
-  factory BaseFunction.fromJson(Map<String, dynamic> json) =>
-      _$BaseFunctionFromJson(json);
-}
-
-@JsonSerializable()
 class Buff {
-  int id;
-  String name;
-  String detail;
-  String? icon;
-  BuffType type;
-  int buffGroup;
-  BuffScript script;
-  List<NiceTrait> vals;
-  List<NiceTrait> tvals;
-  List<NiceTrait> ckSelfIndv;
-  List<NiceTrait> ckOpIndv;
-  int maxRate;
+  final int id;
+  final String name;
+  final String detail;
+  final String? icon;
+  final BuffType type;
+  final int buffGroup;
+  final BuffScript? script;
+  final List<NiceTrait> vals;
+  final List<NiceTrait> tvals;
+  final List<NiceTrait> ckSelfIndv;
+  final List<NiceTrait> ckOpIndv;
+  final int maxRate;
 
-  Buff({
+  const Buff.create({
     required this.id,
     required this.name,
     required this.detail,
     this.icon,
     this.type = BuffType.none,
     this.buffGroup = 0,
-    BuffScript? script,
+    this.script,
     this.vals = const [],
     this.tvals = const [],
     this.ckSelfIndv = const [],
     this.ckOpIndv = const [],
-    required this.maxRate,
-  }) : script = script ?? BuffScript();
+    this.maxRate = 0,
+  });
+
+  factory Buff({
+    required int id,
+    required String name,
+    required String detail,
+    String? icon,
+    BuffType type = BuffType.none,
+    int buffGroup = 0,
+    BuffScript? script,
+    List<NiceTrait> vals = const [],
+    List<NiceTrait> tvals = const [],
+    List<NiceTrait> ckSelfIndv = const [],
+    List<NiceTrait> ckOpIndv = const [],
+    int maxRate = 0,
+  }) =>
+      GameDataLoader.instance.tmp.buffs.putIfAbsent(
+          id,
+          () => Buff.create(
+                id: id,
+                name: name,
+                detail: detail,
+                icon: icon,
+                type: type,
+                buffGroup: buffGroup,
+                script: script,
+                vals: vals,
+                tvals: tvals,
+                ckSelfIndv: ckSelfIndv,
+                ckOpIndv: ckOpIndv,
+                maxRate: maxRate,
+              ));
 
   factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
 }
 
 @JsonSerializable()
 class BuffScript {
-  int? checkIndvType;
-  List<BuffType>? CheckOpponentBuffTypes;
-  BuffRelationOverwrite? relationId;
-  String? ReleaseText;
-  int? DamageRelease;
-  NiceTrait? INDIVIDUALITIE;
-  List<NiceTrait>? UpBuffRateBuffIndiv;
-  int? HP_LOWER;
+  final int? checkIndvType;
+  final List<BuffType>? CheckOpponentBuffTypes;
+  final BuffRelationOverwrite? relationId;
+  final String? ReleaseText;
+  final int? DamageRelease;
+  final NiceTrait? INDIVIDUALITIE;
+  final List<NiceTrait>? UpBuffRateBuffIndiv;
+  final int? HP_LOWER;
 
-  BuffScript({
+  const BuffScript({
     this.checkIndvType,
     this.CheckOpponentBuffTypes,
     this.relationId,

@@ -8,7 +8,7 @@ part of '../../../models/gamedata/common.dart';
 
 NiceTrait _$NiceTraitFromJson(Map json) => NiceTrait(
       id: json['id'] as int,
-      negative: json['negative'] as bool?,
+      negative: json['negative'] as bool? ?? false,
     );
 
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(

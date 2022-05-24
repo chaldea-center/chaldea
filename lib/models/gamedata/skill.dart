@@ -37,7 +37,7 @@ abstract class SkillOrTd {
 }
 
 @JsonSerializable()
-class BaseSkill extends SkillOrTd {
+class BaseSkill with SkillOrTd {
   int id;
   @override
   String name;
@@ -49,14 +49,14 @@ class BaseSkill extends SkillOrTd {
   String? icon;
   List<int> coolDown;
   List<NiceTrait> actIndividuality;
-  SkillScript script;
+  SkillScript? script;
   List<ExtraPassive> extraPassive;
   List<SkillAdd> skillAdd;
   Map<AiType, List<int>>? aiIds;
   @override
   List<NiceFunction> functions;
 
-  BaseSkill({
+  BaseSkill.create({
     required this.id,
     required this.name,
     this.ruby = '',
@@ -66,12 +66,45 @@ class BaseSkill extends SkillOrTd {
     this.icon,
     this.coolDown = const [],
     this.actIndividuality = const [],
-    SkillScript? script,
+    this.script,
     this.extraPassive = const [],
     this.skillAdd = const [],
     this.aiIds,
     required this.functions,
-  }) : script = script ?? SkillScript();
+  });
+
+  factory BaseSkill({
+    required int id,
+    required String name,
+    String ruby = '',
+    String? unmodifiedDetail,
+    required SkillType type,
+    String? icon,
+    List<int> coolDown = const [],
+    List<NiceTrait> actIndividuality = const [],
+    SkillScript? script,
+    List<ExtraPassive> extraPassive = const [],
+    List<SkillAdd> skillAdd = const [],
+    Map<AiType, List<int>>? aiIds,
+    required List<NiceFunction> functions,
+  }) =>
+      GameDataLoader.instance.tmp.baseSkills.putIfAbsent(
+          id,
+          () => BaseSkill.create(
+                id: id,
+                name: name,
+                ruby: ruby,
+                unmodifiedDetail: unmodifiedDetail,
+                type: type,
+                icon: icon,
+                coolDown: coolDown,
+                actIndividuality: actIndividuality,
+                script: script,
+                extraPassive: extraPassive,
+                skillAdd: skillAdd,
+                aiIds: aiIds,
+                functions: functions,
+              ));
 
   factory BaseSkill.fromJson(Map<String, dynamic> json) =>
       _$BaseSkillFromJson(json);
@@ -129,6 +162,34 @@ class BaseSkill extends SkillOrTd {
 
 @JsonSerializable()
 class NiceSkill extends BaseSkill {
+  BaseSkill _baseSkill;
+  @override
+  int get id => _baseSkill.id;
+  @override
+  String get name => _baseSkill.name;
+  @override
+  String get ruby => _baseSkill.ruby;
+  @override
+  String? get unmodifiedDetail => _baseSkill.unmodifiedDetail;
+  @override
+  SkillType get type => _baseSkill.type;
+  @override
+  String? get icon => _baseSkill.icon;
+  @override
+  List<int> get coolDown => _baseSkill.coolDown;
+  @override
+  List<NiceTrait> get actIndividuality => _baseSkill.actIndividuality;
+  @override
+  SkillScript? get script => _baseSkill.script;
+  @override
+  List<ExtraPassive> get extraPassive => _baseSkill.extraPassive;
+  @override
+  List<SkillAdd> get skillAdd => _baseSkill.skillAdd;
+  @override
+  Map<AiType, List<int>>? get aiIds => _baseSkill.aiIds;
+  @override
+  List<NiceFunction> get functions => _baseSkill.functions;
+
   int num;
   int strengthStatus;
   int priority;
@@ -158,7 +219,7 @@ class NiceSkill extends BaseSkill {
     this.condQuestPhase = 0,
     this.condLv = 0,
     this.condLimitCount = 0,
-  }) : super(
+  })  : _baseSkill = BaseSkill(
           id: id,
           name: name,
           ruby: ruby,
@@ -167,7 +228,22 @@ class NiceSkill extends BaseSkill {
           icon: icon,
           coolDown: coolDown,
           actIndividuality: actIndividuality,
-          script: script ?? SkillScript(),
+          script: script,
+          extraPassive: extraPassive,
+          skillAdd: skillAdd,
+          aiIds: aiIds,
+          functions: functions,
+        ),
+        super.create(
+          id: id,
+          name: name,
+          ruby: ruby,
+          unmodifiedDetail: unmodifiedDetail,
+          type: type,
+          icon: icon,
+          coolDown: coolDown,
+          actIndividuality: actIndividuality,
+          script: script,
           extraPassive: extraPassive,
           skillAdd: skillAdd,
           aiIds: aiIds,
@@ -177,7 +253,7 @@ class NiceSkill extends BaseSkill {
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
       final baseSkill = GameDataLoader
-          .instance!.gameJson!['baseSkills']![json['id'].toString()]!;
+          .instance.tmp.gameJson!['baseSkills']![json['id'].toString()]!;
       json.addAll(Map.from(baseSkill));
     }
     return _$NiceSkillFromJson(json);
@@ -201,11 +277,11 @@ class BaseTd extends SkillOrTd {
   NpGain npGain;
   List<int> npDistribution;
   List<NiceTrait> individuality;
-  SkillScript script;
+  SkillScript? script;
   @override
   List<NiceFunction> functions;
 
-  BaseTd({
+  BaseTd.create({
     required this.id,
     required this.card,
     required this.name,
@@ -218,10 +294,45 @@ class BaseTd extends SkillOrTd {
     this.unmodifiedDetail,
     required this.npGain,
     required this.npDistribution,
-    required this.individuality,
-    SkillScript? script,
+    this.individuality = const [],
+    this.script,
     required this.functions,
-  }) : script = script ?? SkillScript();
+  });
+
+  factory BaseTd({
+    required int id,
+    required CardType card,
+    required String name,
+    String ruby = '',
+    String? icon,
+    required String rank,
+    required String type,
+    List<TdEffectFlag> effectFlags = const [],
+    String? unmodifiedDetail,
+    required NpGain npGain,
+    required List<int> npDistribution,
+    List<NiceTrait> individuality = const [],
+    SkillScript? script,
+    required List<NiceFunction> functions,
+  }) =>
+      GameDataLoader.instance.tmp.baseTds.putIfAbsent(
+          id,
+          () => BaseTd.create(
+                id: id,
+                card: card,
+                name: name,
+                ruby: ruby,
+                icon: icon,
+                rank: rank,
+                type: type,
+                effectFlags: effectFlags,
+                unmodifiedDetail: unmodifiedDetail,
+                npGain: npGain,
+                npDistribution: npDistribution,
+                individuality: individuality,
+                script: script,
+                functions: functions,
+              ));
 
   factory BaseTd.fromJson(Map<String, dynamic> json) => _$BaseTdFromJson(json);
 
@@ -259,6 +370,37 @@ class BaseTd extends SkillOrTd {
 
 @JsonSerializable()
 class NiceTd extends BaseTd {
+  BaseTd _baseTd;
+
+  @override
+  int get id => _baseTd.id;
+  @override
+  CardType get card => _baseTd.card;
+  @override
+  String get name => _baseTd.name;
+  @override
+  String get ruby => _baseTd.ruby;
+  @override
+  String? get icon => _baseTd.icon;
+  @override
+  String get rank => _baseTd.rank;
+  @override
+  String get type => _baseTd.type;
+  @override
+  List<TdEffectFlag> get effectFlags => _baseTd.effectFlags;
+  @override
+  String? get unmodifiedDetail => _baseTd.unmodifiedDetail;
+  @override
+  NpGain get npGain => _baseTd.npGain;
+  @override
+  List<int> get npDistribution => _baseTd.npDistribution;
+  @override
+  List<NiceTrait> get individuality => _baseTd.individuality;
+  @override
+  SkillScript? get script => _baseTd.script;
+  @override
+  List<NiceFunction> get functions => _baseTd.functions;
+
   int num;
   int strengthStatus;
   int priority;
@@ -286,7 +428,23 @@ class NiceTd extends BaseTd {
     required List<NiceTrait> individuality,
     SkillScript? script,
     required List<NiceFunction> functions,
-  }) : super(
+  })  : _baseTd = BaseTd(
+          id: id,
+          card: card,
+          name: name,
+          ruby: ruby,
+          icon: icon,
+          rank: rank,
+          type: type,
+          effectFlags: effectFlags,
+          unmodifiedDetail: unmodifiedDetail,
+          npGain: npGain,
+          npDistribution: npDistribution,
+          individuality: individuality,
+          script: script,
+          functions: functions,
+        ),
+        super.create(
           id: id,
           card: card,
           name: name,
@@ -306,7 +464,7 @@ class NiceTd extends BaseTd {
   factory NiceTd.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
       final baseTd = GameDataLoader
-          .instance!.gameJson!['baseTds']![json['id'].toString()]!;
+          .instance.tmp.gameJson!['baseTds']![json['id'].toString()]!;
       json.addAll(Map.from(baseTd));
     }
     return _$NiceTdFromJson(json);
@@ -372,18 +530,18 @@ class ExtraPassive {
 
 @JsonSerializable()
 class SkillScript {
-  List<int>? NP_HIGHER;
-  List<int>? NP_LOWER;
-  List<int>? STAR_HIGHER;
-  List<int>? STAR_LOWER;
-  List<int>? HP_VAL_HIGHER;
-  List<int>? HP_VAL_LOWER;
-  List<int>? HP_PER_HIGHER;
-  List<int>? HP_PER_LOWER;
-  List<int>? additionalSkillId;
-  List<int>? additionalSkillActorType;
+  final List<int>? NP_HIGHER;
+  final List<int>? NP_LOWER;
+  final List<int>? STAR_HIGHER;
+  final List<int>? STAR_LOWER;
+  final List<int>? HP_VAL_HIGHER;
+  final List<int>? HP_VAL_LOWER;
+  final List<int>? HP_PER_HIGHER;
+  final List<int>? HP_PER_LOWER;
+  final List<int>? additionalSkillId;
+  final List<int>? additionalSkillActorType;
 
-  SkillScript({
+  const SkillScript({
     this.NP_HIGHER,
     this.NP_LOWER,
     this.STAR_HIGHER,
@@ -450,10 +608,10 @@ class NpGain {
 
 @JsonSerializable()
 class BuffRelationOverwrite {
-  Map<SvtClass, Map<SvtClass, dynamic>> atkSide;
-  Map<SvtClass, Map<SvtClass, dynamic>> defSide;
+  final Map<SvtClass, Map<SvtClass, dynamic>> atkSide;
+  final Map<SvtClass, Map<SvtClass, dynamic>> defSide;
 
-  BuffRelationOverwrite({
+  const BuffRelationOverwrite({
     required this.atkSide,
     required this.defSide,
   });

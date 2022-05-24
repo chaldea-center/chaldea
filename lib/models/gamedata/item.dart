@@ -345,6 +345,7 @@ class LvlUpMaterial {
 
 enum ItemUse {
   skill,
+  appendSkill,
   ascension,
   costume,
 }

@@ -64,6 +64,7 @@ const _$ItemTypeEnumMap = {
 
 const _$ItemUseEnumMap = {
   ItemUse.skill: 'skill',
+  ItemUse.appendSkill: 'appendSkill',
   ItemUse.ascension: 'ascension',
   ItemUse.costume: 'costume',
 };

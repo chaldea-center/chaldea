@@ -106,7 +106,7 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       id: json['id'] as int,
       card: $enumDecode(_$CardTypeEnumMap, json['card']),
       name: json['name'] as String,
-      ruby: json['ruby'] as String? ?? "",
+      ruby: json['ruby'] as String? ?? '',
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,
@@ -119,9 +119,11 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       npDistribution: (json['npDistribution'] as List<dynamic>)
           .map((e) => e as int)
           .toList(),
-      individuality: (json['individuality'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      individuality: (json['individuality'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       script: json['script'] == null
           ? null
           : SkillScript.fromJson(
@@ -507,16 +509,6 @@ const _$FuncApplyTargetEnumMap = {
   FuncApplyTarget.playerAndEnemy: 'playerAndEnemy',
 };
 
-FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
-      eventId: json['eventId'] as int,
-      baseFuncId: json['baseFuncId'] as int,
-      nameTotal: json['nameTotal'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String?,
-      priority: json['priority'] as int,
-      isDispValue: json['isDispValue'] as bool,
-    );
-
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
@@ -525,7 +517,7 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
           $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
-      funcPopupText: json['funcPopupText'] as String? ?? "",
+      funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals: (json['functvals'] as List<dynamic>?)
               ?.map((e) =>
@@ -551,6 +543,16 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
               ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+    );
+
+FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
+      eventId: json['eventId'] as int,
+      baseFuncId: json['baseFuncId'] as int,
+      nameTotal: json['nameTotal'] as String,
+      name: json['name'] as String,
+      icon: json['icon'] as String?,
+      priority: json['priority'] as int,
+      isDispValue: json['isDispValue'] as bool,
     );
 
 Buff _$BuffFromJson(Map json) => Buff(
@@ -585,7 +587,7 @@ Buff _$BuffFromJson(Map json) => Buff(
                   NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      maxRate: json['maxRate'] as int,
+      maxRate: json['maxRate'] as int? ?? 0,
     );
 
 const _$BuffTypeEnumMap = {

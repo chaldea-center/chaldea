@@ -21,49 +21,17 @@ import '../../utils/json_helper.dart';
 class GameDataLoader {
   // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
 
-  static Future<Response<T>> _dioGet<T>(String filename,
-      {Options? options}) async {
-    final url = '${Hosts.kDataHostGlobal}/$filename',
-        cnUrl = '${Hosts.kDataHostCN}/$filename';
-    if (!db.settings.proxyServer) {
-      return await Dio().get<T>(url, options: options);
-    }
-    try {
-      Completer<Response<T>> _completer = Completer();
-      Timer(const Duration(seconds: 4), () {
-        if (!_completer.isCompleted) {
-          _completer.completeError(TimeoutException('CF connection timeout'));
-        }
-      });
-      scheduleMicrotask(() {
-        Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
-            .get<T>(url, options: options)
-            .then<void>((value) => _completer.complete(value))
-            .catchError(_completer.completeError);
-      });
-      return await _completer.future;
-    } catch (e) {
-      if (db.settings.proxyServer) {
-        // print('download data from CN: $cnUrl');
-        return await Dio().get<T>(cnUrl, options: options);
-      }
-      rethrow;
-    }
-  }
-
   GameDataLoader._();
 
-  static GameDataLoader? instance;
+  static GameDataLoader instance = GameDataLoader._();
 
-  factory GameDataLoader() {
-    return instance ??= GameDataLoader._();
-  }
+  factory GameDataLoader() => instance;
 
   Completer<GameData>? _completer;
   CancelToken? cancelToken;
 
+  _GameLoadingTempData tmp = _GameLoadingTempData();
   GameData? loadedGameData;
-  Map<String, dynamic>? gameJson;
 
   double? get progress => _progress;
   double? _progress;
@@ -95,7 +63,7 @@ class GameDataLoader {
       return _completer!.future;
     }
     _completer = Completer();
-    if (!updateOnly) gameJson = null;
+    if (!updateOnly) tmp.clear();
     _progress = null;
     error = null;
     cancelToken = CancelToken();
@@ -106,7 +74,7 @@ class GameDataLoader {
       error = e;
       _completer!.completeError(e, s);
     });
-    gameJson = null;
+    tmp.clear();
     return _completer!.future;
   }
 
@@ -246,8 +214,10 @@ class GameDataLoader {
     if (updateOnly) {
       return GameData();
     } // bypass null
-    gameJson = _gameJson;
+    tmp.clear();
+    tmp.gameJson = _gameJson;
     final _gamedata = GameData.fromJson(_gameJson);
+    tmp.clear();
     _gamedata.version = newVersion;
 
     for (final entry in _dataToWrite.entries) {
@@ -258,6 +228,36 @@ class GameDataLoader {
     _onUpdate = null;
     return _gamedata;
   }
+
+  static Future<Response<T>> _dioGet<T>(String filename,
+      {Options? options}) async {
+    final url = '${Hosts.kDataHostGlobal}/$filename',
+        cnUrl = '${Hosts.kDataHostCN}/$filename';
+    if (!db.settings.proxyServer) {
+      return await Dio().get<T>(url, options: options);
+    }
+    try {
+      Completer<Response<T>> _completer = Completer();
+      Timer(const Duration(seconds: 4), () {
+        if (!_completer.isCompleted) {
+          _completer.completeError(TimeoutException('CF connection timeout'));
+        }
+      });
+      scheduleMicrotask(() {
+        Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
+            .get<T>(url, options: options)
+            .then<void>((value) => _completer.complete(value))
+            .catchError(_completer.completeError);
+      });
+      return await _completer.future;
+    } catch (e) {
+      if (db.settings.proxyServer) {
+        // print('download data from CN: $cnUrl');
+        return await Dio().get<T>(cnUrl, options: options);
+      }
+      rethrow;
+    }
+  }
 }
 
 class UpdateError extends Error {
@@ -266,6 +266,22 @@ class UpdateError extends Error {
 
   @override
   String toString() {
-    return message;
+    return 'UpdateError: $message';
+  }
+}
+
+class _GameLoadingTempData {
+  Map<String, dynamic>? gameJson;
+  Map<int, Buff> buffs = {};
+  Map<int, BaseFunction> baseFuncs = {};
+  Map<int, BaseSkill> baseSkills = {};
+  Map<int, BaseTd> baseTds = {};
+
+  void clear() {
+    gameJson = null;
+    buffs.clear();
+    baseFuncs.clear();
+    baseSkills.clear();
+    baseTds.clear();
   }
 }
