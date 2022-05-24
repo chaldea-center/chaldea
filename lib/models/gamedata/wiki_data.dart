@@ -46,6 +46,7 @@ class ServantExtra {
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;
+  List<String> spriteModels;
   String? mcLink;
   String? fandomLink;
 
@@ -55,6 +56,7 @@ class ServantExtra {
     this.obtains = const [],
     this.aprilFoolAssets = const [],
     MappingBase<String>? aprilFoolProfile,
+    this.spriteModels = const [],
     this.mcLink,
     this.fandomLink,
   })  : nicknames = nicknames ?? MappingList(),

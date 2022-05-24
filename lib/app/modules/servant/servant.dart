@@ -383,9 +383,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
           tab: tab,
           tabBuilder: () => S.current.illustration,
           viewBuilder: (ctx) => ExtraAssetsPage(
-            assets: svt.extraAssets,
-            aprilFoolAssets: svt.extra.aprilFoolAssets,
-          ),
+              assets: svt.extraAssets,
+              aprilFoolAssets: svt.extra.aprilFoolAssets,
+              spriteModels: svt.extra.spriteModels),
         );
       case SvtTab.relatedCards:
         if (svt.bondEquip == 0 &&

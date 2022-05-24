@@ -7,10 +7,14 @@ import 'package:chaldea/widgets/widgets.dart';
 class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
   final List<String> aprilFoolAssets;
+  final List<String> spriteModels;
 
-  const ExtraAssetsPage(
-      {Key? key, required this.assets, this.aprilFoolAssets = const []})
-      : super(key: key);
+  const ExtraAssetsPage({
+    Key? key,
+    required this.assets,
+    this.aprilFoolAssets = const [],
+    this.spriteModels = const [],
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +31,7 @@ class ExtraAssetsPage extends StatelessWidget {
         _oneGroup(S.current.card_asset_narrow_figure,
             assets.narrowFigure.allUrls, 300),
         _oneGroup('equipFace', assets.equipFace.allUrls, 50),
+        _oneGroup(S.current.sprites, spriteModels, 300),
         // _oneGroup('Status', assets?.status),
       ].whereType<Widget>().toList(),
     );
