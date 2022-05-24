@@ -145,7 +145,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
             if (v == null) return Text(S.current.general_others);
             return Text(Transl.enums(v, (enums) => enums.missionType).l);
           },
-          onFilterChanged: (v) {
+          onFilterChanged: (v, _) {
             setState(() {});
           },
         ),

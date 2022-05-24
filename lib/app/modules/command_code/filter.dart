@@ -63,7 +63,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           options: const [1, 2, 3, 4, 5],
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v$kStarChar'),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -72,7 +72,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           options: Region.values,
           values: filterData.region,
           optionBuilder: (v) => Text(v.localName),
-          onFilterChanged: (v) {
+          onFilterChanged: (v, _) {
             update();
           },
         ),
@@ -81,7 +81,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           options: EffectTarget.values,
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -93,7 +93,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           showMatchAll: true,
           showInvert: false,
           optionBuilder: (v) => Text(v.transl.l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),

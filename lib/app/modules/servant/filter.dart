@@ -70,7 +70,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).priority, style: textStyle),
           options: const [1, 2, 3, 4, 5],
           values: filterData.priority,
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -79,7 +79,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: const [0, 1, 2, 3, 4, 5],
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v$kStarChar'),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -88,7 +88,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: const [CardType.arts, CardType.buster, CardType.quick],
           values: filterData.npColor,
           optionBuilder: (v) => Text(v.name.toTitle()),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -97,7 +97,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: NpDamageType.values,
           optionBuilder: (v) =>
               Text(Transl.enums(v, (enums) => enums.npDamageType).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -114,7 +114,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //   optionBuilder: (v) =>
         //       Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
         //   combined: true,
-        //   onFilterChanged: (v) {
+        //   onFilterChanged: (v, _) {
         //     setState(() {
         //       filterData.svtDuplicated = v;
         //       update();
@@ -129,6 +129,9 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           optionBuilder: (v) {
             String text;
             switch (v) {
+              case SvtPlanScope.all:
+                text = '(${S.current.general_all})';
+                break;
               case SvtPlanScope.ascension:
                 text = S.current.ascension_short;
                 break;
@@ -147,7 +150,16 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             }
             return Text(text);
           },
-          onFilterChanged: (value) {
+          onFilterChanged: (value, lastChanged) {
+            if (lastChanged == SvtPlanScope.all) {
+              if (value.contain(SvtPlanScope.all)) {
+                value.options = SvtPlanScope.values.toSet();
+              } else {
+                value.options.clear();
+              }
+            } else if (lastChanged != null) {
+              value.options.remove(SvtPlanScope.all);
+            }
             update();
           },
         ),
@@ -167,7 +179,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: Region.values,
           values: filterData.region,
           optionBuilder: (v) => Text(v.localName),
-          onFilterChanged: (v) {
+          onFilterChanged: (v, _) {
             update();
           },
         ),
@@ -176,7 +188,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: SvtObtain.values,
           values: filterData.obtain,
           optionBuilder: (v) => Text(Transl.svtObtain(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -185,7 +197,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: Attribute.values.sublist(0, 5),
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtAttribute(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -195,7 +207,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
           values: filterData.policy,
           optionBuilder: (v) => Text(Transl.servantPolicy(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -204,7 +216,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: ServantPersonality.values
               .sublist(1, ServantPersonality.values.length - 1),
           optionBuilder: (v) => Text(Transl.servantPersonality(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -213,7 +225,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: Gender.values.toList(),
           values: filterData.gender,
           optionBuilder: (v) => Text(Transl.gender(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -225,7 +237,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               Text(v.id != null ? Transl.trait(v.id!).l : v.name),
           showMatchAll: true,
           showInvert: true,
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -235,7 +247,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: SvtEffectScope.values,
           values: filterData.effectScope,
           optionBuilder: (v) => Text(_getEffectScopeName(v)),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -244,7 +256,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           options: EffectTargetX.svtTargets,
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -256,7 +268,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           showMatchAll: true,
           showInvert: false,
           optionBuilder: (v) => Text(v.transl.l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),

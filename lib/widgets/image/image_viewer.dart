@@ -169,11 +169,15 @@ class _CachedImageState extends State<CachedImage> {
         });
         return _withPlaceholder(context, url);
       } else {
-        return cachedOption.errorWidget?.call(context, url, null) ??
-            const SizedBox();
+        return _withError(context, url);
       }
     }
     return _withCached(url);
+  }
+
+  Widget _withError(BuildContext context, String url, [dynamic error]) {
+    return cachedOption.errorWidget?.call(context, url, error) ??
+        const SizedBox();
   }
 
   Widget _withProvider(ImageProvider provider) {
@@ -241,6 +245,11 @@ class _CachedImageState extends State<CachedImage> {
         }
         uri = Uri.tryParse(fullUrl);
       }
+    }
+    if (kIsWeb &&
+        kPlatformMethods.rendererCanvasKit &&
+        fullUrl.contains('fgo.wiki')) {
+      return _withError(context, fullUrl);
     }
 
     Widget child = CachedNetworkImage(

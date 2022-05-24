@@ -352,6 +352,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("Rewards"),
         "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
+        "general_all": MessageLookupByLibrary.simpleMessage("All"),
         "general_default": MessageLookupByLibrary.simpleMessage("Default"),
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
         "general_special": MessageLookupByLibrary.simpleMessage("Special"),

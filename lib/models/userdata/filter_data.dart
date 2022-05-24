@@ -161,6 +161,7 @@ enum EffectTarget {
 }
 
 enum SvtPlanScope {
+  all,
   ascension,
   active,
   append,
@@ -209,33 +210,32 @@ class SvtFilterData {
   List<bool> sortReversed;
 
   //
-  FilterGroupData<SvtClass> svtClass = FilterGroupData();
-  FilterGroupData<int> rarity = FilterGroupData();
-  FilterGroupData<Attribute> attribute = FilterGroupData();
+  final svtClass = FilterGroupData<SvtClass>();
+  final rarity = FilterGroupData<int>();
+  final attribute = FilterGroupData<Attribute>();
 
   // FilterGroupData svtDuplicated= FilterGroupData();
 
-  FilterGroupData<SvtPlanScope> planCompletion = FilterGroupData();
+  final planCompletion = FilterGroupData<SvtPlanScope>();
 
   // FilterGroupData skillLevel;
-  FilterGroupData<int> priority = FilterGroupData(onChanged: () {
+  final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
-  FilterRadioData<Region> region = FilterRadioData();
-  FilterGroupData<SvtObtain> obtain = FilterGroupData();
-  FilterGroupData<CardType> npColor = FilterGroupData();
-  FilterGroupData<NpDamageType> npType = FilterGroupData();
-  FilterGroupData<ServantPolicy> policy = FilterGroupData(); //秩序 混沌 中庸
-  FilterGroupData<ServantPersonality> personality =
-      FilterGroupData(); //善 恶 中立 夏 狂...
-  FilterGroupData<Gender> gender = FilterGroupData();
-  FilterGroupData<Trait> trait = FilterGroupData();
+  final region = FilterRadioData<Region>();
+  final obtain = FilterGroupData<SvtObtain>();
+  final npColor = FilterGroupData<CardType>();
+  final npType = FilterGroupData<NpDamageType>();
+  final policy = FilterGroupData<ServantPolicy>(); //秩序 混沌 中庸
+  final personality = FilterGroupData<ServantPersonality>(); //善 恶 中立 夏 狂...
+  final gender = FilterGroupData<Gender>();
+  final trait = FilterGroupData<Trait>();
 
   // FilterGroupData special; //not used yet
-  FilterGroupData<SvtEffectScope> effectScope =
-      FilterGroupData(options: {SvtEffectScope.active, SvtEffectScope.td});
-  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
-  FilterGroupData<SkillEffect> effectType = FilterGroupData();
+  final effectScope = FilterGroupData<SvtEffectScope>(
+      options: {SvtEffectScope.active, SvtEffectScope.td});
+  final effectTarget = FilterGroupData<EffectTarget>();
+  final effectType = FilterGroupData<SkillEffect>();
 
   SvtFilterData({
     this.useGrid = false,
@@ -346,13 +346,13 @@ class CraftFilterData {
   List<bool> sortReversed;
 
   // filter
-  FilterGroupData<int> rarity = FilterGroupData();
-  FilterRadioData<Region> region = FilterRadioData();
-  FilterGroupData<CEObtain> obtain = FilterGroupData();
-  FilterGroupData<CraftATKType> atkType = FilterGroupData();
-  FilterGroupData<int> status = FilterGroupData();
-  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
-  FilterGroupData<SkillEffect> effectType = FilterGroupData();
+  final rarity = FilterGroupData<int>();
+  final region = FilterRadioData<Region>();
+  final obtain = FilterGroupData<CEObtain>();
+  final atkType = FilterGroupData<CraftATKType>();
+  final status = FilterGroupData<int>();
+  final effectTarget = FilterGroupData<EffectTarget>();
+  final effectType = FilterGroupData<SkillEffect>();
 
   CraftFilterData({
     this.useGrid = false,
@@ -432,10 +432,10 @@ class CmdCodeFilterData {
   List<bool> sortReversed;
 
   // filter
-  FilterGroupData<int> rarity = FilterGroupData();
-  FilterRadioData<Region> region = FilterRadioData();
-  FilterGroupData<EffectTarget> effectTarget = FilterGroupData();
-  FilterGroupData<SkillEffect> effectType = FilterGroupData();
+  final rarity = FilterGroupData<int>();
+  final region = FilterRadioData<Region>();
+  final effectTarget = FilterGroupData<EffectTarget>();
+  final effectType = FilterGroupData<SkillEffect>();
 
   CmdCodeFilterData({
     this.useGrid = false,
@@ -504,14 +504,13 @@ class SummonFilterData {
   bool showBanner;
   bool showOutdated;
   @JsonKey(ignore: true)
-  FilterGroupData<SummonType> category = FilterGroupData();
+  final category = FilterGroupData<SummonType>();
 
   SummonFilterData({
     bool? favorite,
     bool? reversed,
     bool? showBanner,
     bool? showOutdated,
-    FilterGroupData? category,
   })  : favorite = favorite ?? false,
         reversed = reversed ?? true,
         showBanner = showBanner ?? false,
@@ -537,9 +536,9 @@ class EnemyFilterData {
   bool useGrid;
   bool onlyShowQuestEnemy;
   // filter
-  FilterGroupData<SvtClass> svtClass = FilterGroupData();
-  FilterGroupData<Attribute> attribute = FilterGroupData();
-  FilterGroupData<Trait> trait = FilterGroupData();
+  final svtClass = FilterGroupData<SvtClass>();
+  final attribute = FilterGroupData<Attribute>();
+  final trait = FilterGroupData<Trait>();
 
   EnemyFilterData({
     this.useGrid = false,

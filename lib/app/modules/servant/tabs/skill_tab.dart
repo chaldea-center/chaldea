@@ -104,7 +104,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                   child: Text(Transl.skillNames(v.name).l),
                 ),
                 values: FilterRadioData(skill),
-                onFilterChanged: (v) {
+                onFilterChanged: (v, _) {
                   state.value = v.radioValue!;
                   state.updateState();
                 },

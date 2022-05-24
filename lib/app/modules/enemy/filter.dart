@@ -54,7 +54,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
           options: Attribute.values.sublist(0, 5),
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtAttribute(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -66,7 +66,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
               Text(v.id != null ? Transl.trait(v.id!).l : v.name),
           showMatchAll: true,
           showInvert: true,
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),

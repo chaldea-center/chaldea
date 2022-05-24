@@ -51,7 +51,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
           optionBuilder: (v) {
             return Text(v.name);
           },
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             // filterData.category = value;
             update();
           },

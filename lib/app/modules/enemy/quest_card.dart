@@ -337,7 +337,7 @@ class _QuestCardState extends State<QuestCard> {
             values: FilterRadioData(preferApRate),
             optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
             combined: true,
-            onFilterChanged: (v) {
+            onFilterChanged: (v, _) {
               setState(() {
                 preferApRate = v.radioValue ?? preferApRate;
               });
@@ -349,7 +349,7 @@ class _QuestCardState extends State<QuestCard> {
               values: FilterRadioData(use6th ? true : null),
               optionBuilder: (v) => const Text('6th'),
               combined: true,
-              onFilterChanged: (v) {
+              onFilterChanged: (v, _) {
                 setState(() {
                   _use6th = !use6th;
                 });

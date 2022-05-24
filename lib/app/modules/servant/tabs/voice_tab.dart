@@ -97,7 +97,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                 options: releasedRegions.toList(),
                 optionBuilder: (v) => Text(v.name.toUpperCase()),
                 values: FilterRadioData(_region),
-                onFilterChanged: (v) {
+                onFilterChanged: (v, _) {
                   if (v.radioValue != null) {
                     _region = v.radioValue!;
                     fetchSvt();

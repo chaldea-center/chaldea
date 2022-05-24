@@ -15,7 +15,8 @@ class FilterGroup<T> extends StatelessWidget {
   final bool showMatchAll;
   final bool showInvert;
   final bool shrinkWrap;
-  final void Function(FilterGroupData<T> optionData)? onFilterChanged;
+  final void Function(FilterGroupData<T> optionData, T? lastChanged)?
+      onFilterChanged;
 
   final bool combined;
   final EdgeInsetsGeometry padding;
@@ -44,7 +45,7 @@ class FilterGroup<T> extends StatelessWidget {
       values: FilterRadioData(useGrid),
       optionBuilder: (v) => Text(v ? 'Grid' : 'List'),
       combined: true,
-      onFilterChanged: (v) {
+      onFilterChanged: (v, _) {
         onChanged(v.radioValue);
       },
     );
@@ -84,7 +85,7 @@ class FilterGroup<T> extends StatelessWidget {
         onChanged: (v) {
           values.toggle(key);
           if (onFilterChanged != null) {
-            onFilterChanged!(values);
+            onFilterChanged!(values, key);
           }
         },
         child:
@@ -114,7 +115,7 @@ class FilterGroup<T> extends StatelessWidget {
                   context, values.matchAll, S.current.filter_match_all, () {
                 values.matchAll = !values.matchAll;
                 if (onFilterChanged != null) {
-                  onFilterChanged!(values);
+                  onFilterChanged!(values, null);
                 }
               }),
             if (showInvert)
@@ -122,7 +123,7 @@ class FilterGroup<T> extends StatelessWidget {
                   () {
                 values.invert = !values.invert;
                 if (onFilterChanged != null) {
-                  onFilterChanged!(values);
+                  onFilterChanged!(values, null);
                 }
               }),
             if (expandIcon != null) expandIcon,

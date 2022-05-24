@@ -71,7 +71,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 values: FilterRadioData(expCardRarity),
                 combined: true,
                 optionBuilder: (v) => Text('EXP$v'),
-                onFilterChanged: (v) {
+                onFilterChanged: (v, _) {
                   expCardRarity = v.radioValue ?? expCardRarity;
                   setState(() {});
                 },

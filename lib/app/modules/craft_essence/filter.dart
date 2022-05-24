@@ -65,7 +65,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: const [1, 2, 3, 4, 5],
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v$kStarChar'),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -74,7 +74,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: CEObtain.values,
           values: filterData.obtain,
           optionBuilder: (v) => Text(Transl.ceObtain(v).l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -83,7 +83,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: Region.values,
           values: filterData.region,
           optionBuilder: (v) => Text(v.localName),
-          onFilterChanged: (v) {
+          onFilterChanged: (v, _) {
             update();
           },
         ),
@@ -92,7 +92,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: CraftATKType.values,
           values: filterData.atkType,
           optionBuilder: (v) => Text(_getHpAtkType(v)),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -101,7 +101,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: CraftStatus.values,
           values: filterData.status,
           optionBuilder: (v) => Text(CraftStatus.shownText(v)),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -110,7 +110,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: EffectTarget.values,
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),
@@ -122,7 +122,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           showMatchAll: true,
           showInvert: false,
           optionBuilder: (v) => Text(v.transl.l),
-          onFilterChanged: (value) {
+          onFilterChanged: (value, _) {
             update();
           },
         ),

@@ -2452,6 +2452,17 @@ class S {
     );
   }
 
+  /// `All`
+  String get general_all {
+    return Intl.message(
+      'All',
+      name: 'general_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Default`
   String get general_default {
     return Intl.message(

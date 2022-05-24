@@ -96,7 +96,7 @@ class ItemStatTab extends StatefulWidget {
 class _ItemStatTabState extends State<ItemStatTab> {
   late ScrollController _scrollController;
   Map<int, int> shownItems = {};
-  FilterGroupData<int> svtParts = FilterGroupData();
+  final svtParts = FilterGroupData<int>();
 
   bool get demandMode => widget.demandMode;
   // consume
@@ -180,7 +180,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
               ),
             );
           },
-          onFilterChanged: (v) {
+          onFilterChanged: (v, _) {
             setState(() {});
           },
         ),

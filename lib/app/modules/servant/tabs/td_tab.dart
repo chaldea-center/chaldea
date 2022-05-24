@@ -75,7 +75,7 @@ class SvtTdTab extends StatelessWidget {
                       .l),
                 ),
                 values: FilterRadioData(tdIndex),
-                onFilterChanged: (v) {
+                onFilterChanged: (v, _) {
                   state.value = v.radioValue!;
                   state.updateState();
                 },

@@ -311,6 +311,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "game_server": MessageLookupByLibrary.simpleMessage("游戏区服"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
+        "general_all": MessageLookupByLibrary.simpleMessage("所有"),
         "general_default": MessageLookupByLibrary.simpleMessage("默认"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
