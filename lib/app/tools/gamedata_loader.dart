@@ -53,7 +53,7 @@ class GameDataLoader {
     assert(!(offline && updateOnly), [offline, updateOnly]);
     void _showError(Object? e) {
       error = escapeDioError(e);
-      if (!offline) EasyLoading.showInfo(error);
+      if (!silent) EasyLoading.showInfo(error);
     }
 
     if (network.unavailable) {

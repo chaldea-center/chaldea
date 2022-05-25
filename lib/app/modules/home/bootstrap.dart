@@ -68,6 +68,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       if (!db.settings.tips.starter) {
         final data = await _loader.reload(
           offline: true,
+          silent: true,
           onUpdate: (v) {
             if (mounted) setState(() {});
           },
@@ -379,7 +380,7 @@ class _BootstrapPageState extends State<BootstrapPage>
     rootRouter.appState.dataReady = true;
     if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));
-      await _loader.reload(updateOnly: true);
+      await _loader.reload(updateOnly: true, silent: true);
     }
   }
 
@@ -487,6 +488,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 });
                 final gamedata = await _loader.reload(
                   offline: false,
+                  silent: false,
                   onUpdate: (v) {
                     if (mounted) setState(() {});
                   },
