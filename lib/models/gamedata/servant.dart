@@ -6,6 +6,7 @@ import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
+import '../userdata/userdata.dart';
 import 'common.dart';
 import 'game_card.dart';
 import 'item.dart';
@@ -386,6 +387,22 @@ class Servant with GameCardMixin {
   Iterable<NiceSkill> eventSkills(int eventId) {
     return extraPassive.where((skill) => skill.functions
         .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
+  }
+
+  NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
+    skills = skills.where((e) => e.num > 0).toList();
+    final priorities =
+        db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
+    if (collectionNo == 1) {
+      skills = skills.where((e) => priorities?[e.id] != null).toList();
+    }
+    if (skills.isEmpty) return null;
+    if (region == Region.jp) {
+      return Maths.findMax<NiceSkill, int>(skills, (e) => e.priority);
+    } else {
+      return Maths.findMax<NiceSkill, int>(
+          skills, (e) => priorities?[e.id] ?? -1);
+    }
   }
 }
 

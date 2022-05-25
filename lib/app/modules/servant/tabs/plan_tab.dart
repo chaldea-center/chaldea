@@ -105,8 +105,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     //skill part
     List<Widget> skillWidgets = [];
     for (int index = 0; index < 3; index++) {
-      final skill = svt.groupedActiveSkills.getOrNull(index)?.last;
-      if (skill == null) continue;
+      final skills = svt.groupedActiveSkills.getOrNull(index) ?? [];
+      if (skills.isEmpty) continue;
+      final skill =
+          svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
       skillWidgets.add(buildPlanRow(
         useSlider: sliderMode,
         leading: db.getIconImage(skill.icon, width: 33),

@@ -85,7 +85,8 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     if (skills.length == 1) {
       return SkillDescriptor(skill: skills.first, level: level);
     }
-    NiceSkill initSkill = _getDefaultSkill(skills) ?? skills.last;
+    NiceSkill initSkill =
+        svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
     return ValueStatefulBuilder<NiceSkill>(
       initValue: initSkill,
       builder: (context, state) {
@@ -142,21 +143,5 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         );
       },
     );
-  }
-
-  NiceSkill? _getDefaultSkill(List<NiceSkill> skills) {
-    skills = skills.where((e) => e.num > 0).toList();
-    final priorities = db.gameData.mappingData.skillPriority[svt.id]
-        ?.ofRegion(db.curUser.region);
-    if (svt.collectionNo == 1) {
-      skills = skills.where((e) => priorities?[e.id] != null).toList();
-    }
-    if (skills.isEmpty) return null;
-    if (db.curUser.region == Region.jp) {
-      return Maths.findMax<NiceSkill, int>(skills, (e) => e.priority);
-    } else {
-      return Maths.findMax<NiceSkill, int>(
-          skills, (e) => priorities?[e.id] ?? -1);
-    }
   }
 }

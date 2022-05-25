@@ -325,6 +325,9 @@ class ValDsc extends StatelessWidget {
         (vals.Rate != null && vals.Rate != 1000)) {
       _addPercent(vals.Rate, 10, (v) => '$v Chance');
     }
+    if (vals.ActSetWeight != null) {
+      _addPercent(vals.ActSetWeight, 1, (v) => '$v Weight');
+    }
   }
 }
 
