@@ -137,7 +137,7 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (PlatformU.isAndroid) {
       await db.saveAll();
       MethodChannelChaldeaNext.sendBackground();
-      return false;
+      return true;
     }
     return SynchronousFuture(true);
   }
