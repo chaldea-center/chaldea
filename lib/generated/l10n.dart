@@ -6022,6 +6022,17 @@ class S {
     );
   }
 
+  /// `Trail Quest`
+  String get trial_quest {
+    return Intl.message(
+      'Trail Quest',
+      name: 'trial_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Draw Cost`
   String get treasure_box_draw_cost {
     return Intl.message(

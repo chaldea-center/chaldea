@@ -16,7 +16,8 @@ import '../common/filter_group.dart';
 import 'quest_enemy.dart';
 
 class QuestCard extends StatefulWidget {
-  final Quest quest;
+  final Quest? quest;
+  final int questId;
   final bool? use6th;
   final bool offline;
   final Region region;
@@ -24,17 +25,22 @@ class QuestCard extends StatefulWidget {
   QuestCard({
     Key? key,
     required this.quest,
+    int? questId,
     this.use6th,
     this.offline = true,
     this.region = Region.jp,
-  }) : super(key: Key('QuestCard_${quest.id}'));
+  })  : assert(quest != null || questId != null),
+        questId = (quest?.id ?? questId)!,
+        super(key: key ?? Key('QuestCard_${quest?.id ?? questId}'));
 
   @override
   _QuestCardState createState() => _QuestCardState();
 }
 
 class _QuestCardState extends State<QuestCard> {
-  Quest get quest => widget.quest;
+  Quest? _quest;
+
+  Quest get quest => _quest!;
   bool showTrueName = false;
   bool? _use6th;
   bool preferApRate = false;
@@ -42,15 +48,32 @@ class _QuestCardState extends State<QuestCard> {
   bool get use6th => _use6th ?? db.curUser.use6thDropRate;
 
   bool get show6th {
-    return db.gameData.dropRate.getSheet(true).questIds.contains(quest.id);
+    return db.gameData.dropRate
+        .getSheet(true)
+        .questIds
+        .contains(widget.questId);
+  }
+
+  void _init() {
+    _quest = widget.quest ?? db.gameData.quests[widget.questId];
+    if (_quest == null && !widget.offline) {
+      AtlasApi.quest(widget.questId).then((value) {
+        if (value != null) {
+          _quest = value;
+          if (!widget.offline) _fetchAllPhases();
+        }
+        if (mounted) setState(() {});
+      });
+    }
+    if (!widget.offline) _fetchAllPhases();
   }
 
   @override
   void initState() {
     super.initState();
     _use6th = widget.use6th;
-    if (quest.isDomusQuest) preferApRate = db.settings.preferApRate;
-    if (!widget.offline) _fetchAllPhases();
+    _init();
+    if (_quest?.isDomusQuest == true) preferApRate = db.settings.preferApRate;
     showTrueName = !Transl.isJP;
   }
 
@@ -80,7 +103,7 @@ class _QuestCardState extends State<QuestCard> {
   static final Map<String, QuestPhase> _cachedPhaseData = {};
 
   QuestPhase? _getCachedPhase(int phase) {
-    return _cachedPhaseData['${widget.region.name}/${quest.id}/$phase'];
+    return _cachedPhaseData['${widget.region.name}/${widget.questId}/$phase'];
   }
 
   @override
@@ -91,13 +114,47 @@ class _QuestCardState extends State<QuestCard> {
     }
     if (oldWidget.offline != widget.offline ||
         oldWidget.region != widget.region ||
-        oldWidget.quest != widget.quest) {
-      _fetchAllPhases();
+        oldWidget.quest != widget.quest ||
+        oldWidget.questId != widget.questId) {
+      _init();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_quest == null) {
+      return Card(
+        elevation: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            AutoSizeText(
+              'Quest ${widget.questId}',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            if (widget.offline)
+              TextButton(
+                onPressed: () {
+                  router.push(
+                    url: Routes.questI(widget.questId),
+                    child: QuestDetailPage(
+                      quest: _quest,
+                      id: widget.questId,
+                      region: widget.region,
+                    ),
+                    detail: true,
+                  );
+                },
+                child: Text('>>> ${S.current.quest_detail_btn} >>>'),
+              ),
+          ],
+        ),
+      );
+    }
     QuestPhase? questPhase;
     for (final phase in quest.phases) {
       questPhase ??=
@@ -243,8 +300,8 @@ class _QuestCardState extends State<QuestCard> {
       }
     }
     if (curPhase == null) {
-      children.add(Text('  $phase/${widget.quest.phases.length}  '));
-      if (widget.quest.phasesNoBattle.contains(phase)) {
+      children.add(Text('  $phase/${quest.phases.length}  '));
+      if (quest.phasesNoBattle.contains(phase)) {
         children.add(const Expanded(
             child: Text('No Battle', textAlign: TextAlign.center)));
       } else if (!widget.offline) {
@@ -410,7 +467,7 @@ class _QuestCardState extends State<QuestCard> {
     final dropRates = db.gameData.dropRate.getSheet(use6th);
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
-      final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
+      final drops = dropRates.getQuestApRate(widget.questId).entries.toList();
       drops.sort((a, b) => _compareItem(a.key, b.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value > 1000
@@ -418,8 +475,7 @@ class _QuestCardState extends State<QuestCard> {
             : entry.value.format(maxDigits: 4);
       }
     } else {
-      final drops =
-          dropRates.getQuestDropRate(widget.quest.id).entries.toList();
+      final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
       drops.sort((a, b) => _compareItem(a.key, b.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 4);

@@ -825,6 +825,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Extra Gifts per box"),
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("Max Draws at once:"),
+        "trial_quest": MessageLookupByLibrary.simpleMessage("Trail Quest"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),

@@ -52,13 +52,14 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
       ));
     }
     widget.solution?.countVars.forEach((variable) {
-      final Quest? quest = db.gameData.getQuestPhase(variable.name) ??
-          db.gameData.quests[variable.name];
+      final questId = variable.name;
+      final Quest? quest =
+          db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
       children.add(Container(
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),
         child: ValueStatefulBuilder<bool>(
-            key: Key('plan_quest_${variable.name}'),
+            key: Key('plan_quest_$questId'),
             initValue: false,
             builder: (context, state) {
               return Column(
@@ -66,7 +67,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.lDispName ?? 'Quest ${variable.name}'),
+                    title: Text(quest?.lDispName ?? 'Quest $questId'),
                     subtitle: buildRichDetails(variable.detail.entries),
                     trailing: Text('${variable.value}*${variable.cost} AP'),
                     onTap: () {
@@ -75,12 +76,12 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                     },
                   ),
                   if (state.value && widget.solution?.params != null)
-                    widget.solution!.params!.blacklist.contains(variable.name)
+                    widget.solution!.params!.blacklist.contains(questId)
                         ? TextButton.icon(
                             onPressed: () {
                               setState(() {
                                 widget.solution!.params!.blacklist
-                                    .remove(variable.name);
+                                    .remove(questId);
                               });
                             },
                             icon: Icon(Icons.clear,
@@ -95,8 +96,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         : TextButton.icon(
                             onPressed: () {
                               setState(() {
-                                widget.solution!.params!.blacklist
-                                    .add(variable.name);
+                                widget.solution!.params!.blacklist.add(questId);
                               });
                             },
                             icon:
@@ -106,9 +106,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                               style: const TextStyle(color: Colors.redAccent),
                             ),
                           ),
-                  if (state.value && (quest != null))
+                  if (state.value)
                     QuestCard(
                       quest: quest,
+                      questId: questId,
                       use6th: widget.solution?.params?.use6th,
                     ),
                 ],

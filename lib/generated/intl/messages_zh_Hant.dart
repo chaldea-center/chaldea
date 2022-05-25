@@ -698,6 +698,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("每箱額外禮物"),
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("單次最多抽數"),
+        "trial_quest": MessageLookupByLibrary.simpleMessage("体验关卡"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("已經是最新版本"),
