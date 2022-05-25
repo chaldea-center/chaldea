@@ -4,15 +4,17 @@ import 'package:flutter/foundation.dart';
 
 import 'package:screenshot/screenshot.dart';
 
-import 'package:chaldea/models/version.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'api/recognizer.dart';
+import 'gamedata/gamedata.dart';
+import 'version.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;
   AppUpdateDetail? releaseDetail;
+  DataVersion? upgradableDataVersion;
 
   double? criticalWidth;
 

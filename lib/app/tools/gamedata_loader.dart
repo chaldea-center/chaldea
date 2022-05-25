@@ -32,7 +32,6 @@ class GameDataLoader {
   CancelToken? cancelToken;
 
   _GameLoadingTempData tmp = _GameLoadingTempData();
-  GameData? loadedGameData;
 
   double? get progress => _progress;
   double? _progress;
@@ -57,11 +56,6 @@ class GameDataLoader {
       if (!offline) EasyLoading.showInfo(error);
     }
 
-    if (!offline &&
-        loadedGameData != null &&
-        loadedGameData!.version.timestamp > db.gameData.version.timestamp) {
-      return loadedGameData!;
-    }
     if (network.unavailable) {
       _showError(S.current.error_no_internet);
       return null;
@@ -77,7 +71,7 @@ class GameDataLoader {
     cancelToken = CancelToken();
     try {
       final result = await _loadJson(offline, onUpdate, updateOnly);
-      loadedGameData = result;
+      db.runtimeData.upgradableDataVersion = result.version;
       _completer!.complete(result);
     } catch (e, s) {
       if (e is! UpdateError) logger.e('load gamedata($offline)', e, s);
@@ -289,6 +283,7 @@ class _GameLoadingTempData {
   Map<int, BaseTd> baseTds = {};
 
   void clear() {
+    gameJson?.clear();
     gameJson = null;
     buffs.clear();
     baseFuncs.clear();

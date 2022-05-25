@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -36,36 +35,13 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.version),
                 subtitle: Text(S.current.gamedata),
-                trailing: db.onUserData((context, snapshot) => Text(
-                      db.gameData.version.text(true),
-                      textAlign: TextAlign.end,
-                    )),
-              ),
-              // TODO: 不兼容版本提示
-              if (loader.loadedGameData != null &&
-                  loader.loadedGameData!.version.timestamp >
-                      db.gameData.version.timestamp)
-                ListTile(
-                  title:
-                      const Text('Update Available, click or restart to load'),
-                  trailing: Text(
-                    loader.loadedGameData!.version.text(true),
-                    style: TextStyle(color: Theme.of(context).errorColor),
+                trailing: db.onUserData(
+                  (context, snapshot) => Text(
+                    db.gameData.version.text(true),
                     textAlign: TextAlign.end,
                   ),
-                  onTap: () {
-                    if (loader.loadedGameData != null) {
-                      for (final child in rootRouter.appState.children) {
-                        child.popAll();
-                      }
-                      db.gameData = loader.loadedGameData!;
-                      db.itemCenter.init();
-                      db.notifyAppUpdate();
-                      setState(() {});
-                      EasyLoading.showSuccess('Updated');
-                    }
-                  },
-                )
+                ),
+              ),
             ],
           ),
           TileGroup(
@@ -94,9 +70,16 @@ class _GameDataPageState extends State<GameDataPage> {
                     if (loader.error != null) {
                       hint = loader.error!.toString();
                     }
+                    String? newVersion;
+                    if (db.runtimeData.upgradableDataVersion != null &&
+                        db.runtimeData.upgradableDataVersion!.timestamp >
+                            db.gameData.version.timestamp) {
+                      newVersion = db.runtimeData.upgradableDataVersion!.text();
+                    }
                     return ListTile(
                       title: Text(S.current.update),
                       subtitle: Text('Progress: $hint', maxLines: 2),
+                      trailing: newVersion?.toText(textAlign: TextAlign.end),
                       onTap: () async {
                         loader.setOnUpdate((value) {
                           state.value = value;
