@@ -82,7 +82,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     solutionVars.forEach((variable) {
       final int questId = variable.name;
       final Map<int, double> drops = variable.detail;
-      final Quest? quest = db.gameData.getQuestPhase(questId);
+      final Quest? quest =
+          db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
       if (filterItems.isEmpty ||
           (matchAll &&
               filterItems.every((e) => variable.detail.containsKey(e))) ||

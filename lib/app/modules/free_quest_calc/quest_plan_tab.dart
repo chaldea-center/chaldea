@@ -52,7 +52,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
       ));
     }
     widget.solution?.countVars.forEach((variable) {
-      final QuestPhase? quest = db.gameData.getQuestPhase(variable.name);
+      final Quest? quest = db.gameData.getQuestPhase(variable.name) ??
+          db.gameData.quests[variable.name];
       children.add(Container(
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),
@@ -105,7 +106,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                               style: const TextStyle(color: Colors.redAccent),
                             ),
                           ),
-                  if (state.value && quest != null)
+                  if (state.value && (quest != null))
                     QuestCard(
                       quest: quest,
                       use6th: widget.solution?.params?.use6th,
