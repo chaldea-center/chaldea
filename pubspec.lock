@@ -453,7 +453,7 @@ packages:
       name: flutter_easyloading
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.5"
   flutter_email_sender:
     dependency: "direct main"
     description:
@@ -974,7 +974,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.14.0"
   platform:
     dependency: transitive
     description:
