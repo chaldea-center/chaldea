@@ -328,6 +328,15 @@ class Servant with GameCardMixin {
   Transl<String, String> get lName =>
       Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 
+  Set<String> get allNames {
+    return <String>{
+      name,
+      ...ascensionAdd.overWriteServantName.all.values,
+      ...ascensionAdd.overWriteServantBattleName.all.values,
+      ...svtChange.map((e) => e.name)
+    };
+  }
+
   ServantExtra get extra => db.gameData.wiki.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);
 

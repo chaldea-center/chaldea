@@ -238,6 +238,21 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
       yield SearchUtil.getJP(ce.ruby);
       yield* getAllKeys(Transl.cvNames(ce.profile.cv));
       yield* getAllKeys(Transl.illustratorNames(ce.profile.illustrator));
+      for (final svtId in [
+        ce.bondEquipOwner,
+        ce.valentineEquipOwner,
+        ...ce.extra.characters
+      ]) {
+        final svt =
+            db.gameData.servantsById[svtId] ?? db.gameData.servants[svtId];
+        if (svt == null) continue;
+        for (final name in svt.allNames) {
+          yield* getAllKeys(Transl.svtNames(name));
+        }
+      }
+      for (final name in ce.extra.unknownCharacters) {
+        yield* getAllKeys(Transl.charaNames(name));
+      }
     }
     if (skill) {
       for (final skill in ce.skills) {

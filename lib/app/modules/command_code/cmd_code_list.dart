@@ -215,6 +215,17 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       yield* getAllKeys(code.lName);
       yield SearchUtil.getJP(code.ruby);
       yield* getAllKeys(Transl.illustratorNames(code.illustrator));
+      for (final svtId in code.extra.characters) {
+        final svt =
+            db.gameData.servantsById[svtId] ?? db.gameData.servants[svtId];
+        if (svt == null) continue;
+        for (final name in svt.allNames) {
+          yield* getAllKeys(Transl.svtNames(name));
+        }
+      }
+      for (final name in code.extra.unknownCharacters) {
+        yield* getAllKeys(Transl.charaNames(name));
+      }
     }
     if (skill) {
       for (final skill in code.skills) {

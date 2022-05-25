@@ -18,7 +18,8 @@ class SvtInfoTab extends StatelessWidget {
     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     Set<String> names = {
       svt.name,
-      for (final name in svt.ascensionAdd.overWriteServantName.all.values) name
+      ...svt.ascensionAdd.overWriteServantName.all.values,
+      ...svt.svtChange.map((e) => e.name)
     };
     final baseTraits = [
       ...svt.traits,

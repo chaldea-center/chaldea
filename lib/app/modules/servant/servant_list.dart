@@ -1060,13 +1060,8 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
     if (basic) {
       yield svt.collectionNo.toString();
       yield svt.id.toString();
-      yield* getAllKeys(Transl.svtNames(svt.name));
       yield SearchUtil.getJP(svt.ruby);
-      for (final name
-          in svt.ascensionAdd.overWriteServantName.ascension.values) {
-        yield* getAllKeys(Transl.svtNames(name));
-      }
-      for (final name in svt.ascensionAdd.overWriteServantName.costume.values) {
+      for (final name in svt.allNames) {
         yield* getAllKeys(Transl.svtNames(name));
       }
       yield* getAllKeys(Transl.cvNames(svt.profile.cv));
