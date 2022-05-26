@@ -26,7 +26,6 @@ class SvtVoiceTab extends StatefulWidget {
 }
 
 class _SvtVoiceTabState extends State<SvtVoiceTab> {
-  final _scrollController = ScrollController();
   late Region _region;
   Set<Region> releasedRegions = {};
 
@@ -75,7 +74,6 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     Widget view;
     if (groups.isNotEmpty) {
       view = ListView.builder(
-        controller: _scrollController,
         itemCount: children.length,
         itemBuilder: (context, index) => children[index],
       );

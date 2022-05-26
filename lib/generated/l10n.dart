@@ -284,6 +284,17 @@ class S {
     );
   }
 
+  /// `April Fool`
+  String get april_fool {
+    return Intl.message(
+      'April Fool',
+      name: 'april_fool',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ascension`
   String get ascension {
     return Intl.message(
@@ -6022,17 +6033,6 @@ class S {
     );
   }
 
-  /// `Trail Quest`
-  String get trial_quest {
-    return Intl.message(
-      'Trail Quest',
-      name: 'trial_quest',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Draw Cost`
   String get treasure_box_draw_cost {
     return Intl.message(
@@ -6060,6 +6060,17 @@ class S {
     return Intl.message(
       'Max Draws at once:',
       name: 'treasure_box_max_draw_once',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Trail Quest`
+  String get trial_quest {
+    return Intl.message(
+      'Trail Quest',
+      name: 'trial_quest',
       desc: '',
       locale: localeName,
       args: [],

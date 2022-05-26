@@ -307,7 +307,7 @@ const _traitsForFilter = <Trait>[
   Trait.demonic,
   Trait.giant,
   Trait.superGiant,
-  Trait.skyOrEarthExceptPseudoAndDemi,
+  Trait.skyOrEarthExceptPseudoAndDemiServant,
   Trait.hominidaeServant,
   Trait.demonicBeastServant,
   Trait.livingHuman,

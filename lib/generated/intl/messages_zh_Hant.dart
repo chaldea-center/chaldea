@@ -90,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("使用外部儲存(SD卡)"),
         "append_skill": MessageLookupByLibrary.simpleMessage("附加技能"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("附加"),
+        "april_fool": MessageLookupByLibrary.simpleMessage("愚人节"),
         "ascension": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("靈基再臨"),

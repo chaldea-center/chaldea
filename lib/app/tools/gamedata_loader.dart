@@ -65,7 +65,7 @@ class GameDataLoader {
       return _completer!.future;
     }
     _completer = Completer();
-    if (!updateOnly) tmp.clear();
+    tmp.clear();
     _progress = null;
     error = null;
     cancelToken = CancelToken();
@@ -114,6 +114,7 @@ class GameDataLoader {
 
     Map<String, dynamic> _gameJson = {};
     Map<FilePlus, List<int>> _dataToWrite = {};
+    _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
     int finished = 0;
     Future<void> _downloadCheck(FileVersion fv,
         {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
@@ -213,21 +214,16 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
-    if (!offline) {
-      _versionFile.writeAsString(jsonEncode(newVersion));
+    for (final entry in _dataToWrite.entries) {
+      await entry.key.writeAsBytes(entry.value);
     }
-    if (updateOnly) {
-      return GameData();
-    } // bypass null
+    if (updateOnly) return db.gameData;
+
     tmp.clear();
     tmp.gameJson = _gameJson;
     final _gamedata = GameData.fromJson(_gameJson);
     tmp.clear();
     _gamedata.version = newVersion;
-
-    for (final entry in _dataToWrite.entries) {
-      await entry.key.writeAsBytes(entry.value);
-    }
     _progress = finished / newVersion.files.length;
     (onUpdate ?? _onUpdate)?.call(_progress!);
     _onUpdate = null;

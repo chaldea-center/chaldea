@@ -111,7 +111,7 @@ const kTraitIdMapping = <int, Trait>{
   2008: Trait.weakToEnumaElish,
   2009: Trait.riding,
   2010: Trait.arthur,
-  2011: Trait.skyOrEarth,
+  2011: Trait.skyOrEarthServant,
   // # Tesla's NP
   2012: Trait.brynhildsBeloved,
   2018: Trait.undeadOrDemon,
@@ -119,7 +119,7 @@ const kTraitIdMapping = <int, Trait>{
   2019: Trait.demonic,
   2023: Trait.enemyDavinciTrueEnemy,
   2024: Trait.enemyDavinciFalseEnemy,
-  2037: Trait.skyOrEarthExceptPseudoAndDemi,
+  2037: Trait.skyOrEarthExceptPseudoAndDemiServant,
   // # Raikou's 3rd skill
   2038: Trait.fieldSunlight,
   2039: Trait.fieldShore,

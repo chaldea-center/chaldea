@@ -17,7 +17,6 @@ class SvtLoreTab extends StatefulWidget {
 }
 
 class _SvtLoreTabState extends State<SvtLoreTab> {
-  final _scrollController = ScrollController();
   late Region _region;
   Set<Region> releasedRegions = {};
 
@@ -69,39 +68,42 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
             ? S.current.svt_profile_info
             : S.current.svt_profile_n(lore.id - 1);
       }
-      children.add(Card(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        color: Theme.of(context).cardColor.withOpacity(0.975),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            CustomTile(
-              title: Text(title),
-              subtitle:
-                  lore.condMessage.isEmpty ? null : Text(lore.condMessage),
-            ),
-            CustomTile(subtitle: Text(lore.comment)),
-          ],
+      children.add(_profileCard(
+        title: Text(title),
+        subtitle: lore.condMessage.isEmpty ? null : Text(lore.condMessage),
+        comment: lore.comment,
+      ));
+    }
+    if (comments.isEmpty) {
+      children.add(Center(
+        child: Padding(
+          padding: const EdgeInsets.all(48),
+          child:
+              _loading ? const CircularProgressIndicator() : const Text('???'),
         ),
       ));
     }
-    Widget view;
-    if (comments.isNotEmpty) {
-      view = ListView.builder(
-        controller: _scrollController,
-        itemCount: children.length,
-        itemBuilder: (context, index) => children[index],
-      );
-    } else if (_loading) {
-      view = const Center(child: CircularProgressIndicator());
-    } else {
-      view = const Center(child: Text('???'));
+
+    if (!_loading) {
+      for (final region in Region.values) {
+        final text = widget.svt.extra.aprilFoolProfile.ofRegion(region);
+        if (text == null) continue;
+        children.add(_profileCard(
+          title: Text(S.current.april_fool),
+          subtitle: Text(region.toUpper()),
+          comment: text,
+        ));
+      }
     }
 
     return Column(
       children: [
-        Expanded(child: view),
+        Expanded(
+          child: ListView.builder(
+            itemCount: children.length,
+            itemBuilder: (context, index) => children[index],
+          ),
+        ),
         SafeArea(
           child: ButtonBar(
             alignment: MainAxisAlignment.center,
@@ -123,6 +125,25 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _profileCard(
+      {required Widget title, Widget? subtitle, required String comment}) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: Theme.of(context).cardColor.withOpacity(0.975),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          CustomTile(
+            title: title,
+            subtitle: subtitle,
+          ),
+          CustomTile(subtitle: Text(comment)),
+        ],
+      ),
     );
   }
 }

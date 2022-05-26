@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Use External Storage (SD card)"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
+        "april_fool": MessageLookupByLibrary.simpleMessage("April Fool"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),

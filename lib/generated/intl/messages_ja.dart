@@ -86,6 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("外部ストレージ（SDカード）を使用"),
         "append_skill": MessageLookupByLibrary.simpleMessage("アペンドスキル"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("アペンド"),
+        "april_fool": MessageLookupByLibrary.simpleMessage("エイプリルフール"),
         "ascension": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
