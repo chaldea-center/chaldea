@@ -171,7 +171,9 @@ class _CVOptions with SearchOptionsMixin<String> {
     }
     if (cardName) {
       for (final svt in state.svtMap[cv] ?? <Servant>[]) {
-        yield* getAllKeys(svt.lName);
+        for (final name in svt.allNames) {
+          yield* getAllKeys(Transl.svtNames(name));
+        }
       }
       for (final ce in state.ceMap[cv] ?? <CraftEssence>[]) {
         yield* getAllKeys(ce.lName);

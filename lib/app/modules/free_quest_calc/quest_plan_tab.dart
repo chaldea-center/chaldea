@@ -43,7 +43,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             runSpacing: 4,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Text('Ignored:'),
+              Text(S.current.ignore),
+              const SizedBox(width: 4),
               ...ignoredItems.map((e) => Item.iconBuilder(
                   context: context, item: db.gameData.items[e], width: 32))
             ],

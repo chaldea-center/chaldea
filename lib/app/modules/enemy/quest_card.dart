@@ -174,7 +174,7 @@ class _QuestCardState extends State<QuestCard> {
     List<String> names = [
       questName,
       if (!Transl.isJP && quest.name != quest.lName.l) quest.name
-    ];
+    ].map((e) => e.replaceAll('\n', ' ')).toList();
     String shownQuestName;
     if (names.any((s) => s.charWidth > 16)) {
       shownQuestName = names.join('\n');

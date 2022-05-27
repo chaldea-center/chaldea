@@ -19,6 +19,7 @@ import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
 import '../../app/tools/git_tool.dart';
@@ -93,9 +94,9 @@ class ServerFeedbackHandler extends ReportHandler {
     Uint8List? screenshotBytes,
     Map<String, Uint8List> generatedAttachments = const {},
   }) async {
-    if (network.unavailable) return false;
+    if (network.unavailable) throw S.current.error_no_internet;
 
-    if (await _isBlockedError(report)) return false;
+    if (await _isBlockedError(report)) throw 'Blocked Error';
 
     // don't send email repeatedly
     if (_sentReports.contains(report.shownError)) {
@@ -145,6 +146,8 @@ class ServerFeedbackHandler extends ReportHandler {
     );
     if (!response.success) {
       logger_.logger.e('failed to send mail', response.message);
+    }
+    if (report is! FeedbackReport) {
       _sentReports.add(report.shownError);
     }
     return response.success;
@@ -156,6 +159,7 @@ class ServerFeedbackHandler extends ReportHandler {
   List<String>? _blockedErrors;
 
   Future<bool> _isBlockedError(Report report) async {
+    if (report is FeedbackReport) return false;
     if (report.error is DioError) return true;
     if (kIsWeb) {
       if (['TypeError: Failed to fetch', 'Bad state: Future already completed']

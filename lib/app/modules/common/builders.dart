@@ -168,33 +168,35 @@ class SharedBuilder {
       context: context,
       useRootNavigator: false,
       builder: (context) {
-        List<Widget> children = [];
-        children.add(db.onUserData(
-          (context, snapshot) => CheckboxListTile(
-            value: db.curUser.sameEventPlan,
-            title: Text(S.current.same_event_plan),
-            onChanged: (v) {
-              if (v != null) db.curUser.sameEventPlan = v;
-              db.itemCenter.calculate();
-            },
-          ),
-        ));
-        for (int index = 0; index < db.curUser.plans.length; index++) {
-          children.add(ListTile(
-            title: Text(db.curUser.getFriendlyPlanName(index)),
-            selected: index == db.curUser.curSvtPlanNo,
-            onTap: () {
-              Navigator.of(context).pop();
-              if (onChange != null) {
-                onChange(index);
-              }
-            },
-          ));
-        }
-        return SimpleDialog(
-          title: Text(S.current.select_plan),
-          children: children,
-        );
+        return db.onUserData((context, snapshot) {
+          return SimpleDialog(
+            title: Text(S.current.select_plan),
+            children: [
+              CheckboxListTile(
+                value: db.curUser.sameEventPlan,
+                title: Text(S.current.same_event_plan),
+                onChanged: (v) {
+                  if (v != null) db.curUser.sameEventPlan = v;
+                  db.itemCenter.calculate();
+                },
+              ),
+              for (int index = 0; index < db.curUser.plans.length; index++)
+                ListTile(
+                  title: Text(db.curUser.getFriendlyPlanName(index)),
+                  subtitle: db.curUser.sameEventPlan && index == 0
+                      ? Text(S.current.event_title)
+                      : null,
+                  selected: index == db.curUser.curSvtPlanNo,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    if (onChange != null) {
+                      onChange(index);
+                    }
+                  },
+                )
+            ],
+          );
+        });
       },
     );
   }

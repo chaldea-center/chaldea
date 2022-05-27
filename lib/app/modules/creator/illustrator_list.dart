@@ -173,7 +173,9 @@ class _IllustratorOptions with SearchOptionsMixin<String> {
     }
     if (cardName) {
       for (final svt in state.svtMap[creator] ?? <Servant>[]) {
-        yield* getAllKeys(svt.lName);
+        for (final name in svt.allNames) {
+          yield* getAllKeys(Transl.svtNames(name));
+        }
       }
       for (final ce in state.ceMap[creator] ?? <CraftEssence>[]) {
         yield* getAllKeys(ce.lName);

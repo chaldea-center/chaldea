@@ -125,7 +125,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   String subject = '$kAppName v${AppInfo.fullVersion} Feedback';
                   String body = "OS: ${PlatformU.operatingSystem}"
                       " ${PlatformU.operatingSystemVersion}\n\n"
-                      "Please attach logs(${db.paths.logDir})";
+                      "Please attach logs(${db.paths.convertIosPath(db.paths.logDir)})";
                   final uri = Uri(
                       scheme: 'mailto',
                       path: kSupportTeamEmailAddress,
@@ -144,8 +144,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ListTile(
                 title: const Text('QQ频道'),
                 onTap: () {
-                  launch(
-                      'https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5');
+                  // https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5
+                  launch('https://jq.qq.com/?_wv=1027&k=kvHMMxGn');
                 },
               ),
               ListTile(
@@ -247,12 +247,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ],
       ),
     );
-    if (_changed) {
-      child = WillPopScope(
-        onWillPop: _alertPopPage,
-        child: child,
-      );
-    }
     return child;
   }
 

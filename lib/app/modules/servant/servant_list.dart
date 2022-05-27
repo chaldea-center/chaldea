@@ -58,9 +58,6 @@ class ServantListPageState extends State<ServantListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
-    if (db.settings.hideUnreleasedCard && db.curUser.region != Region.jp) {
-      filterData.region.toggle(db.curUser.region);
-    }
     if (db.settings.favoritePreferred != null) {
       filterData.favorite = db.settings.favoritePreferred!;
     }

@@ -28,6 +28,18 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showBuffDetail = false,
   }) : super(key: key);
 
+  const SkillDescriptor.only({
+    Key? key,
+    required this.skill,
+    required bool isPlayer,
+    this.level,
+    this.showNone = false,
+    this.hideDetail = false,
+    this.showBuffDetail = false,
+  })  : showPlayer = isPlayer,
+        showEnemy = !isPlayer,
+        super(key: key);
+
   @override
   Widget build(BuildContext context) {
     int cd0 = 0, cd1 = 0;
@@ -143,6 +155,17 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.overrideData,
   }) : super(key: key);
+
+  const TdDescriptor.only({
+    Key? key,
+    required this.td,
+    required bool isPlayer,
+    this.level,
+    this.showNone = false,
+    this.overrideData,
+  })  : showPlayer = isPlayer,
+        showEnemy = !isPlayer,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

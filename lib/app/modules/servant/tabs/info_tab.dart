@@ -127,7 +127,7 @@ class SvtInfoTab extends StatelessWidget {
               svt.atkMax,
               svt.atkGrowth.getOrNull(89),
               svt.atkGrowth.getOrNull(99),
-              svt.atkGrowth.getOrNull(109),
+              svt.atkGrowth.getOrNull(119),
             ]),
             _addAtkHpRow(
               context,
@@ -137,7 +137,7 @@ class SvtInfoTab extends StatelessWidget {
                 svt.atkMax,
                 svt.atkGrowth.getOrNull(89),
                 svt.atkGrowth.getOrNull(99),
-                svt.atkGrowth.getOrNull(109),
+                svt.atkGrowth.getOrNull(119),
               ],
               db.gameData.constData.classAttackRate[svt.className],
             ),
@@ -146,7 +146,7 @@ class SvtInfoTab extends StatelessWidget {
               svt.hpMax,
               svt.hpGrowth.getOrNull(89),
               svt.hpGrowth.getOrNull(99),
-              svt.hpGrowth.getOrNull(109),
+              svt.hpGrowth.getOrNull(119),
             ]),
             CustomTableRow.fromTexts(
                 texts: [S.current.info_cards], defaults: headerData),

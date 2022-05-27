@@ -184,10 +184,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final skillId in skillIds..sort())
-                  SkillDescriptor(
+                  SkillDescriptor.only(
                     skill: db.gameData.baseSkills[skillId]!,
-                    showEnemy: true,
-                    showPlayer: false,
+                    isPlayer: false,
                   ),
               ],
               if (classPassiveIds.isNotEmpty) ...[
@@ -196,10 +195,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final skillId in classPassiveIds..sort())
-                  SkillDescriptor(
+                  SkillDescriptor.only(
                     skill: db.gameData.baseSkills[skillId]!,
-                    showEnemy: true,
-                    showPlayer: false,
+                    isPlayer: false,
                   ),
               ],
               if (tdIds.isNotEmpty) ...[
@@ -208,10 +206,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final tdId in tdIds..sort())
-                  TdDescriptor(
+                  TdDescriptor.only(
                     td: db.gameData.baseTds[tdId]!,
-                    showEnemy: true,
-                    showPlayer: false,
+                    isPlayer: false,
                   ),
               ],
             ],

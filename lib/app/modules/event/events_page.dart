@@ -55,7 +55,7 @@ class _EventListPageState extends State<EventListPage>
             TextSpan(
               text: S.current.event_title,
               children: [
-                if (db.curUser.sameEventPlan)
+                if (!db.curUser.sameEventPlan)
                   TextSpan(
                     text: ' (${db.curUser.getFriendlyPlanName()})',
                     style: const TextStyle(fontSize: 14),

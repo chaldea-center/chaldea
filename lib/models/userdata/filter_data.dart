@@ -196,8 +196,13 @@ extension EffectTargetX on EffectTarget {
   }
 }
 
+abstract class _FilterData {
+  List<FilterGroupData> get groups;
+  void reset();
+}
+
 @JsonSerializable(ignoreUnannotated: true)
-class SvtFilterData {
+class SvtFilterData implements _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -250,7 +255,8 @@ class SvtFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [
+  @override
+  List<FilterGroupData> get groups => [
         svtClass,
         rarity,
         attribute,
@@ -269,11 +275,19 @@ class SvtFilterData {
         effectType,
       ];
 
+  @override
   void reset() {
-    for (var value in _group) {
+    for (var value in groups) {
       value.reset();
     }
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
+    if (db.settings.hideUnreleasedCard) {
+      if (db.curUser.region == Region.jp) {
+        region.options.clear();
+      } else {
+        region.toggle(db.curUser.region);
+      }
+    }
   }
 
   factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
@@ -335,7 +349,7 @@ enum CraftCompare { no, rarity, atk, hp }
 enum CraftATKType { none, hp, atk, mix }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CraftFilterData {
+class CraftFilterData implements _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -366,7 +380,8 @@ class CraftFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [
+  @override
+  List<FilterGroupData> get groups => [
         rarity,
         region,
         obtain,
@@ -376,10 +391,18 @@ class CraftFilterData {
         effectType,
       ];
 
+  @override
   void reset() {
     favorite = false;
-    for (var value in _group) {
+    for (var value in groups) {
       value.reset();
+    }
+    if (db.settings.hideUnreleasedCard) {
+      if (db.curUser.region == Region.jp) {
+        region.options.clear();
+      } else {
+        region.toggle(db.curUser.region);
+      }
     }
   }
 
@@ -421,7 +444,7 @@ class CraftFilterData {
 enum CmdCodeCompare { no, rarity }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CmdCodeFilterData {
+class CmdCodeFilterData implements _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -451,13 +474,22 @@ class CmdCodeFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group =>
+  @override
+  List<FilterGroupData> get groups =>
       [rarity, region, effectTarget, effectType];
 
+  @override
   void reset() {
     favorite = false;
-    for (var value in _group) {
+    for (var value in groups) {
       value.reset();
+    }
+    if (db.settings.hideUnreleasedCard) {
+      if (db.curUser.region == Region.jp) {
+        region.options.clear();
+      } else {
+        region.toggle(db.curUser.region);
+      }
     }
   }
 
@@ -498,7 +530,7 @@ enum FavoriteState {
 // summon
 
 @JsonSerializable(checked: true)
-class SummonFilterData {
+class SummonFilterData implements _FilterData {
   bool favorite;
   bool reversed;
   bool showBanner;
@@ -516,10 +548,12 @@ class SummonFilterData {
         showBanner = showBanner ?? false,
         showOutdated = showOutdated ?? false;
 
-  List<FilterGroupData> get groupValues => [category];
+  @override
+  List<FilterGroupData> get groups => [category];
 
+  @override
   void reset() {
-    for (var group in groupValues) {
+    for (var group in groups) {
       group.reset();
     }
     favorite = false;
@@ -532,7 +566,7 @@ class SummonFilterData {
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
 
-class EnemyFilterData {
+class EnemyFilterData implements _FilterData {
   bool useGrid;
   bool onlyShowQuestEnemy;
   // filter
@@ -545,10 +579,12 @@ class EnemyFilterData {
     this.onlyShowQuestEnemy = true,
   });
 
-  List<FilterGroupData> get _group => [svtClass, attribute, trait];
+  @override
+  List<FilterGroupData> get groups => [svtClass, attribute, trait];
 
+  @override
   void reset() {
-    for (var value in _group) {
+    for (var value in groups) {
       value.reset();
     }
   }
