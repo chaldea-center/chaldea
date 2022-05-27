@@ -255,8 +255,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Los siguientes objetos se consumirán para mejorar"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("Sin internet"),
-        "error_no_version_data_found": MessageLookupByLibrary.simpleMessage(
-            "No se encontró ninguna versión de datos"),
         "error_required_app_version": m11,
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
@@ -504,7 +502,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "Antes de planificar, puede establecer el número excedido de objetos (solo se usa para la planificación de Free Quest)"),
         "item_grail2crystal":
-            MessageLookupByLibrary.simpleMessage("Grial a Lore"),
+            MessageLookupByLibrary.simpleMessage("Grial → Lore"),
         "item_left": MessageLookupByLibrary.simpleMessage("Sobra"),
         "item_no_free_quests":
             MessageLookupByLibrary.simpleMessage("Sin Free Quests"),
@@ -848,7 +846,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_close": MessageLookupByLibrary.simpleMessage("Cerrar"),
         "time_end": MessageLookupByLibrary.simpleMessage("Finaliza"),
         "time_start": MessageLookupByLibrary.simpleMessage("Comienza"),
-        "toogle_dark_mode":
+        "toggle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Alternar tema"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Actualizar diapositivas"),

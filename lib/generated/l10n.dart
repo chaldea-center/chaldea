@@ -1582,22 +1582,22 @@ class S {
     );
   }
 
-  /// `No internet`
-  String get error_no_internet {
+  /// `No data found`
+  String get error_no_data_found {
     return Intl.message(
-      'No internet',
-      name: 'error_no_internet',
+      'No data found',
+      name: 'error_no_data_found',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `No version data found`
-  String get error_no_version_data_found {
+  /// `No internet`
+  String get error_no_internet {
     return Intl.message(
-      'No version data found',
-      name: 'error_no_version_data_found',
+      'No internet',
+      name: 'error_no_internet',
       desc: '',
       locale: localeName,
       args: [],
@@ -3519,10 +3519,10 @@ class S {
     );
   }
 
-  /// `Holy Grail to Crystallized Lore`
+  /// `Grail → Lore`
   String get item_grail2crystal {
     return Intl.message(
-      'Holy Grail to Crystallized Lore',
+      'Grail → Lore',
       name: 'item_grail2crystal',
       desc: '',
       locale: localeName,
@@ -5990,10 +5990,10 @@ class S {
   }
 
   /// `Toggle Dark Mode`
-  String get toogle_dark_mode {
+  String get toggle_dark_mode {
     return Intl.message(
       'Toggle Dark Mode',
-      name: 'toogle_dark_mode',
+      name: 'toggle_dark_mode',
       desc: '',
       locale: localeName,
       args: [],

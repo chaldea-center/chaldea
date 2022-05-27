@@ -222,9 +222,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_list": MessageLookupByLibrary.simpleMessage("敌人一览"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
+        "error_no_data_found": MessageLookupByLibrary.simpleMessage("未找到数据文件"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("无网络连接"),
-        "error_no_version_data_found":
-            MessageLookupByLibrary.simpleMessage("未找到数据文件"),
         "error_required_app_version": m11,
         "event_bonus": MessageLookupByLibrary.simpleMessage("加成"),
         "event_collect_item_confirm":
@@ -425,7 +424,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_eff": MessageLookupByLibrary.simpleMessage("素材效率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "计算规划前，可以设置不同材料的富余量(仅用于Free本规划)"),
-        "item_grail2crystal": MessageLookupByLibrary.simpleMessage("圣杯转传承结晶"),
+        "item_grail2crystal": MessageLookupByLibrary.simpleMessage("圣杯→传承结晶"),
         "item_left": MessageLookupByLibrary.simpleMessage("剩余"),
         "item_no_free_quests": MessageLookupByLibrary.simpleMessage("无Free本"),
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("仅显示不足"),
@@ -690,7 +689,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_close": MessageLookupByLibrary.simpleMessage("关闭"),
         "time_end": MessageLookupByLibrary.simpleMessage("结束"),
         "time_start": MessageLookupByLibrary.simpleMessage("开始"),
-        "toogle_dark_mode": MessageLookupByLibrary.simpleMessage("切换深色模式"),
+        "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("切换深色模式"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),

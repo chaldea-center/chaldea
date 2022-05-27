@@ -249,10 +249,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             "The following items will be consumed for enhancement"),
+        "error_no_data_found":
+            MessageLookupByLibrary.simpleMessage("No data found"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("No internet"),
-        "error_no_version_data_found":
-            MessageLookupByLibrary.simpleMessage("No version data found"),
         "error_required_app_version": m11,
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
@@ -491,8 +491,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "Before planning, you can set exceeded num for items(Only used for free quest planning)"),
-        "item_grail2crystal": MessageLookupByLibrary.simpleMessage(
-            "Holy Grail to Crystallized Lore"),
+        "item_grail2crystal":
+            MessageLookupByLibrary.simpleMessage("Grail → Lore"),
         "item_left": MessageLookupByLibrary.simpleMessage("Left"),
         "item_no_free_quests":
             MessageLookupByLibrary.simpleMessage("No Free Quests"),
@@ -814,7 +814,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),
         "time_end": MessageLookupByLibrary.simpleMessage("End"),
         "time_start": MessageLookupByLibrary.simpleMessage("Start"),
-        "toogle_dark_mode":
+        "toggle_dark_mode":
             MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Refresh slides"),

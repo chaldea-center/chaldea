@@ -127,7 +127,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
       children: [
         ListTile(
           leading: const Icon(Icons.dark_mode),
-          title: Text(S.current.toogle_dark_mode),
+          title: Text(S.current.toggle_dark_mode),
           horizontalTitleGap: 0,
           onTap: () {
             Navigator.pop(context);

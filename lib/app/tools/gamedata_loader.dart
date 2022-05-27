@@ -97,7 +97,7 @@ class GameDataLoader {
     if (offline) {
       // if not exist, raise error
       if (oldVersion == null) {
-        throw UpdateError(S.current.error_no_version_data_found);
+        throw UpdateError(S.current.error_no_data_found);
       }
       newVersion = oldVersion;
     } else {
