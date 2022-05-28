@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../app/modules/ffo/schema.dart';
 import '../../generated/l10n.dart';
 import '../db.dart';
 import '_helper.dart';
@@ -198,11 +199,15 @@ extension EffectTargetX on EffectTarget {
 
 abstract class _FilterData {
   List<FilterGroupData> get groups;
-  void reset();
+  void reset() {
+    for (final group in groups) {
+      group.reset();
+    }
+  }
 }
 
 @JsonSerializable(ignoreUnannotated: true)
-class SvtFilterData implements _FilterData {
+class SvtFilterData with _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -277,9 +282,7 @@ class SvtFilterData implements _FilterData {
 
   @override
   void reset() {
-    for (var value in groups) {
-      value.reset();
-    }
+    super.reset();
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region == Region.jp) {
@@ -349,7 +352,7 @@ enum CraftCompare { no, rarity, atk, hp }
 enum CraftATKType { none, hp, atk, mix }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CraftFilterData implements _FilterData {
+class CraftFilterData with _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -393,10 +396,8 @@ class CraftFilterData implements _FilterData {
 
   @override
   void reset() {
+    super.reset();
     favorite = false;
-    for (var value in groups) {
-      value.reset();
-    }
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region == Region.jp) {
         region.options.clear();
@@ -444,7 +445,7 @@ class CraftFilterData implements _FilterData {
 enum CmdCodeCompare { no, rarity }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CmdCodeFilterData implements _FilterData {
+class CmdCodeFilterData with _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -480,10 +481,8 @@ class CmdCodeFilterData implements _FilterData {
 
   @override
   void reset() {
+    super.reset();
     favorite = false;
-    for (var value in groups) {
-      value.reset();
-    }
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region == Region.jp) {
         region.options.clear();
@@ -530,7 +529,7 @@ enum FavoriteState {
 // summon
 
 @JsonSerializable(checked: true)
-class SummonFilterData implements _FilterData {
+class SummonFilterData with _FilterData {
   bool favorite;
   bool reversed;
   bool showBanner;
@@ -553,9 +552,7 @@ class SummonFilterData implements _FilterData {
 
   @override
   void reset() {
-    for (var group in groups) {
-      group.reset();
-    }
+    super.reset();
     favorite = false;
     showOutdated = false;
   }
@@ -566,7 +563,7 @@ class SummonFilterData implements _FilterData {
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
 
-class EnemyFilterData implements _FilterData {
+class EnemyFilterData with _FilterData {
   bool useGrid;
   bool onlyShowQuestEnemy;
   // filter
@@ -582,15 +579,61 @@ class EnemyFilterData implements _FilterData {
   @override
   List<FilterGroupData> get groups => [svtClass, attribute, trait];
 
-  @override
-  void reset() {
-    for (var value in groups) {
-      value.reset();
-    }
-  }
-
   // factory EnemyFilterData.fromJson(Map<String, dynamic> data) =>
   //     _$EnemyFilterDataFromJson(data);
 
   // Map<String, dynamic> toJson() => _$EnemyFilterDataToJson(this);
+}
+
+class FfoPartFilterData with _FilterData {
+  static const kSortKeys = [
+    SvtCompare.no,
+    SvtCompare.className,
+    SvtCompare.rarity
+  ];
+
+  bool useGrid = false;
+  final rarity = FilterGroupData<int>();
+  final classType = FilterGroupData<SvtClass>();
+  List<SvtCompare> sortKeys = List.of(kSortKeys);
+  List<bool> sortReversed = [false, false, true];
+
+  @override
+  List<FilterGroupData> get groups => [rarity, classType];
+
+  static int compare(FfoSvt? a, FfoSvt? b,
+      {List<SvtCompare>? keys, List<bool>? reversed}) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+
+    if (keys == null || keys.isEmpty) {
+      keys = [SvtCompare.no];
+    }
+    int _classSortKey(SvtClass? cls) {
+      int k = cls == null ? -1 : SvtClassX.regularAll.indexOf(cls);
+      return k < 0 ? 999 : k;
+    }
+
+    for (var i = 0; i < keys.length; i++) {
+      int r;
+      switch (keys[i]) {
+        case SvtCompare.no:
+          r = a.collectionNo - b.collectionNo;
+          break;
+        case SvtCompare.className:
+          r = _classSortKey(a.svtClass) - _classSortKey(b.svtClass);
+          break;
+        case SvtCompare.rarity:
+          r = a.rarity - b.rarity;
+          break;
+        default:
+          r = 0;
+      }
+      if (r != 0) {
+        return (reversed?.elementAt(i) ?? false) ? -r : r;
+      }
+    }
+    return 0;
+  }
 }

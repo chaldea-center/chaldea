@@ -13,6 +13,7 @@ import '../../craft_essence/craft_list.dart';
 import '../../enemy/enemy_list.dart';
 import '../../event/events_page.dart';
 import '../../exp/exp_card_cost_page.dart';
+import '../../ffo/ffo.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
@@ -95,7 +96,7 @@ class GalleryItem {
         // effectSearch,
         costumes,
         summons,
-        // ffo,
+        ffo,
         cvList,
         illustratorList,
         enemyList,
@@ -212,13 +213,13 @@ class GalleryItem {
     page: SummonListPage(),
     isDetail: false,
   );
-// static GalleryItem ffo = GalleryItem(
-//   name: 'ffo',
-//   titleBuilder: () => 'Freedom Order',
-//   icon: FontAwesomeIcons.layerGroup,
-//   page: FreedomOrderPage(),
-//   isDetail: true,
-// );
+  static GalleryItem ffo = GalleryItem(
+    name: 'ffo',
+    titleBuilder: () => 'Freedom Order',
+    icon: FontAwesomeIcons.layerGroup,
+    page: FreedomOrderPage(),
+    isDetail: true,
+  );
   static GalleryItem cvList = GalleryItem(
     name: 'cv_list',
     titleBuilder: () => S.current.info_cv,

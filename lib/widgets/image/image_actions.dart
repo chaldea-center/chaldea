@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,6 +11,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -25,11 +27,11 @@ class ImageActions {
     required BuildContext context,
     Uint8List? data,
     String? srcFp,
-    //
     bool gallery = true,
     String? destFp,
     bool share = true,
     String? shareText,
+    List<Widget> extraHeaders = const [],
   }) {
     assert(srcFp != null || data != null);
     if (srcFp == null && data == null) return Future.value();
@@ -37,7 +39,7 @@ class ImageActions {
       context: context,
       duration: const Duration(milliseconds: 250),
       builder: (context) {
-        List<Widget> children = [];
+        List<Widget> children = [...extraHeaders];
         if (gallery && PlatformU.isMobile) {
           children.add(ListTile(
             leading: const Icon(Icons.photo_library),
@@ -60,7 +62,7 @@ class ImageActions {
                 if (result is Map) {
                   msg = result['errorMessage'];
                 }
-                EasyLoading.showError(msg ?? result.toString());
+                EasyLoading.showError((msg ?? result).toString());
               }
             },
           ));
@@ -89,6 +91,16 @@ class ImageActions {
                     ),
                 ],
               ).showDialog(context);
+            },
+          ));
+        }
+        if (kIsWeb && data != null) {
+          children.add(ListTile(
+            leading: const Icon(Icons.save),
+            title: Text(S.current.save),
+            onTap: () {
+              Navigator.pop(context);
+              launchUrl(Uri.dataFromBytes(data));
             },
           ));
         }

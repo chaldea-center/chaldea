@@ -224,6 +224,8 @@ extension SvtClassX on SvtClass {
 
   String get shortName => kSvtClassShotName[this] ?? '?';
 
+  String get lName => Transl.svtClass(this).l;
+
   static List<SvtClass> regularAll = [
     ...regular,
     ...extra,
