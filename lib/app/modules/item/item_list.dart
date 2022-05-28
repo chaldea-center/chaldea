@@ -223,13 +223,14 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
       title: Text(S.of(context).priority),
       actions: [
         TextButton(
-            onPressed: () {
-              setState(() {
-                priorityFilter.reset();
-              });
-              db.itemCenter.updateSvts(all: true);
-            },
-            child: Text(S.of(context).clear.toUpperCase())),
+          onPressed: () {
+            setState(() {
+              priorityFilter.reset();
+            });
+            db.itemCenter.updateSvts(all: true);
+          },
+          child: Text(S.of(context).clear.toUpperCase()),
+        ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -363,13 +364,18 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   Widget build(BuildContext context) {
+    return db.onUserData((context, snapshot) => buildContent(context));
+  }
+
+  Widget buildContent(BuildContext context) {
     setTextController();
     List<Widget> children = [];
     _shownGroups.clear();
     for (var group in _allGroups.values) {
       if (!widget.filtered ||
           group.data == Items.qpId ||
-          (db.itemCenter.itemLeft[group.data] ?? 0) < 0) {
+          (db.itemCenter.itemLeft[group.data] ?? 0) < 0 ||
+          group.focusNode.hasFocus) {
         _shownGroups.add(group);
         children.add(buildItemTile(group));
       }

@@ -54,15 +54,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "제${n}절";
 
-  static String m16(region) => "${region} 공고";
+  static String m17(region) => "${region} 공고";
 
   static String m7(n) => "계획 초기화 ${n}(모두)";
 
   static String m8(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m17(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m18(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
-  static String m18(n) => "프로필${n}";
+  static String m19(n) => "프로필${n}";
 
   static String m9(a, b) => "${a} ${b}";
 
@@ -592,7 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("일본 서버"),
         "region_kr": MessageLookupByLibrary.simpleMessage("한국 서버"),
         "region_na": MessageLookupByLibrary.simpleMessage("미국 서버"),
-        "region_notice": m16,
+        "region_notice": m17,
         "region_tw": MessageLookupByLibrary.simpleMessage("번체 중국 서버"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("2호기 삭제하기"),
@@ -675,7 +675,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m17,
+        "solution_total_battles_ap": m18,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "sprites": MessageLookupByLibrary.simpleMessage("스프라이트"),
         "sq_fragment_convert":
@@ -713,7 +713,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("숨김"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("프로필"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("캐릭터 정보"),
-        "svt_profile_n": m18,
+        "svt_profile_n": m19,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("관련 예장"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("영기 보관실"),

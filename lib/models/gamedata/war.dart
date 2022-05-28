@@ -69,16 +69,31 @@ class NiceWar {
   String get name => lName.jp;
   String get longName => lLongName.jp;
 
+  String get lShortName {
+    if (id == 305) {
+      return '${lName.l} (1)';
+    } else if (id == 306) {
+      return '${lName.l} (2)';
+    } else {
+      return lName.l;
+    }
+  }
+
   Transl<String, String> get lLongName {
-    final warName = flags.contains(WarFlag.subFolder) ? _name : _longName;
-    if (warName != null) return Transl.warNames(warName);
-    return Transl.eventNames(event?.shortName ?? 'War $id');
+    final warName =
+        (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? 'War $id';
+    if (Transl.md.warNames.containsKey(warName)) {
+      return Transl.warNames(warName);
+    }
+    return Transl.eventNames(warName);
   }
 
   Transl<String, String> get lName {
-    final warName = _name ?? _longName;
-    if (warName != null) return Transl.warNames(warName);
-    return Transl.eventNames(event?.shortName ?? 'War $id');
+    final warName = _name ?? _longName ?? 'War $id';
+    if (Transl.md.warNames.containsKey(warName)) {
+      return Transl.warNames(warName);
+    }
+    return Transl.eventNames(warName);
   }
 
   bool get isMainStory => id >= 100 && id < 1000;

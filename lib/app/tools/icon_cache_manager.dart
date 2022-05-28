@@ -136,7 +136,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   final _rateLimiter =
       RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
   final _fsLimiter =
-      RateLimiter(maxCalls: 5, period: const Duration(milliseconds: 50));
+      RateLimiter(maxCalls: 20, period: const Duration(milliseconds: 100));
 
   @override
   Future<String?> download(String url, {RateLimiter? limiter}) async {

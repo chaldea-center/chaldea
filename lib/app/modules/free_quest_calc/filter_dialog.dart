@@ -57,7 +57,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                   value: war,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 180),
-                    child: Text(war.lName.l, maxLines: 1),
+                    child: Text(war.lShortName, maxLines: 1),
                   ),
                 )
             ],

@@ -1307,6 +1307,17 @@ class S {
     );
   }
 
+  /// `Show Multi-Window Button`
+  String get display_show_window_fab {
+    return Intl.message(
+      'Show Multi-Window Button',
+      name: 'display_show_window_fab',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `DONE`
   String get done {
     return Intl.message(
@@ -3734,6 +3745,17 @@ class S {
     );
   }
 
+  /// `Load FFO Data`
+  String get load_ffo_data {
+    return Intl.message(
+      'Load FFO Data',
+      name: 'load_ffo_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Change Name`
   String get login_change_name {
     return Intl.message(
@@ -4685,6 +4707,28 @@ class S {
     return Intl.message(
       'Drops',
       name: 'quest_fixed_drop_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Something went wrong or {region} doesn't have this quest's data`
+  String quest_not_found_error(Object region) {
+    return Intl.message(
+      'Something went wrong or $region doesn\'t have this quest\'s data',
+      name: 'quest_not_found_error',
+      desc: '',
+      locale: localeName,
+      args: [region],
+    );
+  }
+
+  /// `Only JP(after 2020/11) or NA(2020/12) may contain enemy data`
+  String get quest_region_has_enemy_hint {
+    return Intl.message(
+      'Only JP(after 2020/11) or NA(2020/12) may contain enemy data',
+      name: 'quest_region_has_enemy_hint',
       desc: '',
       locale: localeName,
       args: [],

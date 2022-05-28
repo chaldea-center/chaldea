@@ -54,15 +54,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "第${n}節";
 
-  static String m16(region) => "${region}公告";
+  static String m16(region) => "出现错误或${region}无此关卡数据";
+
+  static String m17(region) => "${region}公告";
 
   static String m7(n) => "重置規劃${n}(所有)";
 
   static String m8(n) => "重置規劃${n}(已顯示)";
 
-  static String m17(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m18(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
-  static String m18(n) => "個人資料${n}";
+  static String m19(n) => "個人資料${n}";
 
   static String m9(a, b) => "${a}${b}";
 
@@ -193,6 +195,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),
+        "display_show_window_fab":
+            MessageLookupByLibrary.simpleMessage("显示多窗口按钮"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下載"),
         "download_latest_gamedata_hint":
@@ -446,6 +450,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_all": m13,
         "list_count_shown_hidden_all": m14,
         "list_end_hint": m6,
+        "load_ffo_data": MessageLookupByLibrary.simpleMessage("加载FFO数据"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用戶名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密碼"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("確認密碼"),
@@ -552,6 +557,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
+        "quest_not_found_error": m16,
+        "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
+            "仅日服(2020/11之后)和美服(2020/12之后)可能含有敌方数据"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
@@ -562,7 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韓服"),
         "region_na": MessageLookupByLibrary.simpleMessage("美服"),
-        "region_notice": m16,
+        "region_notice": m17,
         "region_tw": MessageLookupByLibrary.simpleMessage("繁中服"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("銷毀2號機"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("移出黑名單"),
@@ -639,7 +647,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m17,
+        "solution_total_battles_ap": m18,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":
@@ -676,7 +684,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隱藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羈絆故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色詳情"),
-        "svt_profile_n": m18,
+        "svt_profile_n": m19,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("關聯禮裝"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置規劃"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),

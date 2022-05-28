@@ -12,6 +12,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/animation_on_scroll.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
@@ -571,19 +572,26 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ));
     }
 
-    return Scaffold(
-      body: ListView.builder(
-        itemBuilder: (context, index) => children[index],
-        itemCount: children.length,
-      ),
-      floatingActionButton: db.onUserData(
-        (context, snapshot) => FloatingActionButton(
-          backgroundColor: plan.enabled ? null : Colors.grey,
-          onPressed: plan.enabled
-              ? () => _ArchiveEventDialog(event: event, initPlan: plan)
-                  .showDialog(context)
-              : null,
-          child: const Icon(Icons.archive_outlined),
+    return UserScrollListener(
+      shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
+      initForward: true,
+      builder: (context, animationController) => Scaffold(
+        floatingActionButton: ScaleTransition(
+          scale: animationController,
+          child: db.onUserData(
+            (context, snapshot) => FloatingActionButton(
+              backgroundColor: plan.enabled ? null : Colors.grey,
+              onPressed: plan.enabled
+                  ? () => _ArchiveEventDialog(event: event, initPlan: plan)
+                      .showDialog(context)
+                  : null,
+              child: const Icon(Icons.archive_outlined),
+            ),
+          ),
+        ),
+        body: ListView.builder(
+          itemBuilder: (context, index) => children[index],
+          itemCount: children.length,
         ),
       ),
     );

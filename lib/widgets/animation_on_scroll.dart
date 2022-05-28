@@ -5,10 +5,14 @@ class UserScrollListener extends StatefulWidget {
   final Widget Function(BuildContext context, AnimationController controller)
       builder;
   final bool Function(UserScrollNotification userScroll)? shouldAnimate;
+  final bool initForward;
 
-  const UserScrollListener(
-      {Key? key, required this.builder, this.shouldAnimate})
-      : super(key: key);
+  const UserScrollListener({
+    Key? key,
+    required this.builder,
+    this.shouldAnimate,
+    this.initForward = false,
+  }) : super(key: key);
 
   @override
   _UserScrollListenerState createState() => _UserScrollListenerState();
@@ -23,6 +27,7 @@ class _UserScrollListenerState extends State<UserScrollListener>
     super.initState();
     controller =
         AnimationController(vsync: this, duration: kThemeAnimationDuration);
+    if (widget.initForward) controller.forward();
   }
 
   @override

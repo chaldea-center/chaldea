@@ -55,15 +55,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "Sección ${n}";
 
-  static String m16(region) => "Aviso de ${region}";
+  static String m17(region) => "Aviso de ${region}";
 
   static String m7(n) => "Restablecer plan ${n}(Todo)";
 
   static String m8(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m17(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m18(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
-  static String m18(n) => "Perfil ${n}";
+  static String m19(n) => "Perfil ${n}";
 
   static String m9(a, b) => "${a} ${b}";
 
@@ -672,7 +672,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m16,
+        "region_notice": m17,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remover duplicado"),
@@ -779,7 +779,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m17,
+        "solution_total_battles_ap": m18,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -828,7 +828,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Perfil"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Info del personaje"),
-        "svt_profile_n": m18,
+        "svt_profile_n": m19,
         "svt_related_ce":
             MessageLookupByLibrary.simpleMessage("CE Relacionadas"),
         "svt_reset_plan":

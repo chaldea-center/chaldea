@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/enemy/quest_card.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
@@ -99,7 +101,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           ? Center(
               child: _loading
                   ? const CircularProgressIndicator()
-                  : const Text('Not Found'),
+                  : Text(S.current.quest_not_found_error(region.localName)),
             )
           : ListView(
               children: [
@@ -107,7 +109,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   quest: quest,
                   region: region,
                   offline: false,
-                )
+                ),
+                SFooter(S.current.quest_region_has_enemy_hint),
               ],
             ),
     );

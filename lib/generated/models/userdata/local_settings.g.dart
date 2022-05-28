@@ -12,8 +12,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = LocalSettings(
           beta: $checkedConvert('beta', (v) => v as bool? ?? false),
-          showWindowFab:
-              $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
           showDebugFab:
               $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
           alwaysOnTop:
@@ -109,7 +107,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
     <String, dynamic>{
       'beta': instance.beta,
-      'showWindowFab': instance.showWindowFab,
       'showDebugFab': instance.showDebugFab,
       'alwaysOnTop': instance.alwaysOnTop,
       'windowPosition': instance.windowPosition,
@@ -167,6 +164,8 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
         final val = DisplaySettings(
           showAccountAtHome:
               $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
+          showWindowFab:
+              $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
           svtPlanInputMode: $checkedConvert(
               'svtPlanInputMode',
               (v) =>
@@ -212,6 +211,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
     <String, dynamic>{
       'showAccountAtHome': instance.showAccountAtHome,
+      'showWindowFab': instance.showWindowFab,
       'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
       'itemDetailViewType':
           _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType],

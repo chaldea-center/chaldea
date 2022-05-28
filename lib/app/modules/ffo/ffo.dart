@@ -47,7 +47,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           onPressed: () {
             loadDB(false);
           },
-          child: const Text('Load FFO DB'),
+          child: Text(S.current.load_ffo_data),
         ),
       );
     } else {
@@ -89,7 +89,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 onTap: () => loadDB(true),
-                child: const Text('Load FFO DB'),
+                child: Text(S.current.load_ffo_data),
               ),
               PopupMenuItem(
                 onTap: () {

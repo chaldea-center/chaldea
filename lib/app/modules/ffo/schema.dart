@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/models.dart';
 
 enum FfoPartWhere { head, body, bg }

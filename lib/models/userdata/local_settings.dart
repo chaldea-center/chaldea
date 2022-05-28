@@ -17,7 +17,6 @@ part '../../generated/models/userdata/local_settings.g.dart';
 @JsonSerializable()
 class LocalSettings {
   bool beta;
-  bool showWindowFab;
   bool showDebugFab;
   bool alwaysOnTop;
   List<int>? windowPosition;
@@ -52,7 +51,6 @@ class LocalSettings {
 
   LocalSettings({
     this.beta = false,
-    this.showWindowFab = true,
     this.showDebugFab = false,
     this.alwaysOnTop = false,
     this.windowPosition,
@@ -136,6 +134,7 @@ class LocalSettings {
 @JsonSerializable()
 class DisplaySettings {
   bool showAccountAtHome;
+  bool showWindowFab;
   SvtPlanInputMode svtPlanInputMode;
   ItemDetailViewType itemDetailViewType;
   ItemDetailSvtSort itemDetailSvtSort;
@@ -150,6 +149,7 @@ class DisplaySettings {
 
   DisplaySettings({
     this.showAccountAtHome = true,
+    this.showWindowFab = true,
     this.svtPlanInputMode = SvtPlanInputMode.dropdown,
     this.itemDetailViewType = ItemDetailViewType.separated,
     this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,

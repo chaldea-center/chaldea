@@ -9,6 +9,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+import '../../root/global_fab.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
 import 'display_settings/fav_option.dart';
@@ -47,6 +48,20 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     setState(() {});
                   },
                 ),
+              SwitchListTile.adaptive(
+                value: db.settings.display.showWindowFab,
+                title: Text(S.current.display_show_window_fab),
+                onChanged: (v) async {
+                  db.settings.display.showWindowFab = v;
+                  db.saveSettings();
+                  if (v) {
+                    WindowManagerFab.createOverlay(context);
+                  } else {
+                    WindowManagerFab.removeOverlay();
+                  }
+                  setState(() {});
+                },
+              ),
               // only show on mobile phone, not desktop and tablet
               // on Android, cannot detect phone or mobile
               if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)

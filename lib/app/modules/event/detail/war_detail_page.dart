@@ -51,13 +51,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
     final banners = [
       ...war.extra.titleBanner.values.whereType<String>(),
     ];
-    final eventBanners = db
-        .gameData.events[war.eventId]?.extra.titleBanner.values
-        .whereType<String>()
-        .toList();
-    if (eventBanners != null && eventBanners.isNotEmpty) {
-      banners.addAll(eventBanners);
-    }
+    // final eventBanners = war.event?.extra.titleBanner.values
+    //     .whereType<String>()
+    //     .toList();
+    // if (eventBanners != null && eventBanners.isNotEmpty) {
+    //   banners.addAll(eventBanners);
+    // }
 
     List<Widget> children = [
       if (banners.isNotEmpty)
@@ -250,6 +249,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
             itemBuilder: (context) => [
               ...SharedBuilder.websitesPopupMenuItems(
                 atlas: Atlas.dbWar(war.id),
+                mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
+                fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
               ),
               ...SharedBuilder.noticeLinkPopupMenuItems(
                 noticeLink: war.extra.noticeLink,

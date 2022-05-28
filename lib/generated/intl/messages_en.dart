@@ -54,15 +54,18 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "Section ${n}";
 
-  static String m16(region) => "${region} Notice";
+  static String m16(region) =>
+      "Something went wrong or ${region} doesn\'t have this quest\'s data";
+
+  static String m17(region) => "${region} Notice";
 
   static String m7(n) => "Reset Plan ${n}(All)";
 
   static String m8(n) => "Reset Plan ${n}(Shown)";
 
-  static String m17(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m18(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
-  static String m18(n) => "Profile ${n}";
+  static String m19(n) => "Profile ${n}";
 
   static String m9(a, b) => "${a} ${b}";
 
@@ -217,6 +220,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "display_setting":
             MessageLookupByLibrary.simpleMessage("Display Settings"),
+        "display_show_window_fab":
+            MessageLookupByLibrary.simpleMessage("Show Multi-Window Button"),
         "done": MessageLookupByLibrary.simpleMessage("DONE"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
         "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
@@ -519,6 +524,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_all": m13,
         "list_count_shown_hidden_all": m14,
         "list_end_hint": m6,
+        "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password":
@@ -649,6 +655,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
+        "quest_not_found_error": m16,
+        "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
+            "Only JP(after 2020/11) or NA(2020/12) may contain enemy data"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
@@ -660,7 +669,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m16,
+        "region_notice": m17,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remove duplicated"),
@@ -754,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m17,
+        "solution_total_battles_ap": m18,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -799,7 +808,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Character Info"),
-        "svt_profile_n": m18,
+        "svt_profile_n": m19,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
