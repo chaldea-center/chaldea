@@ -1,11 +1,18 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import 'package:csv/csv.dart';
+import 'package:dio/dio.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'ffo_card.dart';
 
 enum FfoPartWhere { head, body, bg }
 
@@ -29,6 +36,46 @@ class FfoDB {
   void clear() {
     parts.clear();
     servants.clear();
+  }
+
+  Future<void> load(bool force) async {
+    for (final data
+        in jsonDecode(await _readFile('FFOSpriteParts.json', force))) {
+      final svt = FfoSvt.fromJson(data);
+      servants[svt.collectionNo] = svt;
+    }
+
+    final csvrows = const CsvToListConverter(eol: '\n').convert(
+        (await _readFile('CSV/ServantDB-Parts.csv', force))
+            .replaceAll('\r\n', '\n'));
+    for (final row in csvrows) {
+      if (row[0] == 'id') {
+        assert(row.length == 10, row.toString());
+        continue;
+      }
+      final item = FfoSvtPart.fromList(row);
+      parts[item.collectionNo] = item;
+    }
+    print('loaded ffo csv: ${parts.length} parts, ${servants.length} svts');
+  }
+
+  Future<String> _readFile(String fn, bool force) async {
+    String url = FFOUtil.imgUrl(fn)!;
+    final file = FilePlus(joinPaths(db.paths.tempDir, 'ffo', fn));
+    if (file.existsSync() && !force) {
+      try {
+        print('reading ${file.path}');
+        return await file.readAsString();
+      } catch (e, s) {
+        logger.e('$fn corrupt', e, s);
+      }
+    }
+    print('downloading: $url');
+    final resp = await Dio()
+        .get(url, options: Options(responseType: ResponseType.plain));
+    await file.create(recursive: true);
+    await file.writeAsString(resp.data as String);
+    return resp.data;
   }
 }
 
