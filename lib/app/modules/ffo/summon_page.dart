@@ -48,6 +48,20 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           if (FfoDB.i.isEmpty)
             Center(child: Text(S.current.ffo_missing_data_hint)),
           results,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                _partChooser(FfoPartWhere.head),
+                _partChooser(FfoPartWhere.body),
+                _partChooser(FfoPartWhere.bg),
+              ],
+            ),
+          ),
           if (history.isNotEmpty)
             Center(
               child: Text(
@@ -57,6 +71,19 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
             ),
         ],
       ),
+    );
+  }
+
+  FFOParams fixedParams = FFOParams();
+  Widget _partChooser(FfoPartWhere where) {
+    return PartChooser(
+      where: where,
+      part: fixedParams.of(where),
+      placeholder: Center(child: Text(S.current.random)),
+      onChanged: (part) {
+        fixedParams.update(where, part);
+        if (mounted) setState(() {});
+      },
     );
   }
 
@@ -106,14 +133,27 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   final Random _random = Random(DateTime.now().millisecondsSinceEpoch);
 
   void drawSummon(int counts) async {
-    final svts = FfoDB.i.parts.values.toList();
-    if (svts.isEmpty) return;
+    // final svts = FfoDB.i.parts.values.where((e) => e.svt != null).toList();
+    final categorized = {
+      for (final where in FfoPartWhere.values)
+        where: FfoDB.i.parts.values
+            .where((e) => e.svt?.has(where) == true)
+            .toList(),
+    };
+    FfoSvtPart? _getRandom(FfoPartWhere where) {
+      final fixedSvt = fixedParams.of(where);
+      if (fixedSvt != null) return fixedSvt;
+      final svts = categorized[where]!;
+      if (svts.isEmpty) return null;
+      return svts[_random.nextInt(svts.length)];
+    }
+
     history.add(List.generate(
       counts,
       (index) => FFOParams(
-        headPart: svts[_random.nextInt(svts.length)],
-        bodyPart: svts[_random.nextInt(svts.length)],
-        bgPart: svts[_random.nextInt(svts.length)],
+        headPart: _getRandom(FfoPartWhere.head),
+        bodyPart: _getRandom(FfoPartWhere.body),
+        bgPart: _getRandom(FfoPartWhere.bg),
         clipOverflow: true,
         cropNormalizedSize: true,
       ),
@@ -123,7 +163,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   }
 
   Widget get results {
-    if (history.isEmpty) return Container();
+    if (history.isEmpty) return const SizedBox(height: 160);
 
     Widget _buildRow(List<FFOParams> rowItems) {
       return Row(

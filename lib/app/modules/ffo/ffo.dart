@@ -10,7 +10,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/ffo/ffo_card.dart';
-import 'package:chaldea/app/modules/ffo/part_list.dart';
 import 'package:chaldea/app/modules/ffo/schema.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -66,12 +65,13 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
               spacing: 6,
               runSpacing: 6,
               children: [
-                partChooser(FfoPartWhere.head),
-                partChooser(FfoPartWhere.body),
-                partChooser(FfoPartWhere.bg),
+                _partChooser(FfoPartWhere.head),
+                _partChooser(FfoPartWhere.body),
+                _partChooser(FfoPartWhere.bg),
               ],
             ),
           ),
@@ -105,49 +105,17 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     );
   }
 
-  Widget partChooser(FfoPartWhere where) {
-    final _part = params.of(where);
-    String icon;
-    switch (where) {
-      case FfoPartWhere.head:
-        icon = 'UI/icon_servant_head_on.png';
-        break;
-      case FfoPartWhere.body:
-        icon = 'UI/icon_servant_body_on.png';
-        break;
-      case FfoPartWhere.bg:
-        icon = 'UI/icon_servant_bg_on.png';
-        break;
-    }
-    return InkWell(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          db.getIconImage(FFOUtil.imgUrl(_part?.svt?.icon), height: 72),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              db.getIconImage(FFOUtil.imgUrl(icon), width: 16),
-              Text(where.shownName),
-            ],
-          ),
-        ],
-      ),
-      onTap: () {
-        router.pushPage(
-          FfoPartListPage(
-            where: where,
-            onSelected: (part) async {
-              if (sameSvt) {
-                params.bgPart = params.bodyPart = params.headPart = part;
-              } else {
-                params.update(where, part);
-              }
-              if (mounted) setState(() {});
-            },
-          ),
-          detail: true,
-        );
+  Widget _partChooser(FfoPartWhere where) {
+    return PartChooser(
+      where: FfoPartWhere.head,
+      part: params.of(FfoPartWhere.head),
+      onChanged: (part) {
+        if (sameSvt) {
+          params.bgPart = params.bodyPart = params.headPart = part;
+        } else {
+          params.update(where, part);
+        }
+        if (mounted) setState(() {});
       },
     );
   }
@@ -233,6 +201,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       logger.e('load FFO data failed', e, s);
       EasyLoading.showError(escapeDioError(e));
     }
+    params.cropNormalizedSize = true;
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -242,6 +211,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     final file = FilePlus(joinPaths(db.paths.tempDir, 'ffo', fn));
     if (file.existsSync() && !force) {
       try {
+        print('reading ${file.path}');
         return await file.readAsString();
       } catch (e, s) {
         logger.e('$fn corrupt', e, s);

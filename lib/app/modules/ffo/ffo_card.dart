@@ -17,6 +17,8 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../app.dart';
+import 'part_list.dart';
 import 'schema.dart';
 
 class FfoCard extends StatefulWidget {
@@ -231,128 +233,84 @@ abstract class FFOUtil {
 
   static void drawCanvas(
       Canvas canvas, FFOParams params, FfoCanvasImages images) {
+    const double w0 = 1024, h0 = 1024, w1 = 512, h1 = 720;
+    final centerRect = Rect.fromCenter(
+        center: const Offset(w0 / 2, h0 / 2), width: w1, height: h1);
     if (params.cropNormalizedSize) {
-      canvas.clipRect(const Rect.fromLTWH(0, 0, 512, 720));
-      canvas.translate((512 - 1024) / 2, (720 - 1024) / 2);
-    }
-
-    double headScale = 1;
-    if (params.headPart != null &&
-        params.bodyPart != null &&
-        params.headPart!.scale != 0) {
-      headScale = params.bodyPart!.scale / params.headPart!.scale;
-    }
-
-    bool flip = false;
-    if ((params.headPart?.direction == 0 && params.bodyPart?.direction == 2) ||
-        (params.headPart?.direction == 2 && params.bodyPart?.direction == 0)) {
-      flip = true;
-    }
-
-    int headX2 = (params.bodyPart?.headX2 == 0
-            ? params.bodyPart?.headX
-            : params.bodyPart?.headX2) ??
-        512;
-    int headY2 = (params.bodyPart?.headY2 == 0
-            ? params.bodyPart?.headY
-            : params.bodyPart?.headY2) ??
-        512;
-
-    // draw
-    if (params.clipOverflow) {
-      canvas.clipRect(Rect.fromCenter(
-          center: const Offset(512, 512), width: 512, height: 720));
-    }
-    if (images.bg_0 != null) {
-      canvas.drawImage(
-        images.bg_0!,
-        const Offset((1024 - 512) / 2, (1024 - 720) / 2),
-        Paint(),
-      );
-    }
-    if (images.bodyBack_1 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.bodyBack_1!,
-      );
-    }
-    if (images.headBack_2 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.headBack_2!,
-        flip: flip,
-        scale: headScale,
-        x: headX2 - 512,
-        y: headY2 - 512,
-      );
-    }
-    if (images.bodyBack2_3 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.bodyBack2_3!,
-      );
-    }
-    if (images.bodyMiddle_4 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.bodyMiddle_4!,
-      );
-    }
-    if (images.headFront_5 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.headFront_5!,
-        flip: flip,
-        scale: headScale,
-        x: headX2 - 512,
-        y: headY2 - 512,
-      );
-    }
-
-    if (images.bodyFront_6 != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images.bodyFront_6!,
-        // direction: headPart?.direction ?? 0,
-      );
-    }
-
-    if (images.bgFront_7 != null) {
-      canvas.drawImage(images.bgFront_7!,
-          const Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
-    }
-  }
-
-  static void _drawImage({
-    required Canvas canvas,
-    required ui.Image img,
-    bool flip = false,
-    double scale = 1,
-    int x = 0,
-    int y = 0,
-  }) {
-    double x2 = scale == 1 ? x.toDouble() : x - ((scale - 1) / 2 * img.width);
-    double y2 = scale == 1 ? y.toDouble() : y - ((scale - 1) / 2 * img.height);
-    int orgX = x;
-    // render
-    if (flip) {
       canvas.save();
-      canvas.translate(img.width + orgX * 2, 0);
-      canvas.scale(-1, 1);
+      canvas.translate(-(w0 - w1) / 2, -(h0 - h1) / 2);
     }
-    if (scale == 1) {
-      canvas.drawImage(img, Offset(x2, y2), Paint());
-    } else {
+    bool clip = params.cropNormalizedSize || params.clipOverflow;
+    if (clip) {
+      canvas.save();
+      canvas.clipRect(centerRect);
+    }
+
+    final body = params.bodyPart;
+    final head = params.headPart;
+
+    void _drawLand(ui.Image? img) {
+      if (img == null) return;
       canvas.drawImageRect(
         img,
         Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-        Rect.fromLTWH(x2, y2, img.width * scale, img.height * scale),
+        centerRect,
         Paint(),
       );
     }
-    if (flip) {
+
+    void _drawBody(ui.Image? img) {
+      if (img == null) return;
+      canvas.drawImageRect(
+        img,
+        Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+        const Rect.fromLTWH(0, 0, w0, h0),
+        Paint(),
+      );
+    }
+
+    bool flipHead = (head?.direction == 0 && body?.direction == 2) ||
+        (head?.direction == 2 && body?.direction == 0);
+
+    void _drawHead(ui.Image? img, bool use2) {
+      if (img == null) return;
+      if (body == null || head == null) return _drawBody(img);
+      canvas.save();
+      if (body.headX2 == 0 && body.headY2 == 0) {
+        use2 = false;
+      }
+      int headX = use2 ? body.headX2 : body.headX,
+          headY = use2 ? body.headY2 : body.headY;
+      canvas.translate(headX.toDouble(), headY.toDouble());
+      if (flipHead) canvas.scale(-1, 1);
+      double scale = body.scale / head.scale;
+
+      canvas.drawImageRect(
+        img,
+        head.collectionNo == 402
+            ? Rect.fromLTWH(0, -20, img.width.toDouble(), img.height.toDouble())
+            : Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+        Rect.fromCenter(
+          center: const Offset(0, 0),
+          width: w0 * scale,
+          height: h0 * scale,
+        ),
+        Paint(),
+      );
       canvas.restore();
     }
+
+    _drawLand(images.bg_0);
+    _drawBody(images.bodyBack_1);
+    _drawHead(images.headBack_2, false);
+    _drawBody(images.bodyBack2_3);
+    _drawBody(images.bodyMiddle_4);
+    _drawHead(images.headFront_5, true);
+    _drawBody(images.bodyFront_6);
+    _drawLand(images.bgFront_7);
+
+    if (clip) canvas.restore();
+    if (params.cropNormalizedSize) canvas.restore();
   }
 
   static Future<Uint8List?> toBinary(FFOParams params) async {
@@ -412,5 +370,62 @@ abstract class FFOUtil {
         share: share,
         shareText: shareText ?? fn,
         extraHeaders: [SHeader(parts.join('\n'))]);
+  }
+}
+
+class PartChooser extends StatelessWidget {
+  final FfoPartWhere where;
+  final FfoSvtPart? part;
+  final Widget? placeholder;
+  final ValueChanged<FfoSvtPart?> onChanged;
+  const PartChooser({
+    Key? key,
+    required this.where,
+    required this.part,
+    this.placeholder,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String icon;
+    switch (where) {
+      case FfoPartWhere.head:
+        icon = 'UI/icon_servant_head_on.png';
+        break;
+      case FfoPartWhere.body:
+        icon = 'UI/icon_servant_body_on.png';
+        break;
+      case FfoPartWhere.bg:
+        icon = 'UI/icon_servant_bg_on.png';
+        break;
+    }
+
+    return InkWell(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          (part?.svt?.icon == null && placeholder != null)
+              ? SizedBox(height: 72, width: 72, child: placeholder)
+              : db.getIconImage(FFOUtil.imgUrl(part?.svt?.icon), height: 72),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              db.getIconImage(FFOUtil.imgUrl(icon), width: 16),
+              Text(where.shownName),
+            ],
+          ),
+        ],
+      ),
+      onTap: () {
+        router.pushPage(
+          FfoPartListPage(
+            where: where,
+            onSelected: onChanged,
+          ),
+          detail: true,
+        );
+      },
+    );
   }
 }

@@ -52,15 +52,16 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
-    if (db.userData.previousVersion == 2) {
+    if (db.userData.previousVersion <= 2) {
+      db.userData.previousVersion = db.userData.version;
       showDialog(
         context: context,
         useRootNavigator: false,
         builder: (context) {
           return SimpleCancelOkDialog(
             title: const Text('From Chaldea v1?'),
-            content: const Text(
-                'Please go to **Import-v1 backup** to restore v1 data'),
+            content: Text(
+                '${S.current.import_data} ${S.current.chaldea_backup} (V1)'),
             onTapOk: () {
               router.pushPage(ImportPageHome());
             },

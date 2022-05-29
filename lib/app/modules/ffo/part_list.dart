@@ -15,7 +15,7 @@ import 'schema.dart';
 
 class FfoPartListPage extends StatefulWidget {
   final FfoPartWhere where;
-  final void Function(FfoSvtPart)? onSelected;
+  final ValueChanged<FfoSvtPart?>? onSelected;
 
   FfoPartListPage({Key? key, required this.where, this.onSelected})
       : super(key: key);
@@ -60,6 +60,14 @@ class FfoPartListPageState extends State<FfoPartListPage>
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.clear),
+            tooltip: S.current.clear,
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onSelected?.call(null);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,

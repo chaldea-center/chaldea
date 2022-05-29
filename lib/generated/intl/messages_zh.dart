@@ -504,6 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建账号"),
+        "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("新掉落数据"),
         "next_card": MessageLookupByLibrary.simpleMessage("下一张"),
         "next_page": MessageLookupByLibrary.simpleMessage("下一页"),
         "no_servant_quest_hint":
@@ -561,6 +562,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "仅日服(2020/11之后)和美服(2020/12之后)可能含有敌方数据"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("奖励"),
+        "random": MessageLookupByLibrary.simpleMessage("随机"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
         "rate_play_store":

@@ -31,7 +31,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
       children: [
         SwitchListTile.adaptive(
           value: params.use6th,
-          title: const Text('New Drop Data'),
+          title: Text(S.current.new_drop_data_6th),
           subtitle: const Text('6th Anniversary(~2.5.5)'),
           controlAffinity: ListTileControlAffinity.trailing,
           onChanged: (v) {

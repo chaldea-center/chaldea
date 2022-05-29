@@ -44,14 +44,13 @@ class UserData {
   Map<int, String?> customSvtIcon;
 
   UserData({
-    int? previousVersion,
+    this.previousVersion = 0,
     int curUserKey = 0,
     List<User>? users,
     List<int?>? itemAbundantValue,
     this.svtAscensionIcon = 1,
     Map<int, String?>? customSvtIcon,
   })  : version = UserData.modelVersion,
-        previousVersion = previousVersion ?? UserData.modelVersion,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(
@@ -94,8 +93,8 @@ class UserData {
     } else {
       userData = _$UserDataFromJson(json);
     }
-    if (previousVersion is int) {
-      userData.previousVersion = previousVersion;
+    if (previousVersion is int || previousVersion == null) {
+      userData.previousVersion = previousVersion ?? 0;
     }
     return userData;
   }

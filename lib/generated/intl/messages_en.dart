@@ -595,6 +595,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
+        "new_drop_data_6th":
+            MessageLookupByLibrary.simpleMessage("New Drop Data"),
         "next_card": MessageLookupByLibrary.simpleMessage("Next"),
         "next_page": MessageLookupByLibrary.simpleMessage("NEXT"),
         "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage(
@@ -660,6 +662,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Only JP(after 2020/11) or NA(2020/12) may contain enemy data"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
+        "random": MessageLookupByLibrary.simpleMessage("Random"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),

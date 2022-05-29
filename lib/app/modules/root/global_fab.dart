@@ -29,6 +29,10 @@ class WindowManagerFab extends StatefulWidget {
     _instance?.remove();
     _instance = null;
   }
+
+  static void markNeedRebuild() {
+    _instance?.markNeedsBuild();
+  }
 }
 
 class _WindowManagerFabState extends State<WindowManagerFab> {

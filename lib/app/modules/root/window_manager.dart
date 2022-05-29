@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/modules/root/global_fab.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import '../../routes/root_delegate.dart';
@@ -245,6 +246,7 @@ class WindowThumb extends StatelessWidget {
         onTap: () {
           root.appState.activeIndex = index;
           root.appState.showWindowManager = false;
+          WindowManagerFab.markNeedRebuild();
         },
         child: Stack(
           // alignment: Alignment.bottomLeft,

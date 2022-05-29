@@ -4218,6 +4218,17 @@ class S {
     );
   }
 
+  /// `New Drop Data`
+  String get new_drop_data_6th {
+    return Intl.message(
+      'New Drop Data',
+      name: 'new_drop_data_6th',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Next`
   String get next_card {
     return Intl.message(
@@ -4751,6 +4762,17 @@ class S {
     return Intl.message(
       'Bonus',
       name: 'quest_reward_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Random`
+  String get random {
+    return Intl.message(
+      'Random',
+      name: 'random',
       desc: '',
       locale: localeName,
       args: [],

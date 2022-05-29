@@ -73,6 +73,24 @@ class FfoSvt {
     return _name ?? Transl.svtNames(name).l;
   }
 
+  bool get hasHead => headBack != null || headFront != null;
+  bool get hasBody =>
+      bodyBack != null ||
+      bodyBack2 != null ||
+      bodyMiddle != null ||
+      bodyFront != null;
+  bool get hasLandscape => bg != null || bgFront != null;
+  bool has(FfoPartWhere where) {
+    switch (where) {
+      case FfoPartWhere.head:
+        return hasHead;
+      case FfoPartWhere.body:
+        return hasBody;
+      case FfoPartWhere.bg:
+        return hasLandscape;
+    }
+  }
+
   factory FfoSvt.fromJson(Map<String, dynamic> json) {
     return FfoSvt(
       collectionNo: json['collectionNo'] as int,
@@ -133,7 +151,16 @@ class FfoSvtPart {
   final int direction;
   final double scale;
   final int headX;
-  final int headY;
+  final int _headY;
+  int get headY {
+    // if (collectionNo == 402) {
+    //   const y = 490;
+    //   print('402 headY: $_headY -> $y');
+    //   return y;
+    // }
+    return _headY;
+  }
+
   final int bodyX;
   final int bodyY;
   final int headX2;
@@ -159,7 +186,7 @@ class FfoSvtPart {
         direction = _toInt(row[2]),
         scale = _toDouble(row[3]),
         headX = _toInt(row[4]),
-        headY = _toInt(row[5]),
+        _headY = _toInt(row[5]),
         bodyX = _toInt(row[6]),
         bodyY = _toInt(row[7]),
         headX2 = _toInt(row[8]),
