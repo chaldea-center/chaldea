@@ -75,7 +75,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               ],
             ),
           ),
-          bottomBar,
+          SafeArea(child: bottomBar),
         ],
       );
     }

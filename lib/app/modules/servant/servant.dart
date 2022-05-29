@@ -248,7 +248,14 @@ class ServantDetailPageState extends State<ServantDetailPage>
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 4),
                 child: badge,
-              )
+              ),
+            if (Items.specialSvtMat.contains(svt.id))
+              TextButton(
+                onPressed: () {
+                  router.push(url: Routes.itemI(svt.id));
+                },
+                child: Text(S.current.item_category_special),
+              ),
           ],
         ),
       ),

@@ -239,6 +239,12 @@ The other campaign events, maintenance compensation, and other rewards directly 
               style: Theme.of(context).textTheme.caption,
             ),
           ),
+        ),
+        const Card(
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Text('Just for fun', textAlign: TextAlign.center),
+          ),
         )
       ],
     );

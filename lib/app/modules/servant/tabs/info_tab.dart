@@ -167,8 +167,9 @@ class SvtInfoTab extends StatelessWidget {
                 flex: 3,
               )
             ]),
-            CustomTableRow.fromTexts(
-                texts: const ['Hits'], defaults: headerData),
+            if (svt.hitsDistribution.isNotEmpty)
+              CustomTableRow.fromTexts(
+                  texts: const ['Hits'], defaults: headerData),
             for (final entry in svt.hitsDistribution.entries)
               CustomTableRow(children: [
                 TableCellData(text: entry.key.name.toTitle(), isHeader: true),
@@ -181,11 +182,18 @@ class SvtInfoTab extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                 )
               ]),
-            CustomTableRow.fromTexts(
-                texts: [S.current.info_np_rate], defaults: headerData),
-            CustomTableRow.fromTexts(
-                texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
-                defaults: TableCellData(isHeader: true, maxLines: 1)),
+            if (svt.noblePhantasms.isNotEmpty) ...[
+              CustomTableRow.fromTexts(
+                  texts: [S.current.info_np_rate], defaults: headerData),
+              CustomTableRow.fromTexts(texts: const [
+                'Buster',
+                'Arts',
+                'Quick',
+                'Extra',
+                'NP',
+                'Def'
+              ], defaults: TableCellData(isHeader: true, maxLines: 1)),
+            ],
             ..._npRates(),
             CustomTableRow.fromTexts(texts: [
               S.current.info_star_rate,
@@ -202,12 +210,7 @@ class SvtInfoTab extends StatelessWidget {
             ),
             CustomTableRow.fromTexts(
                 texts: [S.current.info_trait], defaults: headerData),
-            ..._addTraits(
-              context,
-              null,
-              baseTraits,
-              [],
-            ),
+            ..._addTraits(context, null, baseTraits, []),
             for (final entry
                 in svt.ascensionAdd.individuality.ascension.entries)
               ..._addTraits(

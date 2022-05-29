@@ -67,7 +67,7 @@ class NiceShop {
   PayType payType;
   ItemAmount cost;
   PurchaseType purchaseType;
-  List<int> targetIds;
+  List<int> targetIds; // only kiaraPunisherReset using more than 1?
   List<ItemSet> itemSet;
   int setNum;
   int limitNum;
@@ -605,7 +605,7 @@ class Event {
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
 
-  bool isOutdated([Duration diff = const Duration(days: 32)]) {
+  bool isOutdated([Duration diff = const Duration(days: 20)]) {
     if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) >
           const Duration(days: 31 * 13);

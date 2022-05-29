@@ -34,8 +34,8 @@ mixin GameCardMixin {
   }
 
   @protected
-  void routeToId(String path) {
-    router.push(url: '$path/$id');
+  void routeToId(String path, {Widget? child}) {
+    router.push(url: '$path/$id', child: child);
   }
 
   void routeTo();
@@ -77,7 +77,8 @@ mixin GameCardMixin {
             child: CmdCodeDetailPage(cc: instance),
             detail: true);
       } else if (this is BasicServant) {
-        //
+        final instance = this as BasicServant;
+        onTap = () => router.push(url: instance.routeIfItem);
       }
     }
     return cardIconBuilder(

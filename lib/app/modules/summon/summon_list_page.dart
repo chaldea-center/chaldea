@@ -124,16 +124,17 @@ class _SummonListPageState extends State<SummonListPage>
         maxFontSize: 14,
         style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
       );
-      String? subtitleText;
-      if (db.curUser.region == Region.cn) {
-        subtitleText = summon.startTime.cn?.sec2date().toDateString();
-        if (subtitleText != null) {
-          subtitleText = 'CN $subtitleText';
-        }
-      }
-      subtitleText ??=
-          'JP ${summon.startTime.jp?.sec2date().toDateString() ?? '???'}';
-      subtitle = Text(subtitleText);
+      final region = db.curUser.region;
+      Map<Region, int?> dates = {
+        Region.jp: summon.startTime.jp,
+        if (region != Region.jp) region: summon.startTime.ofRegion(region)
+      };
+      String subtitleText = dates.entries
+          .where((e) => e.value != null)
+          .map(
+              (e) => '${e.key.toUpper()} ${e.value?.sec2date().toDateString()}')
+          .join(' / ');
+      subtitle = Text(subtitleText, textScaleFactor: 0.9);
     }
     return ListTile(
       title: title,

@@ -37,8 +37,18 @@ class LimitEventTab extends StatelessWidget {
       children: events.map((event) {
         final plan = db.curUser.limitEventPlanOf(event.id);
         bool outdated = event.isOutdated();
-        String? subtitle;
-        subtitle ??= 'JP ${event.startedAt.sec2date().toDateString()}';
+        final region = db.curUser.region;
+        Map<Region, int?> dates = {
+          Region.jp: event.startedAt,
+          if (region != Region.jp)
+            region: event.extra.startTime.ofRegion(region)
+        };
+        String subtitle = dates.entries
+            .where((e) => e.value != null)
+            .map((e) =>
+                '${e.key.toUpper()} ${e.value?.sec2date().toDateString()}')
+            .join(' / ');
+
         Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
         Widget tile = ListTile(
           title: AutoSizeText(
@@ -53,6 +63,7 @@ class LimitEventTab extends StatelessWidget {
             style: outdated
                 ? TextStyle(color: _outdatedColor?.withAlpha(200))
                 : null,
+            textScaleFactor: 0.9,
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,

@@ -210,6 +210,29 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   router.pushPage(SvtPriorityTagging());
                 },
               ),
+              ListTile(
+                title: Text(S.current.svt_switch_slider_dropdown),
+                trailing: DropdownButton<SvtPlanInputMode>(
+                  value: db.settings.display.svtPlanInputMode,
+                  underline: const SizedBox(),
+                  items: [
+                    for (final mode in [
+                      SvtPlanInputMode.dropdown,
+                      SvtPlanInputMode.slider
+                    ])
+                      DropdownMenuItem(
+                        value: mode,
+                        child: Text(mode.name),
+                      ),
+                  ],
+                  onChanged: (v) {
+                    if (v != null) {
+                      db.settings.display.svtPlanInputMode = v;
+                    }
+                    setState(() {});
+                  },
+                ),
+              ),
             ],
           ),
         ],

@@ -18,10 +18,11 @@ class WindowManagerFab extends StatefulWidget {
   static OverlayEntry? _instance;
 
   static void createOverlay(BuildContext context) {
+    context = router.navigatorKey.currentContext ?? context;
     _instance?.remove();
     _instance =
         OverlayEntry(builder: (context) => WindowManagerFab(key: globalKey));
-    Overlay.of(context)?.insert(_instance!);
+    Overlay.of(context, rootOverlay: true)?.insert(_instance!);
   }
 
   static void removeOverlay() {
@@ -60,7 +61,7 @@ class DebugFab extends StatefulWidget {
   static void createOverlay(BuildContext context) {
     _instance?.remove();
     _instance = OverlayEntry(builder: (context) => DebugFab(key: globalKey));
-    Overlay.of(context)?.insert(_instance!);
+    Overlay.of(context, rootOverlay: true)?.insert(_instance!);
   }
 
   static void removeOverlay() {
@@ -85,6 +86,8 @@ class _DebugFabState extends State<DebugFab> {
         setState(() {
           isMenuShowing = true;
         });
+        final context = rootRouter.navigatorKey.currentContext;
+        if (context == null) return;
         showDialog(
           context: context,
           builder: (context) => _DebugMenuDialog(state: this),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../app/app.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
 import '../userdata/userdata.dart';
@@ -86,13 +86,17 @@ class BasicServant with GameCardMixin {
     return icon;
   }
 
+  String get route =>
+      collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
+
+  String get routeIfItem {
+    if (Items.specialSvtMat.contains(id)) return Routes.itemI(id);
+    return route;
+  }
+
   @override
   void routeTo() {
-    if (collectionNo > 0) {
-      routeToId(Routes.servant);
-    } else {
-      routeToId(Routes.enemy);
-    }
+    router.push(url: route);
   }
 }
 
@@ -257,12 +261,15 @@ class Servant with GameCardMixin {
   String? get icon => extraAssets.faces.ascension?.values.toList().getOrNull(0);
 
   @override
-  String? get borderedIcon => collectionNo > 0 ? super.borderedIcon : icon;
+  String? get borderedIcon => collectionNo > 0 ||
+          (type == SvtType.combineMaterial || type == SvtType.statusUp)
+      ? super.borderedIcon
+      : icon;
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
   String? get customIcon {
-    if (collectionNo <= 0) return icon;
+    if (collectionNo <= 0) return borderedIcon;
     final _icon = db.userData.customSvtIcon[collectionNo] ??
         extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ??
         icon;
@@ -308,6 +315,7 @@ class Servant with GameCardMixin {
     String? name,
     bool showName = false,
   }) {
+    //
     return super.iconBuilder(
       context: context,
       width: width,

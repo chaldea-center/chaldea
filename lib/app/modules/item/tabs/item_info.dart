@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../app.dart';
 
 class ItemInfoTab extends StatefulWidget {
   final int itemId;
@@ -21,6 +22,19 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
 
   @override
   Widget build(BuildContext context) {
+    if (Items.specialSvtMat.contains(itemId)) {
+      final svt = db.gameData.entities[itemId];
+      return ListTile(
+        title: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              router.push(url: Routes.enemyI(itemId));
+            },
+            child: Text('${S.current.servant} - ${svt?.lName.l}'),
+          ),
+        ),
+      );
+    }
     final item = db.gameData.items[itemId];
     if (item == null) {
       return ListTile(
