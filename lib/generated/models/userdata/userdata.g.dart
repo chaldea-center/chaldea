@@ -11,6 +11,7 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = UserData(
+          version: $checkedConvert('version', (v) => v as int?),
           curUserKey: $checkedConvert('curUserKey', (v) => v as int? ?? 0),
           users: $checkedConvert(
               'users',
@@ -33,6 +34,7 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+      'version': instance.version,
       'curUserKey': instance.curUserKey,
       'users': instance.users.map((e) => e.toJson()).toList(),
       'itemAbundantValue': instance.itemAbundantValue,

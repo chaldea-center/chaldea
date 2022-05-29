@@ -44,6 +44,7 @@ class UserData {
   Map<int, String?> customSvtIcon;
 
   UserData({
+    int? version,
     this.previousVersion = 0,
     int curUserKey = 0,
     List<User>? users,

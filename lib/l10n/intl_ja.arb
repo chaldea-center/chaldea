@@ -387,7 +387,7 @@
   "not_found": "Not Found",
   "not_implemented": "お楽しみに",
   "not_outdated": "期限切れなし",
-  "np_gain_mod": "敵被弾補正",
+  "np_gain_mod": "被ダメージ補正",
   "np_short": "宝具",
   "obtain_time": "タイム",
   "ok": "OK",

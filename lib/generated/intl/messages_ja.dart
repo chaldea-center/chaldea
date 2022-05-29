@@ -548,7 +548,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("お楽しみに"),
         "not_outdated": MessageLookupByLibrary.simpleMessage("期限切れなし"),
-        "np_gain_mod": MessageLookupByLibrary.simpleMessage("敵被弾補正"),
+        "np_gain_mod": MessageLookupByLibrary.simpleMessage("被ダメージ補正"),
         "np_short": MessageLookupByLibrary.simpleMessage("宝具"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("タイム"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
