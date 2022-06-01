@@ -658,6 +658,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_not_found_error": m16,
+        "quest_prefer_region":
+            MessageLookupByLibrary.simpleMessage("Preferred Region"),
+        "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
+            "If the related event of the quest has not started at chosen region, it will fallback to JP"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
             "Only JP(after 2020/11) or NA(2020/12) may contain enemy data"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),

@@ -424,6 +424,8 @@
   "quest_fixed_drop": "固定掉落",
   "quest_fixed_drop_short": "掉落",
   "quest_not_found_error": null,
+  "quest_prefer_region": null,
+  "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
   "quest_reward": "通關獎勵",
   "quest_reward_short": "獎勵",

@@ -85,6 +85,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 TableCellData(
                   child: TextButton(
                     onPressed: () => svtCoinOwner!.routeTo(),
+                    style: kTextButtonDenseStyle,
                     child: Text(svtCoinOwner!.lName.l),
                   ),
                   padding: EdgeInsets.zero,
@@ -220,12 +221,14 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   (np + _baseNp - 1) * _summonCoin;
               return TableCellData(
                 text: coins.toString(),
-                style: coins > 480
+                style: coins > 660
                     ? TextStyle(
                         color: Theme.of(context).hintColor,
                         fontStyle: FontStyle.italic,
                       )
-                    : const TextStyle(fontWeight: FontWeight.bold),
+                    : coins > 480
+                        ? const TextStyle(fontWeight: FontWeight.w300)
+                        : const TextStyle(fontWeight: FontWeight.bold),
                 maxLines: 1,
               );
             },

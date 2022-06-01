@@ -11,9 +11,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class QuestDetailPage extends StatefulWidget {
   final int? id;
   final Quest? quest;
-  final Region region;
-  const QuestDetailPage(
-      {Key? key, this.id, this.quest, this.region = Region.jp})
+  final Region? region;
+  const QuestDetailPage({Key? key, this.id, this.quest, this.region})
       : super(key: key);
 
   @override
@@ -30,11 +29,31 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   @override
   void initState() {
     super.initState();
-    region = widget.region;
+    region = _resolveDefaultRegion();
     _quest = widget.quest ??
         (region == Region.jp ? db.gameData.quests[widget.id] : null);
     questId = _quest?.id ?? widget.id;
     _resolveQuest();
+  }
+
+  Region _resolveDefaultRegion() {
+    final fixedRegion = db.settings.preferredQuestRegion;
+    if (widget.region != null) return widget.region!;
+    if (fixedRegion == null || fixedRegion == Region.jp) {
+      return Region.jp;
+    }
+    final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
+    if (jpQuest == null) return Region.jp;
+    final eventId = db.gameData.wars[jpQuest.warId]?.eventId;
+    if (eventId == null) return Region.jp;
+    final event = db.gameData.events[eventId];
+    if (event == null) return Region.jp;
+    print([event.extra.startTime.values]);
+    if (event.extra.startTime.ofRegion(fixedRegion) != null) {
+      print(event.extra.startTime.ofRegion(fixedRegion));
+      return fixedRegion;
+    }
+    return Region.jp;
   }
 
   Future<void> _resolveQuest() async {
@@ -89,11 +108,17 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             underline: const SizedBox(),
           ),
           PopupMenuButton(
-            itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-              atlas: _quest == null
-                  ? null
-                  : Atlas.dbQuest(_quest!.id, null, region),
-            ),
+            itemBuilder: (context) => [
+              ...SharedBuilder.websitesPopupMenuItems(
+                atlas: _quest == null
+                    ? null
+                    : Atlas.dbQuest(_quest!.id, null, region),
+              ),
+              PopupMenuItem(
+                onTap: _showFixRegionDialog,
+                child: Text(S.current.quest_prefer_region),
+              ),
+            ],
           )
         ],
       ),
@@ -114,5 +139,39 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               ],
             ),
     );
+  }
+
+  void _showFixRegionDialog() async {
+    await null;
+    if (!mounted) return;
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(S.current.quest_prefer_region),
+            children: [
+              ListTile(
+                title: Text(S.current.general_default),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                selected: db.settings.preferredQuestRegion == null,
+                onTap: () {
+                  Navigator.pop(context);
+                  db.settings.preferredQuestRegion = null;
+                },
+              ),
+              for (final region in Region.values)
+                ListTile(
+                  title: Text(region.localName),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  selected: db.settings.preferredQuestRegion == region,
+                  onTap: () {
+                    Navigator.pop(context);
+                    db.settings.preferredQuestRegion = region;
+                  },
+                ),
+              SFooter(S.current.quest_prefer_region_hint)
+            ],
+          );
+        });
   }
 }

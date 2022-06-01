@@ -176,7 +176,7 @@ extension StringX on String {
 
   String trimCharLeft(String chars) {
     String s = this;
-    while (s.isNotEmpty && chars.contains(s[0])) {
+    while (s.isNotEmpty && chars.contains(s.substring(0, 1))) {
       s = s.substring(1);
     }
     return s;

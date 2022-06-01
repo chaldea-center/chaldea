@@ -412,6 +412,9 @@ class Servant with GameCardMixin {
           skills, (e) => priorities?[e.id] ?? -1);
     }
   }
+
+  SvtStatus get status => db.curUser.svtStatusOf(collectionNo);
+  SvtPlan get curPlan => db.curUser.svtPlanOf(collectionNo);
 }
 
 @JsonSerializable()
@@ -481,6 +484,12 @@ class CraftEssence with GameCardMixin {
 
   @override
   String? get icon => extraAssets.faces.equip?[id];
+
+  @override
+  String? get borderedIcon {
+    if (collectionNo > 0) return super.borderedIcon;
+    return icon;
+  }
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
 

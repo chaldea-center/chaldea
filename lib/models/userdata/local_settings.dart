@@ -33,6 +33,7 @@ class LocalSettings {
   bool hideUnreleasedCard;
   FavoriteState? favoritePreferred;
   bool preferApRate;
+  Region? preferredQuestRegion;
 
   Map<int, String> priorityTags;
   Map<String, bool> galleries;
@@ -67,6 +68,7 @@ class LocalSettings {
     this.hideUnreleasedCard = false,
     this.favoritePreferred,
     this.preferApRate = true,
+    this.preferredQuestRegion,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
     DisplaySettings? display,

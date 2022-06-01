@@ -60,23 +60,21 @@ class MainStoryTab extends StatelessWidget {
               children: mainStories.map((record) {
                 final plan = db.curUser.mainStoryOf(record.id);
                 bool outdated = record.isOutdated();
-                String originTitle = record.lLongName.l.trim();
-                String titleText;
-                String? subtitleText;
-                if (originTitle.contains('\n')) {
-                  titleText = originTitle.split('\n').first;
-                  subtitleText = originTitle.substring(titleText.length + 1);
-                } else {
-                  titleText = originTitle;
-                }
+                String shortName = record.lName.l;
+                String longName = record.lLongName.l;
+                String titleText = shortName;
+                String subtitleText = longName.startsWith(shortName)
+                    ? longName.substring(shortName.length).trimChar(' -\n')
+                    : longName.replaceAll('\n', ' ');
+                print([shortName, longName, titleText, subtitleText]);
                 Widget? title, subtitle;
                 title = AutoSizeText(
                   titleText,
-                  maxLines: subtitleText == null ? 2 : 1,
+                  maxLines: 1,
                   // maxFontSize: 16,
                   style: outdated ? TextStyle(color: _outdatedColor) : null,
                 );
-                if (subtitleText != null) {
+                if (subtitleText.isNotEmpty) {
                   subtitle = AutoSizeText(
                     subtitleText,
                     maxLines: 1,

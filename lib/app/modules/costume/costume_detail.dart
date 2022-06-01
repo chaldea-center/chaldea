@@ -79,25 +79,19 @@ class CostumeDetailPage extends StatelessWidget {
                               text: costume.lName.na,
                               textAlign: TextAlign.center)
                         ]),
-                      CustomTableRow(children: [
-                        TableCellData(
-                            text: 'No. ${costume.costumeCollectionNo}'),
-                        TableCellData(
-                          flex: 2,
-                          child: TextButton(
-                            onPressed: svt == null ? null : () => svt.routeTo(),
-                            style: TextButton.styleFrom(
-                                minimumSize: const Size(24, 28),
-                                tapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap),
-                            child: Text(svt?.lName.l ?? '-'),
-                          ),
-                        )
-                      ]),
+                      CustomTableRow.fromTexts(texts: [
+                        'No. ${costume.costumeCollectionNo}',
+                        'No. ${costume.battleCharaId}'
+                      ])
                     ],
                   ),
                 ),
               ],
+            ),
+            TextButton(
+              onPressed: svt == null ? null : () => svt.routeTo(),
+              style: kTextButtonDenseStyle,
+              child: Text(svt?.lName.l ?? '-'),
             ),
             CustomTableRow(children: [
               TableCellData(text: S.current.item, isHeader: true)

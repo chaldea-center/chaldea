@@ -351,6 +351,15 @@ class AtlasApi {
     );
   }
 
+  static Future<CraftEssence?> ce(int ceId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/equip/$ceId?lore=true',
+      (data) => CraftEssence.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<NiceSkill?> skill(int skillId,
       {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(

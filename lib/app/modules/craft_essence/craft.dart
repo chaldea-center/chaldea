@@ -6,11 +6,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/extra_assets_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/custom_table.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
@@ -31,7 +30,6 @@ class CraftDetailPage extends StatefulWidget {
 }
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
-  Language? lang;
   CraftEssence? _ce;
 
   CraftEssence get ce => _ce!;
@@ -89,7 +87,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: CraftDetailBasePage(ce: ce, lang: lang, showSummon: true),
+              child: CraftDetailBasePage(ce: ce, showSummon: true),
             ),
           ),
           SafeArea(
@@ -149,14 +147,12 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 
 class CraftDetailBasePage extends StatelessWidget {
   final CraftEssence ce;
-  final Language? lang;
   final bool showSummon;
   final bool enableLink;
 
   const CraftDetailBasePage({
     Key? key,
     required this.ce,
-    this.lang,
     this.showSummon = false,
     this.enableLink = false,
   }) : super(key: key);
@@ -175,10 +171,7 @@ class CraftDetailBasePage extends StatelessWidget {
                     onPressed: () {
                       ce.routeTo();
                     },
-                    style: TextButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                    ),
+                    style: kTextButtonDenseStyle,
                     child: name,
                   )
                 : name,
@@ -334,6 +327,11 @@ class CraftDetailBasePage extends StatelessWidget {
               )
             ],
           ),
+        CustomTableRow.fromTexts(
+          texts: [S.current.illustration],
+          isHeader: true,
+        ),
+        ExtraAssetsPage(assets: ce.extraAssets, scrollable: false),
         if (showSummon && summons.isNotEmpty) ...[
           CustomTableRow(children: [
             TableCellData(text: S.current.summon, isHeader: true)
@@ -355,7 +353,7 @@ class CraftDetailBasePage extends StatelessWidget {
               ],
             ))
           ])
-        ]
+        ],
       ],
     );
   }

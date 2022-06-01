@@ -424,6 +424,8 @@
   "quest_fixed_drop": "必定のドロップ",
   "quest_fixed_drop_short": "ドロップ",
   "quest_not_found_error": null,
+  "quest_prefer_region": null,
+  "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
   "quest_reward": "クエスト報酬",
   "quest_reward_short": "報酬",

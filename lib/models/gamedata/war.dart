@@ -82,18 +82,12 @@ class NiceWar {
   Transl<String, String> get lLongName {
     final warName =
         (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? 'War $id';
-    if (Transl.md.warNames.containsKey(warName)) {
-      return Transl.warNames(warName);
-    }
-    return Transl.eventNames(warName);
+    return Transl.warNames(warName);
   }
 
   Transl<String, String> get lName {
     final warName = _name ?? _longName ?? 'War $id';
-    if (Transl.md.warNames.containsKey(warName)) {
-      return Transl.warNames(warName);
-    }
-    return Transl.eventNames(warName);
+    return Transl.warNames(warName);
   }
 
   bool get isMainStory => id >= 100 && id < 1000;

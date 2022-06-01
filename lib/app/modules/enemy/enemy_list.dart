@@ -43,7 +43,10 @@ class EnemyListPageState extends State<EnemyListPage>
       for (final stage in quest.stages) {
         for (final enemy in stage.enemies) {
           assert(db.gameData.entities.containsKey(enemy.svt.id), enemy.svt.id);
-          if (enemy.svt.collectionNo > 0) continue;
+          if (enemy.svt.collectionNo > 0 &&
+              [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)) {
+            continue;
+          }
           _allEnemies.putIfAbsent(enemy.svt.id, () => []).add(enemy);
         }
       }
@@ -161,6 +164,9 @@ class EnemyListPageState extends State<EnemyListPage>
       return false;
     }
     if (!filterData.attribute.matchOne(svt.attribute)) {
+      return false;
+    }
+    if (!filterData.svtType.matchOne(svt.type)) {
       return false;
     }
     if (filterData.trait.options.isNotEmpty) {

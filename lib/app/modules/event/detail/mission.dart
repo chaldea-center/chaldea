@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -46,10 +47,23 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
         child: Text(selected.length.toString()),
       ),
       body: ListView.separated(
-        itemBuilder: (context, index) =>
-            missionBuilder(context, index, missions),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  'Menu - ${S.current.switch_region}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ),
+            );
+          }
+          return missionBuilder(context, index - 1, missions);
+        },
         separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
-        itemCount: widget.event.missions.length,
+        itemCount: widget.event.missions.length + 1,
       ),
     );
   }

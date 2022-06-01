@@ -58,6 +58,21 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
             update();
           },
         ),
+        FilterGroup<SvtType>(
+          title: Text(S.of(context).general_type, style: textStyle),
+          options: List.of(SvtType.values)
+            ..removeWhere((e) => [
+                  SvtType.svtEquipMaterial,
+                  SvtType.enemyCollectionDetail,
+                  SvtType.all,
+                  SvtType.commandCode
+                ].contains(e)),
+          values: filterData.svtType,
+          optionBuilder: (v) => Text(v.name),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         FilterGroup<Trait>(
           title: Text('${S.current.info_trait}*', style: textStyle),
           options: _traitsForFilter,

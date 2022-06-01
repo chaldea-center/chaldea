@@ -4735,6 +4735,28 @@ class S {
     );
   }
 
+  /// `Preferred Region`
+  String get quest_prefer_region {
+    return Intl.message(
+      'Preferred Region',
+      name: 'quest_prefer_region',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `If the related event of the quest has not started at chosen region, it will fallback to JP`
+  String get quest_prefer_region_hint {
+    return Intl.message(
+      'If the related event of the quest has not started at chosen region, it will fallback to JP',
+      name: 'quest_prefer_region_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only JP(after 2020/11) or NA(2020/12) may contain enemy data`
   String get quest_region_has_enemy_hint {
     return Intl.message(

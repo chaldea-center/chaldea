@@ -424,6 +424,8 @@
   "quest_fixed_drop": null,
   "quest_fixed_drop_short": null,
   "quest_not_found_error": null,
+  "quest_prefer_region": null,
+  "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
   "quest_reward": null,
   "quest_reward_short": null,

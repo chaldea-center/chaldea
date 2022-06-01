@@ -106,9 +106,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
               onPressed: () {
                 router.push(url: Routes.eventI(war.eventId), detail: true);
               },
-              style: TextButton.styleFrom(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
+              style: kTextButtonDenseStyle,
               child: Text(
                 Transl.eventNames(war.eventName).l,
                 textAlign: TextAlign.center,
@@ -245,8 +243,15 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ),
         centerTitle: false,
         actions: [
-          PopupMenuButton(
+          PopupMenuButton<dynamic>(
             itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: false,
+                height: 32,
+                child: Text('No.${widget.war?.id ?? widget.warId}',
+                    textScaleFactor: 0.9),
+              ),
+              const PopupMenuDivider(),
               ...SharedBuilder.websitesPopupMenuItems(
                 atlas: Atlas.dbWar(war.id),
                 mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,

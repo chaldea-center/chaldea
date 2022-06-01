@@ -362,14 +362,15 @@ abstract class FFOUtil {
       }
     }
     return ImageActions.showSaveShare(
-        context: context,
-        data: data,
-        srcFp: null,
-        gallery: gallery,
-        destFp: destFp,
-        share: share,
-        shareText: shareText ?? fn,
-        extraHeaders: [SHeader(parts.join('\n'))]);
+      context: context,
+      data: data,
+      srcFp: null,
+      gallery: gallery,
+      destFp: destFp,
+      share: share,
+      shareText: shareText ?? fn,
+      extraHeaders: [SHeader(parts.join('\n'))],
+    );
   }
 }
 

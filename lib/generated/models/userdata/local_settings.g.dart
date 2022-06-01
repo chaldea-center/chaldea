@@ -46,6 +46,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           preferApRate:
               $checkedConvert('preferApRate', (v) => v as bool? ?? true),
+          preferredQuestRegion: $checkedConvert('preferredQuestRegion',
+              (v) => $enumDecodeNullable(_$RegionEnumMap, v)),
           priorityTags: $checkedConvert(
               'priorityTags',
               (v) => (v as Map?)?.map(
@@ -123,6 +125,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'preferApRate': instance.preferApRate,
+      'preferredQuestRegion': _$RegionEnumMap[instance.preferredQuestRegion],
       'priorityTags':
           instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
       'galleries': instance.galleries,

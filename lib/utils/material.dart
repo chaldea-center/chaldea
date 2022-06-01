@@ -31,3 +31,8 @@ class DirectionalIcons {
     }
   }
 }
+
+final kTextButtonDenseStyle = TextButton.styleFrom(
+  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  visualDensity: VisualDensity.compact,
+);

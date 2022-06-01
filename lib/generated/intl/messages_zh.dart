@@ -558,6 +558,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
         "quest_not_found_error": m16,
+        "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首选区服"),
+        "quest_prefer_region_hint":
+            MessageLookupByLibrary.simpleMessage("若该关卡所属活动在所选区服尚未开放，则默认显示日服"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
             "仅日服(2020/11之后)和美服(2020/12之后)可能含有敌方数据"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),

@@ -8,33 +8,46 @@ class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
   final List<String> aprilFoolAssets;
   final List<String> spriteModels;
+  final bool scrollable;
 
   const ExtraAssetsPage({
     Key? key,
     required this.assets,
     this.aprilFoolAssets = const [],
     this.spriteModels = const [],
+    this.scrollable = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 48),
-      children: <Widget?>[
-        _oneGroup(S.current.illustration,
-            [...assets.charaGraph.allUrls, ...aprilFoolAssets], 300),
-        _oneGroup(S.current.card_asset_face, assets.faces.allUrls, 80),
-        _oneGroup(S.current.card_asset_status, assets.status.allUrls, 120),
-        _oneGroup(S.current.card_asset_command, assets.commands.allUrls, 120),
-        _oneGroup(
-            S.current.card_asset_chara_figure, assets.charaFigure.allUrls, 300),
-        _oneGroup(S.current.card_asset_narrow_figure,
-            assets.narrowFigure.allUrls, 300),
-        _oneGroup('equipFace', assets.equipFace.allUrls, 50),
-        _oneGroup(S.current.sprites, spriteModels, 300),
-        // _oneGroup('Status', assets?.status),
-      ].whereType<Widget>().toList(),
-    );
+    final children = <Widget?>[
+      _oneGroup(S.current.illustration,
+          [...assets.charaGraph.allUrls, ...aprilFoolAssets], 300),
+      _oneGroup(S.current.card_asset_face, assets.faces.allUrls, 80),
+      _oneGroup(S.current.card_asset_status, assets.status.allUrls, 120),
+      _oneGroup(S.current.card_asset_command, assets.commands.allUrls, 120),
+      _oneGroup(
+          S.current.card_asset_chara_figure, assets.charaFigure.allUrls, 300),
+      _oneGroup(
+          S.current.card_asset_narrow_figure, assets.narrowFigure.allUrls, 300),
+      _oneGroup('equipFace', assets.equipFace.allUrls, 50),
+      _oneGroup(S.current.sprites, spriteModels, 300),
+      // _oneGroup('Status', assets?.status),
+    ].whereType<Widget>().toList();
+    if (scrollable) {
+      return ListView(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 48),
+        children: children,
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
+      );
+    }
   }
 
   Widget? _oneGroup(String title, Iterable<String> urls, double height,

@@ -136,12 +136,13 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   final _rateLimiter =
       RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
   final _fsLimiter =
-      RateLimiter(maxCalls: 20, period: const Duration(milliseconds: 100));
+      RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 100));
 
   @override
   Future<String?> download(String url, {RateLimiter? limiter}) async {
     final localPath = atlasUrlToFp(url);
     if (localPath == null) return null;
+    final file = File(localPath);
     if (await _fsLimiter.limited(() => File(localPath).exists())) {
       return localPath;
     }
@@ -150,8 +151,15 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     }
     final resp = await (limiter ?? _rateLimiter).limited(() =>
         Dio().get(url, options: Options(responseType: ResponseType.bytes)));
-    File(localPath).createSync(recursive: true);
-    await File(localPath).writeAsBytes(List.from(resp.data));
+    try {
+      file.createSync(recursive: true);
+      await file.writeAsBytes(List.from(resp.data));
+    } catch (e) {
+      if (file.existsSync()) {
+        await FilePlus(localPath).delete();
+      }
+      rethrow;
+    }
     print('download image: $url');
     return localPath;
   }

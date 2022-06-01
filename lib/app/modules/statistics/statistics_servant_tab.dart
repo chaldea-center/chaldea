@@ -27,20 +27,46 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   List<int> rarity999 = List.filled(6, 0);
   List<bool> raritySelected = List.filled(6, true);
 
+  FilterGroupData<int> get priorityFilter => db.settings.svtFilterData.priority;
+
   void _calcRarityCounts() {
     if (rarityTotal.every((e) => e == 0)) {
-      db.gameData.servants.forEach((no, svt) {
-        if (!svt.isUserSvt) return;
+      for (final svt in db.gameData.servants.values) {
+        if (!svt.isUserSvt) continue;
+        if (!priorityFilter.matchOne(svt.status.priority)) {
+          continue;
+        }
         rarityTotal[svt.rarity] += 1;
-        final stat = db.curUser.svtStatusOf(no);
+        final stat = svt.status;
         if (stat.favorite) {
           rarityOwn[svt.rarity] += 1;
         }
         if (stat.cur.skills.every((e) => e >= 9)) {
           rarity999[svt.rarity] += 1;
         }
-      });
+      }
     }
+  }
+
+  void _calcServantClass() {
+    svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA],
+        value: (_) => 0);
+    for (final svt in db.gameData.servants.values) {
+      final status = db.curUser.svtStatusOf(svt.collectionNo);
+      if (!status.favorite) continue;
+      if (raritySelected.contains(true) && !raritySelected[svt.rarity]) {
+        continue;
+      }
+      if (!priorityFilter.matchOne(status.priority)) continue;
+      if (svtClassCount.containsKey(svt.className)) {
+        svtClassCount[svt.className] = (svtClassCount[svt.className] ?? 0) + 1;
+      } else {
+        svtClassCount[SvtClass.EXTRA] =
+            (svtClassCount[SvtClass.EXTRA] ?? 0) + 1;
+      }
+    }
+    svtClassCount.removeWhere((key, value) => value <= 0);
+    // print(svtClassCount);
   }
 
   Map<SvtClass, int> svtClassCount = {};
@@ -60,7 +86,18 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   @override
   Widget build(BuildContext context) {
     _calcRarityCounts();
-    List<Widget> children = [];
+    final priority = db.settings.svtFilterData.priority;
+    List<Widget> children = [
+      ListTile(
+        title: Text(
+          S.current.priority,
+          style: Theme.of(context).textTheme.caption,
+        ),
+        trailing: Text(priority.options.isEmpty
+            ? S.current.general_all
+            : priority.options.join(', ')),
+      )
+    ];
     children.add(pieChart());
     children.add(ListTile(
       title: Text(S.current.rarity),
@@ -155,27 +192,6 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         ],
       ),
     ];
-  }
-
-  void _calcServantClass() {
-    svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA],
-        value: (_) => 0);
-    db.gameData.servants.values.forEach((svt) {
-      if (db.curUser.svtStatusOf(svt.collectionNo).favorite) {
-        if (raritySelected.contains(true) && !raritySelected[svt.rarity]) {
-          return;
-        }
-        if (svtClassCount.containsKey(svt.className)) {
-          svtClassCount[svt.className] =
-              (svtClassCount[svt.className] ?? 0) + 1;
-        } else {
-          svtClassCount[SvtClass.EXTRA] =
-              (svtClassCount[SvtClass.EXTRA] ?? 0) + 1;
-        }
-      }
-    });
-    svtClassCount.removeWhere((key, value) => value <= 0);
-    // print(svtClassCount);
   }
 
   SvtClass? selectedPie;

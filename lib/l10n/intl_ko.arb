@@ -424,6 +424,8 @@
   "quest_fixed_drop": "드롭",
   "quest_fixed_drop_short": "드롭",
   "quest_not_found_error": null,
+  "quest_prefer_region": null,
+  "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
   "quest_reward": "보너스",
   "quest_reward_short": "보너스",

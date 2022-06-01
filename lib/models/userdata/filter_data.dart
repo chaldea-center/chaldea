@@ -131,7 +131,7 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   bool get invert => false;
 
   @override
-  Set<T> get options => Set.unmodifiable([if (_selected != null) _selected!]);
+  Set<T> get options => {if (_selected != null) _selected!};
 
   FilterRadioData([this._selected]);
 
@@ -286,7 +286,7 @@ class SvtFilterData with _FilterData {
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region == Region.jp) {
-        region.options.clear();
+        region.reset();
       } else {
         region.toggle(db.curUser.region);
       }
@@ -569,6 +569,7 @@ class EnemyFilterData with _FilterData {
   // filter
   final svtClass = FilterGroupData<SvtClass>();
   final attribute = FilterGroupData<Attribute>();
+  final svtType = FilterGroupData<SvtType>();
   final trait = FilterGroupData<Trait>();
 
   EnemyFilterData({
@@ -577,7 +578,7 @@ class EnemyFilterData with _FilterData {
   });
 
   @override
-  List<FilterGroupData> get groups => [svtClass, attribute, trait];
+  List<FilterGroupData> get groups => [svtClass, attribute, svtType, trait];
 
   // factory EnemyFilterData.fromJson(Map<String, dynamic> data) =>
   //     _$EnemyFilterDataFromJson(data);
