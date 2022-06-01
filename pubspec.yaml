@@ -34,6 +34,7 @@ dependencies:
   carousel_slider: ^4.1.1
   catcher: ^0.6.9
   connectivity_plus: ^2.2.1
+  connectivity_plus_windows: 1.2.0
   crclib: ^3.0.0
   crypto: ^3.0.2
   csv: ^5.0.1
