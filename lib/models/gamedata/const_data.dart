@@ -28,14 +28,20 @@ class ConstGameData {
 
   ConstGameData({
     required this.attributeRelation,
-    required this.buffActions,
+    required Map<dynamic, BuffActionDetail> buffActions,
     required this.cardInfo,
     required this.classAttackRate,
     required this.classRelation,
     required this.constants,
     required this.svtGrailCost,
     required this.userLevel,
-  });
+  }) : buffActions = buffActions.map(
+          (key, value) => MapEntry(
+            $enumDecode(_$BuffActionEnumMap, key as String,
+                unknownValue: BuffAction.none),
+            value,
+          ),
+        );
 
   ConstGameData.empty()
       : attributeRelation = const {},
@@ -66,14 +72,15 @@ class BuffActionDetail {
 
   BuffActionDetail({
     required this.limit,
-    required this.plusTypes,
-    required this.minusTypes,
+    required List<BuffType?> plusTypes,
+    required List<BuffType?> minusTypes,
     required this.baseParam,
     required this.baseValue,
     required this.isRec,
     required this.plusAction,
     required this.maxRate,
-  });
+  })  : plusTypes = plusTypes.whereType<BuffType>().toList(),
+        minusTypes = minusTypes.whereType<BuffType>().toList();
 
   factory BuffActionDetail.fromJson(Map<String, dynamic> json) =>
       _$BuffActionDetailFromJson(json);
@@ -366,6 +373,7 @@ enum SvtFrameType {
   frame0804,
 }
 
+@JsonEnum(alwaysCreate: true)
 enum BuffAction {
   none,
   commandAtk,
@@ -470,6 +478,7 @@ enum BuffAction {
   invisibleBattleChara,
   buffRate,
   counterFunction,
+  notTargetSkill,
 }
 
 enum BuffLimit {

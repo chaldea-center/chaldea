@@ -742,6 +742,7 @@ const _$BuffTypeEnumMap = {
   BuffType.buffRate: 'buffRate',
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
   BuffType.counterFunction: 'counterFunction',
+  BuffType.notTargetSkill: 'notTargetSkill',
 };
 
 BuffScript _$BuffScriptFromJson(Map json) => BuffScript(

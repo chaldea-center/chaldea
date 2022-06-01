@@ -391,6 +391,7 @@
   "np_short": null,
   "obtain_time": null,
   "ok": "موافق",
+  "only_show_main_story_enemy": null,
   "open": "فتح",
   "open_condition": "شرط",
   "open_in_file_manager": null,

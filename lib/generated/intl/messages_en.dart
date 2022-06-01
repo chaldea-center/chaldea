@@ -615,6 +615,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage(
+            "Only show enemies from main story\'s free quest"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
         "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
         "open_in_file_manager": MessageLookupByLibrary.simpleMessage(

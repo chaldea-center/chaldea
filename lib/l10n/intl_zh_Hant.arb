@@ -391,6 +391,7 @@
   "np_short": "寶具",
   "obtain_time": "時間",
   "ok": "確定",
+  "only_show_main_story_enemy": null,
   "open": "打開",
   "open_condition": "開發條件",
   "open_in_file_manager": "請用文件管理器打開",

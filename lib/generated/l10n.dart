@@ -4372,6 +4372,17 @@ class S {
     );
   }
 
+  /// `Only show enemies from main story's free quest`
+  String get only_show_main_story_enemy {
+    return Intl.message(
+      'Only show enemies from main story\'s free quest',
+      name: 'only_show_main_story_enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Open`
   String get open {
     return Intl.message(

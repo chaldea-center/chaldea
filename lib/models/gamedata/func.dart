@@ -589,6 +589,7 @@ enum BuffType {
   buffRate,
   invisibleBattleChara,
   counterFunction,
+  notTargetSkill,
 }
 
 enum FuncType {

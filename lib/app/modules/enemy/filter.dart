@@ -39,8 +39,8 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
         SwitchListTile.adaptive(
           value: filterData.onlyShowQuestEnemy,
           controlAffinity: ListTileControlAffinity.trailing,
-          title: const Text(
-            'Only Show Quest Enemy',
+          title: Text(
+            S.current.only_show_main_story_enemy,
             textScaleFactor: 0.8,
           ),
           onChanged: (v) {
@@ -68,7 +68,8 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
                   SvtType.commandCode
                 ].contains(e)),
           values: filterData.svtType,
-          optionBuilder: (v) => Text(v.name),
+          optionBuilder: (v) =>
+              Text(Transl.enums(v, (enums) => enums.svtType).l),
           onFilterChanged: (value, _) {
             update();
           },

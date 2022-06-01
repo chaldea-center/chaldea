@@ -391,6 +391,7 @@
   "np_short": "宝具",
   "obtain_time": "タイム",
   "ok": "OK",
+  "only_show_main_story_enemy": null,
   "open": "開く",
   "open_condition": "開放条件",
   "open_in_file_manager": "ファイルマネージャで開いてください",

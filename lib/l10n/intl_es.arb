@@ -391,6 +391,7 @@
   "np_short": "NP",
   "obtain_time": "Tiempo",
   "ok": "OK",
+  "only_show_main_story_enemy": null,
   "open": "Abrir",
   "open_condition": "Condición",
   "open_in_file_manager": "Por favor, abrir con el administrador de archivos",

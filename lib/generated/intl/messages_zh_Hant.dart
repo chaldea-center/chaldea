@@ -521,6 +521,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_short": MessageLookupByLibrary.simpleMessage("寶具"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),
         "ok": MessageLookupByLibrary.simpleMessage("確定"),
+        "only_show_main_story_enemy":
+            MessageLookupByLibrary.simpleMessage("仅显示主线Free敌人"),
         "open": MessageLookupByLibrary.simpleMessage("打開"),
         "open_condition": MessageLookupByLibrary.simpleMessage("開發條件"),
         "open_in_file_manager":

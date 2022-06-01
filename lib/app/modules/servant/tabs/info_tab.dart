@@ -112,7 +112,8 @@ class SvtInfoTab extends StatelessWidget {
                 ].join('·'),
                 textAlign: TextAlign.center,
               ),
-              TableCellData(text: svt.type.name),
+              TableCellData(
+                  text: Transl.enums(svt.type, (enums) => enums.svtType).l),
             ]),
             CustomTableRow.fromTexts(texts: [
               S.current.info_value,

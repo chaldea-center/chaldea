@@ -594,6 +594,7 @@ enum Trait {
   classBeastIV,
   havingAnimalsCharacteristics,
   like,
+  exaltation,
 }
 
 enum CondType {

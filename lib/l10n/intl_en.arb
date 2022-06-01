@@ -391,6 +391,7 @@
   "np_short": "NP",
   "obtain_time": "Time",
   "ok": "OK",
+  "only_show_main_story_enemy": "Only show enemies from main story's free quest",
   "open": "Open",
   "open_condition": "Condition",
   "open_in_file_manager": "Please open with file manager",

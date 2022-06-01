@@ -132,6 +132,8 @@ class DataVals {
   int? get AllowSubBgmPlaying => sourceVals['AllowSubBgmPlaying'];
   int? get NotAccompanyWhenLinkedTargetMoveState =>
       sourceVals['NotAccompanyWhenLinkedTargetMoveState'];
+  List<int>? get NotTargetSkillIdArray =>
+      _listInt(sourceVals['NotTargetSkillIdArray']);
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];
   int? get EventId => sourceVals['EventId'];
