@@ -203,7 +203,7 @@ class FuncDescriptor extends StatelessWidget {
         ].contains(func.funcType)) {
           return;
         }
-        if (showPlayer && showEnemy) return;
+        // if (showPlayer && showEnemy) return;
         if (lastFuncTarget == func.funcTargetType) return;
         spans.add(TextSpan(
             text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
@@ -211,7 +211,12 @@ class FuncDescriptor extends StatelessWidget {
 
       _addFuncTarget();
 
-      spans.add(TextSpan(text: funcText.toString()));
+      spans.add(TextSpan(
+        text: funcText.toString(),
+        style: func.funcTargetTeam == FuncApplyTarget.enemy
+            ? const TextStyle(fontStyle: FontStyle.italic)
+            : null,
+      ));
       DataVals? vals = func.svals.getOrNull(0);
 
       void _addTraits(String? prefix, List<NiceTrait> traits) {

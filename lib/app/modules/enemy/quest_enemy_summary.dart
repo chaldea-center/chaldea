@@ -86,6 +86,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 onPressed: () {
                   svt.routeTo();
                 },
+                style: kTextButtonDenseStyle,
                 child: Text('Enemy No.${svt.id} - ${svt.lName.l}'),
               ),
               CustomTableRow.fromChildren(children: [
@@ -133,15 +134,18 @@ class QuestEnemySummaryPage extends StatelessWidget {
               CustomTableRow(children: [
                 TableCellData(
                   textAlign: TextAlign.center,
-                  child: Text.rich(TextSpan(children: [
-                    CenterWidgetSpan(
-                      child: db.getIconImage(
-                        svt.className.icon(svt.rarity),
-                        width: 24,
+                  child: Text.rich(
+                    TextSpan(children: [
+                      CenterWidgetSpan(
+                        child: db.getIconImage(
+                          svt.className.icon(svt.rarity),
+                          width: 24,
+                        ),
                       ),
-                    ),
-                    TextSpan(text: Transl.svtClass(svt.className).l)
-                  ])),
+                      TextSpan(text: Transl.svtClass(svt.className).l)
+                    ]),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 TableCellData(
                     text: npGainMods
@@ -184,9 +188,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final skillId in skillIds..sort())
-                  SkillDescriptor.only(
+                  SkillDescriptor(
                     skill: db.gameData.baseSkills[skillId]!,
-                    isPlayer: false,
+                    showEnemy: true,
                   ),
               ],
               if (classPassiveIds.isNotEmpty) ...[
@@ -195,9 +199,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final skillId in classPassiveIds..sort())
-                  SkillDescriptor.only(
+                  SkillDescriptor(
                     skill: db.gameData.baseSkills[skillId]!,
-                    isPlayer: false,
+                    showEnemy: true,
                   ),
               ],
               if (tdIds.isNotEmpty) ...[
@@ -206,9 +210,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   isHeader: true,
                 ),
                 for (final tdId in tdIds..sort())
-                  TdDescriptor.only(
+                  TdDescriptor(
                     td: db.gameData.baseTds[tdId]!,
-                    isPlayer: false,
+                    showEnemy: true,
                   ),
               ],
             ],

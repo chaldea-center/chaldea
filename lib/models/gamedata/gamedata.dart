@@ -224,8 +224,8 @@ class DataVersion {
 
   String text([bool twoLine = true]) {
     if (timestamp <= 0) return '0';
-    String s =
-        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toStringShort();
+    String s = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
+        .toStringShort(omitSec: true);
     if (twoLine) return s.replaceFirst(' ', '\n');
     return s;
   }

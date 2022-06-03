@@ -228,9 +228,17 @@ class EventItemsOverview extends StatefulWidget {
 }
 
 class _EventItemsOverviewState extends State<EventItemsOverview> {
+  late final ScrollController _scrollController;
+
   Event get event => widget.event;
 
   LimitEventPlan get plan => db.curUser.limitEventPlanOf(event.id);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +318,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               ? null
               : db.getIconImage(war!.banner, height: height),
           horizontalTitleGap: 8,
-          title: Text(title, maxLines: 1, textScaleFactor: 0.8),
+          title: Text(
+            title,
+            maxLines: 1,
+            textScaleFactor: 0.8,
+            overflow: TextOverflow.ellipsis,
+          ),
           onTap: () {
             router.push(url: Routes.warI(warId));
           },
@@ -369,7 +382,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     if (!event.isEmpty) {
       children.add(db.onUserData(
         (context, snapshot) => CheckboxListTile(
-          title: const Text('ALL'),
+          title: Text(S.current.plan),
           value: plan.enabled,
           onChanged: (v) {
             if (v != null) plan.enabled = v;
@@ -590,6 +603,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           ),
         ),
         body: ListView.builder(
+          controller: _scrollController,
           itemBuilder: (context, index) => children[index],
           itemCount: children.length,
         ),
@@ -690,6 +704,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
   @override
   void dispose() {
     super.dispose();
+    _scrollController.dispose();
     for (var controller in _controllers.values) {
       controller.dispose();
     }

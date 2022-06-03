@@ -56,7 +56,7 @@ class GameDataLoader {
       if (!silent) EasyLoading.showInfo(error);
     }
 
-    if (network.unavailable) {
+    if (!offline && network.unavailable) {
       _showError(S.current.error_no_internet);
       return null;
     }

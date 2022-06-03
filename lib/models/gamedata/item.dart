@@ -190,9 +190,13 @@ class Item {
         'Item $id';
   }
 
-  static String? getIcon(int id) {
-    return db.gameData.items[id]?.borderedIcon ??
-        db.gameData.entities[id]?.borderedIcon;
+  static String? getIcon(int id, {bool bordered = true}) {
+    if (bordered) {
+      return db.gameData.items[id]?.borderedIcon ??
+          db.gameData.entities[id]?.borderedIcon;
+    } else {
+      return db.gameData.items[id]?.icon ?? db.gameData.entities[id]?.icon;
+    }
   }
 
   static Map<int, int> sortMapByPriority(Map<int, int> items) {

@@ -91,7 +91,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
     final customMission = CustomMission.fromEventMission(mission);
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
-        title: Text('${mission.dispNo}. ${mission.name}'),
+        title: Text('${mission.dispNo}. ${mission.name}', textScaleFactor: 0.9),
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         trailing: customMission == null
             ? null

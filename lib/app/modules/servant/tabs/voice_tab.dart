@@ -8,6 +8,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/hosts.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -29,7 +31,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   late Region _region;
   Set<Region> releasedRegions = {};
 
-  Servant? svt;
+  Servant? _svt;
   bool _loading = true;
 
   @override
@@ -56,9 +58,9 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
 
   void fetchSvt() async {
     _loading = true;
-    svt = null;
+    _svt = null;
     if (mounted) setState(() {});
-    svt = await AtlasApi.svt(widget.svt.id, region: _region);
+    _svt = await AtlasApi.svt(widget.svt.id, region: _region);
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -66,7 +68,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    List<VoiceGroup> groups = List.of(svt?.profile.voices ?? []);
+    List<VoiceGroup> groups = List.of(_svt?.profile.voices ?? []);
     for (final group in groups) {
       if (group.voiceLines.isEmpty) continue;
       children.add(_buildGroup(context, group));
@@ -111,33 +113,35 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   }
 
   Widget _buildGroup(BuildContext context, VoiceGroup group) {
-    final _svt = svt ?? widget.svt;
+    final svt = _svt ?? widget.svt;
     final voiceLines = group.voiceLines.toList()
       ..sort2((e) => e.priority ?? 0, reversed: true);
     return SimpleAccordion(
       headerBuilder: (context, _) {
-        List<String> suffixes = [];
+        List<InlineSpan> suffixes = [];
         if (group.voicePrefix != 0) {
-          final ascensions = _svt.ascensionAdd.voicePrefix.ascension.entries
+          final ascensions = svt.ascensionAdd.voicePrefix.ascension.entries
               .where((e) => e.value == group.voicePrefix)
               .map((e) => e.key)
               .toList();
-          final costumes = _svt.ascensionAdd.voicePrefix.costume.entries
+          final costumes = svt.ascensionAdd.voicePrefix.costume.entries
               .where((e) => e.value == group.voicePrefix)
               .map((e) => e.key)
               .toList();
           if (ascensions.isNotEmpty) {
-            suffixes
-                .add('${S.current.ascension_short} ${ascensions.join("&")}');
+            suffixes.add(TextSpan(
+                text: '${S.current.ascension_short} ${ascensions.join("&")}'));
           }
           for (final costumeId in costumes) {
-            final costume = _svt.profile.costume.values
+            final costume = svt.profile.costume.values
                 .firstWhereOrNull((e) => e.battleCharaId == costumeId);
-            if (costume == null) {
-              suffixes.add('${S.current.costume} $costumeId');
-            } else {
-              suffixes.add(costume.lName.l);
-            }
+            suffixes.add(SharedBuilder.textButtonSpan(
+              context: context,
+              text: costume == null
+                  ? '${S.current.costume} $costumeId'
+                  : costume.lName.l,
+              onTap: costume == null ? null : () => costume.routeTo(),
+            ));
           }
         }
         Event? event;
@@ -148,31 +152,56 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           }
         }
         if (event != null) {
-          suffixes.add(event.lName.l);
-        }
-        if (group.svtId != _svt.id) {
-          suffixes.add('svt ${group.svtId}');
+          suffixes.add(SharedBuilder.textButtonSpan(
+            context: context,
+            text: event.lName.l.replaceAll('\n', ' '),
+            onTap: () => event?.routeTo(),
+          ));
         }
         String name = Transl.enums(group.type, (enums) => enums.svtVoiceType).l;
-        if (suffixes.isNotEmpty) {
-          name = '$name (${suffixes.join(", ")})';
-        }
-        return ListTile(title: Text(name));
+        return ListTile(
+          title: Text(name),
+          subtitle: suffixes.isEmpty
+              ? null
+              : Text.rich(
+                  TextSpan(
+                      children:
+                          divideList(suffixes, const TextSpan(text: ', '))),
+                  textScaleFactor: 0.9,
+                ),
+        );
       },
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Table(
-          border: TableBorder(
-              horizontalInside: Divider.createBorderSide(context, width: 1)),
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: voiceLines.map((e) => _buildVoiceLine(context, e)).toList(),
-          columnWidths: const [
-            FlexColumnWidth(),
-            FixedColumnWidth(36.0),
-            FixedColumnWidth(36.0)
-          ].asMap(),
-        ),
-      ),
+      contentBuilder: (context) {
+        List<Widget> children = [];
+        if (group.svtId != svt.id) {
+          children.add(ListTile(
+            title: Text(S.current.card_asset_chara_figure),
+            trailing: Text(group.svtId.toString()),
+            dense: true,
+            onTap: () {
+              FullscreenImageViewer.show(context: context, urls: [
+                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}0/${group.svtId}0_merged.png'
+              ]);
+            },
+          ));
+        }
+        children.add(Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Table(
+            border: TableBorder(
+                horizontalInside: Divider.createBorderSide(context, width: 1)),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children:
+                voiceLines.map((e) => _buildVoiceLine(context, e)).toList(),
+            columnWidths: const [
+              FlexColumnWidth(),
+              FixedColumnWidth(36.0),
+              FixedColumnWidth(36.0)
+            ].asMap(),
+          ),
+        ));
+        return Column(children: children);
+      },
     );
   }
 

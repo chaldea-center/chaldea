@@ -140,7 +140,11 @@ class ServantListPageState extends State<ServantListPage>
               Icons.favorite, // owned
               Icons.favorite_border, // planned
             ][favoriteState.index]),
-            tooltip: ['All', 'Owned', 'Others'][favoriteState.index],
+            tooltip: [
+              S.current.general_all,
+              S.current.item_own,
+              S.current.general_others
+            ][favoriteState.index],
             onPressed: () {
               setState(() {
                 favoriteState =

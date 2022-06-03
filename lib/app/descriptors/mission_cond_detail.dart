@@ -6,10 +6,18 @@ import 'descriptor_base.dart';
 class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final int targetNum;
   final EventMissionConditionDetail detail;
+  @override
+  final TextStyle? style;
+  @override
+  final double? textScaleFactor;
 
-  const MissionCondDetailDescriptor(
-      {Key? key, required this.targetNum, required this.detail})
-      : super(key: key);
+  const MissionCondDetailDescriptor({
+    Key? key,
+    required this.targetNum,
+    required this.detail,
+    this.style,
+    this.textScaleFactor,
+  }) : super(key: key);
 
   @override
   List<int> get targetIds => detail.targetIds;

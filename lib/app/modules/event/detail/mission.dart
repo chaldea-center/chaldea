@@ -76,7 +76,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
       key: Key('event_mission_${mission.id}'),
       headerBuilder: (context, _) => ListTile(
         leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
-        title: Text(mission.name),
+        title: Text(mission.name, textScaleFactor: 0.9),
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         trailing: customMission == null

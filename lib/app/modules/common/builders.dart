@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -246,6 +247,28 @@ class SharedBuilder {
           );
         },
       ),
+    );
+  }
+
+  static TextSpan textButtonSpan({
+    required BuildContext context,
+    required String text,
+    List<InlineSpan>? children,
+    TextStyle? style,
+    VoidCallback? onTap,
+    GestureRecognizer? recognizer,
+  }) {
+    return TextSpan(
+      text: text,
+      children: children,
+      style: style ??
+          TextStyle(
+              color: Theme.of(context)
+                  .colorScheme
+                  .secondaryContainer
+                  .withAlpha(200)),
+      recognizer: recognizer ??
+          (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
     );
   }
 

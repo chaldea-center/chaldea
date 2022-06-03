@@ -5,6 +5,8 @@ import 'package:chaldea/models/models.dart';
 import '../../widgets/widget_builders.dart';
 
 abstract class DescriptorBase {
+  TextStyle? get style;
+  double? get textScaleFactor;
   List<int> get targetIds;
 
   Widget localized({
@@ -40,6 +42,8 @@ abstract class DescriptorBase {
           if (text5 != null) TextSpan(text: text5),
         ],
       ),
+      style: style,
+      textScaleFactor: textScaleFactor,
     );
   }
 

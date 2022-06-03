@@ -58,12 +58,15 @@ class SvtInfoTab extends StatelessWidget {
                 Text('No.${svt.collectionNo}',
                     textAlign: TextAlign.center, maxLines: 1),
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),
-                Text.rich(TextSpan(children: [
-                  CenterWidgetSpan(
-                      child: db.getIconImage(svt.className.icon(svt.rarity),
-                          width: 20, aspectRatio: 1)),
-                  TextSpan(text: ' ${Transl.svtClass(svt.className).l}')
-                ])),
+                Text.rich(
+                  TextSpan(children: [
+                    CenterWidgetSpan(
+                        child: db.getIconImage(svt.className.icon(svt.rarity),
+                            width: 20, aspectRatio: 1)),
+                    TextSpan(text: ' ${Transl.svtClass(svt.className).l}')
+                  ]),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
             CustomTableRow.fromTexts(texts: [

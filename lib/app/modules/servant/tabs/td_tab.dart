@@ -47,9 +47,9 @@ class SvtTdTab extends StatelessWidget {
       List<OverrideTDData?> overrideTds) {
     assert(tds.length == overrideTds.length);
     if (tds.length == 1) {
-      return TdDescriptor.only(
+      return TdDescriptor(
         td: tds.first,
-        isPlayer: svt.isUserSvt,
+        showEnemy: !svt.isUserSvt,
         level: level,
         overrideData: overrideTds.getOrNull(0),
       );
@@ -109,9 +109,9 @@ class SvtTdTab extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             toggle,
-            TdDescriptor.only(
+            TdDescriptor(
               td: td,
-              isPlayer: svt.isUserSvt,
+              showEnemy: !svt.isUserSvt,
               level: level,
               overrideData: overrideTds.getOrNull(tdIndex),
             ),

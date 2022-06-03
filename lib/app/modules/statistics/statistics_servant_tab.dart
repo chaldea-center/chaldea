@@ -19,9 +19,6 @@ class StatisticServantTab extends StatefulWidget {
 class _StatisticServantTabState extends State<StatisticServantTab> {
   late ScrollController _scrollController;
 
-  /// disable scroll of ListView when pie chart is touched
-  bool scrollable = true;
-
   List<int> rarityTotal = List.filled(6, 0);
   List<int> rarityOwn = List.filled(6, 0);
   List<int> rarity999 = List.filled(6, 0);
@@ -95,7 +92,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         ),
         trailing: Text(priority.options.isEmpty
             ? S.current.general_all
-            : priority.options.join(', ')),
+            : (priority.options.toList()..sort()).join(', ')),
       )
     ];
     children.add(pieChart());
@@ -141,7 +138,6 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     children = divideTiles(children);
     return ListView(
       controller: _scrollController,
-      physics: scrollable ? null : const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 6),
       children: children,
     );
@@ -236,11 +232,9 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
               if (event is FlTapUpEvent &&
                   pieTouchResponse.touchedSection != null &&
                   pieTouchResponse.touchedSection!.touchedSectionIndex >= 0) {
-                scrollable = false;
                 _needsBuild = true;
               }
               if (event is FlTapUpEvent || event is FlTapCancelEvent) {
-                scrollable = true;
                 _needsBuild = true;
               }
               final desiredTouch =

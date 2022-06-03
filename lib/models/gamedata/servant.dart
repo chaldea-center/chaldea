@@ -979,6 +979,10 @@ class NiceCostume {
   Servant? get owner => db.gameData.others.costumeSvtMap[costumeCollectionNo];
 
   String get route => Routes.costumeI(costumeCollectionNo);
+
+  void routeTo() {
+    router.push(url: route);
+  }
 }
 
 @JsonSerializable()

@@ -13,6 +13,10 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final List<int> targetIds;
   final EventMissionConditionDetail? detail;
   final List<EventMission> missions;
+  @override
+  final TextStyle? style;
+  @override
+  final double? textScaleFactor;
 
   const CondTargetNumDescriptor({
     Key? key,
@@ -21,6 +25,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     required this.targetIds,
     this.detail,
     this.missions = const [],
+    this.style,
+    this.textScaleFactor,
   }) : super(key: key);
 
   @override
@@ -247,7 +253,11 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.missionConditionDetail:
         if (detail == null) break;
         return MissionCondDetailDescriptor(
-            targetNum: targetNum, detail: detail!);
+          targetNum: targetNum,
+          detail: detail!,
+          style: style,
+          textScaleFactor: textScaleFactor,
+        );
       case CondType.date:
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)
             .toStringShort(omitSec: true);

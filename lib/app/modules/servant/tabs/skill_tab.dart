@@ -63,17 +63,17 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     }
     children.add(SHeader(S.current.passive_skill));
     for (final skill in svt.classPassive) {
-      children.add(SkillDescriptor.only(
+      children.add(SkillDescriptor(
         skill: skill,
-        isPlayer: svt.isUserSvt,
+        showEnemy: !svt.isUserSvt,
       ));
     }
     children.add(SHeader(S.current.append_skill));
     svt.appendPassive.sort2((s) => s.num * 100 + s.priority);
     for (final appendSkill in svt.appendPassive) {
-      children.add(SkillDescriptor.only(
+      children.add(SkillDescriptor(
         skill: appendSkill.skill,
-        isPlayer: svt.isUserSvt,
+        showEnemy: !svt.isUserSvt,
         level: status.favorite
             ? status.appendSkills.getOrNull(appendSkill.num - 100)
             : -1,
@@ -87,10 +87,10 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
 
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
     if (skills.length == 1) {
-      return SkillDescriptor.only(
+      return SkillDescriptor(
         skill: skills.first,
         level: level,
-        isPlayer: svt.isUserSvt,
+        showEnemy: !svt.isUserSvt,
       );
     }
     NiceSkill initSkill =
@@ -146,8 +146,8 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            SkillDescriptor.only(
-                skill: skill, isPlayer: svt.isUserSvt, level: level),
+            SkillDescriptor(
+                skill: skill, showEnemy: !svt.isUserSvt, level: level),
           ],
         );
       },

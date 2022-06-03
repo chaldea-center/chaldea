@@ -299,7 +299,11 @@ class ValDsc extends StatelessWidget {
     } else if (buff.type == BuffType.changeCommandCardType) {
       parts.add(empty);
       return;
-    } else if (buff.type == BuffType.fieldIndividuality) {
+    } else if ([
+      BuffType.fieldIndividuality,
+      BuffType.addIndividuality,
+      BuffType.subIndividuality
+    ].contains(buff.type)) {
       parts.add(Transl.trait(vals.Value!).l);
       return;
     } else {

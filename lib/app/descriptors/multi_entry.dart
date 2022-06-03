@@ -51,7 +51,7 @@ class MultiDescriptor {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-        child: Text(text, style: TextStyle(color: color, fontSize: 14)),
+        child: Text(text, style: TextStyle(color: color)),
       ),
     );
   }

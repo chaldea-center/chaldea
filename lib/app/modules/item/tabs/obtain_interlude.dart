@@ -31,7 +31,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
             RadioWithLabel<bool>(
               value: fav,
               groupValue: _favorite,
-              label: Text(fav ? S.current.favorite : 'All'),
+              label: Text(fav ? S.current.favorite : S.current.general_all),
               onChanged: (v) {
                 if (v != null) {
                   _favorite = v;

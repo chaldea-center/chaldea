@@ -64,6 +64,7 @@ class CustomMission {
         logicType: 0,
         conditionLinkType: DetailMissionCondLinkType.missionStart,
       ),
+      textScaleFactor: 0.9,
     );
   }
 }

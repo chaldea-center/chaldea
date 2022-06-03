@@ -66,7 +66,6 @@ class MainStoryTab extends StatelessWidget {
                 String subtitleText = longName.startsWith(shortName)
                     ? longName.substring(shortName.length).trimChar(' -\n')
                     : longName.replaceAll('\n', ' ');
-                print([shortName, longName, titleText, subtitleText]);
                 Widget? title, subtitle;
                 title = AutoSizeText(
                   titleText,

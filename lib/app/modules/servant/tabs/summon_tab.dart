@@ -30,13 +30,13 @@ class SvtSummonTab extends StatelessWidget {
     }
     summons.sort2((e) => e.startTime.jp!, reversed: true);
     return ListView.separated(
-      itemBuilder: (context, index) => summonTile(summons[index]),
+      itemBuilder: (context, index) => summonTile(context, summons[index]),
       separatorBuilder: (context, index) => kDefaultDivider,
       itemCount: summons.length,
     );
   }
 
-  Widget summonTile(LimitedSummon summon) {
+  Widget summonTile(BuildContext context, LimitedSummon summon) {
     bool planned = db.curUser.summons.contains(summon.id);
     return ListTile(
       title: Row(
@@ -47,7 +47,11 @@ class SvtSummonTab extends StatelessWidget {
             child: AutoSizeText(
               summon.name.l ?? summon.id,
               maxLines: 2,
-              // style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
+              style: TextStyle(
+                color: summon.isOutdated()
+                    ? Theme.of(context).textTheme.caption?.color
+                    : null,
+              ),
               maxFontSize: 14,
             ),
           ),

@@ -25,7 +25,7 @@ class LimitEventTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Event> events = limitEvents.values.toList();
-    events.removeWhere((event) => event.isEmpty);
+    events.removeWhere((event) => event.isEmpty && !event.extra.forceShown);
     if (!showOutdated) {
       events.removeWhere(
           (e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
