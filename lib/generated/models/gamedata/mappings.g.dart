@@ -148,9 +148,12 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ) ??
           const {},
       skillNames: (json['skill_names'] as Map?)?.map(
-        (k, e) => MapEntry(k as String,
-            MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       skillDetail: (json['skill_detail'] as Map?)?.map(
             (k, e) => MapEntry(
                 k as String,

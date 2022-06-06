@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../models/gamedata/mappings.dart';
+import '../models/models.dart';
 
 const double _kSearchBarPaddingBottom = 8.0;
 
@@ -159,6 +159,20 @@ abstract class SearchOptionsMixin<T> {
     if (items == null) return;
     for (final item in items) {
       yield getter(item);
+    }
+  }
+
+  Iterable<String?> getSkillKeys(SkillOrTd skill) sync* {
+    yield* getAllKeys(skill.lName);
+    yield SearchUtil.getJP(skill.ruby);
+    final detail = skill.detail;
+    if (detail != null) {
+      yield* getAllKeys(Transl.skillDetail(detail));
+    }
+    if (skill is BaseSkill) {
+      for (final skillAdd in skill.skillAdd) {
+        yield* getAllKeys(Transl.skillNames(skillAdd.name));
+      }
     }
   }
 }

@@ -146,8 +146,15 @@ class Transl<K, V> {
     return Transl(md.funcPopuptext, jp, jp);
   }
 
-  static Transl<String, String> skillNames(String jp) =>
-      Transl(md.skillNames, jp, jp);
+  static Transl<String, String> skillNames(String jp) {
+    if (md.skillNames.containsKey(jp)) {
+      return Transl(md.skillNames, jp, jp);
+    } else if (md.ceNames.containsKey(jp)) {
+      return ceNames(jp);
+    } else {
+      return ccNames(jp);
+    }
+  }
 
   static Transl<String, String> skillDetail(String jp) =>
       Transl(md.skillDetail, jp, jp);
@@ -255,7 +262,7 @@ class MappingData {
     this.buffNames = const {},
     this.buffDetail = const {},
     this.funcPopuptext = const {},
-    Map<String, MappingBase<String>>? skillNames,
+    this.skillNames = const {},
     this.skillDetail = const {},
     this.tdNames = const {},
     this.tdRuby = const {},
@@ -271,8 +278,7 @@ class MappingData {
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
     EnumMapping? enums,
-  })  : skillNames = skillNames ?? {},
-        svtRelease = svtRelease ?? MappingList(),
+  })  : svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),
         enums = enums ?? EnumMapping() {
@@ -296,11 +302,7 @@ class MappingData {
     _updateRegion(buffNames, Region.jp);
     _updateRegion(buffDetail, Region.jp);
     _updateRegion(funcPopuptext, Region.jp);
-
-    this.skillNames
-      ..addAll(ceNames)
-      ..addAll(ccNames);
-    _updateRegion(this.skillNames, Region.jp);
+    _updateRegion(skillNames, Region.jp);
     _updateRegion(skillDetail, Region.jp);
     _updateRegion(tdNames, Region.jp);
     _updateRegion(tdRuby, Region.jp);

@@ -253,12 +253,7 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
     }
     if (skill) {
       for (final skill in ce.skills) {
-        yield* getAllKeys(skill.lName);
-        yield SearchUtil.getJP(skill.ruby);
-        yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
-        for (final skillAdd in skill.skillAdd) {
-          yield* getAllKeys(Transl.skillNames(skillAdd.name));
-        }
+        yield* getSkillKeys(skill);
       }
     }
   }

@@ -1077,34 +1077,23 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
     }
     if (activeSkill) {
       for (final skill in svt.skills) {
-        yield* _getSkillKeys(skill);
+        yield* getSkillKeys(skill);
       }
     }
     if (classPassive) {
       for (final skill in svt.classPassive) {
-        yield* _getSkillKeys(skill);
+        yield* getSkillKeys(skill);
       }
     }
 
     if (appendSkill) {
       for (final skill in svt.appendPassive) {
-        yield* _getSkillKeys(skill.skill);
+        yield* getSkillKeys(skill.skill);
       }
     }
     if (noblePhantasm) {
       for (final td in svt.noblePhantasms) {
-        yield* _getSkillKeys(td);
-      }
-    }
-  }
-
-  Iterable<String?> _getSkillKeys(SkillOrTd skill) sync* {
-    yield* getAllKeys(skill.lName);
-    yield SearchUtil.getJP(skill.ruby);
-    yield* getAllKeys(Transl.skillDetail(skill.unmodifiedDetail ?? ''));
-    if (skill is BaseSkill) {
-      for (final skillAdd in skill.skillAdd) {
-        yield* getAllKeys(Transl.skillNames(skillAdd.name));
+        yield* getSkillKeys(td);
       }
     }
   }

@@ -34,6 +34,11 @@ abstract class SkillOrTd {
       includeTrigger: includeTrigger,
     ).toList();
   }
+
+  String? get detail {
+    if (unmodifiedDetail == null) return null;
+    return unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), '');
+  }
 }
 
 @JsonSerializable()
@@ -115,9 +120,7 @@ class BaseSkill with SkillOrTd {
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
-    String content = Transl.skillDetail(
-            unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
-        .l;
+    String content = Transl.skillDetail(detail ?? '').l;
     return content.replaceAll('{0}', 'Lv.').replaceFirstMapped(
       RegExp(r'\[servantName (\d+)\]'),
       (match) {
@@ -361,10 +364,7 @@ class BaseTd extends SkillOrTd {
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
-    return Transl.tdDetail(
-            unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), ''))
-        .l
-        .replaceAll('{0}', 'Lv.');
+    return Transl.tdDetail(detail ?? '').l.replaceAll('{0}', 'Lv.');
   }
 }
 
