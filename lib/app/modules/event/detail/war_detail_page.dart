@@ -57,6 +57,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
     // if (eventBanners != null && eventBanners.isNotEmpty) {
     //   banners.addAll(eventBanners);
     // }
+    List<String> warBanners = {
+      war.banner,
+      for (final warAdd in war.warAdds) warAdd.overwriteBanner,
+    }.whereType<String>().toList();
 
     List<Widget> children = [
       if (banners.isNotEmpty)
@@ -89,12 +93,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
         TableCellData(text: S.current.war_age, isHeader: true),
         TableCellData(text: war.age, flex: 3),
       ]),
-      if (war.banner != null)
+      if (warBanners.isNotEmpty)
         CustomTableRow(children: [
           TableCellData(text: S.current.war_banner, isHeader: true),
           TableCellData(
             flex: 3,
-            child: Center(child: db.getIconImage(war.banner, height: 48)),
+            child: Wrap(
+              spacing: 4,
+              alignment: WrapAlignment.center,
+              children: warBanners
+                  .map((e) => db.getIconImage(e, height: 48))
+                  .toList(),
+            ),
           ),
         ]),
       if (war.eventId > 0)

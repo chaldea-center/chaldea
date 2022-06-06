@@ -170,10 +170,12 @@ class _GalleryPageState extends State<GalleryPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(M.of(
-                cn: 'UI文本、游戏文本仍需进一步完善翻译，对5种语言均有一定需求(按需求排序):\n'
+                cn: '真的很缺很缺很缺>_<\n'
+                    'UI文本、游戏文本仍需进一步完善翻译，对5种语言均有一定需求(按需求排序):\n'
                     '- 日语/繁中/韩语/英语/简中\n'
                     '如果您能够并希望帮助改善翻译，请通过以下地址联系！',
-                na: 'UI and game texts still need to be improved, all 5 languages are wanted(sort by demand):\n'
+                na: 'WANTED! WANTED! WANTED! >_<\n'
+                    'UI and game texts still need to be improved, all 5 languages are wanted(sort by demand):\n'
                     '- Japanese/Traditional Chinese/Korean/English/Simplified Chinese\n'
                     'If you are glad to help with it, please contact me through the following link.')),
           ),

@@ -43,6 +43,15 @@ class _AboutPageState extends State<AboutPage> {
       appBar: AppBar(
         title: Text(MaterialLocalizations.of(context)
             .aboutListTileTitle(AppInfo.appName)),
+        actions: [
+          IconButton(
+            onPressed: () {
+              launch(kProjectHomepage);
+            },
+            icon: const FaIcon(FontAwesomeIcons.github),
+            tooltip: 'view on Github',
+          )
+        ],
       ),
       body: ListView(
         children: <Widget>[
