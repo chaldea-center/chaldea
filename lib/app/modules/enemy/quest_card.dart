@@ -200,21 +200,12 @@ class _QuestCardState extends State<QuestCard> {
               ),
               AutoSizeText(
                 shownQuestName,
-                maxLines: 2,
+                maxLines: 3,
                 maxFontSize: 14,
                 minFontSize: 6,
+                textScaleFactor: 0.85,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              AutoSizeText(
-                'Lv.${quest.recommendLv}  '
-                '${S.current.game_kizuna} ${questPhase?.bond ?? "?"}  '
-                '${S.current.game_experience} ${questPhase?.exp ?? "?"}',
-                maxLines: 1,
-                maxFontSize: 14,
-                minFontSize: 6,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.caption,
+                // style: const TextStyle(fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -324,25 +315,74 @@ class _QuestCardState extends State<QuestCard> {
     String spotJp = curPhase.spotName;
     String spot = curPhase.lSpot.l;
     final spotImage = db.gameData.spots[curPhase.spotId]?.image;
-    final shownSpotName = spotJp == spot ? spot : '$spot\n$spotJp';
-    children.add(Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Text('  ${curPhase.phase}/${curPhase.phases.length}  '),
-        Expanded(flex: 1, child: Center(child: Text('AP ${curPhase.consume}'))),
-        Expanded(
-          flex: 4,
-          child: AutoSizeText(
-            shownSpotName,
-            maxLines: shownSpotName.split('\n').length,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-            textAlign: TextAlign.center,
+    final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+    List<Widget> headerRows = [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              '${curPhase.phase}/${curPhase.phases.length}',
+              textAlign: ui.TextAlign.center,
+            ),
           ),
-        ),
-        if (spotImage != null)
-          Expanded(child: db.getIconImage(spotImage, height: 36))
-      ],
-    ));
+          Expanded(
+            flex: 4,
+            child: Text(
+              shownSpotName,
+              // maxLines: shownSpotName.split('\n').length,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              'AP ${curPhase.consume}',
+              textAlign: ui.TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'Lv.${curPhase.recommendLv}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              '${S.current.bond} ${curPhase.bond}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'EXP ${curPhase.exp}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+        ],
+      )
+    ];
+    if (spotImage == null) {
+      children.addAll(headerRows);
+    } else {
+      children.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: Column(children: headerRows)),
+          db.getIconImage(spotImage, height: 42, aspectRatio: 1),
+        ],
+      ));
+    }
     for (int j = 0; j < curPhase.stages.length; j++) {
       children.add(Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -754,6 +794,7 @@ class QuestEnemyWidget extends StatelessWidget {
             return AutoSizeText(
               displayName + (enemy.deck != DeckType.enemy ? "*" : ""),
               textAlign: TextAlign.center,
+              textScaleFactor: 0.8,
               maxFontSize: constraints.maxWidth < 120 ? 14 : 24,
               maxLines: constraints.maxWidth < 120 ? 2 : 1,
             );
