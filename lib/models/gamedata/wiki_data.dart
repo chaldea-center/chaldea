@@ -49,6 +49,8 @@ class ServantExtra {
   List<String> spriteModels;
   String? mcLink;
   String? fandomLink;
+  Map<int, List<String>> mcProfiles;
+  Map<int, List<String>> fandomProfiles;
 
   ServantExtra({
     required this.collectionNo,
@@ -59,6 +61,8 @@ class ServantExtra {
     this.spriteModels = const [],
     this.mcLink,
     this.fandomLink,
+    this.mcProfiles = const {},
+    this.fandomProfiles = const {},
   })  : nicknames = nicknames ?? MappingList(),
         aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 

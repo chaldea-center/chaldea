@@ -46,7 +46,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     if (releasedRegions.isEmpty) releasedRegions.add(Region.jp);
     _region =
         releasedRegions.contains(Transl.current) ? Transl.current : Region.jp;
-    fetchSvt();
+    fetchSvt(_region);
   }
 
   bool isReleased(Region r) {
@@ -56,34 +56,67 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         true;
   }
 
-  void fetchSvt() async {
+  void fetchSvt(Region r) async {
     _loading = true;
     _svt = null;
     if (mounted) setState(() {});
-    _svt = await AtlasApi.svt(widget.svt.id, region: _region);
+    final result = await AtlasApi.svt(widget.svt.id, region: r);
+    if (r == _region) {
+      _svt = result;
+    }
     _loading = false;
     if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
+    List<Widget> children = [
+      if (widget.svt.extra.mcLink != null)
+        ListTile(
+          title: const Text('Mooncell'),
+          trailing: Text(
+            '${Region.jp.localName}/${Region.cn.localName}',
+            style: Theme.of(context).textTheme.caption,
+          ),
+          onTap: () {
+            launch('https://fgo.wiki/w/${widget.svt.extra.mcLink}/语音');
+          },
+          dense: true,
+        ),
+      if (widget.svt.extra.fandomLink != null)
+        ListTile(
+          title: const Text('Fandom'),
+          trailing: Text(
+            '${Region.jp.localName}/${Region.na.localName}',
+            style: Theme.of(context).textTheme.caption,
+          ),
+          onTap: () {
+            launch(
+                'https://fategrandorder.fandom.com/wiki/Sub:${widget.svt.extra.fandomLink}/Dialogue');
+          },
+          dense: true,
+        ),
+    ];
+
     List<VoiceGroup> groups = List.of(_svt?.profile.voices ?? []);
     for (final group in groups) {
       if (group.voiceLines.isEmpty) continue;
       children.add(_buildGroup(context, group));
     }
     Widget view;
-    if (groups.isNotEmpty) {
-      view = ListView.builder(
-        itemCount: children.length,
-        itemBuilder: (context, index) => children[index],
-      );
-    } else if (_loading) {
-      view = const Center(child: CircularProgressIndicator());
-    } else {
-      view = const Center(child: Text('???'));
+    if (groups.isEmpty) {
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+        child: Center(
+          child:
+              _loading ? const CircularProgressIndicator() : const Text('???'),
+        ),
+      ));
     }
+    view = ListView.builder(
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
+    );
 
     return Column(
       children: [
@@ -100,7 +133,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                 onFilterChanged: (v, _) {
                   if (v.radioValue != null) {
                     _region = v.radioValue!;
-                    fetchSvt();
+                    fetchSvt(_region);
                   }
                   setState(() {});
                 },
@@ -185,14 +218,16 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
             },
           ));
         }
+        Map<String, int> _nameCount = {};
         children.add(Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Table(
             border: TableBorder(
                 horizontalInside: Divider.createBorderSide(context, width: 1)),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children:
-                voiceLines.map((e) => _buildVoiceLine(context, e)).toList(),
+            children: voiceLines
+                .map((e) => _buildVoiceLine(context, e, _nameCount))
+                .toList(),
             columnWidths: const [
               FlexColumnWidth(),
               FixedColumnWidth(36.0),
@@ -205,10 +240,41 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     );
   }
 
-  TableRow _buildVoiceLine(BuildContext context, VoiceLine line) {
-    String name = line.overwriteName.isNotEmpty
-        ? line.overwriteName
-        : line.name ?? line.id.toString();
+  TableRow _buildVoiceLine(
+      BuildContext context, VoiceLine line, Map<String, int> _nameCount) {
+    String name = '', overwriteName = '';
+    if (line.name != null && line.name!.isNotEmpty) {
+      name = line.name!;
+      for (final s in ['\u3000（ひとつの施策でふたつあるとき）', '（57は欠番）']) {
+        name = name.replaceFirst(s, '');
+      }
+      name = name.trim();
+      name = line.name!.replaceFirstMapped(RegExp(r'^(.+?)(\d*)$'), (match) {
+        final _name = Transl.string(
+            db.gameData.mappingData.voiceLineNames, match.group(1)!.trim());
+        final _num = match.group(2);
+        if (_num != null && _num.isNotEmpty) {
+          return '${_name.l} $_num';
+        } else {
+          return _name.l;
+        }
+      });
+    }
+
+    if (line.overwriteName.isNotEmpty) {
+      overwriteName = line.overwriteName;
+      if (overwriteName.contains('{0}')) {
+        int index =
+            _nameCount[overwriteName] = (_nameCount[overwriteName] ?? 0) + 1;
+        overwriteName =
+            overwriteName.replaceAllMapped('{0}', (match) => index.toString());
+      }
+    }
+    if (overwriteName.contains(name)) {
+      name = overwriteName;
+    } else if (overwriteName.isNotEmpty) {
+      name = '$name($overwriteName)';
+    }
     String text;
     if (line.subtitle.isNotEmpty) {
       text = line.subtitle;

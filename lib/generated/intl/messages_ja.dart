@@ -290,7 +290,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("連絡先情報がない場合は、返信することはできません。"),
         "filter": MessageLookupByLibrary.simpleMessage("フィルター"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("属性"),
-        "filter_attribute": MessageLookupByLibrary.simpleMessage("相性"),
+        "filter_attribute": MessageLookupByLibrary.simpleMessage("隠し属性"),
         "filter_category": MessageLookupByLibrary.simpleMessage("分類"),
         "filter_effects": MessageLookupByLibrary.simpleMessage("効果"),
         "filter_gender": MessageLookupByLibrary.simpleMessage("性别"),

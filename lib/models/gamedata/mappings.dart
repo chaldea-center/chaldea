@@ -16,6 +16,10 @@ class Transl<K, V> {
   final V _default;
 
   Transl(this.mappings, this.key, this._default) : _m = mappings[key];
+  static Transl<String, String> string(
+      Map<String, MappingBase<String>> mappings, String key) {
+    return Transl(mappings, key, key);
+  }
 
   V get jp => mappings[key]?.jp ?? _default;
 
@@ -217,6 +221,7 @@ class MappingData {
   final Map<String, MappingBase<String>> tdNames;
   final Map<String, MappingBase<String>> tdRuby;
   final Map<String, MappingBase<String>> tdDetail;
+  final Map<String, MappingBase<String>> voiceLineNames;
   final Map<int, MappingBase<String>> trait; // key: trait id
   final Map<int, int> traitRedirect; // key: trait id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
@@ -255,6 +260,7 @@ class MappingData {
     this.tdNames = const {},
     this.tdRuby = const {},
     this.tdDetail = const {},
+    this.voiceLineNames = const {},
     this.trait = const {},
     this.traitRedirect = const {},
     this.mcDetail = const {},
@@ -299,6 +305,7 @@ class MappingData {
     _updateRegion(tdNames, Region.jp);
     _updateRegion(tdRuby, Region.jp);
     _updateRegion(tdDetail, Region.jp);
+    _updateRegion(voiceLineNames, Region.jp);
   }
 
   static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region) {

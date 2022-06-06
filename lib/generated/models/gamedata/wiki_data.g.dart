@@ -61,6 +61,16 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
           const [],
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
+      mcProfiles: (json['mcProfiles'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                (e as List<dynamic>).map((e) => e as String).toList()),
+          ) ??
+          const {},
+      fandomProfiles: (json['fandomProfiles'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                (e as List<dynamic>).map((e) => e as String).toList()),
+          ) ??
+          const {},
     );
 
 const _$SvtObtainEnumMap = {
@@ -160,6 +170,7 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       name: json['name'] as String,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
+      forceShown: json['forceShown'] as bool? ?? false,
       titleBanner: json['titleBanner'] == null
           ? null
           : MappingBase<String>.fromJson(

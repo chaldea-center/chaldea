@@ -179,6 +179,13 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      voiceLineNames: (json['voice_line_names'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       trait: (json['trait'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),

@@ -188,7 +188,7 @@
   "fill_email_warning": "連絡先情報がない場合は、返信することはできません。",
   "filter": "フィルター",
   "filter_atk_hp_type": "属性",
-  "filter_attribute": "相性",
+  "filter_attribute": "隠し属性",
   "filter_category": "分類",
   "filter_effects": "効果",
   "filter_gender": "性别",
