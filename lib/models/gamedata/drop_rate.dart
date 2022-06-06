@@ -8,10 +8,12 @@ part '../../generated/models/gamedata/drop_rate.g.dart';
 
 @JsonSerializable()
 class DropRateData {
+  final int updatedAt;
   final DropRateSheet newData;
   final DropRateSheet legacyData;
 
   DropRateData({
+    this.updatedAt = 0,
     DropRateSheet? newData,
     DropRateSheet? legacyData,
   })  : newData = newData ?? DropRateSheet(),
@@ -27,10 +29,12 @@ class DropRateData {
 
 @JsonSerializable()
 class DropRateSheet {
-  final List<int> questIds; // n
   final List<int> itemIds; // m
+  final List<int> questIds; // n
   final List<int> apCosts;
   final List<int> runs;
+  final List<int> bonds;
+  final List<int> exps;
 
   /// drop rate, not ap rate
   @protected
@@ -39,10 +43,12 @@ class DropRateSheet {
   List<List<double>> matrix; // m*n
 
   DropRateSheet({
-    this.questIds = const [],
     this.itemIds = const [],
+    this.questIds = const [],
     this.apCosts = const [],
     this.runs = const [],
+    this.bonds = const [],
+    this.exps = const [],
     this.sparseMatrix = const {},
   }) : matrix = List.generate(
             itemIds.length,
@@ -58,6 +64,8 @@ class DropRateSheet {
       itemIds: List.of(itemIds),
       apCosts: List.of(apCosts),
       runs: List.of(runs),
+      bonds: List.of(bonds),
+      exps: List.of(exps),
       sparseMatrix:
           sparseMatrix.map((key, value) => MapEntry(key, Map.of(value))),
     )..matrix = List.generate(matrix.length,
@@ -106,6 +114,8 @@ class DropRateSheet {
     questIds.removeAt(index);
     apCosts.removeAt(index);
     runs.removeAt(index);
+    bonds.removeAt(index);
+    exps.removeAt(index);
     matrix.forEach((row) => row.removeAt(index));
   }
 }

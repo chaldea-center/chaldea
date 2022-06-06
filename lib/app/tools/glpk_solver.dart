@@ -83,12 +83,8 @@ class FreeLPSolver {
     params = FreeLPParams.from(params);
     final data = params.sheet.copy();
     data.itemIds.addAll([Items.bondPointId, Items.expPointId]);
-    data.matrix.add(data.questIds
-        .map((e) => db.gameData.getQuestPhase(e)?.bond.toDouble() ?? 0.0)
-        .toList());
-    data.matrix.add(data.questIds
-        .map((e) => db.gameData.getQuestPhase(e)?.exp.toDouble() ?? 0.0)
-        .toList());
+    data.matrix.add(data.bonds.map((e) => e.toDouble()).toList());
+    data.matrix.add(data.exps.map((e) => e.toDouble()).toList());
     _preProcess(data: data, params: params);
     if (params.rows.isEmpty) {
       logger.d('after pre processing, params has no valid rows.\n'

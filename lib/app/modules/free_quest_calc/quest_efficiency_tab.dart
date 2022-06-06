@@ -59,9 +59,14 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   }
 
   double getBondEff(LPVariable variable) {
-    final quest = db.gameData.getQuestPhase(variable.name);
-    if (quest == null) return double.negativeInfinity;
-    return quest.bond / quest.consume;
+    final data = db.gameData.dropRate.newData;
+    final index = data.questIds.indexOf(variable.name);
+    final bond = data.bonds.getOrNull(index),
+        ap = data.apCosts.getOrNull(index);
+    if (bond != null && ap != null) {
+      return bond / ap;
+    }
+    return double.negativeInfinity;
   }
 
   @override

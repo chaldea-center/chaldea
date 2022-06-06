@@ -42,6 +42,14 @@ class _GameDataPageState extends State<GameDataPage> {
                   ),
                 ),
               ),
+              ListTile(
+                title: Text(S.current.fgo_domus_aurea),
+                trailing: db.onUserData(
+                  (context, snapshot) => Text(
+                    db.gameData.dropRate.updatedAt.sec2date().toDateString(),
+                  ),
+                ),
+              ),
             ],
           ),
           TileGroup(

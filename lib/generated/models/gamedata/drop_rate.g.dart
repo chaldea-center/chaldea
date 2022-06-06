@@ -7,6 +7,7 @@ part of '../../../models/gamedata/drop_rate.dart';
 // **************************************************************************
 
 DropRateData _$DropRateDataFromJson(Map json) => DropRateData(
+      updatedAt: json['updatedAt'] as int? ?? 0,
       newData: json['newData'] == null
           ? null
           : DropRateSheet.fromJson(
@@ -18,16 +19,20 @@ DropRateData _$DropRateDataFromJson(Map json) => DropRateData(
     );
 
 DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
-      questIds:
-          (json['questIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
-              const [],
       itemIds:
           (json['itemIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      questIds:
+          (json['questIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
               const [],
       apCosts:
           (json['apCosts'] as List<dynamic>?)?.map((e) => e as int).toList() ??
               const [],
       runs: (json['runs'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+          const [],
+      bonds: (json['bonds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+          const [],
+      exps: (json['exps'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
       sparseMatrix: (json['sparseMatrix'] as Map?)?.map(
             (k, e) => MapEntry(
