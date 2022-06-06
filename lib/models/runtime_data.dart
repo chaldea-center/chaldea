@@ -51,4 +51,6 @@ class RuntimeData {
   Map<dynamic, dynamic> tempDict = {};
 
   WebRenderMode? webRendererCanvasKit;
+
+  bool svtPlanTabButtonBarUseActive = true;
 }

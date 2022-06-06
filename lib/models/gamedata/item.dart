@@ -91,6 +91,9 @@ class Item {
     int? _itemId = item?.id ?? itemId;
     item ??= db.gameData.items[itemId];
     icon ??= item?.borderedIcon;
+    if (icon == null && itemId != null) {
+      icon ??= getIcon(itemId);
+    }
     name ??= Item.getName(item?.id ?? itemId ?? -1);
     if (onTap == null && jumpToDetail && _itemId != null) {
       if (_itemId == Items.grailToCrystalId) {
@@ -318,7 +321,8 @@ class ItemAmount {
     Item? item,
     int? itemId,
     required this.amount,
-  }) : itemId = item?.id ?? itemId!;
+  })  : assert(item != null || itemId != null),
+        itemId = item?.id ?? itemId!;
 
   Item get item => db.gameData.items[itemId]!;
 

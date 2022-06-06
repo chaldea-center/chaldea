@@ -414,6 +414,8 @@ class ServantListPageState extends State<ServantListPage>
           svtPlan.grail > svtStat.cur.grail,
           svtPlan.fouHp > svtStat.cur.fouHp,
           svtPlan.fouAtk > svtStat.cur.fouAtk,
+          svtPlan.fouHp3 > svtStat.cur.fouHp3,
+          svtPlan.fouAtk3 > svtStat.cur.fouAtk3,
           svtPlan.bondLimit > svtStat.cur.bondLimit,
         ].any((e) => e))
           SvtPlanScope.misc,

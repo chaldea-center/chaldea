@@ -127,7 +127,8 @@ class ItemCenter {
     final svt = db.gameData.servants[svtId];
     if (svt == null || svtIndex == null) return;
     final cur = user.svtStatusOf(svtId).cur;
-    final consumed = calcOneSvt(svt, SvtPlan(favorite: cur.favorite), cur,
+    final consumed = calcOneSvt(
+        svt, SvtPlan.empty()..favorite = cur.favorite, cur,
         priorityFiltered: true);
     final demands =
         calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
@@ -140,7 +141,7 @@ class ItemCenter {
     }
     if (max) {
       final allDemands =
-          calcOneSvt(svt, SvtPlan(favorite: true), SvtPlan.max(svt));
+          calcOneSvt(svt, SvtPlan.empty()..favorite = true, SvtPlan.max(svt));
       for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
         _svtFull._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
             allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);
@@ -193,6 +194,8 @@ class ItemCenter {
     detail.special = {
       Items.hpFou4: max(0, target.fouHp - cur.fouHp),
       Items.atkFou4: max(0, target.fouAtk - cur.fouAtk),
+      Items.hpFou3: max(0, target.fouHp3 - cur.fouHp3),
+      Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
       Items.grailId: max(0, target.grail - cur.grail),
       Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
       Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) +
@@ -514,7 +517,7 @@ class QpCost {
 
   static int bondLimit(int cur, int target) {
     int qp = 0;
-    for (int lv = cur + 1; lv <= target; lv++) {
+    for (int lv = cur; lv < target; lv++) {
       qp += db.gameData.constData.bondLimitQp[lv] ?? 0;
     }
     return qp;

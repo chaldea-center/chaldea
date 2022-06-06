@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,9 +27,8 @@ class SvtPlanTab extends StatefulWidget {
 class _SvtPlanTabState extends State<SvtPlanTab> {
   /// in edit mode, change skill lv_a to lv_b and take out the items
   bool enhanceMode = false;
-  bool useActiveSkill = true;
   late TextEditingController _coinEditController;
-  SvtPlan enhancePlan = SvtPlan();
+  SvtPlan enhancePlan = SvtPlan.empty();
 
   Servant get svt => widget.svt;
 
@@ -285,13 +282,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             levelFormatter: (v) => svt.grailedLv(v).toString(),
           ),
         ),
-      ],
-    ));
-
-    // Extra part: np/grail/fou-kun
-    children.add(TileGroup(
-      header: S.current.event_item_extra,
-      children: <Widget>[
         if (svt.type != SvtType.heroine)
           buildPlanRow(
             useSlider: sliderMode,
@@ -311,13 +301,17 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             detailPageBuilder: (context) =>
                 const SimpleCancelOkDialog(title: Text('Not Used yet')),
           ),
+      ],
+    ));
+
+    // Extra part: np/grail/fou-kun
+    children.add(TileGroup(
+      header: S.current.event_item_extra,
+      children: <Widget>[
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
-              context: context,
-              item: null,
-              icon: Item.getIcon(Items.hpFou4),
-              width: 33),
+              context: context, item: null, itemId: Items.hpFou4, width: 33),
           title: '${kStarChar}4 HP ${S.current.foukun}',
           start: curVal.fouHp,
           end: targetVal.fouHp,
@@ -337,10 +331,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
-              context: context,
-              item: null,
-              icon: Item.getIcon(Items.atkFou4),
-              width: 33),
+              context: context, item: null, itemId: Items.atkFou4, width: 33),
           title: '${kStarChar}4 ATK ${S.current.foukun}',
           start: curVal.fouAtk,
           end: targetVal.fouAtk,
@@ -348,11 +339,51 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           maxVal: 50,
           labelFormatter: (v) => (v * 20).toString(),
           trailingLabelFormatter: (a, b) =>
-              '${curVal.fouAtk * 20}→${targetVal.fouHp * 20}',
+              '${curVal.fouAtk * 20}→${targetVal.fouAtk * 20}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouAtk = _start;
             targetVal.fouAtk = _end;
+            updateState();
+          },
+          detailPageBuilder: null,
+        ),
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading: Item.iconBuilder(
+              context: context, item: null, itemId: Items.hpFou3, width: 33),
+          title: '${kStarChar}3 HP ${S.current.foukun}',
+          start: curVal.fouHp3,
+          end: targetVal.fouHp3,
+          minVal: 0,
+          maxVal: 20,
+          labelFormatter: (v) => (v * 50).toString(),
+          trailingLabelFormatter: (a, b) =>
+              '${curVal.fouHp3 * 50}→${targetVal.fouHp3 * 50}',
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.fouHp3 = _start;
+            targetVal.fouHp3 = _end;
+            updateState();
+          },
+          detailPageBuilder: null,
+        ),
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading: Item.iconBuilder(
+              context: context, item: null, itemId: Items.atkFou3, width: 33),
+          title: '${kStarChar}3 ATK ${S.current.foukun}',
+          start: curVal.fouAtk3,
+          end: targetVal.fouAtk3,
+          minVal: 0,
+          maxVal: 20,
+          labelFormatter: (v) => (v * 50).toString(),
+          trailingLabelFormatter: (a, b) =>
+              '${curVal.fouAtk3 * 50}→${targetVal.fouHp3 * 50}',
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.fouAtk3 = _start;
+            targetVal.fouAtk3 = _end;
             updateState();
           },
           detailPageBuilder: null,
@@ -372,11 +403,17 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             targetVal.bondLimit = _end;
             updateState();
           },
-          detailPageBuilder: (context) => SimpleCancelOkDialog(
-            title: Text(S.current.game_kizuna),
-            hideCancel: true,
-            content: const Text(
-                'The value is the current bond limit, used for calculation of Chaldea Lantern'),
+          detailPageBuilder: (context) => LevelingCostPage(
+            costList: {
+              for (int bond = 10; bond < 15; bond++)
+                bond: LvlUpMaterial(
+                  items: [ItemAmount(itemId: Items.lanternId, amount: 1)],
+                  qp: db.gameData.constData.bondLimitQp[bond] ?? 0,
+                )
+            },
+            curLv: curVal.bondLimit,
+            targetLv: plan.bondLimit,
+            title: S.current.bond_limit,
           ),
         ),
       ],
@@ -610,6 +647,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     );
   }
 
+  bool get useActiveSkill => db.runtimeData.svtPlanTabButtonBarUseActive;
+  set useActiveSkill(bool v) => db.runtimeData.svtPlanTabButtonBarUseActive = v;
+
   Widget buildButtonBar(SvtPlan targetPlan) {
     final curVal = status.cur;
     List<Widget> buttons = [];
@@ -666,14 +706,15 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     ));
     buttons.add(DropdownButton<bool>(
       value: useActiveSkill,
+      underline: const SizedBox(),
       items: [
         DropdownMenuItem(
           value: true,
-          child: Text(S.current.active_skill_short),
+          child: Text('${S.current.active_skill_short}:'),
         ),
         DropdownMenuItem(
           value: false,
-          child: Text(S.current.append_skill_short),
+          child: Text('${S.current.append_skill_short}:'),
         ),
       ],
       onChanged: (v) {
@@ -684,90 +725,64 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     ));
 
     // Lv.x or ≠
-    bool skillLvEqual =
-        Set.from((enhanceMode ? targetPlan : curVal).getSkills(useActiveSkill))
-                .length ==
-            1;
-    buttons.add(DropdownButton(
-      value: skillLvEqual
-          ? (enhanceMode ? targetPlan : curVal).getSkills(useActiveSkill)[0]
-          : null,
-      hint: const Text('Lv. ≠'),
-      items: List.generate(10,
-          (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
-      onChanged: _onAllSkillLv,
-    ));
-
-    // max ↑
-    buttons.add(IconButton(
-      icon: const Icon(Icons.vertical_align_top),
-      tooltip: S.of(context).skilled_max10,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      constraints: const BoxConstraints(
-          minHeight: kMinInteractiveDimension, minWidth: 36),
-      onPressed: enhanceMode
+    final _rightPlan = enhanceMode ? targetPlan : plan;
+    final skillsLeft = curVal.getSkills(useActiveSkill);
+    buttons.add(DropdownButton<int>(
+      value: skillsLeft.toSet().length == 1 ? skillsLeft.first : null,
+      items: [
+        const DropdownMenuItem(value: -1, child: Text('x+1')),
+        for (int index = useActiveSkill ? 1 : 0; index <= 10; index++)
+          DropdownMenuItem(
+            value: index,
+            child: Text('Lv.$index'),
+          )
+      ],
+      hint: const Text('Lv.≠'),
+      onChanged: enhanceMode
           ? null
-          : () {
-              curVal.setMax(skill: 10, isActive: useActiveSkill);
-              targetPlan.setMax(skill: 10, isActive: useActiveSkill);
+          : (v) {
+              if (v == -1) {
+                for (int i = 0; i < skillsLeft.length; i++) {
+                  skillsLeft[i] += 1;
+                }
+              } else if (v != null) {
+                skillsLeft.fillRange(0, skillsLeft.length, v);
+              }
+              curVal.favorite = true;
+              curVal.validate(null, svt);
+              _rightPlan.validate(curVal, svt);
               updateState();
             },
     ));
+    buttons.add(const Text(' → '));
 
-    // 999
-    buttons.add(Stack(
-      alignment: AlignmentDirectional.bottomEnd,
-      children: <Widget>[
-        const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 2), child: Text('9')),
-        IconButton(
-          icon: const Icon(Icons.trending_up),
-          tooltip: S.of(context).plan_max9,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(
-              minHeight: kMinInteractiveDimension, minWidth: 36),
-          onPressed: () {
-            status.cur.favorite = true;
-            targetPlan.setMax(skill: 9, isActive: useActiveSkill);
-            for (int i = 0; i < 3; i++) {
-              if (enhanceMode) {
-                // cur cannot change in enhance mode, change target to ensure target>cur
-                targetPlan.getSkills(useActiveSkill)[i] = max(
-                    curVal.getSkills(useActiveSkill)[i],
-                    targetPlan.getSkills(useActiveSkill)[i]);
-              } else {
-                // change cur to ensure cur<=target
-                curVal.getSkills(useActiveSkill)[i] =
-                    min(curVal.getSkills(useActiveSkill)[i], 9);
-              }
-            }
-            updateState();
-          },
-        ),
+    final skillsRight = _rightPlan.getSkills(useActiveSkill);
+    buttons.add(DropdownButton<int>(
+      value: skillsRight.toSet().length == 1 ? skillsRight.first : null,
+      items: [
+        const DropdownMenuItem(value: -1, child: Text('x+1')),
+        for (int index = useActiveSkill ? 1 : 0; index <= 10; index++)
+          DropdownMenuItem(
+            value: index,
+            child: Text('Lv.$index'),
+          )
       ],
+      hint: const Text('Lv.≠'),
+      onChanged: (v) {
+        if (v == -1) {
+          for (int i = 0; i < skillsRight.length; i++) {
+            skillsRight[i] += 1;
+          }
+        } else if (v != null) {
+          skillsRight.fillRange(0, skillsRight.length, v);
+        }
+        curVal.favorite = true;
+        _rightPlan.validate(curVal, svt);
+        updateState();
+      },
     ));
 
-    // 310
-    buttons.add(Stack(
-      alignment: AlignmentDirectional.bottomEnd,
-      children: <Widget>[
-        const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 2), child: Text('10')),
-        IconButton(
-          icon: const Icon(Icons.trending_up),
-          tooltip: S.of(context).plan_max10,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(
-              minHeight: kMinInteractiveDimension, minWidth: 36),
-          onPressed: () {
-            status.cur.favorite = true;
-            targetPlan.setMax(skill: 10, isActive: useActiveSkill);
-            updateState();
-          },
-        ),
-      ],
-    ));
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
           border: Border(top: Divider.createBorderSide(context, width: 0.5))),
       child: SafeArea(
@@ -812,27 +827,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         Navigator.of(context).pop(true);
       },
     );
-  }
-
-  void _onAllSkillLv(int? lv) {
-    if (lv == null) return;
-    final cur = status.cur, target = enhanceMode ? enhancePlan : plan;
-    cur.favorite = target.favorite = true;
-    if (enhanceMode) {
-      for (var i = 0; i < 3; i++) {
-        // don't downgrade skill when enhancement
-        target.getSkills(useActiveSkill)[i] =
-            max(lv, cur.getSkills(useActiveSkill)[i]);
-      }
-    } else {
-      cur.ascension = 4;
-      for (var i = 0; i < 3; i++) {
-        cur.getSkills(useActiveSkill)[i] = lv;
-        target.getSkills(useActiveSkill)[i] =
-            max(lv, target.getSkills(useActiveSkill)[i]);
-      }
-    }
-    updateState();
   }
 
   void _showItemsDialog({

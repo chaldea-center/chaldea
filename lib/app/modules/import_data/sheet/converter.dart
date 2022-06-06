@@ -26,8 +26,10 @@ class PlanDataSheetConverter {
   static const _append3 = 'append3';
   static const _costumes = 'costumes';
   static const _grail = 'grail';
-  static const _fouHp = 'fouHp';
-  static const _fouAtk = 'fouAtk';
+  static const _fouHp = 'fouHp4';
+  static const _fouAtk = 'fouAtk4';
+  static const _fouHp3 = 'fouHp3';
+  static const _fouAtk3 = 'fouAtk3';
   static const _bondLimit = 'bondLimit';
   static const _npLv = 'npLv';
 
@@ -103,6 +105,8 @@ class PlanDataSheetConverter {
     _write(_grail, plan.grail);
     _write(_fouHp, plan.fouHp);
     _write(_fouAtk, plan.fouAtk);
+    _write(_fouHp3, plan.fouHp3);
+    _write(_fouAtk3, plan.fouAtk3);
     _write(_bondLimit, plan.bondLimit);
     _write(_npLv, plan.npLv);
     return data;
@@ -136,6 +140,8 @@ class PlanDataSheetConverter {
       grail: _toInt(_grail) ?? 0,
       fouHp: _toInt(_fouHp) ?? 0,
       fouAtk: _toInt(_fouAtk) ?? 0,
+      fouHp3: _toInt(_fouHp3) ?? 0,
+      fouAtk3: _toInt(_fouAtk3) ?? 0,
       bondLimit: _toInt(_bondLimit) ?? 0,
       npLv: _toInt(_npLv),
     );

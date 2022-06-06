@@ -246,6 +246,8 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
           grail: $checkedConvert('grail', (v) => v as int? ?? 0),
           fouHp: $checkedConvert('fouHp', (v) => v as int? ?? 0),
           fouAtk: $checkedConvert('fouAtk', (v) => v as int? ?? 0),
+          fouHp3: $checkedConvert('fouHp3', (v) => v as int? ?? 20),
+          fouAtk3: $checkedConvert('fouAtk3', (v) => v as int? ?? 20),
           bondLimit: $checkedConvert('bondLimit', (v) => v as int? ?? 10),
           npLv: $checkedConvert('npLv', (v) => v as int?),
         );
@@ -262,6 +264,8 @@ Map<String, dynamic> _$SvtPlanToJson(SvtPlan instance) => <String, dynamic>{
       'grail': instance.grail,
       'fouHp': instance.fouHp,
       'fouAtk': instance.fouAtk,
+      'fouHp3': instance.fouHp3,
+      'fouAtk3': instance.fouAtk3,
       'bondLimit': instance.bondLimit,
       'npLv': instance.npLv,
     };

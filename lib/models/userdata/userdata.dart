@@ -400,6 +400,8 @@ class SvtPlan {
   // 0-50, only ★4 fou-kun planned
   int fouHp;
   int fouAtk;
+  int fouHp3;
+  int fouAtk3;
 
   // bond's upper limit, 5.5=6
   int bondLimit;
@@ -420,6 +422,8 @@ class SvtPlan {
     this.grail = 0,
     this.fouHp = 0,
     this.fouAtk = 0,
+    this.fouHp3 = 20,
+    this.fouAtk3 = 20,
     this.bondLimit = 10,
     int? npLv,
   })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1,
@@ -432,7 +436,7 @@ class SvtPlan {
     validate();
   }
 
-  static SvtPlan empty = SvtPlan();
+  factory SvtPlan.empty() => SvtPlan(fouHp3: 0, fouAtk3: 0);
 
   SvtPlan.max(Servant svt)
       : favorite = true,
@@ -443,6 +447,8 @@ class SvtPlan {
         grail = _grailCostByRarity[svt.rarity] + 10,
         fouHp = 50,
         fouAtk = 50,
+        fouHp3 = 20,
+        fouAtk3 = 20,
         bondLimit = 15,
         _npLv = 5;
   static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
@@ -481,6 +487,8 @@ class SvtPlan {
         lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
     fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);
     fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
+    fouHp3 = fouHp3.clamp2(lower?.fouHp3 ?? 0, 20);
+    fouAtk3 = fouAtk3.clamp2(lower?.fouAtk3 ?? 0, 20);
     bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);
 
     if (_npLv == null && svt != null) {
@@ -501,8 +509,9 @@ class SvtPlan {
     costumes.clear();
     appendSkills.fillRange(0, 3, 0);
     grail = 0;
-    fouHp = fouAtk = -20;
-    bondLimit = 0;
+    fouHp = fouAtk = 0;
+    fouHp3 = fouAtk3 = 20;
+    bondLimit = 10;
   }
 
   void setMax({int skill = 10, bool isActive = true}) {

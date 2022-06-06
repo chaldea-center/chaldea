@@ -19,11 +19,11 @@ class ConstGameData {
       svtGrailCost; // <rarity, <grail_count, detail>>
   final Map<int, MasterUserLvDetail> userLevel;
   final Map<int, int> bondLimitQp = {
-    11: 10000000,
-    12: 12000000,
-    13: 14000000,
-    14: 16000000,
-    15: 18000000
+    10: 10000000,
+    11: 12000000,
+    12: 14000000,
+    13: 16000000,
+    14: 18000000
   };
 
   ConstGameData({
