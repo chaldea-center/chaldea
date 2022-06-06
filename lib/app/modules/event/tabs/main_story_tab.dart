@@ -69,7 +69,7 @@ class MainStoryTab extends StatelessWidget {
                 Widget? title, subtitle;
                 title = AutoSizeText(
                   titleText,
-                  maxLines: 1,
+                  maxLines: 2,
                   // maxFontSize: 16,
                   style: outdated ? TextStyle(color: _outdatedColor) : null,
                 );

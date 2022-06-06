@@ -227,6 +227,10 @@ ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
       year: json['year'] as int,
       month: json['month'] as int,
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),
+      replaced: json['replaced'] == null
+          ? null
+          : MappingList<int>.fromJson(
+              Map<String, dynamic>.from(json['replaced'] as Map)),
     );
 
 FixedDrop _$FixedDropFromJson(Map json) => FixedDrop(

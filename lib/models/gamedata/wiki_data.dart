@@ -220,16 +220,20 @@ class ExchangeTicket {
   final int year;
   final int month;
   final List<int> items;
+  final MappingList<int> replaced;
 
   ExchangeTicket({
     required this.id,
     required this.year,
     required this.month,
     required this.items,
-  });
+    MappingList<int>? replaced,
+  }) : replaced = replaced ?? MappingList();
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> json) =>
       _$ExchangeTicketFromJson(json);
+
+  List<int> of(Region region) => replaced.ofRegion(region) ?? items;
 
   int get monthDiff {
     switch (db.curUser.region) {

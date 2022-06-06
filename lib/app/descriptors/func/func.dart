@@ -194,6 +194,16 @@ class FuncDescriptor extends StatelessWidget {
           ),
         );
       }
+      DataVals? vals = func.svals.getOrNull(0);
+
+      if ((vals?.Rate != null && vals!.Rate! < 0) ||
+          (vals?.UseRate != null && vals!.UseRate! < 0)) {
+        print(vals.Rate);
+        final hint =
+            Transl.string(Transl.md.enums.funcTargetType, "ifPreFuncSucceed").l;
+        spans.add(TextSpan(text: '($hint)'));
+      }
+
       void _addFuncTarget() {
         if ([
           FuncType.eventDropUp,
@@ -217,7 +227,6 @@ class FuncDescriptor extends StatelessWidget {
             ? const TextStyle(fontStyle: FontStyle.italic)
             : null,
       ));
-      DataVals? vals = func.svals.getOrNull(0);
 
       void _addTraits(String? prefix, List<NiceTrait> traits) {
         if ([BuffType.upCommandall, BuffType.downCommandall]

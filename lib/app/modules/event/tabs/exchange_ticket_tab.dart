@@ -9,6 +9,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
   /// If only show ONE month
@@ -96,17 +97,21 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
+    bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
+    bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
         Expanded(
-          flex: 1,
+          flex: 2,
           child: ListTile(
             contentPadding: const EdgeInsetsDirectional.only(start: 12),
-            title: AutoSizeText(
-              ticket.dateStr,
-              maxLines: 1,
-              maxFontSize: 16,
+            title: Text.rich(
+              TextSpan(text: ticket.dateStr, children: [
+                if (hasReplaced)
+                  const CenterWidgetSpan(
+                      child: Icon(Icons.help_outline, size: 18))
+              ]),
               style: TextStyle(
                 color: planned
                     ? _plannedColor
@@ -130,10 +135,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                           : null),
               minFontSize: 6,
             ),
+            onTap: hasAnyReplaced ? () => _showReplaceDetail(ticket) : null,
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 5,
           child: Align(
             alignment: Alignment.centerRight,
             child: buildTrailing(ticket),
@@ -147,7 +153,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     final monthPlan = db.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
     for (int i = 0; i < 3; i++) {
-      final itemId = ticket.items[i];
+      final itemId = ticket.of(db.curUser.region)[i];
       final item = db.gameData.items[itemId];
       int leftNum = db.itemCenter.itemLeft[itemId] ?? 0;
       monthPlan.counts[i] = monthPlan.counts[i].clamp2(0, ticket.days);
@@ -223,6 +229,46 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     }
     return FittedBox(
       child: Row(mainAxisSize: MainAxisSize.min, children: trailingItems),
+    );
+  }
+
+  void _showReplaceDetail(ExchangeTicket ticket) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        List<Widget> children = [];
+        for (final region in Region.values) {
+          final items = region == Region.jp
+              ? ticket.items
+              : ticket.replaced.ofRegion(region);
+          if (items == null) continue;
+          children.add(ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+            title: Text(region.localName),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final itemId in items)
+                  Item.iconBuilder(
+                      context: context, item: null, itemId: itemId),
+              ],
+            ),
+          ));
+        }
+        return SimpleDialog(
+          title: Text.rich(TextSpan(
+            text: ticket.dateStr,
+            children: [
+              TextSpan(
+                text: '\nJP ${ticket.year}-${ticket.month}',
+                style: Theme.of(context).textTheme.caption,
+              )
+            ],
+          )),
+          children: children,
+        );
+      },
     );
   }
 }

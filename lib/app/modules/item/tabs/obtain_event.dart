@@ -128,7 +128,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     exchangeTickets.sort2((a) => a.id);
     int count = 0;
     for (final ticket in exchangeTickets) {
-      int itemIndex = ticket.items.indexOf(widget.itemId);
+      int itemIndex = ticket.of(db.curUser.region).indexOf(widget.itemId);
       if (itemIndex < 0) {
         continue;
       }
@@ -148,7 +148,8 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
             style: _textStyle(false, ticket.isOutdated()),
           ),
           subtitle: AutoSizeText(
-              ticket.items
+              ticket
+                  .of(db.curUser.region)
                   .map((e) => GameCardMixin.anyCardItemName(e).l)
                   .join('/'),
               maxLines: 1),
