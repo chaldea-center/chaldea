@@ -29,6 +29,7 @@ class SvtPlanTab extends StatefulWidget {
 class _SvtPlanTabState extends State<SvtPlanTab> {
   /// in edit mode, change skill lv_a to lv_b and take out the items
   bool enhanceMode = false;
+  bool useActiveSkill = true;
   late TextEditingController _coinEditController;
   SvtPlan enhancePlan = SvtPlan();
 
@@ -580,7 +581,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: Text(
-                    code?.skills.first.lDetail ?? '',
+                    code?.skills.getOrNull(0)?.lDetail ?? '',
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ),
@@ -631,6 +632,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             title: S.current.item_total_demand,
             items: items,
             hideCancel: true,
+            showSubOwned: true,
           );
         },
         child: Text(S.current.demands),
@@ -655,14 +657,41 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       ));
     }
 
-    buttons.add(const SizedBox(width: 8));
+    buttons.add(const SizedBox(
+      height: 28,
+      child: VerticalDivider(
+        width: 8,
+        thickness: 1,
+      ),
+    ));
+    buttons.add(DropdownButton<bool>(
+      value: useActiveSkill,
+      items: [
+        DropdownMenuItem(
+          value: true,
+          child: Text(S.current.active_skill_short),
+        ),
+        DropdownMenuItem(
+          value: false,
+          child: Text(S.current.append_skill_short),
+        ),
+      ],
+      onChanged: (v) {
+        setState(() {
+          if (v != null) useActiveSkill = v;
+        });
+      },
+    ));
 
     // Lv.x or ≠
     bool skillLvEqual =
-        Set.from((enhanceMode ? targetPlan : curVal).skills).length == 1;
+        Set.from((enhanceMode ? targetPlan : curVal).getSkills(useActiveSkill))
+                .length ==
+            1;
     buttons.add(DropdownButton(
-      value:
-          skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
+      value: skillLvEqual
+          ? (enhanceMode ? targetPlan : curVal).getSkills(useActiveSkill)[0]
+          : null,
       hint: const Text('Lv. ≠'),
       items: List.generate(10,
           (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
@@ -679,8 +708,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       onPressed: enhanceMode
           ? null
           : () {
-              curVal.setMax(skill: 10);
-              targetPlan.setMax(skill: 10);
+              curVal.setMax(skill: 10, isActive: useActiveSkill);
+              targetPlan.setMax(skill: 10, isActive: useActiveSkill);
               updateState();
             },
     ));
@@ -699,15 +728,17 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               minHeight: kMinInteractiveDimension, minWidth: 36),
           onPressed: () {
             status.cur.favorite = true;
-            targetPlan.setMax(skill: 9);
+            targetPlan.setMax(skill: 9, isActive: useActiveSkill);
             for (int i = 0; i < 3; i++) {
               if (enhanceMode) {
                 // cur cannot change in enhance mode, change target to ensure target>cur
-                targetPlan.skills[i] =
-                    max(curVal.skills[i], targetPlan.skills[i]);
+                targetPlan.getSkills(useActiveSkill)[i] = max(
+                    curVal.getSkills(useActiveSkill)[i],
+                    targetPlan.getSkills(useActiveSkill)[i]);
               } else {
                 // change cur to ensure cur<=target
-                curVal.skills[i] = min(curVal.skills[i], 9);
+                curVal.getSkills(useActiveSkill)[i] =
+                    min(curVal.getSkills(useActiveSkill)[i], 9);
               }
             }
             updateState();
@@ -730,7 +761,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               minHeight: kMinInteractiveDimension, minWidth: 36),
           onPressed: () {
             status.cur.favorite = true;
-            targetPlan.setMax(skill: 10);
+            targetPlan.setMax(skill: 10, isActive: useActiveSkill);
             updateState();
           },
         ),
@@ -790,13 +821,15 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     if (enhanceMode) {
       for (var i = 0; i < 3; i++) {
         // don't downgrade skill when enhancement
-        target.skills[i] = max(lv, cur.skills[i]);
+        target.getSkills(useActiveSkill)[i] =
+            max(lv, cur.getSkills(useActiveSkill)[i]);
       }
     } else {
       cur.ascension = 4;
       for (var i = 0; i < 3; i++) {
-        cur.skills[i] = lv;
-        target.skills[i] = max(lv, target.skills[i]);
+        cur.getSkills(useActiveSkill)[i] = lv;
+        target.getSkills(useActiveSkill)[i] =
+            max(lv, target.getSkills(useActiveSkill)[i]);
       }
     }
     updateState();
@@ -807,33 +840,60 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     required Map<int, int> items,
     required bool hideCancel,
     VoidCallback? onConfirm,
+    bool showSubOwned = false,
   }) {
     showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (context) => SimpleCancelOkDialog(
-        title: Text(title),
-        hideCancel: hideCancel,
-        onTapOk: onConfirm,
-        content: items.isEmpty
-            ? const Text('Nothing')
-            : Wrap(
-                spacing: 2,
-                runSpacing: 2,
-                children: [
-                  for (final entry in items.entries)
-                    Item.iconBuilder(
-                      context: context,
-                      item: db.gameData.items[entry.key],
-                      icon: Item.getIcon(entry.key),
-                      text: entry.value.format(),
-                      width: 48,
-                      onTap: () {
-                        router.pushPage(ItemDetailPage(itemId: entry.key));
-                      },
+      builder: (context) => ValueStatefulBuilder<bool>(
+        initValue: false,
+        builder: (context, state) {
+          Map<int, int> shownItems = Map.of(items);
+          if (state.value) {
+            shownItems.addDict(db.curUser.items.multiple(-1));
+            shownItems.removeWhere((key, value) => value <= 0);
+          }
+          return SimpleCancelOkDialog(
+            title: Text(title),
+            hideCancel: hideCancel,
+            onTapOk: onConfirm,
+            content: shownItems.isEmpty
+                ? const Text('Nothing')
+                : Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: [
+                      for (final entry in shownItems.entries)
+                        Item.iconBuilder(
+                          context: context,
+                          item: db.gameData.items[entry.key],
+                          icon: Item.getIcon(entry.key),
+                          text: entry.value.format(),
+                          width: 48,
+                          onTap: () {
+                            router.pushPage(ItemDetailPage(itemId: entry.key));
+                          },
+                        ),
+                    ],
+                  ),
+            actions: [
+              if (showSubOwned)
+                TextButton(
+                  onPressed: () {
+                    state.value = !state.value;
+                    state.updateState();
+                  },
+                  child: Text(
+                    S.current.item_stat_sub_owned,
+                    style: TextStyle(
+                      color:
+                          state.value ? Theme.of(context).disabledColor : null,
                     ),
-                ],
-              ),
+                  ),
+                )
+            ],
+          );
+        },
       ),
     );
   }

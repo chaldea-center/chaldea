@@ -452,6 +452,10 @@ class SvtPlan {
 
   Map<String, dynamic> toJson() => _$SvtPlanToJson(this);
 
+  List<int> getSkills(bool isActive) {
+    return isActive ? skills : appendSkills;
+  }
+
   void validate([SvtPlan? lower, Servant? svt]) {
     ascension = ascension.clamp2(lower?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
@@ -501,11 +505,15 @@ class SvtPlan {
     bondLimit = 0;
   }
 
-  void setMax({int skill = 10}) {
+  void setMax({int skill = 10, bool isActive = true}) {
     // not change grail lv
     favorite = true;
     ascension = 4;
-    skills.fillRange(0, 3, skill);
+    if (isActive) {
+      skills.fillRange(0, 3, skill);
+    } else {
+      appendSkills.fillRange(0, 3, skill);
+    }
     // costumes;
     // appendSkills.fillRange(0, 3, skill);
     // grail = grail;
