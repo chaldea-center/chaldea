@@ -119,6 +119,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     debugPrint('initiate $runtimeType');
     super.initState();
     db.notifyAppUpdate = onAppUpdate;
+    db.settings.launchTimes += 1;
     if (db.settings.language != null) {
       Intl.defaultLocale = Language.current.code;
     }

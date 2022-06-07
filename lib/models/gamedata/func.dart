@@ -278,7 +278,7 @@ class Buff {
   final int buffGroup;
   final BuffScript? script;
   final List<NiceTrait> vals;
-  final List<NiceTrait> tvals;
+  // final List<NiceTrait> tvals; // not for game play
   final List<NiceTrait> ckSelfIndv;
   final List<NiceTrait> ckOpIndv;
   final int maxRate;
@@ -292,7 +292,7 @@ class Buff {
     this.buffGroup = 0,
     this.script,
     this.vals = const [],
-    this.tvals = const [],
+    // this.tvals = const [],
     this.ckSelfIndv = const [],
     this.ckOpIndv = const [],
     this.maxRate = 0,
@@ -307,7 +307,7 @@ class Buff {
     int buffGroup = 0,
     BuffScript? script,
     List<NiceTrait> vals = const [],
-    List<NiceTrait> tvals = const [],
+    // List<NiceTrait> tvals = const [],
     List<NiceTrait> ckSelfIndv = const [],
     List<NiceTrait> ckOpIndv = const [],
     int maxRate = 0,
@@ -323,7 +323,7 @@ class Buff {
                 buffGroup: buffGroup,
                 script: script,
                 vals: vals,
-                tvals: tvals,
+                // tvals: tvals,
                 ckSelfIndv: ckSelfIndv,
                 ckOpIndv: ckOpIndv,
                 maxRate: maxRate,

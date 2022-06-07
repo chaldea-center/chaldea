@@ -155,25 +155,25 @@ class SkillEffect {
   static SkillEffect upQuick = SkillEffect(
     'upQuick',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs.any(
-        (buff) => buff.tvals.any((trait) => trait.name == Trait.cardQuick)),
+    validate: (func) => func.buffs.any((buff) =>
+        buff.ckSelfIndv.any((trait) => trait.name == Trait.cardQuick)),
   );
   static SkillEffect upArts = SkillEffect(
     'upArts',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs
-        .any((buff) => buff.tvals.any((trait) => trait.name == Trait.cardArts)),
+    validate: (func) => func.buffs.any(
+        (buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardArts)),
   );
   static SkillEffect upBuster = SkillEffect(
     'upBuster',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs.any(
-        (buff) => buff.tvals.any((trait) => trait.name == Trait.cardBuster)),
+    validate: (func) => func.buffs.any((buff) =>
+        buff.ckSelfIndv.any((trait) => trait.name == Trait.cardBuster)),
   );
   // static SkillEffect upExtraAttack=SkillEffect(
   //   'upExtraAttack',
   //   buffTypes: [BuffType.upCommandall],
-  //   validate: (func)=>func.buffs.any((buff) => buff.tvals.any((trait) => trait.name==Trait.cardExtra)),
+  //   validate: (func)=>func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name==Trait.cardExtra)),
   // );
   static SkillEffect upDamange = SkillEffect(
     'upDamange',
@@ -245,7 +245,7 @@ class SkillEffect {
   static SkillEffect upTolerance = SkillEffect(
     'upTolerance',
     buffTypes: [BuffType.upTolerance],
-    validate: (func) => func.buffs.first.tvals.every((trait) => ![
+    validate: (func) => func.buffs.first.ckOpIndv.every((trait) => ![
           Trait.buffPositiveEffect,
           Trait.buffIncreaseDamage
         ].contains(trait.name)),
@@ -254,7 +254,7 @@ class SkillEffect {
   static SkillEffect avoidState = SkillEffect(
     'avoidState',
     buffTypes: [BuffType.avoidState],
-    validate: (func) => func.buffs.first.tvals.every((trait) => ![
+    validate: (func) => func.buffs.first.ckOpIndv.every((trait) => ![
           Trait.buffPositiveEffect,
           Trait.buffIncreaseDamage
         ].contains(trait.name)),
@@ -266,7 +266,7 @@ class SkillEffect {
   static SkillEffect upReceivePositiveEffect = SkillEffect(
     'upReceivePositiveEffect',
     buffTypes: [BuffType.downTolerance],
-    validate: (func) => func.buffs.first.tvals
+    validate: (func) => func.buffs.first.ckOpIndv
         .any((trait) => trait.name == Trait.buffPositiveEffect),
   );
   // 强化解除耐性提升

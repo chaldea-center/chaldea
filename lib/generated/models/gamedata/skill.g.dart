@@ -572,11 +572,6 @@ Buff _$BuffFromJson(Map json) => Buff(
                   NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      tvals: (json['tvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
       ckSelfIndv: (json['ckSelfIndv'] as List<dynamic>?)
               ?.map((e) =>
                   NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))

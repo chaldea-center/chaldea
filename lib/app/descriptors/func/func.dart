@@ -299,31 +299,11 @@ class FuncDescriptor extends StatelessWidget {
             context: context,
             useRootNavigator: false,
             builder: (context) {
-              List<String> _traitList(List<NiceTrait> traits) {
-                return traits.map((e) => Transl.trait(e.id).l).toList();
-              }
-
               return Theme(
                 data: ThemeData.light(),
                 child: SimpleCancelOkDialog(
-                  title: const Text('Func Detail'),
-                  content: JsonViewer({
-                    "ID": func.funcId,
-                    "Type": func.funcType.name,
-                    "Target": func.funcTargetType.name,
-                    "Team": func.funcTargetTeam.name,
-                    if (func.functvals.isNotEmpty)
-                      "TargetTraits": _traitList(func.functvals),
-                    if (func.funcquestTvals.isNotEmpty)
-                      "FieldTraits": _traitList(func.funcquestTvals),
-                    if (func.traitVals.isNotEmpty)
-                      "RemovalTraits": _traitList(func.traitVals),
-                    if (func.buffs.isNotEmpty) ...{
-                      "BuffId": func.buffs.first.id,
-                      "BuffName": func.buffs.first.name,
-                      "BuffType": func.buffs.first.type.name
-                    }
-                  }),
+                  title: Text('Func ${func.funcId}'),
+                  content: JsonViewer(_getFuncJson()),
                   scrollable: true,
                   hideCancel: true,
                 ),
@@ -390,6 +370,38 @@ class FuncDescriptor extends StatelessWidget {
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
       ),
     );
+  }
+
+  Map<String, dynamic> _getFuncJson() {
+    List<String> _traitList(List<NiceTrait> traits) {
+      return traits.map((e) => Transl.trait(e.id).l).toList();
+    }
+
+    final buff = func.buffs.getOrNull(0);
+    return {
+      "type": func.funcType.name,
+      "target": func.funcTargetType.name,
+      "team": func.funcTargetTeam.name,
+      "popupText": Transl.funcPopuptext(func.funcPopupText).l,
+      if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
+      if (func.funcquestTvals.isNotEmpty)
+        "fieldTraits": _traitList(func.funcquestTvals),
+      if (func.traitVals.isNotEmpty)
+        "removalTraits": _traitList(func.traitVals),
+      if (buff != null) ...{
+        "----buff----": "↓",
+        "id": buff.id,
+        "name": Transl.buffNames(buff.name).l,
+        "type": buff.type.name,
+        "detail": Transl.buffDetail(buff.detail).l,
+        "buffGroup": buff.buffGroup,
+        if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),
+        if (buff.ckSelfIndv.isNotEmpty)
+          "ckSelfIndv": _traitList(buff.ckSelfIndv),
+        if (buff.ckOpIndv.isNotEmpty) "ckOpIndv": _traitList(buff.ckOpIndv),
+        "maxRate": buff.maxRate,
+      }
+    };
   }
 }
 

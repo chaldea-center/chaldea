@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
@@ -75,6 +77,20 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 if (curTab == 0 || curTab == 1) viewTypeButton,
                 if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
                 if (curTab == 3) filterOutdatedButton,
+                PopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      ...SharedBuilder.websitesPopupMenuItems(
+                        atlas: Atlas.dbUrl(
+                          Items.specialSvtMat.contains(widget.itemId)
+                              ? 'servant'
+                              : 'item',
+                          widget.itemId,
+                        ),
+                      )
+                    ];
+                  },
+                )
               ],
         bottom: onlyShowInfoTab
             ? null
