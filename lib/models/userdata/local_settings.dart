@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -39,6 +41,7 @@ class LocalSettings {
   Map<String, bool> galleries;
   DisplaySettings display;
   CarouselSetting carousel;
+  GithubSetting github;
   TipsSetting tips;
 
   // TODO: move to persist storage
@@ -55,7 +58,7 @@ class LocalSettings {
     this.showDebugFab = false,
     this.alwaysOnTop = false,
     this.windowPosition,
-    this.launchTimes = 1,
+    this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     String? language,
@@ -73,6 +76,7 @@ class LocalSettings {
     Map<String, bool>? galleries,
     DisplaySettings? display,
     CarouselSetting? carousel,
+    GithubSetting? github,
     TipsSetting? tips,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
@@ -88,6 +92,7 @@ class LocalSettings {
         galleries = galleries ?? {},
         display = display ?? DisplaySettings(),
         carousel = carousel ?? CarouselSetting(),
+        github = github ?? GithubSetting(),
         tips = tips ?? TipsSetting(),
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
@@ -244,6 +249,41 @@ class CarouselItem {
       _$CarouselItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselItemToJson(this);
+}
+
+@JsonSerializable()
+class GithubSetting {
+  String owner;
+  String repo;
+  String path;
+  @JsonKey(fromJson: _readToken, toJson: _writeToken)
+  String token;
+  String branch;
+  String? sha;
+  bool indent;
+
+  GithubSetting({
+    this.owner = '',
+    this.repo = '',
+    this.path = '',
+    this.token = '',
+    this.branch = '',
+    this.sha,
+    this.indent = false,
+  });
+
+  factory GithubSetting.fromJson(Map<String, dynamic> data) =>
+      _$GithubSettingFromJson(data);
+
+  Map<String, dynamic> toJson() => _$GithubSettingToJson(this);
+
+  static String _writeToken(String token) {
+    return base64Encode(utf8.encode(token).reversed.toList());
+  }
+
+  static String _readToken(String token) {
+    return utf8.decode(base64Decode(token).reversed.toList());
+  }
 }
 
 /// true: should should show

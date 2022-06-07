@@ -18,7 +18,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
           windowPosition: $checkedConvert('windowPosition',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 1),
+          launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 0),
           lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
           themeMode: $checkedConvert(
               'themeMode',
@@ -69,6 +69,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => v == null
                   ? null
                   : CarouselSetting.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
+          github: $checkedConvert(
+              'github',
+              (v) => v == null
+                  ? null
+                  : GithubSetting.fromJson(
                       Map<String, dynamic>.from(v as Map))),
           tips: $checkedConvert(
               'tips',
@@ -131,6 +137,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'galleries': instance.galleries,
       'display': instance.display.toJson(),
       'carousel': instance.carousel.toJson(),
+      'github': instance.github.toJson(),
       'tips': instance.tips.toJson(),
       'useAndroidExternal': instance.useAndroidExternal,
       'svtFilterData': instance.svtFilterData.toJson(),
@@ -321,6 +328,35 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
       'image': instance.image,
       'text': instance.text,
       'link': instance.link,
+    };
+
+GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
+      'GithubSetting',
+      json,
+      ($checkedConvert) {
+        final val = GithubSetting(
+          owner: $checkedConvert('owner', (v) => v as String? ?? ''),
+          repo: $checkedConvert('repo', (v) => v as String? ?? ''),
+          path: $checkedConvert('path', (v) => v as String? ?? ''),
+          token: $checkedConvert('token',
+              (v) => v == null ? '' : GithubSetting._readToken(v as String)),
+          branch: $checkedConvert('branch', (v) => v as String? ?? ''),
+          sha: $checkedConvert('sha', (v) => v as String?),
+          indent: $checkedConvert('indent', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$GithubSettingToJson(GithubSetting instance) =>
+    <String, dynamic>{
+      'owner': instance.owner,
+      'repo': instance.repo,
+      'path': instance.path,
+      'token': GithubSetting._writeToken(instance.token),
+      'branch': instance.branch,
+      'sha': instance.sha,
+      'indent': instance.indent,
     };
 
 TipsSetting _$TipsSettingFromJson(Map json) => $checkedCreate(
