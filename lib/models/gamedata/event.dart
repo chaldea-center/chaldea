@@ -641,7 +641,7 @@ class Event {
 
   // statistics
   @JsonKey(ignore: true)
-  Map<int, int> itemShop = {};
+  Map<int, Map<int, int>> itemShop = {};
   @JsonKey(ignore: true)
   Map<int, int> itemPointReward = {};
   @JsonKey(ignore: true)
@@ -703,6 +703,7 @@ class Event {
       ].contains(shopItem.purchaseType)) {
         continue;
       }
+      final _items = itemShop[shopItem.id] = {};
       if (shopItem.purchaseType == PurchaseType.setItem) {
         for (final set in shopItem.itemSet) {
           if (set.purchaseType == PurchaseType.item ||
@@ -711,7 +712,7 @@ class Event {
                 SvtFlag.svtEquipChocolate) {
               continue;
             }
-            itemShop.addNum(
+            _items.addNum(
                 set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
         }
@@ -721,11 +722,11 @@ class Event {
               SvtFlag.svtEquipChocolate) {
             continue;
           }
-          itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
+          _items.addNum(id, shopItem.limitNum * shopItem.setNum);
         }
       }
+      statItemFixed.addDict(_items);
     }
-    statItemFixed.addDict(itemShop);
 
     // point rewards
     itemPointReward.clear();

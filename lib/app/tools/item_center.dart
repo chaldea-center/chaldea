@@ -249,10 +249,11 @@ class ItemCenter {
     // shop
     if (!plan.enabled) return result;
     if (plan.shop) {
-      result.addDict({
-        for (final k in event.itemShop.keys)
-          if (!plan.shopExcludeItem.contains(k)) k: event.itemShop[k]!,
-      });
+      for (final k in event.itemShop.keys) {
+        if (!plan.shopExcludes.contains(k)) {
+          result.addDict(event.itemShop[k]!);
+        }
+      }
     }
     if (plan.point) {
       result.addDict(event.itemPointReward);

@@ -417,16 +417,31 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ));
     }
     if (event.shop.isNotEmpty) {
-      children.addAll(_buildSwitchGroup(
-        value: () => plan.shop,
-        enabled: () => plan.enabled,
-        onChanged: (v) {
-          plan.shop = v;
-          event.updateStat();
-        },
-        title: S.current.event_shop,
-        items: event.itemShop,
-      ));
+      children.add(db.onUserData((context, snapshot) {
+        Map<int, int> shopItems = {};
+        int excludeCount = 0;
+        for (final shopId in event.itemShop.keys) {
+          if (plan.shopExcludes.contains(shopId)) {
+            excludeCount += 1;
+          } else {
+            shopItems.addDict(event.itemShop[shopId]!);
+          }
+        }
+        return Column(
+          children: _buildSwitchGroup(
+            value: () => plan.shop,
+            enabled: () => plan.enabled,
+            onChanged: (v) {
+              plan.shop = v;
+              event.updateStat();
+            },
+            title: S.current.event_shop,
+            subtitle:
+                excludeCount > 0 ? '$excludeCount ${S.current.ignore}' : null,
+            items: shopItems,
+          ),
+        );
+      }));
     }
     if (event.rewards.isNotEmpty) {
       children.addAll(_buildSwitchGroup(
