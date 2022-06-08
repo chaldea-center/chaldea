@@ -57,7 +57,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   Future<void> backup() async {
-    EasyLoading.show(status: 'backup...');
+    EasyLoading.show(status: 'backup...', maskType: EasyLoadingMaskType.clear);
     try {
       await backend.backup();
       EasyLoading.showSuccess(S.current.success);
@@ -89,7 +89,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   Future<void> restore() async {
-    EasyLoading.show(status: 'downloading...');
+    EasyLoading.show(
+        status: 'downloading...', maskType: EasyLoadingMaskType.clear);
     try {
       await backend.restore();
       EasyLoading.showSuccess(S.current.success);
@@ -294,6 +295,24 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             child: TextButton(
               onPressed: () {
                 launch(
+                    'https://github.com/settings/tokens/new?description=chaldea&scopes=repo');
+              },
+              style: kTextButtonDenseStyle,
+              child: const Text(
+                'Create token for chaldea',
+                textScaleFactor: 0.9,
+              ),
+            ),
+          ),
+          Text(
+            '~~~ Github docs ~~~',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                launch(
                     'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token');
               },
               style: kTextButtonDenseStyle,
@@ -311,7 +330,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               },
               style: kTextButtonDenseStyle,
               child: const Text(
-                'Github api',
+                'Create or update file contents',
                 textScaleFactor: 0.9,
               ),
             ),
@@ -322,27 +341,25 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   String? validate() {
-    String? msg;
+    List<String> msg = [];
     void _check(String s, String key) {
-      if (msg != null) return;
       if (s.isEmpty) {
-        msg = '$key is empty';
+        msg.add('$key is empty');
       } else if (s.contains(' ')) {
-        msg = '$key cannot contains space';
+        msg.add('$key cannot contains space');
       }
     }
 
     _check(config.owner, 'owner');
     _check(config.repo, 'repo');
     _check(config.path, 'path');
-
     if (config.path.startsWith('/')) {
-      return 'Path cannot start with /';
+      msg.add('Path cannot start with /');
     }
     if (config.token.length != 40) {
-      return 'Token must be 40 chars';
+      msg.add('Token must be 40 chars');
     }
-    return null;
+    return msg.isEmpty ? null : msg.join('\n');
   }
 
   @override
