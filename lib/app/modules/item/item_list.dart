@@ -38,7 +38,10 @@ class ItemListPageState extends State<ItemListPage>
     ItemCategory.special,
     ItemCategory.skill,
     ItemCategory.ascension,
+    ItemCategory.eventAscension,
+    ItemCategory.coin,
     ItemCategory.event,
+    ItemCategory.other,
   ];
 
   @override
@@ -52,10 +55,10 @@ class ItemListPageState extends State<ItemListPage>
     for (final item in db.gameData.items.values) {
       categorized.putIfAbsent(item.category, () => []).add(item.id);
     }
-    categorized[ItemCategory.special] = <int>[
-      ...Items.specialItems,
+    categorized[ItemCategory.special] = <int>{
+      ...categorized[ItemCategory.special] ?? [],
       ...Items.specialSvtMat
-    ];
+    }.toList();
   }
 
   @override
@@ -120,6 +123,8 @@ class ItemListPageState extends State<ItemListPage>
                     onNavToCalculator: navToDropCalculator,
                     filtered: filtered,
                     showSet999: true,
+                    editable: ![ItemCategory.event, ItemCategory.other]
+                        .contains(category),
                   )
               ],
             ),
@@ -282,6 +287,7 @@ class ItemListTab extends StatefulWidget {
   final VoidCallback onNavToCalculator;
   final bool filtered;
   final bool showSet999;
+  final bool editable;
 
   const ItemListTab({
     Key? key,
@@ -290,6 +296,7 @@ class ItemListTab extends StatefulWidget {
     required this.onNavToCalculator,
     this.filtered = false,
     this.showSet999 = false,
+    this.editable = true,
   }) : super(key: key);
 
   @override
@@ -300,6 +307,7 @@ class _ItemListTabState extends State<ItemListTab> {
   Map<int, InputComponents> _allGroups = {};
   final List<InputComponents> _shownGroups = [];
   late ScrollController _scrollController;
+  final Map<int, Servant> _coinSvtMap = {};
 
   @override
   void initState() {
@@ -324,10 +332,18 @@ class _ItemListTabState extends State<ItemListTab> {
     }
 
     // sort by item id
-    final sortedEntries = _allGroups.entries.toList()
-      ..sort2((e) => e.key == Items.qpId
+    final sortedEntries = _allGroups.entries.toList();
+    if (widget.category == ItemCategory.coin) {
+      for (final svt in db.gameData.servants.values) {
+        final coinId = svt.coin?.item.id;
+        if (coinId != null) _coinSvtMap[coinId] = svt;
+      }
+      sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
+    } else {
+      sortedEntries.sort2((e) => e.key == Items.qpId
           ? -1
           : db.gameData.items[e.key]?.priority ?? e.key);
+    }
     _allGroups = Map.fromEntries(sortedEntries);
   }
 
@@ -369,29 +385,34 @@ class _ItemListTabState extends State<ItemListTab> {
 
   Widget buildContent(BuildContext context) {
     setTextController();
-    List<Widget> children = [];
+    List<WidgetBuilder> children = [];
     _shownGroups.clear();
     for (var group in _allGroups.values) {
-      if (!widget.filtered ||
-          group.data == Items.qpId ||
-          (db.itemCenter.itemLeft[group.data] ?? 0) < 0 ||
-          group.focusNode.hasFocus) {
+      if (widget.editable) {
+        if (!widget.filtered ||
+            group.data == Items.qpId ||
+            (db.itemCenter.itemLeft[group.data] ?? 0) < 0 ||
+            group.focusNode.hasFocus) {
+          _shownGroups.add(group);
+          children.add((context) => buildItemTile(group));
+        }
+      } else {
         _shownGroups.add(group);
-        children.add(buildItemTile(group));
+        children.add((context) => buildItemTileNonEdit(group));
       }
     }
-    if (widget.showSet999) {
-      children.add(Center(
-        child: TextButton(
-          onPressed: setAll999,
-          child: const Text('  >>> SET ALL 999 <<<  '),
-        ),
-      ));
+    if (widget.showSet999 && widget.editable) {
+      children.add((context) => Center(
+            child: TextButton(
+              onPressed: setAll999,
+              child: const Text('  >>> SET ALL 999 <<<  '),
+            ),
+          ));
     }
     Widget listView = ListView.builder(
       controller: _scrollController,
       itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
+      itemBuilder: (context, index) => children[index](context),
     );
     return Column(children: [
       Expanded(child: listView),
@@ -505,7 +526,7 @@ class _ItemListTabState extends State<ItemListTab> {
   Widget buildItemTile(InputComponents group) {
     final itemId = group.data;
     bool isQp = itemId == Items.qpId;
-
+    final coinOwner = _coinSvtMap[itemId];
     // update when text input
     bool enough = (db.itemCenter.itemLeft[itemId] ?? 0) >= 0;
     final highlightStyle =
@@ -531,8 +552,14 @@ class _ItemListTabState extends State<ItemListTab> {
               db.curUser.items[itemId] ??
               0;
         }
-        db.itemCenter.updateLeftItems();
-        setState(() {});
+        EasyDebounce.debounce(
+          'item_list_edit',
+          const Duration(milliseconds: 500),
+          () {
+            db.itemCenter.updateLeftItems();
+            if (mounted) setState(() {});
+          },
+        );
       },
       onTap: () {
         // select all text at first tap
@@ -595,11 +622,21 @@ class _ItemListTabState extends State<ItemListTab> {
         ],
       );
     } else {
+      int demandCount = db.itemCenter.statSvtDemands[itemId] ?? 0;
+      int leftCount = db.itemCenter.itemLeft[itemId] ?? 0;
+      if (coinOwner != null) {
+        final mats = db.itemCenter
+            .calcOneSvt(coinOwner, coinOwner.status.cur, coinOwner.curPlan)
+            .all;
+        demandCount = mats[itemId] ?? 0;
+        leftCount = (db.curUser.items[itemId] ?? 0) - demandCount;
+      }
+
       title = Row(
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              Item.getName(itemId),
+              _coinSvtMap[itemId]?.lName.l ?? Item.getName(itemId),
               maxLines: 1,
             ),
           ),
@@ -610,7 +647,7 @@ class _ItemListTabState extends State<ItemListTab> {
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                '  ${db.itemCenter.itemLeft[itemId] ?? 0}',
+                '  $leftCount',
                 style: highlightStyle.copyWith(fontSize: 14),
                 maxLines: 1,
               ),
@@ -622,22 +659,25 @@ class _ItemListTabState extends State<ItemListTab> {
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              '${S.current.item_total_demand}  ${db.itemCenter.statSvtDemands[itemId] ?? 0}',
+              '${S.current.item_total_demand}  $demandCount',
               maxLines: 1,
             ),
           ),
-          Text(S.of(context).event_title, style: const TextStyle(fontSize: 14)),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 36),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '  ${db.itemCenter.statObtain[itemId] ?? 0}',
-                style: const TextStyle(fontSize: 14),
-                maxLines: 1,
+          if (coinOwner != null) ...[
+            Text(S.of(context).event_title,
+                style: const TextStyle(fontSize: 14)),
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 36),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '  ${db.itemCenter.statObtain[itemId] ?? 0}',
+                  style: const TextStyle(fontSize: 14),
+                  maxLines: 1,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       );
     }
@@ -661,6 +701,22 @@ class _ItemListTabState extends State<ItemListTab> {
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       subtitle: subtitle,
       trailing: isQp ? null : SizedBox(width: 64, child: textField),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        router.push(url: Routes.itemI(itemId));
+      },
+    );
+  }
+
+  Widget buildItemTileNonEdit(InputComponents group) {
+    final itemId = group.data;
+    return ListTile(
+      horizontalTitleGap: 8,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 6),
+      leading: Item.iconBuilder(
+          context: context, item: null, icon: Item.getIcon(itemId), height: 48),
+      title: Text(Item.getName(itemId)),
+      subtitle: Text('No. $itemId'),
       onTap: () {
         FocusScope.of(context).unfocus();
         router.push(url: Routes.itemI(itemId));

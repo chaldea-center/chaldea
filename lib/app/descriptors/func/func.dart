@@ -200,7 +200,8 @@ class FuncDescriptor extends StatelessWidget {
           (vals?.UseRate != null && vals!.UseRate! < 0)) {
         print(vals.Rate);
         final hint =
-            Transl.string(Transl.md.enums.funcTargetType, "ifPreFuncSucceed").l;
+            Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed")
+                .l;
         spans.add(TextSpan(text: '($hint)'));
       }
 

@@ -51,7 +51,8 @@ class ItemCenter {
     _validItems.clear();
     final List<int> _svtIds = [];
     for (final item in db.gameData.items.values) {
-      if (item.category != ItemCategory.other) {
+      if (item.category != ItemCategory.other &&
+          item.category != ItemCategory.event) {
         _validItems.add(item.id);
       }
     }
@@ -190,6 +191,18 @@ class ItemCenter {
         if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0)
           charaId
     ]);
+    final coinId = svt.coin?.item.id;
+    int coin = 0;
+    if (coinId != null) {
+      for (int skill = 0; skill < 3; skill++) {
+        if (cur.appendSkills[skill] == 0 && target.appendSkills[skill] > 0) {
+          coin += 120;
+        }
+      }
+      final grailLvs =
+          (svt.grailedLv(target.grail) - max(svt.grailedLv(cur.grail), 100));
+      coin += (max(0, grailLvs) ~/ 2) * 30;
+    }
 
     detail.special = {
       Items.hpFou4: max(0, target.fouHp - cur.fouHp),
@@ -200,6 +213,7 @@ class ItemCenter {
       Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
       Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) +
           QpCost.bondLimit(cur.bondLimit, target.bondLimit),
+      if (coinId != null) coinId: coin,
     };
 
     detail.all = Maths.sumDict(detail.parts);

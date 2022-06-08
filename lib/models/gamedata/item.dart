@@ -18,7 +18,9 @@ enum ItemCategory {
   ascension,
   skill,
   special,
+  eventAscension,
   event,
+  coin,
   other,
 }
 
@@ -61,13 +63,16 @@ class Item {
   ItemCategory get category {
     // if (type == ItemType.tdLvUp) return SkillUpItemType.ascension;
     // if (type != ItemType.skillLvUp) return SkillUpItemType.none;
+    if (Items.specialItems.contains(id)) return ItemCategory.special;
     if (id >= 6000 && id < 6300) return ItemCategory.skill;
     if (id >= 6500 && id < 7000) return ItemCategory.normal;
     if (id >= 7000 && id < 7200) return ItemCategory.ascension;
-    if (type == ItemType.eventItem && uses.contains(ItemUse.ascension)) {
-      return ItemCategory.event;
+    if (type == ItemType.eventItem) {
+      return uses.contains(ItemUse.ascension)
+          ? ItemCategory.eventAscension
+          : ItemCategory.event;
     }
-    if (Items.specialItems.contains(id)) return ItemCategory.special;
+    if (type == ItemType.svtCoin) return ItemCategory.coin;
     return ItemCategory.other;
   }
 

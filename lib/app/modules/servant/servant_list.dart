@@ -756,6 +756,10 @@ class ServantListPageState extends State<ServantListPage>
               for (int i in (db.settings.display.onlyAppendSkillTwo
                   ? [1]
                   : [0, 1, 2])) {
+                if (db.settings.display.onlyAppendUnlocked &&
+                    cur.appendSkills[i] == 0) {
+                  continue;
+                }
                 if (changeTarget) {
                   if (v == -1) {
                     target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
@@ -820,13 +824,14 @@ class ServantListPageState extends State<ServantListPage>
                   spacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 8),
-                      child: Text(S.current.plan_list_set_all),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsetsDirectional.only(start: 8),
+                    //   child: Text(S.current.plan_list_set_all),
+                    // ),
                     FilterGroup<bool>(
                       combined: true,
                       options: const [false, true],
+                      padding: EdgeInsets.zero,
                       values: FilterRadioData(changeTarget),
                       onFilterChanged: (v, _) {
                         setState(() {
@@ -840,6 +845,21 @@ class ServantListPageState extends State<ServantListPage>
                       optionBuilder: (s) => Text(s
                           ? S.current.plan_list_set_all_target
                           : S.current.plan_list_set_all_current),
+                    ),
+                    FilterGroup<bool>(
+                      combined: true,
+                      options: const [true],
+                      padding: EdgeInsets.zero,
+                      values: FilterGroupData(
+                          options: {db.settings.display.onlyAppendUnlocked}),
+                      onFilterChanged: (v, _) {
+                        setState(() {
+                          db.settings.display.onlyAppendUnlocked =
+                              !db.settings.display.onlyAppendUnlocked;
+                        });
+                      },
+                      optionBuilder: (s) =>
+                          Text(S.current.plan_list_only_unlock_append),
                     ),
                     IconButton(
                       onPressed: () {

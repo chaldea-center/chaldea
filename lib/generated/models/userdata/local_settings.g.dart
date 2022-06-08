@@ -202,6 +202,8 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
                   SvtListClassFilterStyle.auto),
           onlyAppendSkillTwo:
               $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
+          onlyAppendUnlocked:
+              $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
           planPageFullScreen:
               $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
           eventsShowOutdated:
@@ -237,6 +239,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
       'classFilterStyle':
           _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
+      'onlyAppendUnlocked': instance.onlyAppendUnlocked,
       'planPageFullScreen': instance.planPageFullScreen,
       'eventsShowOutdated': instance.eventsShowOutdated,
       'eventsReversed': instance.eventsReversed,

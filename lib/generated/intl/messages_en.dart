@@ -497,6 +497,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_special":
             MessageLookupByLibrary.simpleMessage("Special Items"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("Items"),
+        "item_edit_owned_amount":
+            MessageLookupByLibrary.simpleMessage("Edit Owned Amount"),
         "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "Before planning, you can set exceeded num for items(Only used for free quest planning)"),
@@ -630,6 +632,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
+        "plan_list_only_unlock_append":
+            MessageLookupByLibrary.simpleMessage("Unlocked Append"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),
         "plan_list_set_all_current":
             MessageLookupByLibrary.simpleMessage("Current"),

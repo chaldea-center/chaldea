@@ -7,8 +7,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
 import 'tabs/obtain_event.dart';
@@ -28,6 +27,17 @@ class ItemDetailPage extends StatefulWidget {
   _ItemDetailPageState createState() => _ItemDetailPageState();
 }
 
+class _TabInfo {
+  final Widget header;
+  final Widget view;
+  final List<Widget> actions;
+  _TabInfo({
+    required this.header,
+    required this.view,
+    required this.actions,
+  });
+}
+
 class _ItemDetailPageState extends State<ItemDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -38,21 +48,37 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   bool showOutdated = false;
 
   //free tab
-  bool onlyShowInfoTab = false;
+  bool _showEvent = true;
+  bool _showStat = true;
 
   @override
   void initState() {
     super.initState();
     final item = db.gameData.items[widget.itemId];
-    onlyShowInfoTab = [
-      ItemType.svtCoin,
-      ItemType.eventItem,
-      ItemType.eventPoint,
-    ].contains(item?.type);
-    if (item?.uses.contains(ItemUse.ascension) == true) onlyShowInfoTab = false;
+    switch (item?.category) {
+      case ItemCategory.coin:
+        _showStat = false;
+        _showEvent = false;
+        break;
+      case ItemCategory.event:
+      case ItemCategory.other:
+        _showEvent = _showStat = false;
+        if ([
+          //
+          4, 19, 5000, 5001, 5002, 5003, 2000,
+        ].contains(widget.itemId)) {
+          _showEvent = true;
+        }
+        break;
+      default:
+        break;
+    }
 
     _tabController = TabController(
-        initialIndex: widget.initialTabIndex, length: 6, vsync: this);
+      initialIndex: widget.initialTabIndex,
+      length: (_showStat ? 4 : 0) + (_showEvent ? 1 : 0) + 1,
+      vsync: this,
+    );
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) setState(() {});
     });
@@ -66,67 +92,96 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    List<_TabInfo> tabs = [];
+
+    if (_showStat) {
+      tabs.addAll([
+        _TabInfo(
+          header: Tab(text: S.current.demands),
+          view: db.onUserData((context, _) =>
+              ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
+          actions: [viewTypeButton, sortButton, popupMenu],
+        ),
+        _TabInfo(
+          header: Tab(text: S.current.consumed),
+          view: db.onUserData((context, _) => ItemCostSvtDetailTab(
+                itemId: widget.itemId,
+                matType: SvtMatCostDetailType.consumed,
+              )),
+          actions: [viewTypeButton, sortButton, popupMenu],
+        ),
+        _TabInfo(
+          header: Tab(text: S.current.free_quest),
+          view: ItemObtainFreeTab(itemId: widget.itemId),
+          actions: [popupMenu],
+        ),
+      ]);
+    }
+    if (_showEvent) {
+      tabs.add(_TabInfo(
+        header: Tab(text: S.current.event_title),
+        view: ItemObtainEventTab(
+            itemId: widget.itemId, showOutdated: showOutdated),
+        actions: [filterOutdatedButton, popupMenu],
+      ));
+    }
+    if (_showStat) {
+      tabs.add(_TabInfo(
+        header: Tab(text: S.current.interlude_and_rankup),
+        view: ItemObtainInterludeTab(itemId: widget.itemId),
+        actions: [sortButton, popupMenu],
+      ));
+    }
+    tabs.add(_TabInfo(
+      header: Tab(text: S.current.card_info),
+      view: ItemInfoTab(itemId: widget.itemId),
+      actions: [popupMenu],
+    ));
+
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(Item.getName(widget.itemId), maxLines: 1),
         centerTitle: false,
         titleSpacing: 0,
-        actions: onlyShowInfoTab
-            ? []
-            : <Widget>[
-                if (curTab == 0 || curTab == 1) viewTypeButton,
-                if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
-                if (curTab == 3) filterOutdatedButton,
-                PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      ...SharedBuilder.websitesPopupMenuItems(
-                        atlas: Atlas.dbUrl(
-                          Items.specialSvtMat.contains(widget.itemId)
-                              ? 'servant'
-                              : 'item',
-                          widget.itemId,
-                        ),
-                      )
-                    ];
-                  },
-                )
-              ],
-        bottom: onlyShowInfoTab
+        actions: tabs.getOrNull(curTab)?.actions ?? [],
+        bottom: tabs.length < 2
             ? null
             : TabBar(
                 controller: _tabController,
                 isScrollable: true,
-                tabs: [
-                  Tab(text: S.current.demands),
-                  Tab(text: S.current.consumed),
-                  Tab(text: S.current.free_quest),
-                  Tab(text: S.current.event_title),
-                  Tab(text: S.current.interlude_and_rankup),
-                  Tab(text: S.current.card_info),
-                ],
+                tabs: tabs.map((e) => e.header).toList(),
               ),
       ),
-      body: onlyShowInfoTab
-          ? ItemInfoTab(itemId: widget.itemId)
+      body: tabs.length == 1
+          ? tabs.first.view
           : TabBarView(
               controller: _tabController,
-              children: <Widget>[
-                db.onUserData((context, _) => ItemCostSvtDetailTab(
-                      itemId: widget.itemId,
-                      matType: null,
-                    )),
-                db.onUserData((context, _) => ItemCostSvtDetailTab(
-                      itemId: widget.itemId,
-                      matType: SvtMatCostDetailType.consumed,
-                    )),
-                ItemObtainFreeTab(itemId: widget.itemId),
-                ItemObtainEventTab(
-                    itemId: widget.itemId, showOutdated: showOutdated),
-                ItemObtainInterludeTab(itemId: widget.itemId),
-                ItemInfoTab(itemId: widget.itemId),
-              ],
+              children: tabs.map((e) => e.view).toList(),
             ),
+    );
+  }
+
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          if (_showStat || _showEvent)
+            PopupMenuItem(
+              child: Text(S.current.item_edit_owned_amount),
+              onTap: () async {
+                await null;
+                if (!mounted) return;
+                _showChangeAmount();
+              },
+            ),
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: Atlas.dbUrl(
+              Items.specialSvtMat.contains(widget.itemId) ? 'servant' : 'item',
+              widget.itemId,
+            ),
+          )
+        ];
+      },
     );
   }
 
@@ -178,6 +233,43 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         setState(() {
           showOutdated = !showOutdated;
         });
+      },
+    );
+  }
+
+  void _showChangeAmount() {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(S.current.item_edit_owned_amount),
+          content: TextFormField(
+            initialValue: (db.curUser.items[widget.itemId] ?? 0).toString(),
+            keyboardType: TextInputType.number,
+            onChanged: (s) {
+              final v = int.tryParse(s);
+              if (v != null) {
+                db.curUser.items[widget.itemId] = v;
+                EasyDebounce.debounce(
+                  'item_owned_changed',
+                  const Duration(milliseconds: 500),
+                  () {
+                    db.itemCenter.updateLeftItems();
+                  },
+                );
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(S.current.cancel),
+            )
+          ],
+        );
       },
     );
   }

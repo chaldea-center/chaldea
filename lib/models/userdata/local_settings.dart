@@ -146,10 +146,11 @@ class DisplaySettings {
   ItemDetailViewType itemDetailViewType;
   ItemDetailSvtSort itemDetailSvtSort;
   bool itemQuestsSortByAp;
-  bool autoTurnOnPlanNotReach = false;
+  bool autoTurnOnPlanNotReach;
   SvtListClassFilterStyle classFilterStyle;
   bool onlyAppendSkillTwo;
-  bool planPageFullScreen = false;
+  bool onlyAppendUnlocked;
+  bool planPageFullScreen;
   bool eventsShowOutdated;
   bool eventsReversed;
   List<SvtTab> sortedSvtTabs;
@@ -165,6 +166,7 @@ class DisplaySettings {
     this.autoTurnOnPlanNotReach = false,
     this.classFilterStyle = SvtListClassFilterStyle.auto,
     this.onlyAppendSkillTwo = true,
+    this.onlyAppendUnlocked = true,
     this.planPageFullScreen = false,
     this.eventsShowOutdated = false,
     this.eventsReversed = true,

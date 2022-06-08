@@ -71,10 +71,8 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                         CustomTableRow.fromTexts(texts: [item.name]),
                       if (!Transl.isEN)
                         CustomTableRow.fromTexts(texts: [item.lName.na]),
-                      CustomTableRow(children: [
-                        TableCellData(text: 'ID', isHeader: true),
-                        TableCellData(text: item.id.toString(), flex: 2),
-                      ]),
+                      CustomTableRow.fromTexts(
+                          texts: ['No.${item.id}', item.type.name]),
                     ],
                   ),
                 ),
@@ -104,6 +102,9 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               ],
             ),
             if (item.type == ItemType.svtCoin) ..._svtCoinObtain(),
+            if (item.type == ItemType.itemSelect)
+              CustomTableRow.fromTexts(
+                  texts: const ['Warning: JP info only!!!']),
           ],
         ),
       ),

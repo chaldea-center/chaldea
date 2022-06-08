@@ -3530,6 +3530,17 @@ class S {
     );
   }
 
+  /// `Edit Owned Amount`
+  String get item_edit_owned_amount {
+    return Intl.message(
+      'Edit Owned Amount',
+      name: 'item_edit_owned_amount',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Item Eff`
   String get item_eff {
     return Intl.message(
@@ -4487,6 +4498,17 @@ class S {
     return Intl.message(
       'Plan',
       name: 'plan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unlocked Append`
+  String get plan_list_only_unlock_append {
+    return Intl.message(
+      'Unlocked Append',
+      name: 'plan_list_only_unlock_append',
       desc: '',
       locale: localeName,
       args: [],

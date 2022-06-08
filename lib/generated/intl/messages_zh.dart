@@ -428,6 +428,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_silver": MessageLookupByLibrary.simpleMessage("银素材"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("特殊素材"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("普通素材"),
+        "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage("修改库存"),
         "item_eff": MessageLookupByLibrary.simpleMessage("素材效率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "计算规划前，可以设置不同材料的富余量(仅用于Free本规划)"),
@@ -534,6 +535,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
+        "plan_list_only_unlock_append":
+            MessageLookupByLibrary.simpleMessage("仅已解锁附加"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("批量设置"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("当前"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("目标"),
