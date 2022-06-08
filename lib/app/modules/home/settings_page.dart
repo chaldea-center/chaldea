@@ -20,7 +20,6 @@ import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
 import 'subpage/login_page.dart';
 import 'subpage/share_app_dialog.dart';
-import 'subpage/support_donation_page.dart';
 import 'subpage/translation_setting.dart';
 import 'subpage/user_data_page.dart';
 
@@ -291,8 +290,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: const Text(kProjectDocRoot),
                 trailing: const Icon(Icons.menu_book),
                 onTap: () {
-                  launch(
-                      joinUrl(kProjectDocRoot, (Language.isZH ? '/zh/' : '/')));
+                  launch(HttpUrlHelper.projectDocUrl(''));
                 },
               ),
               if (!PlatformU.isApple || db.settings.launchTimes > 5)
@@ -300,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.support_chaldea),
                   trailing: const Icon(Icons.favorite),
                   onTap: () {
-                    router.push(child: SupportDonationPage());
+                    launch(HttpUrlHelper.projectDocUrl('donation.html'));
                   },
                 ),
               if (PlatformU.isApple)
