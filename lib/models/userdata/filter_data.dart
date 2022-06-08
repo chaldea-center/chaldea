@@ -565,6 +565,15 @@ class SummonFilterData with _FilterData {
 
 class EnemyFilterData with _FilterData {
   bool useGrid;
+  List<SvtCompare> sortKeys;
+  List<bool> sortReversed;
+
+  static const enemyCompares = [
+    SvtCompare.no,
+    SvtCompare.className,
+    SvtCompare.rarity
+  ];
+
   bool onlyShowQuestEnemy;
   // filter
   final svtClass = FilterGroupData<SvtClass>();
@@ -575,7 +584,14 @@ class EnemyFilterData with _FilterData {
   EnemyFilterData({
     this.useGrid = false,
     this.onlyShowQuestEnemy = true,
-  });
+    List<SvtCompare?>? sortKeys,
+    List<bool>? sortReversed,
+  })  : sortKeys = List.generate(enemyCompares.length,
+            (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],
+            growable: false),
+        sortReversed = List.generate(enemyCompares.length,
+            (index) => sortReversed?.getOrNull(index) ?? true,
+            growable: false);
 
   @override
   List<FilterGroupData> get groups => [svtClass, attribute, svtType, trait];
@@ -584,6 +600,42 @@ class EnemyFilterData with _FilterData {
   //     _$EnemyFilterDataFromJson(data);
 
   // Map<String, dynamic> toJson() => _$EnemyFilterDataToJson(this);
+
+  static int compare(BasicServant? a, BasicServant? b,
+      {List<SvtCompare>? keys, List<bool>? reversed}) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+
+    if (keys == null || keys.isEmpty) {
+      keys = [SvtCompare.no];
+    }
+    int _classSortKey(SvtClass cls) {
+      int k = SvtClass.values.indexOf(cls);
+      return k < 0 ? 999 : k;
+    }
+
+    for (var i = 0; i < keys.length; i++) {
+      int r;
+      switch (keys[i]) {
+        case SvtCompare.no:
+          r = a.id - b.id;
+          break;
+        case SvtCompare.className:
+          r = _classSortKey(a.className) - _classSortKey(b.className);
+          break;
+        case SvtCompare.rarity:
+          r = a.rarity - b.rarity;
+          break;
+        default:
+          r = 0;
+      }
+      if (r != 0) {
+        return (reversed?.elementAt(i) ?? false) ? -r : r;
+      }
+    }
+    return 0;
+  }
 }
 
 class FfoPartFilterData with _FilterData {

@@ -58,7 +58,10 @@ class EnemyListPageState extends State<EnemyListPage>
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(compare: (a, b) => a.id.compareTo(b.id));
+    filterShownList(
+      compare: (a, b) => EnemyFilterData.compare(a, b,
+          keys: filterData.sortKeys, reversed: filterData.sortReversed),
+    );
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(

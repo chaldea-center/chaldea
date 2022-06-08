@@ -36,6 +36,27 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
             },
           ),
         ]),
+        getGroup(children: [
+          for (int i = 0; i < filterData.sortKeys.length; i++)
+            getSortButton<SvtCompare>(
+              prefix: '${i + 1}',
+              value: filterData.sortKeys[i],
+              items: Map.fromIterables(EnemyFilterData.enemyCompares, [
+                S.current.filter_sort_number,
+                S.current.filter_sort_class,
+                S.current.filter_sort_rarity,
+              ]),
+              onSortAttr: (key) {
+                filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
+                update();
+              },
+              reversed: filterData.sortReversed[i],
+              onSortDirectional: (reversed) {
+                filterData.sortReversed[i] = reversed;
+                update();
+              },
+            ),
+        ]),
         SwitchListTile.adaptive(
           value: filterData.onlyShowQuestEnemy,
           controlAffinity: ListTileControlAffinity.trailing,
