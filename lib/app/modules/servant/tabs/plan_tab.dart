@@ -495,7 +495,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           values: RangeValues(start.toDouble(), end.toDouble()),
           labels: RangeLabels(labelFormatter(start), labelFormatter(end)),
           onChanged: (v) {
-            onValueChanged(v.start.round(), v.end.round());
+            if (v.start.round() != start || v.end.round() != end) {
+              onValueChanged(v.start.round(), v.end.round());
+            }
           },
         );
       }
@@ -801,7 +803,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   }
 
   void updateState() {
-    svt.updateStat();
+    EasyDebounce.debounce(
+      'svt_plan_changed',
+      const Duration(milliseconds: 500),
+      () {
+        svt.updateStat();
+      },
+    );
     if (mounted) setState(() {});
   }
 
