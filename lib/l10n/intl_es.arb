@@ -231,6 +231,8 @@
   "guda_male": "Gudao",
   "help": "Ayuda",
   "hide_outdated": "Ocultar desactualizado",
+  "hide_svt_plan_details": null,
+  "hide_svt_plan_details_hint": null,
   "hide_unreleased_card": null,
   "http_sniff_hint": "(NA/JP/CN/TW) Capture los datos al iniciar sesión",
   "https_sniff": "Https Sniffing",

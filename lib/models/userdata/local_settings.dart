@@ -153,6 +153,7 @@ class DisplaySettings {
   bool eventsShowOutdated;
   bool eventsReversed;
   List<SvtTab> sortedSvtTabs;
+  List<SvtPlanDetail> hideSvtPlanDetails;
 
   DisplaySettings({
     this.showAccountAtHome = true,
@@ -168,8 +169,11 @@ class DisplaySettings {
     this.eventsShowOutdated = false,
     this.eventsReversed = true,
     List<SvtTab?>? sortedSvtTabs,
-  }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
-            List.of(SvtTab.values) {
+    List<SvtPlanDetail?>? hideSvtPlanDetails,
+  })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
+            List.of(SvtTab.values),
+        hideSvtPlanDetails =
+            hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();
   }
   void validateSvtTabs() {
@@ -178,6 +182,8 @@ class DisplaySettings {
         int index = sortedSvtTabs.indexOf(a);
         return index >= 0 ? index : SvtTab.values.indexOf(a);
       });
+    hideSvtPlanDetails.remove(SvtPlanDetail.activeSkill);
+    hideSvtPlanDetails.remove(SvtPlanDetail.appendSkill);
   }
 
   factory DisplaySettings.fromJson(Map<String, dynamic> data) =>
@@ -326,6 +332,20 @@ enum SvtTab {
   summon,
   voice,
   quest,
+}
+
+enum SvtPlanDetail {
+  ascension,
+  activeSkill,
+  appendSkill,
+  costume,
+  coin,
+  grail,
+  noblePhantasm,
+  fou4,
+  fou3,
+  bondLimit,
+  commandCode,
 }
 
 enum SvtPlanInputMode { dropdown, slider, input }

@@ -231,6 +231,8 @@
   "guda_male": "Gudao",
   "help": "Help",
   "hide_outdated": "Hide Outdated",
+  "hide_svt_plan_details": "Hide Plan Detail",
+  "hide_svt_plan_details_hint": "It is only not displayed on plan tab, but it is actually still included in the material planning and statistics.",
   "hide_unreleased_card": "Hide Unreleased Card",
   "http_sniff_hint": "(NA/JP/CN/TW)Capture the data when logging in",
   "https_sniff": "Https Sniffing",

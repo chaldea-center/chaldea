@@ -213,6 +213,11 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e))
                   .toList()),
+          hideSvtPlanDetails: $checkedConvert(
+              'hideSvtPlanDetails',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e))
+                  .toList()),
         );
         return val;
       },
@@ -237,6 +242,9 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
       'eventsReversed': instance.eventsReversed,
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
+      'hideSvtPlanDetails': instance.hideSvtPlanDetails
+          .map((e) => _$SvtPlanDetailEnumMap[e])
+          .toList(),
     };
 
 const _$SvtPlanInputModeEnumMap = {
@@ -276,6 +284,20 @@ const _$SvtTabEnumMap = {
   SvtTab.summon: 'summon',
   SvtTab.voice: 'voice',
   SvtTab.quest: 'quest',
+};
+
+const _$SvtPlanDetailEnumMap = {
+  SvtPlanDetail.ascension: 'ascension',
+  SvtPlanDetail.activeSkill: 'activeSkill',
+  SvtPlanDetail.appendSkill: 'appendSkill',
+  SvtPlanDetail.costume: 'costume',
+  SvtPlanDetail.coin: 'coin',
+  SvtPlanDetail.grail: 'grail',
+  SvtPlanDetail.noblePhantasm: 'noblePhantasm',
+  SvtPlanDetail.fou4: 'fou4',
+  SvtPlanDetail.fou3: 'fou3',
+  SvtPlanDetail.bondLimit: 'bondLimit',
+  SvtPlanDetail.commandCode: 'commandCode',
 };
 
 CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(

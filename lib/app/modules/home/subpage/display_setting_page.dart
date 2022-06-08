@@ -13,6 +13,7 @@ import '../../root/global_fab.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
 import 'display_settings/fav_option.dart';
+import 'display_settings/hide_svt_plan_detail.dart';
 import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
@@ -208,6 +209,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   router.pushPage(SvtPriorityTagging());
+                },
+              ),
+              ListTile(
+                title: Text(S.current.hide_svt_plan_details),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  router.pushPage(const HideSvtPlanDetailSettingPage());
                 },
               ),
               ListTile(

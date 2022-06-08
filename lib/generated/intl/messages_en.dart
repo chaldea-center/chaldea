@@ -370,6 +370,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
+        "hide_svt_plan_details":
+            MessageLookupByLibrary.simpleMessage("Hide Plan Detail"),
+        "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
+            "It is only not displayed on plan tab, but it is actually still included in the material planning and statistics."),
         "hide_unreleased_card":
             MessageLookupByLibrary.simpleMessage("Hide Unreleased Card"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(

@@ -48,6 +48,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     _coinEditController.dispose();
   }
 
+  bool showDetail(SvtPlanDetail detail) {
+    return !db.settings.display.hideSvtPlanDetails.contains(detail);
+  }
+
   @override
   Widget build(BuildContext context) {
     final sliderMode =
@@ -61,7 +65,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     targetVal.validate(curVal);
     // ascension part
     List<Widget> children = [];
-    if (svt.collectionNo != 1) {
+    if (showDetail(SvtPlanDetail.ascension) && svt.collectionNo != 1) {
       children.add(TileGroup(
         header: S.of(context).ascension_up,
         children: <Widget>[
@@ -101,159 +105,165 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     }
 
     //skill part
-    List<Widget> skillWidgets = [];
-    for (int index = 0; index < 3; index++) {
-      final skills = svt.groupedActiveSkills.getOrNull(index) ?? [];
-      if (skills.isEmpty) continue;
-      final skill =
-          svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
-      skillWidgets.add(buildPlanRow(
-        useSlider: sliderMode,
-        leading: db.getIconImage(skill.icon, width: 33),
-        title: Transl.skillNames(skill.name).l,
-        start: curVal.skills[index],
-        end: targetVal.skills[index],
-        minVal: 1,
-        maxVal: 10,
-        onValueChanged: (_start, _end) {
-          status.cur.favorite = true;
-          curVal.skills[index] = _start;
-          targetVal.skills[index] = _end;
-          updateState();
-        },
-        detailPageBuilder: (context) => LevelingCostPage(
-          costList: svt.skillMaterials,
-          title:
-              '${S.current.skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
-          curLv: curVal.skills[index],
-          targetLv: targetVal.skills[index],
-        ),
-      ));
+    if (showDetail(SvtPlanDetail.activeSkill)) {
+      List<Widget> skillWidgets = [];
+      for (int index = 0; index < 3; index++) {
+        final skills = svt.groupedActiveSkills.getOrNull(index) ?? [];
+        if (skills.isEmpty) continue;
+        final skill =
+            svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
+        skillWidgets.add(buildPlanRow(
+          useSlider: sliderMode,
+          leading: db.getIconImage(skill.icon, width: 33),
+          title: Transl.skillNames(skill.name).l,
+          start: curVal.skills[index],
+          end: targetVal.skills[index],
+          minVal: 1,
+          maxVal: 10,
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.skills[index] = _start;
+            targetVal.skills[index] = _end;
+            updateState();
+          },
+          detailPageBuilder: (context) => LevelingCostPage(
+            costList: svt.skillMaterials,
+            title:
+                '${S.current.skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+            curLv: curVal.skills[index],
+            targetLv: targetVal.skills[index],
+          ),
+        ));
+      }
+      children
+          .add(TileGroup(header: S.current.skill_up, children: skillWidgets));
     }
-    children.add(TileGroup(header: S.current.skill_up, children: skillWidgets));
 
     // append skill
-    List<Widget> appendSkillWidgets = [];
-    for (int index = 0; index < 3; index++) {
-      final skill = svt.appendPassive.getOrNull(index)?.skill;
-      if (skill == null) continue;
-      appendSkillWidgets.add(buildPlanRow(
-        useSlider: sliderMode,
-        leading: db.getIconImage(skill.icon, width: 33),
-        title: Transl.skillNames(skill.name).l,
-        start: curVal.appendSkills[index],
-        end: targetVal.appendSkills[index],
-        minVal: 0,
-        maxVal: 10,
-        labelFormatter: (v) => v == 0 ? '-' : v.toString(),
-        onValueChanged: (_start, _end) {
-          status.cur.favorite = true;
-          curVal.appendSkills[index] = _start;
-          targetVal.appendSkills[index] = _end;
-          updateState();
-        },
-        detailPageBuilder: (context) => LevelingCostPage(
-          costList: {
-            if (svt.icon != null)
-              0: LvlUpMaterial(
-                items: [ItemAmount(amount: 120, item: svt.coin!.item)],
-                qp: 0,
-              ),
-            ...svt.appendSkillMaterials,
+    if (showDetail(SvtPlanDetail.appendSkill)) {
+      List<Widget> appendSkillWidgets = [];
+      for (int index = 0; index < 3; index++) {
+        final skill = svt.appendPassive.getOrNull(index)?.skill;
+        if (skill == null) continue;
+        appendSkillWidgets.add(buildPlanRow(
+          useSlider: sliderMode,
+          leading: db.getIconImage(skill.icon, width: 33),
+          title: Transl.skillNames(skill.name).l,
+          start: curVal.appendSkills[index],
+          end: targetVal.appendSkills[index],
+          minVal: 0,
+          maxVal: 10,
+          labelFormatter: (v) => v == 0 ? '-' : v.toString(),
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.appendSkills[index] = _start;
+            targetVal.appendSkills[index] = _end;
+            updateState();
           },
-          title:
-              '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
-          curLv: curVal.appendSkills[index],
-          targetLv: targetVal.appendSkills[index],
-        ),
+          detailPageBuilder: (context) => LevelingCostPage(
+            costList: {
+              if (svt.icon != null)
+                0: LvlUpMaterial(
+                  items: [ItemAmount(amount: 120, item: svt.coin!.item)],
+                  qp: 0,
+                ),
+              ...svt.appendSkillMaterials,
+            },
+            title:
+                '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+            curLv: curVal.appendSkills[index],
+            targetLv: targetVal.appendSkills[index],
+          ),
+        ));
+      }
+      children.add(TileGroup(
+        header: S.current.append_skill,
+        children: appendSkillWidgets,
       ));
     }
-    children.add(TileGroup(
-      header: S.current.append_skill,
-      children: appendSkillWidgets,
-    ));
 
     // costume part
-    List<Widget> dressWidgets = [];
-    for (final costume in svt.profile.costume.values) {
-      dressWidgets.add(buildPlanRow(
-        useSlider: false,
-        leading: InkWell(
-          child: db.getIconImage(
-            svt.extraAssets.faces.costume?[costume.battleCharaId] ??
-                Atlas.assetItem(Items.costumeIconId),
-            aspectRatio: 132 / 144,
-            width: 33,
-            placeholder: (ctx) =>
-                db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
+    if (showDetail(SvtPlanDetail.costume)) {
+      List<Widget> dressWidgets = [];
+      for (final costume in svt.profile.costume.values) {
+        dressWidgets.add(buildPlanRow(
+          useSlider: false,
+          leading: InkWell(
+            child: db.getIconImage(
+              svt.extraAssets.faces.costume?[costume.battleCharaId] ??
+                  Atlas.assetItem(Items.costumeIconId),
+              aspectRatio: 132 / 144,
+              width: 33,
+              placeholder: (ctx) =>
+                  db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
+            ),
+            onTap: () {
+              router.push(url: Routes.costumeI(costume.costumeCollectionNo));
+            },
           ),
-          onTap: () {
-            router.push(url: Routes.costumeI(costume.costumeCollectionNo));
+          title: costume.lName.l,
+          subtitle: Transl.isJP ? null : costume.name,
+          start: curVal.costumes[costume.battleCharaId] ?? 0,
+          end: targetVal.costumes[costume.battleCharaId] ?? 0,
+          minVal: 0,
+          maxVal: 1,
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.costumes[costume.battleCharaId] = _start;
+            targetVal.costumes[costume.battleCharaId] = _end;
+            updateState();
           },
-        ),
-        title: costume.lName.l,
-        subtitle: Transl.isJP ? null : costume.name,
-        start: curVal.costumes[costume.battleCharaId] ?? 0,
-        end: targetVal.costumes[costume.battleCharaId] ?? 0,
-        minVal: 0,
-        maxVal: 1,
-        onValueChanged: (_start, _end) {
-          status.cur.favorite = true;
-          curVal.costumes[costume.battleCharaId] = _start;
-          targetVal.costumes[costume.battleCharaId] = _end;
-          updateState();
-        },
-        detailPageBuilder: (context) => LevelingCostPage(
-          costList: svt.costumeMaterials[costume.battleCharaId] == null
-              ? {}
-              : {0: svt.costumeMaterials[costume.battleCharaId]!},
-          title: '${S.current.costume_unlock} - ${costume.lName.l}',
-        ),
-      ));
+          detailPageBuilder: (context) => LevelingCostPage(
+            costList: svt.costumeMaterials[costume.battleCharaId] == null
+                ? {}
+                : {0: svt.costumeMaterials[costume.battleCharaId]!},
+            title: '${S.current.costume_unlock} - ${costume.lName.l}',
+          ),
+        ));
+      }
+      if (dressWidgets.isNotEmpty) {
+        children.add(TileGroup(
+            header: S.of(context).costume_unlock, children: dressWidgets));
+      }
     }
-    if (dressWidgets.isNotEmpty) {
-      children.add(TileGroup(
-          header: S.of(context).costume_unlock, children: dressWidgets));
-    }
-
-    children.add(TileGroup(
-      children: [
-        if (svt.coin != null)
-          ListTile(
-            horizontalTitleGap: 3,
-            leading: InkWell(
-              child: Item.iconBuilder(
-                context: context,
-                item: svt.coin!.item,
-                width: 33,
-              ),
-            ),
-            title: Text(S.current.servant_coin),
-            subtitle:
-                Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
-            trailing: SizedBox(
-              width: 60,
-              child: TextFormField(
-                controller: _coinEditController,
-                buildCounter: (context,
-                        {required int currentLength,
-                        required int? maxLength,
-                        required bool isFocused}) =>
-                    null,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                maxLength: 4,
-                onChanged: (v) {
-                  int? coin = int.tryParse(v);
-                  if (coin != null) {
-                    status.coin = coin;
-                    updateState();
-                  }
-                },
-              ),
+    final extraParts1 = [
+      if (showDetail(SvtPlanDetail.coin) && svt.coin != null)
+        ListTile(
+          horizontalTitleGap: 3,
+          leading: InkWell(
+            child: Item.iconBuilder(
+              context: context,
+              item: svt.coin!.item,
+              width: 33,
             ),
           ),
+          title: Text(S.current.servant_coin),
+          subtitle:
+              Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
+          trailing: SizedBox(
+            width: 60,
+            child: TextFormField(
+              controller: _coinEditController,
+              buildCounter: (context,
+                      {required int currentLength,
+                      required int? maxLength,
+                      required bool isFocused}) =>
+                  null,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              maxLength: 4,
+              onChanged: (v) {
+                int? coin = int.tryParse(v);
+                if (coin != null) {
+                  status.coin = coin;
+                  updateState();
+                }
+              },
+            ),
+          ),
+        ),
+      if (showDetail(SvtPlanDetail.grail))
         buildPlanRow(
           useSlider: sliderMode,
           leading:
@@ -282,32 +292,33 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             levelFormatter: (v) => svt.grailedLv(v).toString(),
           ),
         ),
-        if (svt.type != SvtType.heroine)
-          buildPlanRow(
-            useSlider: sliderMode,
-            leading: db.getIconImage(Atlas.assetItem(Items.npRankUpIconId),
-                width: 33),
-            title: S.of(context).noble_phantasm_level,
-            start: status.cur.npLv,
-            end: plan.npLv,
-            minVal: 1,
-            maxVal: 5,
-            onValueChanged: (_start, _end) {
-              status.cur.favorite = true;
-              status.cur.npLv = _start;
-              plan.npLv = _end;
-              updateState();
-            },
-            detailPageBuilder: (context) =>
-                const SimpleCancelOkDialog(title: Text('Not Used yet')),
-          ),
-      ],
-    ));
+      if (showDetail(SvtPlanDetail.grail) && svt.type != SvtType.heroine)
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading:
+              db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
+          title: S.of(context).noble_phantasm_level,
+          start: status.cur.npLv,
+          end: plan.npLv,
+          minVal: 1,
+          maxVal: 5,
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            status.cur.npLv = _start;
+            plan.npLv = _end;
+            updateState();
+          },
+          detailPageBuilder: (context) =>
+              const SimpleCancelOkDialog(title: Text('Not Used yet')),
+        ),
+    ];
+    if (extraParts1.isNotEmpty) {
+      children.add(TileGroup(children: extraParts1));
+    }
 
-    // Extra part: np/grail/fou-kun
-    children.add(TileGroup(
-      header: S.current.event_item_extra,
-      children: <Widget>[
+    // Extra part2: np/grail/fou-kun
+    final extraParts2 = <Widget>[
+      if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
@@ -328,6 +339,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
+      if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
@@ -348,6 +360,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
+      if (showDetail(SvtPlanDetail.fou3))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
@@ -368,6 +381,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
+      if (showDetail(SvtPlanDetail.fou3))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
@@ -388,6 +402,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
+      if (showDetail(SvtPlanDetail.bondLimit))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(
@@ -416,10 +431,16 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             title: S.current.bond_limit,
           ),
         ),
-      ],
-    ));
-
-    children.add(_buildCmdCodePlanner());
+    ];
+    if (extraParts2.isNotEmpty) {
+      children.add(TileGroup(
+        header: S.current.event_item_extra,
+        children: extraParts2,
+      ));
+    }
+    if (showDetail(SvtPlanDetail.commandCode)) {
+      children.add(_buildCmdCodePlanner());
+    }
 
     return Column(
       children: <Widget>[

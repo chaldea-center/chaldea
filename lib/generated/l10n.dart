@@ -2606,6 +2606,28 @@ class S {
     );
   }
 
+  /// `Hide Plan Detail`
+  String get hide_svt_plan_details {
+    return Intl.message(
+      'Hide Plan Detail',
+      name: 'hide_svt_plan_details',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `It is only not displayed on plan tab, but it is actually still included in the material planning and statistics.`
+  String get hide_svt_plan_details_hint {
+    return Intl.message(
+      'It is only not displayed on plan tab, but it is actually still included in the material planning and statistics.',
+      name: 'hide_svt_plan_details_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Hide Unreleased Card`
   String get hide_unreleased_card {
     return Intl.message(

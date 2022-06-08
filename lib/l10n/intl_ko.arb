@@ -231,6 +231,8 @@
   "guda_male": "구다오",
   "help": "도움말",
   "hide_outdated": "기간종료 숨기기",
+  "hide_svt_plan_details": null,
+  "hide_svt_plan_details_hint": null,
   "hide_unreleased_card": "미구현 서번트 숨기기",
   "http_sniff_hint": "(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다",
   "https_sniff": "Https 스나이핑",

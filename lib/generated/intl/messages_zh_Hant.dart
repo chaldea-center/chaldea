@@ -327,6 +327,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
         "help": MessageLookupByLibrary.simpleMessage("幫助"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隱藏已過期"),
+        "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("隐藏规划项"),
+        "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
+            "仅仅是在从者详情规划页不显示，实际仍计入素材规划与统计。"),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隱藏未實裝卡牌"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(簡中/繁中/日/美)帳號登陸時的數據"),

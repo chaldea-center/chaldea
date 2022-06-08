@@ -231,6 +231,8 @@
   "guda_male": "咕哒夫",
   "help": "帮助",
   "hide_outdated": "隐藏已过期",
+  "hide_svt_plan_details": "隐藏规划项",
+  "hide_svt_plan_details_hint": "仅仅是在从者详情规划页不显示，实际仍计入素材规划与统计。",
   "hide_unreleased_card": "隐藏未实装卡牌",
   "http_sniff_hint": "(国/台/日/美)账号登陆时的数据",
   "https_sniff": "Https抓包",
