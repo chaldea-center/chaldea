@@ -242,14 +242,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
 
   TableRow _buildVoiceLine(
       BuildContext context, VoiceLine line, Map<String, int> _nameCount) {
-    String name = '', overwriteName = '';
-    if (line.name != null && line.name!.isNotEmpty) {
-      name = line.name!;
+    String _transl(String text) {
       for (final s in ['\u3000（ひとつの施策でふたつあるとき）', '（57は欠番）']) {
-        name = name.replaceFirst(s, '');
+        text = text.replaceFirst(s, '');
       }
-      name = name.trim();
-      name = line.name!.replaceFirstMapped(RegExp(r'^(.+?)(\d*)$'), (match) {
+      text = text.trim();
+      text = text.replaceFirstMapped(RegExp(r'^(.+?)(\d*)$'), (match) {
         final _name = Transl.string(
             db.gameData.mappingData.voiceLineNames, match.group(1)!.trim());
         final _num = match.group(2);
@@ -259,6 +257,13 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           return _name.l;
         }
       });
+      return text;
+    }
+
+    String name = '', overwriteName = '';
+
+    if (line.name != null && line.name!.isNotEmpty) {
+      name = _transl(line.name!);
     }
 
     if (line.overwriteName.isNotEmpty) {
@@ -269,6 +274,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         overwriteName =
             overwriteName.replaceAllMapped('{0}', (match) => index.toString());
       }
+      overwriteName = _transl(overwriteName);
     }
     if (overwriteName.contains(name)) {
       name = overwriteName;

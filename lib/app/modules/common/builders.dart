@@ -276,6 +276,7 @@ class SharedBuilder {
     required BuildContext context,
     required NiceTrait trait,
     TextStyle? style,
+    double? textScaleFactor,
   }) {
     return InkWell(
       onTap: () {},
@@ -285,6 +286,7 @@ class SharedBuilder {
           trait.showName,
           style: style ??
               TextStyle(color: Theme.of(context).colorScheme.secondary),
+          textScaleFactor: textScaleFactor,
         ),
       ),
     );
@@ -294,14 +296,21 @@ class SharedBuilder {
     required BuildContext context,
     required List<NiceTrait> traits,
     TextStyle? style,
+    double? textScaleFactor,
     List<int>? hiddenTraits,
     WrapAlignment alignment = WrapAlignment.center,
   }) {
-    hiddenTraits ??= [Trait.canBeInBattle.id!];
+    hiddenTraits ??= []; // [Trait.canBeInBattle.id!];
     traits = List.of(traits)
       ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
-    List<Widget> children =
-        traits.map((e) => trait(context: context, trait: e)).toList();
+    List<Widget> children = traits
+        .map((e) => trait(
+              context: context,
+              trait: e,
+              style: style,
+              textScaleFactor: textScaleFactor,
+            ))
+        .toList();
     children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -314,14 +323,20 @@ class SharedBuilder {
     required BuildContext context,
     required List<NiceTrait> traits,
     TextStyle? style,
+    double? textScaleFactor,
     List<int>? hiddenTraits,
   }) {
     hiddenTraits ??= []; //[Trait.canBeInBattle.id!];
     traits = List.of(traits)
       ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
     List<InlineSpan> children = divideList(
-      traits.map(
-          (e) => CenterWidgetSpan(child: trait(context: context, trait: e))),
+      traits.map((e) => CenterWidgetSpan(
+              child: trait(
+            context: context,
+            trait: e,
+            style: style,
+            textScaleFactor: textScaleFactor,
+          ))),
       TextSpan(text: '/', style: TextStyle(color: Theme.of(context).hintColor)),
     );
     return children;

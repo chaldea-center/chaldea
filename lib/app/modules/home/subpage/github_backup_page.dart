@@ -194,7 +194,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                   // hintText: '',
                 ),
                 onChanged: (s) {
-                  config.repo = s.trim();
+                  config.branch = s.trim();
                 },
               ),
             ),
@@ -206,6 +206,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 decoration: const InputDecoration(
                   labelText: 'path',
                   border: OutlineInputBorder(),
+                  hintText: 'e.g. chaldea-backup.json',
                 ),
                 onChanged: (s) {
                   config.path = s.trim();
@@ -233,6 +234,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             dense: true,
             value: config.indent,
             title: const Text('Indent with 2 spaces'),
+            subtitle: const Text('saved in json format'),
             controlAffinity: ListTileControlAffinity.trailing,
             onChanged: _enableEdit
                 ? (v) {

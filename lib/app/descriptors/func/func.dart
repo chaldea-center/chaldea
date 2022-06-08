@@ -221,12 +221,59 @@ class FuncDescriptor extends StatelessWidget {
 
       _addFuncTarget();
 
-      spans.add(TextSpan(
-        text: funcText.toString(),
-        style: func.funcTargetTeam == FuncApplyTarget.enemy
+      void _addFuncText() {
+        final text = funcText.toString();
+        final style = func.funcTargetTeam == FuncApplyTarget.enemy
             ? const TextStyle(fontStyle: FontStyle.italic)
-            : null,
-      ));
+            : null;
+        switch (func.funcType) {
+          case FuncType.damageNpIndividual:
+          case FuncType.damageNpStateIndividualFix:
+            int? indiv = vals?.Target;
+            if (indiv != null) {
+              spans.add(TextSpan(
+                children: replaceSpan(text, '{0}', [
+                  CenterWidgetSpan(
+                    child: SharedBuilder.trait(
+                      context: context,
+                      trait: NiceTrait(id: indiv),
+                      textScaleFactor: 0.9,
+                    ),
+                  )
+                ]),
+                style: style,
+              ));
+              return;
+            }
+            break;
+          case FuncType.damageNpIndividualSum:
+            if ((vals?.TargetList?.length ?? 0) > 0) {
+              spans.add(TextSpan(
+                children: replaceSpan(text, '{0}', [
+                  for (int indiv in vals?.TargetList ?? [])
+                    CenterWidgetSpan(
+                      child: SharedBuilder.trait(
+                        context: context,
+                        trait: NiceTrait(id: indiv),
+                        textScaleFactor: 0.9,
+                      ),
+                    )
+                ]),
+                style: style,
+              ));
+              return;
+            }
+            break;
+          default:
+            break;
+        }
+        spans.add(TextSpan(
+          text: text,
+          style: style,
+        ));
+      }
+
+      _addFuncText();
 
       void _addTraits(String? prefix, List<NiceTrait> traits) {
         if ([BuffType.upCommandall, BuffType.downCommandall]
@@ -249,28 +296,6 @@ class FuncDescriptor extends StatelessWidget {
       }
 
       switch (func.funcType) {
-        case FuncType.damageNpIndividual:
-        case FuncType.damageNpStateIndividualFix:
-          int? indiv = vals?.Target;
-          if (indiv != null) {
-            spans.add(CenterWidgetSpan(
-              child: SharedBuilder.trait(
-                context: context,
-                trait: NiceTrait(id: indiv),
-              ),
-            ));
-          }
-          break;
-        case FuncType.damageNpIndividualSum:
-          for (int indiv in vals?.TargetList ?? []) {
-            spans.add(CenterWidgetSpan(
-              child: SharedBuilder.trait(
-                context: context,
-                trait: NiceTrait(id: indiv),
-              ),
-            ));
-          }
-          break;
         case FuncType.addState:
         case FuncType.addStateShort:
           final buff = func.buffs.first;
@@ -340,6 +365,20 @@ class FuncDescriptor extends StatelessWidget {
       );
       return child;
     });
+  }
+
+  List<InlineSpan> replaceSpan(
+      String text, Pattern pattern, List<InlineSpan> replace) {
+    final parts = text.split(pattern);
+    if (parts.length == 1) return [TextSpan(text: text), ...replace];
+    List<InlineSpan> spans = [];
+    for (int index = 0; index < parts.length; index++) {
+      spans.add(TextSpan(text: parts[index]));
+      if (index != parts.length - 1) {
+        spans.addAll(replace);
+      }
+    }
+    return spans;
   }
 
   Widget? _buildTrigger(BuildContext context) {
