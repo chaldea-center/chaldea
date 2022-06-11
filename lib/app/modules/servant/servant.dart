@@ -254,6 +254,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 onPressed: () {
                   router.push(url: Routes.itemI(svt.id));
                 },
+                style: kTextButtonDenseStyle,
                 child: Text(S.current.item_category_special),
               ),
           ],

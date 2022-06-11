@@ -66,12 +66,28 @@ class _WarDetailPageState extends State<WarDetailPage> {
       if (banners.isNotEmpty)
         CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
-    String warName = war.name;
-    String longName = war.longName;
+
+    List<String> shortNames = [war.lName.jp];
+    List<String> longNames = [war.lLongName.jp];
+    for (final warAdd in war.warAdds) {
+      if (warAdd.type == WarOverwriteType.name &&
+          !shortNames.contains(warAdd.overwriteStr)) {
+        shortNames.add(warAdd.overwriteStr);
+      }
+      if (warAdd.type == WarOverwriteType.longName &&
+          !longNames.contains(warAdd.overwriteStr)) {
+        longNames.add(warAdd.overwriteStr);
+      }
+    }
+    String lLongName = longNames.map((e) => Transl.warNames(e).l).join('\n');
+    String longNameJp = longNames.join('\n');
+    String lShortName = shortNames.map((e) => Transl.warNames(e).l).join('\n');
+    String shortNameJp = shortNames.join('\n');
+
     children.add(CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
-          text: war.lLongName.l,
+          text: lLongName,
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 14),
           color: TableCellData.resolveHeaderColor(context),
@@ -80,15 +96,16 @@ class _WarDetailPageState extends State<WarDetailPage> {
       if (!Transl.isJP)
         CustomTableRow(children: [
           TableCellData(
-            text: longName,
+            text: longNameJp,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
-      if (warName != longName) CustomTableRow.fromTexts(texts: [war.lName.l]),
-      if (warName != longName && !Transl.isJP)
-        CustomTableRow.fromTexts(texts: [warName]),
+      if (lShortName != lLongName)
+        CustomTableRow.fromTexts(texts: [lShortName]),
+      if (shortNameJp != longNameJp && !Transl.isJP)
+        CustomTableRow.fromTexts(texts: [shortNameJp]),
       CustomTableRow(children: [
         TableCellData(text: S.current.war_age, isHeader: true),
         TableCellData(text: war.age, flex: 3),

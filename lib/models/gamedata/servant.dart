@@ -43,6 +43,7 @@ class BasicServant with GameCardMixin {
   int collectionNo;
   @override
   String name;
+  String? overwriteName;
   SvtType type;
   SvtFlag flag;
   SvtClass className;
@@ -58,6 +59,7 @@ class BasicServant with GameCardMixin {
     required this.id,
     required this.collectionNo,
     required this.name,
+    this.overwriteName,
     required this.type,
     required this.flag,
     required this.className,
@@ -109,6 +111,7 @@ class Servant with GameCardMixin {
   @override
   String name;
   String ruby;
+  String battleName;
   SvtClass className;
   SvtType type;
   SvtFlag flag;
@@ -165,6 +168,7 @@ class Servant with GameCardMixin {
     required this.collectionNo,
     required this.name,
     this.ruby = "",
+    this.battleName = "",
     required this.className,
     required this.type,
     required this.flag,
@@ -340,9 +344,11 @@ class Servant with GameCardMixin {
   Set<String> get allNames {
     return <String>{
       name,
+      battleName,
       ...ascensionAdd.overWriteServantName.all.values,
       ...ascensionAdd.overWriteServantBattleName.all.values,
-      ...svtChange.map((e) => e.name)
+      ...svtChange.map((e) => e.name),
+      ...svtChange.map((e) => e.battleName)
     };
   }
 
@@ -764,6 +770,8 @@ class ServantChange {
   int condTargetId;
   int condValue;
   String name;
+  String ruby;
+  String battleName;
   int svtVoiceId;
   int limitCount;
   int flag;
@@ -778,6 +786,8 @@ class ServantChange {
     required this.condTargetId,
     required this.condValue,
     required this.name,
+    this.ruby = "",
+    this.battleName = "",
     required this.svtVoiceId,
     required this.limitCount,
     required this.flag,

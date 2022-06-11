@@ -508,6 +508,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建账号"),
+        "new_data_available": MessageLookupByLibrary.simpleMessage("可用数据更新"),
         "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("新掉落数据"),
         "next_card": MessageLookupByLibrary.simpleMessage("下一张"),
         "next_page": MessageLookupByLibrary.simpleMessage("下一页"),

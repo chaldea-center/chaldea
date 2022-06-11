@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -43,11 +45,7 @@ mixin FuncsDescriptor {
       if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
         return true;
       }
-      bool player = func.funcTargetTeam == FuncApplyTarget.player;
-      if (func.funcTargetType.isEnemy) {
-        player = !player;
-      }
-      return player ? showPlayer : showEnemy;
+      return func.isPlayerOnlyFunc ? showPlayer : showEnemy;
     }).toList();
     List<Widget> children = [];
 
@@ -224,7 +222,7 @@ class FuncDescriptor extends StatelessWidget {
 
       void _addFuncText() {
         final text = funcText.toString();
-        final style = func.funcTargetTeam == FuncApplyTarget.enemy
+        final style = func.isEnemyOnlyFunc
             ? const TextStyle(fontStyle: FontStyle.italic)
             : null;
         switch (func.funcType) {
@@ -238,7 +236,7 @@ class FuncDescriptor extends StatelessWidget {
                     child: SharedBuilder.trait(
                       context: context,
                       trait: NiceTrait(id: indiv),
-                      textScaleFactor: 0.9,
+                      textScaleFactor: 0.85,
                     ),
                   )
                 ]),
@@ -256,7 +254,7 @@ class FuncDescriptor extends StatelessWidget {
                       child: SharedBuilder.trait(
                         context: context,
                         trait: NiceTrait(id: indiv),
-                        textScaleFactor: 0.9,
+                        textScaleFactor: 0.85,
                       ),
                     )
                 ]),
@@ -292,7 +290,8 @@ class FuncDescriptor extends StatelessWidget {
         if (prefix != null) spans.add(TextSpan(text: prefix));
         for (final trait in traits) {
           spans.add(CenterWidgetSpan(
-              child: SharedBuilder.trait(context: context, trait: trait)));
+              child: SharedBuilder.trait(
+                  context: context, trait: trait, textScaleFactor: 0.85)));
         }
       }
 
@@ -338,10 +337,18 @@ class FuncDescriptor extends StatelessWidget {
           );
         },
       );
+      double maxWidth = 80;
+      if (constraints.maxWidth != double.infinity) {
+        maxWidth = max(maxWidth, constraints.maxWidth / 3);
+        maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
+      }
       child = Row(
         children: [
           Expanded(flex: perLine - 1, child: child),
-          Expanded(child: trailing),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxWidth, minWidth: 20),
+            child: trailing,
+          ),
         ],
       );
       if (levels.isNotEmpty) {

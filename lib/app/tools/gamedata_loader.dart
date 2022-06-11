@@ -71,7 +71,6 @@ class GameDataLoader {
     cancelToken = CancelToken();
     try {
       final result = await _loadJson(offline, onUpdate, updateOnly);
-      db.runtimeData.upgradableDataVersion = result.version;
       _completer!.complete(result);
     } catch (e, s) {
       if (e is! UpdateError) logger.e('load gamedata($offline)', e, s);
@@ -223,7 +222,7 @@ class GameDataLoader {
     tmp.gameJson = _gameJson;
     final _gamedata = GameData.fromJson(_gameJson);
     tmp.clear();
-    _gamedata.version = newVersion;
+    db.runtimeData.upgradableDataVersion = _gamedata.version = newVersion;
     _progress = finished / newVersion.files.length;
     (onUpdate ?? _onUpdate)?.call(_progress!);
     _onUpdate = null;

@@ -28,6 +28,10 @@ class NiceFunction implements BaseFunction {
   List<NiceTrait> get traitVals => _baseFunc.traitVals;
   @override
   List<Buff> get buffs => _baseFunc.buffs;
+  @override
+  bool get isPlayerOnlyFunc => _baseFunc.isPlayerOnlyFunc;
+  @override
+  bool get isEnemyOnlyFunc => _baseFunc.isEnemyOnlyFunc;
 
   List<DataVals> svals;
   List<DataVals>? svals2;
@@ -242,6 +246,13 @@ class BaseFunction {
 
   factory BaseFunction.fromJson(Map<String, dynamic> json) =>
       _$BaseFunctionFromJson(json);
+
+  bool get isPlayerOnlyFunc =>
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||
+      (funcTargetTeam == FuncApplyTarget.player && !funcTargetType.isEnemy);
+  bool get isEnemyOnlyFunc =>
+      (funcTargetTeam == FuncApplyTarget.enemy && !funcTargetType.isEnemy) ||
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
 }
 
 @JsonSerializable()

@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -105,6 +106,7 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget get body {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final dataVersion = db.runtimeData.upgradableDataVersion;
         return ListView(
           controller: _scrollController,
           children: <Widget>[
@@ -119,6 +121,14 @@ class _GalleryPageState extends State<GalleryPage> {
                   if (db.settings.carousel.enabled)
                     const Divider(height: 0.5, thickness: 0.5),
                   GridGallery(maxWidth: constraints.maxWidth),
+                  if (dataVersion != null &&
+                          dataVersion.timestamp >
+                              db.gameData.version.timestamp ||
+                      kDebugMode)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: _dataUpdate(),
+                    ),
                 ],
               ),
             ),
@@ -134,6 +144,37 @@ class _GalleryPageState extends State<GalleryPage> {
           ],
         );
       },
+    );
+  }
+
+  Widget _dataUpdate() {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        InkWell(
+          onTap: () async {
+            EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+            final data = await GameDataLoader.instance.reload(offline: true);
+            if (data == null) {
+              EasyLoading.showError(S.current.failed);
+              return;
+            }
+            EasyLoading.showSuccess(
+                '${S.current.success}\n${data.version.text()}');
+            db.gameData = data;
+            if (mounted) setState(() {});
+          },
+          child: Text.rich(
+            TextSpan(text: '${S.current.new_data_available}  ', children: [
+              TextSpan(
+                text: S.current.update,
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              )
+            ]),
+            textScaleFactor: 0.8,
+          ),
+        ),
+      ],
     );
   }
 

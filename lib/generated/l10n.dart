@@ -4251,6 +4251,17 @@ class S {
     );
   }
 
+  /// `New data available`
+  String get new_data_available {
+    return Intl.message(
+      'New data available',
+      name: 'new_data_available',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `New Drop Data`
   String get new_drop_data_6th {
     return Intl.message(

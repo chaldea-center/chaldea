@@ -601,6 +601,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
+        "new_data_available":
+            MessageLookupByLibrary.simpleMessage("New data available"),
         "new_drop_data_6th":
             MessageLookupByLibrary.simpleMessage("New Drop Data"),
         "next_card": MessageLookupByLibrary.simpleMessage("Next"),
