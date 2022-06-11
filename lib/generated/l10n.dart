@@ -1296,6 +1296,17 @@ class S {
     );
   }
 
+  /// `Desktop only`
+  String get desktop_only {
+    return Intl.message(
+      'Desktop only',
+      name: 'desktop_only',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Display Settings`
   String get display_setting {
     return Intl.message(
@@ -2468,6 +2479,17 @@ class S {
     return Intl.message(
       'All',
       name: 'general_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get general_close {
+    return Intl.message(
+      'Close',
+      name: 'general_close',
       desc: '',
       locale: localeName,
       args: [],
@@ -6302,6 +6324,39 @@ class S {
     return Intl.message(
       'Upload',
       name: 'upload',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Upload & Close`
+  String get upload_and_close_app {
+    return Intl.message(
+      'Upload & Close',
+      name: 'upload_and_close_app',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Upload data before closing the app?`
+  String get upload_and_close_app_alert {
+    return Intl.message(
+      'Upload data before closing the app?',
+      name: 'upload_and_close_app_alert',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Upload before closing`
+  String get upload_before_close_app {
+    return Intl.message(
+      'Upload before closing',
+      name: 'upload_before_close_app',
       desc: '',
       locale: localeName,
       args: [],

@@ -75,7 +75,6 @@ class _BootstrapPageState extends State<BootstrapPage>
         );
         if (data != null) {
           db.gameData = data;
-          db.itemCenter.init();
           onDataReady(true);
         } else {
           _offlineLoading = false;
@@ -495,7 +494,6 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 );
                 if (gamedata != null) {
                   db.gameData = gamedata;
-                  db.itemCenter.init();
                   success = true;
                 }
               } on UpdateError {

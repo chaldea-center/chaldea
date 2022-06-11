@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file/open_file.dart';
@@ -12,10 +11,9 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/backup_backend/chaldea_backend.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -24,7 +22,6 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../import_data/home_import_page.dart';
 import 'github_backup_page.dart';
-import 'login_page.dart';
 
 class UserDataPage extends StatefulWidget {
   UserDataPage({Key? key}) : super(key: key);
@@ -36,6 +33,7 @@ class UserDataPage extends StatefulWidget {
 class _UserDataPageState extends State<UserDataPage> {
   Map<String, String> cachedFiles = {};
   List<String> onlineVersions = [];
+  final _serverBackup = ChaldeaServerBackup();
 
   List<Directory> androidExternalDirs = [];
 
@@ -88,16 +86,31 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TileGroup(
             header: S.current.userdata_sync_server,
-            footer: S.current.userdata_sync_hint,
+            // footer: S.current.userdata_sync_hint,
             children: [
               ListTile(
                 title: Text(S.current.userdata_upload_backup),
-                onTap: uploadToServer,
+                onTap: () => _serverBackup.backup(),
               ),
               ListTile(
                 title: Text(S.current.userdata_download_backup),
-                onTap: downloadFromServer,
+                onTap: () => _serverBackup.restore(),
               ),
+              if (PlatformU.isDesktop)
+                SwitchListTile.adaptive(
+                  title: Text(S.current.upload_before_close_app),
+                  subtitle: Text(S.current.desktop_only),
+                  value: db.settings.alertUploadUserData,
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.alertUploadUserData = v;
+                    });
+                  },
+                )
+            ],
+          ),
+          TileGroup(
+            children: [
               ListTile(
                 title: const Text('Github Backup'),
                 trailing:
@@ -201,104 +214,6 @@ class _UserDataPageState extends State<UserDataPage> {
         );
       },
     ).showDialog(context);
-  }
-
-  bool checkUserPwd() {
-    if (db.security.get('chaldea_user') == null ||
-        db.security.get('chaldea_auth') == null) {
-      SimpleCancelOkDialog(
-        content: Text(S.current.login_first_hint),
-        onTapOk: () {
-          router.pushPage(LoginPage());
-        },
-      ).showDialog(context);
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  Future<void> uploadToServer() async {
-    if (!checkUserPwd()) return;
-    ChaldeaResponse.request(
-      caller: (dio) {
-        final content = base64Encode(
-            GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
-        return dio.post('/account/backup/upload', data: {
-          'username': db.security.get('chaldea_user'),
-          'auth': db.security.get('chaldea_auth'),
-          'content': content,
-        });
-      },
-    );
-  }
-
-  Future<void> downloadFromServer() async {
-    if (!checkUserPwd()) return;
-    ChaldeaResponse.request(
-      showSuccess: false,
-      caller: (dio) => dio.post('/account/backup/download', data: {
-        'username': db.security.get('chaldea_user'),
-        'auth': db.security.get('chaldea_auth')
-      }),
-      onSuccess: (resp) {
-        List<UserDataBackup> backups = [];
-        try {
-          backups = List.from(resp.body())
-              .map((e) => UserDataBackup.fromJson(e))
-              .toList();
-          backups.sort2((e) => e.timestamp, reversed: true);
-        } catch (e, s) {
-          logger.e('decode server backup response failed', e, s);
-          EasyLoading.showError(e.toString());
-          return;
-        }
-
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder: (context) {
-            List<Widget> children = [];
-            if (backups.isEmpty) {
-              children.add(const ListTile(title: Text('No backup found')));
-            }
-            for (int index = 0; index < backups.length; index++) {
-              final backup = backups[index];
-              String title = '${S.current.backup} ${index + 1}';
-              if (backup.content == null) {
-                title += ' (Error)';
-              }
-              children.add(ListTile(
-                title: Text(title),
-                subtitle: Text(backup.timestamp.toString()),
-                enabled: backup.content != null,
-                onTap: backup.content == null
-                    ? null
-                    : () {
-                        Navigator.pop(context);
-                        db.userData = backup.content!;
-                        db.itemCenter.init();
-                        db.notifyUserdata();
-                        EasyLoading.showSuccess(S.current.import_data_success);
-                      },
-              ));
-            }
-            return SimpleDialog(
-              title: Text(S.current.userdata_download_choose_backup),
-              children: [
-                ...children,
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-              ],
-            );
-          },
-        );
-      },
-    );
   }
 
   Future<void> _migrateAndroidData(bool useExternal) async {

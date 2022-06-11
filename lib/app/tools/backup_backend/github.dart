@@ -5,27 +5,28 @@ import 'package:dio/dio.dart';
 import 'package:github/github.dart';
 
 import 'package:chaldea/models/userdata/local_settings.dart';
-import 'backup_backend.dart';
+import 'backend.dart';
 
 extension _GithubSettingX on GithubSetting {
   RepositorySlug get slug => RepositorySlug(owner, repo);
 }
 
-class GithubBackup<V> extends BackupBackend<String, V> {
+class GithubBackup<T> extends BackupBackend<T> {
   final GithubSetting config;
   final GitHub github = GitHub();
+  final FutureOr<List<int>> Function() encode;
+  final FutureOr<T> Function(List<int> data) decode;
 
   GithubBackup({
     required this.config,
-    required FutureOr<String> Function() encode,
-    required FutureOr<V> Function(String) decode,
-  }) : super(encode: encode, decode: decode);
+    required this.encode,
+    required this.decode,
+  });
 
   @override
-  Future<void> backup() async {
+  Future<bool> backup() async {
     github.auth = Authentication.withToken(config.token);
-
-    final content = base64Encode(utf8.encode(await encode()));
+    final content = base64Encode(await encode());
     final message = DateTime.now().toString();
     // print('content: $content');
     print('message: $message');
@@ -38,20 +39,22 @@ class GithubBackup<V> extends BackupBackend<String, V> {
     }
     config.sha = creation.content!.sha!;
     print('new sha: ${config.sha}');
+    return true;
   }
 
   @override
-  Future<V?> restore() async {
+  Future<T?> restore() async {
     github.auth = Authentication.withToken(config.token);
     final file = await _getFile();
     if (file == null) throw NotFound(github, 'NotFound');
     if (file.encoding == 'base64') {
-      final result = decode(file.text);
+      final result =
+          decode(base64Decode(LineSplitter.split(file.content!).join()));
       config.sha = file.sha;
       return result;
     }
     if (file.encoding == 'none' && file.size != null && file.size! > 0) {
-      return decode(utf8.decode(await _getRawFile()));
+      return decode(await _getRawFile());
     }
     throw UnknownError(github, 'Unknown encoding: ${file.encoding}');
   }

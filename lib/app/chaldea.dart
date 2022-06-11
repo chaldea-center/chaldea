@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
 import '../packages/language.dart';
@@ -24,6 +27,7 @@ import '../utils/catcher/catcher_util.dart';
 import '../widgets/after_layout.dart';
 import 'app.dart';
 import 'routes/parser.dart';
+import 'tools/backup_backend/chaldea_backend.dart';
 
 class Chaldea extends StatefulWidget {
   Chaldea({Key? key}) : super(key: key);
@@ -177,9 +181,45 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
       logger.i('closing desktop app...');
       await db.saveAll();
-      await Future.delayed(const Duration(milliseconds: 200));
-      return true;
+      if (!db.settings.alertUploadUserData) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        return true;
+      }
+      return _alertUpload();
     });
+  }
+
+  Future<bool> _alertUpload() async {
+    final ctx = kAppKey.currentContext;
+    if (ctx == null) return true;
+    final close = await showDialog(
+      context: ctx,
+      builder: (context) => AlertDialog(
+        content: Text(S.current.upload_and_close_app_alert),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: Text(S.current.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: Text(S.current.general_close),
+          ),
+          TextButton(
+            onPressed: () async {
+              final success = await ChaldeaServerBackup().backup();
+              if (success && mounted) Navigator.pop(context, true);
+            },
+            child: Text(S.current.upload_and_close_app),
+          ),
+        ],
+      ),
+    );
+    return close == true;
   }
 }
 

@@ -47,6 +47,7 @@ class _Database {
   set userData(UserData userData) {
     _userData = userData;
     _userData.validate();
+    itemCenter.init();
   }
 
   GameData _gameData = GameData();
@@ -56,6 +57,7 @@ class _Database {
   set gameData(GameData gameData) {
     _gameData = gameData;
     _userData.validate();
+    itemCenter.init();
   }
 
   RuntimeData runtimeData = RuntimeData();

@@ -44,16 +44,18 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
     _enableEdit = validate() != null;
   }
 
-  String encodeUserdata() {
+  List<int> encodeUserdata() {
+    String content;
     if (config.indent) {
-      return const JsonEncoder.withIndent('  ').convert(db.userData);
+      content = const JsonEncoder.withIndent('  ').convert(db.userData);
     } else {
-      return jsonEncode(db.userData);
+      content = jsonEncode(db.userData);
     }
+    return utf8.encode(content);
   }
 
-  UserData decodeUserdata(String data) {
-    return db.userData = UserData.fromJson(jsonDecode(data));
+  UserData decodeUserdata(List<int> content) {
+    return db.userData = UserData.fromJson(jsonDecode(utf8.decode(content)));
   }
 
   Future<void> backup() async {
@@ -140,9 +142,10 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             ),
             ListTile(
               dense: true,
-              title: const Text('branch'),
-              trailing: Text(
-                  config.branch.trim().isEmpty ? '(default)' : config.branch),
+              title: const Text('branch/ref'),
+              trailing: Text(config.branch.trim().isEmpty
+                  ? '(default)'
+                  : config.branch.substring(0, min(7, config.branch.length))),
             ),
             ListTile(
               dense: true,
@@ -192,7 +195,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 decoration: const InputDecoration(
                   labelText: 'branch (optional)',
                   border: OutlineInputBorder(),
-                  // hintText: '',
+                  hintText: 'ref for download',
                 ),
                 onChanged: (s) {
                   config.branch = s.trim();
@@ -284,6 +287,11 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  final error = validate();
+                  if (error != null) {
+                    EasyLoading.showError(error);
+                    return;
+                  }
                   restore();
                 },
                 child: Text(S.current.download),
@@ -334,7 +342,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                 textScaleFactor: 0.9,
               ),
             ),
-          )
+          ),
+          const SafeArea(child: SizedBox()),
         ],
       ),
     );

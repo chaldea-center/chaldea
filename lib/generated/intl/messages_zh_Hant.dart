@@ -194,6 +194,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敵攻擊補正"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
+        "desktop_only": MessageLookupByLibrary.simpleMessage("仅限桌面版"),
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),
         "display_show_window_fab":
             MessageLookupByLibrary.simpleMessage("显示多窗口按钮"),
@@ -315,6 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server": MessageLookupByLibrary.simpleMessage("游戏区服"),
         "gamedata": MessageLookupByLibrary.simpleMessage("遊戲數據"),
         "general_all": MessageLookupByLibrary.simpleMessage("所有"),
+        "general_close": MessageLookupByLibrary.simpleMessage("关闭"),
         "general_default": MessageLookupByLibrary.simpleMessage("默認"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
@@ -731,6 +733,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("無可用更新"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("已更新"),
         "upload": MessageLookupByLibrary.simpleMessage("上傳"),
+        "upload_and_close_app": MessageLookupByLibrary.simpleMessage("上传并关闭"),
+        "upload_and_close_app_alert":
+            MessageLookupByLibrary.simpleMessage("是否上传数据再关闭应用?"),
+        "upload_before_close_app":
+            MessageLookupByLibrary.simpleMessage("关闭app前上传"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用戶數據"),
         "userdata_download_backup":

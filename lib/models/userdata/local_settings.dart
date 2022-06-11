@@ -36,6 +36,7 @@ class LocalSettings {
   FavoriteState? favoritePreferred;
   bool preferApRate;
   Region? preferredQuestRegion;
+  bool alertUploadUserData;
 
   Map<int, String> priorityTags;
   Map<String, bool> galleries;
@@ -72,6 +73,7 @@ class LocalSettings {
     this.favoritePreferred,
     this.preferApRate = true,
     this.preferredQuestRegion,
+    this.alertUploadUserData = false,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
     DisplaySettings? display,

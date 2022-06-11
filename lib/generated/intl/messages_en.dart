@@ -218,6 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Def NP Gain Mod"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
+        "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
         "display_setting":
             MessageLookupByLibrary.simpleMessage("Display Settings"),
         "display_show_window_fab":
@@ -358,6 +359,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
         "general_all": MessageLookupByLibrary.simpleMessage("All"),
+        "general_close": MessageLookupByLibrary.simpleMessage("Close"),
         "general_default": MessageLookupByLibrary.simpleMessage("Default"),
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
         "general_special": MessageLookupByLibrary.simpleMessage("Special"),
@@ -866,6 +868,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No update available"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("Updated"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
+        "upload_and_close_app":
+            MessageLookupByLibrary.simpleMessage("Upload & Close"),
+        "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage(
+            "Upload data before closing the app?"),
+        "upload_before_close_app":
+            MessageLookupByLibrary.simpleMessage("Upload before closing"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup":

@@ -109,7 +109,6 @@ class _GameDataPageState extends State<GameDataPage> {
                                   db.gameData.version.timestamp,
                               onTapOk: () {
                                 db.gameData = data;
-                                db.itemCenter.init();
                                 db.notifyAppUpdate();
                               },
                             );
