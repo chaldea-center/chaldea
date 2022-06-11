@@ -809,6 +809,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
+        "svt_class_dist": MessageLookupByLibrary.simpleMessage("Svt Class"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage(
@@ -834,6 +835,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
             MessageLookupByLibrary.simpleMessage("Second Archive"),
+        "svt_stat_details": MessageLookupByLibrary.simpleMessage("Details"),
         "svt_stat_own_total":
             MessageLookupByLibrary.simpleMessage("(SkillMax) Owned/Total"),
         "svt_switch_slider_dropdown":

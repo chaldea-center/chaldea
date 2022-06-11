@@ -4,86 +4,10 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
 import '../item/item.dart';
-import 'statistics_servant_tab.dart';
-
-class GameStatisticsPage extends StatefulWidget {
-  GameStatisticsPage({Key? key}) : super(key: key);
-
-  @override
-  _GameStatisticsPageState createState() => _GameStatisticsPageState();
-}
-
-class _GameStatisticsPageState extends State<GameStatisticsPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return db.onUserData(
-      (context, _) => Scaffold(
-        appBar: AppBar(
-          title: Text(S.current.statistics_title),
-          actions: [
-            SharedBuilder.buildSwitchPlanButton(
-              context: context,
-              onChange: (index) {
-                db.curUser.curSvtPlanNo = index;
-                db.itemCenter.calculate();
-                setState(() {});
-              },
-            ),
-            SharedBuilder.priorityIcon(context: context),
-          ],
-          bottom: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabs: [
-              Tab(text: S.current.demands),
-              Tab(text: S.current.consumed),
-              Tab(text: S.current.servant)
-            ],
-          ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          // pie chart relate
-          physics: PlatformU.isMobile && _tabController.index == 2
-              ? const NeverScrollableScrollPhysics()
-              : null,
-          children: [
-            KeepAliveBuilder(
-                builder: (context) => ItemStatTab(demandMode: true)),
-            KeepAliveBuilder(
-                builder: (context) => ItemStatTab(demandMode: false)),
-            KeepAliveBuilder(builder: (context) => StatisticServantTab())
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class ItemStatTab extends StatefulWidget {
   final bool demandMode;

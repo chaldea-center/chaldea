@@ -370,11 +370,7 @@ class ItemCenter {
   Map<int, SvtMatCostDetail<int>> getItemCostDetail(
       int itemId, SvtMatCostDetailType type) {
     Map<int, SvtMatCostDetail<int>> details = {};
-    final target = type == SvtMatCostDetailType.consumed
-        ? _svtCur
-        : type == SvtMatCostDetailType.demands
-            ? _svtDemands
-            : _svtFull;
+    final target = getSvtMatrix(type);
     int? itemIndex = target._dim2Map[itemId];
     if (itemIndex == null) return details;
     for (int i = 0; i < target.dim1.length; i++) {
@@ -385,11 +381,35 @@ class ItemCenter {
     }
     return details;
   }
+
+  _MatrixManager<int, int, SvtMatCostDetail<int>> getSvtMatrix(
+      SvtMatCostDetailType type) {
+    return type == SvtMatCostDetailType.consumed
+        ? _svtCur
+        : type == SvtMatCostDetailType.demands
+            ? _svtDemands
+            : _svtFull;
+  }
+
+  SvtMatCostDetail<Map<int, int>> getSvtCostDetail(
+      int svtId, SvtMatCostDetailType type) {
+    final target = getSvtMatrix(type);
+    final svtIndex = target._dim1Map[svtId];
+    final details = SvtMatCostDetail<Map<int, int>>(() => {});
+    if (svtIndex == null) return details;
+    for (int i = 0; i < target.dim2.length; i++) {
+      final v = target._matrix[svtIndex][i];
+      if (v.all <= 0) continue;
+      final item = target.dim2[i];
+      details.updateFrom<int>(v, (p1, p2) => p1..addNum(item, p2));
+    }
+    return details;
+  }
 }
 
 class _MatrixManager<K1, K2, V> {
-  final List<K1> dim1;
-  final List<K2> dim2;
+  final List<K1> dim1; // svt, event
+  final List<K2> dim2; // item
   final Map<K1, int> _dim1Map;
   final Map<K2, int> _dim2Map;
   final List<List<V>> _matrix;
@@ -419,6 +439,10 @@ class _MatrixManager<K1, K2, V> {
     if (index != null) {
       _matrix.removeAt(index);
     }
+  }
+
+  V loc(int x, int y) {
+    return _matrix[x][y];
   }
 }
 
@@ -480,6 +504,17 @@ class SvtMatCostDetail<T> {
       special: special,
       all: all,
     );
+  }
+}
+
+extension SvtMatCostDetailInt on SvtMatCostDetail<int> {
+  void add(SvtMatCostDetail<int> other) {
+    ascension += other.ascension;
+    activeSkill += other.activeSkill;
+    appendSkill += other.appendSkill;
+    costume += other.costume;
+    special += other.special;
+    all += other.all;
   }
 }
 

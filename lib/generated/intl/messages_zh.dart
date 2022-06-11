@@ -683,6 +683,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持与捐赠"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("从者头像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("资料"),
+        "svt_class_dist": MessageLookupByLibrary.simpleMessage("职阶分布"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("自动适配"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("隐藏"),
         "svt_class_filter_single_row":
@@ -703,6 +704,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
+        "svt_stat_details": MessageLookupByLibrary.simpleMessage("明细"),
         "svt_stat_own_total":
             MessageLookupByLibrary.simpleMessage("(999)拥有/总计"),
         "svt_switch_slider_dropdown":

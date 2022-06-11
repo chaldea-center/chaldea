@@ -21,7 +21,7 @@ import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../saint_quartz/sq_main.dart';
 import '../../servant/servant_list.dart';
-import '../../statistics/item_stat.dart';
+import '../../statistics/game_stat.dart';
 import '../../summon/summon_list_page.dart';
 
 class GalleryItem {

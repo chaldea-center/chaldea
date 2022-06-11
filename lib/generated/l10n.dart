@@ -5901,6 +5901,17 @@ class S {
     );
   }
 
+  /// `Svt Class`
+  String get svt_class_dist {
+    return Intl.message(
+      'Svt Class',
+      name: 'svt_class_dist',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Auto`
   String get svt_class_filter_auto {
     return Intl.message(
@@ -6071,6 +6082,17 @@ class S {
     return Intl.message(
       'Second Archive',
       name: 'svt_second_archive',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get svt_stat_details {
+    return Intl.message(
+      'Details',
+      name: 'svt_stat_details',
       desc: '',
       locale: localeName,
       args: [],

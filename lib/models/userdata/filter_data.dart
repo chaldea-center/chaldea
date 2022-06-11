@@ -149,6 +149,25 @@ class FilterRadioData<T> extends FilterGroupData<T> {
 /// Servant
 enum SvtCompare { no, className, rarity, atk, hp, priority }
 
+extension SvtCompareX on SvtCompare {
+  String get showName {
+    switch (this) {
+      case SvtCompare.no:
+        return S.current.filter_sort_number;
+      case SvtCompare.className:
+        return S.current.filter_sort_class;
+      case SvtCompare.rarity:
+        return S.current.filter_sort_rarity;
+      case SvtCompare.atk:
+        return 'ATK';
+      case SvtCompare.hp:
+        return 'HP';
+      case SvtCompare.priority:
+        return S.current.priority;
+    }
+  }
+}
+
 enum SvtEffectScope { active, passive, append, td }
 
 enum EffectTarget {
