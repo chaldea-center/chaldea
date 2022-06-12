@@ -6,6 +6,114 @@ part of '../../../models/gamedata/event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Event _$EventFromJson(Map json) => Event(
+      id: json['id'] as int,
+      type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']) ??
+          EventType.none,
+      name: json['name'] as String,
+      shortName: json['shortName'] as String? ?? "",
+      detail: json['detail'] as String,
+      noticeBanner: json['noticeBanner'] as String?,
+      banner: json['banner'] as String?,
+      icon: json['icon'] as String?,
+      bannerPriority: json['bannerPriority'] as int? ?? 0,
+      noticeAt: json['noticeAt'] as int,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+      finishedAt: json['finishedAt'] as int,
+      materialOpenedAt: json['materialOpenedAt'] as int,
+      warIds:
+          (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      shop: (json['shop'] as List<dynamic>?)
+              ?.map(
+                  (e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      rewards: (json['rewards'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventReward.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      rewardScenes: (json['rewardScenes'] as List<dynamic>?)
+              ?.map((e) => EventRewardScene.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      pointGroups: (json['pointGroups'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventPointGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      pointBuffs: (json['pointBuffs'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventPointBuff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      missions: (json['missions'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      towers: (json['towers'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventTower.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      lotteries: (json['lotteries'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventLottery.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      treasureBoxes: (json['treasureBoxes'] as List<dynamic>?)
+              ?.map((e) => EventTreasureBox.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      digging: json['digging'] == null
+          ? null
+          : EventDigging.fromJson(
+              Map<String, dynamic>.from(json['digging'] as Map)),
+      voicePlays: (json['voicePlays'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      voices: (json['voices'] as List<dynamic>?)
+              ?.map((e) =>
+                  VoiceGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+const _$EventTypeEnumMap = {
+  EventType.none: 'none',
+  EventType.raidBoss: 'raidBoss',
+  EventType.pvp: 'pvp',
+  EventType.point: 'point',
+  EventType.loginBonus: 'loginBonus',
+  EventType.combineCampaign: 'combineCampaign',
+  EventType.shop: 'shop',
+  EventType.questCampaign: 'questCampaign',
+  EventType.bank: 'bank',
+  EventType.serialCampaign: 'serialCampaign',
+  EventType.loginCampaign: 'loginCampaign',
+  EventType.loginCampaignRepeat: 'loginCampaignRepeat',
+  EventType.eventQuest: 'eventQuest',
+  EventType.svtequipCombineCampaign: 'svtequipCombineCampaign',
+  EventType.terminalBanner: 'terminalBanner',
+  EventType.boxGacha: 'boxGacha',
+  EventType.boxGachaPoint: 'boxGachaPoint',
+  EventType.loginCampaignStrict: 'loginCampaignStrict',
+  EventType.totalLogin: 'totalLogin',
+  EventType.comebackCampaign: 'comebackCampaign',
+  EventType.locationCampaign: 'locationCampaign',
+  EventType.warBoard: 'warBoard',
+  EventType.combineCosutumeItem: 'combineCosutumeItem',
+  EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
+  EventType.interludeCampaign: 'interludeCampaign',
+};
+
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
       id: json['id'] as int,
       startedAt: json['startedAt'] as int,
@@ -369,110 +477,6 @@ EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
           Map<String, dynamic>.from(json['commonConsume'] as Map)),
     );
 
-Event _$EventFromJson(Map json) => Event(
-      id: json['id'] as int,
-      type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']) ??
-          EventType.none,
-      name: json['name'] as String,
-      shortName: json['shortName'] as String? ?? "",
-      detail: json['detail'] as String,
-      noticeBanner: json['noticeBanner'] as String?,
-      banner: json['banner'] as String?,
-      icon: json['icon'] as String?,
-      bannerPriority: json['bannerPriority'] as int? ?? 0,
-      noticeAt: json['noticeAt'] as int,
-      startedAt: json['startedAt'] as int,
-      endedAt: json['endedAt'] as int,
-      finishedAt: json['finishedAt'] as int,
-      materialOpenedAt: json['materialOpenedAt'] as int,
-      warIds:
-          (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
-              const [],
-      shop: (json['shop'] as List<dynamic>?)
-              ?.map(
-                  (e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      rewards: (json['rewards'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventReward.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      rewardScenes: (json['rewardScenes'] as List<dynamic>?)
-              ?.map((e) => EventRewardScene.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      pointGroups: (json['pointGroups'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventPointGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      pointBuffs: (json['pointBuffs'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventPointBuff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      missions: (json['missions'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      towers: (json['towers'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventTower.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      lotteries: (json['lotteries'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventLottery.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      treasureBoxes: (json['treasureBoxes'] as List<dynamic>?)
-              ?.map((e) => EventTreasureBox.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      voicePlays: (json['voicePlays'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      voices: (json['voices'] as List<dynamic>?)
-              ?.map((e) =>
-                  VoiceGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-    );
-
-const _$EventTypeEnumMap = {
-  EventType.none: 'none',
-  EventType.raidBoss: 'raidBoss',
-  EventType.pvp: 'pvp',
-  EventType.point: 'point',
-  EventType.loginBonus: 'loginBonus',
-  EventType.combineCampaign: 'combineCampaign',
-  EventType.shop: 'shop',
-  EventType.questCampaign: 'questCampaign',
-  EventType.bank: 'bank',
-  EventType.serialCampaign: 'serialCampaign',
-  EventType.loginCampaign: 'loginCampaign',
-  EventType.loginCampaignRepeat: 'loginCampaignRepeat',
-  EventType.eventQuest: 'eventQuest',
-  EventType.svtequipCombineCampaign: 'svtequipCombineCampaign',
-  EventType.terminalBanner: 'terminalBanner',
-  EventType.boxGacha: 'boxGacha',
-  EventType.boxGachaPoint: 'boxGachaPoint',
-  EventType.loginCampaignStrict: 'loginCampaignStrict',
-  EventType.totalLogin: 'totalLogin',
-  EventType.comebackCampaign: 'comebackCampaign',
-  EventType.locationCampaign: 'locationCampaign',
-  EventType.warBoard: 'warBoard',
-  EventType.combineCosutumeItem: 'combineCosutumeItem',
-  EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
-  EventType.interludeCampaign: 'interludeCampaign',
-};
-
 EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) =>
     EventRewardSceneGuide(
       imageId: json['imageId'] as int,
@@ -530,4 +534,42 @@ EventVoicePlay _$EventVoicePlayFromJson(Map json) => EventVoicePlay(
       condValue: json['condValue'] as int,
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
+    );
+
+EventDigging _$EventDiggingFromJson(Map json) => EventDigging(
+      sizeX: json['sizeX'] as int,
+      sizeY: json['sizeY'] as int,
+      bgImage: json['bgImage'] as String,
+      eventPointItem: Item.fromJson(
+          Map<String, dynamic>.from(json['eventPointItem'] as Map)),
+      resettableDiggedNum: json['resettableDiggedNum'] as int,
+      blocks: (json['blocks'] as List<dynamic>?)
+              ?.map((e) => EventDiggingBlock.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      rewards: (json['rewards'] as List<dynamic>?)
+              ?.map((e) => EventDiggingReward.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+EventDiggingBlock _$EventDiggingBlockFromJson(Map json) => EventDiggingBlock(
+      id: json['id'] as int,
+      image: json['image'] as String,
+      commonConsume: CommonConsume.fromJson(
+          Map<String, dynamic>.from(json['commonConsume'] as Map)),
+      objectId: json['objectId'] as int,
+      diggingEventPoint: json['diggingEventPoint'] as int,
+      blockNum: json['blockNum'] as int,
+    );
+
+EventDiggingReward _$EventDiggingRewardFromJson(Map json) => EventDiggingReward(
+      id: json['id'] as int,
+      gifts: (json['gifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      rewardSize: json['rewardSize'] as int,
     );

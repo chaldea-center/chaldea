@@ -9,6 +9,285 @@ import 'gamedata.dart';
 part '../../generated/models/gamedata/event.g.dart';
 
 @JsonSerializable()
+class Event {
+  int id;
+  EventType type;
+  String name;
+  String? _shortName;
+  String detail;
+  String? noticeBanner;
+  String? banner;
+  String? icon;
+  int bannerPriority;
+  int noticeAt;
+  int startedAt;
+  int endedAt;
+  int finishedAt;
+  int materialOpenedAt;
+  List<int> warIds;
+  List<NiceShop> shop;
+  List<EventReward> rewards; // point rewards
+  List<EventRewardScene> rewardScenes;
+  List<EventPointGroup> pointGroups;
+  List<EventPointBuff> pointBuffs;
+  List<EventMission> missions;
+  List<EventTower> towers;
+  List<EventLottery> lotteries;
+  List<EventTreasureBox> treasureBoxes;
+  EventDigging? digging;
+  List<EventVoicePlay> voicePlays;
+  List<VoiceGroup> voices;
+
+  Event({
+    required this.id,
+    this.type = EventType.none,
+    required this.name,
+    String shortName = "",
+    required this.detail,
+    this.noticeBanner,
+    this.banner,
+    this.icon,
+    this.bannerPriority = 0,
+    required this.noticeAt,
+    required this.startedAt,
+    required this.endedAt,
+    required this.finishedAt,
+    required this.materialOpenedAt,
+    this.warIds = const [],
+    this.shop = const [],
+    this.rewards = const [],
+    this.rewardScenes = const [],
+    this.pointGroups = const [],
+    this.pointBuffs = const [],
+    this.missions = const [],
+    this.towers = const [],
+    this.lotteries = const [],
+    this.treasureBoxes = const [],
+    this.digging,
+    this.voicePlays = const [],
+    this.voices = const [],
+  }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
+
+  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+
+  String get shortName => lShortName.jp;
+  Transl<String, String> get lShortName {
+    if (_shortName != null) return Transl.warNames(_shortName!);
+    return lName;
+  }
+
+  EventExtra get extra => db.gameData.wiki.events
+      .putIfAbsent(id, () => EventExtra(id: id, name: name));
+
+  bool get isEmpty =>
+      warIds.isEmpty &&
+      shop.isEmpty &&
+      lotteries.isEmpty &&
+      missions.isEmpty &&
+      treasureBoxes.isEmpty &&
+      towers.isEmpty &&
+      rewards.isEmpty &&
+      extra.huntingQuestIds.isEmpty &&
+      extra.extraFixedItems.isEmpty &&
+      extra.extraItems.isEmpty;
+
+  bool isOutdated([Duration diff = const Duration(days: 20)]) {
+    if (db.curUser.region == Region.jp) {
+      return DateTime.now().difference(startedAt.sec2date()) >
+          const Duration(days: 31 * 13);
+    }
+    int? _end = db.curUser.region == Region.jp
+        ? endedAt
+        : extra.endTime.ofRegion(db.curUser.region);
+    final neverClosed =
+        DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
+    if (_end != null && _end > neverClosed) {
+      final _start = db.curUser.region == Region.jp
+          ? startedAt
+          : extra.startTime.ofRegion(db.curUser.region);
+      if (_start != null) {
+        _end = _start + 3600 * 24 * 30;
+      }
+    }
+    return _end != null &&
+        _end.sec2date().isBefore(DateTime.now().subtract(diff));
+  }
+
+  Transl<String, String> get lName => Transl.eventNames(name);
+
+  String get shownName {
+    if (extra.huntingId > 0) {
+      return '${lName.l} ${extra.huntingId}';
+    }
+    return lName.l.setMaxLines(2);
+  }
+
+  String get route => Routes.eventI(id);
+  void routeTo() => router.push(url: Routes.eventI(id));
+
+  // statistics
+  @JsonKey(ignore: true)
+  Map<int, Map<int, int>> itemShop = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemPointReward = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemMission = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemTower = {};
+  @JsonKey(ignore: true)
+  Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
+  @JsonKey(ignore: true)
+  Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
+  @JsonKey(ignore: true)
+  Map<int, int> itemWarReward = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemWarDrop = {};
+
+  //
+  @JsonKey(ignore: true)
+  Map<int, int> statItemFixed = {};
+  @JsonKey(ignore: true)
+  Map<int, Map<int, int>> statItemLottery = {}; //unlimited
+  @JsonKey(ignore: true)
+  Set<int> statItemExtra = {}; // treasureBox, extraItems
+
+  void updateStat() {
+    db.itemCenter.updateEvents(events: [this]);
+  }
+
+  void calcItems(GameData gameData) {
+    final extra = gameData.wiki.events[id];
+    statItemFixed.clear();
+    statItemLottery.clear();
+    statItemExtra.clear();
+    // ensure war calcItems called before events
+    itemWarReward.clear();
+    itemWarDrop.clear();
+    for (final warId in warIds) {
+      final war = gameData.wars[warId];
+      if (war == null) continue;
+      itemWarReward.addDict(war.itemReward);
+      itemWarDrop.addDict(war.itemDrop);
+    }
+    statItemFixed
+      ..addDict(itemWarReward)
+      ..addDict(itemWarDrop);
+
+    itemShop.clear();
+    // shop
+    for (final shopItem in shop) {
+      if (shopItem.limitNum == 0) continue;
+      if (![
+        PurchaseType.item,
+        PurchaseType.servant,
+        PurchaseType.eventSvtGet,
+        PurchaseType.setItem,
+        PurchaseType.costumeRelease,
+        PurchaseType.itemAsPresent,
+        PurchaseType.commandCode,
+        PurchaseType.gift,
+      ].contains(shopItem.purchaseType)) {
+        continue;
+      }
+      final _items = itemShop[shopItem.id] = {};
+      if (shopItem.purchaseType == PurchaseType.setItem) {
+        for (final set in shopItem.itemSet) {
+          if (set.purchaseType == PurchaseType.item ||
+              set.purchaseType == PurchaseType.servant) {
+            if (gameData.craftEssencesById[set.targetId]?.flag ==
+                SvtFlag.svtEquipChocolate) {
+              continue;
+            }
+            _items.addNum(
+                set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
+          }
+        }
+      } else {
+        for (final id in shopItem.targetIds) {
+          if (gameData.craftEssencesById[id]?.flag ==
+              SvtFlag.svtEquipChocolate) {
+            continue;
+          }
+          _items.addNum(id, shopItem.limitNum * shopItem.setNum);
+        }
+      }
+      statItemFixed.addDict(_items);
+    }
+
+    // point rewards
+    itemPointReward.clear();
+    for (final point in rewards) {
+      Gift.checkAddGifts(itemPointReward, point.gifts);
+    }
+    statItemFixed.addDict(itemPointReward);
+
+    // mission, exclude random mission
+    itemMission.clear();
+    for (final mission in missions) {
+      if (mission.type == MissionType.random) continue;
+      if (mission.rewardType == MissionRewardType.gift) {
+        Gift.checkAddGifts(itemMission, mission.gifts);
+      }
+    }
+    statItemFixed.addDict(itemMission);
+
+    // tower, similar with point rewards
+    itemTower.clear();
+    for (final tower in towers) {
+      for (final reward in tower.rewards) {
+        Gift.checkAddGifts(itemTower, reward.gifts);
+      }
+    }
+    statItemFixed.addDict(itemTower);
+
+    //
+    itemLottery.clear();
+    for (final lottery in lotteries) {
+      final _lastBoxItems = lottery.lastBoxItems;
+      if (!lottery.limited) {
+        // what if multiple unlimited lottery?
+        statItemLottery[lottery.id] = _lastBoxItems;
+      }
+      for (final box in lottery.boxes) {
+        for (final gift in box.gifts) {
+          final itemLotBox = itemLottery
+              .putIfAbsent(lottery.id, () => {})
+              .putIfAbsent(box.boxIndex, () => {});
+          Gift.checkAddGifts(itemLotBox, box.gifts, box.maxNum);
+          if (gift.isStatItem) {
+            if (lottery.limited || !_lastBoxItems.containsKey(gift.objectId)) {
+              Gift.checkAddGifts(statItemFixed, [gift], box.maxNum);
+            }
+          }
+        }
+      }
+    }
+
+    //
+    itemTreasureBox.clear();
+    for (final box in treasureBoxes) {
+      for (final boxGifts in box.treasureBoxGifts) {
+        final itemBox = itemTreasureBox.putIfAbsent(box.id, () => {});
+        for (final gift in boxGifts.gifts) {
+          if (gift.isStatItem) {
+            itemBox.addNum(gift.objectId, gift.num);
+            statItemExtra.add(gift.objectId);
+          }
+        }
+      }
+    }
+    if (extra != null) {
+      for (final e in extra.extraFixedItems) {
+        statItemFixed.addDict(e.items);
+      }
+      for (final e in extra.extraItems) {
+        statItemExtra.addAll(e.items.keys);
+      }
+    }
+  }
+}
+
+@JsonSerializable()
 class MasterMission {
   int id;
   int startedAt;
@@ -525,283 +804,6 @@ class EventTreasureBox {
 }
 
 @JsonSerializable()
-class Event {
-  int id;
-  EventType type;
-  String name;
-  String? _shortName;
-  String detail;
-  String? noticeBanner;
-  String? banner;
-  String? icon;
-  int bannerPriority;
-  int noticeAt;
-  int startedAt;
-  int endedAt;
-  int finishedAt;
-  int materialOpenedAt;
-  List<int> warIds;
-  List<NiceShop> shop;
-  List<EventReward> rewards; // point rewards
-  List<EventRewardScene> rewardScenes;
-  List<EventPointGroup> pointGroups;
-  List<EventPointBuff> pointBuffs;
-  List<EventMission> missions;
-  List<EventTower> towers;
-  List<EventLottery> lotteries;
-  List<EventTreasureBox> treasureBoxes;
-  List<EventVoicePlay> voicePlays;
-  List<VoiceGroup> voices;
-
-  Event({
-    required this.id,
-    this.type = EventType.none,
-    required this.name,
-    String shortName = "",
-    required this.detail,
-    this.noticeBanner,
-    this.banner,
-    this.icon,
-    this.bannerPriority = 0,
-    required this.noticeAt,
-    required this.startedAt,
-    required this.endedAt,
-    required this.finishedAt,
-    required this.materialOpenedAt,
-    this.warIds = const [],
-    this.shop = const [],
-    this.rewards = const [],
-    this.rewardScenes = const [],
-    this.pointGroups = const [],
-    this.pointBuffs = const [],
-    this.missions = const [],
-    this.towers = const [],
-    this.lotteries = const [],
-    this.treasureBoxes = const [],
-    this.voicePlays = const [],
-    this.voices = const [],
-  }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
-
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
-
-  String get shortName => lShortName.jp;
-  Transl<String, String> get lShortName {
-    if (_shortName != null) return Transl.warNames(_shortName!);
-    return lName;
-  }
-
-  EventExtra get extra => db.gameData.wiki.events
-      .putIfAbsent(id, () => EventExtra(id: id, name: name));
-
-  bool get isEmpty =>
-      warIds.isEmpty &&
-      shop.isEmpty &&
-      lotteries.isEmpty &&
-      missions.isEmpty &&
-      treasureBoxes.isEmpty &&
-      towers.isEmpty &&
-      rewards.isEmpty &&
-      extra.huntingQuestIds.isEmpty &&
-      extra.extraFixedItems.isEmpty &&
-      extra.extraItems.isEmpty;
-
-  bool isOutdated([Duration diff = const Duration(days: 20)]) {
-    if (db.curUser.region == Region.jp) {
-      return DateTime.now().difference(startedAt.sec2date()) >
-          const Duration(days: 31 * 13);
-    }
-    int? _end = db.curUser.region == Region.jp
-        ? endedAt
-        : extra.endTime.ofRegion(db.curUser.region);
-    final neverClosed =
-        DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
-    if (_end != null && _end > neverClosed) {
-      final _start = db.curUser.region == Region.jp
-          ? startedAt
-          : extra.startTime.ofRegion(db.curUser.region);
-      if (_start != null) {
-        _end = _start + 3600 * 24 * 30;
-      }
-    }
-    return _end != null &&
-        _end.sec2date().isBefore(DateTime.now().subtract(diff));
-  }
-
-  Transl<String, String> get lName => Transl.eventNames(name);
-
-  String get shownName {
-    if (extra.huntingId > 0) {
-      return '${lName.l} ${extra.huntingId}';
-    }
-    return lName.l.setMaxLines(2);
-  }
-
-  String get route => Routes.eventI(id);
-  void routeTo() => router.push(url: Routes.eventI(id));
-
-  // statistics
-  @JsonKey(ignore: true)
-  Map<int, Map<int, int>> itemShop = {};
-  @JsonKey(ignore: true)
-  Map<int, int> itemPointReward = {};
-  @JsonKey(ignore: true)
-  Map<int, int> itemMission = {};
-  @JsonKey(ignore: true)
-  Map<int, int> itemTower = {};
-  @JsonKey(ignore: true)
-  Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
-  @JsonKey(ignore: true)
-  Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
-  @JsonKey(ignore: true)
-  Map<int, int> itemWarReward = {};
-  @JsonKey(ignore: true)
-  Map<int, int> itemWarDrop = {};
-
-  //
-  @JsonKey(ignore: true)
-  Map<int, int> statItemFixed = {};
-  @JsonKey(ignore: true)
-  Map<int, Map<int, int>> statItemLottery = {}; //unlimited
-  @JsonKey(ignore: true)
-  Set<int> statItemExtra = {}; // treasureBox, extraItems
-
-  void updateStat() {
-    db.itemCenter.updateEvents(events: [this]);
-  }
-
-  void calcItems(GameData gameData) {
-    final extra = gameData.wiki.events[id];
-    statItemFixed.clear();
-    statItemLottery.clear();
-    statItemExtra.clear();
-    // ensure war calcItems called before events
-    itemWarReward.clear();
-    itemWarDrop.clear();
-    for (final warId in warIds) {
-      final war = gameData.wars[warId];
-      if (war == null) continue;
-      itemWarReward.addDict(war.itemReward);
-      itemWarDrop.addDict(war.itemDrop);
-    }
-    statItemFixed
-      ..addDict(itemWarReward)
-      ..addDict(itemWarDrop);
-
-    itemShop.clear();
-    // shop
-    for (final shopItem in shop) {
-      if (shopItem.limitNum == 0) continue;
-      if (![
-        PurchaseType.item,
-        PurchaseType.servant,
-        PurchaseType.eventSvtGet,
-        PurchaseType.setItem,
-        PurchaseType.costumeRelease,
-        PurchaseType.itemAsPresent,
-        PurchaseType.commandCode,
-        PurchaseType.gift,
-      ].contains(shopItem.purchaseType)) {
-        continue;
-      }
-      final _items = itemShop[shopItem.id] = {};
-      if (shopItem.purchaseType == PurchaseType.setItem) {
-        for (final set in shopItem.itemSet) {
-          if (set.purchaseType == PurchaseType.item ||
-              set.purchaseType == PurchaseType.servant) {
-            if (gameData.craftEssencesById[set.targetId]?.flag ==
-                SvtFlag.svtEquipChocolate) {
-              continue;
-            }
-            _items.addNum(
-                set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
-          }
-        }
-      } else {
-        for (final id in shopItem.targetIds) {
-          if (gameData.craftEssencesById[id]?.flag ==
-              SvtFlag.svtEquipChocolate) {
-            continue;
-          }
-          _items.addNum(id, shopItem.limitNum * shopItem.setNum);
-        }
-      }
-      statItemFixed.addDict(_items);
-    }
-
-    // point rewards
-    itemPointReward.clear();
-    for (final point in rewards) {
-      Gift.checkAddGifts(itemPointReward, point.gifts);
-    }
-    statItemFixed.addDict(itemPointReward);
-
-    // mission, exclude random mission
-    itemMission.clear();
-    for (final mission in missions) {
-      if (mission.type == MissionType.random) continue;
-      if (mission.rewardType == MissionRewardType.gift) {
-        Gift.checkAddGifts(itemMission, mission.gifts);
-      }
-    }
-    statItemFixed.addDict(itemMission);
-
-    // tower, similar with point rewards
-    itemTower.clear();
-    for (final tower in towers) {
-      for (final reward in tower.rewards) {
-        Gift.checkAddGifts(itemTower, reward.gifts);
-      }
-    }
-    statItemFixed.addDict(itemTower);
-
-    //
-    itemLottery.clear();
-    for (final lottery in lotteries) {
-      final _lastBoxItems = lottery.lastBoxItems;
-      if (!lottery.limited) {
-        // what if multiple unlimited lottery?
-        statItemLottery[lottery.id] = _lastBoxItems;
-      }
-      for (final box in lottery.boxes) {
-        for (final gift in box.gifts) {
-          final itemLotBox = itemLottery
-              .putIfAbsent(lottery.id, () => {})
-              .putIfAbsent(box.boxIndex, () => {});
-          Gift.checkAddGifts(itemLotBox, box.gifts, box.maxNum);
-          if (gift.isStatItem) {
-            if (lottery.limited || !_lastBoxItems.containsKey(gift.objectId)) {
-              Gift.checkAddGifts(statItemFixed, [gift], box.maxNum);
-            }
-          }
-        }
-      }
-    }
-
-    //
-    itemTreasureBox.clear();
-    for (final box in treasureBoxes) {
-      for (final boxGifts in box.treasureBoxGifts) {
-        final itemBox = itemTreasureBox.putIfAbsent(box.id, () => {});
-        for (final gift in boxGifts.gifts) {
-          if (gift.isStatItem) {
-            itemBox.addNum(gift.objectId, gift.num);
-            statItemExtra.add(gift.objectId);
-          }
-        }
-      }
-    }
-    if (extra != null) {
-      for (final e in extra.extraFixedItems) {
-        statItemFixed.addDict(e.items);
-      }
-      for (final e in extra.extraItems) {
-        statItemExtra.addAll(e.items.keys);
-      }
-    }
-  }
-}
-
-@JsonSerializable()
 class EventRewardSceneGuide {
   int imageId;
   int limitCount;
@@ -883,6 +885,68 @@ class EventVoicePlay {
 
   factory EventVoicePlay.fromJson(Map<String, dynamic> json) =>
       _$EventVoicePlayFromJson(json);
+}
+
+@JsonSerializable()
+class EventDigging {
+  int sizeX;
+  int sizeY;
+  String bgImage;
+  Item eventPointItem;
+  int resettableDiggedNum;
+  List<EventDiggingBlock> blocks;
+  List<EventDiggingReward> rewards;
+
+  EventDigging({
+    required this.sizeX,
+    required this.sizeY,
+    required this.bgImage,
+    required this.eventPointItem,
+    required this.resettableDiggedNum,
+    this.blocks = const [],
+    this.rewards = const [],
+  });
+
+  factory EventDigging.fromJson(Map<String, dynamic> json) =>
+      _$EventDiggingFromJson(json);
+}
+
+@JsonSerializable()
+class EventDiggingBlock {
+  int id;
+  String image;
+  CommonConsume commonConsume;
+  int objectId;
+  int diggingEventPoint;
+  int blockNum;
+
+  EventDiggingBlock({
+    required this.id,
+    required this.image,
+    required this.commonConsume,
+    required this.objectId,
+    required this.diggingEventPoint,
+    required this.blockNum,
+  });
+
+  factory EventDiggingBlock.fromJson(Map<String, dynamic> json) =>
+      _$EventDiggingBlockFromJson(json);
+}
+
+@JsonSerializable()
+class EventDiggingReward {
+  int id;
+  List<Gift> gifts;
+  int rewardSize;
+
+  EventDiggingReward({
+    required this.id,
+    this.gifts = const [],
+    required this.rewardSize,
+  });
+
+  factory EventDiggingReward.fromJson(Map<String, dynamic> json) =>
+      _$EventDiggingRewardFromJson(json);
 }
 
 enum PurchaseType {
