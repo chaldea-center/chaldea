@@ -167,6 +167,15 @@ abstract class FFOUtil {
     return '$assetsRoot$path';
   }
 
+  static String? borderedSprite(String? path) {
+    if (path == null) return null;
+    path = path.replaceFirstMapped(
+        RegExp(r'/Sprite/icon_servant_(\d+)\.png'),
+        (match) =>
+            '/Sprite_bordered/icon_servant_${match.group(1)!}_bordered.png');
+    return imgUrl(path);
+  }
+
   static Future<void> setPart(
       FfoCanvasImages images, FfoSvtPart? coord, FfoPartWhere where) async {
     // wait the previous render completed
@@ -215,7 +224,7 @@ abstract class FFOUtil {
     if (kIsWeb) {
       provider = CachedNetworkImageProvider(url);
     } else {
-      String? localFp = await AtlasIconLoader.i.download(url);
+      String? localFp = await AtlasIconLoader.i.get(url);
       if (localFp == null) return null;
       provider = FileImage(File(localFp));
     }

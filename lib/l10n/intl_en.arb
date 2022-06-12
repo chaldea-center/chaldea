@@ -452,6 +452,7 @@
   "rename": "Rename",
   "rerun_event": "Rerun",
   "reset": "Reset",
+  "reset_custom_ascension_icon": "Reset custom ascension icons",
   "reset_plan_all": "Reset Plan {n}(All)",
   "reset_plan_shown": "Reset Plan {n}(Shown)",
   "restart_to_apply_changes": "Restart to take effect",

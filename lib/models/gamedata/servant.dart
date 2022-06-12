@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../db.dart';
@@ -274,10 +275,28 @@ class Servant with GameCardMixin {
 
   String? get customIcon {
     if (collectionNo <= 0) return borderedIcon;
-    final _icon = db.userData.customSvtIcon[collectionNo] ??
-        extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ??
-        icon;
+    String? _icon = db.userData.customSvtIcon[collectionNo];
+    if (_icon != null) return _icon;
+
+    if (db.userData.svtAscensionIcon == -1) {
+      _icon = aprilFoolBorderedIcon;
+      if (_icon != null) return _icon;
+    }
+    _icon = extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ?? icon;
     return bordered(_icon);
+  }
+
+  String? get aprilFoolIcon {
+    if (collectionNo <= 0 || collectionNo > 306) return null;
+    if ([83, 149, 151, 152, 168, 240].contains(collectionNo)) return null;
+    final padded = collectionNo.toString().padLeft(3, '0');
+    return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite/icon_servant_$padded.png';
+  }
+
+  String? get aprilFoolBorderedIcon {
+    if (aprilFoolIcon == null) return null;
+    final padded = collectionNo.toString().padLeft(3, '0');
+    return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
   String? get classCard {

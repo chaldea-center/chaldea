@@ -190,7 +190,9 @@ class UserData {
     for (final user in users) {
       user.validate();
     }
-    svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
+    if (svtAscensionIcon != -1) {
+      svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
+    }
   }
 }
 

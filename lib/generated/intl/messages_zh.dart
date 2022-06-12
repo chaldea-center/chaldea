@@ -592,6 +592,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
+        "reset_custom_ascension_icon":
+            MessageLookupByLibrary.simpleMessage("重置自定义从者头像"),
         "reset_plan_all": m7,
         "reset_plan_shown": m8,
         "restart_to_apply_changes":

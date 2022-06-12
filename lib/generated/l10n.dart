@@ -5043,6 +5043,17 @@ class S {
     );
   }
 
+  /// `Reset custom ascension icons`
+  String get reset_custom_ascension_icon {
+    return Intl.message(
+      'Reset custom ascension icons',
+      name: 'reset_custom_ascension_icon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Reset Plan {n}(All)`
   String reset_plan_all(Object n) {
     return Intl.message(

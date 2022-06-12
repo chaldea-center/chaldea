@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -135,13 +137,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 trailing: DropdownButton<int>(
                   value: db.userData.svtAscensionIcon,
                   underline: const SizedBox(),
-                  items: List.generate(
-                    4,
-                    (index) => DropdownMenuItem(
-                      value: index + 1,
-                      child: Text('${S.current.ascension} ${index + 1}'),
+                  items: [
+                    for (int index = 1; index <= 4; index++)
+                      DropdownMenuItem(
+                        value: index,
+                        child: Text('${S.current.ascension} $index'),
+                      ),
+                    DropdownMenuItem(
+                      value: -1,
+                      child: Text(S.current.april_fool),
                     ),
-                  ),
+                  ],
                   onChanged: (v) {
                     if (v != null) {
                       db.userData.svtAscensionIcon = v;
@@ -149,6 +155,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     setState(() {});
                   },
                 ),
+              ),
+              ListTile(
+                title: Text(S.current.reset_custom_ascension_icon),
+                onTap: () {
+                  db.userData.customSvtIcon.clear();
+                  EasyLoading.showSuccess(S.current.success);
+                },
               )
             ],
           ),

@@ -699,6 +699,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
+        "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage(
+            "Reset custom ascension icons"),
         "reset_plan_all": m7,
         "reset_plan_shown": m8,
         "restart_to_apply_changes":

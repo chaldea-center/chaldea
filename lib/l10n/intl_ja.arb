@@ -452,6 +452,7 @@
   "rename": "名前変更",
   "rerun_event": "復刻イベント",
   "reset": "リセット",
+  "reset_custom_ascension_icon": null,
   "reset_plan_all": "プラン{n}をリセット(すべて)",
   "reset_plan_shown": "プラン{n}をリセット(表示のみ)",
   "restart_to_apply_changes": "再起動して設定を有効にしてください",

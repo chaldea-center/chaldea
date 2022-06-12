@@ -452,6 +452,7 @@
   "rename": "이름 변경",
   "rerun_event": "복각 이벤트",
   "reset": "초기화",
+  "reset_custom_ascension_icon": null,
   "reset_plan_all": "계획 초기화 {n}(모두)",
   "reset_plan_shown": "계획 초기화 {n}(표시된)",
   "restart_to_apply_changes": "다시 시작하여 적용시키기",

@@ -116,10 +116,12 @@ class FfoPartListPageState extends State<FfoPartListPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(name, maxLines: 1),
-          Text('No.${part.collectionNo} - $svtClass'),
+          Text(
+              'No.${part.collectionNo} - $kStarChar${part.svt?.rarity} $svtClass'),
         ],
       ),
-      trailing: db.getIconImage(FFOUtil.imgUrl(part.svt?.icon), height: 48),
+      trailing:
+          db.getIconImage(FFOUtil.borderedSprite(part.svt?.icon), width: 42),
       selected: SplitRoute.isSplit(context) && selected == part,
       onTap: _getOnTap(part),
       enabled: part.svt != null,

@@ -500,9 +500,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     List<Widget> children = [];
                     void _addOne(String name, String? icon) {
                       if (icon == null) return;
+                      icon = svt.bordered(icon);
                       children.add(ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: db.getIconImage(svt.bordered(icon),
+                        leading: db.getIconImage(icon,
                             padding: const EdgeInsets.symmetric(vertical: 2)),
                         title: Text(name),
                         onTap: () {
@@ -526,6 +527,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
                           value,
                         );
                       });
+                    }
+                    if (svt.aprilFoolBorderedIcon != null) {
+                      _addOne(S.current.april_fool, svt.aprilFoolBorderedIcon);
                     }
                     return SimpleCancelOkDialog(
                       title: Text(S.current.svt_ascension_icon),

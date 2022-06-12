@@ -452,6 +452,7 @@
   "rename": "Renombrar",
   "rerun_event": "Rerun",
   "reset": "Reiniciar",
+  "reset_custom_ascension_icon": null,
   "reset_plan_all": "Restablecer plan {n}(Todo)",
   "reset_plan_shown": "Restablecer plan {n} (Mostrado)",
   "restart_to_apply_changes": "Reiniciar para que surta efecto",

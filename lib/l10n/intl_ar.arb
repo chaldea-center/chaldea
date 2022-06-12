@@ -452,6 +452,7 @@
   "rename": "إعادة التسمية",
   "rerun_event": "ري رن",
   "reset": "إعادة ",
+  "reset_custom_ascension_icon": null,
   "reset_plan_all": "إعادة الخطة {n}(All)",
   "reset_plan_shown": "إعادة الخطة{n}(Shown)",
   "restart_to_apply_changes": null,

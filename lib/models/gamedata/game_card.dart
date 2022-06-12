@@ -23,7 +23,9 @@ mixin GameCardMixin {
 
   String? get borderedIcon => bordered(icon);
 
-  String? bordered(String? icon) {
+  String? bordered(String? icon) => makeBordered(icon);
+
+  static String? makeBordered(String? icon) {
     if (icon == null) return icon;
     if (icon.contains('bordered')) return icon;
     return icon.replaceAll('.png', '_bordered.png');
