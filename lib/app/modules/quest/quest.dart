@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/enemy/quest_card.dart';
@@ -70,7 +72,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_quest?.lName.l ?? 'Quest $questId'),
+        title: AutoSizeText(_quest?.lName.l ?? 'Quest $questId',
+            maxLines: 1, minFontSize: 12),
         actions: [
           DropdownButton<Region>(
             value: region,

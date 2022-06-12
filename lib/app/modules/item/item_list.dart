@@ -663,7 +663,7 @@ class _ItemListTabState extends State<ItemListTab> {
               maxLines: 1,
             ),
           ),
-          if (coinOwner != null) ...[
+          if (coinOwner == null) ...[
             Text(S.of(context).event_title,
                 style: const TextStyle(fontSize: 14)),
             ConstrainedBox(

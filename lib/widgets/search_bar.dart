@@ -164,15 +164,20 @@ abstract class SearchOptionsMixin<T> {
 
   Iterable<String?> getSkillKeys(SkillOrTd skill) sync* {
     yield* getAllKeys(skill.lName);
-    yield SearchUtil.getJP(skill.ruby);
     final detail = skill.detail;
-    if (detail != null) {
-      yield* getAllKeys(Transl.skillDetail(detail));
-    }
     if (skill is BaseSkill) {
+      if (detail != null) {
+        yield* getAllKeys(Transl.skillDetail(detail));
+      }
+      yield SearchUtil.getJP(skill.ruby);
       for (final skillAdd in skill.skillAdd) {
         yield* getAllKeys(Transl.skillNames(skillAdd.name));
       }
+    } else if (skill is BaseTd) {
+      if (detail != null) {
+        yield* getAllKeys(Transl.tdDetail(detail));
+      }
+      yield* SearchUtil.getAllKeys(Transl.tdRuby(skill.ruby));
     }
   }
 }

@@ -355,7 +355,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
               List<String?> localFiles = [];
               EasyLoading.show(status: S.current.downloading);
               for (final url in line.audioAssets) {
-                localFiles.add(await AtlasIconLoader.i.download(url));
+                localFiles.add(await AtlasIconLoader.i.get(url));
               }
               EasyLoading.dismiss();
               if (!mounted) return;
