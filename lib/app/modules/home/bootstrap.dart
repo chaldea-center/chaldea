@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -11,13 +12,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/basic.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/img_util.dart';
-import 'package:chaldea/widgets/after_layout.dart';
-import 'package:chaldea/widgets/custom_dialogs.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../../generated/l10n.dart';
 import '../../../packages/language.dart';
 import '../../../packages/logger.dart';
@@ -39,6 +38,8 @@ class _BootstrapPageState extends State<BootstrapPage>
   final _loader = GameDataLoader();
   bool _offlineLoading = true;
   bool invalidStartup = false;
+  bool _fa_ = false;
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +65,8 @@ class _BootstrapPageState extends State<BootstrapPage>
   @override
   void afterFirstLayout(BuildContext context) async {
     if (invalidStartup) return;
+    _fa_ = AppInfo.packageName.startsWith(_d('Y29tLmxkcy4='));
+    if (_fa_) return;
     try {
       if (!db.settings.tips.starter) {
         final data = await _loader.reload(
@@ -88,8 +91,37 @@ class _BootstrapPageState extends State<BootstrapPage>
     }
   }
 
+  String _d(String s) {
+    return utf8.decode(base64Decode(s));
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_fa_) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _d('U29tZXRoaW5nIHdlbnQgd3Jvbmch'),
+                style: Theme.of(context).textTheme.headline4,
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                onPressed: () {
+                  launch(kGooglePlayLink);
+                },
+                child: Text(_d('UmVkb3dubG9hZCA=') + kPackageName),
+              ),
+              const SizedBox(height: 48),
+              SFooter(_d(
+                  '64u57Iug7J2AIOyVhOuniCDrtojrspUg67O17KCcIOyGjO2UhO2KuOybqOyWtOydmCDtlLztlbTsnpDsnbwg6rKD7J2064uk')),
+            ],
+          ),
+        ),
+      );
+    }
     if (invalidStartup) {
       pages = [
         StartupFailedPage(

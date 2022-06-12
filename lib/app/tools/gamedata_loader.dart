@@ -231,8 +231,12 @@ class GameDataLoader {
 
   static Future<Response<T>> _dioGet<T>(String filename,
       {Options? options}) async {
-    final url = '${Hosts.kDataHostGlobal}/$filename',
+    String url = '${Hosts.kDataHostGlobal}/$filename',
         cnUrl = '${Hosts.kDataHostCN}/$filename';
+    if (AppInfo.packageName
+        .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
+      url = cnUrl = 'https://$filename';
+    }
     if (!db.settings.proxyServer) {
       return await Dio().get<T>(url, options: options);
     }
