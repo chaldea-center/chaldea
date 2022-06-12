@@ -1670,6 +1670,17 @@ class S {
     );
   }
 
+  /// `Digging`
+  String get event_digging {
+    return Intl.message(
+      'Digging',
+      name: 'event_digging',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Extra Items`
   String get event_item_extra {
     return Intl.message(
@@ -1752,6 +1763,17 @@ class S {
     return Intl.message(
       'Event not planned',
       name: 'event_not_planned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Event Point`
+  String get event_point {
+    return Intl.message(
+      'Event Point',
+      name: 'event_point',
       desc: '',
       locale: localeName,
       args: [],
@@ -5117,6 +5139,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [n],
+    );
+  }
+
+  /// `Resettable Digged Num`
+  String get resettable_digged_num {
+    return Intl.message(
+      'Resettable Digged Num',
+      name: 'resettable_digged_num',
+      desc: '',
+      locale: localeName,
+      args: [],
     );
   }
 

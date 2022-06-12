@@ -18,6 +18,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
 import 'bonus.dart';
+import 'digging.dart';
 import 'lottery.dart';
 import 'mission.dart';
 import 'points.dart';
@@ -123,6 +124,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
+    }
+    if (event.digging != null) {
+      _addTab(S.current.event_digging,
+          EventDiggingTab(event: event, digging: event.digging!));
     }
     return DefaultTabController(
       length: tabs.length,
@@ -558,6 +563,30 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           ],
         )
       ]);
+    }
+
+    if (event.digging != null) {
+      final items = Item.sortMapByPriority(event.itemDigging,
+          reversed: false, category: true);
+      children.add(ListTile(title: Text(S.current.event_digging)));
+      children.add(TileGroup(
+        children: [
+          for (final itemId in items.keys)
+            ListTile(
+              leading: GameCardMixin.anyCardItemBuilder(
+                  context: context, id: itemId, width: 36),
+              title: Text(GameCardMixin.anyCardItemName(itemId).l +
+                  (items[itemId] == 1 ? '' : ' x ${items[itemId]}')),
+              trailing: _inputGroup(
+                value: () => plan.digging[itemId],
+                onChanged: (value) {
+                  plan.digging[itemId] = value;
+                },
+                tag: 'event_digging_$itemId',
+              ),
+            )
+        ],
+      ));
     }
 
     for (final extraItems in event.extra.extraFixedItems) {

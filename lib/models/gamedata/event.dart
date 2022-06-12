@@ -87,6 +87,7 @@ class Event {
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
       rewards.isEmpty &&
+      digging == null &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -138,6 +139,8 @@ class Event {
   Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
   @JsonKey(ignore: true)
   Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
+  @JsonKey(ignore: true)
+  Map<int, int> itemDigging = {};
   @JsonKey(ignore: true)
   Map<int, int> itemWarReward = {};
   @JsonKey(ignore: true)
@@ -271,6 +274,18 @@ class Event {
         for (final gift in boxGifts.gifts) {
           if (gift.isStatItem) {
             itemBox.addNum(gift.objectId, gift.num);
+            statItemExtra.add(gift.objectId);
+          }
+        }
+      }
+    }
+
+    itemDigging.clear();
+    if (digging != null) {
+      for (final reward in digging!.rewards) {
+        for (final gift in reward.gifts) {
+          if (gift.isStatItem) {
+            itemDigging.addNum(gift.objectId, gift.num);
             statItemExtra.add(gift.objectId);
           }
         }
@@ -744,15 +759,14 @@ class EventLotteryTalk {
 class CommonConsume {
   int id;
   int priority;
-
-  // CommonConsumeType type;
+  CommonConsumeType type;
   int objectId;
   int num;
 
   CommonConsume({
     required this.id,
     required this.priority,
-    // required this.type,
+    required this.type,
     required this.objectId,
     required this.num,
   });

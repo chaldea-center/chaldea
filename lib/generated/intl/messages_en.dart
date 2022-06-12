@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Collect Items"),
+        "event_digging": MessageLookupByLibrary.simpleMessage("Digging"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra":
             MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
@@ -277,6 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("Event not planned"),
+        "event_point": MessageLookupByLibrary.simpleMessage("Event Point"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
         "event_progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "event_quest": MessageLookupByLibrary.simpleMessage("Event Quests"),
@@ -711,6 +713,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Reset custom ascension icons"),
         "reset_plan_all": m7,
         "reset_plan_shown": m8,
+        "resettable_digged_num":
+            MessageLookupByLibrary.simpleMessage("Resettable Digged Num"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

@@ -297,6 +297,11 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
                           (k, e) => MapEntry(int.parse(k as String), e as int),
                         )),
                   )),
+          digging: $checkedConvert(
+              'digging',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
           questReward:
               $checkedConvert('questReward', (v) => v as bool? ?? true),
@@ -331,6 +336,7 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'lotteries': instance.lotteries.map((k, e) => MapEntry(k.toString(), e)),
       'treasureBoxItems': instance.treasureBoxItems.map((k, e) =>
           MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'digging': instance.digging.map((k, e) => MapEntry(k.toString(), e)),
       'fixedDrop': instance.fixedDrop,
       'questReward': instance.questReward,
       'extraFixedItems':

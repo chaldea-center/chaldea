@@ -115,18 +115,18 @@ class _EventListPageState extends State<EventListPage>
                   copyPlan();
                 },
               ),
-              PopupMenuItem(
-                child: Text(
-                  showSpecialRewards
-                      ? 'Hide Special Rewards'
-                      : 'Show Special Rewards',
-                ),
-                onTap: () {
-                  setState(() {
-                    showSpecialRewards = !showSpecialRewards;
-                  });
-                },
-              )
+              // PopupMenuItem(
+              //   child: Text(
+              //     showSpecialRewards
+              //         ? 'Hide Special Rewards'
+              //         : 'Show Special Rewards',
+              //   ),
+              //   onTap: () {
+              //     setState(() {
+              //       showSpecialRewards = !showSpecialRewards;
+              //     });
+              //   },
+              // )
             ],
           ),
         ],

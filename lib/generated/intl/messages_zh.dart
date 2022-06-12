@@ -234,6 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
+        "event_digging": MessageLookupByLibrary.simpleMessage("发掘"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("额外素材"),
         "event_item_fixed_extra":
             MessageLookupByLibrary.simpleMessage("额外固定素材"),
@@ -243,6 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("无限池"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活动未列入规划"),
+        "event_point": MessageLookupByLibrary.simpleMessage("活动点数"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("点数"),
         "event_progress": MessageLookupByLibrary.simpleMessage("进度"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活动关卡"),
@@ -601,6 +603,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("重置自定义从者头像"),
         "reset_plan_all": m7,
         "reset_plan_shown": m8,
+        "resettable_digged_num":
+            MessageLookupByLibrary.simpleMessage("重置所需发掘数目"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

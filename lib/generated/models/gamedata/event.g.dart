@@ -447,9 +447,15 @@ EventLotteryTalk _$EventLotteryTalkFromJson(Map json) => EventLotteryTalk(
 CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
       id: json['id'] as int,
       priority: json['priority'] as int,
+      type: $enumDecode(_$CommonConsumeTypeEnumMap, json['type']),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
     );
+
+const _$CommonConsumeTypeEnumMap = {
+  CommonConsumeType.item: 'item',
+  CommonConsumeType.ap: 'ap',
+};
 
 EventTreasureBoxGift _$EventTreasureBoxGiftFromJson(Map json) =>
     EventTreasureBoxGift(

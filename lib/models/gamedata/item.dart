@@ -207,11 +207,22 @@ class Item {
     }
   }
 
+  static int compare(int itemA, int itemB) {
+    final a = db.gameData.items[itemA]?.priority,
+        b = db.gameData.items[itemB]?.priority;
+    if (a != null && b != null) return a - b;
+    if (a == null && b == null) return 0;
+    return a == null ? -1 : 1;
+  }
+
   static Map<int, int> sortMapByPriority(Map<int, int> items,
-      {bool qpFirst = true, bool reversed = false}) {
+      {bool qpFirst = true, bool reversed = false, bool category = false}) {
     int _getPriority(int id) {
       if (id == Items.qpId && !qpFirst) return 9999999;
-      return db.gameData.items[id]?.priority ?? id;
+      final item = db.gameData.items[id];
+      if (item == null) return id;
+      if (category) return item.category.index * 10000 + item.priority;
+      return item.priority;
     }
 
     return {
