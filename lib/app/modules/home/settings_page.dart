@@ -19,6 +19,7 @@ import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
 import 'subpage/login_page.dart';
+import 'subpage/network_settings.dart';
 import 'subpage/share_app_dialog.dart';
 import 'subpage/translation_setting.dart';
 import 'subpage/user_data_page.dart';
@@ -224,6 +225,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.push(child: DisplaySettingPage());
+                },
+              ),
+              ListTile(
+                title: Text(S.current.network_settings),
+                trailing:
+                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.push(child: const NetworkSettingsPage());
                 },
               ),
               if (kIsWeb)

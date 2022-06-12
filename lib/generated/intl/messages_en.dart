@@ -602,6 +602,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
+        "network_cur_connection":
+            MessageLookupByLibrary.simpleMessage("Connection"),
+        "network_force_online":
+            MessageLookupByLibrary.simpleMessage("Force Online"),
+        "network_force_online_hint": MessageLookupByLibrary.simpleMessage(
+            "App will change to offline mode if no network detected"),
+        "network_settings":
+            MessageLookupByLibrary.simpleMessage("Network Settings"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
         "new_data_available":
             MessageLookupByLibrary.simpleMessage("New data available"),

@@ -509,6 +509,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_down": MessageLookupByLibrary.simpleMessage("下移"),
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
+        "network_cur_connection": MessageLookupByLibrary.simpleMessage("当前连接"),
+        "network_force_online": MessageLookupByLibrary.simpleMessage("强制在线模式"),
+        "network_force_online_hint":
+            MessageLookupByLibrary.simpleMessage("当未检测到网络连接时，App将默认处于离线模式"),
+        "network_settings": MessageLookupByLibrary.simpleMessage("网络设置"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建账号"),
         "new_data_available": MessageLookupByLibrary.simpleMessage("可用数据更新"),
         "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("新掉落数据"),

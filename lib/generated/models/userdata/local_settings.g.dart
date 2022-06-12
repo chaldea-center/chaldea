@@ -50,6 +50,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => $enumDecodeNullable(_$RegionEnumMap, v)),
           alertUploadUserData: $checkedConvert(
               'alertUploadUserData', (v) => v as bool? ?? false),
+          forceOnline:
+              $checkedConvert('forceOnline', (v) => v as bool? ?? false),
           priorityTags: $checkedConvert(
               'priorityTags',
               (v) => (v as Map?)?.map(
@@ -135,6 +137,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'preferApRate': instance.preferApRate,
       'preferredQuestRegion': _$RegionEnumMap[instance.preferredQuestRegion],
       'alertUploadUserData': instance.alertUploadUserData,
+      'forceOnline': instance.forceOnline,
       'priorityTags':
           instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
       'galleries': instance.galleries,

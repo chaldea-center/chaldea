@@ -4262,6 +4262,50 @@ class S {
     );
   }
 
+  /// `Connection`
+  String get network_cur_connection {
+    return Intl.message(
+      'Connection',
+      name: 'network_cur_connection',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Force Online`
+  String get network_force_online {
+    return Intl.message(
+      'Force Online',
+      name: 'network_force_online',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `App will change to offline mode if no network detected`
+  String get network_force_online_hint {
+    return Intl.message(
+      'App will change to offline mode if no network detected',
+      name: 'network_force_online_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Network Settings`
+  String get network_settings {
+    return Intl.message(
+      'Network Settings',
+      name: 'network_settings',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `New account`
   String get new_account {
     return Intl.message(

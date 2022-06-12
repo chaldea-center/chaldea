@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import '../models/db.dart';
+
 class _NetworkStat {
   ConnectivityResult? _connectivity;
+  ConnectivityResult? get connectivity => _connectivity;
 
   bool get available =>
-      _connectivity != null && _connectivity != ConnectivityResult.none;
+      db.settings.forceOnline ||
+      (_connectivity != null && _connectivity != ConnectivityResult.none);
 
   bool get unavailable => !available;
 
