@@ -607,7 +607,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "network_cur_connection":
             MessageLookupByLibrary.simpleMessage("Connection"),
         "network_force_online":
-            MessageLookupByLibrary.simpleMessage("Force Online"),
+            MessageLookupByLibrary.simpleMessage("Force Online Mode"),
         "network_force_online_hint": MessageLookupByLibrary.simpleMessage(
             "App will change to offline mode if no network detected"),
         "network_settings":

@@ -71,6 +71,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
           ),
           const SizedBox(height: 16),
           TileGroup(
+            footer: S.current.network_force_online_hint,
             children: [
               ListTile(
                 dense: true,
@@ -83,7 +84,6 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
               SwitchListTile.adaptive(
                 value: db.settings.forceOnline,
                 title: Text(S.current.network_force_online),
-                subtitle: Text(S.current.network_force_online_hint),
                 dense: true,
                 onChanged: (v) {
                   setState(() {
@@ -191,7 +191,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
           final completer = testResults[url] = Completer();
           if (mounted) setState(() {});
           try {
-            await Future.delayed(const Duration(seconds: 2));
+            // await Future.delayed(const Duration(seconds: 2));
             final resp = await Dio().get(url);
             completer.complete(resp);
             testResults[url] = resp;

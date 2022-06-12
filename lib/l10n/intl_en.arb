@@ -384,7 +384,7 @@
   "move_up": "Move up",
   "mystic_code": "Mystic Code",
   "network_cur_connection": "Connection",
-  "network_force_online": "Force Online",
+  "network_force_online": "Force Online Mode",
   "network_force_online_hint": "App will change to offline mode if no network detected",
   "network_settings": "Network Settings",
   "new_account": "New account",

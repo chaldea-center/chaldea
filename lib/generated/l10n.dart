@@ -4295,10 +4295,10 @@ class S {
     );
   }
 
-  /// `Force Online`
+  /// `Force Online Mode`
   String get network_force_online {
     return Intl.message(
-      'Force Online',
+      'Force Online Mode',
       name: 'network_force_online',
       desc: '',
       locale: localeName,
