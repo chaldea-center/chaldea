@@ -74,9 +74,8 @@ class ImageActions {
             onTap: () {
               Navigator.pop(context);
               final bytes = data ?? File(srcFp!).readAsBytesSync();
-              File(destFp)
-                ..createSync(recursive: true)
-                ..writeAsBytesSync(bytes);
+              File(destFp).parent.createSync(recursive: true);
+              File(destFp).writeAsBytesSync(bytes);
               SimpleCancelOkDialog(
                 hideCancel: true,
                 title: Text(S.current.saved),

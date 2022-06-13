@@ -156,15 +156,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     }
     final resp = await (limiter ?? _rateLimiter).limited(() =>
         Dio().get(url, options: Options(responseType: ResponseType.bytes)));
-    try {
-      file.createSync(recursive: true);
-      await file.writeAsBytes(List.from(resp.data));
-    } catch (e) {
-      if (file.existsSync()) {
-        await FilePlus(localPath).delete();
-      }
-      rethrow;
-    }
+    file.parent.createSync(recursive: true);
+    await file.writeAsBytes(List.from(resp.data));
     print('download image: $url');
     return localPath;
   }
@@ -238,8 +231,8 @@ abstract class _CachedLoader<K, V> {
       _cmpl.complete(value);
     }).catchError((e, s) {
       _cmpl.complete(null);
-      if (e is! DioError || e.response?.statusCode == 403) {
-        logger.e('Got $key failed', e, s);
+      if (e is DioError && e.response?.statusCode == 403 ||
+          e.response?.statusCode == 404) {
         _failed[key] ??= _FailedDetail(time: DateTime.now());
         return;
       }

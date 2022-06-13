@@ -178,7 +178,7 @@ class AppUpdater {
         options: Options(responseType: ResponseType.bytes));
     final data = List<int>.from(resp.data);
     if (sha1.convert(data).toString().toLowerCase() == checksum) {
-      file.createSync(recursive: true);
+      file.parent.createSync(recursive: true);
       await file.writeAsBytes(data);
       return savePath;
     } else {
