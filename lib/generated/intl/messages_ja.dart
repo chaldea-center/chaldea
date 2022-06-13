@@ -54,15 +54,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "第${n}節";
 
-  static String m17(region) => "${region}お知らせ";
+  static String m18(region) => "${region}お知らせ";
 
   static String m7(n) => "プラン${n}をリセット(すべて)";
 
   static String m8(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m18(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m19(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
-  static String m19(n) => "プロフィール${n}";
+  static String m20(n) => "プロフィール${n}";
 
   static String m9(a, b) => "${a}${b}";
 
@@ -602,7 +602,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("日本版"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韓国版"),
         "region_na": MessageLookupByLibrary.simpleMessage("北米版"),
-        "region_notice": m17,
+        "region_notice": m18,
         "region_tw": MessageLookupByLibrary.simpleMessage("繁体字版"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("2号機を削除"),
         "remove_from_blacklist":
@@ -680,7 +680,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m18,
+        "solution_total_battles_ap": m19,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert":
@@ -716,7 +716,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("非表示"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("プロフィール"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("キャラクター詳細"),
-        "svt_profile_n": m19,
+        "svt_profile_n": m20,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("関連礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),

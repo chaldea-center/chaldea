@@ -56,15 +56,18 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(region) => "出现错误或${region}无此关卡数据";
 
-  static String m17(region) => "${region}公告";
+  static String m17(unknown, dup, valid, total, selected) =>
+      "${unknown}不明, ${dup}重复, ${valid}/${total}有效, ${selected}已选";
+
+  static String m18(region) => "${region}公告";
 
   static String m7(n) => "重置规划${n}(所有)";
 
   static String m8(n) => "重置规划${n}(已显示)";
 
-  static String m18(battles, ap) => "总计${battles}次战斗, ${ap} AP";
+  static String m19(battles, ap) => "总计${battles}次战斗, ${ap} AP";
 
-  static String m19(n) => "个人资料${n}";
+  static String m20(n) => "个人资料${n}";
 
   static String m9(a, b) => "${a}${b}";
 
@@ -588,11 +591,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Google Play评分"),
+        "recognizer_result_count": m17,
         "region_cn": MessageLookupByLibrary.simpleMessage("国服"),
         "region_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韩服"),
         "region_na": MessageLookupByLibrary.simpleMessage("美服"),
-        "region_notice": m17,
+        "region_notice": m18,
         "region_tw": MessageLookupByLibrary.simpleMessage("台服"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("销毁2号机"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("移出黑名单"),
@@ -673,8 +677,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次数"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目标数"),
-        "solution_total_battles_ap": m18,
+        "solution_total_battles_ap": m19,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
+        "special_reward_hide": MessageLookupByLibrary.simpleMessage("隐藏特殊报酬"),
+        "special_reward_show": MessageLookupByLibrary.simpleMessage("显示特殊报酬"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21圣晶片=3圣晶石"),
@@ -711,7 +717,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色详情"),
-        "svt_profile_n": m19,
+        "svt_profile_n": m20,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),

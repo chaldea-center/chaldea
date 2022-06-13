@@ -136,7 +136,7 @@ class GameData {
       detail: '既にクリアした復刻イベントで、聖杯がクリア報酬だったクエストでは、報酬が伝承結晶に置き換わる。',
       icon: 'https://static.atlasacademy.io/JP/Items/19.png',
       background: ItemBGType.zero,
-      priority: 299,
+      priority: 395,
       dropPriority: 8900,
     );
     costumes = {

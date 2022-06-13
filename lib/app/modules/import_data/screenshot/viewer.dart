@@ -26,7 +26,7 @@ class RecognizerViewerTab extends StatefulWidget {
 class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   int count = 10;
   List<String> recentFiles = [];
-  int selected = 0;
+  int? selected;
   dynamic result;
 
   @override
@@ -57,7 +57,12 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   }
 
   Widget get topBar {
-    selected = selected.clamp(0, recentFiles.length);
+    if (selected != null) {
+      selected = selected!.clamp(0, recentFiles.length);
+    }
+    if (recentFiles.isEmpty) {
+      selected = null;
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -66,24 +71,18 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
           child: DropdownButton<int>(
             value: selected,
             underline: const SizedBox(),
-            items: recentFiles.isEmpty
-                ? const [
-                    DropdownMenuItem(
-                      value: 0,
-                      child: Text('No result'),
-                    )
-                  ]
-                : List.generate(recentFiles.length, (index) {
-                    return DropdownMenuItem(
-                      value: index,
-                      child: Text(
-                        '${index + 1} - ${recentFiles[index]}',
-                        maxLines: 1,
-                        textScaleFactor: 0.8,
-                        softWrap: false,
-                      ),
-                    );
-                  }),
+            hint: Text(recentFiles.isEmpty ? 'No result' : 'Not selected'),
+            items: List.generate(recentFiles.length, (index) {
+              return DropdownMenuItem(
+                value: index,
+                child: Text(
+                  '${index + 1} - ${recentFiles[index]}',
+                  maxLines: 1,
+                  textScaleFactor: 0.8,
+                  softWrap: false,
+                ),
+              );
+            }),
             onChanged: (v) {
               if (v != null && recentFiles.isNotEmpty) {
                 selected = v;

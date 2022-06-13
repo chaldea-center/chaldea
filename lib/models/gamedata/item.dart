@@ -81,7 +81,7 @@ class Item {
     required Item? item,
     int? itemId,
     String? icon,
-    double? width,
+    double? width = 32,
     double? height,
     double? aspectRatio = 132 / 144,
     String? text,

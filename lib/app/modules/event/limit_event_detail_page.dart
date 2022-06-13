@@ -15,16 +15,16 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/animation_on_scroll.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../common/not_found.dart';
-import '../../quest/quest_list.dart';
-import 'bonus.dart';
-import 'digging.dart';
-import 'lottery.dart';
-import 'mission.dart';
-import 'points.dart';
-import 'shop.dart';
-import 'towers.dart';
-import 'treasure_box.dart';
+import '../common/not_found.dart';
+import '../quest/quest_list.dart';
+import 'detail/bonus.dart';
+import 'detail/digging.dart';
+import 'detail/lottery.dart';
+import 'detail/mission.dart';
+import 'detail/points.dart';
+import 'detail/shop.dart';
+import 'detail/towers.dart';
+import 'detail/treasure_box.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;

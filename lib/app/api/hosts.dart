@@ -4,8 +4,8 @@ class Hosts {
   const Hosts._();
   static bool get cn => db.settings.proxyServer;
 
-  static const kApiHostGlobal = 'https://api.chaldea.center/v2';
-  static const kApiHostCN = 'https://api-cn.chaldea.center/v2';
+  static const kApiHostGlobal = 'https://api.chaldea.center';
+  static const kApiHostCN = 'https://api-cn.chaldea.center';
   static String get apiHost => cn ? kApiHostCN : kApiHostGlobal;
 
   static const kWorkerHostGlobal = 'https://worker.chaldea.center';

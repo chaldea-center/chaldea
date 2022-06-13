@@ -68,8 +68,8 @@ class _ItemResultTabState extends State<ItemResultTab>
       children: [
         ListTile(
           title: Text(
-            '$countUnknown unknown, $countDup dup, $countSelected selected,'
-            ' $countValid/${result.details.length} valid',
+            S.current.recognizer_result_count(countUnknown, countDup,
+                countValid, result.details.length, countSelected),
             textAlign: TextAlign.center,
           ),
         ),
@@ -80,7 +80,7 @@ class _ItemResultTabState extends State<ItemResultTab>
             itemBuilder: (context, index) => children[index],
           ),
         ),
-        if (!widget.viewMode) buttonBar,
+        if (!widget.viewMode) SafeArea(child: buttonBar),
       ],
     );
   }

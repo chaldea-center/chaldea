@@ -74,8 +74,8 @@ class _SkillResultTabState extends State<SkillResultTab>
       children: [
         ListTile(
           title: Text(
-            '$countUnknown unknown, $countDup dup, $countSelected selected,'
-            ' $countValid/${result.details.length} valid',
+            S.current.recognizer_result_count(countUnknown, countDup,
+                countValid, result.details.length, countSelected),
             textAlign: TextAlign.center,
           ),
         ),
@@ -86,7 +86,7 @@ class _SkillResultTabState extends State<SkillResultTab>
             itemBuilder: (context, index) => children[index],
           ),
         ),
-        if (!widget.viewMode) buttonBar,
+        if (!widget.viewMode) SafeArea(child: buttonBar),
       ],
     );
   }

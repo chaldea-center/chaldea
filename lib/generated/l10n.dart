@@ -1,9 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -4988,6 +4985,18 @@ class S {
     );
   }
 
+  /// `{unknown} unknown, {dup} dup, {valid}/{total} valid, {selected} selected`
+  String recognizer_result_count(
+      Object unknown, Object dup, Object valid, Object total, Object selected) {
+    return Intl.message(
+      '$unknown unknown, $dup dup, $valid/$total valid, $selected selected',
+      name: 'recognizer_result_count',
+      desc: '',
+      locale: localeName,
+      args: [unknown, dup, valid, total, selected],
+    );
+  }
+
   /// `CN`
   String get region_cn {
     return Intl.message(
@@ -5796,6 +5805,28 @@ class S {
     return Intl.message(
       'Sort',
       name: 'sort_order',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Hide Special Rewards`
+  String get special_reward_hide {
+    return Intl.message(
+      'Hide Special Rewards',
+      name: 'special_reward_hide',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Special Rewards`
+  String get special_reward_show {
+    return Intl.message(
+      'Show Special Rewards',
+      name: 'special_reward_show',
       desc: '',
       locale: localeName,
       args: [],

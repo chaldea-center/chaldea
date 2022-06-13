@@ -30,15 +30,18 @@ class _ImportPageHomeState extends State<ImportPageHome> {
         title: Text(S.current.import_data),
       ),
       body: ListView(
-        children: divideTiles([
+        children: [
           ListTile(
-            title: Center(
-                child: db.onUserData((context, snapshot) =>
-                    Text('${S.current.cur_account}: ${db.curUser.name}'))),
+            dense: true,
+            title: db.onUserData((context, snapshot) => Text(
+                  '${S.current.cur_account}: ${db.curUser.name}',
+                  textAlign: TextAlign.center,
+                )),
             onTap: () {
               router.pushPage(AccountPage(), popDetail: true);
             },
           ),
+          const Divider(indent: 48, endIndent: 48, height: 2),
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
             title: Text('${S.current.chaldea_backup} (v2)'),
@@ -75,7 +78,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.push(child: ImportFgoSimuMaterialPage());
             },
           ),
-          SHeader(S.current.testing),
+          // SHeader(S.current.testing),
           ListTile(
             leading: const Icon(Icons.screenshot),
             title: Text(S.current.import_item_screenshots),
@@ -106,11 +109,12 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.table_view),
             title: Text(S.current.import_csv_title),
+            subtitle: const Text('Edit in Excel/Google Sheet'),
             onTap: () {
               router.pushPage(const ImportCSVPage());
             },
-          )
-        ], bottom: true),
+          ),
+        ],
       ),
     );
   }

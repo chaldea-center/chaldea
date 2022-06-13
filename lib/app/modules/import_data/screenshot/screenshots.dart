@@ -35,7 +35,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab>
         kDefaultDivider,
         if (widget.debugServerRoot != null)
           Center(child: Text(widget.debugServerRoot!)),
-        buttonBar,
+        SafeArea(child: buttonBar),
       ],
     );
   }

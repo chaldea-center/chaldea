@@ -57,15 +57,18 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(region) =>
       "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m17(region) => "${region} Notice";
+  static String m17(unknown, dup, valid, total, selected) =>
+      "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
+
+  static String m18(region) => "${region} Notice";
 
   static String m7(n) => "Reset Plan ${n}(All)";
 
   static String m8(n) => "Reset Plan ${n}(Shown)";
 
-  static String m18(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m19(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
-  static String m19(n) => "Profile ${n}";
+  static String m20(n) => "Profile ${n}";
 
   static String m9(a, b) => "${a} ${b}";
 
@@ -696,11 +699,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
+        "recognizer_result_count": m17,
         "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m17,
+        "region_notice": m18,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remove duplicated"),
@@ -798,8 +802,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m18,
+        "solution_total_battles_ap": m19,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
+        "special_reward_hide":
+            MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
+        "special_reward_show":
+            MessageLookupByLibrary.simpleMessage("Show Special Rewards"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21 Fragments = 3 Quartzs"),
@@ -844,7 +852,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Character Info"),
-        "svt_profile_n": m19,
+        "svt_profile_n": m20,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
