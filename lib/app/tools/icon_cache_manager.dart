@@ -106,7 +106,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
         for (final buff in func.buffs) buff.icon
       ]
     };
-    _loader._failed.removeWhere((key, value) => !value.neverRetry);
+    _loader._failed.clear();
     for (final url in urls) {
       if (url == null || url.isEmpty) continue;
       tasks.add(_loader.get(url, limiter: _limiter).then((res) {
@@ -143,7 +143,12 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     final localPath = atlasUrlToFp(url);
     if (localPath == null) return null;
     final file = File(localPath);
-    if (await _fsLimiter.limited(() => File(localPath).exists())) {
+    if (await _fsLimiter.limited(() async {
+      if (!await file.exists()) {
+        return false;
+      }
+      return file.statSync().size > 0;
+    })) {
       return localPath;
     }
     if (Hosts.cn) {
@@ -216,6 +221,12 @@ abstract class _CachedLoader<K, V> {
     _failed.clear();
   }
 
+  void clearAll() {
+    _failed.clear();
+    _success.clear();
+    _completers.clear();
+  }
+
   Future<V?> get(K key, {RateLimiter? limiter}) async {
     if (_success.containsKey(key)) return _success[key];
     if (_completers.containsKey(key)) return _completers[key]?.future;
@@ -228,6 +239,7 @@ abstract class _CachedLoader<K, V> {
     }).catchError((e, s) {
       _cmpl.complete(null);
       if (e is! DioError || e.response?.statusCode == 403) {
+        logger.e('Got $key failed', e, s);
         _failed[key] ??= _FailedDetail(time: DateTime.now());
         return;
       }
