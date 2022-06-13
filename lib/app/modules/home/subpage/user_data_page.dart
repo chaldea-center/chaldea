@@ -194,12 +194,12 @@ class _UserDataPageState extends State<UserDataPage> {
             content: Text(hint),
             hideCancel: true,
             actions: [
-              if (PlatformU.isAndroid || PlatformU.isIOS)
+              if (PlatformU.isAndroid || PlatformU.isIOS && fps.isNotEmpty)
                 TextButton(
                   child: Text(S.current.share),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    Share.shareFiles(fps);
+                    Share.shareFiles([fps.first]);
                   },
                 ),
               if (PlatformU.isDesktop)

@@ -277,6 +277,11 @@ class _ProcessedData {
   Set<FuncType> ccFuncs = {};
   Set<BuffType> ccBuffs = {};
 
+  Set<FuncTargetType> funcTargets = {};
+
+  Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs};
+  Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs};
+
   void _initFuncBuff() {
     for (final svt in gameData.servants.values) {
       for (final skill in [
@@ -286,27 +291,30 @@ class _ProcessedData {
         ...svt.appendPassive.map((e) => e.skill)
       ]) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+            funcs: skill.functions, includeTrigger: true)) {
           svtFuncs.add(func.funcType);
           svtBuffs.addAll(func.buffs.map((e) => e.type));
+          funcTargets.add(func.funcTargetType);
         }
       }
     }
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+            funcs: skill.functions, includeTrigger: true)) {
           ceFuncs.add(func.funcType);
           ceBuffs.addAll(func.buffs.map((e) => e.type));
+          funcTargets.add(func.funcTargetType);
         }
       }
     }
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, showPlayer: true, showEnemy: false)) {
+            funcs: skill.functions, includeTrigger: true)) {
           ccFuncs.add(func.funcType);
           ceBuffs.addAll(func.buffs.map((e) => e.type));
+          funcTargets.add(func.funcTargetType);
         }
       }
     }

@@ -146,8 +146,8 @@ mixin GameCardMixin {
       return ServantDetailPage(svt: this as Servant);
     } else if (this is CraftEssence) {
       return CraftDetailPage(ce: this as CraftEssence);
-      // } else if (this is CommandCode) {
-      // return CmdCodeDetailPage(code: this as CommandCode);
+    } else if (this is CommandCode) {
+      return CmdCodeDetailPage(cc: this as CommandCode);
     } else {
       throw TypeError();
     }

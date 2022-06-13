@@ -61,7 +61,7 @@ class FilterGroup<T> extends StatelessWidget {
             checked ? Icons.check_box : Icons.check_box_outline_blank,
             color: Colors.grey,
           ),
-          Text(text)
+          Text(text, textScaleFactor: 0.8)
         ],
       ),
     );

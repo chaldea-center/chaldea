@@ -246,7 +246,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.current.effect_scope),
           options: SvtEffectScope.values,
           values: filterData.effectScope,
-          optionBuilder: (v) => Text(_getEffectScopeName(v)),
+          optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value, _) {
             update();
           },
@@ -274,19 +274,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
       ]),
     );
-  }
-
-  String _getEffectScopeName(SvtEffectScope scope) {
-    switch (scope) {
-      case SvtEffectScope.active:
-        return S.current.active_skill_short;
-      case SvtEffectScope.passive:
-        return S.current.passive_skill_short;
-      case SvtEffectScope.append:
-        return S.current.append_skill_short;
-      case SvtEffectScope.td:
-        return S.current.np_short;
-    }
   }
 }
 

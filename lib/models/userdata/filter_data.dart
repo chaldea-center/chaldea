@@ -170,6 +170,21 @@ extension SvtCompareX on SvtCompare {
 
 enum SvtEffectScope { active, passive, append, td }
 
+extension SvtEffectScopeX on SvtEffectScope {
+  String get shownName {
+    switch (this) {
+      case SvtEffectScope.active:
+        return S.current.active_skill_short;
+      case SvtEffectScope.passive:
+        return S.current.passive_skill_short;
+      case SvtEffectScope.append:
+        return S.current.append_skill_short;
+      case SvtEffectScope.td:
+        return S.current.np_short;
+    }
+  }
+}
+
 enum EffectTarget {
   self,
   ptAll, //ptFull

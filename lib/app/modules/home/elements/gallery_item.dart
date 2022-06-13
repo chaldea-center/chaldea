@@ -10,6 +10,7 @@ import 'package:chaldea/utils/basic.dart';
 import '../../command_code/cmd_code_list.dart';
 import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
+import '../../effect_search/effect_search_page.dart';
 import '../../enemy/enemy_list.dart';
 import '../../event/events_page.dart';
 import '../../exp/exp_card_cost_page.dart';
@@ -93,7 +94,7 @@ class GalleryItem {
         masterMissions,
         saintQuartz,
         mysticCodes,
-        // effectSearch,
+        effectSearch,
         costumes,
         summons,
         ffo,
@@ -190,13 +191,13 @@ class GalleryItem {
     page: MysticCodeListPage(),
     isDetail: false,
   );
-// static GalleryItem effectSearch = GalleryItem(
-//   name: 'effect_search',
-//   titleBuilder: () => S.current.effect_search,
-//   icon: FontAwesomeIcons.searchengin,
-//   page: EffectSearchPage(),
-//   isDetail: false,
-// );
+  static GalleryItem effectSearch = GalleryItem(
+    name: 'effect_search',
+    titleBuilder: () => S.current.effect_search,
+    icon: FontAwesomeIcons.searchengin,
+    page: EffectSearchPage(),
+    isDetail: false,
+  );
   static GalleryItem costumes = GalleryItem(
     name: 'costumes',
     titleBuilder: () => S.current.costume,

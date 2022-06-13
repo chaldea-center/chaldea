@@ -426,8 +426,9 @@ class FuncDescriptor extends StatelessWidget {
 
     final buff = func.buffs.getOrNull(0);
     return {
-      "type": func.funcType.name,
-      "target": func.funcTargetType.name,
+      "type": '${func.funcType.name}(${Transl.funcType(func.funcType).l})',
+      "target":
+          '${func.funcTargetType.name}(${Transl.funcTargetType(func.funcTargetType).l})',
       "team": func.funcTargetTeam.name,
       "popupText": Transl.funcPopuptext(func.funcPopupText).l,
       if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
@@ -439,7 +440,7 @@ class FuncDescriptor extends StatelessWidget {
         "----buff----": "↓",
         "id": buff.id,
         "name": Transl.buffNames(buff.name).l,
-        "type": buff.type.name,
+        "type": '${buff.type.name}(${Transl.buffType(buff.type).l})',
         "detail": Transl.buffDetail(buff.detail).l,
         "buffGroup": buff.buffGroup,
         if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),
