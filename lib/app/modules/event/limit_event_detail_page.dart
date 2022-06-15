@@ -672,9 +672,13 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   if (v != null) onChanged(v);
                 }
               : null,
-          title: Text(title),
+          title: Text(
+            title,
+            textScaleFactor: subtitle == null ? 0.9 : null,
+          ),
           subtitle: subtitle?.toText(),
           controlAffinity: ListTileControlAffinity.leading,
+          dense: subtitle != null,
         ),
       ),
       SharedBuilder.groupItems(

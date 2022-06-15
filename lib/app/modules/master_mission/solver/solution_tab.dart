@@ -61,31 +61,58 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       questIds.sort2((questId) => -targetCounts[questId]!);
     }
 
-    final listView = ListView.separated(
-      controller: _scrollController,
-      itemBuilder: (context, index) {
-        final id = questIds[index];
-        return _oneQuest(id,
-            widget.showResult ? solution.result[id]! : targetCounts[id] ?? 0);
-      },
-      separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: questIds.length,
+    Widget header = Padding(
+      padding: const EdgeInsetsDirectional.only(end: 16),
+      child: widget.showResult
+          ? ListTile(
+              title: Text(
+                  S.current.solution_total_battles_ap(battleCount, apCount)),
+              trailing: Text(S.current.solution_battle_count),
+            )
+          : ListTile(
+              title: Text(S.current.master_mission_related_quest),
+              trailing: Text(S.current.solution_target_count),
+            ),
     );
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsetsDirectional.only(end: 16),
-        child: widget.showResult
-            ? ListTile(
-                title: Text(
-                    S.current.solution_total_battles_ap(battleCount, apCount)),
-                trailing: Text(S.current.solution_battle_count),
-              )
-            : ListTile(
-                title: Text(S.current.master_mission_related_quest),
-                trailing: Text(S.current.solution_target_count),
+    List<Widget> children = [];
+    for (final questId in questIds) {
+      children.add(_oneQuest(
+        questId,
+        widget.showResult
+            ? solution.result[questId]!
+            : targetCounts[questId] ?? 0,
+      ));
+    }
+    if (widget.showResult) {
+      final invalidMissions = solution.missions
+          .where((m) => solution.result.keys.every((q) =>
+              solution.quests[q] == null ||
+              MissionSolver.countMissionTarget(m, solution.quests[q]!) <= 0))
+          .toList();
+      if (invalidMissions.isNotEmpty) {
+        children.add(TileGroup(
+          header: S.current.ignore,
+          children: [
+            for (final mission in invalidMissions)
+              ListTile(
+                title: mission.buildDescriptor(context),
+                dense: true,
               ),
-      ),
-      Expanded(child: listView)
+          ],
+        ));
+      }
+    }
+
+    return Column(children: [
+      header,
+      Expanded(
+        child: ListView.separated(
+          controller: _scrollController,
+          itemBuilder: (context, index) => children[index],
+          separatorBuilder: (context, index) => kDefaultDivider,
+          itemCount: children.length,
+        ),
+      )
     ]);
   }
 

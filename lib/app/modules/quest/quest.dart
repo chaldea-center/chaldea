@@ -138,9 +138,41 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   region: region,
                   offline: false,
                 ),
+                if (db.gameData.dropRate.newData.questIds.contains(quest.id))
+                  blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
               ],
             ),
+    );
+  }
+
+  Widget get blacklistButton {
+    if (db.curUser.freeLPParams.blacklist.contains(quest.id)) {
+      return TextButton.icon(
+        onPressed: () {
+          setState(() {
+            db.curUser.freeLPParams.blacklist.remove(quest.id);
+          });
+        },
+        icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
+        label: Text(
+          S.of(context).remove_from_blacklist,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+      );
+    }
+
+    return TextButton.icon(
+      onPressed: () {
+        setState(() {
+          db.curUser.freeLPParams.blacklist.add(quest.id);
+        });
+      },
+      icon: const Icon(Icons.add, color: Colors.redAccent),
+      label: Text(
+        S.current.add_to_blacklist,
+        style: const TextStyle(color: Colors.redAccent),
+      ),
     );
   }
 

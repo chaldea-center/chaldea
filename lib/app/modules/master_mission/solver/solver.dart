@@ -17,6 +17,7 @@ class MissionSolver extends BaseLPSolver {
     required List<QuestPhase> quests,
     required List<CustomMission> missions,
   }) {
+    missions = List.of(missions);
     missions
         .removeWhere((mission) => mission.ids.isEmpty || mission.count <= 0);
 

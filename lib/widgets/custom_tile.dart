@@ -257,33 +257,33 @@ class ImageWithText extends StatelessWidget {
     Widget child = Stack(
       alignment: alignment,
       children: <Widget>[
-        Padding(
-          // if pad < 0
+        applyConstraints(Padding(
           padding: EdgeInsets.fromLTRB(
               -min(0.0, padding.left),
               -min(0.0, padding.top),
               -min(0.0, padding.right),
               -min(0.0, padding.bottom)),
-          child: applyConstraints(image),
-        ),
+          child: image,
+        )),
         if (text?.isNotEmpty == true || textBuilder != null)
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                max(0.0, padding.left),
-                max(0.0, padding.top),
-                max(0.0, padding.right),
-                max(0.0, padding.bottom)),
-            child: applyConstraints(
-                paintOutline(
-                  text: text,
-                  builder: textBuilder,
-                  textAlign: textAlign ?? TextAlign.end,
-                  textStyle: _style,
-                  shadowSize: shadowSize,
-                  shadowColor:
-                      shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
-                ),
-                boxFit: BoxFit.scaleDown),
+          applyConstraints(
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  max(0.0, padding.left),
+                  max(0.0, padding.top),
+                  max(0.0, padding.right),
+                  max(0.0, padding.bottom)),
+              child: paintOutline(
+                text: text,
+                builder: textBuilder,
+                textAlign: textAlign ?? TextAlign.end,
+                textStyle: _style,
+                shadowSize: shadowSize,
+                shadowColor:
+                    shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
+              ),
+            ),
+            boxFit: BoxFit.scaleDown,
           ),
       ],
     );
