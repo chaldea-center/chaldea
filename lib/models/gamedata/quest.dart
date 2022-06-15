@@ -914,6 +914,7 @@ enum QuestFlag {
   live,
   forceDisplayEnemyInfo,
   alloutBattle,
+  recollection,
 }
 
 enum GiftType {

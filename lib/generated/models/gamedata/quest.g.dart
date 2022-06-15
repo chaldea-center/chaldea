@@ -565,4 +565,5 @@ const _$QuestFlagEnumMap = {
   QuestFlag.live: 'live',
   QuestFlag.forceDisplayEnemyInfo: 'forceDisplayEnemyInfo',
   QuestFlag.alloutBattle: 'alloutBattle',
+  QuestFlag.recollection: 'recollection',
 };
