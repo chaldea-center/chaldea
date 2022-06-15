@@ -502,66 +502,66 @@ class EnumMapping {
 
 class _SpecialTransl {
   String funcValChance(String v) => M.of(
-        jp: null,
+        jp: '$v確率',
         cn: '$v概率',
-        tw: null,
+        tw: '$v概率',
         na: '$v Chance',
-        kr: null,
+        kr: '$v 확률',
       );
   String funcValWeight(String v) => M.of(
         jp: null,
         cn: '$v权重',
-        tw: null,
+        tw: '$v權重',
         na: '$v Weight',
-        kr: null,
+        kr: '$v 무게',
       );
   String funcValCountTimes(int count) => M.of(
         jp: '$count回',
         cn: '$count次',
-        tw: null,
+        tw: '$count次',
         na: '$count Times',
-        kr: null,
+        kr: '$count 회',
       );
   String funcValTurns(int turn) => M.of(
         jp: '$turnターン',
         cn: '$turn回合',
-        tw: null,
+        tw: '$turn回合',
         na: '$turn Turns',
-        kr: null,
+        kr: '$turn 턴',
       );
   String get funcTraitRemoval => M.of(
         jp: '解除: ',
         cn: '解除: ',
         tw: '解除: ',
         na: 'Remove: ',
-        kr: null,
+        kr: '해제: ',
       );
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',
         cn: '仅在〔{0}〕场地上时 ',
         tw: '僅在〔{0}〕場地上時',
-        na: 'When on a [{0}] field',
-        kr: null,
+        na: 'When on [{0}] field',
+        kr: '〔{0}〕 있는 필드에서만',
       );
   String get funcTargetVals => M.of(
-        jp: null,
+        jp: '目標特性: ',
         cn: '目标特性: ',
-        tw: null,
+        tw: '目標特性: ',
         na: 'Target Trait: ',
-        kr: null,
+        kr: '목표의 특성: ',
       );
   String get buffCheckSelf => M.of(
-        jp: null,
+        jp: '自身特性: ',
         cn: '自身特性: ',
-        tw: null,
+        tw: '自身特性: ',
         na: 'Self Trait: ',
-        kr: null,
+        kr: '자신의 특성: ',
       );
   String get buffCheckOpposite => M.of(
-        jp: null,
+        jp: 'バフ目標: ',
         cn: 'Buff目标: ',
-        tw: null,
+        tw: 'Buff目標: ',
         na: 'Buff Target: ',
-        kr: null,
+        kr: '버프 목표: ',
       );
 }

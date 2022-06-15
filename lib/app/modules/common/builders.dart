@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/img_util.dart';
@@ -535,5 +536,17 @@ class SharedBuilder {
       case SvtListClassFilterStyle.doNotShow:
         return const SizedBox();
     }
+  }
+
+  static IconButton docsHelpBtn(String path,
+      {String? zhPath, String? tooltip}) {
+    return IconButton(
+      onPressed: () {
+        launch(HttpUrlHelper.projectDocUrl(
+            zhPath != null && Language.isZH ? zhPath : path));
+      },
+      icon: const Icon(Icons.help_outline),
+      tooltip: tooltip ?? S.current.help,
+    );
   }
 }

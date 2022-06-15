@@ -1,8 +1,8 @@
 ## HTTPS抓包导入
 
-1. 教程详见
+1.教程详见
 
-- [https://docs.chaldea.center/zh/import_https.html](https://docs.chaldea.center/zh/import_https.html)
+- [https://docs.chaldea.center/zh/import_https/](https://docs.chaldea.center/zh/import_https/)
 
 2.简要说明
 
@@ -18,10 +18,9 @@
 - 最终点击“导入”到当前账户
 - 注意：考虑到同学们会规划未来待抽从者，因此导入时仅覆盖解析出的数据，而未实装/未抽到的则不做更改
 
-3. 关于HTTPS解密
+3.关于HTTPS解密
 
-   通过拦截并解析游戏在登陆时向客户端发送的包含账户信息的HTTPS响应导入素材和从者信息。 客户端与服务器之间的HTTPS通信是经过加密的，解密需要在本机或电脑通过Charles/Fiddler(
-   PC)或Stream(iOS)等工具伪造证书服务器并安装其提供的证书以实现。 因此在导入结束后请及时取消信任或删除证书以保障设备安全。
+通过拦截并解析游戏在登陆时向客户端发送的包含账户信息的HTTPS响应导入素材和从者信息。 客户端与服务器之间的HTTPS通信是经过加密的，解密需要在本机或电脑通过Charles/Fiddler(PC)或Stream(iOS)等工具伪造证书服务器并安装其提供的证书以实现。 因此在导入结束后请及时取消信任或删除证书以保障设备安全。
 
 本软件源码已开源，不涉及https捕获解密等过程，只将以上工具导出的结果解析素材和从者信息，不做其他用途。
 

@@ -7,7 +7,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:path/path.dart' as pathlib;
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -18,7 +17,6 @@ import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import '../../misc/faq_page.dart';
 
 class FeedbackPage extends StatefulWidget {
   FeedbackPage({Key? key}) : super(key: key);
@@ -99,7 +97,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 title: Text(S.current.faq),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  router.pushPage(FAQPage());
+                  launch(HttpUrlHelper.projectDocUrl('faq.html'));
                 },
               ),
             ],
@@ -142,19 +140,19 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 },
               ),
               ListTile(
-                title: const Text('QQ频道'),
-                onTap: () {
-                  // https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5
-                  launch('https://jq.qq.com/?_wv=1027&k=kvHMMxGn');
-                },
-              ),
-              ListTile(
                 title: const Text('Discord'),
                 subtitle: const Text('https://discord.gg/5M6w5faqjP'),
                 onTap: () {
                   launch('https://discord.gg/5M6w5faqjP');
                 },
               ),
+              // ListTile(
+              //   title: const Text('QQ频道'),
+              //   onTap: () {
+              //     // https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5
+              //     launch('https://jq.qq.com/?_wv=1027&k=kvHMMxGn');
+              //   },
+              // ),
             ],
           ),
           TileGroup(

@@ -13,7 +13,10 @@ class JsonViewer extends StatefulWidget {
 class _JsonViewerState extends State<JsonViewer> {
   @override
   Widget build(BuildContext context) {
-    return getContentWidget(widget.jsonObj);
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: getContentWidget(widget.jsonObj),
+    );
   }
 
   static getContentWidget(dynamic content) {

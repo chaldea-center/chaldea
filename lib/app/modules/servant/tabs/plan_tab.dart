@@ -853,7 +853,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           enhanceMode = !enhanceMode;
           updateState();
         }
-        Navigator.of(context).pop(true);
       },
     );
   }

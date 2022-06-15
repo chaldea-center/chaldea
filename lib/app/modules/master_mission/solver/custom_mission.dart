@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -49,17 +50,7 @@ class _CustomMissionPageState extends State<CustomMissionPage>
           ],
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                SimpleCancelOkDialog(
-                  title: Text(S.current.master_mission),
-                  content: const Text(
-                    'For Main Story Free: only include extra one daily quest(door/QP, 10AP)',
-                  ),
-                ).showDialog(context);
-              },
-              icon: const Icon(Icons.help_outline),
-              tooltip: S.current.help)
+          SharedBuilder.docsHelpBtn('master_mission.html'),
         ],
       ),
       body: TabBarView(

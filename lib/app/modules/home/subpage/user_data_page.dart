@@ -62,13 +62,13 @@ class _UserDataPageState extends State<UserDataPage> {
           TileGroup(
             footer: 'All data saved here.',
             children: [
-              if (androidExternalDirs.length >= 2)
-                SwitchListTile.adaptive(
-                  value: db.settings.useAndroidExternal,
-                  title: Text(S.current.app_data_use_external_storage),
-                  subtitle: Text(S.current.restart_to_apply_changes),
-                  onChanged: _migrateAndroidData,
-                ),
+              // if (androidExternalDirs.length >= 2)
+              //   SwitchListTile.adaptive(
+              //     value: db.settings.useAndroidExternal,
+              //     title: Text(S.current.app_data_use_external_storage),
+              //     subtitle: Text(S.current.restart_to_apply_changes),
+              //     onChanged: _migrateAndroidData,
+              //   ),
               ListTile(
                 title: Text(S.current.app_data_folder),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
@@ -166,7 +166,6 @@ class _UserDataPageState extends State<UserDataPage> {
       db.userData = userdata;
       db.saveUserData();
       EasyLoading.showToast(S.current.import_data_success);
-      db.notifyDb();
       db.notifyAppUpdate();
     } catch (e, s) {
       logger.e('import user data failed', e, s);
@@ -386,7 +385,6 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                       db.userData = userdata;
                       EasyLoading.showToast(S.current.import_data_success);
                       db.saveUserData();
-                      db.notifyDb(recalc: true);
                       db.notifyAppUpdate();
                     } catch (e) {
                       EasyLoading.showError(S.of(context).import_data_error(e));

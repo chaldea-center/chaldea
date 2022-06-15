@@ -34,18 +34,18 @@ class _MissionInputTabState extends State<MissionInputTab> {
   late ScrollController _scrollController;
   List<CustomMission> missions = [];
   int warId = 0;
+  final solver = MissionSolver();
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     missions = List.of(widget.initMissions);
     warId = widget.initWarId ??
-        Maths.max(
-            db.gameData.mainStories.values
-                .where(
-                    (war) => war.quests.any((quest) => quest.isMainStoryFree))
-                .map((e) => e.id),
-            0);
+        Maths.max([
+          for (final war in db.gameData.mainStories.values)
+            if (war.quests.any((q) => q.isMainStoryFree)) war.id
+        ], 0);
   }
 
   @override
@@ -302,7 +302,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
     );
   }
 
-  final solver = MissionSolver();
   Future<void> _solveProblem() async {
     if (!missions
         .any((mission) => mission.ids.isNotEmpty && mission.count > 0)) {
@@ -314,7 +313,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
         EasyLoading.show(status: hint, maskType: EasyLoadingMaskType.clear);
     _showHint('Solving.');
     try {
-      // TODO: add success/no enemy data/failed count
       List<QuestPhase> quests = [];
       List<Future> futures = [];
       Map<int, int> phases = {};
@@ -362,6 +360,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           } else {
             countNoEnemy += 1;
           }
+          await Future.delayed(const Duration(milliseconds: 100));
           _showHint('Resolve Quests: total ${phases.length + countNoEnemy},'
               ' $countSuccess success, $countError error, $countNoEnemy no data');
         }));

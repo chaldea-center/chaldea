@@ -93,10 +93,6 @@ class _Database {
 
   // late final ValueNotifier<GameData> _gameNotifier;
 
-  void notifyDb({bool recalc = false}) {
-    // TODO
-  }
-
   void notifyUserdata() {
     _userNotifier.sink.add(userData);
     EasyDebounce.debounce('save_userdata', const Duration(seconds: 10), () {

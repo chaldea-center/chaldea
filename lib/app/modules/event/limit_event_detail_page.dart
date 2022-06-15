@@ -169,55 +169,55 @@ class _EventDetailPageState extends State<EventDetailPage> {
             child: Text(S.current.switch_region),
             onTap: () async {
               await null;
-              final jpEvent = db.gameData.events[eventId];
-              final startTime =
-                  jpEvent?.extra.startTime.copyWith(jp: jpEvent.startedAt);
-              showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) {
-                  return SimpleDialog(
-                    children: [
-                      for (final region in Region.values)
-                        ListTile(
-                          title: Text(region.localName),
-                          enabled: startTime?.ofRegion(region) != null,
-                          onTap: () async {
-                            Navigator.pop(context);
-                            _changeRegion(region, eventId);
-                          },
-                        ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(Icons.clear),
-                      )
-                    ],
-                  );
-                },
-              );
+              _showSwitchRegion();
             },
           ),
       ],
     );
   }
 
-  void _changeRegion(Region region, int eventId) async {
-    EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
-    Event? newEvent;
-    if (region == Region.jp) {
-      newEvent = db.gameData.events[eventId];
-    } else {
-      newEvent = await AtlasApi.event(eventId, region: region);
-      newEvent?.calcItems(db.gameData);
-    }
-    _region = region;
-    _event = newEvent;
-    if (mounted) {
-      setState(() {});
-    }
-    EasyLoading.dismiss();
+  void _showSwitchRegion() {
+    final eventId = widget.event?.id ?? widget.eventId;
+    if (eventId == null || !mounted) return;
+    final jpEvent = db.gameData.events[eventId];
+    final startTime = jpEvent?.extra.startTime.copyWith(jp: jpEvent.startedAt);
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => SimpleDialog(
+        children: [
+          for (final region in Region.values)
+            ListTile(
+              title: Text(region.localName),
+              enabled: startTime?.ofRegion(region) != null,
+              onTap: () async {
+                Navigator.pop(context);
+                EasyLoading.show(
+                    status: 'Loading', maskType: EasyLoadingMaskType.clear);
+                Event? newEvent;
+                if (region == Region.jp) {
+                  newEvent = db.gameData.events[eventId];
+                } else {
+                  newEvent = await AtlasApi.event(eventId, region: region);
+                  newEvent?.calcItems(db.gameData);
+                }
+                _region = region;
+                _event = newEvent;
+                if (mounted) {
+                  setState(() {});
+                }
+                EasyLoading.dismiss();
+              },
+            ),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.clear),
+          )
+        ],
+      ),
+    );
   }
 }
 

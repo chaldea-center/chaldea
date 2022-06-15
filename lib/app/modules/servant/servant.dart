@@ -107,7 +107,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
     return [
       SliverAppBar(
         title: AutoSizeText(svt.lName.l, maxLines: 1),
-        elevation: 0,
         actions: [
           if (svt.isUserSvt)
             db.onUserData(
@@ -331,6 +330,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             // unselectedLabelColor: Colors.grey,
             isScrollable: true,
             tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+            indicatorColor: Theme.of(context).isDarkMode
+                ? null
+                : Colors.white.withAlpha(210),
           ),
         ),
       ),
