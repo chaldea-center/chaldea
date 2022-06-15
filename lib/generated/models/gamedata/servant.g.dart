@@ -598,7 +598,8 @@ NiceCostume _$NiceCostumeFromJson(Map json) => NiceCostume(
     );
 
 VoiceCond _$VoiceCondFromJson(Map json) => VoiceCond(
-      condType: $enumDecode(_$VoiceCondTypeEnumMap, json['condType']),
+      condType: $enumDecodeNullable(_$VoiceCondTypeEnumMap, json['condType']) ??
+          VoiceCondType.unknown,
       value: json['value'] as int,
       valueList: (json['valueList'] as List<dynamic>?)
               ?.map((e) => e as int)
@@ -634,6 +635,7 @@ const _$VoiceCondTypeEnumMap = {
   VoiceCondType.levelUpLimitCount: 'levelUpLimitCount',
   VoiceCondType.levelUpLimitCountAbove: 'levelUpLimitCountAbove',
   VoiceCondType.levelUpLimitCountBelow: 'levelUpLimitCountBelow',
+  VoiceCondType.unknown: 'unknown',
 };
 
 VoicePlayCond _$VoicePlayCondFromJson(Map json) => VoicePlayCond(

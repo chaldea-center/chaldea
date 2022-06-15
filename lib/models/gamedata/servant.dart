@@ -1022,7 +1022,7 @@ class VoiceCond {
   int eventId;
 
   VoiceCond({
-    required this.condType,
+    this.condType = VoiceCondType.unknown,
     required this.value,
     this.valueList = const [],
     this.eventId = 0,
@@ -1234,6 +1234,7 @@ enum VoiceCondType {
   levelUpLimitCount,
   levelUpLimitCountAbove,
   levelUpLimitCountBelow,
+  unknown,
 }
 
 enum SvtVoiceType {
