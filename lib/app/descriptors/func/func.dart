@@ -109,19 +109,9 @@ class FuncDescriptor extends StatelessWidget {
     if (turn > 0 || count > 0) {
       funcText.write(' (');
       funcText.write([
-        if (count > 0)
-          M.of(
-            jp: '$count回',
-            cn: '$count次',
-            na: '$count Times',
-          ),
-        if (turn > 0)
-          M.of(
-            jp: '$turnターン',
-            cn: '$turn回合',
-            na: '$turn Turns',
-          ),
-      ].join(M.of(jp: '·', na: ', ')));
+        if (count > 0) Transl.special.funcValCountTimes(count),
+        if (turn > 0) Transl.special.funcValTurns(turn),
+      ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
       funcText.write(')');
     }
     final lvVals = func.svals;
@@ -198,9 +188,8 @@ class FuncDescriptor extends StatelessWidget {
           (vals?.UseRate != null && vals!.UseRate! < 0)) {
         print(vals.Rate);
         final hint =
-            Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed")
-                .l;
-        spans.add(TextSpan(text: '($hint)'));
+            Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed");
+        spans.add(TextSpan(text: '(${hint.l})'));
       }
 
       void _addFuncTarget() {
@@ -274,6 +263,7 @@ class FuncDescriptor extends StatelessWidget {
 
       _addFuncText();
 
+      List<List<InlineSpan>> _traitSpans = [];
       void _addTraits(String? prefix, List<NiceTrait> traits) {
         if ([BuffType.upCommandall, BuffType.downCommandall]
             .contains(func.buffs.getOrNull(0)?.type)) {
@@ -287,31 +277,50 @@ class FuncDescriptor extends StatelessWidget {
               .toList();
         }
         if (traits.isEmpty) return;
-        if (prefix != null) spans.add(TextSpan(text: prefix));
-        for (final trait in traits) {
-          spans.add(CenterWidgetSpan(
+        _traitSpans.add([
+          if (prefix != null) TextSpan(text: prefix),
+          for (final trait in traits)
+            CenterWidgetSpan(
               child: SharedBuilder.trait(
-                  context: context, trait: trait, textScaleFactor: 0.85)));
-        }
+                  context: context, trait: trait, textScaleFactor: 0.85),
+            )
+        ]);
       }
 
       switch (func.funcType) {
         case FuncType.addState:
         case FuncType.addStateShort:
           final buff = func.buffs.first;
-          _addTraits('  For:', buff.ckSelfIndv);
-          _addTraits('  On:', buff.ckOpIndv);
+          _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv);
+          _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv);
           break;
         default:
           break;
       }
-      _addTraits('  For:', func.traitVals);
+      if (func.traitVals.isNotEmpty) {
+        _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
+      }
       if (func.funcType != FuncType.subState ||
           func.traitVals.map((e) => e.id).join(',') !=
               func.functvals.map((e) => e.id).join(',')) {
-        _addTraits('  On:', func.functvals);
+        _addTraits(Transl.special.funcTargetVals, func.functvals);
       }
-      _addTraits('  On Field:', func.funcquestTvals);
+
+      if (func.funcquestTvals.isNotEmpty) {
+        _traitSpans.add(replaceSpan(
+          Transl.special.funcTraitOnField,
+          '{0}',
+          SharedBuilder.traitSpans(
+              context: context,
+              traits: func.funcquestTvals,
+              textScaleFactor: 0.85),
+        ));
+      }
+      for (int index = 0; index < _traitSpans.length; index++) {
+        spans.add(TextSpan(
+            text: index == _traitSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
+        spans.addAll(_traitSpans[index]);
+      }
 
       Widget child = Text.rich(
         TextSpan(children: spans),

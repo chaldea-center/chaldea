@@ -87,6 +87,8 @@ class SkillEffect {
     avoidState,
     upGrantstate,
     upReceivePositiveEffect,
+    subState,
+    subStatePositive,
     upToleranceSubstate,
     upResistInstantdeath,
     upGrantInstantdeath,
@@ -269,6 +271,13 @@ class SkillEffect {
     validate: (func) => func.buffs.first.ckOpIndv
         .any((trait) => trait.name == Trait.buffPositiveEffect),
   );
+  // 解除Buff
+  static SkillEffect subState =
+      SkillEffect._func('subState', FuncType.subState);
+  static SkillEffect subStatePositive = SkillEffect._func(
+      'subStatePositive', FuncType.subState,
+      validate: (func) =>
+          func.traitVals.any((e) => e.name == Trait.buffPositiveEffect));
   // 强化解除耐性提升
   static SkillEffect upToleranceSubstate =
       SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);

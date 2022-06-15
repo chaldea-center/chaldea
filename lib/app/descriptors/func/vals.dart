@@ -167,7 +167,7 @@ class ValDsc extends StatelessWidget {
         func.funcType == FuncType.addStateShort) {
       describeBuff(func.buffs.first);
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => '$v Chance');
+        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
       }
       _maybeAddRate();
     } else if (func.funcType == FuncType.absorbNpturn) {
@@ -245,13 +245,15 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-        _addInt(vals.Count, (v) => '$v Times');
+        _addInt(
+            vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
       }
       if (vals.AddCount != null) {
         _addInt(vals.AddCount);
       }
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => '$v Chance');
+        Transl.spotNames;
+        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
@@ -327,10 +329,10 @@ class ValDsc extends StatelessWidget {
             _jsonVals.first == 'Rate' &&
             ignoreRate != true) ||
         (vals.Rate != null && vals.Rate != 1000)) {
-      _addPercent(vals.Rate, 10, (v) => '$v Chance');
+      _addPercent(vals.Rate, 10, (v) => Transl.special.funcValChance(v));
     }
     if (vals.ActSetWeight != null) {
-      _addPercent(vals.ActSetWeight, 1, (v) => '$v Weight');
+      _addPercent(vals.ActSetWeight, 1, (v) => Transl.special.funcValWeight(v));
     }
   }
 }

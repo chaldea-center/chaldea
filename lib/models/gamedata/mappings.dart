@@ -199,6 +199,8 @@ class Transl<K, V> {
       Transl(md.enums.buffType, key.name, key.name);
   static Transl<String, String> funcType(FuncType key) =>
       Transl(md.enums.funcType, key.name, key.name);
+
+  static final _SpecialTransl special = _SpecialTransl();
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -496,4 +498,70 @@ class EnumMapping {
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>
       _$EnumMappingFromJson(json);
+}
+
+class _SpecialTransl {
+  String funcValChance(String v) => M.of(
+        jp: null,
+        cn: '$v概率',
+        tw: null,
+        na: '$v Chance',
+        kr: null,
+      );
+  String funcValWeight(String v) => M.of(
+        jp: null,
+        cn: '$v权重',
+        tw: null,
+        na: '$v Weight',
+        kr: null,
+      );
+  String funcValCountTimes(int count) => M.of(
+        jp: '$count回',
+        cn: '$count次',
+        tw: null,
+        na: '$count Times',
+        kr: null,
+      );
+  String funcValTurns(int turn) => M.of(
+        jp: '$turnターン',
+        cn: '$turn回合',
+        tw: null,
+        na: '$turn Turns',
+        kr: null,
+      );
+  String get funcTraitRemoval => M.of(
+        jp: '解除: ',
+        cn: '解除: ',
+        tw: '解除: ',
+        na: 'Remove: ',
+        kr: null,
+      );
+  String get funcTraitOnField => M.of(
+        jp: '〔{0}〕のあるフィールドにおいてのみ',
+        cn: '仅在〔{0}〕场地上时 ',
+        tw: '僅在〔{0}〕場地上時',
+        na: 'When on a [{0}] field',
+        kr: null,
+      );
+  String get funcTargetVals => M.of(
+        jp: null,
+        cn: '目标特性: ',
+        tw: null,
+        na: 'Target Trait: ',
+        kr: null,
+      );
+  String get buffCheckSelf => M.of(
+        jp: null,
+        cn: '自身特性: ',
+        tw: null,
+        na: 'Self Trait: ',
+        kr: null,
+      );
+  String get buffCheckOpposite => M.of(
+        jp: null,
+        cn: 'Buff目标: ',
+        tw: null,
+        na: 'Buff Target: ',
+        kr: null,
+      );
 }
