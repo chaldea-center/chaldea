@@ -54,10 +54,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(n) => "第${n}節";
 
-  static String m16(region) => "出现错误或${region}无此关卡数据";
+  static String m16(region) => "出現錯誤或${region}無此關卡資料";
 
   static String m17(unknown, dup, valid, total, selected) =>
-      "${unknown}不明, ${dup}重复, ${valid}/${total}有效, ${selected}已选";
+      "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m18(region) => "${region}公告";
 
@@ -75,8 +75,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("關於"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "本應用所使用數據均來源於遊戲及以下網站，遊戲圖片文本原文等版權屬於TYPE MOON/FGO PROJECT。\n 程序功能與介面設計參考微信小程序\"素材規劃\"以及iOS版Guda。"),
-        "about_data_source": MessageLookupByLibrary.simpleMessage("數據來源"),
+            "本應用所使用資料均來源於遊戲及以下網站，遊戲圖片文本原文等版權屬於TYPE MOON/FGO PROJECT。\n 程序功能與介面設計參考微信小程序\"素材規劃\"以及iOS版Guda。"),
+        "about_data_source": MessageLookupByLibrary.simpleMessage("資料來源"),
         "about_data_source_footer":
             MessageLookupByLibrary.simpleMessage("若存在未標註的來源或侵權敬請告知"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("回饋"),
@@ -142,7 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "  與V1數據不互通。\n  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea應用備份"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldea伺服器"),
-        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("大陸"),
+        "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中國"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),
         "chaldea_server_hint":
             MessageLookupByLibrary.simpleMessage("用於遊戲數據和截圖識別"),
@@ -154,7 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache": MessageLookupByLibrary.simpleMessage("清除暫存"),
         "clear_cache_finish": MessageLookupByLibrary.simpleMessage("暫存已清除"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("包括卡面語音等"),
-        "clear_data": MessageLookupByLibrary.simpleMessage("清除數據"),
+        "clear_data": MessageLookupByLibrary.simpleMessage("清除資料"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召喚所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "confirm": MessageLookupByLibrary.simpleMessage("確定"),
@@ -181,14 +181,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("無任務，點擊+添加"),
         "custom_mission_source_mission":
-            MessageLookupByLibrary.simpleMessage("源任務"),
+            MessageLookupByLibrary.simpleMessage("原任務"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("淺色"),
         "dark_mode_system": MessageLookupByLibrary.simpleMessage("系統"),
         "database": MessageLookupByLibrary.simpleMessage("Database"),
         "database_not_downloaded":
-            MessageLookupByLibrary.simpleMessage("數據庫未下載，仍然繼續?"),
+            MessageLookupByLibrary.simpleMessage("資料庫未下載，仍然繼續?"),
         "dataset_version": MessageLookupByLibrary.simpleMessage("數據版本"),
         "date": MessageLookupByLibrary.simpleMessage("日期"),
         "debug": MessageLookupByLibrary.simpleMessage("Debug"),
@@ -197,10 +197,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敵攻擊補正"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
-        "desktop_only": MessageLookupByLibrary.simpleMessage("仅限桌面版"),
+        "desktop_only": MessageLookupByLibrary.simpleMessage("僅限桌面版"),
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),
         "display_show_window_fab":
-            MessageLookupByLibrary.simpleMessage("显示多窗口按钮"),
+            MessageLookupByLibrary.simpleMessage("顯示多分頁按鈕"),
         "done": MessageLookupByLibrary.simpleMessage("完成"),
         "download": MessageLookupByLibrary.simpleMessage("下載"),
         "download_latest_gamedata_hint":
@@ -226,7 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每場掉率"),
         "email": MessageLookupByLibrary.simpleMessage("郵箱"),
         "enemy_filter_trait_hint":
-            MessageLookupByLibrary.simpleMessage("特性篩選僅適用於主線Free的敵人"),
+            MessageLookupByLibrary.simpleMessage("特性篩選僅適用於主線FQ的敵人"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("強化將扣除以下素材"),
@@ -237,7 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材倉庫，並將該活動移出規劃"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
-        "event_digging": MessageLookupByLibrary.simpleMessage("发掘"),
+        "event_digging": MessageLookupByLibrary.simpleMessage("發掘"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外素材"),
         "event_item_fixed_extra":
             MessageLookupByLibrary.simpleMessage("額外固定素材"),
@@ -247,7 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限池"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活動未列入規劃"),
-        "event_point": MessageLookupByLibrary.simpleMessage("活动点数"),
+        "event_point": MessageLookupByLibrary.simpleMessage("活動點數"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("點數"),
         "event_progress": MessageLookupByLibrary.simpleMessage("進度"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活動關卡"),
@@ -298,22 +298,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_plan_reached": MessageLookupByLibrary.simpleMessage("已滿"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("反向匹配"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("顯示"),
-        "filter_skill_lv": MessageLookupByLibrary.simpleMessage("技能練度"),
+        "filter_skill_lv": MessageLookupByLibrary.simpleMessage("技能等級"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("排序"),
         "filter_sort_class": MessageLookupByLibrary.simpleMessage("職階"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("序號"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("星級"),
         "foukun": MessageLookupByLibrary.simpleMessage("芙芙"),
-        "free_progress": MessageLookupByLibrary.simpleMessage("Free進度"),
+        "free_progress": MessageLookupByLibrary.simpleMessage("FQ進度"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("日服最新"),
-        "free_quest": MessageLookupByLibrary.simpleMessage("Free本"),
-        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free速查"),
+        "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
+        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("FQ速查"),
         "free_quest_calculator_short":
-            MessageLookupByLibrary.simpleMessage("Free速查"),
+            MessageLookupByLibrary.simpleMessage("FQ速查"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found":
-            MessageLookupByLibrary.simpleMessage("未加載數據包，請先前往遊戲數據頁面下載"),
+            MessageLookupByLibrary.simpleMessage("未加載資料包，請先前往遊戲數據頁面下載"),
         "game_drop": MessageLookupByLibrary.simpleMessage("掉落"),
         "game_experience": MessageLookupByLibrary.simpleMessage("經驗"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羈絆"),
@@ -321,8 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server": MessageLookupByLibrary.simpleMessage("遊戲區服"),
         "gamedata": MessageLookupByLibrary.simpleMessage("遊戲數據"),
         "general_all": MessageLookupByLibrary.simpleMessage("所有"),
-        "general_close": MessageLookupByLibrary.simpleMessage("关闭"),
-        "general_default": MessageLookupByLibrary.simpleMessage("默認"),
+        "general_close": MessageLookupByLibrary.simpleMessage("關閉"),
+        "general_default": MessageLookupByLibrary.simpleMessage("預設"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
         "general_type": MessageLookupByLibrary.simpleMessage("類型"),
@@ -334,9 +334,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
         "help": MessageLookupByLibrary.simpleMessage("幫助"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隱藏已過期"),
-        "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("隐藏规划项"),
+        "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("隱藏規劃項目"),
         "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
-            "仅仅是在从者详情规划页不显示，实际仍计入素材规划与统计。"),
+            "僅僅是在從者詳情規劃頁不顯示，實際仍計入素材規劃與統計。"),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隱藏未實裝卡牌"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(簡中/繁中/日/美)帳號登入時的數據"),
@@ -365,13 +365,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV模板"),
         "import_data": MessageLookupByLibrary.simpleMessage("導入"),
         "import_data_error": m3,
-        "import_data_success": MessageLookupByLibrary.simpleMessage("成功導入數據"),
+        "import_data_success": MessageLookupByLibrary.simpleMessage("成功導入資料"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("從剪切板"),
         "import_from_file": MessageLookupByLibrary.simpleMessage("從文件"),
         "import_http_body_duplicated":
             MessageLookupByLibrary.simpleMessage("允許2號機"),
         "import_http_body_hint": MessageLookupByLibrary.simpleMessage(
-            "點擊右上角導入解密的HTTPS回應包以導入帳戶數據\n點擊幫助以查看如何捕獲並解密HTTPS回應內容"),
+            "點擊右上角導入解密的HTTPS回應包以導入帳戶資料\n點擊幫助以查看如何捕獲並解密HTTPS回應內容"),
         "import_http_body_hint_hide":
             MessageLookupByLibrary.simpleMessage("點擊從者可隱藏/取消隱藏該從者"),
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("僅鎖定"),
@@ -384,7 +384,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("僅更新識別成功的結果"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("更新素材"),
-        "import_source_file": MessageLookupByLibrary.simpleMessage("導入源數據"),
+        "import_source_file": MessageLookupByLibrary.simpleMessage("導入源資料"),
         "import_userdata_more": MessageLookupByLibrary.simpleMessage("更多導入方式"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("屬性"),
@@ -435,13 +435,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_silver": MessageLookupByLibrary.simpleMessage("銀素材"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("特殊素材"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("普通素材"),
-        "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage("修改库存"),
+        "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage("修改庫存"),
         "item_eff": MessageLookupByLibrary.simpleMessage("素材效率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
-            "計算規劃遷，可以設置不同材料的剩餘量(僅用於于Free本規劃)"),
+            "計算規劃遷，可以設置不同材料的剩餘量(僅用於于FQ規劃)"),
         "item_grail2crystal": MessageLookupByLibrary.simpleMessage("聖杯→傳承結晶"),
         "item_left": MessageLookupByLibrary.simpleMessage("剩餘"),
-        "item_no_free_quests": MessageLookupByLibrary.simpleMessage("無Free本"),
+        "item_no_free_quests": MessageLookupByLibrary.simpleMessage("無FQ"),
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("僅顯示不足"),
         "item_own": MessageLookupByLibrary.simpleMessage("擁有"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("素材截圖"),
@@ -461,13 +461,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_all": m13,
         "list_count_shown_hidden_all": m14,
         "list_end_hint": m6,
-        "load_ffo_data": MessageLookupByLibrary.simpleMessage("加载FFO数据"),
+        "load_ffo_data": MessageLookupByLibrary.simpleMessage("加載FFO資料"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用戶名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密碼"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("確認密碼"),
-        "login_first_hint": MessageLookupByLibrary.simpleMessage("請先登錄"),
+        "login_first_hint": MessageLookupByLibrary.simpleMessage("請先登入"),
         "login_forget_pwd": MessageLookupByLibrary.simpleMessage("忘記密碼"),
-        "login_login": MessageLookupByLibrary.simpleMessage("登陸"),
+        "login_login": MessageLookupByLibrary.simpleMessage("登入"),
         "login_logout": MessageLookupByLibrary.simpleMessage("登出"),
         "login_new_name": MessageLookupByLibrary.simpleMessage("新用戶名"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新密碼"),
@@ -487,7 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lucky_bag_expectation": MessageLookupByLibrary.simpleMessage("期望值"),
         "lucky_bag_expectation_short":
             MessageLookupByLibrary.simpleMessage("期望"),
-        "lucky_bag_rating": MessageLookupByLibrary.simpleMessage("打分"),
+        "lucky_bag_rating": MessageLookupByLibrary.simpleMessage("評分"),
         "lucky_bag_tooltip_unwanted":
             MessageLookupByLibrary.simpleMessage("非常不想要"),
         "lucky_bag_tooltip_wanted":
@@ -504,25 +504,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任務列表"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("每週任務"),
         "migrate_external_storage_btn_no":
-            MessageLookupByLibrary.simpleMessage("不遷移"),
+            MessageLookupByLibrary.simpleMessage("不轉移"),
         "migrate_external_storage_btn_yes":
-            MessageLookupByLibrary.simpleMessage("遷移"),
+            MessageLookupByLibrary.simpleMessage("轉移"),
         "migrate_external_storage_manual_warning":
             MessageLookupByLibrary.simpleMessage("請手動移動數據, 否則啟動後為空數據"),
         "migrate_external_storage_title":
-            MessageLookupByLibrary.simpleMessage("遷移數據"),
+            MessageLookupByLibrary.simpleMessage("轉移資料"),
         "mission": MessageLookupByLibrary.simpleMessage("任務"),
         "move_down": MessageLookupByLibrary.simpleMessage("下移"),
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔術禮裝"),
-        "network_cur_connection": MessageLookupByLibrary.simpleMessage("当前连接"),
-        "network_force_online": MessageLookupByLibrary.simpleMessage("强制在线模式"),
+        "network_cur_connection": MessageLookupByLibrary.simpleMessage("當前連接"),
+        "network_force_online": MessageLookupByLibrary.simpleMessage("強制在線模式"),
         "network_force_online_hint":
-            MessageLookupByLibrary.simpleMessage("当未检测到网络连接时，App将默认处于离线模式"),
-        "network_settings": MessageLookupByLibrary.simpleMessage("网络设置"),
+            MessageLookupByLibrary.simpleMessage("當未檢測到網絡連接時，App將預設處於離線模式"),
+        "network_settings": MessageLookupByLibrary.simpleMessage("網路設置"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建帳號"),
-        "new_data_available": MessageLookupByLibrary.simpleMessage("可用数据更新"),
-        "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("新掉落数据"),
+        "new_data_available": MessageLookupByLibrary.simpleMessage("有可用數據更新"),
+        "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("新掉落數據"),
         "next_card": MessageLookupByLibrary.simpleMessage("下一張"),
         "next_page": MessageLookupByLibrary.simpleMessage("下一頁"),
         "no_servant_quest_hint":
@@ -539,7 +539,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),
         "ok": MessageLookupByLibrary.simpleMessage("確定"),
         "only_show_main_story_enemy":
-            MessageLookupByLibrary.simpleMessage("仅显示主线Free敌人"),
+            MessageLookupByLibrary.simpleMessage("僅顯示主線敵人"),
         "open": MessageLookupByLibrary.simpleMessage("打開"),
         "open_condition": MessageLookupByLibrary.simpleMessage("開發條件"),
         "open_in_file_manager":
@@ -550,7 +550,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被動"),
         "plan": MessageLookupByLibrary.simpleMessage("規劃"),
         "plan_list_only_unlock_append":
-            MessageLookupByLibrary.simpleMessage("仅已解锁附加"),
+            MessageLookupByLibrary.simpleMessage("僅已解鎖附加"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("批量設置"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("當前"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("目標"),
@@ -558,8 +558,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_max9": MessageLookupByLibrary.simpleMessage("規劃最大化(999)"),
         "plan_objective": MessageLookupByLibrary.simpleMessage("規劃目標"),
         "plan_title": MessageLookupByLibrary.simpleMessage("規劃"),
-        "planning_free_quest_btn":
-            MessageLookupByLibrary.simpleMessage("規劃Free本"),
+        "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("規劃FQ"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("首選翻譯"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
             "拖動以更改順序。\n用於遊戲數據的顯示而非應用UI語言。部分語言存在未翻譯的部分。"),
@@ -575,19 +574,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("詳情"),
         "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
-            "主線Free本中敵人資訊的匯總, 任何屬性均可能被伺服器所覆蓋, 僅供參考。\n*特殊*特性指僅部分敵人擁有的特性。"),
+            "主線FQ中敵人資訊的匯總, 任何屬性均可能被伺服器所覆蓋, 僅供參考。\n*特殊*特性指僅部分敵人擁有的特性。"),
         "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
         "quest_not_found_error": m16,
-        "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首选区服"),
+        "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首選區服"),
         "quest_prefer_region_hint":
-            MessageLookupByLibrary.simpleMessage("若该关卡所属活动在所选区服尚未开放，则默认显示日服"),
+            MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
-            "仅日服(2020/11之后)和美服(2020/12之后)可能含有敌方数据"),
+            "僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
-        "random": MessageLookupByLibrary.simpleMessage("随机"),
+        "random": MessageLookupByLibrary.simpleMessage("隨機"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store":
@@ -605,21 +604,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻活動"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
         "reset_custom_ascension_icon":
-            MessageLookupByLibrary.simpleMessage("重置自定义从者头像"),
+            MessageLookupByLibrary.simpleMessage("重置自訂從者頭像"),
         "reset_plan_all": m7,
         "reset_plan_shown": m8,
         "resettable_digged_num":
-            MessageLookupByLibrary.simpleMessage("重置所需发掘数目"),
+            MessageLookupByLibrary.simpleMessage("重置所需發掘數目"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("重啟以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
-            "重啟以更新應用，若更新是百，請手動複製source文件夾到destination"),
+            "重啟以更新應用，若更新失敗，請手動複製source文件夾到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢復"),
         "results": MessageLookupByLibrary.simpleMessage("結果"),
-        "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("攢石"),
+        "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("掙石"),
         "same_event_plan": MessageLookupByLibrary.simpleMessage("保持相同活動規劃"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
-        "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相冊"),
+        "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相簿"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "screen_size": MessageLookupByLibrary.simpleMessage("螢幕尺寸"),
         "screenshots": MessageLookupByLibrary.simpleMessage("截圖"),
@@ -645,7 +644,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_always_on_top": MessageLookupByLibrary.simpleMessage("置頂顯示"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自動旋轉"),
         "setting_auto_turn_on_plan_not_reach":
-            MessageLookupByLibrary.simpleMessage("默認顯示\"規劃未滿\""),
+            MessageLookupByLibrary.simpleMessage("預設顯示\"規劃未滿\""),
         "setting_home_plan_list_page":
             MessageLookupByLibrary.simpleMessage("首頁-規劃列表頁"),
         "setting_only_change_second_append_skill":
@@ -655,21 +654,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_servant_class_filter_style":
             MessageLookupByLibrary.simpleMessage("從者職階篩選樣式"),
         "setting_setting_favorite_button_default":
-            MessageLookupByLibrary.simpleMessage("「關注」按紐默認篩選"),
+            MessageLookupByLibrary.simpleMessage("「關注」按紐預設篩選"),
         "setting_show_account_at_homepage":
             MessageLookupByLibrary.simpleMessage("首頁顯示當前帳號"),
         "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage("標籤頁排序"),
-        "settings_data": MessageLookupByLibrary.simpleMessage("數據"),
+        "settings_data": MessageLookupByLibrary.simpleMessage("資料"),
         "settings_documents": MessageLookupByLibrary.simpleMessage("使用文檔"),
         "settings_general": MessageLookupByLibrary.simpleMessage("通用"),
         "settings_language": MessageLookupByLibrary.simpleMessage("語言"),
         "settings_tab_name": MessageLookupByLibrary.simpleMessage("設置"),
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
-            "更新數據/版本/bug較多時，建議提前備份數據，卸載應用將導致內部備份丟失，及時轉移到可靠的儲存位置"),
+            "更新資料/版本/bug較多時，建議提前備份資料，移除應用將導致內部備份丟失，即時轉移到可靠的儲存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("顯示輪播圖"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("顯示刷新率"),
-        "show_fullscreen": MessageLookupByLibrary.simpleMessage("全屏顯示"),
+        "show_fullscreen": MessageLookupByLibrary.simpleMessage("全螢幕顯示"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("顯示已過期"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "simulator": MessageLookupByLibrary.simpleMessage("模擬器"),
@@ -680,8 +679,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
         "solution_total_battles_ap": m19,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
-        "special_reward_hide": MessageLookupByLibrary.simpleMessage("隐藏特殊报酬"),
-        "special_reward_show": MessageLookupByLibrary.simpleMessage("显示特殊报酬"),
+        "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
+        "special_reward_show": MessageLookupByLibrary.simpleMessage("顯示特殊報酬"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),
@@ -701,7 +700,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持與捐贈"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("從者頭像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("資料"),
-        "svt_class_dist": MessageLookupByLibrary.simpleMessage("职阶分布"),
+        "svt_class_dist": MessageLookupByLibrary.simpleMessage("職階分佈"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("自動適配"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("隱藏"),
         "svt_class_filter_single_row":
@@ -722,14 +721,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("關聯禮裝"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置規劃"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
-        "svt_stat_details": MessageLookupByLibrary.simpleMessage("明细"),
+        "svt_stat_details": MessageLookupByLibrary.simpleMessage("詳細"),
         "svt_stat_own_total":
             MessageLookupByLibrary.simpleMessage("(999)擁有/總計"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切換滾動條/下拉框"),
         "switch_region": MessageLookupByLibrary.simpleMessage("切換區服"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
-        "testing": MessageLookupByLibrary.simpleMessage("測試ing"),
+        "testing": MessageLookupByLibrary.simpleMessage("測試中"),
         "time_close": MessageLookupByLibrary.simpleMessage("關閉"),
         "time_end": MessageLookupByLibrary.simpleMessage("結束"),
         "time_start": MessageLookupByLibrary.simpleMessage("開始"),
@@ -752,18 +751,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("無可用更新"),
         "update_msg_succuss": MessageLookupByLibrary.simpleMessage("已更新"),
         "upload": MessageLookupByLibrary.simpleMessage("上傳"),
-        "upload_and_close_app": MessageLookupByLibrary.simpleMessage("上传并关闭"),
+        "upload_and_close_app": MessageLookupByLibrary.simpleMessage("上傳並關閉"),
         "upload_and_close_app_alert":
-            MessageLookupByLibrary.simpleMessage("是否上传数据再关闭应用?"),
+            MessageLookupByLibrary.simpleMessage("是否上傳資料再關閉?"),
         "upload_before_close_app":
-            MessageLookupByLibrary.simpleMessage("关闭app前上传"),
+            MessageLookupByLibrary.simpleMessage("關閉前上傳"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
-        "userdata": MessageLookupByLibrary.simpleMessage("用戶數據"),
+        "userdata": MessageLookupByLibrary.simpleMessage("用戶資料"),
         "userdata_download_backup":
             MessageLookupByLibrary.simpleMessage("下載備份"),
         "userdata_download_choose_backup":
             MessageLookupByLibrary.simpleMessage("選擇一個備份"),
-        "userdata_local": MessageLookupByLibrary.simpleMessage("用戶數據(本地)"),
+        "userdata_local": MessageLookupByLibrary.simpleMessage("用戶資料(本地)"),
         "userdata_sync": MessageLookupByLibrary.simpleMessage("同步數據"),
         "userdata_sync_hint":
             MessageLookupByLibrary.simpleMessage("僅更新帳號數據，不包含本地設置"),

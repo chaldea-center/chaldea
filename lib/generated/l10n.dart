@@ -1131,10 +1131,10 @@ class S {
     );
   }
 
-  /// `Source Mission`
+  /// `Original Mission`
   String get custom_mission_source_mission {
     return Intl.message(
-      'Source Mission',
+      'Original Mission',
       name: 'custom_mission_source_mission',
       desc: '',
       locale: localeName,

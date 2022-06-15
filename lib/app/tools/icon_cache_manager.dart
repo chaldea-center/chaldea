@@ -231,10 +231,12 @@ abstract class _CachedLoader<K, V> {
       _cmpl.complete(value);
     }).catchError((e, s) {
       _cmpl.complete(null);
-      if (e is DioError && e.response?.statusCode == 403 ||
-          e.response?.statusCode == 404) {
-        _failed[key] ??= _FailedDetail(time: DateTime.now());
-        return;
+      if (e is DioError) {
+        final code = e.response?.statusCode;
+        if (code == 403 || code == 404) {
+          _failed[key] ??= _FailedDetail(time: DateTime.now());
+          return;
+        }
       }
       logger.e('Got $key failed', e, s);
 

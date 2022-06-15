@@ -201,8 +201,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Misión personalizada"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage(
             "Sin misiones, haga clic en + para agregar misiones"),
-        "custom_mission_source_mission":
-            MessageLookupByLibrary.simpleMessage("Misión de origen"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Tema"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Oscuro"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("Claro"),

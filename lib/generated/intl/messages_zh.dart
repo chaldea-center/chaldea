@@ -181,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("无任务，点击+添加"),
         "custom_mission_source_mission":
-            MessageLookupByLibrary.simpleMessage("源任务"),
+            MessageLookupByLibrary.simpleMessage("原任务"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),

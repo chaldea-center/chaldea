@@ -70,66 +70,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           ),
         ),
         kDefaultDivider,
-        ButtonBar(
-          children: [
-            FilterGroup<SvtMatCostDetailType>(
-              options: const [
-                SvtMatCostDetailType.consumed,
-                SvtMatCostDetailType.demands
-              ],
-              values: typeFilter,
-              combined: true,
-              optionBuilder: (v) => Text({
-                    SvtMatCostDetailType.consumed: S.current.consumed,
-                    SvtMatCostDetailType.demands: S.current.demands,
-                  }[v] ??
-                  v.name),
-              onFilterChanged: (v, _) {
-                setState(() {});
-              },
-              padding: EdgeInsets.zero,
-            ),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text('  ${S.current.filter_sort}: '),
-                DropdownButton<SvtCompare>(
-                  value: sortOrder,
-                  items: [
-                    for (final order in [
-                      SvtCompare.no,
-                      SvtCompare.className,
-                      SvtCompare.rarity,
-                      SvtCompare.priority
-                    ])
-                      DropdownMenuItem(
-                        value: order,
-                        child: Text(order.showName),
-                      )
-                  ],
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) sortOrder = v;
-                    });
-                  },
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      sortReversed = !sortReversed;
-                    });
-                  },
-                  icon: FaIcon(
-                    sortReversed
-                        ? FontAwesomeIcons.arrowDownWideShort
-                        : FontAwesomeIcons.arrowUpWideShort,
-                  ),
-                  tooltip: S.current.sort_order,
-                )
-              ],
-            )
-          ],
-        )
+        SafeArea(child: buttonBar),
       ],
     );
   }
@@ -197,6 +138,69 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           ),
         );
       },
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      children: [
+        FilterGroup<SvtMatCostDetailType>(
+          options: const [
+            SvtMatCostDetailType.consumed,
+            SvtMatCostDetailType.demands
+          ],
+          values: typeFilter,
+          combined: true,
+          optionBuilder: (v) => Text({
+                SvtMatCostDetailType.consumed: S.current.consumed,
+                SvtMatCostDetailType.demands: S.current.demands,
+              }[v] ??
+              v.name),
+          onFilterChanged: (v, _) {
+            setState(() {});
+          },
+          padding: EdgeInsets.zero,
+        ),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text('  ${S.current.filter_sort}: '),
+            DropdownButton<SvtCompare>(
+              value: sortOrder,
+              items: [
+                for (final order in [
+                  SvtCompare.no,
+                  SvtCompare.className,
+                  SvtCompare.rarity,
+                  SvtCompare.priority
+                ])
+                  DropdownMenuItem(
+                    value: order,
+                    child: Text(order.showName),
+                  )
+              ],
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) sortOrder = v;
+                });
+              },
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  sortReversed = !sortReversed;
+                });
+              },
+              icon: FaIcon(
+                sortReversed
+                    ? FontAwesomeIcons.arrowDownWideShort
+                    : FontAwesomeIcons.arrowUpWideShort,
+              ),
+              tooltip: S.current.sort_order,
+            )
+          ],
+        )
+      ],
     );
   }
 }

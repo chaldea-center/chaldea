@@ -179,8 +179,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_mission": MessageLookupByLibrary.simpleMessage("맞춤 임무"),
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("미션이 없습니다 +를 클릭하여 추가합시다"),
-        "custom_mission_source_mission":
-            MessageLookupByLibrary.simpleMessage("소스 임무"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("다크 모드"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("다크"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("라이트"),

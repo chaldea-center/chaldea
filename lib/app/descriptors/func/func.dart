@@ -440,7 +440,7 @@ class FuncDescriptor extends StatelessWidget {
         "----buff----": "↓",
         "id": buff.id,
         "name": Transl.buffNames(buff.name).l,
-        "type": '${buff.type.name}(${Transl.buffType(buff.type).l})',
+        "buffType": '${buff.type.name}(${Transl.buffType(buff.type).l})',
         "detail": Transl.buffDetail(buff.detail).l,
         "buffGroup": buff.buffGroup,
         if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),

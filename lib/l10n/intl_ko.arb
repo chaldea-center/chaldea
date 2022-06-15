@@ -97,7 +97,7 @@
   "current_version": "현재 버전",
   "custom_mission": "맞춤 임무",
   "custom_mission_nothing_hint": "미션이 없습니다 +를 클릭하여 추가합시다",
-  "custom_mission_source_mission": "소스 임무",
+  "custom_mission_source_mission": null,
   "dark_mode": "다크 모드",
   "dark_mode_dark": "다크",
   "dark_mode_light": "라이트",

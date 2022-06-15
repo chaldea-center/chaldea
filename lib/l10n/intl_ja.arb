@@ -97,7 +97,7 @@
   "current_version": "現バージョン",
   "custom_mission": "カスタム任務",
   "custom_mission_nothing_hint": "ミッションがありません。＋をクリックして追加しましょう。",
-  "custom_mission_source_mission": "ソース任務",
+  "custom_mission_source_mission": null,
   "dark_mode": "ダックモード",
   "dark_mode_dark": "ダック",
   "dark_mode_light": "ライト",

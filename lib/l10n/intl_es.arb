@@ -97,7 +97,7 @@
   "current_version": "Versión Actual",
   "custom_mission": "Misión personalizada",
   "custom_mission_nothing_hint": "Sin misiones, haga clic en + para agregar misiones",
-  "custom_mission_source_mission": "Misión de origen",
+  "custom_mission_source_mission": null,
   "dark_mode": "Tema",
   "dark_mode_dark": "Oscuro",
   "dark_mode_light": "Claro",

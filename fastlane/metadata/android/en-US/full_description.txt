@@ -23,7 +23,7 @@ Chaldea is a cross-platform material planning tool for Fate/Grand Order, support
 </ul></li>
 <li><strong>Others</strong><ul><li><strong>EXP card cost calculator</strong></li>
 <li><strong>Statistics on item demands, consumed items and servant collection</strong></li>
-<li><s><strong>Fate/Freedom Order：</strong> 2021 April Fool's mini game</s> Unavailable now.</li>
+<li><strong>Fate/Freedom Order：</strong> 2021 April Fool's mini game</li>
 <li>Illustrator and CV list</li>
 </ul></li>
 </ul>

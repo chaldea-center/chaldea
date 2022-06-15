@@ -22,7 +22,7 @@ Chaldea是一款用于Fate/Grand Order/命运-冠位指定的规划软件，支�
 </ul></li>
 <li><strong>杂七杂八</strong><ul><li><strong>狗粮需求计算</strong></li>
 <li><strong>从者统计、已消耗素材统计</strong></li>
-<li><s><strong>Fate/Freedom Order</strong>: 2021愚人节小游戏，接头霸王</s> 暂时不可用</li>
+<li><strong>Fate/Freedom Order</strong>: 2021愚人节小游戏，接头霸王</li>
 <li>画师、声优一览</li>
 </ul></li>
 </ul>
