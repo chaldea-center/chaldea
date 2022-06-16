@@ -261,24 +261,27 @@ class Items {
 
   static Map<int, Item> get _items => db.gameData.items;
 
-  static int qpId = 1;
-  static int stoneId = 2;
-  static int manaPrismId = 3;
-  static int purePrismId = 46;
-  static int rarePrismId = 18;
-  static int grailToCrystalId = 19;
-  static int summonTicketId = 4001;
-  static int bronzeAppleId = 102;
-  static int silverAppleId = 101;
-  static int goldAppleId = 100;
-  static int crystalId = 6999;
-  static int grailFragId = 7998;
-  static int grailId = 7999;
-  static int lanternId = 1000;
+  static const int qpId = 1;
+  static const int stoneId = 2;
+  static const int manaPrismId = 3;
+  static const int quartzFragmentId = 16;
+  static const int purePrismId = 46;
+  static const int rarePrismId = 18;
+  static const int grailToCrystalId = 19;
+  static const int summonTicketId = 4001;
+  static const int goldAppleId = 100;
+  static const int silverAppleId = 101;
+  static const int bronzeAppleId = 102;
+  static const int blueSaplingId = 103;
+  static const int blueAppleId = 104;
+  static const int crystalId = 6999;
+  static const int grailFragId = 7998;
+  static const int grailId = 7999;
+  static const int lanternId = 1000;
 
   // not item, icon only
-  static int costumeIconId = 23;
-  static int npRankUpIconId = 8;
+  static const int costumeIconId = 23;
+  static const int npRankUpIconId = 8;
 
   static Item get qp => _items[qpId]!;
 
@@ -308,19 +311,26 @@ class Items {
 
   static const List<int> specialItems = [
     //
-    2, 3, 46, 18, 4001, 102, 101, 100,
-    1, 7998, 7999, 1000
+    qpId, stoneId, quartzFragmentId, manaPrismId, purePrismId, rarePrismId,
+    summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
+    grailFragId, grailId, lanternId
   ];
   static const List<int> specialSvtMat = [
     hpFou3,
     atkFou3,
     hpFou4,
     atkFou4,
+    ember5,
+    ember4,
+    ember3,
   ];
   static const int hpFou3 = 9570300;
   static const int hpFou4 = 9570400;
   static const int atkFou3 = 9670300;
   static const int atkFou4 = 9670400;
+  static const int ember3 = 9770300;
+  static const int ember4 = 9770400;
+  static const int ember5 = 9770500;
 
   @Deprecated('to be evaluated')
   static bool isStatItem(int itemId) {

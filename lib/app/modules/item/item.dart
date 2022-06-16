@@ -14,8 +14,6 @@ import 'tabs/obtain_event.dart';
 import 'tabs/obtain_free.dart';
 import 'tabs/obtain_interlude.dart';
 
-// import 'tabs/item_obtain_interlude.dart';
-
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
   final int initialTabIndex;
@@ -68,6 +66,12 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           4, 19, 5000, 5001, 5002, 5003, 2000,
         ].contains(widget.itemId)) {
           _showEvent = true;
+        }
+        break;
+      case null:
+        if ([Items.ember5, Items.ember4, Items.ember3]
+            .contains(widget.itemId)) {
+          _showStat = false;
         }
         break;
       default:

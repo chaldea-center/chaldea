@@ -76,6 +76,8 @@ class Transl<K, V> {
 
   static Transl<String, String> mcNames(String jp) =>
       Transl(md.mcNames, jp, jp);
+  static Transl<int, String> mcDetail(int id) =>
+      Transl(md.mcDetail, id, db.gameData.mysticCodes[id]?.detail ?? '???');
 
   static Transl<String, String> costumeNames(String jp) =>
       Transl(md.costumeNames, jp, jp);

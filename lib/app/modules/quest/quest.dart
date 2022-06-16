@@ -110,8 +110,14 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             },
             underline: const SizedBox(),
           ),
-          PopupMenuButton(
+          PopupMenuButton<dynamic>(
             itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: false,
+                height: 32,
+                child: Text('No.$questId', textScaleFactor: 0.9),
+              ),
+              const PopupMenuDivider(),
               ...SharedBuilder.websitesPopupMenuItems(
                 atlas: _quest == null
                     ? null

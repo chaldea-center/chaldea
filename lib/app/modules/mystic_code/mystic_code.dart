@@ -193,24 +193,20 @@ class _MysticCodePageState extends State<MysticCodePage> {
             ],
             // color: TableCellData.headerColor.withAlpha(120),
           ),
-        CustomTableRow(children: [
-          TableCellData(
-            text: mysticCode.detail,
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          ),
-        ]),
+        for (final detail in {
+          Transl.mcDetail(mysticCode.id).l,
+          mysticCode.detail
+        })
+          CustomTableRow(children: [
+            TableCellData(
+              text: detail,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            ),
+          ]),
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in mysticCode.skills) SkillDescriptor(skill: skill),
-        // CustomTableRow(children: [
-        //   TableCellData(
-        //     child: Column(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: mysticCode.skills.map((e) => buildSkill(e)).toList(),
-        //     ),
-        //   )
-        // ]),
         CustomTableRow(children: [
           TableCellData(text: S.current.game_experience, isHeader: true)
         ]),
@@ -305,34 +301,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildSkill(NiceSkill skill) {
-    int cd0 = 0, cd1 = 0;
-    if (skill.coolDown.isNotEmpty) {
-      cd0 = skill.coolDown.first;
-      cd1 = skill.coolDown.last;
-    }
-    final header = CustomTile(
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 22, 6),
-      leading: db.getIconImage(skill.icon, width: 33),
-      title: Text(skill.lName.l),
-      subtitle: Transl.isJP ? null : Text(skill.name),
-      trailing: cd0 <= 0 && cd1 <= 0
-          ? null
-          : cd0 == cd1
-              ? Text('   CD: $cd0')
-              : Text('   CD: $cd0→$cd1'),
-    );
-    return TileGroup(
-      children: [
-        header,
-        SFooter(
-          skill.lDetail ?? '???',
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-        )
-      ],
     );
   }
 

@@ -124,7 +124,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           contentBuilder: (context) => Column(
             children: divideTiles(params.blacklist.map((key) {
               String shownName =
-                  db.gameData.getQuestPhase(key)?.lName.l ?? 'Quest $key';
+                  db.gameData.getQuestPhase(key)?.lDispName ?? 'Quest $key';
               return ListTile(
                 title: Text(shownName),
                 dense: true,

@@ -143,7 +143,7 @@ const kTraitIdMapping = <int, Trait>{
   2385: Trait.cursedBook,
   // # Murasaki Valentine
   2386: Trait.kingproteaProliferation,
-  2387: Trait.kingproteaGrowth,
+  2387: Trait.kingproteaInfiniteProliferation,
   2392: Trait.fieldCity,
   2403: Trait.enemyCaseFilesRareEnemy,
   2469: Trait.enemyLasVegasBonusEnemy,
@@ -189,6 +189,8 @@ const kTraitIdMapping = <int, Trait>{
   2803: Trait.buffStrongAgainstWildBeast,
   2810: Trait.fairyTaleServant,
   2821: Trait.havingAnimalsCharacteristics,
+  2827: Trait.like,
+  2828: Trait.exaltation,
 // # 2xxx: CQ or Story quests buff
   3000: Trait.attackPhysical,
   // # Normal attack, including NP

@@ -215,6 +215,7 @@ class _UserDataPageState extends State<UserDataPage> {
     ).showDialog(context);
   }
 
+  // ignore: unused_element
   Future<void> _migrateAndroidData(bool useExternal) async {
     Directory from, to;
     if (useExternal) {

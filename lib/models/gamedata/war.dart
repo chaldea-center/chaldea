@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -121,6 +123,17 @@ class NiceWar {
                 .any((cond) => cond.type == CondType.notQuestClearPhase)) {
           continue;
         }
+        // Interlude in main story
+        if (quest.type == QuestType.friendship) {
+          continue;
+        }
+        if (quest.flags.contains(QuestFlag.branch)) {
+          continue;
+        }
+        // 终局特异点 dup chapter 12
+        if (quest.id == 1000825) {
+          continue;
+        }
 
         Gift.checkAddGifts(itemReward, quest.gifts);
         for (final phase in quest.phases) {
@@ -128,8 +141,40 @@ class NiceWar {
           if (fixedDrop == null) continue;
           itemDrop.addDict(fixedDrop.items);
         }
+        // TODO: add blue saplings later
+        itemReward.addNum(Items.quartzFragmentId, _countFragment(quest));
       }
     }
+  }
+
+  int _countFragment(Quest quest) {
+    if (!isMainStory || quest.type != QuestType.main) {
+      return 0;
+    }
+    if (quest.flags.contains(QuestFlag.branch)) {
+      return 0;
+    }
+    if (quest.id == targetId && startType == WarStartType.quest) {
+      if (flags.contains(WarFlag.dispFirstQuest)) {
+        return max(0, quest.phases.length - 1);
+      } else {
+        return 0;
+      }
+    }
+    // the first training quest for starter
+    if (quest.id == 1000000) return 0;
+    if ([
+      1000825, // 终局特异点 dup chapter 12
+      2000217, // 1.5.2
+      2000317, // 1.5.3
+      3000500,
+      3000501,
+      3000502,
+      3000503, // LB 2.5.1 intro.
+    ].contains(quest.id)) {
+      return 0;
+    }
+    return quest.phases.length;
   }
 }
 

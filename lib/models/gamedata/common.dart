@@ -346,6 +346,7 @@ const kSvtClassIconIds = {
   SvtClass.unknown: 97,
 };
 
+/// Add new entry to common_helper [kTraitIdMapping]
 enum Trait {
   unknown,
   genderMale,
@@ -511,8 +512,8 @@ enum Trait {
   criticalHit,
   faceCard,
   cardNP,
-  kingproteaGrowth,
   kingproteaProliferation,
+  kingproteaInfiniteProliferation,
   kingproteaProliferationNPDefense,
   fieldSunlight,
   fieldShore,

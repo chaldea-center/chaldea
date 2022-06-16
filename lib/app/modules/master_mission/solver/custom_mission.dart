@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'input_tab.dart';
 import 'scheme.dart';

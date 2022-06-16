@@ -128,15 +128,8 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             textAlign: TextAlign.center,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (s) {
-              int? lv = int.tryParse(s);
-              if (lv != null && lv >= 1 && lv <= 120) {
-                data.startLv = lv;
-                if (data.endLv < lv) {
-                  data.endLv = lv;
-                  _endController.text = lv.toString();
-                }
-                setState(() {});
-              }
+              _onChanged();
+              setState(() {});
             },
           ),
         ),
@@ -154,21 +147,26 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             textAlign: TextAlign.center,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (s) {
-              int? lv = int.tryParse(s);
-              if (lv != null && lv >= 1 && lv <= 120) {
-                data.endLv = lv;
-                if (data.startLv > lv) {
-                  data.startLv = lv;
-                  _startController.text = lv.toString();
-                }
-                setState(() {});
-              }
+              _onChanged();
+              setState(() {});
             },
           ),
         ),
         const Padding(padding: EdgeInsets.only(right: 16)),
       ],
     );
+  }
+
+  void _onChanged() {
+    int? a = int.tryParse(_startController.text),
+        b = int.tryParse(_endController.text);
+    if (a != null && a >= 1 && a <= 120) {
+      data.startLv = a;
+    }
+    if (b != null && b >= 1 && b <= 120) {
+      data.endLv = b;
+    }
+    data.endLv = max(data.startLv, data.endLv);
   }
 
   Widget _cardIcon(int rarity) {

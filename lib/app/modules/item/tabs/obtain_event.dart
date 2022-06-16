@@ -175,10 +175,11 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     List<Widget> children = [];
     final mainRecords = db.gameData.mainStories.values.toList();
     mainRecords.sort2((e) => e.id);
-    int count = 0;
+    int count = 0, totalCount = 0;
     for (final record in mainRecords) {
       int dropCount = record.itemDrop[widget.itemId] ?? 0;
       int rewardCount = record.itemReward[widget.itemId] ?? 0;
+      totalCount += dropCount + rewardCount;
       if (dropCount <= 0 && rewardCount <= 0) {
         continue;
       }
@@ -219,7 +220,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     }
     return _getAccordion(
       title: Text(S.of(context).main_story),
-      trailing: Text(count.toString()),
+      trailing: Text('$count/$totalCount'),
       children: children,
       expanded: expandedList[2],
     );
@@ -238,6 +239,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         title: title,
         trailing: trailing,
         horizontalTitleGap: 0,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
       ),
       contentBuilder: (context) => ListView.separated(
         shrinkWrap: true,

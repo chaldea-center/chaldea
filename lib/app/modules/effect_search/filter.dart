@@ -8,7 +8,8 @@ import '../../../models/models.dart';
 
 class BuffFuncFilterData {
   bool useGrid = false;
-  final effectScope = FilterGroupData<SvtEffectScope>();
+  final effectScope = FilterGroupData<SvtEffectScope>(
+      options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<FuncTargetType>();
   final funcAndBuff = FilterGroupData();
   final funcType = FilterGroupData<FuncType>();
@@ -23,6 +24,7 @@ class BuffFuncFilterData {
     for (final group in groups) {
       group.reset();
     }
+    effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
   }
 }
 
