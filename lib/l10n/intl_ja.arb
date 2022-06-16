@@ -421,6 +421,7 @@
   "plan_objective": "プランの目標",
   "plan_title": "プラン",
   "planning_free_quest_btn": "クエストをプラン",
+  "prefer_april_fool_icon": null,
   "preferred_translation": "お気に入りの訳文",
   "preferred_translation_footer": "ドラッグしてオーダー変更してください。\nUIの言語ではなく、ゲームのデータ記述で使用されます。すべてのゲームデータは、5つの公用語へ翻訳されたことがありません。",
   "prev_page": "前のページ",

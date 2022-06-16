@@ -143,10 +143,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                         value: index,
                         child: Text('${S.current.ascension} $index'),
                       ),
-                    DropdownMenuItem(
-                      value: -1,
-                      child: Text(S.current.april_fool),
-                    ),
                   ],
                   onChanged: (v) {
                     if (v != null) {
@@ -155,6 +151,16 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     setState(() {});
                   },
                 ),
+              ),
+              SwitchListTile.adaptive(
+                value: db.userData.preferAprilFoolIcon,
+                title: Text(S.current.prefer_april_fool_icon),
+                controlAffinity: ListTileControlAffinity.trailing,
+                onChanged: (v) {
+                  setState(() {
+                    db.userData.preferAprilFoolIcon = v;
+                  });
+                },
               ),
               ListTile(
                 title: Text(S.current.reset_custom_ascension_icon),

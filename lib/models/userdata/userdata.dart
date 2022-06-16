@@ -41,6 +41,7 @@ class UserData {
   List<User> users;
   List<int> itemAbundantValue;
   int svtAscensionIcon;
+  bool preferAprilFoolIcon;
   Map<int, String?> customSvtIcon;
 
   UserData({
@@ -50,6 +51,7 @@ class UserData {
     List<User>? users,
     List<int?>? itemAbundantValue,
     this.svtAscensionIcon = 1,
+    this.preferAprilFoolIcon = false,
     Map<int, String?>? customSvtIcon,
   })  : version = UserData.modelVersion,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
@@ -190,9 +192,7 @@ class UserData {
     for (final user in users) {
       user.validate();
     }
-    if (svtAscensionIcon != -1) {
-      svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
-    }
+    svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
   }
 }
 

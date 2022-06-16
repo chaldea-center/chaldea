@@ -278,7 +278,7 @@ class Servant with GameCardMixin {
     String? _icon = db.userData.customSvtIcon[collectionNo];
     if (_icon != null) return _icon;
 
-    if (db.userData.svtAscensionIcon == -1) {
+    if (db.userData.preferAprilFoolIcon) {
       _icon = aprilFoolBorderedIcon;
       if (_icon != null) return _icon;
     }

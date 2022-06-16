@@ -4702,6 +4702,17 @@ class S {
     );
   }
 
+  /// `Prefer April Fools' Day icon`
+  String get prefer_april_fool_icon {
+    return Intl.message(
+      'Prefer April Fools\' Day icon',
+      name: 'prefer_april_fool_icon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Preferred Translation`
   String get preferred_translation {
     return Intl.message(

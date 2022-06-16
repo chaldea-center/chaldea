@@ -421,6 +421,7 @@
   "plan_objective": "Objetivo del Plan",
   "plan_title": "Plan",
   "planning_free_quest_btn": "Planificación de Quests",
+  "prefer_april_fool_icon": null,
   "preferred_translation": "Traducción preferida",
   "preferred_translation_footer": "Arrastre para cambiar el orden.\nSe utiliza para la descripción de los datos del juego, no para el idioma de la interfaz de usuario. No todos los datos del juego están traducidos para los 5 idiomas oficiales.",
   "prev_page": "ANT.",

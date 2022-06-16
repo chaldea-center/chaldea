@@ -663,6 +663,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("Planning Quests"),
+        "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage(
+            "Prefer April Fools\' Day icon"),
         "preferred_translation":
             MessageLookupByLibrary.simpleMessage("Preferred Translation"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
