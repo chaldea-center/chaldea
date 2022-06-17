@@ -67,7 +67,8 @@ class PathManager {
       _persistentPath = (await getApplicationDocumentsDirectory()).path;
       final sp = await SharedPreferences.getInstance();
       bool useExternal = sp.get('android_use_external') == true;
-      List<String> externalPaths = (await getExternalStorageDirectories())!
+      List<String> externalPaths = (await getExternalStorageDirectories(
+              type: StorageDirectory.documents))!
           .map((e) => e.path)
           .whereType<String>()
           .toList();
