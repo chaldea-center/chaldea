@@ -153,7 +153,6 @@ class PlanDataSheetConverter {
       _name: name,
       _favorite: status.cur.favorite ? 1 : 0,
       _priority: status.priority,
-      _coin: status.coin,
       _bond: status.bond,
       ..._svtPlanToCsv(status.cur, false),
       ..._svtPlanToCsv(plan, true),
@@ -181,7 +180,6 @@ class PlanDataSheetConverter {
     final plan = _svtPlanFromCsv(rowData, true);
     final status = SvtStatus(
       cur: _svtPlanFromCsv(rowData, false),
-      coin: _toInt(_coin) ?? 0,
       priority: _toInt(_priority) ?? 1,
       bond: _toInt(_bond) ?? 0,
       equipCmdCodes: List.from(equipCmdCodes),

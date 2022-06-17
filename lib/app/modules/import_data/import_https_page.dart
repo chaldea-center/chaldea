@@ -555,6 +555,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         user.items[Items.manaPrismId] = replacedResponse!.firstUser!.mana;
         user.items[Items.rarePrismId] = replacedResponse!.firstUser!.rarePri;
       }
+      for (final svtCoin in replacedResponse!.userSvtCoin) {
+        final coinId = db.gameData.servantsById[svtCoin.svtId]?.coin?.item.id;
+        if (coinId == null) continue;
+        user.items[coinId] = svtCoin.num;
+      }
       items.forEach((item) {
         user.items[item.itemId] = item.num;
       });
@@ -596,8 +601,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (svt.appendLvs != null) {
           status.cur.appendSkills = svt.appendLvs!;
         }
-        status.coin = replacedResponse!.coinMap[svt.svtId]?.num ?? 0;
-
         status.cur.costumes = collection.costumeIdsTo01();
       }
     }

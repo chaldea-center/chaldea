@@ -39,7 +39,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   @override
   void initState() {
     super.initState();
-    _coinEditController = TextEditingController(text: status.coin.toString());
+    _coinEditController = TextEditingController(
+        text: db.curUser.items[svt.coin?.item.id]?.toString());
   }
 
   @override
@@ -255,8 +256,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               maxLength: 4,
               onChanged: (v) {
                 int? coin = int.tryParse(v);
-                if (coin != null) {
-                  status.coin = coin;
+                final coinId = svt.coin?.item.id;
+                if (coin != null && coinId != null) {
+                  db.curUser.items[coinId] = coin;
                   updateState();
                 }
               },

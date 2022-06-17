@@ -118,7 +118,6 @@ class UserData {
             Map<String, dynamic>.from(oldUser['servants']?[idStr]);
         statuses[id] = SvtStatus(
           cur: _convertLegacyPlan(oldStatus['curVal'], oldStatus['npLv']),
-          coin: (oldStatus['coin'] as int?) ?? 0,
           priority: (oldStatus['priority'] as int?) ?? 1,
           equipCmdCodes: List.from((oldStatus['equipCmdCodes'] as List?) ?? []),
         );
@@ -320,7 +319,6 @@ class User {
 @JsonSerializable()
 class SvtStatus {
   SvtPlan cur;
-  int coin;
   int priority; //1-5
 
   /// current bond, 5.5=5
@@ -329,7 +327,6 @@ class SvtStatus {
 
   SvtStatus({
     SvtPlan? cur,
-    this.coin = 0,
     this.priority = 1,
     this.bond = 0,
     List<int?>? equipCmdCodes,
@@ -344,7 +341,6 @@ class SvtStatus {
 
   void validate([Servant? svt]) {
     bond = bond.clamp2(0, 15);
-    coin = coin.clamp2(0);
     priority = priority.clamp2(1, 5);
     cur.bondLimit = cur.bondLimit.clamp2(bond, 15);
     cur.validate(null, svt);
