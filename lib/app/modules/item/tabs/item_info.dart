@@ -79,16 +79,11 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               ],
             ),
             if (svtCoinOwner != null)
-              CustomTableRow(children: [
-                TableCellData(
-                  child: TextButton(
-                    onPressed: () => svtCoinOwner!.routeTo(),
-                    style: kTextButtonDenseStyle,
-                    child: Text(svtCoinOwner!.lName.l),
-                  ),
-                  padding: EdgeInsets.zero,
-                )
-              ]),
+              TextButton(
+                onPressed: () => svtCoinOwner!.routeTo(),
+                style: kTextButtonDenseStyle,
+                child: Text(svtCoinOwner!.lName.l),
+              ),
             CustomTableRow.fromTexts(
                 texts: [S.current.card_description], isHeader: true),
             CustomTableRow(

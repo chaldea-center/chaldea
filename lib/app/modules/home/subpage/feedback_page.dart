@@ -95,7 +95,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             children: [
               ListTile(
                 title: Text(S.current.faq),
-                trailing: const Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.open_in_new),
                 onTap: () {
                   launch(HttpUrlHelper.projectDocUrl('faq.html'));
                 },
@@ -110,12 +110,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 subtitle: const Text(kProjectHomepage),
                 onTap: () => launch('$kProjectHomepage/issues'),
               ),
-              ListTile(
-                title: const Text('NGA'),
-                subtitle:
-                    const Text('https://bbs.nga.cn/read.php?tid=24926789'),
-                onTap: () => launch('https://bbs.nga.cn/read.php?tid=24926789'),
-              ),
+              // ListTile(
+              //   title: const Text('NGA'),
+              //   subtitle:
+              //       const Text('https://bbs.nga.cn/read.php?tid=24926789'),
+              //   onTap: () => launch('https://bbs.nga.cn/read.php?tid=24926789'),
+              // ),
               ListTile(
                 title: Text(S.current.email),
                 subtitle: const Text(kSupportTeamEmailAddress),

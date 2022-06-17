@@ -145,6 +145,16 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     );
   }
 
+  Event? _getEvent(List<VoiceLine> lines) {
+    for (final line in lines) {
+      for (final cond in line.conds) {
+        final event = db.gameData.events[cond.value];
+        if (event != null) return event;
+      }
+    }
+    return null;
+  }
+
   Widget _buildGroup(BuildContext context, VoiceGroup group) {
     final svt = _svt ?? widget.svt;
     final voiceLines = group.voiceLines.toList()
@@ -177,18 +187,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
             ));
           }
         }
-        Event? event;
-        if (voiceLines.isNotEmpty) {
-          for (final cond in voiceLines.first.conds) {
-            event = db.gameData.events[cond.value];
-            if (event != null) break;
-          }
-        }
+        Event? event = _getEvent(voiceLines);
         if (event != null) {
           suffixes.add(SharedBuilder.textButtonSpan(
             context: context,
             text: event.lName.l.replaceAll('\n', ' '),
-            onTap: () => event?.routeTo(),
+            onTap: () => event.routeTo(),
           ));
         }
         String name = Transl.enums(group.type, (enums) => enums.svtVoiceType).l;
@@ -247,7 +251,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         text = text.replaceFirst(s, '');
       }
       text = text.trim();
-      text = text.replaceFirstMapped(RegExp(r'^(.+?)(\d*)$'), (match) {
+      text = text.replaceFirstMapped(RegExp(r'^(.+?)(\d*)([(（)]|$)'), (match) {
         final _name = Transl.string(
             db.gameData.mappingData.voiceLineNames, match.group(1)!.trim());
         final _num = match.group(2);
@@ -257,6 +261,10 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           return _name.l;
         }
       });
+      final event = _getEvent([line]);
+      if (event != null) {
+        text = text.replaceFirst(event.name, event.lName.l);
+      }
       return text;
     }
 
@@ -299,7 +307,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           children: [
             AutoSizeText(
               '· $name',
-              maxLines: 1,
+              maxLines: 2,
               maxFontSize: 12,
               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                   fontWeight: FontWeight.bold,
