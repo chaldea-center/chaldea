@@ -1,5 +1,7 @@
 ## 2.0.5
 
+- fix offline startup
+- fix svt coin stat, but all owned coin counts cleared
 - support backup to Github repo
 - support different exchange ticket info for each region
 - settings: custom shown servant plan detail

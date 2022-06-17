@@ -13,7 +13,6 @@ There are plenty of work need to do.
 - [ ] add legacy data of `ConstData.userLevel`
 - [x] use github issue forms for issue templates
 - [ ] Clear Cache
-- [ ] Auto update for android/windows/linux: pending tests
 - [ ] command card: add svt assets
 - [ ] Summon prob calc
 - [ ] various release condition 
@@ -22,6 +21,13 @@ There are plenty of work need to do.
 - [ ] remember svt tabs
 - [ ] duplicated svt
 - [ ] logger.level
+- [ ] related_card->related_card_on_stage
+- [ ] android: external SD card
+- [ ] filter_group_data: default value
+- [ ] costume: images in accordion
+- [ ] web: settings&bootstrap: add cn/global link
+- [ ] svt icon: custom image
+- [ ] event shop: event item calc and plan
 
 ## Quest Related
 
@@ -30,15 +36,8 @@ There are plenty of work need to do.
 ## Servant
 
 - [ ] Duplicated servant support
-- [ ] Voices: 
-  - [x] from AA
-  - [ ] and wikis
-- [ ] Lores: 
-  - [x] from AA 
-  - [ ] and wikis
 - [ ] Plan:
   - [ ] support TextField input
-- [x] skill RankUp(Kiara)
 - [ ] skill/np/quest condition
 
 ## Adding more pages
@@ -54,10 +53,8 @@ There are plenty of work need to do.
   - [ ] War Map
 - [ ] Mission Solver
   - [ ] hint for invalid mission
-- [x] Statistics
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
-- [x] Fate/Freedom Order
 
 
 ## Server side
