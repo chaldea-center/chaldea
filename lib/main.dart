@@ -14,6 +14,7 @@ import 'package:chaldea/app/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'app/error.dart';
 import 'app/modules/common/blank_page.dart';
 import 'models/db.dart';
 import 'packages/network.dart';
@@ -24,35 +25,50 @@ import 'utils/catcher/catcher_util.dart';
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
-
-  await _initiateCommon();
-  await _mainNext();
-}
-
-Future<void> _mainNext() async {
-  await Executor().warmUp();
-  await db.initiate();
-  await db.loadSettings();
-  await db.loadUserData().then((value) async {
-    if (value != null) db.userData = value;
-  });
-  final catcherOptions = CatcherUtil.getOptions(
-    logPath: db.paths.crashLog,
-    feedbackHandler: ServerFeedbackHandler(
-      screenshotController: db.runtimeData.screenshotController,
-      screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
-      attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],
-      onGenerateAttachments: () => {
-        'userdata.memory.json':
-            Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))
-      },
-    ),
-  );
+  dynamic initError, initStack;
+  CatcherOptions? catcherOptions;
+  try {
+    await _initiateCommon();
+    await Executor().warmUp();
+    await db.initiate();
+    await db.loadSettings();
+    await db.loadUserData().then((value) async {
+      if (value != null) db.userData = value;
+    });
+    catcherOptions = CatcherUtil.getOptions(
+      logPath: db.paths.crashLog,
+      feedbackHandler: ServerFeedbackHandler(
+        screenshotController: db.runtimeData.screenshotController,
+        screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
+        attachments: [
+          db.paths.appLog,
+          db.paths.crashLog,
+          db.paths.userDataPath
+        ],
+        onGenerateAttachments: () => {
+          'userdata.memory.json':
+              Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))
+        },
+      ),
+    );
+  } catch (e, s) {
+    initError = e;
+    initStack = s;
+    try {
+      logger.e('initiate app failed at startup', e, s);
+    } catch (e, s) {
+      print(e);
+      print(s);
+    }
+  }
+  final app = initError == null
+      ? Chaldea()
+      : StartupErrorPage(initError: initError, initStack: initStack);
   if (kDebugMode) {
-    runApp(Chaldea());
+    runApp(app);
   } else {
     Catcher(
-      rootWidget: Chaldea(),
+      rootWidget: app,
       debugConfig: catcherOptions,
       profileConfig: catcherOptions,
       releaseConfig: catcherOptions,
