@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app.dart';
@@ -71,7 +72,7 @@ class _QuestListPageState extends State<QuestListPage> {
                 );
           String chapter = quest.type == QuestType.main
               ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-                  ? '第${quest.chapterSubId}节'
+                  ? S.current.quest_chapter_n(quest.chapterSubId)
                   : quest.chapterSubStr
               : '';
           chapter = chapter.trim();

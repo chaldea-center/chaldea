@@ -13,6 +13,7 @@ part 'vals.dart';
 part '../../generated/models/gamedata/skill.g.dart';
 
 abstract class SkillOrTd {
+  int get id;
   String get name;
   Transl<String, String> get lName;
   String get ruby;
@@ -43,6 +44,7 @@ abstract class SkillOrTd {
 
 @JsonSerializable()
 class BaseSkill with SkillOrTd {
+  @override
   int id;
   @override
   String name;
@@ -265,6 +267,7 @@ class NiceSkill extends BaseSkill {
 
 @JsonSerializable()
 class BaseTd extends SkillOrTd {
+  @override
   int id;
   CardType card;
   @override

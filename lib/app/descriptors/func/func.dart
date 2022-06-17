@@ -20,6 +20,7 @@ mixin FuncsDescriptor {
     int? level,
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
+    SkillOrTd? owner,
   }) =>
       describe(
         funcs: funcs,
@@ -29,6 +30,7 @@ mixin FuncsDescriptor {
         level: level,
         padding: padding,
         showBuffDetail: showBuffDetail,
+        owner: owner,
       );
 
   static List<Widget> describe({
@@ -39,6 +41,7 @@ mixin FuncsDescriptor {
     int? level,
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
+    SkillOrTd? owner,
   }) {
     funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
@@ -58,6 +61,7 @@ mixin FuncsDescriptor {
         showPlayer: showPlayer,
         showEnemy: showEnemy,
         showBuffDetail: showBuffDetail,
+        owner: owner,
       ));
     }
     return children;
@@ -72,6 +76,7 @@ class FuncDescriptor extends StatelessWidget {
   final bool showPlayer;
   final bool showEnemy;
   final bool showBuffDetail;
+  final SkillOrTd? owner;
   const FuncDescriptor({
     Key? key,
     required this.func,
@@ -81,6 +86,7 @@ class FuncDescriptor extends StatelessWidget {
     this.showPlayer = true,
     this.showEnemy = false,
     this.showBuffDetail = false,
+    this.owner,
   }) : super(key: key);
 
   @override
@@ -413,6 +419,7 @@ class FuncDescriptor extends StatelessWidget {
     if (detail == null) return null;
 
     if (noLevel) detail.level = null;
+    final isNp = func.svals.first.UseTreasureDevice == 1;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).hintColor),
@@ -423,9 +430,11 @@ class FuncDescriptor extends StatelessWidget {
       child: _LazyTrigger(
         trigger: detail,
         buff: func.buffs.first,
-        isNp: func.svals.first.UseTreasureDevice == 1,
+        isNp: isNp,
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+        endlessLoop: owner?.id == detail.skill &&
+            (isNp ? owner is BaseTd : owner is BaseSkill),
       ),
     );
   }
@@ -470,6 +479,7 @@ class _LazyTrigger extends StatefulWidget {
   final bool isNp;
   final bool showPlayer;
   final bool showEnemy;
+  final bool endlessLoop;
 
   const _LazyTrigger({
     Key? key,
@@ -478,6 +488,7 @@ class _LazyTrigger extends StatefulWidget {
     required this.isNp,
     required this.showPlayer,
     required this.showEnemy,
+    required this.endlessLoop,
   }) : super(key: key);
 
   @override
@@ -538,13 +549,22 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
                 text: ' [${Transl.funcPopuptext(widget.buff.type.name).l}]')
           ],
         )),
-        ...describeFunctions(
-          funcs: skill?.functions ?? [],
-          showPlayer: widget.showPlayer,
-          showEnemy: widget.showEnemy,
-          level: widget.trigger.level,
-          padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
-        )
+        if (!widget.endlessLoop)
+          ...describeFunctions(
+            funcs: skill?.functions ?? [],
+            showPlayer: widget.showPlayer,
+            showEnemy: widget.showEnemy,
+            level: widget.trigger.level,
+            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+            owner: skill,
+          ),
+        if (widget.endlessLoop)
+          Center(
+            child: Text(
+              '∞',
+              style: Theme.of(context).textTheme.caption,
+            ),
+          )
       ],
     );
   }

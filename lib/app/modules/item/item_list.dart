@@ -714,7 +714,7 @@ class _ItemListTabState extends State<ItemListTab> {
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       leading: Item.iconBuilder(
-          context: context, item: null, icon: Item.getIcon(itemId), height: 48),
+          context: context, item: null, icon: Item.getIcon(itemId), width: 48),
       title: Text(Item.getName(itemId)),
       subtitle: Text('No. $itemId'),
       onTap: () {
