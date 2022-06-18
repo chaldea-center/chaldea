@@ -83,14 +83,14 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           color: plan.enabled
               ? Theme.of(context).colorScheme.secondaryContainer
               : null);
-      texts.add(Text('$itemGot/$itemFixed${hasLottery || hasExtra ? '+' : ''}',
+      texts.add(Text('${itemGot.format()}/${itemFixed.format()}${hasLottery || hasExtra ? '+' : ''}',
           style: style.copyWith(fontWeight: FontWeight.w500)));
       for (final lotteryId in event.statItemLottery.keys) {
         int itemPerLottery =
             event.statItemLottery[lotteryId]![widget.itemId] ?? 0;
         if (itemPerLottery > 0) {
           texts.add(Text(
-              '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} ×$itemPerLottery',
+              '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} ×${itemPerLottery.format()}',
               style: style.copyWith(fontWeight: FontWeight.w300)));
         }
       }
@@ -116,7 +116,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     }
     return _getAccordion(
       title: Text(S.of(context).limited_event),
-      trailing: Text(count.toString()),
+      trailing: Text(count.format()),
       children: children,
       expanded: expandedList[0],
     );
@@ -205,13 +205,13 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
             if (rewardCount > 0)
               Text(
                 '${S.current.quest_reward_short}'
-                ' $rewardCount',
+                ' ${rewardCount.format()}',
                 style: _textStyle(plan.questReward, record.isOutdated()),
               ),
             if (dropCount > 0)
               Text(
                 '${S.current.quest_fixed_drop_short}'
-                ' $dropCount',
+                ' ${dropCount.format()}',
                 style: _textStyle(plan.fixedDrop, record.isOutdated()),
               ),
           ],
@@ -220,7 +220,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     }
     return _getAccordion(
       title: Text(S.of(context).main_story),
-      trailing: Text('$count/$totalCount'),
+      trailing: Text('${count.format()}/${totalCount.format()}'),
       children: children,
       expanded: expandedList[2],
     );

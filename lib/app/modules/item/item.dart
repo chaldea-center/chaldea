@@ -53,6 +53,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   void initState() {
     super.initState();
     final item = db.gameData.items[widget.itemId];
+    print(item?.category);
     switch (item?.category) {
       case ItemCategory.normal:
       case ItemCategory.ascension:
@@ -65,7 +66,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         break;
       case ItemCategory.event:
       case ItemCategory.other:
-        _showEvent = _showStat = false;
+        _showStat = _showEvent = false;
         if ([
           // fp, Q/A/B opener, Beast's Footprint
           4, 5000, 5001, 5002, 5003, 2000,
@@ -76,7 +77,8 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       case ItemCategory.special:
         _showStat = false;
         _showEvent = true;
-        if (<int>[Items.grailId, Items.lanternId].contains(widget.itemId)) {
+        if (<int>[Items.qpId, Items.grailId, Items.lanternId]
+            .contains(widget.itemId)) {
           _showStat = true;
         }
         break;
@@ -181,7 +183,9 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return PopupMenuButton(
       itemBuilder: (context) {
         return [
-          if (_showStat || _showEvent)
+          if (_showStat ||
+              _showEvent ||
+              db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
             PopupMenuItem(
               child: Text(S.current.item_edit_owned_amount),
               onTap: () async {

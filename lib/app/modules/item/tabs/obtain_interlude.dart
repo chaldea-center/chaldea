@@ -63,7 +63,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
         if (itemCount > 0) {
           children.add(_buildOneQuest(
             quest: quest,
-            itemCount: '$itemCount',
+            itemCount: itemCount.format(),
             favorite: svtFavorite,
             svt: svt,
           ));
@@ -94,8 +94,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     return SimpleAccordion(
       headerBuilder: (context, expanded) {
         return CustomTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          contentPadding: const EdgeInsetsDirectional.fromSTEB(10, 5, 0, 5),
           leading: svt.iconBuilder(context: context, width: 36),
           subtitle: Row(
             children: [

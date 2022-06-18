@@ -38,23 +38,19 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
   Widget get baseInfoTable {
     return CustomTable(children: [
       CustomTableRow.fromTexts(texts: [enemy.name], isHeader: true),
-      CustomTableRow.fromChildren(children: [
-        if (enemy.svt.collectionNo > 0)
-          TextButton(
-            onPressed: () {
-              router.push(url: Routes.servantI(enemy.svt.collectionNo));
-            },
-            child: Text(
-                'Servant No.${enemy.svt.collectionNo} - ${enemy.svt.lName.l}'),
-          ),
-        if (enemy.svt.collectionNo == 0)
-          TextButton(
-            onPressed: () {
-              router.push(url: Routes.enemyI(enemy.svt.id));
-            },
-            child: Text('Enemy No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
-          ),
-      ]),
+      TextButton(
+        onPressed: () {
+          if (enemy.svt.collectionNo > 0) {
+            router.push(url: Routes.servantI(enemy.svt.collectionNo));
+          } else {
+            router.push(url: Routes.enemyI(enemy.svt.id));
+          }
+        },
+        style: kTextButtonDenseStyle,
+        child: Text(enemy.svt.collectionNo > 0
+            ? 'Servant No.${enemy.svt.collectionNo} - ${enemy.svt.lName.l}'
+            : 'Enemy No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
+      ),
       CustomTableRow(children: [
         TableCellData(
           child: enemy.svt.iconBuilder(context: context, height: 64),
@@ -140,21 +136,21 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           skill: enemy.skills.skill1!,
           level: enemy.skills.skillLv1,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         ),
       if (enemy.skills.skill2 != null)
         SkillDescriptor(
           skill: enemy.skills.skill2!,
           level: enemy.skills.skillLv2,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         ),
       if (enemy.skills.skill3 != null)
         SkillDescriptor(
           skill: enemy.skills.skill3!,
           level: enemy.skills.skillLv3,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         ),
       if (enemy.classPassive.classPassive.isNotEmpty ||
           enemy.classPassive.addPassive.isNotEmpty)
@@ -166,13 +162,13 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         SkillDescriptor(
           skill: skill,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         ),
       for (final skill in enemy.classPassive.addPassive)
         SkillDescriptor(
           skill: skill,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         ),
       CustomTableRow.fromTexts(
         texts: [S.current.noble_phantasm],
@@ -183,7 +179,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           td: enemy.noblePhantasm.noblePhantasm!,
           level: enemy.noblePhantasm.noblePhantasmLv,
           showEnemy: true,
-          showPlayer: false,
+          showPlayer: true,
         )
     ]);
   }
