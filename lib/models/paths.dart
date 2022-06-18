@@ -69,7 +69,7 @@ class PathManager {
       bool useExternal = sp.get('android_use_external') == true;
       List<String> externalPaths = (await getExternalStorageDirectories(
               type: StorageDirectory.documents))!
-          .map((e) => e.path)
+          .map((e) => dirname(e.path))
           .whereType<String>()
           .toList();
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
