@@ -122,6 +122,8 @@ class ValDsc extends StatelessWidget {
                 content: JsonViewer((originVals ?? vals).toJson()),
                 scrollable: true,
                 hideCancel: true,
+                contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                    10.0, 10.0, 12.0, 24.0),
               ),
             );
           },

@@ -173,8 +173,16 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
       children.add(Center(
         child: Padding(
           padding: const EdgeInsets.all(48),
-          child:
-              _loading ? const CircularProgressIndicator() : const Text('???'),
+          child: _loading
+              ? const CircularProgressIndicator()
+              : RefreshButton(
+                  text: '???',
+                  onPressed: () {
+                    if (_region != null) {
+                      fetchSvt(_region!);
+                    }
+                  },
+                ),
         ),
       ));
     }

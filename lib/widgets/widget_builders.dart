@@ -140,3 +140,27 @@ mixin PrimaryScrollMixin on StatelessWidget {
 
   Widget buildContent(BuildContext context);
 }
+
+class RefreshButton extends StatelessWidget {
+  final String? text;
+  final VoidCallback? onPressed;
+  const RefreshButton({Key? key, this.text, this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final btn = TextButton(
+      onPressed: onPressed,
+      child:
+          Text(MaterialLocalizations.of(context).refreshIndicatorSemanticLabel),
+    );
+    if (text == null) return btn;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(text!),
+        btn,
+      ],
+    );
+  }
+}

@@ -727,11 +727,7 @@ class QuestEnemyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mp = db.gameData.mappingData;
-    String displayName = showTrueName ? enemy.svt.name : enemy.name;
-    displayName = mp.svtNames[displayName]?.l ??
-        mp.entityNames[displayName]?.l ??
-        displayName;
+    String displayName = showTrueName ? enemy.svt.lName.l : enemy.lName;
 
     Widget face = db.getIconImage(
       enemy.svt.face,

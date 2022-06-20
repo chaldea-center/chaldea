@@ -108,8 +108,14 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
         child: Center(
-          child:
-              _loading ? const CircularProgressIndicator() : const Text('???'),
+          child: _loading
+              ? const CircularProgressIndicator()
+              : RefreshButton(
+                  text: '???',
+                  onPressed: () {
+                    fetchSvt(_region);
+                  },
+                ),
         ),
       ));
     }

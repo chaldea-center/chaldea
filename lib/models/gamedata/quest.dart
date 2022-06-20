@@ -670,6 +670,20 @@ class QuestEnemy {
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
       _$QuestEnemyFromJson(json);
+
+  String get lName {
+    String? _name =
+        Transl.md.svtNames[name]?.l ?? Transl.md.entityNames[name]?.l;
+    if (_name != null) return _name;
+    return name.replaceFirstMapped(RegExp(r'^(.+?)(\s*)([A-Z\uff21-\uff3a])$'),
+        (match) {
+      String a = Transl.svtNames(match.group(1)!).l,
+          b = match.group(2)!,
+          c = match.group(3)!;
+      if (Transl.isEN && b.isEmpty && c.isNotEmpty) b = ' ';
+      return '$a$b$c';
+    });
+  }
 }
 
 @JsonSerializable()

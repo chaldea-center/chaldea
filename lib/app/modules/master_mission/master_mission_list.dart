@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'master_mission.dart';
 import 'solver/custom_mission.dart';
 
@@ -114,7 +115,14 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         children: [
           Expanded(
             child: errorMsg != null
-                ? Center(child: Text(errorMsg!))
+                ? Center(
+                    child: RefreshButton(
+                      text: errorMsg,
+                      onPressed: () {
+                        _resolveMissions(_region, force: true);
+                      },
+                    ),
+                  )
                 : missions.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : RefreshIndicator(
