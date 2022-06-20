@@ -142,19 +142,23 @@ class ValDsc extends StatelessWidget {
     parts.add(text);
   }
 
+  String? _toPercent(int? value, [int base = 1]) {
+    if (value == null) return null;
+    int _intValue = value ~/ base;
+    double _floatValue = value / base;
+    if (_intValue.toDouble() == _floatValue) {
+      return '$_intValue';
+    } else {
+      return _floatValue.toString().trimCharRight('0');
+    }
+  }
+
   void _addPercent(int? value, int base, [String Function(String)? post]) {
     if (value == null || value == 0) return;
     if (value == 966756) {
       logger.e(value.toString());
     }
-    int _intValue = value ~/ base;
-    double _floatValue = value / base;
-    String text;
-    if (_intValue.toDouble() == _floatValue) {
-      text = '$_intValue%';
-    } else {
-      text = '${_floatValue.toString().trimCharRight('0')}%';
-    }
+    String text = '${_toPercent(value, base)!}%';
     if (post != null) {
       text = post(text);
     }
@@ -178,7 +182,9 @@ class ValDsc extends StatelessWidget {
     } else if (func.funcType == FuncType.gainHpFromTargets) {
       _addInt(vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
-      _addPercent(vals.DependFuncVals?.Value, 100);
+      // Absorb Value, charge Value2
+      _addPercent(
+          vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
     } else if (func.funcType == FuncType.subState) {
       if (vals.Value2 != null) {
         _addInt(vals.Value2);
@@ -297,7 +303,7 @@ class ValDsc extends StatelessWidget {
       } else if (triggerVal.skill != null) {
         parts.add(triggerVal.skill.toString());
       } else if (triggerVal.level != null) {
-        parts.add(triggerVal.level.toString());
+        parts.add('Lv.${triggerVal.level}');
       }
       return;
     } else if (buff.type == BuffType.changeCommandCardType) {
@@ -319,8 +325,14 @@ class ValDsc extends StatelessWidget {
         _addInt(vals.ParamAdd);
       }
     }
+    if (vals.RatioHPLow != null || vals.RatioHPHigh != null) {
+      final ratios =
+          [vals.RatioHPLow, vals.RatioHPHigh].whereType<int>().toList()..sort();
+      final ratioStrings = ratios.map((e) => _toPercent(e, base ?? 1)).toList();
+      parts.add('${ratioStrings.join('-')}%');
+    }
     if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-      _addInt(vals.Count, (v) => '$v Times');
+      _addInt(vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
     }
   }
 

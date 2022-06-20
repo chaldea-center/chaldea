@@ -36,7 +36,7 @@ class NiceTrait {
     return '$runtimeType($id)';
   }
 
-  String get showName {
+  String get shownName {
     final s = Transl.trait(id).l;
     if (negative == true) return 'Not $s';
     return s;

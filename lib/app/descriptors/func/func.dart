@@ -441,10 +441,11 @@ class FuncDescriptor extends StatelessWidget {
 
   Map<String, dynamic> _getFuncJson() {
     List<String> _traitList(List<NiceTrait> traits) {
-      return traits.map((e) => Transl.trait(e.id).l).toList();
+      return traits.map((e) => e.shownName).toList();
     }
 
     final buff = func.buffs.getOrNull(0);
+    final script = buff?.script;
     return {
       "type": '${func.funcType.name}(${Transl.funcType(func.funcType).l})',
       "target":
@@ -468,6 +469,25 @@ class FuncDescriptor extends StatelessWidget {
           "ckSelfIndv": _traitList(buff.ckSelfIndv),
         if (buff.ckOpIndv.isNotEmpty) "ckOpIndv": _traitList(buff.ckOpIndv),
         "maxRate": buff.maxRate,
+        if (script != null) ...{
+          "----script----": "",
+          if (script.checkIndvType != null)
+            "checkIndvType": script.checkIndvType,
+          if (script.CheckOpponentBuffTypes != null)
+            "CheckOpponentBuffTypes": script.CheckOpponentBuffTypes!
+                .map((e) => '${e.name}(${Transl.buffType(e).l})')
+                .toList(),
+          if (script.relationId != null)
+            "relationId": "!BuffRelationOverwrite!",
+          if (script.ReleaseText != null) "ReleaseText": script.ReleaseText,
+          if (script.DamageRelease != null)
+            "DamageRelease": script.DamageRelease,
+          if (script.INDIVIDUALITIE != null)
+            "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName,
+          if (script.UpBuffRateBuffIndiv != null)
+            "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
+          if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,
+        }
       }
     };
   }
@@ -531,7 +551,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
 
   @override
   Widget build(BuildContext context) {
-    String title = '${widget.trigger.skill}';
+    String title = 'ID ${widget.trigger.skill}';
     if (skill != null) {
       title += ': ${skill!.lName.l}';
     }

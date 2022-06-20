@@ -284,7 +284,7 @@ class SharedBuilder {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
-          trait.showName,
+          trait.shownName,
           style: style ??
               TextStyle(color: Theme.of(context).colorScheme.secondary),
           textScaleFactor: textScaleFactor,

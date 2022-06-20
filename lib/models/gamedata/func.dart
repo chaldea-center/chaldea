@@ -103,6 +103,8 @@ class NiceFunction implements BaseFunction {
         final l = x.putIfAbsent(key, () => {});
         if (value is List && l.any((e) => e.toString() == value.toString())) {
           //
+        } else if (value is Map &&
+            l.any((e) => e.toString() == value.toString())) {
         } else {
           l.add(value);
         }
@@ -345,13 +347,13 @@ class Buff {
 
 @JsonSerializable()
 class BuffScript {
-  final int? checkIndvType;
+  final int? checkIndvType; // 1-AND, default-OR
   final List<BuffType>? CheckOpponentBuffTypes;
   final BuffRelationOverwrite? relationId;
   final String? ReleaseText;
-  final int? DamageRelease;
-  final NiceTrait? INDIVIDUALITIE;
-  final List<NiceTrait>? UpBuffRateBuffIndiv;
+  final int? DamageRelease; // remove this buff when receive damage
+  final NiceTrait? INDIVIDUALITIE; // self indiv?
+  final List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
   final int? HP_LOWER;
 
   const BuffScript({
