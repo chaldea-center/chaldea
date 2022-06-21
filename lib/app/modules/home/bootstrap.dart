@@ -134,6 +134,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       pages = [
         welcomePage,
         languagePage,
+        if (kIsWeb) webDomainPage,
         darkModePage,
         createAccountPage,
         dataPage,
@@ -226,6 +227,48 @@ class _BootstrapPageState extends State<BootstrapPage>
           endIndent: 48,
         ),
         itemCount: Language.supportLanguages.length,
+      ),
+    );
+  }
+
+  Widget get webDomainPage {
+    final cnDomain = Uri.parse('https://cn.chaldea.center'),
+        globalDomain = Uri.parse('https://chaldea.center');
+    Widget _tile(bool isCN) {
+      final domain = isCN ? cnDomain : globalDomain;
+      bool selected = Uri.base.host == domain.host;
+      return ListTile(
+        leading: selected ? const Icon(Icons.done_rounded) : const SizedBox(),
+        title: Text(isCN
+            ? S.current.chaldea_server_cn
+            : S.current.chaldea_server_global),
+        subtitle: Text(domain.toString()),
+        horizontalTitleGap: 0,
+        trailing: selected ? null : const Icon(Icons.open_in_new),
+        onTap: selected
+            ? null
+            : () {
+                launch(domain.toString());
+              },
+      );
+    }
+
+    return _IntroPage(
+      icon: FontAwesomeIcons.link,
+      title: 'Domains',
+      content: ListView(
+        children: [
+          _tile(false),
+          _tile(true),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+            child: Text(
+              S.current.download_source_hint,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          )
+        ],
       ),
     );
   }
