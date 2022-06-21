@@ -184,11 +184,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
             children: [
               ElevatedButton(
                 onPressed: () {
-                  svtResult.forEach((record) {
+                  for (final record in svtResult) {
                     db.curUser.servants[record.svt.collectionNo] =
                         SvtStatus(cur: record.cur);
                     db.curSvtPlan[record.svt.collectionNo] = record.target;
-                  });
+                  }
+                  db.saveUserData();
                   EasyLoading.showSuccess(
                       'Import ${svtResult.length} servants');
                 },

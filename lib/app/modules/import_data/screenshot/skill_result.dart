@@ -214,6 +214,7 @@ class _SkillResultTabState extends State<SkillResultTab>
           }
         }
         db.itemCenter.updateSvts(all: true);
+        db.saveUserData();
         EasyLoading.showSuccess(S.current.import_data_success);
       },
     ).showDialog(context);

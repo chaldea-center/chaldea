@@ -58,6 +58,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
                             db.userData.users.add(user);
                           }
                           db.userData.curUserKey = db.userData.users.length - 1;
+                          db.saveUserData();
                           EasyLoading.showSuccess('Appended data to cur app');
                           router.push(child: AccountPage());
                         },

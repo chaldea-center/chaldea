@@ -193,6 +193,7 @@ class _ItemResultTabState extends State<ItemResultTab>
           }
         }
         db.itemCenter.updateLeftItems();
+        db.saveUserData();
         EasyLoading.showSuccess(S.current.import_data_success);
       },
     ).showDialog(context);
