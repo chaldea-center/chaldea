@@ -21,6 +21,16 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 }
 
 class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
+  List<SkillEffect> effects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    effects = List.of(
+        SkillEffect.values.where((v) => !SkillEffect.svtIgnores.contains(v)));
+    effects.sort2((e) => SearchUtil.getSortAlphabet(e.transl.l));
+  }
+
   @override
   Widget build(BuildContext context) {
     const groupDivider = Divider(height: 16, indent: 12, endIndent: 12);
@@ -264,8 +274,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
-          options: List.of(SkillEffect.values
-              .where((v) => !SkillEffect.svtIgnores.contains(v))),
+          options: effects,
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,

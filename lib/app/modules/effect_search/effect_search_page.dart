@@ -66,7 +66,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   @override
   Widget build(BuildContext context) {
-    filterShownList();
+    filterShownList(compare: (a, b) => a.collectionNo - b.collectionNo);
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
@@ -166,6 +166,22 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     }
     functions.retainWhere(
         (func) => filterData.effectTarget.matchOne(func.funcTargetType));
+    if (filterData.targetTrait.options.isNotEmpty) {
+      final traits = filterData.targetTrait.options;
+      functions.retainWhere((func) {
+        if (func.functvals.any((e) => traits.contains(e.id)) ||
+            func.traitVals.any((e) => traits.contains(e.id))) return true;
+        for (final buff in func.buffs) {
+          if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) ||
+              buff.ckOpIndv.any((e) => traits.contains(e.id))) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+    if (functions.isEmpty) return false;
+
     Set<FuncType> funcTypes = {
       for (final func in functions) func.funcType,
     };

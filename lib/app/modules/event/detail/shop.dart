@@ -92,6 +92,7 @@ class EventShopsPage extends StatelessWidget with PrimaryScrollMixin {
       title: titleWidget,
       subtitle: subtitle,
       trailing: trailing,
+      tileColor: excluded ? Theme.of(context).splashColor : null,
       onTap: () {
         if (excluded) {
           plan.shopExcludes.remove(shop.id);

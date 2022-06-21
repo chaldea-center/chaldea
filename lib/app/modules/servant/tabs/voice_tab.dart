@@ -37,13 +37,11 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   @override
   void initState() {
     super.initState();
-    releasedRegions.add(Region.jp);
     for (final r in Region.values) {
-      if (isReleased(r)) {
+      if (r == Region.jp || isReleased(r)) {
         releasedRegions.add(r);
       }
     }
-    if (releasedRegions.isEmpty) releasedRegions.add(Region.jp);
     _region =
         releasedRegions.contains(Transl.current) ? Transl.current : Region.jp;
     fetchSvt(_region);

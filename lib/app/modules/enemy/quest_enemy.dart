@@ -25,7 +25,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(enemy.name),
+        title: Text(enemy.lName),
       ),
       body: ListView(
         children: [

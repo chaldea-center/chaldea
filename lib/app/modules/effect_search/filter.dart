@@ -17,6 +17,7 @@ class BuffFuncFilterData {
   final funcAndBuff = FilterGroupData();
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
+  final targetTrait = FilterGroupData<int>();
 
   BuffFuncFilterData();
 
@@ -28,7 +29,8 @@ class BuffFuncFilterData {
         effectTarget,
         funcType,
         buffType,
-        funcAndBuff
+        funcAndBuff,
+        targetTrait
       ];
 
   void reset() {
@@ -60,23 +62,32 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
   final ignoredFuncTypes = [FuncType.classDropUp];
   final ignoredBuffTypes = [
     BuffType.donotNobleCondMismatch,
-    BuffType.downDefencecommandall,
+    // BuffType.downDefencecommandall,
     BuffType.preventDeathByDamage
   ];
 
+  Map<FuncType, String> funcs = {};
+  Map<BuffType, String> buffs = {};
   @override
-  Widget build(BuildContext context) {
-    Map<FuncType, String> funcs = {
+  void initState() {
+    super.initState();
+    funcs = {
       for (final type in db.gameData.others.allFuncs)
         if (!ignoredFuncTypes.contains(type)) type: Transl.funcType(type).l,
     };
-    funcs = Map.fromEntries(funcs.entries.toList()..sort2((e) => e.value));
-    Map<BuffType, String> buffs = {
+    funcs = Map.fromEntries(funcs.entries.toList()
+      ..sort2((e) => SearchUtil.getSortAlphabet(e.value)));
+
+    buffs = {
       for (final type in db.gameData.others.allBuffs)
         if (!ignoredBuffTypes.contains(type)) type: Transl.buffType(type).l,
     };
-    buffs = Map.fromEntries(buffs.entries.toList()..sort2((e) => e.value));
+    buffs = Map.fromEntries(buffs.entries.toList()
+      ..sort2((e) => SearchUtil.getSortAlphabet(e.value)));
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
@@ -129,6 +140,30 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
               .toList(),
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
+          title: const Text('Card'),
+          options: [
+            Trait.cardQuick.id!,
+            Trait.cardArts.id!,
+            Trait.cardBuster.id!,
+            Trait.cardExtra.id!,
+            Trait.cardNP.id!,
+          ],
+          values: filterData.targetTrait,
+          showMatchAll: false,
+          showInvert: false,
+          optionBuilder: (v) => Text({
+                Trait.cardQuick.id!: 'Quick',
+                Trait.cardArts.id!: 'Arts',
+                Trait.cardBuster.id!: 'Buster',
+                Trait.cardExtra.id!: 'Extra',
+                Trait.cardNP.id!: S.current.np_short,
+              }[v] ??
+              v.toString()),
           onFilterChanged: (value, _) {
             update();
           },

@@ -19,6 +19,16 @@ class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
 }
 
 class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
+  List<SkillEffect> effects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    effects = List.of(
+        SkillEffect.values.where((v) => !SkillEffect.ccIgnores.contains(v)));
+    effects.sort2((e) => SearchUtil.getSortAlphabet(e.transl.l));
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -87,8 +97,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
         ),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
-          options: List.of(SkillEffect.values
-              .where((v) => !SkillEffect.ccIgnores.contains(v))),
+          options: effects,
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,

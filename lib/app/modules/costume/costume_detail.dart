@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/extra_assets_page.dart';
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -29,12 +29,6 @@ class CostumeDetailPage extends StatelessWidget {
           url: Routes.costumeI(id ?? 0), title: S.current.costume);
     }
     final svt = costume.owner;
-    final List<String?> illustrations = [
-      svt?.extraAssets.charaGraph.costume?[costume.battleCharaId],
-      svt?.extraAssets.charaGraphEx.costume?[costume.battleCharaId],
-      svt?.extraAssets.charaFigure.costume?[costume.battleCharaId],
-      svt?.extraAssets.narrowFigure.costume?[costume.battleCharaId],
-    ];
     final unlockMats = svt?.costumeMaterials[costume.battleCharaId];
     final table = CustomTable(
       children: <Widget>[
@@ -140,30 +134,15 @@ class CostumeDetailPage extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: S.current.illustration, isHeader: true)
         ]),
-        CustomTableRow(children: [
-          TableCellData(
-            child: CarouselSlider(
-              items: List.generate(
-                illustrations.length,
-                (index) => GestureDetector(
-                  child: CachedImage(imageUrl: illustrations[index]),
-                  onTap: () {
-                    FullscreenImageViewer.show(
-                      context: context,
-                      urls: illustrations,
-                      initialPage: index,
-                    );
-                  },
-                ),
-              ),
-              options: CarouselOptions(
-                height: 400,
-                viewportFraction: 1.0,
-                enableInfiniteScroll: false,
-              ),
-            ),
-          )
-        ]),
+        if (svt != null)
+          ExtraAssetsPage(
+            scrollable: false,
+            assets: svt.extraAssets,
+            getUrls: (urls) {
+              final url = urls.costume?[costume.battleCharaId];
+              return url == null ? [] : [url];
+            },
+          ),
       ],
     );
     return Scaffold(

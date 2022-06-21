@@ -19,6 +19,16 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
 }
 
 class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
+  List<SkillEffect> effects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    effects = List.of(
+        SkillEffect.values.where((v) => !SkillEffect.ceIgnores.contains(v)));
+    effects.sort2((e) => SearchUtil.getSortAlphabet(e.transl.l));
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -116,8 +126,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         ),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
-          options: List.of(SkillEffect.values
-              .where((v) => !SkillEffect.ceIgnores.contains(v))),
+          options: effects,
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,

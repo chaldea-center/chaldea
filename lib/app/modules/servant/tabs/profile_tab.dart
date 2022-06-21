@@ -34,11 +34,10 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   void initState() {
     super.initState();
     for (final r in Region.values) {
-      if (isReleased(r)) {
+      if (r == Region.jp || isReleased(r)) {
         releasedRegions.add(r);
       }
     }
-    if (releasedRegions.isEmpty) releasedRegions.add(Region.jp);
 
     final curRegion = Transl.current;
     if (releasedRegions.contains(curRegion)) {

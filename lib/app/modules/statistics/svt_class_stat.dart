@@ -27,20 +27,22 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   FilterGroupData<int> get priorityFilter => db.settings.svtFilterData.priority;
 
   void _calcRarityCounts() {
-    if (rarityTotal.every((e) => e == 0)) {
-      for (final svt in db.gameData.servants.values) {
-        if (!svt.isUserSvt) continue;
-        if (!priorityFilter.matchOne(svt.status.priority)) {
-          continue;
-        }
-        rarityTotal[svt.rarity] += 1;
-        final stat = svt.status;
-        if (stat.favorite) {
-          rarityOwn[svt.rarity] += 1;
-        }
-        if (stat.cur.skills.every((e) => e >= 9)) {
-          rarity999[svt.rarity] += 1;
-        }
+    rarityTotal = List.filled(6, 0);
+    rarityOwn = List.filled(6, 0);
+    rarity999 = List.filled(6, 0);
+
+    for (final svt in db.gameData.servants.values) {
+      if (!svt.isUserSvt) continue;
+      rarityTotal[svt.rarity] += 1;
+      if (!priorityFilter.matchOne(svt.status.priority)) {
+        continue;
+      }
+      final stat = svt.status;
+      if (stat.favorite) {
+        rarityOwn[svt.rarity] += 1;
+      }
+      if (stat.cur.skills.every((e) => e >= 9)) {
+        rarity999[svt.rarity] += 1;
       }
     }
   }
