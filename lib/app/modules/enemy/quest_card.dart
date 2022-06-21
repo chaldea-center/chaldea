@@ -226,28 +226,6 @@ class _QuestCardState extends State<QuestCard> {
           _buildPhases(phase),
       if (quest.gifts.isNotEmpty) _questRewards(),
       // if (quest.releaseConditions.isNotEmpty) _releaseConditions(),
-      if (!quest.isMainStoryFree)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.info_outline,
-                size: 16,
-                color: Theme.of(context).textTheme.caption?.color,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  'Let me know if any mistake.',
-                  style: Theme.of(context).textTheme.caption,
-                ),
-              )
-            ],
-          ),
-        ),
       if (widget.offline)
         TextButton(
           onPressed: () {
@@ -316,6 +294,8 @@ class _QuestCardState extends State<QuestCard> {
     String spot = curPhase.lSpot.l;
     final spotImage = db.gameData.spots[curPhase.spotId]?.image;
     final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+    bool noConsume =
+        curPhase.consumeType == ConsumeType.ap && curPhase.consume == 0;
     List<Widget> headerRows = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -357,14 +337,14 @@ class _QuestCardState extends State<QuestCard> {
           ),
           Expanded(
             child: Text(
-              '${S.current.bond} ${curPhase.bond}',
+              '${S.current.bond} ${noConsume ? "-" : curPhase.bond}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.caption,
             ),
           ),
           Expanded(
             child: Text(
-              'EXP ${curPhase.exp}',
+              'EXP ${noConsume ? "-" : curPhase.exp}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.caption,
             ),

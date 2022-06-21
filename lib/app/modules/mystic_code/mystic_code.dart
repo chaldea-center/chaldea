@@ -206,7 +206,8 @@ class _MysticCodePageState extends State<MysticCodePage> {
           ]),
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        for (final skill in mysticCode.skills) SkillDescriptor(skill: skill),
+        for (final skill in mysticCode.skills)
+          SkillDescriptor(skill: skill, level: _level),
         CustomTableRow(children: [
           TableCellData(text: S.current.game_experience, isHeader: true)
         ]),

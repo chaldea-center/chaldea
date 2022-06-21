@@ -87,13 +87,11 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         ItemAmount(amount: lvCost.qp, item: Items.qp)
       ]) {
         if (itemAmount.amount > 0) {
-          items.add(ImageWithText(
-            image: Item.iconBuilder(
-              context: context,
-              item: itemAmount.item,
-            ),
-            width: 42,
+          items.add(Item.iconBuilder(
+            context: context,
+            item: itemAmount.item,
             text: itemAmount.amount.format(),
+            width: 36,
           ));
         }
       }

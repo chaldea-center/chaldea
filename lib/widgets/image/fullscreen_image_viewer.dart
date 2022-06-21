@@ -115,7 +115,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: gallery,
+          child: SafeArea(child: gallery),
         ),
       ),
     );

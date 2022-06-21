@@ -107,6 +107,34 @@ class _EffectSearchPageState extends State<EffectSearchPage>
   @override
   bool filter(GameCardMixin card) {
     List<NiceFunction> functions = [];
+    if (!filterData.rarity.matchOne(card.rarity)) {
+      return false;
+    }
+
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      MappingList<int>? release;
+      if (card is Servant) {
+        release = db.gameData.mappingData.svtRelease;
+      } else if (card is CraftEssence) {
+        release = db.gameData.mappingData.ceRelease;
+      } else if (card is CommandCode) {
+        release = db.gameData.mappingData.ccRelease;
+      }
+      if (release?.ofRegion(region)?.contains(card.collectionNo) != true) {
+        return false;
+      }
+    }
+    if (card is Servant) {
+      if (!filterData.svtClass.matchOne(card.className, compares: {
+        SvtClass.caster: (v, o) =>
+            v == SvtClass.caster || v == SvtClass.grandCaster,
+        SvtClass.beastII: (v, o) => SvtClassX.beasts.contains(v),
+      })) {
+        return false;
+      }
+    }
+
     if (card is Servant) {
       bool _isScopeEmpty = filterData.effectScope.options.isEmpty;
       functions = [

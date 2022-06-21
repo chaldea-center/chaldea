@@ -179,5 +179,15 @@ abstract class SearchOptionsMixin<T> {
       }
       yield* SearchUtil.getAllKeys(Transl.tdRuby(skill.ruby));
     }
+    for (final func in skill.functions) {
+      if (Transl.md.funcPopuptext.containsKey(func.funcType.name)) {
+        yield* getAllKeys(Transl.funcPopuptext(func.funcType.name));
+      } else {
+        yield* getAllKeys(Transl.funcPopuptext(func.funcPopupText));
+      }
+      for (final buff in func.buffs) {
+        yield* getAllKeys(Transl.buffNames(buff.name));
+      }
+    }
   }
 }

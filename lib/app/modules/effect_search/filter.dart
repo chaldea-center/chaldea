@@ -8,6 +8,9 @@ import '../../../models/models.dart';
 
 class BuffFuncFilterData {
   bool useGrid = false;
+  final rarity = FilterGroupData<int>();
+  final svtClass = FilterGroupData<SvtClass>();
+  final region = FilterRadioData<Region>();
   final effectScope = FilterGroupData<SvtEffectScope>(
       options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<FuncTargetType>();
@@ -17,8 +20,16 @@ class BuffFuncFilterData {
 
   BuffFuncFilterData();
 
-  List<FilterGroupData> get groups =>
-      [effectScope, effectTarget, funcType, buffType, funcAndBuff];
+  List<FilterGroupData> get groups => [
+        rarity,
+        svtClass,
+        region,
+        effectScope,
+        effectTarget,
+        funcType,
+        buffType,
+        funcAndBuff
+      ];
 
   void reset() {
     for (final group in groups) {
@@ -82,6 +93,26 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
             },
           ),
         ]),
+        buildClassFilter(filterData.svtClass),
+        FilterGroup<int>(
+          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+          options: const [0, 1, 2, 3, 4, 5],
+          values: filterData.rarity,
+          optionBuilder: (v) => Text('$v$kStarChar'),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<Region>(
+          title: Text(S.current.game_server, style: textStyle),
+          options: Region.values,
+          values: filterData.region,
+          optionBuilder: (v) => Text(v.localName),
+          onFilterChanged: (v, _) {
+            update();
+          },
+        ),
+        const Divider(height: 16, indent: 12, endIndent: 12),
         FilterGroup<SvtEffectScope>(
           title: Text(S.current.effect_scope),
           options: SvtEffectScope.values,

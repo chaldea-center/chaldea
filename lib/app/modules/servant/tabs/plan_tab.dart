@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -874,7 +876,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         builder: (context, state) {
           Map<int, int> shownItems = Map.of(items);
           if (state.value) {
-            shownItems.addDict(db.curUser.items.multiple(-1));
+            for (final itemId in shownItems.keys.toList()) {
+              shownItems.addNum(itemId, -min(0, db.curUser.items[itemId] ?? 0));
+            }
             shownItems.removeWhere((key, value) => value <= 0);
           }
           return SimpleCancelOkDialog(

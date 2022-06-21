@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -42,7 +44,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           ],
         ),
         getGroup(header: S.of(context).filter_sort, children: [
-          for (int i = 0; i < filterData.sortKeys.length; i++)
+          for (int i = 0; i < min(4, filterData.sortKeys.length); i++)
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],

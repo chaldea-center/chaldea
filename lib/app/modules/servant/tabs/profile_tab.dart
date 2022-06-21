@@ -33,16 +33,28 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   @override
   void initState() {
     super.initState();
-    releasedRegions.add(Region.jp);
     for (final r in Region.values) {
       if (isReleased(r)) {
         releasedRegions.add(r);
       }
     }
     if (releasedRegions.isEmpty) releasedRegions.add(Region.jp);
-    _region =
-        releasedRegions.contains(Transl.current) ? Transl.current : Region.jp;
-    fetchSvt(_region!);
+
+    final curRegion = Transl.current;
+    if (releasedRegions.contains(curRegion)) {
+      _region = curRegion;
+    } else if ((curRegion == Region.cn || curRegion == Region.tw) &&
+        widget.svt.extra.mcProfiles.isNotEmpty) {
+      _wikiSource = _WikiSource.mc;
+    } else if ((curRegion == Region.na || curRegion == Region.kr) &&
+        widget.svt.extra.fandomProfiles.isNotEmpty) {
+      _wikiSource = _WikiSource.fandom;
+    } else {
+      _region = Region.jp;
+    }
+    if (_region != null) {
+      fetchSvt(_region!);
+    }
   }
 
   bool isReleased(Region r) {

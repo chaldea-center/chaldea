@@ -39,6 +39,7 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Scaffold(
       appBar: AppBar(
         title: Text(MaterialLocalizations.of(context)
@@ -80,7 +81,7 @@ class _AboutPageState extends State<AboutPage> {
               legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
               debugInfo: showDebugInfo
                   ? 'UUID\n${AppInfo.uuid}\n'
-                      'Size: ${size.width.toInt()}x${size.height.toInt()}'
+                      'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
                   : null,
             ),
           ),

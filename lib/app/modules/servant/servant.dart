@@ -505,8 +505,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
                       icon = svt.bordered(icon);
                       children.add(ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: db.getIconImage(icon,
-                            padding: const EdgeInsets.symmetric(vertical: 2)),
+                        leading: db.getIconImage(
+                          icon,
+                          width: 36,
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                        ),
                         title: Text(name),
                         onTap: () {
                           db.userData.customSvtIcon[svt.collectionNo] = icon;
