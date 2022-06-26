@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:github/github.dart';
 
 import 'package:chaldea/models/userdata/local_settings.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'backend.dart';
 
 extension _GithubSettingX on GithubSetting {
@@ -24,10 +25,12 @@ class GithubBackup<T> extends BackupBackend<T> {
   });
 
   @override
-  Future<bool> backup() async {
+  Future<bool> backup({String? message}) async {
     github.auth = Authentication.withToken(config.token);
     final content = base64Encode(await encode());
-    final message = DateTime.now().toString();
+    if (message == null || message.isEmpty) {
+      message = DateTime.now().toStringShort(omitSec: false);
+    }
     // print('content: $content');
     print('message: $message');
     final sha = config.sha ??= (await _getFile())?.sha;

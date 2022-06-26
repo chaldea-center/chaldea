@@ -25,11 +25,13 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   late TextEditingController _pathController;
   late TextEditingController _tokenController;
   late TextEditingController _branchController;
+  late TextEditingController _messageController;
 
   GithubSetting get config => db.settings.github;
 
   late GithubBackup backend;
   bool _enableEdit = false;
+  String message = '';
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
     _pathController = TextEditingController(text: config.path);
     _tokenController = TextEditingController(text: config.token);
     _branchController = TextEditingController(text: config.branch);
+    _messageController = TextEditingController();
     backend = GithubBackup<UserData>(
         config: config, encode: encodeUserdata, decode: decodeUserdata);
     _enableEdit = validate() != null;
@@ -61,7 +64,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   Future<void> backup() async {
     EasyLoading.show(status: 'backup...', maskType: EasyLoadingMaskType.clear);
     try {
-      await backend.backup();
+      await backend.backup(message: message.isNotEmpty ? message : null);
       EasyLoading.showSuccess(S.current.success);
       db.saveAll();
     } on ConflictError catch (e) {
@@ -248,6 +251,19 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
                   }
                 : null,
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: TextFormField(
+              controller: _messageController,
+              decoration: InputDecoration(
+                  labelText: 'commit message',
+                  border: const OutlineInputBorder(),
+                  hintText: DateTime.now().toStringShort(omitSec: false)),
+              onChanged: (s) {
+                message = s.trim();
+              },
+            ),
+          ),
           ListTile(
             dense: true,
             title: const Text('Local SHA'),
@@ -379,5 +395,6 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
     _pathController.dispose();
     _tokenController.dispose();
     _branchController.dispose();
+    _messageController.dispose();
   }
 }
