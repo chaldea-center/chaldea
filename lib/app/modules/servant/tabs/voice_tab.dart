@@ -206,8 +206,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
               ? null
               : Text.rich(
                   TextSpan(
-                      children:
-                          divideList(suffixes, const TextSpan(text: ', '))),
+                    children: [
+                      ...divideList(suffixes, const TextSpan(text: ', ')),
+                      // avoid clickable space extends to entire width
+                      const TextSpan(text: ' ')
+                    ],
+                  ),
                   textScaleFactor: 0.9,
                 ),
         );

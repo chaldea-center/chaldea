@@ -124,7 +124,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         return false;
       }
     }
-    if (filterData.effectType.options.isNotEmpty) {
+    if (filterData.effectType.options.isNotEmpty ||
+        filterData.effectTarget.options.isNotEmpty) {
       List<NiceFunction> funcs = [
         for (final skill in cc.skills)
           ...skill.filteredFunction(includeTrigger: true),
@@ -136,6 +137,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         });
       }
       if (funcs.isEmpty) return false;
+      if (filterData.effectType.options.isEmpty) return true;
       if (filterData.effectType.matchAll) {
         if (!filterData.effectType.options
             .every((effect) => funcs.any((func) => effect.match(func)))) {

@@ -498,7 +498,8 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.trait.matchAny(svt.traitsAll)) {
       return false;
     }
-    if (filterData.effectType.options.isNotEmpty) {
+    if (filterData.effectType.options.isNotEmpty ||
+        filterData.effectTarget.options.isNotEmpty) {
       List<NiceFunction> funcs = [
         if (filterData.effectScope.contain(SvtEffectScope.active))
           for (final skill in svt.skills)
@@ -520,6 +521,7 @@ class ServantListPageState extends State<ServantListPage>
         });
       }
       if (funcs.isEmpty) return false;
+      if (filterData.effectType.options.isEmpty) return true;
       if (filterData.effectType.matchAll) {
         if (!filterData.effectType.options
             .every((effect) => funcs.any((func) => effect.match(func)))) {

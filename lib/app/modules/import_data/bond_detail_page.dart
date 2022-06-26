@@ -72,6 +72,10 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
           if (a.value.friendshipRank != b.value.friendshipRank) {
             return b.value.friendshipRank - a.value.friendshipRank;
           }
+          if (a.value.friendshipExceedCount != b.value.friendshipExceedCount) {
+            return b.value.friendshipExceedCount -
+                a.value.friendshipExceedCount;
+          }
           return a.key.collectionNo - b.key.collectionNo;
         });
         break;
