@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../db.dart';
+import '_helper.dart';
 import 'common.dart';
 import 'item.dart';
 import 'mappings.dart';

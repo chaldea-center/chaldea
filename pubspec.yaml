@@ -102,7 +102,6 @@ dev_dependencies:
   intl_utils: # ^2.6.1
     git:
       url: https://github.com/narumishi/intl_utils
-  hive_generator: any
   # flutter_launcher_icons: ^0.8.1
 
 

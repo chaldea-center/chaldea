@@ -1,10 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
+import '_helper.dart';
 import 'common.dart';
 import 'mappings.dart';
 

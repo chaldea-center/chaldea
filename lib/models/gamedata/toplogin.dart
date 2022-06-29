@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import '_helper.dart';
 
 part '../../generated/models/gamedata/toplogin.g.dart';
 

@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/packages/logger.dart';
+import '_helper.dart';
 
 part '../../generated/models/gamedata/drop_rate.g.dart';
 

@@ -2,10 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/utils/extension.dart';
 import '../version.dart';
+import '_helper.dart';
 import 'command_code.dart';
 import 'common.dart';
 import 'const_data.dart';

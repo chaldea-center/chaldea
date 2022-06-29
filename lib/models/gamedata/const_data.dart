@@ -1,5 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
-
+import '_helper.dart';
 import 'common.dart';
 import 'quest.dart' show Gift;
 import 'servant.dart';

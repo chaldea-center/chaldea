@@ -1,5 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
-
+import '_helper.dart';
 import 'quest.dart';
 
 part '../../generated/models/gamedata/script.g.dart';

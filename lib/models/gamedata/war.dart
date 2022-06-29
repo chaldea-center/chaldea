@@ -1,10 +1,9 @@
 import 'dart:math';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
+import '_helper.dart';
 import 'gamedata.dart';
 
 part '../../generated/models/gamedata/war.g.dart';

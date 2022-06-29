@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
 import '../userdata/userdata.dart';
+import '_helper.dart';
 import 'common.dart';
 import 'game_card.dart';
 import 'item.dart';

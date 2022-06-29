@@ -158,11 +158,13 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       ];
     } else if (card is CraftEssence) {
       functions = [
-        for (final skill in card.skills) ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in card.skills)
+          ...skill.filteredFunction(includeTrigger: true),
       ];
     } else if (card is CommandCode) {
       functions = [
-        for (final skill in card.skills) ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in card.skills)
+          ...skill.filteredFunction(includeTrigger: true),
       ];
     }
     functions.retainWhere(

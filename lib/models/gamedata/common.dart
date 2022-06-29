@@ -1,7 +1,6 @@
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:chaldea/utils/atlas.dart';
 import '../../app/tools/gamedata_loader.dart';
+import '_helper.dart';
 import 'event.dart';
 import 'mappings.dart';
 
