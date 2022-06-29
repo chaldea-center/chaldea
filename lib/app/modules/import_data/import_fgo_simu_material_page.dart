@@ -189,6 +189,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                         SvtStatus(cur: record.cur);
                     db.curSvtPlan[record.svt.collectionNo] = record.target;
                   }
+                  db.itemCenter.init();
                   db.saveUserData();
                   EasyLoading.showSuccess(
                       'Import ${svtResult.length} servants');

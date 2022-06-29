@@ -41,17 +41,17 @@ String joinUrl(String part1, String part2, [String? part3]) {
 /// [reversed] is used only when [compare] is null for default num values sort
 Map<K, V> sortDict<K, V>(
   Map<K, V> d, {
-  bool reversed = false,
   int Function(MapEntry<K, V> a, MapEntry<K, V> b)? compare,
+  bool reversed = false,
   bool inPlace = false,
 }) {
   List<MapEntry<K, V>> entries = d.entries.toList();
   entries.sort((a, b) {
     if (compare != null) return compare(a, b);
-    if (a.value is num && b.value is num) {
-      return (a.value as num).compareTo(b.value as num) * (reversed ? -1 : 1);
+    if (a.key is Comparable) {
+      return (a.key as Comparable).compareTo(b.key);
     }
-    throw ArgumentError('must provide "compare" when values is not num');
+    throw ArgumentError('must provide "compare" when key is not Comparable');
   });
   final sorted = Map.fromEntries(entries);
   if (inPlace) {

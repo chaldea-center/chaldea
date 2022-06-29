@@ -606,6 +606,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
     // db2.gameData.updateUserDuplicatedServants();
     EasyLoading.showSuccess(S.current.success);
+    db.itemCenter.init();
     db.saveUserData();
   }
 

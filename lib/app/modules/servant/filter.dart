@@ -20,7 +20,8 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
   _ServantFilterPageState createState() => _ServantFilterPageState();
 }
 
-class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
+class _ServantFilterPageState
+    extends FilterPageState<SvtFilterData, ServantFilterPage> {
   List<SkillEffect> effects = [];
 
   @override

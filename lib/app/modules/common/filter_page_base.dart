@@ -36,7 +36,7 @@ abstract class FilterPage<T> extends StatefulWidget {
   }
 }
 
-abstract class FilterPageState<T> extends State<FilterPage<T>> {
+abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
   T get filterData => widget.filterData;
 
   TextStyle textStyle = const TextStyle(fontSize: 16);

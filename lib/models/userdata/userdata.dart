@@ -181,7 +181,10 @@ class UserData {
     );
   }
 
-  Map<String, dynamic> toJson() => _$UserDataToJson(this);
+  Map<String, dynamic> toJson() {
+    sort();
+    return _$UserDataToJson(this);
+  }
 
   void validate() {
     if (users.isEmpty) {
@@ -192,6 +195,13 @@ class UserData {
       user.validate();
     }
     svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
+  }
+
+  void sort() {
+    for (final user in users) {
+      user.sort();
+    }
+    customSvtIcon = sortDict(customSvtIcon);
   }
 }
 
@@ -314,6 +324,22 @@ class User {
     if (customName != null && customName.isNotEmpty) name += ' - $customName';
     return name;
   }
+
+  void sort() {
+    servants = sortDict(servants);
+    for (final plan in plans) {
+      plan.sort();
+    }
+    items = sortDict(items);
+    craftEssences = sortDict(craftEssences);
+    mysticCodes = sortDict(mysticCodes);
+    summons = (summons.toList()..sort()).toSet();
+    luckyBagSvtScores = sortDict(luckyBagSvtScores);
+    freeLPParams.planItemCounts = sortDict(freeLPParams.planItemCounts);
+    freeLPParams.planItemWeights = sortDict(freeLPParams.planItemWeights);
+    freeLPParams.blacklist = (freeLPParams.blacklist.toList()..sort()).toSet();
+    freeLPParams.extraCols.sort();
+  }
 }
 
 @JsonSerializable()
@@ -381,6 +407,13 @@ class UserPlan {
     limitEvents.clear();
     mainStories.clear();
     tickets.clear();
+  }
+
+  void sort() {
+    servants = sortDict(servants);
+    limitEvents = sortDict(limitEvents);
+    mainStories = sortDict(mainStories);
+    tickets = sortDict(tickets);
   }
 }
 

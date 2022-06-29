@@ -18,7 +18,8 @@ class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
-class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
+class _CmdCodeFilterPageState
+    extends FilterPageState<CmdCodeFilterData, CmdCodeFilterPage> {
   List<SkillEffect> effects = [];
 
   @override

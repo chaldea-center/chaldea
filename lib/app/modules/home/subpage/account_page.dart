@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
@@ -179,7 +179,9 @@ class _AccountPageState extends State<AccountPage> {
   void updateData([bool needCalc = false]) async {
     if (mounted) setState(() {});
     if (needCalc) {
-      db.itemCenter.init();
+      EasyDebounce.debounce('itemCenter.init', const Duration(seconds: 1), () {
+        db.itemCenter.init();
+      });
     }
     db.notifyUserdata();
   }

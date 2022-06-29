@@ -82,6 +82,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
               context: context,
               builder: (context) => BuffFuncFilter(
                 filterData: filterData,
+                showClassFilter: _tabController.index == 0,
                 onChanged: (_) {
                   if (mounted) setState(() {});
                 },
@@ -157,11 +158,11 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       ];
     } else if (card is CraftEssence) {
       functions = [
-        for (final skill in card.skills) ...skill.functions,
+        for (final skill in card.skills) ...skill.filteredFunction(includeTrigger: true),
       ];
     } else if (card is CommandCode) {
       functions = [
-        for (final skill in card.skills) ...skill.functions,
+        for (final skill in card.skills) ...skill.filteredFunction(includeTrigger: true),
       ];
     }
     functions.retainWhere(

@@ -16,7 +16,8 @@ class SummonFilterPage extends FilterPage<SummonFilterData> {
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
-class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
+class _CmdCodeFilterPageState
+    extends FilterPageState<SummonFilterData, SummonFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

@@ -177,7 +177,12 @@ class FreeLPSolver {
           dropWeights[itemId] = (params.useAP20 ? 20 / data.apCosts[col] : 1) *
               data.matrix[row][col] *
               objectiveWeights[itemId]!;
-          sortDict(dropWeights, reversed: true, inPlace: true);
+          sortDict<int, double>(
+            dropWeights,
+            compare: (a, b) => a.value.compareTo(b.value),
+            reversed: true,
+            inPlace: true,
+          );
         }
       }
       if (dropWeights.isNotEmpty) {

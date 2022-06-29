@@ -42,9 +42,11 @@ class BuffFuncFilterData {
 }
 
 class BuffFuncFilter extends FilterPage<BuffFuncFilterData> {
+  final bool showClassFilter;
   const BuffFuncFilter({
     Key? key,
     required BuffFuncFilterData filterData,
+    this.showClassFilter = true,
     ValueChanged<BuffFuncFilterData>? onChanged,
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
@@ -52,7 +54,8 @@ class BuffFuncFilter extends FilterPage<BuffFuncFilterData> {
   _BuffFuncFilterState createState() => _BuffFuncFilterState();
 }
 
-class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
+class _BuffFuncFilterState
+    extends FilterPageState<BuffFuncFilterData, BuffFuncFilter> {
   final ignoredFuncTarget = [
     FuncTargetType.ptSelfAnotherFirst,
     FuncTargetType.ptOneHpLowestRate,
@@ -104,7 +107,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
             },
           ),
         ]),
-        buildClassFilter(filterData.svtClass),
+        if (widget.showClassFilter) buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],

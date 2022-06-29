@@ -18,7 +18,8 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
   _CraftFilterPageState createState() => _CraftFilterPageState();
 }
 
-class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
+class _CraftFilterPageState
+    extends FilterPageState<CraftFilterData, CraftFilterPage> {
   List<SkillEffect> effects = [];
 
   @override

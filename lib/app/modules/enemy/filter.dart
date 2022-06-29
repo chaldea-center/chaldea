@@ -17,7 +17,8 @@ class EnemyFilterPage extends FilterPage<EnemyFilterData> {
   _EnemyFilterPageState createState() => _EnemyFilterPageState();
 }
 
-class _EnemyFilterPageState extends FilterPageState<EnemyFilterData> {
+class _EnemyFilterPageState
+    extends FilterPageState<EnemyFilterData, EnemyFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

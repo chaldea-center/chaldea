@@ -159,7 +159,8 @@ class _CachedImageState extends State<CachedImage> {
     if (!kIsWeb &&
         Atlas.isAtlasAsset(url) &&
         url.endsWith('.png') &&
-        !url.contains('merged')) {
+        !url.contains('merged') &&
+        !url.endsWith('questboard_cap_closed.png')) {
       String? _cachedPath = _loader.getCached(url);
       if (_cachedPath != null) {
         return _withProvider(FileImage(File(_cachedPath)));

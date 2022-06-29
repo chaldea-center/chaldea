@@ -17,7 +17,8 @@ class FfoPartFilterPage extends FilterPage<FfoPartFilterData> {
   _FfoPartFilterPageState createState() => _FfoPartFilterPageState();
 }
 
-class _FfoPartFilterPageState extends FilterPageState<FfoPartFilterData> {
+class _FfoPartFilterPageState
+    extends FilterPageState<FfoPartFilterData, FfoPartFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
