@@ -958,6 +958,7 @@ enum EnemyDeathType {
   stand,
   effect,
   wait,
+  energy,
 }
 
 enum DeckType {

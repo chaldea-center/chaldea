@@ -713,6 +713,7 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.treasureBox: 'treasureBox',
   SvtVoiceType.warBoard: 'warBoard',
   SvtVoiceType.eventDigging: 'eventDigging',
+  SvtVoiceType.eventExpedition: 'eventExpedition',
   SvtVoiceType.sum: 'sum',
 };
 

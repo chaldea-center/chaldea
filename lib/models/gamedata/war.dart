@@ -305,7 +305,7 @@ class WarAdd {
 
   WarAdd({
     required this.warId,
-    this.type = WarOverwriteType.none_,
+    this.type = WarOverwriteType.unknown,
     required this.priority,
     required this.overwriteId,
     this.overwriteStr = "",
@@ -351,7 +351,7 @@ enum WarFlag {
 }
 
 enum WarOverwriteType {
-  none_, // custom none
+  unknown, // custom none
   bgm,
   parentWar,
   banner,
@@ -370,6 +370,7 @@ enum WarOverwriteType {
   startType,
   noticeDialogText,
   clearMark,
+  effectChangeWhiteMark,
 }
 
 enum WarStartType {

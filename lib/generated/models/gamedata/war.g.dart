@@ -115,7 +115,7 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
 WarAdd _$WarAddFromJson(Map json) => WarAdd(
       warId: json['warId'] as int,
       type: $enumDecodeNullable(_$WarOverwriteTypeEnumMap, json['type']) ??
-          WarOverwriteType.none_,
+          WarOverwriteType.unknown,
       priority: json['priority'] as int,
       overwriteId: json['overwriteId'] as int,
       overwriteStr: json['overwriteStr'] as String? ?? "",
@@ -128,7 +128,7 @@ WarAdd _$WarAddFromJson(Map json) => WarAdd(
     );
 
 const _$WarOverwriteTypeEnumMap = {
-  WarOverwriteType.none_: 'none_',
+  WarOverwriteType.unknown: 'unknown',
   WarOverwriteType.bgm: 'bgm',
   WarOverwriteType.parentWar: 'parentWar',
   WarOverwriteType.banner: 'banner',
@@ -147,6 +147,7 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.startType: 'startType',
   WarOverwriteType.noticeDialogText: 'noticeDialogText',
   WarOverwriteType.clearMark: 'clearMark',
+  WarOverwriteType.effectChangeWhiteMark: 'effectChangeWhiteMark',
 };
 
 const _$WarFlagEnumMap = {

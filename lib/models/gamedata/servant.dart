@@ -1259,6 +1259,7 @@ enum SvtVoiceType {
   treasureBox,
   warBoard,
   eventDigging,
+  eventExpedition,
   sum,
 }
 

@@ -10,6 +10,7 @@ import '../../app/app.dart';
 import 'common.dart';
 import 'game_card.dart';
 import 'mappings.dart';
+import 'quest.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
@@ -36,6 +37,7 @@ class Item {
   ItemBGType background;
   int priority;
   int dropPriority;
+  List<ItemSelect> itemSelects;
 
   Item({
     required this.id,
@@ -48,6 +50,7 @@ class Item {
     required this.background,
     required this.priority,
     required this.dropPriority,
+    this.itemSelects = const [],
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
@@ -344,6 +347,22 @@ class Items {
     if (specialSvtMat.contains(itemId)) return true;
     return false;
   }
+}
+
+@JsonSerializable()
+class ItemSelect {
+  int idx;
+  List<Gift> gifts;
+  int requireNum;
+  // String detail;
+  ItemSelect({
+    required this.idx,
+    this.gifts = const [],
+    this.requireNum = 1,
+    // required this.detail,
+  });
+  factory ItemSelect.fromJson(Map<String, dynamic> json) =>
+      _$ItemSelectFromJson(json);
 }
 
 @JsonSerializable()

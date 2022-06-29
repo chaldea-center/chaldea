@@ -440,6 +440,7 @@ const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.stand: 'stand',
   EnemyDeathType.effect: 'effect',
   EnemyDeathType.wait: 'wait',
+  EnemyDeathType.energy: 'energy',
 };
 
 EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
