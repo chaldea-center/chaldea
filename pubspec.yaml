@@ -101,7 +101,7 @@ dev_dependencies:
   import_sorter: ^4.6.0
   intl_utils: # ^2.6.1
     git:
-      url: https://github.com/narumishi/intl_utils
+      url: https://github.com/chaldea-center/intl_utils
   # flutter_launcher_icons: ^0.8.1
 
 

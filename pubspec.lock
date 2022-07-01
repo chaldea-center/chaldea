@@ -643,7 +643,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "015bf0112cbd41b3d3e396b830ddd3c4a43cb6b1"
-      url: "https://github.com/narumishi/intl_utils"
+      url: "https://github.com/chaldea-center/intl_utils"
     source: git
     version: "2.6.1"
   io:
