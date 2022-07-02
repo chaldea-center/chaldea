@@ -19,7 +19,10 @@ class _NetworkStat {
   Future<void> init() async {
     await check();
     _subscription?.cancel();
-    _subscription = Connectivity().onConnectivityChanged.listen((result) {
+    _subscription = Connectivity()
+        .onConnectivityChanged
+        .asBroadcastStream()
+        .listen((result) {
       _connectivity = result;
     });
   }

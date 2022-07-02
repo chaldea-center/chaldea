@@ -50,7 +50,10 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _subscription = Connectivity().onConnectivityChanged.listen((_) {
+    _subscription = Connectivity()
+        .onConnectivityChanged
+        .asBroadcastStream()
+        .listen((result) {
       if (mounted) setState(() {});
     });
   }
