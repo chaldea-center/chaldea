@@ -18,6 +18,7 @@ BasicQuest _$BasicQuestFromJson(Map json) => BasicQuest(
       spotId: json['spotId'] as int,
       warId: json['warId'] as int,
       warLongName: json['warLongName'] as String,
+      priority: json['priority'] as int,
       noticeAt: json['noticeAt'] as int,
       openedAt: json['openedAt'] as int,
       closedAt: json['closedAt'] as int,
@@ -88,6 +89,7 @@ Quest _$QuestFromJson(Map json) => Quest(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      priority: json['priority'] as int,
       noticeAt: json['noticeAt'] as int,
       openedAt: json['openedAt'] as int,
       closedAt: json['closedAt'] as int,
@@ -149,6 +151,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      priority: json['priority'] as int,
       noticeAt: json['noticeAt'] as int,
       openedAt: json['openedAt'] as int,
       closedAt: json['closedAt'] as int,

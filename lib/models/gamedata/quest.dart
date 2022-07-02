@@ -26,6 +26,7 @@ class BasicQuest {
   int spotId;
   int warId;
   String warLongName;
+  int priority;
   int noticeAt;
   int openedAt;
   int closedAt;
@@ -40,6 +41,7 @@ class BasicQuest {
     required this.spotId,
     required this.warId,
     required this.warLongName,
+    required this.priority,
     required this.noticeAt,
     required this.openedAt,
     required this.closedAt,
@@ -74,6 +76,7 @@ class Quest {
   List<int> phasesWithEnemies;
   List<int> phasesNoBattle;
   List<QuestPhaseScript> phaseScripts;
+  int priority;
   int noticeAt;
   int openedAt;
   int closedAt;
@@ -101,6 +104,7 @@ class Quest {
     this.phasesWithEnemies = const [],
     this.phasesNoBattle = const [],
     this.phaseScripts = const [],
+    required this.priority,
     required this.noticeAt,
     required this.openedAt,
     required this.closedAt,
@@ -190,6 +194,7 @@ class QuestPhase extends Quest {
     List<int> phasesWithEnemies = const [],
     List<int> phasesNoBattle = const [],
     List<QuestPhaseScript> phaseScripts = const [],
+    required int priority,
     required int noticeAt,
     required int openedAt,
     required int closedAt,
@@ -231,6 +236,7 @@ class QuestPhase extends Quest {
           phasesWithEnemies: phasesWithEnemies,
           phasesNoBattle: phasesNoBattle,
           phaseScripts: phaseScripts,
+          priority: priority,
           noticeAt: noticeAt,
           openedAt: openedAt,
           closedAt: closedAt,

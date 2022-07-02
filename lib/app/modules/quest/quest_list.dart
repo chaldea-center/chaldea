@@ -20,7 +20,8 @@ class _QuestListPageState extends State<QuestListPage> {
   @override
   Widget build(BuildContext context) {
     final quests = List.of(widget.quests);
-    quests.sort2((e) => e.id);
+    quests.sort((a, b) =>
+        a.priority == b.priority ? a.id - b.id : b.priority - a.priority);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${quests.length} Quests'),

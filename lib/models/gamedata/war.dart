@@ -129,8 +129,9 @@ class NiceWar {
         if (quest.flags.contains(QuestFlag.branch)) {
           continue;
         }
-        // 终局特异点 dup chapter 12
-        if (quest.id == 1000825) {
+        // 1000825: 终局特异点 section 12
+        // 3000540: Atlantis section 18
+        if ([1000825, 3000540].contains(quest.id)) {
           continue;
         }
 
