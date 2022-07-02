@@ -171,7 +171,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       _result.moreThan =
           block.ids.where((id) => scoreOf(id) >= minScore).length;
       _result.lessThan =
-          block.ids.where((id) => scoreOf(id) >= maxScore).length;
+          block.ids.where((id) => scoreOf(id) <= maxScore).length;
       results.add(_result);
     }
     switch (_sortType) {
