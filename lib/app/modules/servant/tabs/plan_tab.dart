@@ -877,7 +877,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           Map<int, int> shownItems = Map.of(items);
           if (state.value) {
             for (final itemId in shownItems.keys.toList()) {
-              shownItems.addNum(itemId, -min(0, db.curUser.items[itemId] ?? 0));
+              shownItems.addNum(itemId, -max(0, db.curUser.items[itemId] ?? 0));
             }
             shownItems.removeWhere((key, value) => value <= 0);
           }
