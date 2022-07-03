@@ -68,13 +68,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
         db.gameData.servantsById[widget.id];
   }
 
-  @override
-  void didUpdateWidget(covariant ServantDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _svt = widget.svt ??
-        db.gameData.servants[widget.id] ??
-        db.gameData.servantsById[widget.id];
-  }
 
   @override
   Widget build(BuildContext context) {

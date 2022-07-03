@@ -22,13 +22,15 @@ class _QuestListPageState extends State<QuestListPage> {
     final quests = List.of(widget.quests);
     quests.sort((a, b) =>
         a.priority == b.priority ? a.id - b.id : b.priority - a.priority);
+    final hasSpot =
+        quests.any((q) => db.gameData.spots[q.spotId]?.image != null);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${quests.length} Quests'),
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) =>
-            const Divider(indent: 48, height: 1),
+            const Divider(indent: 16, endIndent: 16, height: 4),
         itemBuilder: (context, index) {
           final quest = quests[index];
           bool isMainFree = quest.isMainStoryFree;
@@ -81,15 +83,19 @@ class _QuestListPageState extends State<QuestListPage> {
 
           final spot = db.gameData.spots[quest.spotId];
           final leading = spot == null || spot.image == null
-              ? const SizedBox(width: 56)
+              ? (hasSpot ? const SizedBox(width: 56) : null)
               : db.getIconImage(spot.image, width: 56);
+          final subtitle = isMainFree ? quest.lName.l : quest.lSpot.l;
 
           return ListTile(
             leading: leading,
-            title: Text(chapter + quest.lDispName),
-            subtitle: Text(isMainFree ? quest.lName.l : quest.lSpot.l),
+            // minLeadingWidth: 16,
+            title: Text(chapter + quest.lDispName, textScaleFactor: 0.9),
+            subtitle: subtitle.isEmpty ? null : Text(subtitle),
             trailing: trailing,
-            contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
+            contentPadding: leading == null
+                ? null
+                : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
             horizontalTitleGap: 8,
             onTap: () {
               router.push(
