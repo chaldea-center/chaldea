@@ -1,3 +1,13 @@
+## 2.0.7
+- fix GSSR lessThan calculation
+- search keyword for func/buff descriptor
+- add more filter options for effect search
+- github backup: custom commit message
+
+## 2.0.6
+
+- fix incorrect path on Android
+
 ## 2.0.5
 
 - fix offline startup

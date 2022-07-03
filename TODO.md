@@ -21,13 +21,16 @@ There are plenty of work need to do.
 - [ ] remember svt tabs
 - [ ] duplicated svt
 - [ ] logger.level
-- [ ] related_card->related_card_on_stage
+- [ ] l10n: related_card->related_card_on_stage
 - [ ] android: external SD card
 - [ ] filter_group_data: default value
 - [ ] costume: images in accordion
 - [ ] web: settings&bootstrap: add cn/global link
 - [ ] svt icon: custom image
 - [ ] event shop: event item calc and plan
+- [ ] effect_search: add special target
+- [ ] userdata: add app version
+- [ ] plan_tab: append/active/all
 
 ## Quest Related
 
@@ -51,8 +54,6 @@ There are plenty of work need to do.
   - [ ] poor performance
 - [ ] Events
   - [ ] War Map
-- [ ] Mission Solver
-  - [ ] hint for invalid mission
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 
