@@ -324,3 +324,30 @@ extension ResponseX<T> on Response<T> {
     }
   }
 }
+
+extension DioErrorX on DioError {
+  String _limit(String s) {
+    if (s.length > 1000) return s.substring(0, 1000);
+    return s;
+  }
+
+  String _tryDecodeData() {
+    if (response?.data is List<int>) {
+      try {
+        return utf8.decode(response!.data);
+      } catch (e) {
+        return response!.data.toString();
+      }
+    } else {
+      return (response?.data).toString();
+    }
+  }
+
+  String messageWithData() {
+    String msg = '[NetworkError] DioError [$type]: $message';
+    if (response?.data != null) {
+      msg += '\n${_limit(_tryDecodeData())}';
+    }
+    return msg;
+  }
+}

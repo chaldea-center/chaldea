@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
 import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
@@ -97,8 +98,18 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       stackTraceStr =
           formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
-
-    String? errorStr = event.error?.toString();
+    dynamic error = event.error;
+    if (error is DioError && error.response?.data != null) {
+      String detail = error.response!.data.toString();
+      if (detail.length > 1000) detail = detail.substring(0, 1000);
+      error = DioError(
+        requestOptions: error.requestOptions,
+        response: error.response,
+        type: error.type,
+        error: '${error.error}\n$detail',
+      )..stackTrace = error.stackTrace;
+    }
+    String? errorStr = error?.toString();
 
     String timeStr = DateTime.fromMillisecondsSinceEpoch(
             DateTime.now().millisecondsSinceEpoch)

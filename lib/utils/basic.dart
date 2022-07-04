@@ -272,7 +272,7 @@ String calcMd5(String input) {
 
 String escapeDioError(error) {
   if (error is DioError) {
-    return '[NetworkError] DioError [${error.type}]: ${error.message}';
+    return error.messageWithData();
   }
   return error.toString();
 }

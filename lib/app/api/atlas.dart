@@ -231,11 +231,7 @@ class _CacheManager {
         return jsonDecode(utf8.decode(result));
       }
     } catch (e, s) {
-      if (e is DioError) {
-        logger.e('fetch $url', e.getShownError());
-      } else {
-        logger.e('fetch $url', e, s);
-      }
+      logger.e('fetch $url', e, s);
       return result;
     }
   }
@@ -415,24 +411,5 @@ class AtlasApi {
           (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
-  }
-}
-
-extension _DioErrorX on DioError {
-  String getShownError() {
-    final buffer = StringBuffer(message);
-    if (response != null) {
-      buffer.write(' :');
-      if (response!.data is List<int>) {
-        try {
-          buffer.write(utf8.decode(response!.data));
-        } catch (e) {
-          //
-        }
-      } else {
-        buffer.write(response!.data.toString());
-      }
-    }
-    return buffer.toString();
   }
 }

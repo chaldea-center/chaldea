@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -98,8 +99,8 @@ class ChaldeaApi {
 
   static Dio get dio {
     return Dio(BaseOptions(
-      baseUrl: Hosts.apiHost,
-      // baseUrl: kDebugMode ? 'http://localhost:8000/' : Apis.apiRoot,
+      baseUrl: kDebugMode ? Hosts.apiHost : Hosts.apiHost,
+      // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
       queryParameters: {
         'key': AppInfo.uuid,
         'ver': AppInfo.versionString,
