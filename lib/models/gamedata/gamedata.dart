@@ -110,7 +110,6 @@ class GameData {
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
     preprocess();
-    others = _ProcessedData(this);
   }
 
   @JsonKey(ignore: true)
@@ -167,6 +166,7 @@ class GameData {
     for (final event in events.values) {
       event.calcItems(this);
     }
+    others = _ProcessedData(this);
   }
 
   factory GameData.fromMergedFile(Map<String, dynamic> data) {

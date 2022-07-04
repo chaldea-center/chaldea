@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -549,7 +551,7 @@ class ServantListPageState extends State<ServantListPage>
       defaultHintText(shownList.length, wholeData.length,
           widget.planMode ? _hiddenNum : null),
     );
-    final scrollable = Scrollbar(
+    Widget scrollable = Scrollbar(
       controller: scrollController,
       child: useGrid
           ? buildGridView(
@@ -564,6 +566,10 @@ class ServantListPageState extends State<ServantListPage>
                       height: 1, thickness: 0.5, indent: 72, endIndent: 16)
                   : null,
             ),
+    );
+    scrollable = RefreshIndicator(
+      onRefresh: _pullRefresh,
+      child: scrollable,
     );
     if (db.settings.display.classFilterStyle ==
         SvtListClassFilterStyle.doNotShow) {
@@ -647,18 +653,6 @@ class ServantListPageState extends State<ServantListPage>
     return widget.planMode
         ? _planListItemBuilder(svt)
         : _usualListItemBuilder(svt);
-  }
-
-  void _batchChange(
-      void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
-    for (final svt in shownList) {
-      if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-        final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-            target = db.curUser.svtPlanOf(svt.collectionNo);
-        onChanged(svt, cur, target);
-      }
-    }
-    db.itemCenter.updateSvts(all: true);
   }
 
   @override
@@ -890,13 +884,6 @@ class ServantListPageState extends State<ServantListPage>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     db.getIconImage('宝具强化', width: 16, height: 16),
-          //     Text(status.npLv.toString()),
-          //   ],
-          // ),
           Text('${status.cur.ascension}-${status.cur.skills.join('/')}'),
           if (status.cur.appendSkills.any((e) => e > 0))
             Text(
@@ -985,6 +972,37 @@ class ServantListPageState extends State<ServantListPage>
               const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
           onTap: () => _onTapSvt(svt),
         ));
+  }
+
+  Future<void> _pullRefresh() async {
+    final servants =
+        await AtlasApi.basicServants(expireAfter: Duration.zero) ?? [];
+    int _added = 0;
+    for (final basicSvt in servants) {
+      if (db.gameData.servants.containsKey(basicSvt.collectionNo)) continue;
+      final svt = await AtlasApi.svt(basicSvt.id);
+      if (svt == null) continue;
+      db.gameData.servants[svt.collectionNo] = svt;
+      _added += 1;
+    }
+    if (_added > 0) {
+      db.gameData.preprocess();
+      db.notifyAppUpdate();
+      EasyLoading.showSuccess('+ $_added ${S.current.servant} !');
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _batchChange(
+      void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
+    for (final svt in shownList) {
+      if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+        final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
+            target = db.curUser.svtPlanOf(svt.collectionNo);
+        onChanged(svt, cur, target);
+      }
+    }
+    db.itemCenter.updateSvts(all: true);
   }
 
   void copyPlan() {

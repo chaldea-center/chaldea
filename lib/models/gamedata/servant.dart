@@ -442,6 +442,49 @@ class Servant with GameCardMixin {
 }
 
 @JsonSerializable()
+class BasicCraftEssence with GameCardMixin {
+  @override
+  int id;
+  @override
+  int collectionNo;
+  @override
+  String name;
+  SvtType type;
+  SvtFlag flag;
+  @override
+  int rarity;
+  int atkMax;
+  int hpMax;
+  String face;
+
+  BasicCraftEssence({
+    required this.id,
+    required this.collectionNo,
+    required this.name,
+    required this.type,
+    required this.flag,
+    required this.rarity,
+    required this.atkMax,
+    required this.hpMax,
+    required this.face,
+  });
+
+  factory BasicCraftEssence.fromJson(Map<String, dynamic> json) =>
+      _$BasicCraftEssenceFromJson(json);
+
+  @override
+  String get icon => face;
+
+  @override
+  Transl<String, String> get lName => Transl.ceNames(name);
+
+  @override
+  void routeTo() {
+    routeToId(Routes.craftEssence);
+  }
+}
+
+@JsonSerializable()
 class CraftEssence with GameCardMixin {
   @override
   int id;

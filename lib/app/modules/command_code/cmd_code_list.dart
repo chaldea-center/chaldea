@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -73,6 +75,33 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
           searchIcon,
         ],
       ),
+    );
+  }
+
+  @override
+  Widget buildScrollable({bool useGrid = false}) {
+    return RefreshIndicator(
+      child: super.buildScrollable(useGrid: useGrid),
+      onRefresh: () async {
+        final cards =
+            await AtlasApi.basicCommandCodes(expireAfter: Duration.zero) ?? [];
+        int _added = 0;
+        for (final basicCard in cards) {
+          if (db.gameData.commandCodes.containsKey(basicCard.collectionNo)) {
+            continue;
+          }
+          final card = await AtlasApi.cc(basicCard.id);
+          if (card == null) continue;
+          db.gameData.commandCodes[card.collectionNo] = card;
+          _added += 1;
+        }
+        if (_added > 0) {
+          db.gameData.preprocess();
+          db.notifyAppUpdate();
+          EasyLoading.showSuccess('+ $_added ${S.current.command_code} !');
+        }
+        if (mounted) setState(() {});
+      },
     );
   }
 

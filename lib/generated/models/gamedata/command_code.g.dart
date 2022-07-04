@@ -20,3 +20,11 @@ CommandCode _$CommandCodeFromJson(Map json) => CommandCode(
       illustrator: json['illustrator'] as String,
       comment: json['comment'] as String,
     );
+
+BasicCommandCode _$BasicCommandCodeFromJson(Map json) => BasicCommandCode(
+      id: json['id'] as int,
+      collectionNo: json['collectionNo'] as int,
+      name: json['name'] as String,
+      rarity: json['rarity'] as int,
+      face: json['face'] as String,
+    );

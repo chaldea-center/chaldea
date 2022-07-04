@@ -253,6 +253,18 @@ const _$CardTypeEnumMap = {
   CardType.strength: 'strength',
 };
 
+BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
+      id: json['id'] as int,
+      collectionNo: json['collectionNo'] as int,
+      name: json['name'] as String,
+      type: $enumDecode(_$SvtTypeEnumMap, json['type']),
+      flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
+      rarity: json['rarity'] as int,
+      atkMax: json['atkMax'] as int,
+      hpMax: json['hpMax'] as int,
+      face: json['face'] as String,
+    );
+
 CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,

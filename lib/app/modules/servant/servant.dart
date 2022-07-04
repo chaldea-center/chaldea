@@ -68,7 +68,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
         db.gameData.servantsById[widget.id];
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (_svt == null) {

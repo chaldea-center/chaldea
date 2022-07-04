@@ -62,3 +62,38 @@ class CommandCode with GameCardMixin {
   @override
   void routeTo() => routeToId(Routes.commandCode);
 }
+
+@JsonSerializable()
+class BasicCommandCode with GameCardMixin {
+  @override
+  int id;
+  @override
+  int collectionNo;
+  @override
+  String name;
+  @override
+  int rarity;
+  String face;
+
+  BasicCommandCode({
+    required this.id,
+    required this.collectionNo,
+    required this.name,
+    required this.rarity,
+    required this.face,
+  });
+
+  factory BasicCommandCode.fromJson(Map<String, dynamic> json) =>
+      _$BasicCommandCodeFromJson(json);
+
+  @override
+  String get icon => face;
+
+  @override
+  Transl<String, String> get lName => Transl.ccNames(name);
+
+  @override
+  void routeTo() {
+    routeToId(Routes.craftEssence);
+  }
+}
