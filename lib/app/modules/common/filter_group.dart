@@ -43,7 +43,12 @@ class FilterGroup<T> extends StatelessWidget {
       padding: const EdgeInsetsDirectional.only(end: 12),
       options: const [false, true],
       values: FilterRadioData(useGrid),
-      optionBuilder: (v) => Text(v ? 'Grid' : 'List'),
+      optionBuilder: (v) => Text.rich(TextSpan(children: [
+        CenterWidgetSpan(
+            child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
+        const TextSpan(text: ' '),
+        TextSpan(text: v ? S.current.display_grid : S.current.display_list)
+      ])),
       combined: true,
       onFilterChanged: (v, _) {
         onChanged(v.radioValue);

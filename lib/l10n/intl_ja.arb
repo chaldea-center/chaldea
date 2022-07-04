@@ -113,6 +113,8 @@
   "delete": "削除",
   "demands": "要件",
   "desktop_only": null,
+  "display_grid": "グリッド",
+  "display_list": "リスト",
   "display_setting": "設定表示",
   "display_show_window_fab": null,
   "done": "完成",

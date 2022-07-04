@@ -30,6 +30,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
         funcs: skill.functions,
         showPlayer: true,
         showEnemy: false,
+        showEvent: false,
       ));
     }
     if (children.isEmpty) return null;

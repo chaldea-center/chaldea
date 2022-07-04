@@ -17,6 +17,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'app/error.dart';
 import 'app/modules/common/blank_page.dart';
 import 'models/db.dart';
+import 'models/gamedata/common.dart';
 import 'packages/network.dart';
 import 'packages/packages.dart';
 import 'packages/split_route/split_route.dart';
@@ -104,6 +105,7 @@ Future<void> _initiateCommon() async {
     }
   });
   network.init();
+  traitIdMappingReverse.length; // call assert
   if (!kIsWeb) {
     HttpOverrides.global = CustomHttpOverrides();
   }

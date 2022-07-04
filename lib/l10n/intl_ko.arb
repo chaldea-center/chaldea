@@ -113,6 +113,8 @@
   "delete": "삭제",
   "demands": "요구량",
   "desktop_only": null,
+  "display_grid": null,
+  "display_list": null,
   "display_setting": "화면 설정",
   "display_show_window_fab": null,
   "done": "완성",

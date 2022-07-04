@@ -112,6 +112,7 @@ class SkillEffect {
   ];
   static List<SkillEffect> ceIgnores = [
     SkillEffect.damageNpSP,
+    SkillEffect.subStatePositive,
   ];
   static List<SkillEffect> ccIgnores = [
     SkillEffect.damageNpSP,
@@ -131,6 +132,7 @@ class SkillEffect {
     SkillEffect.upResistInstantdeath,
     SkillEffect.upGrantInstantdeath,
     SkillEffect.avoidInstantdeath,
+    SkillEffect.subStatePositive,
     ...svtIgnores,
   ];
 

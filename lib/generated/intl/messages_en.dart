@@ -222,6 +222,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
+        "display_grid": MessageLookupByLibrary.simpleMessage("Grid"),
+        "display_list": MessageLookupByLibrary.simpleMessage("List"),
         "display_setting":
             MessageLookupByLibrary.simpleMessage("Display Settings"),
         "display_show_window_fab":
@@ -308,7 +310,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),
         "feedback_form_alert": MessageLookupByLibrary.simpleMessage(
-            "Feedback form is not empty, still exist?"),
+            "Feedback form is not empty, still exit?"),
         "feedback_info": MessageLookupByLibrary.simpleMessage(
             "Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),

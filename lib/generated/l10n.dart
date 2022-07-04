@@ -1307,6 +1307,28 @@ class S {
     );
   }
 
+  /// `Grid`
+  String get display_grid {
+    return Intl.message(
+      'Grid',
+      name: 'display_grid',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `List`
+  String get display_list {
+    return Intl.message(
+      'List',
+      name: 'display_list',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Display Settings`
   String get display_setting {
     return Intl.message(
@@ -1989,10 +2011,10 @@ class S {
     );
   }
 
-  /// `Feedback form is not empty, still exist?`
+  /// `Feedback form is not empty, still exit?`
   String get feedback_form_alert {
     return Intl.message(
-      'Feedback form is not empty, still exist?',
+      'Feedback form is not empty, still exit?',
       name: 'feedback_form_alert',
       desc: '',
       locale: localeName,

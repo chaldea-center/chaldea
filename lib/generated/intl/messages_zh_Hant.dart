@@ -198,6 +198,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("僅限桌面版"),
+        "display_grid": MessageLookupByLibrary.simpleMessage("网格"),
+        "display_list": MessageLookupByLibrary.simpleMessage("列表"),
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),
         "display_show_window_fab":
             MessageLookupByLibrary.simpleMessage("顯示多分頁按鈕"),

@@ -115,6 +115,7 @@ const _$CEObtainEnumMap = {
   CEObtain.eventReward: 'eventReward',
   CEObtain.campaign: 'campaign',
   CEObtain.bond: 'bond',
+  CEObtain.drop: 'drop',
   CEObtain.unknown: 'unknown',
 };
 

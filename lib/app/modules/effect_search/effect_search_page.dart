@@ -11,12 +11,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'filter.dart';
 
-enum _CardType {
-  svt,
-  ce,
-  cc,
-}
-
 class EffectSearchPage extends StatefulWidget {
   EffectSearchPage({Key? key}) : super(key: key);
 
@@ -52,7 +46,8 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         (options as _BuffOptions).type =
-            _CardType.values.getOrNull(_tabController.index) ?? _CardType.svt;
+            SearchCardType.values.getOrNull(_tabController.index) ??
+                SearchCardType.svt;
         setState(() {});
       }
     });
@@ -82,7 +77,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
               context: context,
               builder: (context) => BuffFuncFilter(
                 filterData: filterData,
-                showClassFilter: _tabController.index == 0,
+                type: (options as _BuffOptions).type,
                 onChanged: (_) {
                   if (mounted) setState(() {});
                 },
@@ -237,7 +232,7 @@ class _BuffOptions with SearchOptionsMixin<GameCardMixin> {
   bool svtNoblePhantasm = true;
   bool svtClassPassive = false;
   bool svtAppendSkill = false;
-  _CardType type = _CardType.svt;
+  SearchCardType type = SearchCardType.svt;
   @override
   ValueChanged? onChanged;
 
@@ -280,7 +275,7 @@ class _BuffOptions with SearchOptionsMixin<GameCardMixin> {
 
   @override
   Iterable<String?> getSummary(GameCardMixin card) sync* {
-    if (type == _CardType.svt && card is Servant) {
+    if (type == SearchCardType.svt && card is Servant) {
       if (svtActiveSkill) {
         for (final skill in card.skills) {
           yield* getSkillKeys(skill);
@@ -301,11 +296,11 @@ class _BuffOptions with SearchOptionsMixin<GameCardMixin> {
           yield* getSkillKeys(skill.skill);
         }
       }
-    } else if (type == _CardType.ce && card is CraftEssence) {
+    } else if (type == SearchCardType.ce && card is CraftEssence) {
       for (final skill in card.skills) {
         yield* getSkillKeys(skill);
       }
-    } else if (type == _CardType.cc && card is CommandCode) {
+    } else if (type == SearchCardType.cc && card is CommandCode) {
       for (final skill in card.skills) {
         yield* getSkillKeys(skill);
       }

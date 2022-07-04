@@ -462,5 +462,6 @@ enum CEObtain {
   eventReward,
   campaign,
   bond,
+  drop,
   unknown,
 }

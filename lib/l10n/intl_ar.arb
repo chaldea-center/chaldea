@@ -113,6 +113,8 @@
   "delete": "حذف",
   "demands": "متطلبات",
   "desktop_only": null,
+  "display_grid": null,
+  "display_list": null,
   "display_setting": "إعدادات العرض",
   "display_show_window_fab": null,
   "done": null,

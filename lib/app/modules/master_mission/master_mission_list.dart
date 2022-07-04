@@ -180,7 +180,8 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     final now = DateTime.now().timestamp;
     return ListTile(
       key: Key('master_mission_${masterMission.id}'),
-      title: Row(
+      title: Text(subtitle, textScaleFactor: 0.9),
+      subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(child: Text(_showTime(masterMission.startedAt))),
@@ -188,7 +189,6 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           Flexible(child: Text(_showTime(masterMission.endedAt))),
         ],
       ),
-      subtitle: Text(subtitle),
       selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
         router.push(
@@ -200,6 +200,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   }
 
   String _showTime(int t) {
-    return DateTime.fromMillisecondsSinceEpoch(t * 1000).toStringShort();
+    return DateTime.fromMillisecondsSinceEpoch(t * 1000)
+        .toStringShort(omitSec: true);
   }
 }

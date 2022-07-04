@@ -65,7 +65,7 @@ class _CostumeListPageState extends State<CostumeListPage>
               });
             },
             icon: Icon(useGrid ? Icons.grid_on : Icons.view_list),
-            tooltip: 'List/Grid',
+            tooltip: '${S.current.display_list}/${S.current.display_grid}',
           ),
           searchIcon,
         ],

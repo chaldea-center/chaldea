@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
@@ -42,6 +43,7 @@ mixin FuncsDescriptor {
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
     SkillOrTd? owner,
+    bool showEvent = true,
   }) {
     funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
@@ -62,6 +64,7 @@ mixin FuncsDescriptor {
         showEnemy: showEnemy,
         showBuffDetail: showBuffDetail,
         owner: owner,
+        showEvent: showEvent,
       ));
     }
     return children;
@@ -77,6 +80,8 @@ class FuncDescriptor extends StatelessWidget {
   final bool showEnemy;
   final bool showBuffDetail;
   final SkillOrTd? owner;
+  final bool showEvent;
+
   const FuncDescriptor({
     Key? key,
     required this.func,
@@ -87,6 +92,7 @@ class FuncDescriptor extends StatelessWidget {
     this.showEnemy = false,
     this.showBuffDetail = false,
     this.owner,
+    this.showEvent = true,
   }) : super(key: key);
 
   @override
@@ -321,6 +327,21 @@ class FuncDescriptor extends StatelessWidget {
               traits: func.funcquestTvals,
               textScaleFactor: 0.85),
         ));
+      }
+      if (vals?.EventId != null && showEvent) {
+        final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
+                .replaceAll('\n', ' ') ??
+            'Event ${vals?.EventId}';
+        _traitSpans.add(replaceSpan(Transl.special.funcEventOnly, '{0}', [
+          TextSpan(
+            text: eventName,
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                router.push(url: Routes.eventI(vals!.EventId!));
+              },
+          ),
+        ]));
       }
       for (int index = 0; index < _traitSpans.length; index++) {
         spans.add(TextSpan(

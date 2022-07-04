@@ -272,12 +272,21 @@ class ValDsc extends StatelessWidget {
           case FuncType.expUp:
             _addPercent(vals.RateCount, 10);
             break;
+          case FuncType.enemyEncountRateUp:
+          case FuncType.enemyEncountCopyRateUp:
+            _addPercent(vals.RateCount, 10);
+            break;
           default:
             _addInt(vals.RateCount);
         }
       }
       if (vals.DropRateCount != null) {
         _addPercent(vals.DropRateCount, 10);
+      }
+      if (vals.Individuality != null) {
+        // if ([].contains(func.funcType)) {
+        //   parts.add(Transl.trait(vals.Individuality!).l);
+        // }
       }
       _maybeAddRate();
     }

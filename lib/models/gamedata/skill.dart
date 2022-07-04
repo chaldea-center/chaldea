@@ -4,8 +4,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import '_helper.dart';
-import 'common.dart';
-import 'mappings.dart';
+import 'gamedata.dart';
 
 part 'func.dart';
 part 'vals.dart';

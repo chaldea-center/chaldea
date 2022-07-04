@@ -113,6 +113,8 @@
   "delete": "刪除",
   "demands": "需求",
   "desktop_only": "僅限桌面版",
+  "display_grid": null,
+  "display_list": null,
   "display_setting": "顯示設置",
   "display_show_window_fab": "顯示多分頁按鈕",
   "done": "完成",

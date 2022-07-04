@@ -310,5 +310,20 @@ const kTraitIdMapping = <int, Trait>{
   94000108: Trait.eventGuda5,
 };
 
-final traitIdMappingReverse =
-    kTraitIdMapping.map((key, value) => MapEntry(value, key));
+final traitIdMappingReverse = () {
+  final reversed = kTraitIdMapping.map((key, value) => MapEntry(value, key));
+  assert(() {
+    List<Trait> invalid = [];
+    for (final trait in Trait.values) {
+      if (!reversed.containsKey(trait) && trait != Trait.unknown) {
+        invalid.add(trait);
+      }
+    }
+    if (invalid.isNotEmpty) {
+      throw ArgumentError.value(
+          invalid.toString(), null, 'Not in trait-id (reversed) mapping');
+    }
+    return true;
+  }());
+  return reversed;
+}();

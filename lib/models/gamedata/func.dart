@@ -154,7 +154,9 @@ class NiceFunction implements BaseFunction {
     bool showEnemy = false,
     bool showNone = false,
     bool includeTrigger = false,
+    GameData? gameData,
   }) {
+    gameData ??= db.gameData;
     funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
       if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
@@ -173,8 +175,8 @@ class NiceFunction implements BaseFunction {
           kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
       if (trigger == null) continue;
       final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
-          ? db.gameData.baseTds[trigger.skill]
-          : db.gameData.baseSkills[trigger.skill];
+          ? gameData.baseTds[trigger.skill]
+          : gameData.baseSkills[trigger.skill];
       if (skill == null) continue;
       funcs.addAll(filterFuncs(
         funcs: skill.functions,

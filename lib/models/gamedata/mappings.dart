@@ -565,4 +565,11 @@ class _SpecialTransl {
         na: 'Buff Target: ',
         kr: '버프 목표: ',
       );
+  String get funcEventOnly => M.of(
+        jp: '『{0}』イベント期間限定',
+        cn: '『{0}』活动期间限定',
+        tw: '『{0}』活動限定',
+        na: '『{0}』Event Only',
+        kr: '『{0}』 이벤트 기간한정',
+      );
 }

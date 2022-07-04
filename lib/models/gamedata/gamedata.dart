@@ -290,7 +290,7 @@ class _ProcessedData {
         ...svt.appendPassive.map((e) => e.skill)
       ]) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, includeTrigger: true)) {
+            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           svtFuncs.add(func.funcType);
           svtBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
@@ -300,19 +300,19 @@ class _ProcessedData {
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, includeTrigger: true)) {
+            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           ceFuncs.add(func.funcType);
           ceBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
         }
       }
     }
-    for (final ce in gameData.craftEssences.values) {
-      for (final skill in ce.skills) {
+    for (final cc in gameData.commandCodes.values) {
+      for (final skill in cc.skills) {
         for (final func in NiceFunction.filterFuncs(
-            funcs: skill.functions, includeTrigger: true)) {
+            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           ccFuncs.add(func.funcType);
-          ceBuffs.addAll(func.buffs.map((e) => e.type));
+          ccBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
         }
       }
