@@ -282,21 +282,27 @@ class _CachedImageState extends State<CachedImage> {
       maxWidthDiskCache: cachedOption.maxWidthDiskCache,
       maxHeightDiskCache: cachedOption.maxHeightDiskCache,
     );
-
-    if (!PlatformU.isWeb && widget.showSaveOnLongPress) {
+    if (widget.showSaveOnLongPress) {
       child = GestureDetector(
         child: child,
         onLongPress: () async {
-          File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
-          String fn = pathlib.basename(file.path);
-          return ImageActions.showSaveShare(
-            context: context,
-            srcFp: file.path,
-            destFp: joinPaths(db.paths.downloadDir, fn),
-            gallery: true,
-            share: true,
-            shareText: fn,
-          );
+          if (kIsWeb) {
+            return ImageActions.showSaveShare(
+              context: context,
+              srcFp: fullUrl,
+            );
+          } else {
+            File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
+            String fn = pathlib.basename(file.path);
+            return ImageActions.showSaveShare(
+              context: context,
+              srcFp: file.path,
+              destFp: joinPaths(db.paths.downloadDir, fn),
+              gallery: true,
+              share: true,
+              shareText: fn,
+            );
+          }
         },
       );
     }

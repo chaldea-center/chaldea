@@ -11,7 +11,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' show launchUrl;
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -38,6 +38,16 @@ class ImageActions {
       duration: const Duration(milliseconds: 250),
       builder: (context) {
         List<Widget> children = [...extraHeaders];
+        if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
+          children.add(ListTile(
+            title: Text(S.current.download),
+            onTap: () async {
+              if (await canLaunch(srcFp)) {
+                launch(srcFp);
+              }
+            },
+          ));
+        }
         if (gallery && PlatformU.isMobile) {
           children.add(ListTile(
             leading: const Icon(Icons.photo_library),
