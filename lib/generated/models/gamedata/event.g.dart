@@ -123,9 +123,11 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
           .map(
               (e) => EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      quests: (json['quests'] as List<dynamic>)
-          .map((e) => BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      quests: (json['quests'] as List<dynamic>?)
+              ?.map((e) =>
+                  BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 ItemSet _$ItemSetFromJson(Map json) => ItemSet(

@@ -1120,7 +1120,7 @@ class VoiceLine {
     this.condType,
     this.condValue,
     this.priority,
-    required this.svtVoiceType,
+    this.svtVoiceType,
     this.overwriteName = "",
     this.summonScript,
     this.id = const [],

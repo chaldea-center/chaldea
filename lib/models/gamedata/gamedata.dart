@@ -53,6 +53,7 @@ class GameData {
   Map<int, ExchangeTicket> exchangeTickets;
   Map<int, BasicServant> entities;
   Map<int, Bgm> bgms;
+  Map<int, MasterMission> extraMasterMission;
 
   Map<int, FixedDrop> fixedDrops;
   WikiData wiki;
@@ -81,6 +82,7 @@ class GameData {
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, BasicServant>? entities,
     Map<int, Bgm>? bgms,
+    Map<int, MasterMission>? extraMasterMission,
     Map<int, FixedDrop>? fixedDrops,
     WikiData? wiki,
     MappingData? mappingData,
@@ -101,6 +103,7 @@ class GameData {
         exchangeTickets = exchangeTickets ?? {},
         entities = entities ?? {},
         bgms = bgms ?? {},
+        extraMasterMission = extraMasterMission ?? {},
         fixedDrops = fixedDrops ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
@@ -167,27 +170,6 @@ class GameData {
       event.calcItems(this);
     }
     others = _ProcessedData(this);
-  }
-
-  factory GameData.fromMergedFile(Map<String, dynamic> data) {
-    Map<String, dynamic> data2 = Map.of(data);
-    void _list2map(String key, {String? id, String Function(dynamic)? idFn}) {
-      assert(id != null || idFn != null);
-      idFn ??= (item) => item[id!]!.toString();
-      data2[key] = Map.fromIterable(data2[key], key: idFn);
-    }
-
-    _list2map('servants', id: 'collectionNo');
-    _list2map('commandCodes', id: 'collectionNo');
-    _list2map('craftEssences', id: 'collectionNo');
-    _list2map('events', id: 'id');
-    _list2map('wars', id: 'id');
-    _list2map('exchangeTickets', id: 'key');
-    _list2map('items', id: 'id');
-    _list2map('mysticCodes', id: 'id');
-    _list2map('questPhases',
-        idFn: (phase) => '${phase["id"]}/${phase["phase"]}');
-    return GameData.fromJson(data2);
   }
 
   factory GameData.fromJson(Map<String, dynamic> json) =>

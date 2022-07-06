@@ -195,6 +195,7 @@ class GameDataLoader {
       // 'questPhases':'',
       'servants': 'collectionNo',
       'wars': 'id',
+      'extraMasterMission': 'id',
       'wiki.commandCodes': 'collectionNo',
       'wiki.craftEssences': 'collectionNo',
       'wiki.events': 'id',

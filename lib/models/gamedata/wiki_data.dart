@@ -369,7 +369,7 @@ class LimitedSummon {
     final date = startTime.ofRegion(db.curUser.region)?.sec2date();
     int days;
     if (date != null) {
-      days = db.curUser.region == Region.jp ? 365 : 30;
+      days = db.curUser.region == Region.jp ? 365 + 30 : 30;
       return date.isBefore(DateTime.now().subtract(Duration(days: days)));
     }
     final jpDate = startTime.jp?.sec2date();

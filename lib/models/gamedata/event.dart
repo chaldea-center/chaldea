@@ -316,7 +316,7 @@ class MasterMission {
     required this.endedAt,
     required this.closedAt,
     required this.missions,
-    required this.quests,
+    this.quests = const [],
   });
 
   factory MasterMission.fromJson(Map<String, dynamic> json) =>

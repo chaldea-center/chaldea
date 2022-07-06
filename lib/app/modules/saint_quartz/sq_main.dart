@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -35,12 +34,6 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
           _tabController.index == _tabController.length - 1) {
         db.curUser.saintQuartzPlan.solve();
       }
-    });
-    AtlasApi.masterMission(10001, expireAfter: const Duration(days: 30))
-        .then((value) {
-      db.curUser.saintQuartzPlan.extraMission = value;
-      db.curUser.saintQuartzPlan.solve();
-      if (mounted) setState(() {});
     });
   }
 

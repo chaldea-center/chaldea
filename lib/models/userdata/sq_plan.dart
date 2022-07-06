@@ -21,9 +21,9 @@ class SaintQuartzPlan {
   bool minusPlannedBanner;
 
   @JsonKey(ignore: true)
-  MasterMission? extraMission;
-  @JsonKey(ignore: true)
   VoidCallback? onSolved;
+
+  MasterMission? get extraMission => db.gameData.extraMasterMission[10001];
 
   SaintQuartzPlan({
     int? curSQ,

@@ -40,21 +40,25 @@ class AppUpdater {
   static Future<void> checkAppStoreUpdate() async {
     // use https and set UA, or the fetched info may be outdated
     // this http request always return iOS version result
-    final response = await Dio()
-        .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
-            options: Options(responseType: ResponseType.plain, headers: {
-              'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
-                  " AppleWebKit/537.36 (KHTML, like Gecko)"
-                  " Chrome/88.0.4324.146"
-                  " Safari/537.36 Edg/88.0.705.62"
-            }));
-    // print(response.data);
-    final jsonData = jsonDecode(response.data.toString().trim());
-    // logger.d(jsonData);
-    final result = jsonData['results'][0];
-    AppVersion? version = AppVersion.tryParse(result['version'] ?? '');
-    if (version != null && version > AppInfo.version) {
-      db.runtimeData.upgradableVersion = version;
+    try {
+      final response = await Dio()
+          .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
+              options: Options(responseType: ResponseType.plain, headers: {
+                'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+                    " AppleWebKit/537.36 (KHTML, like Gecko)"
+                    " Chrome/88.0.4324.146"
+                    " Safari/537.36 Edg/88.0.705.62"
+              }));
+      // print(response.data);
+      final jsonData = jsonDecode(response.data.toString().trim());
+      // logger.d(jsonData);
+      final result = jsonData['results'][0];
+      AppVersion? version = AppVersion.tryParse(result['version'] ?? '');
+      if (version != null && version > AppInfo.version) {
+        db.runtimeData.upgradableVersion = version;
+      }
+    } catch (e, s) {
+      logger.e('failed to check AppStore update', e, s);
     }
   }
 
