@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../app.dart';
 
 class MultiDescriptor {
@@ -8,17 +10,17 @@ class MultiDescriptor {
 
   static const iconSize = 36.0;
 
-  static List<Widget> list(
+  static List<InlineSpan> list(
     BuildContext context,
     List<int> ids,
-    Widget Function(BuildContext context, int id) builder,
+    InlineSpan Function(BuildContext context, int id) builder,
   ) {
     return [
       for (final id in ids) builder(context, id),
     ];
   }
 
-  static Widget collapsed(
+  static InlineSpan collapsed(
     BuildContext context,
     List<int> ids,
     String title,
@@ -40,33 +42,32 @@ class MultiDescriptor {
     );
   }
 
-  static Widget inkWell({
+  static TextSpan inkWell({
     required BuildContext context,
     required String text,
     VoidCallback? onTap,
   }) {
-    final color = Theme.of(context).colorScheme.secondary;
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-        child: Text(text, style: TextStyle(color: color)),
-      ),
+    return TextSpan(
+      text: ' $text ',
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      recognizer:
+          onTap == null ? null : (TapGestureRecognizer()..onTap = onTap),
     );
   }
 
-  static List<Widget> items(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> items(BuildContext context, List<int> targetIds) {
     if (targetIds.length <= 7) {
       return list(
         context,
         targetIds,
-        (context, id) => Item.iconBuilder(
+        (context, id) => CenterWidgetSpan(
+            child: Item.iconBuilder(
           context: context,
           item: null,
           itemId: id,
           width: iconSize,
           padding: const EdgeInsets.all(2),
-        ),
+        )),
       );
     }
     return [
@@ -82,15 +83,17 @@ class MultiDescriptor {
     ];
   }
 
-  static List<Widget> servants(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> servants(BuildContext context, List<int> targetIds) {
     if (targetIds.length <= 7) {
       return list(
         context,
         targetIds,
         (context, id) {
           final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
-          return svt?.iconBuilder(context: context, width: iconSize) ??
-              Text('SVT $id');
+          return svt == null
+              ? TextSpan(text: 'SVT $id')
+              : CenterWidgetSpan(
+                  child: svt.iconBuilder(context: context, width: iconSize));
         },
       );
     }
@@ -107,7 +110,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<Widget> quests(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> quests(BuildContext context, List<int> targetIds) {
     if (targetIds.length == 1) {
       return list(
         context,
@@ -142,7 +145,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<Widget> traits(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> traits(BuildContext context, List<int> targetIds) {
     if (targetIds.length <= 7) {
       return list(
         context,
@@ -168,7 +171,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<Widget> svtClass(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> svtClass(BuildContext context, List<int> targetIds) {
     return list(
       context,
       targetIds,
@@ -182,12 +185,12 @@ class MultiDescriptor {
     );
   }
 
-  static List<Widget> missions(BuildContext context, List<int> targetIds,
+  static List<InlineSpan> missions(BuildContext context, List<int> targetIds,
       Map<int, EventMission> missions) {
     if (targetIds.length == 1) {
       return list(context, targetIds, (context, id) {
         final mission = missions[id];
-        return Text('${mission?.dispNo} - ${mission?.name}');
+        return TextSpan(text: '${mission?.dispNo} - ${mission?.name}');
       });
     } else {
       return [

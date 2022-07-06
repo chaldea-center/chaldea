@@ -158,25 +158,28 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   Widget? _condDescribe(CondType condType, List<int>? condValues,
       int condValue2, bool showUnknown) {
     int? condValue = condValues?.getOrNull(0);
-    if (condValue == null) return null;
-    switch (condType) {
-      case CondType.none:
-        if (showUnknown) {
-          return Text('Unknown condType $condType, condValues $condValues');
-        }
-        return null;
-      case CondType.questClear:
-        return CondTargetValueDescriptor(
-            condType: condType, target: condValue, value: 0);
-      case CondType.svtFriendship:
-        return Text('${S.current.bond} Lv.$condValue');
-      case CondType.svtLimit:
-        return Text('${S.current.ascension_short} Lv.$condValue');
-      case CondType.svtGet:
-        return CondTargetValueDescriptor(
-            condType: condType, target: condValue, value: 0);
-      default:
-        return null;
+    if (condValue != null) {
+      switch (condType) {
+        case CondType.none:
+          return null;
+        case CondType.questClear:
+          return CondTargetValueDescriptor(
+              condType: condType, target: condValue, value: 0);
+        case CondType.svtFriendship:
+          return Text('${S.current.bond} Lv.$condValue');
+        case CondType.svtLimit:
+          return Text('${S.current.ascension_short} Lv.$condValue');
+        case CondType.svtGet:
+          return CondTargetValueDescriptor(
+              condType: condType, target: condValue, value: 0);
+        default:
+          break;
+      }
+    }
+    if (showUnknown) {
+      return Text('Unknown condType $condType, condValues $condValues');
+    } else {
+      return null;
     }
   }
 

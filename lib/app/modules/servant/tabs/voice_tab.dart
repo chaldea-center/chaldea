@@ -314,103 +314,123 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                         color: Theme.of(context).colorScheme.primaryContainer),
                   ),
                   for (final cond in line.conds)
-                    VoiceCondDescriptor(
-                      condType: cond.condType,
-                      value: cond.value,
-                      valueList: cond.valueList,
-                      textScaleFactor: 0.85,
-                      style: TextStyle(
-                          color: Theme.of(context).textTheme.caption?.color),
-                    ),
+                    if (![
+                      VoiceCondType.levelUp,
+                      VoiceCondType.event,
+                      VoiceCondType.birthDay
+                    ].contains(cond.condType))
+                      VoiceCondDescriptor(
+                        condType: cond.condType,
+                        value: cond.value,
+                        valueList: cond.valueList,
+                        textScaleFactor: 0.85,
+                        style: TextStyle(
+                            color: Theme.of(context).textTheme.caption?.color),
+                      ),
                 ],
               ),
             ),
-            Builder(
-              builder: (context) {
-                bool valid = line.audioAssets.isNotEmpty;
-                if (!valid) {
-                  return const IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.play_circle_outline),
-                    tooltip: 'Not Found',
-                  );
-                } else {
-                  return IconButton(
-                    onPressed: () {
-                      onPlayVoice(line).catchError((e, s) async {
-                        EasyLoading.showError(
-                            'Error playing audio (May not support)\n$e');
-                        logger.e(
-                            'Error playing audio:\n${line.audioAssets}', e, s);
-                        _playing = null;
-                      });
-                    },
-                    icon: const Icon(Icons.play_circle_outline),
-                    tooltip: 'Play',
-                  );
-                }
-              },
-            ),
-            Builder(
-              builder: (context) {
-                bool valid = line.audioAssets.isNotEmpty;
-                if (!valid) {
-                  return const IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.file_download),
-                    tooltip: 'Not Found',
-                  );
-                }
-                return IconButton(
-                  onPressed: () async {
-                    if (kIsWeb) {
-                      for (var url in line.audioAssets) {
-                        launch(url);
-                      }
-                      return;
-                    }
-                    List<String?> localFiles = [];
-                    EasyLoading.show(status: S.current.downloading);
-                    for (final url in line.audioAssets) {
-                      localFiles.add(await AtlasIconLoader.i.get(url));
-                    }
-                    EasyLoading.dismiss();
-                    if (!mounted) return;
-                    String? _dir =
-                        localFiles.firstWhereOrNull((e) => e != null);
-                    if (_dir != null) _dir = dirname(_dir);
-                    String hint = '';
-                    if (_dir == null) {
-                      hint = S.current.failed;
-                    } else {
-                      hint = '${db.paths.convertIosPath(_dir)}:';
-                      for (final fp in localFiles) {
-                        hint += '\n - ${basename(fp ?? S.current.failed)}';
-                      }
-                    }
-                    SimpleCancelOkDialog(
-                      title: Text(S.current.save),
-                      content: Text(hint),
-                      confirmText: S.current.open,
-                      onTapOk: () async {
-                        if (_dir == null) return;
-                        if (PlatformU.isDesktop) {
-                          OpenFile.open(_dir);
-                        } else {
-                          EasyLoading.showInfo(S.current.open_in_file_manager);
-                        }
+            SizedBox(
+              height: 24,
+              child: Builder(
+                builder: (context) {
+                  bool valid = line.audioAssets.isNotEmpty;
+                  if (!valid) {
+                    return const IconButton(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      onPressed: null,
+                      icon: Icon(Icons.play_circle_outline),
+                      tooltip: 'Not Found',
+                    );
+                  } else {
+                    return IconButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      onPressed: () {
+                        onPlayVoice(line).catchError((e, s) async {
+                          EasyLoading.showError(
+                              'Error playing audio (May not support)\n$e');
+                          logger.e('Error playing audio:\n${line.audioAssets}',
+                              e, s);
+                          _playing = null;
+                        });
                       },
-                    ).showDialog(context);
-                  },
-                  icon: const Icon(Icons.file_download),
-                  tooltip: S.current.download,
-                );
-              },
+                      icon: const Icon(Icons.play_circle_outline),
+                      tooltip: 'Play',
+                    );
+                  }
+                },
+              ),
             ),
+            SizedBox(
+              height: 24,
+              child: Builder(
+                builder: (context) {
+                  bool valid = line.audioAssets.isNotEmpty;
+                  if (!valid) {
+                    return const IconButton(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      onPressed: null,
+                      icon: Icon(Icons.file_download),
+                      tooltip: 'Not Found',
+                    );
+                  }
+                  return IconButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    onPressed: () async {
+                      if (kIsWeb) {
+                        for (var url in line.audioAssets) {
+                          launch(url);
+                        }
+                        return;
+                      }
+                      List<String?> localFiles = [];
+                      EasyLoading.show(status: S.current.downloading);
+                      for (final url in line.audioAssets) {
+                        localFiles.add(await AtlasIconLoader.i.get(url));
+                      }
+                      EasyLoading.dismiss();
+                      if (!mounted) return;
+                      String? _dir =
+                          localFiles.firstWhereOrNull((e) => e != null);
+                      if (_dir != null) _dir = dirname(_dir);
+                      String hint = '';
+                      if (_dir == null) {
+                        hint = S.current.failed;
+                      } else {
+                        hint = '${db.paths.convertIosPath(_dir)}:';
+                        for (final fp in localFiles) {
+                          hint += '\n - ${basename(fp ?? S.current.failed)}';
+                        }
+                      }
+                      SimpleCancelOkDialog(
+                        title: Text(S.current.save),
+                        content: Text(hint),
+                        confirmText: S.current.open,
+                        onTapOk: () async {
+                          if (_dir == null) return;
+                          if (PlatformU.isDesktop) {
+                            OpenFile.open(_dir);
+                          } else {
+                            EasyLoading.showInfo(
+                                S.current.open_in_file_manager);
+                          }
+                        },
+                      ).showDialog(context);
+                    },
+                    icon: const Icon(Icons.file_download),
+                    tooltip: S.current.download,
+                  );
+                },
+              ),
+            )
           ],
         ),
         // _voicePlayCond(),
-        Text(text),
+        Padding(
+          padding: const EdgeInsetsDirectional.only(end: 16),
+          child: Text(text, textScaleFactor: 0.9),
+        ),
+        const SizedBox(height: 8),
       ],
     );
   }

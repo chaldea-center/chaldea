@@ -31,7 +31,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.birthDay:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('生日'),
           tw: null,
           na: () => text('Player birthday'),
           kr: null,
@@ -39,7 +39,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.countStop:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('最终再临'),
           tw: null,
           na: () => text('Final ascension'),
           kr: null,
@@ -47,7 +47,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.event:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动举行中'),
           tw: null,
           na: () => text('An event is available'),
           kr: null,
@@ -55,62 +55,57 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.eventPeriod:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动举行期间'),
           tw: null,
-          na: () => combineToRich(context, 'During event ', event(context)),
+          na: () => text('During event'),
           kr: null,
         );
       case VoiceCondType.eventEnd:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动已结束'),
           tw: null,
-          na: () => combineToRich(context, 'Event ', event(context), ' ended'),
+          na: () => text('Event ended'),
           kr: null,
         );
-
       case VoiceCondType.eventNoend:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动未结束'),
           tw: null,
-          na: () => combineToRich(
-              context, 'Event ', event(context), ' hasn\'t ended'),
+          na: () => text('Event hasn\'t ended'),
           kr: null,
         );
       case VoiceCondType.eventShopPurchase:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动商店购买语音'),
           tw: null,
-          na: () => combineToRich(
-              context, 'Event ', event(context), ' shop purchase line'),
+          na: () => text('Event shop purchase line'),
           kr: null,
         );
       case VoiceCondType.spacificShopPurchase:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动商店特殊购买语音'),
           tw: null,
-          na: () => combineToRich(context, 'Event ', event(context),
-              ' specific shop purchase line'),
+          na: () => text('Event specific shop purchase line'),
           kr: null,
         );
 
       case VoiceCondType.eventMissionAction:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('活动任务语音'),
           tw: null,
-          na: () =>
-              combineToRich(context, 'Event ', event(context), ' mission line'),
+          na: () => text('Event mission line'),
           kr: null,
         );
       case VoiceCondType.friendship:
       case VoiceCondType.friendshipAbove:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('羁绊Lv.$value'),
           tw: null,
           na: () => text('Bond level $value'),
           kr: null,
@@ -118,7 +113,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.friendshipBelow:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('羁绊等级不高于Lv.$value'),
           tw: null,
           na: () => text('Bond level $value or less'),
           kr: null,
@@ -144,18 +139,18 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
             '${S.current.costume} ${db.gameData.costumes[value]?.lName.l ?? value}');
       case VoiceCondType.isnewWar:
         final war = db.gameData.wars[value];
+        final warName = war?.lLongName.l ?? value.toString();
         return localized(
           jp: null,
-          cn: null,
+          cn: () => text('$warName已开发'),
           tw: null,
-          na: () =>
-              combineToRich(context, 'War ${war?.lLongName.l ?? value} opened'),
+          na: () => text('War $warName opened'),
           kr: null,
         );
       case VoiceCondType.questClear:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '已通关', quests(context)),
           tw: null,
           na: () => combineToRich(context, 'Cleared ', quests(context)),
           kr: null,
@@ -163,7 +158,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.notQuestClear:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '未通关', quests(context)),
           tw: null,
           na: () => combineToRich(context, 'Hasn\'t cleared ', quests(context)),
           kr: null,
@@ -171,7 +166,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.svtGet:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '持有', servants(context)),
           tw: null,
           na: () => combineToRich(context, 'Presence of ', servants(context)),
           kr: null,
@@ -179,7 +174,8 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.svtGroup:
         return localized(
           jp: null,
-          cn: null,
+          cn: () => combineToRich(context, '持有任意一个: ',
+              MultiDescriptor.servants(context, valueList)),
           tw: null,
           na: () => combineToRich(context, 'Presence any of following: ',
               MultiDescriptor.servants(context, valueList)),

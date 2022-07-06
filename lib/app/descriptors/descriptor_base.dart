@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/descriptors/multi_entry.dart';
 import 'package:chaldea/models/models.dart';
-import '../../widgets/widget_builders.dart';
 
 abstract class DescriptorBase {
   TextStyle? get style;
@@ -28,9 +27,9 @@ abstract class DescriptorBase {
   Text combineToRich(
     BuildContext context,
     String? text1, [
-    List<Widget>? children2,
+    List<InlineSpan>? children2,
     String? text3,
-    List<Widget>? children4,
+    List<InlineSpan>? children4,
     String? text5,
   ]) {
     return Text.rich(
@@ -38,11 +37,9 @@ abstract class DescriptorBase {
         text: text1,
         // style: Theme.of(context).textTheme.bodyText2,
         children: [
-          if (children2 != null)
-            for (final child in children2) CenterWidgetSpan(child: child),
+          if (children2 != null) ...children2,
           if (text3 != null) TextSpan(text: text3),
-          if (children4 != null)
-            for (final child in children4) CenterWidgetSpan(child: child),
+          if (children4 != null) ...children4,
           if (text5 != null) TextSpan(text: text5),
         ],
       ),
@@ -51,25 +48,26 @@ abstract class DescriptorBase {
     );
   }
 
-  List<Widget> quests(BuildContext context) =>
+  List<InlineSpan> quests(BuildContext context) =>
       MultiDescriptor.quests(context, targetIds);
-  List<Widget> traits(BuildContext context) =>
+  List<InlineSpan> traits(BuildContext context) =>
       MultiDescriptor.traits(context, targetIds);
-  List<Widget> svtClasses(BuildContext context) =>
+  List<InlineSpan> svtClasses(BuildContext context) =>
       MultiDescriptor.svtClass(context, targetIds);
-  List<Widget> servants(BuildContext context) =>
+  List<InlineSpan> servants(BuildContext context) =>
       MultiDescriptor.servants(context, targetIds);
-  List<Widget> items(BuildContext context) =>
+  List<InlineSpan> items(BuildContext context) =>
       MultiDescriptor.items(context, targetIds);
-  List<Widget> missionList(
+  List<InlineSpan> missionList(
           BuildContext context, Map<int, EventMission> missions) =>
       MultiDescriptor.missions(context, targetIds, missions);
-  List<Widget> event(BuildContext context) {
+  List<InlineSpan> event(BuildContext context) {
     final _event = db.gameData.events[targetIds.first];
     return [
       MultiDescriptor.inkWell(
         context: context,
-        text: _event?.shownName ?? targetIds.first.toString(),
+        text: _event?.shownName.replaceAll('\n', ' ') ??
+            targetIds.first.toString(),
         onTap: () => _event?.routeTo(),
       )
     ];
