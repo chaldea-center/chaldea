@@ -119,7 +119,8 @@ class ValDsc extends StatelessWidget {
               data: ThemeData.light(),
               child: SimpleCancelOkDialog(
                 title: const Text('Data Vals'),
-                content: JsonViewer((originVals ?? vals).toJson()),
+                content: JsonViewer((originVals ?? vals).toJson(),
+                    defaultOpen: true),
                 scrollable: true,
                 hideCancel: true,
                 contentPadding: const EdgeInsetsDirectional.fromSTEB(

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 
 class JsonViewer extends StatefulWidget {
   final dynamic jsonObj;
-  JsonViewer(this.jsonObj, {Key? key}) : super(key: key);
+  final bool defaultOpen;
+  JsonViewer(this.jsonObj, {Key? key, this.defaultOpen = false})
+      : super(key: key);
   @override
   _JsonViewerState createState() => _JsonViewerState();
 }
@@ -15,17 +17,18 @@ class _JsonViewerState extends State<JsonViewer> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: getContentWidget(widget.jsonObj),
+      child: getContentWidget(widget.jsonObj, widget.defaultOpen),
     );
   }
 
-  static getContentWidget(dynamic content) {
+  static Widget getContentWidget(dynamic content, bool defaultOpen) {
     if (content == null) {
       return const Text('{}');
     } else if (content is List) {
-      return JsonArrayViewer(content, notRoot: false);
+      return JsonArrayViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else {
-      return JsonObjectViewer(content, notRoot: false);
+      return JsonObjectViewer(content,
+          notRoot: false, defaultOpen: defaultOpen);
     }
   }
 }
@@ -33,8 +36,10 @@ class _JsonViewerState extends State<JsonViewer> {
 class JsonObjectViewer extends StatefulWidget {
   final Map<String, dynamic> jsonObj;
   final bool notRoot;
+  final bool defaultOpen;
 
-  JsonObjectViewer(this.jsonObj, {Key? key, this.notRoot = false})
+  JsonObjectViewer(this.jsonObj,
+      {Key? key, this.notRoot = false, this.defaultOpen = false})
       : super(key: key);
 
   @override
@@ -64,11 +69,10 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     for (MapEntry entry in widget.jsonObj.entries) {
       bool ex = isExtensible(entry.value);
       bool ink = isInkWell(entry.value);
-      list.add(Wrap(
-        crossAxisAlignment: WrapCrossAlignment.start,
-        children: <Widget>[
-          ex
-              ? ((openFlag[entry.key] ?? false)
+      list.add(Text.rich(TextSpan(children: [
+        WidgetSpan(
+          child: ex
+              ? ((openFlag[entry.key] ?? widget.defaultOpen)
                   ? Icon(Icons.arrow_drop_down,
                       size: 14, color: Colors.grey[700])
                   : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
@@ -77,44 +81,83 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
                   color: Color.fromARGB(0, 0, 0, 0),
                   size: 14,
                 ),
-          (ex && ink)
-              ? InkWell(
-                  child: Text(entry.key,
-                      style: TextStyle(color: Colors.purple[900])),
-                  onTap: () {
-                    setState(() {
-                      openFlag[entry.key] = !(openFlag[entry.key] ?? false);
-                    });
-                  },
-                )
-              : Text(
-                  entry.key,
-                  style: TextStyle(
-                    color:
-                        entry.value == null ? Colors.grey : Colors.purple[900],
-                  ),
+        ),
+        (ex && ink)
+            ? WidgetSpan(
+                child: InkWell(
+                child: Text(entry.key,
+                    style: TextStyle(color: Colors.purple[900])),
+                onTap: () {
+                  setState(() {
+                    openFlag[entry.key] =
+                        !(openFlag[entry.key] ?? widget.defaultOpen);
+                  });
+                },
+              ))
+            : TextSpan(
+                text: entry.key,
+                style: TextStyle(
+                  color: entry.value == null ? Colors.grey : Colors.purple[900],
                 ),
-          const Text(
-            ':',
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(width: 3),
-          getValueWidget(entry)
-        ],
-      ));
+              ),
+        const TextSpan(
+          text: ': ',
+          style: TextStyle(color: Colors.grey),
+        ),
+        getValueWidget(entry)
+      ])));
+      // list.add(Wrap(
+      //   crossAxisAlignment: WrapCrossAlignment.start,
+      //   children: <Widget>[
+      //     ex
+      //         ? ((openFlag[entry.key] ?? widget.defaultOpen)
+      //             ? Icon(Icons.arrow_drop_down,
+      //                 size: 14, color: Colors.grey[700])
+      //             : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
+      //         : const Icon(
+      //             Icons.arrow_right,
+      //             color: Color.fromARGB(0, 0, 0, 0),
+      //             size: 14,
+      //           ),
+      //     (ex && ink)
+      //         ? InkWell(
+      //             child: Text(entry.key,
+      //                 style: TextStyle(color: Colors.purple[900])),
+      //             onTap: () {
+      //               setState(() {
+      //                 openFlag[entry.key] =
+      //                     !(openFlag[entry.key] ?? widget.defaultOpen);
+      //               });
+      //             },
+      //           )
+      //         : Text(
+      //             entry.key,
+      //             style: TextStyle(
+      //               color:
+      //                   entry.value == null ? Colors.grey : Colors.purple[900],
+      //             ),
+      //           ),
+      //     const Text(
+      //       ':',
+      //       style: TextStyle(color: Colors.grey),
+      //     ),
+      //     const SizedBox(width: 3),
+      //     getValueWidget(entry)
+      //   ],
+      // ));
       list.add(const SizedBox(height: 4));
-      if (openFlag[entry.key] ?? false) {
-        list.add(getContentWidget(entry.value));
+      if (ex && (openFlag[entry.key] ?? widget.defaultOpen)) {
+        list.add(getContentWidget(entry.value, widget.defaultOpen));
       }
     }
     return list;
   }
 
-  static getContentWidget(dynamic content) {
+  static Widget getContentWidget(dynamic content, bool defaultOpen) {
     if (content is List) {
-      return JsonArrayViewer(content, notRoot: true);
+      return JsonArrayViewer(content, notRoot: true, defaultOpen: defaultOpen);
     } else {
-      return JsonObjectViewer(content, notRoot: true);
+      return JsonObjectViewer(content, notRoot: true, defaultOpen: defaultOpen);
     }
   }
 
@@ -139,62 +182,67 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     return true;
   }
 
-  Widget getValueWidget(MapEntry entry) {
+  InlineSpan getValueWidget(MapEntry entry) {
     if (entry.value == null) {
-      return const Text(
-        'undefined',
+      return const TextSpan(
+        text: 'undefined',
         style: TextStyle(color: Colors.grey),
       );
     } else if (entry.value is int) {
-      return Text(
-        entry.value.toString(),
+      return TextSpan(
+        text: entry.value.toString(),
         style: const TextStyle(color: Colors.teal),
       );
     } else if (entry.value is String) {
-      return Text(
-        '"${entry.value}"',
+      return TextSpan(
+        text: '"${entry.value}"',
         style: const TextStyle(color: Colors.redAccent),
       );
     } else if (entry.value is bool) {
-      return Text(
-        entry.value.toString(),
+      return TextSpan(
+        text: entry.value.toString(),
         style: const TextStyle(color: Colors.purple),
       );
     } else if (entry.value is double) {
-      return Text(
-        entry.value.toString(),
+      return TextSpan(
+        text: entry.value.toString(),
         style: const TextStyle(color: Colors.teal),
       );
     } else if (entry.value is List) {
       if (entry.value.isEmpty) {
-        return const Text(
-          'Array[0]',
+        return const TextSpan(
+          text: 'Array[0]',
           style: TextStyle(color: Colors.grey),
         );
       } else {
-        return InkWell(
-          child: Text(
-            'Array<${getTypeName(entry.value[0])}>[${entry.value.length}]',
-            style: const TextStyle(color: Colors.grey),
+        return WidgetSpan(
+          child: InkWell(
+            child: Text(
+              'Array<${getTypeName(entry.value[0])}>[${entry.value.length}]',
+              style: const TextStyle(color: Colors.grey),
+            ),
+            onTap: () {
+              setState(() {
+                openFlag[entry.key] =
+                    !(openFlag[entry.key] ?? widget.defaultOpen);
+              });
+            },
           ),
-          onTap: () {
-            setState(() {
-              openFlag[entry.key] = !(openFlag[entry.key] ?? false);
-            });
-          },
         );
       }
     }
-    return InkWell(
-      child: const Text(
-        'Object',
-        style: TextStyle(color: Colors.grey),
+    return WidgetSpan(
+      child: InkWell(
+        child: const Text(
+          'Object',
+          style: TextStyle(color: Colors.grey),
+        ),
+        onTap: () {
+          setState(() {
+            openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
+          });
+        },
       ),
-      onTap: () {
-        setState(() {
-          openFlag[entry.key] = !(openFlag[entry.key] ?? false);
-        });
-      },
     );
   }
 
@@ -233,8 +281,10 @@ class JsonArrayViewer extends StatefulWidget {
   final List<dynamic> jsonArray;
 
   final bool notRoot;
+  final bool defaultOpen;
 
-  JsonArrayViewer(this.jsonArray, {Key? key, this.notRoot = false})
+  JsonArrayViewer(this.jsonArray,
+      {Key? key, this.notRoot = false, this.defaultOpen = false})
       : super(key: key);
 
   @override
@@ -264,7 +314,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
   @override
   void initState() {
     super.initState();
-    openFlag = List.filled(widget.jsonArray.length, false);
+    openFlag = List.filled(widget.jsonArray.length, widget.defaultOpen);
   }
 
   List<Widget> _getList() {
@@ -303,8 +353,9 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
         ],
       ));
       list.add(const SizedBox(height: 4));
-      if (openFlag[i]) {
-        list.add(JsonObjectViewerState.getContentWidget(content));
+      if (ex && openFlag[i]) {
+        list.add(JsonObjectViewerState.getContentWidget(
+            content, widget.defaultOpen));
       }
       i++;
     }

@@ -364,7 +364,7 @@ class FuncDescriptor extends StatelessWidget {
                 data: ThemeData.light(),
                 child: SimpleCancelOkDialog(
                   title: Text('Func ${func.funcId}'),
-                  content: JsonViewer(_getFuncJson()),
+                  content: JsonViewer(_getFuncJson(), defaultOpen: true),
                   scrollable: true,
                   hideCancel: true,
                   contentPadding: const EdgeInsetsDirectional.fromSTEB(
@@ -468,9 +468,9 @@ class FuncDescriptor extends StatelessWidget {
     final buff = func.buffs.getOrNull(0);
     final script = buff?.script;
     return {
-      "type": '${func.funcType.name}(${Transl.funcType(func.funcType).l})',
+      "type": '${Transl.funcType(func.funcType).l}/${func.funcType.name}',
       "target":
-          '${func.funcTargetType.name}(${Transl.funcTargetType(func.funcTargetType).l})',
+          '${Transl.funcTargetType(func.funcTargetType).l}/${func.funcTargetType.name}',
       "team": func.funcTargetTeam.name,
       "popupText": Transl.funcPopuptext(func.funcPopupText).l,
       if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
@@ -482,16 +482,16 @@ class FuncDescriptor extends StatelessWidget {
         "----buff----": "↓",
         "id": buff.id,
         "name": Transl.buffNames(buff.name).l,
-        "buffType": '${buff.type.name}(${Transl.buffType(buff.type).l})',
+        "buffType": '${Transl.buffType(buff.type).l}/${buff.type.name}',
         "detail": Transl.buffDetail(buff.detail).l,
-        "buffGroup": buff.buffGroup,
-        if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),
         if (buff.ckSelfIndv.isNotEmpty)
           "ckSelfIndv": _traitList(buff.ckSelfIndv),
         if (buff.ckOpIndv.isNotEmpty) "ckOpIndv": _traitList(buff.ckOpIndv),
+        "buffGroup": buff.buffGroup,
+        if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),
         "maxRate": buff.maxRate,
         if (script != null) ...{
-          "----script----": "",
+          "----script----": "↓",
           if (script.checkIndvType != null)
             "checkIndvType": script.checkIndvType,
           if (script.CheckOpponentBuffTypes != null)
