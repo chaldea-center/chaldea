@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/utils.dart';
 import '../app.dart';
 
 class MultiDescriptor {
@@ -106,26 +105,6 @@ class MultiDescriptor {
         );
       })
     ];
-  }
-
-  static String classLimits(List<int> targetIds) {
-    List<int> clsIds = [];
-    List<int> limits = [];
-    for (final id in targetIds) {
-      clsIds.add(id ~/ 100);
-      limits.add(id % 100);
-    }
-    if (limits.toSet().length == 1) {
-      if (clsIds.toSet().equalTo(kSvtIdsPlayable.toSet())) {
-        return ' servants to ascension ${limits.first}';
-      }
-      return '${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to ascension ${limits.first}';
-    }
-    return List.generate(
-            clsIds.length,
-            (i) =>
-                'Ascension ${limits[i]} ${kSvtClassIds[clsIds[i]]?.name ?? clsIds[i]}')
-        .join();
   }
 
   static List<Widget> quests(BuildContext context, List<int> targetIds) {

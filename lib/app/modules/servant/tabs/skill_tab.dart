@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -127,14 +128,24 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                   minHeight: 24,
                 ),
                 onPressed: () {
-                  SimpleCancelOkDialog(
-                    title: Text(Transl.skillNames(skill.name).l),
-                    hideCancel: true,
-                    content: Text(
-                      'TODO',
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ).showDialog(context);
+                  bool notMain = ['91', '94'].contains(
+                      skill.condQuestId.toString().padRight(2).substring(0, 2));
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) {
+                      return SimpleCancelOkDialog(
+                        title: Text(Transl.skillNames(skill.name).l),
+                        hideCancel: true,
+                        content: CondTargetValueDescriptor(
+                            condType: notMain
+                                ? CondType.questClear
+                                : CondType.questClearPhase,
+                            target: skill.condQuestId,
+                            value: skill.condQuestPhase),
+                      );
+                    },
+                  );
                 },
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,

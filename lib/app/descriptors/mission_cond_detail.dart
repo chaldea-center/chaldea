@@ -43,10 +43,10 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.questClearNum2:
         if (targetIds.length == 1 && targetIds.first == 0) {
           return localized(
-            jp: () => Text('いずれかのクエストを$targetNum回クリアせよ'),
-            cn: () => Text('通关$targetNum次任意关卡'),
+            jp: () => text('いずれかのクエストを$targetNum回クリアせよ'),
+            cn: () => text('通关$targetNum次任意关卡'),
             tw: null,
-            na: () => Text('Complete any quest $targetNum times'),
+            na: () => text('Complete any quest $targetNum times'),
             kr: null,
           );
         } else {
@@ -63,20 +63,20 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         }
       case DetailCondType.questClearNumIncludingGrailFront:
         return localized(
-          jp: () => Text('いずれかのクエスト（聖杯戦線含め）を$targetNum回クリアせよ'),
-          cn: () => Text('通关$targetNum次任意关卡(包括圣杯战线)'),
+          jp: () => text('いずれかのクエスト（聖杯戦線含め）を$targetNum回クリアせよ'),
+          cn: () => text('通关$targetNum次任意关卡(包括圣杯战线)'),
           tw: null,
-          na: () => Text(
+          na: () => text(
               'Clear any quest including grail front quest $targetNum times'),
           kr: null,
         );
       case DetailCondType.mainQuestDone:
         return localized(
-          jp: () => Text('1部または2部のメインクエストを$targetNum回クリアせよ'),
-          cn: () => Text('通关$targetNum次第一部和第二部的主线关卡'),
+          jp: () => text('1部または2部のメインクエストを$targetNum回クリアせよ'),
+          cn: () => text('通关$targetNum次第一部和第二部的主线关卡'),
           tw: null,
           na: () =>
-              Text('Clear any main quest in Arc 1 and Arc 2 $targetNum times'),
+              text('Clear any main quest in Arc 1 and Arc 2 $targetNum times'),
           kr: null,
         );
       case DetailCondType.enemyKillNum:
@@ -205,27 +205,27 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.svtGetBattle:
         return localized(
-          jp: () => Text('戦利品で種火を$targetNum個集めろ'),
-          cn: () => Text('获取$targetNum个种火作为战利品'),
+          jp: () => text('戦利品で種火を$targetNum個集めろ'),
+          cn: () => text('获取$targetNum个种火作为战利品'),
           tw: null,
-          na: () => Text('Acquire $targetNum embers through battle'),
+          na: () => text('Acquire $targetNum embers through battle'),
           kr: null,
         );
       case DetailCondType.friendPointSummon:
         return localized(
-          jp: () => Text('フレンドポイント召喚を$targetNum回実行せよ'),
-          cn: () => Text('完成$targetNum次友情点召唤'),
+          jp: () => text('フレンドポイント召喚を$targetNum回実行せよ'),
+          cn: () => text('完成$targetNum次友情点召唤'),
           tw: null,
-          na: () => Text('Perform $targetNum Friend Point Summons'),
+          na: () => text('Perform $targetNum Friend Point Summons'),
           kr: null,
         );
     }
     return localized(
       jp: () =>
-          Text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
-      cn: () => Text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),
+          text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
+      cn: () => text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),
       tw: null,
-      na: () => Text(
+      na: () => text(
           'Unknown CondDetail(${detail.missionCondType}): $targetIds, $targetNum'),
       kr: null,
     );

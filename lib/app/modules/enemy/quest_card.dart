@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -225,7 +226,8 @@ class _QuestCardState extends State<QuestCard> {
             in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
           _buildPhases(phase),
       if (quest.gifts.isNotEmpty) _questRewards(),
-      // if (quest.releaseConditions.isNotEmpty) _releaseConditions(),
+      if (quest.releaseConditions.isNotEmpty && !widget.offline)
+        releaseConditions(),
       if (widget.offline)
         TextButton(
           onPressed: () {
@@ -580,14 +582,15 @@ class _QuestCardState extends State<QuestCard> {
   Widget releaseConditions() {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(
           child: Text(S.of(context).quest_condition,
               style: const TextStyle(fontWeight: FontWeight.w500)),
         ),
-        Text('${quest.releaseConditions.length} conditions',
-            textAlign: TextAlign.center)
+        for (final cond in quest.releaseConditions)
+          CondTargetValueDescriptor(
+              condType: cond.type, target: cond.targetId, value: cond.value),
       ],
     );
   }

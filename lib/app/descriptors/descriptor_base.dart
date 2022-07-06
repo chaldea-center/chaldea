@@ -21,6 +21,10 @@ abstract class DescriptorBase {
         const SizedBox();
   }
 
+  Text text(String data) {
+    return Text(data, textScaleFactor: textScaleFactor, style: style);
+  }
+
   Text combineToRich(
     BuildContext context,
     String? text1, [
@@ -60,4 +64,14 @@ abstract class DescriptorBase {
   List<Widget> missionList(
           BuildContext context, Map<int, EventMission> missions) =>
       MultiDescriptor.missions(context, targetIds, missions);
+  List<Widget> event(BuildContext context) {
+    final _event = db.gameData.events[targetIds.first];
+    return [
+      MultiDescriptor.inkWell(
+        context: context,
+        text: _event?.shownName ?? targetIds.first.toString(),
+        onTap: () => _event?.routeTo(),
+      )
+    ];
+  }
 }

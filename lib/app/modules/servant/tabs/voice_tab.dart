@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/hosts.dart';
+import 'package:chaldea/app/descriptors/voice_cond.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
@@ -231,28 +232,16 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           ));
         }
         Map<String, int> _nameCount = {};
-        children.add(Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Table(
-            border: TableBorder(
-                horizontalInside: Divider.createBorderSide(context, width: 1)),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: voiceLines
-                .map((e) => _buildVoiceLine(context, e, _nameCount))
-                .toList(),
-            columnWidths: const [
-              FlexColumnWidth(),
-              FixedColumnWidth(36.0),
-              FixedColumnWidth(36.0)
-            ].asMap(),
-          ),
-        ));
+        children.addAll(voiceLines.map((e) => Padding(
+              padding: const EdgeInsetsDirectional.only(start: 16),
+              child: _buildVoiceLine(context, e, _nameCount),
+            )));
         return Column(children: children);
       },
     );
   }
 
-  TableRow _buildVoiceLine(
+  Widget _buildVoiceLine(
       BuildContext context, VoiceLine line, Map<String, int> _nameCount) {
     String _transl(String text) {
       for (final s in ['\u3000（ひとつの施策でふたつあるとき）', '（57は欠番）']) {
@@ -306,107 +295,129 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       text = '-';
     }
     text = text.replaceAll(RegExp(r'\[([0-9a-zA-Z _,\.]+)\]'), '');
-    return TableRow(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            AutoSizeText(
-              '· $name',
-              maxLines: 2,
-              maxFontSize: 12,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    '· $name',
+                    maxLines: 2,
+                    maxFontSize: 12,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primaryContainer),
+                  ),
+                  for (final cond in line.conds)
+                    VoiceCondDescriptor(
+                      condType: cond.condType,
+                      value: cond.value,
+                      valueList: cond.valueList,
+                      textScaleFactor: 0.85,
+                      style: TextStyle(
+                          color: Theme.of(context).textTheme.caption?.color),
+                    ),
+                ],
+              ),
             ),
-            Text(text),
+            Builder(
+              builder: (context) {
+                bool valid = line.audioAssets.isNotEmpty;
+                if (!valid) {
+                  return const IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.play_circle_outline),
+                    tooltip: 'Not Found',
+                  );
+                } else {
+                  return IconButton(
+                    onPressed: () {
+                      onPlayVoice(line).catchError((e, s) async {
+                        EasyLoading.showError(
+                            'Error playing audio (May not support)\n$e');
+                        logger.e(
+                            'Error playing audio:\n${line.audioAssets}', e, s);
+                        _playing = null;
+                      });
+                    },
+                    icon: const Icon(Icons.play_circle_outline),
+                    tooltip: 'Play',
+                  );
+                }
+              },
+            ),
+            Builder(
+              builder: (context) {
+                bool valid = line.audioAssets.isNotEmpty;
+                if (!valid) {
+                  return const IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.file_download),
+                    tooltip: 'Not Found',
+                  );
+                }
+                return IconButton(
+                  onPressed: () async {
+                    if (kIsWeb) {
+                      for (var url in line.audioAssets) {
+                        launch(url);
+                      }
+                      return;
+                    }
+                    List<String?> localFiles = [];
+                    EasyLoading.show(status: S.current.downloading);
+                    for (final url in line.audioAssets) {
+                      localFiles.add(await AtlasIconLoader.i.get(url));
+                    }
+                    EasyLoading.dismiss();
+                    if (!mounted) return;
+                    String? _dir =
+                        localFiles.firstWhereOrNull((e) => e != null);
+                    if (_dir != null) _dir = dirname(_dir);
+                    String hint = '';
+                    if (_dir == null) {
+                      hint = S.current.failed;
+                    } else {
+                      hint = '${db.paths.convertIosPath(_dir)}:';
+                      for (final fp in localFiles) {
+                        hint += '\n - ${basename(fp ?? S.current.failed)}';
+                      }
+                    }
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.save),
+                      content: Text(hint),
+                      confirmText: S.current.open,
+                      onTapOk: () async {
+                        if (_dir == null) return;
+                        if (PlatformU.isDesktop) {
+                          OpenFile.open(_dir);
+                        } else {
+                          EasyLoading.showInfo(S.current.open_in_file_manager);
+                        }
+                      },
+                    ).showDialog(context);
+                  },
+                  icon: const Icon(Icons.file_download),
+                  tooltip: S.current.download,
+                );
+              },
+            ),
           ],
         ),
-      ),
-      Builder(
-        builder: (context) {
-          bool valid = line.audioAssets.isNotEmpty;
-          if (!valid) {
-            return const IconButton(
-              onPressed: null,
-              icon: Icon(Icons.play_circle_outline),
-              tooltip: 'Not Found',
-            );
-          } else {
-            return IconButton(
-              onPressed: () {
-                onPlayVoice(line).catchError((e, s) async {
-                  EasyLoading.showError(
-                      'Error playing audio (May not support)\n$e');
-                  logger.e('Error playing audio:\n${line.audioAssets}', e, s);
-                  _playing = null;
-                });
-              },
-              icon: const Icon(Icons.play_circle_outline),
-              tooltip: 'Play',
-            );
-          }
-        },
-      ),
-      Builder(
-        builder: (context) {
-          bool valid = line.audioAssets.isNotEmpty;
-          if (!valid) {
-            return const IconButton(
-              onPressed: null,
-              icon: Icon(Icons.file_download),
-              tooltip: 'Not Found',
-            );
-          }
-          return IconButton(
-            onPressed: () async {
-              if (kIsWeb) {
-                for (var url in line.audioAssets) {
-                  launch(url);
-                }
-                return;
-              }
-              List<String?> localFiles = [];
-              EasyLoading.show(status: S.current.downloading);
-              for (final url in line.audioAssets) {
-                localFiles.add(await AtlasIconLoader.i.get(url));
-              }
-              EasyLoading.dismiss();
-              if (!mounted) return;
-              String? _dir = localFiles.firstWhereOrNull((e) => e != null);
-              if (_dir != null) _dir = dirname(_dir);
-              String hint = '';
-              if (_dir == null) {
-                hint = S.current.failed;
-              } else {
-                hint = '${db.paths.convertIosPath(_dir)}:';
-                for (final fp in localFiles) {
-                  hint += '\n - ${basename(fp ?? S.current.failed)}';
-                }
-              }
-              SimpleCancelOkDialog(
-                title: Text(S.current.save),
-                content: Text(hint),
-                confirmText: S.current.open,
-                onTapOk: () async {
-                  if (_dir == null) return;
-                  if (PlatformU.isDesktop) {
-                    OpenFile.open(_dir);
-                  } else {
-                    EasyLoading.showInfo(S.current.open_in_file_manager);
-                  }
-                },
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.file_download),
-            tooltip: S.current.download,
-          );
-        },
-      ),
-    ]);
+        // _voicePlayCond(),
+        Text(text),
+      ],
+    );
   }
+
+  // Widget _voicePlayCond(){
+
+  // }
 
   static final audioPlayer = AudioPlayer();
 

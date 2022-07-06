@@ -269,7 +269,9 @@ extension SvtClassX on SvtClass {
   ];
 }
 
-const kSvtIdsPlayable = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25];
+/// non-JP may not contains the last class
+const kSvtIdsPlayable = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
+const kSvtIdsPlayableNA = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25];
 
 const kSvtClassIds = {
   1: SvtClass.saber,

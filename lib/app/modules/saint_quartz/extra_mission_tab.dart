@@ -22,18 +22,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
       itemCount: missions.length,
       itemBuilder: (context, index) {
         final mission = missions[index];
-        List<Widget> rewards = [
-          Text(
-            [
-              '${mission.startedAt.sec2date().toDateString()}(JP)',
-              DateUtils.addDaysToDate(
-                      mission.startedAt.sec2date(), plan.eventDateDelta)
-                  .toDateString()
-            ].join('\n'),
-            textScaleFactor: 0.9,
-            style: kMonoStyle,
-          ),
-        ];
+        List<Widget> rewards = [];
         for (final gift in mission.gifts) {
           final item = db.gameData.items[gift.objectId];
           if (item != null) {

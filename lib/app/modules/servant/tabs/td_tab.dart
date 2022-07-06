@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../descriptors/cond_target_value.dart';
 
 class SvtTdTab extends StatelessWidget {
   final Servant svt;
@@ -89,14 +90,24 @@ class SvtTdTab extends StatelessWidget {
                 minHeight: 24,
               ),
               onPressed: () {
-                SimpleCancelOkDialog(
-                  title: Text(Transl.tdNames(td.name).l),
-                  hideCancel: true,
-                  content: Text(
-                    'TODO',
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ).showDialog(context);
+                bool notMain = ['91', '94'].contains(
+                    td.condQuestId.toString().padRight(2).substring(0, 2));
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) {
+                    return SimpleCancelOkDialog(
+                      title: Text(Transl.tdNames(td.name).l),
+                      hideCancel: true,
+                      content: CondTargetValueDescriptor(
+                          condType: notMain
+                              ? CondType.questClear
+                              : CondType.questClearPhase,
+                          target: td.condQuestId,
+                          value: td.condQuestPhase),
+                    );
+                  },
+                );
               },
               icon: const Icon(Icons.info_outline),
               color: Theme.of(context).hintColor,

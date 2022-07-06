@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -154,6 +155,31 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     );
   }
 
+  Widget? _condDescribe(CondType condType, List<int>? condValues,
+      int condValue2, bool showUnknown) {
+    int? condValue = condValues?.getOrNull(0);
+    if (condValue == null) return null;
+    switch (condType) {
+      case CondType.none:
+        if (showUnknown) {
+          return Text('Unknown condType $condType, condValues $condValues');
+        }
+        return null;
+      case CondType.questClear:
+        return CondTargetValueDescriptor(
+            condType: condType, target: condValue, value: 0);
+      case CondType.svtFriendship:
+        return Text('${S.current.bond} Lv.$condValue');
+      case CondType.svtLimit:
+        return Text('${S.current.ascension_short} Lv.$condValue');
+      case CondType.svtGet:
+        return CondTargetValueDescriptor(
+            condType: condType, target: condValue, value: 0);
+      default:
+        return null;
+    }
+  }
+
   List<Widget> _addRegionProfile() {
     List<Widget> children = [];
     List<LoreComment> comments = List.of(svt?.profile.comments ?? []);
@@ -174,9 +200,28 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
             ? S.current.svt_profile_info
             : S.current.svt_profile_n(lore.id - 1);
       }
+      List<Widget?> conds = [];
+      conds.add(_condDescribe(
+          lore.condType, lore.condValues, lore.condValue2, false));
+      if (lore.additionalConds.isNotEmpty) {
+        for (final condAdd in lore.additionalConds) {
+          final cond = _condDescribe(
+              condAdd.condType, condAdd.condValues, condAdd.condValue2, true);
+          conds.add(cond);
+        }
+      }
+      if (lore.condMessage.isNotEmpty) {
+        conds.add(Text(lore.condMessage));
+      }
+
       children.add(_profileCard(
         title: Text(title),
-        subtitle: lore.condMessage.isEmpty ? null : Text(lore.condMessage),
+        subtitle: conds.any((e) => e != null)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: conds.whereType<Widget>().toList(),
+              )
+            : null,
         comment: lore.comment,
       ));
     }

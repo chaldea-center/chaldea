@@ -4,7 +4,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'descriptor_base.dart';
 import 'mission_cond_detail.dart';
-import 'multi_entry.dart';
 
 class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final CondType condType;
@@ -29,6 +28,11 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     this.textScaleFactor,
   }) : super(key: key);
 
+  bool _isPlayableAll(List<int> clsIds) {
+    return clsIds.toSet().equalTo(kSvtIdsPlayable.toSet()) ||
+        clsIds.toSet().equalTo(kSvtIdsPlayableNA.toSet());
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (condType) {
@@ -37,7 +41,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           jp: null,
           cn: null,
           tw: null,
-          na: () => const Text('NONE'),
+          na: () => text('NONE'),
           kr: null,
         );
       case CondType.questClear:
@@ -111,7 +115,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.svtGet:
         return localized(
           jp: null,
-          cn: () => combineToRich(context, null, servants(context), '正式加入'),
+          cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: null,
           na: () => combineToRich(
             context,
@@ -122,19 +126,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.eventEnd:
-        final event = db.gameData.events[targetIds.first];
-        final targets = [
-          MultiDescriptor.inkWell(
-            context: context,
-            text: event?.shownName ?? targetIds.toString(),
-            onTap: () => event?.routeTo(),
-          )
-        ];
         return localized(
           jp: null,
-          cn: () => combineToRich(context, '活动', targets, '结束'),
+          cn: () => combineToRich(context, '活动', event(context), '结束'),
           tw: null,
-          na: () => combineToRich(context, 'Event ', targets, ' has ended'),
+          na: () =>
+              combineToRich(context, 'Event ', event(context), ' has ended'),
           kr: null,
         );
       case CondType.svtHaving:
@@ -143,7 +140,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => combineToRich(context, '持有从者', servants(context)),
           tw: null,
           na: () =>
-              combineToRich(context, 'Presense of Servant ', servants(context)),
+              combineToRich(context, 'Presence of Servant ', servants(context)),
           kr: null,
         );
       case CondType.svtRecoverd:
@@ -151,7 +148,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           jp: null,
           cn: null,
           tw: null,
-          na: () => const Text('Servant Recovered'),
+          na: () => text('Servant Recovered'),
           kr: null,
         );
       case CondType.limitCountAbove:
@@ -183,24 +180,122 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.svtLevelClassNum:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: null,
-          na: () => Text('Raise $targetNum servants of class_level $targetIds'),
-          kr: null,
-        );
+        List<int> clsIds = [];
+        List<int> levels = [];
+        for (int index = 0; index < targetIds.length / 2; index++) {
+          clsIds.add(targetIds[index * 2]);
+          levels.add(targetIds[index * 2 + 1]);
+        }
+        if (levels.toSet().length == 1) {
+          final lv = levels.first;
+          if (_isPlayableAll(clsIds)) {
+            return localized(
+              jp: null,
+              cn: () => text('将$targetNum骑从者升级到$lv级以上'),
+              tw: null,
+              na: () => text('Raise $targetNum servants to level $lv'),
+              kr: null,
+            );
+          } else {
+            return localized(
+              jp: null,
+              cn: () => text(
+                  '将$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者升级到$lv级以上'),
+              tw: null,
+              na: () => text(
+                  'Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to level $lv'),
+              kr: null,
+            );
+          }
+        } else {
+          return localized(
+            jp: null,
+            cn: () => text(
+                '升级$targetNum骑 ${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
+            tw: null,
+            na: () => text(
+                'Raise $targetNum ${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' or ')}'),
+            kr: null,
+          );
+        }
       case CondType.svtLimitClassNum:
-        return localized(
-          jp: null,
-          cn: null,
-          tw: null,
-          na: () => Text(
-              'Raise $targetNum ${MultiDescriptor.classLimits(targetIds)}'),
-          kr: null,
-        );
+        List<int> clsIds = [];
+        List<int> limits = [];
+        for (final id in targetIds) {
+          clsIds.add(id ~/ 100);
+          limits.add(id % 100);
+        }
+        if (limits.toSet().length == 1) {
+          final limit = limits.first;
+          if (_isPlayableAll(clsIds)) {
+            return localized(
+              jp: null,
+              cn: () => text('让$targetNum骑从者达到灵基再临第$limit阶段'),
+              tw: null,
+              na: () => text('Raise $targetNum servants to ascension $limit'),
+              kr: null,
+            );
+          } else {
+            return localized(
+              jp: null,
+              cn: () => text(
+                  '让$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者达到灵基再临第$limit阶段'),
+              tw: null,
+              na: () => text(
+                  'Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to ascension $limit'),
+              kr: null,
+            );
+          }
+        } else {
+          return localized(
+            jp: null,
+            cn: () => text(
+                '升级$targetNum骑 ${List.generate(clsIds.length, (index) => '灵基${limits[index]}${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
+            tw: null,
+            na: () => text(
+                'Raise $targetNum ${List.generate(clsIds.length, (index) => 'Ascension ${limits[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' or ')}'),
+            kr: null,
+          );
+        }
       case CondType.svtEquipRarityLevelNum:
-        break;
+        List<int> levels = [];
+        List<int> rarities = [];
+        for (final id in targetIds) {
+          levels.add(id ~/ 100);
+          rarities.add(id % 100);
+        }
+        if (levels.toSet().length == 1) {
+          final level = levels.first;
+          if (rarities.toSet().equalTo({1, 2, 3, 4, 5})) {
+            return localized(
+              jp: null,
+              cn: () => text('将$targetNum种概念礼装的等级提升到$level以上'),
+              tw: null,
+              na: () => text('Raise $targetNum CEs to level $level'),
+              kr: null,
+            );
+          } else {
+            return localized(
+              jp: null,
+              cn: () => text(
+                  '将$targetNum种${rarities.map((e) => '$e$kStarChar').join('/')}概念礼装的等级提升到$level以上'),
+              tw: null,
+              na: () => text(
+                  'Raise $targetNum ${rarities.map((e) => '$e$kStarChar').join('/')} to level $level'),
+              kr: null,
+            );
+          }
+        } else {
+          return localized(
+            jp: null,
+            cn: () => text(
+                '升级$targetNum种 ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' 或 ')} 礼装'),
+            tw: null,
+            na: () => text(
+                'Raise $targetNum ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' or ')}'),
+            kr: null,
+          );
+        }
       case CondType.eventMissionAchieve:
         final mission = missions
             .firstWhereOrNull((mission) => mission.id == targetIds.first);
@@ -208,17 +303,17 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             '${mission?.dispNo}-${mission?.name ?? targetIds.first}';
         return localized(
           jp: null,
-          cn: () => Text('完成任务 $targets'),
+          cn: () => text('完成任务 $targets'),
           tw: null,
-          na: () => Text('Archive mission $targets'),
+          na: () => text('Archive mission $targets'),
           kr: null,
         );
       case CondType.eventTotalPoint:
         return localized(
           jp: null,
-          cn: () => Text('获得活动点数$targetNum点'),
+          cn: () => text('获得活动点数$targetNum点'),
           tw: null,
-          na: () => Text('Reach $targetNum event points'),
+          na: () => text('Reach $targetNum event points'),
           kr: null,
         );
       case CondType.eventMissionClear:
@@ -263,9 +358,9 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             .toStringShort(omitSec: true);
         return localized(
           jp: null,
-          cn: () => Text('$time后开放'),
+          cn: () => text('$time后开放'),
           tw: null,
-          na: () => Text('After $time'),
+          na: () => text('After $time'),
           kr: null,
         );
       default:
@@ -273,9 +368,9 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     }
     return localized(
       jp: null,
-      cn: () => Text('未知条件(${condType.name}): $targetNum, $targetIds'),
+      cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
       tw: null,
-      na: () => Text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
+      na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
       kr: null,
     );
   }
