@@ -125,7 +125,6 @@ class _Database {
   Future<void> initiate() async {
     await paths.initRootPath();
     if (kIsWeb) {
-      setUrlStrategy(PathUrlStrategy());
       Hive.init(null);
       await FilePlus.initiate();
     } else {
@@ -135,6 +134,7 @@ class _Database {
     await AppInfo.resolve(paths.appPath);
     MethodChannelChaldeaNext.configMethodChannel();
     security = await Hive.openBoxRetry('security');
+    if (kIsWeb) setUrlStrategy(PathUrlStrategy());
     _startSavingLoop();
   }
 

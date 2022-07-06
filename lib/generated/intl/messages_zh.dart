@@ -340,6 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
             "仅仅是在从者详情规划页不显示，实际仍计入素材规划与统计。"),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隐藏未实装卡牌"),
+        "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高难度关卡"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(国/台/日/美)账号登陆时的数据"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),
@@ -539,6 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_short": MessageLookupByLibrary.simpleMessage("宝具"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("时间"),
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
+        "one_off_quest": MessageLookupByLibrary.simpleMessage("一次性关卡"),
         "only_show_main_story_enemy":
             MessageLookupByLibrary.simpleMessage("仅显示主线Free敌人"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),

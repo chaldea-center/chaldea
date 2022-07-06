@@ -141,13 +141,14 @@ class NiceWar {
           if (fixedDrop == null) continue;
           itemDrop.addDict(fixedDrop.items);
         }
-        // TODO: add blue saplings later
-        itemReward.addNum(Items.quartzFragmentId, _countFragment(quest));
+        int arrows = _countArrows(quest);
+        itemReward.addNum(Items.quartzFragmentId, arrows);
+        itemReward.addNum(Items.blueSaplingId, arrows);
       }
     }
   }
 
-  int _countFragment(Quest quest) {
+  int _countArrows(Quest quest) {
     if (!isMainStory || quest.type != QuestType.main) {
       return 0;
     }

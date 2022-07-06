@@ -385,6 +385,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "It is only not displayed on plan tab, but it is actually still included in the material planning and statistics."),
         "hide_unreleased_card":
             MessageLookupByLibrary.simpleMessage("Hide Unreleased Card"),
+        "high_difficulty_quest":
+            MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
             "(NA/JP/CN/TW)Capture the data when logging in"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
@@ -640,6 +642,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "one_off_quest": MessageLookupByLibrary.simpleMessage("One-off Quest"),
         "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage(
             "Only show enemies from main story\'s free quest"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),

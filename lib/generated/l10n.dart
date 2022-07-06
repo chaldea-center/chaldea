@@ -2705,6 +2705,17 @@ class S {
     );
   }
 
+  /// `High DIfficulty Quest`
+  String get high_difficulty_quest {
+    return Intl.message(
+      'High DIfficulty Quest',
+      name: 'high_difficulty_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `(NA/JP/CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(
@@ -4520,6 +4531,17 @@ class S {
     return Intl.message(
       'OK',
       name: 'ok',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `One-off Quest`
+  String get one_off_quest {
+    return Intl.message(
+      'One-off Quest',
+      name: 'one_off_quest',
       desc: '',
       locale: localeName,
       args: [],

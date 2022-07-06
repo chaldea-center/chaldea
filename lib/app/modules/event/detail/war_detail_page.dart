@@ -142,8 +142,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
           )
         ]),
     ]));
-    List<Quest> freeQuests = [],
-        mainQuests = [],
+    List<Quest> mainQuests = [],
+        freeQuests = [],
+        difficultQuests = [],
+        oneOffQuests = [],
         bondQuests = [],
         eventQuests = [];
     for (final quest in war.quests) {
@@ -154,7 +156,13 @@ class _WarDetailPageState extends State<WarDetailPage> {
       } else if (quest.type == QuestType.free ||
           (quest.type == QuestType.event &&
               quest.afterClear == QuestAfterClearType.repeatLast)) {
-        freeQuests.add(quest);
+        if (quest.afterClear != QuestAfterClearType.repeatLast) {
+          oneOffQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
+          difficultQuests.add(quest);
+        } else {
+          freeQuests.add(quest);
+        }
       } else {
         eventQuests.add(quest);
       }
@@ -182,6 +190,29 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 router.push(
                   child: QuestListPage(
                       title: S.current.free_quest, quests: freeQuests),
+                );
+              },
+            ),
+          if (difficultQuests.isNotEmpty)
+            ListTile(
+              title: Text(S.current.high_difficulty_quest),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(
+                  child: QuestListPage(
+                      title: S.current.high_difficulty_quest,
+                      quests: difficultQuests),
+                );
+              },
+            ),
+          if (oneOffQuests.isNotEmpty)
+            ListTile(
+              title: Text(S.current.one_off_quest),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(
+                  child: QuestListPage(
+                      title: S.current.one_off_quest, quests: oneOffQuests),
                 );
               },
             ),

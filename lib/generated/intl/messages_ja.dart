@@ -338,6 +338,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れを非表示"),
         "hide_unreleased_card":
             MessageLookupByLibrary.simpleMessage("未實装サーヴァントを隠す"),
+        "high_difficulty_quest":
+            MessageLookupByLibrary.simpleMessage("高難易度クエスト"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
             "(JP/NA/CN/TW)アカウントがログインしているときにデータ"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Httpsスニッフィング"),
