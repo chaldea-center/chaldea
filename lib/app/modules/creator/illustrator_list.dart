@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'creator_detail.dart';
 
 class IllustratorListPage extends StatefulWidget {
   IllustratorListPage({Key? key}) : super(key: key);
@@ -98,8 +100,14 @@ class _IllustratorListPageState extends State<IllustratorListPage>
         (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
-        title: Text(Transl.illustratorNames(creator).l),
+        title: InkWell(
+          onTap: () {
+            router.pushPage(CreatorDetail.illust(name: creator));
+          },
+          child: Text(Transl.illustratorNames(creator).l),
+        ),
         trailing: Text(count.toString()),
+        contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
       ),
       contentBuilder: (context) {
         return Column(

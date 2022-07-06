@@ -7,6 +7,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/extra_assets_page.dart';
+import 'package:chaldea/app/modules/creator/creator_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -212,7 +213,14 @@ class CraftDetailBasePage extends StatelessWidget {
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
-                      text: Transl.illustratorNames(ce.profile.illustrator).l,
+                      child: Text.rich(SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: Transl.illustratorNames(ce.profile.illustrator).l,
+                        onTap: () {
+                          router.pushPage(CreatorDetail.illust(
+                              name: ce.profile.illustrator));
+                        },
+                      )),
                       flex: 3,
                     )
                   ]),
@@ -224,7 +232,14 @@ class CraftDetailBasePage extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                       TableCellData(
-                        text: Transl.cvNames(ce.profile.cv).l,
+                        child: Text.rich(SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: Transl.cvNames(ce.profile.cv).l,
+                          onTap: () {
+                            router.pushPage(
+                                CreatorDetail.cv(name: ce.profile.cv));
+                          },
+                        )),
                         flex: 3,
                         textAlign: TextAlign.center,
                       )

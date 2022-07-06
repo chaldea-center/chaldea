@@ -16,6 +16,7 @@ import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../common/not_found.dart';
+import '../creator/creator_detail.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final int? id;
@@ -185,7 +186,14 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
-                        text: Transl.illustratorNames(cc.illustrator).l,
+                        child: Text.rich(SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: Transl.illustratorNames(cc.illustrator).l,
+                          onTap: () {
+                            router.pushPage(
+                                CreatorDetail.illust(name: cc.illustrator));
+                          },
+                        )),
                         flex: 3,
                         maxLines: 1)
                   ]),

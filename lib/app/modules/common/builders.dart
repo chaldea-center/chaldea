@@ -58,6 +58,25 @@ class SharedBuilder {
     );
   }
 
+  static Widget grid<T>({
+    required BuildContext context,
+    required Iterable<T> items,
+    required Widget Function(BuildContext context, T item) builder,
+    EdgeInsetsGeometry? padding,
+  }) {
+    Widget child = Wrap(
+      spacing: 1,
+      runSpacing: 1,
+      children: [
+        for (final item in items) builder(context, item),
+      ],
+    );
+    if (padding != null) {
+      child = Padding(padding: padding, child: child);
+    }
+    return child;
+  }
+
   static Widget itemGrid({
     required BuildContext context,
     required Iterable<MapEntry<int, int>> items,

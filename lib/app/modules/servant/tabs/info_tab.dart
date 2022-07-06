@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../creator/creator_detail.dart';
 
 class SvtInfoTab extends StatelessWidget {
   final Servant svt;
@@ -74,11 +76,37 @@ class SvtInfoTab extends StatelessWidget {
               S.current.info_cv,
               S.current.info_gender,
             ], defaults: headerData),
-            CustomTableRow.fromTexts(texts: [
-              Transl.illustratorNames(svt.profile.illustrator).l,
-              Transl.cvNames(svt.profile.cv).l,
-              Transl.enums(svt.gender, (enums) => enums.gender).l,
-            ], defaults: TableCellData(textAlign: TextAlign.center)),
+            CustomTableRow(children: [
+              TableCellData(
+                child: Text.rich(
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: Transl.illustratorNames(svt.profile.illustrator).l,
+                    onTap: () {
+                      router.pushPage(
+                          CreatorDetail.illust(name: svt.profile.illustrator));
+                    },
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              TableCellData(
+                child: Text.rich(
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: Transl.cvNames(svt.profile.cv).l,
+                    onTap: () {
+                      router.pushPage(CreatorDetail.cv(name: svt.profile.cv));
+                    },
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              TableCellData(
+                text: Transl.enums(svt.gender, (enums) => enums.gender).l,
+                textAlign: TextAlign.center,
+              )
+            ]),
             CustomTableRow.fromTexts(texts: [
               S.current.info_strength,
               S.current.info_endurance,

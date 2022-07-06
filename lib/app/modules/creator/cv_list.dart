@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/creator/creator_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -98,8 +100,14 @@ class _CvListPageState extends State<CvListPage>
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
-          title: Text(cv.isEmpty ? '?' : Transl.cvNames(cv).l),
+          title: InkWell(
+            onTap: () {
+              router.pushPage(CreatorDetail.cv(name: cv));
+            },
+            child: Text(cv.isEmpty ? '?' : Transl.cvNames(cv).l),
+          ),
           trailing: Text(count.toString()),
+          contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
         );
       },
       contentBuilder: (context) => Column(
