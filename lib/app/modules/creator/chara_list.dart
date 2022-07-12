@@ -1,57 +1,52 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/creator/creator_detail.dart';
+import 'package:chaldea/app/modules/creator/chara_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class CvListPage extends StatefulWidget {
-  CvListPage({Key? key}) : super(key: key);
+class CharaListPage extends StatefulWidget {
+  CharaListPage({Key? key}) : super(key: key);
 
   @override
-  _CvListPageState createState() => _CvListPageState();
+  _CharaListPageState createState() => _CharaListPageState();
 }
 
-class _CvListPageState extends State<CvListPage>
-    with SearchableListState<String, CvListPage> {
+class _CharaListPageState extends State<CharaListPage>
+    with SearchableListState<String, CharaListPage> {
   @override
-  Iterable<String> get wholeData => cvs;
+  Iterable<String> get wholeData => charas;
 
-  Map<String, List<Servant>> svtMap = {};
   Map<String, List<CraftEssence>> ceMap = {};
-  List<String> cvs = [];
+  Map<String, List<CommandCode>> ccMap = {};
+  List<String> charas = [];
 
   bool _initiated = false;
 
   void _parse() async {
-    cvs.clear();
-    svtMap.clear();
+    charas.clear();
     ceMap.clear();
+    ccMap.clear();
 
-    void _update<T>(Map<String, List<T>> map, String cv, T card) {
-      final creators = cv.split(RegExp(r'[&＆]+')).map((e) => e.trim()).toSet();
-      creators.add(cv);
-      for (final creator in creators) {
-        map.putIfAbsent(creator.trim(), () => []).add(card);
-      }
-    }
-
-    for (final svt in db.gameData.servants.values) {
-      _update<Servant>(svtMap, svt.profile.cv, svt);
-    }
     for (final ce in db.gameData.craftEssences.values) {
-      if (ce.profile.cv.isNotEmpty) {
-        _update<CraftEssence>(ceMap, ce.profile.cv, ce);
+      for (final chara in ce.extra.unknownCharacters) {
+        ceMap.putIfAbsent(chara, () => []).add(ce);
+      }
+    }
+    for (final cc in db.gameData.commandCodes.values) {
+      for (final chara in cc.extra.unknownCharacters) {
+        ccMap.putIfAbsent(chara, () => []).add(cc);
       }
     }
 
-    cvs = {...svtMap.keys, ...ceMap.keys}.toList();
+    charas = {...ceMap.keys, ...ccMap.keys}.toList();
     final sortKeys = {
-      for (final c in cvs) c: SearchUtil.getLocalizedSort(Transl.cvNames(c))
+      for (final c in charas)
+        c: SearchUtil.getLocalizedSort(Transl.charaNames(c))
     };
-    cvs.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
+    charas.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
 
     if (mounted) {
       setState(() {
@@ -64,7 +59,7 @@ class _CvListPageState extends State<CvListPage>
   void initState() {
     super.initState();
     _parse();
-    options = _CVOptions(
+    options = _CharaOptions(
       onChanged: (_) {
         if (mounted) setState(() {});
       },
@@ -78,7 +73,7 @@ class _CvListPageState extends State<CvListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        title: Text(S.current.info_cv),
+        title: Text(S.current.characters_in_card),
         bottom: showSearchBar ? searchBar : null,
         actions: [searchIcon],
       ),
@@ -94,19 +89,19 @@ class _CvListPageState extends State<CvListPage>
   }
 
   @override
-  bool filter(String cv) => true;
+  bool filter(String chara) => true;
 
   @override
-  Widget listItemBuilder(String cv) {
-    int count = (svtMap[cv]?.length ?? 0) + (ceMap[cv]?.length ?? 0);
+  Widget listItemBuilder(String chara) {
+    int count = (ccMap[chara]?.length ?? 0) + (ceMap[chara]?.length ?? 0);
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
           title: InkWell(
             onTap: () {
-              router.pushPage(CreatorDetail.cv(name: cv));
+              router.pushPage(CharaDetail(name: chara));
             },
-            child: Text(cv.isEmpty ? '?' : Transl.cvNames(cv).l),
+            child: Text(chara.isEmpty ? '?' : Transl.charaNames(chara).l),
           ),
           trailing: Text(count.toString()),
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0),
@@ -115,8 +110,8 @@ class _CvListPageState extends State<CvListPage>
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (svtMap[cv] != null) _cardGrid(svtMap[cv]!),
-          if (ceMap[cv] != null) _cardGrid(ceMap[cv]!),
+          if (ceMap[chara] != null) _cardGrid(ceMap[chara]!),
+          if (ccMap[chara] != null) _cardGrid(ccMap[chara]!),
         ],
       ),
     );
@@ -134,29 +129,29 @@ class _CvListPageState extends State<CvListPage>
   }
 
   @override
-  Widget gridItemBuilder(String cv) =>
+  Widget gridItemBuilder(String chara) =>
       throw UnimplementedError('GridView not designed');
 }
 
-class _CVOptions with SearchOptionsMixin<String> {
-  bool cvName = true;
+class _CharaOptions with SearchOptionsMixin<String> {
+  bool charaName = true;
   bool cardName = true;
   @override
   ValueChanged? onChanged;
 
-  _CvListPageState state;
+  _CharaListPageState state;
 
-  _CVOptions({this.onChanged, required this.state});
+  _CharaOptions({this.onChanged, required this.state});
 
   @override
   Widget builder(BuildContext context, StateSetter setState) {
     return Wrap(
       children: [
         CheckboxWithLabel(
-          value: cvName,
-          label: Text(S.current.info_cv),
+          value: charaName,
+          label: Text(S.current.characters_in_card),
           onChanged: (v) {
-            cvName = v ?? cvName;
+            charaName = v ?? charaName;
             setState(() {});
             updateParent();
           },
@@ -175,18 +170,16 @@ class _CVOptions with SearchOptionsMixin<String> {
   }
 
   @override
-  Iterable<String?> getSummary(String cv) sync* {
-    if (cvName) {
-      yield* getAllKeys(Transl.cvNames(cv));
+  Iterable<String?> getSummary(String chara) sync* {
+    if (charaName) {
+      yield* getAllKeys(Transl.charaNames(chara));
     }
     if (cardName) {
-      for (final svt in state.svtMap[cv] ?? <Servant>[]) {
-        for (final name in svt.allNames) {
-          yield* getAllKeys(Transl.svtNames(name));
-        }
-      }
-      for (final ce in state.ceMap[cv] ?? <CraftEssence>[]) {
+      for (final ce in state.ceMap[chara] ?? <CraftEssence>[]) {
         yield* getAllKeys(ce.lName);
+      }
+      for (final cc in state.ccMap[chara] ?? <CommandCode>[]) {
+        yield* getAllKeys(cc.lName);
       }
     }
   }

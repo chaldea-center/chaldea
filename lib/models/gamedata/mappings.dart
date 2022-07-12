@@ -32,7 +32,8 @@ class Transl<K, V> {
 
   MappingBase<V>? get m => mappings[key];
 
-  static Region get current => db.settings.resolvedPreferredRegions.first;
+  static List<Region> get preferRegions => db.settings.resolvedPreferredRegions;
+  static Region get current => preferRegions.first;
 
   static bool get isJP => current == Region.jp;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
@@ -79,6 +80,7 @@ class Routes {
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
+  static const String characters = '/characters';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';
@@ -239,6 +241,8 @@ class RouteConfiguration {
         return CvListPage();
       case Routes.illustrators:
         return IllustratorListPage();
+      case Routes.characters:
+        return CharaListPage();
       case Routes.stats:
         return GameStatisticsPage();
     }

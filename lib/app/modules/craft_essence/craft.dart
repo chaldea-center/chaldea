@@ -7,6 +7,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/extra_assets_page.dart';
+import 'package:chaldea/app/modules/creator/chara_detail.dart';
 import 'package:chaldea/app/modules/creator/creator_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -390,7 +391,13 @@ class CraftDetailBasePage extends StatelessWidget {
       }
     }
     for (final name in ce.extra.unknownCharacters) {
-      children.add(Text(Transl.charaNames(name).l));
+      children.add(InkWell(
+        child: Text(
+          Transl.charaNames(name).l,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+        onTap: () => router.pushPage(CharaDetail(name: name)),
+      ));
     }
     if (children.isEmpty) {
       return const Text('-');

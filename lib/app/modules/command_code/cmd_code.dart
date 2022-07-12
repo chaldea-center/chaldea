@@ -16,6 +16,7 @@ import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../common/not_found.dart';
+import '../creator/chara_detail.dart';
 import '../creator/creator_detail.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
@@ -277,7 +278,13 @@ class CmdCodeDetailBasePage extends StatelessWidget {
       }
     }
     for (final name in cc.extra.unknownCharacters) {
-      children.add(Text(Transl.charaNames(name).l));
+      children.add(InkWell(
+        child: Text(
+          Transl.charaNames(name).l,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+        onTap: () => router.pushPage(CharaDetail(name: name)),
+      ));
     }
     if (children.isEmpty) {
       return const Text('-');

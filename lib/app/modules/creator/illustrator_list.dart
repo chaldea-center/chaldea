@@ -50,7 +50,12 @@ class _IllustratorListPageState extends State<IllustratorListPage>
 
     illustrators = {...svtMap.keys, ...ceMap.keys, ...codeMap.keys}.toList();
 
-    illustrators.sort2((a) => SearchUtil.getSortAlphabet(a));
+    final sortKeys = {
+      for (final c in illustrators)
+        c: SearchUtil.getLocalizedSort(Transl.illustratorNames(c))
+    };
+    illustrators.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
+
     if (mounted) {
       setState(() {
         _initiated = true;

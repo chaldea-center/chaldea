@@ -108,9 +108,9 @@ class CreatorDetail extends StatelessWidget {
     final servants =
         db.gameData.servants.values.where((svt) => ckSvt(svt)).toList();
     final ces =
-        db.gameData.craftEssences.values.where((svt) => ckCE(svt)).toList();
+        db.gameData.craftEssences.values.where((ce) => ckCE(ce)).toList();
     final ccs =
-        db.gameData.commandCodes.values.where((svt) => ckCC(svt)).toList();
+        db.gameData.commandCodes.values.where((cc) => ckCC(cc)).toList();
     if (servants.isNotEmpty) {
       children.addAll([
         ListTile(title: Text(S.current.servant)),

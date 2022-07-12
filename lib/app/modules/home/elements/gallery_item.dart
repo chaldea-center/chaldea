@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
@@ -100,6 +101,7 @@ class GalleryItem {
         ffo,
         cvList,
         illustratorList,
+        charaList,
         enemyList,
         expCard,
         statistics,
@@ -235,6 +237,14 @@ class GalleryItem {
     icon: FontAwesomeIcons.paintbrush,
     url: Routes.illustrators,
     page: IllustratorListPage(),
+    isDetail: true,
+  );
+  static GalleryItem charaList = GalleryItem(
+    name: 'chara_list',
+    titleBuilder: () => S.current.characters_in_card,
+    icon: FontAwesomeIcons.personRays,
+    url: Routes.characters,
+    page: CharaListPage(),
     isDetail: true,
   );
   static GalleryItem enemyList = GalleryItem(

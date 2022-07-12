@@ -72,4 +72,14 @@ class SearchUtil {
         return getKr(words.toLowerCase())!.toLowerCase();
     }
   }
+
+  static String getLocalizedSort<K>(Transl<K, String> transl) {
+    for (final region in Transl.preferRegions) {
+      final v = transl.m?.ofRegion(region);
+      if (v != null) {
+        return getSortAlphabet(v, region);
+      }
+    }
+    return transl.key.toString();
+  }
 }
