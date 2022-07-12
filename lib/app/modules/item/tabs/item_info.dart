@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -125,6 +127,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   ];
   int _summonCoin = 90;
   int _baseNp = 1;
+  int _offsetNp = 0;
 
   List<Widget> _svtCoinObtain() {
     return [
@@ -148,12 +151,18 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   child: AutoSizeText(
                     '${validCoins[index]}',
                     textAlign: TextAlign.center,
-                    style: _summonCoin == validCoins[index]
-                        ? TextStyle(
-                            color: Theme.of(context).errorColor,
-                            fontWeight: FontWeight.bold,
-                          )
-                        : null,
+                    style: TextStyle(
+                      color: _summonCoin == validCoins[index]
+                          ? Theme.of(context).errorColor
+                          : null,
+                      fontWeight: _summonCoin == validCoins[index]
+                          ? FontWeight.bold
+                          : null,
+                      decoration:
+                          svtCoinOwner?.coin?.summonNum == validCoins[index]
+                              ? TextDecoration.underline
+                              : null,
+                    ),
                     maxLines: 1,
                   ),
                 ),
@@ -170,11 +179,13 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             ...List.generate(
               5,
               (index) {
-                int baseNp = 1 + 5 * index;
+                int baseNp = 1 + 5 * (index + max(0, _offsetNp));
                 return InkWell(
                   onTap: () {
                     setState(() {
                       _baseNp = baseNp;
+                      if (index == 4) _offsetNp += 1;
+                      if (index == 0) _offsetNp = max(0, _offsetNp - 1);
                     });
                   },
                   child: SizedBox.expand(
@@ -182,6 +193,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                       child: AutoSizeText(
                         '$baseNp~${baseNp + 4}',
                         textAlign: TextAlign.center,
+                        minFontSize: 6,
                         style: baseNp == _baseNp
                             ? TextStyle(
                                 color: Theme.of(context).errorColor,

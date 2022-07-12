@@ -7,6 +7,7 @@ import 'package:chaldea/app/descriptors/multi_entry.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class CreatorDetail extends StatelessWidget {
@@ -104,9 +105,12 @@ class CreatorDetail extends StatelessWidget {
     );
     children.add(table);
 
-    final servants = db.gameData.servants.values.where((svt) => ckSvt(svt));
-    final ces = db.gameData.craftEssences.values.where((svt) => ckCE(svt));
-    final ccs = db.gameData.commandCodes.values.where((svt) => ckCC(svt));
+    final servants =
+        db.gameData.servants.values.where((svt) => ckSvt(svt)).toList();
+    final ces =
+        db.gameData.craftEssences.values.where((svt) => ckCE(svt)).toList();
+    final ccs =
+        db.gameData.commandCodes.values.where((svt) => ckCC(svt)).toList();
     if (servants.isNotEmpty) {
       children.addAll([
         ListTile(title: Text(S.current.servant)),
@@ -141,6 +145,9 @@ class CreatorDetail extends StatelessWidget {
         ),
       ]);
     }
+    servants.sort2((e) => e.collectionNo);
+    ces.sort2((e) => e.collectionNo);
+    ccs.sort2((e) => e.collectionNo);
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(

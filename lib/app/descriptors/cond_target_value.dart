@@ -77,7 +77,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () =>
-              combineToRich(context, null, servants(context), '的羁绊等级为$value'),
+              combineToRich(context, null, servants(context), '的羁绊等级达到$value'),
           tw: null,
           na: () => combineToRich(
             context,

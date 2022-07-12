@@ -337,7 +337,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                         _curHistory -= 1;
                       });
                     },
-              icon: Icon(DirectionalIcons.keyboard_arrow_back(context)),
+              icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
               child: ConstrainedBox(
@@ -356,7 +356,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                         _curHistory += 1;
                       });
                     },
-              icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         ),

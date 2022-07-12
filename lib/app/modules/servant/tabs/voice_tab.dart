@@ -315,10 +315,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                   ),
                   for (final cond in line.conds)
                     if (![
-                      VoiceCondType.levelUp,
-                      VoiceCondType.event,
-                      VoiceCondType.birthDay
-                    ].contains(cond.condType))
+                          VoiceCondType.levelUp,
+                          VoiceCondType.event,
+                          VoiceCondType.birthDay
+                        ].contains(cond.condType) &&
+                        !(cond.condType == VoiceCondType.eventEnd &&
+                            cond.value == 0))
                       VoiceCondDescriptor(
                         condType: cond.condType,
                         value: cond.value,

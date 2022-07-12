@@ -187,7 +187,7 @@ class _ServantFilterPageState
               case SvtSkillLevelState.max9:
                 return const Text('999');
               case SvtSkillLevelState.max10:
-                return const Text('310');
+                return const Text('10/10/10');
             }
           },
           onFilterChanged: (value, _) {

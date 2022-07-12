@@ -37,8 +37,11 @@ extension HiveRetryOpen on HiveInterface {
       } catch (e, s) {
         logger.e('open Box<$E> "$name" failed', e, s);
         await Future.delayed(const Duration(seconds: 1));
-        if (n % 2 == 0) {
+        logger.d('deleting box $name');
+        try {
           await deleteBoxFromDisk(name, path: path);
+        } catch (e, s) {
+          logger.e('deleting box failed: $name', e, s);
         }
         if (n >= retry) rethrow;
       }
