@@ -80,14 +80,6 @@ class _ServantFilterPageState
         ]),
         buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
-          title: Text(S.of(context).priority, style: textStyle),
-          options: const [1, 2, 3, 4, 5],
-          values: filterData.priority,
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<int>(
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],
           values: filterData.rarity,
@@ -134,6 +126,14 @@ class _ServantFilterPageState
         //     });
         //   },
         // ),
+        FilterGroup<int>(
+          title: Text(S.of(context).priority, style: textStyle),
+          options: const [1, 2, 3, 4, 5],
+          values: filterData.priority,
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         FilterGroup<SvtPlanScope>(
           title: Text(S.current.filter_plan_not_reached, style: textStyle),
           options: SvtPlanScope.values,
@@ -176,16 +176,24 @@ class _ServantFilterPageState
             update();
           },
         ),
-        // FilterGroup(
-        //   title: Text(S.of(context).filter_skill_lv, style: textStyle),
-        //   options: SvtFilterData.skillLevelData,
-        //   values: filterData.skillLevel,
-        //   onFilterChanged: (value) {
-        //     // object should be the same, need not to update manually
-        //     filterData.skillLevel = value;
-        //     update();
-        //   },
-        // ),
+        FilterGroup<SvtSkillLevelState>(
+          title: Text(S.current.active_skill),
+          options: SvtSkillLevelState.values,
+          values: filterData.activeSkillLevel,
+          optionBuilder: (v) {
+            switch (v) {
+              case SvtSkillLevelState.normal:
+                return const Text('<999');
+              case SvtSkillLevelState.max9:
+                return const Text('999');
+              case SvtSkillLevelState.max10:
+                return const Text('310');
+            }
+          },
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         groupDivider,
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),

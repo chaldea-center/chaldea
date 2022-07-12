@@ -204,6 +204,12 @@ enum SvtPlanScope {
   misc, //fou, grail, bond
 }
 
+enum SvtSkillLevelState {
+  normal,
+  max9,
+  max10,
+}
+
 const _funcEffectMapping = {
   FuncTargetType.self: EffectTarget.self,
   FuncTargetType.ptAll: EffectTarget.ptAll,
@@ -262,7 +268,7 @@ class SvtFilterData with _FilterData {
 
   final planCompletion = FilterGroupData<SvtPlanScope>();
 
-  // FilterGroupData skillLevel;
+  final activeSkillLevel = FilterGroupData<SvtSkillLevelState>();
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
@@ -299,6 +305,7 @@ class SvtFilterData with _FilterData {
         svtClass,
         rarity,
         attribute,
+        activeSkillLevel,
         planCompletion,
         // priority,
         region,

@@ -426,15 +426,18 @@ class ServantListPageState extends State<ServantListPage>
     }
     // svt data filter
     // skill level
-    // if (filterData.skillLevel.options.containsValue(true)) {
-    //   final curSvtState = svtStat.cur;
-    //   if (!svtStat.favorite) return false;
-    //   int lowestSkill = curSvtState.skills.reduce((a, b) => min(a, b));
-    //   if (!filterData.skillLevel.singleValueFilter(
-    //       SvtFilterData.skillLevelData[max(lowestSkill - 8, 0)])) {
-    //     return false;
-    //   }
-    // }
+    if (filterData.activeSkillLevel.options.isNotEmpty) {
+      if (!svtStat.favorite) return false;
+      int lowestSkill = svtStat.cur.skills.reduce((a, b) => min(a, b));
+      final skillState = lowestSkill == 10
+          ? SvtSkillLevelState.max10
+          : lowestSkill == 9
+              ? SvtSkillLevelState.max9
+              : SvtSkillLevelState.normal;
+      if (!filterData.activeSkillLevel.matchOne(skillState)) {
+        return false;
+      }
+    }
     // class name
     if (!filterData.svtClass.matchOne(svt.className, compares: {
       SvtClass.caster: (v, o) =>
