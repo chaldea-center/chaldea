@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/packages/app_info.dart';
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
@@ -20,6 +21,7 @@ class UserData {
   static const int modelVersion = 4;
 
   final int version;
+  final String appVer;
   @JsonKey(ignore: true)
   int previousVersion;
 
@@ -46,6 +48,7 @@ class UserData {
 
   UserData({
     int? version,
+    String? appVer,
     this.previousVersion = 0,
     int curUserKey = 0,
     List<User>? users,
@@ -54,6 +57,7 @@ class UserData {
     this.preferAprilFoolIcon = false,
     Map<int, String?>? customSvtIcon,
   })  : version = UserData.modelVersion,
+        appVer = AppInfo.versionString,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(

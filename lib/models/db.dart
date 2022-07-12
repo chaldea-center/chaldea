@@ -230,7 +230,8 @@ class _Database {
       if (memory) utf8.encode(jsonEncode(userData)),
     ];
     for (var obj in objs) {
-      String filename = '$timeStamp${obj is FilePlus ? 'd' : 'm'}.json';
+      String filename =
+          '$timeStamp${obj is FilePlus ? 'd' : 'm-${userData.appVer}'}.json';
       await FilePlus(joinPaths(paths.backupDir, filename)).writeAsBytes(obj);
       _saved.add(filename);
     }
