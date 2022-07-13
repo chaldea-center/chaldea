@@ -55,8 +55,6 @@ User _$UserFromJson(Map json) => $checkedCreate(
         final val = User(
           name: $checkedConvert('name', (v) => v as String? ?? 'Gudako'),
           isGirl: $checkedConvert('isGirl', (v) => v as bool? ?? true),
-          use6thDrops:
-              $checkedConvert('use6thDrops', (v) => v as bool? ?? true),
           region: $checkedConvert('region',
               (v) => $enumDecodeNullable(_$RegionEnumMap, v) ?? Region.jp),
           servants: $checkedConvert(
@@ -93,8 +91,6 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           summons: $checkedConvert('summons',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
-          use6thDropRate:
-              $checkedConvert('use6thDropRate', (v) => v as bool? ?? true),
           freeLPParams: $checkedConvert(
               'freeLPParams',
               (v) => v == null
@@ -123,7 +119,6 @@ User _$UserFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'isGirl': instance.isGirl,
-      'use6thDrops': instance.use6thDrops,
       'region': _$RegionEnumMap[instance.region],
       'servants':
           instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
@@ -136,7 +131,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
-      'use6thDropRate': instance.use6thDropRate,
       'freeLPParams': instance.freeLPParams.toJson(),
       'luckyBagSvtScores': instance.luckyBagSvtScores.map(
           (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),

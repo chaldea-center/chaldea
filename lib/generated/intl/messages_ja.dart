@@ -83,6 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("フィードバックの内容を記入してください"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("ブラックリストに追加"),
+        "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP効率"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("データフォルダ"),

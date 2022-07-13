@@ -137,7 +137,6 @@ class UserData {
       final user = User(
         name: oldUser['name'] ?? 'unknown',
         isGirl: (oldUser['isMasterGirl'] as bool?) ?? true,
-        use6thDrops: (oldUser['use6thDropRate'] as bool?) ?? true,
         region: {
               'jp': Region.jp,
               'cn': Region.cn,
@@ -215,7 +214,6 @@ const kSvtPlanMaxNum = 5;
 class User {
   String name;
   bool isGirl;
-  bool use6thDrops;
 
   Region region;
   Map<int, SvtStatus> servants;
@@ -234,7 +232,6 @@ class User {
   Map<int, int> mysticCodes;
   Set<String> summons;
 
-  bool use6thDropRate;
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
 
@@ -243,7 +240,6 @@ class User {
   User({
     this.name = 'Gudako',
     this.isGirl = true,
-    this.use6thDrops = true,
     this.region = Region.jp,
     Map<int, SvtStatus>? servants,
     List<UserPlan>? plans,
@@ -253,7 +249,6 @@ class User {
     Map<int, int?>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
-    this.use6thDropRate = true,
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,

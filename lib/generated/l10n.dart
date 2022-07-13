@@ -218,6 +218,17 @@ class S {
     );
   }
 
+  /// `Anniversary`
+  String get anniversary {
+    return Intl.message(
+      'Anniversary',
+      name: 'anniversary',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `AP`
   String get ap {
     return Intl.message(

@@ -88,6 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("请填写反馈内容"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名单"),
+        "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("数据目录"),

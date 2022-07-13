@@ -46,7 +46,7 @@ class _QuestCardState extends State<QuestCard> {
   bool? _use6th;
   bool preferApRate = false;
 
-  bool get use6th => _use6th ?? db.curUser.use6thDropRate;
+  bool get use6th => _use6th ?? db.curUser.freeLPParams.use6th;
 
   bool get show6th {
     return db.gameData.dropRate

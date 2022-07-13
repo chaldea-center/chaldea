@@ -23,7 +23,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     db.saveSettings();
   }
 
-  bool use6th = db.curUser.use6thDropRate;
+  bool use6th = db.curUser.freeLPParams.use6th;
 
   @override
   Widget build(BuildContext context) {

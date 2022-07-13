@@ -91,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please add feedback details"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
+        "anniversary": MessageLookupByLibrary.simpleMessage("Anniversary"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
