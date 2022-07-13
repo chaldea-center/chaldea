@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -15,6 +16,7 @@ class SummonUtil {
     bool showStar = true,
     bool showFavorite = true,
     bool showCategory = true,
+    bool showNpLv = true,
   }) {
     return cardGrid(
       ids: block.ids,
@@ -30,6 +32,7 @@ class SummonUtil {
             weight: showProb ? block.weight / block.ids.length : null,
             star: showStar && block.ids.length == 1,
             favorite: showFavorite && db.curUser.svtStatusOf(id).favorite,
+            npLv: showNpLv,
           );
         } else {
           final ce = db.gameData.craftEssences[id];
@@ -89,6 +92,7 @@ class SummonUtil {
     bool star = false,
     bool favorite = false,
     bool category = true,
+    bool npLv = true,
   }) {
     return Stack(
       alignment: Alignment.topRight,
@@ -98,12 +102,8 @@ class SummonUtil {
           card: card,
           weight: weight,
           showCategory: category,
+          showNpLv: npLv,
         ),
-        // if (star) ...[
-        //   Icon(Icons.star, color: Colors.yellow, size: 18),
-        //   Icon(Icons.star_outline, color: Colors.redAccent, size: 18),
-        // ],
-
         if (favorite || star)
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -144,9 +144,14 @@ class SummonUtil {
     required GameCardMixin? card,
     double? weight,
     bool showCategory = false,
+    bool showNpLv = true,
   }) {
     if (card == null) return Container();
     List<String> texts = [];
+    if (showNpLv && card is Servant) {
+      texts.add('NP${card.status.cur.npLv}');
+    }
+
     if (weight != null) {
       texts.add('${_removeDoubleTrailing(weight)}%');
     }
@@ -168,8 +173,8 @@ class SummonUtil {
         text: texts.join('\n'),
         width: 56,
         textAlign: TextAlign.right,
-        textStyle: const TextStyle(fontSize: 12),
-        padding: const EdgeInsets.only(bottom: 0, left: 15),
+        textStyle: const TextStyle(fontSize: 11),
+        padding: const EdgeInsets.only(bottom: 0, left: 15, right: 4),
       ),
     );
   }

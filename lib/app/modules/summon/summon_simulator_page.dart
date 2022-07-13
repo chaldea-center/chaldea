@@ -256,6 +256,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           card: svt,
           weight: weight,
           showCategory: true,
+          showNpLv: false,
         ));
       });
     });
