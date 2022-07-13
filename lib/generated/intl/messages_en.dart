@@ -702,6 +702,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
+        "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
+            "Some quests\' start time is not correct"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),

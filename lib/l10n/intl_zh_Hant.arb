@@ -450,6 +450,7 @@
   "quest_reward": "通關獎勵",
   "quest_reward_short": "獎勵",
   "random": "隨機",
+  "rankup_timeline_hint": null,
   "rarity": "稀有度",
   "rate_app_store": "App Store評分",
   "rate_play_store": "Google Play評分",

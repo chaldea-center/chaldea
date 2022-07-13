@@ -450,6 +450,7 @@
   "quest_reward": "通关奖励",
   "quest_reward_short": "奖励",
   "random": "随机",
+  "rankup_timeline_hint": "部分关卡时间与实际开放时间不符",
   "rarity": "稀有度",
   "rate_app_store": "App Store评分",
   "rate_play_store": "Google Play评分",

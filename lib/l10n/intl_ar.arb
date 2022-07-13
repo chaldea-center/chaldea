@@ -450,6 +450,7 @@
   "quest_reward": null,
   "quest_reward_short": null,
   "random": null,
+  "rankup_timeline_hint": null,
   "rarity": "الندرة",
   "rate_app_store": "قيمنا على آب ستور",
   "rate_play_store": "قيمنا على متجر بلاي",

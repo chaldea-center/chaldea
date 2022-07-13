@@ -594,6 +594,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("奖励"),
         "random": MessageLookupByLibrary.simpleMessage("随机"),
+        "rankup_timeline_hint":
+            MessageLookupByLibrary.simpleMessage("部分关卡时间与实际开放时间不符"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
         "rate_play_store":

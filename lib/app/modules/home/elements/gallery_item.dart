@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
+import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -103,6 +104,7 @@ class GalleryItem {
         illustratorList,
         charaList,
         enemyList,
+        svtQuestTimeline,
         expCard,
         statistics,
         importData,
@@ -252,6 +254,13 @@ class GalleryItem {
     titleBuilder: () => S.current.enemy_list,
     icon: FontAwesomeIcons.dragon,
     page: EnemyListPage(),
+    isDetail: false,
+  );
+  static GalleryItem svtQuestTimeline = GalleryItem(
+    name: 'svt_quest_timeline',
+    titleBuilder: () => S.current.interlude_and_rankup,
+    icon: FontAwesomeIcons.timeline,
+    page: const SvtQuestTimeline(),
     isDetail: false,
   );
   static GalleryItem expCard = GalleryItem(

@@ -243,6 +243,7 @@ class MappingData {
   final MappingList<int> svtRelease;
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
+  final Map<int, MappingBase<int>> questRelease;
   final EnumMapping enums;
 
   MappingData({
@@ -281,6 +282,7 @@ class MappingData {
     MappingList<int>? svtRelease,
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
+    this.questRelease = const {},
     EnumMapping? enums,
   })  : svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),

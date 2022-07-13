@@ -317,7 +317,7 @@ class BaseGift {
         };
         break;
       case GiftType.questRewardIcon:
-        icon ??= Atlas.assetItem(9);
+        icon ??= Atlas.assetItem(objectId);
         break;
       case GiftType.eventPointBuff:
         break;

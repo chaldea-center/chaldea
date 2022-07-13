@@ -450,6 +450,7 @@
   "quest_reward": "보너스",
   "quest_reward_short": "보너스",
   "random": null,
+  "rankup_timeline_hint": null,
   "rarity": "레어도",
   "rate_app_store": "App Store에서 평가",
   "rate_play_store": "Google Play에서 평가",

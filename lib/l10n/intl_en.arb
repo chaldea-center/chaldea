@@ -450,6 +450,7 @@
   "quest_reward": "Bonus",
   "quest_reward_short": "Bonus",
   "random": "Random",
+  "rankup_timeline_hint": "Some quests' start time is not correct",
   "rarity": "Rarity",
   "rate_app_store": "Rate on App Store",
   "rate_play_store": "Rate on Google Play",

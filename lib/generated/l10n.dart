@@ -5021,6 +5021,17 @@ class S {
     );
   }
 
+  /// `Some quests' start time is not correct`
+  String get rankup_timeline_hint {
+    return Intl.message(
+      'Some quests\' start time is not correct',
+      name: 'rankup_timeline_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Rarity`
   String get rarity {
     return Intl.message(

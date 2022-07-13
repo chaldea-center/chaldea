@@ -450,6 +450,7 @@
   "quest_reward": "クエスト報酬",
   "quest_reward_short": "報酬",
   "random": null,
+  "rankup_timeline_hint": null,
   "rarity": "レアリティ",
   "rate_app_store": "App Storeで評価",
   "rate_play_store": "Google Playで評価",
