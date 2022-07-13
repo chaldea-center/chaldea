@@ -304,7 +304,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           title: S.of(context).noble_phantasm_level,
           start: status.cur.npLv,
           end: plan.npLv,
-          minVal: 1,
+          minVal: 0,
           maxVal: 5,
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;

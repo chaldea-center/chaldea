@@ -533,7 +533,7 @@ class SvtPlan {
       }
     }
     if (_npLv != null) {
-      _npLv = _npLv!.clamp2(lower?.npLv ?? 1, 5);
+      _npLv = _npLv!.clamp2(lower?.npLv ?? 0, 5);
     }
   }
 
