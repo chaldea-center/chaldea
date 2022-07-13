@@ -82,7 +82,11 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             '$targetNum runs of quests ',
             quests(context),
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            '$targetNum 퀘스트 탐색 ',
+            quests(context),
+          ),
         );
       case CondType.svtLimit:
         return localized(
@@ -96,7 +100,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             servants(context),
             ' at ascension $targetNum',
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            null,
+            servants(context),
+            '영기재림 $targetNum 단계',
+          ),
         );
       case CondType.svtFriendship:
         return localized(
@@ -110,7 +119,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             servants(context),
             ' at bond level $targetNum',
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            null,
+            servants(context),
+            ' 인연도 레벨 $targetNum',
+          ),
         );
       case CondType.svtGet:
         return localized(
@@ -123,7 +137,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             servants(context),
             ' in Spirit Origin Collection',
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            null,
+            servants(context),
+            ' 정식가입',
+          ),
         );
       case CondType.eventEnd:
         return localized(
@@ -132,7 +151,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () =>
               combineToRich(context, 'Event ', event(context), ' has ended'),
-          kr: null,
+          kr: () => combineToRich(context, '이벤트 ', event(context), ' 종료'),
         );
       case CondType.svtHaving:
         return localized(
@@ -149,7 +168,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: null,
           tw: null,
           na: () => text('Servant Recovered'),
-          kr: null,
+          kr: () => text('서번트 회복되다'),
         );
       case CondType.limitCountAbove:
         return localized(
@@ -163,7 +182,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             servants(context),
             ' at ascension ≥ $targetNum',
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            '서번트',
+            servants(context),
+            ' 재림 ≥ $targetNum',
+          ),
         );
       case CondType.limitCountBelow:
         return localized(
@@ -177,7 +201,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             servants(context),
             ' at ascension ≤ $targetNum',
           ),
-          kr: null,
+          kr: () => combineToRich(
+            context,
+            '서번트',
+            servants(context),
+            ' 재림 ≥ $targetNum',
+          ),
         );
       case CondType.svtLevelClassNum:
         List<int> clsIds = [];
@@ -306,7 +335,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('完成任务 $targets'),
           tw: null,
           na: () => text('Archive mission $targets'),
-          kr: null,
+          kr: () => text('미션을 완수하다 $targets'),
         );
       case CondType.eventTotalPoint:
         return localized(
@@ -314,7 +343,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('获得活动点数$targetNum点'),
           tw: null,
           na: () => text('Reach $targetNum event points'),
-          kr: null,
+          kr: () => text('이벤트 포인트 $targetNum점'),
         );
       case CondType.eventMissionClear:
         final missionMap = {for (final m in missions) m.id: m};
@@ -329,7 +358,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             tw: null,
             na: () => combineToRich(context, 'Clear all missions of',
                 missionList(context, missionMap)),
-            kr: null,
+            kr: () => combineToRich(
+                context, '다음 모든 미션을 완료', missionList(context, missionMap)),
           );
         } else {
           return localized(
@@ -342,7 +372,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
               'Clear $targetNum different missions from ',
               missionList(context, missionMap),
             ),
-            kr: null,
+            kr: () => combineToRich(context, '완료$targetNum 다른 미션들',
+                missionList(context, missionMap)),
           );
         }
       case CondType.missionConditionDetail:
@@ -361,7 +392,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('$time后开放'),
           tw: null,
           na: () => text('After $time'),
-          kr: null,
+          kr: () => text('$time 개방'),
         );
       default:
         break;
@@ -371,7 +402,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
       tw: null,
       na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
-      kr: null,
+      kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
     );
   }
 }

@@ -37,7 +37,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             'Clear $targetNum quests with fields ',
             traits(context),
           ),
-          kr: null,
+          kr: () => combineToRich(
+              context, null, traits(context), '필드의 프리 퀘스트를 $targetNum회 클리어'),
         );
       case DetailCondType.questClearNum1:
       case DetailCondType.questClearNum2:
@@ -47,7 +48,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             cn: () => text('通关$targetNum次任意关卡'),
             tw: null,
             na: () => text('Complete any quest $targetNum times'),
-            kr: null,
+            kr: () => text('퀘스트를 $targetNum회 클리어'),
           );
         } else {
           return localized(
@@ -58,7 +59,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             tw: null,
             na: () => combineToRich(
                 context, '$targetNum runs of quests ', quests(context)),
-            kr: null,
+            kr: () => combineToRich(
+                context, '아래의 퀘스트를 $targetNum회 클리어', quests(context)),
           );
         }
       case DetailCondType.questClearNumIncludingGrailFront:
@@ -68,7 +70,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () => text(
               'Clear any quest including grail front quest $targetNum times'),
-          kr: null,
+          kr: () => text('퀘스트를 (성배전선 포함) $targetNum회 클리어'),
         );
       case DetailCondType.mainQuestDone:
         return localized(
@@ -77,7 +79,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () =>
               text('Clear any main quest in Arc 1 and Arc 2 $targetNum times'),
-          kr: null,
+          kr: () => text('1부 또는 2부의 메인 퀘스트를 $targetNum회 클리어'),
         );
       case DetailCondType.enemyKillNum:
         return localized(
@@ -91,7 +93,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             'Defeat $targetNum from enemies ',
             servants(context),
           ),
-          kr: null,
+          kr: () => combineToRich(
+              context, null, servants(context), '계열의 적을 $targetNum마리 처치'),
         );
       case DetailCondType.defeatEnemyIndividuality:
       case DetailCondType.enemyIndividualityKillNum:
@@ -103,7 +106,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () => combineToRich(context,
               'Defeat $targetNum enemies with traits ', traits(context)),
-          kr: null,
+          kr: () => combineToRich(
+              context, null, traits(context), '속성을 가진 적을 $targetNum마리 처치'),
         );
       case DetailCondType.defeatServantClass:
         return localized(
@@ -114,7 +118,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () => combineToRich(context,
               'Defeat $targetNum servants with class ', svtClasses(context)),
-          kr: null,
+          kr: () => combineToRich(
+              context, null, svtClasses(context), '클래스의 서번트를 $targetNum기 처치'),
         );
       case DetailCondType.defeatEnemyClass:
         return localized(
@@ -128,7 +133,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             'Defeat $targetNum enemies with class ',
             svtClasses(context),
           ),
-          kr: null,
+          kr: () => combineToRich(
+              context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치'),
         );
       case DetailCondType.defeatEnemyNotServantClass:
         return localized(
@@ -143,7 +149,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             svtClasses(context),
             ' (excluding Servants and certain bosses)',
           ),
-          kr: null,
+          kr: () => combineToRich(context, null, svtClasses(context),
+              '클래스의 적을 $targetNum마리 처치 (서번트 및 일부 보스 등은 제외)'),
         );
       case DetailCondType.battleSvtClassInDeck:
         return localized(
@@ -158,7 +165,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             svtClasses(context),
             ' in your Party and complete any quest $targetNum times',
           ),
-          kr: null,
+          kr: () => combineToRich(context, null, svtClasses(context),
+              '클래스의 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case DetailCondType.itemGetBattle:
       case DetailCondType.itemGetTotal:
@@ -174,7 +182,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             items(context),
             ' as battle drop',
           ),
-          kr: null,
+          kr: () => combineToRich(
+              context, '전리품으로 ', items(context), ' 중 하나를 $targetNum개 획득'),
         );
       case DetailCondType.battleSvtIndividualityInDeck:
         return localized(
@@ -189,7 +198,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
             traits(context),
             ' in your Party and complete Quests $targetNum times',
           ),
-          kr: null,
+          kr: () => combineToRich(context, null, traits(context),
+              '특성을 가진 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case DetailCondType.battleSvtIdInDeck1:
       case DetailCondType.battleSvtIdInDeck2:
@@ -201,7 +211,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           tw: null,
           na: () => combineToRich(context, 'Put servants ', servants(context),
               ' in your Party and complete Quests $targetNum times'),
-          kr: null,
+          kr: () => combineToRich(context, null, servants(context),
+              '를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case DetailCondType.svtGetBattle:
         return localized(
@@ -209,7 +220,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('获取$targetNum个种火作为战利品'),
           tw: null,
           na: () => text('Acquire $targetNum embers through battle'),
-          kr: null,
+          kr: () => text('전리품으로 종화를 $targetNum개 획득'),
         );
       case DetailCondType.friendPointSummon:
         return localized(
@@ -217,7 +228,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => text('完成$targetNum次友情点召唤'),
           tw: null,
           na: () => text('Perform $targetNum Friend Point Summons'),
-          kr: null,
+          kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
         );
     }
     return localized(
@@ -227,7 +238,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       tw: null,
       na: () => text(
           'Unknown CondDetail(${detail.missionCondType}): $targetIds, $targetNum'),
-      kr: null,
+      kr: () =>
+          text('알 수 없는 조건(${detail.missionCondType}): $targetIds, $targetNum'),
     );
   }
 }
