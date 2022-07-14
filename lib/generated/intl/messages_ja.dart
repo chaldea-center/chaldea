@@ -261,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("レベル"),
+        "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("同じクラス"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("種火計算"),
         "failed": MessageLookupByLibrary.simpleMessage("失敗"),

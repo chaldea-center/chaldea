@@ -170,6 +170,7 @@
   "exchange_ticket": "Exchange Ticket",
   "exchange_ticket_short": "Ticket",
   "exp_card_plan_lv": "Niveles",
+  "exp_card_plan_next": null,
   "exp_card_same_class": "Misma Clase",
   "exp_card_title": "Exp Card",
   "failed": "Falló",

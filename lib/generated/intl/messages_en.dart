@@ -298,6 +298,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("Levels"),
+        "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "exp_card_same_class":
             MessageLookupByLibrary.simpleMessage("Same Class"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),

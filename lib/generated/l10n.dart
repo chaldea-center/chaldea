@@ -1934,6 +1934,17 @@ class S {
     );
   }
 
+  /// `NEXT`
+  String get exp_card_plan_next {
+    return Intl.message(
+      'NEXT',
+      name: 'exp_card_plan_next',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Same Class`
   String get exp_card_same_class {
     return Intl.message(

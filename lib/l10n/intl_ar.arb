@@ -170,6 +170,7 @@
   "exchange_ticket": "تذكرة المبادلة",
   "exchange_ticket_short": "التذكرة",
   "exp_card_plan_lv": "المستويات",
+  "exp_card_plan_next": null,
   "exp_card_same_class": "نفس الكلاس",
   "exp_card_title": "بطاقة التطوير",
   "failed": "فشل",

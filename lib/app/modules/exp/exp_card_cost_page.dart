@@ -24,12 +24,14 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
 
   late TextEditingController _startController;
   late TextEditingController _endController;
+  late TextEditingController _nextController;
 
   @override
   void initState() {
     super.initState();
     _startController = TextEditingController(text: data.startLv.toString());
     _endController = TextEditingController(text: data.endLv.toString());
+    _nextController = TextEditingController(text: data.endLv.toString());
   }
 
   @override
@@ -37,6 +39,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     super.dispose();
     _startController.dispose();
     _endController.dispose();
+    _nextController.dispose();
   }
 
   @override
@@ -45,23 +48,26 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.exp_card_title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              SimpleCancelOkDialog(
-                scrollable: true,
-                title: Text(S.current.help),
-                content: const Text('Help messages'),
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.help_outline),
-            tooltip: S.current.help,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       SimpleCancelOkDialog(
+        //         scrollable: true,
+        //         title: Text(S.current.help),
+        //         content: const Text('Help messages'),
+        //       ).showDialog(context);
+        //     },
+        //     icon: const Icon(Icons.help_outline),
+        //     tooltip: S.current.help,
+        //   ),
+        // ],
       ),
       body: ListView(
         children: [
-          selector,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: selector,
+          ),
           kDefaultDivider,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -95,64 +101,96 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
   ExpUpData data = ExpUpData();
 
   Widget get selector {
+    Widget _oneGroup(String text, List<Widget> children) {
+      return Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(text),
+          const SizedBox(width: 4),
+          ...children,
+        ],
+      );
+    }
+
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 4,
+      spacing: 16,
       children: [
-        Text(S.current.servant),
-        DropdownButton<int>(
-          value: data.rarity,
-          items: List.generate(
-            6,
-            (index) => DropdownMenuItem(
-              value: 5 - index,
-              child: Text('${5 - index}$kStarChar'),
+        _oneGroup(S.current.exp_card_plan_lv, [
+          SizedBox(
+            width: 48,
+            child: TextFormField(
+              controller: _startController,
+              decoration: const InputDecoration(
+                counter: SizedBox(),
+                isDense: true,
+              ),
+              maxLength: 3,
+              textAlign: TextAlign.center,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: (s) {
+                _onChanged();
+                setState(() {});
+              },
             ),
           ),
-          onChanged: (v) => setState(() {
-            data.rarity = v ?? data.rarity;
-          }),
-        ),
-        const SizedBox(width: 16),
-        Text(S.current.exp_card_plan_lv),
-        SizedBox(
-          width: 48,
-          child: TextFormField(
-            controller: _startController,
-            decoration: const InputDecoration(
-              counter: SizedBox(),
-              isDense: true,
+          const Text(' → '),
+          // Text(' ${data.startLv} -> ${data.endLv} '),
+          SizedBox(
+            width: 48,
+            child: TextFormField(
+              controller: _endController,
+              decoration: const InputDecoration(
+                counter: SizedBox(),
+                isDense: true,
+              ),
+              maxLength: 3,
+              textAlign: TextAlign.center,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: (s) {
+                _onChanged();
+                setState(() {});
+              },
             ),
-            maxLength: 3,
-            textAlign: TextAlign.center,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: (s) {
-              _onChanged();
-              setState(() {});
-            },
           ),
-        ),
-        const Text(' → '),
-        // Text(' ${data.startLv} -> ${data.endLv} '),
-        SizedBox(
-          width: 48,
-          child: TextFormField(
-            controller: _endController,
-            decoration: const InputDecoration(
-              counter: SizedBox(),
-              isDense: true,
+        ]),
+        _oneGroup(S.current.servant, [
+          DropdownButton<int>(
+            value: data.rarity,
+            items: List.generate(
+              6,
+              (index) => DropdownMenuItem(
+                value: 5 - index,
+                child: Text('${5 - index}$kStarChar'),
+              ),
             ),
-            maxLength: 3,
-            textAlign: TextAlign.center,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: (s) {
-              _onChanged();
-              setState(() {});
-            },
+            onChanged: (v) => setState(() {
+              data.rarity = v ?? data.rarity;
+            }),
+            itemHeight: null,
+            isDense: true,
           ),
-        ),
-        const Padding(padding: EdgeInsets.only(right: 16)),
+        ]),
+        _oneGroup(S.current.exp_card_plan_next, [
+          SizedBox(
+            width: 120,
+            child: TextFormField(
+              controller: _nextController,
+              decoration: const InputDecoration(
+                counter: SizedBox(),
+                isDense: true,
+              ),
+              // maxLength: ,
+              textAlign: TextAlign.center,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: (s) {
+                _onChanged();
+                setState(() {});
+              },
+            ),
+          ),
+        ]),
       ],
     );
   }
@@ -167,16 +205,16 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       data.endLv = b;
     }
     data.endLv = max(data.startLv, data.endLv);
+    data.next = max(0, int.tryParse(_nextController.text) ?? 0);
   }
 
   Widget _cardIcon(int rarity) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CachedImage(
-        imageUrl:
-            'https://static.atlasacademy.io/JP/Faces/f_9770${rarity}000_bordered.png',
-        width: 132 * 0.2,
-        height: 144 * 0.2,
+        imageUrl: Atlas.asset('/Faces/f_9770${rarity}000_bordered.png'),
+        width: 132 * 0.25,
+        height: 144 * 0.25,
       ),
     );
   }
@@ -186,8 +224,8 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CachedImage(
         imageUrl: item.borderedIcon,
-        width: 132 * 0.2,
-        height: 144 * 0.2,
+        width: 132 * 0.25,
+        height: 144 * 0.25,
       ),
     );
   }
@@ -256,8 +294,8 @@ class ExpUpData {
   int get rarity2 => rarity == 0 ? 2 : rarity;
 
   int startLv;
-
   int endLv;
+  int next;
 
   List<String> stageNames = [];
   List<int> qpStages = [];
@@ -265,7 +303,7 @@ class ExpUpData {
   List<int> grailStages = [];
   List<int> coinStages = [];
 
-  ExpUpData({this.rarity = 5, this.startLv = 1, this.endLv = 90})
+  ExpUpData({this.rarity = 5, this.startLv = 1, this.endLv = 90, this.next = 0})
       : assert(rarity >= 0 && rarity <= 5);
 
   void calculate({int expCardRarity = 4, bool sameClass = true}) {
@@ -290,9 +328,11 @@ class ExpUpData {
         grailCost[key]?.qp ?? 0));
     int lv = startLv;
     List<int> addedLvs = [];
+    int _nextExp = next;
     while (lv < endLv) {
       int qp = 0, cards = 0, grail = 0, coin = 0;
       String stageName;
+      if (_nextExp > 0) addedLvs.add(lv);
       if (!addedLvs.contains(lv) && grailLvQp[lv] != null) {
         coin = lv >= 100 && lv % 2 == 0 ? 30 : 0;
         qp += grailLvQp[lv]!;
@@ -304,14 +344,23 @@ class ExpUpData {
         addedLvs.add(lv);
         stageName = lv.toString();
       } else {
-        int curExp = svt.expGrowth[lv - 1];
         int nextUpgrade = Maths.min(
             [...grailLvQp.keys, ...ascensionLevels.keys].where((e) => e > lv),
             120);
         if (nextUpgrade > endLv) {
           nextUpgrade = endLv;
         }
+
         stageName = '$lv→$nextUpgrade';
+        int curExp = svt.expGrowth[lv - 1];
+        if (_nextExp > 0 && lv < 120) {
+          int curLvExp = svt.expGrowth[lv] - curExp;
+          _nextExp = min(_nextExp, curLvExp);
+          stageName = '$lv($_nextExp)→$nextUpgrade';
+          curExp = svt.expGrowth[lv] - _nextExp;
+          _nextExp = 0;
+        }
+
         int expDemand = svt.expGrowth[nextUpgrade - 1] - curExp;
         cards = (expDemand / expPerCard).ceil();
         int usedCards = 0;
@@ -334,7 +383,7 @@ class ExpUpData {
     }
 
     //sum
-    stageNames.insert(0, '$startLv->$endLv');
+    stageNames.insert(0, '$startLv→$endLv');
     expStages.insert(0, Maths.sum(expStages));
     qpStages.insert(0, Maths.sum(qpStages));
     grailStages.insert(0, Maths.sum(grailStages));

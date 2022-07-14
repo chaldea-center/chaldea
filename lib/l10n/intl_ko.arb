@@ -170,6 +170,7 @@
   "exchange_ticket": "교환 티켓",
   "exchange_ticket_short": "티켓",
   "exp_card_plan_lv": "레벨",
+  "exp_card_plan_next": null,
   "exp_card_same_class": "같은 클래스",
   "exp_card_title": "경험치 카드",
   "failed": "실패",

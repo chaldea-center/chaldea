@@ -170,6 +170,7 @@
   "exchange_ticket": "素材交換券",
   "exchange_ticket_short": "交換券",
   "exp_card_plan_lv": "等級",
+  "exp_card_plan_next": null,
   "exp_card_same_class": "相同職階",
   "exp_card_title": "種火需求",
   "failed": "失敗",
