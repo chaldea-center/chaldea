@@ -62,7 +62,9 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       leading: db.getIconImage(skill.icon, width: 33, aspectRatio: 1),
       title: _wrapSkillAdd(Text(skill.lName.l), true),
-      subtitle: Transl.isJP || hideDetail || skill.lName.l == skill.name
+      subtitle: Transl.isJP ||
+              hideDetail ||
+              (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
           ? null
           : _wrapSkillAdd(Text(skill.name), false),
       trailing: cd0 <= 0 && cd1 <= 0

@@ -535,14 +535,18 @@ class _QuestCardState extends State<QuestCard> {
             double apRate = quest.consume / dropRate;
             text = apRate >= 1000
                 ? apRate.toInt().toString()
-                : apRate.format(precision: 4, maxDigits: 4);
+                : apRate.format(precision: 3, maxDigits: 3);
           }
         } else {
-          text = dropRate.format(percent: true, maxDigits: 4);
+          text = dropRate.format(percent: true, precision: 3, maxDigits: 3);
         }
       }
       if (text != null) {
-        text = '×${drop.num.format()}\n$text';
+        if (drop.num == 1) {
+          text = ' \n$text';
+        } else {
+          text = '×${drop.num.format(minVal: 999)}\n$text';
+        }
       }
       children.add(GameCardMixin.anyCardItemBuilder(
         context: context,
