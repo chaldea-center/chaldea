@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -273,14 +274,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
-      // if (event.banner != null)
-      //   CustomTableRow(children: [
-      //     TableCellData(text: 'Banner', isHeader: true),
-      //     TableCellData(
-      //       flex: 3,
-      //       child: Center(child: db.getIconImage(event.banner, height: 48)),
-      //     ),
-      //   ]),
     ];
     String _timeText(Region r, int? start, int? end) =>
         '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
@@ -626,6 +619,21 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               ),
             )
         ],
+      ));
+    }
+
+    if (event.extra.relatedSummons.isNotEmpty) {
+      children.add(ListTile(title: Text(S.current.summon)));
+      children.add(TileGroup(
+        children: List.generate(event.extra.relatedSummons.length, (index) {
+          final summonKey = event.extra.relatedSummons[index];
+          final summon = db.gameData.wiki.summons[summonKey];
+          return ListTile(
+            dense: true,
+            title: Text(summon == null ? summonKey : summon.lName),
+            onTap: summon == null ? null : () => summon.routeTo(),
+          );
+        }),
       ));
     }
 

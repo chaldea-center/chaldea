@@ -324,6 +324,10 @@ class LimitedSummon {
 
   String get route => Routes.summonI(id);
 
+  void routeTo() {
+    router.push(url: route);
+  }
+
   List<int> allCards({
     bool svt = false,
     bool ce = false,
