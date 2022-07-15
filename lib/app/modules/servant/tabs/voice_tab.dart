@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as pathlib;
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/hosts.dart';
@@ -347,16 +350,25 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                   } else {
                     return IconButton(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      onPressed: () {
-                        onPlayVoice(line).catchError((e, s) async {
-                          EasyLoading.showError(
-                              'Error playing audio (May not support)\n$e');
-                          logger.e('Error playing audio:\n${line.audioAssets}',
-                              e, s);
-                          _playing = null;
-                        });
+                      onPressed: () async {
+                        if (playing == line.hashCode) {
+                          await audioPlayer.stop();
+                          playing = null;
+                        } else {
+                          onPlayVoice(line).catchError((e, s) async {
+                            EasyLoading.showError(
+                                'Error playing audio (May not support)\n$e');
+                            logger.e(
+                                'Error playing audio:\n${line.audioAssets}',
+                                e,
+                                s);
+                            playing = null;
+                          });
+                        }
                       },
-                      icon: const Icon(Icons.play_circle_outline),
+                      icon: Icon(playing == line.hashCode
+                          ? Icons.pause_circle_outline
+                          : Icons.play_circle_outline),
                       tooltip: 'Play',
                     );
                   }
@@ -394,14 +406,15 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                       if (!mounted) return;
                       String? _dir =
                           localFiles.firstWhereOrNull((e) => e != null);
-                      if (_dir != null) _dir = dirname(_dir);
+                      if (_dir != null) _dir = pathlib.dirname(_dir);
                       String hint = '';
                       if (_dir == null) {
                         hint = S.current.failed;
                       } else {
                         hint = '${db.paths.convertIosPath(_dir)}:';
                         for (final fp in localFiles) {
-                          hint += '\n - ${basename(fp ?? S.current.failed)}';
+                          hint +=
+                              '\n - ${pathlib.basename(fp ?? S.current.failed)}';
                         }
                       }
                       SimpleCancelOkDialog(
@@ -443,23 +456,57 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
 
   static final audioPlayer = AudioPlayer();
 
-  int? _playing;
+  int? _playing; // line.hashCode
+  int? get playing => _playing;
+  set playing(int? p) {
+    _playing = p;
+    if (mounted) setState(() {});
+  } // line.hashCode
+
+  bool _linuxValid = false;
 
   Future<void> onPlayVoice(VoiceLine line) async {
     if (line.audioAssets.isEmpty) {
       // check before call and set button disabled
       return;
     }
-    if (PlatformU.isLinux) {
-      EasyLoading.showInfo('Linux not supported yet');
-      return;
+    if (PlatformU.isLinux && !_linuxValid) {
+      if (Process.runSync("which", ["mpv"]).exitCode == 0) {
+        _linuxValid = true;
+      } else {
+        if (mounted) {
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleCancelOkDialog(
+                title: const Text('Linux MPV'),
+                hideCancel: true,
+                content: Text.rich(TextSpan(
+                    text: 'MPV is required to play audio, see\n',
+                    children: [
+                      TextSpan(
+                        text: 'https://github.com/bleonard252/just_audio_mpv',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launch(
+                                'https://github.com/bleonard252/just_audio_mpv');
+                          },
+                      )
+                    ])),
+              );
+            },
+          );
+        }
+      }
     }
-    if (line.hashCode == _playing) return;
-    _playing = line.hashCode;
+    if (line.hashCode == playing) return;
     await audioPlayer.stop();
+    playing = line.hashCode;
     List<AudioSource> sources = [];
     for (int index = 0; index < line.audioAssets.length; index++) {
-      final asset = Uri.tryParse(line.audioAssets[index]);
+      final asset = Uri.tryParse(Atlas.proxyAssetUrl(line.audioAssets[index]));
       double delay = line.delay.getOrNull(index) ?? 0;
       if (delay > 0 && PlatformU.isAndroid) {
         // Android only
@@ -483,7 +530,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     if (mounted) {
       await audioPlayer.play();
     }
-    _playing = null;
+    playing = null;
   }
 
   @override
