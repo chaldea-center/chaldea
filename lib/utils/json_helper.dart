@@ -43,11 +43,11 @@ class JsonHelper {
 
   static Future<dynamic> decodeString<T>(String data) async {
     if (kIsWeb || data.length < 10 * 1024) return jsonDecode(data);
-    return _executor.execute(fun1: jsonDecode, arg1: data);
+    return _executor.execute(fun1: _decodeString, arg1: data);
   }
 
   static Future<dynamic> decodeBytes<T>(List<int> bytes) async {
-    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes);
+    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes, null);
     return _executor.execute(fun1: _decodeBytes, arg1: bytes);
   }
 
@@ -56,11 +56,15 @@ class JsonHelper {
     return _executor.execute(fun1: _decodeFile, arg1: fp);
   }
 
-  static dynamic _decodeBytes<T>(List<int> bytes) {
+  static dynamic _decodeBytes<T>(List<int> bytes, TypeSendPort? port) {
     return jsonDecode(utf8.decode(bytes));
   }
 
-  static Future<dynamic> _decodeFile<T>(String fp) async {
+  static dynamic _decodeString<T>(String text, TypeSendPort? port) {
+    return jsonDecode(text);
+  }
+
+  static Future<dynamic> _decodeFile<T>(String fp, TypeSendPort? port) async {
     return jsonDecode(utf8.decode(await FilePlus(fp).readAsBytes()));
   }
 }

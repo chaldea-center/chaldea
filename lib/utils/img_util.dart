@@ -30,10 +30,10 @@ Uint8List compressToJpg({
   int? maxWidth,
   int? maxHeight,
 }) =>
-    _compressToJpg(src, quality, maxWidth, maxHeight);
+    _compressToJpg(src, quality, maxWidth, maxHeight, null);
 
-Uint8List _compressToJpg(
-    Uint8List src, int quality, int? maxWidth, int? maxHeight) {
+Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth,
+    int? maxHeight, TypeSendPort? port) {
   assert(maxWidth == null || maxWidth > 0);
   assert(maxHeight == null || maxHeight > 0);
   lib_image.Image? srcImage = lib_image.decodeImage(src);
