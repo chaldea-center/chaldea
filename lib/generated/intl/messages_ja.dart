@@ -514,6 +514,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("本当に不要"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("とても欲しい"),
+        "main_interlude": MessageLookupByLibrary.simpleMessage("メインインタールード"),
         "main_quest": MessageLookupByLibrary.simpleMessage("メインクエスト"),
         "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
@@ -774,6 +775,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
         "war_age": MessageLookupByLibrary.simpleMessage("時代"),
         "war_banner": MessageLookupByLibrary.simpleMessage("バナー"),
+        "war_board": MessageLookupByLibrary.simpleMessage("聖杯戦線"),
         "war_title": MessageLookupByLibrary.simpleMessage("クエスト一覧"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Webレンダラ"),

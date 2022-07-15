@@ -567,6 +567,50 @@ enum FavoriteState {
   other,
 }
 
+// event
+@JsonSerializable()
+class EventFilterData with _FilterData {
+  bool reversed;
+  bool showOutdated;
+  bool showSpecialRewards;
+
+  // filter
+  @JsonKey(ignore: true)
+  final type = FilterGroupData<EventCustomType>();
+
+  EventFilterData({
+    this.reversed = false,
+    this.showOutdated = false,
+    this.showSpecialRewards = false,
+  });
+
+  @override
+  void reset() {
+    super.reset();
+    showSpecialRewards = false;
+  }
+
+  @override
+  List<FilterGroupData> get groups => [type];
+
+  factory EventFilterData.fromJson(Map<String, dynamic> data) =>
+      _$EventFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$EventFilterDataToJson(this);
+}
+
+enum EventCustomType {
+  lottery,
+  hunting,
+  mission,
+  point,
+  tower,
+  treasureBox,
+  digging,
+  warBoard,
+  mainInterlude,
+}
+
 // summon
 
 @JsonSerializable(checked: true)

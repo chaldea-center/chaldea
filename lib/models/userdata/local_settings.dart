@@ -53,6 +53,7 @@ class LocalSettings {
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
   CmdCodeFilterData cmdCodeFilterData;
+  EventFilterData eventFilterData;
   SummonFilterData summonFilterData;
 
   LocalSettings({
@@ -85,6 +86,7 @@ class LocalSettings {
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     CmdCodeFilterData? cmdCodeFilterData,
+    EventFilterData? eventFilterData,
     SummonFilterData? summonFilterData,
   })  : _language = language,
         preferredRegions = preferredRegions == null
@@ -101,6 +103,7 @@ class LocalSettings {
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
+        eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData();
 
   String? get language => _language;
@@ -155,8 +158,6 @@ class DisplaySettings {
   bool onlyAppendSkillTwo;
   bool onlyAppendUnlocked;
   bool planPageFullScreen;
-  bool eventsShowOutdated;
-  bool eventsReversed;
   List<SvtTab> sortedSvtTabs;
   List<SvtPlanDetail> hideSvtPlanDetails;
 
@@ -172,8 +173,6 @@ class DisplaySettings {
     this.onlyAppendSkillTwo = true,
     this.onlyAppendUnlocked = true,
     this.planPageFullScreen = false,
-    this.eventsShowOutdated = false,
-    this.eventsReversed = true,
     List<SvtTab?>? sortedSvtTabs,
     List<SvtPlanDetail?>? hideSvtPlanDetails,
   })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??

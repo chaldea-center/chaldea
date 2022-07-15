@@ -103,6 +103,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   ? null
                   : CmdCodeFilterData.fromJson(
                       Map<String, dynamic>.from(v as Map))),
+          eventFilterData: $checkedConvert(
+              'eventFilterData',
+              (v) => v == null
+                  ? null
+                  : EventFilterData.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
           summonFilterData: $checkedConvert(
               'summonFilterData',
               (v) => v == null
@@ -149,6 +155,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),
+      'eventFilterData': instance.eventFilterData.toJson(),
       'summonFilterData': instance.summonFilterData.toJson(),
       'language': instance.language,
     };
@@ -212,10 +219,6 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
               $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
           planPageFullScreen:
               $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
-          eventsShowOutdated:
-              $checkedConvert('eventsShowOutdated', (v) => v as bool? ?? false),
-          eventsReversed:
-              $checkedConvert('eventsReversed', (v) => v as bool? ?? true),
           sortedSvtTabs: $checkedConvert(
               'sortedSvtTabs',
               (v) => (v as List<dynamic>?)
@@ -247,8 +250,6 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
       'onlyAppendUnlocked': instance.onlyAppendUnlocked,
       'planPageFullScreen': instance.planPageFullScreen,
-      'eventsShowOutdated': instance.eventsShowOutdated,
-      'eventsReversed': instance.eventsReversed,
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
       'hideSvtPlanDetails': instance.hideSvtPlanDetails

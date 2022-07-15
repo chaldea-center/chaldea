@@ -126,6 +126,28 @@ const _$CmdCodeCompareEnumMap = {
   CmdCodeCompare.rarity: 'rarity',
 };
 
+EventFilterData _$EventFilterDataFromJson(Map json) => $checkedCreate(
+      'EventFilterData',
+      json,
+      ($checkedConvert) {
+        final val = EventFilterData(
+          reversed: $checkedConvert('reversed', (v) => v as bool? ?? false),
+          showOutdated:
+              $checkedConvert('showOutdated', (v) => v as bool? ?? false),
+          showSpecialRewards:
+              $checkedConvert('showSpecialRewards', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$EventFilterDataToJson(EventFilterData instance) =>
+    <String, dynamic>{
+      'reversed': instance.reversed,
+      'showOutdated': instance.showOutdated,
+      'showSpecialRewards': instance.showSpecialRewards,
+    };
+
 SummonFilterData _$SummonFilterDataFromJson(Map json) => $checkedCreate(
       'SummonFilterData',
       json,

@@ -6,11 +6,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
+import '../common/filter_page_base.dart';
+import 'filter.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
@@ -19,18 +23,18 @@ class EventListPage extends StatefulWidget {
   EventListPage({Key? key}) : super(key: key);
 
   @override
-  _EventListPageState createState() => _EventListPageState();
+  State<StatefulWidget> createState() => EventListPageState();
 }
 
-class _EventListPageState extends State<EventListPage>
-    with SingleTickerProviderStateMixin {
+class EventListPageState extends State<EventListPage>
+    with
+        SearchableListState<Event, EventListPage>,
+        SingleTickerProviderStateMixin {
   late TabController _tabController;
+  @override
+  Iterable<Event> get wholeData => db.gameData.events.values;
 
-  bool get reversed => db.settings.display.eventsReversed;
-
-  bool get showOutdated => db.settings.display.eventsShowOutdated;
-  bool showSpecialRewards = false;
-
+  final filterData = db.settings.eventFilterData;
   List<String> get tabNames => [
         S.current.limited_event,
         S.current.main_story,
@@ -41,15 +45,34 @@ class _EventListPageState extends State<EventListPage>
   @override
   void initState() {
     super.initState();
+    if (db.settings.autoResetFilter) {
+      filterData.reset();
+    }
     _tabController = TabController(length: tabNames.length, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        if (mounted) setState(() {});
+      }
+    });
     scrollControllers =
         List.generate(tabNames.length, (index) => ScrollController());
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+    for (var controller in scrollControllers) {
+      controller.dispose();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    filterShownList();
     return Scaffold(
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: db.onUserData((context, snapshot) {
           return AutoSizeText.rich(
             TextSpan(
@@ -65,76 +88,14 @@ class _EventListPageState extends State<EventListPage>
             maxLines: 1,
           );
         }),
-        titleSpacing: 0,
-        leading: const MasterBackButton(),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              setState(() {
-                db.settings.display.eventsShowOutdated = !showOutdated;
-                db.saveSettings();
-              });
-            },
-            tooltip: S.current.outdated,
-            icon: Icon(
-                showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
-          ),
-          IconButton(
-            icon: FaIcon(
-              reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
-              size: 20,
-            ),
-            tooltip: S.current.sort_order,
-            onPressed: () {
-              setState(() => db.settings.display.eventsReversed = !reversed);
-              db.saveSettings();
-            },
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text(S.current.select_plan),
-                onTap: () async {
-                  await null;
-                  SharedBuilder.showSwitchPlanDialog(
-                    context: context,
-                    onChange: (index) {
-                      db.curUser.curSvtPlanNo = index;
-                      db.curUser.ensurePlanLarger();
-                      db.itemCenter.calculate();
-                    },
-                  );
-                },
+        bottom: showSearchBar && _tabController.index == 0
+            ? searchBar
+            : TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabs: tabNames.map((name) => Tab(text: name)).toList(),
               ),
-              PopupMenuItem(
-                child: Text(S.current.copy_plan_menu),
-                onTap: () async {
-                  await null;
-                  copyPlan();
-                },
-              ),
-              PopupMenuItem(
-                child: Text(
-                  showSpecialRewards
-                      ? S.current.special_reward_hide
-                      : S.current.special_reward_show,
-                ),
-                onTap: () {
-                  setState(() {
-                    showSpecialRewards = !showSpecialRewards;
-                  });
-                },
-              )
-            ],
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: tabNames.map((name) => Tab(text: name)).toList(),
-        ),
+        actions: actions,
       ),
       body: db.onUserData(
         (context, snapshot) => TabBarView(
@@ -142,36 +103,160 @@ class _EventListPageState extends State<EventListPage>
           children: <Widget>[
             KeepAliveBuilder(
               builder: (_) => LimitEventTab(
-                reversed: reversed,
-                showOutdated: showOutdated,
-                showSpecialRewards: showSpecialRewards,
+                limitEvents: shownList,
+                reversed: filterData.reversed,
+                showOutdated: filterData.showOutdated,
+                showSpecialRewards: filterData.showSpecialRewards,
                 scrollController: scrollControllers[0],
               ),
             ),
             KeepAliveBuilder(
               builder: (_) => MainStoryTab(
-                reversed: reversed,
-                showOutdated: showOutdated,
-                showSpecialRewards: showSpecialRewards,
+                reversed: filterData.reversed,
+                showOutdated: filterData.showOutdated,
+                showSpecialRewards: filterData.showSpecialRewards,
                 scrollController: scrollControllers[1],
               ),
             ),
             KeepAliveBuilder(
                 builder: (_) => ExchangeTicketTab(
-                    reversed: reversed, showOutdated: showOutdated)),
+                    reversed: filterData.reversed,
+                    showOutdated: filterData.showOutdated)),
           ],
         ),
       ),
     );
   }
 
+  List<Widget> get actions {
+    return <Widget>[
+      if (_tabController.index == 0) searchIcon,
+      if (_tabController.index == 0)
+        IconButton(
+          icon: const Icon(Icons.filter_alt),
+          tooltip: S.current.filter,
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => EventFilterPage(
+              filterData: filterData,
+              onChanged: (_) {
+                if (mounted) setState(() {});
+              },
+            ),
+          ),
+        ),
+      IconButton(
+        icon: FaIcon(
+          filterData.reversed
+              ? FontAwesomeIcons.arrowDownWideShort
+              : FontAwesomeIcons.arrowUpWideShort,
+          size: 20,
+        ),
+        tooltip: S.current.sort_order,
+        onPressed: () {
+          setState(() => filterData.reversed = !filterData.reversed);
+          db.saveSettings();
+        },
+      ),
+      PopupMenuButton(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            child: Text(S.current.select_plan),
+            onTap: () async {
+              await null;
+              SharedBuilder.showSwitchPlanDialog(
+                context: context,
+                onChange: (index) {
+                  db.curUser.curSvtPlanNo = index;
+                  db.curUser.ensurePlanLarger();
+                  db.itemCenter.calculate();
+                },
+              );
+            },
+          ),
+          PopupMenuItem(
+            child: Text(S.current.copy_plan_menu),
+            onTap: () async {
+              await null;
+              copyPlan();
+            },
+          ),
+          PopupMenuItem(
+            child: Text(
+              filterData.showSpecialRewards
+                  ? S.current.special_reward_hide
+                  : S.current.special_reward_show,
+            ),
+            onTap: () {
+              setState(() {
+                filterData.showSpecialRewards = !filterData.showSpecialRewards;
+              });
+            },
+          )
+        ],
+      ),
+    ];
+  }
+
   @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-    for (var controller in scrollControllers) {
-      controller.dispose();
+  Widget buildScrollable({bool useGrid = false}) {
+    return RefreshIndicator(
+      child: super.buildScrollable(useGrid: useGrid),
+      onRefresh: () async {
+        final cards =
+            await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
+        int _added = 0;
+        for (final basicCard in cards) {
+          if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
+            continue;
+          }
+          final card = await AtlasApi.ce(basicCard.id);
+          if (card == null) continue;
+          db.gameData.craftEssences[card.collectionNo] = card;
+          _added += 1;
+        }
+        if (_added > 0) {
+          db.gameData.preprocess();
+          db.notifyAppUpdate();
+          EasyLoading.showSuccess('+ $_added ${S.current.craft_essence} !');
+        }
+        if (mounted) setState(() {});
+      },
+    );
+  }
+
+  @override
+  Widget listItemBuilder(Event event) => throw UnimplementedError();
+
+  @override
+  Widget gridItemBuilder(Event event) => throw UnimplementedError();
+
+  @override
+  bool filter(Event event) {
+    if (filterData.type.options.isNotEmpty) {
+      final List<EventCustomType> types = [
+        if (event.lotteries.isNotEmpty) EventCustomType.lottery,
+        if (event.rewards.isNotEmpty) EventCustomType.point,
+        if (event.towers.isNotEmpty) EventCustomType.tower,
+        if (event.treasureBoxes.isNotEmpty) EventCustomType.treasureBox,
+        if (event.digging != null) EventCustomType.digging,
+        if (event.missions.isNotEmpty) EventCustomType.mission,
+        if (event.type == EventType.warBoard) EventCustomType.warBoard,
+        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == 1004)
+          EventCustomType.mainInterlude,
+        if (event.extra.huntingQuestIds.isNotEmpty) EventCustomType.hunting,
+      ];
+      if (!filterData.type.matchAny(types)) {
+        return false;
+      }
     }
+    return true;
+  }
+
+  @override
+  Iterable<String?> getSummary(Event event) sync* {
+    yield* SearchUtil.getAllKeys(event.lName);
+    yield* SearchUtil.getAllKeys(event.lShortName);
   }
 
   void copyPlan() {

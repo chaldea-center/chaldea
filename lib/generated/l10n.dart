@@ -4152,6 +4152,17 @@ class S {
     );
   }
 
+  /// `Main Interlude`
+  String get main_interlude {
+    return Intl.message(
+      'Main Interlude',
+      name: 'main_interlude',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Main Quests`
   String get main_quest {
     return Intl.message(
@@ -6754,6 +6765,17 @@ class S {
     return Intl.message(
       'Banner',
       name: 'war_banner',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `War Board`
+  String get war_board {
+    return Intl.message(
+      'War Board',
+      name: 'war_board',
       desc: '',
       locale: localeName,
       args: [],

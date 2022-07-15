@@ -80,7 +80,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
           }
         });
       },
-      icon: const Icon(Icons.search),
+      icon: Icon(showSearchBar ? Icons.search_off : Icons.search),
       tooltip: S.current.search,
     );
   }

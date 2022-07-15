@@ -502,6 +502,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("정말로 불필요함"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("정말로 원함"),
+        "main_interlude": MessageLookupByLibrary.simpleMessage("메인 인터루드"),
         "main_quest": MessageLookupByLibrary.simpleMessage("메인 퀘스트"),
         "main_story": MessageLookupByLibrary.simpleMessage("메인 스토리"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("챕터"),

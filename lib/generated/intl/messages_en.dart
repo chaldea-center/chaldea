@@ -585,6 +585,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unwanted"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("Wanted"),
+        "main_interlude":
+            MessageLookupByLibrary.simpleMessage("Main Interlude"),
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
@@ -933,6 +935,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
         "war_age": MessageLookupByLibrary.simpleMessage("Age"),
         "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
+        "war_board": MessageLookupByLibrary.simpleMessage("War Board"),
         "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),

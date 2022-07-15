@@ -496,6 +496,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("非常不想要"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("非常想要！"),
+        "main_interlude": MessageLookupByLibrary.simpleMessage("主线物语"),
         "main_quest": MessageLookupByLibrary.simpleMessage("主线关卡"),
         "main_story": MessageLookupByLibrary.simpleMessage("主线记录"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("章节"),
@@ -785,6 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
         "war_age": MessageLookupByLibrary.simpleMessage("年代"),
         "war_banner": MessageLookupByLibrary.simpleMessage("标题图"),
+        "war_board": MessageLookupByLibrary.simpleMessage("圣杯战线"),
         "war_title": MessageLookupByLibrary.simpleMessage("关卡配置"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),

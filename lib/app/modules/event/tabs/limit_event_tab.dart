@@ -7,6 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class LimitEventTab extends StatelessWidget {
+  final List<Event> limitEvents;
   final bool reversed;
   final bool showOutdated;
   final bool showSpecialRewards;
@@ -14,17 +15,16 @@ class LimitEventTab extends StatelessWidget {
 
   LimitEventTab({
     Key? key,
+    required this.limitEvents,
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
     required this.scrollController,
   }) : super(key: key);
 
-  Map<int, Event> get limitEvents => db.gameData.events;
-
   @override
   Widget build(BuildContext context) {
-    List<Event> events = limitEvents.values.toList();
+    List<Event> events = limitEvents.toList();
     events.removeWhere((event) => event.isEmpty && !event.extra.forceShown);
     if (!showOutdated) {
       events.removeWhere(
