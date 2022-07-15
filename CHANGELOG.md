@@ -1,4 +1,16 @@
+## 2.0.8
+
+- pull to refresh svt/ce/cc list
+- improve effect filter
+- add various kinds of conditions
+- add cv/illustrator detail page
+- add character list
+- interlude&rankup timeline(date not correct)
+- add next level exp in exp calc
+- add event search and filter
+
 ## 2.0.7
+
 - fix GSSR lessThan calculation
 - search keyword for func/buff descriptor
 - add more filter options for effect search
@@ -22,7 +34,7 @@
 - show more items
 - support servant AprilFools' icon
 - upload userdata warning before closing desktop app
-- plan list: add option - only unlocked append 
+- plan list: add option - only unlocked append
 - add network settings(force online mode)
 - add event digging
 - add effect search for all svt/ce/cc

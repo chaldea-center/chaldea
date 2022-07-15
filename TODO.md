@@ -15,7 +15,6 @@ There are plenty of work need to do.
 - [ ] Clear Cache
 - [ ] command card: add svt assets
 - [ ] Summon prob calc
-- [ ] various release condition 
 - [ ] userdata: make all constructor params nullable, catch error when converting token 
 - [ ] TextTab with smaller height
 - [ ] remember svt tabs
@@ -24,13 +23,12 @@ There are plenty of work need to do.
 - [ ] l10n: related_card->related_card_on_stage
 - [ ] android: external SD card
 - [ ] filter_group_data: default value
-- [ ] costume: images in accordion
-- [ ] web: settings&bootstrap: add cn/global link
 - [ ] svt icon: custom image
 - [ ] event shop: event item calc and plan
 - [ ] effect_search: add special target
-- [ ] userdata: add app version
 - [ ] plan_tab: append/active/all
+- [ ] cards: weak/strength
+- [ ] master mission: logicType
 
 ## Quest Related
 
@@ -41,15 +39,12 @@ There are plenty of work need to do.
 - [ ] Duplicated servant support
 - [ ] Plan:
   - [ ] support TextField input
-- [ ] skill/np/quest condition
+- [x] skill/np/quest/voice/profile condition
 
 ## Adding more pages
 
-- [x] CV/illustrator: list page 
-  - [ ] and detail page
 - [x] Summon list and detail page
   - [ ] summon plan: ?
-- [ ] EXP demand calc: add next level exp input
 - [x] Saint Quartz estimate
   - [ ] poor performance
 - [ ] Events
