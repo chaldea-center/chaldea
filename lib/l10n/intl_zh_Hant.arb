@@ -71,6 +71,7 @@
   "chaldea_share_msg": "Chaldea——一款跨平台的Fate/GO素材規劃客戶端，支持遊戲資訊瀏覽、從者練度/活動/素材規劃、周常規劃、抽卡模擬器等功能。\n\n詳情請見: \n{url}\n",
   "change_log": "更新歷史",
   "characters_in_card": "出場角色",
+  "check_file_hash": null,
   "check_update": "檢查更新",
   "clear": "清空",
   "clear_cache": "清除暫存",

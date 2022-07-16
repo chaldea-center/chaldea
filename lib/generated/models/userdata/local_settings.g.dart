@@ -33,6 +33,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   .toList()),
           autoUpdateData:
               $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
+          checkDataHash:
+              $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
           proxyServer:
               $checkedConvert('proxyServer', (v) => v as bool? ?? false),
           autoUpdateApp:
@@ -134,6 +136,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'preferredRegions':
           instance.preferredRegions?.map((e) => _$RegionEnumMap[e]).toList(),
       'autoUpdateData': instance.autoUpdateData,
+      'checkDataHash': instance.checkDataHash,
       'autoUpdateApp': instance.autoUpdateApp,
       'proxyServer': instance.proxyServer,
       'autoRotate': instance.autoRotate,

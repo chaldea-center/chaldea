@@ -845,6 +845,17 @@ class S {
     );
   }
 
+  /// `Verify file integrity`
+  String get check_file_hash {
+    return Intl.message(
+      'Verify file integrity',
+      name: 'check_file_hash',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Check update`
   String get check_update {
     return Intl.message(

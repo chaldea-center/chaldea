@@ -117,6 +117,8 @@ FileVersion _$FileVersionFromJson(Map json) => FileVersion(
       size: json['size'] as int,
       timestamp: json['timestamp'] as int,
       hash: json['hash'] as String,
+      minSize: json['minSize'] as int,
+      minHash: json['minHash'] as String,
     );
 
 Map<String, dynamic> _$FileVersionToJson(FileVersion instance) =>
@@ -126,4 +128,6 @@ Map<String, dynamic> _$FileVersionToJson(FileVersion instance) =>
       'size': instance.size,
       'timestamp': instance.timestamp,
       'hash': instance.hash,
+      'minSize': instance.minSize,
+      'minHash': instance.minHash,
     };

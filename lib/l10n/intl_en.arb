@@ -71,6 +71,7 @@
   "chaldea_share_msg": "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n{url}\n",
   "change_log": "Change Log",
   "characters_in_card": "Characters",
+  "check_file_hash": "Verify file integrity",
   "check_update": "Check update",
   "clear": "Clear",
   "clear_cache": "Clear cache",

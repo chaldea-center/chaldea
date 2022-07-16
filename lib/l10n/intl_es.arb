@@ -71,6 +71,7 @@
   "chaldea_share_msg": "Chaldea - Una utilidad multiplataforma para Fate/GO. Compatibilidad con la revisión de datos del juego, la planificación de sirvientes/eventos/elementos, la planificación de misiones maestras, el simulador de invocaciones, etc.\n\nPara más detalless: \n{url}\n",
   "change_log": "Registro de cambios",
   "characters_in_card": "Personajes",
+  "check_file_hash": null,
   "check_update": "Comprobar actualización",
   "clear": "Borrar",
   "clear_cache": "Borrar caché",

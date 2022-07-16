@@ -71,6 +71,7 @@
   "chaldea_share_msg": "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n\n詳細はこちら: \n{url}\n",
   "change_log": "更新履歴",
   "characters_in_card": "キャラ",
+  "check_file_hash": null,
   "check_update": "更新確認",
   "clear": "クリア",
   "clear_cache": "キャッシュクリア",

@@ -150,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m10,
         "change_log": MessageLookupByLibrary.simpleMessage("更新歷史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出場角色"),
+        "check_file_hash": MessageLookupByLibrary.simpleMessage("验证文件完整性"),
         "check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "clear": MessageLookupByLibrary.simpleMessage("清空"),
         "clear_cache": MessageLookupByLibrary.simpleMessage("清除暫存"),

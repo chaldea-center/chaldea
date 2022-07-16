@@ -172,12 +172,109 @@ class GameData {
     others = _ProcessedData(this);
   }
 
-  factory GameData.fromJson(Map<String, dynamic> json) =>
-      _$GameDataFromJson(json);
-
   QuestPhase? getQuestPhase(int id, [int? phase]) {
     if (phase != null) return questPhases[id * 100 + phase];
     return questPhases[id * 100 + 1] ?? questPhases[id * 100 + 3];
+  }
+
+  factory GameData.fromJson(Map<String, dynamic> json) =>
+      _$GameDataFromJson(json);
+
+  static Future<GameData> fromJsonAsync(Map<String, dynamic> json) async {
+    return GameData(
+      version: json['version'] == null
+          ? null
+          : DataVersion.fromJson(
+              Map<String, dynamic>.from(json['version'] as Map)),
+      servants: await (json['servants'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            Servant.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      craftEssences: await (json['craftEssences'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            CraftEssence.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      commandCodes: await (json['commandCodes'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            CommandCode.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      mysticCodes: await (json['mysticCodes'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            MysticCode.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      events: await (json['events'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            Event.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      wars: await (json['wars'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            NiceWar.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      items: await (json['items'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            Item.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      questPhases: await (json['questPhases'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            QuestPhase.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      exchangeTickets: await (json['exchangeTickets'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            ExchangeTicket.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      entities: await (json['entities'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            BasicServant.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      bgms: await (json['bgms'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            Bgm.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      extraMasterMission: await (json['extraMasterMission'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      fixedDrops: await (json['fixedDrops'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            FixedDrop.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      wiki: json['wiki'] == null
+          ? null
+          : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
+      mappingData: json['mappingData'] == null
+          ? null
+          : MappingData.fromJson(
+              Map<String, dynamic>.from(json['mappingData'] as Map)),
+      constData: json['constData'] == null
+          ? null
+          : ConstGameData.fromJson(
+              Map<String, dynamic>.from(json['constData'] as Map)),
+      dropRate: json['dropRate'] == null
+          ? null
+          : DropRateData.fromJson(
+              Map<String, dynamic>.from(json['dropRate'] as Map)),
+      baseTds: await (json['baseTds'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      baseSkills: await (json['baseSkills'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      baseFunctions: await (json['baseFunctions'] as Map?)?.mapAsync(
+        (k, e) async => MapEntry(int.parse(k as String),
+            BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+    );
+  }
+}
+
+extension _AsyncIterMap<K, V> on Map<K, V> {
+  Future<Map<K2, V2>> mapAsync<K2, V2>(
+      Future<MapEntry<K2, V2>> Function(K key, V value) convert) async {
+    return Map.fromEntries([
+      for (final entry in entries) await convert(entry.key, entry.value),
+    ]);
   }
 }
 
@@ -224,6 +321,8 @@ class FileVersion {
   int size;
   int timestamp;
   String hash;
+  int minSize;
+  String minHash;
 
   FileVersion({
     required this.key,
@@ -231,6 +330,8 @@ class FileVersion {
     required this.size,
     required this.timestamp,
     required this.hash,
+    required this.minSize,
+    required this.minHash,
   });
 
   factory FileVersion.fromJson(Map<String, dynamic> json) =>

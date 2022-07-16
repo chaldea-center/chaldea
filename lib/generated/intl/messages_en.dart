@@ -164,6 +164,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card":
             MessageLookupByLibrary.simpleMessage("Characters"),
+        "check_file_hash":
+            MessageLookupByLibrary.simpleMessage("Verify file integrity"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clear_cache": MessageLookupByLibrary.simpleMessage("Clear cache"),

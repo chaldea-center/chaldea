@@ -66,6 +66,16 @@ class _GameDataPageState extends State<GameDataPage> {
                   });
                 },
               ),
+              SwitchListTile.adaptive(
+                value: db.settings.checkDataHash,
+                title: Text(S.current.check_file_hash),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.checkDataHash = v;
+                    db.saveSettings();
+                  });
+                },
+              ),
               ValueStatefulBuilder<double?>(
                   initValue: loader.progress,
                   builder: (context, state) {

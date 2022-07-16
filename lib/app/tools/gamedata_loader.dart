@@ -74,8 +74,7 @@ class GameDataLoader {
       _completer!.complete(result);
     } catch (e, s) {
       if (e is! UpdateError) logger.e('load gamedata($offline)', e, s);
-      error = escapeDioError(e);
-      _showError(error);
+      _showError(e);
       _completer!.complete(null);
     }
     tmp.clear();
@@ -88,10 +87,12 @@ class GameDataLoader {
     DataVersion? oldVersion;
     DataVersion newVersion;
     try {
-      oldVersion =
-          DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
-    } catch (e) {
-      print(e);
+      if (_versionFile.existsSync()) {
+        oldVersion =
+            DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
+      }
+    } catch (e, s) {
+      logger.e('read old version failed', e, s);
     }
     if (offline) {
       // if not exist, raise error
@@ -111,7 +112,7 @@ class GameDataLoader {
       throw UpdateError(S.current.update_already_latest);
     }
 
-    Map<String, dynamic> _gameJson = {};
+    Map<String, dynamic> _gameJson = {"version": newVersion.toJson()};
     Map<FilePlus, List<int>> _dataToWrite = {};
     _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
     int finished = 0;
@@ -126,7 +127,9 @@ class GameDataLoader {
       if (bytes != null) {
         _localHash = md5.convert(bytes).toString().toLowerCase();
       }
-      if (_localHash == null || !_localHash.startsWith(fv.hash)) {
+      bool hashMismatch = _localHash == null ||
+          (db.settings.checkDataHash && !_localHash.startsWith(fv.hash));
+      if (hashMismatch) {
         if (offline) {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
@@ -138,7 +141,7 @@ class GameDataLoader {
         );
         final _hash =
             md5.convert(List.from(resp.data)).toString().toLowerCase();
-        if (!_hash.startsWith(fv.hash)) {
+        if (db.settings.checkDataHash && !_hash.startsWith(fv.hash)) {
           throw S.current
               .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
         }
@@ -214,16 +217,24 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
-    for (final entry in _dataToWrite.entries) {
-      await entry.key.writeAsBytes(entry.value);
-    }
-    if (updateOnly) return db.gameData;
 
     tmp.clear();
     tmp.gameJson = _gameJson;
-    final _gamedata = GameData.fromJson(_gameJson);
+    GameData _gamedata;
+    if (!updateOnly || onUpdate != null || _onUpdate != null) {
+      _gamedata = GameData.fromJson(_gameJson);
+    } else if (kIsWeb) {
+      // performance issue, not to stuck app
+      _gamedata = db.gameData;
+    } else {
+      _gamedata = await GameData.fromJsonAsync(_gameJson);
+    }
+    for (final entry in _dataToWrite.entries) {
+      await entry.key.writeAsBytes(entry.value);
+    }
+
     tmp.clear();
-    db.runtimeData.upgradableDataVersion = _gamedata.version = newVersion;
+    db.runtimeData.upgradableDataVersion = newVersion;
     _progress = finished / newVersion.files.length;
     (onUpdate ?? _onUpdate)?.call(_progress!);
     _onUpdate = null;
