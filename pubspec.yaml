@@ -60,7 +60,6 @@ dependencies:
   intl: ^0.17.0
   json_annotation: ^4.5.0
   just_audio: ^0.9.27
-  just_audio_mpv: ^0.1.4
   just_audio_windows: ^0.1.0
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
   kana_kit: ^2.0.0

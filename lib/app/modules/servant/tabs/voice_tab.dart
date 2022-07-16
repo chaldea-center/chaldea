@@ -470,7 +470,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       // check before call and set button disabled
       return;
     }
+    if (PlatformU.isLinux) {
+      EasyLoading.showInfo('Linux not supported yet');
+      return;
+    }
     if (PlatformU.isLinux && !_linuxValid) {
+      // if linux mpv is support in the future
       if (Process.runSync("which", ["mpv"]).exitCode == 0) {
         _linuxValid = true;
       } else {
@@ -502,33 +507,31 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       }
     }
     if (line.hashCode == playing) return;
-    await audioPlayer.stop();
-    playing = line.hashCode;
-    List<AudioSource> sources = [];
-    for (int index = 0; index < line.audioAssets.length; index++) {
-      final asset = Uri.tryParse(Atlas.proxyAssetUrl(line.audioAssets[index]));
-      double delay = line.delay.getOrNull(index) ?? 0;
-      if (delay > 0 && PlatformU.isAndroid) {
-        // Android only
-        sources.add(SilenceAudioSource(
-            duration: Duration(milliseconds: (delay * 1000).toInt())));
-      }
-      if (asset != null) {
-        sources.add(AudioSource.uri(asset));
-      }
+    if (audioPlayer.playing) {
+      await audioPlayer.stop();
     }
-    await audioPlayer.setAudioSource(ConcatenatingAudioSource(
-      useLazyPreparation: false,
-      shuffleOrder: _DoNotShuffleOrder(),
-      children: sources,
-    ));
-    // final url = await WikiUtil.resolveFileUrl(record.voiceFile!);
+    playing = line.hashCode;
 
-    /// [DefaultCacheManager] will change the extension when saving cache
-    ///   * .ogg/.ogx -> .oga
-    ///   * .wav -> .bin
-    if (mounted) {
-      await audioPlayer.play();
+    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
+
+    for (int index = 0; index < line.audioAssets.length; index++) {
+      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
+      if (fp == null) continue;
+      int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
+      if (delay > 0) {
+        await Future.delayed(Duration(milliseconds: delay));
+      }
+      if (mounted) {
+        await audioPlayer.setFilePath(fp);
+        await audioPlayer.play();
+        // on windows, play() is returned immediately
+        if (PlatformU.isWindows) {
+          await Future.delayed(const Duration(milliseconds: 50));
+          while (audioPlayer.playing) {
+            await Future.delayed(const Duration(milliseconds: 50));
+          }
+        }
+      }
     }
     playing = null;
   }
@@ -536,10 +539,11 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   @override
   void dispose() {
     super.dispose();
-    audioPlayer.stop();
+    if (audioPlayer.playing) audioPlayer.stop();
   }
 }
 
+// ignore: unused_element
 class _DoNotShuffleOrder extends ShuffleOrder {
   int _count;
   @override
