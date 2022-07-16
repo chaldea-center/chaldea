@@ -188,7 +188,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
 }
 
 Future<void> jumpToExternalLinkAlert(
-    {required String url, String? name}) async {
+    {required String url, String? name, String? content}) async {
   String shownLink = url;
   String? safeLink = Uri.tryParse(url)?.toString();
   if (safeLink != null) {
@@ -200,8 +200,13 @@ Future<void> jumpToExternalLinkAlert(
     useRootNavigator: false,
     builder: (context) => SimpleCancelOkDialog(
       title: Text(S.current.jump_to(name ?? S.current.link)),
-      content: Text(shownLink,
-          style: const TextStyle(decoration: TextDecoration.underline)),
+      content: Text.rich(TextSpan(children: [
+        if (content != null) TextSpan(text: '$content\n'),
+        TextSpan(
+          text: shownLink,
+          style: const TextStyle(decoration: TextDecoration.underline),
+        )
+      ])),
       onTapOk: () async {
         String link = safeLink ?? url;
         if (await canLaunch(link)) {

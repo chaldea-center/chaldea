@@ -207,8 +207,11 @@ class CarouselSetting {
   List<CarouselItem> items;
   bool enabled;
   bool enableMooncell;
-  bool enableJp;
-  bool enableUs;
+  bool enableJP;
+  bool enableCN;
+  bool enableNA;
+  bool enableTW;
+  bool enableKR;
   @JsonKey(ignore: true)
   bool needUpdate = false;
 
@@ -217,13 +220,22 @@ class CarouselSetting {
     List<CarouselItem>? items,
     this.enabled = true,
     this.enableMooncell = true,
-    this.enableJp = true,
-    this.enableUs = true,
+    this.enableJP = true,
+    this.enableCN = true,
+    this.enableNA = true,
+    this.enableTW = true,
+    // KR is blocked in CN, thus disable it by default
+    this.enableKR = false,
   }) : items = items ?? [];
+
+  List<bool> get options =>
+      [enableMooncell, enableJP, enableCN, enableNA, enableTW, enableKR];
 
   bool get shouldUpdate {
     if (updateTime == null) return true;
-    if (items.isEmpty && (enableMooncell || enableJp || enableUs)) return true;
+    if (items.isEmpty && options.contains(true)) {
+      return true;
+    }
     DateTime lastTime =
             DateTime.fromMillisecondsSinceEpoch(updateTime! * 1000).toUtc(),
         now = DateTime.now().toUtc();

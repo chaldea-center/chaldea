@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +15,8 @@ import 'package:string_validator/string_validator.dart';
 import 'package:chaldea/app/tools/git_tool.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -76,32 +78,110 @@ class AppNewsCarousel extends StatefulWidget {
         updated = true;
       } else {
         final _dio = Dio();
-        Future<List<CarouselItem>>? taskMC, taskJp, taskUs;
+        Future<List<CarouselItem>>? taskMC,
+            taskJP,
+            taskCN,
+            taskTW,
+            taskNA,
+            taskKR;
         // mc slides
         if (carouselSetting.enableMooncell) {
           const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
           taskMC = _dio.get(mcUrl).then((response) {
-            var mcParser = parser.parse(response.data.toString());
-            var mcElement = mcParser.getElementById('transImageBox');
+            var doc = parser.parse(response.data.toString());
+            var ele = doc.getElementById('transImageBox');
             updated = true;
-            return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
+            return _getImageLinks(element: ele, uri: Uri.parse(mcUrl));
           }).catchError((e, s) async {
-            logger.e('parse mc slides failed', e, s);
+            logger.d('parse mc slides failed', e, s);
             return <CarouselItem>[];
           });
         }
 
         // jp slides
-        if (carouselSetting.enableJp) {
+        if (carouselSetting.enableJP) {
           const jpUrl = 'https://view.fate-go.jp';
-          taskJp = _dio.get(jpUrl).then((response) {
-            var jpParser = parser.parse(response.data.toString());
-            var jpElement =
-                jpParser.getElementsByClassName('slide').getOrNull(0);
+          taskJP = _dio.get(jpUrl).then((response) {
+            var doc = parser.parse(response.data.toString());
+            var ele = doc.getElementsByClassName('slide').getOrNull(0);
             updated = true;
-            return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
+            return _getImageLinks(element: ele, uri: Uri.parse(jpUrl));
           }).catchError((e, s) async {
-            logger.e('parse jp slides failed', e, s);
+            logger.d('parse JP slides failed', e, s);
+            return <CarouselItem>[];
+          });
+        }
+
+        if (carouselSetting.enableCN) {
+          final _dio = Dio(BaseOptions(baseUrl: 'https://api.biligame.com'));
+          taskCN = _dio
+              .get(
+                  '/news/list.action?gameExtensionId=45&positionId=2&pageNum=1&pageSize=6&typeId=1')
+              .then((response) async {
+            final notices = (response.data as Map)["data"] as List;
+            List<CarouselItem> items = [];
+            for (final Map notice in notices) {
+              final id = notice["id"] as int;
+              final title = notice["title"] as String;
+              if (id == 1509 || title.contains('维护')) continue;
+              final data = (await _dio.get('/news/$id.action')).data["data"];
+              final content = data["content"] as String;
+              String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"')
+                  .firstMatch(content)
+                  ?.group(2);
+              if (img == null) continue;
+              img = Uri.https('game.bilibili.com', '/fgo/news.html')
+                  .resolve(img)
+                  .toString();
+              items.add(CarouselItem(
+                image: img,
+                text: data['title'],
+                link: PlatformU.isTargetMobile
+                    ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
+                    : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
+              ));
+            }
+            updated = true;
+            return items;
+          }).catchError((e, s) async {
+            logger.d('parse CN notices failed', e, s);
+            return <CarouselItem>[];
+          });
+        }
+
+        if (carouselSetting.enableTW) {
+          final _dio = Dio(BaseOptions(baseUrl: 'https://www.fate-go.com.tw'));
+          // https://www.fate-go.com.tw/newsmng/2026.json
+          // https://www.fate-go.com.tw/newsmng/index.json
+          taskTW = _dio.get('/newsmng/index.json').then((response) async {
+            final notices = List<Map>.from(response.data as List);
+            notices.retainWhere((e) => e["category"] == 1);
+            notices.sort2((e) => e["publish_time"] as int, reversed: true);
+            List<CarouselItem> items = [];
+            for (final Map notice in notices.take(5)) {
+              final id = notice["id"] as int;
+              final title = notice["title"] as String;
+              if (title.contains('維護')) continue;
+              final data = (await _dio.get('/newsmng/$id.json')).data as Map;
+              final content = data["content"] as String;
+              String? img =
+                  RegExp(r'<img src="([^"]*)"').firstMatch(content)?.group(1);
+              if (img == null) continue;
+              img = Uri.https('www.fate-go.com.tw', '/news.html')
+                  .resolve(img)
+                  .toString();
+              items.add(CarouselItem(
+                image: img,
+                text: data['title'],
+                link: PlatformU.isTargetMobile
+                    ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
+                    : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
+              ));
+            }
+            updated = true;
+            return items;
+          }).catchError((e, s) async {
+            logger.d('parse TW notices failed', e, s);
             return <CarouselItem>[];
           });
         }
@@ -123,23 +203,44 @@ class AppNewsCarousel extends StatefulWidget {
         // });
 
         // NA slides
-        if (carouselSetting.enableUs) {
+        if (carouselSetting.enableNA) {
           const usUrl = 'https://webview.fate-go.us';
-          taskUs = _dio.get(usUrl).then((response) {
-            var usParser = parser.parse(response.data.toString());
-            var usElement =
-                usParser.getElementsByClassName('slide').getOrNull(0);
+          taskNA = _dio.get(usUrl).then((response) {
+            var doc = parser.parse(response.data.toString());
+            var ele = doc.getElementsByClassName('slide').getOrNull(0);
             updated = true;
-            return _getImageLinks(element: usElement, uri: Uri.parse(usUrl));
+            return _getImageLinks(element: ele, uri: Uri.parse(usUrl));
           }).catchError((e, s) async {
-            logger.e('parse NA slides failed', e, s);
+            logger.d('parse NA slides failed', e, s);
+            return <CarouselItem>[];
+          });
+        }
+
+        if (carouselSetting.enableKR) {
+          const krUrl =
+              'https://cafe.naver.com/MyCafeIntro.nhn?clubid=29199987';
+          final options = Options(headers: {
+            HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'
+          });
+          taskKR = _dio.get(krUrl, options: options).then((response) {
+            var doc = parser.parse(response.data.toString());
+            var ele = doc.getElementsByTagName('table').getOrNull(0);
+            updated = true;
+            final items = _getImageLinks(element: ele, uri: Uri.parse(krUrl));
+            items.removeWhere((element) => {
+                  'http://fgo.netmarble.com/',
+                  'https://www.facebook.com/FateGO.KR',
+                  'https://twitter.com/FateGO_KR'
+                }.contains(element.link));
+            return items;
+          }).catchError((e, s) async {
+            logger.d('parse KR slides failed', e, s);
             return <CarouselItem>[];
           });
         }
 
         await Future.forEach<Future<List<CarouselItem>>?>(
-          // [taskUs],
-          [taskMC, taskJp, taskUs],
+          [taskMC, taskJP, taskCN, taskTW, taskNA, taskKR],
           (e) async {
             if (e != null) result.addAll(await e);
           },
@@ -147,7 +248,10 @@ class AppNewsCarousel extends StatefulWidget {
       }
 
       // key: img url, value: href url
-      if (updated && !kIsWeb) {
+      if (carouselSetting.options.every((e) => !e)) {
+        carouselSetting.items.clear();
+      }
+      if ((result.isNotEmpty || updated) && !kIsWeb) {
         final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
         List<String> blocked = blockedWiki
             .split('\n')
@@ -322,7 +426,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
                 link.length > routePrefix.length + 1) {
               Navigator.pushNamed(context, link.substring(routePrefix.length));
             } else if (await canLaunch(link)) {
-              jumpToExternalLinkAlert(url: link);
+              jumpToExternalLinkAlert(url: link, content: item.text);
             }
           },
           child: child,

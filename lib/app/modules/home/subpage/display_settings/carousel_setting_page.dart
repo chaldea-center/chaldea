@@ -47,25 +47,61 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
                 : null,
           ),
           CheckboxListTile(
-            value: carousel.enableJp,
+            value: carousel.enableJP,
             title: const Text('JP News'),
             subtitle: const Text('https://view.fate-go.jp/'),
             onChanged: carousel.enabled
                 ? (v) => setState(() {
                       carousel.needUpdate = true;
-                      carousel.enableJp = v ?? carousel.enableJp;
+                      carousel.enableJP = v ?? carousel.enableJP;
                       updateHome();
                     })
                 : null,
           ),
           CheckboxListTile(
-            value: carousel.enableUs,
+            value: carousel.enableCN,
+            title: const Text('CN News'),
+            subtitle: const Text('https://game.bilibili.com/fgo/news.html'),
+            onChanged: carousel.enabled
+                ? (v) => setState(() {
+                      carousel.needUpdate = true;
+                      carousel.enableCN = v ?? carousel.enableCN;
+                      updateHome();
+                    })
+                : null,
+          ),
+          CheckboxListTile(
+            value: carousel.enableTW,
+            title: const Text('TW News'),
+            subtitle: const Text('https://www.fate-go.com.tw/news.html'),
+            onChanged: carousel.enabled
+                ? (v) => setState(() {
+                      carousel.needUpdate = true;
+                      carousel.enableTW = v ?? carousel.enableTW;
+                      updateHome();
+                    })
+                : null,
+          ),
+          CheckboxListTile(
+            value: carousel.enableNA,
             title: const Text('NA News'),
             subtitle: const Text('https://webview.fate-go.us/'),
             onChanged: carousel.enabled && !PlatformU.isWindows
                 ? (v) => setState(() {
                       carousel.needUpdate = true;
-                      carousel.enableUs = v ?? carousel.enableUs;
+                      carousel.enableNA = v ?? carousel.enableNA;
+                      updateHome();
+                    })
+                : null,
+          ),
+          CheckboxListTile(
+            value: carousel.enableKR,
+            title: const Text('KR News'),
+            subtitle: const Text('https://cafe.naver.com/fategokr'),
+            onChanged: carousel.enabled && !PlatformU.isWindows
+                ? (v) => setState(() {
+                      carousel.needUpdate = true;
+                      carousel.enableKR = v ?? carousel.enableKR;
                       updateHome();
                     })
                 : null,

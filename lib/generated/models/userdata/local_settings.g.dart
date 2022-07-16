@@ -328,8 +328,10 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
           enableMooncell:
               $checkedConvert('enableMooncell', (v) => v as bool? ?? true),
-          enableJp: $checkedConvert('enableJp', (v) => v as bool? ?? true),
-          enableUs: $checkedConvert('enableUs', (v) => v as bool? ?? true),
+          enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? true),
+          enableCN: $checkedConvert('enableCN', (v) => v as bool? ?? true),
+          enableNA: $checkedConvert('enableNA', (v) => v as bool? ?? true),
+          enableKR: $checkedConvert('enableKR', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -341,8 +343,10 @@ Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
       'items': instance.items.map((e) => e.toJson()).toList(),
       'enabled': instance.enabled,
       'enableMooncell': instance.enableMooncell,
-      'enableJp': instance.enableJp,
-      'enableUs': instance.enableUs,
+      'enableJP': instance.enableJP,
+      'enableCN': instance.enableCN,
+      'enableNA': instance.enableNA,
+      'enableKR': instance.enableKR,
     };
 
 CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
