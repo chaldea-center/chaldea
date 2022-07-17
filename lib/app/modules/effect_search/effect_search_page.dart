@@ -162,8 +162,11 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           ...skill.filteredFunction(includeTrigger: true),
       ];
     }
-    functions.retainWhere(
-        (func) => filterData.effectTarget.matchOne(func.funcTargetType));
+    functions.retainWhere((func) => filterData.effectTarget
+            .matchOne(func.funcTargetType, compares: {
+          null: (value, option) =>
+              BuffFuncFilterData.specialFuncTarget.contains(value)
+        }));
     if (filterData.targetTrait.options.isNotEmpty) {
       final traits = filterData.targetTrait.options;
       functions.retainWhere((func) {

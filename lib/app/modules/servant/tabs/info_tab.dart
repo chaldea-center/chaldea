@@ -185,18 +185,28 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow(children: [
               if (svt.noblePhantasms.isNotEmpty)
                 TableCellData(
-                  child: CommandCardWidget(
-                      card: svt.noblePhantasms.first.card, width: 55),
-                  flex: 1,
+                  child: FittedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: svt.noblePhantasms
+                          .map((e) => e.card)
+                          .toSet()
+                          .map((e) => CommandCardWidget(card: e, width: 55))
+                          .toList(),
+                    ),
+                  ),
+                  flex: 2,
                 ),
               TableCellData(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: svt.cards
-                      .map((e) => CommandCardWidget(card: e, width: 44))
-                      .toList(),
+                child: FittedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: svt.cards
+                        .map((e) => CommandCardWidget(card: e, width: 44))
+                        .toList(),
+                  ),
                 ),
-                flex: 3,
+                flex: 4,
               )
             ]),
             if (svt.hitsDistribution.isNotEmpty)
@@ -309,8 +319,7 @@ class SvtInfoTab extends StatelessWidget {
     List<NiceTrait> traits, [
     List<NiceTrait> baseTraits = const [],
   ]) {
-    List<Widget> children = [];
-    if (traits.isEmpty) return children;
+    if (traits.isEmpty) return [];
     List<NiceTrait> shownTraits = [];
     bool showMore = false;
     final baseTraitIds = baseTraits.map((e) => e.signedId).toSet();
@@ -322,46 +331,43 @@ class SvtInfoTab extends StatelessWidget {
       }
       shownTraits.add(trait);
     }
+    List<InlineSpan> children = [];
+    if (prefix != null) children.add(prefix);
+    children.addAll(
+        SharedBuilder.traitSpans(context: context, traits: shownTraits));
+    if (showMore) {
+      children.add(CenterWidgetSpan(
+        child: InkWell(
+          child: const Icon(Icons.more_outlined, size: 16),
+          onTap: () {
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) {
+                return SimpleCancelOkDialog(
+                  title: Text.rich(TextSpan(
+                    text: S.current.info_trait,
+                    children: prefix == null
+                        ? null
+                        : [const TextSpan(text: ' '), prefix],
+                  )),
+                  hideCancel: true,
+                  content: SharedBuilder.traitList(
+                    context: context,
+                    traits: traits,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ));
+    }
     return [
       CustomTableRow(children: [
         TableCellData(
           alignment: null,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                if (prefix != null) prefix,
-                ...SharedBuilder.traitSpans(
-                    context: context, traits: shownTraits),
-                if (showMore)
-                  CenterWidgetSpan(
-                      child: InkWell(
-                    child: const Icon(Icons.more_outlined, size: 16),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) {
-                          return SimpleCancelOkDialog(
-                            title: Text.rich(TextSpan(
-                              text: S.current.info_trait,
-                              children: prefix == null
-                                  ? null
-                                  : [const TextSpan(text: ' '), prefix],
-                            )),
-                            hideCancel: true,
-                            content: SharedBuilder.traitList(
-                              context: context,
-                              traits: traits,
-                              alignment: WrapAlignment.start,
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ))
-              ],
-            ),
-          ),
+          child: Text.rich(TextSpan(children: children)),
         )
       ]),
     ];

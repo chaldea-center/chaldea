@@ -19,7 +19,7 @@ class BuffFuncFilterData {
   final region = FilterRadioData<Region>();
   final effectScope = FilterGroupData<SvtEffectScope>(
       options: {SvtEffectScope.active, SvtEffectScope.td});
-  final effectTarget = FilterGroupData<FuncTargetType>();
+  final effectTarget = FilterGroupData<FuncTargetType?>();
   final funcAndBuff = FilterGroupData();
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
@@ -45,6 +45,20 @@ class BuffFuncFilterData {
     }
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
   }
+
+  static const specialFuncTarget = [
+    FuncTargetType.ptSelfAnotherFirst,
+    FuncTargetType.ptSelfAnotherLast,
+    FuncTargetType.ptOneOther,
+    FuncTargetType.ptOneHpLowestRate,
+    FuncTargetType.commandTypeSelfTreasureDevice,
+    FuncTargetType.enemyOneNoTargetNoAction,
+  ];
+  static const ignoredFuncTypes = [FuncType.classDropUp];
+  static const ignoredBuffTypes = [
+    BuffType.donotNobleCondMismatch,
+    BuffType.preventDeathByDamage
+  ];
 }
 
 class BuffFuncFilter extends FilterPage<BuffFuncFilterData> {
@@ -62,18 +76,6 @@ class BuffFuncFilter extends FilterPage<BuffFuncFilterData> {
 
 class _BuffFuncFilterState
     extends FilterPageState<BuffFuncFilterData, BuffFuncFilter> {
-  final ignoredFuncTarget = [
-    FuncTargetType.ptSelfAnotherFirst,
-    FuncTargetType.ptOneHpLowestRate,
-    FuncTargetType.commandTypeSelfTreasureDevice,
-    FuncTargetType.enemyOneNoTargetNoAction,
-  ];
-  final ignoredFuncTypes = [FuncType.classDropUp];
-  final ignoredBuffTypes = [
-    BuffType.donotNobleCondMismatch,
-    BuffType.preventDeathByDamage
-  ];
-
   Map<FuncType, String> allFuncs = {};
   Map<BuffType, String> allBuffs = {};
   @override
@@ -81,7 +83,7 @@ class _BuffFuncFilterState
     super.initState();
     allFuncs = {
       for (final type in db.gameData.others.allFuncs)
-        if (!ignoredFuncTypes.contains(type))
+        if (!BuffFuncFilterData.ignoredFuncTypes.contains(type))
           type: SearchUtil.getSortAlphabet(Transl.funcType(type).l),
     };
     allFuncs =
@@ -89,7 +91,7 @@ class _BuffFuncFilterState
 
     allBuffs = {
       for (final type in db.gameData.others.allBuffs)
-        if (!ignoredBuffTypes.contains(type))
+        if (!BuffFuncFilterData.ignoredBuffTypes.contains(type))
           type: SearchUtil.getSortAlphabet(Transl.buffType(type).l),
     };
     allBuffs =
@@ -166,13 +168,17 @@ class _BuffFuncFilterState
               update();
             },
           ),
-        FilterGroup<FuncTargetType>(
+        FilterGroup<FuncTargetType?>(
           title: Text(S.current.effect_target),
-          options: db.gameData.others.funcTargets
-              .where((e) => !ignoredFuncTarget.contains(e))
-              .toList(),
+          options: [
+            ...db.gameData.others.funcTargets.where(
+                (e) => !BuffFuncFilterData.specialFuncTarget.contains(e)),
+            null,
+          ],
           values: filterData.effectTarget,
-          optionBuilder: (v) => Text(Transl.funcTargetType(v).l),
+          optionBuilder: (v) => Text(v == null
+              ? S.current.general_special
+              : Transl.funcTargetType(v).l),
           onFilterChanged: (value, _) {
             update();
           },

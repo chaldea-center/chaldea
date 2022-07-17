@@ -399,7 +399,10 @@ class _QuestCardState extends State<QuestCard> {
             Text(S.current.quest_fields),
             Expanded(
               child: SharedBuilder.traitList(
-                  context: context, traits: curPhase.individuality),
+                context: context,
+                traits: curPhase.individuality,
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         ),

@@ -176,7 +176,6 @@ class ValDsc extends StatelessWidget {
       if (vals.UseRate != null) {
         _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
       }
-      _maybeAddRate();
     } else if (func.funcType == FuncType.absorbNpturn) {
       // enemy
       // return null;
@@ -218,9 +217,9 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.Value2 != null) {
-        if (func.funcType == FuncType.damageNpIndividualSum) {
-          _addPercent(vals.Value2, 10);
-        }
+        // if (func.funcType == FuncType.damageNpIndividualSum) {
+        //   _addPercent(vals.Value2, 10);
+        // }
       }
       if (vals.Correction != null) {
         switch (func.funcType) {
@@ -230,7 +229,12 @@ class ValDsc extends StatelessWidget {
             _addPercent(vals.Correction, 10);
             break;
           case FuncType.damageNpIndividualSum:
-            _addPercent(vals.Correction, 10);
+            if (vals.Value2 != null) {
+              parts.add(
+                  '${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
+            } else {
+              _addPercent(vals.Correction, 10);
+            }
             break;
           default:
             parts.add(vals.Correction.toString());
@@ -261,7 +265,6 @@ class ValDsc extends StatelessWidget {
         _addInt(vals.AddCount);
       }
       if (vals.UseRate != null) {
-        Transl.spotNames;
         _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
       }
       if (vals.RateCount != null) {
@@ -289,8 +292,8 @@ class ValDsc extends StatelessWidget {
         //   parts.add(Transl.trait(vals.Individuality!).l);
         // }
       }
-      _maybeAddRate();
     }
+    _maybeAddRate();
   }
 
   final empty = '';
@@ -309,7 +312,7 @@ class ValDsc extends StatelessWidget {
     } else if (trigger != null) {
       final triggerVal = trigger(vals);
       if (triggerVal.skill != null && triggerVal.level != null) {
-        parts.add(triggerVal.skill.toString());
+        parts.add('Lv.${triggerVal.level}');
       } else if (triggerVal.skill != null) {
         parts.add(triggerVal.skill.toString());
       } else if (triggerVal.level != null) {

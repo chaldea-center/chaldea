@@ -312,52 +312,53 @@ class SharedBuilder {
     );
   }
 
+  static InlineSpan traitSpan({
+    required BuildContext context,
+    required NiceTrait trait,
+    TextStyle? style,
+  }) {
+    return textButtonSpan(
+      context: context,
+      text: trait.shownName,
+      style: style,
+      onTap: () {},
+    );
+  }
+
   static Widget traitList({
     required BuildContext context,
     required List<NiceTrait> traits,
+    String separator = ' / ',
     TextStyle? style,
     double? textScaleFactor,
-    List<int>? hiddenTraits,
-    WrapAlignment alignment = WrapAlignment.center,
+    TextAlign? textAlign,
   }) {
-    hiddenTraits ??= []; // [Trait.canBeInBattle.id!];
-    traits = List.of(traits)
-      ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
-    List<Widget> children = traits
-        .map((e) => trait(
-              context: context,
-              trait: e,
-              style: style,
-              textScaleFactor: textScaleFactor,
-            ))
-        .toList();
-    children = divideTiles(children, divider: const Text('/'));
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: alignment,
-      children: children,
+    return Text.rich(
+      TextSpan(
+        children: traitSpans(
+          context: context,
+          traits: traits,
+          separator: separator,
+        ),
+      ),
+      style: style,
+      textScaleFactor: textScaleFactor,
+      textAlign: textAlign,
     );
   }
 
   static List<InlineSpan> traitSpans({
     required BuildContext context,
     required List<NiceTrait> traits,
+    String separator = ' / ',
     TextStyle? style,
-    double? textScaleFactor,
-    List<int>? hiddenTraits,
   }) {
-    hiddenTraits ??= []; //[Trait.canBeInBattle.id!];
-    traits = List.of(traits)
-      ..removeWhere((t) => t.negative != true && hiddenTraits!.contains(t.id));
     List<InlineSpan> children = divideList(
-      traits.map((e) => CenterWidgetSpan(
-              child: trait(
-            context: context,
-            trait: e,
-            style: style,
-            textScaleFactor: textScaleFactor,
-          ))),
-      TextSpan(text: '/', style: TextStyle(color: Theme.of(context).hintColor)),
+      traits.map((e) => traitSpan(context: context, trait: e, style: style)),
+      TextSpan(
+        text: separator,
+        style: TextStyle(color: Theme.of(context).hintColor),
+      ),
     );
     return children;
   }

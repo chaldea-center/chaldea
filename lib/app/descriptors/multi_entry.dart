@@ -119,7 +119,7 @@ class MultiDescriptor {
           final quest = db.gameData.quests[id];
           return inkWell(
             context: context,
-            onTap: () => quest?.routeTo(),
+            onTap: () => router.push(url: Routes.questI(id)),
             text: quest?.lName.l ?? 'Quest $id',
           );
         },
@@ -139,7 +139,7 @@ class MultiDescriptor {
           title: Text(quest?.lName.l ?? 'Quest $id'),
           subtitle:
               Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
-          onTap: quest == null ? null : () => quest.routeTo(),
+          onTap: () => router.push(url: Routes.questI(id)),
         );
       })
     ];

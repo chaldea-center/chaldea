@@ -548,7 +548,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "only_show_main_story_enemy":
             MessageLookupByLibrary.simpleMessage("仅显示主线Free敌人"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),
-        "open_condition": MessageLookupByLibrary.simpleMessage("开发条件"),
+        "open_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
         "open_in_file_manager":
             MessageLookupByLibrary.simpleMessage("请用文件管理器打开"),
         "outdated": MessageLookupByLibrary.simpleMessage("已过期"),

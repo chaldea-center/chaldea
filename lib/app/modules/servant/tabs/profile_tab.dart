@@ -164,14 +164,23 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           return null;
         case CondType.questClear:
           return CondTargetValueDescriptor(
-              condType: condType, target: condValue, value: 0);
+            condType: condType,
+            target: condValue,
+            value: 0,
+            textScaleFactor: 0.9,
+          );
         case CondType.svtFriendship:
-          return Text('${S.current.bond} Lv.$condValue');
+          return Text('${S.current.bond} Lv.$condValue', textScaleFactor: 0.9);
         case CondType.svtLimit:
-          return Text('${S.current.ascension_short} Lv.$condValue');
+          return Text('${S.current.ascension_short} Lv.$condValue',
+              textScaleFactor: 0.9);
         case CondType.svtGet:
           return CondTargetValueDescriptor(
-              condType: condType, target: condValue, value: 0);
+            condType: condType,
+            target: condValue,
+            value: 0,
+            textScaleFactor: 0.9,
+          );
         default:
           break;
       }
@@ -214,7 +223,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         }
       }
       if (lore.condMessage.isNotEmpty) {
-        conds.add(Text(lore.condMessage));
+        conds.add(Text('(${lore.condMessage})', textScaleFactor: 0.85));
       }
 
       children.add(_profileCard(
@@ -297,7 +306,14 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
             title: title,
             subtitle: subtitle,
           ),
-          CustomTile(subtitle: Text(comment)),
+          kIndentDivider,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              comment,
+              textScaleFactor: 0.9,
+            ),
+          )
         ],
       ),
     );

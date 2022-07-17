@@ -104,7 +104,7 @@ class FuncDescriptor extends StatelessWidget {
         funcText.write(Transl.buffDetail(func.buffs.first.detail).l);
       } else {
         if (func.buffs.first.name.isEmpty) {
-          funcText.write(Transl.buffNames(func.buffs.first.type.name).l);
+          funcText.write(Transl.buffType(func.buffs.first.type).l);
         } else {
           funcText.write(Transl.buffNames(func.buffs.first.name).l);
         }
@@ -248,19 +248,44 @@ class FuncDescriptor extends StatelessWidget {
             break;
           case FuncType.damageNpIndividualSum:
             if ((vals?.TargetList?.length ?? 0) > 0) {
-              spans.add(TextSpan(
-                children: replaceSpan(text, '{0}', [
-                  for (int indiv in vals?.TargetList ?? [])
-                    CenterWidgetSpan(
-                      child: SharedBuilder.trait(
+              spans.addAll(replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
+                final s = match[0]!;
+                if (s == "{0}") {
+                  return [
+                    TextSpan(
+                      children: SharedBuilder.traitSpans(
                         context: context,
-                        trait: NiceTrait(id: indiv),
-                        textScaleFactor: 0.85,
+                        traits: [
+                          for (int indiv in vals?.TargetList ?? [])
+                            NiceTrait(id: indiv),
+                        ],
                       ),
+                      style: style,
                     )
-                ]),
-                style: style,
-              ));
+                  ];
+                } else if (s == "{1}") {
+                  return [
+                    TextSpan(
+                        text: vals?.Target == 0
+                            ? M.of(
+                                jp: '自身',
+                                cn: '自身',
+                                tw: '自身',
+                                na: 'self',
+                                kr: '자신',
+                              )
+                            : M.of(
+                                jp: '対象',
+                                cn: '对象',
+                                tw: '對象',
+                                na: 'target',
+                                kr: '대상',
+                              )),
+                  ];
+                } else {
+                  return [TextSpan(text: s)];
+                }
+              }));
               return;
             }
             break;
@@ -276,7 +301,8 @@ class FuncDescriptor extends StatelessWidget {
       _addFuncText();
 
       List<List<InlineSpan>> _traitSpans = [];
-      void _addTraits(String? prefix, List<NiceTrait> traits) {
+      void _addTraits(String? prefix, List<NiceTrait> traits,
+          [bool useAnd = false]) {
         if ([BuffType.upCommandall, BuffType.downCommandall]
             .contains(func.buffs.getOrNull(0)?.type)) {
           traits = traits
@@ -291,11 +317,11 @@ class FuncDescriptor extends StatelessWidget {
         if (traits.isEmpty) return;
         _traitSpans.add([
           if (prefix != null) TextSpan(text: prefix),
-          for (final trait in traits)
-            CenterWidgetSpan(
-              child: SharedBuilder.trait(
-                  context: context, trait: trait, textScaleFactor: 0.85),
-            )
+          ...SharedBuilder.traitSpans(
+            context: context,
+            traits: traits,
+            separator: useAnd ? ' & ' : ' / ',
+          ),
         ]);
       }
 
@@ -303,8 +329,10 @@ class FuncDescriptor extends StatelessWidget {
         case FuncType.addState:
         case FuncType.addStateShort:
           final buff = func.buffs.first;
-          _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv);
-          _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv);
+          _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
+              buff.script?.checkIndvType == 1);
+          _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
+              buff.script?.checkIndvType == 1);
           break;
         default:
           break;
@@ -323,9 +351,9 @@ class FuncDescriptor extends StatelessWidget {
           Transl.special.funcTraitOnField,
           '{0}',
           SharedBuilder.traitSpans(
-              context: context,
-              traits: func.funcquestTvals,
-              textScaleFactor: 0.85),
+            context: context,
+            traits: func.funcquestTvals,
+          ),
         ));
       }
       if (vals?.EventId != null && showEvent) {
@@ -424,6 +452,21 @@ class FuncDescriptor extends StatelessWidget {
         spans.addAll(replace);
       }
     }
+    return spans;
+  }
+
+  List<InlineSpan> replaceSpanMap(String text, Pattern pattern,
+      List<InlineSpan> Function(Match match) replace) {
+    List<InlineSpan> spans = [];
+    List<String> textParts = text.split(pattern);
+    text.splitMapJoin(pattern, onMatch: (match) {
+      assert(textParts.isNotEmpty);
+      spans.add(TextSpan(text: textParts.removeAt(0)));
+      spans.addAll(replace(match));
+      return match.group(0)!;
+    });
+    assert(textParts.length == 1);
+    spans.addAll(textParts.map((e) => TextSpan(text: e)));
     return spans;
   }
 

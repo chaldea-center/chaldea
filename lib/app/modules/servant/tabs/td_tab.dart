@@ -47,7 +47,7 @@ class SvtTdTab extends StatelessWidget {
   Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level,
       List<OverrideTDData?> overrideTds) {
     assert(tds.length == overrideTds.length);
-    if (tds.length == 1) {
+    if (tds.length == 1 && tds.first.condQuestId <= 0) {
       return TdDescriptor(
         td: tds.first,
         showEnemy: !svt.isUserSvt,
@@ -89,26 +89,11 @@ class SvtTdTab extends StatelessWidget {
                 minWidth: 48,
                 minHeight: 24,
               ),
-              onPressed: () {
-                bool notMain = ['91', '94'].contains(
-                    td.condQuestId.toString().padRight(2).substring(0, 2));
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) {
-                    return SimpleCancelOkDialog(
-                      title: Text(Transl.tdNames(td.name).l),
-                      hideCancel: true,
-                      content: CondTargetValueDescriptor(
-                          condType: notMain
-                              ? CondType.questClear
-                              : CondType.questClearPhase,
-                          target: td.condQuestId,
-                          value: td.condQuestPhase),
-                    );
-                  },
-                );
-              },
+              onPressed: () => showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) => releaseCondition(context, td),
+              ),
               icon: const Icon(Icons.info_outline),
               color: Theme.of(context).hintColor,
               tooltip: S.current.open_condition,
@@ -145,5 +130,33 @@ class SvtTdTab extends StatelessWidget {
     } else {
       return Maths.findMax<NiceTd, int>(tds, (e) => priorities?[e.id] ?? -1);
     }
+  }
+
+  Widget releaseCondition(BuildContext context, NiceTd td) {
+    bool notMain = ['91', '94']
+        .contains(td.condQuestId.toString().padRight(2).substring(0, 2));
+    final quest = db.gameData.quests[td.condQuestId];
+    final jpTime = quest?.openedAt,
+        localTime = db.gameData.mappingData.questRelease[td.condQuestId]
+            ?.ofRegion(db.curUser.region);
+    return SimpleCancelOkDialog(
+      title: Text(td.lName.l),
+      hideCancel: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CondTargetValueDescriptor(
+            condType: notMain ? CondType.questClear : CondType.questClearPhase,
+            target: td.condQuestId,
+            value: td.condQuestPhase,
+          ),
+          if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
+          if (localTime != null)
+            Text(
+                '${db.curUser.region.toUpper()}: ${localTime.sec2date().toDateString()}'),
+        ],
+      ),
+    );
   }
 }

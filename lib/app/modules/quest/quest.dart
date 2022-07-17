@@ -7,7 +7,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/enemy/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/atlas.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class QuestDetailPage extends StatefulWidget {
@@ -121,7 +121,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               ...SharedBuilder.websitesPopupMenuItems(
                 atlas: _quest == null
                     ? null
-                    : Atlas.dbQuest(_quest!.id, null, region),
+                    : Atlas.dbQuest(
+                        _quest!.id, _quest!.phases.getOrNull(0), region),
               ),
               PopupMenuItem(
                 onTap: _showFixRegionDialog,

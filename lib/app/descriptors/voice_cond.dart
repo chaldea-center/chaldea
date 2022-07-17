@@ -142,7 +142,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         final warName = war?.lLongName.l ?? value.toString();
         return localized(
           jp: null,
-          cn: () => text('$warName已开发'),
+          cn: () => text('$warName已开放'),
           tw: null,
           na: () => text('War $warName opened'),
           kr: null,

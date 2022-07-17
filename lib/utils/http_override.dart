@@ -6,9 +6,12 @@ class CustomHttpOverrides extends HttpOverrides {
     final client = super.createHttpClient(context);
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
-    // client.findProxy = (uri) {
-    //   return 'PROXY 127.0.0.1:8888;';
-    // };
+    // // debug only
+    // if (kDebugMode) {
+    //   client.findProxy = (uri) {
+    //     return 'PROXY 127.0.0.1:1087;';
+    //   };
+    // }
     return client;
   }
 }

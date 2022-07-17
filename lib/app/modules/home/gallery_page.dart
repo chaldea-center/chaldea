@@ -204,20 +204,20 @@ class _GalleryPageState extends State<GalleryPage> {
         title: Text(M.of(cn: '帮助改善翻译', na: 'Help Translation')),
       );
     }, contentBuilder: (context) {
-      String url = 'https://docs.chaldea.center/translation.html';
+      String url = 'https://docs.chaldea.center/feedback.html';
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(M.of(
-                cn: '真的很缺很缺很缺>_<\n'
-                    'UI文本、游戏文本仍需进一步完善翻译，对5种语言均有一定需求(按需求排序):\n'
-                    '- 英语/简中/日语/繁中/韩语\n'
+                cn: '真的很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺很缺>_<\n'
+                    'UI文本、游戏文本仍需进一步完善翻译，对5种语言均有一定需求:\n'
+                    '- 韩语/日语/繁中/英语/简中\n'
                     '如果您能够并希望帮助改善翻译，请通过以下地址联系！',
-                na: 'WANTED! WANTED! WANTED! >_<\n'
-                    'UI and game texts still need to be improved, all 5 languages are wanted(sort by demand):\n'
-                    '- English/Simplified Chinese/Japanese/Traditional Chinese/Korean\n'
+                na: 'WANTED! WANTED! WANTED! >_< WANTED! >_< WANTED! >_< WANTED! >_< WANTED! >_< WANTED! >_<\n'
+                    'UI and game texts still need to be improved, all 5 languages are wanted:\n'
+                    '- Korean/Japanese/Traditional Chinese/English/Simplified Chinese\n'
                     'If you are glad to help with it, please contact me through the following link.')),
           ),
           Padding(
@@ -233,7 +233,7 @@ class _GalleryPageState extends State<GalleryPage> {
             children: [
               TextButton(
                 onPressed: () {
-                  launch(url);
+                  launch('https://docs.chaldea.center/translation.html');
                 },
                 child: const Text('Docs'),
               )

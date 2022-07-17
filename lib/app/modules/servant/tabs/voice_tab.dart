@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -348,28 +349,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                       tooltip: 'Not Found',
                     );
                   } else {
-                    return IconButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      onPressed: () async {
-                        if (playing == line.hashCode) {
-                          await audioPlayer.stop();
-                          playing = null;
-                        } else {
-                          onPlayVoice(line).catchError((e, s) async {
-                            EasyLoading.showError(
-                                'Error playing audio (May not support)\n$e');
-                            logger.e(
-                                'Error playing audio:\n${line.audioAssets}',
-                                e,
-                                s);
-                            playing = null;
-                          });
-                        }
+                    return _PlayButton(
+                      player: audioPlayer,
+                      getSources: () {
+                        return getSources(line);
                       },
-                      icon: Icon(playing == line.hashCode
-                          ? Icons.pause_circle_outline
-                          : Icons.play_circle_outline),
-                      tooltip: 'Play',
+                      tag: line,
                     );
                   }
                 },
@@ -450,37 +435,117 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     );
   }
 
-  // Widget _voicePlayCond(){
+  static final audioPlayer = MyAudioPlayer<VoiceLine>();
 
-  // }
-
-  static final audioPlayer = AudioPlayer();
-
-  int? _playing; // line.hashCode
-  int? get playing => _playing;
-  set playing(int? p) {
-    _playing = p;
-    if (mounted) setState(() {});
-  } // line.hashCode
-
-  bool _linuxValid = false;
-
-  Future<void> onPlayVoice(VoiceLine line) async {
-    if (line.audioAssets.isEmpty) {
-      // check before call and set button disabled
-      return;
+  Future<List<AudioSource>> getSources(VoiceLine line) async {
+    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
+    List<AudioSource> sources = [];
+    for (int index = 0; index < line.audioAssets.length; index++) {
+      int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
+      if (delay > 0) {
+        sources
+            .add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
+      }
+      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
+      if (fp == null) continue;
+      sources.add(AudioSource.uri(Uri.file(fp)));
     }
+    return sources;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    audioPlayer.stop();
+  }
+}
+
+class _PlayButton<T> extends StatefulWidget {
+  final MyAudioPlayer<T> player;
+  final T? tag;
+  final FutureOr<List<AudioSource>> Function() getSources;
+  const _PlayButton(
+      {Key? key, required this.player, required this.getSources, this.tag})
+      : super(key: key);
+
+  @override
+  State<_PlayButton> createState() => __PlayButtonState();
+}
+
+class __PlayButtonState<T> extends State<_PlayButton<T>> {
+  bool _downloading = false;
+  set downloading(bool v) {
+    _downloading = v;
+    refresh();
+  }
+
+  late StreamSubscription<bool> subscription;
+  @override
+  void initState() {
+    super.initState();
+    subscription = widget.player.player.playingStream.listen((event) {
+      refresh();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subscription.cancel();
+  }
+
+  void refresh() {
+    if (mounted) setState(() {});
+  }
+
+  static bool _linuxValid = false;
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      onPressed: () async {
+        if (!await checkCompatibility()) {
+          return;
+        }
+        if (_downloading) {
+          return;
+        }
+        if (widget.player.isPlaying(widget.tag)) {
+          return widget.player.stop();
+        }
+        downloading = true;
+        final sources = await widget.getSources();
+        downloading = false;
+        if (sources.isEmpty) return;
+
+        await widget.player.play(sources, widget.tag).catchError((e, s) async {
+          widget.player.resetTag();
+          EasyLoading.showError('Error playing audio (May not support)\n$e');
+          logger.e('Error playing audio', e, s);
+        });
+      },
+      icon: Icon(widget.player.isPlaying(widget.tag)
+          ? Icons.pause_circle_outline
+          : _downloading
+              ? Icons.downloading
+              : Icons.play_circle_outline),
+      tooltip: 'Play',
+    );
+  }
+
+  Future<bool> checkCompatibility() async {
     if (PlatformU.isLinux) {
       EasyLoading.showInfo('Linux not supported yet');
-      return;
+      return false;
     }
     if (PlatformU.isLinux && !_linuxValid) {
       // if linux mpv is support in the future
       if (Process.runSync("which", ["mpv"]).exitCode == 0) {
         _linuxValid = true;
+        return true;
       } else {
         if (mounted) {
-          return showDialog(
+          showDialog(
             context: context,
             builder: (context) {
               return SimpleCancelOkDialog(
@@ -504,42 +569,10 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
             },
           );
         }
+        return false;
       }
     }
-    if (line.hashCode == playing) return;
-    if (audioPlayer.playing) {
-      await audioPlayer.stop();
-    }
-    playing = line.hashCode;
-
-    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
-
-    for (int index = 0; index < line.audioAssets.length; index++) {
-      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
-      if (fp == null) continue;
-      int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
-      if (delay > 0) {
-        await Future.delayed(Duration(milliseconds: delay));
-      }
-      if (mounted) {
-        await audioPlayer.setFilePath(fp);
-        await audioPlayer.play();
-        // on windows, play() is returned immediately
-        if (PlatformU.isWindows) {
-          await Future.delayed(const Duration(milliseconds: 50));
-          while (audioPlayer.playing) {
-            await Future.delayed(const Duration(milliseconds: 50));
-          }
-        }
-      }
-    }
-    playing = null;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (audioPlayer.playing) audioPlayer.stop();
+    return SynchronousFuture(true);
   }
 }
 
@@ -568,5 +601,51 @@ class _DoNotShuffleOrder extends ShuffleOrder {
   @override
   void clear() {
     _count = 0;
+  }
+}
+
+class MyAudioPlayer<T> {
+  final AudioPlayer player;
+  MyAudioPlayer([AudioPlayer? player]) : player = player ?? AudioPlayer();
+
+  dynamic _tag;
+  bool get playing => _tag != null;
+  bool isPlaying(T? tag) => tag != null && _tag == tag;
+  void resetTag() => _tag = null;
+
+  Future<void> play(List<AudioSource> sources, [T? tag]) async {
+    dynamic curTag = tag ?? DateTime.now().microsecondsSinceEpoch;
+    _tag = curTag;
+    bool invalid() => curTag != _tag;
+    if (player.playing) {
+      await player.pause();
+    }
+    for (final source in sources) {
+      if (source is SilenceAudioSource) {
+        await Future.delayed(source.duration);
+      } else if (source is UriAudioSource) {
+        if (invalid()) return;
+        await player.setAudioSource(source);
+        if (invalid()) return;
+        await player.play();
+        await Future.delayed(const Duration(milliseconds: 10));
+        // may not be `completed`
+        while (
+            player.playerState.processingState != ProcessingState.completed) {
+          if (invalid()) return;
+          await Future.delayed(const Duration(milliseconds: 20));
+        }
+      }
+    }
+    _tag = null;
+  }
+
+  Future<void> stop() async {
+    _tag = null;
+    if (PlatformU.isWindows || PlatformU.isLinux) {
+      return player.pause();
+    } else {
+      return player.stop();
+    }
   }
 }

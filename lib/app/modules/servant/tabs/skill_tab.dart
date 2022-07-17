@@ -87,7 +87,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
   }
 
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
-    if (skills.length == 1) {
+    if (skills.length == 1 && skills.first.condQuestId <= 0) {
       return SkillDescriptor(
         skill: skills.first,
         level: level,
@@ -127,26 +127,11 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                   minWidth: 48,
                   minHeight: 24,
                 ),
-                onPressed: () {
-                  bool notMain = ['91', '94'].contains(
-                      skill.condQuestId.toString().padRight(2).substring(0, 2));
-                  showDialog(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) {
-                      return SimpleCancelOkDialog(
-                        title: Text(Transl.skillNames(skill.name).l),
-                        hideCancel: true,
-                        content: CondTargetValueDescriptor(
-                            condType: notMain
-                                ? CondType.questClear
-                                : CondType.questClearPhase,
-                            target: skill.condQuestId,
-                            value: skill.condQuestPhase),
-                      );
-                    },
-                  );
-                },
+                onPressed: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => releaseCondition(context, skill),
+                ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,
@@ -162,6 +147,34 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           ],
         );
       },
+    );
+  }
+
+  Widget releaseCondition(BuildContext context, NiceSkill skill) {
+    bool notMain = ['91', '94']
+        .contains(skill.condQuestId.toString().padRight(2).substring(0, 2));
+    final quest = db.gameData.quests[skill.condQuestId];
+    final jpTime = quest?.openedAt,
+        localTime = db.gameData.mappingData.questRelease[skill.condQuestId]
+            ?.ofRegion(db.curUser.region);
+    return SimpleCancelOkDialog(
+      title: Text(skill.lName.l),
+      hideCancel: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CondTargetValueDescriptor(
+            condType: notMain ? CondType.questClear : CondType.questClearPhase,
+            target: skill.condQuestId,
+            value: skill.condQuestPhase,
+          ),
+          if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
+          if (localTime != null)
+            Text(
+                '${db.curUser.region.toUpper()}: ${localTime.sec2date().toDateString()}'),
+        ],
+      ),
     );
   }
 }

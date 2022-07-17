@@ -35,9 +35,15 @@ class SvtSummonTab extends StatelessWidget {
   }
 
   Widget summonTile(BuildContext context, LimitedSummon summon) {
-    bool planned = db.curUser.summons.contains(summon.id);
     final outdated = summon.isOutdated();
+    String subtitle = 'JP: ${summon.startTime.jp?.sec2date().toDateString()}';
+    final localDate =
+        summon.startTime.ofRegion(db.curUser.region)?.sec2date().toDateString();
+    if (localDate != null) {
+      subtitle = '$subtitle / ${db.curUser.region.toUpper()}: $localDate';
+    }
     return ListTile(
+      dense: true,
       title: Text.rich(
         TextSpan(children: [
           if (summon.hasSinglePickupSvt(svt.collectionNo))
@@ -54,17 +60,22 @@ class SvtSummonTab extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        'JP: ${summon.startTime.jp?.sec2date().toDateString()}',
+        subtitle,
         style: outdated ? const TextStyle(fontStyle: FontStyle.italic) : null,
       ),
-      trailing: IconButton(
-        icon: Icon(
-          planned ? Icons.favorite : Icons.favorite_outline,
-          color: planned ? Colors.redAccent : null,
-        ),
-        onPressed: () {
-          db.curUser.summons.toggle(summon.id);
-          db.notifyUserdata();
+      trailing: db.onUserData(
+        (context, snapshot) {
+          bool planned = db.curUser.summons.contains(summon.id);
+          return IconButton(
+            icon: Icon(
+              planned ? Icons.favorite : Icons.favorite_outline,
+              color: planned ? Colors.redAccent : null,
+            ),
+            onPressed: () {
+              db.curUser.summons.toggle(summon.id);
+              db.notifyUserdata();
+            },
+          );
         },
       ),
       onTap: () {
