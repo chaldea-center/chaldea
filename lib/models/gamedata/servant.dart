@@ -373,7 +373,7 @@ class Servant with GameCardMixin {
   ServantExtra get extra => db.gameData.wiki.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);
 
-  Set<Trait> get traitsAll {
+  Set<int> get traitsAll {
     if (_traitsAll != null) return _traitsAll!;
     List<NiceTrait> _traits = [];
     _traits.addAll(traits);
@@ -383,10 +383,13 @@ class Servant with GameCardMixin {
     for (var v in ascensionAdd.individuality.costume.values) {
       _traits.addAll(v);
     }
-    return _traitsAll = _traits.map((e) => e.name).toSet();
+    for (final t in traitAdd) {
+      _traits.addAll(t.trait);
+    }
+    return _traitsAll = _traits.map((e) => e.id).toSet();
   }
 
-  Set<Trait>? _traitsAll;
+  Set<int>? _traitsAll;
 
   int grailedLv(int grails) {
     final costs = db.gameData.constData.svtGrailCost[rarity]?[grails];
@@ -921,7 +924,7 @@ class ServantTrait {
   int limitCount;
   @JsonKey(fromJson: toEnumNullCondType)
   CondType? condType;
-  int? ondId;
+  int? condId;
   int? condNum;
 
   ServantTrait({
@@ -929,7 +932,7 @@ class ServantTrait {
     required this.trait,
     required this.limitCount,
     this.condType,
-    this.ondId,
+    this.condId,
     this.condNum,
   });
 

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -269,6 +270,23 @@ class SvtInfoTab extends StatelessWidget {
                 entry.value,
                 baseTraits,
               ),
+            for (final traitAdd in svt.traitAdd)
+              if (traitAdd.idx != 1)
+                ..._addTraits(
+                  context,
+                  TextSpan(
+                    text: '${traitAdd.idx}: ',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        final event = db.gameData.events[traitAdd.idx ~/ 100];
+                        if (event != null) {
+                          event.routeTo();
+                        }
+                      },
+                  ),
+                  traitAdd.trait,
+                  baseTraits,
+                ),
             if (svt.bondGrowth.isNotEmpty) ...[
               CustomTableRow.fromTexts(
                   texts: [S.current.info_bond_points], defaults: headerData),

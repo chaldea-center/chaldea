@@ -229,6 +229,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每場掉率"),
         "email": MessageLookupByLibrary.simpleMessage("郵箱"),
+        "enemy": MessageLookupByLibrary.simpleMessage("敌人"),
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("特性篩選僅適用於主線FQ的敵人"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
@@ -709,6 +710,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_show_banner": MessageLookupByLibrary.simpleMessage("顯示橫幅"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("呼符"),
         "summon_title": MessageLookupByLibrary.simpleMessage("卡池一覽"),
+        "super_effective_damage": MessageLookupByLibrary.simpleMessage("特攻"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持與捐贈"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("從者頭像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("資料"),

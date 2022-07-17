@@ -257,6 +257,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_drop":
             MessageLookupByLibrary.simpleMessage("Drop Rate"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage(
             "Trait filter is only used for enemies in Main Story\'s free quests"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
@@ -469,7 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Strength"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Traits"),
+        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "info_value": MessageLookupByLibrary.simpleMessage("Value"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Invalid inputs"),
@@ -841,6 +842,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
         "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
+        "super_effective_damage":
+            MessageLookupByLibrary.simpleMessage("SP.DMG"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Support and Donation"),
         "svt_ascension_icon":

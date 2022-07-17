@@ -538,7 +538,7 @@ ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
           .toList(),
       limitCount: json['limitCount'] as int,
       condType: toEnumNullCondType(json['condType']),
-      ondId: json['ondId'] as int?,
+      condId: json['condId'] as int?,
       condNum: json['condNum'] as int?,
     );
 

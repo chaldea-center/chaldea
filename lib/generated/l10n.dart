@@ -1604,6 +1604,17 @@ class S {
     );
   }
 
+  /// `Enemy`
+  String get enemy {
+    return Intl.message(
+      'Enemy',
+      name: 'enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Trait filter is only used for enemies in Main Story's free quests`
   String get enemy_filter_trait_hint {
     return Intl.message(
@@ -3332,10 +3343,10 @@ class S {
     );
   }
 
-  /// `Traits`
+  /// `Trait`
   String get info_trait {
     return Intl.message(
-      'Traits',
+      'Trait',
       name: 'info_trait',
       desc: '',
       locale: localeName,
@@ -6094,6 +6105,17 @@ class S {
     return Intl.message(
       'Summons',
       name: 'summon_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `SP.DMG`
+  String get super_effective_damage {
+    return Intl.message(
+      'SP.DMG',
+      name: 'super_effective_damage',
       desc: '',
       locale: localeName,
       args: [],

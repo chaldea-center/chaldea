@@ -500,7 +500,8 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.gender.matchOne(svt.gender)) {
       return false;
     }
-    if (!filterData.trait.matchAny(svt.traitsAll)) {
+    if (!filterData.trait.matchAny(
+        svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown))) {
       return false;
     }
     if (filterData.effectType.options.isNotEmpty ||

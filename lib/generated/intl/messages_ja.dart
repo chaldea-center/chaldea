@@ -223,6 +223,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP効率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("ドロップ率"),
         "email": MessageLookupByLibrary.simpleMessage("メール"),
+        "enemy": MessageLookupByLibrary.simpleMessage("エネミー"),
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("特性のフィルターは、フリークエストの敵にのみ適用される"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("エネミー"),
@@ -702,6 +703,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_show_banner": MessageLookupByLibrary.simpleMessage("バナーを表示"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("呼符"),
         "summon_title": MessageLookupByLibrary.simpleMessage("ガチャ"),
+        "super_effective_damage": MessageLookupByLibrary.simpleMessage("特攻"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("霊基再臨アイコン"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("情報"),

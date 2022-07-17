@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -299,7 +300,9 @@ class SharedBuilder {
     double? textScaleFactor,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        router.push(url: Routes.traitI(trait.id));
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
@@ -320,8 +323,11 @@ class SharedBuilder {
     return textButtonSpan(
       context: context,
       text: trait.shownName,
-      style: style,
-      onTap: () {},
+      style: style ??
+          TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+      onTap: () {
+        router.push(url: Routes.traitI(trait.id));
+      },
     );
   }
 
