@@ -100,7 +100,7 @@ class ServantListPageState extends State<ServantListPage>
         widget.planMode ? db.curUser.getFriendlyPlanName() : S.current.servant,
         maxLines: 1,
         minFontSize: 12,
-        maxFontSize: 18,
+        // maxFontSize: 18,
       ),
     );
     if (widget.planMode) {

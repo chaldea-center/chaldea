@@ -90,11 +90,11 @@ class EventListPageState extends State<EventListPage>
         }),
         bottom: showSearchBar && _tabController.index == 0
             ? searchBar
-            : TabBar(
+            : FixedHeight.tabBar(TabBar(
                 controller: _tabController,
                 isScrollable: true,
                 tabs: tabNames.map((name) => Tab(text: name)).toList(),
-              ),
+              )),
         actions: actions,
       ),
       body: db.onUserData(

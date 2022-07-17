@@ -5,6 +5,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../enemy/quest_enemy_summary.dart';
 
 class TraitDetailPage extends StatefulWidget {
@@ -42,11 +43,12 @@ class _TraitDetailPageState extends State<TraitDetailPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        bottom: TabBar(isScrollable: true, controller: _tabController, tabs: [
+        bottom: FixedHeight.tabBar(
+            TabBar(isScrollable: true, controller: _tabController, tabs: [
           Tab(text: S.current.servant),
           Tab(text: S.current.enemy),
           Tab(text: S.current.super_effective_damage),
-        ]),
+        ])),
       ),
       body: ListTileTheme(
         data: const ListTileThemeData(horizontalTitleGap: 8),

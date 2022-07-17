@@ -96,7 +96,7 @@ class ItemListPageState extends State<ItemListPage>
             },
           ),
         ],
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: [
@@ -108,7 +108,7 @@ class ItemListPageState extends State<ItemListPage>
           onTap: (_) {
             FocusScope.of(context).unfocus();
           },
-        ),
+        )),
       ),
       body: Column(
         children: [

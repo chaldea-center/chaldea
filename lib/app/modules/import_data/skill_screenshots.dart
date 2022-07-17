@@ -86,14 +86,14 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
               'import_data.html#active-append-skill-recognition',
               zhPath: 'import_data.html#主动-被动技能截图解析'),
         ],
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: S.current.screenshots),
             Tab(text: S.current.results),
             if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
-        ),
+        )),
       ),
       body: TabBarView(
         controller: _tabController,

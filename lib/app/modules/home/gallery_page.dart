@@ -56,6 +56,7 @@ class _GalleryPageState extends State<GalleryPage> {
       appBar: AppBar(
         title: const Text(kAppName),
         titleSpacing: NavigationToolbar.kMiddleSpacing,
+        toolbarHeight: kToolbarHeight,
         actions: <Widget>[
           if (db.settings.display.showAccountAtHome)
             InkWell(

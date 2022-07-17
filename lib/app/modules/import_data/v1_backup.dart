@@ -12,6 +12,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class OldVersionDataImport extends StatefulWidget {
   OldVersionDataImport({Key? key}) : super(key: key);
@@ -30,10 +31,10 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
           title: Text('${S.current.chaldea_backup} (v1)'),
           bottom: users.isEmpty
               ? null
-              : TabBar(
+              : FixedHeight.tabBar(TabBar(
                   tabs: users.map((e) => Tab(text: e.name)).toList(),
                   isScrollable: true,
-                ),
+                )),
         ),
         body: Column(
           children: [

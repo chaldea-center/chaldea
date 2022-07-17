@@ -91,14 +91,14 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     );
   }
 
-  TabBar get tabBar => TabBar(
+  PreferredSizeWidget get tabBar => FixedHeight.tabBar(TabBar(
         controller: _tabController,
         tabs: [
           Tab(text: S.current.servant),
           Tab(text: S.current.craft_essence),
           Tab(text: S.current.command_code),
         ],
-      );
+      ));
 
   @override
   bool filter(GameCardMixin card) {

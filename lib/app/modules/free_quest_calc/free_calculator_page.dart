@@ -45,7 +45,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')
         ],
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: [
@@ -57,7 +57,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
           onTap: (_) {
             FocusScope.of(context).unfocus();
           },
-        ),
+        )),
       ),
       body: GestureDetector(
         onTap: () {

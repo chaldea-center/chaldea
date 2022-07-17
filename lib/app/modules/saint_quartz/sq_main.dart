@@ -49,7 +49,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
     return Scaffold(
       appBar: AppBar(
         title: Text(Items.stone.lName.l),
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: [
@@ -66,7 +66,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
                   chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
             ),
           ],
-        ),
+        )),
       ),
       body: TabBarView(
         controller: _tabController,

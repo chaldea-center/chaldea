@@ -44,13 +44,13 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(widget.summon.lName, maxLines: 1),
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: S.current.lucky_bag_rating),
             Tab(text: S.current.lucky_bag_expectation)
           ],
-        ),
+        )),
       ),
       body: TabBarView(
         controller: _tabController,

@@ -579,10 +579,10 @@ class EventChooser extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Select Free Progress or an Event War'),
-          bottom: TabBar(tabs: [
+          bottom: FixedHeight.tabBar(TabBar(tabs: [
             Tab(text: S.current.main_story),
             Tab(text: S.current.event_title),
-          ]),
+          ])),
         ),
         body: TabBarView(
           children: [

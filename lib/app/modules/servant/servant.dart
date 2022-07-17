@@ -119,6 +119,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         ],
         pinned: true,
         expandedHeight: 160,
+        toolbarHeight: AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
         flexibleSpace: FlexibleSpaceBar(
           background: Stack(
             children: [
@@ -309,26 +310,19 @@ class ServantDetailPageState extends State<ServantDetailPage>
   }
 
   PreferredSizeWidget get tabBar {
-    return PreferredSize(
-      preferredSize: const Size(double.infinity, 36),
-      child: SizedBox(
-        height: 36,
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TabBar(
-            // labelColor: Theme.of(context).colorScheme.secondary,
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-            // unselectedLabelColor: Colors.grey,
-            isScrollable: true,
-            tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
-            indicatorColor: Theme.of(context).isDarkMode
-                ? null
-                : Colors.white.withAlpha(210),
-          ),
-        ),
+    return FixedHeight.tabBar(Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: TabBar(
+        // labelColor: Theme.of(context).colorScheme.secondary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+        // unselectedLabelColor: Colors.grey,
+        isScrollable: true,
+        tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+        indicatorColor:
+            Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
       ),
-    );
+    ));
   }
 
   Widget get tabBarView {

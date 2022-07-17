@@ -8,6 +8,7 @@ import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
 import 'tabs/obtain_event.dart';
@@ -164,11 +165,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         actions: tabs.getOrNull(curTab)?.actions ?? [],
         bottom: tabs.length < 2
             ? null
-            : TabBar(
+            : FixedHeight.tabBar(TabBar(
                 controller: _tabController,
                 isScrollable: true,
                 tabs: tabs.map((e) => e.header).toList(),
-              ),
+              )),
       ),
       body: tabs.length == 1
           ? tabs.first.view

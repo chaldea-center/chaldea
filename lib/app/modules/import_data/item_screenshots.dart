@@ -68,14 +68,14 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           SharedBuilder.docsHelpBtn('import_data.html#item-screenshots',
               zhPath: 'import_data.html#素材截图解析'),
         ],
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: S.current.screenshots),
             Tab(text: S.current.results),
             if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
-        ),
+        )),
       ),
       body: TabBarView(
         controller: _tabController,

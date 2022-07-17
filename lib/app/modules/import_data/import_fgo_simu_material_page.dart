@@ -53,14 +53,14 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       appBar: AppBar(
         titleSpacing: 0,
         title: const AutoSizeText('FGO Simulator - Material', maxLines: 1),
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
             const Tab(text: 'Input'),
             Tab(text: S.current.servant),
             Tab(text: S.current.item)
           ],
-        ),
+        )),
         actions: [
           IconButton(
             onPressed: () {

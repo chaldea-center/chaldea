@@ -139,8 +139,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
           ),
           centerTitle: false,
           actions: [popupMenu],
-          bottom:
-              tabs.length > 1 ? TabBar(tabs: tabs, isScrollable: true) : null,
+          bottom: tabs.length > 1
+              ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true))
+              : null,
         ),
         body: TabBarView(children: views),
       ),

@@ -40,14 +40,14 @@ class _CustomMissionPageState extends State<CustomMissionPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.custom_mission),
-        bottom: TabBar(
+        bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: S.current.mission),
             Tab(text: S.current.master_mission_solution),
             Tab(text: S.current.master_mission_related_quest)
           ],
-        ),
+        )),
         actions: [
           SharedBuilder.docsHelpBtn('master_mission.html'),
         ],

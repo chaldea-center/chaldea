@@ -53,6 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(S.current.settings_tab_name),
         titleSpacing: NavigationToolbar.kMiddleSpacing,
+        toolbarHeight: kToolbarHeight,
       ),
       body: CustomScrollView(
         controller: _scrollController,

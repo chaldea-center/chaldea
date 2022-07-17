@@ -105,6 +105,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(
         titleSpacing: 0,
+        toolbarHeight: 48, // kToolbarHeight=56,
       ),
     );
   }

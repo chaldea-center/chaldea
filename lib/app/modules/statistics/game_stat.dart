@@ -53,7 +53,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
             ),
             SharedBuilder.priorityIcon(context: context),
           ],
-          bottom: TabBar(
+          bottom: FixedHeight.tabBar(TabBar(
             controller: _tabController,
             isScrollable: true,
             tabs: [
@@ -62,7 +62,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
               Tab(text: S.current.svt_stat_details),
               Tab(text: S.current.svt_class_dist),
             ],
-          ),
+          )),
         ),
         body: TabBarView(
           controller: _tabController,
