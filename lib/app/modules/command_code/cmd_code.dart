@@ -9,8 +9,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_table.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
@@ -73,8 +72,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child:
-                  CmdCodeDetailBasePage(cc: cc, lang: lang, showSummon: true),
+              child: CmdCodeDetailBasePage(cc: cc, lang: lang, showExtra: true),
             ),
           ),
           SafeArea(
@@ -135,14 +133,22 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
 class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode cc;
   final Language? lang;
-  final bool showSummon;
+  final bool showExtra;
+  final bool enableLink;
 
-  const CmdCodeDetailBasePage(
-      {Key? key, required this.cc, this.lang, this.showSummon = false})
-      : super(key: key);
+  const CmdCodeDetailBasePage({
+    Key? key,
+    required this.cc,
+    this.lang,
+    this.showExtra = false,
+    this.enableLink = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final name =
+        Text(cc.lName.l, style: const TextStyle(fontWeight: FontWeight.bold));
+
     return CustomTable(
       children: <Widget>[
         CustomTableRow(children: [
@@ -150,6 +156,21 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             child: Text(cc.lName.l,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
             isHeader: true,
+          )
+        ]),
+        CustomTableRow(children: [
+          TableCellData(
+            child: enableLink
+                ? TextButton(
+                    onPressed: () {
+                      cc.routeTo();
+                    },
+                    style: kTextButtonDenseStyle,
+                    child: name,
+                  )
+                : name,
+            isHeader: true,
+            padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
         if (!Transl.isJP)
@@ -257,8 +278,34 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             )
           ],
         ),
+        if (showExtra) ...[
+          CustomTableRow.fromTexts(
+            texts: [S.current.cc_equipped_svt],
+            isHeader: true,
+          ),
+          CustomTableRow.fromChildren(children: [
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: _equippedSvts(context),
+            ),
+          ]),
+        ]
       ],
     );
+  }
+
+  List<Widget> _equippedSvts(BuildContext context) {
+    List<Widget> svts = [];
+    db.curUser.servants.forEach((svtNo, status) {
+      final svt = db.gameData.servants[svtNo];
+      if (status.equipCmdCodes.contains(cc.collectionNo) && svt != null) {
+        svts.add(svt.iconBuilder(context: context, height: 48));
+      }
+    });
+    if (svts.isEmpty) svts.add(const Text('-'));
+    return svts;
   }
 
   Widget localizeCharacters(BuildContext context) {

@@ -644,9 +644,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4),
-                  child: Text(
-                    code?.skills.getOrNull(0)?.lDetail ?? '',
-                    style: Theme.of(context).textTheme.caption,
+                  child: GestureDetector(
+                    onTap: code?.routeTo,
+                    child: Text(
+                      code?.skills.getOrNull(0)?.lDetail ?? '',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                   ),
                 ),
                 IconButton(

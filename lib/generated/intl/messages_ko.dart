@@ -126,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("정보"),
         "card_name": MessageLookupByLibrary.simpleMessage("카드명"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
+        "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("장착된 서번트"),
         "ce_status": MessageLookupByLibrary.simpleMessage("도감 상태"),
         "ce_status_met": MessageLookupByLibrary.simpleMessage("이미 조우"),
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("미조우"),

@@ -658,6 +658,17 @@ class S {
     );
   }
 
+  /// `Equipped Servants`
+  String get cc_equipped_svt {
+    return Intl.message(
+      'Equipped Servants',
+      name: 'cc_equipped_svt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `MLB`
   String get ce_max_limit_break {
     return Intl.message(

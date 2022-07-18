@@ -131,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("资料"),
         "card_name": MessageLookupByLibrary.simpleMessage("卡牌名称"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("轮播设置"),
+        "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("已装备从者"),
         "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("满破"),
         "ce_status": MessageLookupByLibrary.simpleMessage("图鉴状态"),
         "ce_status_met": MessageLookupByLibrary.simpleMessage("已遭遇"),

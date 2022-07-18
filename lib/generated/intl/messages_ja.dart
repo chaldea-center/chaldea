@@ -126,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "card_name": MessageLookupByLibrary.simpleMessage("カード名"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
+        "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("装備されたサーヴァント"),
         "ce_status": MessageLookupByLibrary.simpleMessage("所持状態"),
         "ce_status_met": MessageLookupByLibrary.simpleMessage("未所持"),
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),

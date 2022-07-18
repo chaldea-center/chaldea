@@ -141,6 +141,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_name": MessageLookupByLibrary.simpleMessage("Card Name"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Carousel Setting"),
+        "cc_equipped_svt":
+            MessageLookupByLibrary.simpleMessage("Equipped Servants"),
         "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "ce_status": MessageLookupByLibrary.simpleMessage("Status"),
         "ce_status_met": MessageLookupByLibrary.simpleMessage("Met"),

@@ -89,7 +89,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: CraftDetailBasePage(ce: ce, showSummon: true),
+              child: CraftDetailBasePage(ce: ce, showExtra: true),
             ),
           ),
           SafeArea(
@@ -149,13 +149,13 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 
 class CraftDetailBasePage extends StatelessWidget {
   final CraftEssence ce;
-  final bool showSummon;
+  final bool showExtra;
   final bool enableLink;
 
   const CraftDetailBasePage({
     Key? key,
     required this.ce,
-    this.showSummon = false,
+    this.showExtra = false,
     this.enableLink = false,
   }) : super(key: key);
 
@@ -348,7 +348,7 @@ class CraftDetailBasePage extends StatelessWidget {
           isHeader: true,
         ),
         ExtraAssetsPage(assets: ce.extraAssets, scrollable: false),
-        if (showSummon && summons.isNotEmpty) ...[
+        if (showExtra && summons.isNotEmpty) ...[
           CustomTableRow(children: [
             TableCellData(text: S.current.summon, isHeader: true)
           ]),
