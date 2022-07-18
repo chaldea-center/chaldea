@@ -329,6 +329,49 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       traits: (json['traits'] as List<dynamic>)
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      skills:
+          EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
+      noblePhantasm: SupportServantTd.fromJson(
+          Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+      equips: (json['equips'] as List<dynamic>?)
+              ?.map((e) => SupportServantEquip.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      script: json['script'] == null
+          ? null
+          : SupportServantScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
+      limit: SupportServantLimit.fromJson(
+          Map<String, dynamic>.from(json['limit'] as Map)),
+    );
+
+SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(
+      noblePhantasmId: json['noblePhantasmId'] as int,
+      noblePhantasm: json['noblePhantasm'] == null
+          ? null
+          : NiceTd.fromJson(
+              Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+      noblePhantasmLv: json['noblePhantasmLv'] as int,
+    );
+
+SupportServantEquip _$SupportServantEquipFromJson(Map json) =>
+    SupportServantEquip(
+      equip: CraftEssence.fromJson(
+          Map<String, dynamic>.from(json['equip'] as Map)),
+      lv: json['lv'] as int,
+      limitCount: json['limitCount'] as int,
+    );
+
+SupportServantScript _$SupportServantScriptFromJson(Map json) =>
+    SupportServantScript(
+      dispLimitCount: json['dispLimitCount'] as int?,
+      eventDeckIndex: json['eventDeckIndex'] as int?,
+    );
+
+SupportServantLimit _$SupportServantLimitFromJson(Map json) =>
+    SupportServantLimit(
+      limitCount: json['limitCount'] as int,
     );
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(

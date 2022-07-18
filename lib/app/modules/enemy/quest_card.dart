@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
 import 'quest_enemy.dart';
+import 'support_servant.dart';
 
 class QuestCard extends StatefulWidget {
   final Quest? quest;
@@ -298,6 +299,7 @@ class _QuestCardState extends State<QuestCard> {
     final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
     bool noConsume =
         curPhase.consumeType == ConsumeType.ap && curPhase.consume == 0;
+    final questSelects = curPhase.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -352,7 +354,20 @@ class _QuestCardState extends State<QuestCard> {
             ),
           ),
         ],
-      )
+      ),
+      if (questSelects != null && questSelects.isNotEmpty)
+        Text.rich(
+          TextSpan(text: '${S.current.branch_quest}: ', children: [
+            for (final selectId in questSelects)
+              if (selectId != curPhase.id)
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: ' $selectId ',
+                  onTap: () => router.push(url: Routes.questI(selectId)),
+                )
+          ]),
+          textAlign: TextAlign.center,
+        )
     ];
     if (spotImage == null) {
       children.addAll(headerRows);
@@ -396,7 +411,7 @@ class _QuestCardState extends State<QuestCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(S.current.quest_fields),
+            _header(S.current.quest_fields),
             Expanded(
               child: SharedBuilder.traitList(
                 context: context,
@@ -408,12 +423,16 @@ class _QuestCardState extends State<QuestCard> {
         ),
       ));
     }
+    if (!widget.offline && curPhase.supportServants.isNotEmpty) {
+      children.add(getSupportServants(curPhase));
+    }
+
     if (show6th || curPhase.drops.isNotEmpty) {
       children.add(Wrap(
         spacing: 2,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text('${S.current.game_drop}:'),
+          _header('${S.current.game_drop}:'),
           FilterGroup<bool>(
             options: const [true, false],
             values: FilterRadioData(preferApRate),
@@ -473,6 +492,84 @@ class _QuestCardState extends State<QuestCard> {
         children,
         divider: const Divider(height: 5, thickness: 0.5),
       ),
+    );
+  }
+
+  Widget getSupportServants(QuestPhase curPhase) {
+    TextSpan _mono(dynamic v, int width) =>
+        TextSpan(text: v.toString().padRight(width), style: kMonoStyle);
+    String _nullLevel(int lv, dynamic skill) {
+      return skill == null ? '-' : lv.toString();
+    }
+
+    List<Widget> supports = [];
+    for (final svt in curPhase.supportServants) {
+      Widget support = Text.rich(
+        TextSpan(children: [
+          CenterWidgetSpan(
+              child: svt.svt.iconBuilder(context: context, width: 32)),
+          TextSpan(
+            children: [
+              const TextSpan(text: ' Lv.'),
+              _mono(svt.lv, 2),
+              TextSpan(text: ' ${S.current.np_short} Lv.'),
+              _mono(
+                  _nullLevel(svt.noblePhantasm.noblePhantasmLv,
+                      svt.noblePhantasm.noblePhantasm),
+                  1),
+              TextSpan(text: ' ${S.current.skill} Lv.'),
+              _mono(
+                  '${_nullLevel(svt.skills.skillLv1, svt.skills.skill1)}'
+                  '/${_nullLevel(svt.skills.skillLv2, svt.skills.skill2)}'
+                  '/${_nullLevel(svt.skills.skillLv3, svt.skills.skill3)}',
+                  8),
+              const TextSpan(text: '  ')
+            ],
+            style: svt.script?.eventDeckIndex == null
+                ? null
+                : TextStyle(color: Theme.of(context).errorColor),
+          ),
+          for (final ce in svt.equips) ...[
+            CenterWidgetSpan(
+                child: ce.equip.iconBuilder(context: context, width: 32)),
+            TextSpan(
+              children: [
+                const TextSpan(text: ' Lv.'),
+                _mono(ce.lv, 2),
+              ],
+              style: ce.limitCount == 4
+                  ? TextStyle(color: Theme.of(context).errorColor)
+                  : null,
+            ),
+          ]
+        ]),
+        textScaleFactor: 0.9,
+      );
+      supports.add(InkWell(
+        child: support,
+        onTap: () {
+          router.pushPage(SupportServantPage(svt));
+        },
+      ));
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _header(
+            '${S.current.support_servant}${curPhase.isNpcOnly ? " (${S.current.support_servant_forced})" : ""}',
+          ),
+          ...supports,
+        ],
+      ),
+    );
+  }
+
+  Text _header(String text, [TextStyle? style]) {
+    return Text(
+      text,
+      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
     );
   }
 
@@ -572,7 +669,7 @@ class _QuestCardState extends State<QuestCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(S.current.quest_reward_short),
+          _header(S.current.quest_reward_short),
           Expanded(
             child: Center(
               child: SharedBuilder.giftGrid(
@@ -592,8 +689,7 @@ class _QuestCardState extends State<QuestCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(
-          child: Text(S.of(context).quest_condition,
-              style: const TextStyle(fontWeight: FontWeight.w500)),
+          child: _header(S.current.quest_condition),
         ),
         for (final cond in quest.releaseConditions)
           CondTargetValueDescriptor(

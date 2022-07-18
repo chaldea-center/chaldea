@@ -164,7 +164,7 @@ class QuestPhase extends Quest {
   int bond;
   bool isNpcOnly;
   int battleBgId;
-  QuestPhaseExtraDetail extraDetail;
+  QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
   List<SupportServant> supportServants;
@@ -206,14 +206,13 @@ class QuestPhase extends Quest {
     required this.bond,
     this.isNpcOnly = false,
     required this.battleBgId,
-    QuestPhaseExtraDetail? extraDetail,
+    this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
     this.supportServants = const [],
     this.stages = const [],
     this.drops = const [],
-  })  : extraDetail = extraDetail ?? QuestPhaseExtraDetail(),
-        super(
+  }) : super(
           id: id,
           name: name,
           type: type,
@@ -528,12 +527,11 @@ class SupportServant {
   int atk;
   int hp;
   List<NiceTrait> traits;
-
-  // skills;
-  // noblePhantasm
-  // equips
-  //  script
-  // limit
+  EnemySkill skills;
+  SupportServantTd noblePhantasm;
+  List<SupportServantEquip> equips;
+  SupportServantScript? script;
+  SupportServantLimit limit;
   // misc
 
   SupportServant({
@@ -545,10 +543,80 @@ class SupportServant {
     required this.atk,
     required this.hp,
     required this.traits,
+    required this.skills,
+    required this.noblePhantasm,
+    this.equips = const [],
+    this.script,
+    required this.limit,
   });
 
   factory SupportServant.fromJson(Map<String, dynamic> json) =>
       _$SupportServantFromJson(json);
+
+  String get shownName {
+    if (name.isEmpty || name == "NONE") {
+      return svt.name;
+    }
+    return name;
+  }
+}
+
+@JsonSerializable()
+class SupportServantTd {
+  int noblePhantasmId;
+  NiceTd? noblePhantasm;
+  int noblePhantasmLv;
+
+  SupportServantTd({
+    required this.noblePhantasmId,
+    this.noblePhantasm,
+    required this.noblePhantasmLv,
+  });
+
+  factory SupportServantTd.fromJson(Map<String, dynamic> json) =>
+      _$SupportServantTdFromJson(json);
+}
+
+@JsonSerializable()
+class SupportServantEquip {
+  CraftEssence equip;
+  int lv;
+  int limitCount;
+
+  SupportServantEquip({
+    required this.equip,
+    required this.lv,
+    required this.limitCount,
+  });
+
+  factory SupportServantEquip.fromJson(Map<String, dynamic> json) =>
+      _$SupportServantEquipFromJson(json);
+}
+
+@JsonSerializable()
+class SupportServantScript {
+  int? dispLimitCount;
+  int? eventDeckIndex;
+
+  SupportServantScript({
+    this.dispLimitCount,
+    this.eventDeckIndex,
+  });
+
+  factory SupportServantScript.fromJson(Map<String, dynamic> json) =>
+      _$SupportServantScriptFromJson(json);
+}
+
+@JsonSerializable()
+class SupportServantLimit {
+  int limitCount;
+
+  SupportServantLimit({
+    required this.limitCount,
+  });
+
+  factory SupportServantLimit.fromJson(Map<String, dynamic> json) =>
+      _$SupportServantLimitFromJson(json);
 }
 
 @JsonSerializable()

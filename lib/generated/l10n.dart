@@ -504,6 +504,17 @@ class S {
     );
   }
 
+  /// `Branch Quest`
+  String get branch_quest {
+    return Intl.message(
+      'Branch Quest',
+      name: 'branch_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bronze`
   String get bronze {
     return Intl.message(
@@ -641,6 +652,17 @@ class S {
     return Intl.message(
       'Carousel Setting',
       name: 'carousel_setting',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `MLB`
+  String get ce_max_limit_break {
+    return Intl.message(
+      'MLB',
+      name: 'ce_max_limit_break',
       desc: '',
       locale: localeName,
       args: [],
@@ -6127,6 +6149,28 @@ class S {
     return Intl.message(
       'Support and Donation',
       name: 'support_chaldea',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Support Servant`
+  String get support_servant {
+    return Intl.message(
+      'Support Servant',
+      name: 'support_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Forced`
+  String get support_servant_forced {
+    return Intl.message(
+      'Forced',
+      name: 'support_servant_forced',
       desc: '',
       locale: localeName,
       args: [],

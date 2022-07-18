@@ -331,6 +331,7 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
           enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? true),
           enableCN: $checkedConvert('enableCN', (v) => v as bool? ?? true),
           enableNA: $checkedConvert('enableNA', (v) => v as bool? ?? true),
+          enableTW: $checkedConvert('enableTW', (v) => v as bool? ?? true),
           enableKR: $checkedConvert('enableKR', (v) => v as bool? ?? false),
         );
         return val;
@@ -346,6 +347,7 @@ Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
       'enableJP': instance.enableJP,
       'enableCN': instance.enableCN,
       'enableNA': instance.enableNA,
+      'enableTW': instance.enableTW,
       'enableKR': instance.enableKR,
     };
 

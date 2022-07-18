@@ -122,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
         "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
+        "branch_quest": MessageLookupByLibrary.simpleMessage("Branch Quest"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("Cache Icons"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Weight"),
@@ -140,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_name": MessageLookupByLibrary.simpleMessage("Card Name"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Carousel Setting"),
+        "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "ce_status": MessageLookupByLibrary.simpleMessage("Status"),
         "ce_status_met": MessageLookupByLibrary.simpleMessage("Met"),
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
@@ -846,6 +848,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("SP.DMG"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Support and Donation"),
+        "support_servant":
+            MessageLookupByLibrary.simpleMessage("Support Servant"),
+        "support_servant_forced":
+            MessageLookupByLibrary.simpleMessage("Forced"),
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
