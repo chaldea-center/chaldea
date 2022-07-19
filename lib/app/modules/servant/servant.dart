@@ -14,8 +14,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
+import 'tabs/illustration_tab.dart';
 import 'tabs/info_tab.dart';
 import 'tabs/plan_tab.dart';
 import 'tabs/profile_tab.dart';
@@ -397,10 +397,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.illustration,
-          viewBuilder: (ctx) => ExtraAssetsPage(
-              assets: svt.extraAssets,
-              aprilFoolAssets: svt.extra.aprilFoolAssets,
-              spriteModels: svt.extra.spriteModels),
+          viewBuilder: (ctx) => SvtIllustrationTab(svt: svt),
         );
       case SvtTab.relatedCards:
         if (svt.bondEquip == 0 &&

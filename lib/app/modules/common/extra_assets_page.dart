@@ -71,7 +71,7 @@ class ExtraAssetsPage extends StatelessWidget {
         300,
       ),
       _oneGroup('equipFace', _getUrls(assets.equipFace), 50),
-      _oneGroup(S.current.sprites, spriteModels, 300),
+      _oneGroup('${S.current.sprites} (Mooncell)', spriteModels, 300),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(
