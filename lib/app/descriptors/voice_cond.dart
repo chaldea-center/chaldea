@@ -15,6 +15,8 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
   final TextStyle? style;
   @override
   final double? textScaleFactor;
+  @override
+  final InlineSpan? leading;
 
   const VoiceCondDescriptor({
     Key? key,
@@ -23,10 +25,11 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     this.valueList = const [],
     this.style,
     this.textScaleFactor,
+    this.leading,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  List<InlineSpan> buildContent(BuildContext context) {
     switch (condType) {
       case VoiceCondType.birthDay:
         return localized(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -86,6 +87,14 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 style: kTextButtonDenseStyle,
                 child: Text(svtCoinOwner!.lName.l),
               ),
+            if (item.individuality.isNotEmpty) ...[
+              CustomTableRow.fromTexts(
+                  texts: [S.current.info_trait], isHeader: true),
+              CustomTableRow.fromChildren(children: [
+                SharedBuilder.traitList(
+                    context: context, traits: item.individuality)
+              ])
+            ],
             CustomTableRow.fromTexts(
                 texts: [S.current.card_description], isHeader: true),
             CustomTableRow(

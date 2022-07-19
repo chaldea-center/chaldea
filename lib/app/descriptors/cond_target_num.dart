@@ -16,6 +16,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final TextStyle? style;
   @override
   final double? textScaleFactor;
+  @override
+  final InlineSpan? leading;
 
   const CondTargetNumDescriptor({
     Key? key,
@@ -26,6 +28,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     this.missions = const [],
     this.style,
     this.textScaleFactor,
+    this.leading,
   }) : super(key: key);
 
   bool _isPlayableAll(List<int> clsIds) {
@@ -35,6 +38,20 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
 
   @override
   Widget build(BuildContext context) {
+    if (condType == CondType.missionConditionDetail && detail != null) {
+      return MissionCondDetailDescriptor(
+        targetNum: targetNum,
+        detail: detail!,
+        style: style,
+        textScaleFactor: textScaleFactor,
+        leading: leading,
+      );
+    }
+    return super.build(context);
+  }
+
+  @override
+  List<InlineSpan> buildContent(BuildContext context) {
     switch (condType) {
       case CondType.none:
         return localized(
@@ -376,14 +393,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
                 missionList(context, missionMap)),
           );
         }
-      case CondType.missionConditionDetail:
-        if (detail == null) break;
-        return MissionCondDetailDescriptor(
-          targetNum: targetNum,
-          detail: detail!,
-          style: style,
-          textScaleFactor: textScaleFactor,
-        );
+      // case CondType.missionConditionDetail:
       case CondType.date:
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)
             .toStringShort(omitSec: true);

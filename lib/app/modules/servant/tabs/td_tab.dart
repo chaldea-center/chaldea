@@ -23,6 +23,7 @@ class SvtTdTab extends StatelessWidget {
       List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {
         if (shownTds.every((e) => e.id != td.id)) {
+          // ?
           shownTds.add(td);
           overrideTds.add(null);
         }
@@ -61,6 +62,8 @@ class SvtTdTab extends StatelessWidget {
       builder: (context, state) {
         final tdIndex = state.value;
         final td = tds[tdIndex];
+        final oTdData = overrideTds.getOrNull(tdIndex);
+
         final toggle = Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -83,21 +86,22 @@ class SvtTdTab extends StatelessWidget {
                 },
               ),
             ),
-            IconButton(
-              padding: const EdgeInsets.all(2),
-              constraints: const BoxConstraints(
-                minWidth: 48,
-                minHeight: 24,
+            if (td.condQuestId > 0 || oTdData != null)
+              IconButton(
+                padding: const EdgeInsets.all(2),
+                constraints: const BoxConstraints(
+                  minWidth: 48,
+                  minHeight: 24,
+                ),
+                onPressed: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => releaseCondition(context, td, oTdData),
+                ),
+                icon: const Icon(Icons.info_outline),
+                color: Theme.of(context).hintColor,
+                tooltip: S.current.open_condition,
               ),
-              onPressed: () => showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) => releaseCondition(context, td),
-              ),
-              icon: const Icon(Icons.info_outline),
-              color: Theme.of(context).hintColor,
-              tooltip: S.current.open_condition,
-            ),
           ],
         );
         return Column(
@@ -132,13 +136,19 @@ class SvtTdTab extends StatelessWidget {
     }
   }
 
-  Widget releaseCondition(BuildContext context, NiceTd td) {
+  Widget releaseCondition(
+      BuildContext context, NiceTd td, OverrideTDData? overrideTDData) {
     bool notMain = ['91', '94']
         .contains(td.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[td.condQuestId];
     final jpTime = quest?.openedAt,
         localTime = db.gameData.mappingData.questRelease[td.condQuestId]
             ?.ofRegion(db.curUser.region);
+    final keys = overrideTDData?.keys ?? [];
+    List<int> ascensions = [], costumes = [];
+    for (final key in keys) {
+      key < 10 ? ascensions.add(key) : costumes.add(key);
+    }
     return SimpleCancelOkDialog(
       title: Text(td.lName.l),
       hideCancel: true,
@@ -146,11 +156,21 @@ class SvtTdTab extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CondTargetValueDescriptor(
-            condType: notMain ? CondType.questClear : CondType.questClearPhase,
-            target: td.condQuestId,
-            value: td.condQuestPhase,
-          ),
+          if (td.condQuestId > 0)
+            CondTargetValueDescriptor(
+              condType:
+                  notMain ? CondType.questClear : CondType.questClearPhase,
+              target: td.condQuestId,
+              value: td.condQuestPhase,
+            ),
+          if (ascensions.isNotEmpty)
+            Text('${S.current.ascension_short} ${ascensions.join('&')}'),
+          if (costumes.isNotEmpty)
+            Text([
+              '${S.current.costume}:',
+              for (final c in costumes)
+                svt.profile.costume[c]?.lName.l ?? c.toString()
+            ].join(' ')),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (localTime != null)
             Text(

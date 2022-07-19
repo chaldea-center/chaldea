@@ -15,6 +15,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   final TextStyle? style;
   @override
   final double? textScaleFactor;
+  @override
+  final InlineSpan? leading;
 
   const CondTargetValueDescriptor({
     Key? key,
@@ -24,10 +26,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.forceFalseDescription,
     this.style,
     this.textScaleFactor,
+    this.leading,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  List<InlineSpan> buildContent(BuildContext context) {
     switch (condType) {
       case CondType.none:
         return localized(
@@ -237,7 +240,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.date:
-        if (value == 0) return const SizedBox();
+        // if (value == 0) return [];
         final time = DateTime.fromMillisecondsSinceEpoch(value * 1000)
             .toStringShort(omitSec: true);
         return localized(

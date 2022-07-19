@@ -7,24 +7,39 @@ abstract class DescriptorBase {
   TextStyle? get style;
   double? get textScaleFactor;
   List<int> get targetIds;
+  InlineSpan? get leading;
 
-  Widget localized({
-    required Widget Function()? jp,
-    required Widget Function()? cn,
-    required Widget Function()? tw,
-    required Widget Function()? na,
-    required Widget Function()? kr,
+  List<InlineSpan> localized({
+    required List<InlineSpan> Function()? jp,
+    required List<InlineSpan> Function()? cn,
+    required List<InlineSpan> Function()? tw,
+    required List<InlineSpan> Function()? na,
+    required List<InlineSpan> Function()? kr,
   }) {
     assert(jp != null || cn != null || na != null);
-    return MappingBase.of(jp: jp, cn: cn, tw: tw, na: na, kr: kr)?.call() ??
-        const SizedBox();
+    return MappingBase.of(jp: jp, cn: cn, tw: tw, na: na, kr: kr)?.call() ?? [];
   }
 
-  Text text(String data) {
-    return Text(data, textScaleFactor: textScaleFactor, style: style);
+  List<InlineSpan> buildContent(BuildContext context);
+
+  Widget build(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          if (leading != null) leading!,
+          ...buildContent(context),
+        ],
+      ),
+      textScaleFactor: textScaleFactor,
+      style: style,
+    );
   }
 
-  Text combineToRich(
+  List<InlineSpan> text(String data) {
+    return [TextSpan(text: data)];
+  }
+
+  List<InlineSpan> combineToRich(
     BuildContext context,
     String? text1, [
     List<InlineSpan>? children2,
@@ -32,20 +47,13 @@ abstract class DescriptorBase {
     List<InlineSpan>? children4,
     String? text5,
   ]) {
-    return Text.rich(
-      TextSpan(
-        text: text1,
-        // style: Theme.of(context).textTheme.bodyText2,
-        children: [
-          if (children2 != null) ...children2,
-          if (text3 != null) TextSpan(text: text3),
-          if (children4 != null) ...children4,
-          if (text5 != null) TextSpan(text: text5),
-        ],
-      ),
-      style: style,
-      textScaleFactor: textScaleFactor,
-    );
+    return [
+      if (text1 != null) TextSpan(text: text1),
+      if (children2 != null) ...children2,
+      if (text3 != null) TextSpan(text: text3),
+      if (children4 != null) ...children4,
+      if (text5 != null) TextSpan(text: text5),
+    ];
   }
 
   List<InlineSpan> quests(BuildContext context) =>

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -47,26 +48,32 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       cd0 = skill.coolDown.first;
       cd1 = skill.coolDown.last;
     }
-    Widget? _wrapSkillAdd(Widget? child, bool translate) {
-      if (child == null) return null;
-      if (skill.skillAdd.isEmpty) return child;
-      return Tooltip(
-        message: skill.skillAdd
-            .map((e) => translate ? Transl.skillNames(e.name).l : e.name)
-            .join('/'),
-        child: child,
-      );
-    }
 
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       leading: db.getIconImage(skill.icon, width: 33, aspectRatio: 1),
-      title: _wrapSkillAdd(Text(skill.lName.l), true),
+      title: Text.rich(TextSpan(text: skill.lName.l, children: [
+        if (skill.skillAdd.isNotEmpty)
+          CenterWidgetSpan(
+            child: InkWell(
+              onTap: () => showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: _skillAddDialog,
+              ),
+              child: Icon(
+                Icons.info_outline,
+                size: 16,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          )
+      ])),
       subtitle: Transl.isJP ||
               hideDetail ||
               (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
           ? null
-          : _wrapSkillAdd(Text(skill.name), false),
+          : Text(skill.name),
       trailing: cd0 <= 0 && cd1 <= 0
           ? null
           : cd0 == cd1
@@ -94,6 +101,38 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           showBuffDetail: showBuffDetail,
         )
       ],
+    );
+  }
+
+  Widget _skillAddDialog(BuildContext context) {
+    List<Widget> children = [];
+    for (final skillAdd in skill.skillAdd) {
+      children.add(ListTile(
+        title: Text(Transl.skillNames(skillAdd.name).l),
+        subtitle: Transl.isJP ? null : Text(skillAdd.name),
+        dense: true,
+        contentPadding: EdgeInsets.zero,
+      ));
+      for (final release in skillAdd.releaseConditions) {
+        children.add(CondTargetValueDescriptor(
+          condType: release.condType,
+          target: release.condId,
+          value: release.condNum,
+          textScaleFactor: 0.8,
+          leading: const TextSpan(text: ' ꔷ '),
+        ));
+      }
+    }
+
+    return SimpleCancelOkDialog(
+      // title: Text(skill.lName.l),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+      hideCancel: true,
+      scrollable: true,
     );
   }
 }

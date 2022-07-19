@@ -10,6 +10,8 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final TextStyle? style;
   @override
   final double? textScaleFactor;
+  @override
+  final InlineSpan? leading;
 
   const MissionCondDetailDescriptor({
     Key? key,
@@ -17,13 +19,14 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
     required this.detail,
     this.style,
     this.textScaleFactor,
+    this.leading,
   }) : super(key: key);
 
   @override
   List<int> get targetIds => detail.targetIds;
 
   @override
-  Widget build(BuildContext context) {
+  List<InlineSpan> buildContent(BuildContext context) {
     switch (detail.missionCondType) {
       case DetailCondType.questClearIndividuality:
         return localized(

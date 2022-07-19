@@ -120,7 +120,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 },
               ),
             ),
-            if (skill.condQuestId > 0)
+            if (skill.condQuestId > 0 || hasUnusualLimitCond(skill))
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(
@@ -150,6 +150,12 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     );
   }
 
+  bool hasUnusualLimitCond(NiceSkill skill) {
+    return (skill.num == 1 && skill.condLimitCount != 0) ||
+        (skill.num == 2 && skill.condLimitCount != 1) ||
+        (skill.num == 3 && skill.condLimitCount != 3);
+  }
+
   Widget releaseCondition(BuildContext context, NiceSkill skill) {
     bool notMain = ['91', '94']
         .contains(skill.condQuestId.toString().padRight(2).substring(0, 2));
@@ -164,11 +170,14 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CondTargetValueDescriptor(
-            condType: notMain ? CondType.questClear : CondType.questClearPhase,
-            target: skill.condQuestId,
-            value: skill.condQuestPhase,
-          ),
+          if (skill.condQuestId > 0)
+            CondTargetValueDescriptor(
+              condType:
+                  notMain ? CondType.questClear : CondType.questClearPhase,
+              target: skill.condQuestId,
+              value: skill.condQuestPhase,
+            ),
+          Text('${S.current.ascension_short} ${skill.condLimitCount}'),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (localTime != null)
             Text(
