@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/quest/quest_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -95,7 +97,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   spacing: 2,
                   runSpacing: 2,
                   children: [
-                    for (final icon in _getValues((e) => e.svt.face))
+                    for (final icon in _getValues((e) => e.svt.icon))
                       db.getIconImage(icon, width: 48, height: 48)
                   ],
                 )
@@ -217,9 +219,28 @@ class QuestEnemySummaryPage extends StatelessWidget {
               ],
             ],
           ),
+          CustomTableRow.fromTexts(
+            texts: [S.current.quest],
+            isHeader: true,
+          ),
+          questTile(context),
+          kDefaultDivider,
           ListTile(subtitle: Text(S.current.quest_enemy_summary_hint)),
         ],
       ),
+    );
+  }
+
+  Widget questTile(BuildContext context) {
+    final quests = db.gameData.questPhases.values
+        .where((q) => q.allEnemies.any((e) => e.svt.id == svt.id))
+        .toList();
+    return TextButton(
+      onPressed: () {
+        router.pushPage(QuestListPage(quests: quests));
+      },
+      style: kTextButtonDenseStyle,
+      child: Text('${quests.length} ${S.current.free_quest}'),
     );
   }
 }

@@ -91,7 +91,13 @@ class MultiDescriptor {
         (context, id) {
           final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
           return svt == null
-              ? TextSpan(text: 'SVT $id')
+              ? TextSpan(
+                  text: 'SVT $id',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      router.push(url: Routes.servantI(id));
+                    },
+                )
               : CenterWidgetSpan(
                   child: svt.iconBuilder(context: context, width: iconSize));
         },
@@ -104,7 +110,9 @@ class MultiDescriptor {
         return ListTile(
           leading: svt?.iconBuilder(context: context, width: iconSize),
           title: Text(svt?.lName.l ?? 'Servant $id'),
-          onTap: svt == null ? null : () => svt.routeTo(),
+          onTap: () {
+            router.push(url: Routes.servantI(id));
+          },
         );
       })
     ];
@@ -153,7 +161,7 @@ class MultiDescriptor {
         (context, id) {
           return inkWell(
             context: context,
-            onTap: null,
+            onTap: () => router.push(url: Routes.traitI(id)),
             text: '[${Transl.trait(id).l}]',
           );
         },
@@ -163,9 +171,9 @@ class MultiDescriptor {
       collapsed(context, targetIds, 'All ${targetIds.length} Traits',
           (context, id) {
         return ListTile(
-          title: Text('Trait $id - ${Transl.trait(id)}'),
+          title: Text('Trait $id - ${Transl.trait(id).l}'),
           subtitle: Text(id.toString()),
-          onTap: null,
+          onTap: () => router.push(url: Routes.traitI(id)),
         );
       })
     ];

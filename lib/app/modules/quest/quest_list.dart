@@ -26,7 +26,7 @@ class _QuestListPageState extends State<QuestListPage> {
         quests.any((q) => db.gameData.spots[q.spotId]?.image != null);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title ?? '${quests.length} Quests'),
+        title: Text(widget.title ?? '${quests.length} ${S.current.quest}'),
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) =>

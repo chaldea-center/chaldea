@@ -268,7 +268,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         // target=event id
         return localized(
           jp: null,
-          cn: () => text('获得活动点数$value点'),
+          cn: () => text('活动点数达到$value点'),
           tw: null,
           na: () => text('Reach $value event points'),
           kr: null,

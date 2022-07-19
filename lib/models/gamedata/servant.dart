@@ -35,6 +35,11 @@ class BasicCostume {
       _$BasicCostumeFromJson(json);
 }
 
+const kSvtDefAscenRemap = <int, int>{
+  9939360: 1, // ダユー
+  9943860: 1, // 張角
+};
+
 @JsonSerializable()
 class BasicServant with GameCardMixin {
   @override
@@ -52,6 +57,7 @@ class BasicServant with GameCardMixin {
   int rarity;
   int atkMax;
   int hpMax;
+  @protected
   String face;
   Map<int, BasicCostume> costume;
 
@@ -78,7 +84,14 @@ class BasicServant with GameCardMixin {
   Transl<String, String> get lName => Transl.svtNames(name);
 
   @override
-  String get icon => face;
+  String get icon {
+    final _remapId = kSvtDefAscenRemap[id];
+    if (_remapId != null) {
+      final s = face.replaceFirst(RegExp('$id\\d\\.png\$'), '$id$_remapId.png');
+      return s;
+    }
+    return face;
+  }
 
   @override
   String get borderedIcon {
@@ -262,7 +275,9 @@ class Servant with GameCardMixin {
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
   @override
-  String? get icon => extraAssets.faces.ascension?.values.toList().getOrNull(0);
+  String? get icon => extraAssets.faces.ascension?.values
+      .toList()
+      .getOrNull(kSvtDefAscenRemap[id] ?? 0);
 
   @override
   String? get borderedIcon => collectionNo > 0 ||

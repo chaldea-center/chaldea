@@ -518,10 +518,12 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
         downloading = false;
         if (sources.isEmpty) return;
 
-        await widget.player.play(sources, widget.tag).catchError((e, s) async {
+        widget.player.play(sources, widget.tag).catchError((e, s) async {
           widget.player.resetTag();
           EasyLoading.showError('Error playing audio (May not support)\n$e');
           logger.e('Error playing audio', e, s);
+        }).whenComplete(() {
+          if (mounted) setState(() {});
         });
       },
       icon: Icon(widget.player.isPlaying(widget.tag)

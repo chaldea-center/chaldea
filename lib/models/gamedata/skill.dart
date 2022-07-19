@@ -275,7 +275,8 @@ class BaseTd extends SkillOrTd {
   String? icon;
   String rank;
   String type;
-  List<TdEffectFlag> effectFlags;
+  // @Deprecated('The support flag is not accurate')
+  // List<TdEffectFlag> effectFlags;
   @override
   String? unmodifiedDetail;
   NpGain npGain;
@@ -293,7 +294,7 @@ class BaseTd extends SkillOrTd {
     this.icon,
     required this.rank,
     required this.type,
-    this.effectFlags = const [],
+    // this.effectFlags = const [],
     // this.detail,
     this.unmodifiedDetail,
     required this.npGain,
@@ -329,7 +330,7 @@ class BaseTd extends SkillOrTd {
                 icon: icon,
                 rank: rank,
                 type: type,
-                effectFlags: effectFlags,
+                // effectFlags: effectFlags,
                 unmodifiedDetail: unmodifiedDetail,
                 npGain: npGain,
                 npDistribution: npDistribution,
@@ -339,24 +340,23 @@ class BaseTd extends SkillOrTd {
               ));
 
   factory BaseTd.fromJson(Map<String, dynamic> json) => _$BaseTdFromJson(json);
+  TdEffectFlag? _damageType;
 
-  NpDamageType? _damageType;
-
-  NpDamageType get damageType {
+  TdEffectFlag get damageType {
     if (_damageType != null) return _damageType!;
     for (var func in functions) {
-      if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
+      // if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
       if (func.funcType.name.startsWith('damageNp')) {
         if (func.funcTargetType == FuncTargetType.enemyAll) {
-          _damageType = NpDamageType.aoe;
+          _damageType = TdEffectFlag.attackEnemyAll;
         } else if (func.funcTargetType == FuncTargetType.enemy) {
-          _damageType = NpDamageType.singleTarget;
+          _damageType = TdEffectFlag.attackEnemyOne;
         } else {
           throw 'Unknown damageType: ${func.funcTargetType}';
         }
       }
     }
-    return _damageType ??= NpDamageType.support;
+    return _damageType ??= TdEffectFlag.support;
   }
 
   @override
@@ -387,8 +387,8 @@ class NiceTd extends BaseTd {
   String get rank => _baseTd.rank;
   @override
   String get type => _baseTd.type;
-  @override
-  List<TdEffectFlag> get effectFlags => _baseTd.effectFlags;
+  // @override
+  // List<TdEffectFlag> get effectFlags => _baseTd.effectFlags;
   @override
   String? get unmodifiedDetail => _baseTd.unmodifiedDetail;
   @override
@@ -453,7 +453,7 @@ class NiceTd extends BaseTd {
           icon: icon,
           rank: rank,
           type: type,
-          effectFlags: effectFlags,
+          // effectFlags: effectFlags,
           unmodifiedDetail: unmodifiedDetail,
           npGain: npGain,
           npDistribution: npDistribution,
@@ -471,8 +471,6 @@ class NiceTd extends BaseTd {
     return _$NiceTdFromJson(json);
   }
 }
-
-enum NpDamageType { support, singleTarget, aoe }
 
 @JsonSerializable()
 class CommonRelease {

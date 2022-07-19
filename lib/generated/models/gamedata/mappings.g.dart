@@ -384,13 +384,6 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      npDamageType: (json['np_damage_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
-          ) ??
-          const {},
       effectType: (json['effect_type'] as Map?)?.map(
             (k, e) => MapEntry(
                 k as String,
@@ -420,6 +413,13 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
           ) ??
           const {},
       svtType: (json['svt_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      summonType: (json['summon_type'] as Map?)?.map(
             (k, e) => MapEntry(
                 k as String,
                 MappingBase<String>.fromJson(

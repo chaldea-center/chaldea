@@ -275,7 +275,7 @@ class SvtFilterData with _FilterData {
   final region = FilterRadioData<Region>();
   final obtain = FilterGroupData<SvtObtain>();
   final npColor = FilterGroupData<CardType>();
-  final npType = FilterGroupData<NpDamageType>();
+  final npType = FilterGroupData<TdEffectFlag>();
   final policy = FilterGroupData<ServantPolicy>(); //秩序 混沌 中庸
   final personality = FilterGroupData<ServantPersonality>(); //善 恶 中立 夏 狂...
   final gender = FilterGroupData<Gender>();

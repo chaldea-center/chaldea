@@ -262,7 +262,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: cc.extra.profile.ofRegion(Transl.current) ?? '???',
+                child: SelectableText(
+                    cc.extra.profile.ofRegion(Transl.current) ?? '???'),
                 alignment: Alignment.centerLeft,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -272,7 +273,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              text: cc.comment,
+              child: SelectableText(cc.comment),
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             )

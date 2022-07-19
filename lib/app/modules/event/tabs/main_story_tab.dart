@@ -45,9 +45,21 @@ class MainStoryTab extends StatelessWidget {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(S.of(context).quest_fixed_drop_short),
-                  const SizedBox(width: 6),
-                  Text(S.of(context).quest_reward_short)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 56),
+                    child: Text(
+                      S.of(context).quest_fixed_drop_short,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 56),
+                    child: Text(
+                      S.of(context).quest_reward_short,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
                 ],
               ),
             ),

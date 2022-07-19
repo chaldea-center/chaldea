@@ -309,7 +309,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           kIndentDivider,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
+            child: SelectableText(
               comment,
               textScaleFactor: 0.9,
             ),

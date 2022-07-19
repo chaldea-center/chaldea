@@ -283,11 +283,7 @@ class SharedBuilder {
       text: text,
       children: children,
       style: style ??
-          TextStyle(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondaryContainer
-                  .withAlpha(200)),
+          TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
       recognizer: recognizer ??
           (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
     );
@@ -307,8 +303,7 @@ class SharedBuilder {
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
           trait.shownName,
-          style: style ??
-              TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: style,
           textScaleFactor: textScaleFactor,
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
@@ -53,6 +54,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   Servant get svt => _svt!;
 
+  BasicServant? get entity => db.gameData.entities[widget.svt?.id ?? widget.id];
+
   List<_SubTabInfo> builders = [];
 
   // store data
@@ -63,16 +66,32 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   void initState() {
     super.initState();
+    _fetchSvt();
+  }
+
+  void _fetchSvt() async {
     _svt = widget.svt ??
         db.gameData.servants[widget.id] ??
         db.gameData.servantsById[widget.id];
+    final id = widget.svt?.id ?? widget.id;
+    if (id == null || _svt != null) return;
+    _svt = await AtlasApi.svt(id);
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     if (_svt == null) {
+      final _entity = entity;
+      if (_entity != null) {
+        return Scaffold(
+          appBar: AppBar(title: Text(_entity.lName.l)),
+          body: const Center(child: CircularProgressIndicator()),
+        );
+      }
       return NotFoundPage(url: Routes.servantI(widget.id ?? 0));
     }
+
     builders = db.settings.display.sortedSvtTabs
         .map((e) => _getBuilder(e))
         .whereType<_SubTabInfo>()

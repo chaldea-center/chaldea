@@ -49,9 +49,8 @@ class _CmdCodeFilterPageState
           title: Text(S.of(context).filter_category),
           options: List.of(SummonType.values),
           values: filterData.category,
-          optionBuilder: (v) {
-            return Text(v.name);
-          },
+          optionBuilder: (v) =>
+              Text(Transl.enums(v, (enums) => enums.summonType).l),
           onFilterChanged: (value, _) {
             // filterData.category = value;
             update();

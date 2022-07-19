@@ -42,7 +42,10 @@ class _TraitDetailPageState extends State<TraitDetailPage>
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          overflow: TextOverflow.fade,
+        ),
         bottom: FixedHeight.tabBar(
             TabBar(isScrollable: true, controller: _tabController, tabs: [
           Tab(text: S.current.servant),
@@ -77,6 +80,7 @@ class _ServantTab extends StatelessWidget {
     servants.sort2((e) => e.collectionNo);
     if (servants.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       itemBuilder: (context, index) {
         final svt = servants[index];
         List<String> details = [];
@@ -160,8 +164,19 @@ class _EnemyTab extends StatelessWidget {
     final svtIds = grouped.keys.toList()..sort();
     if (svtIds.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       itemBuilder: (context, index) {
-        final enemies = grouped[svtIds[index]]!;
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(
+              S.current.only_show_main_story_enemy,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          );
+        }
+        final enemies = grouped[svtIds[index - 1]]!;
         final enemy = enemies.first;
         return ListTile(
           leading: enemy.svt.iconBuilder(context: context, jumpToDetail: false),
@@ -177,7 +192,7 @@ class _EnemyTab extends StatelessWidget {
           },
         );
       },
-      itemCount: svtIds.length,
+      itemCount: svtIds.length + 1,
     );
   }
 }
@@ -242,7 +257,10 @@ class __BuffSEState extends State<_BuffSE> {
 
     return Column(
       children: [
-        buttons,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: buttons,
+        ),
         Expanded(
           child: children.isEmpty
               ? const Center(child: Text('No record'))

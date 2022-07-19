@@ -816,7 +816,7 @@ class QuestEnemyWidget extends StatelessWidget {
     String displayName = showTrueName ? enemy.svt.lName.l : enemy.lName;
 
     Widget face = db.getIconImage(
-      enemy.svt.face,
+      enemy.svt.icon,
       width: 42,
       placeholder: (_) => const SizedBox(),
     );

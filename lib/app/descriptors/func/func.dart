@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -167,20 +168,26 @@ class FuncDescriptor extends StatelessWidget {
           func.funcType == FuncType.eventDropRateUp ||
           func.funcType == FuncType.eventPointUp) {
         int? indiv = func.svals.getOrNull(0)?.Individuality;
-        final item = db.gameData.items.values.firstWhereOrNull(
-            (item) => item.individuality.any((trait) => trait.id == indiv));
-        if (item != null) {
-          icon = Item.iconBuilder(context: context, item: item, width: 24);
+        final items = db.gameData.items.values
+            .where(
+                (item) => item.individuality.any((trait) => trait.id == indiv))
+            .toList();
+        if (items.isEmpty) {
+          spans.add(TextSpan(text: '$indiv  '));
+        }
+        for (final item in items) {
           spans.add(TextSpan(
-            text: '${item.lName.l}  ',
-            style: const TextStyle(fontSize: 13),
+            children: [
+              CenterWidgetSpan(
+                  child: Item.iconBuilder(
+                      context: context, item: item, width: 20)),
+              TextSpan(text: ' ${item.lName.l}  ')
+            ],
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 item.routeTo();
               },
           ));
-        } else {
-          spans.add(TextSpan(text: '$indiv  '));
         }
       }
       if (icon != null) {
@@ -233,12 +240,9 @@ class FuncDescriptor extends StatelessWidget {
             if (indiv != null) {
               spans.add(TextSpan(
                 children: replaceSpan(text, '{0}', [
-                  CenterWidgetSpan(
-                    child: SharedBuilder.trait(
-                      context: context,
-                      trait: NiceTrait(id: indiv),
-                      textScaleFactor: 0.85,
-                    ),
+                  SharedBuilder.traitSpan(
+                    context: context,
+                    trait: NiceTrait(id: indiv),
                   )
                 ]),
                 style: style,
@@ -300,6 +304,21 @@ class FuncDescriptor extends StatelessWidget {
 
       _addFuncText();
 
+      if (func.funcType == FuncType.transformServant) {
+        final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
+        if (transformId != null) {
+          spans.add(SharedBuilder.textButtonSpan(
+            context: context,
+            text: transformLimit == null
+                ? ' $transformId '
+                : ' $transformId[${S.current.ascension_short}$transformLimit] ',
+            onTap: () {
+              router.push(url: Routes.servantI(transformId));
+            },
+          ));
+        }
+      }
+
       List<List<InlineSpan>> _traitSpans = [];
       void _addTraits(String? prefix, List<NiceTrait> traits,
           [bool useAnd = false]) {
@@ -322,6 +341,7 @@ class FuncDescriptor extends StatelessWidget {
             traits: traits,
             separator: useAnd ? ' & ' : ' / ',
           ),
+          const TextSpan(text: ' '), // not let recognizer extends its width
         ]);
       }
 
@@ -338,7 +358,17 @@ class FuncDescriptor extends StatelessWidget {
           break;
       }
       if (func.traitVals.isNotEmpty) {
-        _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
+        if (func.funcType == FuncType.subState) {
+          _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
+        } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
+          spans.addAll(replaceSpan(
+              Transl.special.funcTraitPerBuff,
+              '{0}',
+              SharedBuilder.traitSpans(
+                  context: context, traits: func.traitVals)));
+        } else if (func.funcType == FuncType.eventDropUp) {
+          _addTraits(Transl.special.buffCheckSelf, func.traitVals);
+        }
       }
       if (func.funcType != FuncType.subState ||
           func.traitVals.map((e) => e.id).join(',') !=
@@ -371,6 +401,12 @@ class FuncDescriptor extends StatelessWidget {
           ),
         ]));
       }
+
+      final ownerIndiv = func.buffs.getOrNull(0)?.script?.INDIVIDUALITIE;
+      if (ownerIndiv != null) {
+        _addTraits(Transl.special.buffCheckSelf, [ownerIndiv]);
+      }
+
       for (int index = 0; index < _traitSpans.length; index++) {
         spans.add(TextSpan(
             text: index == _traitSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
@@ -520,7 +556,7 @@ class FuncDescriptor extends StatelessWidget {
       if (func.funcquestTvals.isNotEmpty)
         "fieldTraits": _traitList(func.funcquestTvals),
       if (func.traitVals.isNotEmpty)
-        "removalTraits": _traitList(func.traitVals),
+        "funcTargetTraits": _traitList(func.traitVals),
       if (buff != null) ...{
         "----buff----": "↓",
         "id": buff.id,

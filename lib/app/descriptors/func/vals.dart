@@ -211,6 +211,9 @@ class ValDsc extends StatelessWidget {
           case FuncType.lossNp:
             _addPercent(vals.Value, 100);
             break;
+          case FuncType.transformServant:
+            // already added in func text
+            break;
           default:
             parts.add(vals.Value.toString());
             break;
@@ -311,12 +314,10 @@ class ValDsc extends StatelessWidget {
       // return;
     } else if (trigger != null) {
       final triggerVal = trigger(vals);
-      if (triggerVal.skill != null && triggerVal.level != null) {
+      if (triggerVal.level != null) {
         parts.add('Lv.${triggerVal.level}');
       } else if (triggerVal.skill != null) {
-        parts.add(triggerVal.skill.toString());
-      } else if (triggerVal.level != null) {
-        parts.add('Lv.${triggerVal.level}');
+        parts.add('${triggerVal.skill}');
       }
       return;
     } else if (buff.type == BuffType.changeCommandCardType) {

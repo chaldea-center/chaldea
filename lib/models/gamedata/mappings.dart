@@ -470,14 +470,15 @@ class EnumMapping {
   final Map<String, MappingBase<String>> ceObtain;
   final Map<String, MappingBase<String>> missionProgressType;
   final Map<String, MappingBase<String>> missionType;
+  final Map<String, MappingBase<String>> tdEffectFlag;
   final Map<String, MappingBase<String>> itemCategory;
   final Map<String, MappingBase<String>> customMissionType;
-  final Map<String, MappingBase<String>> npDamageType;
   final Map<String, MappingBase<String>> effectType;
   final Map<String, MappingBase<String>> funcType;
   final Map<String, MappingBase<String>> buffType;
   final Map<String, MappingBase<String>> svtVoiceType;
   final Map<String, MappingBase<String>> svtType;
+  final Map<String, MappingBase<String>> summonType;
 
   EnumMapping({
     this.svtClass = const {},
@@ -490,14 +491,15 @@ class EnumMapping {
     this.ceObtain = const {},
     this.missionProgressType = const {},
     this.missionType = const {},
+    this.tdEffectFlag = const {},
     this.itemCategory = const {},
     this.customMissionType = const {},
-    this.npDamageType = const {},
     this.effectType = const {},
     this.funcType = const {},
     this.buffType = const {},
     this.svtVoiceType = const {},
     this.svtType = const {},
+    this.summonType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>
@@ -539,6 +541,13 @@ class _SpecialTransl {
         tw: '解除: ',
         na: 'Remove: ',
         kr: '해제: ',
+      );
+  String get funcTraitPerBuff => M.of(
+        jp: '【〔{0}〕状態の数によって】',
+        cn: '【根据〔{0}〕状态的数量】',
+        tw: "【根據〔{0}〕狀態的數量】",
+        na: ' based on the amount of [{0}]',
+        kr: null,
       );
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',

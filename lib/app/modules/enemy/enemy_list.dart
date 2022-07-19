@@ -52,7 +52,7 @@ class EnemyListPageState extends State<EnemyListPage>
       }
     }
     for (final enemies in _allEnemies.values) {
-      enemies.sort2((e) => e.svt.face);
+      enemies.sort2((e) => e.svt.icon);
     }
   }
 
@@ -121,7 +121,7 @@ class EnemyListPageState extends State<EnemyListPage>
   Widget listItemBuilder(BasicServant svt) {
     return CustomTile(
       leading: db.getIconImage(
-        svt.face,
+        svt.icon,
         width: 56,
         aspectRatio: 132 / 144,
       ),

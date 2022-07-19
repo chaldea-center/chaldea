@@ -19,6 +19,25 @@ class _TranslationSettingState extends State<TranslationSetting> {
       body: ListView(
         children: [
           orderableList,
+          Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                text: 'Auto',
+                style: db.settings.preferredRegions == null
+                    ? null
+                    : Theme.of(context).textTheme.caption,
+              ),
+              const TextSpan(text: ' / '),
+              TextSpan(
+                text: 'Fixed',
+                style: db.settings.preferredRegions == null
+                    ? Theme.of(context).textTheme.caption
+                    : null,
+              ),
+            ]),
+            textAlign: TextAlign.center,
+            // style: ,
+          ),
           SFooter(S.current.preferred_translation_footer),
           Center(
             child: ElevatedButton(

@@ -340,7 +340,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.eventTotalPoint:
         return localized(
           jp: null,
-          cn: () => text('获得活动点数$targetNum点'),
+          cn: () => text('活动点数达到$targetNum点'),
           tw: null,
           na: () => text('Reach $targetNum event points'),
           kr: () => text('이벤트 포인트 $targetNum점'),

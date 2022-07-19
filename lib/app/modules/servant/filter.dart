@@ -97,11 +97,11 @@ class _ServantFilterPageState
             update();
           },
         ),
-        FilterGroup<NpDamageType>(
+        FilterGroup<TdEffectFlag>(
           values: filterData.npType,
-          options: NpDamageType.values,
+          options: TdEffectFlag.values,
           optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.npDamageType).l),
+              Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
           onFilterChanged: (value, _) {
             update();
           },

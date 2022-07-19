@@ -35,11 +35,11 @@ class SvtSummonTab extends StatelessWidget {
   }
 
   Widget summonTile(BuildContext context, LimitedSummon summon) {
-    final outdated = summon.isOutdated();
+    final outdated = db.curUser.region != Region.jp && summon.isOutdated();
     String subtitle = 'JP: ${summon.startTime.jp?.sec2date().toDateString()}';
     final localDate =
         summon.startTime.ofRegion(db.curUser.region)?.sec2date().toDateString();
-    if (localDate != null) {
+    if (db.curUser.region != Region.jp && localDate != null) {
       subtitle = '$subtitle / ${db.curUser.region.toUpper()}: $localDate';
     }
     return ListTile(

@@ -31,7 +31,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     super.initState();
     _startController = TextEditingController(text: data.startLv.toString());
     _endController = TextEditingController(text: data.endLv.toString());
-    _nextController = TextEditingController(text: data.endLv.toString());
+    _nextController = TextEditingController(text: data.next.toString());
   }
 
   @override

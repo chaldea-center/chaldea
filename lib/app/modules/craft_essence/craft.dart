@@ -325,7 +325,8 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: ce.extra.profile.ofRegion(Transl.current) ?? '???',
+                child: SelectableText(
+                    ce.extra.profile.ofRegion(Transl.current) ?? '???'),
                 alignment: Alignment.centerLeft,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -336,7 +337,8 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: ce.extra.profile.ofRegion(Region.jp) ?? '???',
+                child: SelectableText(
+                    ce.extra.profile.ofRegion(Region.jp) ?? '???'),
                 alignment: Alignment.centerLeft,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
