@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
+import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -105,6 +106,7 @@ class GalleryItem {
         charaList,
         enemyList,
         svtQuestTimeline,
+        traits,
         expCard,
         statistics,
         importData,
@@ -261,6 +263,13 @@ class GalleryItem {
     titleBuilder: () => S.current.interlude_and_rankup,
     icon: FontAwesomeIcons.timeline,
     page: const SvtQuestTimeline(),
+    isDetail: false,
+  );
+  static GalleryItem traits = GalleryItem(
+    name: 'trait_list',
+    titleBuilder: () => S.current.info_trait,
+    icon: FontAwesomeIcons.diceD20,
+    page: const TraitListPage(),
     isDetail: false,
   );
   static GalleryItem expCard = GalleryItem(

@@ -9,7 +9,7 @@ CondType? toEnumNullCondType(Object? value) {
 }
 
 extension TraitX on Trait {
-  int? get id => traitIdMappingReverse[this];
+  int? get id => kTraitIdMappingReverse[this];
 }
 
 // utils
@@ -310,7 +310,7 @@ const kTraitIdMapping = <int, Trait>{
   94000108: Trait.eventGuda5,
 };
 
-final traitIdMappingReverse = () {
+final kTraitIdMappingReverse = () {
   final reversed = kTraitIdMapping.map((key, value) => MapEntry(value, key));
   assert(() {
     List<Trait> invalid = [];

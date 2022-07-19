@@ -66,7 +66,10 @@ class Transl<K, V> {
 
   static Transl<int, String> trait(int id) {
     if (!md.trait.containsKey(id)) {
-      id = md.traitRedirect[id] ?? id;
+      final redirectId = md.traitRedirect[id];
+      if (redirectId != null && md.trait.containsKey(redirectId)) {
+        id = redirectId;
+      }
     }
     return Transl(md.trait, id, '$id');
   }

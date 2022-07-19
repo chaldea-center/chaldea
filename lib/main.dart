@@ -105,7 +105,7 @@ Future<void> _initiateCommon() async {
     }
   });
   network.init();
-  traitIdMappingReverse.length; // call assert
+  kTraitIdMappingReverse.length; // call assert
   if (!kIsWeb) {
     HttpOverrides.global = CustomHttpOverrides();
   }

@@ -151,9 +151,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
                         mission.ids.remove(id);
                       });
                     },
-                    onLongPress: () {
-                      // enter trait detail
-                    },
                     child: AbsorbPointer(
                       child: FilterOption(
                         selected: false,

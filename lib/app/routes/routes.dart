@@ -16,6 +16,7 @@ import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
+import 'package:chaldea/app/modules/trait/trait_list.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/command_code/cmd_code.dart';
@@ -81,6 +82,7 @@ class Routes {
 
   static String traitI(int id) => '/trait/$id';
   static const String trait = '/trait';
+  static const String traits = '/traits';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -249,6 +251,8 @@ class RouteConfiguration {
         return CharaListPage();
       case Routes.stats:
         return GameStatisticsPage();
+      case Routes.traits:
+        return const TraitListPage();
       case Routes.trait:
         return TraitDetailPage(id: _secondInt ?? 0);
     }
