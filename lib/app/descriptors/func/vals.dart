@@ -319,6 +319,9 @@ class ValDsc extends StatelessWidget {
       } else if (triggerVal.skill != null) {
         parts.add('${triggerVal.skill}');
       }
+      if (buff.type == BuffType.counterFunction && vals.CounterOc != null) {
+        parts.add('OC${vals.CounterOc}');
+      }
       return;
     } else if (buff.type == BuffType.changeCommandCardType) {
       parts.add(empty);

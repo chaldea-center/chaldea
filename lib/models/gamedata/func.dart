@@ -92,9 +92,15 @@ class NiceFunction implements BaseFunction {
     ];
   }
 
-  DataVals getStaticVal() {
-    List<Map<String, dynamic>> allVals =
-        allDataVals.map((e) => e.toJson()).toList();
+  DataVals getStaticVal({bool levelOnly = false, bool ocOnly = false}) {
+    assert(!levelOnly || !ocOnly);
+    final _vals = levelOnly
+        ? svals
+        : ocOnly
+            ? ocVals(0)
+            : allDataVals;
+
+    List<Map<String, dynamic>> allVals = _vals.map((e) => e.toJson()).toList();
     if (allVals.isEmpty) return DataVals();
 
     Map<String, Set> x = {};
@@ -114,12 +120,19 @@ class NiceFunction implements BaseFunction {
     return DataVals.fromJson(x.map((key, value) => MapEntry(key, value.first)));
   }
 
-  List<DataVals> getMutatingVals(DataVals? staticVals) {
-    staticVals ??= getStaticVal();
+  List<DataVals> getMutatingVals(DataVals? staticVals,
+      {bool levelOnly = false, bool ocOnly = false}) {
+    assert(!levelOnly || !ocOnly);
+    staticVals ??= getStaticVal(levelOnly: levelOnly, ocOnly: ocOnly);
     final staticKeys = staticVals.toJson().keys.toSet();
     List<DataVals> valList = [];
+    final _svals = levelOnly
+        ? svals
+        : ocOnly
+            ? ocVals(0)
+            : crossVals;
     for (int i = 0; i < svals.length; i++) {
-      final val = (svalsList.getOrNull(i) ?? svals).getOrNull(i);
+      final val = _svals.getOrNull(i);
       if (val != null) {
         final valJson = val.toJson()
           ..removeWhere((key, value) => staticKeys.contains(key));

@@ -115,8 +115,8 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     final staticVal = func.getStaticVal();
-    final crossVals = func.crossVals;
-    final mutatingVals = func.getMutatingVals(staticVal);
+    final mutatingLvVals = func.getMutatingVals(null, levelOnly: true);
+    final mutatingOCVals = func.getMutatingVals(null, ocOnly: true);
 
     int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
     if (turn > 0 || count > 0) {
@@ -126,18 +126,6 @@ class FuncDescriptor extends StatelessWidget {
         if (turn > 0) Transl.special.funcValTurns(turn),
       ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
       funcText.write(')');
-    }
-    final lvVals = func.svals;
-    final ocVals = func.ocVals(0);
-    final int lvNum = lvVals.toSet().length, ocNum = ocVals.toSet().length;
-
-    if (func.svals.length == 5) {
-      if (lvNum > 1) {
-        funcText.write('<Lv>');
-      }
-      if (ocNum > 1) {
-        funcText.write('<OC>');
-      }
     }
     return LayoutBuilder(builder: (context, constraints) {
       int perLine =
@@ -152,14 +140,25 @@ class FuncDescriptor extends StatelessWidget {
         ignoreCount: true,
       );
 
-      if (mutatingVals.isNotEmpty) {
+      if (mutatingLvVals.isNotEmpty) {
+        funcText.write('<Lv>');
         levels.add(ValListDsc(
           func: func,
-          mutaingVals: mutatingVals,
-          originVals: crossVals,
-          selected: ocNum > 1 ? null : level,
+          mutaingVals: mutatingLvVals,
+          originVals: func.svals,
+          selected: level,
         ));
       }
+      if (mutatingOCVals.isNotEmpty) {
+        funcText.write('<OC>');
+        levels.add(ValListDsc(
+          func: func,
+          mutaingVals: mutatingOCVals,
+          originVals: func.ocVals(0),
+          selected: null,
+        ));
+      }
+
       List<InlineSpan> spans = [];
       Widget? icon;
       if (func.funcPopupIcon != null) {
