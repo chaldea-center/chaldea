@@ -117,12 +117,14 @@ class FilterGroupData<T> {
 }
 
 class FilterRadioData<T> extends FilterGroupData<T> {
-  @override
-  T? get radioValue => _selected;
-
-  @Deprecated('use radioValue instead`')
-  T? get selected => _selected;
   T? _selected;
+  final bool _nonnull;
+
+  @override
+  T? get radioValue {
+    assert(!(_selected == null && _nonnull && null is! T));
+    return _selected;
+  }
 
   @override
   bool get matchAll => false;
@@ -133,11 +135,18 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   @override
   Set<T> get options => {if (_selected != null) _selected!};
 
-  FilterRadioData([this._selected]);
+  FilterRadioData([this._selected]) : _nonnull = false;
+  FilterRadioData.nonnull(T selected)
+      : _selected = selected,
+        _nonnull = true;
 
   @override
   void toggle(T value) {
-    _selected = value;
+    if (value == _selected && !_nonnull) {
+      _selected = null;
+    } else {
+      _selected = value;
+    }
   }
 
   @override

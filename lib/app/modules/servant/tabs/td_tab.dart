@@ -79,7 +79,7 @@ class SvtTdTab extends StatelessWidget {
                           overrideTds.getOrNull(v)?.tdName ?? tds[v].name)
                       .l),
                 ),
-                values: FilterRadioData(tdIndex),
+                values: FilterRadioData.nonnull(tdIndex),
                 onFilterChanged: (v, _) {
                   state.value = v.radioValue!;
                   state.updateState();

@@ -832,7 +832,7 @@ class ServantListPageState extends State<ServantListPage>
                       combined: true,
                       options: const [false, true],
                       padding: EdgeInsets.zero,
-                      values: FilterRadioData(changeTarget),
+                      values: FilterRadioData.nonnull(changeTarget),
                       onFilterChanged: (v, _) {
                         setState(() {
                           changeTarget = v.radioValue!;

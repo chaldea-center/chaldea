@@ -74,7 +74,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             children: [
               FilterGroup<int>(
                 options: const [3, 4, 5],
-                values: FilterRadioData(expCardRarity),
+                values: FilterRadioData.nonnull(expCardRarity),
                 combined: true,
                 optionBuilder: (v) => Text('EXP$v'),
                 onFilterChanged: (v, _) {

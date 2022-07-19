@@ -113,7 +113,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   child: Text(Transl.skillNames(v.name).l),
                 ),
-                values: FilterRadioData(skill),
+                values: FilterRadioData.nonnull(skill),
                 onFilterChanged: (v, _) {
                   state.value = v.radioValue!;
                   state.updateState();

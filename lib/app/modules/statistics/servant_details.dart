@@ -19,8 +19,8 @@ class ServantDemandDetailStat extends StatefulWidget {
 }
 
 class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
-  final typeFilter =
-      FilterRadioData<SvtMatCostDetailType>(SvtMatCostDetailType.demands);
+  final typeFilter = FilterRadioData<SvtMatCostDetailType>.nonnull(
+      SvtMatCostDetailType.demands);
   SvtCompare sortOrder = SvtCompare.no;
   bool sortReversed = true;
 

@@ -42,7 +42,7 @@ class FilterGroup<T> extends StatelessWidget {
     return FilterGroup<bool>(
       padding: const EdgeInsetsDirectional.only(end: 12),
       options: const [false, true],
-      values: FilterRadioData(useGrid),
+      values: FilterRadioData.nonnull(useGrid),
       optionBuilder: (v) => Text.rich(TextSpan(children: [
         CenterWidgetSpan(
             child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),

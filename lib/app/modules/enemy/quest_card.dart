@@ -435,7 +435,7 @@ class _QuestCardState extends State<QuestCard> {
           _header('${S.current.game_drop}:'),
           FilterGroup<bool>(
             options: const [true, false],
-            values: FilterRadioData(preferApRate),
+            values: FilterRadioData.nonnull(preferApRate),
             optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
             combined: true,
             onFilterChanged: (v, _) {
