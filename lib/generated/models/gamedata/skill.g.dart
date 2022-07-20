@@ -110,10 +110,6 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,
-      effectFlags: (json['effectFlags'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e))
-              .toList() ??
-          const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
       npDistribution: (json['npDistribution'] as List<dynamic>)
@@ -145,12 +141,6 @@ const _$CardTypeEnumMap = {
   CardType.strength: 'strength',
 };
 
-const _$TdEffectFlagEnumMap = {
-  TdEffectFlag.support: 'support',
-  TdEffectFlag.attackEnemyAll: 'attackEnemyAll',
-  TdEffectFlag.attackEnemyOne: 'attackEnemyOne',
-};
-
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       id: json['id'] as int,
       num: json['num'] as int,
@@ -160,10 +150,6 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,
-      effectFlags: (json['effectFlags'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e))
-              .toList() ??
-          const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
       npDistribution: (json['npDistribution'] as List<dynamic>)

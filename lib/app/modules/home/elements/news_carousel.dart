@@ -12,6 +12,8 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
 
+import 'package:chaldea/app/api/hosts.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/git_tool.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -59,13 +61,13 @@ class AppNewsCarousel extends StatefulWidget {
             _result.add(CarouselItem(link: link, image: imgUrl));
           }
         } else if (linkNode.text.isNotEmpty && custom) {
-          _result.add(CarouselItem(link: link, text: linkNode.text));
+          _result.add(CarouselItem(link: link, content: linkNode.text));
         }
       }
       _result.forEach((item) {
         print('img=${item.image}');
         print('  link=${item.link}');
-        if (item.text != null) print('  text=${item.text}');
+        if (item.content != null) print('  content=${item.content}');
       });
       return _result;
     }
@@ -78,12 +80,27 @@ class AppNewsCarousel extends StatefulWidget {
         updated = true;
       } else {
         final _dio = Dio();
-        Future<List<CarouselItem>>? taskMC,
+        Future<List<CarouselItem>>? taskChaldea,
+            taskMC,
             taskJP,
             taskCN,
             taskTW,
             taskNA,
             taskKR;
+
+        // app news
+        if (carouselSetting.enableChaldea) {
+          const url = '${Hosts.kDataHostCN}/news.json';
+          taskChaldea = _dio.get(url).then((response) {
+            return (response.data as List)
+                .map((e) => CarouselItem.fromJson(e))
+                .toList();
+          }).catchError((e, s) async {
+            logger.d('parse JP slides failed', e, s);
+            return <CarouselItem>[];
+          });
+        }
+
         // mc slides
         if (carouselSetting.enableMooncell) {
           const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
@@ -135,7 +152,7 @@ class AppNewsCarousel extends StatefulWidget {
                   .toString();
               items.add(CarouselItem(
                 image: img,
-                text: data['title'],
+                title: data['title'],
                 link: PlatformU.isTargetMobile
                     ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
                     : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
@@ -172,7 +189,7 @@ class AppNewsCarousel extends StatefulWidget {
                   .toString();
               items.add(CarouselItem(
                 image: img,
-                text: data['title'],
+                title: data['title'],
                 link: PlatformU.isTargetMobile
                     ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
                     : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
@@ -240,7 +257,7 @@ class AppNewsCarousel extends StatefulWidget {
         }
 
         await Future.forEach<Future<List<CarouselItem>>?>(
-          [taskMC, taskJP, taskCN, taskTW, taskNA, taskKR],
+          [taskChaldea, taskMC, taskJP, taskCN, taskTW, taskNA, taskKR],
           (e) async {
             if (e != null) result.addAll(await e);
           },
@@ -303,11 +320,11 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         onTap: () {
           launch(kProjectDocRoot);
         },
-        child: AspectRatio(
+        child: const AspectRatio(
           aspectRatio: 8 / 3,
           child: CachedImage(
-            imageUrl: Atlas.asset('Back/back10111.png'),
-            cachedOption: const CachedImageOption(fit: BoxFit.cover),
+            imageUrl: 'https://docs.chaldea.center/images/chaldea-banner.jpg',
+            // cachedOption: CachedImageOption(fit: BoxFit.cover),
           ),
         ),
       ));
@@ -391,7 +408,17 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       });
       return sliders;
     }
+    final items = carouselSetting.items.toList();
+    items.removeWhere((item) {
+      final t = DateTime.now();
+      return item.startTime.isAfter(t) || item.endTime.isBefore(t);
+    });
+    items.sort((a, b) {
+      if (a.priority != b.priority) return a.priority - b.priority;
+      return a.startTime.compareTo(b.startTime);
+    });
     for (final item in carouselSetting.items) {
+      if (item.priority < 0 && !kDebugMode) continue;
       Widget? child;
       if (item.image != null && isURL(item.image!)) {
         child = CachedImage(
@@ -402,16 +429,16 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             fit: item.fit,
           ),
         );
-      } else if (item.text?.isNotEmpty == true) {
+      } else if (item.content?.isNotEmpty == true) {
         child = Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
           child: Center(
             child: AutoSizeText(
-              item.text!,
+              item.content!,
               textAlign: TextAlign.center,
               maxFontSize: 20,
               minFontSize: 5,
-              maxLines: item.text!.split('\n').length,
+              maxLines: item.content!.split('\n').length,
             ),
           ),
         );
@@ -424,9 +451,9 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             const routePrefix = '/chaldea/route';
             if (link.toLowerCase().startsWith(routePrefix) &&
                 link.length > routePrefix.length + 1) {
-              Navigator.pushNamed(context, link.substring(routePrefix.length));
+              router.push(url: link.substring(routePrefix.length));
             } else if (await canLaunch(link)) {
-              jumpToExternalLinkAlert(url: link, content: item.text);
+              jumpToExternalLinkAlert(url: link, content: item.title);
             }
           },
           child: child,

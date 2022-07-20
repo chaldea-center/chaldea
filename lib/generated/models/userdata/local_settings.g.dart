@@ -326,6 +326,8 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
                       Map<String, dynamic>.from(e as Map)))
                   .toList()),
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
+          enableChaldea:
+              $checkedConvert('enableChaldea', (v) => v as bool? ?? true),
           enableMooncell:
               $checkedConvert('enableMooncell', (v) => v as bool? ?? true),
           enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? true),
@@ -343,6 +345,7 @@ Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
       'updateTime': instance.updateTime,
       'items': instance.items.map((e) => e.toJson()).toList(),
       'enabled': instance.enabled,
+      'enableChaldea': instance.enableChaldea,
       'enableMooncell': instance.enableMooncell,
       'enableJP': instance.enableJP,
       'enableCN': instance.enableCN,
@@ -356,8 +359,13 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CarouselItem(
+          type: $checkedConvert('type', (v) => v as int? ?? 0),
+          priority: $checkedConvert('priority', (v) => v as int? ?? 100),
+          startTime: $checkedConvert('startTime', (v) => v as String? ?? ""),
+          endTime: $checkedConvert('endTime', (v) => v as String? ?? ""),
+          title: $checkedConvert('title', (v) => v as String?),
+          content: $checkedConvert('content', (v) => v as String?),
           image: $checkedConvert('image', (v) => v as String?),
-          text: $checkedConvert('text', (v) => v as String?),
           link: $checkedConvert('link', (v) => v as String?),
         );
         return val;
@@ -366,8 +374,13 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
     <String, dynamic>{
+      'type': instance.type,
+      'priority': instance.priority,
+      'startTime': instance.startTime.toIso8601String(),
+      'endTime': instance.endTime.toIso8601String(),
+      'title': instance.title,
+      'content': instance.content,
       'image': instance.image,
-      'text': instance.text,
       'link': instance.link,
     };
 

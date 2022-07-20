@@ -201,7 +201,7 @@ Future<void> jumpToExternalLinkAlert(
     builder: (context) => SimpleCancelOkDialog(
       title: Text(S.current.jump_to(name ?? S.current.link)),
       content: Text.rich(TextSpan(children: [
-        if (content != null) TextSpan(text: '$content\n'),
+        if (content != null) TextSpan(text: '$content\n\n'),
         TextSpan(
           text: shownLink,
           style: const TextStyle(decoration: TextDecoration.underline),

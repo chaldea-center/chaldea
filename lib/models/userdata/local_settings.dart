@@ -202,10 +202,9 @@ class DisplaySettings {
 @JsonSerializable()
 class CarouselSetting {
   int? updateTime;
-
-  /// img_url: link, or text:link
   List<CarouselItem> items;
   bool enabled;
+  bool enableChaldea;
   bool enableMooncell;
   bool enableJP;
   bool enableCN;
@@ -219,6 +218,7 @@ class CarouselSetting {
     this.updateTime,
     List<CarouselItem>? items,
     this.enabled = true,
+    this.enableChaldea = true,
     this.enableMooncell = true,
     this.enableJP = true,
     this.enableCN = true,
@@ -228,8 +228,15 @@ class CarouselSetting {
     this.enableKR = false,
   }) : items = items ?? [];
 
-  List<bool> get options =>
-      [enableMooncell, enableJP, enableCN, enableNA, enableTW, enableKR];
+  List<bool> get options => [
+        enableChaldea,
+        enableMooncell,
+        enableJP,
+        enableCN,
+        enableNA,
+        enableTW,
+        enableKR
+      ];
 
   bool get shouldUpdate {
     if (updateTime == null) return true;
@@ -257,18 +264,29 @@ class CarouselSetting {
 
 @JsonSerializable()
 class CarouselItem {
+  int type;
+  int priority; // if <0, only used for debug
+  DateTime startTime;
+  DateTime endTime;
+  String? title;
+  String? content;
   String? image;
-  String? text;
   String? link;
   @JsonKey(ignore: true)
   BoxFit? fit;
 
   CarouselItem({
+    this.type = 0,
+    this.priority = 100,
+    String startTime = "",
+    String endTime = "",
+    this.title,
+    this.content,
     this.image,
-    this.text,
     this.link,
     this.fit,
-  });
+  })  : startTime = DateTime.tryParse(startTime) ?? DateTime(2000),
+        endTime = DateTime.tryParse(endTime) ?? DateTime(2099);
 
   factory CarouselItem.fromJson(Map<String, dynamic> data) =>
       _$CarouselItemFromJson(data);

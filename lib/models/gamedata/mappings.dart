@@ -550,7 +550,7 @@ class _SpecialTransl {
         cn: '【根据〔{0}〕状态的数量】',
         tw: "【根據〔{0}〕狀態的數量】",
         na: ' based on the amount of [{0}]',
-        kr: null,
+        kr: ' [〔{0}〕 상태의 수만큼]',
       );
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',

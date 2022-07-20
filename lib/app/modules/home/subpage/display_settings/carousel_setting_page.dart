@@ -35,6 +35,18 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
           ),
           kIndentDivider,
           CheckboxListTile(
+            value: carousel.enableChaldea,
+            title: const Text('Chaldea Announcements'),
+            subtitle: const Text('https://docs.chaldea.center'),
+            onChanged: carousel.enabled
+                ? (v) => setState(() {
+                      carousel.needUpdate = true;
+                      carousel.enableChaldea = v ?? carousel.enableChaldea;
+                      updateHome();
+                    })
+                : null,
+          ),
+          CheckboxListTile(
             value: carousel.enableMooncell,
             title: const Text('Mooncell News'),
             subtitle: const Text('CN/JP'),
