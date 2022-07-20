@@ -30,6 +30,7 @@ class ImageActions {
     bool share = true,
     String? shareText,
     List<Widget> extraHeaders = const [],
+    Future<void> Function()? onClearCache,
   }) {
     assert(srcFp != null || data != null);
     if (srcFp == null && data == null) return Future.value();
@@ -129,6 +130,16 @@ class ImageActions {
                   ..writeAsBytesSync(data);
                 await Share.shareFiles([tmpFp], text: shareText);
               }
+            },
+          ));
+        }
+        if (onClearCache != null) {
+          children.add(ListTile(
+            leading: const Icon(Icons.cached),
+            title: Text(S.current.clear_cache),
+            onTap: () {
+              Navigator.pop(context);
+              onClearCache();
             },
           ));
         }

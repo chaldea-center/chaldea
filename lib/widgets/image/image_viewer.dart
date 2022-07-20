@@ -163,7 +163,15 @@ class _CachedImageState extends State<CachedImage> {
         !url.endsWith('questboard_cap_closed.png')) {
       String? _cachedPath = _loader.getCached(url);
       if (_cachedPath != null) {
-        return _withProvider(FileImage(File(_cachedPath)));
+        final provider = FileImage(File(_cachedPath));
+        return _withProvider(provider, onClearCache: () async {
+          AtlasIconLoader.i.evict(url!);
+          if (provider.file.existsSync()) {
+            provider.file.deleteSync();
+          }
+          await provider.evict();
+          if (mounted) setState(() {});
+        });
       } else if (!_loader.isFailed(url)) {
         _loader.get(url).then((localPath) {
           if (mounted) setState(() {});
@@ -181,7 +189,8 @@ class _CachedImageState extends State<CachedImage> {
         const SizedBox();
   }
 
-  Widget _withProvider(ImageProvider provider) {
+  Widget _withProvider(ImageProvider provider,
+      {Future<void> Function()? onClearCache}) {
     Widget child = FadeInImage(
       placeholder: MemoryImage(kOnePixel),
       image: provider,
@@ -222,6 +231,7 @@ class _CachedImageState extends State<CachedImage> {
               destFp: joinPaths(db.paths.downloadDir, fn),
               gallery: true,
               share: true,
+              onClearCache: onClearCache,
             );
           });
           provider.resolve(ImageConfiguration.empty)
@@ -253,8 +263,10 @@ class _CachedImageState extends State<CachedImage> {
       return _withError(context, fullUrl);
     }
 
+    String url = uri?.toString() ?? fullUrl;
+
     Widget child = CachedNetworkImage(
-      imageUrl: uri?.toString() ?? fullUrl,
+      imageUrl: url,
       httpHeaders: cachedOption.httpHeaders,
       imageBuilder: cachedOption.imageBuilder,
       placeholder: _withPlaceholder,
@@ -283,6 +295,11 @@ class _CachedImageState extends State<CachedImage> {
       maxHeightDiskCache: cachedOption.maxHeightDiskCache,
     );
     if (widget.showSaveOnLongPress) {
+      Future<void> onClearCache() async {
+        await _cacheManager.removeFile(cachedOption.cacheKey ?? url);
+        if (mounted) setState(() {});
+      }
+
       child = GestureDetector(
         child: child,
         onLongPress: () async {
@@ -290,6 +307,7 @@ class _CachedImageState extends State<CachedImage> {
             return ImageActions.showSaveShare(
               context: context,
               srcFp: fullUrl,
+              onClearCache: onClearCache,
             );
           } else {
             File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
@@ -301,6 +319,7 @@ class _CachedImageState extends State<CachedImage> {
               gallery: true,
               share: true,
               shareText: fn,
+              onClearCache: onClearCache,
             );
           }
         },

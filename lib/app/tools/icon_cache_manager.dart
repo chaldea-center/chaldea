@@ -182,11 +182,11 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 }
 
-class _FailedDetail {
+class _FailureDetail {
   DateTime time;
   Duration? retryAfter;
 
-  _FailedDetail({required this.time, this.retryAfter});
+  _FailureDetail({required this.time, this.retryAfter});
 
   bool get neverRetry => retryAfter == null || retryAfter!.inSeconds <= 0;
 }
@@ -194,13 +194,19 @@ class _FailedDetail {
 abstract class _CachedLoader<K, V> {
   final Map<K, Completer<V?>> _completers = {};
   final Map<K, V> _success = {};
-  final Map<K, _FailedDetail> _failed = {};
+  final Map<K, _FailureDetail> _failed = {};
 
   Future<V?> download(K key, {RateLimiter? limiter});
 
   V? getCached(K key) {
     if (_success.containsKey(key)) return _success[key];
     return null;
+  }
+
+  void evict(K key) {
+    _completers.remove(key);
+    _success.remove(key);
+    _failed.remove(key);
   }
 
   bool isFailed(K key) {
@@ -238,7 +244,7 @@ abstract class _CachedLoader<K, V> {
       if (e is DioError) {
         final code = e.response?.statusCode;
         if (code == 403 || code == 404) {
-          _failed[key] ??= _FailedDetail(time: DateTime.now());
+          _failed[key] ??= _FailureDetail(time: DateTime.now());
           return;
         }
       }
@@ -246,7 +252,7 @@ abstract class _CachedLoader<K, V> {
 
       final detail = _failed[key];
       if (detail == null) {
-        _failed[key] = _FailedDetail(
+        _failed[key] = _FailureDetail(
             time: DateTime.now(), retryAfter: const Duration(seconds: 30));
       } else if (detail.neverRetry) {
         return;
