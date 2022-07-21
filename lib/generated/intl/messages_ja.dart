@@ -39,7 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(name) => "${name}はすでにあります";
 
-  static String m5(site) => "${site}にジャンプします";
+  static String m5(site) => "${site}へ";
 
   static String m13(shown, total) => "表示${shown}/合計${total}";
 

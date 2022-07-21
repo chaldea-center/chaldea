@@ -486,7 +486,7 @@ enum Trait {
   buffCritDamageDown,
   buffCritRateDown,
   buffDeathResistDown,
-  buffDefenceUp,
+  buffDefenceUpRelated,
   buffMaxHpUpPercent,
   buffMaxHpDownPercent,
   buffMaxHpUp,
@@ -502,11 +502,11 @@ enum Trait {
   buffLockCardsDeck,
   buffDisableColorCard,
   buffChangeField,
-  buffIncreaseDefenceAgainstIndividuality,
+  buffDefenceUp, //
   buffInvinciblePierce,
   buffHpRecoveryPerTurn,
   buffNegativeEffectImmunity,
-  buffNegativeEffectAtTurnEnd,
+  buffDelayedNegativeEffect, // buffNegativeEffectAtTurnEnd
   attackPhysical,
   attackProjectile,
   attackMagical,

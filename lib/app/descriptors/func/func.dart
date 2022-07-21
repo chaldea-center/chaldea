@@ -479,6 +479,7 @@ class FuncDescriptor extends StatelessWidget {
   List<InlineSpan> replaceSpan(
       String text, Pattern pattern, List<InlineSpan> replace) {
     final parts = text.split(pattern);
+    assert(parts.length > 1, [text, pattern]);
     if (parts.length == 1) return [TextSpan(text: text), ...replace];
     List<InlineSpan> spans = [];
     for (int index = 0; index < parts.length; index++) {
@@ -494,14 +495,17 @@ class FuncDescriptor extends StatelessWidget {
       List<InlineSpan> Function(Match match) replace) {
     List<InlineSpan> spans = [];
     List<String> textParts = text.split(pattern);
+    bool mapped = false;
     text.splitMapJoin(pattern, onMatch: (match) {
       assert(textParts.isNotEmpty);
       spans.add(TextSpan(text: textParts.removeAt(0)));
       spans.addAll(replace(match));
+      mapped = true;
       return match.group(0)!;
     });
     assert(textParts.length == 1);
     spans.addAll(textParts.map((e) => TextSpan(text: e)));
+    assert(mapped, [text, pattern]);
     return spans;
   }
 

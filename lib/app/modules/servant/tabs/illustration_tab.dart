@@ -24,6 +24,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
     final hasCostume = svt.extraAssets.faces.costume?.isNotEmpty == true;
     return Column(
       children: [
+        const SizedBox(height: 4),
         FilterGroup<int>(
           options: [
             ...ascensions,

@@ -241,7 +241,7 @@ const kTraitIdMapping = <int, Trait>{
   3037: Trait.buffCritDamageDown,
   3038: Trait.buffCritRateDown,
   3039: Trait.buffDeathResistDown,
-  3040: Trait.buffDefenceUp,
+  3040: Trait.buffDefenceUpRelated,
   3041: Trait.buffMaxHpUpPercent,
   3042: Trait.buffMaxHpDownPercent,
   3043: Trait.buffMaxHpUp,
@@ -261,12 +261,12 @@ const kTraitIdMapping = <int, Trait>{
   // # Summer BB
   3056: Trait.buffDisableColorCard,
   3057: Trait.buffChangeField,
-  3058: Trait.buffIncreaseDefenceAgainstIndividuality,
+  3058: Trait.buffDefenceUp,
   // # Unsure
   3059: Trait.buffInvinciblePierce,
   3060: Trait.buffHpRecoveryPerTurn,
   3061: Trait.buffNegativeEffectImmunity,
-  3063: Trait.buffNegativeEffectAtTurnEnd,
+  3063: Trait.buffDelayedNegativeEffect,
   3064: Trait.buffSpecialInvincible,
   3065: Trait.buffSkillRankUp,
   3066: Trait.buffSleep,
