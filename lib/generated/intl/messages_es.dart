@@ -23,49 +23,49 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "Versión actual: ${curVersion}\nÚltima versión: ${newVersion}\nNota de lanzamiento:\n${releaseNote}";
 
-  static String m10(url) =>
+  static String m1(url) =>
       "Chaldea - Una utilidad multiplataforma para Fate/GO. Compatibilidad con la revisión de datos del juego, la planificación de sirvientes/eventos/elementos, la planificación de misiones maestras, el simulador de invocaciones, etc.\n\nPara más detalless: \n${url}\n";
 
-  static String m11(version) =>
+  static String m2(version) =>
       "Versión de la aplicación requerida: ≥ ${version}";
 
-  static String m1(n) => "Lotería Máx. ${n}";
+  static String m3(n) => "Lotería Máx. ${n}";
 
-  static String m2(n, total) => "Griales a Lore: ${n}/${total}";
+  static String m4(n, total) => "Griales a Lore: ${n}/${total}";
 
-  static String m12(filename, hash, localHash) =>
+  static String m15(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
-  static String m3(error) => "La importación ha fallado. Error:\n${error}";
+  static String m5(error) => "La importación ha fallado. Error:\n${error}";
 
-  static String m4(name) => "${name} ya existe";
+  static String m6(name) => "${name} ya existe";
 
-  static String m5(site) => "Ir a ${site}";
+  static String m7(site) => "Ir a ${site}";
 
-  static String m13(shown, total) => "${shown} mostrado (total ${total})";
+  static String m16(shown, total) => "${shown} mostrado (total ${total})";
 
-  static String m14(shown, ignore, total) =>
+  static String m17(shown, ignore, total) =>
       "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
-  static String m6(first) => "${Intl.select(first, {
+  static String m8(first) => "${Intl.select(first, {
             'true': 'Ya es el primero',
             'false': 'Ya es el último',
             'other': 'No más',
           })}";
 
-  static String m15(n) => "Sección ${n}";
+  static String m9(n) => "Sección ${n}";
 
-  static String m18(region) => "Aviso de ${region}";
+  static String m10(region) => "Aviso de ${region}";
 
-  static String m7(n) => "Restablecer plan ${n}(Todo)";
+  static String m11(n) => "Restablecer plan ${n}(Todo)";
 
-  static String m8(n) => "Restablecer plan ${n} (Mostrado)";
+  static String m12(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m19(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m20(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
-  static String m20(n) => "Perfil ${n}";
+  static String m13(n) => "Perfil ${n}";
 
-  static String m9(a, b) => "${a} ${b}";
+  static String m14(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -157,7 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("Global"),
         "chaldea_server_hint": MessageLookupByLibrary.simpleMessage(
             "Se utiliza para los datos del juego y el reconocedor de capturas de pantalla."),
-        "chaldea_share_msg": m10,
+        "chaldea_share_msg": m1,
         "change_log":
             MessageLookupByLibrary.simpleMessage("Registro de cambios"),
         "characters_in_card":
@@ -253,7 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Los siguientes objetos se consumirán para mejorar"),
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("Sin internet"),
-        "error_required_app_version": m11,
+        "error_required_app_version": m2,
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "Todos los objetos se añadirán al inventario y se eliminará el evento fuera del plan"),
@@ -264,7 +264,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_item_fixed_extra":
             MessageLookupByLibrary.simpleMessage("Objetos fijos adicionales"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lotería"),
-        "event_lottery_limit_hint": m1,
+        "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("Lotería limitada"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lotería"),
@@ -276,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_progress": MessageLookupByLibrary.simpleMessage("Progreso"),
         "event_quest":
             MessageLookupByLibrary.simpleMessage("Misiones de Evento"),
-        "event_rerun_replace_grail": m2,
+        "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("Tiendas"),
         "event_title": MessageLookupByLibrary.simpleMessage("Eventos"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Torre"),
@@ -312,7 +312,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Primero descargue o importe los datos de FFO↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
-        "file_not_found_or_mismatched_hash": m12,
+        "file_not_found_or_mismatched_hash": m15,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
             "Por favor, rellene la dirección de correo. De lo contrario NO hay respuesta."),
@@ -402,7 +402,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_title":
             MessageLookupByLibrary.simpleMessage("Plantilla CSV"),
         "import_data": MessageLookupByLibrary.simpleMessage("Importar"),
-        "import_data_error": m3,
+        "import_data_error": m5,
         "import_data_success":
             MessageLookupByLibrary.simpleMessage("Importar datos con éxito"),
         "import_from_clipboard":
@@ -469,7 +469,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Aplicación \"Archivos\"/En mi iPhone/Caldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Problemas"),
         "item": MessageLookupByLibrary.simpleMessage("Objeto"),
-        "item_already_exist_hint": m4,
+        "item_already_exist_hint": m6,
         "item_apple": MessageLookupByLibrary.simpleMessage("Manzana"),
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Objetos de Ascension"),
@@ -519,16 +519,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta":
             MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
-        "jump_to": m5,
+        "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
         "language_en": MessageLookupByLibrary.simpleMessage("Spanish"),
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event":
             MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_count_shown_all": m13,
-        "list_count_shown_hidden_all": m14,
-        "list_end_hint": m6,
+        "list_count_shown_all": m16,
+        "list_count_shown_hidden_all": m17,
+        "list_end_hint": m8,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password":
@@ -653,7 +653,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "project_homepage": MessageLookupByLibrary.simpleMessage(
             "Página de inicio del proyecto"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
-        "quest_chapter_n": m15,
+        "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Condiciones"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("detalles"),
         "quest_fields": MessageLookupByLibrary.simpleMessage("Terrenos"),
@@ -670,7 +670,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m18,
+        "region_notice": m10,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remover duplicado"),
@@ -679,8 +679,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Renombrar"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reiniciar"),
-        "reset_plan_all": m7,
-        "reset_plan_shown": m8,
+        "reset_plan_all": m11,
+        "reset_plan_shown": m12,
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -777,7 +777,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m19,
+        "solution_total_battles_ap": m20,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":
@@ -826,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_profile": MessageLookupByLibrary.simpleMessage("Perfil"),
         "svt_profile_info":
             MessageLookupByLibrary.simpleMessage("Info del personaje"),
-        "svt_profile_n": m20,
+        "svt_profile_n": m13,
         "svt_related_ce":
             MessageLookupByLibrary.simpleMessage("CE Relacionadas"),
         "svt_reset_plan":
@@ -896,6 +896,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),
-        "words_separate": m9
+        "words_separate": m14
       };
 }
