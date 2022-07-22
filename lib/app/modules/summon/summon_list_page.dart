@@ -105,10 +105,7 @@ class _SummonListPageState extends State<SummonListPage>
       title = ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
-          imageUrl:
-              db.curUser.region == Region.cn || db.curUser.region == Region.tw
-                  ? summon.banner.cn ?? summon.banner.jp
-                  : summon.banner.jp ?? summon.banner.cn,
+          imageUrl: summon.resolvedBanner.ofRegion(),
           placeholder: (ctx, url) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
             child: Text(summon.lName),

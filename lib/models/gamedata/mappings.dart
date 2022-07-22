@@ -413,6 +413,18 @@ class MappingBase<T> {
     }
   }
 
+  MappingBase<T> merge(MappingBase<T>? other) {
+    if (other == null) return this;
+    if (other.values.every((e) => e == null)) return this;
+    return MappingBase(
+      jp: other.jp ?? jp,
+      cn: other.cn ?? cn,
+      tw: other.tw ?? tw,
+      na: other.na ?? na,
+      kr: other.kr ?? kr,
+    );
+  }
+
   factory MappingBase.fromJson(Map<String, dynamic> json) =>
       _$MappingBaseFromJson(json, _fromJsonT);
 

@@ -49,7 +49,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       );
     }
     final banners = [
-      ...war.extra.titleBanner.values.whereType<String>(),
+      ...war.extra.resolvedBanner.values.whereType<String>(),
     ];
     // final eventBanners = war.event?.extra.titleBanner.values
     //     .whereType<String>()

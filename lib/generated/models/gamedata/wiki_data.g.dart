@@ -176,6 +176,10 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['titleBanner'] as Map)),
+      officialBanner: json['officialBanner'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['officialBanner'] as Map)),
       noticeLink: json['noticeLink'] == null
           ? null
           : MappingBase<String>.fromJson(
@@ -217,6 +221,10 @@ WarExtra _$WarExtraFromJson(Map json) => WarExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['titleBanner'] as Map)),
+      officialBanner: json['officialBanner'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['officialBanner'] as Map)),
       noticeLink: json['noticeLink'] == null
           ? null
           : MappingBase<String>.fromJson(
@@ -257,6 +265,10 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['noticeLink'] as Map)),
+      officialBanner: json['officialBanner'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['officialBanner'] as Map)),
       startTime: json['startTime'] == null
           ? null
           : MappingBase<int>.fromJson(

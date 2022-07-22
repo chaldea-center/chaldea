@@ -96,7 +96,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             delegate: SliverChildListDelegate([
           CarouselUtil.limitHeightWidget(
             context: context,
-            imageUrls: [summon.banner.jp, summon.banner.cn],
+            imageUrls: summon.resolvedBanner.values.toList(),
           ),
           if (summon.subSummons.length > 1) dropdownButton,
           details,

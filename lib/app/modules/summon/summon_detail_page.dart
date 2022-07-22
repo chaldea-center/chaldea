@@ -98,7 +98,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                 url: WikiTool.mcFullLink(summon.mcLink!)),
         child: CarouselUtil.limitHeightWidget(
           context: context,
-          imageUrls: [summon.banner.jp, summon.banner.cn],
+          imageUrls: summon.resolvedBanner.values.toList(),
         ),
       ),
       CustomTable(children: [

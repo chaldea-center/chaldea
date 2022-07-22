@@ -158,6 +158,7 @@ class EventExtra {
   String? fandomLink;
   bool forceShown;
   MappingBase<String> titleBanner;
+  MappingBase<String> officialBanner;
   MappingBase<String> noticeLink;
   int huntingId;
   List<int> huntingQuestIds;
@@ -175,6 +176,7 @@ class EventExtra {
     this.fandomLink,
     this.forceShown = false,
     MappingBase<String>? titleBanner,
+    MappingBase<String>? officialBanner,
     MappingBase<String>? noticeLink,
     this.huntingId = 0,
     this.huntingQuestIds = const [],
@@ -184,9 +186,12 @@ class EventExtra {
     MappingBase<int>? endTime,
     this.relatedSummons = const [],
   })  : titleBanner = titleBanner ?? MappingBase(),
+        officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
+
+  MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
   factory EventExtra.fromJson(Map<String, dynamic> json) =>
       _$EventExtraFromJson(json);
@@ -198,6 +203,7 @@ class WarExtra {
   String? mcLink;
   String? fandomLink;
   MappingBase<String> titleBanner;
+  MappingBase<String> officialBanner;
   MappingBase<String> noticeLink;
 
   WarExtra({
@@ -205,9 +211,12 @@ class WarExtra {
     this.mcLink,
     this.fandomLink,
     MappingBase<String>? titleBanner,
+    MappingBase<String>? officialBanner,
     MappingBase<String>? noticeLink,
   })  : titleBanner = titleBanner ?? MappingBase(),
+        officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase();
+  MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
   factory WarExtra.fromJson(Map<String, dynamic> json) =>
       _$WarExtraFromJson(json);
@@ -290,6 +299,7 @@ class LimitedSummon {
   String? fandomLink;
   MappingBase<String> name;
   MappingBase<String> banner;
+  MappingBase<String> officialBanner;
   MappingBase<String> noticeLink;
   MappingBase<int> startTime;
   MappingBase<int> endTime;
@@ -303,6 +313,7 @@ class LimitedSummon {
     this.fandomLink,
     MappingBase<String>? name,
     MappingBase<String>? banner,
+    MappingBase<String>? officialBanner,
     MappingBase<String>? noticeLink,
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
@@ -311,6 +322,7 @@ class LimitedSummon {
     this.subSummons = const [],
   })  : name = name ?? MappingBase(),
         banner = banner ?? MappingBase(),
+        officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
@@ -327,6 +339,8 @@ class LimitedSummon {
   void routeTo() {
     router.push(url: route);
   }
+
+  MappingBase<String> get resolvedBanner => banner.merge(officialBanner);
 
   List<int> allCards({
     bool svt = false,
