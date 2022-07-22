@@ -105,14 +105,26 @@ class _SummonListPageState extends State<SummonListPage>
       title = ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
-          imageUrl: summon.resolvedBanner.ofRegion(),
+          imageUrl: summon.resolvedBanner.l,
           placeholder: (ctx, url) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
-            child: Text(summon.lName),
+            child: Text(summon.lName, textScaleFactor: 0.9),
           ),
           cachedOption: CachedImageOption(
               errorWidget: (ctx, url, error) => Text(summon.lName)),
         ),
+      );
+      title = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          title,
+          Text(
+            summon.lName,
+            style: Theme.of(context).textTheme.caption?.copyWith(
+                fontStyle: summon.isOutdated() ? FontStyle.italic : null),
+            textAlign: TextAlign.center,
+          )
+        ],
       );
     } else {
       title = AutoSizeText(
@@ -137,8 +149,8 @@ class _SummonListPageState extends State<SummonListPage>
       title: title,
       subtitle: subtitle,
       contentPadding: filterData.showBanner
-          ? const EdgeInsets.only(right: 8)
-          : const EdgeInsets.only(left: 16, right: 8),
+          ? EdgeInsets.zero
+          : const EdgeInsetsDirectional.only(start: 16),
       minVerticalPadding: filterData.showBanner ? 0 : null,
       trailing: db.onUserData(
         (context, snapshot) {
@@ -148,6 +160,7 @@ class _SummonListPageState extends State<SummonListPage>
               planned ? Icons.favorite : Icons.favorite_outline,
               color: planned ? Colors.redAccent : null,
             ),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             onPressed: () {
               db.curUser.summons.toggle(summon.id);
               db.notifyUserdata();

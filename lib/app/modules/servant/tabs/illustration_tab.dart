@@ -22,26 +22,28 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
   Widget build(BuildContext context) {
     final ascensions = svt.extraAssets.faces.ascension?.keys.toList() ?? [];
     final hasCostume = svt.extraAssets.faces.costume?.isNotEmpty == true;
+    final List<int> options = [
+      ...ascensions,
+      if (hasCostume) _costumeKey,
+      if (svt.extra.aprilFoolAssets.isNotEmpty) _aprilKey,
+    ];
     return Column(
       children: [
         const SizedBox(height: 4),
-        FilterGroup<int>(
-          options: [
-            ...ascensions,
-            if (hasCostume) _costumeKey,
-            if (svt.extra.aprilFoolAssets.isNotEmpty) _aprilKey,
-          ],
-          values: filter,
-          combined: true,
-          optionBuilder: (key) {
-            if (key == _costumeKey) return Text(S.current.costume);
-            if (key == _aprilKey) return Text(S.current.april_fool);
-            return Text('$key');
-          },
-          onFilterChanged: (v, _) {
-            setState(() {});
-          },
-        ),
+        if (options.length > 1)
+          FilterGroup<int>(
+            options: options,
+            values: filter,
+            combined: true,
+            optionBuilder: (key) {
+              if (key == _costumeKey) return Text(S.current.costume);
+              if (key == _aprilKey) return Text(S.current.april_fool);
+              return Text('$key');
+            },
+            onFilterChanged: (v, _) {
+              setState(() {});
+            },
+          ),
         Expanded(
           child: ExtraAssetsPage(
             assets: svt.extraAssets,

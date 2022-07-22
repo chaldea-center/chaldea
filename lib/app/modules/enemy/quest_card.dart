@@ -227,8 +227,7 @@ class _QuestCardState extends State<QuestCard> {
             in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
           _buildPhases(phase),
       if (quest.gifts.isNotEmpty) _questRewards(),
-      if (quest.releaseConditions.isNotEmpty && !widget.offline)
-        releaseConditions(),
+      if (!widget.offline) releaseConditions(),
       if (widget.offline)
         TextButton(
           onPressed: () {
@@ -684,16 +683,21 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Widget releaseConditions() {
+    final conds = quest.releaseConditions
+        .where((cond) => !(cond.type == CondType.date && cond.value == 0))
+        .toList();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-          child: _header(S.current.quest_condition),
-        ),
-        for (final cond in quest.releaseConditions)
+        Center(child: _header(S.current.quest_condition)),
+        for (final cond in conds)
           CondTargetValueDescriptor(
               condType: cond.type, target: cond.targetId, value: cond.value),
+        Text(
+            '${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
+        Text(
+            '${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
       ],
     );
   }

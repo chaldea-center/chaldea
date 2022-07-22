@@ -63,6 +63,8 @@ class GameData {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
+  @JsonKey(ignore: true)
+  Map<int, Buff> baseBuffs;
 
   @JsonKey(ignore: true)
   late _ProcessedData others;
@@ -111,7 +113,13 @@ class GameData {
         dropRate = dropRate ?? DropRateData(),
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
-        baseFunctions = baseFunctions ?? {} {
+        baseFunctions = baseFunctions ?? {},
+        baseBuffs = {} {
+    for (final func in this.baseFunctions.values) {
+      for (final buff in func.buffs) {
+        baseBuffs[buff.id] = buff;
+      }
+    }
     preprocess();
   }
 
