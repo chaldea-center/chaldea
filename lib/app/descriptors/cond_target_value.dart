@@ -42,7 +42,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClear:
         return localized(
-          jp: () => combineToRich(context, 'クエスト', quests(context), 'をクリアした'),
+          jp: () => combineToRich(context, null, quests(context), 'をクリアした'),
           cn: () => combineToRich(context, '通关', quests(context)),
           tw: null,
           na: () =>
@@ -66,7 +66,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtGet:
         return localized(
-          jp: () => combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
+          jp: () =>
+              combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
           cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: null,
           na: () => combineToRich(
@@ -79,8 +80,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtFriendship:
         return localized(
-          jp: () => 
-              combineToRich(context, null, servants(context), 'の絆レベルが$valueになる'),
+          jp: () => combineToRich(
+              context, null, servants(context), 'の絆レベルが$valueになる'),
           cn: () =>
               combineToRich(context, null, servants(context), '的羁绊等级达到$value'),
           tw: null,
@@ -94,8 +95,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtFriendshipBelow:
         return localized(
-          jp: () => combineToRich(
-              context, null, servants(context), 'の絆レベルは$value以下'),
+          jp: () =>
+              combineToRich(context, null, servants(context), 'の絆レベルは$value以下'),
           cn: () => combineToRich(
               context, null, servants(context), '的羁绊等级为$value或以下'),
           tw: null,
@@ -109,8 +110,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtFriendshipAbove:
         return localized(
-          jp: () => combineToRich(
-              context, null, servants(context), 'の絆レベルは$value以上'),
+          jp: () =>
+              combineToRich(context, null, servants(context), 'の絆レベルは$value以上'),
           cn: () => combineToRich(
               context, null, servants(context), '的羁绊等级为$value或以上'),
           tw: null,
@@ -135,7 +136,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventEnd:
         return localized(
-          jp: () => combineToRich(context, 'イベント', event(context), 'は終了しました'),
+          jp: () => combineToRich(context, 'イベント', event(context), 'は終了した'),
           cn: () => combineToRich(context, '活动', event(context), '结束'),
           tw: null,
           na: () =>
@@ -144,7 +145,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questNotClear:
         return localized(
-          jp: () => combineToRich(context, 'クエスト', quests(context), 'をクリアされていません'),
+          jp: () =>
+              combineToRich(context, null, quests(context), 'をクリアされていません'),
           cn: () => combineToRich(context, '未通关', quests(context)),
           tw: null,
           na: () =>
@@ -153,7 +155,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtHaving:
         return localized(
-          jp: () => combineToRich(context, 'サーヴァント', servants(context), 'を持っている'),
+          jp: () =>
+              combineToRich(context, 'サーヴァント', servants(context), 'を持っている'),
           cn: () => combineToRich(context, '持有从者', servants(context)),
           tw: null,
           na: () =>
@@ -162,7 +165,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClearPhase:
         return localized(
-          jp: () => combineToRich(context, quests(context), 'クエストをクリアした、進度$targetNum'),
+          jp: () =>
+              combineToRich(context, null, quests(context), '進行度$valueをクリアした'),
           cn: () => combineToRich(context, '已通关', quests(context), '进度$value'),
           tw: null,
           na: () => combineToRich(
@@ -171,7 +175,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.notQuestClearPhase:
         return localized(
-          jp: () => combineToRich(context, quests(context), 'クエストをクリアしていません、進度$targetNum'),
+          jp: () => combineToRich(
+              context, null, quests(context), '進行度$valueをクリアしていません'),
           cn: () => combineToRich(context, '未通关', quests(context), '进度$value'),
           tw: null,
           na: () => combineToRich(context,
@@ -188,8 +193,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventRewardDispCount:
         return localized(
-          jp: () => combineToRich(
-              context, null, event(context), ' のイベント音声、および少なくとも${value - 1}の他の音声が再生されました'),
+          jp: () => combineToRich(context, null, event(context),
+              ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
           cn: () => combineToRich(
               context, null, event(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
           tw: null,
@@ -219,7 +224,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountAbove:
         return localized(
           jp: () => combineToRich(
-              context, null, servants(context), 'の霊基再臨を ≥ $targetNum段階目にする'),
+              context, null, servants(context), 'の霊基再臨を ≥ $value段階目にする'),
           cn: () =>
               combineToRich(context, '从者', servants(context), '的灵基再临 ≥ $value'),
           tw: null,
@@ -234,7 +239,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountBelow:
         return localized(
           jp: () => combineToRich(
-              context, null, servants(context), 'の霊基再臨を ≤ $targetNum段階目にする'),
+              context, null, servants(context), 'の霊基再臨を ≤ $value段階目にする'),
           cn: () =>
               combineToRich(context, '从者', servants(context), '的灵基再临 ≤ $value'),
           tw: null,
@@ -259,7 +264,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.itemGet:
         return localized(
-          jp: () => combineToRich(context, 'アイテム', items(context), '×$valueを持っている'),
+          jp: () =>
+              combineToRich(context, 'アイテム', items(context), '×$valueを持っている'),
           cn: () => combineToRich(context, '拥有', items(context), '×$value'),
           tw: null,
           na: () => combineToRich(context, 'Has ', items(context), '×$value'),
@@ -267,7 +273,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.notItemGet:
         return localized(
-          jp: () => combineToRich(context, 'アイテム', items(context), '×$valueを持っていません'),
+          jp: () =>
+              combineToRich(context, 'アイテム', items(context), '×$valueを持っていません'),
           cn: () => combineToRich(context, '未拥有', items(context), '×$value'),
           tw: null,
           na: () => combineToRich(

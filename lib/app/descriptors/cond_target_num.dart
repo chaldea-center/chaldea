@@ -84,8 +84,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClearPhase:
         return localized(
-          jp: () =>
-              combineToRich(context, quests(context), 'クエストをクリアせよ、進度$targetNum'),
+          jp: () => combineToRich(
+              context, null, quests(context), '進行度$targetNumをクリアせよ'),
           cn: () =>
               combineToRich(context, '通关', quests(context), '进度$targetNum'),
           tw: null,
@@ -95,8 +95,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClearNum:
         return localized(
-          jp: () =>
-              combineToRich(context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
+          jp: () => combineToRich(
+              context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
           cn: () =>
               combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
           tw: null,
@@ -153,7 +153,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtGet:
         return localized(
-          jp: () => combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
+          jp: () =>
+              combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
           cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: null,
           na: () => combineToRich(
@@ -171,7 +172,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventEnd:
         return localized(
-          jp: () => combineToRich(context, 'イベント', event(context), 'は終了しました'),
+          jp: () => combineToRich(context, 'イベント', event(context), 'は終了した'),
           cn: () => combineToRich(context, '活动', event(context), '结束'),
           tw: null,
           na: () =>
@@ -180,7 +181,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtHaving:
         return localized(
-          jp: () => combineToRich(context, 'サーヴァント', servants(context), 'を持っている'),
+          jp: () =>
+              combineToRich(context, 'サーヴァント', servants(context), 'を持っている'),
           cn: () => combineToRich(context, '持有从者', servants(context)),
           tw: null,
           na: () =>
@@ -253,25 +255,48 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
               kr: null,
             );
           } else {
+            final frags = clsIds.map((e) => Transl.svtClassId(e).l);
             return localized(
-              jp: () => text('『${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}』クラスのサーヴァント$targetNum騎をLv.$lv以上にせよ'),
-              cn: () => text(
-                  '将$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者升级到$lv级以上'),
+              jp: () =>
+                  text('『${frags.join('/')}』クラスのサーヴァント$targetNum騎をLv.$lv以上にせよ'),
+              cn: () => text('将$targetNum骑${frags.join('/')}从者升级到$lv级以上'),
               tw: null,
-              na: () => text(
-                  'Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to level $lv'),
+              na: () =>
+                  text('Raise $targetNum ${frags.join(', ')} to level $lv'),
               kr: null,
             );
           }
         } else {
+          final frags = List.generate(
+              clsIds.length,
+              (index) =>
+                  'Lv.${levels[index]} ${Transl.svtClassId(clsIds[index]).jp}');
           return localized(
-            jp: () => text(
-                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} のサーヴァント$targetNum騎をレベルアップする'),
-            cn: () => text(
-                '升级$targetNum骑 ${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
+            jp: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    'Lv.${levels[index]} ${Transl.svtClassId(clsIds[index]).jp}',
+              );
+              return text('${frags.join('/')} のサーヴァント$targetNum騎をレベルアップする');
+            },
+            cn: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    'Lv.${levels[index]} ${Transl.svtClassId(clsIds[index]).cn}',
+              );
+              return text('升级$targetNum骑 ${frags.join(' 或 ')} 从者');
+            },
             tw: null,
-            na: () => text(
-                'Raise $targetNum ${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' or ')}'),
+            na: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    'Lv.${levels[index]} ${Transl.svtClassId(clsIds[index]).na}',
+              );
+              return text('Raise $targetNum ${frags.join(', ')}');
+            },
             kr: null,
           );
         }
@@ -294,24 +319,43 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             );
           } else {
             return localized(
-              jp: () => text('『${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
+              jp: () => text(
+                  '『${clsIds.map((e) => Transl.svtClassId(e).jp).join("/")}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
               cn: () => text(
-                  '让$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者达到灵基再临第$limit阶段'),
+                  '让$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).cn).join('/')}从者达到灵基再临第$limit阶段'),
               tw: null,
               na: () => text(
-                  'Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).l).join(',')} to ascension $limit'),
+                  'Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).na).join(', ')} to ascension $limit'),
               kr: null,
             );
           }
         } else {
           return localized(
-            jp: () => text(
-                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} のサーヴァント$targetNum騎を霊基再臨する'),
-            cn: () => text(
-                '升级$targetNum骑 ${List.generate(clsIds.length, (index) => '灵基${limits[index]}${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
+            jp: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    '霊基再臨${limits[index]}階目 ${Transl.svtClassId(clsIds[index]).jp}',
+              );
+              return text('${frags.join('/')} のサーヴァント$targetNum騎を霊基再臨する');
+            },
+            cn: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    '灵基${limits[index]}${Transl.svtClassId(clsIds[index]).cn}',
+              );
+              return text('升级$targetNum骑 ${frags.join(' 或 ')} 从者');
+            },
             tw: null,
-            na: () => text(
-                'Raise $targetNum ${List.generate(clsIds.length, (index) => 'Ascension ${limits[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' or ')}'),
+            na: () {
+              final frags = List.generate(
+                clsIds.length,
+                (index) =>
+                    'Ascension ${limits[index]} ${Transl.svtClassId(clsIds[index]).na}',
+              );
+              return text('Raise $targetNum ${frags.join(' or ')}');
+            },
             kr: null,
           );
         }
@@ -333,25 +377,23 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
               kr: null,
             );
           } else {
+            final frags = rarities.map((e) => '$e$kStarChar').join('/');
             return localized(
-              jp: () => text('${rarities.map((e) => '$e$kStarChar').join('/')}概念礼装$targetNum種をLv.$level以上にせよ'),
-              cn: () => text(
-                  '将$targetNum种${rarities.map((e) => '$e$kStarChar').join('/')}概念礼装的等级提升到$level以上'),
+              jp: () => text('$frags概念礼装$targetNum種をLv.$level以上にせよ'),
+              cn: () => text('将$targetNum种$frags概念礼装的等级提升到$level以上'),
               tw: null,
-              na: () => text(
-                  'Raise $targetNum ${rarities.map((e) => '$e$kStarChar').join('/')} CEs to level $level'),
+              na: () => text('Raise $targetNum $frags CEs to level $level'),
               kr: null,
             );
           }
         } else {
+          final frags = List.generate(levels.length,
+              (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar}');
           return localized(
-            jp: () => text(
-                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} の概念礼装$targetNum種をレベルアップする'),
-            cn: () => text(
-                '升级$targetNum种 ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' 或 ')} 礼装'),
+            jp: () => text('${frags.join('/')} の概念礼装$targetNum種をレベルアップする'),
+            cn: () => text('升级$targetNum种 ${frags.join(' 或 ')} 礼装'),
             tw: null,
-            na: () => text(
-                'Raise $targetNum ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' or ')} CEs'),
+            na: () => text('Raise $targetNum ${frags.join(' or ')} CEs'),
             kr: null,
           );
         }
@@ -382,8 +424,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
 
         if (dispNos.length == targetNum) {
           return localized(
-            jp: () => combineToRich(
-                context, '以下のすべてのクエストをクリアせよ:', missionList(context, missionMap)),
+            jp: () => combineToRich(context, '以下のすべてのクエストをクリアせよ:',
+                missionList(context, missionMap)),
             cn: () => combineToRich(
                 context, '完成以下全部任务:', missionList(context, missionMap)),
             tw: null,
