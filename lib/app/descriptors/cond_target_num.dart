@@ -64,7 +64,11 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.questClear:
         bool all = targetNum == targetIds.length && targetNum != 1;
         return localized(
-          jp: null,
+          jp: () => combineToRich(
+            context,
+            '${all ? "すべての" : ""}クエストを$targetNum種クリアせよ',
+            quests(context),
+          ),
           cn: () => combineToRich(
             context,
             '通关${all ? "所有" : ""}$targetNum个关卡',
@@ -80,7 +84,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClearPhase:
         return localized(
-          jp: null,
+          jp: () =>
+              combineToRich(context, quests(context), 'クエストをクリアせよ、進度$targetNum'),
           cn: () =>
               combineToRich(context, '通关', quests(context), '进度$targetNum'),
           tw: null,
@@ -90,7 +95,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClearNum:
         return localized(
-          jp: null,
+          jp: () =>
+              combineToRich(context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
           cn: () =>
               combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
           tw: null,
@@ -107,7 +113,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtLimit:
         return localized(
-          jp: null,
+          jp: () => combineToRich(
+              context, null, servants(context), 'の霊基再臨を$targetNum段階目にする'),
           cn: () => combineToRich(
               context, null, servants(context), '达到灵基再临第$targetNum阶段'),
           tw: null,
@@ -126,7 +133,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtFriendship:
         return localized(
-          jp: null,
+          jp: () => combineToRich(
+              context, null, servants(context), 'の絆レベルが$targetNumになる'),
           cn: () => combineToRich(
               context, null, servants(context), '的羁绊等级达到$targetNum'),
           tw: null,
@@ -145,7 +153,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtGet:
         return localized(
-          jp: null,
+          jp: () => combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
           cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: null,
           na: () => combineToRich(
@@ -163,7 +171,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventEnd:
         return localized(
-          jp: null,
+          jp: () => combineToRich(context, 'イベント', event(context), 'は終了しました'),
           cn: () => combineToRich(context, '活动', event(context), '结束'),
           tw: null,
           na: () =>
@@ -172,7 +180,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.svtHaving:
         return localized(
-          jp: null,
+          jp: () => combineToRich(context, 'サーヴァント', servants(context), 'を持っている'),
           cn: () => combineToRich(context, '持有从者', servants(context)),
           tw: null,
           na: () =>
@@ -189,7 +197,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.limitCountAbove:
         return localized(
-          jp: null,
+          jp: () => combineToRich(
+              context, null, servants(context), 'の霊基再臨を ≥ $targetNum段階目にする'),
           cn: () => combineToRich(
               context, '从者', servants(context), '的灵基再临 ≥ $targetNum'),
           tw: null,
@@ -208,7 +217,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.limitCountBelow:
         return localized(
-          jp: null,
+          jp: () => combineToRich(
+              context, null, servants(context), 'の霊基再臨を ≤ $targetNum段階目にする'),
           cn: () => combineToRich(
               context, '从者', servants(context), '的灵基再临 ≤ $targetNum'),
           tw: null,
@@ -236,7 +246,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           final lv = levels.first;
           if (_isPlayableAll(clsIds)) {
             return localized(
-              jp: null,
+              jp: () => text('サーヴァント$targetNum騎をLv.$lv以上にせよ'),
               cn: () => text('将$targetNum骑从者升级到$lv级以上'),
               tw: null,
               na: () => text('Raise $targetNum servants to level $lv'),
@@ -244,7 +254,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             );
           } else {
             return localized(
-              jp: null,
+              jp: () => text('『${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}』クラスのサーヴァント$targetNum騎をLv.$lv以上にせよ'),
               cn: () => text(
                   '将$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者升级到$lv级以上'),
               tw: null,
@@ -255,7 +265,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           }
         } else {
           return localized(
-            jp: null,
+            jp: () => text(
+                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} のサーヴァント$targetNum騎をレベルアップする'),
             cn: () => text(
                 '升级$targetNum骑 ${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
             tw: null,
@@ -275,7 +286,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           final limit = limits.first;
           if (_isPlayableAll(clsIds)) {
             return localized(
-              jp: null,
+              jp: () => text('サーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
               cn: () => text('让$targetNum骑从者达到灵基再临第$limit阶段'),
               tw: null,
               na: () => text('Raise $targetNum servants to ascension $limit'),
@@ -283,7 +294,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             );
           } else {
             return localized(
-              jp: null,
+              jp: () => text('『${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
               cn: () => text(
                   '让$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).l).join('/')}从者达到灵基再临第$limit阶段'),
               tw: null,
@@ -294,7 +305,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           }
         } else {
           return localized(
-            jp: null,
+            jp: () => text(
+                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} のサーヴァント$targetNum騎を霊基再臨する'),
             cn: () => text(
                 '升级$targetNum骑 ${List.generate(clsIds.length, (index) => '灵基${limits[index]}${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' 或 ')} 从者'),
             tw: null,
@@ -314,7 +326,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           final level = levels.first;
           if (rarities.toSet().equalTo({1, 2, 3, 4, 5})) {
             return localized(
-              jp: null,
+              jp: () => text('概念礼装$targetNum種をLv.$level以上にせよ'),
               cn: () => text('将$targetNum种概念礼装的等级提升到$level以上'),
               tw: null,
               na: () => text('Raise $targetNum CEs to level $level'),
@@ -322,23 +334,24 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             );
           } else {
             return localized(
-              jp: null,
+              jp: () => text('${rarities.map((e) => '$e$kStarChar').join('/')}概念礼装$targetNum種をLv.$level以上にせよ'),
               cn: () => text(
                   '将$targetNum种${rarities.map((e) => '$e$kStarChar').join('/')}概念礼装的等级提升到$level以上'),
               tw: null,
               na: () => text(
-                  'Raise $targetNum ${rarities.map((e) => '$e$kStarChar').join('/')} to level $level'),
+                  'Raise $targetNum ${rarities.map((e) => '$e$kStarChar').join('/')} CEs to level $level'),
               kr: null,
             );
           }
         } else {
           return localized(
-            jp: null,
+            jp: () => text(
+                '${List.generate(clsIds.length, (index) => 'Lv.${levels[index]} ${kSvtClassIds[clsIds[index]]?.name ?? clsIds[index]}').join(' または ')} の概念礼装$targetNum種をレベルアップする'),
             cn: () => text(
                 '升级$targetNum种 ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' 或 ')} 礼装'),
             tw: null,
             na: () => text(
-                'Raise $targetNum ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' or ')}'),
+                'Raise $targetNum ${List.generate(levels.length, (index) => 'Lv.${levels[index]} ${rarities[index]}$kStarChar').join(' or ')} CEs'),
             kr: null,
           );
         }
@@ -348,15 +361,15 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         final targets =
             '${mission?.dispNo}-${mission?.name ?? targetIds.first}';
         return localized(
-          jp: null,
+          jp: () => text('クエストをクリアせよ $targets'),
           cn: () => text('完成任务 $targets'),
           tw: null,
-          na: () => text('Archive mission $targets'),
+          na: () => text('Achieve mission $targets'),
           kr: () => text('미션을 완수하다 $targets'),
         );
       case CondType.eventTotalPoint:
         return localized(
-          jp: null,
+          jp: () => text('イベントポイントを$targetNum点獲得'),
           cn: () => text('活动点数达到$targetNum点'),
           tw: null,
           na: () => text('Reach $targetNum event points'),
@@ -369,7 +382,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
 
         if (dispNos.length == targetNum) {
           return localized(
-            jp: null,
+            jp: () => combineToRich(
+                context, '以下のすべてのクエストをクリアせよ:', missionList(context, missionMap)),
             cn: () => combineToRich(
                 context, '完成以下全部任务:', missionList(context, missionMap)),
             tw: null,
@@ -380,7 +394,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           );
         } else {
           return localized(
-            jp: null,
+            jp: () => combineToRich(context, '以下の異なるクエスト$targetNum個をクリアせよ',
+                missionList(context, missionMap)),
             cn: () => combineToRich(context, '完成$targetNum个不同的任务',
                 missionList(context, missionMap)),
             tw: null,
@@ -398,7 +413,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)
             .toStringShort(omitSec: true);
         return localized(
-          jp: null,
+          jp: () => text('$time以降に開放'),
           cn: () => text('$time后开放'),
           tw: null,
           na: () => text('After $time'),
@@ -408,7 +423,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         break;
     }
     return localized(
-      jp: null,
+      jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
       cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
       tw: null,
       na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
