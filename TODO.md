@@ -2,6 +2,8 @@
 
 There are plenty of work need to do.
 
+flutter create --platforms=windows .
+
 ## Misc
 
 - [ ] Search should be re-designed and improved
@@ -29,6 +31,10 @@ There are plenty of work need to do.
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
 - [ ] master mission: logicType
+- [ ] more selectable text
+- [ ] remove apk install, add download link redirect
+- [ ] huntingId=any
+- [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 
 ## Quest Related
 

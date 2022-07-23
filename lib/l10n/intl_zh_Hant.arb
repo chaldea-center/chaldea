@@ -138,6 +138,7 @@
   "effect_search": "Buff檢索",
   "effect_target": "效果對象",
   "effect_type": "效果類型",
+  "effective_condition": null,
   "efficiency": "效率",
   "efficiency_type": "效率類型",
   "efficiency_type_ap": "20AP效率",

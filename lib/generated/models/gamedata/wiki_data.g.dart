@@ -261,14 +261,14 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['banner'] as Map)),
-      noticeLink: json['noticeLink'] == null
-          ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['noticeLink'] as Map)),
       officialBanner: json['officialBanner'] == null
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['officialBanner'] as Map)),
+      noticeLink: json['noticeLink'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['noticeLink'] as Map)),
       startTime: json['startTime'] == null
           ? null
           : MappingBase<int>.fromJson(

@@ -251,14 +251,20 @@ BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
         (k, e) => MapEntry(
             $enumDecode(_$SvtClassEnumMap, k),
             (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
+              (k, e) => MapEntry(
+                  $enumDecode(_$SvtClassEnumMap, k),
+                  RelationOverwriteDetail.fromJson(
+                      Map<String, dynamic>.from(e as Map))),
             )),
       ),
       defSide: (json['defSide'] as Map).map(
         (k, e) => MapEntry(
             $enumDecode(_$SvtClassEnumMap, k),
             (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e),
+              (k, e) => MapEntry(
+                  $enumDecode(_$SvtClassEnumMap, k),
+                  RelationOverwriteDetail.fromJson(
+                      Map<String, dynamic>.from(e as Map))),
             )),
       ),
     );

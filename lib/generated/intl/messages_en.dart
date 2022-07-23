@@ -255,6 +255,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "effect_search": MessageLookupByLibrary.simpleMessage("Buff Search"),
         "effect_target": MessageLookupByLibrary.simpleMessage("Effect Target"),
         "effect_type": MessageLookupByLibrary.simpleMessage("Effect Type"),
+        "effective_condition":
+            MessageLookupByLibrary.simpleMessage("Effective Condition"),
         "efficiency": MessageLookupByLibrary.simpleMessage("Efficiency"),
         "efficiency_type": MessageLookupByLibrary.simpleMessage("Efficient"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP Rate"),

@@ -138,6 +138,7 @@
   "effect_search": "バフ検索",
   "effect_target": "効果対象",
   "effect_type": "効果タイプ",
+  "effective_condition": null,
   "efficiency": "効率",
   "efficiency_type": "効率タイプ",
   "efficiency_type_ap": "20AP効率",

@@ -329,7 +329,7 @@ class SharedBuilder {
   static Widget traitList({
     required BuildContext context,
     required List<NiceTrait> traits,
-    String separator = ' / ',
+    bool useAndJoin = false,
     TextStyle? style,
     double? textScaleFactor,
     TextAlign? textAlign,
@@ -339,7 +339,7 @@ class SharedBuilder {
         children: traitSpans(
           context: context,
           traits: traits,
-          separator: separator,
+          useAndJoin: useAndJoin,
         ),
       ),
       style: style,
@@ -351,13 +351,13 @@ class SharedBuilder {
   static List<InlineSpan> traitSpans({
     required BuildContext context,
     required List<NiceTrait> traits,
-    String separator = ' / ',
+    bool useAndJoin = false,
     TextStyle? style,
   }) {
     List<InlineSpan> children = divideList(
       traits.map((e) => traitSpan(context: context, trait: e, style: style)),
       TextSpan(
-        text: separator,
+        text: useAndJoin ? ' & ' : ' / ',
         style: TextStyle(color: Theme.of(context).hintColor),
       ),
     );

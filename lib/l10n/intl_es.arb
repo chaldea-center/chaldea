@@ -138,6 +138,7 @@
   "effect_search": "Buscar Buff",
   "effect_target": "Objetivo del Efecto",
   "effect_type": "Tipo de Efecto",
+  "effective_condition": null,
   "efficiency": "Eficiencia",
   "efficiency_type": "Eficiente",
   "efficiency_type_ap": "20 AP Rate",

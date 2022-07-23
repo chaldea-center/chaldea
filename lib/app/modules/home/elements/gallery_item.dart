@@ -19,6 +19,7 @@ import '../../event/events_page.dart';
 import '../../exp/exp_card_cost_page.dart';
 import '../../ffo/ffo.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
+import '../../func/buff_list.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
@@ -107,6 +108,7 @@ class GalleryItem {
         enemyList,
         svtQuestTimeline,
         traits,
+        buffs,
         expCard,
         statistics,
         importData,
@@ -266,10 +268,17 @@ class GalleryItem {
     isDetail: false,
   );
   static GalleryItem traits = GalleryItem(
-    name: 'trait_list',
+    name: 'traits',
     titleBuilder: () => S.current.info_trait,
     icon: FontAwesomeIcons.diceD20,
     page: const TraitListPage(),
+    isDetail: false,
+  );
+  static GalleryItem buffs = GalleryItem(
+    name: 'buffs',
+    titleBuilder: () => 'Buffs',
+    icon: FontAwesomeIcons.fire,
+    page: const BuffListPage(),
     isDetail: false,
   );
   static GalleryItem expCard = GalleryItem(

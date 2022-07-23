@@ -227,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "effect_search": MessageLookupByLibrary.simpleMessage("Buff檢索"),
         "effect_target": MessageLookupByLibrary.simpleMessage("效果對象"),
         "effect_type": MessageLookupByLibrary.simpleMessage("效果類型"),
+        "effective_condition": MessageLookupByLibrary.simpleMessage("生效条件"),
         "efficiency": MessageLookupByLibrary.simpleMessage("效率"),
         "efficiency_type": MessageLookupByLibrary.simpleMessage("效率類型"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),

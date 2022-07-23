@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:chaldea/utils/utils.dart';
+import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import '_helper.dart';
@@ -607,8 +608,8 @@ class NpGain {
 
 @JsonSerializable()
 class BuffRelationOverwrite {
-  final Map<SvtClass, Map<SvtClass, dynamic>> atkSide;
-  final Map<SvtClass, Map<SvtClass, dynamic>> defSide;
+  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> atkSide;
+  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> defSide;
 
   const BuffRelationOverwrite({
     required this.atkSide,

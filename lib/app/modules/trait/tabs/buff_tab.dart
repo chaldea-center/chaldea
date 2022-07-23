@@ -121,6 +121,7 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
             _traits('UpBuffRate', buff.script!.UpBuffRateBuffIndiv!),
         ],
       ),
+      onTap: () => buff.routeTo(),
     );
   }
 }

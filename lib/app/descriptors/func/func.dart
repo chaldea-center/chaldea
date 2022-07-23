@@ -338,7 +338,7 @@ class FuncDescriptor extends StatelessWidget {
           ...SharedBuilder.traitSpans(
             context: context,
             traits: traits,
-            separator: useAnd ? ' & ' : ' / ',
+            useAndJoin: useAnd,
           ),
           const TextSpan(text: ' '), // not let recognizer extends its width
         ]);
@@ -385,7 +385,7 @@ class FuncDescriptor extends StatelessWidget {
           ),
         ));
       }
-      if (vals?.EventId != null && showEvent) {
+      if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
         final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
                 .replaceAll('\n', ' ') ??
             'Event ${vals?.EventId}';

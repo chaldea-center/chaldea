@@ -374,6 +374,24 @@ class AtlasApi {
     );
   }
 
+  static Future<BaseFunction?> func(int funcId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/function/$funcId',
+      (data) => BaseFunction.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<Buff?> buff(int buffId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/buff/$buffId',
+      (data) => Buff.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<NiceTd?> td(int tdId,
       {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(

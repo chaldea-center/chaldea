@@ -1582,6 +1582,17 @@ class S {
     );
   }
 
+  /// `Effective Condition`
+  String get effective_condition {
+    return Intl.message(
+      'Effective Condition',
+      name: 'effective_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Efficiency`
   String get efficiency {
     return Intl.message(

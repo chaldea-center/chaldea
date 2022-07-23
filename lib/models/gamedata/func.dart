@@ -297,7 +297,7 @@ class FuncGroup {
 }
 
 @JsonSerializable()
-class Buff {
+class Buff with RouteInfo {
   final int id;
   final String name;
   final String detail;
@@ -358,6 +358,11 @@ class Buff {
               ));
 
   factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
+
+  @override
+  String get route => Routes.buffI(id);
+  Transl<String, String> get lName => Transl.buffNames(name);
+  Transl<String, String> get lDetail => Transl.buffDetail(detail);
 }
 
 @JsonSerializable()
@@ -369,7 +374,7 @@ class BuffScript {
   final int? DamageRelease; // remove this buff when receive damage
   final NiceTrait? INDIVIDUALITIE; // self indiv?
   final List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
-  final int? HP_LOWER;
+  final int? HP_LOWER; // Passionlip
 
   const BuffScript({
     this.checkIndvType,

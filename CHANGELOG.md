@@ -1,5 +1,15 @@
 ## 2.0.8
 
+- add next level exp in exp calc
+- add quest/skill conditions
+- add cv/illustrator detail page
+- add character list(non-servant chara)
+- add trait list
+- add buff pages
+- show quest support servant
+- interlude&rankup timeline
+- add event search and filter
+
 - pull to refresh svt/ce/cc list
 - improve effect filter
 - add various kinds of conditions

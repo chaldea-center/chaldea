@@ -8,6 +8,7 @@ import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
 import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
+import 'package:chaldea/app/modules/func/buff_list.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
@@ -28,6 +29,7 @@ import '../modules/costume/costume_list.dart';
 import '../modules/event/detail/war_detail_page.dart';
 import '../modules/event/limit_event_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
+import '../modules/func/buff_detail.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/statistics/game_stat.dart';
@@ -84,6 +86,13 @@ class Routes {
   static const String trait = '/trait';
   static const String traits = '/traits';
 
+  static String buffI(int id) => '/buff/$id';
+  static const String buff = '/buff';
+  static const String buffs = '/buffs';
+
+  static String funcI(int id) => '/func/$id';
+  static const String func = '/func';
+
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
@@ -106,6 +115,8 @@ class Routes {
     items,
     plans,
     summons,
+    traits,
+    buffs,
   ];
 }
 
@@ -255,6 +266,10 @@ class RouteConfiguration {
         return const TraitListPage();
       case Routes.trait:
         return TraitDetailPage(id: _secondInt ?? 0);
+      case Routes.buffs:
+        return const BuffListPage();
+      case Routes.buff:
+        return BuffDetailPage(id: _secondInt);
     }
     return null;
   }

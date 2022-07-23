@@ -138,6 +138,7 @@
   "effect_search": "버프 검색",
   "effect_target": "효과 대상",
   "effect_type": "효과 타입",
+  "effective_condition": null,
   "efficiency": "효율",
   "efficiency_type": "효율 타입",
   "efficiency_type_ap": "20AP 효율",
