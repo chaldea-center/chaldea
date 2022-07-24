@@ -141,11 +141,14 @@ class Transl<K, V> {
   static Transl<String, String> buffDetail(String jp) =>
       Transl(md.buffDetail, jp, jp);
 
-  static Transl<String, String> funcPopuptext(String jp, [FuncType? type]) {
+  static Transl<String, String> funcPopuptext(BaseFunction func) =>
+      funcPopuptextBase(func.funcPopupText, func.funcType);
+
+  static Transl<String, String> funcPopuptextBase(String jp, [FuncType? type]) {
     if ({'', '-', 'なし', 'None', 'none'}.contains(jp) && type != null) {
       return Transl(md.funcPopuptext, type.name, type.name);
     }
-    if (md.buffNames.containsKey(jp) && !md.funcPopuptext.containsKey(jp)) {
+    if (!md.funcPopuptext.containsKey(jp) && md.buffNames.containsKey(jp)) {
       return Transl(md.buffNames, jp, jp);
     }
     return Transl(md.funcPopuptext, jp, jp);

@@ -8,7 +8,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'vals.dart';
@@ -111,7 +110,7 @@ class FuncDescriptor extends StatelessWidget {
         }
       }
     } else {
-      funcText.write(Transl.funcPopuptext(func.funcPopupText, func.funcType).l);
+      funcText.write(Transl.funcPopuptext(func).l);
     }
 
     final staticVal = func.getStaticVal();
@@ -419,23 +418,24 @@ class FuncDescriptor extends StatelessWidget {
       child = InkWell(
         child: child,
         onTap: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) {
-              return Theme(
-                data: ThemeData.light(),
-                child: SimpleCancelOkDialog(
-                  title: Text('Func ${func.funcId}'),
-                  content: JsonViewer(_getFuncJson(), defaultOpen: true),
-                  scrollable: true,
-                  hideCancel: true,
-                  contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                      10.0, 10.0, 12.0, 24.0),
-                ),
-              );
-            },
-          );
+          return func.routeTo();
+          // showDialog(
+          //   context: context,
+          //   useRootNavigator: false,
+          //   builder: (context) {
+          //     return Theme(
+          //       data: ThemeData.light(),
+          //       child: SimpleCancelOkDialog(
+          //         title: Text('Func ${func.funcId}'),
+          //         content: JsonViewer(_getFuncJson(), defaultOpen: true),
+          //         scrollable: true,
+          //         hideCancel: true,
+          //         contentPadding: const EdgeInsetsDirectional.fromSTEB(
+          //             10.0, 10.0, 12.0, 24.0),
+          //       ),
+          //     );
+          //   },
+          // );
         },
       );
       double maxWidth = 80;
@@ -542,6 +542,7 @@ class FuncDescriptor extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Map<String, dynamic> _getFuncJson() {
     List<String> _traitList(List<NiceTrait> traits) {
       return traits.map((e) => e.shownName).toList();
@@ -554,7 +555,7 @@ class FuncDescriptor extends StatelessWidget {
       "target":
           '${Transl.funcTargetType(func.funcTargetType).l}/${func.funcTargetType.name}',
       "team": func.funcTargetTeam.name,
-      "popupText": Transl.funcPopuptext(func.funcPopupText).l,
+      "popupText": func.lPopupText.l,
       if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
       if (func.funcquestTvals.isNotEmpty)
         "fieldTraits": _traitList(func.funcquestTvals),
@@ -669,7 +670,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
               style: const TextStyle(decoration: TextDecoration.underline),
             ),
             TextSpan(
-                text: ' [${Transl.funcPopuptext(widget.buff.type.name).l}]')
+                text: ' [${Transl.funcPopuptextBase(widget.buff.type.name).l}]')
           ],
         )),
         if (!widget.endlessLoop)

@@ -95,13 +95,12 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
       leading: func.funcPopupIcon == null
           ? const SizedBox()
           : db.getIconImage(func.funcPopupIcon, height: 32),
-      title:
-          Text('${func.funcId} ${Transl.funcPopuptext(func.funcPopupText).l}'),
+      title: Text('${func.funcId} ${func.lPopupText.l}'),
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('[${func.funcType.name}]${Transl.funcType(func.funcType).l}'),
+          Text('[${func.funcType.name}] ${Transl.funcType(func.funcType).l}'),
           if (positions.contains(_FuncCheckPos.tvals))
             _traits('functvals', func.functvals),
           if (positions.contains(_FuncCheckPos.questtvals))

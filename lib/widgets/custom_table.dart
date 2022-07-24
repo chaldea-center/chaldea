@@ -280,7 +280,7 @@ class TableCellData {
   TextStyle? style;
   Color? color;
   int? maxLines;
-  Alignment? alignment;
+  AlignmentGeometry? alignment;
   TextAlign? textAlign;
   EdgeInsets padding;
 
@@ -335,8 +335,8 @@ class TableCellData {
     List<Color>? colorList,
     int? maxLines,
     List<int>? maxLinesList,
-    Alignment? alignment,
-    List<Alignment?>? alignmentList,
+    AlignmentGeometry? alignment,
+    List<AlignmentGeometry?>? alignmentList,
     TextAlign? textAlign,
     List<TextAlign>? textAlignList,
     EdgeInsets? padding,
@@ -400,7 +400,7 @@ class TableCellData {
       TextStyle? style,
       Color? color,
       int? maxLines,
-      Alignment? alignment,
+      AlignmentGeometry? alignment,
       TextAlign? textAlign,
       EdgeInsets? padding,
       bool? fitHeight}) {

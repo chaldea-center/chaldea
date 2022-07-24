@@ -181,9 +181,9 @@ abstract class SearchOptionsMixin<T> {
     }
     for (final func in skill.functions) {
       if (Transl.md.funcPopuptext.containsKey(func.funcType.name)) {
-        yield* getAllKeys(Transl.funcPopuptext(func.funcType.name));
+        yield* getAllKeys(Transl.funcPopuptextBase(func.funcType.name));
       } else {
-        yield* getAllKeys(Transl.funcPopuptext(func.funcPopupText));
+        yield* getAllKeys(func.lPopupText);
       }
       for (final buff in func.buffs) {
         yield* getAllKeys(Transl.buffNames(buff.name));

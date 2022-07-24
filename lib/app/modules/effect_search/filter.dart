@@ -122,13 +122,13 @@ class _BuffFuncFilterState
         allBuffs.keys.where((e) => _buffs.contains(e)).toList();
 
     return buildAdaptive(
-      title: Text(S.current.filter_shown_type, textScaleFactor: 0.8),
+      title: Text(S.current.filter_sort, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.of(context).filter_shown_type, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
             onChanged: (v) {

@@ -10,6 +10,7 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
+import '../../buff/buff_list.dart';
 import '../../command_code/cmd_code_list.dart';
 import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
@@ -19,7 +20,7 @@ import '../../event/events_page.dart';
 import '../../exp/exp_card_cost_page.dart';
 import '../../ffo/ffo.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
-import '../../func/buff_list.dart';
+import '../../func/func_list.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
@@ -108,6 +109,7 @@ class GalleryItem {
         enemyList,
         svtQuestTimeline,
         traits,
+        funcs,
         buffs,
         expCard,
         statistics,
@@ -272,6 +274,13 @@ class GalleryItem {
     titleBuilder: () => S.current.info_trait,
     icon: FontAwesomeIcons.diceD20,
     page: const TraitListPage(),
+    isDetail: false,
+  );
+  static GalleryItem funcs = GalleryItem(
+    name: 'funcs',
+    titleBuilder: () => 'Funcs',
+    icon: FontAwesomeIcons.hurricane,
+    page: const FuncListPage(),
     isDetail: false,
   );
   static GalleryItem buffs = GalleryItem(

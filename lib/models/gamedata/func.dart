@@ -3,7 +3,7 @@
 part of 'skill.dart';
 
 @JsonSerializable()
-class NiceFunction implements BaseFunction {
+class NiceFunction with RouteInfo implements BaseFunction {
   BaseFunction _baseFunc;
 
   @override
@@ -32,6 +32,8 @@ class NiceFunction implements BaseFunction {
   bool get isPlayerOnlyFunc => _baseFunc.isPlayerOnlyFunc;
   @override
   bool get isEnemyOnlyFunc => _baseFunc.isEnemyOnlyFunc;
+  @override
+  Transl<String, String> get lPopupText => _baseFunc.lPopupText;
 
   List<DataVals> svals;
   List<DataVals>? svals2;
@@ -72,6 +74,9 @@ class NiceFunction implements BaseFunction {
           buffs: buffs,
         ),
         svals = svals ?? [];
+
+  @override
+  String get route => _baseFunc.route;
 
   List<List<DataVals>?> get svalsList =>
       [svals, svals2, svals3, svals4, svals5];
@@ -205,7 +210,7 @@ class NiceFunction implements BaseFunction {
 }
 
 @JsonSerializable()
-class BaseFunction {
+class BaseFunction with RouteInfo {
   final int funcId;
   final FuncType funcType;
   final FuncTargetType funcTargetType;
@@ -263,6 +268,12 @@ class BaseFunction {
 
   factory BaseFunction.fromJson(Map<String, dynamic> json) =>
       _$BaseFunctionFromJson(json);
+
+  @override
+  String get route => Routes.funcI(funcId);
+
+  Transl<String, String> get lPopupText =>
+      Transl.funcPopuptextBase(funcPopupText, funcType);
 
   bool get isPlayerOnlyFunc =>
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||

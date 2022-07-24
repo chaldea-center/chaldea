@@ -267,10 +267,6 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             );
           }
         } else {
-          final frags = List.generate(
-              clsIds.length,
-              (index) =>
-                  'Lv.${levels[index]} ${Transl.svtClassId(clsIds[index]).jp}');
           return localized(
             jp: () {
               final frags = List.generate(

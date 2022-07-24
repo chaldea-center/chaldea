@@ -10,6 +10,8 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../app.dart';
+import 'buff_list.dart';
 
 class BuffDetailPage extends StatefulWidget {
   final int? id;
@@ -58,7 +60,7 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
       );
     }
     return Scaffold(
-      appBar: AppBar(title: Text(buff.lName.l)),
+      appBar: AppBar(title: Text('Buff $id ${buff.lName.l}')),
       body: SingleChildScrollView(child: body),
     );
   }
@@ -88,13 +90,27 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
       CustomTableRow(children: [
         TableCellData(text: S.current.general_type, isHeader: true),
         TableCellData(
-          text: '(${buff.type.name}) ${Transl.buffType(buff.type).l}',
+          child: Text.rich(
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: '(${buff.type.name}) ${Transl.buffType(buff.type).l}',
+              onTap: () {
+                router.push(
+                    url: Routes.funcs, child: BuffListPage(type: buff.type));
+              },
+            ),
+            textAlign: TextAlign.center,
+          ),
           flex: 3,
-        )
+        ),
       ]),
       CustomTableRow(children: [
         TableCellData(text: "Detail", isHeader: true),
-        TableCellData(text: buff.lDetail.l, flex: 3)
+        TableCellData(
+          text: buff.lDetail.l,
+          flex: 3,
+          textAlign: TextAlign.center,
+        )
       ]),
       CustomTableRow.fromTexts(
         texts: const ["Buff Traits"],
@@ -176,7 +192,15 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
             child: Text.rich(TextSpan(
               children: divideList(
                 buff.script!.CheckOpponentBuffTypes!
-                    .map((e) => TextSpan(text: Transl.buffType(e).l)),
+                    .map((e) => SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: Transl.buffType(e).l,
+                          onTap: () {
+                            router.push(
+                                url: Routes.buffs,
+                                child: BuffListPage(type: e));
+                          },
+                        )),
                 const TextSpan(text: ' / '),
               ),
             )),
@@ -248,35 +272,5 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
           color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
     );
-  }
-}
-
-class LoadingData<T> {
-  int? id;
-  T? data;
-  FutureOr<T> Function() loader;
-  VoidCallback? onChanged;
-  void Function(dynamic error, dynamic stacktrace)? onError;
-
-  bool _loading = false;
-  bool get loading => _loading;
-
-  LoadingData({
-    this.id,
-    this.data,
-    required this.loader,
-  });
-
-  Future<void> load() async {
-    _loading = true;
-    onChanged?.call();
-    try {
-      data = await loader();
-    } catch (e, s) {
-      if (onError != null) {
-        onError!.call(e, s);
-      }
-    }
-    onChanged?.call();
   }
 }
