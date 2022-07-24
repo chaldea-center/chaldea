@@ -37,7 +37,9 @@ class NiceTrait {
 
   String get shownName {
     final s = Transl.trait(id).l;
-    if (negative == true) return 'Not $s';
+    if (negative == true) {
+      return '${M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null)} $s';
+    }
     return s;
   }
 

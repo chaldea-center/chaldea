@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
+import '../../app/modules/enemy/quest_enemy.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -672,13 +673,14 @@ class EnemyMisc {
 }
 
 @JsonSerializable()
-class QuestEnemy {
+class QuestEnemy with GameCardMixin {
   DeckType deck;
   int deckId;
   int userSvtId;
   int uniqueId;
   int npcId;
   EnemyRoleType roleType;
+  @override
   String name;
   BasicServant svt;
 
@@ -744,7 +746,7 @@ class QuestEnemy {
   factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
       _$QuestEnemyFromJson(json);
 
-  String get lName {
+  String get lShownName {
     String? _name =
         Transl.md.svtNames[name]?.l ?? Transl.md.entityNames[name]?.l;
     if (_name != null) return _name;
@@ -756,6 +758,29 @@ class QuestEnemy {
       if (Transl.isEN && b.isEmpty && c.isNotEmpty) b = ' ';
       return '$a$b$c';
     });
+  }
+
+  @override
+  Transl<String, String> get lName => svt.lName;
+
+  @override
+  int get collectionNo => svt.collectionNo;
+
+  @override
+  String? get icon => throw UnimplementedError();
+
+  @override
+  int get id => svt.id;
+
+  @override
+  int get rarity => svt.rarity;
+
+  @override
+  String get route => Routes.enemyI(id);
+
+  @override
+  void routeTo({Widget? child, Quest? quest}) {
+    super.routeTo(child: QuestEnemyDetail(enemy: this, quest: quest));
   }
 }
 

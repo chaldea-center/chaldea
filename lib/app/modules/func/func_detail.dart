@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/buff/buff_detail.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/misc.dart';
 import 'func_list.dart';
 
 class FuncDetailPage extends StatefulWidget {
@@ -21,16 +24,25 @@ class FuncDetailPage extends StatefulWidget {
   State<FuncDetailPage> createState() => _FuncDetailPageState();
 }
 
-class _FuncDetailPageState extends State<FuncDetailPage> {
+class _FuncDetailPageState extends State<FuncDetailPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController =
+      TabController(length: 3, vsync: this);
   bool loading = false;
   BaseFunction? _func;
-  int get id => widget.func?.funcId ?? widget.id ?? _func?.funcId ?? 0;
+  int get id => widget.func?.funcId ?? widget.id ?? _func?.funcId ?? -1;
   BaseFunction get func => _func!;
 
   @override
   void initState() {
     super.initState();
     fetchFunc();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
   }
 
   Future<void> fetchFunc() async {
@@ -48,7 +60,10 @@ class _FuncDetailPageState extends State<FuncDetailPage> {
   Widget build(BuildContext context) {
     if (_func == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Func $id')),
+        appBar: AppBar(
+          title: Text('Func $id'),
+          actions: [if (id >= 0) popupMenu],
+        ),
         body: Center(
           child: loading
               ? const CircularProgressIndicator()
@@ -57,12 +72,43 @@ class _FuncDetailPageState extends State<FuncDetailPage> {
       );
     }
     return Scaffold(
-      appBar: AppBar(title: Text("Func ${func.funcId} ${func.lPopupText.l}")),
-      body: SingleChildScrollView(child: body),
+      appBar: AppBar(
+        title: Text(
+          "Func ${func.funcId} ${func.lPopupText.l}",
+          overflow: TextOverflow.fade,
+        ),
+        actions: [popupMenu],
+        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
+          const Tab(text: "Info"),
+          Tab(text: S.current.skill),
+          Tab(text: S.current.noble_phantasm),
+        ])),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          SingleChildScrollView(child: FuncInfoTable(func: func)),
+          _SkillTab(func),
+          _TdTab(func),
+        ],
+      ),
     );
   }
 
-  Widget get body {
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) =>
+          SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbFunc(id)),
+    );
+  }
+}
+
+class FuncInfoTable extends StatelessWidget {
+  final BaseFunction func;
+  const FuncInfoTable({Key? key, required this.func}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
@@ -122,22 +168,6 @@ class _FuncDetailPageState extends State<FuncDetailPage> {
           alignment: AlignmentDirectional.centerEnd,
         ),
       ]),
-      if (func.buffs.isNotEmpty)
-        CustomTableRow(children: [
-          TableCellData(
-            text: "Buff",
-            isHeader: true,
-          ),
-          TableCellData(
-            child: Text.rich(SharedBuilder.textButtonSpan(
-              context: context,
-              text: func.buffs.first.lName.l,
-              onTap: func.buffs.first.routeTo,
-            )),
-            flex: 3,
-            alignment: AlignmentDirectional.centerEnd,
-          )
-        ]),
       CustomTableRow.fromTexts(
           texts: [S.current.effective_condition], isHeader: true),
       CustomTableRow(children: [
@@ -191,6 +221,144 @@ class _FuncDetailPageState extends State<FuncDetailPage> {
             alignment: AlignmentDirectional.centerEnd,
           )
         ]),
+      if (func.buffs.isNotEmpty) ...[
+        CustomTableRow.fromTexts(texts: const ["Buff"], isHeader: true),
+        SimpleAccordion(
+          expanded: true,
+          headerBuilder: (context, _) {
+            final buff = func.buffs.first;
+            return Padding(
+              padding: const EdgeInsetsDirectional.only(start: 42),
+              child: TextButton(
+                onPressed: () {
+                  buff.routeTo(child: BuffDetailPage(buff: buff));
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(buff.lName.l),
+              ),
+            );
+          },
+          contentBuilder: (context) => Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).hintColor, width: 0.75),
+                  borderRadius: BorderRadius.circular(5)),
+              position: DecorationPosition.foreground,
+              child: BuffInfoTable(buff: func.buffs.first),
+            ),
+          ),
+        ),
+      ],
     ]);
+  }
+}
+
+class _SkillTab extends StatelessWidget {
+  final BaseFunction func;
+  const _SkillTab(this.func, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final skills = db.gameData.baseSkills.values
+        .where((e) => e.functions.any((f) => f.funcId == func.funcId))
+        .toList();
+    skills.sort2((e) => e.id);
+    if (skills.isEmpty) {
+      return const Center(child: Text('No local record'));
+    }
+    Map<int, List<GameCardMixin>> allCards = {
+      for (final skill in skills)
+        skill.id: ReverseGameData.skill2All(skill.id).toList()
+    };
+
+    return ScrollControlWidget(
+      builder: (context, controller) {
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            final skill = skills[index];
+            final cards = allCards[skill.id] ?? [];
+            return ListTile(
+              dense: true,
+              leading: skill.icon == null
+                  ? const SizedBox()
+                  : db.getIconImage(skill.icon, width: 28),
+              horizontalTitleGap: 0,
+              title: Text('${skill.id} ${skill.lName.l}'),
+              trailing: cards.isEmpty
+                  ? null
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...cards.take(3).map(
+                            (e) => e.iconBuilder(context: context, width: 32)),
+                        if (cards.length > 3)
+                          Text(
+                            '+${cards.length - 3}',
+                            style: Theme.of(context).textTheme.caption,
+                          )
+                      ],
+                    ),
+            );
+          },
+          itemCount: skills.length,
+        );
+      },
+    );
+  }
+}
+
+class _TdTab extends StatelessWidget {
+  final BaseFunction func;
+  const _TdTab(this.func, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final tds = db.gameData.baseTds.values
+        .where((e) => e.functions.any((f) => f.funcId == func.funcId))
+        .toList();
+    tds.sort2((e) => e.id);
+    if (tds.isEmpty) {
+      return const Center(child: Text('No local record'));
+    }
+    Map<int, List<GameCardMixin>> allCards = {
+      for (final td in tds) td.id: ReverseGameData.td2Svt(td.id).toList()
+    };
+
+    return ScrollControlWidget(
+      builder: (context, controller) {
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            final td = tds[index];
+            final cards = allCards[td.id] ?? [];
+            cards.sort2((e) => e.collectionNo);
+            return ListTile(
+              dense: true,
+              leading: CommandCardWidget(card: td.card, width: 32),
+              horizontalTitleGap: 6,
+              contentPadding:
+                  const EdgeInsetsDirectional.only(start: 10, end: 16),
+              title: Text('${td.id} ${td.lName.l}'),
+              trailing: cards.isEmpty
+                  ? null
+                  : Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ...cards.take(3).map(
+                            (e) => e.iconBuilder(context: context, width: 32)),
+                        if (cards.length > 3)
+                          Text(
+                            '+${cards.length - 3}',
+                            style: Theme.of(context).textTheme.caption,
+                          )
+                      ],
+                    ),
+            );
+          },
+          itemCount: tds.length,
+        );
+      },
+    );
   }
 }

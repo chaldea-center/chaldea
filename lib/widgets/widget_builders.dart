@@ -132,6 +132,30 @@ class _PrimaryScrollBuilderState extends State<PrimaryScrollBuilder> {
   }
 }
 
+class ScrollControlWidget extends StatefulWidget {
+  final Widget Function(BuildContext context, ScrollController controller)
+      builder;
+  const ScrollControlWidget({Key? key, required this.builder})
+      : super(key: key);
+
+  @override
+  State<ScrollControlWidget> createState() => _ScrollControlWidgetState();
+}
+
+class _ScrollControlWidgetState extends State<ScrollControlWidget> {
+  late final controller = ScrollController();
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, controller);
+  }
+}
+
 mixin PrimaryScrollMixin on StatelessWidget {
   @override
   Widget build(BuildContext context) {

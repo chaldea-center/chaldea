@@ -45,6 +45,14 @@ class Atlas {
     return dbUrl('war', id, region);
   }
 
+  static String dbFunc(int id, [Region region = Region.jp]) {
+    return dbUrl('func', id, region);
+  }
+
+  static String dbBuff(int id, [Region region = Region.jp]) {
+    return dbUrl('buff', id, region);
+  }
+
   static String dbQuest(int id, [int? phase, Region region = Region.jp]) {
     String url = dbUrl('quest', id, region);
     if (phase != null) {

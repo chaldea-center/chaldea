@@ -817,7 +817,7 @@ class QuestEnemyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String displayName = showTrueName ? enemy.svt.lName.l : enemy.lName;
+    String displayName = showTrueName ? enemy.svt.lName.l : enemy.lShownName;
 
     Widget face = db.getIconImage(
       enemy.svt.icon,

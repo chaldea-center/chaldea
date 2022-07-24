@@ -89,6 +89,9 @@ class _FuncListPageState extends State<FuncListPage>
     if (!filterData.funcType.matchOne(func.funcType)) {
       return false;
     }
+    if (!filterData.buffType.matchAny(func.buffs.map((e) => e.type))) {
+      return false;
+    }
     if (!filterData.trait.matchAny([
       ...func.functvals,
       ...func.funcquestTvals,

@@ -24,7 +24,9 @@ class BuffDetailPage extends StatefulWidget {
   State<BuffDetailPage> createState() => _BuffDetailPageState();
 }
 
-class _BuffDetailPageState extends State<BuffDetailPage> {
+class _BuffDetailPageState extends State<BuffDetailPage>
+    with SingleTickerProviderStateMixin {
+  late final controller = TabController(length: 2, vsync: this);
   bool loading = false;
   Buff? _buff;
   int get id => widget.buff?.id ?? widget.id ?? _buff?.id ?? 0;
@@ -34,6 +36,12 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
   void initState() {
     super.initState();
     fetchBuff();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 
   Future<void> fetchBuff() async {
@@ -51,7 +59,10 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
   Widget build(BuildContext context) {
     if (_buff == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('Buff $id')),
+        appBar: AppBar(
+          title: Text('Buff $id'),
+          actions: [if (id > 0) popupMenu],
+        ),
         body: Center(
           child: loading
               ? const CircularProgressIndicator()
@@ -60,12 +71,38 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
       );
     }
     return Scaffold(
-      appBar: AppBar(title: Text('Buff $id ${buff.lName.l}')),
-      body: SingleChildScrollView(child: body),
+      appBar: AppBar(
+        title: Text('Buff $id ${buff.lName.l}', overflow: TextOverflow.fade),
+        actions: [popupMenu],
+        bottom: FixedHeight.tabBar(TabBar(
+          controller: controller,
+          tabs: const [Tab(text: "Info"), Tab(text: 'Func')],
+        )),
+      ),
+      body: TabBarView(
+        controller: controller,
+        children: [
+          SingleChildScrollView(child: BuffInfoTable(buff: buff)),
+          _FuncTab(buff),
+        ],
+      ),
     );
   }
 
-  Widget get body {
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) =>
+          SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbBuff(id)),
+    );
+  }
+}
+
+class BuffInfoTable extends StatelessWidget {
+  final Buff buff;
+  const BuffInfoTable({Key? key, required this.buff}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
@@ -214,17 +251,17 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
         ),
         if (buff.script!.relationId!.atkSide.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Attacking']),
-          relationId(buff.script!.relationId!.atkSide),
+          relationId(context, buff.script!.relationId!.atkSide),
         ],
         if (buff.script!.relationId!.defSide.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Defending']),
-          relationId(buff.script!.relationId!.defSide),
+          relationId(context, buff.script!.relationId!.defSide),
         ]
       ]
     ]);
   }
 
-  Widget relationId(
+  Widget relationId(BuildContext context,
       Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> data) {
     // data[attacker][defender]
     final attackers = data.keys.toList();
@@ -271,6 +308,44 @@ class _BuffDetailPageState extends State<BuffDetailPage> {
       border: TableBorder.all(
           color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+    );
+  }
+}
+
+class _FuncTab extends StatelessWidget {
+  final Buff buff;
+  const _FuncTab(this.buff, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final funcs = db.gameData.baseFunctions.values
+        .where((e) => e.buffs.any((e) => e.id == buff.id))
+        .toList();
+    funcs.sort2((e) => e.funcId);
+    if (funcs.isEmpty) {
+      return const Center(child: Text('No local record'));
+    }
+
+    return ScrollControlWidget(
+      builder: (context, controller) {
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            final func = funcs[index];
+            return ListTile(
+              dense: true,
+              leading: func.funcPopupIcon == null
+                  ? const SizedBox()
+                  : db.getIconImage(func.funcPopupIcon, width: 28),
+              horizontalTitleGap: 6,
+              contentPadding:
+                  const EdgeInsetsDirectional.only(start: 10, end: 16),
+              title: Text('${func.funcId} ${func.lPopupText.l}'),
+              onTap: func.routeTo,
+            );
+          },
+          itemCount: funcs.length,
+        );
+      },
     );
   }
 }

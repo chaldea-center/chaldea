@@ -34,6 +34,7 @@ export 'servant.dart';
 export 'skill.dart';
 export 'war.dart';
 export 'wiki_data.dart';
+export 'reverse.dart';
 
 part '../../generated/models/gamedata/gamedata.g.dart';
 

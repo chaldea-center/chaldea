@@ -10,12 +10,13 @@ class FuncFilterData {
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcTargetTeam = FilterGroupData<FuncApplyTarget>();
   final funcType = FilterGroupData<FuncType>();
+  final buffType = FilterGroupData<BuffType>();
   final trait = FilterGroupData<int>();
 
   FuncFilterData();
 
   List<FilterGroupData> get groups =>
-      [funcTargetType, funcTargetTeam, funcType, trait];
+      [funcTargetType, funcTargetTeam, funcType, buffType, trait];
 
   void reset() {
     for (final group in groups) {
@@ -38,6 +39,7 @@ class FuncFilter extends FilterPage<FuncFilterData> {
 class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
   Map<FuncType, String> funcTypes = {};
   Map<FuncTargetType, String> funcTargetTypes = {};
+  Map<BuffType, String> buffTypes = {};
 
   @override
   void initState() {
@@ -56,6 +58,12 @@ class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
     };
     funcTargetTypes = Map.fromEntries(
         funcTargetTypes.entries.toList()..sort2((e) => e.value));
+    buffTypes = {
+      for (final buff in db.gameData.baseBuffs.values)
+        buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
+    };
+    buffTypes =
+        Map.fromEntries(buffTypes.entries.toList()..sort2((e) => e.value));
   }
 
   @override
@@ -68,7 +76,7 @@ class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
       }),
       content: getListViewBody(children: [
         FilterGroup<FuncApplyTarget>(
-          title: Text(S.current.effect_target),
+          title: const Text('Target Team'),
           options: FuncApplyTarget.values,
           values: filterData.funcTargetTeam,
           optionBuilder: (v) => Text(v.name),
@@ -104,6 +112,18 @@ class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
           showMatchAll: false,
           showInvert: false,
           optionBuilder: (v) => Text(Transl.funcType(v).l),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        const Divider(height: 16),
+        FilterGroup<BuffType>(
+          title: const Text('Buff Type'),
+          options: buffTypes.keys.toList(),
+          values: filterData.buffType,
+          showMatchAll: false,
+          showInvert: false,
+          optionBuilder: (v) => Text(Transl.buffType(v).l),
           onFilterChanged: (value, _) {
             update();
           },

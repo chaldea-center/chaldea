@@ -79,6 +79,8 @@ mixin GameCardMixin implements RouteInfo {
       } else if (this is BasicServant) {
         final instance = this as BasicServant;
         onTap = () => router.push(url: instance.routeIfItem);
+      } else {
+        onTap = () => routeTo();
       }
     }
     return cardIconBuilder(

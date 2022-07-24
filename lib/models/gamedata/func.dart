@@ -272,6 +272,11 @@ class BaseFunction with RouteInfo {
   @override
   String get route => Routes.funcI(funcId);
 
+  @override
+  void routeTo({Widget? child}) {
+    return super.routeTo(child: FuncDetailPage(func: this));
+  }
+
   Transl<String, String> get lPopupText =>
       Transl.funcPopuptextBase(funcPopupText, funcType);
 
@@ -372,7 +377,8 @@ class Buff with RouteInfo {
 
   @override
   String get route => Routes.buffI(id);
-  Transl<String, String> get lName => Transl.buffNames(name);
+  Transl<String, String> get lName =>
+      Transl.buffNames(name.isEmpty ? type.name : name);
   Transl<String, String> get lDetail => Transl.buffDetail(detail);
 }
 
