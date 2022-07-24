@@ -101,17 +101,13 @@ class BasicServant with GameCardMixin {
     return icon;
   }
 
+  @override
   String get route =>
       collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
 
   String get routeIfItem {
     if (Items.specialSvtMat.contains(id)) return Routes.itemI(id);
     return route;
-  }
-
-  @override
-  void routeTo() {
-    router.push(url: route);
   }
 }
 
@@ -266,10 +262,8 @@ class Servant with GameCardMixin {
     ];
   }
 
-  String get route => '${Routes.servant}/$collectionNo';
-
   @override
-  void routeTo() => routeToId(Routes.servant);
+  String get route => Routes.servantI(id);
 
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
@@ -497,9 +491,7 @@ class BasicCraftEssence with GameCardMixin {
   Transl<String, String> get lName => Transl.ceNames(name);
 
   @override
-  void routeTo() {
-    routeToId(Routes.craftEssence);
-  }
+  String get route => Routes.craftEssenceI(id);
 }
 
 @JsonSerializable()
@@ -606,10 +598,8 @@ class CraftEssence with GameCardMixin {
         .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
   }
 
-  String get route => '${Routes.craftEssence}/$collectionNo';
-
   @override
-  void routeTo() => routeToId(Routes.craftEssence);
+  String get route => Routes.craftEssenceI(id);
 }
 
 @JsonSerializable()

@@ -182,6 +182,7 @@ class GalleryItem {
     name: 'master_missions',
     titleBuilder: () => S.current.master_mission,
     icon: FontAwesomeIcons.listCheck,
+    url: Routes.masterMissions,
     page: MasterMissionListPage(),
     isDetail: true,
   );
@@ -205,6 +206,7 @@ class GalleryItem {
     name: 'effect_search',
     titleBuilder: () => S.current.effect_search,
     icon: FontAwesomeIcons.searchengin,
+    url: Routes.effectSearch,
     page: EffectSearchPage(),
     isDetail: false,
   );
@@ -228,6 +230,7 @@ class GalleryItem {
     name: 'ffo',
     titleBuilder: () => 'Freedom Order',
     icon: FontAwesomeIcons.layerGroup,
+    url: Routes.ffo,
     page: FreedomOrderPage(),
     isDetail: true,
   );
@@ -259,6 +262,7 @@ class GalleryItem {
     name: 'enemy_list',
     titleBuilder: () => S.current.enemy_list,
     icon: FontAwesomeIcons.dragon,
+    url: Routes.enemies,
     page: EnemyListPage(),
     isDetail: false,
   );
@@ -273,6 +277,7 @@ class GalleryItem {
     name: 'traits',
     titleBuilder: () => S.current.info_trait,
     icon: FontAwesomeIcons.diceD20,
+    url: Routes.traits,
     page: const TraitListPage(),
     isDetail: false,
   );
@@ -280,6 +285,7 @@ class GalleryItem {
     name: 'funcs',
     titleBuilder: () => 'Funcs',
     icon: FontAwesomeIcons.hurricane,
+    url: Routes.funcs,
     page: const FuncListPage(),
     isDetail: false,
   );
@@ -287,6 +293,7 @@ class GalleryItem {
     name: 'buffs',
     titleBuilder: () => 'Buffs',
     icon: FontAwesomeIcons.fire,
+    url: Routes.buffs,
     page: const BuffListPage(),
     isDetail: false,
   );

@@ -58,6 +58,7 @@ class _TraitListPageState extends State<TraitListPage>
     }
     final hasTransl = id.toString() != name;
     return ListTile(
+      dense: true,
       title: Text(hasTransl ? name : subtitle),
       subtitle: hasTransl ? Text(subtitle) : null,
       onTap: () {

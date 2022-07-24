@@ -57,10 +57,8 @@ class CommandCode with GameCardMixin {
   CommandCodeExtra get extra => db.gameData.wiki.commandCodes[collectionNo] ??=
       CommandCodeExtra(collectionNo: collectionNo);
 
-  String get route => Routes.commandCodeI(id);
-
   @override
-  void routeTo() => routeToId(Routes.commandCode);
+  String get route => Routes.commandCodeI(id);
 }
 
 @JsonSerializable()
@@ -93,7 +91,5 @@ class BasicCommandCode with GameCardMixin {
   Transl<String, String> get lName => Transl.ccNames(name);
 
   @override
-  void routeTo() {
-    routeToId(Routes.craftEssence);
-  }
+  String get route => Routes.commandCodeI(id);
 }

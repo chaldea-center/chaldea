@@ -281,15 +281,14 @@ class AtlasApi {
       if (questJP != null) {
         final now = DateTime.now().timestamp;
         // main story's main quest:
-        //  if just released in 1 month, only cache for 1 day, otherwise 7 days
+        //  if just released in 1 month
         if (questJP.type == QuestType.main &&
             questJP.closedAt > kNeverClosedTimestamp) {
           expireAfter =
               now - questJP.openedAt < const Duration(days: 30).inSeconds
-                  ? const Duration(days: 1)
-                  : const Duration(days: 7);
-        } else if (now - questJP.closedAt >
-            const Duration(days: 30).inSeconds) {
+                  ? const Duration(days: 3)
+                  : const Duration(days: 15);
+        } else if (now > questJP.closedAt) {
           expireAfter = const Duration(days: 15);
         }
       }

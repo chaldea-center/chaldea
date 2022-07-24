@@ -47,10 +47,8 @@ class MysticCode with GameCardMixin {
   @override
   Transl<String, String> get lName => Transl.mcNames(name);
 
-  String get route => Routes.mysticCodeI(id);
-
   @override
-  void routeTo() => routeToId(Routes.mysticCode);
+  String get route => Routes.mysticCodeI(id);
 }
 
 @JsonSerializable()

@@ -6,12 +6,14 @@ import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
+import 'package:chaldea/app/modules/effect_search/effect_search_page.dart';
 import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
 import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
+import 'package:chaldea/app/modules/master_mission/master_mission_list.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
@@ -96,16 +98,21 @@ class Routes {
   static const String func = '/func';
   static const String funcs = '/funcs';
 
+  static String masterMissionI(int id) => '/master-mission/$id';
+  static const String masterMission = '/master-mission';
+  static const String masterMissions = '/master-missions';
+
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
-  static const String masterMission = '/master-mission';
   static const String expCard = '/expCard';
   static const String sqPlan = '/sqPlan';
   static const String stats = '/stats';
   static const String importData = '/import_data';
+  static const String ffo = '/ffo';
+  static const String effectSearch = '/effect-search';
   static const String notFound = '/404';
 
   static const List<String> masterRoutes = [
@@ -277,6 +284,10 @@ class RouteConfiguration {
         return const BuffListPage();
       case Routes.buff:
         return BuffDetailPage(id: _secondInt);
+      case Routes.masterMissions:
+        return MasterMissionListPage();
+      case Routes.effectSearch:
+        return EffectSearchPage();
     }
     return null;
   }

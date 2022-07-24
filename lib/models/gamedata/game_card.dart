@@ -10,7 +10,7 @@ import '../../app/modules/command_code/cmd_code.dart';
 import '../../app/modules/craft_essence/craft.dart';
 import '../../app/modules/servant/servant.dart';
 
-mixin GameCardMixin {
+mixin GameCardMixin implements RouteInfo {
   int get id;
 
   int get collectionNo;
@@ -35,14 +35,12 @@ mixin GameCardMixin {
     return const {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3}[rarity] ?? 3;
   }
 
-  @protected
-  void routeToId(String path, {Widget? child}) {
-    router.push(url: '$path/$id', child: child);
-  }
-
-  void routeTo();
-
   Transl<String, String> get lName;
+
+  @override
+  void routeTo({Widget? child}) {
+    router.push(url: route, child: child);
+  }
 
   Widget iconBuilder({
     required BuildContext context,
