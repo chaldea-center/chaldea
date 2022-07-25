@@ -76,31 +76,30 @@ class AppNewsCarousel extends StatefulWidget {
     bool updated = false;
     try {
       // CORS issue
+      Future<List<CarouselItem>>? taskChaldea,
+          taskMC,
+          taskJP,
+          taskCN,
+          taskTW,
+          taskNA,
+          taskKR;
+
+      final _dio = Dio();
+
+      // app news
+      taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) {
+        return (response.data as List)
+            .map((e) => CarouselItem.fromJson(e))
+            .where((e) => carouselSetting.enableChaldea || e.type == 1)
+            .toList();
+      }).catchError((e, s) async {
+        logger.d('parse chaldea news failed', e, s);
+        return <CarouselItem>[];
+      });
+
       if (kIsWeb) {
         updated = true;
       } else {
-        final _dio = Dio();
-        Future<List<CarouselItem>>? taskChaldea,
-            taskMC,
-            taskJP,
-            taskCN,
-            taskTW,
-            taskNA,
-            taskKR;
-
-        // app news
-        if (carouselSetting.enableChaldea) {
-          const url = '${Hosts.kDataHostCN}/news.json';
-          taskChaldea = _dio.get(url).then((response) {
-            return (response.data as List)
-                .map((e) => CarouselItem.fromJson(e))
-                .toList();
-          }).catchError((e, s) async {
-            logger.d('parse JP slides failed', e, s);
-            return <CarouselItem>[];
-          });
-        }
-
         // mc slides
         if (carouselSetting.enableMooncell) {
           const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';

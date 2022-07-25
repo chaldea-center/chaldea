@@ -264,6 +264,7 @@ class CarouselSetting {
 
 @JsonSerializable()
 class CarouselItem {
+  // 0-default, 1-sticky
   int type;
   int priority; // if <0, only used for debug
   DateTime startTime;
