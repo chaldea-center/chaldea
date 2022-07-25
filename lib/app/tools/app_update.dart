@@ -30,11 +30,13 @@ class AppUpdater {
     if (network.unavailable) return;
     final detail = await check();
     if (detail == null) return;
+    if (PlatformU.isAndroid) {
+      showUpdateAlert(detail);
+      return;
+    }
     final savePath = await download(detail);
-    if (savePath == null) return;
-    final update =
-        await showUpdateAlert(detail.release.version!, detail.release.body);
-    if (update == true) installUpdate(savePath);
+    final install = await showUpdateAlert(detail);
+    if (install == true) installUpdate(detail, savePath);
   }
 
   static Future<void> checkAppStoreUpdate() async {
@@ -62,15 +64,40 @@ class AppUpdater {
     }
   }
 
-  static Future showUpdateAlert(AppVersion version, String body) {
+  static Future showUpdateAlert(AppUpdateDetail detail) {
     return showDialog(
       context: kAppKey.currentContext!,
       useRootNavigator: false,
       builder: (context) {
-        return SimpleCancelOkDialog(
-          title: Text('v${version.versionString}'),
-          content: Text(body),
-          confirmText: S.current.update,
+        return AlertDialog(
+          title: Text('v${detail.release.version?.versionString}'),
+          content: Text(detail.release.body),
+          scrollable: true,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text(S.current.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                if (PlatformU.isAndroid) {
+                  launch(detail.installer.downloadUrl);
+                } else {
+                  Navigator.pop(context, true);
+                }
+              },
+              child: Text(S.current.update),
+            ),
+            if (PlatformU.isAndroid)
+              TextButton(
+                onPressed: () {
+                  launch(kGooglePlayLink);
+                },
+                child: const Text('Google Play'),
+              ),
+          ],
         );
       },
     );
@@ -108,6 +135,7 @@ class AppUpdater {
 
   static Future<String?> download(AppUpdateDetail detail) async {
     if (_downloadCmpl != null) return _downloadCmpl!.future;
+    if (PlatformU.isAndroid) return null;
     _downloadCmpl = Completer();
     _downloadFileWithCheck(detail)
         .then((value) => _downloadCmpl!.complete(value))
@@ -118,23 +146,23 @@ class AppUpdater {
     return _downloadCmpl?.future;
   }
 
-  static Future<void> installUpdate(String fp) async {
+  static Future<void> installUpdate(AppUpdateDetail detail, String? fp) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    if (PlatformU.isAndroid) {
-      final result = await OpenFile.open(fp);
-      print('open result: ${result.type}, ${result.message}');
-      // await InstallPlugin.installApk(saveFp, AppInfo.packageName);
+    if (PlatformU.isApple) {
+      launch(kAppStoreLink);
+    } else if (fp == null || PlatformU.isAndroid) {
+      launch(detail.installer.downloadUrl);
+      return;
     } else if (PlatformU.isLinux || PlatformU.isWindows) {
       final result = await OpenFile.open(dirname(fp));
       logger.d('open result: ${result.type}, ${result.message}');
-    } else if (PlatformU.isApple) {
-      launch(kAppStoreLink);
     }
   }
 
   static Future<AppUpdateDetail?> latestAppRelease() async {
     String? os;
     if (PlatformU.isAndroid) {
+      // Google Play limited the REQUEST_INSTALL_PACKAGES permission.
       os = 'android';
     } else if (PlatformU.isWindows) {
       os = 'windows';

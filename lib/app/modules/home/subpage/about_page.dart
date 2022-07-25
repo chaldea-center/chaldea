@@ -116,19 +116,17 @@ class _AboutPageState extends State<AboutPage> {
                       EasyLoading.showInfo('No Update Found');
                       return;
                     }
-                    final update = await AppUpdater.showUpdateAlert(
-                        detail.release.version!, detail.release.body);
+                    final update = await AppUpdater.showUpdateAlert(detail);
                     if (update != true) return;
                     EasyLoading.showInfo('Background downloading...');
                     final savePath = await AppUpdater.download(detail);
-                    if (savePath == null) {
+                    if (savePath == null && !PlatformU.isAndroid) {
                       EasyLoading.showError('Download app update failed');
-                      return;
                     }
                     final install = await AppUpdater.showInstallAlert(
                         detail.release.version!);
                     if (install != true) return;
-                    await AppUpdater.installUpdate(savePath);
+                    await AppUpdater.installUpdate(detail, savePath);
                   },
                 ),
               if (!PlatformU.isIOS &&
