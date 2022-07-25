@@ -662,17 +662,22 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text.rich(TextSpan(
-          style: Theme.of(context).textTheme.caption,
-          children: [
-            TextSpan(
-              text: '  $title ',
-              style: const TextStyle(decoration: TextDecoration.underline),
-            ),
-            TextSpan(
-                text: ' [${Transl.funcPopuptextBase(widget.buff.type.name).l}]')
-          ],
-        )),
+        InkWell(
+          onTap: () => skill?.routeTo(),
+          child: Text.rich(TextSpan(
+            style: Theme.of(context).textTheme.caption,
+            children: [
+              TextSpan(
+                text: '  $title ',
+                style: const TextStyle(decoration: TextDecoration.underline),
+              ),
+              TextSpan(
+                  text:
+                      ' [${Transl.funcPopuptextBase(widget.buff.type.name).l}]')
+            ],
+            // recognizer: TapGestureRecognizer()..onTap = () => skill?.routeTo(),
+          )),
+        ),
         if (!widget.endlessLoop)
           ...describeFunctions(
             funcs: skill?.functions ?? [],

@@ -33,7 +33,7 @@ class MysticCode with GameCardMixin {
       _$MysticCodeFromJson(json);
 
   @override
-  int get collectionNo => throw UnimplementedError();
+  int get collectionNo => id;
 
   @override
   String? get icon => extraAssets.item.masterGender;
@@ -42,6 +42,7 @@ class MysticCode with GameCardMixin {
   String? get borderedIcon => icon;
 
   @override
+  @Deprecated("Mystic Code doesn't have rarity")
   int get rarity => throw UnimplementedError();
 
   @override

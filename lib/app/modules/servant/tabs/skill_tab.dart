@@ -63,7 +63,11 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
       ));
     }
     children.add(SHeader(S.current.passive_skill));
-    for (final skill in svt.classPassive) {
+    for (final skill in [
+      ...svt.classPassive,
+      ...svt.extraPassive
+          .where((e) => e.extraPassive.any((cond) => cond.eventId == 0))
+    ]) {
       children.add(SkillDescriptor(
         skill: skill,
         showEnemy: !svt.isUserSvt,

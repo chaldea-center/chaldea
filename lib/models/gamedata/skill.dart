@@ -14,7 +14,7 @@ part 'func.dart';
 part 'vals.dart';
 part '../../generated/models/gamedata/skill.g.dart';
 
-abstract class SkillOrTd {
+abstract class SkillOrTd implements RouteInfo {
   int get id;
   String get name;
   Transl<String, String> get lName;
@@ -45,7 +45,7 @@ abstract class SkillOrTd {
 }
 
 @JsonSerializable()
-class BaseSkill with SkillOrTd {
+class BaseSkill with SkillOrTd, RouteInfo {
   @override
   int id;
   @override
@@ -59,7 +59,6 @@ class BaseSkill with SkillOrTd {
   List<int> coolDown;
   List<NiceTrait> actIndividuality;
   SkillScript? script;
-  List<ExtraPassive> extraPassive;
   List<SkillAdd> skillAdd;
   Map<AiType, List<int>>? aiIds;
   @override
@@ -76,7 +75,6 @@ class BaseSkill with SkillOrTd {
     this.coolDown = const [],
     this.actIndividuality = const [],
     this.script,
-    this.extraPassive = const [],
     this.skillAdd = const [],
     this.aiIds,
     required this.functions,
@@ -92,7 +90,6 @@ class BaseSkill with SkillOrTd {
     List<int> coolDown = const [],
     List<NiceTrait> actIndividuality = const [],
     SkillScript? script,
-    List<ExtraPassive> extraPassive = const [],
     List<SkillAdd> skillAdd = const [],
     Map<AiType, List<int>>? aiIds,
     required List<NiceFunction> functions,
@@ -109,7 +106,6 @@ class BaseSkill with SkillOrTd {
                 coolDown: coolDown,
                 actIndividuality: actIndividuality,
                 script: script,
-                extraPassive: extraPassive,
                 skillAdd: skillAdd,
                 aiIds: aiIds,
                 functions: functions,
@@ -152,7 +148,6 @@ class BaseSkill with SkillOrTd {
       coolDown: coolDown,
       actIndividuality: actIndividuality,
       script: script,
-      extraPassive: extraPassive,
       skillAdd: skillAdd,
       aiIds: aiIds,
       functions: functions,
@@ -165,6 +160,9 @@ class BaseSkill with SkillOrTd {
       condLimitCount: 0,
     );
   }
+
+  @override
+  String get route => Routes.skillI(id);
 }
 
 @JsonSerializable()
@@ -188,8 +186,7 @@ class NiceSkill extends BaseSkill {
   List<NiceTrait> get actIndividuality => _baseSkill.actIndividuality;
   @override
   SkillScript? get script => _baseSkill.script;
-  @override
-  List<ExtraPassive> get extraPassive => _baseSkill.extraPassive;
+  List<ExtraPassive> extraPassive;
   @override
   List<SkillAdd> get skillAdd => _baseSkill.skillAdd;
   @override
@@ -215,7 +212,7 @@ class NiceSkill extends BaseSkill {
     List<int> coolDown = const [],
     List<NiceTrait> actIndividuality = const [],
     SkillScript? script,
-    List<ExtraPassive> extraPassive = const [],
+    this.extraPassive = const [],
     List<SkillAdd> skillAdd = const [],
     Map<AiType, List<int>>? aiIds,
     List<NiceFunction> functions = const [],
@@ -236,7 +233,6 @@ class NiceSkill extends BaseSkill {
           coolDown: coolDown,
           actIndividuality: actIndividuality,
           script: script,
-          extraPassive: extraPassive,
           skillAdd: skillAdd,
           aiIds: aiIds,
           functions: functions,
@@ -251,7 +247,6 @@ class NiceSkill extends BaseSkill {
           coolDown: coolDown,
           actIndividuality: actIndividuality,
           script: script,
-          extraPassive: extraPassive,
           skillAdd: skillAdd,
           aiIds: aiIds,
           functions: functions,
@@ -268,7 +263,7 @@ class NiceSkill extends BaseSkill {
 }
 
 @JsonSerializable()
-class BaseTd extends SkillOrTd {
+class BaseTd extends SkillOrTd with RouteInfo {
   @override
   int id;
   CardType card;
@@ -371,6 +366,9 @@ class BaseTd extends SkillOrTd {
     if (unmodifiedDetail == null) return null;
     return Transl.tdDetail(detail ?? '').l.replaceAll('{0}', 'Lv.');
   }
+
+  @override
+  String get route => Routes.tdI(id);
 }
 
 @JsonSerializable()

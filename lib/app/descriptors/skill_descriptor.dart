@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../generated/l10n.dart';
 import 'func/func.dart';
 
 class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
@@ -17,6 +18,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showNone;
   final bool hideDetail;
   final bool showBuffDetail;
+  final bool jumpToDetail;
+  final bool showExtraPassiveCond;
 
   const SkillDescriptor({
     Key? key,
@@ -27,6 +30,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.hideDetail = false,
     this.showBuffDetail = false,
+    this.jumpToDetail = true,
+    this.showExtraPassiveCond = true,
   }) : super(key: key);
 
   const SkillDescriptor.only({
@@ -37,6 +42,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.hideDetail = false,
     this.showBuffDetail = false,
+    this.jumpToDetail = true,
+    this.showExtraPassiveCond = true,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer,
         super(key: key);
@@ -67,7 +74,23 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
                 color: Theme.of(context).hintColor,
               ),
             ),
-          )
+          ),
+        if (skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
+          CenterWidgetSpan(
+            child: InkWell(
+              onTap: () => showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) =>
+                    _extraPassiveDialog(context, skill as NiceSkill),
+              ),
+              child: Icon(
+                Icons.info_outline,
+                size: 16,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
       ])),
       subtitle: Transl.isJP ||
               hideDetail ||
@@ -79,6 +102,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           : cd0 == cd1
               ? Text('   CD: $cd0')
               : Text('   CD: $cd0→$cd1'),
+      onTap: jumpToDetail ? skill.routeTo : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     return TileGroup(
@@ -135,6 +159,59 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       scrollable: true,
     );
   }
+
+  Widget _extraPassiveDialog(BuildContext context, NiceSkill skill) {
+    List<Widget> children = [];
+    skill.extraPassive.sort(
+        (a, b) => a.num == b.num ? a.priority - b.priority : a.num - b.num);
+    final style = Theme.of(context).textTheme.bodySmall;
+    for (int index = 0; index < skill.extraPassive.length; index++) {
+      final cond = skill.extraPassive[index];
+      List<Widget> condDetails = [];
+      if (cond.condQuestId != 0) {
+        condDetails.add(CondTargetValueDescriptor(
+          condType: CondType.questClearPhase,
+          target: cond.condQuestId,
+          value: cond.condQuestPhase,
+          leading: const TextSpan(text: ' ꔷ '),
+          style: style,
+        ));
+      }
+      if (cond.condLv != 0) {
+        condDetails.add(Text(' ꔷ Servant Level ${cond.condLv}', style: style));
+      }
+      if (cond.condLimitCount != 0) {
+        condDetails.add(Text(' ꔷ ${S.current.ascension} ${cond.condLimitCount}',
+            style: style));
+      }
+      if (cond.condFriendshipRank != 0) {
+        condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condLimitCount}',
+            style: style));
+      }
+      if (cond.eventId != 0) {
+        final event = db.gameData.events[cond.eventId];
+        condDetails.add(Text(
+            ' ꔷ ${S.current.event_title} ${event?.lName.l ?? cond.eventId}',
+            style: style));
+      }
+      children.add(Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: condDetails,
+      ));
+    }
+
+    return SimpleCancelOkDialog(
+      title: Text(skill.lName.l),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: divideTiles(children),
+      ),
+      hideCancel: true,
+      scrollable: true,
+    );
+  }
 }
 
 class OverrideTDData {
@@ -186,6 +263,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showEnemy;
   final bool showNone;
   final OverrideTDData? overrideData;
+  final bool jumpToDetail;
 
   const TdDescriptor({
     Key? key,
@@ -195,6 +273,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showEnemy = false,
     this.showNone = false,
     this.overrideData,
+    this.jumpToDetail = true,
   }) : super(key: key);
 
   const TdDescriptor.only({
@@ -204,6 +283,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.level,
     this.showNone = false,
     this.overrideData,
+    this.jumpToDetail = true,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer,
         super(key: key);
@@ -260,6 +340,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           ]
         ],
       ),
+      onTap: jumpToDetail ? td.routeTo : null,
     );
     return TileGroup(
       children: [

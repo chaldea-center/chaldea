@@ -41,6 +41,7 @@ class ValListDsc extends StatelessWidget {
               color: j == 5 || j == 9
                   ? Theme.of(context).colorScheme.secondary
                   : null,
+              inList: true,
             );
           }
           child = Padding(
@@ -81,6 +82,7 @@ class ValDsc extends StatelessWidget {
   final bool? ignoreRate;
   final bool ignoreCount;
   final Color? color;
+  final bool inList;
 
   ValDsc({
     Key? key,
@@ -90,6 +92,7 @@ class ValDsc extends StatelessWidget {
     this.color,
     this.ignoreRate,
     this.ignoreCount = false,
+    this.inList = false,
   }) : super(key: key);
 
   final List<String> parts = [];
@@ -342,12 +345,22 @@ class ValDsc extends StatelessWidget {
         _addInt(vals.ParamAdd);
       }
     }
-    if (vals.RatioHPLow != null || vals.RatioHPHigh != null) {
-      final ratios =
-          [vals.RatioHPLow, vals.RatioHPHigh].whereType<int>().toList()..sort();
+    if (vals.RatioHPHigh != null || vals.RatioHPLow != null) {
+      final ratios = [vals.RatioHPHigh ?? 0, vals.RatioHPLow ?? 0].toList();
       final ratioStrings = ratios.map((e) => _toPercent(e, base ?? 1)).toList();
       parts.add('${ratioStrings.join('-')}%');
     }
+    if (!inList &&
+        (vals.RatioHPRangeHigh != null ||
+            vals.RatioHPRangeLow != null ||
+            vals.RatioHPHigh != null ||
+            vals.RatioHPLow != null)) {
+      final hpRatios =
+          [vals.RatioHPRangeHigh ?? 1000, vals.RatioHPRangeLow ?? 0].toList();
+      final hpRatiosStrings = hpRatios.map((e) => _toPercent(e, 10)).toList();
+      parts.add('[HP ${hpRatiosStrings.join('-')}%]');
+    }
+
     if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
       _addInt(vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
     }

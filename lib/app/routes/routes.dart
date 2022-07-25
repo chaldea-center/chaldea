@@ -36,6 +36,8 @@ import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
+import '../modules/skill/skill_detail.dart';
+import '../modules/skill/td_detail.dart';
 import '../modules/statistics/game_stat.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
@@ -97,6 +99,12 @@ class Routes {
   static String funcI(int id) => '/func/$id';
   static const String func = '/func';
   static const String funcs = '/funcs';
+
+  static String skillI(int id) => '/skill/$id';
+  static const String skill = '/skill';
+
+  static String tdI(int id) => '/noble-phantasm/$id';
+  static const String td = '/noble-phantasm';
 
   static String masterMissionI(int id) => '/master-mission/$id';
   static const String masterMission = '/master-mission';
@@ -288,6 +296,10 @@ class RouteConfiguration {
         return MasterMissionListPage();
       case Routes.effectSearch:
         return EffectSearchPage();
+      case Routes.skill:
+        return SkillDetailPage(id: _secondInt);
+      case Routes.td:
+        return TdDetailPage(id: _secondInt);
     }
     return null;
   }

@@ -45,6 +45,14 @@ class Atlas {
     return dbUrl('war', id, region);
   }
 
+  static String dbSkill(int id, [Region region = Region.jp]) {
+    return dbUrl('skill', id, region);
+  }
+
+  static String dbTd(int id, [Region region = Region.jp]) {
+    return dbUrl('noble-phantasm', id, region);
+  }
+
   static String dbFunc(int id, [Region region = Region.jp]) {
     return dbUrl('func', id, region);
   }

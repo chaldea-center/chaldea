@@ -25,11 +25,6 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
           ? null
           : SkillScript.fromJson(
               Map<String, dynamic>.from(json['script'] as Map)),
-      extraPassive: (json['extraPassive'] as List<dynamic>?)
-              ?.map((e) =>
-                  ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
       skillAdd: (json['skillAdd'] as List<dynamic>?)
               ?.map(
                   (e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))

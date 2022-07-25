@@ -300,6 +300,7 @@ class _SkillTab extends StatelessWidget {
                           )
                       ],
                     ),
+              onTap: skill.routeTo,
             );
           },
           itemCount: skills.length,
@@ -354,6 +355,7 @@ class _TdTab extends StatelessWidget {
                           )
                       ],
                     ),
+              onTap: td.routeTo,
             );
           },
           itemCount: tds.length,
