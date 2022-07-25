@@ -52,7 +52,7 @@ class _FuncListPageState extends State<FuncListPage>
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(compare: (a, b) => (a?.funcId ?? -1) - (b?.funcId ?? 0));
+    filterShownList(compare: (a, b) => (a?.funcId ?? -1) - (b?.funcId ?? -1));
     return scrollListener(
       useGrid: false,
       appBar: AppBar(

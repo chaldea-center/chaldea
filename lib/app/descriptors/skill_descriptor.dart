@@ -133,7 +133,9 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     for (final skillAdd in skill.skillAdd) {
       children.add(ListTile(
         title: Text(Transl.skillNames(skillAdd.name).l),
-        subtitle: Transl.isJP ? null : Text(skillAdd.name),
+        subtitle: Transl.isJP
+            ? Text(skillAdd.ruby)
+            : Text('${skillAdd.ruby}\n${skillAdd.name}'),
         dense: true,
         contentPadding: EdgeInsets.zero,
       ));

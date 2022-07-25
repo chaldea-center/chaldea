@@ -224,7 +224,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
         "edit": MessageLookupByLibrary.simpleMessage("編輯"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("效果範圍"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("Buff檢索"),
+        "effect_search": MessageLookupByLibrary.simpleMessage("效果檢索"),
         "effect_target": MessageLookupByLibrary.simpleMessage("效果對象"),
         "effect_type": MessageLookupByLibrary.simpleMessage("效果類型"),
         "effective_condition": MessageLookupByLibrary.simpleMessage("生效条件"),

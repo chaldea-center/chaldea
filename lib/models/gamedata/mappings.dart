@@ -249,6 +249,7 @@ class MappingData {
   final MappingList<int> svtRelease;
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
+  final MappingList<int> mcRelease;
   final Map<int, MappingBase<int>> questRelease;
   final EnumMapping enums;
 
@@ -288,11 +289,13 @@ class MappingData {
     MappingList<int>? svtRelease,
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
+    MappingList<int>? mcRelease,
     this.questRelease = const {},
     EnumMapping? enums,
   })  : svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),
+        mcRelease = mcRelease ?? MappingList(),
         enums = enums ?? EnumMapping() {
     _updateRegion(itemNames, Region.jp);
     _updateRegion(mcNames, Region.jp);

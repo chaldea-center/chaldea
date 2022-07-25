@@ -183,7 +183,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
             ),
           Text('${S.current.ascension_short} ${skill.condLimitCount}'),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
-          if (localTime != null)
+          if (db.curUser.region != Region.jp && localTime != null)
             Text(
                 '${db.curUser.region.toUpper()}: ${localTime.sec2date().toDateString()}'),
         ],

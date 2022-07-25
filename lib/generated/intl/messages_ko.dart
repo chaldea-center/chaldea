@@ -220,7 +220,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_rate": MessageLookupByLibrary.simpleMessage("드롭률"),
         "edit": MessageLookupByLibrary.simpleMessage("수정"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("효과 범위"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("버프 검색"),
         "effect_target": MessageLookupByLibrary.simpleMessage("효과 대상"),
         "effect_type": MessageLookupByLibrary.simpleMessage("효과 타입"),
         "efficiency": MessageLookupByLibrary.simpleMessage("효율"),

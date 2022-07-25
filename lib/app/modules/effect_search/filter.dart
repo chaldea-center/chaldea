@@ -10,6 +10,7 @@ enum SearchCardType {
   svt,
   ce,
   cc,
+  mc,
 }
 
 class BuffFuncFilterData {
@@ -115,6 +116,10 @@ class _BuffFuncFilterState
         _funcs = db.gameData.others.ccFuncs;
         _buffs = db.gameData.others.ccBuffs;
         break;
+      case SearchCardType.mc:
+        _funcs = db.gameData.others.mcFuncs;
+        _buffs = db.gameData.others.mcBuffs;
+        break;
     }
     List<FuncType> funcs =
         allFuncs.keys.where((e) => _funcs.contains(e)).toList();
@@ -139,15 +144,16 @@ class _BuffFuncFilterState
         ]),
         if (widget.type == SearchCardType.svt)
           buildClassFilter(filterData.svtClass),
-        FilterGroup<int>(
-          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
-          options: const [0, 1, 2, 3, 4, 5],
-          values: filterData.rarity,
-          optionBuilder: (v) => Text('$v$kStarChar'),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
+        if (widget.type != SearchCardType.mc)
+          FilterGroup<int>(
+            title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+            options: const [0, 1, 2, 3, 4, 5],
+            values: filterData.rarity,
+            optionBuilder: (v) => Text('$v$kStarChar'),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),
           options: Region.values,
@@ -202,7 +208,7 @@ class _BuffFuncFilterState
                 Trait.cardBuster.id!: 'Buster',
                 Trait.cardExtra.id!: 'Extra',
                 Trait.faceCard.id!: Transl.trait(Trait.faceCard.id!).l,
-                Trait.cardNP.id!: S.current.np_short,
+                Trait.cardNP.id!: Transl.trait(Trait.cardNP.id!).l,
               }[v] ??
               v.toString()),
           onFilterChanged: (value, _) {

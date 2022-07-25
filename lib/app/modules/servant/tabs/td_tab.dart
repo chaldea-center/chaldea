@@ -172,7 +172,7 @@ class SvtTdTab extends StatelessWidget {
                 svt.profile.costume[c]?.lName.l ?? c.toString()
             ].join(' ')),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
-          if (localTime != null)
+          if (db.curUser.region != Region.jp && localTime != null)
             Text(
                 '${db.curUser.region.toUpper()}: ${localTime.sec2date().toDateString()}'),
         ],

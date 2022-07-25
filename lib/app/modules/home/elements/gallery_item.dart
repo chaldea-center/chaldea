@@ -27,6 +27,8 @@ import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../saint_quartz/sq_main.dart';
 import '../../servant/servant_list.dart';
+import '../../skill/skill_list.dart';
+import '../../skill/td_list.dart';
 import '../../statistics/game_stat.dart';
 import '../../summon/summon_list_page.dart';
 
@@ -108,11 +110,13 @@ class GalleryItem {
         charaList,
         enemyList,
         svtQuestTimeline,
-        traits,
-        funcs,
-        buffs,
         expCard,
         statistics,
+        traits,
+        skills,
+        tds,
+        funcs,
+        buffs,
         importData,
         // faq,
         // if (kDebugMode) ...[lostRoom, palette],
@@ -281,10 +285,26 @@ class GalleryItem {
     page: const TraitListPage(),
     isDetail: false,
   );
+  static GalleryItem skills = GalleryItem(
+    name: 'skills',
+    titleBuilder: () => S.current.skill,
+    icon: FontAwesomeIcons.s,
+    url: Routes.skills,
+    page: const SkillListPage(),
+    isDetail: false,
+  );
+  static GalleryItem tds = GalleryItem(
+    name: 'tds',
+    titleBuilder: () => S.current.noble_phantasm,
+    icon: FontAwesomeIcons.n,
+    url: Routes.tds,
+    page: const TdListPage(),
+    isDetail: false,
+  );
   static GalleryItem funcs = GalleryItem(
     name: 'funcs',
     titleBuilder: () => 'Funcs',
-    icon: FontAwesomeIcons.hurricane,
+    icon: FontAwesomeIcons.f, // FontAwesomeIcons.hurricane
     url: Routes.funcs,
     page: const FuncListPage(),
     isDetail: false,
@@ -292,7 +312,7 @@ class GalleryItem {
   static GalleryItem buffs = GalleryItem(
     name: 'buffs',
     titleBuilder: () => 'Buffs',
-    icon: FontAwesomeIcons.fire,
+    icon: FontAwesomeIcons.b, // FontAwesomeIcons.fire
     url: Routes.buffs,
     page: const BuffListPage(),
     isDetail: false,

@@ -216,7 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_rate": MessageLookupByLibrary.simpleMessage("ドロップ率"),
         "edit": MessageLookupByLibrary.simpleMessage("編集"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("効果範囲"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("バフ検索"),
+        "effect_search": MessageLookupByLibrary.simpleMessage("効果検索"),
         "effect_target": MessageLookupByLibrary.simpleMessage("効果対象"),
         "effect_type": MessageLookupByLibrary.simpleMessage("効果タイプ"),
         "efficiency": MessageLookupByLibrary.simpleMessage("効率"),

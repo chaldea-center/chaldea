@@ -367,11 +367,15 @@ class _ProcessedData {
   Set<BuffType> ceBuffs = {};
   Set<FuncType> ccFuncs = {};
   Set<BuffType> ccBuffs = {};
+  Set<FuncType> mcFuncs = {};
+  Set<BuffType> mcBuffs = {};
 
   Set<FuncTargetType> funcTargets = {};
 
-  Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs};
-  Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs};
+  Set<FuncType> get allFuncs =>
+      {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
+  Set<BuffType> get allBuffs =>
+      {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
 
   void _initFuncBuff() {
     for (final svt in gameData.servants.values) {
@@ -405,6 +409,16 @@ class _ProcessedData {
             funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           ccFuncs.add(func.funcType);
           ccBuffs.addAll(func.buffs.map((e) => e.type));
+          funcTargets.add(func.funcTargetType);
+        }
+      }
+    }
+    for (final mc in gameData.mysticCodes.values) {
+      for (final skill in mc.skills) {
+        for (final func in NiceFunction.filterFuncs(
+            funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
+          mcFuncs.add(func.funcType);
+          mcBuffs.addAll(func.buffs.map((e) => e.type));
           funcTargets.add(func.funcTargetType);
         }
       }

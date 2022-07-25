@@ -27,12 +27,16 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   @override
   Iterable<GameCardMixin> get wholeData {
-    if (_tabController.index == 0) {
-      return db.gameData.servants.values;
-    } else if (_tabController.index == 1) {
-      return db.gameData.craftEssences.values;
-    } else {
-      return db.gameData.commandCodes.values;
+    final type = (options as _BuffOptions).type;
+    switch (type) {
+      case SearchCardType.svt:
+        return db.gameData.servants.values;
+      case SearchCardType.ce:
+        return db.gameData.craftEssences.values;
+      case SearchCardType.cc:
+        return db.gameData.commandCodes.values;
+      case SearchCardType.mc:
+        return db.gameData.mysticCodes.values;
     }
   }
 
@@ -42,7 +46,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     options = _BuffOptions(onChanged: (_) {
       if (mounted) setState(() {});
     });
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         (options as _BuffOptions).type =
@@ -93,17 +97,19 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   PreferredSizeWidget get tabBar => FixedHeight.tabBar(TabBar(
         controller: _tabController,
+        isScrollable: true,
         tabs: [
           Tab(text: S.current.servant),
           Tab(text: S.current.craft_essence),
           Tab(text: S.current.command_code),
+          Tab(text: S.current.mystic_code)
         ],
       ));
 
   @override
   bool filter(GameCardMixin card) {
     List<NiceFunction> functions = [];
-    if (!filterData.rarity.matchOne(card.rarity)) {
+    if (card is! MysticCode && !filterData.rarity.matchOne(card.rarity)) {
       return false;
     }
 
@@ -116,6 +122,8 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         release = db.gameData.mappingData.ceRelease;
       } else if (card is CommandCode) {
         release = db.gameData.mappingData.ccRelease;
+      } else if (card is MysticCode) {
+        release = db.gameData.mappingData.mcRelease;
       }
       if (release?.ofRegion(region)?.contains(card.collectionNo) != true) {
         return false;
@@ -157,6 +165,11 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           ...skill.filteredFunction(includeTrigger: true),
       ];
     } else if (card is CommandCode) {
+      functions = [
+        for (final skill in card.skills)
+          ...skill.filteredFunction(includeTrigger: true),
+      ];
+    } else if (card is MysticCode) {
       functions = [
         for (final skill in card.skills)
           ...skill.filteredFunction(includeTrigger: true),

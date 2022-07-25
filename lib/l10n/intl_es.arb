@@ -135,7 +135,7 @@
   "drop_rate": "Drop rate",
   "edit": "Editar",
   "effect_scope": "Alcance del Efecto",
-  "effect_search": "Buscar Buff",
+  "effect_search": null,
   "effect_target": "Objetivo del Efecto",
   "effect_type": "Tipo de Efecto",
   "effective_condition": null,

@@ -204,7 +204,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("احسب"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("نسبة الدروب"),
         "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("البحث عن بفف"),
         "effect_target": MessageLookupByLibrary.simpleMessage("هدف التأثير"),
         "effect_type": MessageLookupByLibrary.simpleMessage("نوع التأثير"),
         "efficiency": MessageLookupByLibrary.simpleMessage("كفاءة"),

@@ -236,7 +236,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("Editar"),
         "effect_scope":
             MessageLookupByLibrary.simpleMessage("Alcance del Efecto"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("Buscar Buff"),
         "effect_target":
             MessageLookupByLibrary.simpleMessage("Objetivo del Efecto"),
         "effect_type": MessageLookupByLibrary.simpleMessage("Tipo de Efecto"),

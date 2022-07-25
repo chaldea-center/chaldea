@@ -33,39 +33,11 @@ class FuncFilter extends FilterPage<FuncFilterData> {
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
-  _BuffFuncFilterState createState() => _BuffFuncFilterState();
+  _FuncFilterState createState() => _FuncFilterState();
 }
 
-class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
-  Map<FuncType, String> funcTypes = {};
-  Map<FuncTargetType, String> funcTargetTypes = {};
-  Map<BuffType, String> buffTypes = {};
-
-  @override
-  void initState() {
-    super.initState();
-    funcTypes = {
-      for (final func in db.gameData.baseFunctions.values)
-        func.funcType:
-            SearchUtil.getSortAlphabet(Transl.funcType(func.funcType).l),
-    };
-    funcTypes =
-        Map.fromEntries(funcTypes.entries.toList()..sort2((e) => e.value));
-    funcTargetTypes = {
-      for (final func in db.gameData.baseFunctions.values)
-        func.funcTargetType: SearchUtil.getSortAlphabet(
-            Transl.funcTargetType(func.funcTargetType).l),
-    };
-    funcTargetTypes = Map.fromEntries(
-        funcTargetTypes.entries.toList()..sort2((e) => e.value));
-    buffTypes = {
-      for (final buff in db.gameData.baseBuffs.values)
-        buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
-    };
-    buffTypes =
-        Map.fromEntries(buffTypes.entries.toList()..sort2((e) => e.value));
-  }
-
+class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter>
+    with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -130,5 +102,40 @@ class _BuffFuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> {
         ),
       ]),
     );
+  }
+}
+
+mixin FuncFilterMixin {
+  late Map<FuncType, String> funcTypes = _getFuncTypes();
+  late Map<FuncTargetType, String> funcTargetTypes = _getFuncTargetTypes();
+  late Map<BuffType, String> buffTypes = _getBuffTypes();
+
+  Iterable<BaseFunction> getAllFuncs() => db.gameData.baseFunctions.values;
+  Iterable<Buff> getAllBuffs() => db.gameData.baseBuffs.values;
+
+  Map<FuncType, String> _getFuncTypes() {
+    var types = {
+      for (final func in getAllFuncs())
+        func.funcType:
+            SearchUtil.getSortAlphabet(Transl.funcType(func.funcType).l),
+    };
+    return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
+  }
+
+  Map<FuncTargetType, String> _getFuncTargetTypes() {
+    var types = {
+      for (final func in getAllFuncs())
+        func.funcTargetType: SearchUtil.getSortAlphabet(
+            Transl.funcTargetType(func.funcTargetType).l),
+    };
+    return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
+  }
+
+  Map<BuffType, String> _getBuffTypes() {
+    var types = {
+      for (final buff in getAllBuffs())
+        buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
+    };
+    return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
   }
 }

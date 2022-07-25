@@ -252,7 +252,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_rate": MessageLookupByLibrary.simpleMessage("Drop rate"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("Effect Scope"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("Buff Search"),
+        "effect_search": MessageLookupByLibrary.simpleMessage("Effect Search"),
         "effect_target": MessageLookupByLibrary.simpleMessage("Effect Target"),
         "effect_type": MessageLookupByLibrary.simpleMessage("Effect Type"),
         "effective_condition":

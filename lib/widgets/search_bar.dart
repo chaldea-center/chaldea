@@ -150,9 +150,8 @@ abstract class SearchOptionsMixin<T> {
         '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
   }
 
-  Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
-    yield* SearchUtil.getAllKeys(transl);
-  }
+  Iterable<String?> getAllKeys(Transl<dynamic, String> transl) =>
+      SearchUtil.getAllKeys(transl);
 
   Iterable<String?> getListKeys(
       List<String>? items, String? Function(String word) getter) sync* {
@@ -162,32 +161,6 @@ abstract class SearchOptionsMixin<T> {
     }
   }
 
-  Iterable<String?> getSkillKeys(SkillOrTd skill) sync* {
-    yield* getAllKeys(skill.lName);
-    final detail = skill.detail;
-    if (skill is BaseSkill) {
-      if (detail != null) {
-        yield* getAllKeys(Transl.skillDetail(detail));
-      }
-      yield SearchUtil.getJP(skill.ruby);
-      for (final skillAdd in skill.skillAdd) {
-        yield* getAllKeys(Transl.skillNames(skillAdd.name));
-      }
-    } else if (skill is BaseTd) {
-      if (detail != null) {
-        yield* getAllKeys(Transl.tdDetail(detail));
-      }
-      yield* SearchUtil.getAllKeys(Transl.tdRuby(skill.ruby));
-    }
-    for (final func in skill.functions) {
-      if (Transl.md.funcPopuptext.containsKey(func.funcType.name)) {
-        yield* getAllKeys(Transl.funcPopuptextBase(func.funcType.name));
-      } else {
-        yield* getAllKeys(func.lPopupText);
-      }
-      for (final buff in func.buffs) {
-        yield* getAllKeys(Transl.buffNames(buff.name));
-      }
-    }
-  }
+  Iterable<String?> getSkillKeys(SkillOrTd skill) =>
+      SearchUtil.getSkillKeys(skill);
 }

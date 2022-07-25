@@ -236,6 +236,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ? null
           : MappingList<int>.fromJson(
               Map<String, dynamic>.from(json['cc_release'] as Map)),
+      mcRelease: json['mc_release'] == null
+          ? null
+          : MappingList<int>.fromJson(
+              Map<String, dynamic>.from(json['mc_release'] as Map)),
       questRelease: (json['quest_release'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 MappingBase<int>.fromJson(Map<String, dynamic>.from(e as Map))),

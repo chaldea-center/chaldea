@@ -1549,10 +1549,10 @@ class S {
     );
   }
 
-  /// `Buff Search`
+  /// `Effect Search`
   String get effect_search {
     return Intl.message(
-      'Buff Search',
+      'Effect Search',
       name: 'effect_search',
       desc: '',
       locale: localeName,

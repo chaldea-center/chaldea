@@ -23,6 +23,8 @@ class SearchUtil {
       kanaKit.toRomaji(words).replaceAll(' ', ''),
       kanaKit.toHiragana(words),
       words,
+      PinyinHelper.getPinyinE(words).replaceAll(' ', ''),
+      PinyinHelper.getShortPinyin(words),
     }.join('\t');
   }
 
@@ -51,6 +53,35 @@ class SearchUtil {
     yield getCN(transl.m?.tw);
     yield getEn(transl.m?.na);
     yield getKr(transl.m?.kr);
+  }
+
+  static Iterable<String?> getSkillKeys(SkillOrTd skill) sync* {
+    yield* getAllKeys(skill.lName);
+    final detail = skill.detail;
+    if (skill is BaseSkill) {
+      if (detail != null) {
+        yield* getAllKeys(Transl.skillDetail(detail));
+      }
+      yield SearchUtil.getJP(skill.ruby);
+      for (final skillAdd in skill.skillAdd) {
+        yield* getAllKeys(Transl.skillNames(skillAdd.name));
+      }
+    } else if (skill is BaseTd) {
+      if (detail != null) {
+        yield* getAllKeys(Transl.tdDetail(detail));
+      }
+      yield* SearchUtil.getAllKeys(Transl.tdRuby(skill.ruby));
+    }
+    for (final func in skill.functions) {
+      if (Transl.md.funcPopuptext.containsKey(func.funcType.name)) {
+        yield* getAllKeys(Transl.funcPopuptextBase(func.funcType.name));
+      } else {
+        yield* getAllKeys(func.lPopupText);
+      }
+      for (final buff in func.buffs) {
+        yield* getAllKeys(Transl.buffNames(buff.name));
+      }
+    }
   }
 
   static String getCache(

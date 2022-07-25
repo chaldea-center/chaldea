@@ -135,7 +135,7 @@
   "drop_rate": "نسبة الدروب",
   "edit": "تعديل",
   "effect_scope": null,
-  "effect_search": "البحث عن بفف",
+  "effect_search": null,
   "effect_target": "هدف التأثير",
   "effect_type": "نوع التأثير",
   "effective_condition": null,

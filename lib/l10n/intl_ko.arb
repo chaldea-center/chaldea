@@ -135,7 +135,7 @@
   "drop_rate": "드롭률",
   "edit": "수정",
   "effect_scope": "효과 범위",
-  "effect_search": "버프 검색",
+  "effect_search": null,
   "effect_target": "효과 대상",
   "effect_type": "효과 타입",
   "effective_condition": null,
