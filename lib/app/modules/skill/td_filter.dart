@@ -56,7 +56,6 @@ class _BuffFuncFilterState extends FilterPageState<TdFilterData, TdFilter>
           },
         ),
         FilterGroup<TdEffectFlag>(
-          title: Text(S.current.general_type),
           options: TdEffectFlag.values,
           values: filterData.type,
           optionBuilder: (v) =>

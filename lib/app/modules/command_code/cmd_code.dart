@@ -153,13 +153,6 @@ class CmdCodeDetailBasePage extends StatelessWidget {
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(
-            child: Text(cc.lName.l,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            isHeader: true,
-          )
-        ]),
-        CustomTableRow(children: [
-          TableCellData(
             child: enableLink
                 ? TextButton(
                     onPressed: () {
@@ -173,10 +166,12 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: cc.lName.jp, textAlign: TextAlign.center)
-          ]),
+        CustomTableRow(children: [
+          TableCellData(
+            text: Transl.isJP ? cc.ruby : [cc.ruby, cc.lName.jp].join('\n'),
+            textAlign: TextAlign.center,
+          )
+        ]),
         if (!Transl.isEN)
           CustomTableRow(children: [
             TableCellData(text: cc.lName.na, textAlign: TextAlign.center)

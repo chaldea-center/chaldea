@@ -260,6 +260,7 @@ class _Database {
     EdgeInsetsGeometry? padding,
     WidgetBuilder? placeholder,
     LoadingErrorWidgetBuilder? errorWidget,
+    VoidCallback? onTap,
   }) {
     Widget image;
     if (iconUrl == null || iconUrl.isEmpty) {
@@ -301,6 +302,9 @@ class _Database {
     }
     if (padding != null) {
       image = Padding(padding: padding, child: image);
+    }
+    if (onTap != null) {
+      image = GestureDetector(onTap: onTap, child: image);
     }
     return image;
   }

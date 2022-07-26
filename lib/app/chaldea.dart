@@ -81,15 +81,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       child = AnnotatedRegion<SystemUiOverlayStyle>(
         value: db.settings.isResolvedDarkMode
             ? SystemUiOverlayStyle.dark.copyWith(
-                statusBarColor: Colors.transparent,
+                // statusBarColor: Colors.transparent,
                 systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-                statusBarIconBrightness: Brightness.light,
+                // statusBarIconBrightness: Brightness.light,
                 systemNavigationBarIconBrightness: Brightness.light,
               )
             : SystemUiOverlayStyle.light.copyWith(
-                statusBarColor: Colors.transparent,
+                // statusBarColor: Colors.transparent,
                 systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-                statusBarIconBrightness: Brightness.dark,
+                // statusBarIconBrightness: Brightness.dark,
                 systemNavigationBarIconBrightness: Brightness.dark,
               ),
         child: child,
@@ -106,8 +106,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       appBarTheme: themeData.appBarTheme.copyWith(
         titleSpacing: 0,
         toolbarHeight: 48, // kToolbarHeight=56,
-        titleTextStyle:
-            (themeData.appBarTheme.titleTextStyle ?? const TextStyle())
+        titleTextStyle: kIsWeb
+            ? null
+            : (themeData.appBarTheme.titleTextStyle ?? const TextStyle())
                 .copyWith(fontSize: 20),
       ),
     );

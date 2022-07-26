@@ -24,13 +24,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
   Map<int, MysticCode> get codes => db.gameData.mysticCodes;
 
   int? _selected;
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
+  late final _scrollController = ScrollController();
 
   int _level = 10;
 

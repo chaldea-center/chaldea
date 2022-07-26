@@ -182,7 +182,10 @@ class CraftDetailBasePage extends StatelessWidget {
           )
         ]),
         CustomTableRow(children: [
-          TableCellData(text: ce.lName.jp, textAlign: TextAlign.center)
+          TableCellData(
+            text: Transl.isJP ? ce.ruby : [ce.ruby, ce.lName.jp].join('\n'),
+            textAlign: TextAlign.center,
+          )
         ]),
         CustomTableRow(children: [
           TableCellData(text: ce.lName.na, textAlign: TextAlign.center)

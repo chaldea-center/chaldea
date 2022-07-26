@@ -365,11 +365,14 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             TableCellData(text: 'Hits', isHeader: true),
             TableCellData(
               text: td.npDistribution.isEmpty
-                  ? '   -'
+                  ? '   -  '
                   : '   ${td.npDistribution.length} Hits '
-                      '(${td.npDistribution.join(', ')})',
+                      '(${td.npDistribution.join(', ')})  ',
               flex: 5,
               alignment: Alignment.centerLeft,
+              style: td.damageType == TdEffectFlag.support
+                  ? const TextStyle(decoration: TextDecoration.lineThrough)
+                  : null,
             )
           ]),
           CustomTableRow.fromTexts(

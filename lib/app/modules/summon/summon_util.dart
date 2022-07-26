@@ -147,7 +147,7 @@ class SummonUtil {
   }) {
     if (card == null) return Container();
     List<String> texts = [];
-    if (showNpLv && card is Servant) {
+    if (showNpLv && card is Servant && card.status.cur.favorite) {
       texts.add('NP${card.status.cur.npLv}');
     }
 

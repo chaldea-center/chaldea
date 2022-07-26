@@ -346,12 +346,25 @@ class BaseTd extends SkillOrTd with RouteInfo {
     for (var func in functions) {
       // if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
       if (func.funcType.name.startsWith('damageNp')) {
-        if (func.funcTargetType == FuncTargetType.enemyAll) {
+        if ([
+          FuncTargetType.enemyAll,
+          FuncTargetType.enemyFull,
+          FuncTargetType.enemyOtherFull,
+          FuncTargetType.enemyOther
+        ].contains(func.funcTargetType)) {
           _damageType = TdEffectFlag.attackEnemyAll;
-        } else if (func.funcTargetType == FuncTargetType.enemy) {
+        } else if ([
+          FuncTargetType.enemy,
+          FuncTargetType.enemyRandom,
+          FuncTargetType.enemyOneAnotherRandom,
+          FuncTargetType.enemyOneNoTargetNoAction,
+          FuncTargetType.enemyAnother,
+        ].contains(func.funcTargetType)) {
           _damageType = TdEffectFlag.attackEnemyOne;
         } else {
-          throw 'Unknown damageType: ${func.funcTargetType}';
+          assert(() {
+            throw 'Unknown damageType: ${func.funcTargetType}';
+          }());
         }
       }
     }

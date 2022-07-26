@@ -267,15 +267,17 @@ class AppNewsCarousel extends StatefulWidget {
       if (carouselSetting.options.every((e) => !e)) {
         carouselSetting.items.clear();
       }
-      if ((result.isNotEmpty || updated) && !kIsWeb) {
-        final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
-        List<String> blocked = blockedWiki
-            .split('\n')
-            .map((e) => e.trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-        result.removeWhere((item) =>
-            blocked.any((word) => item.image?.contains(word) == true));
+      if ((result.isNotEmpty || updated)) {
+        if (!kIsWeb) {
+          final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
+          List<String> blocked = blockedWiki
+              .split('\n')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList();
+          result.removeWhere((item) =>
+              blocked.any((word) => item.image?.contains(word) == true));
+        }
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
@@ -322,7 +324,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         child: const AspectRatio(
           aspectRatio: 8 / 3,
           child: CachedImage(
-            imageUrl: 'https://docs.chaldea.center/images/chaldea-banner.jpg',
+            imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
             // cachedOption: CachedImageOption(fit: BoxFit.cover),
           ),
         ),

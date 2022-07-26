@@ -44,6 +44,10 @@ class SvtInfoTab extends StatelessWidget {
                 )
               ],
             ),
+            CustomTableRow.fromTexts(
+              texts: [svt.ruby],
+              defaults: TableCellData(textAlign: TextAlign.center),
+            ),
             if (!Transl.isJP)
               CustomTableRow.fromTexts(
                 texts: [names.join(' / ')],

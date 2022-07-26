@@ -123,9 +123,7 @@ class _GalleryPageState extends State<GalleryPage> {
                     const Divider(height: 0.5, thickness: 0.5),
                   GridGallery(maxWidth: constraints.maxWidth),
                   if (dataVersion != null &&
-                          dataVersion.timestamp >
-                              db.gameData.version.timestamp ||
-                      kDebugMode)
+                      dataVersion.timestamp > db.gameData.version.timestamp)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: _dataUpdate(),

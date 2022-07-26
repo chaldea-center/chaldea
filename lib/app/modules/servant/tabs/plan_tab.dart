@@ -117,7 +117,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
         skillWidgets.add(buildPlanRow(
           useSlider: sliderMode,
-          leading: db.getIconImage(skill.icon, width: 33),
+          leading: db.getIconImage(skill.icon, width: 33, onTap: skill.routeTo),
           title: Transl.skillNames(skill.name).l,
           start: curVal.skills[index],
           end: targetVal.skills[index],
@@ -150,7 +150,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         if (skill == null) continue;
         appendSkillWidgets.add(buildPlanRow(
           useSlider: sliderMode,
-          leading: db.getIconImage(skill.icon, width: 33),
+          leading: db.getIconImage(skill.icon, width: 33, onTap: skill.routeTo),
           title: Transl.skillNames(skill.name).l,
           start: curVal.appendSkills[index],
           end: targetVal.appendSkills[index],

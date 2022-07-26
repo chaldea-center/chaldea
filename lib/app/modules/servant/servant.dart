@@ -473,11 +473,13 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 SimpleCancelOkDialog(
                   title: Text(S.of(context).reset),
                   onTapOk: () {
-                    setState(() {
-                      status.cur.reset();
-                      plan.reset();
-                      svt.updateStat();
-                    });
+                    if (mounted) {
+                      setState(() {
+                        status.cur.reset();
+                        plan.reset();
+                        svt.updateStat();
+                      });
+                    }
                   },
                 ).showDialog(context);
               },

@@ -96,6 +96,7 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
           ? const SizedBox()
           : db.getIconImage(func.funcPopupIcon, height: 32),
       title: Text('${func.funcId} ${func.lPopupText.l}'),
+      onTap: func.routeTo,
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

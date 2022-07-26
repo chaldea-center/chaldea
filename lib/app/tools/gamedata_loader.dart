@@ -251,28 +251,30 @@ class GameDataLoader {
     }
     if (!db.settings.proxyServer) {
       return await Dio().get<T>(url, options: options);
+    } else {
+      return await Dio().get<T>(cnUrl, options: options);
     }
-    try {
-      Completer<Response<T>> _completer = Completer();
-      Timer(const Duration(seconds: 4), () {
-        if (!_completer.isCompleted) {
-          _completer.completeError(TimeoutException('CF connection timeout'));
-        }
-      });
-      scheduleMicrotask(() {
-        Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
-            .get<T>(url, options: options)
-            .then<void>((value) => _completer.complete(value))
-            .catchError(_completer.completeError);
-      });
-      return await _completer.future;
-    } catch (e) {
-      if (db.settings.proxyServer) {
-        // print('download data from CN: $cnUrl');
-        return await Dio().get<T>(cnUrl, options: options);
-      }
-      rethrow;
-    }
+    // try {
+    //   Completer<Response<T>> _completer = Completer();
+    //   Timer(const Duration(seconds: 4), () {
+    //     if (!_completer.isCompleted) {
+    //       _completer.completeError(TimeoutException('CF connection timeout'));
+    //     }
+    //   });
+    //   scheduleMicrotask(() {
+    //     Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
+    //         .get<T>(url, options: options)
+    //         .then<void>((value) => _completer.complete(value))
+    //         .catchError(_completer.completeError);
+    //   });
+    //   return await _completer.future;
+    // } catch (e) {
+    //   if (db.settings.proxyServer) {
+    //     // print('download data from CN: $cnUrl');
+    //     return await Dio().get<T>(cnUrl, options: options);
+    //   }
+    //   rethrow;
+    // }
   }
 }
 
