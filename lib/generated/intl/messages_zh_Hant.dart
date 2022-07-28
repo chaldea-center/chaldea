@@ -145,6 +145,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  與V1數據不互通。\n  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea應用備份"),
+        "chaldea_gate": MessageLookupByLibrary.simpleMessage("迦勒底之門"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldea伺服器"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中國"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),

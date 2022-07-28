@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "V1データとの互換性はありません。\nユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。"),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea バックアップ"),
+        "chaldea_gate": MessageLookupByLibrary.simpleMessage("カルデアゲート"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldeaサーバー"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中国"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),

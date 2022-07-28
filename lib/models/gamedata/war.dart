@@ -9,7 +9,7 @@ import 'gamedata.dart';
 part '../../generated/models/gamedata/war.g.dart';
 
 @JsonSerializable()
-class NiceWar {
+class NiceWar with RouteInfo {
   int id;
   List<List<double>> coordinates;
   String age;
@@ -95,6 +95,7 @@ class NiceWar {
 
   Event? get event => db.gameData.events[eventId];
 
+  @override
   String get route => Routes.warI(id);
 
   bool isOutdated() => false;

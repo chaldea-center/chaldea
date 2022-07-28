@@ -158,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
         "chaldea_backup":
             MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
+        "chaldea_gate": MessageLookupByLibrary.simpleMessage("Chaldea Gate"),
         "chaldea_server":
             MessageLookupByLibrary.simpleMessage("Chaldea Server"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("China"),

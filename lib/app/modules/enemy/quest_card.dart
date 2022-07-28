@@ -380,21 +380,24 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
     for (int j = 0; j < curPhase.stages.length; j++) {
+      final stage = curPhase.stages[j];
       children.add(Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SizedBox(
             width: 32,
-            child: AutoSizeText(
-              (j + 1).toString(),
+            child: Text(
+              [
+                j + 1,
+                if (stage.enemyFieldPosCount != null)
+                  '(${stage.enemyFieldPosCount})'
+              ].join('\n'),
               textAlign: TextAlign.center,
-              maxLines: 1,
-              minFontSize: 3,
             ),
           ),
           Expanded(
             child: QuestWave(
-              stage: curPhase.stages[j],
+              stage: stage,
               showTrueName: showTrueName,
             ),
           )
@@ -693,7 +696,11 @@ class _QuestCardState extends State<QuestCard> {
         Center(child: _header(S.current.quest_condition)),
         for (final cond in conds)
           CondTargetValueDescriptor(
-              condType: cond.type, target: cond.targetId, value: cond.value),
+            condType: cond.type,
+            target: cond.targetId,
+            value: cond.value,
+            missions: db.gameData.wars[quest.warId]?.event?.missions ?? [],
+          ),
         Text(
             '${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
         Text(

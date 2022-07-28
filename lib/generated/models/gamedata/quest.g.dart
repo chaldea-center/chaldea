@@ -289,6 +289,7 @@ Stage _$StageFromJson(Map json) => Stage(
           const [],
       calls: (json['calls'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
+      enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
       enemies: (json['enemies'] as List<dynamic>?)
               ?.map((e) =>
                   QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))

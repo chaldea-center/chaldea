@@ -15,6 +15,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../common/filter_page_base.dart';
 import 'filter.dart';
+import 'tabs/chaldea_gate_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
@@ -39,6 +40,7 @@ class EventListPageState extends State<EventListPage>
         S.current.limited_event,
         S.current.main_story,
         S.current.exchange_ticket,
+        S.current.chaldea_gate,
       ];
   List<ScrollController> scrollControllers = [];
 
@@ -122,6 +124,7 @@ class EventListPageState extends State<EventListPage>
                 builder: (_) => ExchangeTicketTab(
                     reversed: filterData.reversed,
                     showOutdated: filterData.showOutdated)),
+            ChaldeaGateTab(),
           ],
         ),
       ),

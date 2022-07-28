@@ -801,6 +801,17 @@ class S {
     );
   }
 
+  /// `Chaldea Gate`
+  String get chaldea_gate {
+    return Intl.message(
+      'Chaldea Gate',
+      name: 'chaldea_gate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Chaldea Server`
   String get chaldea_server {
     return Intl.message(

@@ -140,6 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "V1 데이터와 호환되지 않습니다\n사용자 데이터 백업 및 다중 장치 동기화를 위한 간단한 계정 시스템입니다\n보안이 보장되지 않는 한 일반 비밀번호를 설정하지 마십시오\n위의 서비스가 필요하지 않으시면 회원가입을 하지 않으셔도 됩니다"),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea 백업"),
+        "chaldea_gate": MessageLookupByLibrary.simpleMessage("칼데아 게이트"),
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldea 서버"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("중국"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("국제성"),

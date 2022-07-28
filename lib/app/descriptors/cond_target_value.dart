@@ -17,6 +17,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   final double? textScaleFactor;
   @override
   final InlineSpan? leading;
+  final List<EventMission> missions;
 
   const CondTargetValueDescriptor({
     Key? key,
@@ -27,6 +28,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.style,
     this.textScaleFactor,
     this.leading,
+    this.missions = const [],
   }) : super(key: key);
 
   @override
@@ -290,6 +292,18 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => text('Reach $value event points'),
           kr: null,
         );
+      case CondType.eventMissionAchieve:
+        final mission =
+            missions.firstWhereOrNull((mission) => mission.id == target);
+        final targets = '${mission?.dispNo}-${mission?.name ?? target}';
+        return localized(
+          jp: () => text('クエストをクリアせよ $targets'),
+          cn: () => text('完成任务 $targets'),
+          tw: null,
+          na: () => text('Achieve mission $targets'),
+          kr: () => text('미션을 완수하다 $targets'),
+        );
+
       default:
         break;
     }

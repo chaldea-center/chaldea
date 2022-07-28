@@ -67,6 +67,7 @@
   "chaldea_account": "Chaldea账号",
   "chaldea_account_system_hint": "  与V1数据不互通。\n  一个简易的用于数据备份及多设备同步的账户系统。\n  没有安全性保障，请不要设置常用密码！\n  若不需要上述功能，则无需注册。",
   "chaldea_backup": "Chaldea应用备份",
+  "chaldea_gate": "迦勒底之门",
   "chaldea_server": "Chaldea服务器",
   "chaldea_server_cn": "国内",
   "chaldea_server_global": "海外",

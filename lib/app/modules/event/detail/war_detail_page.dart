@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -24,6 +27,8 @@ class WarDetailPage extends StatefulWidget {
 
 class _WarDetailPageState extends State<WarDetailPage> {
   NiceWar? _war;
+  bool _loading = false;
+  int get id => widget.war?.id ?? widget.warId ?? _war?.id ?? 0;
 
   NiceWar get war => _war!;
 
@@ -33,10 +38,14 @@ class _WarDetailPageState extends State<WarDetailPage> {
     _war = widget.war ?? db.gameData.wars[widget.warId];
   }
 
-  @override
-  void didUpdateWidget(covariant WarDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _war = widget.war ?? db.gameData.wars[widget.warId];
+  Future<void> fetchWar() async {
+    _war = null;
+    _loading = true;
+    if (mounted) setState(() {});
+    _war =
+        widget.war ?? db.gameData.wars[widget.warId] ?? await AtlasApi.war(id);
+    _loading = false;
+    if (mounted) setState(() {});
   }
 
   MainStoryPlan get plan => db.curUser.mainStoryOf(war.id);
@@ -46,6 +55,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
       return NotFoundPage(
         title: 'War ${widget.warId}',
         url: Routes.warI(widget.warId ?? 0),
+      );
+    }
+    if (_war == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('${S.current.war_title} $id'),
+        ),
+        body: Center(
+          child: _loading
+              ? const CircularProgressIndicator()
+              : RefreshButton(onPressed: fetchWar),
+        ),
       );
     }
     final banners = [
@@ -120,6 +141,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
               alignment: WrapAlignment.center,
               children: warBanners
                   .map((e) => db.getIconImage(e, height: 48))
+                  .take(6)
                   .toList(),
             ),
           ),
@@ -239,6 +261,46 @@ class _WarDetailPageState extends State<WarDetailPage> {
               },
             ),
         ],
+      ));
+    }
+
+    final subWars = db.gameData.wars.values.where((w) {
+      if (w.parentWarId == war.id) return true;
+      for (final warAdd in w.warAdds) {
+        if (warAdd.type == WarOverwriteType.parentWar &&
+            warAdd.overwriteId == war.id) {
+          return true;
+        }
+      }
+      return false;
+    }).toList();
+    if (subWars.isNotEmpty) {
+      subWars.sort2((e) => -e.priority);
+      List<Widget> warTiles = [];
+      for (final _w in subWars) {
+        warTiles.add(LayoutBuilder(builder: (context, constraints) {
+          String title = _w.lLongName.l;
+          final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
+          return ListTile(
+            leading: _w.banner == null
+                ? null
+                : db.getIconImage(_w.banner, height: height),
+            horizontalTitleGap: 8,
+            title: Text(
+              title,
+              maxLines: 1,
+              textScaleFactor: 0.8,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () {
+              _w.routeTo();
+            },
+          );
+        }));
+      }
+      children.add(TileGroup(
+        header: 'Sub Wars',
+        children: warTiles,
       ));
     }
 
