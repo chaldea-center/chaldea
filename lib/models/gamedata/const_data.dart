@@ -478,6 +478,8 @@ enum BuffAction {
   buffRate,
   counterFunction,
   notTargetSkill,
+  toFieldChangeField,
+  toFieldAvoidBuff,
 }
 
 enum BuffLimit {

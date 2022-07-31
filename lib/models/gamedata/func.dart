@@ -640,6 +640,8 @@ enum BuffType {
   invisibleBattleChara,
   counterFunction,
   notTargetSkill,
+  toFieldChangeField,
+  toFieldAvoidBuff,
 }
 
 enum FuncType {
@@ -734,6 +736,8 @@ enum FuncType {
   func127,
   updateEntryPositions,
   buddyPointUp,
+  addFieldChangeToField,
+  subFieldBuff,
 }
 
 extension FuncTargetTypeX on FuncTargetType {

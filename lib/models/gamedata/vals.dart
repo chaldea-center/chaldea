@@ -134,6 +134,18 @@ class DataVals {
       sourceVals['NotAccompanyWhenLinkedTargetMoveState'];
   List<int>? get NotTargetSkillIdArray =>
       _listInt(sourceVals['NotTargetSkillIdArray']);
+
+  int? get ShortTurn => sourceVals['ShortTurn'];
+  int? get FieldIndividuality => sourceVals['FieldIndividuality'];
+  int? get BGId => sourceVals['BGId'];
+  int? get BGType => sourceVals['BGType'];
+  int? get BgmId => sourceVals['BgmId'];
+  int? get TakeOverFieldState => sourceVals['TakeOverFieldState'];
+  int? get TakeOverNextWaveBGAndBGM => sourceVals['TakeOverNextWaveBGAndBGM'];
+  int? get RemoveFieldBuffActorDeath => sourceVals['RemoveFieldBuffActorDeath'];
+  int? get FieldBuffGrantType => sourceVals['FieldBuffGrantType'];
+  int? get Priority => sourceVals['Priority'];
+
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];
   int? get EventId => sourceVals['EventId'];

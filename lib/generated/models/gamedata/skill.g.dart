@@ -455,6 +455,8 @@ const _$FuncTypeEnumMap = {
   FuncType.func127: 'func127',
   FuncType.updateEntryPositions: 'updateEntryPositions',
   FuncType.buddyPointUp: 'buddyPointUp',
+  FuncType.addFieldChangeToField: 'addFieldChangeToField',
+  FuncType.subFieldBuff: 'subFieldBuff',
 };
 
 const _$FuncTargetTypeEnumMap = {
@@ -725,6 +727,8 @@ const _$BuffTypeEnumMap = {
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
   BuffType.counterFunction: 'counterFunction',
   BuffType.notTargetSkill: 'notTargetSkill',
+  BuffType.toFieldChangeField: 'toFieldChangeField',
+  BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
 };
 
 BuffScript _$BuffScriptFromJson(Map json) => BuffScript(

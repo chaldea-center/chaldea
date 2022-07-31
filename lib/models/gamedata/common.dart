@@ -765,4 +765,5 @@ enum CondType {
   progressValueAbove,
   progressValueBelow,
   randomMissionTotalClearNum,
+  weekdays,
 }

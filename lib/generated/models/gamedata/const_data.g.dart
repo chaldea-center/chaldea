@@ -382,4 +382,6 @@ const _$BuffActionEnumMap = {
   BuffAction.buffRate: 'buffRate',
   BuffAction.counterFunction: 'counterFunction',
   BuffAction.notTargetSkill: 'notTargetSkill',
+  BuffAction.toFieldChangeField: 'toFieldChangeField',
+  BuffAction.toFieldAvoidBuff: 'toFieldAvoidBuff',
 };
