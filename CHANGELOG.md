@@ -1,23 +1,21 @@
+## 2.0.9
+
+- add events-chaldea gate tab
+- bug fix
+
 ## 2.0.8
 
+- 🎉 FGO 7th/6th/5th Anniversary 🎉
 - add next level exp in exp calc
 - add quest/skill conditions
 - add cv/illustrator detail page
 - add character list(non-servant chara)
-- add trait list
-- add buff pages
+- add skill/td/func/buff/trait listing
 - show quest support servant
 - interlude&rankup timeline
 - add event search and filter
-
 - pull to refresh svt/ce/cc list
 - improve effect filter
-- add various kinds of conditions
-- add cv/illustrator detail page
-- add character list
-- interlude&rankup timeline(date not correct)
-- add next level exp in exp calc
-- add event search and filter
 
 ## 2.0.7
 

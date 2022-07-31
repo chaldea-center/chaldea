@@ -35,6 +35,8 @@ flutter create --platforms=windows .
 - [ ] remove apk install, add download link redirect
 - [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
+- [ ] gssr exp: sigma
+- [ ] routeTo: add this as argument
 
 ## Quest Related
 
