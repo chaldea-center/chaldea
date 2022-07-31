@@ -152,11 +152,13 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       }
     } catch (e, s) {
       logger.e('upload item screenshots to server error', e, s);
-      SimpleCancelOkDialog(
-        title: const Text('Error'),
-        content: Text(escapeDioError(e)),
-        hideCancel: true,
-      ).showDialog(context);
+      if (mounted) {
+        SimpleCancelOkDialog(
+          title: const Text('Error'),
+          content: Text(escapeDioError(e)),
+          hideCancel: true,
+        ).showDialog(context);
+      }
     } finally {
       EasyLoading.dismiss();
     }

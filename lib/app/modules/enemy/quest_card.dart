@@ -186,41 +186,51 @@ class _QuestCardState extends State<QuestCard> {
     String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
 
     List<Widget> children = [
-      CustomTile(
-        title: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AutoSizeText(
-                warName,
-                maxLines: 2,
-                maxFontSize: 14,
-                minFontSize: 6,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(width: 36),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AutoSizeText(
+                    warName,
+                    maxLines: 2,
+                    maxFontSize: 14,
+                    minFontSize: 6,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  AutoSizeText(
+                    shownQuestName,
+                    maxLines: 3,
+                    maxFontSize: 14,
+                    minFontSize: 6,
+                    textScaleFactor: 0.85,
+                    textAlign: TextAlign.center,
+                    // style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
-              AutoSizeText(
-                shownQuestName,
-                maxLines: 3,
-                maxFontSize: 14,
-                minFontSize: 6,
-                textScaleFactor: 0.85,
-                textAlign: TextAlign.center,
-                // style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ),
+          SizedBox(
+            width: 36,
+            child: IconButton(
+              onPressed: () => setState(() => showTrueName = !showTrueName),
+              icon: Icon(
+                Icons.remove_red_eye_outlined,
+                color: showTrueName ? Theme.of(context).indicatorColor : null,
               ),
-            ],
-          ),
-        ),
-        contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 8),
-        trailing: IconButton(
-          onPressed: () => setState(() => showTrueName = !showTrueName),
-          icon: Icon(
-            Icons.remove_red_eye_outlined,
-            color: showTrueName ? Theme.of(context).indicatorColor : null,
-          ),
-          tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
-        ),
+              tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
+              padding: EdgeInsets.zero,
+              iconSize: 20,
+            ),
+          )
+        ],
       ),
       if (quest.phases.isNotEmpty)
         for (final phase
@@ -246,15 +256,20 @@ class _QuestCardState extends State<QuestCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: divideTiles(
-          children.map(
-            (e) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-              child: e,
+        children: [
+          const SizedBox(height: 8),
+          ...divideTiles(
+            children.map(
+              (e) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                child: e,
+              ),
             ),
+            divider: const Divider(height: 8, thickness: 2),
           ),
-          divider: const Divider(height: 8, thickness: 2),
-        ).toList(),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }
