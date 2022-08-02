@@ -599,6 +599,8 @@ enum Trait {
   havingAnimalsCharacteristics,
   like,
   exaltation,
+  yuMeiren,
+  milleniumCastle,
 }
 
 enum CondType {

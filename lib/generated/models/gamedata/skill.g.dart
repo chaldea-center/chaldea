@@ -219,6 +219,12 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
           (json['additionalSkillActorType'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList(),
+      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
     );
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(

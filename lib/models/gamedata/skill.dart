@@ -554,6 +554,8 @@ class SkillScript {
   final List<int>? HP_PER_LOWER;
   final List<int>? additionalSkillId;
   final List<int>? additionalSkillActorType;
+  final List<int>? tdTypeChangeIDs;
+  final List<int>? excludeTdChangeTypes;
 
   const SkillScript({
     this.NP_HIGHER,
@@ -566,6 +568,8 @@ class SkillScript {
     this.HP_PER_LOWER,
     this.additionalSkillId,
     this.additionalSkillActorType,
+    this.tdTypeChangeIDs,
+    this.excludeTdChangeTypes,
   });
 
   factory SkillScript.fromJson(Map<String, dynamic> json) =>

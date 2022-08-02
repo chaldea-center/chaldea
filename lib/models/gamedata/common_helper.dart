@@ -191,6 +191,8 @@ const kTraitIdMapping = <int, Trait>{
   2821: Trait.havingAnimalsCharacteristics,
   2827: Trait.like,
   2828: Trait.exaltation,
+  2829: Trait.milleniumCastle,
+  2833: Trait.yuMeiren,
 // # 2xxx: CQ or Story quests buff
   3000: Trait.attackPhysical,
   // # Normal attack, including NP
