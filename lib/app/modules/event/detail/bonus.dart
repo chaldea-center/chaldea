@@ -28,6 +28,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
       _lastTag = tag;
       children.addAll(FuncsDescriptor.describe(
         funcs: skill.functions,
+        script: skill.script,
         showPlayer: true,
         showEnemy: false,
         showEvent: false,

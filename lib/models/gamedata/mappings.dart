@@ -208,6 +208,8 @@ class Transl<K, V> {
   static Transl<String, String> funcType(FuncType key) =>
       Transl(md.enums.funcType, key.name, key.name);
 
+  static Transl<String, String> misc(String key) => Transl(md.misc, key, key);
+
   static final _SpecialTransl special = _SpecialTransl();
 }
 
@@ -252,6 +254,7 @@ class MappingData {
   final MappingList<int> mcRelease;
   final Map<int, MappingBase<int>> questRelease;
   final EnumMapping enums;
+  final Map<String, MappingBase<String>> misc;
 
   MappingData({
     this.itemNames = const {},
@@ -292,6 +295,7 @@ class MappingData {
     MappingList<int>? mcRelease,
     this.questRelease = const {},
     EnumMapping? enums,
+    this.misc = const {},
   })  : svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),

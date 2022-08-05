@@ -6,13 +6,10 @@ flutter create --platforms=windows .
 
 ## Misc
 
-- [ ] Search should be re-designed and improved
-  - [ ] add search for event 
 - [ ] pass locale to `Text` for Region-based gamedata text.
       which translation found, then pass that locale
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
-- [ ] add legacy data of `ConstData.userLevel`
 - [x] use github issue forms for issue templates
 - [ ] Clear Cache
 - [ ] command card: add svt assets
@@ -30,7 +27,6 @@ flutter create --platforms=windows .
 - [ ] effect_search: add special target
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
-- [ ] master mission: logicType
 - [ ] more selectable text
 - [ ] remove apk install, add download link redirect
 - [ ] huntingId=any

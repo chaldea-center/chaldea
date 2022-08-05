@@ -110,12 +110,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   Widget _buildInputRows() {
+    final itemIds = List.of(params.rows);
     return ListView.separated(
       controller: _scrollController,
       separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: params.rows.length,
+      itemCount: itemIds.length,
       itemBuilder: (context, index) {
-        final itemId = params.rows[index];
+        final itemId = itemIds[index];
         final item = db.gameData.items[itemId];
         Widget leading = InkWell(
           onTap: () {
@@ -151,7 +152,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 if (params.rows.contains(v)) {
                   EasyLoading.showInfo(
                       S.current.item_already_exist_hint(_getItemName(v)));
-                } else {
+                } else if (index < params.rows.length) {
                   params.rows[index] = v;
                 }
                 if (mounted) setState(() {});

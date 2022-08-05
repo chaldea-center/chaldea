@@ -15,6 +15,7 @@ import 'vals.dart';
 mixin FuncsDescriptor {
   List<Widget> describeFunctions({
     required List<NiceFunction> funcs,
+    required SkillScript? script,
     required bool showPlayer,
     required bool showEnemy,
     bool showNone = false,
@@ -25,6 +26,7 @@ mixin FuncsDescriptor {
   }) =>
       describe(
         funcs: funcs,
+        script: script,
         showPlayer: showPlayer,
         showEnemy: showEnemy,
         showNone: showNone,
@@ -36,6 +38,7 @@ mixin FuncsDescriptor {
 
   static List<Widget> describe({
     required List<NiceFunction> funcs,
+    required SkillScript? script,
     required bool showPlayer,
     required bool showEnemy,
     bool showNone = false,
@@ -53,6 +56,9 @@ mixin FuncsDescriptor {
       return func.isPlayerOnlyFunc ? showPlayer : showEnemy;
     }).toList();
     List<Widget> children = [];
+    if (script != null && script.isNotEmpty) {
+      children.add(SkillScriptDescriptor(script: script));
+    }
 
     for (int index = 0; index < funcs.length; index++) {
       children.add(FuncDescriptor(
@@ -68,6 +74,163 @@ mixin FuncsDescriptor {
       ));
     }
     return children;
+  }
+}
+
+class _DescriptorWrapper extends StatelessWidget {
+  final Widget title;
+  final Widget? trailing;
+  final List<Widget> lvCells;
+  final List<Widget> ocCells;
+  final int? selected;
+
+  const _DescriptorWrapper({
+    Key? key,
+    required this.title,
+    required this.trailing,
+    this.lvCells = const [],
+    this.ocCells = const [],
+    this.selected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      double maxWidth = 80;
+      if (constraints.maxWidth != double.infinity) {
+        maxWidth = max(maxWidth, constraints.maxWidth / 3);
+        maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
+      }
+      int perLine = constraints.maxWidth > 600 && lvCells.length > 5 ? 10 : 5;
+
+      List<Widget> children = [];
+      if (trailing == null) {
+        children.add(title);
+      } else {
+        children.add(Row(
+          children: [
+            Expanded(flex: perLine - 1, child: title),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth, minWidth: 20),
+              child: trailing,
+            ),
+          ],
+        ));
+      }
+      for (int cellIndex = 0; cellIndex < 2; cellIndex++) {
+        final _cells = [lvCells, ocCells][cellIndex];
+        if (_cells.isEmpty) continue;
+        List<Widget> rows = [];
+        int rowCount = (_cells.length / perLine).ceil();
+        for (int i = 0; i < rowCount; i++) {
+          List<Widget> cols = [];
+          for (int j = i * perLine; j < (i + 1) * perLine; j++) {
+            Widget cell = _cells.getOrNull(j) ?? const SizedBox();
+            cell = Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: cell,
+            );
+            if (selected != null && selected! - 1 == j) {
+              cell = DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .secondaryContainer
+                          .withAlpha(180)),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: cell,
+              );
+            }
+            cols.add(cell);
+          }
+          rows.add(Row(children: cols.map((e) => Expanded(child: e)).toList()));
+        }
+        children.addAll(rows);
+      }
+      if (children.length == 1) return children.first;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      );
+    });
+  }
+}
+
+class SkillScriptDescriptor extends StatelessWidget {
+  final SkillScript script;
+  const SkillScriptDescriptor({Key? key, required this.script})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    if (script.NP_HIGHER?.isNotEmpty == true) {
+      children.add(_one(context, 'NP_HIGHER', script.NP_HIGHER!, (v) => '$v%'));
+    }
+    if (script.NP_LOWER?.isNotEmpty == true) {
+      children.add(_one(context, 'NP_LOWER', script.NP_LOWER!, (v) => '$v%'));
+    }
+    if (script.STAR_HIGHER?.isNotEmpty == true) {
+      children
+          .add(_one(context, 'STAR_HIGHER', script.STAR_HIGHER!, (v) => '$v'));
+    }
+    if (script.STAR_LOWER?.isNotEmpty == true) {
+      children
+          .add(_one(context, 'STAR_LOWER', script.STAR_LOWER!, (v) => '$v'));
+    }
+    if (script.HP_VAL_HIGHER?.isNotEmpty == true) {
+      children.add(
+          _one(context, 'HP_VAL_HIGHER', script.HP_VAL_HIGHER!, (v) => '$v'));
+    }
+    if (script.HP_VAL_LOWER?.isNotEmpty == true) {
+      children.add(
+          _one(context, 'HP_VAL_LOWER', script.HP_VAL_LOWER!, (v) => '$v'));
+    }
+    if (script.HP_PER_HIGHER?.isNotEmpty == true) {
+      children.add(_one(context, 'HP_PER_HIGHER', script.HP_PER_HIGHER!,
+          (v) => v.format(compact: false, percent: true, base: 10)));
+    }
+    if (script.HP_PER_LOWER?.isNotEmpty == true) {
+      children.add(_one(context, 'HP_PER_LOWER', script.HP_PER_LOWER!,
+          (v) => v.format(compact: false, percent: true, base: 10)));
+    }
+    if (children.length == 1) return children.first;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
+  }
+
+  Widget _one(BuildContext context, String key, List<int> vals,
+      String Function(int v) builder) {
+    String title = Transl.misc('SkillScript.$key').l;
+    Widget? trailing;
+    List<Widget> cells = [];
+    if (vals.toSet().length == 1) {
+      title = title.replaceAll('{0}', builder(vals.first));
+      trailing = Text(
+        builder(vals.first),
+        style: const TextStyle(fontSize: 13),
+      );
+    } else {
+      for (final v in vals) {
+        cells.add(Text(
+          builder(v),
+          style: const TextStyle(fontSize: 13),
+        ));
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: _DescriptorWrapper(
+        title: Text(title, style: Theme.of(context).textTheme.caption),
+        trailing: trailing,
+        lvCells: cells,
+      ),
+    );
   }
 }
 
@@ -97,432 +260,392 @@ class FuncDescriptor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      StringBuffer funcText = StringBuffer();
-      if ((func.funcType == FuncType.addState ||
-              func.funcType == FuncType.addStateShort ||
-              func.funcType == FuncType.addFieldChangeToField) &&
-          func.buffs.isNotEmpty) {
-        final buff = func.buffs.first;
-        if (showBuffDetail) {
-          funcText.write(Transl.buffDetail(buff.detail).l);
-        } else {
-          if ([
-            BuffType.fieldIndividuality,
-            BuffType.addIndividuality,
-            BuffType.subIndividuality,
-            BuffType.toFieldChangeField
-          ].contains(buff.type)) {
-            funcText.write(Transl.buffNames(buff.type.name).l);
-          } else if (buff.name.isEmpty) {
-            funcText.write(Transl.buffType(buff.type).l);
-          } else {
-            funcText.write(Transl.buffNames(buff.name).l);
-          }
-        }
+    StringBuffer funcText = StringBuffer();
+    if ((func.funcType == FuncType.addState ||
+            func.funcType == FuncType.addStateShort ||
+            func.funcType == FuncType.addFieldChangeToField) &&
+        func.buffs.isNotEmpty) {
+      final buff = func.buffs.first;
+      if (showBuffDetail) {
+        funcText.write(Transl.buffDetail(buff.detail).l);
       } else {
-        funcText.write(Transl.funcPopuptext(func).l);
+        if ([
+          BuffType.fieldIndividuality,
+          BuffType.addIndividuality,
+          BuffType.subIndividuality,
+          BuffType.toFieldChangeField
+        ].contains(buff.type)) {
+          funcText.write(Transl.buffNames(buff.type.name).l);
+        } else if (buff.name.isEmpty) {
+          funcText.write(Transl.buffType(buff.type).l);
+        } else {
+          funcText.write(Transl.buffNames(buff.name).l);
+        }
       }
+    } else {
+      funcText.write(Transl.funcPopuptext(func).l);
+    }
 
-      if ([
-        FuncType.gainHpFromTargets,
-        FuncType.absorbNpturn,
-        FuncType.gainNpFromTargets,
-      ].contains(func.funcType)) {
-        funcText.write(Transl.special.funcAbsorbFrom);
-      }
+    if ([
+      FuncType.gainHpFromTargets,
+      FuncType.absorbNpturn,
+      FuncType.gainNpFromTargets,
+    ].contains(func.funcType)) {
+      funcText.write(Transl.special.funcAbsorbFrom);
+    }
 
-      final staticVal = func.getStaticVal();
-      final mutatingLvVals = func.getMutatingVals(null, levelOnly: true);
-      final mutatingOCVals = func.getMutatingVals(null, ocOnly: true);
+    final staticVal = func.getStaticVal();
+    final mutatingLvVals = func.getMutatingVals(null, levelOnly: true);
+    final mutatingOCVals = func.getMutatingVals(null, ocOnly: true);
 
-      int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
-      if (turn > 0 || count > 0) {
-        funcText.write(' (');
-        funcText.write([
-          if (count > 0) Transl.special.funcValCountTimes(count),
-          if (turn > 0) Transl.special.funcValTurns(turn),
-        ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
-        funcText.write(')');
-      }
-      int perLine =
-          constraints.maxWidth > 600 && func.svals.length > 5 ? 10 : 5;
-      Widget trailing;
-      List<Widget> levels = [];
-      trailing = ValDsc(
+    int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
+    if (turn > 0 || count > 0) {
+      funcText.write(' (');
+      funcText.write([
+        if (count > 0) Transl.special.funcValCountTimes(count),
+        if (turn > 0) Transl.special.funcValTurns(turn),
+      ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
+      funcText.write(')');
+    }
+    Widget trailing;
+    List<Widget> lvCells = [];
+    List<Widget> ocCells = [];
+    trailing = ValDsc(
+      func: func,
+      vals: staticVal,
+      originVals: func.svals.getOrNull(0),
+      ignoreRate: true,
+      ignoreCount: true,
+    );
+
+    Widget _listVal(DataVals mVals, DataVals? oVals, int? index) {
+      Widget cell = ValDsc(
         func: func,
-        vals: staticVal,
-        originVals: func.svals.getOrNull(0),
-        ignoreRate: true,
-        ignoreCount: true,
+        vals: mVals,
+        originVals: oVals,
+        color: index == 5 || index == 9
+            ? Theme.of(context).colorScheme.secondary
+            : null,
+        inList: true,
       );
+      return cell;
+    }
 
-      if (mutatingLvVals.isNotEmpty) {
-        funcText.write('<Lv>');
-        levels.add(ValListDsc(
-          func: func,
-          mutaingVals: mutatingLvVals,
-          originVals: func.svals,
-          selected: level,
+    if (mutatingLvVals.isNotEmpty) {
+      funcText.write('<Lv>');
+      lvCells.addAll(List.generate(
+          mutatingLvVals.length,
+          (index) => _listVal(
+              mutatingLvVals[index], func.svals.getOrNull(index), index)));
+    }
+    if (mutatingOCVals.isNotEmpty) {
+      funcText.write('<OC>');
+      ocCells.addAll(List.generate(
+          mutatingOCVals.length,
+          (index) => _listVal(
+              mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
+    }
+
+    List<InlineSpan> spans = [];
+    Widget? icon;
+    if (func.funcPopupIcon != null) {
+      icon = db.getIconImage(func.funcPopupIcon, width: 18);
+    } else if (func.funcType == FuncType.eventDropUp ||
+        func.funcType == FuncType.eventDropRateUp ||
+        func.funcType == FuncType.eventPointUp) {
+      int? indiv = func.svals.getOrNull(0)?.Individuality;
+      final items = db.gameData.items.values
+          .where((item) => item.individuality.any((trait) => trait.id == indiv))
+          .toList();
+      if (items.isEmpty) {
+        spans.add(TextSpan(text: '$indiv  '));
+      }
+      for (final item in items) {
+        spans.add(TextSpan(
+          children: [
+            CenterWidgetSpan(
+                child:
+                    Item.iconBuilder(context: context, item: item, width: 20)),
+            TextSpan(text: ' ${item.lName.l}  ')
+          ],
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              item.routeTo();
+            },
         ));
       }
-      if (mutatingOCVals.isNotEmpty) {
-        funcText.write('<OC>');
-        levels.add(ValListDsc(
-          func: func,
-          mutaingVals: mutatingOCVals,
-          originVals: func.ocVals(0),
-          selected: null,
-        ));
-      }
-
-      List<InlineSpan> spans = [];
-      Widget? icon;
-      if (func.funcPopupIcon != null) {
-        icon = db.getIconImage(func.funcPopupIcon, width: 18);
-      } else if (func.funcType == FuncType.eventDropUp ||
-          func.funcType == FuncType.eventDropRateUp ||
-          func.funcType == FuncType.eventPointUp) {
-        int? indiv = func.svals.getOrNull(0)?.Individuality;
-        final items = db.gameData.items.values
-            .where(
-                (item) => item.individuality.any((trait) => trait.id == indiv))
-            .toList();
-        if (items.isEmpty) {
-          spans.add(TextSpan(text: '$indiv  '));
-        }
-        for (final item in items) {
-          spans.add(TextSpan(
-            children: [
-              CenterWidgetSpan(
-                  child: Item.iconBuilder(
-                      context: context, item: item, width: 20)),
-              TextSpan(text: ' ${item.lName.l}  ')
-            ],
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                item.routeTo();
-              },
-          ));
-        }
-      }
-      if (icon != null) {
-        spans.insert(
-          0,
-          CenterWidgetSpan(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
-              child: icon,
-            ),
+    }
+    if (icon != null) {
+      spans.insert(
+        0,
+        CenterWidgetSpan(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(end: 4),
+            child: icon,
           ),
+        ),
+      );
+    }
+    DataVals? vals = func.svals.getOrNull(0);
+
+    if ((vals?.Rate != null && vals!.Rate! < 0) ||
+        (vals?.UseRate != null && vals!.UseRate! < 0)) {
+      print(vals.Rate);
+      final hint =
+          Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed");
+      spans.add(TextSpan(text: '(${hint.l})'));
+    }
+
+    void _addFuncTarget() {
+      if ([
+        FuncType.eventDropUp,
+        FuncType.eventDropRateUp,
+        FuncType.eventPointUp,
+        FuncType.eventPointRateUp,
+      ].contains(func.funcType)) {
+        return;
+      }
+      // if (showPlayer && showEnemy) return;
+      if (lastFuncTarget == func.funcTargetType) return;
+      spans.add(
+          TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
+    }
+
+    _addFuncTarget();
+
+    void _addFuncText() {
+      final text = funcText.toString();
+      final style = func.isEnemyOnlyFunc
+          ? const TextStyle(fontStyle: FontStyle.italic)
+          : null;
+
+      InlineSpan _replaceTrait(int trait) {
+        return TextSpan(
+          children: replaceSpan(text, '{0}', [
+            SharedBuilder.traitSpan(
+              context: context,
+              trait: NiceTrait(id: trait),
+            )
+          ]),
+          style: style,
         );
       }
-      DataVals? vals = func.svals.getOrNull(0);
 
-      if ((vals?.Rate != null && vals!.Rate! < 0) ||
-          (vals?.UseRate != null && vals!.UseRate! < 0)) {
-        print(vals.Rate);
-        final hint =
-            Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed");
-        spans.add(TextSpan(text: '(${hint.l})'));
+      switch (func.funcType) {
+        case FuncType.damageNpIndividual:
+        case FuncType.damageNpStateIndividualFix:
+          int? indiv = vals?.Target;
+          if (indiv != null) {
+            spans.add(_replaceTrait(indiv));
+            return;
+          }
+          break;
+        case FuncType.damageNpIndividualSum:
+          if ((vals?.TargetList?.length ?? 0) > 0) {
+            spans.addAll(replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
+              final s = match[0]!;
+              if (s == "{0}") {
+                return [
+                  TextSpan(
+                    children: SharedBuilder.traitSpans(
+                      context: context,
+                      traits: [
+                        for (int indiv in vals?.TargetList ?? [])
+                          NiceTrait(id: indiv),
+                      ],
+                    ),
+                    style: style,
+                  )
+                ];
+              } else if (s == "{1}") {
+                final target = vals?.Target == 0
+                    ? M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신')
+                    : M.of(
+                        jp: '対象', cn: '对象', tw: '對象', na: 'target', kr: '대상');
+                return [
+                  TextSpan(text: target),
+                ];
+              } else {
+                return [TextSpan(text: s)];
+              }
+            }));
+            return;
+          }
+          break;
+        default:
+          break;
       }
-
-      void _addFuncTarget() {
-        if ([
-          FuncType.eventDropUp,
-          FuncType.eventDropRateUp,
-          FuncType.eventPointUp,
-          FuncType.eventPointRateUp,
-        ].contains(func.funcType)) {
-          return;
-        }
-        // if (showPlayer && showEnemy) return;
-        if (lastFuncTarget == func.funcTargetType) return;
-        spans.add(TextSpan(
-            text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
-      }
-
-      _addFuncTarget();
-
-      void _addFuncText() {
-        final text = funcText.toString();
-        final style = func.isEnemyOnlyFunc
-            ? const TextStyle(fontStyle: FontStyle.italic)
-            : null;
-
-        InlineSpan _replaceTrait(int trait) {
-          return TextSpan(
-            children: replaceSpan(text, '{0}', [
-              SharedBuilder.traitSpan(
-                context: context,
-                trait: NiceTrait(id: trait),
-              )
-            ]),
-            style: style,
-          );
-        }
-
-        switch (func.funcType) {
-          case FuncType.damageNpIndividual:
-          case FuncType.damageNpStateIndividualFix:
-            int? indiv = vals?.Target;
+      if (func.buffs.isNotEmpty) {
+        final buff = func.buffs.first;
+        switch (buff.type) {
+          case BuffType.addIndividuality:
+          case BuffType.subIndividuality:
+          case BuffType.fieldIndividuality:
+            int? indiv = vals?.Value;
             if (indiv != null) {
               spans.add(_replaceTrait(indiv));
               return;
             }
             break;
-          case FuncType.damageNpIndividualSum:
-            if ((vals?.TargetList?.length ?? 0) > 0) {
-              spans.addAll(replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
-                final s = match[0]!;
-                if (s == "{0}") {
-                  return [
-                    TextSpan(
-                      children: SharedBuilder.traitSpans(
-                        context: context,
-                        traits: [
-                          for (int indiv in vals?.TargetList ?? [])
-                            NiceTrait(id: indiv),
-                        ],
-                      ),
-                      style: style,
-                    )
-                  ];
-                } else if (s == "{1}") {
-                  return [
-                    TextSpan(
-                        text: vals?.Target == 0
-                            ? M.of(
-                                jp: '自身',
-                                cn: '自身',
-                                tw: '自身',
-                                na: 'self',
-                                kr: '자신',
-                              )
-                            : M.of(
-                                jp: '対象',
-                                cn: '对象',
-                                tw: '對象',
-                                na: 'target',
-                                kr: '대상',
-                              )),
-                  ];
-                } else {
-                  return [TextSpan(text: s)];
-                }
-              }));
+          case BuffType.toFieldChangeField:
+            int? indiv = vals?.FieldIndividuality;
+            if (indiv != null) {
+              spans.add(_replaceTrait(indiv));
               return;
             }
             break;
           default:
             break;
         }
-        if (func.buffs.isNotEmpty) {
-          final buff = func.buffs.first;
-          switch (buff.type) {
-            case BuffType.addIndividuality:
-            case BuffType.subIndividuality:
-            case BuffType.fieldIndividuality:
-              int? indiv = vals?.Value;
-              if (indiv != null) {
-                spans.add(_replaceTrait(indiv));
-                return;
-              }
-              break;
-            case BuffType.toFieldChangeField:
-              int? indiv = vals?.FieldIndividuality;
-              if (indiv != null) {
-                spans.add(_replaceTrait(indiv));
-                return;
-              }
-              break;
-            default:
-              break;
-          }
-        }
-        spans.add(TextSpan(
-          text: text,
-          style: style,
+      }
+      spans.add(TextSpan(
+        text: text,
+        style: style,
+      ));
+    }
+
+    _addFuncText();
+
+    if (func.funcType == FuncType.transformServant) {
+      final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
+      if (transformId != null) {
+        spans.add(SharedBuilder.textButtonSpan(
+          context: context,
+          text: transformLimit == null
+              ? ' $transformId '
+              : ' $transformId[${S.current.ascension_short}$transformLimit] ',
+          onTap: () {
+            router.push(url: Routes.servantI(transformId));
+          },
         ));
       }
+    }
 
-      _addFuncText();
+    List<List<InlineSpan>> _traitSpans = [];
+    void _addTraits(String? prefix, List<NiceTrait> traits,
+        [bool useAnd = false]) {
+      if ([BuffType.upCommandall, BuffType.downCommandall]
+          .contains(func.buffs.getOrNull(0)?.type)) {
+        traits = traits
+            .where((e) => ![
+                  Trait.cardQuick,
+                  Trait.cardArts,
+                  Trait.cardBuster,
+                  Trait.cardExtra
+                ].contains(e.name))
+            .toList();
+      }
+      if (traits.isEmpty) return;
+      _traitSpans.add([
+        if (prefix != null) TextSpan(text: prefix),
+        ...SharedBuilder.traitSpans(
+          context: context,
+          traits: traits,
+          useAndJoin: useAnd,
+        ),
+        const TextSpan(text: ' '), // not let recognizer extends its width
+      ]);
+    }
 
-      if (func.funcType == FuncType.transformServant) {
-        final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
-        if (transformId != null) {
-          spans.add(SharedBuilder.textButtonSpan(
-            context: context,
-            text: transformLimit == null
-                ? ' $transformId '
-                : ' $transformId[${S.current.ascension_short}$transformLimit] ',
-            onTap: () {
-              router.push(url: Routes.servantI(transformId));
+    switch (func.funcType) {
+      case FuncType.addState:
+      case FuncType.addStateShort:
+      case FuncType.addFieldChangeToField:
+        final buff = func.buffs.first;
+        _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
+            buff.script?.checkIndvType == 1);
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
+            buff.script?.checkIndvType == 1);
+        break;
+      default:
+        break;
+    }
+    if (func.traitVals.isNotEmpty) {
+      if (func.funcType == FuncType.subState) {
+        _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
+      } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
+        spans.addAll(replaceSpan(
+            Transl.special.funcTraitPerBuff,
+            '{0}',
+            SharedBuilder.traitSpans(
+                context: context, traits: func.traitVals)));
+      } else if (func.funcType == FuncType.eventDropUp) {
+        _addTraits(Transl.special.buffCheckSelf, func.traitVals);
+      }
+    }
+    if (func.funcType != FuncType.subState ||
+        func.traitVals.map((e) => e.id).join(',') !=
+            func.functvals.map((e) => e.id).join(',')) {
+      _addTraits(Transl.special.funcTargetVals, func.functvals);
+    }
+
+    if (func.funcquestTvals.isNotEmpty) {
+      _traitSpans.add(replaceSpan(
+        Transl.special.funcTraitOnField,
+        '{0}',
+        SharedBuilder.traitSpans(
+          context: context,
+          traits: func.funcquestTvals,
+        ),
+      ));
+    }
+    if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
+      final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
+              .replaceAll('\n', ' ') ??
+          'Event ${vals?.EventId}';
+      _traitSpans.add(replaceSpan(Transl.special.funcEventOnly, '{0}', [
+        TextSpan(
+          text: eventName,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              router.push(url: Routes.eventI(vals!.EventId!));
             },
-          ));
-        }
-      }
+        ),
+      ]));
+    }
 
-      List<List<InlineSpan>> _traitSpans = [];
-      void _addTraits(String? prefix, List<NiceTrait> traits,
-          [bool useAnd = false]) {
-        if ([BuffType.upCommandall, BuffType.downCommandall]
-            .contains(func.buffs.getOrNull(0)?.type)) {
-          traits = traits
-              .where((e) => ![
-                    Trait.cardQuick,
-                    Trait.cardArts,
-                    Trait.cardBuster,
-                    Trait.cardExtra
-                  ].contains(e.name))
-              .toList();
-        }
-        if (traits.isEmpty) return;
-        _traitSpans.add([
-          if (prefix != null) TextSpan(text: prefix),
-          ...SharedBuilder.traitSpans(
-            context: context,
-            traits: traits,
-            useAndJoin: useAnd,
-          ),
-          const TextSpan(text: ' '), // not let recognizer extends its width
-        ]);
-      }
+    final ownerIndiv = func.buffs.getOrNull(0)?.script?.INDIVIDUALITIE;
+    if (ownerIndiv != null) {
+      _addTraits(Transl.special.buffCheckSelf, [ownerIndiv]);
+    }
 
-      switch (func.funcType) {
-        case FuncType.addState:
-        case FuncType.addStateShort:
-        case FuncType.addFieldChangeToField:
-          final buff = func.buffs.first;
-          _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
-              buff.script?.checkIndvType == 1);
-          _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
-              buff.script?.checkIndvType == 1);
-          break;
-        default:
-          break;
-      }
-      if (func.traitVals.isNotEmpty) {
-        if (func.funcType == FuncType.subState) {
-          _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
-        } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
-          spans.addAll(replaceSpan(
-              Transl.special.funcTraitPerBuff,
-              '{0}',
-              SharedBuilder.traitSpans(
-                  context: context, traits: func.traitVals)));
-        } else if (func.funcType == FuncType.eventDropUp) {
-          _addTraits(Transl.special.buffCheckSelf, func.traitVals);
-        }
-      }
-      if (func.funcType != FuncType.subState ||
-          func.traitVals.map((e) => e.id).join(',') !=
-              func.functvals.map((e) => e.id).join(',')) {
-        _addTraits(Transl.special.funcTargetVals, func.functvals);
-      }
+    for (int index = 0; index < _traitSpans.length; index++) {
+      spans.add(
+          TextSpan(text: index == _traitSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
+      spans.addAll(_traitSpans[index]);
+    }
 
-      if (func.funcquestTvals.isNotEmpty) {
-        _traitSpans.add(replaceSpan(
-          Transl.special.funcTraitOnField,
-          '{0}',
-          SharedBuilder.traitSpans(
-            context: context,
-            traits: func.funcquestTvals,
-          ),
-        ));
-      }
-      if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
-        final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
-                .replaceAll('\n', ' ') ??
-            'Event ${vals?.EventId}';
-        _traitSpans.add(replaceSpan(Transl.special.funcEventOnly, '{0}', [
-          TextSpan(
-            text: eventName,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                router.push(url: Routes.eventI(vals!.EventId!));
-              },
-          ),
-        ]));
-      }
+    Widget title = Text.rich(
+      TextSpan(children: spans),
+      style: Theme.of(context).textTheme.caption,
+    );
+    title = InkWell(
+      onTap: func.routeTo,
+      child: title,
+    );
+    Widget last = _DescriptorWrapper(
+      title: title,
+      trailing: trailing,
+      lvCells: lvCells,
+      ocCells: ocCells,
+      selected: level,
+    );
 
-      final ownerIndiv = func.buffs.getOrNull(0)?.script?.INDIVIDUALITIE;
-      if (ownerIndiv != null) {
-        _addTraits(Transl.special.buffCheckSelf, [ownerIndiv]);
-      }
-
-      for (int index = 0; index < _traitSpans.length; index++) {
-        spans.add(TextSpan(
-            text: index == _traitSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
-        spans.addAll(_traitSpans[index]);
-      }
-
-      Widget child = Text.rich(
-        TextSpan(children: spans),
-        style: Theme.of(context).textTheme.caption,
+    final triggerSkill = _buildTrigger(context);
+    final dependFunc = _buildDependFunc(context);
+    if (triggerSkill != null || dependFunc != null) {
+      last = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [last, triggerSkill, dependFunc].whereType<Widget>().toList(),
       );
-      child = InkWell(
-        child: child,
-        onTap: () {
-          return func.routeTo();
-          // showDialog(
-          //   context: context,
-          //   useRootNavigator: false,
-          //   builder: (context) {
-          //     return Theme(
-          //       data: ThemeData.light(),
-          //       child: SimpleCancelOkDialog(
-          //         title: Text('Func ${func.funcId}'),
-          //         content: JsonViewer(_getFuncJson(), defaultOpen: true),
-          //         scrollable: true,
-          //         hideCancel: true,
-          //         contentPadding: const EdgeInsetsDirectional.fromSTEB(
-          //             10.0, 10.0, 12.0, 24.0),
-          //       ),
-          //     );
-          //   },
-          // );
-        },
-      );
-      double maxWidth = 80;
-      if (constraints.maxWidth != double.infinity) {
-        maxWidth = max(maxWidth, constraints.maxWidth / 3);
-        maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
-      }
-      child = Row(
-        children: [
-          Expanded(flex: perLine - 1, child: child),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth, minWidth: 20),
-            child: trailing,
-          ),
-        ],
-      );
-      if (levels.isNotEmpty) {
-        child = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [child, ...levels],
-        );
-      }
-
-      final triggerSkill = _buildTrigger(context);
-      final dependFunc = _buildDependFunc(context);
-      if (triggerSkill != null || dependFunc != null) {
-        child = Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children:
-              [child, triggerSkill, dependFunc].whereType<Widget>().toList(),
-        );
-      }
-      child = Padding(
-        padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: child,
-      );
-      return child;
-    });
+    }
+    last = Padding(
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: last,
+    );
+    return last;
   }
 
   List<InlineSpan> replaceSpan(
@@ -752,6 +875,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
         if (!widget.endlessLoop)
           ...describeFunctions(
             funcs: skill?.functions ?? [],
+            script: skill?.script,
             showPlayer: widget.showPlayer,
             showEnemy: widget.showEnemy,
             level: widget.trigger.level,
@@ -840,6 +964,7 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
                   svals5: _getDependVals(widget.trigger.svals5),
                 ),
             ],
+            script: null,
             level: widget.level,
             showPlayer: true,
             showEnemy: true,

@@ -22,6 +22,7 @@ abstract class SkillOrTd implements RouteInfo {
   String? get unmodifiedDetail;
   String? get lDetail;
   List<NiceFunction> get functions;
+  SkillScript? get script;
 
   List<NiceFunction> filteredFunction({
     bool showPlayer = true,
@@ -58,6 +59,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
   String? icon;
   List<int> coolDown;
   List<NiceTrait> actIndividuality;
+  @override
   SkillScript? script;
   List<SkillAdd> skillAdd;
   Map<AiType, List<int>>? aiIds;
@@ -281,6 +283,7 @@ class BaseTd extends SkillOrTd with RouteInfo {
   NpGain npGain;
   List<int> npDistribution;
   List<NiceTrait> individuality;
+  @override
   SkillScript? script;
   @override
   List<NiceFunction> functions;
@@ -544,18 +547,32 @@ class ExtraPassive {
 
 @JsonSerializable()
 class SkillScript {
-  final List<int>? NP_HIGHER;
+  final List<int>? NP_HIGHER; // lv, 50->50%
   final List<int>? NP_LOWER;
   final List<int>? STAR_HIGHER;
   final List<int>? STAR_LOWER;
   final List<int>? HP_VAL_HIGHER;
   final List<int>? HP_VAL_LOWER;
-  final List<int>? HP_PER_HIGHER;
+  final List<int>? HP_PER_HIGHER; // 500->50%
   final List<int>? HP_PER_LOWER;
   final List<int>? additionalSkillId;
   final List<int>? additionalSkillActorType;
   final List<int>? tdTypeChangeIDs;
   final List<int>? excludeTdChangeTypes;
+
+  bool get isNotEmpty =>
+      NP_HIGHER?.isNotEmpty == true ||
+      NP_LOWER?.isNotEmpty == true ||
+      STAR_HIGHER?.isNotEmpty == true ||
+      STAR_LOWER?.isNotEmpty == true ||
+      HP_VAL_HIGHER?.isNotEmpty == true ||
+      HP_VAL_LOWER?.isNotEmpty == true ||
+      HP_PER_HIGHER?.isNotEmpty == true ||
+      HP_PER_LOWER?.isNotEmpty == true ||
+      additionalSkillId?.isNotEmpty == true ||
+      additionalSkillActorType?.isNotEmpty == true ||
+      tdTypeChangeIDs?.isNotEmpty == true ||
+      excludeTdChangeTypes?.isNotEmpty == true;
 
   const SkillScript({
     this.NP_HIGHER,
