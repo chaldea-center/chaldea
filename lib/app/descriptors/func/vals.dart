@@ -174,20 +174,23 @@ class ValDsc extends StatelessWidget {
     parts.clear();
 
     if (func.funcType == FuncType.addState ||
-        func.funcType == FuncType.addStateShort) {
+        func.funcType == FuncType.addStateShort ||
+        func.funcType == FuncType.addFieldChangeToField) {
       describeBuff(func.buffs.first);
       if (vals.UseRate != null) {
         _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
       }
-    } else if (func.funcType == FuncType.absorbNpturn) {
-      // enemy
-      // return null;
     } else if (func.funcType == FuncType.gainHpFromTargets) {
       _addInt(vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
       _addPercent(
           vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
+    } else if (func.funcType == FuncType.absorbNpturn) {
+      final v2 = vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value;
+      if (v2 != null) {
+        _addInt(v2 ~/ 100);
+      }
     } else if (func.funcType == FuncType.subState) {
       if (vals.Value2 != null) {
         _addInt(vals.Value2);
@@ -330,11 +333,16 @@ class ValDsc extends StatelessWidget {
       parts.add(empty);
       return;
     } else if ([
-      BuffType.fieldIndividuality,
-      BuffType.addIndividuality,
-      BuffType.subIndividuality
-    ].contains(buff.type)) {
+          BuffType.fieldIndividuality,
+          BuffType.addIndividuality,
+          BuffType.subIndividuality,
+        ].contains(buff.type) &&
+        vals.Value != null) {
       parts.add(Transl.trait(vals.Value!).l);
+      return;
+    } else if (buff.type == BuffType.toFieldChangeField &&
+        vals.FieldIndividuality != null) {
+      parts.add(Transl.trait(vals.FieldIndividuality!).l);
       return;
     } else {
       _addInt(vals.Value);

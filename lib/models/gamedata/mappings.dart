@@ -605,4 +605,11 @@ class _SpecialTransl {
         na: '『{0}』Event Only',
         kr: '『{0}』 이벤트 기간한정',
       );
+  String get funcAbsorbFrom => M.of(
+        jp: '(ターゲットごとに)',
+        cn: '(每个目标)',
+        tw: "(每個目標)",
+        na: '(per target)',
+        kr: '(목표당)',
+      );
 }

@@ -53,6 +53,9 @@ Map<K, V> sortDict<K, V>(
     }
     throw ArgumentError('must provide "compare" when key is not Comparable');
   });
+  if (reversed) {
+    entries = entries.reversed.toList();
+  }
   final sorted = Map.fromEntries(entries);
   if (inPlace) {
     d.clear();

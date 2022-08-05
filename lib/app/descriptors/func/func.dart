@@ -97,36 +97,54 @@ class FuncDescriptor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StringBuffer funcText = StringBuffer();
-    if (func.funcType == FuncType.addState ||
-        func.funcType == FuncType.addStateShort) {
-      if (showBuffDetail) {
-        funcText.write(Transl.buffDetail(func.buffs.first.detail).l);
-      } else {
-        if (func.buffs.first.name.isEmpty) {
-          funcText.write(Transl.buffType(func.buffs.first.type).l);
-        } else {
-          funcText.write(Transl.buffNames(func.buffs.first.name).l);
-        }
-      }
-    } else {
-      funcText.write(Transl.funcPopuptext(func).l);
-    }
-
-    final staticVal = func.getStaticVal();
-    final mutatingLvVals = func.getMutatingVals(null, levelOnly: true);
-    final mutatingOCVals = func.getMutatingVals(null, ocOnly: true);
-
-    int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
-    if (turn > 0 || count > 0) {
-      funcText.write(' (');
-      funcText.write([
-        if (count > 0) Transl.special.funcValCountTimes(count),
-        if (turn > 0) Transl.special.funcValTurns(turn),
-      ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
-      funcText.write(')');
-    }
     return LayoutBuilder(builder: (context, constraints) {
+      StringBuffer funcText = StringBuffer();
+      if ((func.funcType == FuncType.addState ||
+              func.funcType == FuncType.addStateShort ||
+              func.funcType == FuncType.addFieldChangeToField) &&
+          func.buffs.isNotEmpty) {
+        final buff = func.buffs.first;
+        if (showBuffDetail) {
+          funcText.write(Transl.buffDetail(buff.detail).l);
+        } else {
+          if ([
+            BuffType.fieldIndividuality,
+            BuffType.addIndividuality,
+            BuffType.subIndividuality,
+            BuffType.toFieldChangeField
+          ].contains(buff.type)) {
+            funcText.write(Transl.buffNames(buff.type.name).l);
+          } else if (buff.name.isEmpty) {
+            funcText.write(Transl.buffType(buff.type).l);
+          } else {
+            funcText.write(Transl.buffNames(buff.name).l);
+          }
+        }
+      } else {
+        funcText.write(Transl.funcPopuptext(func).l);
+      }
+
+      if ([
+        FuncType.gainHpFromTargets,
+        FuncType.absorbNpturn,
+        FuncType.gainNpFromTargets,
+      ].contains(func.funcType)) {
+        funcText.write(Transl.special.funcAbsorbFrom);
+      }
+
+      final staticVal = func.getStaticVal();
+      final mutatingLvVals = func.getMutatingVals(null, levelOnly: true);
+      final mutatingOCVals = func.getMutatingVals(null, ocOnly: true);
+
+      int turn = staticVal.Turn ?? -1, count = staticVal.Count ?? -1;
+      if (turn > 0 || count > 0) {
+        funcText.write(' (');
+        funcText.write([
+          if (count > 0) Transl.special.funcValCountTimes(count),
+          if (turn > 0) Transl.special.funcValTurns(turn),
+        ].join(M.of(jp: '·', cn: '·', tw: '·', na: ', ', kr: ', ')));
+        funcText.write(')');
+      }
       int perLine =
           constraints.maxWidth > 600 && func.svals.length > 5 ? 10 : 5;
       Widget trailing;
@@ -231,20 +249,25 @@ class FuncDescriptor extends StatelessWidget {
         final style = func.isEnemyOnlyFunc
             ? const TextStyle(fontStyle: FontStyle.italic)
             : null;
+
+        InlineSpan _replaceTrait(int trait) {
+          return TextSpan(
+            children: replaceSpan(text, '{0}', [
+              SharedBuilder.traitSpan(
+                context: context,
+                trait: NiceTrait(id: trait),
+              )
+            ]),
+            style: style,
+          );
+        }
+
         switch (func.funcType) {
           case FuncType.damageNpIndividual:
           case FuncType.damageNpStateIndividualFix:
             int? indiv = vals?.Target;
             if (indiv != null) {
-              spans.add(TextSpan(
-                children: replaceSpan(text, '{0}', [
-                  SharedBuilder.traitSpan(
-                    context: context,
-                    trait: NiceTrait(id: indiv),
-                  )
-                ]),
-                style: style,
-              ));
+              spans.add(_replaceTrait(indiv));
               return;
             }
             break;
@@ -293,6 +316,29 @@ class FuncDescriptor extends StatelessWidget {
             break;
           default:
             break;
+        }
+        if (func.buffs.isNotEmpty) {
+          final buff = func.buffs.first;
+          switch (buff.type) {
+            case BuffType.addIndividuality:
+            case BuffType.subIndividuality:
+            case BuffType.fieldIndividuality:
+              int? indiv = vals?.Value;
+              if (indiv != null) {
+                spans.add(_replaceTrait(indiv));
+                return;
+              }
+              break;
+            case BuffType.toFieldChangeField:
+              int? indiv = vals?.FieldIndividuality;
+              if (indiv != null) {
+                spans.add(_replaceTrait(indiv));
+                return;
+              }
+              break;
+            default:
+              break;
+          }
         }
         spans.add(TextSpan(
           text: text,
@@ -346,6 +392,7 @@ class FuncDescriptor extends StatelessWidget {
       switch (func.funcType) {
         case FuncType.addState:
         case FuncType.addStateShort:
+        case FuncType.addFieldChangeToField:
           final buff = func.buffs.first;
           _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
               buff.script?.checkIndvType == 1);
@@ -461,10 +508,12 @@ class FuncDescriptor extends StatelessWidget {
       }
 
       final triggerSkill = _buildTrigger(context);
-      if (triggerSkill != null) {
+      final dependFunc = _buildDependFunc(context);
+      if (triggerSkill != null || dependFunc != null) {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [child, triggerSkill],
+          children:
+              [child, triggerSkill, dependFunc].whereType<Widget>().toList(),
         );
       }
       child = Padding(
@@ -538,6 +587,26 @@ class FuncDescriptor extends StatelessWidget {
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
         endlessLoop: owner?.id == detail.skill &&
             (isNp ? owner is BaseTd : owner is BaseSkill),
+      ),
+    );
+  }
+
+  Widget? _buildDependFunc(BuildContext context) {
+    final dependFuncId = func.svals.getOrNull(0)?.DependFuncId;
+    if (dependFuncId == null) return null;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).hintColor),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
+      child: _LazyFunc(
+        dependFuncId: dependFuncId,
+        trigger: func,
+        level: level,
+        endlessLoop: func.funcId == dependFuncId,
       ),
     );
   }
@@ -625,12 +694,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   @override
   void initState() {
     super.initState();
-    if (!widget.isNp) {
-      skill = db.gameData.baseTds[widget.trigger.skill];
-    } else {
-      skill = db.gameData.baseSkills[widget.trigger.skill];
-    }
-    if (skill == null) _fetchSkill();
+    _fetchSkill();
   }
 
   @override
@@ -642,6 +706,13 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   }
 
   void _fetchSkill() async {
+    if (!widget.isNp) {
+      skill = db.gameData.baseTds[widget.trigger.skill];
+    } else {
+      skill = db.gameData.baseSkills[widget.trigger.skill];
+    }
+    if (skill != null) return;
+
     final skillId = widget.trigger.skill;
     if (skillId == null) {
       skill = null;
@@ -696,5 +767,105 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
           )
       ],
     );
+  }
+}
+
+class _LazyFunc extends StatefulWidget {
+  final int dependFuncId;
+  final NiceFunction trigger;
+  final int? level;
+  final bool endlessLoop;
+
+  const _LazyFunc({
+    Key? key,
+    required this.dependFuncId,
+    required this.trigger,
+    required this.level,
+    required this.endlessLoop,
+  }) : super(key: key);
+
+  @override
+  State<_LazyFunc> createState() => ___LazyFuncState();
+}
+
+class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
+  BaseFunction? func;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFunc();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LazyFunc oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.dependFuncId != oldWidget.dependFuncId) {
+      _fetchFunc();
+    }
+  }
+
+  void _fetchFunc() async {
+    func = db.gameData.baseFunctions[widget.dependFuncId];
+    func ??= await AtlasApi.func(widget.dependFuncId);
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final _func = func;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!widget.endlessLoop)
+          ...describeFunctions(
+            funcs: [
+              if (_func != null)
+                NiceFunction(
+                  funcId: _func.funcId,
+                  funcType: _func.funcType,
+                  funcTargetType: _func.funcTargetType,
+                  funcTargetTeam: _func.funcTargetTeam,
+                  funcPopupText: _func.funcPopupText,
+                  funcPopupIcon: _func.funcPopupIcon,
+                  functvals: _func.functvals,
+                  funcquestTvals: _func.funcquestTvals,
+                  funcGroup: _func.funcGroup,
+                  traitVals: _func.traitVals,
+                  buffs: _func.buffs,
+                  svals: _getDependVals(widget.trigger.svals),
+                  svals2: _getDependVals(widget.trigger.svals2),
+                  svals3: _getDependVals(widget.trigger.svals3),
+                  svals4: _getDependVals(widget.trigger.svals4),
+                  svals5: _getDependVals(widget.trigger.svals5),
+                ),
+            ],
+            level: widget.level,
+            showPlayer: true,
+            showEnemy: true,
+            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+          ),
+        if (widget.endlessLoop)
+          Center(
+            child: Text(
+              '∞',
+              style: Theme.of(context).textTheme.caption,
+            ),
+          )
+      ],
+    );
+  }
+
+  List<DataVals>? _getDependVals(List<DataVals>? svals) {
+    if (svals == null) return null;
+    final dependsvals = svals.map((e) => e.DependFuncVals).toList();
+    if (dependsvals.any((e) => e == null)) return null;
+    if (widget.trigger.funcType == FuncType.gainNpFromTargets ||
+        widget.trigger.funcType == FuncType.absorbNpturn) {
+      return dependsvals
+          .map((e) => DataVals(e!.toJson()..remove('Value2')))
+          .toList();
+    }
+    return List.from(dependsvals);
   }
 }

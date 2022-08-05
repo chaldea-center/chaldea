@@ -159,7 +159,7 @@ class DataVals {
       DataVals(Map.from(json));
 
   Map<String, dynamic> toJson() {
-    final entries = sourceVals.entries.where((e) => e.value != null).toList();
+    final entries = sourceVals.entries.toList();
     entries.sort((a, b) => a.key.compareTo(b.key));
     return Map.fromEntries(entries);
   }
