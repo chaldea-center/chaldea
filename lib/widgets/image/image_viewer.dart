@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
@@ -244,7 +245,8 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   Widget _withCached(String fullUrl) {
-    final _cacheManager = cachedOption.cacheManager ?? DefaultCacheManager();
+    final _cacheManager =
+        cachedOption.cacheManager ?? ImageViewerCacheManager();
     Uri? uri = Uri.tryParse(fullUrl);
     if (uri != null && uri.host == 'fgo.wiki') {
       final hashValue = uri.queryParameters['sha1'];
@@ -340,5 +342,51 @@ class _CachedImageState extends State<CachedImage> {
           ? CachedImage.defaultProgressPlaceholder(context, url)
           : const SizedBox(),
     );
+  }
+}
+
+class ImageViewerCacheManager extends CacheManager with ImageCacheManager {
+  static const key = 'chaldeaCachedImageData';
+
+  static final ImageViewerCacheManager _instance = ImageViewerCacheManager._();
+  factory ImageViewerCacheManager() {
+    return _instance;
+  }
+
+  ImageViewerCacheManager._()
+      : super(Config(
+          key,
+          stalePeriod: const Duration(days: 30),
+          fileService: _MyHttpFileService(),
+        ));
+}
+
+class _MyHttpFileService extends FileService {
+  final http.Client _httpClient;
+
+  _MyHttpFileService({http.Client? httpClient})
+      : _httpClient = httpClient ?? http.Client();
+
+  @override
+  Future<FileServiceResponse> get(String url,
+      {Map<String, String>? headers}) async {
+    final uri = Uri.parse(url);
+    final req = http.Request('GET', uri);
+    if (headers != null) {
+      req.headers.addAll(headers);
+    }
+    final httpResponse = await _httpClient.send(req);
+    if ([
+      'webview.fate-go.jp',
+      'news.fate-go.jp',
+      'i0.hdslb.com',
+      'webview.fate-go.us',
+      'static.fate-go.com.tw',
+    ].contains(uri.host)) {
+      // 30days=2,592,000
+      httpResponse.headers
+          .addAll({HttpHeaders.cacheControlHeader: 'max-age=2592000'});
+    }
+    return HttpGetResponse(httpResponse);
   }
 }

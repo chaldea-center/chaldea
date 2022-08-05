@@ -149,7 +149,11 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.clear_cache),
                 // subtitle: Text(S.current.clear_cache_hint),
-                onTap: clearCache,
+                onTap: () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => const _ClearCacheDialog(),
+                ),
               ),
             ],
           ),
@@ -193,16 +197,100 @@ class _GameDataPageState extends State<GameDataPage> {
       ).showDialog(context);
     }
   }
+}
 
-  Future<void> clearCache() async {
-    AtlasIconLoader.i.clearAll();
-    await DefaultCacheManager().emptyCache();
-    if (!kIsWeb) {
-      Directory(db.paths.tempDir)
-        ..deleteSync(recursive: true)
-        ..createSync(recursive: true);
-    }
-    imageCache.clear();
-    EasyLoading.showToast(S.current.clear_cache_finish);
+class _ClearCacheDialog extends StatefulWidget {
+  const _ClearCacheDialog({Key? key}) : super(key: key);
+
+  @override
+  State<_ClearCacheDialog> createState() => __ClearCacheDialogState();
+}
+
+class __ClearCacheDialogState extends State<_ClearCacheDialog> {
+  bool memory = true;
+  bool app = false;
+  final bool atlas = false;
+  bool temp = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleCancelOkDialog(
+      title: Text(S.current.clear_cache),
+      confirmText: S.current.clear,
+      scrollable: true,
+      content: Column(
+        children: [
+          CheckboxListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            value: memory,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: const Text('Memory Cache'),
+            onChanged: (v) {
+              setState(() {
+                memory = !memory;
+              });
+            },
+          ),
+          CheckboxListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            value: temp,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: const Text('Temp Directory'),
+            subtitle: Text(db.paths.convertIosPath(db.paths.tempDir)),
+            onChanged: (v) {
+              setState(() {
+                temp = !temp;
+              });
+            },
+          ),
+          CheckboxListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            value: app,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: const Text('Image Cache'),
+            subtitle:
+                const Text('Network images, including event/summon banners'),
+            onChanged: (v) {
+              setState(() {
+                app = !app;
+              });
+            },
+          ),
+          CheckboxListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            value: atlas,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: const Text('Game Assets'),
+            subtitle: Text(db.paths.convertIosPath(db.paths.atlasAssetsDir)),
+            onChanged: null,
+          ),
+        ],
+      ),
+      onTapOk: () async {
+        if (memory) {
+          AtlasIconLoader.i.clearAll();
+          imageCache.clear();
+        }
+        if (app) {
+          await DefaultCacheManager().emptyCache();
+          await ImageViewerCacheManager().emptyCache();
+        }
+        if (temp) {
+          if (!kIsWeb) {
+            Directory(db.paths.tempDir)
+              ..deleteSync(recursive: true)
+              ..createSync(recursive: true);
+          }
+        }
+        if (atlas) {
+          //
+        }
+        EasyLoading.showToast(S.current.clear_cache_finish);
+      },
+    );
   }
 }

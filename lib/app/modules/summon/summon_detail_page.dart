@@ -6,11 +6,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 import '../../app.dart';
+import '../common/builders.dart';
 import 'lucky_bag_expectation.dart';
 import 'summon_simulator_page.dart';
 import 'summon_util.dart';
@@ -74,6 +74,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               );
             },
           ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              ...SharedBuilder.websitesPopupMenuItems(
+                mooncell: summon.mcLink,
+                fandom: summon.fandomLink,
+              ),
+              ...SharedBuilder.noticeLinkPopupMenuItems(
+                  noticeLink: summon.noticeLink),
+            ],
+          )
         ],
       ),
       body: Column(
@@ -91,15 +101,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         .where((event) => event.extra.relatedSummons.contains(summon.id))
         .toList();
     List<Widget> children = [
-      GestureDetector(
-        onTap: summon.mcLink == null
-            ? null
-            : () => jumpToExternalLinkAlert(
-                url: WikiTool.mcFullLink(summon.mcLink!)),
-        child: CarouselUtil.limitHeightWidget(
-          context: context,
-          imageUrls: summon.resolvedBanner.values.toList(),
-        ),
+      CarouselUtil.limitHeightWidget(
+        context: context,
+        imageUrls: summon.resolvedBanner.values.toList(),
       ),
       CustomTable(children: [
         CustomTableRow(children: [
