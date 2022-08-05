@@ -102,7 +102,8 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson((await _dioGet('version.json')).json());
+      newVersion =
+          DataVersion.fromJson((await _downFile('version.json')).json());
     }
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
@@ -134,7 +135,7 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
         }
-        final resp = await _dioGet(
+        final resp = await _downFile(
           fv.filename,
           // cancelToken: cancelToken,
           options: Options(responseType: ResponseType.bytes),
@@ -220,15 +221,7 @@ class GameDataLoader {
 
     tmp.clear();
     tmp.gameJson = _gameJson;
-    GameData _gamedata;
-    if (!updateOnly || onUpdate != null || _onUpdate != null) {
-      _gamedata = GameData.fromJson(_gameJson);
-    } else if (kIsWeb) {
-      // performance issue, not to stuck app
-      _gamedata = db.gameData;
-    } else {
-      _gamedata = await GameData.fromJsonAsync(_gameJson);
-    }
+    GameData _gamedata = GameData.fromJson(_gameJson);
     for (final entry in _dataToWrite.entries) {
       await entry.key.writeAsBytes(entry.value);
     }
@@ -241,7 +234,7 @@ class GameDataLoader {
     return _gamedata;
   }
 
-  static Future<Response<T>> _dioGet<T>(String filename,
+  static Future<Response<T>> _downFile<T>(String filename,
       {Options? options}) async {
     String url = '${Hosts.kDataHostGlobal}/$filename',
         cnUrl = '${Hosts.kDataHostCN}/$filename';
@@ -249,11 +242,8 @@ class GameDataLoader {
         .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = cnUrl = 'https://$filename';
     }
-    if (!db.settings.proxyServer) {
-      return await Dio().get<T>(url, options: options);
-    } else {
-      return await Dio().get<T>(cnUrl, options: options);
-    }
+    return await Dio()
+        .get<T>(db.settings.proxyServer ? cnUrl : url, options: options);
     // try {
     //   Completer<Response<T>> _completer = Completer();
     //   Timer(const Duration(seconds: 4), () {

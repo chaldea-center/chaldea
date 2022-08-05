@@ -13,6 +13,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final EventMissionConditionDetail? detail;
   final List<EventMission> missions;
   @override
+  final bool? useAnd;
+  @override
   final TextStyle? style;
   @override
   final double? textScaleFactor;
@@ -29,6 +31,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     this.style,
     this.textScaleFactor,
     this.leading,
+    this.useAnd,
   }) : super(key: key);
 
   bool _isPlayableAll(List<int> clsIds) {
@@ -419,17 +422,31 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             targetIds.map((e) => missionMap[e]?.dispNo ?? e).toList();
 
         if (dispNos.length == targetNum) {
-          return localized(
-            jp: () => combineToRich(context, '以下のすべてのクエストをクリアせよ:',
-                missionList(context, missionMap)),
-            cn: () => combineToRich(
-                context, '完成以下全部任务:', missionList(context, missionMap)),
-            tw: null,
-            na: () => combineToRich(context, 'Clear all missions of',
-                missionList(context, missionMap)),
-            kr: () => combineToRich(
-                context, '다음 모든 미션을 완료', missionList(context, missionMap)),
-          );
+          if (targetNum == 1) {
+            return localized(
+              jp: () => combineToRich(
+                  context, 'ミッションをクリア: ', missionList(context, missionMap)),
+              cn: () => combineToRich(
+                  context, '完成任务: ', missionList(context, missionMap)),
+              tw: null,
+              na: () => combineToRich(
+                  context, 'Clear mission: ', missionList(context, missionMap)),
+              kr: () => combineToRich(
+                  context, '미션 완료: ', missionList(context, missionMap)),
+            );
+          } else {
+            return localized(
+              jp: () => combineToRich(context, '以下のすべてのミッションをクリアせよ:',
+                  missionList(context, missionMap)),
+              cn: () => combineToRich(
+                  context, '完成以下全部任务:', missionList(context, missionMap)),
+              tw: null,
+              na: () => combineToRich(context, 'Clear all missions of ',
+                  missionList(context, missionMap)),
+              kr: () => combineToRich(
+                  context, '다음 모든 미션을 완료', missionList(context, missionMap)),
+            );
+          }
         } else {
           return localized(
             jp: () => combineToRich(context, '以下の異なるクエスト$targetNum個をクリアせよ',

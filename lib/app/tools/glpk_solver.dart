@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:catcher/catcher.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -38,6 +39,9 @@ abstract class BaseLPSolver {
   Future<Map<int, num>> callSolver(BasicLPParams params) async {
     await ensureEngine();
     params.removeInvalidCells();
+    if (params.bVec.isEmpty || params.cVec.isEmpty) {
+      throw ArgumentError(S.current.glpk_error_no_valid_target);
+    }
     final resultString = await engine.eval(
         '''glpk_solver(`${jsonEncode(params)}`)''',
         name: 'solver_caller');

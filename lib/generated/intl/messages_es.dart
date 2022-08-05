@@ -450,7 +450,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Fuerza"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
+        "info_trait": MessageLookupByLibrary.simpleMessage("Traits"),
         "info_value": MessageLookupByLibrary.simpleMessage("Valor"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Entradas inválidas"),

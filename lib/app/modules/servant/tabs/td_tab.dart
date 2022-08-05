@@ -72,13 +72,19 @@ class SvtTdTab extends StatelessWidget {
                 shrinkWrap: true,
                 combined: true,
                 options: List.generate(tds.length, (index) => index),
-                optionBuilder: (v) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Text(Transl.tdNames(
-                          overrideTds.getOrNull(v)?.tdName ?? tds[v].name)
-                      .l),
-                ),
+                optionBuilder: (v) {
+                  String name = overrideTds.getOrNull(v)?.tdName ?? tds[v].name;
+                  name = Transl.tdNames(name).l;
+                  final rank = overrideTds.getOrNull(v)?.tdRank ?? tds[v].rank;
+                  if (rank != 'なし') {
+                    name = '$name $rank';
+                  }
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    child: Text(name),
+                  );
+                },
                 values: FilterRadioData.nonnull(tdIndex),
                 onFilterChanged: (v, _) {
                   state.value = v.radioValue!;

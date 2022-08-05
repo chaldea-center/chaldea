@@ -12,6 +12,7 @@ class FilterGroup<T> extends StatelessWidget {
   final List<T> options;
   final FilterGroupData<T> values;
   final Widget Function(T value)? optionBuilder;
+  final bool enabled;
   final bool showMatchAll;
   final bool showInvert;
   final bool shrinkWrap;
@@ -28,6 +29,7 @@ class FilterGroup<T> extends StatelessWidget {
     required this.options,
     required this.values,
     this.optionBuilder,
+    this.enabled = true,
     this.showMatchAll = false,
     this.showInvert = false,
     this.shrinkWrap = false,
@@ -59,7 +61,7 @@ class FilterGroup<T> extends StatelessWidget {
   Widget _buildCheckbox(
       BuildContext context, bool checked, String text, VoidCallback onTap) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: Row(
         children: <Widget>[
           Icon(
@@ -93,6 +95,7 @@ class FilterGroup<T> extends StatelessWidget {
             onFilterChanged!(values, key);
           }
         },
+        enabled: enabled,
         child:
             optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
       ));
@@ -188,6 +191,7 @@ class FilterOption<T> extends StatelessWidget {
   final T value;
   final Widget? child;
   final ValueChanged<bool>? onChanged;
+  final bool enabled;
   final Color? selectedColor;
   final Color? unselectedColor;
   final Color? selectedTextColor;
@@ -200,6 +204,7 @@ class FilterOption<T> extends StatelessWidget {
     required this.value,
     this.child,
     this.onChanged,
+    this.enabled = true,
     this.selectedColor,
     this.unselectedColor,
     this.selectedTextColor,
@@ -213,11 +218,13 @@ class FilterOption<T> extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
-        onPressed: () {
-          if (onChanged != null) {
-            onChanged!(!selected);
-          }
-        },
+        onPressed: enabled
+            ? () {
+                if (onChanged != null) {
+                  onChanged!(!selected);
+                }
+              }
+            : null,
         style: OutlinedButton.styleFrom(
           primary: selected || darkMode ? Colors.white : Colors.black,
           backgroundColor:

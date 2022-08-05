@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../app.dart';
@@ -14,10 +15,13 @@ class MultiDescriptor {
     BuildContext context,
     List<int> ids,
     InlineSpan Function(BuildContext context, int id) builder,
+    bool? useAnd,
   ) {
-    return [
+    final children = [
       for (final id in ids) builder(context, id),
     ];
+    if (useAnd == null) return children;
+    return divideList(children, TextSpan(text: useAnd ? ' & ' : ' / '));
   }
 
   static InlineSpan collapsed(
@@ -25,7 +29,11 @@ class MultiDescriptor {
     List<int> ids,
     String title,
     Widget Function(BuildContext context, int id) builder,
+    bool? useAnd,
   ) {
+    title = useAnd == false
+        ? 'Any of ${ids.length} $title'
+        : 'All ${ids.length} $title';
     return inkWell(
       context: context,
       onTap: () {
@@ -55,7 +63,8 @@ class MultiDescriptor {
     );
   }
 
-  static List<InlineSpan> items(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> items(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
     if (targetIds.length <= 7) {
       return list(
         context,
@@ -68,22 +77,29 @@ class MultiDescriptor {
           width: iconSize,
           padding: const EdgeInsets.all(2),
         )),
+        useAnd,
       );
     }
     return [
-      collapsed(context, targetIds, 'All ${targetIds.length} items',
-          (context, id) {
-        final item = db.gameData.items[id];
-        return ListTile(
-          leading: Item.iconBuilder(context: context, item: item),
-          title: Text(item?.lName.l ?? 'Item $id'),
-          onTap: item == null ? null : () => item.routeTo(),
-        );
-      })
+      collapsed(
+        context,
+        targetIds,
+        S.current.item,
+        (context, id) {
+          final item = db.gameData.items[id];
+          return ListTile(
+            leading: Item.iconBuilder(context: context, item: item),
+            title: Text(item?.lName.l ?? 'Item $id'),
+            onTap: item == null ? null : () => item.routeTo(),
+          );
+        },
+        useAnd,
+      )
     ];
   }
 
-  static List<InlineSpan> servants(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> servants(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
     if (targetIds.length <= 7) {
       return list(
         context,
@@ -101,24 +117,31 @@ class MultiDescriptor {
               : CenterWidgetSpan(
                   child: svt.iconBuilder(context: context, width: iconSize));
         },
+        useAnd,
       );
     }
     return [
-      collapsed(context, targetIds, 'All ${targetIds.length} servants',
-          (context, id) {
-        final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
-        return ListTile(
-          leading: svt?.iconBuilder(context: context, width: iconSize),
-          title: Text(svt?.lName.l ?? 'Servant $id'),
-          onTap: () {
-            router.push(url: Routes.servantI(id));
-          },
-        );
-      })
+      collapsed(
+        context,
+        targetIds,
+        S.current.servant,
+        (context, id) {
+          final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
+          return ListTile(
+            leading: svt?.iconBuilder(context: context, width: iconSize),
+            title: Text(svt?.lName.l ?? 'Servant $id'),
+            onTap: () {
+              router.push(url: Routes.servantI(id));
+            },
+          );
+        },
+        useAnd,
+      )
     ];
   }
 
-  static List<InlineSpan> quests(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> quests(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
     if (targetIds.length == 1) {
       return list(
         context,
@@ -131,30 +154,37 @@ class MultiDescriptor {
             text: quest?.lName.l ?? 'Quest $id',
           );
         },
+        useAnd,
       );
     }
     return [
-      collapsed(context, targetIds, 'All ${targetIds.length} quests',
-          (context, id) {
-        final quest = db.gameData.quests[id];
-        final phase = db.gameData.getQuestPhase(id);
-        final warName =
-            Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?")
-                .l
-                .replaceAll('\n', ' ');
-        final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
-        return ListTile(
-          title: Text(quest?.lName.l ?? 'Quest $id'),
-          subtitle:
-              Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
-          onTap: () => router.push(url: Routes.questI(id)),
-        );
-      })
+      collapsed(
+        context,
+        targetIds,
+        S.current.quest,
+        (context, id) {
+          final quest = db.gameData.quests[id];
+          final phase = db.gameData.getQuestPhase(id);
+          final warName =
+              Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?")
+                  .l
+                  .replaceAll('\n', ' ');
+          final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
+          return ListTile(
+            title: Text(quest?.lName.l ?? 'Quest $id'),
+            subtitle:
+                Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
+            onTap: () => router.push(url: Routes.questI(id)),
+          );
+        },
+        useAnd,
+      )
     ];
   }
 
-  static List<InlineSpan> traits(BuildContext context, List<int> targetIds) {
-    if (targetIds.length <= 7) {
+  static List<InlineSpan> traits(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
+    if (targetIds.length <= 10) {
       return list(
         context,
         targetIds,
@@ -165,21 +195,28 @@ class MultiDescriptor {
             text: '[${Transl.trait(id).l}]',
           );
         },
+        useAnd,
       );
     }
     return [
-      collapsed(context, targetIds, 'All ${targetIds.length} Traits',
-          (context, id) {
-        return ListTile(
-          title: Text('Trait $id - ${Transl.trait(id).l}'),
-          subtitle: Text(id.toString()),
-          onTap: () => router.push(url: Routes.traitI(id)),
-        );
-      })
+      collapsed(
+        context,
+        targetIds,
+        S.current.info_trait,
+        (context, id) {
+          return ListTile(
+            title: Text('Trait $id - ${Transl.trait(id).l}'),
+            subtitle: Text(id.toString()),
+            onTap: () => router.push(url: Routes.traitI(id)),
+          );
+        },
+        useAnd,
+      )
     ];
   }
 
-  static List<InlineSpan> svtClass(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> svtClass(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
     return list(
       context,
       targetIds,
@@ -190,24 +227,36 @@ class MultiDescriptor {
           text: '[${Transl.svtClassId(id).l}]',
         );
       },
+      useAnd,
     );
   }
 
   static List<InlineSpan> missions(BuildContext context, List<int> targetIds,
-      Map<int, EventMission> missions) {
+      Map<int, EventMission> missions,
+      {bool? useAnd}) {
     if (targetIds.length == 1) {
-      return list(context, targetIds, (context, id) {
-        final mission = missions[id];
-        return TextSpan(text: '${mission?.dispNo} - ${mission?.name}');
-      });
+      return list(
+        context,
+        targetIds,
+        (context, id) {
+          final mission = missions[id];
+          return TextSpan(text: '[${mission?.dispNo} - ${mission?.name}]');
+        },
+        useAnd,
+      );
     } else {
       return [
         MultiDescriptor.collapsed(
-            context, targetIds, 'All ${targetIds.length} missions',
-            (context, id) {
-          final mission = missions[id];
-          return ListTile(title: Text('${mission?.dispNo} - ${mission?.name}'));
-        }),
+          context,
+          targetIds,
+          S.current.mission,
+          (context, id) {
+            final mission = missions[id];
+            return ListTile(
+                title: Text('${mission?.dispNo} - ${mission?.name}'));
+          },
+          useAnd,
+        ),
       ];
     }
   }

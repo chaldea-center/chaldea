@@ -2683,6 +2683,17 @@ class S {
     );
   }
 
+  /// `Invalid input or no valid target found`
+  String get glpk_error_no_valid_target {
+    return Intl.message(
+      'Invalid input or no valid target found',
+      name: 'glpk_error_no_valid_target',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Gold`
   String get gold {
     return Intl.message(
@@ -3398,10 +3409,10 @@ class S {
     );
   }
 
-  /// `Trait`
+  /// `Traits`
   String get info_trait {
     return Intl.message(
-      'Trait',
+      'Traits',
       name: 'info_trait',
       desc: '',
       locale: localeName,
@@ -3959,6 +3970,39 @@ class S {
     return Intl.message(
       'Load FFO Data',
       name: 'load_ffo_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Logic Type`
+  String get logic_type {
+    return Intl.message(
+      'Logic Type',
+      name: 'logic_type',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `AND`
+  String get logic_type_and {
+    return Intl.message(
+      'AND',
+      name: 'logic_type_and',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `OR`
+  String get logic_type_or {
+    return Intl.message(
+      'OR',
+      name: 'logic_type_or',
       desc: '',
       locale: localeName,
       args: [],

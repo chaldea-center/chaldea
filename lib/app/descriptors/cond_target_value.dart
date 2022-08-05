@@ -12,6 +12,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   @override
   List<int> get targetIds => [target];
   @override
+  final bool? useAnd;
+  @override
   final TextStyle? style;
   @override
   final double? textScaleFactor;
@@ -29,6 +31,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     this.missions = const [],
+    this.useAnd,
   }) : super(key: key);
 
   @override

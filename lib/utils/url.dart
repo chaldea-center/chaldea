@@ -1,5 +1,6 @@
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
+import 'package:chaldea/packages/platform/platform.dart';
 import '../packages/language.dart';
 import 'constants.dart';
 
@@ -14,7 +15,12 @@ class HttpUrlHelper {
 }
 
 Future<bool> launch(String url) {
-  return launcher.launchUrl(Uri.parse(url));
+  return launcher.launchUrl(
+    Uri.parse(url),
+    mode: PlatformU.isAndroid
+        ? launcher.LaunchMode.externalApplication
+        : launcher.LaunchMode.platformDefault,
+  );
 }
 
 Future<bool> canLaunch(String url) {

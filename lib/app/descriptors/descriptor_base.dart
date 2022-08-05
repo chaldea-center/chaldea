@@ -8,6 +8,7 @@ abstract class DescriptorBase {
   double? get textScaleFactor;
   List<int> get targetIds;
   InlineSpan? get leading;
+  bool? get useAnd;
 
   List<InlineSpan> localized({
     required List<InlineSpan> Function()? jp,
@@ -57,18 +58,18 @@ abstract class DescriptorBase {
   }
 
   List<InlineSpan> quests(BuildContext context) =>
-      MultiDescriptor.quests(context, targetIds);
+      MultiDescriptor.quests(context, targetIds, useAnd: useAnd);
   List<InlineSpan> traits(BuildContext context) =>
-      MultiDescriptor.traits(context, targetIds);
+      MultiDescriptor.traits(context, targetIds, useAnd: useAnd);
   List<InlineSpan> svtClasses(BuildContext context) =>
-      MultiDescriptor.svtClass(context, targetIds);
+      MultiDescriptor.svtClass(context, targetIds, useAnd: useAnd);
   List<InlineSpan> servants(BuildContext context) =>
-      MultiDescriptor.servants(context, targetIds);
+      MultiDescriptor.servants(context, targetIds, useAnd: useAnd);
   List<InlineSpan> items(BuildContext context) =>
-      MultiDescriptor.items(context, targetIds);
+      MultiDescriptor.items(context, targetIds, useAnd: useAnd);
   List<InlineSpan> missionList(
           BuildContext context, Map<int, EventMission> missions) =>
-      MultiDescriptor.missions(context, targetIds, missions);
+      MultiDescriptor.missions(context, targetIds, missions, useAnd: useAnd);
   List<InlineSpan> event(BuildContext context) {
     final _event = db.gameData.events[targetIds.first];
     return [

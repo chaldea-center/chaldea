@@ -617,8 +617,8 @@ class NpGain {
         arts.getOrNull(0),
         quick.getOrNull(0),
         extra.getOrNull(0),
-        defence.getOrNull(0),
         np.getOrNull(0),
+        defence.getOrNull(0),
       ];
 
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);

@@ -84,7 +84,7 @@ dependencies:
   table_sticky_headers: ^2.0.1
   url_launcher: ^6.1.5
   uuid: ^3.0.5
-  worker_manager: ^4.4.0
+  worker_manager: ^4.4.6
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding

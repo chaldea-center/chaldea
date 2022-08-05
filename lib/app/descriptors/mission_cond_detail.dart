@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/models/models.dart';
 import 'descriptor_base.dart';
 
 class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final int targetNum;
   final EventMissionConditionDetail detail;
+  final bool? _useAnd;
   @override
   final TextStyle? style;
   @override
@@ -20,7 +22,29 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
     this.style,
     this.textScaleFactor,
     this.leading,
-  }) : super(key: key);
+    bool? useAnd,
+  })  : _useAnd = useAnd,
+        super(key: key);
+
+  @override
+  bool? get useAnd {
+    if (_useAnd != null) return _useAnd;
+    final type = CustomMission.kDetailCondMapping[detail.missionCondType];
+    switch (type) {
+      case CustomMissionType.trait:
+        return true;
+      case CustomMissionType.questTrait:
+        return false;
+      case CustomMissionType.quest:
+      case CustomMissionType.enemy:
+      case CustomMissionType.servantClass:
+      case CustomMissionType.enemyClass:
+      case CustomMissionType.enemyNotServantClass:
+        return false;
+      case null:
+        return null;
+    }
+  }
 
   @override
   List<int> get targetIds => detail.targetIds;

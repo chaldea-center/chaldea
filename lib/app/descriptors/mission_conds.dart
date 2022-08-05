@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
+import '../../generated/l10n.dart';
 import '../../models/models.dart';
 import 'cond_target_num.dart';
 
@@ -44,6 +46,16 @@ class MissionCondsDescriptor extends StatelessWidget {
         detail: cond.detail,
         missions: missions,
       ));
+    }
+    if (mission.gifts.isNotEmpty) {
+      children.add(Text(
+        '~~~ ${S.current.game_rewards} ~~~',
+        textAlign: TextAlign.center,
+        textScaleFactor: 0.9,
+        style: TextStyle(color: Theme.of(context).textTheme.caption?.color),
+      ));
+      children
+          .add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));
     }
     if (!onlyShowClear) {
       children.add(const SizedBox(height: 10));

@@ -23,8 +23,6 @@ class SearchUtil {
       kanaKit.toRomaji(words).replaceAll(' ', ''),
       kanaKit.toHiragana(words),
       words,
-      PinyinHelper.getPinyinE(words).replaceAll(' ', ''),
-      PinyinHelper.getShortPinyin(words),
     }.join('\t');
   }
 
@@ -49,7 +47,7 @@ class SearchUtil {
 
   static Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
     yield getJP(transl.m?.jp);
-    yield getCN(transl.m?.cn);
+    yield getCN(transl.m?.cn ?? transl.m?.jp);
     yield getCN(transl.m?.tw);
     yield getEn(transl.m?.na);
     yield getKr(transl.m?.kr);

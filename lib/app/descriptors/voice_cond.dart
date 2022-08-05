@@ -12,6 +12,8 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
   @override
   List<int> get targetIds => [value];
   @override
+  final bool? useAnd;
+  @override
   final TextStyle? style;
   @override
   final double? textScaleFactor;
@@ -26,6 +28,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     this.style,
     this.textScaleFactor,
     this.leading,
+    this.useAnd,
   }) : super(key: key);
 
   @override

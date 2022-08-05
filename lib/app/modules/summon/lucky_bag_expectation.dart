@@ -85,7 +85,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     context: context,
                     card: svt,
                     category: false,
-                    favorite: db.curUser.svtStatusOf(svtId).favorite),
+                    favorite: svt.status.favorite),
               ),
               horizontalTitleGap: 0,
               title: Row(
@@ -195,15 +195,20 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     for (final _result in results) {
       children.add(SHeader(SummonUtil.summonNameLocalize(_result.data.title)));
       children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
         child: Wrap(
           spacing: 2,
           runSpacing: 2,
           children: _result.block.ids.map((id) {
             final svt = db.gameData.servants[id];
-            if (svt == null) return Container();
+            if (svt == null) return Text('ID $id');
             return SummonUtil.svtAvatar(
-                context: context, card: svt, favorite: true);
+              context: context,
+              card: svt,
+              favorite: svt.status.favorite,
+              npLv: true,
+              width: 48,
+            );
           }).toList(),
         ),
       ));
@@ -213,11 +218,13 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       }
 
       children.add(ListTile(
-        tileColor: Theme.of(context).highlightColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        // tileColor: Theme.of(context).highlightColor,
+        dense: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
         title: DefaultTextStyle(
           style: TextStyle(
-              fontSize: 14,
+              // fontSize: 14,
               color: Theme.of(context).textTheme.bodyText2?.color),
           textAlign: TextAlign.center,
           overflow: TextOverflow.visible,
@@ -248,6 +255,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           ),
         ),
       ));
+      children.add(kIndentDivider);
     }
 
     Widget _underline(Widget child, bool underline) {

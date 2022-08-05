@@ -245,8 +245,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Widget get details {
     List<Widget> svtRow = [];
-    data.svts.forEach((block) {
-      if (block.ids.isEmpty || !block.display) return; // should always not
+    for (final block in data.svts) {
+      if (block.ids.isEmpty) continue;
+      if (!_expanded && !block.display) continue;
       double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
         Servant? svt = db.gameData.servants[id];
@@ -259,10 +260,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           showNpLv: false,
         ));
       });
-    });
+    }
+
     List<Widget> craftRow = [];
-    data.crafts.forEach((block) {
-      if (block.ids.isEmpty || !block.display) return; // should always not
+    for (final block in data.crafts) {
+      if (block.ids.isEmpty) continue;
+      if (!_expanded && !block.display) continue;
       double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
         CraftEssence? ce = db.gameData.craftEssences[id];
@@ -273,7 +276,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           weight: weight,
         ));
       });
-    });
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Column(
@@ -285,10 +289,23 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           const SizedBox(height: 4),
           if (craftRow.isNotEmpty)
             Wrap(spacing: 4, runSpacing: 4, children: craftRow),
+          Center(
+            child: ExpandIcon(
+              onPressed: (v) {
+                setState(() {
+                  _expanded = !v;
+                });
+              },
+              isExpanded: _expanded,
+              padding: EdgeInsets.zero,
+            ),
+          )
         ],
       ),
     );
   }
+
+  bool _expanded = false;
 
   Widget curResult() {
     if (history.isEmpty) return Container();

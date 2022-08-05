@@ -138,6 +138,23 @@ class _MissionInputTabState extends State<MissionInputTab> {
             ),
           ),
           ListTile(
+            leading: Text(S.current.logic_type),
+            trailing: FilterGroup<bool>(
+              options: const [true, false],
+              values: FilterRadioData.nonnull(mission.useAnd),
+              enabled: mission.fixedLogicType == null,
+              optionBuilder: (v) =>
+                  Text(v ? S.current.logic_type_and : S.current.logic_type_or),
+              combined: true,
+              padding: EdgeInsets.zero,
+              onFilterChanged: (v, _) {
+                setState(() {
+                  mission.useAnd = v.radioValue!;
+                });
+              },
+            ),
+          ),
+          ListTile(
             title: Wrap(
               spacing: 2,
               runSpacing: 2,
@@ -286,7 +303,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
           onPressed: () {
             setState(() {
               missions.add(CustomMission(
-                  type: CustomMissionType.trait, count: 0, ids: []));
+                type: CustomMissionType.trait,
+                count: 0,
+                ids: [],
+                useAnd: true,
+              ));
             });
           },
           icon: const Icon(Icons.add_circle_outline),

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
@@ -17,10 +15,10 @@ class SummonUtil {
     bool showCategory = true,
     bool showNpLv = true,
   }) {
-    return cardGrid(
-      ids: block.ids,
-      header: showRarity ? '$kStarChar${block.rarity}' : null,
-      childBuilder: (id) {
+    final grid = Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: block.ids.map((id) {
         Widget child;
         if (block.isSvt) {
           final svt = db.gameData.servants[id];
@@ -42,40 +40,17 @@ class SummonUtil {
             weight: showProb ? block.weight / block.ids.length : null,
           );
         }
-        return Center(
-            child: Padding(padding: const EdgeInsets.all(2), child: child));
-      },
+        return child;
+      }).toList(),
     );
-  }
-
-  static Widget cardGrid({
-    required Iterable<int> ids,
-    required String? header,
-    required Widget Function(int id) childBuilder,
-  }) {
-    final grid = LayoutBuilder(
-      builder: (context, constraints) {
-        int count = max(constraints.maxWidth ~/ 72, 5);
-        double childWidth = constraints.maxWidth / count;
-        return GridView.count(
-          crossAxisCount: count,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          childAspectRatio: childWidth / min(72, childWidth * 144 / 132),
-          children: ids.map((id) {
-            return childBuilder(id);
-          }).toList(),
-        );
-      },
-    );
-    if (header == null) {
+    if (!showRarity) {
       return grid;
     } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SHeader(
-            header,
+            '$kStarChar${block.rarity}',
             padding: const EdgeInsets.only(left: 0, top: 4, bottom: 2),
           ),
           grid,
@@ -92,6 +67,7 @@ class SummonUtil {
     bool favorite = false,
     bool category = true,
     bool npLv = true,
+    double? width,
   }) {
     return Stack(
       alignment: Alignment.topRight,
@@ -102,6 +78,7 @@ class SummonUtil {
           weight: weight,
           showCategory: category,
           showNpLv: npLv,
+          width: width,
         ),
         if (favorite || star)
           Column(
@@ -144,6 +121,7 @@ class SummonUtil {
     double? weight,
     bool showCategory = false,
     bool showNpLv = true,
+    double? width,
   }) {
     if (card == null) return Container();
     List<String> texts = [];
@@ -168,9 +146,10 @@ class SummonUtil {
         card.routeTo();
       },
       child: ImageWithText(
-        image: db.getIconImage(card.borderedIcon, aspectRatio: 132 / 144),
+        image: db.getIconImage(card.borderedIcon,
+            width: width, aspectRatio: 132 / 144),
         text: texts.join('\n'),
-        width: 56,
+        width: width ?? 56,
         textAlign: TextAlign.right,
         textStyle: const TextStyle(fontSize: 11),
         padding: const EdgeInsets.only(bottom: 0, left: 15, right: 4),

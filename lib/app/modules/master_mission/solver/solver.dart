@@ -52,10 +52,16 @@ class MissionSolver extends BaseLPSolver {
     switch (mission.type) {
       case CustomMissionType.trait:
         return enemies
-            .where((enemy) => NiceTrait.hasAllTraits(enemy.traits, mission.ids))
+            .where((enemy) => mission.useAnd
+                ? NiceTrait.hasAllTraits(enemy.traits, mission.ids)
+                : NiceTrait.hasAnyTrait(enemy.traits, mission.ids))
             .length;
       case CustomMissionType.questTrait:
-        return NiceTrait.hasAnyTrait(quest.individuality, mission.ids) ? 1 : 0;
+        return (mission.useAnd
+                ? NiceTrait.hasAllTraits(quest.individuality, mission.ids)
+                : NiceTrait.hasAnyTrait(quest.individuality, mission.ids))
+            ? 1
+            : 0;
       case CustomMissionType.quest:
         return mission.ids.contains(quest.id) ? 1 : 0;
       case CustomMissionType.enemy:

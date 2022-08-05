@@ -383,6 +383,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
         "general_special": MessageLookupByLibrary.simpleMessage("Special"),
         "general_type": MessageLookupByLibrary.simpleMessage("Type"),
+        "glpk_error_no_valid_target": MessageLookupByLibrary.simpleMessage(
+            "Invalid input or no valid target found"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
@@ -477,7 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Strength"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
+        "info_trait": MessageLookupByLibrary.simpleMessage("Traits"),
         "info_value": MessageLookupByLibrary.simpleMessage("Value"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Invalid inputs"),
@@ -554,6 +556,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_hidden_all": m17,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
+        "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
+        "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
+        "logic_type_or": MessageLookupByLibrary.simpleMessage("OR"),
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password":
