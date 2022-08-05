@@ -108,9 +108,19 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               ],
             ),
             if (item.type == ItemType.svtCoin) ..._svtCoinObtain(),
-            if (item.type == ItemType.itemSelect)
+            if (item.type == ItemType.itemSelect) ...[
+              CustomTableRow.fromTexts(
+                texts: [S.current.exchange_ticket],
+                isHeader: true,
+              ),
+              CustomTableRow.fromChildren(children: [
+                SharedBuilder.giftGrid(context: context, gifts: [
+                  for (final select in item.itemSelects) ...select.gifts
+                ])
+              ]),
               CustomTableRow.fromTexts(
                   texts: const ['Warning: JP info only!!!']),
+            ],
           ],
         ),
       ),

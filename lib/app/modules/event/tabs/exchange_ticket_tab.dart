@@ -120,19 +120,29 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            subtitle: AutoSizeText(
-              db.curUser.region == Region.jp
-                  ? 'max: ${ticket.days}'
-                  : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
-              maxLines: 2,
-              maxFontSize: 12,
+            subtitle: Text.rich(
+              TextSpan(
+                  text: db.curUser.region == Region.jp
+                      ? 'max: ${ticket.days}'
+                      : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
+                  children: [
+                    if (ticket.multiplier != 1)
+                      TextSpan(
+                        text: ' ×${ticket.multiplier}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                  ]),
               style: TextStyle(
-                  color: planned
-                      ? _plannedColor.withAlpha(200)
-                      : outdated
-                          ? _outdatedColor?.withAlpha(200)
-                          : null),
-              minFontSize: 6,
+                color: planned
+                    ? _plannedColor.withAlpha(200)
+                    : outdated
+                        ? _outdatedColor?.withAlpha(200)
+                        : null,
+                fontSize: 12,
+              ),
             ),
             onTap: hasAnyReplaced ? () => _showReplaceDetail(ticket) : null,
           ),
@@ -161,11 +171,13 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              router.push(url: Routes.itemI(itemId), detail: true);
-            },
-            child: db.getIconImage(Item.getIcon(itemId), width: 42),
+          Item.iconBuilder(
+            context: context,
+            item: item,
+            itemId: itemId,
+            width: 42,
+            text: (db.curUser.items[itemId] ?? 0).format(),
+            textPadding: const EdgeInsets.only(top: 36),
           ),
           SizedBox(
             width: 36,
@@ -175,7 +187,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 children: <Widget>[
                   Text(monthPlan.counts[i] == 0
                       ? ''
-                      : monthPlan.counts[i].toString()),
+                      : (monthPlan.counts[i] * ticket.multiplier).toString()),
                   const Divider(height: 1),
                   DefaultTextStyle(
                     style: Theme.of(context).textTheme.bodyText2!,
@@ -205,6 +217,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                         items: List.generate(
                             maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
                         initValue: monthPlan.counts[i],
+                        onFormatValue: (v) {
+                          return ticket.multiplier == 1
+                              ? v.toString()
+                              : '$v×${ticket.multiplier}';
+                        },
                       ),
                     ],
                   ),

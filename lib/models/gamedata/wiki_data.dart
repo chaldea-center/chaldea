@@ -229,6 +229,7 @@ class ExchangeTicket {
   final int month;
   final List<int> items;
   final MappingList<int> replaced;
+  final int multiplier;
 
   ExchangeTicket({
     required this.id,
@@ -236,6 +237,7 @@ class ExchangeTicket {
     required this.month,
     required this.items,
     MappingList<int>? replaced,
+    this.multiplier = 1,
   }) : replaced = replaced ?? MappingList();
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> json) =>
@@ -267,15 +269,17 @@ class ExchangeTicket {
     return DateTime(year, month + diff);
   }
 
+  String get dateStr {
+    final d = date;
+    return '${d.year}-${d.month}';
+  }
+
   int get days {
     final d = date;
     return DateUtils.getDaysInMonth(d.year, d.month);
   }
 
-  String get dateStr {
-    final d = date;
-    return '${d.year}-${d.month}';
-  }
+  int get maxCount => days * multiplier;
 }
 
 @JsonSerializable()

@@ -103,6 +103,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
                 icon: const Icon(Icons.search),
                 color: Theme.of(context).colorScheme.secondary,
                 padding: const EdgeInsets.symmetric(vertical: 8),
+                constraints: const BoxConstraints(minWidth: 24),
               ),
       ),
       contentBuilder: (context) => Padding(

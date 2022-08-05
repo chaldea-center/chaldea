@@ -349,7 +349,8 @@ class ItemCenter {
     for (final ticket in db.gameData.exchangeTickets.values) {
       final plan = user.ticketOf(ticket.id);
       for (int i = 0; i < 3; i++) {
-        _statTicket.addNum(ticket.of(user.region)[i], plan.counts[i]);
+        _statTicket.addNum(
+            ticket.of(user.region)[i], plan.counts[i] * ticket.multiplier);
       }
     }
     if (notify) {

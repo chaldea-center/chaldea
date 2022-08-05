@@ -139,7 +139,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
 
-      int itemNum = plan.counts[itemIndex];
+      int itemNum = plan.counts[itemIndex] * ticket.multiplier;
       count += itemNum;
       children.add(SimpleAccordion(
         expanded: false,
@@ -155,7 +155,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
                   .join('/'),
               maxLines: 1),
           trailing: Text(
-            '$itemNum/${ticket.days}',
+            '$itemNum/${ticket.maxCount}',
             style: _textStyle(plan.enabled, ticket.isOutdated()),
           ),
         ),

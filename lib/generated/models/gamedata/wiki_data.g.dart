@@ -240,6 +240,7 @@ ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
           ? null
           : MappingList<int>.fromJson(
               Map<String, dynamic>.from(json['replaced'] as Map)),
+      multiplier: json['multiplier'] as int? ?? 1,
     );
 
 FixedDrop _$FixedDropFromJson(Map json) => FixedDrop(
