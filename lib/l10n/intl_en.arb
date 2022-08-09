@@ -225,7 +225,7 @@
   "free_quest_calculator_short": "Free Quest",
   "gallery_tab_name": "Home",
   "game_account": "Game Account",
-  "game_data_not_found": "Game data not found, please download data first",
+  "game_data_not_found": "Loading game data failed, please download data again",
   "game_drop": "Drop",
   "game_experience": "Experience",
   "game_kizuna": "Bond",

@@ -83,8 +83,14 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           color: plan.enabled
               ? Theme.of(context).colorScheme.secondaryContainer
               : null);
-      texts.add(Text(
-          '${itemGot.format()}/${itemFixed.format()}${hasLottery || hasExtra ? '+' : ''}',
+      String suffix = hasLottery || hasExtra ? '+' : '';
+      final grail2crystal = event.statItemFixed[Items.grailToCrystalId] ?? 0;
+      if ((widget.itemId == Items.crystalId ||
+              widget.itemId == Items.grailId) &&
+          grail2crystal > 0) {
+        suffix += '+$grail2crystal';
+      }
+      texts.add(Text('${itemGot.format()}/${itemFixed.format()}$suffix',
           style: style.copyWith(fontWeight: FontWeight.w500)));
       for (final lotteryId in event.statItemLottery.keys) {
         int itemPerLottery =

@@ -56,7 +56,9 @@ class _GridGalleryState extends State<GridGallery> {
           )
         : _getGrid(crossCount, true);
 
-    if (db.gameData.version.timestamp <= 0) {
+    if (db.gameData.version.timestamp <= 0 ||
+        db.gameData.servantsById.isEmpty ||
+        db.gameData.items.isEmpty) {
       grid = GestureDetector(
         onTap: () {
           SimpleCancelOkDialog(

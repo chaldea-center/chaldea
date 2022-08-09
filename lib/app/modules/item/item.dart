@@ -26,6 +26,23 @@ class ItemDetailPage extends StatefulWidget {
   _ItemDetailPageState createState() => _ItemDetailPageState();
 }
 
+enum _TabType {
+  demand,
+  consumed,
+  free,
+  event,
+  interlude,
+  info,
+}
+
+const _kEventTabs = [_TabType.event];
+const _kStatTabs = [
+  _TabType.demand,
+  _TabType.consumed,
+  _TabType.free,
+  _TabType.interlude
+];
+
 class _TabInfo {
   final Widget header;
   final Widget view;
@@ -46,9 +63,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   // event
   bool showOutdated = false;
 
-  //free tab
-  bool _showEvent = true;
-  bool _showStat = false;
+  List<_TabType> _shownTabs = [];
 
   @override
   void initState() {
@@ -60,42 +75,41 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       case ItemCategory.ascension:
       case ItemCategory.skill:
       case ItemCategory.eventAscension:
-        _showStat = _showEvent = true;
+        _shownTabs = _TabType.values;
         break;
       case ItemCategory.coin:
-        _showStat = _showEvent = false;
         break;
       case ItemCategory.event:
       case ItemCategory.other:
-        _showStat = _showEvent = false;
         if ([
           // fp, Q/A/B opener, Beast's Footprint
           4, 5000, 5001, 5002, 5003, 2000,
         ].contains(widget.itemId)) {
-          _showEvent = true;
+          _shownTabs = _kEventTabs;
         }
         break;
       case ItemCategory.special:
-        _showStat = false;
-        _showEvent = true;
+        _shownTabs.addAll(_kEventTabs);
         if (<int>[Items.qpId, Items.grailId, Items.lanternId]
             .contains(widget.itemId)) {
-          _showStat = true;
+          _shownTabs.addAll(_kStatTabs);
+        } else if (<int>[Items.stoneId].contains(widget.itemId)) {
+          _shownTabs.addAll([_TabType.interlude]);
         }
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
-          _showStat = _showEvent = true;
+          _shownTabs = _TabType.values;
         } else if (Items.embers.contains(widget.itemId)) {
-          _showStat = false;
-          _showEvent = true;
+          _shownTabs = _kEventTabs;
         }
         break;
     }
+    _shownTabs = {..._shownTabs, _TabType.info}.toList();
 
     _tabController = TabController(
       initialIndex: widget.initialTabIndex,
-      length: (_showStat ? 4 : 0) + (_showEvent ? 1 : 0) + 1,
+      length: _shownTabs.length,
       vsync: this,
     );
     _tabController.addListener(() {
@@ -111,16 +125,15 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    List<_TabInfo> tabs = [];
-
-    if (_showStat) {
-      tabs.addAll([
+    List<_TabInfo> tabs = [
+      if (_shownTabs.contains(_TabType.demand))
         _TabInfo(
           header: Tab(text: S.current.demands),
           view: db.onUserData((context, _) =>
               ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
           actions: [viewTypeButton, sortButton, popupMenu],
         ),
+      if (_shownTabs.contains(_TabType.consumed))
         _TabInfo(
           header: Tab(text: S.current.consumed),
           view: db.onUserData((context, _) => ItemCostSvtDetailTab(
@@ -129,33 +142,32 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               )),
           actions: [viewTypeButton, sortButton, popupMenu],
         ),
+      if (_shownTabs.contains(_TabType.free))
         _TabInfo(
           header: Tab(text: S.current.free_quest),
           view: ItemObtainFreeTab(itemId: widget.itemId),
           actions: [popupMenu],
         ),
-      ]);
-    }
-    if (_showEvent) {
-      tabs.add(_TabInfo(
-        header: Tab(text: S.current.event_title),
-        view: ItemObtainEventTab(
-            itemId: widget.itemId, showOutdated: showOutdated),
-        actions: [filterOutdatedButton, popupMenu],
-      ));
-    }
-    if (_showStat) {
-      tabs.add(_TabInfo(
-        header: Tab(text: S.current.interlude_and_rankup),
-        view: ItemObtainInterludeTab(itemId: widget.itemId),
-        actions: [sortButton, popupMenu],
-      ));
-    }
-    tabs.add(_TabInfo(
-      header: Tab(text: S.current.card_info),
-      view: ItemInfoTab(itemId: widget.itemId),
-      actions: [popupMenu],
-    ));
+      if (_shownTabs.contains(_TabType.event))
+        _TabInfo(
+          header: Tab(text: S.current.event_title),
+          view: ItemObtainEventTab(
+              itemId: widget.itemId, showOutdated: showOutdated),
+          actions: [filterOutdatedButton, popupMenu],
+        ),
+      if (_shownTabs.contains(_TabType.interlude))
+        _TabInfo(
+          header: Tab(text: S.current.interlude_and_rankup),
+          view: ItemObtainInterludeTab(itemId: widget.itemId),
+          actions: [sortButton, popupMenu],
+        ),
+      if (_shownTabs.contains(_TabType.info))
+        _TabInfo(
+          header: Tab(text: S.current.card_info),
+          view: ItemInfoTab(itemId: widget.itemId),
+          actions: [popupMenu],
+        )
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -184,8 +196,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return PopupMenuButton(
       itemBuilder: (context) {
         return [
-          if (_showStat ||
-              _showEvent ||
+          if (_shownTabs.length > 1 ||
               db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
             PopupMenuItem(
               child: Text(S.current.item_edit_owned_amount),

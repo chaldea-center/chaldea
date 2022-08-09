@@ -322,8 +322,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("홈"),
         "game_account": MessageLookupByLibrary.simpleMessage("게임 계정"),
-        "game_data_not_found": MessageLookupByLibrary.simpleMessage(
-            "게임 정보를 찾을 수 없습니다. 먼저 다운로드 해 주시기 바랍니다"),
         "game_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "game_experience": MessageLookupByLibrary.simpleMessage("경험치"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("몽화"),

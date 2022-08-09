@@ -225,7 +225,7 @@
   "free_quest_calculator_short": "FQ速查",
   "gallery_tab_name": "首頁",
   "game_account": "遊戲帳號",
-  "game_data_not_found": "未加載資料包，請先前往遊戲數據頁面下載",
+  "game_data_not_found": null,
   "game_drop": "掉落",
   "game_experience": "經驗",
   "game_kizuna": "羈絆",

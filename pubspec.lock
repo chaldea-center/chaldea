@@ -35,7 +35,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "3.3.1"
   args:
     dependency: "direct main"
     description:
@@ -210,7 +210,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.5"
+    version: "2.3.6"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -238,7 +238,7 @@ packages:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.3"
   connectivity_plus_windows:
     dependency: transitive
     description:
@@ -427,7 +427,7 @@ packages:
       name: fl_chart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.55.0"
+    version: "0.55.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -493,7 +493,7 @@ packages:
       name: flutter_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -594,7 +594,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.4"
+    version: "0.13.5"
   http_multi_server:
     dependency: transitive
     description:
@@ -666,21 +666,21 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.0"
+    version: "4.6.0"
   json_serializable:
     dependency: "direct dev"
     description:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.2.0"
+    version: "6.3.1"
   just_audio:
     dependency: "direct main"
     description:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.27"
+    version: "0.9.28"
   just_audio_platform_interface:
     dependency: transitive
     description:

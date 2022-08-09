@@ -225,7 +225,7 @@
   "free_quest_calculator_short": "フリークエスト",
   "gallery_tab_name": "ホーム",
   "game_account": "ゲームアカウント",
-  "game_data_not_found": "ゲームデータが見つかりませので、まずデータをダウンロードしてください",
+  "game_data_not_found": null,
   "game_drop": "ドロップ",
   "game_experience": "EXP",
   "game_kizuna": "絆",

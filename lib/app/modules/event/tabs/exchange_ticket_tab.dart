@@ -29,13 +29,7 @@ class ExchangeTicketTab extends StatefulWidget {
 
 class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
+  late final _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -135,11 +129,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                       )
                   ]),
               style: TextStyle(
-                color: planned
-                    ? _plannedColor.withAlpha(200)
-                    : outdated
-                        ? _outdatedColor?.withAlpha(200)
-                        : null,
+                color: outdated ? _outdatedColor?.withAlpha(200) : null,
                 fontSize: 12,
               ),
             ),

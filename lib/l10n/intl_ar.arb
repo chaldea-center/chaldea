@@ -225,7 +225,7 @@
   "free_quest_calculator_short": "فري كويست",
   "gallery_tab_name": "الرئيسية",
   "game_account": null,
-  "game_data_not_found": "لم يتم إيجاد بيانات اللعبة ،الرجاء إعادة تحميلها مجددا",
+  "game_data_not_found": null,
   "game_drop": "دروب",
   "game_experience": "خبرة",
   "game_kizuna": "بوند",

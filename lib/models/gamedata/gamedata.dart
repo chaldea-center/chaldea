@@ -136,6 +136,9 @@ class GameData with _GameDataExtra {
         for (final costume in svt.profile.costume.values)
           costume.costumeCollectionNo: costume
     };
+    costumesById = {
+      for (final costume in costumes.values) costume.battleCharaId: costume
+    };
     mainStories = {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war
@@ -277,6 +280,8 @@ mixin _GameDataExtra {
   late _ProcessedData others;
   @JsonKey(ignore: true)
   Map<int, NiceCostume> costumes = {};
+  @JsonKey(ignore: true)
+  Map<int, NiceCostume> costumesById = {};
   @JsonKey(ignore: true)
   late Map<int, NiceWar> mainStories;
   @JsonKey(ignore: true)

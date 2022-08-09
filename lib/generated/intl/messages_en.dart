@@ -370,7 +370,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage(
-            "Game data not found, please download data first"),
+            "Loading game data failed, please download data again"),
         "game_drop": MessageLookupByLibrary.simpleMessage("Drop"),
         "game_experience": MessageLookupByLibrary.simpleMessage("Experience"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("Bond"),

@@ -2540,10 +2540,10 @@ class S {
     );
   }
 
-  /// `Game data not found, please download data first`
+  /// `Loading game data failed, please download data again`
   String get game_data_not_found {
     return Intl.message(
-      'Game data not found, please download data first',
+      'Loading game data failed, please download data again',
       name: 'game_data_not_found',
       desc: '',
       locale: localeName,

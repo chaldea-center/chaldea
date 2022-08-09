@@ -321,8 +321,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("フリークエスト"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("ホーム"),
         "game_account": MessageLookupByLibrary.simpleMessage("ゲームアカウント"),
-        "game_data_not_found": MessageLookupByLibrary.simpleMessage(
-            "ゲームデータが見つかりませので、まずデータをダウンロードしてください"),
         "game_drop": MessageLookupByLibrary.simpleMessage("ドロップ"),
         "game_experience": MessageLookupByLibrary.simpleMessage("EXP"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("絆"),

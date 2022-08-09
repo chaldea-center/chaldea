@@ -15,23 +15,19 @@ flutter create --platforms=windows .
 - [ ] command card: add svt assets
 - [ ] Summon prob calc
 - [ ] userdata: make all constructor params nullable, catch error when converting token 
-- [ ] TextTab with smaller height
 - [ ] remember svt tabs
-- [ ] duplicated svt
 - [ ] logger.level
 - [ ] l10n: related_card->related_card_on_stage
 - [ ] android: external SD card
 - [ ] filter_group_data: default value
 - [ ] svt icon: custom image
 - [ ] event shop: event item calc and plan
-- [ ] effect_search: add special target
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
 - [ ] more selectable text
 - [ ] remove apk install, add download link redirect
 - [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
-- [ ] gssr exp: sigma
 - [ ] routeTo: add this as argument
 
 ## Quest Related

@@ -324,7 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found":
-            MessageLookupByLibrary.simpleMessage("未加載資料包，請先前往遊戲數據頁面下載"),
+            MessageLookupByLibrary.simpleMessage("数据加载失败，请先前往游戏数据页面下载"),
         "game_drop": MessageLookupByLibrary.simpleMessage("掉落"),
         "game_experience": MessageLookupByLibrary.simpleMessage("經驗"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羈絆"),

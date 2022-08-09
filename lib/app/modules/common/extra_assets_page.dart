@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ExtraAssetsPage extends StatelessWidget {
@@ -72,6 +73,7 @@ class ExtraAssetsPage extends StatelessWidget {
       ),
       _oneGroup('equipFace', _getUrls(assets.equipFace), 50),
       _oneGroup('${S.current.sprites} (Mooncell)', spriteModels, 300),
+      spriteViewer(),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(
@@ -118,6 +120,55 @@ class ExtraAssetsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget? spriteViewer() {
+    if (assets.spriteModel.allUrls.isEmpty) return null;
+    Map<String, List<int>> ascensionModels = {};
+    Map<String, List<int>> costumeModels = {};
+    final reg = RegExp(r'(?:/Servants/)(\d+)(?:/)');
+    assets.spriteModel.ascension?.forEach((key, value) {
+      final id = reg.firstMatch(value)?.group(1);
+      if (id == null) return;
+      ascensionModels.putIfAbsent(id, () => []).add(key);
+    });
+    assets.spriteModel.costume?.forEach((key, value) {
+      final id = reg.firstMatch(value)?.group(1);
+      if (id == null) return;
+      costumeModels.putIfAbsent(id, () => []).add(key);
+    });
+
+    Widget _tile(String title, String key) {
+      return ListTile(
+        dense: true,
+        title: Text('ꔷ $title'),
+        trailing: const Icon(Icons.open_in_new, size: 18),
+        onTap: () => launch('https://katboi01.github.io/FateViewer/?id=$key',
+            external: true),
+      );
+    }
+
+    List<Widget> children = [];
+    ascensionModels.forEach((key, ascensions) {
+      children.add(
+          _tile('${S.current.ascension_short} ${ascensions.join("&")}', key));
+    });
+    costumeModels.forEach((key, costumeIds) {
+      children.add(_tile(
+          costumeIds
+              .map((e) => db.gameData.costumesById[e]?.lName.l ?? 'Costume $e')
+              .join('& '),
+          key));
+    });
+
+    return SimpleAccordion(
+      expanded: true,
+      headerBuilder: (context, _) =>
+          Text('${S.current.sprites} (katboi01\'s Fate Viewer)'),
+      expandElevation: 0,
+      contentBuilder: (context) =>
+          Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }

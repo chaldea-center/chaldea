@@ -225,7 +225,7 @@
   "free_quest_calculator_short": "Free速查",
   "gallery_tab_name": "首页",
   "game_account": "游戏账号",
-  "game_data_not_found": "未加载数据包，请先前往游戏数据页面下载",
+  "game_data_not_found": "数据加载失败，请先前往游戏数据页面下载",
   "game_drop": "掉落",
   "game_experience": "经验",
   "game_kizuna": "羁绊",
