@@ -612,7 +612,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ),
         ];
       },
-        
     );
   }
 

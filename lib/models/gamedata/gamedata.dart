@@ -400,7 +400,7 @@ class _ProcessedData {
         ...svt.classPassive,
         ...svt.appendPassive.map((e) => e.skill)
       ]) {
-        for (final func in NiceFunction.filterFuncs(
+        for (final func in NiceFunction.filterFuncs<BaseFunction>(
             funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           svtFuncs.add(func.funcType);
           svtBuffs.addAll(func.buffs.map((e) => e.type));
@@ -410,7 +410,7 @@ class _ProcessedData {
     }
     for (final ce in gameData.craftEssences.values) {
       for (final skill in ce.skills) {
-        for (final func in NiceFunction.filterFuncs(
+        for (final func in NiceFunction.filterFuncs<BaseFunction>(
             funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           ceFuncs.add(func.funcType);
           ceBuffs.addAll(func.buffs.map((e) => e.type));
@@ -420,7 +420,7 @@ class _ProcessedData {
     }
     for (final cc in gameData.commandCodes.values) {
       for (final skill in cc.skills) {
-        for (final func in NiceFunction.filterFuncs(
+        for (final func in NiceFunction.filterFuncs<BaseFunction>(
             funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           ccFuncs.add(func.funcType);
           ccBuffs.addAll(func.buffs.map((e) => e.type));
@@ -430,7 +430,7 @@ class _ProcessedData {
     }
     for (final mc in gameData.mysticCodes.values) {
       for (final skill in mc.skills) {
-        for (final func in NiceFunction.filterFuncs(
+        for (final func in NiceFunction.filterFuncs<BaseFunction>(
             funcs: skill.functions, includeTrigger: true, gameData: gameData)) {
           mcFuncs.add(func.funcType);
           mcBuffs.addAll(func.buffs.map((e) => e.type));

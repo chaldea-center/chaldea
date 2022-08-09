@@ -24,14 +24,14 @@ abstract class SkillOrTd implements RouteInfo {
   List<NiceFunction> get functions;
   SkillScript? get script;
 
-  List<NiceFunction> filteredFunction({
+  List<T> filteredFunction<T extends BaseFunction>({
     bool showPlayer = true,
     bool showEnemy = false,
     bool showNone = false,
     bool includeTrigger = false,
   }) {
-    return NiceFunction.filterFuncs(
-      funcs: functions,
+    return NiceFunction.filterFuncs<T>(
+      funcs: functions.cast(),
       showPlayer: showPlayer,
       showEnemy: showEnemy,
       showNone: showNone,

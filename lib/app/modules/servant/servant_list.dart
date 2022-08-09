@@ -506,7 +506,7 @@ class ServantListPageState extends State<ServantListPage>
     }
     if (filterData.effectType.options.isNotEmpty ||
         filterData.effectTarget.options.isNotEmpty) {
-      List<NiceFunction> funcs = [
+      List<BaseFunction> funcs = [
         if (filterData.effectScope.contain(SvtEffectScope.active))
           for (final skill in svt.skills)
             ...skill.filteredFunction(includeTrigger: true),

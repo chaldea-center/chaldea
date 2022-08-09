@@ -166,8 +166,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
     return _$NiceFunctionFromJson(json);
   }
 
-  static Iterable<NiceFunction> filterFuncs({
-    required List<NiceFunction> funcs,
+  static Iterable<T> filterFuncs<T extends BaseFunction>({
+    required Iterable<T> funcs,
     bool showPlayer = true,
     bool showEnemy = false,
     bool showNone = false,
@@ -175,20 +175,35 @@ class NiceFunction with RouteInfo implements BaseFunction {
     GameData? gameData,
   }) {
     gameData ??= db.gameData;
-    funcs = funcs.where((func) {
-      if (!showNone && func.funcType == FuncType.none) return false;
-      if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
-        return true;
+    List<T> filteredFuncs = funcs
+        .where((func) {
+          if (!showNone && func.funcType == FuncType.none) return false;
+          if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
+            return true;
+          }
+          bool player = func.funcTargetTeam == FuncApplyTarget.player;
+          if (func.funcTargetType.isEnemy) {
+            player = !player;
+          }
+          return player ? showPlayer : showEnemy;
+        })
+        .toList()
+        .cast<T>()
+        .toList(); // avoid type cast error
+    if (!includeTrigger) return filteredFuncs;
+    for (final func in List.of(filteredFuncs)) {
+      if (func is! NiceFunction) continue;
+      if (func.svals.isEmpty) continue;
+      if (T == BaseFunction) {
+        if (func.svals.first.DependFuncId != null) {
+          final dependFunc =
+              db.gameData.baseFunctions[func.svals.first.DependFuncId];
+          if (dependFunc != null) {
+            filteredFuncs.add(dependFunc as T);
+          }
+        }
       }
-      bool player = func.funcTargetTeam == FuncApplyTarget.player;
-      if (func.funcTargetType.isEnemy) {
-        player = !player;
-      }
-      return player ? showPlayer : showEnemy;
-    }).toList();
-    if (!includeTrigger) return funcs;
-    for (final func in List.of(funcs)) {
-      if (func.buffs.isEmpty || func.svals.isEmpty) continue;
+      if (func.buffs.isEmpty) continue;
       final trigger =
           kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
       if (trigger == null) continue;
@@ -196,8 +211,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
           ? gameData.baseTds[trigger.skill]
           : gameData.baseSkills[trigger.skill];
       if (skill == null) continue;
-      funcs.addAll(filterFuncs(
-        funcs: skill.functions,
+      filteredFuncs.addAll(filterFuncs<T>(
+        funcs: skill.functions.cast(),
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
         showNone: showNone,
@@ -205,7 +220,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
       ));
     }
 
-    return funcs;
+    return filteredFuncs;
   }
 }
 

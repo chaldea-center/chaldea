@@ -9,7 +9,7 @@ class SkillEffect {
   List<FuncType> funcTypes;
   List<BuffType> buffTypes;
   // Transl<String, String> Function(SkillEffect effect) name;
-  bool Function(NiceFunction func)? validate;
+  bool Function(BaseFunction func)? validate;
 
   SkillEffect(
     this.effectType, {
@@ -29,7 +29,7 @@ class SkillEffect {
     return Transl.funcType(funcTypes.first);
   }
 
-  bool match(NiceFunction func) {
+  bool match(BaseFunction func) {
     if (funcTypes.contains(func.funcType) ||
         func.buffs.any((buff) => buffTypes.contains(buff.type))) {
       if (validate != null) return validate!(func);

@@ -108,7 +108,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   @override
   bool filter(GameCardMixin card) {
-    List<NiceFunction> functions = [];
+    List<BaseFunction> functions = [];
     if (card is! MysticCode && !filterData.rarity.matchOne(card.rarity)) {
       return false;
     }
@@ -138,42 +138,46 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         return false;
       }
     }
+    Iterable<BaseFunction> _filterFunc(SkillOrTd skill) {
+      return NiceFunction.filterFuncs<BaseFunction>(
+        funcs: skill.functions,
+        showEnemy: true,
+        showNone: true,
+        includeTrigger: true,
+      );
+    }
 
     if (card is Servant) {
       bool _isScopeEmpty = filterData.effectScope.options.isEmpty;
       functions = [
         if (_isScopeEmpty ||
             filterData.effectScope.options.contains(SvtEffectScope.active))
-          for (final skill in card.skills)
-            ...skill.filteredFunction(includeTrigger: true),
+          for (final skill in card.skills) ..._filterFunc(skill),
         if (_isScopeEmpty ||
             filterData.effectScope.options.contains(SvtEffectScope.td))
-          for (final np in card.noblePhantasms)
-            ...np.filteredFunction(includeTrigger: true),
+          for (final np in card.noblePhantasms) ..._filterFunc(np),
         if (_isScopeEmpty ||
             filterData.effectScope.options.contains(SvtEffectScope.append))
-          for (final skill in card.appendPassive)
-            ...skill.skill.filteredFunction(includeTrigger: true),
+          for (final skill in card.appendPassive) ..._filterFunc(skill.skill),
         if (_isScopeEmpty ||
             filterData.effectScope.options.contains(SvtEffectScope.passive))
-          for (final skill in card.classPassive)
-            ...skill.filteredFunction(includeTrigger: true),
+          for (final skill in card.classPassive) ..._filterFunc(skill),
       ];
     } else if (card is CraftEssence) {
       functions = [
-        for (final skill in card.skills)
-          ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in card.skills) ..._filterFunc(skill),
       ];
     } else if (card is CommandCode) {
       functions = [
-        for (final skill in card.skills)
-          ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in card.skills) ..._filterFunc(skill),
       ];
     } else if (card is MysticCode) {
       functions = [
-        for (final skill in card.skills)
-          ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in card.skills) ..._filterFunc(skill),
       ];
+    }
+    if (card.collectionNo == 266) {
+      print('266: ${functions.any((e) => e.funcType == FuncType.lossNp)}');
     }
     functions.retainWhere((func) => filterData.effectTarget
             .matchOne(func.funcTargetType, compares: {

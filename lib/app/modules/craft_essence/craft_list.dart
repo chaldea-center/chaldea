@@ -177,7 +177,7 @@ class CraftListPageState extends State<CraftListPage>
 
     if (filterData.effectType.options.isNotEmpty ||
         filterData.effectTarget.options.isNotEmpty) {
-      List<NiceFunction> funcs = [
+      List<BaseFunction> funcs = [
         for (final skill in ce.skills)
           ...skill.filteredFunction(includeTrigger: true),
       ];

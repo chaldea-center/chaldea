@@ -155,7 +155,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     }
     if (filterData.effectType.options.isNotEmpty ||
         filterData.effectTarget.options.isNotEmpty) {
-      List<NiceFunction> funcs = [
+      List<BaseFunction> funcs = [
         for (final skill in cc.skills)
           ...skill.filteredFunction(includeTrigger: true),
       ];
