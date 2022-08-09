@@ -380,23 +380,24 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           items: pages,
           options: options,
         ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: DotsIndicator(
-            dotsCount: pages.length,
-            position: _curCarouselIndex.toDouble(),
-            decorator: const DotsDecorator(
-              color: Colors.white70,
-              spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+        if (pages.isNotEmpty)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: DotsIndicator(
+              dotsCount: pages.length,
+              position: _curCarouselIndex.toDouble(),
+              decorator: const DotsDecorator(
+                color: Colors.white70,
+                spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+              ),
+              onTap: (v) {
+                setState(() {
+                  _curCarouselIndex = v.toInt().clamp(0, pages.length - 1);
+                  _carouselController.animateToPage(_curCarouselIndex);
+                });
+              },
             ),
-            onTap: (v) {
-              setState(() {
-                _curCarouselIndex = v.toInt().clamp(0, pages.length - 1);
-                _carouselController.animateToPage(_curCarouselIndex);
-              });
-            },
           ),
-        ),
       ],
     );
   }

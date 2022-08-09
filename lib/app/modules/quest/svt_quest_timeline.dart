@@ -27,7 +27,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   @override
   void initState() {
     super.initState();
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       for (final questId in svt.relateQuestIds) {
         final quest = db.gameData.quests[questId];
         if (quest != null) {

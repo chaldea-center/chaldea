@@ -94,7 +94,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
       ])
         for (final rarity in [1, 3, 5]) svtClass.icon(rarity),
       for (final item in db.gameData.items.values) item.borderedIcon,
-      for (final svt in db.gameData.servants.values) svt.customIcon,
+      for (final svt in db.gameData.servantsNoDup.values) svt.customIcon,
       for (final costume in db.gameData.costumes.values) costume.icon,
       for (final ce in db.gameData.craftEssences.values) ce.borderedIcon,
       for (final cc in db.gameData.commandCodes.values) cc.borderedIcon,

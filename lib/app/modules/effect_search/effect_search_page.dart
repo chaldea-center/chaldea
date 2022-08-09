@@ -30,7 +30,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     final type = (options as _BuffOptions).type;
     switch (type) {
       case SearchCardType.svt:
-        return db.gameData.servants.values;
+        return db.gameData.servantsNoDup.values;
       case SearchCardType.ce:
         return db.gameData.craftEssences.values;
       case SearchCardType.cc:

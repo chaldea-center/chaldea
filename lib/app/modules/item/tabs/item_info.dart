@@ -130,7 +130,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   @override
   void initState() {
     super.initState();
-    svtCoinOwner = db.gameData.servants.values
+    svtCoinOwner = db.gameData.servantsNoDup.values
         .firstWhereOrNull((svt) => svt.coin?.item.id == itemId);
     if (svtCoinOwner != null) {
       _summonCoin = svtCoinOwner!.coin!.summonNum;

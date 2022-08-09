@@ -271,8 +271,8 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
         ce.valentineEquipOwner,
         ...ce.extra.characters
       ]) {
-        final svt =
-            db.gameData.servantsById[svtId] ?? db.gameData.servants[svtId];
+        final svt = db.gameData.servantsById[svtId] ??
+            db.gameData.servantsWithDup[svtId];
         if (svt == null) continue;
         for (final name in svt.allNames) {
           yield* getAllKeys(Transl.svtNames(name));

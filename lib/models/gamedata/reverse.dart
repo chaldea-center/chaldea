@@ -18,7 +18,7 @@ class ReverseGameData {
     bool append = true,
     bool extraPassive = true,
   }) sync* {
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       if ((active && svt.skills.any((e) => e.id == skillId)) ||
           (passive && svt.classPassive.any((e) => e.id == skillId)) ||
           (append && svt.appendPassive.any((e) => e.skill.id == skillId)) ||
@@ -53,7 +53,7 @@ class ReverseGameData {
   }
 
   static Iterable<Servant> td2Svt(int tdId) sync* {
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       if (svt.noblePhantasms.any((e) => e.id == tdId)) {
         yield svt;
       }

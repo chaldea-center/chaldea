@@ -150,7 +150,7 @@ class _SQTableTabState extends State<SQTableTab> {
                       for (final svt in summon.shownSvts)
                         WidgetSpan(
                             child: GameCardMixin.cardIconBuilder(
-                          icon: db.gameData.servants[svt]?.borderedIcon,
+                          icon: db.gameData.servantsNoDup[svt]?.borderedIcon,
                           context: context,
                           height: _summonHeight,
                         )),

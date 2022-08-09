@@ -203,15 +203,15 @@ class PlanDataSheetConverter {
     data.add(notes);
     List<int> collections = [];
     if (includeAll) {
-      collections = db.gameData.servants.keys.toList();
+      collections = db.gameData.servantsWithDup.keys.toList();
     } else if (includeFavorite) {
-      collections = db.gameData.servants.keys
+      collections = db.gameData.servantsWithDup.keys
           .where((key) => db.curUser.svtStatusOf(key).favorite)
           .toList();
     }
     collections.sort();
     for (final key in collections) {
-      data.add(svtToCsv(key, db.gameData.servants[key]?.lName.l ?? "",
+      data.add(svtToCsv(key, db.gameData.servantsWithDup[key]?.lName.l ?? "",
           db.curUser.svtStatusOf(key), db.curUser.svtPlanOf(key)));
     }
     return data;

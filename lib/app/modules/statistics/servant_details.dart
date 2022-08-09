@@ -27,7 +27,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   @override
   Widget build(BuildContext context) {
     final data = {
-      for (final svt in db.gameData.servants.values)
+      for (final svt in db.gameData.servantsWithDup.values)
         svt: db.itemCenter.getSvtCostDetail(svt.collectionNo,
             typeFilter.radioValue ?? SvtMatCostDetailType.demands)
     };

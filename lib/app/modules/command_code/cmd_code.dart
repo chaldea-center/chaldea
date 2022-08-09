@@ -295,7 +295,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   List<Widget> _equippedSvts(BuildContext context) {
     List<Widget> svts = [];
     db.curUser.servants.forEach((svtNo, status) {
-      final svt = db.gameData.servants[svtNo];
+      final svt = db.gameData.servantsWithDup[svtNo];
       if (status.equipCmdCodes.contains(cc.collectionNo) && svt != null) {
         svts.add(svt.iconBuilder(context: context, height: 48));
       }
@@ -307,7 +307,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   Widget localizeCharacters(BuildContext context) {
     List<Widget> children = [];
     for (final svtId in cc.extra.characters) {
-      final svt = db.gameData.servants[svtId];
+      final svt = db.gameData.servantsNoDup[svtId];
       if (svt == null) {
         children.add(Text('SVT $svtId'));
       } else {

@@ -172,6 +172,9 @@ class Servant with GameCardMixin {
   List<NiceTd> noblePhantasms;
   NiceLore profile;
 
+  int get originalCollectionNo =>
+      db.gameData.servantsById[id]?.collectionNo ?? collectionNo;
+
   Servant({
     required this.id,
     required this.collectionNo,
@@ -233,6 +236,65 @@ class Servant with GameCardMixin {
     preprocess();
   }
 
+  Servant copyWith({int? collectionNo}) {
+    return Servant(
+      id: id,
+      collectionNo: collectionNo ?? this.collectionNo,
+      name: name,
+      ruby: ruby,
+      battleName: battleName,
+      className: className,
+      type: type,
+      flag: flag,
+      rarity: rarity,
+      cost: cost,
+      lvMax: lvMax,
+      extraAssets: extraAssets,
+      gender: gender,
+      attribute: attribute,
+      traits: traits,
+      starAbsorb: starAbsorb,
+      starGen: starGen,
+      instantDeathChance: instantDeathChance,
+      cards: cards,
+      hitsDistribution: hitsDistribution,
+      cardDetails: cardDetails,
+      atkBase: atkBase,
+      atkMax: atkMax,
+      hpBase: hpBase,
+      hpMax: hpMax,
+      relateQuestIds: relateQuestIds,
+      trialQuestIds: trialQuestIds,
+      growthCurve: growthCurve,
+      atkGrowth: atkGrowth,
+      hpGrowth: hpGrowth,
+      bondGrowth: bondGrowth,
+      expGrowth: expGrowth,
+      expFeed: expFeed,
+      bondEquip: bondEquip,
+      valentineEquip: valentineEquip,
+      valentineScript: valentineScript,
+      bondEquipOwner: bondEquipOwner,
+      valentineEquipOwner: valentineEquipOwner,
+      ascensionAdd: ascensionAdd,
+      traitAdd: traitAdd,
+      svtChange: svtChange,
+      ascensionImage: ascensionImage,
+      ascensionMaterials: ascensionMaterials,
+      skillMaterials: skillMaterials,
+      appendSkillMaterials: appendSkillMaterials,
+      costumeMaterials: costumeMaterials,
+      coin: coin,
+      script: script,
+      skills: skills,
+      classPassive: classPassive,
+      extraPassive: extraPassive,
+      appendPassive: appendPassive,
+      noblePhantasms: noblePhantasms,
+      profile: profile,
+    );
+  }
+
   factory Servant.fromJson(Map<String, dynamic> json) =>
       _$ServantFromJson(json);
   @JsonKey(ignore: true)
@@ -263,7 +325,7 @@ class Servant with GameCardMixin {
   }
 
   @override
-  String get route => Routes.servantI(id);
+  String get route => Routes.servantI(collectionNo > 0 ? collectionNo : id);
 
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
@@ -379,8 +441,8 @@ class Servant with GameCardMixin {
     };
   }
 
-  ServantExtra get extra => db.gameData.wiki.servants[collectionNo] ??=
-      ServantExtra(collectionNo: collectionNo);
+  ServantExtra get extra => db.gameData.wiki.servants[originalCollectionNo] ??=
+      ServantExtra(collectionNo: originalCollectionNo);
 
   Set<int> get traitsAll {
     if (_traitsAll != null) return _traitsAll!;

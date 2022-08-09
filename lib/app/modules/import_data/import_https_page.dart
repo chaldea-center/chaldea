@@ -496,17 +496,17 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               },
               label: Text(S.current.import_http_body_locked),
             ),
-            CheckboxWithLabel(
-              value: _allowDuplicated,
-              onChanged: (v) {
-                EasyLoading.showInfo(S.current.not_implemented);
-                // setState(() {
-                //   _allowDuplicated = v ?? _allowDuplicated;
-                //   _refreshValidSvts();
-                // });
-              },
-              label: Text(S.current.import_http_body_duplicated),
-            ),
+            // CheckboxWithLabel(
+            //   value: _allowDuplicated,
+            //   onChanged: (v) {
+            //     EasyLoading.showInfo(S.current.not_implemented);
+            //     // setState(() {
+            //     //   _allowDuplicated = v ?? _allowDuplicated;
+            //     //   _refreshValidSvts();
+            //     // });
+            //   },
+            //   label: Text(S.current.import_http_body_duplicated),
+            // ),
             ElevatedButton(
               onPressed: replacedResponse == null
                   ? null

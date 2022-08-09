@@ -219,11 +219,11 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     );
   }
 
-  Widget _itemIcon(Item item) {
+  Widget _itemIcon(Item? item) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CachedImage(
-        imageUrl: item.borderedIcon,
+        imageUrl: item?.borderedIcon,
         width: 132 * 0.25,
         height: 144 * 0.25,
       ),
@@ -240,7 +240,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           _cardIcon(expCardRarity),
           _itemIcon(Items.qp),
           _itemIcon(Items.grail),
-          _itemIcon(db.gameData.servants[2]!.coin!.item),
+          _itemIcon(db.gameData.servantsNoDup[1]?.coin!.item),
         ],
       )
     ];
@@ -315,7 +315,7 @@ class ExpUpData {
     grailStages.clear();
     coinStages.clear();
 
-    final svt = db.gameData.servants.values.firstWhere(
+    final svt = db.gameData.servantsNoDup.values.firstWhere(
         (svt) => svt.rarity == rarity && svt.isUserSvt && svt.collectionNo > 1);
 
     // level->ascension

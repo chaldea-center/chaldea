@@ -48,7 +48,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     for (var block in [...data.svts, ...data.crafts]) {
       for (int i = 0; i < block.ids.length; i++) {
         var card = block.isSvt
-            ? db.gameData.servants[block.ids[i]]
+            ? db.gameData.servantsNoDup[block.ids[i]]
             : db.gameData.craftEssences[block.ids[i]];
         double value = acc + i * block.weight / block.ids.length;
         if (card != null) probabilityList.add(MapEntry(card, value));
@@ -250,7 +250,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (!_expanded && !block.display) continue;
       double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
-        Servant? svt = db.gameData.servants[id];
+        Servant? svt = db.gameData.servantsNoDup[id];
         if (svt == null) return;
         svtRow.add(SummonUtil.buildCard(
           context: context,
@@ -662,7 +662,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // print(s);
   }
 
-  Servant? svtFromId(int id) => db.gameData.servants[id];
+  Servant? svtFromId(int id) => db.gameData.servantsNoDup[id];
 
   CraftEssence? craftFromId(int id) => db.gameData.craftEssences[id];
 
@@ -676,7 +676,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     result ??= {};
     double weight = totalWeight / ids.length;
     for (var id in ids) {
-      var key = (isSvt ? db.gameData.servants : db.gameData.craftEssences)[id];
+      var key =
+          (isSvt ? db.gameData.servantsNoDup : db.gameData.craftEssences)[id];
       if (key == null) continue;
       if (skipExistKey) {
         result.putIfAbsent(key, () => weight);

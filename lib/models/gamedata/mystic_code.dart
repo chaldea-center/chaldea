@@ -43,7 +43,7 @@ class MysticCode with GameCardMixin {
 
   @override
   @Deprecated("Mystic Code doesn't have rarity")
-  int get rarity => throw UnimplementedError();
+  int get rarity => 5;
 
   @override
   Transl<String, String> get lName => Transl.mcNames(name);

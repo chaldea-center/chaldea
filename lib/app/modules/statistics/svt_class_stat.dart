@@ -31,7 +31,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     rarityOwn = List.filled(6, 0);
     rarity999 = List.filled(6, 0);
 
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       if (!svt.isUserSvt) continue;
       rarityTotal[svt.rarity] += 1;
       if (!priorityFilter.matchOne(svt.status.priority)) {
@@ -50,7 +50,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   void _calcServantClass() {
     svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA],
         value: (_) => 0);
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       final status = db.curUser.svtStatusOf(svt.collectionNo);
       if (!status.favorite) continue;
       if (raritySelected.contains(true) && !raritySelected[svt.rarity]) {

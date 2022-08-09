@@ -42,7 +42,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
         ],
       ),
     ];
-    final sortedServants = sortSvts(db.gameData.servants.values.toList());
+    final sortedServants = sortSvts(db.gameData.servantsNoDup.values.toList());
     for (final svt in sortedServants) {
       bool svtFavorite = db.curUser.svtStatusOf(svt.collectionNo).favorite;
       if (_favorite && !svtFavorite) continue;

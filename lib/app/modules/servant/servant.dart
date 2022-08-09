@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -71,7 +72,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   void _fetchSvt() async {
     _svt = widget.svt ??
-        db.gameData.servants[widget.id] ??
+        db.gameData.servantsWithDup[widget.id] ??
         db.gameData.servantsById[widget.id];
     final id = widget.svt?.id ?? widget.id;
     if (id == null || _svt != null) return;
@@ -570,16 +571,32 @@ class ServantDetailPageState extends State<ServantDetailPage>
             mooncell: svt.extra.mcLink,
             fandom: svt.extra.fandomLink,
           ),
-          // if (svt.isUserSvt)
-          //   PopupMenuItem<String>(
-          //     child: Text(S.current.create_duplicated_svt),
-          //     value: 'duplicate_svt', // push new page
-          //   ),
-          // if (svt.collectionNo != svt.originNo)
-          //   PopupMenuItem<String>(
-          //     child: Text(S.current.remove_duplicated_svt),
-          //     value: 'delete_duplicated', //pop cur page
-          //   ),
+          if (svt.isUserSvt)
+            PopupMenuItem<String>(
+              onTap: () async {
+                final newSvtId = db.curUser.addDupServant(svt);
+                print('add $newSvtId');
+                if (newSvtId == null) {
+                  EasyLoading.showError(S.current.failed);
+                } else {
+                  db.itemCenter.init();
+                  db.notifyAppUpdate();
+                  await Future.delayed(const Duration(seconds: 1));
+                  router.push(url: Routes.servantI(newSvtId));
+                }
+              },
+              child: Text(S.current.create_duplicated_svt),
+            ),
+          if (svt.collectionNo != svt.originalCollectionNo)
+            PopupMenuItem<String>(
+              onTap: () {
+                db.curUser.dupServantMapping.remove(svt.collectionNo);
+                db.itemCenter.init();
+                db.notifyAppUpdate();
+                Navigator.pop(context);
+              },
+              child: Text(S.current.remove_duplicated_svt),
+            ),
           // if (_tabController.index == 0)
           if (svt.isUserSvt)
             PopupMenuItem<String>(
@@ -595,28 +612,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ),
         ];
       },
-      onSelected: (select) {
-        if (select == 'duplicate_svt') {
-          // final newSvt = db.curUser.addDuplicatedForServant(svt);
-          // print('add ${newSvt.no}');
-          // if (newSvt == svt) {
-          //   const SimpleCancelOkDialog(
-          //     title: Text('复制从者失败'),
-          //     content: Text('同一从者超过999个上限'),
-          //   ).showDialog(context);
-          // } else {
-          //    router.pushPage(
-          //     ServantDetailPage(newSvt),
-          //     detail: true,
-          //   );
-          //   db.notifyDbUpdate();
-          // }
-        } else if (select == 'delete_duplicated') {
-          // db.curUser.removeDuplicatedServant(svt.no);
-          // db.notifyDbUpdate();
-          // Navigator.pop(context);
-        }
-      },
+        
     );
   }
 

@@ -34,7 +34,7 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState extends State<ServantListPage>
     with SearchableListState<Servant, ServantListPage> {
   @override
-  Iterable<Servant> get wholeData => db.gameData.servants.values;
+  Iterable<Servant> get wholeData => db.gameData.servantsWithDup.values;
 
   Set<Servant> hiddenPlanServants = {};
 
@@ -983,14 +983,17 @@ class ServantListPageState extends State<ServantListPage>
         await AtlasApi.basicServants(expireAfter: Duration.zero) ?? [];
     int _added = 0;
     for (final basicSvt in servants) {
-      if (db.gameData.servants.containsKey(basicSvt.collectionNo)) continue;
+      if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo)) {
+        continue;
+      }
       final svt = await AtlasApi.svt(basicSvt.id);
       if (svt == null) continue;
-      db.gameData.servants[svt.collectionNo] = svt;
+      db.gameData.servantsNoDup[svt.collectionNo] = svt;
       _added += 1;
     }
     if (_added > 0) {
       db.gameData.preprocess();
+      db.itemCenter.init();
       db.notifyAppUpdate();
       EasyLoading.showSuccess('+ $_added ${S.current.servant} !');
     }

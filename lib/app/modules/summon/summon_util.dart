@@ -21,7 +21,7 @@ class SummonUtil {
       children: block.ids.map((id) {
         Widget child;
         if (block.isSvt) {
-          final svt = db.gameData.servants[id];
+          final svt = db.gameData.servantsNoDup[id];
           if (svt == null) return Text('No.$id');
           child = svtAvatar(
             context: context,
@@ -173,7 +173,7 @@ class SummonUtil {
     List<String> names =
         castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
     return names.map((e) {
-      String name2 = db.gameData.servants.values
+      String name2 = db.gameData.servantsNoDup.values
               .firstWhereOrNull((svt) =>
                   castBracket(svt.extra.mcLink) == e ||
                   castBracket(svt.lName.cn) == e)
@@ -185,7 +185,7 @@ class SummonUtil {
               .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
         List<String> fragments = e.split('(');
         fragments[0] = fragments[0].trim();
-        fragments[0] = db.gameData.servants.values
+        fragments[0] = db.gameData.servantsNoDup.values
                 .firstWhereOrNull((svt) =>
                     castBracket(svt.extra.mcLink) == fragments[0] ||
                     castBracket(svt.lName.cn) == fragments[0] ||

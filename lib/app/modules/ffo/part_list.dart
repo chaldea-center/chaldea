@@ -93,7 +93,7 @@ class FfoPartListPageState extends State<FfoPartListPage>
   Widget listItemBuilder(FfoSvtPart part) {
     String? name;
     if (part.collectionNo < 400) {
-      name = db.gameData.servants[part.collectionNo]?.lName.l;
+      name = db.gameData.servantsNoDup[part.collectionNo]?.lName.l;
     }
     name ??= part.svt?.name ?? 'Svt ${part.collectionNo}';
     final svtClass =
@@ -166,7 +166,7 @@ class FfoPartListPageState extends State<FfoPartListPage>
       yield* SearchUtil.getAllKeys(Transl.svtNames(part.svt!.name));
     }
     final originSvt = part.collectionNo < 400
-        ? db.gameData.servants[part.collectionNo]
+        ? db.gameData.servantsNoDup[part.collectionNo]
         : null;
     if (originSvt != null) {
       for (final name in originSvt.allNames) {

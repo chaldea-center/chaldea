@@ -31,7 +31,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (final svt in db.gameData.servants.values.toList()
+    for (final svt in db.gameData.servantsNoDup.values.toList()
       ..sort2((e) => e.collectionNo)) {
       if (filter.matchOne(_SEScope.active)) {
         children.addAll(checkSkills(svt, svt.skills));

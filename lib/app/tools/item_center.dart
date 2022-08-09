@@ -48,6 +48,7 @@ class ItemCenter {
   Map<int, int> itemLeft = {};
 
   void init() {
+    db.gameData.updateDupServants(db.curUser.dupServantMapping);
     _validItems.clear();
     final List<int> _svtIds = [];
     for (final item in db.gameData.items.values) {
@@ -60,7 +61,7 @@ class ItemCenter {
     _validItems.addAll(Items.specialSvtMat);
     _validItems = _validItems.toSet().toList();
     // svt
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsWithDup.values) {
       if (svt.isUserSvt) _svtIds.add(svt.collectionNo);
     }
     _svtCur = _MatrixManager(
@@ -125,7 +126,7 @@ class ItemCenter {
 
   void _updateOneSvt(int svtId, {bool max = false}) {
     final svtIndex = _svtCur._dim1Map[svtId];
-    final svt = db.gameData.servants[svtId];
+    final svt = db.gameData.servantsWithDup[svtId];
     if (svt == null || svtIndex == null) return;
     final cur = user.svtStatusOf(svtId).cur;
     final consumed = calcOneSvt(

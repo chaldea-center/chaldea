@@ -10,7 +10,7 @@ class TraitServantTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Servant> servants = db.gameData.servants.values
+    List<Servant> servants = db.gameData.servantsNoDup.values
         .where((svt) => svt.traitsAll.contains(id))
         .toList();
     servants.sort2((e) => e.collectionNo);

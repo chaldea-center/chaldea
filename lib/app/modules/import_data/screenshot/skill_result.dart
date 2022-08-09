@@ -92,7 +92,7 @@ class _SkillResultTabState extends State<SkillResultTab>
   }
 
   Widget _buildDetailRow(SkillDetail item) {
-    final svt = db.gameData.servants[item.svtId];
+    final svt = db.gameData.servantsNoDup[item.svtId];
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

@@ -41,8 +41,9 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 // part 'helpers/adapters.dart';
 
 @JsonSerializable()
-class GameData {
+class GameData with _GameDataExtra {
   DataVersion version;
+  @protected
   Map<int, Servant> servants;
   Map<int, CraftEssence> craftEssences;
   Map<int, CommandCode> commandCodes;
@@ -64,13 +65,8 @@ class GameData {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
-  @JsonKey(ignore: true)
-  Map<int, Buff> baseBuffs;
 
-  @JsonKey(ignore: true)
-  late _ProcessedData others;
-  @JsonKey(ignore: true)
-  Map<int, NiceCostume> costumes = {};
+  Map<int, Servant> get servantsNoDup => servants;
 
   GameData({
     DataVersion? version,
@@ -114,8 +110,7 @@ class GameData {
         dropRate = dropRate ?? DropRateData(),
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
-        baseFunctions = baseFunctions ?? {},
-        baseBuffs = {} {
+        baseFunctions = baseFunctions ?? {} {
     for (final func in this.baseFunctions.values) {
       for (final buff in func.buffs) {
         baseBuffs[buff.id] = buff;
@@ -124,21 +119,8 @@ class GameData {
     preprocess();
   }
 
-  @JsonKey(ignore: true)
-  late Map<int, NiceWar> mainStories;
-  @JsonKey(ignore: true)
-  late Map<int, NiceSpot> spots;
-  @JsonKey(ignore: true)
-  late Map<int, Quest> quests;
-
-  @JsonKey(ignore: true)
-  late Map<int, Servant> servantsById;
-  @JsonKey(ignore: true)
-  late Map<int, CraftEssence> craftEssencesById;
-  @JsonKey(ignore: true)
-  late Map<int, CommandCode> commandCodesById;
-
   void preprocess() {
+    updateDupServants({});
     items[Items.grailToCrystalId] = Item(
       id: Items.grailToCrystalId,
       name: '聖杯→伝承結晶',
@@ -179,6 +161,16 @@ class GameData {
       event.calcItems(this);
     }
     others = _ProcessedData(this);
+  }
+
+  void updateDupServants(Map<int, int> dupServants) {
+    servantsWithDup = Map.of(servants);
+    dupServants.forEach((customId, originId) {
+      if (servantsWithDup.containsKey(customId)) return;
+      final svt = servantsWithDup[originId];
+      if (svt == null) return;
+      servantsWithDup[customId] = svt.copyWith(collectionNo: customId);
+    });
   }
 
   QuestPhase? getQuestPhase(int id, [int? phase]) {
@@ -276,6 +268,29 @@ class GameData {
       ),
     );
   }
+}
+
+mixin _GameDataExtra {
+  @JsonKey(ignore: true)
+  Map<int, Buff> baseBuffs = {};
+  @JsonKey(ignore: true)
+  late _ProcessedData others;
+  @JsonKey(ignore: true)
+  Map<int, NiceCostume> costumes = {};
+  @JsonKey(ignore: true)
+  late Map<int, NiceWar> mainStories;
+  @JsonKey(ignore: true)
+  late Map<int, NiceSpot> spots;
+  @JsonKey(ignore: true)
+  late Map<int, Quest> quests;
+  @JsonKey(ignore: true)
+  late Map<int, Servant> servantsById;
+  @JsonKey(ignore: true)
+  late Map<int, CraftEssence> craftEssencesById;
+  @JsonKey(ignore: true)
+  late Map<int, CommandCode> commandCodesById;
+  @JsonKey(ignore: true)
+  Map<int, Servant> servantsWithDup = {};
 }
 
 extension _AsyncIterMap<K, V> on Map<K, V> {

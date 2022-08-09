@@ -52,6 +52,32 @@ class _ServantFilterPageState
                 update();
               },
             ),
+            FilterGroup<FavoriteState>(
+              options: FavoriteState.values,
+              combined: true,
+              values: FilterRadioData.nonnull(filterData.favorite),
+              padding: EdgeInsets.zero,
+              optionBuilder: (v) {
+                final icon = [
+                  Icons.remove_circle_outline, // other
+                  Icons.favorite, // owned
+                  Icons.favorite_border, // planned
+                ][v.index];
+                final tootip = [
+                  S.current.general_all,
+                  S.current.item_own,
+                  S.current.general_others
+                ][v.index];
+                return Tooltip(
+                  message: tootip,
+                  child: Icon(icon, size: 16),
+                );
+              },
+              onFilterChanged: (v, _) {
+                filterData.favorite = v.radioValue!;
+                update();
+              },
+            ),
           ],
         ),
         getGroup(header: S.of(context).filter_sort, children: [

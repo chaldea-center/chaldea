@@ -38,7 +38,7 @@ class _CvListPageState extends State<CvListPage>
       }
     }
 
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       _update<Servant>(svtMap, svt.profile.cv, svt);
     }
     for (final ce in db.gameData.craftEssences.values) {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -76,7 +78,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         if (block.rarity == 5 /*|| (block.rarity == 4 && showSR)*/) {
           children.add(SHeader(SummonUtil.summonNameLocalize(data.title)));
           for (final svtId in block.ids) {
-            final svt = db.gameData.servants[svtId];
+            final svt = db.gameData.servantsNoDup[svtId];
             if (svt == null) continue;
             children.add(ListTile(
               leading: Padding(
@@ -166,6 +168,20 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       _ExpResult _result = _ExpResult(data, block);
       _result.exp =
           Maths.sum(block.ids.map((id) => scoreOf(id))) / block.ids.length;
+      if (block.ids.length < 2) {
+        _result.sd = 0;
+      } else {
+        final scores = block.ids.map((e) => scoreOf(e)).toList();
+        double meanA = Maths.sum(scores) / scores.length;
+        double variance = 0.0;
+        for (var el in scores) {
+          variance += (el - meanA) * (el - meanA);
+        }
+        variance /= scores.length - 1;
+        _result.sd = sqrt(variance);
+      }
+
+      // return temp / (a.length - 1);
       _result.best5 = block.ids.where((id) => scoreOf(id) == 5).length;
       _result.worst1 = block.ids.where((id) => scoreOf(id) == 1).length;
       _result.moreThan =
@@ -200,7 +216,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           spacing: 2,
           runSpacing: 2,
           children: _result.block.ids.map((id) {
-            final svt = db.gameData.servants[id];
+            final svt = db.gameData.servantsNoDup[id];
             if (svt == null) return Text('ID $id');
             return SummonUtil.svtAvatar(
               context: context,
@@ -230,7 +246,12 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           overflow: TextOverflow.visible,
           child: Row(
             children: [
-              Expanded(child: Text(_result.exp.toStringAsFixed(2))),
+              Expanded(
+                child: Text(
+                  '${_result.exp.toStringAsFixed(2)}\n±${_result.sd.toStringAsFixed(2)}',
+                  textAlign: TextAlign.center,
+                ),
+              ),
               Expanded(
                 child: Text(
                   '${_toPercent(_result.pBest5)}\n${_result.best5}/$n',
@@ -400,6 +421,7 @@ class _ExpResult {
   SubSummon data;
   ProbGroup block;
   double exp = 0;
+  double sd = 0;
   int best5 = 0;
   int worst1 = 0;
   int moreThan = 0;

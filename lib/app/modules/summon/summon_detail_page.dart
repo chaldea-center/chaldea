@@ -310,7 +310,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             children: pickups
                 .map((id) => SummonUtil.svtAvatar(
                       context: context,
-                      card: db.gameData.servants[id],
+                      card: db.gameData.servantsNoDup[id],
                       star: summon.hasSinglePickupSvt(id),
                       favorite: db.curUser.svtStatusOf(id).favorite,
                     ))
@@ -344,7 +344,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           children: svtIds.entries
               .map((entry) => SummonUtil.svtAvatar(
                   context: context,
-                  card: db.gameData.servants[entry.key],
+                  card: db.gameData.servantsNoDup[entry.key],
                   star: entry.value,
                   favorite: db.curUser.svtStatusOf(entry.key).favorite))
               .toList(),

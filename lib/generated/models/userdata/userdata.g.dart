@@ -65,6 +65,11 @@ User _$UserFromJson(Map json) => $checkedCreate(
                         SvtStatus.fromJson(
                             Map<String, dynamic>.from(e as Map))),
                   )),
+          dupServantMapping: $checkedConvert(
+              'dupServantMapping',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
           plans: $checkedConvert(
               'plans',
               (v) => (v as List<dynamic>?)
@@ -120,6 +125,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'isGirl': instance.isGirl,
       'region': _$RegionEnumMap[instance.region],
+      'dupServantMapping':
+          instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
       'servants':
           instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'plans': instance.plans.map((e) => e.toJson()).toList(),

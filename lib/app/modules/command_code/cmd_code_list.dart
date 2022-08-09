@@ -245,7 +245,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       yield* getAllKeys(Transl.illustratorNames(code.illustrator));
       for (final svtId in code.extra.characters) {
         final svt =
-            db.gameData.servantsById[svtId] ?? db.gameData.servants[svtId];
+            db.gameData.servantsById[svtId] ?? db.gameData.servantsNoDup[svtId];
         if (svt == null) continue;
         for (final name in svt.allNames) {
           yield* getAllKeys(Transl.svtNames(name));

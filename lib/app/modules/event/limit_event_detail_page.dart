@@ -72,7 +72,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     );
     if (db.gameData.craftEssences.values
             .any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
-        db.gameData.servants.values
+        db.gameData.servantsNoDup.values
             .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }

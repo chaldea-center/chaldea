@@ -70,7 +70,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
     Map<int, BaseSkill> eventSkills = {};
     Map<int, List<Servant>> svts = {};
 
-    for (final svt in db.gameData.servants.values) {
+    for (final svt in db.gameData.servantsNoDup.values) {
       for (final skill in svt.extraPassive) {
         if (skill.isEventSkill(event.id)) {
           svts.putIfAbsent(skill.id, () => []).add(svt);

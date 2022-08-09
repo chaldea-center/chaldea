@@ -115,7 +115,7 @@ class FfoSvt {
   String get shownName {
     String? _name;
     if (collectionNo < 400) {
-      _name = db.gameData.servants[collectionNo]?.lName.l;
+      _name = db.gameData.servantsNoDup[collectionNo]?.lName.l;
     }
     return _name ?? Transl.svtNames(name).l;
   }

@@ -122,7 +122,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
         for (final id in List.of(user.servants.keys)..sort())
           if (user.servants[id]!.favorite)
             () {
-              final svt = db.gameData.servants[id];
+              final svt = db.gameData.servantsNoDup[id];
               final status = user.servants[id]!;
               final cur = status.cur;
               final plan = user.plans.getOrNull(_curPlanNo)?.servants[id];

@@ -130,7 +130,7 @@ class _DescriptorWrapper extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: cell,
             );
-            if (selected != null && selected! - 1 == j) {
+            if (cellIndex == 0 && selected != null && selected! - 1 == j) {
               cell = DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(

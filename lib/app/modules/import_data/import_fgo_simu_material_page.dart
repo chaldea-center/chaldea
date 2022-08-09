@@ -300,7 +300,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
           if (webcrowId < 149) {
             svtId ??= webcrowId;
           }
-          final svt = db.gameData.servants[svtId];
+          final svt = db.gameData.servantsNoDup[svtId];
           if (svt == null || row.length < 9) {
             _ignoredSvtIds.add(webcrowId);
             continue;

@@ -216,6 +216,7 @@ class User {
   bool isGirl;
 
   Region region;
+  Map<int, int> dupServantMapping; // <new id, original id>
   Map<int, SvtStatus> servants;
   List<UserPlan> plans;
   bool sameEventPlan;
@@ -242,6 +243,7 @@ class User {
     this.isGirl = true,
     this.region = Region.jp,
     Map<int, SvtStatus>? servants,
+    Map<int, int>? dupServantMapping,
     List<UserPlan>? plans,
     this.sameEventPlan = true,
     int curSvtPlanNo = 0,
@@ -253,6 +255,7 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
   })  : servants = servants ?? {},
+        dupServantMapping = dupServantMapping ?? {},
         plans = List.generate(
             kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
         _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
@@ -278,7 +281,7 @@ class User {
 
   void ensurePlanLarger() {
     curSvtPlan.forEach((key, plan) {
-      plan.validate(servants[key]?.cur, db.gameData.servants[key]);
+      plan.validate(servants[key]?.cur, db.gameData.servantsWithDup[key]);
     });
   }
 
@@ -306,12 +309,12 @@ class User {
     curSvtPlanNo = curSvtPlanNo.clamp2(0, plans.length - 1);
     servants.values.forEach((e) => e.validate());
     for (final key in servants.keys) {
-      servants[key]!.validate(db.gameData.servants[key]);
+      servants[key]!.validate(db.gameData.servantsWithDup[key]);
     }
     for (final group in plans) {
       for (final plan in group.servants.entries) {
-        plan.value
-            .validate(servants[plan.key]?.cur, db.gameData.servants[plan.key]);
+        plan.value.validate(
+            servants[plan.key]?.cur, db.gameData.servantsWithDup[plan.key]);
       }
     }
   }
@@ -338,6 +341,20 @@ class User {
     freeLPParams.planItemWeights = sortDict(freeLPParams.planItemWeights);
     freeLPParams.blacklist = (freeLPParams.blacklist.toList()..sort()).toSet();
     freeLPParams.extraCols.sort();
+  }
+
+  int? addDupServant(Servant svt) {
+    // collectionNo: 1-4
+    // id: 6-7
+    // dup: 8: 1xxxxxii
+    int minId = 10000000 + svt.originalCollectionNo * 100 + 1;
+    int maxId = minId + 98;
+    for (int id = minId; id < maxId; id++) {
+      if (dupServantMapping.containsKey(id)) continue;
+      dupServantMapping[id] = svt.originalCollectionNo;
+      return id;
+    }
+    return null;
   }
 }
 

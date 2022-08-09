@@ -334,7 +334,7 @@ class _ItemListTabState extends State<ItemListTab> {
     // sort by item id
     final sortedEntries = _allGroups.entries.toList();
     if (widget.category == ItemCategory.coin) {
-      for (final svt in db.gameData.servants.values) {
+      for (final svt in db.gameData.servantsNoDup.values) {
         final coinId = svt.coin?.item.id;
         if (coinId != null) _coinSvtMap[coinId] = svt;
       }

@@ -156,11 +156,11 @@ class _ItemStatTabState extends State<ItemStatTab> {
     emptyPlan.cur.favorite = true;
     db.curUser.servants.forEach((no, svtStat) {
       if (!svtStat.favorite) return;
-      if (!db.gameData.servants.containsKey(no)) {
-        print('No $no: ${db.gameData.servants.length}');
+      if (!db.gameData.servantsWithDup.containsKey(no)) {
+        print('No $no: ${db.gameData.servantsWithDup.length}');
         return;
       }
-      final svt = db.gameData.servants[no]!;
+      final svt = db.gameData.servantsWithDup[no]!;
       final detail = db.itemCenter.calcOneSvt(svt, emptyPlan.cur, svtStat.cur);
       Maths.sumDict(
         [
@@ -191,9 +191,9 @@ class _ItemStatTabState extends State<ItemStatTab> {
     } else {
       db.curUser.servants.forEach((no, svtStat) {
         if (!svtStat.favorite) return;
-        final svt = db.gameData.servants[no];
+        final svt = db.gameData.servantsWithDup[no];
         if (svt == null) {
-          print('No $no: ${db.gameData.servants.length}');
+          print('No $no: ${db.gameData.servantsWithDup.length}');
           return;
         }
         final detail = db.itemCenter

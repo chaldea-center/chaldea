@@ -382,7 +382,7 @@ class CraftDetailBasePage extends StatelessWidget {
   Widget localizeCharacters(BuildContext context) {
     List<Widget> children = [];
     for (final svtId in ce.extra.characters) {
-      final svt = db.gameData.servants[svtId];
+      final svt = db.gameData.servantsNoDup[svtId];
       if (svt == null) {
         children.add(Text('SVT $svtId'));
       } else {

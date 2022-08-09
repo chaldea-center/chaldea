@@ -24,7 +24,7 @@ class _CostumeListPageState extends State<CostumeListPage>
 
   @override
   Iterable<NiceCostume> get wholeData => [
-        for (final svt in db.gameData.servants.values)
+        for (final svt in db.gameData.servantsById.values)
           ...svt.profile.costume.values
       ];
 

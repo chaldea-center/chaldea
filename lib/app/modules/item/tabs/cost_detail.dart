@@ -127,7 +127,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
-      final svt = db.gameData.servants[svtNo];
+      final svt = db.gameData.servantsWithDup[svtNo];
       if (svt == null) return;
       final count = src[svtNo]!;
       bool shouldHighlight =
@@ -185,7 +185,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       final detail = details[svtNo]!;
       if (detail.all <= 0) continue;
 
-      final svt = db.gameData.servants[svtNo];
+      final svt = db.gameData.servantsWithDup[svtNo];
       bool _planned = db.curUser.svtStatusOf(svtNo).cur.favorite;
       final textStyle = _planned && matType == SvtMatCostDetailType.full
           ? TextStyle(color: Theme.of(context).colorScheme.secondary)
@@ -228,7 +228,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         break;
     }
     svts.sort((a, b) => SvtFilterData.compare(
-        db.gameData.servants[a], db.gameData.servants[b],
+        db.gameData.servantsWithDup[a], db.gameData.servantsWithDup[b],
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }

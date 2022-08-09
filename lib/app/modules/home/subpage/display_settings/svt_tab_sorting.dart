@@ -37,11 +37,11 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 child: Text(S.current.reset),
               ),
               ElevatedButton(
-                onPressed: db.gameData.servants.isEmpty
+                onPressed: db.gameData.servantsNoDup.isEmpty
                     ? null
                     : () {
                         final index =
-                            Random().nextInt(db.gameData.servants.length);
+                            Random().nextInt(db.gameData.servantsNoDup.length);
                         router.push(url: Routes.servantI(index));
                       },
                 child: Text(S.current.preview),
