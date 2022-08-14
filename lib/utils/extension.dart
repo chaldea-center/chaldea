@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart' as material;
@@ -324,6 +325,11 @@ extension ResponseX<T> on Response<T> {
     }
   }
 }
+
+// ignore: non_constant_identifier_names
+Dio DioE([BaseOptions? options]) => Dio(options?.copyWith(
+    headers: {HttpHeaders.acceptEncodingHeader: 'gzip, deflate'}
+      ..addAll(options.headers)));
 
 extension DioErrorX on DioError {
   String _limit(String s) {

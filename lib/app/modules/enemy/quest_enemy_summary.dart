@@ -68,7 +68,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
         }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(svt.lName.l)),
+      appBar: AppBar(title: Text('[${S.current.enemy}] ${svt.lName.l}')),
       body: ListView(
         children: [
           CustomTable(
@@ -89,7 +89,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   svt.routeTo();
                 },
                 style: kTextButtonDenseStyle,
-                child: Text('Enemy No.${svt.id} - ${svt.lName.l}'),
+                child: Text('${S.current.enemy} No.${svt.id} - ${svt.lName.l}'),
               ),
               CustomTableRow.fromChildren(children: [
                 Wrap(

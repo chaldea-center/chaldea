@@ -46,9 +46,12 @@ class _SupportServantPageState extends State<SupportServantPage> {
         },
         style: kTextButtonDenseStyle,
         child: Text(svt.svt.collectionNo > 0
-            ? 'Servant No.${svt.svt.collectionNo} - ${svt.svt.lName.l}'
-            : 'Enemy No.${svt.svt.id} - ${svt.svt.lName.l}'),
+            ? '${S.current.servant} No.${svt.svt.collectionNo} - ${svt.svt.lName.l}'
+            : '${S.current.enemy} No.${svt.svt.id} - ${svt.svt.lName.l}'),
       ),
+      if (svt.script?.eventDeckIndex != null)
+        CustomTableRow.fromTexts(
+            texts: ['Event Deck Index: ${svt.script!.eventDeckIndex}']),
       CustomTableRow(children: [
         TableCellData(
           child: svt.svt.iconBuilder(context: context, height: 64),

@@ -25,7 +25,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(enemy.lShownName),
+        title: Text('[${S.current.enemy}] ${enemy.lShownName}'),
       ),
       body: ListView(
         children: [
@@ -48,8 +48,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         },
         style: kTextButtonDenseStyle,
         child: Text(enemy.svt.collectionNo > 0
-            ? 'Servant No.${enemy.svt.collectionNo} - ${enemy.svt.lName.l}'
-            : 'Enemy No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
+            ? '${S.current.servant} No.${enemy.svt.collectionNo} - ${enemy.svt.lName.l}'
+            : '${S.current.enemy} No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
       ),
       CustomTableRow(children: [
         TableCellData(

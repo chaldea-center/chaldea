@@ -84,7 +84,7 @@ class AppNewsCarousel extends StatefulWidget {
           taskNA,
           taskKR;
 
-      final _dio = Dio();
+      final _dio = DioE();
 
       // app news
       taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) {

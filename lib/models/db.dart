@@ -309,7 +309,7 @@ class _Database {
     return image;
   }
 
-  Dio get apiWorkerDio => Dio(BaseOptions(
+  Dio get apiWorkerDio => DioE(BaseOptions(
         baseUrl: Hosts.workerHost,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
         queryParameters: {

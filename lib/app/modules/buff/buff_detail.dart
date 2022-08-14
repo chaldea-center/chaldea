@@ -130,7 +130,7 @@ class BuffInfoTable extends StatelessWidget {
           child: Text.rich(
             SharedBuilder.textButtonSpan(
               context: context,
-              text: '(${buff.type.name}) ${Transl.buffType(buff.type).l}',
+              text: '${buff.type.name}\n${Transl.buffType(buff.type).l}',
               onTap: () {
                 router.push(
                     url: Routes.funcs, child: BuffListPage(type: buff.type));

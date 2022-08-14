@@ -63,7 +63,7 @@ class GithubBackup<T> extends BackupBackend<T> {
   }
 
   Dio _createDio() {
-    final d = Dio(BaseOptions(baseUrl: 'https://api.github.com', headers: {
+    final d = DioE(BaseOptions(baseUrl: 'https://api.github.com', headers: {
       'Accept': 'application/vnd.github.v3+json',
       if (config.token.isNotEmpty) 'Authorization': 'token ${config.token}',
       'User-Agent': 'chaldea/2.0',

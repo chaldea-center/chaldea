@@ -124,7 +124,7 @@ class _CacheManager {
 
   Future<List<int>?> _download(String url) async {
     print('fetching Atlas API: $url');
-    final response = await Dio().get<List<int>>(url,
+    final response = await DioE().get<List<int>>(url,
         options: Options(responseType: ResponseType.bytes));
     if (statusCodes.contains(response.statusCode) && response.data != null) {
       try {

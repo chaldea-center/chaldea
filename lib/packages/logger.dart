@@ -38,7 +38,7 @@ void initiateLoggerPath([String? fp]) {
 /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
 void rollLogFiles(String fp, int maxBackup, int maxSize) {
   if (kIsWeb) {
-    debugPrint('ignore rolling log on web');
+    // debugPrint('ignore rolling log on web');
     return;
   }
   var f = File(fp);
@@ -85,6 +85,9 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       lines.removeWhere((line) =>
           line.contains('chaldea/packages/logger.dart') ||
           line == '<asynchronous suspension>');
+      if (kIsWeb && lines.isNotEmpty && lines.first.trim() == "Error") {
+        lines.removeAt(0);
+      }
       return StackTrace.fromString(lines.join('\n'));
     }
 

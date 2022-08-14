@@ -155,7 +155,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (Hosts.cn) {
       url = Atlas.proxyAssetUrl(url);
     }
-    final resp = await (limiter ?? _rateLimiter).limited(() => Dio().get(url,
+    final resp = await (limiter ?? _rateLimiter).limited(() => DioE().get(url,
         options: Options(responseType: ResponseType.bytes, headers: {
           HttpHeaders.userAgentHeader:
               'chaldea/${AppInfo.version} (${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion})'

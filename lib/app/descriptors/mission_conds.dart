@@ -47,7 +47,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         missions: missions,
       ));
     }
-    if (mission.gifts.isNotEmpty) {
+    if (!onlyShowClear && mission.gifts.isNotEmpty) {
       children.add(Text(
         '~~~ ${S.current.game_rewards} ~~~',
         textAlign: TextAlign.center,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -109,11 +110,13 @@ class GameDataLoader {
       final String versionString = newVersion.appVersion.versionString;
       throw UpdateError(S.current.error_required_app_version(versionString));
     }
-    if (newVersion.timestamp <= db.gameData.version.timestamp) {
+    if (newVersion.timestamp <= db.gameData.version.timestamp &&
+        db.gameData.servantsById.isNotEmpty &&
+        db.gameData.items.isNotEmpty) {
       throw UpdateError(S.current.update_already_latest);
     }
 
-    Map<String, dynamic> _gameJson = {"version": newVersion.toJson()};
+    Map<String, dynamic> _gameJson = {};
     Map<FilePlus, List<int>> _dataToWrite = {};
     _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
     int finished = 0;
@@ -218,8 +221,11 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
-
+    if (_gameJson.isEmpty) {
+      throw Exception('No data loaded');
+    }
     tmp.clear();
+    _gameJson["version"] = newVersion.toJson();
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     for (final entry in _dataToWrite.entries) {
@@ -242,7 +248,7 @@ class GameDataLoader {
         .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = cnUrl = 'https://$filename';
     }
-    return await Dio()
+    return await DioE()
         .get<T>(db.settings.proxyServer ? cnUrl : url, options: options);
     // try {
     //   Completer<Response<T>> _completer = Completer();

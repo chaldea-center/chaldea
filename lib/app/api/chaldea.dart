@@ -98,7 +98,7 @@ class ChaldeaApi {
   const ChaldeaApi._();
 
   static Dio get dio {
-    return Dio(BaseOptions(
+    return DioE(BaseOptions(
       baseUrl: kDebugMode ? Hosts.apiHost : Hosts.apiHost,
       // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
       queryParameters: {

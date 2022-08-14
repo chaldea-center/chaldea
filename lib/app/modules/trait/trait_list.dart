@@ -18,6 +18,7 @@ class _TraitListPageState extends State<TraitListPage>
   @override
   Iterable<int> get wholeData {
     Set<int> ids = kTraitIdMappingReverse.values.toSet();
+    ids.addAll(db.gameData.mappingData.trait.keys);
     int? _searchInt = int.tryParse(searchEditingController.text);
     if (_searchInt != null) ids.add(_searchInt);
     return ids.toList();

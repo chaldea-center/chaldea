@@ -125,7 +125,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   @override
   void initState() {
-    debugPrint('initiate $runtimeType');
+    // debugPrint('initiate $runtimeType');
     super.initState();
     db.notifyAppUpdate = onAppUpdate;
     db.settings.launchTimes += 1;

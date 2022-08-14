@@ -144,7 +144,7 @@ class FuncInfoTable extends StatelessWidget {
             SharedBuilder.textButtonSpan(
               context: context,
               text:
-                  '(${func.funcType.name}) ${Transl.funcType(func.funcType).l}',
+                  '${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
               onTap: () {
                 router.push(
                     url: Routes.funcs,
