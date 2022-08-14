@@ -15,10 +15,8 @@ class HttpUrlHelper {
 }
 
 Future<bool> launch(String url, {bool? external}) {
-  final mode = external == null
-      ? (PlatformU.isAndroid
-          ? launcher.LaunchMode.externalApplication
-          : launcher.LaunchMode.platformDefault)
+  final mode = external ?? PlatformU.isAndroid
+      ? launcher.LaunchMode.externalApplication
       : launcher.LaunchMode.platformDefault;
   return launcher.launchUrl(
     Uri.parse(url),

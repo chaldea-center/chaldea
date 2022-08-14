@@ -11,6 +11,7 @@ class ConstGameData {
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
+  final Map<int, SvtClassInfo> classInfo;
   final Map<SvtClass, int> classAttackRate;
   final Map<SvtClass, Map<SvtClass, int>> classRelation;
   final GameConstants constants;
@@ -28,6 +29,7 @@ class ConstGameData {
   ConstGameData({
     required this.attributeRelation,
     required Map<dynamic, BuffActionDetail> buffActions,
+    this.classInfo = const {},
     required this.cardInfo,
     required this.classAttackRate,
     required this.classRelation,
@@ -46,6 +48,7 @@ class ConstGameData {
       : attributeRelation = const {},
         buffActions = const {},
         cardInfo = const {},
+        classInfo = const {},
         classAttackRate = const {},
         classRelation = const {},
         constants = const GameConstants(),
@@ -83,6 +86,42 @@ class BuffActionDetail {
 
   factory BuffActionDetail.fromJson(Map<String, dynamic> json) =>
       _$BuffActionDetailFromJson(json);
+}
+
+@JsonSerializable()
+class SvtClassInfo {
+  int id;
+  SvtClass? className;
+  String name;
+  Trait individuality;
+  int attackRate;
+  int imageId;
+  int iconImageId;
+  int frameId;
+  int priority;
+  int groupType;
+  int relationId;
+  int supportGroup;
+  int autoSelSupportType;
+
+  SvtClassInfo({
+    required this.id,
+    this.className,
+    required this.name,
+    this.individuality = Trait.unknown,
+    required this.attackRate,
+    required this.imageId,
+    required this.iconImageId,
+    required this.frameId,
+    required this.priority,
+    required this.groupType,
+    required this.relationId,
+    required this.supportGroup,
+    required this.autoSelSupportType,
+  });
+
+  factory SvtClassInfo.fromJson(Map<String, dynamic> json) =>
+      _$SvtClassInfoFromJson(json);
 }
 
 @JsonSerializable()

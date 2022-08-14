@@ -132,9 +132,9 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'windowPosition': instance.windowPosition,
       'launchTimes': instance.launchTimes,
       'lastBackup': instance.lastBackup,
-      'themeMode': _$ThemeModeEnumMap[instance.themeMode],
+      'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'preferredRegions':
-          instance.preferredRegions?.map((e) => _$RegionEnumMap[e]).toList(),
+          instance.preferredRegions?.map((e) => _$RegionEnumMap[e]!).toList(),
       'autoUpdateData': instance.autoUpdateData,
       'checkDataHash': instance.checkDataHash,
       'autoUpdateApp': instance.autoUpdateApp,
@@ -241,22 +241,22 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
     <String, dynamic>{
       'showAccountAtHome': instance.showAccountAtHome,
       'showWindowFab': instance.showWindowFab,
-      'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
+      'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode]!,
       'itemDetailViewType':
-          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType],
+          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType]!,
       'itemDetailSvtSort':
-          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort],
+          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort]!,
       'itemQuestsSortByAp': instance.itemQuestsSortByAp,
       'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
       'classFilterStyle':
-          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
+          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle]!,
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
       'onlyAppendUnlocked': instance.onlyAppendUnlocked,
       'planPageFullScreen': instance.planPageFullScreen,
       'sortedSvtTabs':
-          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
+          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
       'hideSvtPlanDetails': instance.hideSvtPlanDetails
-          .map((e) => _$SvtPlanDetailEnumMap[e])
+          .map((e) => _$SvtPlanDetailEnumMap[e]!)
           .toList(),
     };
 

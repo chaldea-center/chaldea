@@ -37,9 +37,10 @@ SvtFilterData _$SvtFilterDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'useGrid': instance.useGrid,
-      'favorite': _$FavoriteStateEnumMap[instance.favorite],
-      'planFavorite': _$FavoriteStateEnumMap[instance.planFavorite],
-      'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
+      'favorite': _$FavoriteStateEnumMap[instance.favorite]!,
+      'planFavorite': _$FavoriteStateEnumMap[instance.planFavorite]!,
+      'sortKeys':
+          instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]!).toList(),
       'sortReversed': instance.sortReversed,
     };
 
@@ -82,7 +83,7 @@ Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
       'useGrid': instance.useGrid,
       'favorite': instance.favorite,
       'sortKeys':
-          instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]).toList(),
+          instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]!).toList(),
       'sortReversed': instance.sortReversed,
     };
 
@@ -117,7 +118,7 @@ Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
       'useGrid': instance.useGrid,
       'favorite': instance.favorite,
       'sortKeys':
-          instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),
+          instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]!).toList(),
       'sortReversed': instance.sortReversed,
     };
 

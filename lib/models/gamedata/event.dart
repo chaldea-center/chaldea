@@ -34,6 +34,7 @@ class Event {
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
   EventDigging? digging;
+  EventCooltime? cooltime;
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
@@ -63,6 +64,7 @@ class Event {
     this.lotteries = const [],
     this.treasureBoxes = const [],
     this.digging,
+    this.cooltime,
     this.voicePlays = const [],
     this.voices = const [],
   }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
@@ -960,6 +962,44 @@ class EventDiggingReward {
 
   factory EventDiggingReward.fromJson(Map<String, dynamic> json) =>
       _$EventDiggingRewardFromJson(json);
+}
+
+@JsonSerializable()
+class EventCooltimeReward {
+  int spotId;
+  int lv;
+  String name;
+  CommonRelease commonRelease;
+  int cooltime;
+  int addEventPointRate;
+  List<Gift> gifts;
+  int upperLimitGiftNum;
+
+  EventCooltimeReward({
+    required this.spotId,
+    required this.lv,
+    required this.name,
+    required this.commonRelease,
+    required this.cooltime,
+    required this.addEventPointRate,
+    required this.gifts,
+    required this.upperLimitGiftNum,
+  });
+
+  factory EventCooltimeReward.fromJson(Map<String, dynamic> json) =>
+      _$EventCooltimeRewardFromJson(json);
+}
+
+@JsonSerializable()
+class EventCooltime {
+  List<EventCooltimeReward> rewards;
+
+  EventCooltime({
+    this.rewards = const [],
+  });
+
+  factory EventCooltime.fromJson(Map<String, dynamic> json) =>
+      _$EventCooltimeFromJson(json);
 }
 
 enum PurchaseType {

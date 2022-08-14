@@ -467,11 +467,14 @@ class CraftFilterData with _FilterData {
     if (keys == null || keys.isEmpty) {
       keys = [CraftCompare.no];
     }
+    const _idRemap = {102022: 1461.5};
     for (var i = 0; i < keys.length; i++) {
       int r;
       switch (keys[i]) {
         case CraftCompare.no:
-          r = a.collectionNo - b.collectionNo;
+          r = ((_idRemap[a.collectionNo] ?? a.collectionNo) -
+                  (_idRemap[b.collectionNo] ?? b.collectionNo))
+              .round();
           break;
         case CraftCompare.rarity:
           r = a.rarity - b.rarity;

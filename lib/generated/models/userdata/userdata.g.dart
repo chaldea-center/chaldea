@@ -124,7 +124,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'isGirl': instance.isGirl,
-      'region': _$RegionEnumMap[instance.region],
+      'region': _$RegionEnumMap[instance.region]!,
       'dupServantMapping':
           instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
       'servants':

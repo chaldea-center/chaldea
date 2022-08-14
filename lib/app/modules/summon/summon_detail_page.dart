@@ -171,17 +171,18 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             ],
           ),
         ),
-      Center(
-        child: ExpandIcon(
-          isExpanded: _expanded,
-          onPressed: (v) {
-            setState(() {
-              _expanded = !v;
-            });
-          },
-          padding: EdgeInsets.zero,
+      if (curIndex >= 0)
+        Center(
+          child: ExpandIcon(
+            isExpanded: _expanded,
+            onPressed: (v) {
+              setState(() {
+                _expanded = !v;
+              });
+            },
+            padding: EdgeInsets.zero,
+          ),
         ),
-      ),
       if (relatedEvents.isNotEmpty) ...[
         SHeader(S.current.event_title),
         for (Event event in relatedEvents) associateEvent(event)

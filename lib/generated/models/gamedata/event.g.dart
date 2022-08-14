@@ -74,6 +74,10 @@ Event _$EventFromJson(Map json) => Event(
           ? null
           : EventDigging.fromJson(
               Map<String, dynamic>.from(json['digging'] as Map)),
+      cooltime: json['cooltime'] == null
+          ? null
+          : EventCooltime.fromJson(
+              Map<String, dynamic>.from(json['cooltime'] as Map)),
       voicePlays: (json['voicePlays'] as List<dynamic>?)
               ?.map((e) =>
                   EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -580,4 +584,27 @@ EventDiggingReward _$EventDiggingRewardFromJson(Map json) => EventDiggingReward(
               .toList() ??
           const [],
       rewardSize: json['rewardSize'] as int,
+    );
+
+EventCooltimeReward _$EventCooltimeRewardFromJson(Map json) =>
+    EventCooltimeReward(
+      spotId: json['spotId'] as int,
+      lv: json['lv'] as int,
+      name: json['name'] as String,
+      commonRelease: CommonRelease.fromJson(
+          Map<String, dynamic>.from(json['commonRelease'] as Map)),
+      cooltime: json['cooltime'] as int,
+      addEventPointRate: json['addEventPointRate'] as int,
+      gifts: (json['gifts'] as List<dynamic>)
+          .map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      upperLimitGiftNum: json['upperLimitGiftNum'] as int,
+    );
+
+EventCooltime _$EventCooltimeFromJson(Map json) => EventCooltime(
+      rewards: (json['rewards'] as List<dynamic>?)
+              ?.map((e) => EventCooltimeReward.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );

@@ -601,6 +601,10 @@ enum Trait {
   exaltation,
   yuMeiren,
   milleniumCastle,
+  protoMerlinNPChargeBlock,
+  valkyrie,
+  immuneToPigify,
+  summerModeServant,
 }
 
 enum CondType {
