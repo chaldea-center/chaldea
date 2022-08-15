@@ -1,3 +1,9 @@
+## 2.0.10
+
+- support duplicated servant planning
+- exchange ticket can be 30x4 per month
+- add event cooltime and bulletinboard
+
 ## 2.0.9
 
 - add events-chaldea gate tab
