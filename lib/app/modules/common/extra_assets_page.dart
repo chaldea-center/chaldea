@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
   final List<String> aprilFoolAssets;
-  final List<String> spriteModels;
+  final List<String> mcSprites;
+  final List<String> fandomSprites;
   final bool scrollable;
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
 
@@ -16,7 +18,8 @@ class ExtraAssetsPage extends StatelessWidget {
     Key? key,
     required this.assets,
     this.aprilFoolAssets = const [],
-    this.spriteModels = const [],
+    this.mcSprites = const [],
+    this.fandomSprites = const [],
     this.scrollable = true,
     this.getUrls,
   }) : super(key: key);
@@ -48,22 +51,6 @@ class ExtraAssetsPage extends StatelessWidget {
       _oneGroup(S.current.card_asset_status, _getUrls(assets.status), 120),
       _oneGroup(S.current.card_asset_command, _getUrls(assets.commands), 120),
       _oneGroup(
-          S.current.card_asset_chara_figure, _getUrls(assets.charaFigure), 300),
-      _oneGroup(
-        'Forms',
-        [
-          for (final form in assets.charaFigureForm.values) ..._getUrls(form),
-        ],
-        300,
-      ),
-      _oneGroup(
-        'Characters',
-        [
-          for (final form in assets.charaFigureMulti.values) ..._getUrls(form),
-        ],
-        300,
-      ),
-      _oneGroup(
         S.current.card_asset_narrow_figure,
         [
           ..._getUrls(assets.narrowFigure),
@@ -71,8 +58,29 @@ class ExtraAssetsPage extends StatelessWidget {
         ],
         300,
       ),
+      _oneGroup(S.current.card_asset_chara_figure, _getUrls(assets.charaFigure),
+          300, false),
+      _oneGroup(
+        'Forms',
+        [
+          for (final form in assets.charaFigureForm.values) ..._getUrls(form),
+        ],
+        300,
+        false,
+      ),
+      _oneGroup(
+        'Characters',
+        [
+          for (final form in assets.charaFigureMulti.values) ..._getUrls(form),
+        ],
+        300,
+        false,
+      ),
       _oneGroup('equipFace', _getUrls(assets.equipFace), 50),
-      _oneGroup('${S.current.sprites} (Mooncell)', spriteModels, 300),
+      _oneGroup('${S.current.sprites} (Mooncell)',
+          mcSprites.map(WikiTool.mcFileUrl), 300, false),
+      _oneGroup('${S.current.sprites} (Fandom)',
+          fandomSprites.map(WikiTool.fandomFileUrl), 300, false),
       spriteViewer(),
     ].whereType<Widget>().toList();
     if (scrollable) {

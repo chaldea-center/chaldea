@@ -45,7 +45,8 @@ class ServantExtra {
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;
-  List<String> spriteModels;
+  List<String> mcSprites; // filename only
+  List<String> fandomSprites;
   String? mcLink;
   String? fandomLink;
   Map<int, List<String>> mcProfiles;
@@ -57,7 +58,8 @@ class ServantExtra {
     this.obtains = const [],
     this.aprilFoolAssets = const [],
     MappingBase<String>? aprilFoolProfile,
-    this.spriteModels = const [],
+    this.mcSprites = const [],
+    this.fandomSprites = const [],
     this.mcLink,
     this.fandomLink,
     this.mcProfiles = const {},

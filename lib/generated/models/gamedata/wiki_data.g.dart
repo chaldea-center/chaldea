@@ -55,7 +55,11 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['aprilFoolProfile'] as Map)),
-      spriteModels: (json['spriteModels'] as List<dynamic>?)
+      mcSprites: (json['mcSprites'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      fandomSprites: (json['fandomSprites'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],

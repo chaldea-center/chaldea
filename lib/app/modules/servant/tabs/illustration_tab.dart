@@ -51,7 +51,8 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
                 filter.options.isEmpty || filter.options.contains(_aprilKey)
                     ? svt.extra.aprilFoolAssets
                     : [],
-            spriteModels: svt.extra.spriteModels,
+            mcSprites: svt.extra.mcSprites,
+            fandomSprites: svt.extra.fandomSprites,
             getUrls: filter.options.isEmpty ? null : getUrls,
           ),
         )
