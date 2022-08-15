@@ -244,6 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_internet": MessageLookupByLibrary.simpleMessage("無網路連接"),
         "error_required_app_version": m2,
         "event_bonus": MessageLookupByLibrary.simpleMessage("加成"),
+        "event_bulletin_board": MessageLookupByLibrary.simpleMessage("咕咕报"),
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材倉庫，並將該活動移出規劃"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),

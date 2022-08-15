@@ -33,6 +33,7 @@ class Event {
   List<EventTower> towers;
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
+  List<EventBulletinBoard> bulletinBoards;
   EventDigging? digging;
   EventCooltime? cooltime;
   List<EventVoicePlay> voicePlays;
@@ -63,6 +64,7 @@ class Event {
     this.towers = const [],
     this.lotteries = const [],
     this.treasureBoxes = const [],
+    this.bulletinBoards = const [],
     this.digging,
     this.cooltime,
     this.voicePlays = const [],
@@ -88,7 +90,9 @@ class Event {
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
       rewards.isEmpty &&
+      bulletinBoards.isEmpty &&
       digging == null &&
+      cooltime == null &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -1000,6 +1004,43 @@ class EventCooltime {
 
   factory EventCooltime.fromJson(Map<String, dynamic> json) =>
       _$EventCooltimeFromJson(json);
+}
+
+@JsonSerializable()
+class EventBulletinBoard {
+  int bulletinBoardId;
+  String message;
+  int? probability;
+  List<EventBulletinBoardRelease> releaseConditions;
+
+  EventBulletinBoard({
+    required this.bulletinBoardId,
+    required this.message,
+    this.probability,
+    this.releaseConditions = const [],
+  });
+
+  factory EventBulletinBoard.fromJson(Map<String, dynamic> json) =>
+      _$EventBulletinBoardFromJson(json);
+}
+
+@JsonSerializable()
+class EventBulletinBoardRelease {
+  int condGroup;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType;
+  int condTargetId;
+  int condNum;
+
+  EventBulletinBoardRelease({
+    required this.condGroup,
+    required this.condType,
+    required this.condTargetId,
+    required this.condNum,
+  });
+
+  factory EventBulletinBoardRelease.fromJson(Map<String, dynamic> json) =>
+      _$EventBulletinBoardReleaseFromJson(json);
 }
 
 enum PurchaseType {

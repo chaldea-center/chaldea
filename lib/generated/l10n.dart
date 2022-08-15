@@ -526,6 +526,17 @@ class S {
     );
   }
 
+  /// `Bulletin`
+  String get event_bulletin_board {
+    return Intl.message(
+      'Bulletin',
+      name: 'event_bulletin_board',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Cache Icons`
   String get cache_icons {
     return Intl.message(
@@ -1774,6 +1785,17 @@ class S {
     return Intl.message(
       'Collect Items',
       name: 'event_collect_items',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Cooltime`
+  String get event_cooltime {
+    return Intl.message(
+      'Cooltime',
+      name: 'event_cooltime',
       desc: '',
       locale: localeName,
       args: [],

@@ -277,10 +277,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No internet"),
         "error_required_app_version": m2,
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
+        "event_bulletin_board":
+            MessageLookupByLibrary.simpleMessage("Bulletin"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Collect Items"),
+        "event_cooltime": MessageLookupByLibrary.simpleMessage("Cooltime"),
         "event_digging": MessageLookupByLibrary.simpleMessage("Digging"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra":

@@ -253,13 +253,13 @@ extension SvtClassX on SvtClass {
     SvtClass.berserker,
   ];
   static const extra = <SvtClass>[
-    SvtClass.shielder,
     SvtClass.ruler,
     SvtClass.avenger,
-    SvtClass.moonCancer,
     SvtClass.alterEgo,
+    SvtClass.moonCancer,
     SvtClass.foreigner,
     SvtClass.pretender,
+    SvtClass.shielder,
   ];
   static const beasts = <SvtClass>[
     SvtClass.beastI,

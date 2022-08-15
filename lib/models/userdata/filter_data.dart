@@ -358,7 +358,10 @@ class SvtFilterData with _FilterData {
       keys = [SvtCompare.no];
     }
     int _classSortKey(SvtClass cls) {
-      int k = SvtClassX.regularAll.indexOf(cls);
+      if (db.gameData.constData.classInfo.isNotEmpty) {
+        return -(db.gameData.constData.classInfo[cls.id]?.priority ?? 0);
+      }
+      int k = SvtClassX.regularWithBeast.indexOf(cls);
       return k < 0 ? 999 : k;
     }
 

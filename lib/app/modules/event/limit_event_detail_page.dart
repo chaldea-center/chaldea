@@ -18,6 +18,8 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../quest/quest_list.dart';
 import 'detail/bonus.dart';
+import 'detail/bulletin_board.dart';
+import 'detail/cooltime.dart';
 import 'detail/digging.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
@@ -70,12 +72,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
         builder: (context) => EventItemsOverview(event: event, region: _region),
       ),
     );
-    if (db.gameData.craftEssences.values
-            .any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
-        db.gameData.servantsNoDup.values
-            .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
-      _addTab(S.current.event_bonus, EventBonusTab(event: event));
-    }
 
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
       ..sort();
@@ -125,9 +121,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
     }
+    if (event.bulletinBoards.isNotEmpty) {
+      _addTab(
+          S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
+    }
     if (event.digging != null) {
       _addTab(S.current.event_digging,
           EventDiggingTab(event: event, digging: event.digging!));
+    }
+    if (event.cooltime != null) {
+      _addTab(S.current.event_cooltime, EventCooltimePage(event: event));
+    }
+    if (db.gameData.craftEssences.values
+            .any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
+        db.gameData.servantsNoDup.values
+            .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
+      _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
     return DefaultTabController(
       length: tabs.length,

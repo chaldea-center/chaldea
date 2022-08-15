@@ -70,6 +70,11 @@ Event _$EventFromJson(Map json) => Event(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      bulletinBoards: (json['bulletinBoards'] as List<dynamic>?)
+              ?.map((e) => EventBulletinBoard.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       digging: json['digging'] == null
           ? null
           : EventDigging.fromJson(
@@ -607,4 +612,23 @@ EventCooltime _$EventCooltimeFromJson(Map json) => EventCooltime(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+    );
+
+EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
+      bulletinBoardId: json['bulletinBoardId'] as int,
+      message: json['message'] as String,
+      probability: json['probability'] as int?,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => EventBulletinBoardRelease.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) =>
+    EventBulletinBoardRelease(
+      condGroup: json['condGroup'] as int,
+      condType: toEnumCondType(json['condType'] as Object),
+      condTargetId: json['condTargetId'] as int,
+      condNum: json['condNum'] as int,
     );
