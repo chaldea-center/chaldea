@@ -322,7 +322,7 @@ class _QuestCardState extends State<QuestCard> {
             width: 48,
             child: Text(
               '${curPhase.phase}/${curPhase.phases.length}',
-              textAlign: ui.TextAlign.center,
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(
@@ -341,9 +341,21 @@ class _QuestCardState extends State<QuestCard> {
         children: [
           SizedBox(
             width: 48,
-            child: Text(
-              'AP ${curPhase.consume}',
-              textAlign: ui.TextAlign.center,
+            child: Text.rich(
+              TextSpan(children: [
+                if (curPhase.consumeType != ConsumeType.item)
+                  TextSpan(text: 'AP ${curPhase.consume}'),
+                for (final itemAmount in curPhase.consumeItem)
+                  WidgetSpan(
+                    child: Item.iconBuilder(
+                      context: context,
+                      item: itemAmount.item,
+                      text: itemAmount.amount.format(),
+                      width: 36,
+                    ),
+                  )
+              ]),
+              textAlign: TextAlign.center,
             ),
           ),
           Expanded(

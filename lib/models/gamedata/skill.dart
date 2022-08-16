@@ -377,6 +377,11 @@ class BaseTd extends SkillOrTd with RouteInfo {
   @override
   Transl<String, String> get lName => Transl.tdNames(name);
 
+  String get nameWithRank {
+    if (['なし', '无', 'None', '無', '없음'].contains(rank)) return lName.l;
+    return '${lName.l} $rank';
+  }
+
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;

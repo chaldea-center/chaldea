@@ -39,7 +39,7 @@ class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
         e.gifts.first.objectId == first.gifts.first.objectId &&
         e.gifts.first.num == first.gifts.first.num));
     final spot = db.gameData.spots[rewards.first.spotId];
-    final totalPointRate = Maths.sum(rewards.map((e) => e.addEventPointRate));
+    final maxPointRate = Maths.max(rewards.map((e) => e.addEventPointRate), 0);
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
@@ -50,7 +50,7 @@ class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
           title: Text(Transl.spotNames(first.name).l),
           subtitle: Text(
               '${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'
-              ' +${(totalPointRate / 1000).toStringAsFixed(1)}'),
+              ' +${(maxPointRate / 1000).toStringAsFixed(1)}'),
           trailing: Text.rich(
             TextSpan(children: [
               for (final gift in first.gifts)

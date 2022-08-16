@@ -76,7 +76,7 @@ class SvtTdTab extends StatelessWidget {
                   String name = overrideTds.getOrNull(v)?.tdName ?? tds[v].name;
                   name = Transl.tdNames(name).l;
                   final rank = overrideTds.getOrNull(v)?.tdRank ?? tds[v].rank;
-                  if (rank != 'なし') {
+                  if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
                     name = '$name $rank';
                   }
                   return Padding(

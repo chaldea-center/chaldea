@@ -111,7 +111,8 @@ class _TdListPageState extends State<TdListPage>
           : CommandCardWidget(card: td.card, width: 36),
       horizontalTitleGap: 6,
       contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
-      title: Text(td?.lName.l ?? "${S.current.noble_phantasm} $_searchTdId"),
+      title:
+          Text(td?.nameWithRank ?? "${S.current.noble_phantasm} $_searchTdId"),
       onTap: () {
         final id = td?.id ?? _searchTdId;
         if (id != null) router.push(url: Routes.tdI(id));
