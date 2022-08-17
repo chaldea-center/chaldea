@@ -285,11 +285,10 @@ class ServantListPageState extends State<ServantListPage>
       Navigator.pop(context);
       widget.onSelected!(svt);
     } else {
-      router.push(
+      router.popDetailAndPush(
         url: svt.route,
         child: ServantDetailPage(id: svt.id, svt: svt),
         detail: true,
-        popDetail: true,
       );
       selected = svt;
     }

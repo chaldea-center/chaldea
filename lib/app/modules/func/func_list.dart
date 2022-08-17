@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
@@ -56,6 +57,7 @@ class _FuncListPageState extends State<FuncListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: const Text("Funcs"),
         bottom: searchBar,
         actions: [
@@ -132,7 +134,7 @@ class _FuncListPageState extends State<FuncListPage>
             ),
       onTap: () {
         final id = func?.funcId ?? _searchFuncId;
-        if (id != null) router.push(url: Routes.funcI(id));
+        if (id != null) router.popDetailAndPush(url: Routes.funcI(id));
       },
     );
   }

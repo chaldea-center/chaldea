@@ -201,6 +201,7 @@ class RouteConfiguration {
       detail: detail ?? !Routes.masterRoutes.contains(url),
       name: url,
       arguments: this,
+      key: UniqueKey(),
     );
   }
 

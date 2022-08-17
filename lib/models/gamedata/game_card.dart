@@ -38,8 +38,8 @@ mixin GameCardMixin implements RouteInfo {
   Transl<String, String> get lName;
 
   @override
-  void routeTo({Widget? child}) {
-    router.push(url: route, child: child);
+  void routeTo({Widget? child, bool popDetails = false}) {
+    router.popDetailAndPush(url: route, child: child);
   }
 
   Widget iconBuilder({

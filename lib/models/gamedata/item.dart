@@ -117,7 +117,7 @@ class Item {
                     title: Text(item?.lName.l ?? ""),
                     onTap: () {
                       Navigator.pop(context);
-                      router.push(
+                      router.popDetailAndPush(
                         url: Routes.itemI(Items.grailToCrystalId),
                         popDetail: popDetail,
                         detail: true,
@@ -129,7 +129,7 @@ class Item {
                     title: Text(Items.grail.lName.l),
                     onTap: () {
                       Navigator.pop(context);
-                      router.push(
+                      router.popDetailAndPush(
                         url: Routes.itemI(Items.grailId),
                         popDetail: popDetail,
                         detail: true,
@@ -141,7 +141,7 @@ class Item {
                     title: Text(Items.crystal.lName.l),
                     onTap: () {
                       Navigator.pop(context);
-                      router.push(
+                      router.popDetailAndPush(
                         url: Routes.itemI(Items.crystalId),
                         popDetail: popDetail,
                         detail: true,
@@ -155,7 +155,7 @@ class Item {
         };
       } else {
         onTap = () {
-          router.push(
+          router.popDetailAndPush(
             url: Routes.itemI(_itemId),
             popDetail: popDetail,
             detail: true,
@@ -368,15 +368,17 @@ class ItemSelect {
 class ItemAmount {
   int itemId;
   int amount;
+  Item? _item;
 
   ItemAmount({
     Item? item,
     int? itemId,
     required this.amount,
   })  : assert(item != null || itemId != null),
+        _item = item,
         itemId = item?.id ?? itemId!;
 
-  Item get item => db.gameData.items[itemId]!;
+  Item? get item => _item ?? db.gameData.items[itemId];
 
   factory ItemAmount.fromJson(Map<String, dynamic> json) =>
       _$ItemAmountFromJson(json);

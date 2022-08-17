@@ -208,14 +208,13 @@ class CraftListPageState extends State<CraftListPage>
     if (widget.onSelected != null && !forcePush) {
       widget.onSelected!(ce);
     } else {
-      router.push(
+      router.popDetailAndPush(
         url: ce.route,
         child: CraftDetailPage(
           ce: ce,
           onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
         ),
         detail: true,
-        popDetail: true,
       );
       selected = ce;
     }

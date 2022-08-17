@@ -124,7 +124,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
           return InkWell(
             onTap: () {
-              quest.routeTo();
+              quest.routeTo(popDetails: true);
             },
             child: Stack(
               alignment: Alignment.bottomRight,

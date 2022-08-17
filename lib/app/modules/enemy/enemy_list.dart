@@ -194,10 +194,12 @@ class EnemyListPageState extends State<EnemyListPage>
   void _onTapCard(BasicServant svt, [bool forcePush = false]) {
     final enemies = _allEnemies[svt.id] ?? [];
     if (enemies.isEmpty) {
-      svt.routeTo();
+      svt.routeTo(popDetails: true);
     } else {
       router.pushPage(
-          QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies));
+        QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
+        popDetail: true,
+      );
     }
     selected = svt;
     setState(() {});

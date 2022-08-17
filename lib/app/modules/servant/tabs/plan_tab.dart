@@ -10,7 +10,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../command_code/cmd_code_list.dart';
@@ -622,19 +621,17 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
                 InkWell(
                   onTap: () async {
-                    await SplitRoute.pushBuilder(
-                      context: context,
-                      builder: (context, _) => CmdCodeListPage(
+                    router.pushBuilder(
+                      builder: (context) => CmdCodeListPage(
                         onSelected: (selectedCode) {
                           status.equipCmdCodes[index] =
                               selectedCode.collectionNo;
                           Navigator.of(context).pop();
+                          if (mounted) setState(() {});
                         },
                       ),
                       detail: false,
-                      popDetail: false,
                     );
-                    if (mounted) setState(() {});
                   },
                   child: db.getIconImage(
                       code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),

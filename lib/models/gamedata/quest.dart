@@ -53,7 +53,7 @@ class BasicQuest {
 }
 
 @JsonSerializable()
-class Quest {
+class Quest with RouteInfo {
   int id;
   String name;
   QuestType type;
@@ -119,7 +119,8 @@ class Quest {
 
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
 
-  void routeTo() => router.push(url: Routes.questI(id));
+  @override
+  String get route => Routes.questI(id);
 
   String get lDispName {
     // 群島-10308, 裏山-20314
@@ -781,8 +782,11 @@ class QuestEnemy with GameCardMixin {
   String get route => Routes.enemyI(id);
 
   @override
-  void routeTo({Widget? child, Quest? quest}) {
-    super.routeTo(child: QuestEnemyDetail(enemy: this, quest: quest));
+  void routeTo({Widget? child, bool popDetails = false, Quest? quest}) {
+    super.routeTo(
+      child: QuestEnemyDetail(enemy: this, quest: quest),
+      popDetails: popDetails,
+    );
   }
 }
 

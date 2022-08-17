@@ -1082,7 +1082,7 @@ class LoreStatus {
 }
 
 @JsonSerializable()
-class NiceCostume {
+class NiceCostume with RouteInfo {
   int id;
   int costumeCollectionNo;
   int battleCharaId;
@@ -1119,11 +1119,8 @@ class NiceCostume {
 
   Servant? get owner => db.gameData.others.costumeSvtMap[costumeCollectionNo];
 
+  @override
   String get route => Routes.costumeI(costumeCollectionNo);
-
-  void routeTo() {
-    router.push(url: route);
-  }
 }
 
 @JsonSerializable()

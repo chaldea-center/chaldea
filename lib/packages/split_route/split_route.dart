@@ -344,6 +344,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   /// if there is any detail view and need to pop detail,
   /// don't show pop and push animation
+  @protected
   static Future<T?> pushBuilder<T extends Object?>({
     required BuildContext context,
     required SplitPageBuilder builder,

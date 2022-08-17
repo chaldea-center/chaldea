@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -127,7 +128,11 @@ class MainStoryTab extends StatelessWidget {
               ],
             ),
       onTap: () {
-        router.push(url: Routes.warI(record.id), detail: true);
+        router.popDetailAndPush(
+          url: Routes.warI(record.id),
+          detail: true,
+          popDetail: SplitRoute.of(context)?.detail != true,
+        );
       },
     );
     if (showSpecialRewards) {

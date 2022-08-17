@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/routes/root_delegate.dart';
+import 'root_delegate.dart';
 import 'routes.dart';
 
 class AppShell extends StatefulWidget {
@@ -9,12 +9,12 @@ class AppShell extends StatefulWidget {
   final AppRouterDelegate routerDelegate;
   final bool active;
 
-  const AppShell(
-      {Key? key,
-      required this.appState,
-      required this.routerDelegate,
-      this.active = false})
-      : super(key: key);
+  const AppShell({
+    Key? key,
+    required this.appState,
+    required this.routerDelegate,
+    this.active = false,
+  }) : super(key: key);
 
   @override
   _AppShellState createState() => _AppShellState();
@@ -109,11 +109,41 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     bool? detail,
     bool popDetail = false,
   }) {
-    push(
+    popDetailAndPush(
       child: child,
       arguments: arguments,
       detail: detail,
       popDetail: popDetail,
+    );
+  }
+
+  void pushBuilder({
+    required WidgetBuilder builder,
+    dynamic arguments,
+    bool? detail,
+    bool popDetail = false,
+  }) {
+    popDetailAndPush(
+      child: Builder(builder: builder),
+      arguments: arguments,
+      detail: detail,
+      popDetail: popDetail,
+    );
+  }
+
+  void popDetailAndPush({
+    String? url,
+    Widget? child,
+    dynamic arguments,
+    bool? detail,
+    bool popDetail = true,
+  }) {
+    if (popDetail) popDetails();
+    push(
+      url: url,
+      child: child,
+      arguments: arguments,
+      detail: detail,
     );
   }
 
@@ -122,10 +152,9 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     Widget? child,
     dynamic arguments,
     bool? detail,
-    bool popDetail = false,
+    // bool popDetail = false,
   }) {
     assert(url != null || child != null);
-    // TODO: why not updated
     // if (popDetail) popDetails();
     _pages.add(RouteConfiguration(
       url: url,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
@@ -45,6 +46,7 @@ class _SkillListPageState extends State<SkillListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: Text(S.current.skill),
         bottom: showSearchBar ? searchBar : null,
         actions: [
@@ -110,7 +112,7 @@ class _SkillListPageState extends State<SkillListPage>
       title: Text(skill?.lName.l ?? "Skill $_searchSkillId"),
       onTap: () {
         final id = skill?.id ?? _searchSkillId;
-        if (id != null) router.push(url: Routes.skillI(id));
+        if (id != null) router.popDetailAndPush(url: Routes.skillI(id));
       },
     );
   }

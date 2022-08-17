@@ -299,7 +299,7 @@ class FixedDrop {
 }
 
 @JsonSerializable()
-class LimitedSummon {
+class LimitedSummon with RouteInfo {
   String id;
   String? mcLink;
   String? fandomLink;
@@ -340,11 +340,8 @@ class LimitedSummon {
 
   String get lName => name.l ?? id;
 
+  @override
   String get route => Routes.summonI(id);
-
-  void routeTo() {
-    router.push(url: route);
-  }
 
   MappingBase<String> get resolvedBanner => banner.merge(officialBanner);
 

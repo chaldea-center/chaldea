@@ -186,14 +186,13 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     if (widget.onSelected != null && !forcePush) {
       widget.onSelected!(cc);
     } else {
-      router.push(
+      router.popDetailAndPush(
         url: cc.route,
         child: CmdCodeDetailPage(
           cc: cc,
           onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
         ),
         detail: true,
-        popDetail: true,
       );
       selected = cc;
     }

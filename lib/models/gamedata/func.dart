@@ -288,8 +288,9 @@ class BaseFunction with RouteInfo {
   String get route => Routes.funcI(funcId);
 
   @override
-  void routeTo({Widget? child}) {
-    return super.routeTo(child: FuncDetailPage(func: this));
+  void routeTo({Widget? child, bool popDetails = false}) {
+    return super
+        .routeTo(child: FuncDetailPage(func: this), popDetails: popDetails);
   }
 
   Transl<String, String> get lPopupText =>

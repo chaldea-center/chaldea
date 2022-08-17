@@ -4,6 +4,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
@@ -46,6 +47,7 @@ class _TdListPageState extends State<TdListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: Text(S.current.noble_phantasm),
         bottom: showSearchBar ? searchBar : null,
         actions: [
@@ -115,7 +117,7 @@ class _TdListPageState extends State<TdListPage>
           Text(td?.nameWithRank ?? "${S.current.noble_phantasm} $_searchTdId"),
       onTap: () {
         final id = td?.id ?? _searchTdId;
-        if (id != null) router.push(url: Routes.tdI(id));
+        if (id != null) router.popDetailAndPush(url: Routes.tdI(id));
       },
     );
   }

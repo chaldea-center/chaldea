@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
@@ -53,6 +54,7 @@ class _BuffListPageState extends State<BuffListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: const Text("Buffs"),
         bottom: searchBar,
         actions: [
@@ -125,7 +127,7 @@ class _BuffListPageState extends State<BuffListPage>
               '${buff.id} ${buff.type.name} ${Transl.buffType(buff.type).l}'),
       onTap: () {
         final id = buff?.id ?? _searchBuffId;
-        if (id != null) router.push(url: Routes.buffI(id));
+        if (id != null) router.popDetailAndPush(url: Routes.buffI(id));
       },
     );
   }

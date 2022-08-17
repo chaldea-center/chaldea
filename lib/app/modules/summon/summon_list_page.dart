@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -169,12 +168,12 @@ class _SummonListPageState extends State<SummonListPage>
         },
       ),
       onTap: () {
-        router.push(
-          url: Routes.summonI(summon.id),
+        summon.routeTo(
           child: SummonDetailPage(
             summon: summon,
             summonList: shownList.toList(),
           ),
+          popDetails: true,
         );
       },
     );

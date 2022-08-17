@@ -157,8 +157,11 @@ class _GridGalleryState extends State<GridGallery> {
             });
           } else {
             if (item.url != null || item.page != null) {
-              router.push(
-                  url: item.url, child: item.page, detail: item.isDetail);
+              router.popDetailAndPush(
+                url: item.url,
+                child: item.page,
+                detail: item.isDetail,
+              );
             }
           }
         },

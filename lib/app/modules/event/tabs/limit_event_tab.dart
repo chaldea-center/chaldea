@@ -84,7 +84,7 @@ class LimitEventTab extends StatelessWidget {
         ],
       ),
       onTap: () {
-        router.push(url: Routes.eventI(event.id), detail: true);
+        router.popDetailAndPush(url: Routes.eventI(event.id), detail: true);
       },
     );
     if (showSpecialRewards) {

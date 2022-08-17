@@ -47,7 +47,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.push(child: UserDataPage());
+              router.popDetailAndPush(child: UserDataPage());
             },
           ),
           ListTile(
@@ -56,7 +56,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.push(child: OldVersionDataImport());
+              router.popDetailAndPush(child: OldVersionDataImport());
             },
           ),
           ListTile(
@@ -65,7 +65,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.http_sniff_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.push(child: ImportHttpPage());
+              router.popDetailAndPush(child: ImportHttpPage());
             },
           ),
           ListTile(
@@ -74,7 +74,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: const Text('https://fgosim.github.io/Material/'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.push(child: ImportFgoSimuMaterialPage());
+              router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
             },
           ),
           // SHeader(S.current.testing),
@@ -84,7 +84,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.import_item_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.pushPage(ImportItemScreenshotPage());
+              router.pushPage(ImportItemScreenshotPage(), popDetail: true);
             },
           ),
           ListTile(
@@ -93,7 +93,8 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.import_active_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.pushPage(ImportSkillScreenshotPage(isAppend: false));
+              router.pushPage(ImportSkillScreenshotPage(isAppend: false),
+                  popDetail: true);
             },
           ),
           ListTile(
@@ -102,7 +103,8 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.import_append_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.pushPage(ImportSkillScreenshotPage(isAppend: true));
+              router.pushPage(ImportSkillScreenshotPage(isAppend: true),
+                  popDetail: true);
             },
           ),
           ListTile(
@@ -110,7 +112,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Text(S.current.import_csv_title),
             subtitle: const Text('Edit in Excel/Google Sheet'),
             onTap: () {
-              router.pushPage(const ImportCSVPage());
+              router.pushPage(const ImportCSVPage(), popDetail: true);
             },
           ),
         ],

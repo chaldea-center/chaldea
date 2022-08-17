@@ -41,7 +41,7 @@ class _ChaldeaGateTabState extends State<ChaldeaGateTab> {
       ),
       horizontalTitleGap: 8,
       onTap: () {
-        war.routeTo();
+        war.routeTo(popDetails: true);
       },
     );
   }

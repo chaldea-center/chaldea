@@ -102,11 +102,10 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
     if (widget.onSelected != null && !forcePush) {
       widget.onSelected!(mc);
     } else {
-      router.push(
+      router.popDetailAndPush(
         url: mc.route,
         child: MysticCodePage(id: mc.id),
         detail: true,
-        popDetail: true,
       );
       selected = mc;
     }

@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: _wrapArrowTrailing(db
                     .onUserData((context, snapshot) => Text(db.curUser.name))),
                 onTap: () {
-                  router.push(child: AccountPage());
+                  router.popDetailAndPush(child: AccountPage());
                 },
               ),
               ListTile(
@@ -112,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: _wrapArrowTrailing(db.onUserData(
                     (context, snapshot) => Text(db.curUser.region.localName))),
                 onTap: () {
-                  router.push(child: GameServerPage());
+                  router.popDetailAndPush(child: GameServerPage());
                 },
               ),
             ],
@@ -138,7 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.push(child: UserDataPage());
+                  router.popDetailAndPush(child: UserDataPage());
                 },
               ),
               ListTile(
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           textAlign: TextAlign.end,
                         ))),
                 onTap: () {
-                  router.push(child: GameDataPage());
+                  router.popDetailAndPush(child: GameDataPage());
                 },
               ),
               ListTile(
@@ -160,7 +160,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       Text('${region.toLanguage().name}(${region.localName})'));
                 }),
                 onTap: () {
-                  router.push(child: TranslationSetting());
+                  router.popDetailAndPush(child: TranslationSetting());
                 },
               ),
               db.onUserData(
@@ -239,7 +239,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.push(child: DisplaySettingPage());
+                  router.popDetailAndPush(child: DisplaySettingPage());
                 },
               ),
               ListTile(
@@ -247,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.push(child: const NetworkSettingsPage());
+                  router.popDetailAndPush(child: const NetworkSettingsPage());
                 },
               ),
               if (kIsWeb)
@@ -292,14 +292,14 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: TextStyle(
                             color: Theme.of(context).errorColor.withAlpha(200)),
                       ),
-                onTap: () => router.push(child: AboutPage()),
+                onTap: () => router.popDetailAndPush(child: AboutPage()),
               ),
               ListTile(
                 title: Text(S.current.about_feedback),
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.push(child: FeedbackPage());
+                  router.popDetailAndPush(child: FeedbackPage());
                 },
               ),
               ListTile(
@@ -426,7 +426,7 @@ class _SettingsPageState extends State<SettingsPage> {
       trailing: db.onSettings(
           (context, snapshot) => Text(db.security.get('chaldea_user') ?? '')),
       onTap: () {
-        router.push(child: LoginPage());
+        router.popDetailAndPush(child: LoginPage());
       },
     );
   }

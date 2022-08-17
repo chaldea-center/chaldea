@@ -225,6 +225,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       context: context,
       padding: const EdgeInsets.all(2),
       jumpToDetail: true,
+      popDetail: true,
     );
   }
 
@@ -241,7 +242,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       ),
       subtitle: Text('No.${card.collectionNo}'),
       onTap: () {
-        card.routeTo();
+        card.routeTo(popDetails: true);
       },
     );
   }

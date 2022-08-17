@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -32,6 +33,7 @@ class _TraitListPageState extends State<TraitListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
+        leading: const MasterBackButton(),
         title: Text(S.current.info_trait),
         bottom: searchBar,
         actions: const [],
@@ -63,7 +65,7 @@ class _TraitListPageState extends State<TraitListPage>
       title: Text(hasTransl ? name : subtitle),
       subtitle: hasTransl ? Text(subtitle) : null,
       onTap: () {
-        router.push(url: Routes.traitI(id));
+        router.popDetailAndPush(url: Routes.traitI(id));
       },
     );
   }
