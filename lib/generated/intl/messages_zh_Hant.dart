@@ -681,6 +681,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("「關注」按紐預設篩選"),
         "setting_show_account_at_homepage":
             MessageLookupByLibrary.simpleMessage("首頁顯示當前帳號"),
+        "setting_split_ratio": MessageLookupByLibrary.simpleMessage("分屏模式分割比例"),
+        "setting_split_ratio_hint":
+            MessageLookupByLibrary.simpleMessage("仅用于宽屏模式"),
         "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage("標籤頁排序"),
         "settings_data": MessageLookupByLibrary.simpleMessage("資料"),
         "settings_documents": MessageLookupByLibrary.simpleMessage("使用文檔"),

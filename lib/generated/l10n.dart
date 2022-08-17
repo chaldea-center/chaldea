@@ -526,17 +526,6 @@ class S {
     );
   }
 
-  /// `Bulletin`
-  String get event_bulletin_board {
-    return Intl.message(
-      'Bulletin',
-      name: 'event_bulletin_board',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Cache Icons`
   String get cache_icons {
     return Intl.message(
@@ -1763,6 +1752,17 @@ class S {
     return Intl.message(
       'Bonus',
       name: 'event_bonus',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Bulletin`
+  String get event_bulletin_board {
+    return Intl.message(
+      'Bulletin',
+      name: 'event_bulletin_board',
       desc: '',
       locale: localeName,
       args: [],
@@ -5819,6 +5819,28 @@ class S {
     return Intl.message(
       'Show Account at Homepage',
       name: 'setting_show_account_at_homepage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Split Screen Ratio`
+  String get setting_split_ratio {
+    return Intl.message(
+      'Split Screen Ratio',
+      name: 'setting_split_ratio',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `For wide screen`
+  String get setting_split_ratio_hint {
+    return Intl.message(
+      'For wide screen',
+      name: 'setting_split_ratio_hint',
       desc: '',
       locale: localeName,
       args: [],

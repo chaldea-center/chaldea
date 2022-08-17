@@ -183,10 +183,11 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             padding: EdgeInsets.zero,
           ),
         ),
-      if (relatedEvents.isNotEmpty) ...[
-        SHeader(S.current.event_title),
-        for (Event event in relatedEvents) associateEvent(event)
-      ],
+      if (relatedEvents.isNotEmpty)
+        TileGroup(
+          header: S.current.event_title,
+          children: [for (Event event in relatedEvents) associateEvent(event)],
+        )
     ];
     return ListView(children: children);
   }

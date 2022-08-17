@@ -807,6 +807,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Favorite Button Default"),
         "setting_show_account_at_homepage":
             MessageLookupByLibrary.simpleMessage("Show Account at Homepage"),
+        "setting_split_ratio":
+            MessageLookupByLibrary.simpleMessage("Split Screen Ratio"),
+        "setting_split_ratio_hint":
+            MessageLookupByLibrary.simpleMessage("For wide screen"),
         "setting_tabs_sorting":
             MessageLookupByLibrary.simpleMessage("Tabs Sorting"),
         "settings_data": MessageLookupByLibrary.simpleMessage("Data"),

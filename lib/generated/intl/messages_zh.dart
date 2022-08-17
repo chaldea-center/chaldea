@@ -681,6 +681,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("「关注」按钮默认筛选"),
         "setting_show_account_at_homepage":
             MessageLookupByLibrary.simpleMessage("首页显示当前账号"),
+        "setting_split_ratio": MessageLookupByLibrary.simpleMessage("分屏模式分割比例"),
+        "setting_split_ratio_hint":
+            MessageLookupByLibrary.simpleMessage("仅用于宽屏模式"),
         "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage("标签页排序"),
         "settings_data": MessageLookupByLibrary.simpleMessage("数据"),
         "settings_documents": MessageLookupByLibrary.simpleMessage("使用文档"),

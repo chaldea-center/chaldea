@@ -25,6 +25,7 @@ class LocalSettings {
   int launchTimes;
   int lastBackup;
   ThemeMode themeMode;
+  int? splitMasterRatio;
   String? _language;
   List<Region>? preferredRegions;
   bool autoUpdateData; // dataset
@@ -65,6 +66,7 @@ class LocalSettings {
     this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
+    this.splitMasterRatio,
     String? language,
     List<Region>? preferredRegions,
     this.autoUpdateData = true,

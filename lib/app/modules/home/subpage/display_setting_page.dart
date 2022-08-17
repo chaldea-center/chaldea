@@ -16,6 +16,7 @@ import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
 import 'display_settings/fav_option.dart';
 import 'display_settings/hide_svt_plan_detail.dart';
+import 'display_settings/master_ratio.dart';
 import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
@@ -101,7 +102,15 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   router.pushPage(const CarouselSettingPage());
                 },
-              )
+              ),
+              ListTile(
+                title: Text(S.current.setting_split_ratio),
+                subtitle: Text(S.current.setting_split_ratio_hint),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  router.pushPage(MasterRatioSetting());
+                },
+              ),
             ],
           ),
           TileGroup(

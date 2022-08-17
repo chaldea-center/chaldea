@@ -1,5 +1,6 @@
 // ignore_for_file: unused_element
 
+import 'package:chaldea/utils/utils.dart';
 import 'common.dart';
 import 'mappings.dart';
 import 'skill.dart';
@@ -22,6 +23,11 @@ class SkillEffect {
     var mapping = Transl.md.enums.effectType[effectType];
     if (mapping != null) {
       return Transl(Transl.md.enums.effectType, effectType, effectType);
+    }
+    final fistType =
+        buffTypes.getOrNull(0)?.name ?? funcTypes.getOrNull(0)?.name;
+    if (effectType != fistType) {
+      return Transl.string({}, effectType);
     }
     if (buffTypes.isNotEmpty) {
       return Transl.buffType(buffTypes.first);
@@ -57,7 +63,7 @@ class SkillEffect {
     upQuick,
     upArts,
     upBuster,
-    upDamange,
+    upDamage,
     addDamage,
     upCriticaldamage,
     upCriticalpoint,
@@ -89,6 +95,7 @@ class SkillEffect {
     upReceivePositiveEffect,
     subState,
     subStatePositive,
+    subStateNegative,
     upToleranceSubstate,
     upResistInstantdeath,
     upGrantInstantdeath,
@@ -179,8 +186,8 @@ class SkillEffect {
   //   buffTypes: [BuffType.upCommandall],
   //   validate: (func)=>func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name==Trait.cardExtra)),
   // );
-  static SkillEffect upDamange = SkillEffect(
-    'upDamange',
+  static SkillEffect upDamage = SkillEffect(
+    'upDamage',
     buffTypes: [BuffType.upDamage, BuffType.upDamageIndividualityActiveonly],
   );
   static SkillEffect addDamage =
@@ -280,6 +287,10 @@ class SkillEffect {
       'subStatePositive', FuncType.subState,
       validate: (func) =>
           func.traitVals.any((e) => e.name == Trait.buffPositiveEffect));
+  static SkillEffect subStateNegative = SkillEffect._func(
+      'subStateNegative', FuncType.subState,
+      validate: (func) =>
+          func.traitVals.any((e) => e.name == Trait.buffNegativeEffect));
   // 强化解除耐性提升
   static SkillEffect upToleranceSubstate =
       SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);

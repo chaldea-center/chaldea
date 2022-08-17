@@ -53,6 +53,11 @@ enum SplitLayout {
 
 /// Master-Detail Layout Route for large aspect ratio screen.
 class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
+  static int _defaultMasterRatio = _kSplitMasterRatio;
+  static int get defaultMasterRatio => _defaultMasterRatio;
+  static set defaultMasterRatio(int? v) =>
+      _defaultMasterRatio = v == null ? _kSplitMasterRatio : v.clamp(30, 60);
+
   /// Expose BuildContext and SplitLayout to builder
   final SplitPageBuilder builder;
 
@@ -72,7 +77,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   bool get master => _detail == false;
 
   /// Master page ratio of full-width, between 0~100
-  final int masterRatio;
+  final int? _masterRatio;
+  int get masterRatio => _masterRatio ?? defaultMasterRatio;
 
   @override
   final Duration transitionDuration;
@@ -93,7 +99,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     RouteSettings? settings,
     required this.builder,
     bool? detail = false,
-    this.masterRatio = _kSplitMasterRatio,
+    int? masterRatio,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
     bool? opaque,
@@ -101,10 +107,11 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     this.title,
     bool fullscreenDialog = false,
   })  : assert(builder != null),
-        assert(masterRatio > 0 && masterRatio < 100),
+        assert(masterRatio == null || masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
         _detail = detail,
+        _masterRatio = masterRatio,
         transitionDuration = transitionDuration ?? kSplitRouteDuration,
         reverseTransitionDuration = reverseTransitionDuration ??
             transitionDuration ??
@@ -127,7 +134,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     switch (layout) {
       case SplitLayout.master:
         child = createMasterWidget(
-            context: context, child: builder(context, layout));
+            context: context,
+            child: builder(context, layout),
+            masterRatio: masterRatio);
         break;
       case SplitLayout.detail:
         child = builder(context, layout);
