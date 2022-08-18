@@ -12,6 +12,7 @@ import 'mappings.dart';
 import 'script.dart';
 import 'servant.dart';
 import 'skill.dart';
+import 'war.dart';
 
 part '../../generated/models/gamedata/quest.g.dart';
 
@@ -118,6 +119,8 @@ class Quest with RouteInfo {
   Transl<String, String> get lName => Transl.questNames(name);
 
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
+
+  NiceWar? get war => db.gameData.wars[warId];
 
   @override
   String get route => Routes.questI(id);

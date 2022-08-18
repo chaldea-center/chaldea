@@ -123,9 +123,14 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       headerTileColor: Theme.of(context).cardColor,
       headerBuilder: (context, expanded) {
         final name = quest.lDispName, nameJp = quest.dispName;
+        String subtitle = '${quest.consume}AP';
+        if (quest.war?.isMainStory == true) {
+          subtitle += ' ${quest.war?.lShortName}';
+        }
+        if (name != nameJp) subtitle += ' $nameJp';
         return ListTile(
           title: Text(quest.lDispName),
-          subtitle: Text('${quest.consume}AP  ${name == nameJp ? '' : nameJp}'),
+          subtitle: Text(subtitle),
           trailing: Text('${widget.showResult ? '×' : '+'} $count'),
         );
       },

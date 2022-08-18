@@ -388,14 +388,31 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     if (!event.isEmpty) {
       children.add(db.onUserData(
-        (context, snapshot) => CheckboxListTile(
-          title: Text(S.current.plan),
-          value: plan.enabled,
-          onChanged: (v) {
-            if (v != null) plan.enabled = v;
-            event.updateStat();
+        (context, snapshot) => SimpleAccordion(
+          headerBuilder: (context, _) {
+            return CheckboxListTile(
+              title: Text(S.current.plan),
+              value: plan.enabled,
+              onChanged: (v) {
+                if (v != null) plan.enabled = v;
+                event.updateStat();
+              },
+              controlAffinity: ListTileControlAffinity.leading,
+            );
           },
-          controlAffinity: ListTileControlAffinity.leading,
+          contentBuilder: (context) {
+            final plan2 = plan.copy()..enabled = true;
+            final items = db.itemCenter.calcOneEvent(event, plan2);
+            return TileGroup(
+              children: [
+                SharedBuilder.groupItems(
+                  context: context,
+                  items: items,
+                  width: 48,
+                )
+              ],
+            );
+          },
         ),
       ));
     }

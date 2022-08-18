@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'package:ruby_text/ruby_text.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
@@ -29,41 +31,46 @@ class SvtInfoTab extends StatelessWidget {
       for (final traitAdd in svt.traitAdd)
         if (traitAdd.idx == 1) ...traitAdd.trait,
     ];
+    final name = RubyText(
+      [RubyTextData(svt.name, ruby: svt.ruby)],
+      style: const TextStyle(fontWeight: FontWeight.bold),
+      textAlign: TextAlign.center,
+    );
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: SafeArea(
         child: CustomTable(
           children: <Widget>[
-            CustomTableRow.fromChildren(
-              defaults: headerData.copyWith(maxLines: names.length),
-              children: [
-                Text(
-                  names.map((e) => Transl.svtNames(e).l).join(' / '),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-            CustomTableRow.fromTexts(
-              texts: [svt.ruby],
-              defaults: TableCellData(textAlign: TextAlign.center),
-            ),
-            if (!Transl.isJP)
+            CustomTableRow(children: [
+              TableCellData(
+                child: name,
+                isHeader: true,
+                padding: const EdgeInsets.all(4),
+              )
+            ]),
+            if (names.length > 1)
               CustomTableRow.fromTexts(
                 texts: [names.join(' / ')],
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
+            if (!Transl.isJP)
+              CustomTableRow.fromTexts(
+                texts: [names.map((e) => Transl.svtNames(e).l).join(' / ')],
+                defaults: TableCellData(textAlign: TextAlign.center),
+              ),
             if (!Transl.isEN)
               CustomTableRow.fromTexts(
-                texts: [
-                  names.map((e) => Transl.svtNames(e).na).join(' / '),
-                ],
+                texts: [names.map((e) => Transl.svtNames(e).na).join(' / ')],
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
             CustomTableRow.fromChildren(
               children: [
-                Text('No.${svt.collectionNo}',
-                    textAlign: TextAlign.center, maxLines: 1),
+                Text(
+                  svt.collectionNo == svt.originalCollectionNo
+                      ? 'No.${svt.collectionNo}'
+                      : 'No.${svt.originalCollectionNo}\n${svt.collectionNo}',
+                  textAlign: TextAlign.center,
+                ),
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),
                 Text.rich(
                   TextSpan(children: [

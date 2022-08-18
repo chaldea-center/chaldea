@@ -461,6 +461,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.1.0"
+  flutter_hooks:
+    dependency: transitive
+    description:
+      name: flutter_hooks
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.18.5+1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -642,10 +649,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "015bf0112cbd41b3d3e396b830ddd3c4a43cb6b1"
+      resolved-ref: "02955e09502acf8face0f24f88add7a7ce6b86f9"
       url: "https://github.com/chaldea-center/intl_utils"
     source: git
-    version: "2.6.1"
+    version: "2.7.0"
   io:
     dependency: transitive
     description:
@@ -1031,6 +1038,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0"
+  ruby_text:
+    dependency: "direct main"
+    description:
+      name: ruby_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   rxdart:
     dependency: transitive
     description:

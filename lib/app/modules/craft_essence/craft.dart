@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
@@ -162,8 +163,12 @@ class CraftDetailBasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summons = getPickupSummons();
-    final name =
-        Text(ce.lName.l, style: const TextStyle(fontWeight: FontWeight.bold));
+    final name = RubyText(
+      [RubyTextData(ce.name, ruby: ce.ruby)],
+      style: const TextStyle(fontWeight: FontWeight.bold),
+      textAlign: TextAlign.center,
+    );
+
     return CustomTable(
       children: <Widget>[
         CustomTableRow(children: [
@@ -181,15 +186,14 @@ class CraftDetailBasePage extends StatelessWidget {
             padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
-        CustomTableRow(children: [
-          TableCellData(
-            text: Transl.isJP ? ce.ruby : [ce.ruby, ce.lName.jp].join('\n'),
-            textAlign: TextAlign.center,
-          )
-        ]),
-        CustomTableRow(children: [
-          TableCellData(text: ce.lName.na, textAlign: TextAlign.center)
-        ]),
+        if (!Transl.isJP)
+          CustomTableRow(children: [
+            TableCellData(text: ce.lName.l, textAlign: TextAlign.center)
+          ]),
+        if (!Transl.isEN)
+          CustomTableRow(children: [
+            TableCellData(text: ce.lName.na, textAlign: TextAlign.center)
+          ]),
         CustomTableRow(
           children: [
             TableCellData(

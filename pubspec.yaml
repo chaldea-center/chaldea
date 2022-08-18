@@ -76,6 +76,7 @@ dependencies:
   pool: ^1.5.0
   photo_view: ^0.14.0
   rfc_6902: ^0.1.0
+  ruby_text: ^3.0.1
   screenshot: ^1.2.3
   share_plus: ^4.0.10
   shared_preferences: ^2.0.15

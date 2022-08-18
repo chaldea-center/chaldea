@@ -39,7 +39,7 @@ mixin GameCardMixin implements RouteInfo {
 
   @override
   void routeTo({Widget? child, bool popDetails = false}) {
-    router.popDetailAndPush(url: route, child: child);
+    router.popDetailAndPush(url: route, child: child, popDetail: popDetails);
   }
 
   Widget iconBuilder({

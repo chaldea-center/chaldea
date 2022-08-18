@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:ruby_text/ruby_text.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -84,9 +86,10 @@ class _SkillDetailPageState extends State<SkillDetailPage> {
         children: [
           CustomTable(children: [
             CustomTableRow.fromTexts(texts: ['No.${skill.id}'], isHeader: true),
-            CustomTableRow(children: [
-              TableCellData(
-                text: '${skill.ruby}\n${skill.name}',
+            CustomTableRow.fromChildren(children: [
+              RubyText(
+                [RubyTextData(skill.name, ruby: skill.ruby)],
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               )
             ]),
