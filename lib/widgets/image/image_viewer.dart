@@ -122,6 +122,19 @@ class CachedImage extends StatefulWidget {
     }
     return child;
   }
+
+  static String proxyMooncellImage(String url) {
+    Uri? uri = Uri.tryParse(url);
+    if (uri == null) return url;
+    if (!uri.host.contains('fgo.wiki')) return url;
+    final hashValue = uri.queryParameters['sha1'];
+    if (hashValue == null) return url;
+    if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
+      return '$kStaticHostRoot/${uri.host}/$hashValue';
+    } else {
+      return url.split('?').first;
+    }
+  }
 }
 
 class _CachedImageState extends State<CachedImage> {
@@ -129,8 +142,6 @@ class _CachedImageState extends State<CachedImage> {
 
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
-
-  ImageStreamListener? _imageStreamListener;
 
   @override
   Widget build(BuildContext context) {
@@ -157,11 +168,8 @@ class _CachedImageState extends State<CachedImage> {
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
     url = Atlas.proxyAssetUrl(url);
-    if (!kIsWeb &&
-        Atlas.isAtlasAsset(url) &&
-        url.endsWith('.png') &&
-        !url.contains('merged') &&
-        !url.endsWith('questboard_cap_closed.png')) {
+    url = CachedImage.proxyMooncellImage(url);
+    if (AtlasIconLoader.i.shouldCacheImage(url)) {
       String? _cachedPath = _loader.getCached(url);
       if (_cachedPath != null) {
         final provider = FileImage(File(_cachedPath));
@@ -214,30 +222,25 @@ class _CachedImageState extends State<CachedImage> {
       child = GestureDetector(
         child: child,
         onLongPress: () async {
-          _imageStreamListener ??= ImageStreamListener((info, sycCall) async {
-            final bytes =
-                await info.image.toByteData(format: ui.ImageByteFormat.png);
-            final data = bytes?.buffer.asUint8List();
-            if (data == null) {
-              EasyLoading.showError('Failed');
-              return;
-            }
-            if (!mounted) return;
-            // some sha1 hash value for same data
-            String fn =
-                '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString())}.png';
-            ImageActions.showSaveShare(
-              context: context,
-              data: data,
-              destFp: joinPaths(db.paths.downloadDir, fn),
-              gallery: true,
-              share: true,
-              onClearCache: onClearCache,
-            );
-          });
-          provider.resolve(ImageConfiguration.empty)
-            ..removeListener(_imageStreamListener!)
-            ..addListener(_imageStreamListener!);
+          final img = await ImageActions.resolveImage(provider);
+          final bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))
+              ?.buffer
+              .asUint8List();
+          if (bytes == null) {
+            EasyLoading.showError('Failed');
+            return;
+          }
+          if (!mounted) return;
+          String fn =
+              '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
+          ImageActions.showSaveShare(
+            context: context,
+            data: bytes,
+            destFp: joinPaths(db.paths.downloadDir, fn),
+            gallery: true,
+            share: true,
+            onClearCache: onClearCache,
+          );
         },
       );
     }

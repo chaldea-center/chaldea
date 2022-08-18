@@ -14,7 +14,6 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
@@ -228,16 +227,7 @@ abstract class FFOUtil {
       if (localFp == null) return null;
       provider = FileImage(File(localFp));
     }
-    final stream = provider.resolve(ImageConfiguration.empty);
-    final Completer<ui.Image?> completer = Completer();
-    stream.addListener(ImageStreamListener((info, _) {
-      completer.complete(info.image);
-    }, onError: (e, s) async {
-      // EasyLoading.showError(e.toString());
-      logger.e('load Image error: $fn', e, s);
-      completer.complete(null);
-    }));
-    return completer.future;
+    return ImageActions.resolveImage(provider);
   }
 
   static void drawCanvas(

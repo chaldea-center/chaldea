@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -166,5 +168,37 @@ class ImageActions {
         );
       },
     );
+  }
+
+  // resolve one frame
+  static Future<ui.Image?> resolveImage(ImageProvider provider,
+      {BuildContext? context}) async {
+    final completer = Completer<ui.Image?>();
+    context ??= kAppKey.currentContext;
+    final stream = provider.resolve(context == null
+        ? ImageConfiguration.empty
+        : createLocalImageConfiguration(context));
+    ImageStreamListener? listener;
+    listener = ImageStreamListener(
+      (image, synchronousCall) {
+        if (completer.isCompleted) {
+          return;
+        }
+        completer.complete(image.image);
+        if (listener != null) stream.removeListener(listener);
+      },
+      onError: (e, s) {
+        if (completer.isCompleted) {
+          logger.e('onError why completed!', e, s);
+          return;
+        }
+        FlutterError.dumpErrorToConsole(
+            FlutterErrorDetails(exception: e, stack: s));
+        completer.complete(null);
+        if (listener != null) stream.removeListener(listener);
+      },
+    );
+    stream.addListener(listener);
+    return completer.future;
   }
 }

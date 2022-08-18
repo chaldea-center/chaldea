@@ -1,7 +1,19 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image/image.dart' as img_lib;
+import 'package:photo_view/photo_view.dart';
+
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -33,14 +45,16 @@ class ExtraAssetsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = <Widget?>[
       _oneGroup(
-          S.current.illustration,
-          [
-            ..._getUrls(assets.charaGraph),
-            ..._getUrls(assets.charaGraphEx),
-            ..._getUrls(assets.charaGraphChange),
-            ...aprilFoolAssets
-          ],
-          300),
+        S.current.illustration,
+        [
+          ..._getUrls(assets.charaGraph),
+          ..._getUrls(assets.charaGraphEx),
+          ..._getUrls(assets.charaGraphChange),
+          ...aprilFoolAssets
+        ],
+        300,
+        showMerge: true,
+      ),
       _oneGroup(
           S.current.card_asset_face,
           [
@@ -58,15 +72,19 @@ class ExtraAssetsPage extends StatelessWidget {
         ],
         300,
       ),
-      _oneGroup(S.current.card_asset_chara_figure, _getUrls(assets.charaFigure),
-          300, false),
+      _oneGroup(
+        S.current.card_asset_chara_figure,
+        _getUrls(assets.charaFigure),
+        300,
+        expanded: false,
+      ),
       _oneGroup(
         'Forms',
         [
           for (final form in assets.charaFigureForm.values) ..._getUrls(form),
         ],
         300,
-        false,
+        expanded: false,
       ),
       _oneGroup(
         'Characters',
@@ -74,13 +92,15 @@ class ExtraAssetsPage extends StatelessWidget {
           for (final form in assets.charaFigureMulti.values) ..._getUrls(form),
         ],
         300,
-        false,
+        expanded: false,
       ),
       _oneGroup('equipFace', _getUrls(assets.equipFace), 50),
       _oneGroup('${S.current.sprites} (Mooncell)',
-          mcSprites.map(WikiTool.mcFileUrl), 300, false),
+          mcSprites.map(WikiTool.mcFileUrl), 300,
+          expanded: false),
       _oneGroup('${S.current.sprites} (Fandom)',
-          fandomSprites.map(WikiTool.fandomFileUrl), 300, false),
+          fandomSprites.map(WikiTool.fandomFileUrl), 300,
+          expanded: false),
       spriteViewer(),
     ].whereType<Widget>().toList();
     if (scrollable) {
@@ -99,14 +119,31 @@ class ExtraAssetsPage extends StatelessWidget {
     }
   }
 
-  Widget? _oneGroup(String title, Iterable<String> urls, double height,
-      [bool expanded = true]) {
-    // final urls = assetsUrl.allUrls.toList();
+  Widget? _oneGroup(
+    String title,
+    Iterable<String> urls,
+    double height, {
+    bool expanded = true,
+    bool showMerge = true,
+  }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
     return SimpleAccordion(
       expanded: expanded,
-      headerBuilder: (context, _) => Text(title),
+      headerBuilder: (context, expanded) => Row(
+        children: [
+          Expanded(child: Text(title)),
+          if (showMerge && expanded && _urls.length > 1)
+            IconButton(
+              onPressed: () {
+                router.pushPage(MergeImagePage(imageUrls: _urls.toList()));
+              },
+              icon: Icon(Icons.ios_share, color: Theme.of(context).hintColor),
+              tooltip: S.current.share,
+              iconSize: 20,
+            )
+        ],
+      ),
       expandElevation: 0,
       contentBuilder: (context) => SizedBox(
         height: height,
@@ -177,6 +214,155 @@ class ExtraAssetsPage extends StatelessWidget {
       expandElevation: 0,
       contentBuilder: (context) =>
           Column(mainAxisSize: MainAxisSize.min, children: children),
+    );
+  }
+}
+
+class MergeImagePage extends StatefulWidget {
+  final String? title;
+  final List<String> imageUrls;
+
+  const MergeImagePage({Key? key, this.title, required this.imageUrls})
+      : super(key: key);
+
+  @override
+  State<MergeImagePage> createState() => _MergeImagePageState();
+}
+
+class _MergeImagePageState extends State<MergeImagePage> {
+  Uint8List? imgBytes;
+  Size? size;
+  dynamic status;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      load().catchError((e, s) {
+        logger.e('merge images failed', e, s);
+        update(e);
+      });
+    });
+  }
+
+  void update(String? s) {
+    status = s;
+    if (mounted) setState(() {});
+  }
+
+  Future<void> load() async {
+    if (widget.imageUrls.isEmpty) return;
+    imgBytes = null;
+    size = null;
+    update(null);
+    List<img_lib.Image> images = [];
+    final imagesUrls = widget.imageUrls.toList();
+    for (int index = 0; index < imagesUrls.length; index++) {
+      update('Reading $index/${imagesUrls.length}...');
+      String url = imagesUrls[index];
+      ImageProvider? provider;
+      if (AtlasIconLoader.i.shouldCacheImage(url)) {
+        final fp = await AtlasIconLoader.i.get(url);
+        if (fp != null) {
+          provider = FileImage(File(fp));
+        }
+      } else {
+        url = CachedImage.proxyMooncellImage(url);
+        provider = CachedNetworkImageProvider(url,
+            cacheManager: ImageViewerCacheManager());
+      }
+      if (provider == null) continue;
+      final uiImg = await ImageActions.resolveImage(provider);
+      final bytes = (await uiImg?.toByteData())?.buffer.asUint8List();
+      if (uiImg == null || bytes == null) continue;
+      final img = img_lib.Image.fromBytes(uiImg.width, uiImg.height, bytes);
+      images.add(img);
+    }
+    if (images.isNotEmpty) {
+      int w = Maths.max(images.map((e) => e.width)),
+          h = Maths.max(images.map((e) => e.height));
+      int colCount = sqrt(images.length).ceil();
+      int rowCount = (images.length / colCount).ceil();
+      img_lib.Image merged = img_lib.Image(w * colCount, h * rowCount);
+      for (int row = 0; row < rowCount; row++) {
+        for (int col = 0; col < colCount; col++) {
+          int index = row * colCount + col;
+          final img = images.getOrNull(index);
+          if (img == null) continue;
+          update('Drawing $index/${images.length}...');
+          await Future.delayed(const Duration(milliseconds: 50));
+          img_lib.drawImage(
+            merged,
+            img,
+            dstX: merged.width * col ~/ colCount,
+            dstY: merged.height * row ~/ rowCount,
+            dstW: img.width,
+            dstH: img.height,
+          );
+        }
+      }
+      size = Size(merged.width.toDouble(), merged.height.toDouble());
+      update('Rendering...');
+      await Future.delayed(const Duration(milliseconds: 50));
+      imgBytes = Uint8List.fromList(img_lib.encodePng(merged));
+      update('done');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title ?? 'Merge Images'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: imgBytes != null
+                ? PhotoView(
+                    imageProvider: MemoryImage(imgBytes!),
+                    backgroundDecoration:
+                        const BoxDecoration(color: Colors.transparent),
+                  )
+                : Center(
+                    child: Text(status?.toString() ?? '...'),
+                  ),
+          ),
+          if (size != null)
+            Text(
+              '${size!.width.toInt()}×${size!.height.toInt()}',
+              textAlign: TextAlign.center,
+            ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: buttonBar,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget get buttonBar {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 4,
+      children: [
+        ElevatedButton(
+          onPressed: imgBytes == null
+              ? null
+              : () {
+                  ImageActions.showSaveShare(
+                    context: context,
+                    data: imgBytes,
+                    destFp: joinPaths(db.paths.downloadDir,
+                        'merged-${DateTime.now().toString().replaceAll(':', '-')}.png'),
+                  );
+                },
+          child: Text('${S.current.save}/${S.current.share}'),
+        ),
+      ],
     );
   }
 }

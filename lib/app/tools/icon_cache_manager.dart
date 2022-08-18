@@ -139,6 +139,15 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   final _fsLimiter =
       RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 100));
 
+  bool shouldCacheImage(String url) {
+    if (kIsWeb) return false;
+    if (!Atlas.isAtlasAsset(url)) return false;
+    if (!url.endsWith('.png') ||
+        url.contains('merged') ||
+        url.endsWith('questboard_cap_closed.png')) return false;
+    return true;
+  }
+
   @override
   Future<String?> download(String url, {RateLimiter? limiter}) async {
     final localPath = atlasUrlToFp(url);
@@ -158,7 +167,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     final resp = await (limiter ?? _rateLimiter).limited(() => DioE().get(url,
         options: Options(responseType: ResponseType.bytes, headers: {
           HttpHeaders.userAgentHeader:
-              'chaldea/${AppInfo.version} (${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion})'
+              'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})'
         })));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
