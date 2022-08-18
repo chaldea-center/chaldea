@@ -60,9 +60,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
   List<_SubTabInfo> builders = [];
 
   // store data
-  SvtStatus get status => db.curUser.svtStatusOf(svt.collectionNo);
+  SvtStatus get status => svt.status;
 
-  SvtPlan get plan => db.curUser.svtPlanOf(svt.collectionNo);
+  SvtPlan get plan => svt.curPlan;
 
   @override
   void initState() {
@@ -386,7 +386,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtInfoTab(svt: svt),
         );
       case SvtTab.lore:
-        if (svt.collectionNo == 0 && svt.profile.comments.isEmpty) {
+        if (svt.originalCollectionNo == 0 && svt.profile.comments.isEmpty) {
           break;
         }
         return _SubTabInfo(
@@ -403,10 +403,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
       case SvtTab.relatedCards:
         if (svt.bondEquip == 0 &&
             svt.valentineEquip.isEmpty &&
-            db.gameData.craftEssences.values
-                .every((e) => !e.extra.characters.contains(svt.collectionNo)) &&
-            db.gameData.commandCodes.values
-                .every((e) => !e.extra.characters.contains(svt.collectionNo))) {
+            db.gameData.craftEssences.values.every((e) =>
+                !e.extra.characters.contains(svt.originalCollectionNo)) &&
+            db.gameData.commandCodes.values.every((e) =>
+                !e.extra.characters.contains(svt.originalCollectionNo))) {
           return null;
         }
         return _SubTabInfo(

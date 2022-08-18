@@ -315,8 +315,8 @@ class ExpUpData {
     grailStages.clear();
     coinStages.clear();
 
-    final svt = db.gameData.servantsNoDup.values.firstWhere(
-        (svt) => svt.rarity == rarity && svt.isUserSvt && svt.collectionNo > 1);
+    final svt = db.gameData.servantsNoDup.values.firstWhere((svt) =>
+        svt.rarity == rarity && svt.isUserSvt && svt.originalCollectionNo > 1);
 
     // level->ascension
     final ascensionLevels = svt.ascensionAdd.lvMax.ascension

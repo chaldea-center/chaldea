@@ -172,12 +172,13 @@ class Servant with GameCardMixin {
   List<NiceTd> noblePhantasms;
   NiceLore profile;
 
-  int get originalCollectionNo =>
-      db.gameData.servantsById[id]?.collectionNo ?? collectionNo;
+  @JsonKey(ignore: true)
+  final int originalCollectionNo;
 
   Servant({
     required this.id,
     required this.collectionNo,
+    int? originalCollectionNo,
     required this.name,
     this.ruby = "",
     this.battleName = "",
@@ -230,7 +231,8 @@ class Servant with GameCardMixin {
     required this.appendPassive,
     required this.noblePhantasms,
     NiceLore? profile,
-  })  : extraAssets = extraAssets ?? ExtraAssets(),
+  })  : originalCollectionNo = originalCollectionNo ?? collectionNo,
+        extraAssets = extraAssets ?? ExtraAssets(),
         ascensionAdd = ascensionAdd ?? AscensionAdd(),
         profile = profile ?? NiceLore() {
     preprocess();
@@ -240,6 +242,7 @@ class Servant with GameCardMixin {
     return Servant(
       id: id,
       collectionNo: collectionNo ?? this.collectionNo,
+      originalCollectionNo: originalCollectionNo,
       name: name,
       ruby: ruby,
       battleName: battleName,
@@ -328,7 +331,8 @@ class Servant with GameCardMixin {
   String get route => Routes.servantI(collectionNo > 0 ? collectionNo : id);
 
   bool get isUserSvt =>
-      (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
+      (type == SvtType.normal || type == SvtType.heroine) &&
+      originalCollectionNo > 0;
 
   @override
   String? get icon => extraAssets.faces.ascension?.values
@@ -336,7 +340,7 @@ class Servant with GameCardMixin {
       .getOrNull(kSvtDefAscenRemap[id] ?? 0);
 
   @override
-  String? get borderedIcon => collectionNo > 0 ||
+  String? get borderedIcon => originalCollectionNo > 0 ||
           (type == SvtType.combineMaterial || type == SvtType.statusUp)
       ? super.borderedIcon
       : icon;
@@ -344,7 +348,7 @@ class Servant with GameCardMixin {
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
   String? get customIcon {
-    if (collectionNo <= 0) return borderedIcon;
+    if (originalCollectionNo <= 0) return borderedIcon;
     String? _icon = db.userData.customSvtIcon[collectionNo];
     if (_icon != null) return _icon;
 
@@ -357,15 +361,17 @@ class Servant with GameCardMixin {
   }
 
   String? get aprilFoolIcon {
-    if (collectionNo <= 0 || collectionNo > 306) return null;
-    if ([83, 149, 151, 152, 168, 240].contains(collectionNo)) return null;
-    final padded = collectionNo.toString().padLeft(3, '0');
+    if (originalCollectionNo <= 0 || originalCollectionNo > 306) return null;
+    if ([83, 149, 151, 152, 168, 240].contains(originalCollectionNo)) {
+      return null;
+    }
+    final padded = originalCollectionNo.toString().padLeft(3, '0');
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite/icon_servant_$padded.png';
   }
 
   String? get aprilFoolBorderedIcon {
     if (aprilFoolIcon == null) return null;
-    final padded = collectionNo.toString().padLeft(3, '0');
+    final padded = originalCollectionNo.toString().padLeft(3, '0');
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
@@ -387,7 +393,7 @@ class Servant with GameCardMixin {
       SvtClass.pretender: "27@1",
     };
     final suffix =
-        collectionNo == 285 ? "123@1" : suffixes[className] ?? "13@1";
+        originalCollectionNo == 285 ? "123@1" : suffixes[className] ?? "13@1";
     final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
     return Atlas.asset('ClassCard/class_${color}_$suffix.png');
   }
@@ -499,7 +505,7 @@ class Servant with GameCardMixin {
     skills = skills.where((e) => e.num > 0).toList();
     final priorities =
         db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
-    if (collectionNo == 1) {
+    if (originalCollectionNo == 1) {
       skills = skills.where((e) => priorities?[e.id] != null).toList();
     }
     if (skills.isEmpty) return null;

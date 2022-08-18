@@ -44,7 +44,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     ];
     final sortedServants = sortSvts(db.gameData.servantsNoDup.values.toList());
     for (final svt in sortedServants) {
-      bool svtFavorite = db.curUser.svtStatusOf(svt.collectionNo).favorite;
+      bool svtFavorite = svt.status.favorite;
       if (_favorite && !svtFavorite) continue;
       for (final questId in svt.relateQuestIds) {
         final quest = db.gameData.quests[questId];
