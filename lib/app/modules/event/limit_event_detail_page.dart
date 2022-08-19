@@ -133,7 +133,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.event_cooltime, EventCooltimePage(event: event));
     }
     if (db.gameData.craftEssences.values
-            .any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
+            .any((ce) => ce.eventSkills(event).isNotEmpty) ||
         db.gameData.servantsNoDup.values
             .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));

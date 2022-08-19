@@ -27,7 +27,7 @@ class EventBulletinBoardPage extends StatelessWidget with PrimaryScrollMixin {
       key: Key('event_bulletin_${bulletin.bulletinBoardId}'),
       leading: Text(bulletin.bulletinBoardId.toString(),
           textAlign: TextAlign.center),
-      title: Text(bulletin.message, textScaleFactor: 0.8),
+      title: SelectableText(bulletin.message, textScaleFactor: 0.8),
       horizontalTitleGap: 4,
     );
   }

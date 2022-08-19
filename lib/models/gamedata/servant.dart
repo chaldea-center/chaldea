@@ -8,6 +8,7 @@ import '../userdata/filter_data.dart';
 import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
+import 'event.dart';
 import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
@@ -661,9 +662,17 @@ class CraftEssence with GameCardMixin {
             : CraftATKType.none;
   }
 
-  Iterable<NiceSkill> eventSkills(int eventId) {
-    return skills.where((skill) => skill.functions
-        .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
+  Iterable<NiceSkill> eventSkills(Event event) {
+    // event should have stat info
+    if (flag == SvtFlag.svtEquipChocolate) return [];
+    return skills.where((skill) => skill.functions.any((func) {
+          if (func.svals.getOrNull(0)?.EventId == event.id) return true;
+          if (event.statItemFixed.containsKey(id)) {
+            return func.funcquestTvals
+                .any((trait) => trait.id >= 94000000 && trait.id < 95000000);
+          }
+          return false;
+        }));
   }
 
   @override

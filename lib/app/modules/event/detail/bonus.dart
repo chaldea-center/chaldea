@@ -11,10 +11,22 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   const EventBonusTab({Key? key, required this.event}) : super(key: key);
 
-  Widget? ceDetail(BuildContext context, CraftEssence ce) {
-    List<Widget> children = [];
+  Widget ceDetail(BuildContext context, CraftEssence ce) {
+    StringBuffer subtitle = StringBuffer(Transl.ceObtain(ce.extra.obtain).l);
+    subtitle.write(
+        ' HP ${ce.hpBase == ce.hpMax ? ce.hpBase.toString() : '${ce.hpBase}/${ce.hpMax}'}');
+    subtitle.write(
+        ' ATK ${ce.atkBase == ce.atkMax ? ce.atkBase.toString() : '${ce.atkBase}/${ce.atkMax}'}');
+    List<Widget> children = [
+      ListTile(
+        leading: ce.iconBuilder(context: context),
+        title: Text(ce.lName.l, maxLines: 1),
+        subtitle: Text(subtitle.toString()),
+      )
+    ];
+
     int? _lastTag;
-    for (final skill in ce.eventSkills(event.id)) {
+    for (final skill in ce.eventSkills(event)) {
       final tag = Object.hash(skill.icon, skill.lName.l);
       if (_lastTag != tag) {
         children.add(ListTile(
@@ -34,20 +46,6 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
         showEvent: false,
       ));
     }
-    if (children.isEmpty) return null;
-    StringBuffer subtitle = StringBuffer(Transl.ceObtain(ce.extra.obtain).l);
-    subtitle.write(
-        ' HP ${ce.hpBase == ce.hpMax ? ce.hpBase.toString() : '${ce.hpBase}/${ce.hpMax}'}');
-    subtitle.write(
-        ' ATK ${ce.atkBase == ce.atkMax ? ce.atkBase.toString() : '${ce.atkBase}/${ce.atkMax}'}');
-    children.insert(
-      0,
-      ListTile(
-        leading: ce.iconBuilder(context: context),
-        title: Text(ce.lName.l, maxLines: 1),
-        subtitle: Text(subtitle.toString()),
-      ),
-    );
 
     return TileGroup(children: children);
   }
@@ -56,15 +54,15 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
   Widget buildContent(BuildContext context) {
     List<Widget> children = [];
     final eventCEs = db.gameData.craftEssences.values
-        .where((e) => e.eventSkills(event.id).isNotEmpty)
+        .where((e) => e.eventSkills(event).isNotEmpty)
         .toList();
+    eventCEs.sort2((e) => e.collectionNo);
+
     if (eventCEs.isNotEmpty) {
       children.add(ListTile(title: Text(S.current.craft_essence)));
-    }
-    for (final ce in eventCEs) {
-      final detail = ceDetail(context, ce);
-      if (detail == null) continue;
-      children.add(detail);
+      for (final ce in eventCEs) {
+        children.add(ceDetail(context, ce));
+      }
     }
 
     Map<int, BaseSkill> eventSkills = {};
@@ -95,7 +93,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
             showBuffDetail: true,
           ),
           GridView.extent(
-            maxCrossAxisExtent: 72,
+            maxCrossAxisExtent: 48,
             childAspectRatio: 132 / 144,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
