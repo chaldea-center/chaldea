@@ -1,3 +1,9 @@
+## 2.0.11
+
+- free quest solver: add AP Cost 1/2 option
+- wide screen: adjust split screen ratio
+- merge illustrations into one image
+
 ## 2.0.10
 
 - support duplicated servant planning

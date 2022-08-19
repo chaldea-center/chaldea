@@ -29,6 +29,10 @@ flutter create --platforms=windows .
 - [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 - [ ] routeTo: add this as argument
+- [ ] generate skill/np in one image
+- [ ] mappings.effect: subStateNegative
+- [ ] quest: refresh
+- [ ] trait: dynamic tabs(fixed some tabs), items
 
 ## Quest Related
 
@@ -36,7 +40,7 @@ flutter create --platforms=windows .
 
 ## Servant
 
-- [ ] Duplicated servant support
+- [x] Duplicated servant support
 - [ ] Plan:
   - [ ] support TextField input
 - [x] skill/np/quest/voice/profile condition
