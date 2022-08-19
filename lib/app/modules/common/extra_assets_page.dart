@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import 'package:archive/archive.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image/image.dart' as img_lib;
 import 'package:photo_view/photo_view.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -256,7 +255,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
     imgBytes = null;
     size = null;
     update(null);
-    List<img_lib.Image> images = [];
+    List<ui.Image> images = [];
     final imagesUrls = widget.imageUrls.toList();
     for (int index = 0; index < imagesUrls.length; index++) {
       update('Reading $index/${imagesUrls.length}...');
@@ -274,43 +273,54 @@ class _MergeImagePageState extends State<MergeImagePage> {
       }
       if (provider == null) continue;
       final uiImg = await ImageActions.resolveImage(provider);
-      final bytes = (await uiImg?.toByteData())?.buffer.asUint8List();
-      if (uiImg == null || bytes == null) continue;
-      final img = img_lib.Image.fromBytes(uiImg.width, uiImg.height, bytes);
-      images.add(img);
+      if (uiImg != null) images.add(uiImg);
     }
     if (images.isEmpty) {
       update('No image loaded');
-    } else {
-      int w = Maths.max(images.map((e) => e.width)),
-          h = Maths.max(images.map((e) => e.height));
-      int colCount = sqrt(images.length).ceil();
-      int rowCount = (images.length / colCount).ceil();
-      img_lib.Image merged = img_lib.Image(w * colCount, h * rowCount);
-      for (int row = 0; row < rowCount; row++) {
-        for (int col = 0; col < colCount; col++) {
-          int index = row * colCount + col;
-          final img = images.getOrNull(index);
-          if (img == null) continue;
-          update('Drawing $index/${images.length}...');
-          await Future.delayed(const Duration(milliseconds: 50));
-          img_lib.drawImage(
-            merged,
-            img,
-            dstX: merged.width * col ~/ colCount,
-            dstY: merged.height * row ~/ rowCount,
-            dstW: img.width,
-            dstH: img.height,
-          );
-        }
-      }
-      size = Size(merged.width.toDouble(), merged.height.toDouble());
-      update('Rendering...');
-      await Future.delayed(const Duration(milliseconds: 50));
-      imgBytes = Uint8List.fromList(
-          img_lib.encodePng(merged, level: Deflate.BEST_COMPRESSION));
-      update('done');
+      return;
     }
+
+    double w = Maths.max(images.map((e) => e.width)).toDouble(),
+        h = Maths.max(images.map((e) => e.height)).toDouble();
+    int colCount = sqrt(images.length).ceil();
+    int rowCount = (images.length / colCount).ceil();
+
+    final canvasSize =
+        size = Size(w * colCount.toDouble(), h * rowCount.toDouble());
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(
+      recorder,
+      Rect.fromPoints(
+          const Offset(0, 0), Offset(canvasSize.width, canvasSize.height)),
+    );
+    for (int row = 0; row < rowCount; row++) {
+      for (int col = 0; col < colCount; col++) {
+        int index = row * colCount + col;
+        final img = images.getOrNull(index);
+        if (img == null) continue;
+        update('Drawing $index/${images.length}...');
+        await Future.delayed(const Duration(milliseconds: 50));
+        canvas.drawImageRect(
+          img,
+          Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+          Rect.fromLTWH(
+              col * w, row * h, img.width.toDouble(), img.height.toDouble()),
+          Paint()
+            ..filterQuality = FilterQuality.high
+            ..isAntiAlias = true,
+        );
+      }
+    }
+    final picture = recorder.endRecording();
+    update('Rendering...');
+    await Future.delayed(const Duration(milliseconds: 50));
+    ui.Image img = await picture.toImage(
+        canvasSize.width.toInt(), canvasSize.height.toInt());
+    imgBytes = (await img.toByteData(format: ui.ImageByteFormat.png))
+        ?.buffer
+        .asUint8List();
+    update('done');
   }
 
   @override
@@ -324,13 +334,13 @@ class _MergeImagePageState extends State<MergeImagePage> {
           Expanded(
             child: imgBytes != null
                 ? PhotoView(
-                    imageProvider: MemoryImage(imgBytes!),
                     backgroundDecoration:
                         const BoxDecoration(color: Colors.transparent),
+                    imageProvider: MemoryImage(imgBytes!),
+                    filterQuality: FilterQuality.high,
+                    minScale: PhotoViewComputedScale.contained * 0.4,
                   )
-                : Center(
-                    child: Text(status?.toString() ?? '...'),
-                  ),
+                : Center(child: Text(status?.toString() ?? '...')),
           ),
           if (size != null)
             Text(
