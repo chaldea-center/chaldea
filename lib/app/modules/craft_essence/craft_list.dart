@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -11,6 +9,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../tools/gamedata_loader.dart';
 import '../common/filter_page_base.dart';
 import 'craft.dart';
 import 'filter.dart';
@@ -83,23 +82,7 @@ class CraftListPageState extends State<CraftListPage>
     return RefreshIndicator(
       child: super.buildScrollable(useGrid: useGrid),
       onRefresh: () async {
-        final cards =
-            await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
-        int _added = 0;
-        for (final basicCard in cards) {
-          if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
-            continue;
-          }
-          final card = await AtlasApi.ce(basicCard.id);
-          if (card == null) continue;
-          db.gameData.craftEssences[card.collectionNo] = card;
-          _added += 1;
-        }
-        if (_added > 0) {
-          db.gameData.preprocess();
-          db.notifyAppUpdate();
-          EasyLoading.showSuccess('+ $_added ${S.current.craft_essence} !');
-        }
+        await GameDataLoader.instance.fetchUpdates();
         if (mounted) setState(() {});
       },
     );

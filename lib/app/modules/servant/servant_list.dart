@@ -4,11 +4,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
@@ -571,7 +570,10 @@ class ServantListPageState extends State<ServantListPage>
             ),
     );
     scrollable = RefreshIndicator(
-      onRefresh: _pullRefresh,
+      onRefresh: () async {
+        await GameDataLoader.instance.fetchUpdates();
+        if (mounted) setState(() {});
+      },
       child: scrollable,
     );
     if (db.settings.display.classFilterStyle ==
@@ -975,28 +977,6 @@ class ServantListPageState extends State<ServantListPage>
               const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
           onTap: () => _onTapSvt(svt),
         ));
-  }
-
-  Future<void> _pullRefresh() async {
-    final servants =
-        await AtlasApi.basicServants(expireAfter: Duration.zero) ?? [];
-    int _added = 0;
-    for (final basicSvt in servants) {
-      if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo)) {
-        continue;
-      }
-      final svt = await AtlasApi.svt(basicSvt.id);
-      if (svt == null) continue;
-      db.gameData.servantsNoDup[svt.collectionNo] = svt;
-      _added += 1;
-    }
-    if (_added > 0) {
-      db.gameData.preprocess();
-      db.itemCenter.init();
-      db.notifyAppUpdate();
-      EasyLoading.showSuccess('+ $_added ${S.current.servant} !');
-    }
-    if (mounted) setState(() {});
   }
 
   void _batchChange(

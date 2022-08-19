@@ -232,6 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("強化すると、次のアイテムが控除されます"),
+        "error": MessageLookupByLibrary.simpleMessage("エラー"),
         "error_no_data_found":
             MessageLookupByLibrary.simpleMessage("データが見つかりません"),
         "error_no_internet":

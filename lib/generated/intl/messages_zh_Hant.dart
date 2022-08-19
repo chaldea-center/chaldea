@@ -240,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("強化將扣除以下素材"),
+        "error": MessageLookupByLibrary.simpleMessage("錯誤"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("未找到數據文件"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("無網路連接"),
         "error_required_app_version": m2,
@@ -616,6 +617,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Google Play評分"),
         "recognizer_result_count": m19,
+        "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
+        "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("无新增卡牌"),
         "region_cn": MessageLookupByLibrary.simpleMessage("簡中服"),
         "region_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韓服"),

@@ -234,6 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("강화"),
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("강화하게 되면 다음 아이템이 소비됩니다"),
+        "error": MessageLookupByLibrary.simpleMessage("오류"),
         "error_no_data_found":
             MessageLookupByLibrary.simpleMessage("버전 정보를 찾을 수 없습니다"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("인터넷 연결 없음"),

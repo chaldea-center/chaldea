@@ -1714,6 +1714,17 @@ class S {
     );
   }
 
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `No data found`
   String get error_no_data_found {
     return Intl.message(
@@ -5239,6 +5250,28 @@ class S {
       desc: '',
       locale: localeName,
       args: [unknown, dup, valid, total, selected],
+    );
+  }
+
+  /// `Refresh`
+  String get refresh {
+    return Intl.message(
+      'Refresh',
+      name: 'refresh',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No new card found`
+  String get refresh_data_no_update {
+    return Intl.message(
+      'No new card found',
+      name: 'refresh_data_no_update',
+      desc: '',
+      locale: localeName,
+      args: [],
     );
   }
 

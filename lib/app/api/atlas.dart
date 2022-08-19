@@ -68,6 +68,14 @@ class _CacheManager {
   _CacheManager(this.cacheKey);
 
   Completer? _initCompleter;
+
+  Future<void> clearCache() async {
+    _memoryCache.clear();
+    _data.clear();
+    _downloading.clear();
+    await _saveCacheInfo();
+  }
+
   Future<void> init() async {
     if (_initCompleter != null) return _initCompleter!.future;
     _initCompleter = Completer();
@@ -402,7 +410,8 @@ class AtlasApi {
 
   // export
   static Future<List<BasicServant>?> basicServants(
-      {Region region = Region.jp, Duration? expireAfter}) async {
+      {Region region = Region.jp,
+      Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.toUpper()}/basic_servant.json',
       (data) => (data as List).map((e) => BasicServant.fromJson(e)).toList(),
@@ -411,7 +420,8 @@ class AtlasApi {
   }
 
   static Future<List<BasicCraftEssence>?> basicCraftEssences(
-      {Region region = Region.jp, Duration? expireAfter}) async {
+      {Region region = Region.jp,
+      Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.toUpper()}/basic_equip.json',
       (data) =>
@@ -421,11 +431,31 @@ class AtlasApi {
   }
 
   static Future<List<BasicCommandCode>?> basicCommandCodes(
-      {Region region = Region.jp, Duration? expireAfter}) async {
+      {Region region = Region.jp,
+      Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.toUpper()}/basic_command_code.json',
       (data) =>
           (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<Item>?> niceItems(
+      {Region region = Region.jp,
+      Duration? expireAfter = Duration.zero}) async {
+    return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.toUpper()}/nice_items.json',
+      (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<Map<String, dynamic>?> regionInfo(
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.toUpper()}/info.json',
+      (data) => Map.from(data),
       expireAfter: expireAfter,
     );
   }

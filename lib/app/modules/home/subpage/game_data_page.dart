@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -280,6 +281,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
           await ImageViewerCacheManager().emptyCache();
         }
         if (temp) {
+          await AtlasApi.cacheManager.clearCache();
           if (!kIsWeb) {
             Directory(db.paths.tempDir)
               ..deleteSync(recursive: true)

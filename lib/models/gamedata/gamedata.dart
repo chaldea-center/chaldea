@@ -341,6 +341,9 @@ class DataVersion {
   String toString() {
     return '$runtimeType($utc, ${files.length} files)';
   }
+
+  DateTime get dateTime =>
+      DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
 }
 
 @JsonSerializable(createToJson: true)

@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pool/pool.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
@@ -102,8 +103,8 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion =
-          DataVersion.fromJson((await _downFile('version.json')).json());
+      newVersion = DataVersion.fromJson(
+          (await _downFile('version.json', t: true)).json());
     }
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
@@ -137,16 +138,22 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
         }
-        final resp = await _downFile(
+        var resp = await _downFile(
           fv.filename,
-          // cancelToken: cancelToken,
           options: Options(responseType: ResponseType.bytes),
         );
-        final _hash =
-            md5.convert(List.from(resp.data)).toString().toLowerCase();
+        var _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
         if (db.settings.checkDataHash && !_hash.startsWith(fv.hash)) {
-          throw S.current
-              .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
+          resp = await _downFile(
+            fv.filename,
+            options: Options(responseType: ResponseType.bytes),
+            t: true,
+          );
+          _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
+          if (!_hash.startsWith(fv.hash)) {
+            throw S.current
+                .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
+          }
         }
         _dataToWrite[_file] = List.from(resp.data);
         bytes = resp.data;
@@ -239,16 +246,34 @@ class GameDataLoader {
     return _gamedata;
   }
 
-  static Future<Response<T>> _downFile<T>(String filename,
-      {Options? options}) async {
-    String url = '${Hosts.kDataHostGlobal}/$filename',
-        cnUrl = '${Hosts.kDataHostCN}/$filename';
+  static bool checkHash(List<int> bytes, String hash) {
+    return md5
+        .convert(bytes)
+        .toString()
+        .toLowerCase()
+        .startsWith(hash.toLowerCase());
+  }
+
+  static Future<Response<T>> _downFile<T>(
+    String filename, {
+    Options? options,
+    bool t = false,
+  }) async {
+    String url = db.settings.proxyServer
+        ? '${Hosts.kDataHostGlobal}/$filename'
+        : '${Hosts.kDataHostCN}/$filename';
+    if (t) {
+      final uri = Uri.parse(url);
+      url = uri.replace(queryParameters: {
+        ...uri.queryParameters,
+        't': DateTime.now().timestamp.toString(),
+      }).toString();
+    }
     if (AppInfo.packageName
         .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
-      url = cnUrl = 'https://$filename';
+      url = 'https://$filename';
     }
-    return await DioE()
-        .get<T>(db.settings.proxyServer ? cnUrl : url, options: options);
+    return await DioE().get<T>(url, options: options);
     // try {
     //   Completer<Response<T>> _completer = Completer();
     //   Timer(const Duration(seconds: 4), () {
@@ -270,6 +295,88 @@ class GameDataLoader {
     //   }
     //   rethrow;
     // }
+  }
+
+  Future<void> fetchUpdates() async {
+    final info = await AtlasApi.regionInfo();
+    final remoteTime = info?['timestamp'] as int?;
+    if (remoteTime == null) {
+      EasyLoading.showError(S.current.failed);
+      return;
+    } else if (remoteTime - db.gameData.version.timestamp >
+        const Duration(days: 14).inSeconds) {
+      EasyLoading.showInfo(
+          'Local data is pretty out of date, goto update dataset first.');
+      return;
+    } else if (db.gameData.version.timestamp > remoteTime) {
+      EasyLoading.showInfo(S.current.update_already_latest);
+      return;
+    }
+    final items = await AtlasApi.niceItems(expireAfter: Duration.zero) ?? [];
+    int _addedItem = 0;
+    for (final item in items) {
+      if (db.gameData.items.containsKey(item.id)) {
+        continue;
+      }
+      db.gameData.items[item.id] = item;
+      _addedItem += 1;
+    }
+
+    // svts
+    final servants =
+        await AtlasApi.basicServants(expireAfter: Duration.zero) ?? [];
+    int _addedSvt = 0;
+    for (final basicSvt in servants) {
+      if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo)) {
+        continue;
+      }
+      final svt = await AtlasApi.svt(basicSvt.id);
+      if (svt == null) continue;
+      db.gameData.servantsNoDup[svt.collectionNo] = svt;
+      _addedSvt += 1;
+    }
+
+    final crafts =
+        await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
+    int _addedCE = 0;
+    for (final basicCard in crafts) {
+      if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
+        continue;
+      }
+      final card = await AtlasApi.ce(basicCard.id);
+      if (card == null) continue;
+      db.gameData.craftEssences[card.collectionNo] = card;
+      _addedCE += 1;
+    }
+
+    final codes =
+        await AtlasApi.basicCommandCodes(expireAfter: Duration.zero) ?? [];
+    int _addedCC = 0;
+    for (final basicCard in codes) {
+      if (db.gameData.commandCodes.containsKey(basicCard.collectionNo)) {
+        continue;
+      }
+      final card = await AtlasApi.cc(basicCard.id);
+      if (card == null) continue;
+      db.gameData.commandCodes[card.collectionNo] = card;
+      _addedCC += 1;
+    }
+
+    if (_addedItem + _addedSvt + _addedCE + _addedCC > 0) {
+      db.gameData.preprocess();
+      db.itemCenter.init();
+      db.notifyAppUpdate();
+      String msg = '${S.current.update}: ';
+      msg += [
+        if (_addedSvt > 0) '$_addedSvt ${S.current.servant}',
+        if (_addedCE > 0) '$_addedCE ${S.current.craft_essence}',
+        if (_addedCC > 0) '$_addedCC ${S.current.command_code}',
+        if (_addedItem > 0) '$_addedItem ${S.current.item}',
+      ].join(', ');
+      EasyLoading.showSuccess(msg);
+    } else {
+      EasyLoading.showInfo(S.current.refresh_data_no_update);
+    }
   }
 }
 

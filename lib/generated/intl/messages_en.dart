@@ -271,6 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             "The following items will be consumed for enhancement"),
+        "error": MessageLookupByLibrary.simpleMessage("Error"),
         "error_no_data_found":
             MessageLookupByLibrary.simpleMessage("No data found"),
         "error_no_internet":
@@ -731,6 +732,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
         "recognizer_result_count": m19,
+        "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
+        "refresh_data_no_update":
+            MessageLookupByLibrary.simpleMessage("No new card found"),
         "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
