@@ -113,9 +113,14 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
         // appBar: AppBar(leading: BackButton()),
         body: GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            // sometime context is null?
+            if (mounted) Navigator.pop(context, _curIndex);
           },
-          child: SafeArea(child: gallery),
+          child: Padding(
+            padding:
+                MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
+            child: gallery,
+          ),
         ),
       ),
     );

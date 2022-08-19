@@ -278,7 +278,9 @@ class _MergeImagePageState extends State<MergeImagePage> {
       final img = img_lib.Image.fromBytes(uiImg.width, uiImg.height, bytes);
       images.add(img);
     }
-    if (images.isNotEmpty) {
+    if (images.isEmpty) {
+      update('No image loaded');
+    } else {
       int w = Maths.max(images.map((e) => e.width)),
           h = Maths.max(images.map((e) => e.height));
       int colCount = sqrt(images.length).ceil();

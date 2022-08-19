@@ -298,15 +298,31 @@ class GameDataLoader {
   }
 
   Future<void> fetchUpdates() async {
+    DataVersion dataVer;
+    try {
+      dataVer = DataVersion.fromJson(
+          Map.from((await _downFile('version.json', t: true)).data));
+    } catch (e, s) {
+      EasyLoading.showError(escapeDioError(e));
+      logger.e('fetch data version failed', e, s);
+      return;
+    }
+
+    if (dataVer.timestamp > db.gameData.version.timestamp) {
+      final newData = await reload();
+      if (newData != null) {
+        db.gameData = newData;
+        db.notifyAppUpdate();
+        EasyLoading.showSuccess(S.current.update_msg_succuss);
+        return;
+      } else {
+        return;
+      }
+    }
     final info = await AtlasApi.regionInfo();
     final remoteTime = info?['timestamp'] as int?;
     if (remoteTime == null) {
       EasyLoading.showError(S.current.failed);
-      return;
-    } else if (remoteTime - db.gameData.version.timestamp >
-        const Duration(days: 14).inSeconds) {
-      EasyLoading.showInfo(
-          'Local data is pretty out of date, goto update dataset first.');
       return;
     } else if (db.gameData.version.timestamp > remoteTime) {
       EasyLoading.showInfo(S.current.update_already_latest);

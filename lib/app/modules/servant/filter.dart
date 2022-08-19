@@ -342,7 +342,7 @@ const _traitsForFilter = <Trait>[
   Trait.superGiant,
   Trait.skyOrEarthExceptPseudoAndDemiServant,
   Trait.hominidaeServant,
-  Trait.demonicBeastServant,
+  Trait.demonicBeastServant, // 魔兽型
   Trait.livingHuman,
   Trait.childServant,
   Trait.existenceOutsideTheDomain,
@@ -354,4 +354,7 @@ const _traitsForFilter = <Trait>[
   Trait.fairyTaleServant,
   Trait.divineSpirit,
   Trait.hasCostume,
+  Trait.havingAnimalsCharacteristics, // 兽科
+  Trait.summerModeServant,
+  Trait.immuneToPigify,
 ];
