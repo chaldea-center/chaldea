@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:share_plus/share_plus.dart';
 
@@ -169,7 +168,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
           confirmText: PlatformU.isDesktop ? S.current.open : S.current.share,
           onTapOk: () {
             if (PlatformU.isDesktop) {
-              OpenFile.open(pathlib.dirname(fp!));
+              openFile(pathlib.dirname(fp!));
             } else if (kIsWeb) {
               Share.share(contents);
             } else {

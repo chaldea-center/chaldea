@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -76,7 +75,7 @@ class _UserDataPageState extends State<UserDataPage> {
                   if (PlatformU.isWeb) {
                     EasyLoading.showInfo('Check it in IndexedDB');
                   } else if (PlatformU.isDesktop) {
-                    OpenFile.open(db.paths.appPath);
+                    openFile(db.paths.appPath);
                   } else {
                     EasyLoading.showInfo(S.current.open_in_file_manager);
                   }
@@ -205,7 +204,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 TextButton(
                   child: Text(S.current.open),
                   onPressed: () {
-                    OpenFile.open(db.paths.backupDir);
+                    openFile(db.paths.backupDir);
                   },
                 ),
             ],
@@ -358,7 +357,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
             return Card(
               child: InkWell(
                 onTap: PlatformU.isDesktop
-                    ? () => OpenFile.open(db.paths.backupDir)
+                    ? () => openFile(db.paths.backupDir)
                     : null,
                 child: Padding(
                   padding: const EdgeInsets.all(6),

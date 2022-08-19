@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -95,7 +94,7 @@ class ImageActions {
                   if (PlatformU.isDesktop)
                     TextButton(
                       onPressed: () {
-                        OpenFile.open(dirname(destFp));
+                        openFile(dirname(destFp));
                       },
                       child: Text(S.current.open),
                     ),

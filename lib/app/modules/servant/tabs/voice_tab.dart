@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as pathlib;
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -409,7 +408,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                         onTapOk: () async {
                           if (_dir == null) return;
                           if (PlatformU.isDesktop) {
-                            OpenFile.open(_dir);
+                            openFile(_dir);
                           } else {
                             EasyLoading.showInfo(
                                 S.current.open_in_file_manager);

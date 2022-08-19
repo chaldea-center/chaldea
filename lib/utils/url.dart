@@ -27,3 +27,7 @@ Future<bool> launch(String url, {bool? external}) {
 Future<bool> canLaunch(String url) {
   return launcher.canLaunchUrl(Uri.parse(url));
 }
+
+Future<bool> openFile(String fp) {
+  return launcher.launchUrl(Uri.file(fp));
+}

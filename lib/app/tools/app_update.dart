@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 
 import 'package:chaldea/app/api/hosts.dart';
@@ -154,8 +153,7 @@ class AppUpdater {
       launch(detail.installer.downloadUrl);
       return;
     } else if (PlatformU.isLinux || PlatformU.isWindows) {
-      final result = await OpenFile.open(dirname(fp));
-      logger.d('open result: ${result.type}, ${result.message}');
+      await openFile(dirname(fp));
     }
   }
 
