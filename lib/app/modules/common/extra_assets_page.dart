@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -306,7 +307,8 @@ class _MergeImagePageState extends State<MergeImagePage> {
       size = Size(merged.width.toDouble(), merged.height.toDouble());
       update('Rendering...');
       await Future.delayed(const Duration(milliseconds: 50));
-      imgBytes = Uint8List.fromList(img_lib.encodePng(merged));
+      imgBytes = Uint8List.fromList(
+          img_lib.encodePng(merged, level: Deflate.BEST_COMPRESSION));
       update('done');
     }
   }

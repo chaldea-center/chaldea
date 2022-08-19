@@ -1758,6 +1758,17 @@ class S {
     );
   }
 
+  /// `AP Cost 1/2`
+  String get event_ap_cost_half {
+    return Intl.message(
+      'AP Cost 1/2',
+      name: 'event_ap_cost_half',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bonus`
   String get event_bonus {
     return Intl.message(

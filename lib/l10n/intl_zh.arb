@@ -154,6 +154,7 @@
   "error_no_data_found": "未找到数据文件",
   "error_no_internet": "无网络连接",
   "error_required_app_version": "App版本需不低于{version}",
+  "event_ap_cost_half": "AP消耗减半",
   "event_bonus": "加成",
   "event_bulletin_board": "咕咕报",
   "event_collect_item_confirm": "所有素材添加到素材仓库，并将该活动移出规划",

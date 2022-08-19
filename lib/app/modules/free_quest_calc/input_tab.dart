@@ -253,7 +253,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               color: params.minCost > 0 ||
                       db.gameData.mainStories[params.progress] != null ||
                       params.blacklist.isNotEmpty ||
-                      !params.use6th
+                      !params.use6th ||
+                      params.dailyCostHalf
                   ? Theme.of(context).errorColor
                   : Theme.of(context).colorScheme.primary,
               tooltip: S.of(context).settings_tab_name,
@@ -324,19 +325,19 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   void solve() async {
     FocusScope.of(context).unfocus();
-    if (Maths.max(params.counts, 0) > 0) {
-      setState(() {
-        running = true;
-      });
-      final solution = await solver.calculate(params: params);
-      running = false;
-      solution.destination = planOrEff ? 1 : 2;
-      solution.params = params;
-      if (widget.onSolved != null) {
-        widget.onSolved!(solution);
-      }
-    } else {
+    if (Maths.max(params.counts, 0) <= 0) {
       EasyLoading.showToast(S.of(context).input_invalid_hint);
+      return;
+    }
+    setState(() {
+      running = true;
+    });
+    final solution = await solver.calculate(params: params);
+    running = false;
+    solution.destination = planOrEff ? 1 : 2;
+    solution.params = params;
+    if (widget.onSolved != null) {
+      widget.onSolved!(solution);
     }
   }
 }

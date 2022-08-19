@@ -47,6 +47,8 @@ class FreeLPParams {
 
   bool useAP20;
 
+  bool dailyCostHalf;
+
   /// convert two key-value list to map
   Map<int, int> get objectiveCounts =>
       Map.fromIterable(rows, value: (k) => getPlanItemCount(k));
@@ -70,6 +72,7 @@ class FreeLPParams {
     List<int>? extraCols,
     this.integerResult = false,
     this.useAP20 = true,
+    this.dailyCostHalf = false,
     Map<int, int>? planItemCounts,
     Map<int, double>? planItemWeights,
   })  : rows = rows ?? [],
@@ -88,6 +91,7 @@ class FreeLPParams {
         extraCols = List.of(other.extraCols),
         integerResult = other.integerResult,
         useAP20 = other.useAP20,
+        dailyCostHalf = other.dailyCostHalf,
         planItemCounts = Map.of(other.planItemCounts),
         planItemWeights = Map.of(other.planItemWeights);
 

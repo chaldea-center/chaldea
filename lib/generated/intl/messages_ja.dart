@@ -238,6 +238,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("インターネットに接続できません"),
         "error_required_app_version": m2,
+        "event_ap_cost_half":
+            MessageLookupByLibrary.simpleMessage("消費AP 50% DOWN"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("ボーナス"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "すべてのアイテムを倉庫に追加し、プランからこのイベントを削除します"),

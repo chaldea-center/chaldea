@@ -244,6 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("未找到數據文件"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("無網路連接"),
         "error_required_app_version": m2,
+        "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP消費減半"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("加成"),
         "event_bulletin_board": MessageLookupByLibrary.simpleMessage("咕咕报"),
         "event_collect_item_confirm":

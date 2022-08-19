@@ -74,22 +74,6 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                 setState(() => params.minCost = v ?? params.minCost),
           ),
         ),
-        // ListTile(
-        //   title: Text(S.of(context).free_progress),
-        //   trailing: DropdownButton<int>(
-        //     value: params.maxColNum,
-        //     items: [
-        //       DropdownMenuItem(
-        //           value: -1, child: Text(S.of(context).free_progress_newest)),
-        //       for (var entry
-        //           in params.sheet.freeCounts.entries.toList()
-        //             ..sort((a, b) => b.value - a.value))
-        //         DropdownMenuItem(value: entry.value, child: Text(entry.key)),
-        //     ],
-        //     onChanged: (v) =>
-        //         setState(() => params.maxColNum = v ?? params.maxColNum),
-        //   ),
-        // ),
         ListTile(
           title: Text(S.of(context).plan_objective),
           trailing: DropdownButton<bool>(
@@ -115,6 +99,17 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             onChanged: (v) =>
                 setState(() => params.useAP20 = v ?? params.useAP20),
           ),
+        ),
+        SwitchListTile.adaptive(
+          value: params.dailyCostHalf,
+          title: Text(S.current.event_ap_cost_half),
+          subtitle: Text(Transl.warNames('曜日クエスト').l),
+          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: (v) {
+            setState(() {
+              params.dailyCostHalf = v;
+            });
+          },
         ),
         SimpleAccordion(
           headerBuilder: (context, _) => ListTile(

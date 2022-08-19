@@ -25,6 +25,8 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
           integerResult:
               $checkedConvert('integerResult', (v) => v as bool? ?? false),
           useAP20: $checkedConvert('useAP20', (v) => v as bool? ?? true),
+          dailyCostHalf:
+              $checkedConvert('dailyCostHalf', (v) => v as bool? ?? false),
           planItemCounts: $checkedConvert(
               'planItemCounts',
               (v) => (v as Map?)?.map(
@@ -56,6 +58,7 @@ Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) =>
       'extraCols': instance.extraCols,
       'integerResult': instance.integerResult,
       'useAP20': instance.useAP20,
+      'dailyCostHalf': instance.dailyCostHalf,
     };
 
 LPSolution _$LPSolutionFromJson(Map json) => $checkedCreate(

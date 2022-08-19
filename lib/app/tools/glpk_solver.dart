@@ -216,8 +216,8 @@ DropRateSheet _preProcess(
   List<int> cols = data.questIds.where((questId) {
     if (!wars.containsKey(params.progress)) return true;
     final warId = db.gameData.quests[questId]?.warId;
-    // some error that db not loaded
-    return warId == null || warId <= params.progress;
+    // some error that db not loaded || fit progress || chaldea gate quests
+    return warId == null || warId <= params.progress || warId >= 1000;
   }).toList();
   // only append extra columns having drop data in gpk matrix
   params.extraCols.forEach((col) {
@@ -312,6 +312,13 @@ DropRateSheet _preProcess(
 
   // no rows (glpk will raise error), need to check in caller
   if (objective.isEmpty) logger.d('no valid objRows');
+  if (params.dailyCostHalf) {
+    for (int index = 0; index < data.questIds.length; index++) {
+      if (db.gameData.quests[data.questIds[index]]?.warId == 1002) {
+        data.apCosts[index] ~/= 2;
+      }
+    }
+  }
 
   logger.v('processed data: ${data.itemIds.length} rows,'
       ' ${data.questIds.length} columns');

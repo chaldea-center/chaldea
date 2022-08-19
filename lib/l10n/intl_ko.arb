@@ -154,6 +154,7 @@
   "error_no_data_found": "버전 정보를 찾을 수 없습니다",
   "error_no_internet": "인터넷 연결 없음",
   "error_required_app_version": "필요한 앱 버전: ≥ {version}",
+  "event_ap_cost_half": "소비 AP 50% DOWN",
   "event_bonus": "보너스",
   "event_bulletin_board": null,
   "event_collect_item_confirm": "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다",

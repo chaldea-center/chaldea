@@ -154,6 +154,7 @@
   "error_no_data_found": "لا يوجد بيانات",
   "error_no_internet": "لا انترنت",
   "error_required_app_version": "نسخة التطبيق المطلوبة : ≥ {version}",
+  "event_ap_cost_half": null,
   "event_bonus": "إضافي",
   "event_bulletin_board": null,
   "event_collect_item_confirm": "ستتم إضافة جميع العناصر إلى الحقيبة وإزالة الحدث خارج الخطة",

@@ -239,6 +239,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("버전 정보를 찾을 수 없습니다"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("인터넷 연결 없음"),
         "error_required_app_version": m2,
+        "event_ap_cost_half":
+            MessageLookupByLibrary.simpleMessage("소비 AP 50% DOWN"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("보너스"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다"),
