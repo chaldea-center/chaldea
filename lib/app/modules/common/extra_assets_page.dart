@@ -208,7 +208,6 @@ class ExtraAssetsPage extends StatelessWidget {
     });
 
     return SimpleAccordion(
-      expanded: true,
       headerBuilder: (context, _) =>
           Text('${S.current.sprites} (katboi01\'s Fate Viewer)'),
       expandElevation: 0,

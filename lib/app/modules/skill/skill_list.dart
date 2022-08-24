@@ -109,7 +109,17 @@ class _SkillListPageState extends State<SkillListPage>
           ? const SizedBox(height: 28, width: 28)
           : db.getIconImage(skill?.icon, height: 28),
       horizontalTitleGap: 8,
-      title: Text(skill?.lName.l ?? "Skill $_searchSkillId"),
+      title: Text.rich(
+        TextSpan(
+          text: skill?.lName.l ?? "Skill $_searchSkillId",
+          children: [
+            if (skill != null)
+              TextSpan(
+                  text: '\n${skill.id} ${skill.type.name}',
+                  style: Theme.of(context).textTheme.caption)
+          ],
+        ),
+      ),
       onTap: () {
         final id = skill?.id ?? _searchSkillId;
         if (id != null) router.popDetailAndPush(url: Routes.skillI(id));

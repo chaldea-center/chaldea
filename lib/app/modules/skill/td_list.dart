@@ -113,8 +113,18 @@ class _TdListPageState extends State<TdListPage>
           : CommandCardWidget(card: td.card, width: 36),
       horizontalTitleGap: 6,
       contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
-      title:
-          Text(td?.nameWithRank ?? "${S.current.noble_phantasm} $_searchTdId"),
+      title: Text.rich(
+        TextSpan(
+          text: td?.nameWithRank ?? "${S.current.noble_phantasm} $_searchTdId",
+          children: [
+            if (td != null)
+              TextSpan(
+                  text:
+                      '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
+                  style: Theme.of(context).textTheme.caption)
+          ],
+        ),
+      ),
       onTap: () {
         final id = td?.id ?? _searchTdId;
         if (id != null) router.popDetailAndPush(url: Routes.tdI(id));
