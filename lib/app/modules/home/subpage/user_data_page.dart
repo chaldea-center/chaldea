@@ -379,15 +379,20 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                   content: Text(db.paths.convertIosPath(entry.key)),
                   onTapOk: () async {
                     try {
-                      final userdata = UserData.fromJson(json
-                          .decode(await FilePlus(entry.key).readAsString()));
+                      final jsonData =
+                          jsonDecode(await FilePlus(entry.key).readAsString());
+                      if (jsonData['users'] == null) {
+                        EasyLoading.showError('Empty Data!');
+                        return;
+                      }
+                      final userdata = UserData.fromJson(jsonData);
                       await db.backupUserdata();
                       db.userData = userdata;
                       EasyLoading.showToast(S.current.import_data_success);
                       db.saveUserData();
                       db.notifyAppUpdate();
                     } catch (e) {
-                      EasyLoading.showError(S.of(context).import_data_error(e));
+                      EasyLoading.showError(S.current.import_data_error(e));
                     }
                   },
                 ).showDialog(context);
