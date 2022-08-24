@@ -424,7 +424,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           plan.questReward = v;
           event.updateStat();
         },
-        title: S.current.game_rewards,
+        title: S.current.quest_reward,
         items: event.itemWarReward,
       ));
     }

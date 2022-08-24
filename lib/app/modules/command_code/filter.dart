@@ -27,7 +27,7 @@ class _CmdCodeFilterPageState
     super.initState();
     effects = List.of(
         SkillEffect.values.where((v) => !SkillEffect.ccIgnores.contains(v)));
-    effects.sort2((e) => SearchUtil.getSortAlphabet(e.transl.l));
+    effects.sort2((e) => SearchUtil.getSortAlphabet(e.lName));
   }
 
   @override
@@ -102,7 +102,7 @@ class _CmdCodeFilterPageState
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,
-          optionBuilder: (v) => Text(v.transl.l),
+          optionBuilder: (v) => Text(v.lName),
           onFilterChanged: (value, _) {
             update();
           },

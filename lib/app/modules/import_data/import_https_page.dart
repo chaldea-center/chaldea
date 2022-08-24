@@ -684,7 +684,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     servants.clear();
     items = _topLogin.body.userItem
         .where((e) =>
-            e.num > 0 &&
+            e.num >= 0 &&
             db.gameData.items[e.itemId]?.category != ItemCategory.other)
         .toList();
     crafts.clear();

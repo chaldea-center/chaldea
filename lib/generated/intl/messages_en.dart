@@ -723,8 +723,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "If the related event of the quest has not started at chosen region, it will fallback to JP"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
             "Only JP(after 2020/11) or NA(2020/12) may contain enemy data"),
-        "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
-        "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
+        "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
+        "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "Some quests\' start time is not correct"),

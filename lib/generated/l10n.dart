@@ -5175,10 +5175,10 @@ class S {
     );
   }
 
-  /// `Bonus`
+  /// `Quest Rewards`
   String get quest_reward {
     return Intl.message(
-      'Bonus',
+      'Quest Rewards',
       name: 'quest_reward',
       desc: '',
       locale: localeName,
@@ -5186,10 +5186,10 @@ class S {
     );
   }
 
-  /// `Bonus`
+  /// `Rewards`
   String get quest_reward_short {
     return Intl.message(
-      'Bonus',
+      'Rewards',
       name: 'quest_reward_short',
       desc: '',
       locale: localeName,

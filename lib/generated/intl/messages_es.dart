@@ -656,8 +656,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Terrenos"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-        "quest_reward": MessageLookupByLibrary.simpleMessage("Bonus"),
-        "quest_reward_short": MessageLookupByLibrary.simpleMessage("Bonus"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rareza"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Valorar en App Store"),

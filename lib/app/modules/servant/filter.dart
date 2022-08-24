@@ -29,7 +29,7 @@ class _ServantFilterPageState
     super.initState();
     effects = List.of(
         SkillEffect.values.where((v) => !SkillEffect.svtIgnores.contains(v)));
-    effects.sort2((e) => SearchUtil.getSortAlphabet(e.transl.l));
+    effects.sort2((e) => SearchUtil.getSortAlphabet(e.lName));
   }
 
   @override
@@ -313,7 +313,7 @@ class _ServantFilterPageState
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,
-          optionBuilder: (v) => Text(v.transl.l),
+          optionBuilder: (v) => Text(v.lName),
           onFilterChanged: (value, _) {
             update();
           },

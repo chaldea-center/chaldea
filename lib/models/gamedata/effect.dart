@@ -35,6 +35,11 @@ class SkillEffect {
     return Transl.funcType(funcTypes.first);
   }
 
+  String get lName {
+    String s = transl.l;
+    return validate == null ? s : '$s*';
+  }
+
   bool match(BaseFunction func) {
     if (funcTypes.contains(func.funcType) ||
         func.buffs.any((buff) => buffTypes.contains(buff.type))) {
@@ -90,8 +95,10 @@ class SkillEffect {
     regainHp,
     addMaxhp,
     upTolerance,
-    avoidState,
+    avoidStateNegative,
     upGrantstate,
+    upGrantstatePositive,
+    upGrantstateNegative,
     upReceivePositiveEffect,
     subState,
     subStatePositive,
@@ -136,6 +143,8 @@ class SkillEffect {
     SkillEffect.regainHp,
     SkillEffect.addMaxhp,
     SkillEffect.upGrantstate,
+    SkillEffect.upGrantstatePositive,
+    SkillEffect.upGrantstateNegative,
     SkillEffect.upResistInstantdeath,
     SkillEffect.upGrantInstantdeath,
     SkillEffect.avoidInstantdeath,
@@ -262,8 +271,8 @@ class SkillEffect {
         ].contains(trait.name)),
   );
   // 弱体无效
-  static SkillEffect avoidState = SkillEffect(
-    'avoidState',
+  static SkillEffect avoidStateNegative = SkillEffect(
+    'avoidStateNegative',
     buffTypes: [BuffType.avoidState],
     validate: (func) => func.buffs.first.ckOpIndv.every((trait) => ![
           Trait.buffPositiveEffect,
@@ -273,6 +282,14 @@ class SkillEffect {
   // 状态付与成功率提升
   static SkillEffect upGrantstate =
       SkillEffect._buff('upGrantstate', BuffType.upGrantstate);
+  static SkillEffect upGrantstatePositive = SkillEffect._buff(
+      'upGrantstatePositive', BuffType.upGrantstate,
+      validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv
+          .any((trait) => trait.name == Trait.buffPositiveEffect)));
+  static SkillEffect upGrantstateNegative = SkillEffect._buff(
+      'upGrantstateNegative', BuffType.upGrantstate,
+      validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv
+          .any((trait) => trait.name == Trait.buffNegativeEffect)));
   // 被强化成功率提升
   static SkillEffect upReceivePositiveEffect = SkillEffect(
     'upReceivePositiveEffect',

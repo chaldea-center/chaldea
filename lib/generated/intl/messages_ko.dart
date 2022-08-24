@@ -616,8 +616,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("필드"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("드롭"),
-        "quest_reward": MessageLookupByLibrary.simpleMessage("보너스"),
-        "quest_reward_short": MessageLookupByLibrary.simpleMessage("보너스"),
         "rarity": MessageLookupByLibrary.simpleMessage("레어도"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("App Store에서 평가"),

@@ -10,8 +10,6 @@ flutter create --platforms=windows .
       which translation found, then pass that locale
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
-- [x] use github issue forms for issue templates
-- [ ] Clear Cache
 - [ ] command card: add svt assets
 - [ ] Summon prob calc
 - [ ] userdata: make all constructor params nullable, catch error when converting token 
@@ -25,7 +23,6 @@ flutter create --platforms=windows .
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
 - [ ] more selectable text
-- [ ] remove apk install, add download link redirect
 - [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 - [ ] routeTo: add this as argument
@@ -33,6 +30,8 @@ flutter create --platforms=windows .
 - [ ] mappings.effect: subStateNegative
 - [ ] quest: refresh
 - [ ] trait: dynamic tabs(fixed some tabs), items
+- [ ] quest: unknown call/shift/transform deck
+- [ ] skill/td/func/buff: change region
 
 ## Quest Related
 
