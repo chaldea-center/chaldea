@@ -134,7 +134,12 @@ class _FuncListPageState extends State<FuncListPage>
             ),
       onTap: () {
         final id = func?.funcId ?? _searchFuncId;
-        if (id != null) router.popDetailAndPush(url: Routes.funcI(id));
+        if (id != null) {
+          router.popDetailAndPush(
+            url: Routes.funcI(id),
+            popDetail: SplitRoute.of(context)?.detail == false,
+          );
+        }
       },
     );
   }

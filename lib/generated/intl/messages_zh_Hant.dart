@@ -732,6 +732,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持與捐贈"),
         "support_servant": MessageLookupByLibrary.simpleMessage("助戰"),
         "support_servant_forced": MessageLookupByLibrary.simpleMessage("限定"),
+        "support_servant_short": MessageLookupByLibrary.simpleMessage("助战"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("從者頭像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("資料"),
         "svt_class_dist": MessageLookupByLibrary.simpleMessage("職階分佈"),

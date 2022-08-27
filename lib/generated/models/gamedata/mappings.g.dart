@@ -256,6 +256,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      cnReplace: (json['cn_replace'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, e as String),
+          ) ??
+          const {},
     );
 
 MappingBase<T> _$MappingBaseFromJson<T>(

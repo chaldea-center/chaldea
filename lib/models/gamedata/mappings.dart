@@ -255,6 +255,7 @@ class MappingData {
   final Map<int, MappingBase<int>> questRelease;
   final EnumMapping enums;
   final Map<String, MappingBase<String>> misc;
+  final Map<String, String> cnReplace;
 
   MappingData({
     this.itemNames = const {},
@@ -296,6 +297,7 @@ class MappingData {
     this.questRelease = const {},
     EnumMapping? enums,
     this.misc = const {},
+    this.cnReplace = const {},
   })  : svtRelease = svtRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),

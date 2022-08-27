@@ -6342,6 +6342,17 @@ class S {
     );
   }
 
+  /// `Support`
+  String get support_servant_short {
+    return Intl.message(
+      'Support',
+      name: 'support_servant_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ascension Icon`
   String get svt_ascension_icon {
     return Intl.message(

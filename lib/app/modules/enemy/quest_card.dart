@@ -536,7 +536,14 @@ class _QuestCardState extends State<QuestCard> {
       Widget support = Text.rich(
         TextSpan(children: [
           CenterWidgetSpan(
-              child: svt.svt.iconBuilder(context: context, width: 32)),
+            child: svt.svt.iconBuilder(
+              context: context,
+              width: 32,
+              onTap: () {
+                router.pushPage(SupportServantPage(svt));
+              },
+            ),
+          ),
           TextSpan(
             children: [
               const TextSpan(text: ' Lv.'),

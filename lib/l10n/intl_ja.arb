@@ -570,6 +570,7 @@
   "support_chaldea": "サポートと寄付",
   "support_servant": null,
   "support_servant_forced": null,
+  "support_servant_short": null,
   "svt_ascension_icon": "霊基再臨アイコン",
   "svt_basic_info": "情報",
   "svt_class_dist": null,

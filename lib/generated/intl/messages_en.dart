@@ -875,6 +875,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Support Servant"),
         "support_servant_forced":
             MessageLookupByLibrary.simpleMessage("Forced"),
+        "support_servant_short":
+            MessageLookupByLibrary.simpleMessage("Support"),
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),

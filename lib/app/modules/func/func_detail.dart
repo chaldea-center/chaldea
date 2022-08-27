@@ -147,8 +147,10 @@ class FuncInfoTable extends StatelessWidget {
                   '${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
               onTap: () {
                 router.push(
-                    url: Routes.funcs,
-                    child: FuncListPage(type: func.funcType));
+                  url: Routes.funcs,
+                  child: FuncListPage(type: func.funcType),
+                  detail: false,
+                );
               },
             ),
             textAlign: TextAlign.end,

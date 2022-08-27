@@ -138,7 +138,10 @@ class Routes {
     plans,
     summons,
     traits,
+    funcs,
     buffs,
+    skills,
+    tds,
   ];
 }
 

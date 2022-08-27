@@ -133,7 +133,10 @@ class BuffInfoTable extends StatelessWidget {
               text: '${buff.type.name}\n${Transl.buffType(buff.type).l}',
               onTap: () {
                 router.push(
-                    url: Routes.funcs, child: BuffListPage(type: buff.type));
+                  url: Routes.funcs,
+                  child: BuffListPage(type: buff.type),
+                  detail: false,
+                );
               },
             ),
             textAlign: TextAlign.center,

@@ -570,6 +570,7 @@
   "support_chaldea": "서포트 및 기부하기",
   "support_servant": null,
   "support_servant_forced": null,
+  "support_servant_short": null,
   "svt_ascension_icon": "영기 재림 아이콘",
   "svt_basic_info": "정보",
   "svt_class_dist": null,

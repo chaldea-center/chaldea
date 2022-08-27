@@ -570,6 +570,7 @@
   "support_chaldea": "支持與捐贈",
   "support_servant": "助戰",
   "support_servant_forced": "限定",
+  "support_servant_short": null,
   "svt_ascension_icon": "從者頭像",
   "svt_basic_info": "資料",
   "svt_class_dist": "職階分佈",

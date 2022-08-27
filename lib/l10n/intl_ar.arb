@@ -570,6 +570,7 @@
   "support_chaldea": "الدعم والتبرعات",
   "support_servant": null,
   "support_servant_forced": null,
+  "support_servant_short": null,
   "svt_ascension_icon": "ايقونه الاسينشن",
   "svt_basic_info": "عن",
   "svt_class_dist": null,

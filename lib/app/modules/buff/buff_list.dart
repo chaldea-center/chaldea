@@ -127,7 +127,12 @@ class _BuffListPageState extends State<BuffListPage>
               '${buff.id} ${buff.type.name} ${Transl.buffType(buff.type).l}'),
       onTap: () {
         final id = buff?.id ?? _searchBuffId;
-        if (id != null) router.popDetailAndPush(url: Routes.buffI(id));
+        if (id != null) {
+          router.popDetailAndPush(
+            url: Routes.buffI(id),
+            popDetail: SplitRoute.of(context)?.detail == false,
+          );
+        }
       },
     );
   }

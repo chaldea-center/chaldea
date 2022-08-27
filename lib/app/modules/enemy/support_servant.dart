@@ -23,7 +23,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.svtNames(svt.shownName).l),
+        title: Text(
+            '[${S.current.support_servant_short}] ${Transl.svtNames(svt.shownName).l}'),
       ),
       body: ListView(
         children: [

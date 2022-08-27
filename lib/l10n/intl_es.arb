@@ -570,6 +570,7 @@
   "support_chaldea": "Apoyo y Donación",
   "support_servant": null,
   "support_servant_forced": null,
+  "support_servant_short": null,
   "svt_ascension_icon": "Icono de Ascension",
   "svt_basic_info": "Info",
   "svt_class_dist": null,
