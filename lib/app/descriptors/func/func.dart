@@ -23,6 +23,7 @@ mixin FuncsDescriptor {
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
     SkillOrTd? owner,
+    bool showEvent = true,
   }) =>
       describe(
         funcs: funcs,
@@ -34,6 +35,7 @@ mixin FuncsDescriptor {
         padding: padding,
         showBuffDetail: showBuffDetail,
         owner: owner,
+        showEvent: showEvent,
       );
 
   static List<Widget> describe({
@@ -346,10 +348,25 @@ class FuncDescriptor extends StatelessWidget {
               mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
     }
 
+    DataVals? vals = func.svals.getOrNull(0);
+
     List<InlineSpan> spans = [];
     Widget? icon;
-    if (func.funcPopupIcon != null) {
-      icon = db.getIconImage(func.funcPopupIcon, width: 18);
+    String? _iconUrl = func.funcPopupIcon ?? func.buffs.getOrNull(0)?.icon;
+    if (_iconUrl != null) {
+      icon = db.getIconImage(_iconUrl, width: 18);
+      if (vals?.SetPassiveFrame == 1) {
+        icon = DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).hintColor),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(1),
+            child: icon,
+          ),
+        );
+      }
     } else if (func.funcType == FuncType.eventDropUp ||
         func.funcType == FuncType.eventDropRateUp ||
         func.funcType == FuncType.eventPointUp) {
@@ -386,7 +403,6 @@ class FuncDescriptor extends StatelessWidget {
         ),
       );
     }
-    DataVals? vals = func.svals.getOrNull(0);
 
     if ((vals?.Rate != null && vals!.Rate! < 0) ||
         (vals?.UseRate != null && vals!.UseRate! < 0)) {

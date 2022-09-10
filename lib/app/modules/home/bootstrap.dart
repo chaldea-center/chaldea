@@ -260,6 +260,16 @@ class _BootstrapPageState extends State<BootstrapPage>
         children: [
           _tile(false),
           _tile(true),
+          ListTile(
+            leading: const SizedBox(),
+            title: const Text('Native App'),
+            subtitle: const Text('Android/iOS/Windows/macOS/Linux'),
+            horizontalTitleGap: 0,
+            trailing: const Icon(Icons.open_in_new),
+            onTap: () {
+              launch(HttpUrlHelper.projectDocUrl('installation.html'));
+            },
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
             child: Text(

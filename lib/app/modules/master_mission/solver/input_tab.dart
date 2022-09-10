@@ -93,10 +93,12 @@ class _MissionInputTabState extends State<MissionInputTab> {
         children: [
           if (mission.originDetail?.isNotEmpty == true)
             ListTile(
+              dense: true,
               title: Text(S.current.custom_mission_source_mission),
               subtitle: Text(mission.originDetail!),
             ),
           ListTile(
+            dense: true,
             leading: Text(S.current.general_type),
             trailing: DropdownButton<CustomMissionType>(
               value: mission.type,
@@ -105,8 +107,9 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   DropdownMenuItem(
                     value: type,
                     child: Text(
-                        Transl.enums(type, (enums) => enums.customMissionType)
-                            .l),
+                      Transl.enums(type, (enums) => enums.customMissionType).l,
+                      textScaleFactor: 0.9,
+                    ),
                   ),
               ],
               onChanged: (v) {
@@ -117,6 +120,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             ),
           ),
           ListTile(
+            dense: true,
             leading: Text(S.current.counts),
             trailing: SizedBox(
               width: 72,
@@ -125,6 +129,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   border: const OutlineInputBorder(),
                   isDense: true,
                   hintText: mission.count.toString(),
+                  contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 ),
                 textAlign: TextAlign.center,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -138,6 +143,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             ),
           ),
           ListTile(
+            dense: true,
             leading: Text(S.current.logic_type),
             trailing: FilterGroup<bool>(
               options: const [true, false],

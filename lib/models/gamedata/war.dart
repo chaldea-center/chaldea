@@ -130,6 +130,12 @@ class NiceWar with RouteInfo {
         if (quest.flags.contains(QuestFlag.branch)) {
           continue;
         }
+        if (quest.warId < 1000 &&
+            quest.type == QuestType.event &&
+            quest.closedAt - quest.openedAt <
+                const Duration(days: 365).inSeconds) {
+          continue;
+        }
         // 1000825: 终局特异点 section 12
         // 3000540: Atlantis section 18
         if ([1000825, 3000540].contains(quest.id)) {

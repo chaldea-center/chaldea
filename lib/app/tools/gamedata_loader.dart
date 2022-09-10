@@ -102,8 +102,8 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson(
-          (await _downFile('version.json', t: true)).json());
+      newVersion =
+          DataVersion.fromJson((await _downFile('version.json')).json());
     }
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
@@ -117,7 +117,6 @@ class GameDataLoader {
 
     Map<String, dynamic> _gameJson = {};
     Map<FilePlus, List<int>> _dataToWrite = {};
-    _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
     int finished = 0;
     Future<void> _downloadCheck(FileVersion fv,
         {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
@@ -233,6 +232,11 @@ class GameDataLoader {
     _gameJson["version"] = newVersion.toJson();
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
+    if (!offline) {
+      logger.i(
+          'Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
+    }
+    _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
     for (final entry in _dataToWrite.entries) {
       await entry.key.writeAsBytes(entry.value);
     }
@@ -300,7 +304,7 @@ class GameDataLoader {
     DataVersion dataVer;
     try {
       dataVer = DataVersion.fromJson(
-          Map.from((await _downFile('version.json', t: true)).data));
+          Map.from((await _downFile('version.json')).data));
     } catch (e, s) {
       EasyLoading.showError(escapeDioError(e));
       logger.e('fetch data version failed', e, s);

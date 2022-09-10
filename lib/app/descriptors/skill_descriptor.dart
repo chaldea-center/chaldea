@@ -20,6 +20,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showBuffDetail;
   final bool jumpToDetail;
   final bool showExtraPassiveCond;
+  final bool showEvent;
 
   const SkillDescriptor({
     Key? key,
@@ -32,6 +33,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showBuffDetail = false,
     this.jumpToDetail = true,
     this.showExtraPassiveCond = true,
+    this.showEvent = true,
   }) : super(key: key);
 
   const SkillDescriptor.only({
@@ -44,6 +46,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showBuffDetail = false,
     this.jumpToDetail = true,
     this.showExtraPassiveCond = true,
+    this.showEvent = true,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer,
         super(key: key);
@@ -124,6 +127,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           showEnemy: showEnemy,
           showNone: showNone,
           showBuffDetail: showBuffDetail,
+          showEvent: showEvent,
         )
       ],
     );

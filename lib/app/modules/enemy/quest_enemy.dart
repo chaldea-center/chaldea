@@ -37,7 +37,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   Widget get baseInfoTable {
     return CustomTable(children: [
-      CustomTableRow.fromTexts(texts: [enemy.name], isHeader: true),
+      CustomTableRow.fromTexts(texts: [enemy.lShownName], isHeader: true),
+      if (!Transl.isJP) CustomTableRow.fromTexts(texts: [enemy.name]),
       TextButton(
         onPressed: () {
           if (enemy.svt.collectionNo > 0) {

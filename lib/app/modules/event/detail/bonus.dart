@@ -91,6 +91,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
             skill: eventSkills[skillId]!,
             hideDetail: true,
             showBuffDetail: true,
+            showEvent: false,
           ),
           GridView.extent(
             maxCrossAxisExtent: 48,

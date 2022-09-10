@@ -271,7 +271,11 @@ class ValDsc extends StatelessWidget {
             vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
       }
       if (vals.AddCount != null) {
-        _addInt(vals.AddCount);
+        if (func.funcType == FuncType.eventDropRateUp) {
+          _addPercent(vals.AddCount, 10);
+        } else {
+          _addInt(vals.AddCount);
+        }
       }
       if (vals.UseRate != null) {
         _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));

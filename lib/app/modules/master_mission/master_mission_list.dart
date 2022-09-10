@@ -33,6 +33,8 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
 
   Future<void> _resolveMissions(Region region, {bool force = false}) async {
     errorMsg = null;
+    _allRegionMissions.remove(region);
+    if (mounted) setState(() {});
     final missions = await AtlasApi.masterMissions(
         region: region, expireAfter: force ? Duration.zero : null);
     if (missions == null || missions.isEmpty) {

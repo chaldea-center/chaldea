@@ -112,16 +112,22 @@ class FuncInfoTable extends StatelessWidget {
     return CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
-          child: Text.rich(TextSpan(children: [
-            if (func.funcPopupIcon != null)
-              CenterWidgetSpan(
-                  child: db.getIconImage(func.funcPopupIcon, width: 24)),
-            TextSpan(text: ' ${func.lPopupText.l}'),
-          ])),
+          child: Text.rich(
+            TextSpan(children: [
+              if (func.funcPopupIcon != null)
+                CenterWidgetSpan(
+                    child: db.getIconImage(func.funcPopupIcon, width: 24)),
+              TextSpan(text: ' ${func.lPopupText.l}'),
+            ]),
+            textAlign: TextAlign.center,
+          ),
           isHeader: true,
         )
       ]),
-      if (!Transl.isJP) CustomTableRow.fromTexts(texts: [func.lPopupText.jp]),
+      if (!Transl.isJP)
+        CustomTableRow(children: [
+          TableCellData(text: func.lPopupText.jp, textAlign: TextAlign.center)
+        ]),
       CustomTableRow(children: [
         TableCellData(
           text: 'ID',

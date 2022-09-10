@@ -143,7 +143,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (kIsWeb) return false;
     if (!Atlas.isAtlasAsset(url)) return false;
     if (!url.endsWith('.png') ||
-        url.contains('merged') ||
+        // url.contains('merged') ||
         url.endsWith('questboard_cap_closed.png')) return false;
     return true;
   }
@@ -293,7 +293,8 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
   }
 
   @override
-  ImageStreamCompleter load(MyCacheImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+      MyCacheImage key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -304,7 +305,8 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(MyCacheImage key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(
+      MyCacheImage key, DecoderBufferCallback decode) async {
     assert(key == this);
 
     final localPath = await AtlasIconLoader.i.get(key.url);
@@ -318,7 +320,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
       throw StateError('$localPath is empty and cannot be loaded as an image.');
     }
 
-    return decode(bytes);
+    return decode(await ui.ImmutableBuffer.fromUint8List(bytes));
   }
 
   @override

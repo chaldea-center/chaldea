@@ -104,23 +104,14 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop(_curIndex);
-        return false;
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context, _curIndex);
       },
       child: Scaffold(
-        // appBar: AppBar(leading: BackButton()),
-        body: GestureDetector(
-          onTap: () {
-            // sometime context is null?
-            if (mounted) Navigator.pop(context, _curIndex);
-          },
-          child: Padding(
-            padding:
-                MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
-            child: gallery,
-          ),
+        body: Padding(
+          padding: MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
+          child: gallery,
         ),
       ),
     );

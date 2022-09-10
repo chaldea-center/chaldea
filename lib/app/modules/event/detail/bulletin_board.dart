@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -27,8 +31,12 @@ class EventBulletinBoardPage extends StatelessWidget with PrimaryScrollMixin {
       key: Key('event_bulletin_${bulletin.bulletinBoardId}'),
       leading: Text(bulletin.bulletinBoardId.toString(),
           textAlign: TextAlign.center),
-      title: SelectableText(bulletin.message, textScaleFactor: 0.8),
+      title: Text(bulletin.message, textScaleFactor: 0.8),
       horizontalTitleGap: 4,
+      onLongPress: () async {
+        await Clipboard.setData(ClipboardData(text: bulletin.message));
+        EasyLoading.showInfo(S.current.copied);
+      },
     );
   }
 }

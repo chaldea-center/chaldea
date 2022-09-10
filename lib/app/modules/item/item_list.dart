@@ -339,6 +339,8 @@ class _ItemListTabState extends State<ItemListTab> {
         if (coinId != null) _coinSvtMap[coinId] = svt;
       }
       sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
+    } else if (widget.category == ItemCategory.other) {
+      sortedEntries.sort2((e) => db.gameData.items[e.key]?.id ?? e.key);
     } else {
       sortedEntries.sort2((e) => e.key == Items.qpId
           ? -1
