@@ -149,7 +149,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
 
-      int itemNum = plan.counts[itemIndex] * ticket.multiplier;
+      int itemNum = plan[itemIndex] * ticket.multiplier;
       count += itemNum;
       children.add(SimpleAccordion(
         expanded: false,

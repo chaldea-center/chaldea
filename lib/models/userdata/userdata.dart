@@ -1,5 +1,7 @@
 library userdata;
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -692,11 +694,21 @@ class MainStoryPlan {
 
 @JsonSerializable()
 class ExchangeTicketPlan {
+  @protected
   List<int> counts;
 
+  int get length => counts.length;
+  int operator [](int index) => counts.getOrNull(index) ?? 0;
+  void operator []=(int index, int value) {
+    if (index >= counts.length) counts.fixLength(index + 1, () => 0);
+    counts[index] = value;
+  }
+
+  Iterable<int> getRange(int start, int end) => counts.getRange(start, end);
+
   ExchangeTicketPlan({List<int>? counts})
-      : counts = List.generate(3, (index) => counts?.getOrNull(index) ?? 0,
-            growable: false);
+      : counts = List.generate(max(3, counts?.length ?? 0),
+            (index) => counts?.getOrNull(index) ?? 0);
 
   factory ExchangeTicketPlan.fromJson(Map<String, dynamic> json) =>
       _$ExchangeTicketPlanFromJson(json);

@@ -85,156 +85,170 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {
-    bool planned = db.curUser.ticketOf(ticket.id).enabled;
-    bool outdated = ticket.isOutdated();
-    Color? _plannedColor = Theme.of(context).colorScheme.secondary;
-    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
-    bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
-    bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     return Row(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          flex: 2,
-          child: ListTile(
-            contentPadding: const EdgeInsetsDirectional.only(start: 12),
-            title: Text.rich(
-              TextSpan(text: ticket.dateStr, children: [
-                if (hasReplaced)
-                  const CenterWidgetSpan(
-                      child: Icon(Icons.help_outline, size: 18))
-              ]),
-              style: TextStyle(
-                color: planned
-                    ? _plannedColor
-                    : outdated
-                        ? _outdatedColor
-                        : null,
-                fontWeight: FontWeight.w600,
+        SizedBox(
+          width: 90,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(12, 2, 8, 2),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: buildTitle(ticket),
               ),
             ),
-            subtitle: Text.rich(
-              TextSpan(
-                  text: db.curUser.region == Region.jp
-                      ? 'max: ${ticket.days}'
-                      : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
-                  children: [
-                    if (ticket.multiplier != 1)
-                      TextSpan(
-                        text: ' ×${ticket.multiplier}',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                  ]),
-              style: TextStyle(
-                color: outdated ? _outdatedColor?.withAlpha(200) : null,
-                fontSize: 12,
-              ),
-            ),
-            onTap: hasAnyReplaced ? () => _showReplaceDetail(ticket) : null,
           ),
         ),
         Expanded(
-          flex: 5,
           child: Align(
-            alignment: Alignment.centerRight,
-            child: buildTrailing(ticket),
+            alignment: AlignmentDirectional.centerEnd,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: buildItems(ticket),
+            ),
           ),
         )
       ],
     );
   }
 
-  Widget buildTrailing(ExchangeTicket ticket) {
+  Widget buildTitle(ExchangeTicket ticket) {
+    bool planned = db.curUser.ticketOf(ticket.id).enabled;
+    bool outdated = ticket.isOutdated();
+    Color? _plannedColor = Theme.of(context).colorScheme.secondary;
+    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
+    bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
+    bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
+
+    return InkWell(
+      onTap: hasAnyReplaced ? () => _showReplaceDetail(ticket) : null,
+      child: Text.rich(TextSpan(children: [
+        TextSpan(
+          text: ticket.dateStr,
+          children: [
+            if (hasReplaced)
+              const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18))
+          ],
+          style: TextStyle(
+            color: planned
+                ? _plannedColor
+                : outdated
+                    ? _outdatedColor
+                    : null,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const TextSpan(text: '\n'),
+        TextSpan(
+            text: db.curUser.region == Region.jp
+                ? 'max: ${ticket.days}'
+                : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
+            children: [
+              if (ticket.multiplier != 1)
+                TextSpan(
+                  text: ' ×${ticket.multiplier}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+            ],
+            style: TextStyle(
+              color: outdated
+                  ? _outdatedColor?.withAlpha(200)
+                  : Theme.of(context).textTheme.caption?.color,
+              fontSize: 12,
+            )),
+      ])),
+    );
+  }
+
+  Widget buildItems(ExchangeTicket ticket) {
     final monthPlan = db.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
-    for (int i = 0; i < 3; i++) {
-      final itemId = ticket.of(db.curUser.region)[i];
+    final items = ticket.of(db.curUser.region);
+    for (int index = 0; index < items.length; index++) {
+      final itemId = items[index];
       final item = db.gameData.items[itemId];
       int leftNum = db.itemCenter.itemLeft[itemId] ?? 0;
-      monthPlan.counts[i] = monthPlan.counts[i].clamp2(0, ticket.days);
+      monthPlan[index] = monthPlan[index].clamp2(0, ticket.days);
       final int maxValue =
-          ticket.days - Maths.sum(monthPlan.counts.getRange(0, i));
-      trailingItems.add(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Item.iconBuilder(
-            context: context,
-            item: item,
-            itemId: itemId,
-            width: 42,
-            text: (db.curUser.items[itemId] ?? 0).format(),
-            textPadding: const EdgeInsets.only(top: 36),
-            popDetail: true,
-          ),
-          SizedBox(
-            width: 36,
-            child: MaterialButton(
-              padding: const EdgeInsets.symmetric(),
-              child: Column(
-                children: <Widget>[
-                  Text(monthPlan.counts[i] == 0
-                      ? ''
-                      : (monthPlan.counts[i] * ticket.multiplier).toString()),
-                  const Divider(height: 1),
-                  DefaultTextStyle(
-                    style: Theme.of(context).textTheme.bodyText2!,
-                    child: AutoSizeText(
-                      leftNum.toString(),
-                      maxLines: 1,
-                      group: _autoSizeGroup,
-                      style: TextStyle(
-                          color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
-                    ),
-                  )
-                ],
-              ),
-              onPressed: () {
-                Picker(
-                  title: Text('${ticket.dateStr} ${item?.lName.l}'),
-                  itemExtent: 36,
-                  height: min(250, MediaQuery.of(context).size.height - 220),
-                  hideHeader: true,
-                  cancelText: S.of(context).cancel,
-                  confirmText: S.of(context).confirm,
-                  backgroundColor: null,
-                  textStyle: Theme.of(context).textTheme.headline6,
-                  adapter: NumberPickerAdapter(
-                    data: [
-                      NumberPickerColumn(
-                        items: List.generate(
-                            maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                        initValue: monthPlan.counts[i],
-                        onFormatValue: (v) {
-                          return ticket.multiplier == 1
-                              ? v.toString()
-                              : '$v×${ticket.multiplier}';
-                        },
-                      ),
-                    ],
-                  ),
-                  onConfirm: (picker, values) {
-                    monthPlan.counts[i] = picker.getSelectedValues()[0];
-                    for (var j = 0; j < 3; j++) {
-                      final int v = min(
-                          monthPlan.counts[j],
-                          ticket.days -
-                              Maths.sum(monthPlan.counts.getRange(0, j)));
-                      monthPlan.counts[j] = v;
-                    }
-                    db.itemCenter.updateExchangeTickets();
-                  },
-                ).showDialog(context);
-              },
+          ticket.days - Maths.sum(monthPlan.getRange(0, index));
+      trailingItems.addAll([
+        Item.iconBuilder(
+          context: context,
+          item: item,
+          itemId: itemId,
+          width: 36,
+          text: (db.curUser.items[itemId] ?? 0).format(),
+          textPadding: const EdgeInsets.only(top: 30),
+          popDetail: true,
+        ),
+        SizedBox(
+          width: 36,
+          child: MaterialButton(
+            padding: const EdgeInsets.symmetric(),
+            child: Column(
+              children: <Widget>[
+                Text(monthPlan[index] == 0
+                    ? ''
+                    : (monthPlan[index] * ticket.multiplier).toString()),
+                const Divider(height: 1),
+                AutoSizeText(
+                  leftNum.format(),
+                  maxLines: 1,
+                  minFontSize: 6,
+                  group: _autoSizeGroup,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
+                )
+              ],
             ),
-          )
-        ],
-      ));
+            onPressed: () {
+              Picker(
+                title: Text('${ticket.dateStr} ${item?.lName.l}'),
+                itemExtent: 36,
+                height: min(250, MediaQuery.of(context).size.height - 220),
+                hideHeader: true,
+                cancelText: S.of(context).cancel,
+                confirmText: S.of(context).confirm,
+                backgroundColor: null,
+                textStyle: Theme.of(context).textTheme.headline6,
+                adapter: NumberPickerAdapter(
+                  data: [
+                    NumberPickerColumn(
+                      items: List.generate(
+                          maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
+                      initValue: monthPlan[index],
+                      onFormatValue: (v) {
+                        return ticket.multiplier == 1
+                            ? v.toString()
+                            : '$v×${ticket.multiplier}';
+                      },
+                    ),
+                  ],
+                ),
+                onConfirm: (picker, values) {
+                  monthPlan[index] = picker.getSelectedValues()[0];
+                  for (var j = 0; j < 3; j++) {
+                    final int v = min(monthPlan[j],
+                        ticket.days - Maths.sum(monthPlan.getRange(0, j)));
+                    monthPlan[j] = v;
+                  }
+                  db.itemCenter.updateExchangeTickets();
+                },
+              ).showDialog(context);
+            },
+          ),
+        )
+      ]);
     }
-    return FittedBox(
-      child: Row(mainAxisSize: MainAxisSize.min, children: trailingItems),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: trailingItems,
     );
   }
 
