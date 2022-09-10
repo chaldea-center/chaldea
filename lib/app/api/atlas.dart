@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 
@@ -454,8 +453,8 @@ class AtlasApi {
   static Future<Map<String, dynamic>?> regionInfo(
       {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
-      '$_atlasApiHost/export/${region.toUpper()}/info.json',
-      (data) => Map.from(data),
+      '$_atlasApiHost/info',
+      (data) => data[region.toUpper()],
       expireAfter: expireAfter,
     );
   }

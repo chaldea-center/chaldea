@@ -145,7 +145,7 @@ abstract class SearchOptionsMixin<T> {
   final Map<int, String> _caches = {};
 
   String getCache(T datum, String subKey, List<String?> Function() ifAbsent) {
-    int key = hashValues(datum, subKey);
+    int key = Object.hash(datum, subKey);
     return _caches[key] ??=
         '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
   }

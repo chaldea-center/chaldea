@@ -230,8 +230,5 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
 class DraggableScrollBehavior extends MaterialScrollBehavior {
   @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+  final Set<PointerDeviceKind> dragDevices = PointerDeviceKind.values.toSet();
 }
