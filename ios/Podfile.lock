@@ -8,14 +8,14 @@ PODS:
     - ReachabilitySwift
   - device_info_plus (0.0.1):
     - Flutter
-  - DKImagePickerController/Core (4.3.2):
+  - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.2)
-  - DKImagePickerController/PhotoGallery (4.3.2):
+  - DKImagePickerController/ImageDataManager (4.3.4)
+  - DKImagePickerController/PhotoGallery (4.3.4):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.2)
+  - DKImagePickerController/Resource (4.3.4)
   - DKPhotoGallery (0.0.17):
     - DKPhotoGallery/Core (= 0.0.17)
     - DKPhotoGallery/Model (= 0.0.17)
@@ -66,9 +66,9 @@ PODS:
   - permission_handler_apple (9.0.4):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.12.5):
-    - SDWebImage/Core (= 5.12.5)
-  - SDWebImage/Core (5.12.5)
+  - SDWebImage (5.13.2):
+    - SDWebImage/Core (= 5.13.2)
+  - SDWebImage/Core (5.13.2)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -86,7 +86,6 @@ DEPENDENCIES:
   - catcher (from `.symlinks/plugins/catcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
-  - DKImagePickerController/PhotoGallery (from `https://github.com/miguelpruivo/DKImagePickerController.git`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
@@ -105,6 +104,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - DKImagePickerController
     - DKPhotoGallery
     - FMDB
     - ReachabilitySwift
@@ -121,8 +121,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
-  DKImagePickerController:
-    :git: https://github.com/miguelpruivo/DKImagePickerController.git
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -154,17 +152,12 @@ EXTERNAL SOURCES:
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
-CHECKOUT OPTIONS:
-  DKImagePickerController:
-    :commit: ded0926eb9fddf0bc03fa79d552b1cbd3537ce97
-    :git: https://github.com/miguelpruivo/DKImagePickerController.git
-
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
-  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
+  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
@@ -179,7 +172,7 @@ SPEC CHECKSUMS:
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 0905f1b7760fc8ac4198cae0036600d67478751e
+  SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
@@ -187,6 +180,6 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
-PODFILE CHECKSUM: f15eb2890a9257220d01abbe2780ba3871fa408f
+PODFILE CHECKSUM: 6608c5d091f93ffe3244af31f484c4ac8943eaab
 
 COCOAPODS: 1.11.3

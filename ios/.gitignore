@@ -3,6 +3,7 @@
 Runner/info.plist
 
 # default
+**/dgph
 *.mode1v3
 *.mode2v3
 *.moved-aside
@@ -23,6 +24,7 @@ Flutter/App.framework
 Flutter/Flutter.framework
 Flutter/Flutter.podspec
 Flutter/Generated.xcconfig
+Flutter/ephemeral/
 Flutter/app.flx
 Flutter/app.zip
 Flutter/flutter_assets/
