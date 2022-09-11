@@ -5,13 +5,16 @@
 
     <meta charset="UTF-8" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <link rel="icon" href="/favicon.png" />
+    <meta name="description" content="Chaldea - Yet Another Planner for Fate/GO" />
 
     <!-- iOS meta tags & icons -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="chaldea" />
     <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
     <!-- social graph -->
     <meta property="og:site_name" content="Chaldea" />
@@ -26,9 +29,10 @@
     <meta property="og:description" content="Chaldea - Yet another planner for Fate/GO" />
 
     <title>Chaldea</title>
-    <meta name="description" content="Chaldea - Yet Another Planner for Fate/GO" />
     <link rel="manifest" href="manifest.json" />
+
     <style>
+      /* loading indicator style */
       .loading-hint {
         margin-top: 100px;
         color: #212529;
@@ -79,6 +83,13 @@
         }
       }
     </style>
+    <script>
+      // The value below is injected by flutter build, do not touch.
+      var serviceWorkerVersion = null;
+      var entrypointUrl = "main.dart.js";
+    </script>
+    <!-- This script adds the flutter initialization JS code -->
+    <script src="flutter.js" defer></script>
   </head>
   <body>
     <!-- loading indicator, ref: loading.io -->
@@ -119,69 +130,21 @@
     </script>
 
     <script>
-      var serviceWorkerVersion = null;
-      var scriptLoaded = false;
-      function loadMainDartJs() {
-        if (scriptLoaded) {
-          return;
-        }
-        scriptLoaded = true;
-        var scriptTag = document.createElement("script");
-        scriptTag.src = "main.dart.js";
-        scriptTag.type = "application/javascript";
-        scriptTag.onload = () => {
-          document.getElementsByClassName("loading-indicator")[0]?.remove();
-        };
-        document.body.append(scriptTag);
-      }
-
-      if ("serviceWorker" in navigator) {
-        // Service workers are supported. Use them.
-        window.addEventListener("load", function () {
-          // Wait for registration to finish before dropping the <script> tag.
-          // Otherwise, the browser will load the script multiple times,
-          // potentially different versions.
-          var serviceWorkerUrl = "flutter_service_worker.js?v=" + serviceWorkerVersion;
-          navigator.serviceWorker.register(serviceWorkerUrl).then((reg) => {
-            function waitForActivation(serviceWorker) {
-              serviceWorker.addEventListener("statechange", () => {
-                if (serviceWorker.state == "activated") {
-                  console.log("Installed new service worker.");
-                  loadMainDartJs();
-                }
-              });
-            }
-            if (!reg.active && (reg.installing || reg.waiting)) {
-              // No active web worker and we have installed or are installing
-              // one for the first time. Simply wait for it to activate.
-              waitForActivation(reg.installing || reg.waiting);
-            } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
-              // When the app updates the serviceWorkerVersion changes, so we
-              // need to ask the service worker to update.
-              console.log("New service worker available.");
-              document.getElementsByClassName("loading-hint")[0].innerHTML = "Updating Chaldea...";
-              reg.update();
-              waitForActivation(reg.installing);
-            } else {
-              // Existing service worker is still good.
-              console.log("Loading app from service worker.");
-              loadMainDartJs();
-            }
+      window.addEventListener("load", function (ev) {
+        // Download main.dart.js
+        _flutter.loader
+          .loadEntrypoint({
+            serviceWorker: {
+              serviceWorkerVersion: serviceWorkerVersion,
+            },
+          })
+          .then(function (engineInitializer) {
+            return engineInitializer.initializeEngine();
+          })
+          .then(function (appRunner) {
+            return appRunner.runApp();
           });
-
-          // If service worker doesn't succeed in a reasonable amount of time,
-          // fallback to plaint <script> tag.
-          setTimeout(() => {
-            if (!scriptLoaded) {
-              console.warn("Failed to load app from service worker. Falling back to plain <script> tag.");
-              loadMainDartJs();
-            }
-          }, 4000);
-        });
-      } else {
-        // Service workers not supported. Just drop the <script> tag.
-        loadMainDartJs();
-      }
+      });
     </script>
   </body>
 </html>
