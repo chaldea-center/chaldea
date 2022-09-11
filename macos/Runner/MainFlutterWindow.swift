@@ -10,7 +10,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
     configMethodChannel()
-    
+
     super.awakeFromNib()
   }
     
