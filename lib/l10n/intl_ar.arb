@@ -538,6 +538,7 @@
   "settings_userdata_footer": "قم بعمل نسخة احتياطية قبل التحديث واحفظها خارج مجلدات التطبيق احتياطا",
   "share": "مشاركة",
   "show_carousel": null,
+  "show_empty_event": null,
   "show_frame_rate": "عرض نسبة الاطارات",
   "show_fullscreen": "عرض ملئ الشاشة",
   "show_outdated": "عرض المنتهى منه",

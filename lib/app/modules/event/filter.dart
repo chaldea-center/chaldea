@@ -36,6 +36,15 @@ class _EventFilterPageState
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          value: filterData.showEmpty,
+          title: Text(S.current.show_empty_event),
+          onChanged: (v) {
+            filterData.showEmpty = v;
+            update();
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         FilterGroup<EventCustomType>(
           title: Text(S.current.general_type),
           options: EventCustomType.values,

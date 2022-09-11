@@ -11,6 +11,7 @@ class LimitEventTab extends StatelessWidget {
   final bool reversed;
   final bool showOutdated;
   final bool showSpecialRewards;
+  final bool showEmpty;
   final ScrollController scrollController;
 
   LimitEventTab({
@@ -19,13 +20,16 @@ class LimitEventTab extends StatelessWidget {
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
+    this.showEmpty = false,
     required this.scrollController,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Event> events = limitEvents.toList();
-    events.removeWhere((event) => event.isEmpty && !event.extra.forceShown);
+    if (!showEmpty) {
+      events.removeWhere((event) => event.isEmpty && !event.extra.forceShown);
+    }
     if (!showOutdated) {
       events.removeWhere(
           (e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
@@ -74,13 +78,14 @@ class LimitEventTab extends StatelessWidget {
               event.lotteries.isNotEmpty ||
               event.treasureBoxes.isNotEmpty)
             Icon(Icons.star, color: Colors.yellow[700]),
-          Switch.adaptive(
-            value: plan.enabled,
-            onChanged: (v) {
-              plan.enabled = v;
-              event.updateStat();
-            },
-          )
+          if (!event.isEmpty)
+            Switch.adaptive(
+              value: plan.enabled,
+              onChanged: (v) {
+                plan.enabled = v;
+                event.updateStat();
+              },
+            )
         ],
       ),
       onTap: () {

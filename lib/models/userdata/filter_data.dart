@@ -588,6 +588,7 @@ class EventFilterData with _FilterData {
   bool reversed;
   bool showOutdated;
   bool showSpecialRewards;
+  bool showEmpty;
 
   // filter
   @JsonKey(ignore: true)
@@ -597,12 +598,14 @@ class EventFilterData with _FilterData {
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
+    this.showEmpty = false,
   });
 
   @override
   void reset() {
     super.reset();
     showSpecialRewards = false;
+    showEmpty = false;
   }
 
   @override

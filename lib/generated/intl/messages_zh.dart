@@ -698,6 +698,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("显示轮播图"),
+        "show_empty_event": MessageLookupByLibrary.simpleMessage("显示无内容活动"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("显示刷新率"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("全屏显示"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),

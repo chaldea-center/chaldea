@@ -5990,6 +5990,17 @@ class S {
     );
   }
 
+  /// `Show Empty Event`
+  String get show_empty_event {
+    return Intl.message(
+      'Show Empty Event',
+      name: 'show_empty_event',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show Frame Rate`
   String get show_frame_rate {
     return Intl.message(

@@ -538,6 +538,7 @@
   "settings_userdata_footer": "앱 업데이트 전에 유저 데이터를 백업하시고,앱 폴더외의 안전한 공간에 보관하십시오",
   "share": "공유",
   "show_carousel": "배너 표시",
+  "show_empty_event": null,
   "show_frame_rate": "fps 표시",
   "show_fullscreen": "풀스크린 보이기",
   "show_outdated": "기간종료 보이기",

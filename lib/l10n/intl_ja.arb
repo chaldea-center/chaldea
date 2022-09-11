@@ -538,6 +538,7 @@
   "settings_userdata_footer": "アップデート/バッグが大量あう時、お先にバックアップしてください。アプリのアンインストールで内部バックアップが失われることがありますから、頼りになった位置へ移動するようにしてください",
   "share": "シェア",
   "show_carousel": "カルーセルを表示",
+  "show_empty_event": null,
   "show_frame_rate": "フレームレートを表示",
   "show_fullscreen": "フルスクリーンを表示",
   "show_outdated": "期限切れのを表示",

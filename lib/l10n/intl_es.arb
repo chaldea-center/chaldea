@@ -538,6 +538,7 @@
   "settings_userdata_footer": "Realice una copia de seguridad de los datos del usuario antes de actualizar la aplicación y traslade las copias de seguridad a ubicaciones seguras fuera de la carpeta de documentos de la aplicación",
   "share": "Compartir",
   "show_carousel": "Mostrar Carrusel",
+  "show_empty_event": null,
   "show_frame_rate": "Mostrar velocidad de fotogramas",
   "show_fullscreen": "Mostrar Pantalla Completa",
   "show_outdated": "Mostrar desactualizado",

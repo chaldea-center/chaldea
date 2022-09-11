@@ -109,6 +109,7 @@ class EventListPageState extends State<EventListPage>
                 reversed: filterData.reversed,
                 showOutdated: filterData.showOutdated,
                 showSpecialRewards: filterData.showSpecialRewards,
+                showEmpty: filterData.showEmpty,
                 scrollController: scrollControllers[0],
               ),
             ),
