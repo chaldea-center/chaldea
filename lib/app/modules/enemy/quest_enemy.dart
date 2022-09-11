@@ -73,6 +73,16 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
               ),
               CustomTableRow.fromTextsWithHeader(
                 texts: [
+                  'Deck',
+                  enemy.deck.name,
+                  'DeckId',
+                  enemy.deckId.toString(),
+                ],
+                isHeaders: const [true, false, true, false],
+                defaults: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
                   S.current.filter_sort_class,
                   Transl.svtClass(enemy.svt.className).l,
                   S.current.filter_attribute,
@@ -90,19 +100,34 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 ],
                 isHeaders: const [true, false, true, false],
               ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  S.current.info_death_rate,
-                  _dscPercent(enemy.deathRate, 10),
-                  S.current.info_critical_rate,
-                  _dscPercent(enemy.criticalRate, 10),
-                ],
-                isHeaders: const [true, false, true, false],
-              ),
+              // CustomTableRow.fromTextsWithHeader(
+              //   texts: [
+              //     S.current.info_death_rate,
+              //     _dscPercent(enemy.deathRate, 10),
+              //     S.current.info_critical_rate,
+              //     _dscPercent(enemy.criticalRate, 10),
+              //   ],
+              //   isHeaders: const [true, false, true, false],
+              // ),
             ],
           ),
         )
       ]),
+      CustomTableRow.fromTexts(
+        texts: [
+          'Role Type',
+          S.current.info_death_rate,
+          S.current.info_critical_rate,
+        ],
+        isHeader: true,
+      ),
+      CustomTableRow.fromTexts(
+        texts: [
+          enemy.roleType.name.toTitle(),
+          _dscPercent(enemy.deathRate, 10),
+          _dscPercent(enemy.criticalRate, 10),
+        ],
+      ),
       CustomTableRow.fromTexts(
         texts: [
           S.current.np_gain_mod,

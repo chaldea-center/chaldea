@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -756,29 +757,28 @@ class QuestWave extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<QuestEnemy?> enemyDeck = [];
-    List<QuestEnemy> callDeck = [];
-    Map<int, QuestEnemy> shiftDeck = {};
-    List<QuestEnemy> unknownDeck = [];
+    final npcs = {
+      for (final enemy in stage.enemies) enemy.npcId: enemy,
+    };
+    Set<int> _usedNpcIds = {};
 
-    void _insertEnemy(QuestEnemy enemy) {
-      assert(enemy.deck == DeckType.enemy);
-      if (enemyDeck.length <= enemy.deckId) {
-        enemyDeck.length = enemy.deckId;
-      }
-      assert(enemyDeck[enemy.deckId - 1] == null);
-      enemyDeck[enemy.deckId - 1] = enemy;
-    }
-
-    Widget _buildEnemyWithShift(QuestEnemy? enemy) {
+    Widget _buildEnemyWithShift(QuestEnemy? enemy, {bool showDeck = false}) {
       if (enemy == null) return const SizedBox();
       List<Widget> parts = [];
-      parts.add(QuestEnemyWidget(enemy: enemy, showTrueName: showTrueName));
-      if (enemy.enemyScript.shift != null) {
-        for (final shift in enemy.enemyScript.shift!) {
-          final shiftEnemy = shiftDeck[shift]!;
-          parts.add(
-              QuestEnemyWidget(enemy: shiftEnemy, showTrueName: showTrueName));
+      parts.add(QuestEnemyWidget(
+        enemy: enemy,
+        showTrueName: showTrueName,
+        showDeck: showDeck,
+      ));
+      if (enemy.enemyScript?.shift != null) {
+        for (final shift in enemy.enemyScript!.shift!) {
+          final shiftEnemy = npcs[shift];
+          if (shiftEnemy == null || shiftEnemy.deck != DeckType.shift) continue;
+          parts.add(QuestEnemyWidget(
+            enemy: shiftEnemy,
+            showTrueName: showTrueName,
+            showDeck: showDeck,
+          ));
         }
       }
       if (parts.length == 1) return parts.first;
@@ -796,53 +796,71 @@ class QuestWave extends StatelessWidget {
       );
     }
 
-    for (final enemy in stage.enemies) {
-      switch (enemy.deck) {
-        case DeckType.enemy:
-          _insertEnemy(enemy);
-          break;
-        case DeckType.call:
-          callDeck.add(enemy);
-          break;
-        case DeckType.shift:
-          shiftDeck[enemy.npcId] = enemy;
-          break;
-        case DeckType.change:
-        case DeckType.transform:
-        case DeckType.skillShift:
-        case DeckType.missionTargetSkillShift:
-          unknownDeck.add(enemy);
-          break;
+    List<Widget> _buildDeck(Iterable<QuestEnemy?> enemies,
+        {bool showDeck = false, bool needSort = false}) {
+      List<QuestEnemy?> _enemies;
+      if (needSort) {
+        _enemies = List.filled(
+            enemies.fold(0, (p, e) => max(p, e?.deckId ?? 0)), null);
+        for (final e in enemies) {
+          if (e != null) {
+            assert(_enemies[e.deckId - 1] == null);
+            _enemies[e.deckId - 1] = e;
+          }
+        }
+        for (int i = 0; i < _enemies.length ~/ 3; i++) {
+          if (_enemies.sublist(i * 3, i * 3 + 3).every((e) => e == null)) {
+            _enemies.removeRange(i * 3, i * 3 + 3);
+          }
+        }
+      } else {
+        _enemies = enemies.toList();
       }
+
+      return [
+        for (int i = 0; i < _enemies.length / 3; i++)
+          Row(
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              for (int j in [0, 1, 2])
+                Expanded(
+                  child: _buildEnemyWithShift(_enemies.getOrNull(i * 3 + j),
+                      showDeck: showDeck),
+                ),
+            ],
+          ),
+      ];
     }
-    List<Widget> positions = [];
-    int enemyDeckLength = (enemyDeck.length / 3).ceil() * 3;
-    for (int i = 0; i < enemyDeckLength; i++) {
-      final enemy = enemyDeck.getOrNull(i);
-      positions.add(_buildEnemyWithShift(enemy));
+
+    // building
+    List<Widget> children = [];
+    // enemy deck
+    final _enemyDeck =
+        stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
+    children.addAll(_buildDeck(_enemyDeck, needSort: true));
+    for (final e in _enemyDeck) {
+      _usedNpcIds.add(e.npcId);
+      _usedNpcIds.addAll(e.enemyScript?.shift ?? []);
     }
-    int callDeckLength = (callDeck.length / 3).ceil() * 3;
-    for (int i = 0; i < callDeckLength; i++) {
-      final enemy = callDeck.getOrNull(i);
-      positions.add(_buildEnemyWithShift(enemy));
+    // call deck
+    final _callDeck =
+        stage.enemies.where((e) => e.deck == DeckType.call).toList();
+    if (_callDeck.isNotEmpty) {
+      children.add(const Text('Call Deck', textAlign: TextAlign.center));
+      children.addAll(_buildDeck(_callDeck, needSort: true));
     }
-    int unknownDeckLength = (unknownDeck.length / 3).ceil() * 3;
-    for (int i = 0; i < unknownDeckLength; i++) {
-      final enemy = unknownDeck.getOrNull(i);
-      positions.add(_buildEnemyWithShift(enemy));
+    _usedNpcIds.addAll(_callDeck.map((e) => e.npcId));
+    // others
+    final _unknownDeck =
+        stage.enemies.where((e) => !_usedNpcIds.contains(e.npcId));
+    if (_unknownDeck.isNotEmpty) {
+      children.add(const Text('Unknown Deck', textAlign: TextAlign.center));
+      children.addAll(_buildDeck(_unknownDeck, showDeck: true));
     }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(positions.length ~/ 3, (i) {
-        return Row(
-          textDirection: TextDirection.rtl,
-          children: <Widget>[
-            Expanded(child: positions[i * 3]),
-            Expanded(child: positions[i * 3 + 1]),
-            Expanded(child: positions[i * 3 + 2]),
-          ],
-        );
-      }),
+      children: children,
     );
   }
 }
@@ -850,10 +868,13 @@ class QuestWave extends StatelessWidget {
 class QuestEnemyWidget extends StatelessWidget {
   final QuestEnemy enemy;
   final bool showTrueName;
+  final bool showDeck;
+
   const QuestEnemyWidget({
     Key? key,
     required this.enemy,
     this.showTrueName = false,
+    this.showDeck = false,
   }) : super(key: key);
 
   @override
@@ -866,7 +887,7 @@ class QuestEnemyWidget extends StatelessWidget {
       placeholder: (_) => const SizedBox(),
     );
 
-    if (enemy.misc.displayType == 2 && !showTrueName) {
+    if (enemy.misc?.displayType == 2 && !showTrueName) {
       face = Stack(
         alignment: Alignment.center,
         children: [
@@ -919,7 +940,11 @@ class QuestEnemyWidget extends StatelessWidget {
           face,
           LayoutBuilder(builder: (context, constraints) {
             return AutoSizeText(
-              displayName + (enemy.deck != DeckType.enemy ? "*" : ""),
+              [
+                displayName,
+                if (showDeck) '[${enemy.deck.name}]',
+                if (enemy.deck != DeckType.enemy) '*'
+              ].join(),
               textAlign: TextAlign.center,
               textScaleFactor: 0.8,
               maxFontSize: constraints.maxWidth < 120 ? 14 : 24,

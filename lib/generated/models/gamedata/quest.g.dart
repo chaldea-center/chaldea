@@ -383,6 +383,17 @@ EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
       runs: json['runs'] as int,
     );
 
+EnemyLimit _$EnemyLimitFromJson(Map json) => EnemyLimit(
+      limitCount: json['limitCount'] as int? ?? 0,
+      imageLimitCount: json['imageLimitCount'] as int? ?? 0,
+      dispLimitCount: json['dispLimitCount'] as int? ?? 0,
+      commandCardLimitCount: json['commandCardLimitCount'] as int? ?? 0,
+      iconLimitCount: json['iconLimitCount'] as int? ?? 0,
+      portraitLimitCount: json['portraitLimitCount'] as int? ?? 0,
+      battleVoice: json['battleVoice'] as int? ?? 0,
+      exceedCount: json['exceedCount'] as int? ?? 0,
+    );
+
 EnemyMisc _$EnemyMiscFromJson(Map json) => EnemyMisc(
       displayType: json['displayType'] as int? ?? 1,
       npcSvtType: json['npcSvtType'] as int? ?? 2,
@@ -443,6 +454,10 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
           ? null
           : EnemyScript.fromJson(
               Map<String, dynamic>.from(json['enemyScript'] as Map)),
+      limit: json['limit'] == null
+          ? null
+          : EnemyLimit.fromJson(
+              Map<String, dynamic>.from(json['limit'] as Map)),
       misc: json['misc'] == null
           ? null
           : EnemyMisc.fromJson(Map<String, dynamic>.from(json['misc'] as Map)),

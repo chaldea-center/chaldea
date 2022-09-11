@@ -649,6 +649,32 @@ class EnemyDrop extends BaseGift {
 }
 
 @JsonSerializable()
+class EnemyLimit {
+  int limitCount;
+  int imageLimitCount;
+  int dispLimitCount;
+  int commandCardLimitCount;
+  int iconLimitCount;
+  int portraitLimitCount;
+  int battleVoice;
+  int exceedCount;
+
+  EnemyLimit({
+    this.limitCount = 0,
+    this.imageLimitCount = 0,
+    this.dispLimitCount = 0,
+    this.commandCardLimitCount = 0,
+    this.iconLimitCount = 0,
+    this.portraitLimitCount = 0,
+    this.battleVoice = 0,
+    this.exceedCount = 0,
+  });
+
+  factory EnemyLimit.fromJson(Map<String, dynamic> json) =>
+      _$EnemyLimitFromJson(json);
+}
+
+@JsonSerializable()
 class EnemyMisc {
   int displayType;
   int npcSvtType;
@@ -710,10 +736,10 @@ class QuestEnemy with GameCardMixin {
   EnemyServerMod serverMod;
 
   // EnemyAi ai;
-  EnemyScript enemyScript;
+  EnemyScript? enemyScript;
 
-  // limit
-  EnemyMisc misc;
+  EnemyLimit? limit;
+  EnemyMisc? misc;
 
   QuestEnemy({
     required this.deck,
@@ -741,13 +767,12 @@ class QuestEnemy with GameCardMixin {
     EnemyTd? noblePhantasm,
     required this.serverMod,
     // required this.ai,
-    EnemyScript? enemyScript,
-    EnemyMisc? misc,
+    this.enemyScript,
+    this.limit,
+    this.misc,
   })  : skills = skills ?? EnemySkill(),
         classPassive = classPassive ?? EnemyPassive(),
-        enemyScript = enemyScript ?? EnemyScript(),
-        noblePhantasm = noblePhantasm ?? EnemyTd(),
-        misc = misc ?? EnemyMisc();
+        noblePhantasm = noblePhantasm ?? EnemyTd();
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
       _$QuestEnemyFromJson(json);
