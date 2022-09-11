@@ -14,6 +14,7 @@ import 'package:chaldea/widgets/tile_items.dart';
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
+import 'subpage/chaldea_server_page.dart';
 import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
@@ -67,32 +68,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.chaldea_server),
                 // subtitle: Text(S.current.chaldea_server_hint),
                 horizontalTitleGap: 0,
-                trailing: DropdownButton<bool>(
-                  value: db.settings.proxyServer,
-                  underline: const SizedBox(),
-                  items: [
-                    DropdownMenuItem(
-                      value: false,
-                      child: Text(S.current.chaldea_server_global),
-                    ),
-                    DropdownMenuItem(
-                      value: true,
-                      child: Text(S.current.chaldea_server_cn),
-                    ),
-                  ],
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) {
-                        db.settings.proxyServer = v;
-                      }
-                      if (kIsWeb) {
-                        kPlatformMethods.setLocalStorage(
-                            'useProxy', v.toString());
-                      }
-                      db.saveSettings();
-                    });
-                  },
-                ),
+                trailing: _wrapArrowTrailing(db.onSettings(
+                    (context, snapshot) => Text(db.settings.proxyServer
+                        ? S.current.chaldea_server_global
+                        : S.current.chaldea_server_cn))),
+                onTap: () {
+                  router.popDetailAndPush(child: const ChaldeaServerPage());
+                },
               ),
             ],
           ),
