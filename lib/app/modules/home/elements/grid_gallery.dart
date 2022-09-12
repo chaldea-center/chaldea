@@ -10,9 +10,11 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'gallery_item.dart';
 
 class GridGallery extends StatefulWidget {
+  final List<GalleryItem> items;
   final double? maxWidth;
 
-  const GridGallery({Key? key, this.maxWidth}) : super(key: key);
+  const GridGallery({Key? key, required this.items, this.maxWidth})
+      : super(key: key);
 
   @override
   _GridGalleryState createState() => _GridGalleryState();
@@ -22,13 +24,6 @@ class _GridGalleryState extends State<GridGallery> {
   bool _editMode = false;
 
   Map<String, bool> get galleries => db.settings.galleries;
-
-  @override
-  void initState() {
-    super.initState();
-    db.settings.galleries.removeWhere(
-        (key, value) => GalleryItem.allItems.every((item) => item.name != key));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +73,7 @@ class _GridGalleryState extends State<GridGallery> {
 
   Widget _getGrid(int crossCount, bool active) {
     final themeData = Theme.of(context);
-    final items = GalleryItem.allItems
+    final items = widget.items
         .where((e) => (galleries[e.name] ?? true) == active)
         .toList();
     if (active) items.add(_editMode ? GalleryItem.done : GalleryItem.edit);

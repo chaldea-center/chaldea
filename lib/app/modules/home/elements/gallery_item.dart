@@ -31,6 +31,7 @@ import '../../skill/skill_list.dart';
 import '../../skill/td_list.dart';
 import '../../statistics/game_stat.dart';
 import '../../summon/summon_list_page.dart';
+import '../lost_room.dart';
 
 class GalleryItem {
   // instant part
@@ -90,7 +91,7 @@ class GalleryItem {
     isDetail: false,
   );
 
-  static List<GalleryItem> get allItems => [
+  static List<GalleryItem> get homeItems => [
         servants,
         craftEssences,
         commandCodes,
@@ -104,19 +105,10 @@ class GalleryItem {
         effectSearch,
         costumes,
         summons,
-        ffo,
-        cvList,
-        illustratorList,
-        charaList,
         enemyList,
-        svtQuestTimeline,
         expCard,
         statistics,
-        traits,
-        skills,
-        tds,
-        funcs,
-        buffs,
+        lostRoom,
         importData,
         // faq,
         // if (kDebugMode) ...[lostRoom, palette],
@@ -124,6 +116,19 @@ class GalleryItem {
         // // unpublished
         // _apCal,
         // _damageCalc,
+      ];
+
+  static List<GalleryItem> get lostRoomItems => [
+        ffo,
+        cvList,
+        illustratorList,
+        charaList,
+        svtQuestTimeline,
+        traits,
+        skills,
+        tds,
+        funcs,
+        buffs,
       ];
 
   static GalleryItem servants = GalleryItem(
@@ -230,6 +235,53 @@ class GalleryItem {
     page: SummonListPage(),
     isDetail: false,
   );
+  static GalleryItem enemyList = GalleryItem(
+    name: 'enemy_list',
+    titleBuilder: () => S.current.enemy_list,
+    icon: FontAwesomeIcons.dragon,
+    url: Routes.enemies,
+    page: EnemyListPage(),
+    isDetail: false,
+  );
+  static GalleryItem expCard = GalleryItem(
+    name: 'exp_card',
+    titleBuilder: () => S.current.exp_card_title,
+    icon: FontAwesomeIcons.breadSlice,
+    url: Routes.expCard,
+    page: ExpCardCostPage(),
+    isDetail: true,
+  );
+  static GalleryItem statistics = GalleryItem(
+    name: 'statistics',
+    titleBuilder: () => S.current.statistics_title,
+    icon: Icons.analytics,
+    url: Routes.stats,
+    page: GameStatisticsPage(),
+    isDetail: true,
+  );
+  static GalleryItem importData = GalleryItem(
+    name: 'import_data',
+    titleBuilder: () => S.current.import_data,
+    icon: Icons.cloud_download,
+    url: Routes.importData,
+    page: ImportPageHome(),
+    isDetail: false,
+  );
+// static GalleryItem faq = GalleryItem(
+//   name: 'faq',
+//   titleBuilder: () => 'FAQ',
+//   icon: Icons.help_center,
+//   page: FAQPage(),
+//   isDetail: true,
+// );
+  static GalleryItem lostRoom = GalleryItem(
+    name: 'lost_room',
+    titleBuilder: () => 'LOSTROOM',
+    icon: FontAwesomeIcons.unity, // atom
+    page: const LostRoomPage(),
+    isDetail: false,
+  );
+  // show in Lost Room
   static GalleryItem ffo = GalleryItem(
     name: 'ffo',
     titleBuilder: () => 'Freedom Order',
@@ -261,14 +313,6 @@ class GalleryItem {
     url: Routes.characters,
     page: CharaListPage(),
     isDetail: true,
-  );
-  static GalleryItem enemyList = GalleryItem(
-    name: 'enemy_list',
-    titleBuilder: () => S.current.enemy_list,
-    icon: FontAwesomeIcons.dragon,
-    url: Routes.enemies,
-    page: EnemyListPage(),
-    isDetail: false,
   );
   static GalleryItem svtQuestTimeline = GalleryItem(
     name: 'svt_quest_timeline',
@@ -303,7 +347,7 @@ class GalleryItem {
   );
   static GalleryItem funcs = GalleryItem(
     name: 'funcs',
-    titleBuilder: () => 'Funcs',
+    titleBuilder: () => 'Functions',
     icon: FontAwesomeIcons.f, // FontAwesomeIcons.hurricane
     url: Routes.funcs,
     page: const FuncListPage(),
@@ -317,44 +361,6 @@ class GalleryItem {
     page: const BuffListPage(),
     isDetail: false,
   );
-  static GalleryItem expCard = GalleryItem(
-    name: 'exp_card',
-    titleBuilder: () => S.current.exp_card_title,
-    icon: FontAwesomeIcons.breadSlice,
-    url: Routes.expCard,
-    page: ExpCardCostPage(),
-    isDetail: true,
-  );
-  static GalleryItem statistics = GalleryItem(
-    name: 'statistics',
-    titleBuilder: () => S.current.statistics_title,
-    icon: Icons.analytics,
-    url: Routes.stats,
-    page: GameStatisticsPage(),
-    isDetail: true,
-  );
-  static GalleryItem importData = GalleryItem(
-    name: 'import_data',
-    titleBuilder: () => S.current.import_data,
-    icon: Icons.cloud_download,
-    url: Routes.importData,
-    page: ImportPageHome(),
-    isDetail: false,
-  );
-// static GalleryItem faq = GalleryItem(
-//   name: 'faq',
-//   titleBuilder: () => 'FAQ',
-//   icon: Icons.help_center,
-//   page: FAQPage(),
-//   isDetail: true,
-// );
-// static GalleryItem lostRoom = GalleryItem(
-//   name: 'lost_room',
-//   titleBuilder: () => 'LOSTROOM',
-//   icon: FontAwesomeIcons.ghost,
-//   page: LostRoomPage(),
-//   isDetail: false,
-// );
 // static GalleryItem more = GalleryItem(
 //   name: 'more',
 //   titleBuilder: () => S.current.more,

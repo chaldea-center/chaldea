@@ -13,6 +13,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../../packages/packages.dart';
+import 'elements/gallery_item.dart';
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
 import 'subpage/account_page.dart';
@@ -121,7 +122,10 @@ class _GalleryPageState extends State<GalleryPage> {
                     AppNewsCarousel(maxWidth: constraints.maxWidth),
                   if (db.settings.carousel.enabled)
                     const Divider(height: 0.5, thickness: 0.5),
-                  GridGallery(maxWidth: constraints.maxWidth),
+                  GridGallery(
+                    items: GalleryItem.homeItems,
+                    maxWidth: constraints.maxWidth,
+                  ),
                   if (dataVersion != null &&
                       dataVersion.timestamp > db.gameData.version.timestamp)
                     Padding(

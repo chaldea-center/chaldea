@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
 import '_helper.dart';
 import 'filter_data.dart';
@@ -108,7 +109,12 @@ class LocalSettings {
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
-        summonFilterData = summonFilterData ?? SummonFilterData();
+        summonFilterData = summonFilterData ?? SummonFilterData() {
+    this.galleries.removeWhere((key, value) => [
+          ...GalleryItem.homeItems,
+          ...GalleryItem.lostRoomItems
+        ].every((item) => item.name != key));
+  }
 
   String? get language => _language;
 
