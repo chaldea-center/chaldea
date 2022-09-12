@@ -74,7 +74,7 @@ class GameDataLoader {
       final result = await _loadJson(offline, onUpdate, updateOnly);
       _completer!.complete(result);
     } catch (e, s) {
-      if (e is! UpdateError) logger.e('load gamedata($offline)', e, s);
+      if (e is! UpdateError) logger.e('load gamedata(offline=$offline)', e, s);
       _showError(e);
       _completer!.complete(null);
     }

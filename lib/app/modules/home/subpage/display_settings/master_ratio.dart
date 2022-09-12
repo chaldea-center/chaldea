@@ -61,6 +61,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
                   db.settings.splitMasterRatio =
                       SplitRoute.defaultMasterRatio = null;
                 });
+                db.notifyAppUpdate();
               },
               child: Text(S.current.reset),
             ),

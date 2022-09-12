@@ -123,6 +123,7 @@ class _Database {
 
   // methods
   Future<void> initiate() async {
+    itemCenter.init();
     await paths.initRootPath();
     if (kIsWeb) {
       Hive.init(null);

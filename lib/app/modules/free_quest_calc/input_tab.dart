@@ -147,17 +147,20 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
           child: Text(_getItemName(itemId, item)),
           onPressed: () {
-            router.push(child: ItemSelectPage(
-              onSelected: (v) {
-                if (params.rows.contains(v)) {
-                  EasyLoading.showInfo(
-                      S.current.item_already_exist_hint(_getItemName(v)));
-                } else if (index < params.rows.length) {
-                  params.rows[index] = v;
-                }
-                if (mounted) setState(() {});
-              },
-            ));
+            router.push(
+              child: ItemSelectPage(
+                includeSpecial: true,
+                onSelected: (v) {
+                  if (params.rows.contains(v)) {
+                    EasyLoading.showInfo(
+                        S.current.item_already_exist_hint(_getItemName(v)));
+                  } else if (index < params.rows.length) {
+                    params.rows[index] = v;
+                  }
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
           },
         );
         Widget subtitle = Padding(

@@ -65,7 +65,6 @@ android {
         }
         fdroid {
             applicationIdSuffix ".fdroid"
-            signingConfig null
         }
     }
 

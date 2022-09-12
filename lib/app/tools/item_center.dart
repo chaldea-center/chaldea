@@ -52,8 +52,7 @@ class ItemCenter {
     _validItems.clear();
     final List<int> _svtIds = [];
     for (final item in db.gameData.items.values) {
-      if (item.category != ItemCategory.other &&
-          item.category != ItemCategory.event) {
+      if (![ItemCategory.other, ItemCategory.event].contains(item.category)) {
         _validItems.add(item.id);
       }
     }
