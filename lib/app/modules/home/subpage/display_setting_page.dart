@@ -48,7 +48,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   onChanged: (v) async {
                     db.settings.alwaysOnTop = v;
                     db.saveSettings();
-                    MethodChannelChaldeaNext.setAlwaysOnTop(v);
+                    MethodChannelChaldea.setAlwaysOnTop(v);
                     setState(() {});
                   },
                 ),

@@ -151,10 +151,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
-      MethodChannelChaldeaNext.setAlwaysOnTop();
+      MethodChannelChaldea.setAlwaysOnTop();
     }
     if (PlatformU.isWindows) {
-      MethodChannelChaldeaNext.setWindowPos();
+      MethodChannelChaldea.setWindowPos();
     }
     if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();

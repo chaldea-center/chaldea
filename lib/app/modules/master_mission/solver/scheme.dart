@@ -87,7 +87,7 @@ class CustomMission {
     );
   }
 
-  Widget buildDescriptor(BuildContext context) {
+  Widget buildDescriptor(BuildContext context, {double? textScaleFactor}) {
     int missionCondType = kDetailCondMappingReverse[type] ?? -1;
     return MissionCondDetailDescriptor(
       targetNum: count,
@@ -99,7 +99,7 @@ class CustomMission {
         logicType: 0,
         conditionLinkType: DetailMissionCondLinkType.missionStart,
       ),
-      textScaleFactor: 0.9,
+      textScaleFactor: textScaleFactor ?? 0.9,
       useAnd: useAnd,
     );
   }

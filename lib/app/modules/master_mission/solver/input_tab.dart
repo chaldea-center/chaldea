@@ -85,7 +85,9 @@ class _MissionInputTabState extends State<MissionInputTab> {
           textAlign: TextAlign.center,
         ),
         horizontalTitleGap: 0,
-        title: mission.buildDescriptor(context),
+        title: mission.buildDescriptor(context, textScaleFactor: 0.9),
+        minLeadingWidth: 32,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,

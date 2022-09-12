@@ -6,14 +6,14 @@ import '../platform/platform.dart';
 // default channel
 const MethodChannel kMethodChannel = MethodChannel('chaldea.narumi.cc/chaldea');
 
-class MethodChannelChaldeaNext {
+class MethodChannelChaldea {
   static void configMethodChannel() {
     kMethodChannel.setMethodCallHandler((call) async {
       print('[dart] on call: ${call.method}, ${call.arguments}');
       if (call.method == 'onWindowPos') {
         if (call.arguments != null && call.arguments['pos'] != null) {
           // print('onWindowRect: args=${call.arguments}');
-          db.settings.windowPosition = call.arguments['pos'];
+          db.settings.windowPosition = List.from(call.arguments['pos']);
           return;
         } else {
           print('onWindowRect invalid args=${call.arguments}');

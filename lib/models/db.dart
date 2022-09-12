@@ -132,7 +132,7 @@ class _Database {
       HttpOverrides.global = CustomHttpOverrides();
     }
     await AppInfo.resolve(paths.appPath);
-    MethodChannelChaldeaNext.configMethodChannel();
+    MethodChannelChaldea.configMethodChannel();
     security = await Hive.openBoxRetry('security');
     if (kIsWeb) setUrlStrategy(PathUrlStrategy());
     _startSavingLoop();

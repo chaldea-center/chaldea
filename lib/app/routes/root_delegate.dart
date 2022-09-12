@@ -136,7 +136,7 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   Future<bool> popRoute() async {
     if (PlatformU.isAndroid) {
       await db.saveAll();
-      MethodChannelChaldeaNext.sendBackground();
+      MethodChannelChaldea.sendBackground();
       return true;
     }
     return SynchronousFuture(true);

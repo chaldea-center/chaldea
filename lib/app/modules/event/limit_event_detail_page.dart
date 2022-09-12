@@ -568,8 +568,10 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               ListTile(
                 leading: GameCardMixin.anyCardItemBuilder(
                     context: context, id: itemId, width: 36),
-                title: Text(
-                    '${GameCardMixin.anyCardItemName(itemId).l} x ${boxItems[itemId]}'),
+                title: Text([
+                  GameCardMixin.anyCardItemName(itemId).l,
+                  if (boxItems[itemId] != 1) ' × ${boxItems[itemId]}'
+                ].join()),
                 trailing: _inputGroup(
                   value: () => plan.treasureBoxItems[box.id]?[itemId],
                   onChanged: (value) {

@@ -460,7 +460,8 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   void onDataReady(bool needCheckUpdate) async {
-    print('onDataReady: $needCheckUpdate');
+    needCheckUpdate = needCheckUpdate && db.settings.autoUpdateData;
+    print('onDataReady: needCheckUpdate=$needCheckUpdate');
     rootRouter.appState.dataReady = true;
     if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));

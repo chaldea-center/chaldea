@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:path/path.dart';
 import 'package:pool/pool.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -157,28 +158,31 @@ class GameDataLoader {
         bytes = resp.data;
       }
       if (updateOnly) return;
-      dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
-      l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
-      if (l2mFn != null) {
-        assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
-        fileJson = Map.fromIterable(fileJson, key: l2mFn);
-      }
-      Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
-          ? _gameJson.putIfAbsent('wiki', () => {})
-          : _gameJson;
-      String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
-      if (targetJson[key] == null) {
-        targetJson[key] = fileJson;
-      } else {
-        final value = targetJson[key]!;
-        if (value is Map) {
-          value.addAll(fileJson);
-        } else if (value is List) {
-          value.addAll(fileJson);
+      if (!updateOnly) {
+        dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
+        l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
+        if (l2mFn != null) {
+          assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
+          fileJson = Map.fromIterable(fileJson, key: l2mFn);
+        }
+        Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
+            ? _gameJson.putIfAbsent('wiki', () => {})
+            : _gameJson;
+        String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
+        if (targetJson[key] == null) {
+          targetJson[key] = fileJson;
         } else {
-          throw "Unsupported type: ${value.runtimeType}";
+          final value = targetJson[key]!;
+          if (value is Map) {
+            value.addAll(fileJson);
+          } else if (value is List) {
+            value.addAll(fileJson);
+          } else {
+            throw "Unsupported type: ${value.runtimeType}";
+          }
         }
       }
+
       // print('loaded ${fv.filename}');
       finished += 1;
       _progress = finished / (newVersion.files.length + 0.1);
@@ -225,7 +229,7 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
-    if (_gameJson.isEmpty) {
+    if (!updateOnly && _gameJson.isEmpty) {
       throw Exception('No data loaded');
     }
     tmp.clear();
@@ -235,10 +239,11 @@ class GameDataLoader {
     if (!offline) {
       logger.i(
           'Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
-    }
-    _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
-    for (final entry in _dataToWrite.entries) {
-      await entry.key.writeAsBytes(entry.value);
+      _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
+      for (final entry in _dataToWrite.entries) {
+        print('writing ${basename(entry.key.path)}');
+        await entry.key.writeAsBytes(entry.value);
+      }
     }
 
     tmp.clear();
