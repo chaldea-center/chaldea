@@ -188,3 +188,65 @@ class RefreshButton extends StatelessWidget {
     );
   }
 }
+
+class ScrollRestoration extends StatefulWidget {
+  final String? restorationId;
+  final Widget Function(BuildContext context, ScrollController controller)
+      builder;
+  final bool keepScrollOffset;
+  final String? debugLabel;
+
+  const ScrollRestoration({
+    super.key,
+    required this.restorationId,
+    required this.builder,
+    this.keepScrollOffset = true,
+    this.debugLabel,
+  });
+
+  @override
+  State<ScrollRestoration> createState() => _ScrollRestorationState();
+
+  static final Map<String, double> _offsets = {};
+
+  static void reset(String restorationId) {
+    _offsets.remove(restorationId);
+  }
+}
+
+class _ScrollRestorationState extends State<ScrollRestoration> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController(
+      initialScrollOffset:
+          ScrollRestoration._offsets[widget.restorationId] ?? 0,
+      keepScrollOffset: widget.keepScrollOffset,
+      debugLabel: widget.debugLabel,
+    );
+    if (widget.restorationId != null) {
+      _scrollController.addListener(_onScrollChanged);
+    }
+  }
+
+  void _onScrollChanged() {
+    if (_scrollController.hasClients && widget.restorationId != null) {
+      ScrollRestoration._offsets[widget.restorationId!] =
+          _scrollController.offset;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.removeListener(_onScrollChanged);
+    _scrollController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, _scrollController);
+  }
+}

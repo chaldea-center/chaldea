@@ -84,7 +84,11 @@ class ItemSelectPage extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(title: Text(S.current.select_item_title)),
-      body: ListView(children: children),
+      body: ScrollRestoration(
+        restorationId: 'item_select_page',
+        builder: (context, controller) =>
+            ListView(controller: controller, children: children),
+      ),
     );
   }
 
@@ -99,35 +103,5 @@ class ItemSelectPage extends StatelessWidget {
         Navigator.pop(context);
       },
     );
-    // return InkWell(
-    //   onTap: () {
-    //     onSelected(id);
-    //     Navigator.pop(context);
-    //   },
-    //   child: Row(
-    //     mainAxisSize: MainAxisSize.min,
-    //     crossAxisAlignment: CrossAxisAlignment.center,
-    //     children: [
-    //       Item.iconBuilder(
-    //         context: context,
-    //         item: null,
-    //         icon: icon,
-    //         width: 36,
-    //         jumpToDetail: false,
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.symmetric(horizontal: 4),
-    //         child: SizedBox(
-    //           height: 32,
-    //           width: 36,
-    //           child: AutoSizeText(
-    //             name,
-    //             maxLines: 2,
-    //           ),
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 }

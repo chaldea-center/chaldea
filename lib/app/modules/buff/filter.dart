@@ -30,10 +30,10 @@ class BuffFilter extends FilterPage<BuffFilterData> {
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
-  _BuffFuncFilterState createState() => _BuffFuncFilterState();
+  _BuffFilterState createState() => _BuffFilterState();
 }
 
-class _BuffFuncFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
+class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
   Map<BuffType, String> buffTypes = {};
 
   @override
@@ -55,7 +55,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'buff_list_filter', children: [
         FilterGroup<bool>(
           title: const Text("Stackable"),
           options: const [true, false],

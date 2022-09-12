@@ -38,10 +38,10 @@ class SkillFilter extends FilterPage<SkillFilterData> {
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
-  _BuffFuncFilterState createState() => _BuffFuncFilterState();
+  _SkillFilterState createState() => _SkillFilterState();
 }
 
-class _BuffFuncFilterState extends FilterPageState<SkillFilterData, SkillFilter>
+class _SkillFilterState extends FilterPageState<SkillFilterData, SkillFilter>
     with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _BuffFuncFilterState extends FilterPageState<SkillFilterData, SkillFilter>
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'skill_list_filter', children: [
         FilterGroup<SkillType>(
           title: Text(S.current.general_type),
           options: SkillType.values,

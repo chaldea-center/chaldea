@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/img_util.dart';
-import 'package:chaldea/widgets/custom_tile.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 
 abstract class FilterPage<T> extends StatefulWidget {
@@ -142,15 +141,20 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     }
   }
 
-  Widget getListViewBody({List<Widget> children = const []}) {
+  Widget getListViewBody(
+      {List<Widget> children = const [], String? restorationId}) {
     final size = MediaQuery.of(context).size;
     return LimitedBox(
       maxHeight: min(420, size.height * 0.65),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        shrinkWrap: true,
-        children: divideTiles(children,
-            divider: const Divider(color: Colors.transparent, height: 5)),
+      child: ScrollRestoration(
+        restorationId: restorationId,
+        builder: (context, controller) => ListView(
+          controller: controller,
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          shrinkWrap: true,
+          children: divideTiles(children,
+              divider: const Divider(color: Colors.transparent, height: 5)),
+        ),
       ),
     );
   }

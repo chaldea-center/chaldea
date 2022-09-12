@@ -46,7 +46,7 @@ class _ServantFilterPageState
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'svt_list_filter', children: [
         getGroup(
           header: S.of(context).filter_shown_type,
           children: [

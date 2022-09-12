@@ -27,7 +27,7 @@ class _EnemyFilterPageState
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'enemy_list_filter', children: [
         getGroup(header: S.of(context).filter_sort, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,

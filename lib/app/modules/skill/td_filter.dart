@@ -32,10 +32,10 @@ class TdFilter extends FilterPage<TdFilterData> {
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
-  _BuffFuncFilterState createState() => _BuffFuncFilterState();
+  _TdFilterState createState() => _TdFilterState();
 }
 
-class _BuffFuncFilterState extends FilterPageState<TdFilterData, TdFilter>
+class _TdFilterState extends FilterPageState<TdFilterData, TdFilter>
     with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _BuffFuncFilterState extends FilterPageState<TdFilterData, TdFilter>
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'td_list_filter', children: [
         FilterGroup<CardType>(
           title: Text(S.current.general_type),
           options: const [CardType.arts, CardType.buster, CardType.quick],

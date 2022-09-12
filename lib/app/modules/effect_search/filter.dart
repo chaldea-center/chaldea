@@ -79,6 +79,7 @@ class _BuffFuncFilterState
     extends FilterPageState<BuffFuncFilterData, BuffFuncFilter> {
   Map<FuncType, String> allFuncs = {};
   Map<BuffType, String> allBuffs = {};
+
   @override
   void initState() {
     super.initState();
@@ -132,123 +133,125 @@ class _BuffFuncFilterState
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
-        getGroup(header: S.of(context).filter_shown_type, children: [
-          FilterGroup.display(
-            useGrid: filterData.useGrid,
-            onChanged: (v) {
-              if (v != null) filterData.useGrid = v;
-              update();
-            },
-          ),
-        ]),
-        if (widget.type == SearchCardType.svt)
-          buildClassFilter(filterData.svtClass),
-        if (widget.type != SearchCardType.mc)
-          FilterGroup<int>(
-            title: Text(S.of(context).filter_sort_rarity, style: textStyle),
-            options: const [0, 1, 2, 3, 4, 5],
-            values: filterData.rarity,
-            optionBuilder: (v) => Text('$v$kStarChar'),
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
-        FilterGroup<Region>(
-          title: Text(S.current.game_server, style: textStyle),
-          options: Region.values,
-          values: filterData.region,
-          optionBuilder: (v) => Text(v.localName),
-          onFilterChanged: (v, _) {
-            update();
-          },
-        ),
-        const Divider(height: 16, indent: 12, endIndent: 12),
-        if (widget.type == SearchCardType.svt)
-          FilterGroup<SvtEffectScope>(
-            title: Text(S.current.effect_scope),
-            options: SvtEffectScope.values,
-            values: filterData.effectScope,
-            optionBuilder: (v) => Text(v.shownName),
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
-        FilterGroup<FuncTargetType?>(
-          title: Text(S.current.effect_target),
-          options: [
-            ...db.gameData.others.funcTargets.where(
-                (e) => !BuffFuncFilterData.specialFuncTarget.contains(e)),
-            null,
-          ],
-          values: filterData.effectTarget,
-          optionBuilder: (v) => Text(v == null
-              ? S.current.general_special
-              : Transl.funcTargetType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<int>(
-          title: const Text('Card'),
-          options: [
-            Trait.cardQuick.id!,
-            Trait.cardArts.id!,
-            Trait.cardBuster.id!,
-            Trait.cardExtra.id!,
-            Trait.faceCard.id!,
-            Trait.cardNP.id!,
-          ],
-          values: filterData.targetTrait,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text({
-                Trait.cardQuick.id!: 'Quick',
-                Trait.cardArts.id!: 'Arts',
-                Trait.cardBuster.id!: 'Buster',
-                Trait.cardExtra.id!: 'Extra',
-                Trait.faceCard.id!: Transl.trait(Trait.faceCard.id!).l,
-                Trait.cardNP.id!: Transl.trait(Trait.cardNP.id!).l,
-              }[v] ??
-              v.toString()),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        const Divider(height: 16),
-        FilterGroup<dynamic>(
-          options: const [],
-          values: filterData.funcAndBuff,
-          title: const Text('FuncType & BuffType'),
-          showMatchAll: true,
-          showInvert: true,
-          onFilterChanged: (v, _) {
-            update();
-          },
-        ),
-        FilterGroup<FuncType>(
-          title: const Text('FuncType'),
-          options: funcs,
-          values: filterData.funcType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.funcType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<BuffType>(
-          title: const Text('BuffType'),
-          options: buffs,
-          values: filterData.buffType,
-          showMatchAll: false,
-          showInvert: false,
-          optionBuilder: (v) => Text(Transl.buffType(v).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-      ]),
+      content: getListViewBody(
+          restorationId: 'effect_search_list_filter',
+          children: [
+            getGroup(header: S.of(context).filter_shown_type, children: [
+              FilterGroup.display(
+                useGrid: filterData.useGrid,
+                onChanged: (v) {
+                  if (v != null) filterData.useGrid = v;
+                  update();
+                },
+              ),
+            ]),
+            if (widget.type == SearchCardType.svt)
+              buildClassFilter(filterData.svtClass),
+            if (widget.type != SearchCardType.mc)
+              FilterGroup<int>(
+                title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+                options: const [0, 1, 2, 3, 4, 5],
+                values: filterData.rarity,
+                optionBuilder: (v) => Text('$v$kStarChar'),
+                onFilterChanged: (value, _) {
+                  update();
+                },
+              ),
+            FilterGroup<Region>(
+              title: Text(S.current.game_server, style: textStyle),
+              options: Region.values,
+              values: filterData.region,
+              optionBuilder: (v) => Text(v.localName),
+              onFilterChanged: (v, _) {
+                update();
+              },
+            ),
+            const Divider(height: 16, indent: 12, endIndent: 12),
+            if (widget.type == SearchCardType.svt)
+              FilterGroup<SvtEffectScope>(
+                title: Text(S.current.effect_scope),
+                options: SvtEffectScope.values,
+                values: filterData.effectScope,
+                optionBuilder: (v) => Text(v.shownName),
+                onFilterChanged: (value, _) {
+                  update();
+                },
+              ),
+            FilterGroup<FuncTargetType?>(
+              title: Text(S.current.effect_target),
+              options: [
+                ...db.gameData.others.funcTargets.where(
+                    (e) => !BuffFuncFilterData.specialFuncTarget.contains(e)),
+                null,
+              ],
+              values: filterData.effectTarget,
+              optionBuilder: (v) => Text(v == null
+                  ? S.current.general_special
+                  : Transl.funcTargetType(v).l),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+            FilterGroup<int>(
+              title: const Text('Card'),
+              options: [
+                Trait.cardQuick.id!,
+                Trait.cardArts.id!,
+                Trait.cardBuster.id!,
+                Trait.cardExtra.id!,
+                Trait.faceCard.id!,
+                Trait.cardNP.id!,
+              ],
+              values: filterData.targetTrait,
+              showMatchAll: false,
+              showInvert: false,
+              optionBuilder: (v) => Text({
+                    Trait.cardQuick.id!: 'Quick',
+                    Trait.cardArts.id!: 'Arts',
+                    Trait.cardBuster.id!: 'Buster',
+                    Trait.cardExtra.id!: 'Extra',
+                    Trait.faceCard.id!: Transl.trait(Trait.faceCard.id!).l,
+                    Trait.cardNP.id!: Transl.trait(Trait.cardNP.id!).l,
+                  }[v] ??
+                  v.toString()),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+            const Divider(height: 16),
+            FilterGroup<dynamic>(
+              options: const [],
+              values: filterData.funcAndBuff,
+              title: const Text('FuncType & BuffType'),
+              showMatchAll: true,
+              showInvert: true,
+              onFilterChanged: (v, _) {
+                update();
+              },
+            ),
+            FilterGroup<FuncType>(
+              title: const Text('FuncType'),
+              options: funcs,
+              values: filterData.funcType,
+              showMatchAll: false,
+              showInvert: false,
+              optionBuilder: (v) => Text(Transl.funcType(v).l),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+            FilterGroup<BuffType>(
+              title: const Text('BuffType'),
+              options: buffs,
+              values: filterData.buffType,
+              showMatchAll: false,
+              showInvert: false,
+              optionBuilder: (v) => Text(Transl.buffType(v).l),
+              onFilterChanged: (value, _) {
+                update();
+              },
+            ),
+          ]),
     );
   }
 }

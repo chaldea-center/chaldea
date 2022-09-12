@@ -46,7 +46,7 @@ class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter>
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'func_list_filter', children: [
         FilterGroup<FuncApplyTarget>(
           title: const Text('Target Team'),
           options: FuncApplyTarget.values,

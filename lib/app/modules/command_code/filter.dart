@@ -38,7 +38,7 @@ class _CmdCodeFilterPageState
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'cc_list_filter', children: [
         getGroup(header: S.of(context).filter_sort, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
