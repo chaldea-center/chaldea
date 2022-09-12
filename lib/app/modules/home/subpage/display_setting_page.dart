@@ -10,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../root/global_fab.dart';
 import 'display_settings/carousel_setting_page.dart';
@@ -174,8 +175,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ListTile(
                 title: Text(S.current.reset_custom_ascension_icon),
                 onTap: () {
-                  db.userData.customSvtIcon.clear();
-                  EasyLoading.showSuccess(S.current.success);
+                  showDialog(
+                    context: context,
+                    builder: (context) => SimpleCancelOkDialog(
+                      title: Text(S.current.confirm),
+                      content: Text(S.current.reset_custom_ascension_icon),
+                      confirmText: S.current.reset.toUpperCase(),
+                      onTapOk: () {
+                        db.userData.customSvtIcon.clear();
+                        EasyLoading.showSuccess(S.current.success);
+                      },
+                    ),
+                  );
                 },
               )
             ],

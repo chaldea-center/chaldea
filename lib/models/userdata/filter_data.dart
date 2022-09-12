@@ -273,10 +273,8 @@ class SvtFilterData with _FilterData {
   final rarity = FilterGroupData<int>();
   final attribute = FilterGroupData<Attribute>();
 
-  // FilterGroupData svtDuplicated= FilterGroupData();
-
+  final svtDuplicated = FilterRadioData<bool>();
   final planCompletion = FilterGroupData<SvtPlanScope>();
-
   final activeSkillLevel = FilterGroupData<SvtSkillLevelState>();
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
@@ -290,7 +288,6 @@ class SvtFilterData with _FilterData {
   final gender = FilterGroupData<Gender>();
   final trait = FilterGroupData<Trait>();
 
-  // FilterGroupData special; //not used yet
   final effectScope = FilterGroupData<SvtEffectScope>(
       options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<EffectTarget>();
@@ -316,6 +313,7 @@ class SvtFilterData with _FilterData {
         attribute,
         activeSkillLevel,
         planCompletion,
+        svtDuplicated,
         // priority,
         region,
         obtain,
@@ -369,7 +367,8 @@ class SvtFilterData with _FilterData {
       int r;
       switch (keys[i]) {
         case SvtCompare.no:
-          r = a.collectionNo - b.collectionNo;
+          r = a.originalCollectionNo - b.originalCollectionNo;
+          if (r == 0) r = a.collectionNo - b.collectionNo;
           if (r == 0) r = a.id - b.id;
           break;
         case SvtCompare.className:

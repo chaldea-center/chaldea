@@ -143,6 +143,7 @@ class _UserDataPageState extends State<UserDataPage> {
               ListTile(
                 title: Text(S.current.import_userdata_more),
                 trailing: const Icon(Icons.keyboard_arrow_right),
+                enabled: db.gameData.isValid,
                 onTap: () {
                   router.pushPage(ImportPageHome(), detail: false);
                 },

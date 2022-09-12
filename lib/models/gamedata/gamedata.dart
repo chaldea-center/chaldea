@@ -67,6 +67,8 @@ class GameData with _GameDataExtra {
   Map<int, BaseFunction> baseFunctions;
 
   Map<int, Servant> get servantsNoDup => servants;
+  bool get isValid =>
+      version.timestamp > 0 && servantsById.isNotEmpty && items.length > 1;
 
   GameData({
     DataVersion? version,

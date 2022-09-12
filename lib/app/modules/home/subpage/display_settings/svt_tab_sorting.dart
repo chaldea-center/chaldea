@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class SvtTabsSortingSetting extends StatefulWidget {
   SvtTabsSortingSetting({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
       body: ListView(
         children: [
           reorderableList(),
-          const SizedBox(height: 8),
+          const SFooter('Drag to change order'),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: [
@@ -37,13 +37,14 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 child: Text(S.current.reset),
               ),
               ElevatedButton(
-                onPressed: db.gameData.servantsNoDup.isEmpty
-                    ? null
-                    : () {
-                        final index =
-                            Random().nextInt(db.gameData.servantsNoDup.length);
-                        router.push(url: Routes.servantI(index));
-                      },
+                onPressed: db.gameData.isValid
+                    ? () {
+                        final servants =
+                            db.gameData.servantsNoDup.values.toList();
+                        final index = Random().nextInt(servants.length);
+                        servants[index].routeTo();
+                      }
+                    : null,
                 child: Text(S.current.preview),
               ),
             ],

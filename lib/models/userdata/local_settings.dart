@@ -186,11 +186,12 @@ class DisplaySettings {
     validateSvtTabs();
   }
   void validateSvtTabs() {
-    sortedSvtTabs = List.of(SvtTab.values)
-      ..sort2((a) {
-        int index = sortedSvtTabs.indexOf(a);
-        return index >= 0 ? index : SvtTab.values.indexOf(a);
-      });
+    sortedSvtTabs = List.of(SvtTab.values);
+    final _unsorted = List.of(SvtTab.values);
+    sortedSvtTabs.sort2((a) {
+      int index = _unsorted.indexOf(a);
+      return index >= 0 ? index : SvtTab.values.indexOf(a);
+    });
     hideSvtPlanDetails.remove(SvtPlanDetail.activeSkill);
     hideSvtPlanDetails.remove(SvtPlanDetail.appendSkill);
   }

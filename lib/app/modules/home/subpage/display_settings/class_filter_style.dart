@@ -56,9 +56,9 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
           ),
           Center(
             child: ElevatedButton(
-              onPressed: () {
-                router.push(url: Routes.servants);
-              },
+              onPressed: db.gameData.isValid
+                  ? () => router.push(url: Routes.servants)
+                  : null,
               child: Text(S.current.preview),
             ),
           )
