@@ -223,6 +223,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("最低AP"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
+        "duplicated_servant": MessageLookupByLibrary.simpleMessage("2号机"),
+        "duplicated_servant_duplicated":
+            MessageLookupByLibrary.simpleMessage("2号机"),
+        "duplicated_servant_primary":
+            MessageLookupByLibrary.simpleMessage("初号机"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("效果范围"),
         "effect_search": MessageLookupByLibrary.simpleMessage("效果检索"),

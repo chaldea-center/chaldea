@@ -36,7 +36,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _includeCraft = true;
 
   bool _onlyLocked = true;
-  final bool _allowDuplicated = false;
+  bool _allowDuplicated = false;
 
   bool _showAccount = true;
   bool _showItem = false;
@@ -301,7 +301,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               divider: null,
               children: [
                 Text(
-                  DateFormat('yyyy-MM-dd').format(svt.createdAt),
+                  '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt)}',
                   style: TextStyle(color: Theme.of(context).errorColor),
                 )
               ],
@@ -496,17 +496,16 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               },
               label: Text(S.current.import_http_body_locked),
             ),
-            // CheckboxWithLabel(
-            //   value: _allowDuplicated,
-            //   onChanged: (v) {
-            //     EasyLoading.showInfo(S.current.not_implemented);
-            //     // setState(() {
-            //     //   _allowDuplicated = v ?? _allowDuplicated;
-            //     //   _refreshValidSvts();
-            //     // });
-            //   },
-            //   label: Text(S.current.import_http_body_duplicated),
-            // ),
+            CheckboxWithLabel(
+              value: _allowDuplicated,
+              onChanged: (v) {
+                setState(() {
+                  _allowDuplicated = v ?? _allowDuplicated;
+                  _refreshValidSvts();
+                });
+              },
+              label: Text(S.current.import_http_body_duplicated),
+            ),
             ElevatedButton(
               onPressed: replacedResponse == null
                   ? null
@@ -576,15 +575,16 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (!_includeSvt && !svt.inStorage) continue;
         if (!_includeSvtStorage && svt.inStorage) continue;
 
-        SvtStatus status;
+        SvtStatus status = SvtStatus();
         UserSvtCollection collection = cardCollections[svt.svtId]!;
-        if (_alreadyAdded.contains(svt.svtId)) {
-          // user.duplicatedServants[svt.id] = svt.indexKey!;
-          // status = user.svtStatusOf(svt.id);
-          continue;
-        } else {
-          status = user
-              .svtStatusOf(db.gameData.servantsById[svt.svtId]!.collectionNo);
+        final dbSvt = svt.dbSvt;
+        if (_alreadyAdded.contains(svt.svtId) &&
+            dbSvt != null &&
+            dbSvt.collectionNo > 0) {
+          user.dupServantMapping[svt.id] = dbSvt.collectionNo;
+          status = user.svtStatusOf(svt.id);
+        } else if (dbSvt != null) {
+          status = user.svtStatusOf(dbSvt.collectionNo);
         }
         _alreadyAdded.add(svt.svtId);
 
@@ -604,7 +604,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         status.cur.costumes = collection.costumeIdsTo01();
       }
     }
-    // db2.gameData.updateUserDuplicatedServants();
+
     EasyLoading.showSuccess(S.current.success);
     db.itemCenter.init();
     db.saveUserData();
@@ -696,55 +696,61 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         _topLogin.body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
 
     // svt
-    _topLogin.body.userSvt.forEach((svt) {
-      if (db.gameData.servantsById.containsKey(svt.svtId)) {
-        // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
-        svt.inStorage = false;
-        svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
-        final group = servants.firstWhereOrNull(
-            (group) => group.any((element) => element.svtId == svt.svtId));
-        if (group == null) {
-          servants.add([svt]);
-        } else {
-          group.add(svt);
-        }
+    for (final svt in _topLogin.body.userSvt) {
+      if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
+      svt.inStorage = false;
+      svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
+      final group = servants.firstWhereOrNull(
+          (group) => group.any((element) => element.svtId == svt.svtId));
+      if (group == null) {
+        servants.add([svt]);
+      } else {
+        group.add(svt);
       }
-    });
+    }
     // svtStorage
-    _topLogin.body.userSvtStorage.forEach((svt) {
-      if (db.gameData.servantsById.containsKey(svt.svtId)) {
-        // svt.indexKey = svtIdMap[svt.svtId]!.originNo;
-        svt.inStorage = true;
-        svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
-        final group = servants.firstWhereOrNull(
-            (group) => group.any((element) => element.svtId == svt.svtId));
-        if (group == null) {
-          servants.add([svt]);
-        } else {
-          group.add(svt);
-        }
+    for (final svt in _topLogin.body.userSvtStorage) {
+      if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
+      svt.inStorage = true;
+      svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
+      final group = servants.firstWhereOrNull(
+          (group) => group.any((element) => element.svtId == svt.svtId));
+      if (group == null) {
+        servants.add([svt]);
+      } else {
+        group.add(svt);
       }
-    });
-    servants.sort((a, b) {
-      final aa = db.gameData.servantsById[a.first.svtId];
-      final bb = db.gameData.servantsById[b.first.svtId];
-      return SvtFilterData.compare(aa, bb,
+    }
+
+    servants.sort((a, b) => SvtFilterData.compare(
+          a.first.dbSvt,
+          b.first.dbSvt,
           keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-          reversed: [true, false, false]);
-    });
-    servants.forEach((group) {
+          reversed: [true, false, false],
+        ));
+    for (final group in servants) {
       group.sort((a, b) {
-        // reversed, skill high to low
-        int d = (b.skillLv1 + b.skillLv2 + b.skillLv3) -
-            (a.skillLv1 + a.skillLv2 + a.skillLv3);
-        if (d == 0) {
-          // created from old to new
-          d = a.createdAt.millisecondsSinceEpoch -
-              b.createdAt.millisecondsSinceEpoch;
+        // lv higher, active skills higher, created earlier, id
+        final aa = [
+          a.lv,
+          a.skillLv1 + a.skillLv2 + a.skillLv3,
+          -a.createdAt.microsecondsSinceEpoch,
+          a.id
+        ];
+        final bb = [
+          b.lv,
+          b.skillLv1 + b.skillLv2 + b.skillLv3,
+          -b.createdAt.microsecondsSinceEpoch,
+          b.id
+        ];
+        for (int i = 0; i < aa.length; i++) {
+          final ia = aa[i], ib = bb[i];
+          if (ia != ib) return ib - ia;
         }
-        return d;
+        return 0;
       });
-    });
+    }
+
     // crafts
     crafts = db.gameData.craftEssencesById.map((gameId, craft) {
       int status = cardCollections[gameId]?.status ?? 0;

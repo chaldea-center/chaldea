@@ -34,7 +34,12 @@ class _ServantFilterPageState
 
   @override
   Widget build(BuildContext context) {
-    const groupDivider = Divider(height: 16, indent: 12, endIndent: 12);
+    const groupDivider = Divider(
+      height: 16,
+      indent: 12,
+      endIndent: 12,
+      thickness: 1,
+    );
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
@@ -133,25 +138,6 @@ class _ServantFilterPageState
           },
         ),
         groupDivider,
-        // FilterGroup(
-        //   title: Text(const LocalizedText(
-        //           chs: '重复从者',
-        //           jpn: '重複サーバント',
-        //           eng: 'Duplicated Servant',
-        //           kor: '중복된 서번트')
-        //       .localized),
-        //   options: const ['1', '2'],
-        //   values: filterData.svtDuplicated,
-        //   optionBuilder: (v) =>
-        //       Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
-        //   combined: true,
-        //   onFilterChanged: (v, _) {
-        //     setState(() {
-        //       filterData.svtDuplicated = v;
-        //       update();
-        //     });
-        //   },
-        // ),
         FilterGroup<int>(
           title: Text(S.of(context).priority, style: textStyle),
           options: const [1, 2, 3, 4, 5],
@@ -218,6 +204,19 @@ class _ServantFilterPageState
           },
           onFilterChanged: (value, _) {
             update();
+          },
+        ),
+        FilterGroup<bool>(
+          title: Text(S.current.duplicated_servant),
+          options: const [false, true],
+          values: filterData.svtDuplicated,
+          optionBuilder: (v) => Text(v
+              ? S.current.duplicated_servant_duplicated
+              : S.current.duplicated_servant_primary),
+          onFilterChanged: (v, _) {
+            setState(() {
+              update();
+            });
           },
         ),
         groupDivider,

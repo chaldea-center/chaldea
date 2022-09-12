@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
+import 'servant.dart';
 
 part '../../generated/models/gamedata/toplogin.g.dart';
 
@@ -298,6 +299,8 @@ class UserSvt {
 
   factory UserSvt.fromJson(Map<String, dynamic> data) =>
       _$UserSvtFromJson(data);
+
+  Servant? get dbSvt => db.gameData.servantsById[svtId];
 }
 
 //  {

@@ -251,6 +251,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("Min AP"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Solve"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("Drop rate"),
+        "duplicated_servant":
+            MessageLookupByLibrary.simpleMessage("Duplicated Servant"),
+        "duplicated_servant_duplicated":
+            MessageLookupByLibrary.simpleMessage("Duplicated"),
+        "duplicated_servant_primary":
+            MessageLookupByLibrary.simpleMessage("Primary"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("Effect Scope"),
         "effect_search": MessageLookupByLibrary.simpleMessage("Effect Search"),

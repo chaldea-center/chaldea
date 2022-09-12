@@ -1538,6 +1538,39 @@ class S {
     );
   }
 
+  /// `Duplicated Servant`
+  String get duplicated_servant {
+    return Intl.message(
+      'Duplicated Servant',
+      name: 'duplicated_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Duplicated`
+  String get duplicated_servant_duplicated {
+    return Intl.message(
+      'Duplicated',
+      name: 'duplicated_servant_duplicated',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Primary`
+  String get duplicated_servant_primary {
+    return Intl.message(
+      'Primary',
+      name: 'duplicated_servant_primary',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Edit`
   String get edit {
     return Intl.message(

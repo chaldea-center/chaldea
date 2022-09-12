@@ -386,11 +386,6 @@ class ServantListPageState extends State<ServantListPage>
       return false;
     }
 
-    // if (!filterData.svtDuplicated
-    //     .singleValueFilter(svt.originNo == svt.no ? '1' : '2')) {
-    //   return false;
-    // }
-
     if (filterData.planCompletion.options.isNotEmpty) {
       if (!svtStat.favorite) return false;
       final planCompletion = <SvtPlanScope>[
@@ -436,6 +431,11 @@ class ServantListPageState extends State<ServantListPage>
         return false;
       }
     }
+    if (!filterData.svtDuplicated
+        .matchOne(svt.collectionNo != svt.originalCollectionNo)) {
+      return false;
+    }
+
     // class name
     if (!filterData.svtClass.matchOne(svt.className, compares: {
       SvtClass.caster: (v, o) =>
