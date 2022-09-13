@@ -45,6 +45,8 @@ class GalleryItem {
   final String? url;
   final Widget? page;
   final bool isDetail;
+  final bool shownDefault;
+  final bool persist;
 
   const GalleryItem({
     required this.name,
@@ -54,6 +56,8 @@ class GalleryItem {
     this.url,
     this.page,
     required this.isDetail,
+    this.shownDefault = true,
+    this.persist = false,
   }) : assert(icon != null || child != null);
 
   Widget buildIcon(BuildContext context, {double size = 40, Color? color}) {
@@ -72,7 +76,7 @@ class GalleryItem {
 
   @override
   String toString() {
-    return '$runtimeType($name)';
+    return 'GalleryItem($name)';
   }
 
   static List<GalleryItem> get persistentPages => [
@@ -83,6 +87,7 @@ class GalleryItem {
     titleBuilder: () => '',
     icon: FontAwesomeIcons.penToSquare,
     isDetail: false,
+    persist: true,
   );
 
   static GalleryItem done = GalleryItem(
@@ -90,9 +95,10 @@ class GalleryItem {
     titleBuilder: () => '',
     icon: FontAwesomeIcons.circleCheck,
     isDetail: false,
+    persist: true,
   );
 
-  static List<GalleryItem> get homeItems => [
+  static List<GalleryItem> get allItems => [
         servants,
         craftEssences,
         commandCodes,
@@ -108,24 +114,15 @@ class GalleryItem {
         summons,
         enemyList,
         expCard,
+        npCharge,
         statistics,
-        lostRoom,
         importData,
-        // faq,
-        // if (kDebugMode) ...[lostRoom, palette],
-        // more,
-        // // unpublished
-        // _apCal,
-        // _damageCalc,
-      ];
-
-  static List<GalleryItem> get lostRoomItems => [
+        // default hide
         ffo,
         cvList,
         illustratorList,
         charaList,
         svtQuestTimeline,
-        npCharge,
         traits,
         skills,
         tds,
@@ -253,6 +250,13 @@ class GalleryItem {
     page: ExpCardCostPage(),
     isDetail: true,
   );
+  static GalleryItem npCharge = GalleryItem(
+    name: 'np_charge',
+    titleBuilder: () => S.current.np_charge,
+    icon: FontAwesomeIcons.batteryHalf,
+    page: const NpChargePage(),
+    isDetail: false,
+  );
   static GalleryItem statistics = GalleryItem(
     name: 'statistics',
     titleBuilder: () => S.current.statistics_title,
@@ -282,6 +286,7 @@ class GalleryItem {
     icon: FontAwesomeIcons.unity, // atom
     page: const LostRoomPage(),
     isDetail: false,
+    persist: true,
   );
   // show in Lost Room
   static GalleryItem ffo = GalleryItem(
@@ -291,6 +296,7 @@ class GalleryItem {
     url: Routes.ffo,
     page: FreedomOrderPage(),
     isDetail: true,
+    shownDefault: false,
   );
   static GalleryItem cvList = GalleryItem(
     name: 'cv_list',
@@ -299,6 +305,7 @@ class GalleryItem {
     url: Routes.cvs,
     page: CvListPage(),
     isDetail: true,
+    shownDefault: false,
   );
   static GalleryItem illustratorList = GalleryItem(
     name: 'illustrator_list',
@@ -307,6 +314,7 @@ class GalleryItem {
     url: Routes.illustrators,
     page: IllustratorListPage(),
     isDetail: true,
+    shownDefault: false,
   );
   static GalleryItem charaList = GalleryItem(
     name: 'chara_list',
@@ -315,6 +323,7 @@ class GalleryItem {
     url: Routes.characters,
     page: CharaListPage(),
     isDetail: true,
+    shownDefault: false,
   );
   static GalleryItem svtQuestTimeline = GalleryItem(
     name: 'svt_quest_timeline',
@@ -322,13 +331,7 @@ class GalleryItem {
     icon: FontAwesomeIcons.timeline,
     page: const SvtQuestTimeline(),
     isDetail: false,
-  );
-  static GalleryItem npCharge = GalleryItem(
-    name: 'np_charge',
-    titleBuilder: () => S.current.np_charge,
-    icon: FontAwesomeIcons.batteryHalf,
-    page: const NpChargePage(),
-    isDetail: false,
+    shownDefault: false,
   );
   static GalleryItem traits = GalleryItem(
     name: 'traits',
@@ -337,6 +340,7 @@ class GalleryItem {
     url: Routes.traits,
     page: const TraitListPage(),
     isDetail: false,
+    shownDefault: false,
   );
   static GalleryItem skills = GalleryItem(
     name: 'skills',
@@ -345,6 +349,7 @@ class GalleryItem {
     url: Routes.skills,
     page: const SkillListPage(),
     isDetail: false,
+    shownDefault: false,
   );
   static GalleryItem tds = GalleryItem(
     name: 'tds',
@@ -353,6 +358,7 @@ class GalleryItem {
     url: Routes.tds,
     page: const TdListPage(),
     isDetail: false,
+    shownDefault: false,
   );
   static GalleryItem funcs = GalleryItem(
     name: 'funcs',
@@ -361,6 +367,7 @@ class GalleryItem {
     url: Routes.funcs,
     page: const FuncListPage(),
     isDetail: false,
+    shownDefault: false,
   );
   static GalleryItem buffs = GalleryItem(
     name: 'buffs',
@@ -369,6 +376,7 @@ class GalleryItem {
     url: Routes.buffs,
     page: const BuffListPage(),
     isDetail: false,
+    shownDefault: false,
   );
 // static GalleryItem more = GalleryItem(
 //   name: 'more',

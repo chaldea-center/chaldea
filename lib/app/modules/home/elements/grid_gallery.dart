@@ -10,10 +10,10 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'gallery_item.dart';
 
 class GridGallery extends StatefulWidget {
-  final List<GalleryItem> items;
+  final bool isHome;
   final double? maxWidth;
 
-  const GridGallery({Key? key, required this.items, this.maxWidth})
+  const GridGallery({Key? key, required this.isHome, this.maxWidth})
       : super(key: key);
 
   @override
@@ -73,10 +73,18 @@ class _GridGalleryState extends State<GridGallery> {
 
   Widget _getGrid(int crossCount, bool active) {
     final themeData = Theme.of(context);
-    final items = widget.items
-        .where((e) => (galleries[e.name] ?? true) == active)
-        .toList();
-    if (active) items.add(_editMode ? GalleryItem.done : GalleryItem.edit);
+    List<GalleryItem> items = GalleryItem.allItems.where((item) {
+      final v = galleries[item.name] ?? item.shownDefault;
+      return widget.isHome && active ? v : !v;
+    }).toList();
+
+    if (widget.isHome && active) {
+      items.addAll([
+        GalleryItem.lostRoom,
+        _editMode ? GalleryItem.done : GalleryItem.edit
+      ]);
+    }
+
     List<Widget> children = List.generate(items.length, (index) {
       final item = items[index];
       Widget child = item.buildIcon(context,
@@ -114,7 +122,7 @@ class _GridGalleryState extends State<GridGallery> {
         );
       }
 
-      if (_editMode && item != GalleryItem.edit && item != GalleryItem.done) {
+      if (_editMode && !item.persist) {
         final editIcon = active
             ? Icon(Icons.remove_circle,
                 color: themeData.isDarkMode

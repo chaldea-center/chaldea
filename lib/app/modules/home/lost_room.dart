@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'elements/gallery_item.dart';
 import 'elements/grid_gallery.dart';
 
 class LostRoomPage extends StatefulWidget {
@@ -18,7 +17,7 @@ class _LostRoomPageState extends State<LostRoomPage> {
       body: LayoutBuilder(
         builder: (context, constrains) => SingleChildScrollView(
           child: GridGallery(
-            items: GalleryItem.lostRoomItems,
+            isHome: false,
             maxWidth: constrains.maxWidth,
           ),
         ),

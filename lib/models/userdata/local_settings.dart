@@ -110,10 +110,8 @@ class LocalSettings {
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData() {
-    this.galleries.removeWhere((key, value) => [
-          ...GalleryItem.homeItems,
-          ...GalleryItem.lostRoomItems
-        ].every((item) => item.name != key));
+    this.galleries.removeWhere(
+        (key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
   String? get language => _language;
