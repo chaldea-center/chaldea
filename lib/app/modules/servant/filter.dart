@@ -90,14 +90,7 @@ class _ServantFilterPageState
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(SvtCompare.values, [
-                S.current.filter_sort_number,
-                S.current.filter_sort_class,
-                S.current.filter_sort_rarity,
-                'ATK',
-                'HP',
-                S.current.priority
-              ]),
+              items: {for (final e in SvtCompare.values) e: e.showName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();

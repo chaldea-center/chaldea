@@ -405,6 +405,21 @@ class SvtFilterData with _FilterData {
 
 enum CraftCompare { no, rarity, atk, hp }
 
+extension CraftCompareX on CraftCompare {
+  String get shownName {
+    switch (this) {
+      case CraftCompare.no:
+        return S.current.filter_sort_number;
+      case CraftCompare.rarity:
+        return S.current.filter_sort_rarity;
+      case CraftCompare.atk:
+        return 'ATK';
+      case CraftCompare.hp:
+        return 'HP';
+    }
+  }
+}
+
 enum CraftATKType { none, hp, atk, mix }
 
 @JsonSerializable(ignoreUnannotated: true)
@@ -502,6 +517,17 @@ class CraftFilterData with _FilterData {
 
 /// Command Code
 enum CmdCodeCompare { no, rarity }
+
+extension CmdCodeCompareX on CmdCodeCompare {
+  String get shownName {
+    switch (this) {
+      case CmdCodeCompare.no:
+        return S.current.filter_sort_number;
+      case CmdCodeCompare.rarity:
+        return S.current.filter_sort_rarity;
+    }
+  }
+}
 
 @JsonSerializable(ignoreUnannotated: true)
 class CmdCodeFilterData with _FilterData {

@@ -54,12 +54,7 @@ class _CraftFilterPageState
             getSortButton<CraftCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(CraftCompare.values, [
-                S.current.filter_sort_number,
-                S.current.filter_sort_rarity,
-                'ATK',
-                'HP'
-              ]),
+              items: {for (final e in CraftCompare.values) e: e.shownName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();

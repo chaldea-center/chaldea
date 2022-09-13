@@ -300,6 +300,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                         onTap: () {
                           data.toggle(className);
                           update();
+                          onChanged?.call();
                         },
                       );
                     }).toList(),

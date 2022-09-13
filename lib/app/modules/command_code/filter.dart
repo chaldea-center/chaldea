@@ -54,10 +54,7 @@ class _CmdCodeFilterPageState
             getSortButton<CmdCodeCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(CmdCodeCompare.values, [
-                S.current.filter_sort_number,
-                S.current.filter_sort_rarity,
-              ]),
+              items: {for (final e in CmdCodeCompare.values) e: e.shownName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();

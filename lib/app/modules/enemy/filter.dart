@@ -42,11 +42,9 @@ class _EnemyFilterPageState
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(EnemyFilterData.enemyCompares, [
-                S.current.filter_sort_number,
-                S.current.filter_sort_class,
-                S.current.filter_sort_rarity,
-              ]),
+              items: {
+                for (final e in EnemyFilterData.enemyCompares) e: e.showName
+              },
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();

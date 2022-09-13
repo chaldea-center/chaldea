@@ -111,6 +111,10 @@ class _CustomPrettyPrinter extends PrettyPrinter {
           lines.last.contains('(dart:')) {
         lines.removeLast();
       }
+      lines.insertAll(0, {
+        error.requestOptions.uri.toString(),
+        if (error.response != null) error.response!.realUri.toString(),
+      });
 
       error = DioError(
         requestOptions: error.requestOptions,

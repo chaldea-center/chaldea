@@ -20,22 +20,17 @@ class NpChargePage extends StatefulWidget {
 
 class _NpChargePageState extends State<NpChargePage> {
   final filterData = NpFilterData();
-  Map<int, List<_ChargeData>> groupedData = {};
+  Map<String, List<_ChargeData>> groupedData = {};
   @override
   void initState() {
     super.initState();
     filter();
   }
 
-  void _debugPrint(Servant svt, int? collectionNo, Object msg) {
-    if (collectionNo != null && svt.collectionNo != collectionNo) return;
-    print('No.${svt.collectionNo}-${svt.lName.l}: $msg');
-  }
-
   @override
   Widget build(BuildContext context) {
     final keys = groupedData.keys.toList();
-    keys.sort2((e) => e, reversed: true);
+    keys.sort2((e) => groupedData[e]!.first.sortValue, reversed: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.np_charge),
@@ -73,7 +68,7 @@ class _NpChargePageState extends State<NpChargePage> {
     );
   }
 
-  Widget rowBuilder(int index, List<_ChargeData> servants) {
+  Widget rowBuilder(int index, List<_ChargeData> details) {
     Widget child = Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 4,
@@ -89,7 +84,7 @@ class _NpChargePageState extends State<NpChargePage> {
             width: 45,
             child: Center(
               child: AutoSizeText(
-                servants.first.value,
+                details.first.value,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 maxLines: 1,
@@ -99,7 +94,7 @@ class _NpChargePageState extends State<NpChargePage> {
             ),
           ),
         ),
-        for (final svt in servants)
+        for (final detail in details)
           Tooltip(
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
@@ -116,11 +111,11 @@ class _NpChargePageState extends State<NpChargePage> {
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             waitDuration: const Duration(seconds: 1),
-            richMessage: WidgetSpan(child: _tooltip(svt)),
-            child: svt.svt.iconBuilder(
+            richMessage: WidgetSpan(child: _tooltip(detail)),
+            child: detail.svt.iconBuilder(
               context: context,
               width: 45,
-              text: svt.pos,
+              text: detail.pos,
             ),
           )
       ],
@@ -135,24 +130,24 @@ class _NpChargePageState extends State<NpChargePage> {
     );
   }
 
-  Widget _tooltip(_ChargeData svt) {
-    final skill = svt.skill;
+  Widget _tooltip(_ChargeData detail) {
+    final skill = detail.skill;
     final header = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        svt.svt.iconBuilder(context: context, height: 56),
+        detail.svt.iconBuilder(context: context, height: 56),
         const SizedBox(width: 8),
         Flexible(
           child: Text.rich(TextSpan(
-            text: svt.svt.lName.l,
+            text: detail.svt.lName.l,
             children: [
               const TextSpan(text: '\n'),
               TextSpan(
-                text: svt.isPassive
+                text: detail.isPassive
                     ? S.current.passive_skill
-                    : svt.isTd
+                    : detail.isTd
                         ? S.current.noble_phantasm
-                        : "${S.current.skill} ${svt.pos}",
+                        : "${S.current.skill} ${detail.pos}",
                 style: Theme.of(context).textTheme.caption,
               )
             ],
@@ -176,9 +171,13 @@ class _NpChargePageState extends State<NpChargePage> {
         const SizedBox(height: 2),
         Text(skill.lDetail ?? '???',
             style: Theme.of(context).textTheme.caption),
-        const SizedBox(height: 2),
+        const Divider(height: 6, thickness: 1),
         FuncDescriptor(
-            func: svt.func, level: svt.level, padding: EdgeInsets.zero),
+          func: detail.func,
+          level: detail.level,
+          showEnemy: true, // in case it is triggered skill
+          padding: EdgeInsets.zero,
+        ),
       ],
     );
 
@@ -262,7 +261,7 @@ class _NpChargePageState extends State<NpChargePage> {
     );
   }
 
-  Map<int, List<_ChargeData>> filter() {
+  void filter() {
     groupedData.clear();
     for (final svt in db.gameData.servantsNoDup.values) {
       if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.card))) {
@@ -270,6 +269,13 @@ class _NpChargePageState extends State<NpChargePage> {
       }
       if (!filterData.tdType
           .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
+        continue;
+      }
+      if (!filterData.svtClass.matchOne(svt.className, compares: {
+        SvtClass.caster: (v, o) =>
+            v == SvtClass.caster || v == SvtClass.grandCaster,
+        SvtClass.beastII: (v, o) => SvtClassX.beasts.contains(v),
+      })) {
         continue;
       }
       final region = filterData.region.radioValue ?? Region.jp;
@@ -304,7 +310,6 @@ class _NpChargePageState extends State<NpChargePage> {
             }
           }
         }
-        _debugPrint(svt, 351, '${skills.length} skills');
         for (final skill in skills) {
           details.addAll(checkSkill(
               svt, skill, filterData.skillLv == 0 ? 1 : filterData.skillLv, 1));
@@ -323,7 +328,7 @@ class _NpChargePageState extends State<NpChargePage> {
         }
       }
       for (final detail in details) {
-        groupedData.putIfAbsent(detail.sortValue, () => []).add(detail);
+        groupedData.putIfAbsent(detail.value, () => []).add(detail);
       }
     }
 
@@ -331,7 +336,6 @@ class _NpChargePageState extends State<NpChargePage> {
       details.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
           keys: filterData.sortKeys, reversed: filterData.sortReversed));
     }
-    return groupedData;
   }
 
   Iterable<_ChargeData> checkSkill(

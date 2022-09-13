@@ -31,6 +31,7 @@ class NpFilterData {
   int tdOC = 1; // 1-5
 
   final type = FilterRadioData.nonnull(NpChargeType.instant);
+  final svtClass = FilterGroupData<SvtClass>();
   final effectTarget = FilterRadioData<EffectTarget>();
   final region = FilterRadioData<Region>();
   final tdColor = FilterRadioData<CardType>();
@@ -42,7 +43,14 @@ class NpFilterData {
   void reset() {
     skillLv = 10;
     tdLv = tdOC = 1;
-    for (var v in [region, type, effectTarget, tdColor, tdType]) {
+    for (var v in <FilterGroupData>[
+      type,
+      svtClass,
+      effectTarget,
+      region,
+      tdColor,
+      tdType
+    ]) {
       v.reset();
     }
   }
@@ -98,14 +106,7 @@ class _NpChargeFilterPageState
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(SvtCompare.values, [
-                S.current.filter_sort_number,
-                S.current.filter_sort_class,
-                S.current.filter_sort_rarity,
-                'ATK',
-                'HP',
-                S.current.priority
-              ]),
+              items: {for (final e in SvtCompare.values) e: e.showName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();
@@ -181,6 +182,7 @@ class _NpChargeFilterPageState
                   },
           ),
         ]),
+        buildClassFilter(filterData.svtClass),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: const [...NpFilterData.kEffectTargets, EffectTarget.special],
