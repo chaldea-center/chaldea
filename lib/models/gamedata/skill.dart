@@ -19,6 +19,7 @@ abstract class SkillOrTd implements RouteInfo {
   String get name;
   Transl<String, String> get lName;
   String get ruby;
+  String? get icon;
   String? get unmodifiedDetail;
   String? get lDetail;
   List<NiceFunction> get functions;
@@ -56,6 +57,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
   @override
   String? unmodifiedDetail; // String? detail;
   SkillType type;
+  @override
   String? icon;
   List<int> coolDown;
   List<NiceTrait> actIndividuality;
@@ -273,6 +275,7 @@ class BaseTd extends SkillOrTd with RouteInfo {
   String name;
   @override
   String ruby;
+  @override
   String? icon;
   String rank;
   String type;

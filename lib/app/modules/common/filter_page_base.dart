@@ -38,7 +38,7 @@ abstract class FilterPage<T> extends StatefulWidget {
 abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
   T get filterData => widget.filterData;
 
-  TextStyle textStyle = const TextStyle(fontSize: 16);
+  TextStyle textStyle = const TextStyle();
   bool? _useTabletView;
 
   bool get useSplitView {
@@ -231,7 +231,12 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       ),
       items: items.entries
           .map((e) => DropdownMenuItem(
-              value: e.key, child: Text(e.value, style: textStyle)))
+              value: e.key,
+              child: Text(
+                e.value,
+                style: textStyle,
+                textScaleFactor: 0.9,
+              )))
           .toList(),
       onChanged: onSortAttr,
     );

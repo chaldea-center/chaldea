@@ -119,6 +119,7 @@ class FilterGroupData<T> {
 class FilterRadioData<T> extends FilterGroupData<T> {
   T? _selected;
   final bool _nonnull;
+  final T? _initValue;
 
   @override
   T? get radioValue {
@@ -135,10 +136,13 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   @override
   Set<T> get options => {if (_selected != null) _selected!};
 
-  FilterRadioData([this._selected]) : _nonnull = false;
+  FilterRadioData([this._selected])
+      : _nonnull = false,
+        _initValue = null;
   FilterRadioData.nonnull(T selected)
       : _selected = selected,
-        _nonnull = true;
+        _nonnull = true,
+        _initValue = selected;
 
   @override
   void toggle(T value) {
@@ -151,7 +155,7 @@ class FilterRadioData<T> extends FilterGroupData<T> {
 
   @override
   void reset() {
-    _selected = null;
+    _selected = _nonnull ? _initValue : null;
   }
 }
 

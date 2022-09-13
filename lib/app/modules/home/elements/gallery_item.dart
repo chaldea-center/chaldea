@@ -11,6 +11,7 @@ import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
 import '../../buff/buff_list.dart';
+import '../../charge/np_charge_page.dart';
 import '../../command_code/cmd_code_list.dart';
 import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
@@ -124,6 +125,7 @@ class GalleryItem {
         illustratorList,
         charaList,
         svtQuestTimeline,
+        npCharge,
         traits,
         skills,
         tds,
@@ -319,6 +321,13 @@ class GalleryItem {
     titleBuilder: () => S.current.interlude_and_rankup,
     icon: FontAwesomeIcons.timeline,
     page: const SvtQuestTimeline(),
+    isDetail: false,
+  );
+  static GalleryItem npCharge = GalleryItem(
+    name: 'np_charge',
+    titleBuilder: () => S.current.np_charge,
+    icon: FontAwesomeIcons.batteryHalf,
+    page: const NpChargePage(),
     isDetail: false,
   );
   static GalleryItem traits = GalleryItem(

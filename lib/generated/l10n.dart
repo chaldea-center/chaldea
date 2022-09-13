@@ -4724,6 +4724,39 @@ class S {
     );
   }
 
+  /// `NP Charge`
+  String get np_charge {
+    return Intl.message(
+      'NP Charge',
+      name: 'np_charge',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Instant`
+  String get np_charge_type_instant {
+    return Intl.message(
+      'Instant',
+      name: 'np_charge_type_instant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Per Turn`
+  String get np_charge_type_perturn {
+    return Intl.message(
+      'Per Turn',
+      name: 'np_charge_type_perturn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `NP Gain Mod`
   String get np_gain_mod {
     return Intl.message(
