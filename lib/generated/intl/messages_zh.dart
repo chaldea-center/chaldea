@@ -94,8 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_data_folder": MessageLookupByLibrary.simpleMessage("数据目录"),
         "app_data_use_external_storage":
             MessageLookupByLibrary.simpleMessage("使用外部储存(SD卡)"),
-        "append_skill": MessageLookupByLibrary.simpleMessage("附加技能"),
-        "append_skill_short": MessageLookupByLibrary.simpleMessage("附加"),
+        "append_skill": MessageLookupByLibrary.simpleMessage("追加技能"),
+        "append_skill_short": MessageLookupByLibrary.simpleMessage("追加"),
         "april_fool": MessageLookupByLibrary.simpleMessage("愚人节"),
         "ascension": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
@@ -375,7 +375,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_append_skill_hint":
             MessageLookupByLibrary.simpleMessage("强化 - 被动技能强化"),
         "import_append_skill_screenshots":
-            MessageLookupByLibrary.simpleMessage("附加技能截图解析"),
+            MessageLookupByLibrary.simpleMessage("追加技能截图解析"),
         "import_backup": MessageLookupByLibrary.simpleMessage("导入备份"),
         "import_csv_export_all": MessageLookupByLibrary.simpleMessage("所有从者"),
         "import_csv_export_empty": MessageLookupByLibrary.simpleMessage("空模板"),
@@ -579,7 +579,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
         "plan_list_only_unlock_append":
-            MessageLookupByLibrary.simpleMessage("仅已解锁附加"),
+            MessageLookupByLibrary.simpleMessage("仅已解锁追加"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("批量设置"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("当前"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("目标"),
@@ -684,7 +684,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_home_plan_list_page":
             MessageLookupByLibrary.simpleMessage("首页-规划列表页"),
         "setting_only_change_second_append_skill":
-            MessageLookupByLibrary.simpleMessage("仅更改附加技能2"),
+            MessageLookupByLibrary.simpleMessage("仅更改追加技能2"),
         "setting_priority_tagging":
             MessageLookupByLibrary.simpleMessage("优先级备注"),
         "setting_servant_class_filter_style":
