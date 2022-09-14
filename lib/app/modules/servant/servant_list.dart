@@ -136,22 +136,23 @@ class ServantListPageState extends State<ServantListPage>
       bottom: showSearchBar ? searchBar : null,
       actions: <Widget>[
         IconButton(
-            icon: Icon([
-              Icons.remove_circle_outline, // other
-              Icons.favorite, // owned
-              Icons.favorite_border, // planned
-            ][favoriteState.index]),
-            tooltip: [
-              S.current.general_all,
-              S.current.item_own,
-              S.current.general_others
-            ][favoriteState.index],
-            onPressed: () {
-              setState(() {
-                favoriteState =
-                    EnumUtil.next(FavoriteState.values, favoriteState);
-              });
-            }),
+          icon: Icon([
+            Icons.remove_circle_outline, // other
+            Icons.favorite, // owned
+            Icons.favorite_border, // planned
+          ][favoriteState.index]),
+          tooltip: [
+            S.current.general_all,
+            S.current.item_own,
+            S.current.general_others
+          ][favoriteState.index],
+          onPressed: () {
+            setState(() {
+              favoriteState =
+                  EnumUtil.next(FavoriteState.values, favoriteState);
+            });
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
@@ -164,6 +165,7 @@ class ServantListPageState extends State<ServantListPage>
                   setState(() {});
                 }
               },
+              planMode: widget.planMode,
             ),
           ),
         ),

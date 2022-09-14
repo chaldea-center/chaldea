@@ -10,10 +10,12 @@ import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
+  final bool planMode;
   const ServantFilterPage({
     Key? key,
     required SvtFilterData filterData,
     ValueChanged<SvtFilterData>? onChanged,
+    required this.planMode,
   }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
@@ -60,7 +62,9 @@ class _ServantFilterPageState
             FilterGroup<FavoriteState>(
               options: FavoriteState.values,
               combined: true,
-              values: FilterRadioData.nonnull(filterData.favorite),
+              values: FilterRadioData.nonnull(widget.planMode
+                  ? filterData.planFavorite
+                  : filterData.favorite),
               padding: EdgeInsets.zero,
               optionBuilder: (v) {
                 final icon = [
@@ -79,7 +83,11 @@ class _ServantFilterPageState
                 );
               },
               onFilterChanged: (v, _) {
-                filterData.favorite = v.radioValue!;
+                if (widget.planMode) {
+                  filterData.planFavorite = v.radioValue!;
+                } else {
+                  filterData.favorite = v.radioValue!;
+                }
                 update();
               },
             ),
