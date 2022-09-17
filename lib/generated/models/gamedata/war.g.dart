@@ -37,8 +37,7 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
               .toList() ??
           const [],
       maps: (json['maps'] as List<dynamic>?)
-              ?.map(
-                  (e) => NiceMap.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => WarMap.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       spots: (json['spots'] as List<dynamic>?)
@@ -59,13 +58,33 @@ const _$WarStartTypeEnumMap = {
   WarStartType.quest: 'quest',
 };
 
-NiceMap _$NiceMapFromJson(Map json) => NiceMap(
+WarMap _$WarMapFromJson(Map json) => WarMap(
       id: json['id'] as int,
       mapImage: json['mapImage'] as String?,
       mapImageW: json['mapImageW'] as int,
       mapImageH: json['mapImageH'] as int,
+      mapGimmicks: (json['mapGimmicks'] as List<dynamic>?)
+              ?.map((e) =>
+                  MapGimmick.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       headerImage: json['headerImage'] as String?,
       bgm: Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
+    );
+
+MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
+      id: json['id'] as int,
+      image: json['image'] as String?,
+      x: json['x'] as int,
+      y: json['y'] as int,
+      depthOffset: json['depthOffset'] as int,
+      scale: json['scale'] as int,
+      dispCondType: toEnumCondType(json['dispCondType'] as Object),
+      dispTargetId: json['dispTargetId'] as int,
+      dispTargetValue: json['dispTargetValue'] as int,
+      dispCondType2: toEnumCondType(json['dispCondType2'] as Object),
+      dispTargetId2: json['dispTargetId2'] as int,
+      dispTargetValue2: json['dispTargetValue2'] as int,
     );
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(

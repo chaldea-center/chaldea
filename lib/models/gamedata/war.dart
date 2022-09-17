@@ -32,7 +32,7 @@ class NiceWar with RouteInfo {
   String eventName;
   int lastQuestId;
   List<WarAdd> warAdds;
-  List<NiceMap> maps;
+  List<WarMap> maps;
   List<NiceSpot> spots;
   List<SpotRoad> spotRoads;
 
@@ -187,26 +187,66 @@ class NiceWar with RouteInfo {
 }
 
 @JsonSerializable()
-class NiceMap {
+class WarMap {
   int id;
   String? mapImage;
   int mapImageW;
   int mapImageH;
-  // List<NiceMapGimmick> mapGimmicks;
+  List<MapGimmick> mapGimmicks;
   String? headerImage;
   Bgm bgm;
 
-  NiceMap({
+  WarMap({
     required this.id,
     this.mapImage,
     required this.mapImageW,
     required this.mapImageH,
+    this.mapGimmicks = const [],
     this.headerImage,
     required this.bgm,
   });
 
-  factory NiceMap.fromJson(Map<String, dynamic> json) =>
-      _$NiceMapFromJson(json);
+  factory WarMap.fromJson(Map<String, dynamic> json) => _$WarMapFromJson(json);
+}
+
+@JsonSerializable()
+class MapGimmick {
+  int id;
+  String? image;
+  int x;
+  int y;
+  int depthOffset;
+  int scale;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType dispCondType;
+  int dispTargetId;
+  int dispTargetValue;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType dispCondType2;
+  int dispTargetId2;
+  int dispTargetValue2;
+  // int actionAnimTime;
+  // int actionEffectId;
+  // int startedAt;
+  // int endedAt;
+
+  MapGimmick({
+    required this.id,
+    this.image,
+    required this.x,
+    required this.y,
+    required this.depthOffset,
+    required this.scale,
+    required this.dispCondType,
+    required this.dispTargetId,
+    required this.dispTargetValue,
+    required this.dispCondType2,
+    required this.dispTargetId2,
+    required this.dispTargetValue2,
+  });
+
+  factory MapGimmick.fromJson(Map<String, dynamic> json) =>
+      _$MapGimmickFromJson(json);
 }
 
 @JsonSerializable()

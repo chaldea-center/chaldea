@@ -52,17 +52,14 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
 
   @override
   Widget buildContent(BuildContext context) {
-    List<Widget> children = [];
+    List<Widget> ceWidgets = [], svtWidgets = [];
     final eventCEs = db.gameData.craftEssences.values
         .where((e) => e.eventSkills(event).isNotEmpty)
         .toList();
     eventCEs.sort2((e) => e.collectionNo);
 
-    if (eventCEs.isNotEmpty) {
-      children.add(ListTile(title: Text(S.current.craft_essence)));
-      for (final ce in eventCEs) {
-        children.add(ceDetail(context, ce));
-      }
+    for (final ce in eventCEs) {
+      ceWidgets.add(ceDetail(context, ce));
     }
 
     Map<int, BaseSkill> eventSkills = {};
@@ -76,16 +73,14 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
         }
       }
     }
-    if (eventSkills.isNotEmpty) {
-      children.add(ListTile(title: Text(S.current.servant)));
-    }
+    svts = sortDict(svts);
 
     for (final skillId in svts.keys) {
       final group = svts[skillId]!
         ..sort((a, b) => SvtFilterData.compare(a, b,
             keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
             reversed: [false, true, true]));
-      children.add(TileGroup(
+      svtWidgets.add(TileGroup(
         children: [
           SkillDescriptor(
             skill: eventSkills[skillId]!,
@@ -105,9 +100,34 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
         ],
       ));
     }
-    return ListView.builder(
-      itemBuilder: (context, index) => children[index],
-      itemCount: children.length,
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          FixedHeight.tabBar(
+            TabBar(
+              tabs: [
+                for (var text in [S.current.craft_essence, S.current.servant])
+                  Tab(
+                    child: Text(text,
+                        style: Theme.of(context).textTheme.bodyText2),
+                  )
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                for (var children in [ceWidgets, svtWidgets])
+                  ListView.builder(
+                    itemBuilder: (context, index) => children[index],
+                    itemCount: children.length,
+                  )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

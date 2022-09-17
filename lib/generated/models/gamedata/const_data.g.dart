@@ -411,6 +411,7 @@ const _$TraitEnumMap = {
   Trait.valkyrie: 'valkyrie',
   Trait.immuneToPigify: 'immuneToPigify',
   Trait.summerModeServant: 'summerModeServant',
+  Trait.shinsengumiServant: 'shinsengumiServant',
 };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(

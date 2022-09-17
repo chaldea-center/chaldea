@@ -322,7 +322,7 @@ class _QuestCardState extends State<QuestCard> {
           SizedBox(
             width: 48,
             child: Text(
-              '${curPhase.phase}/${curPhase.phases.length}',
+              '${curPhase.phase}/${Maths.max(curPhase.phases, 0)}',
               textAlign: TextAlign.center,
             ),
           ),

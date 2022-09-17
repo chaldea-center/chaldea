@@ -57,7 +57,7 @@ class EventShopsPage extends StatelessWidget with PrimaryScrollMixin {
         style: style,
       );
     } else if (targetId != null) {
-      leading = _iconBuilder(context, shop.purchaseType, targetId, null);
+      leading = _iconBuilder(context, shop.purchaseType, targetId, 42);
       title = _getItemName(shop.purchaseType, targetId, null);
       title ??= shop.name;
       if (shop.setNum != 1) {

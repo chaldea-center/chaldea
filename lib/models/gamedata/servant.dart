@@ -1384,6 +1384,7 @@ enum SvtVoiceType {
   warBoard,
   eventDigging,
   eventExpedition,
+  eventRecipe,
   sum,
 }
 

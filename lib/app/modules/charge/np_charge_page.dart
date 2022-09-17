@@ -39,7 +39,6 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               itemBuilder: (context, index) =>
                   rowBuilder(index, groupedData[keys[index]]!),
               itemCount: keys.length,
@@ -124,7 +123,7 @@ class _NpChargePageState extends State<NpChargePage> {
       decoration: BoxDecoration(
           color: index.isEven ? null : Theme.of(context).cardColor),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         child: child,
       ),
     );

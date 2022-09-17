@@ -605,6 +605,7 @@ enum Trait {
   valkyrie,
   immuneToPigify,
   summerModeServant,
+  shinsengumiServant,
 }
 
 enum CondType {

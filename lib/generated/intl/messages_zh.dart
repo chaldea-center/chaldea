@@ -326,9 +326,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_progress": MessageLookupByLibrary.simpleMessage("Free进度"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("日服最新"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free本"),
-        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free速查"),
+        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free规划"),
         "free_quest_calculator_short":
-            MessageLookupByLibrary.simpleMessage("Free速查"),
+            MessageLookupByLibrary.simpleMessage("Free规划"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首页"),
         "game_account": MessageLookupByLibrary.simpleMessage("游戏账号"),
         "game_data_not_found":

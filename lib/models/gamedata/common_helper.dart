@@ -197,6 +197,7 @@ const kTraitIdMapping = <int, Trait>{
   2836: Trait.protoMerlinNPChargeBlock,
   2837: Trait.valkyrie,
   2838: Trait.summerModeServant,
+  2839: Trait.shinsengumiServant,
 // # 2xxx: CQ or Story quests buff
   3000: Trait.attackPhysical,
   // # Normal attack, including NP

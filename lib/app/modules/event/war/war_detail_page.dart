@@ -14,6 +14,7 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
+import 'war_map.dart';
 
 class WarDetailPage extends StatefulWidget {
   final int? warId;
@@ -301,6 +302,26 @@ class _WarDetailPageState extends State<WarDetailPage> {
       children.add(TileGroup(
         header: 'Sub Wars',
         children: warTiles,
+      ));
+    }
+
+    // war map
+    final maps = war.maps
+        .where((map) => map.mapImageW > 0 && map.mapImageH > 0)
+        .toList();
+    if (maps.isNotEmpty) {
+      children.add(TileGroup(
+        header: 'Maps',
+        children: [
+          for (final map in maps)
+            ListTile(
+              title: Text('Map ${map.id}'),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(child: WarMapPage(war: war, map: map));
+              },
+            )
+        ],
       ));
     }
 

@@ -30,7 +30,7 @@ import 'routes/parser.dart';
 import 'tools/backup_backend/chaldea_backend.dart';
 
 class Chaldea extends StatefulWidget {
-  Chaldea({Key? key}) : super(key: key);
+  Chaldea({super.key});
 
   @override
   _ChaldeaState createState() => _ChaldeaState();

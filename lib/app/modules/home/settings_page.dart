@@ -346,7 +346,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       FrameRateLayer.showFps = v;
                     });
                     if (v) {
-                      FrameRateLayer.createOverlay(context);
+                      FrameRateLayer.createOverlay(
+                          kAppKey.currentContext ?? context);
                     } else {
                       FrameRateLayer.removeOverlay();
                     }

@@ -30,7 +30,9 @@ extension NumX on num {
       return NumberFormat.compact(locale: 'en').format(number);
     }
     final pattern = [
-      if (groupSeparator != null && groupSeparator.isNotEmpty)
+      if (groupSeparator != null &&
+          groupSeparator.isNotEmpty &&
+          (minVal == null || abs() >= minVal))
         '###$groupSeparator',
       '###',
       if (precision > 0) '.${(omit ? '#' : '0') * precision}',
