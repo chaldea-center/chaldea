@@ -206,7 +206,8 @@ class Event {
                 SvtFlag.svtEquipChocolate) {
               continue;
             }
-            _items.addNum(
+            _items.addNum(set.targetId, set.setNum * shopItem.setNum);
+            statItemFixed.addNum(
                 set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
         }
@@ -216,10 +217,10 @@ class Event {
               SvtFlag.svtEquipChocolate) {
             continue;
           }
-          _items.addNum(id, shopItem.limitNum * shopItem.setNum);
+          _items.addNum(id, shopItem.setNum);
+          statItemFixed.addNum(id, shopItem.setNum * shopItem.limitNum);
         }
       }
-      statItemFixed.addDict(_items);
     }
 
     // point rewards

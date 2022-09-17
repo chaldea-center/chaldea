@@ -168,6 +168,7 @@ mixin GameCardMixin implements RouteInfo {
     bool popDetail = false,
     String? name,
     bool showName = false,
+    Widget? Function()? onDefault,
   }) {
     return anyCardItem(
       id: id,
@@ -263,6 +264,10 @@ mixin GameCardMixin implements RouteInfo {
         showName: showName,
       ),
       onDefault: () {
+        if (onDefault != null) {
+          final child = onDefault();
+          if (child != null) return child;
+        }
         if (id == Items.grailToCrystalId) {
           return Item.iconBuilder(
             context: context,

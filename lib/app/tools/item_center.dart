@@ -263,9 +263,11 @@ class ItemCenter {
     // shop
     if (!plan.enabled) return result;
     if (plan.shop) {
-      for (final k in event.itemShop.keys) {
-        if (!plan.shopExcludes.contains(k)) {
-          result.addDict(event.itemShop[k]!);
+      for (final shop in event.shop) {
+        final counts = event.itemShop[shop.id]
+            ?.multiple(plan.shopBuyCount[shop.id] ?? shop.limitNum);
+        if (counts != null) {
+          result.addDict(counts);
         }
       }
     }

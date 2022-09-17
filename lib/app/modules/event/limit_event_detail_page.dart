@@ -443,13 +443,13 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     if (event.shop.isNotEmpty) {
       children.add(db.onUserData((context, snapshot) {
         Map<int, int> shopItems = {};
-        int excludeCount = 0;
-        for (final shopId in event.itemShop.keys) {
-          if (plan.shopExcludes.contains(shopId)) {
-            excludeCount += 1;
-          } else {
-            shopItems.addDict(event.itemShop[shopId]!);
+        int customCount = 0;
+        for (final shop in event.shop) {
+          int count = plan.shopBuyCount[shop.id] ?? shop.limitNum;
+          if (count != shop.limitNum) {
+            customCount += 1;
           }
+          shopItems.addDict(event.itemShop[shop.id]?.multiple(count) ?? {});
         }
         return Column(
           children: _buildSwitchGroup(
@@ -460,8 +460,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               event.updateStat();
             },
             title: S.current.event_shop,
-            subtitle:
-                excludeCount > 0 ? '$excludeCount ${S.current.ignore}' : null,
+            subtitle: customCount > 0 ? '$customCount Customized' : null,
             items: shopItems,
           ),
         );

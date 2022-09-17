@@ -585,7 +585,7 @@ class LimitEventPlan {
   int rerunGrails;
 
   bool shop;
-  List<int> shopExcludes;
+  Map<int, int> shopBuyCount;
   bool point;
   bool mission;
   bool tower;
@@ -601,7 +601,7 @@ class LimitEventPlan {
     this.enabled = false,
     this.rerunGrails = 0,
     this.shop = true,
-    List<int>? shopExcludes,
+    Map<int, int>? shopBuyCount,
     this.point = true,
     this.mission = true,
     this.tower = true,
@@ -612,7 +612,7 @@ class LimitEventPlan {
     this.questReward = true,
     Map<int, bool>? extraFixedItems,
     Map<int, Map<int, int>>? extraItems,
-  })  : shopExcludes = shopExcludes ?? [],
+  })  : shopBuyCount = shopBuyCount ?? {},
         lotteries = lotteries ?? {},
         treasureBoxItems = treasureBoxItems ?? {},
         digging = digging ?? {},
@@ -627,7 +627,7 @@ class LimitEventPlan {
   void reset() {
     enabled = false;
     shop = true;
-    shopExcludes.clear();
+    shopBuyCount.clear();
     point = true;
     mission = true;
     tower = true;
@@ -642,7 +642,7 @@ class LimitEventPlan {
   void planAll() {
     enabled = true;
     shop = true;
-    // shopExcludeItem.clear();
+    shopBuyCount.clear();
     point = true;
     mission = true;
     tower = true;
@@ -658,7 +658,7 @@ class LimitEventPlan {
     return LimitEventPlan(
       enabled: enabled,
       shop: shop,
-      shopExcludes: List.of(shopExcludes),
+      shopBuyCount: Map.of(shopBuyCount),
       point: point,
       mission: mission,
       tower: tower,

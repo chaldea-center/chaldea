@@ -282,8 +282,11 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
           rerunGrails: $checkedConvert('rerunGrails', (v) => v as int? ?? 0),
           shop: $checkedConvert('shop', (v) => v as bool? ?? true),
-          shopExcludes: $checkedConvert('shopExcludes',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          shopBuyCount: $checkedConvert(
+              'shopBuyCount',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
           point: $checkedConvert('point', (v) => v as bool? ?? true),
           mission: $checkedConvert('mission', (v) => v as bool? ?? true),
           tower: $checkedConvert('tower', (v) => v as bool? ?? true),
@@ -333,7 +336,8 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'enabled': instance.enabled,
       'rerunGrails': instance.rerunGrails,
       'shop': instance.shop,
-      'shopExcludes': instance.shopExcludes,
+      'shopBuyCount':
+          instance.shopBuyCount.map((k, e) => MapEntry(k.toString(), e)),
       'point': instance.point,
       'mission': instance.mission,
       'tower': instance.tower,
