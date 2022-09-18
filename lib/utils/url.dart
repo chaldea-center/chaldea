@@ -1,4 +1,5 @@
 import 'package:url_launcher/url_launcher.dart' as launcher;
+import 'package:url_launcher/url_launcher_string.dart' as launcher_string;
 
 import 'package:chaldea/packages/platform/platform.dart';
 import '../packages/language.dart';
@@ -29,5 +30,14 @@ Future<bool> canLaunch(String url) {
 }
 
 Future<bool> openFile(String fp) {
-  return launcher.launchUrl(Uri.file(fp));
+  assert(PlatformU.isDesktop, 'Only Desktop is supported');
+  final uri = Uri.file(fp);
+  if (PlatformU.isWindows) {
+    // on Windows, [launcher.launchUrl] will encode Chinese chars
+    return launcher_string.launchUrlString('file:///${uri.toFilePath()}');
+  } else if (PlatformU.isDesktop) {
+    return launcher.launchUrl(uri);
+  } else {
+    return Future.value(false);
+  }
 }
