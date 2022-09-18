@@ -1,3 +1,13 @@
+## 2.1.0
+
+- NP Charge list
+- exchange ticket: >3 items
+- event shop: plan each purchase quantity
+- support dup svts from sniffing
+- event list: show empty event
+- add war map
+- add event recipe
+
 ## 2.0.11
 
 - free quest solver: add AP Cost 1/2 option

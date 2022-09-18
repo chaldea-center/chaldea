@@ -2,7 +2,6 @@
 
 There are plenty of work need to do.
 
-flutter create --platforms=windows .
 
 ## Misc
 
@@ -27,11 +26,18 @@ flutter create --platforms=windows .
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 - [ ] routeTo: add this as argument
 - [ ] generate skill/np in one image
-- [ ] mappings.effect: subStateNegative
 - [ ] quest: refresh
 - [ ] trait: dynamic tabs(fixed some tabs), items
-- [ ] quest: unknown call/shift/transform deck
 - [ ] skill/td/func/buff: change region
+- [ ] list view: pull to show outdated
+- [ ] daily quests: name, hand/door name
+- [ ] item_list: sort
+- [ ] forgot password: add hint what to add
+- [ ] class icon+name
+- [ ] breaking change: FixedDrop
+- [ ] event: custom extra items
+- [ ] filter_group: add onReset
+- [ ] separate cn proxy 
 
 ## Quest Related
 
