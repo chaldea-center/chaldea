@@ -2,6 +2,9 @@ import 'dart:io';
 
 /// `dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}`
 void main(List<String> args) {
+  print('Patch before build, args=$args');
+  _patchFlutterFadeInImage();
+
   final String target = args[0];
   final String ref = args[1];
   if (target == 'windows') {
@@ -12,6 +15,28 @@ void main(List<String> args) {
   } else if (target == 'android' && ref == 'refs/heads/main') {
     _patchAndroidPreview();
   }
+}
+
+void _patchFlutterFadeInImage() {
+  print('Patching flutter 3.3.1 FadeInImage bug...');
+  print('Dart: ${Platform.resolvedExecutable}');
+  final dartFp = Uri.file(Platform.resolvedExecutable);
+  final targetFp = dartFp.replace(pathSegments: [
+    ...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5),
+    ...'packages/flutter/lib/src/widgets/fade_in_image.dart'.split('/')
+  ]);
+  print(targetFp.toFilePath());
+  final targetFile = File(targetFp.toFilePath());
+  assert(targetFile.existsSync());
+  String content = targetFile.readAsStringSync();
+  const s1 =
+      '    if (widget.wasSynchronouslyLoaded || _placeholderOpacityAnimation!.isCompleted) {';
+  const s2 = '''    if (widget.wasSynchronouslyLoaded ||
+        (_placeholderOpacityAnimation?.isCompleted ?? true)) {''';
+  assert(content.contains(s1));
+  targetFile
+      .writeAsStringSync(targetFile.readAsStringSync().replaceFirst(s1, s2));
+  return;
 }
 
 void _patchWindows() {
