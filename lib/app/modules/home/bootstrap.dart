@@ -465,7 +465,7 @@ class _BootstrapPageState extends State<BootstrapPage>
     rootRouter.appState.dataReady = true;
     if (needCheckUpdate && network.available && kReleaseMode) {
       await Future.delayed(const Duration(seconds: 3));
-      await _loader.reload(updateOnly: true, silent: true);
+      await _loader.reload(silent: true);
     }
   }
 

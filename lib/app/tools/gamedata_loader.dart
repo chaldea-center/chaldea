@@ -48,10 +48,8 @@ class GameDataLoader {
   Future<GameData?> reload({
     ValueChanged<double>? onUpdate,
     bool offline = false,
-    bool updateOnly = false,
     bool silent = false,
   }) async {
-    assert(!(offline && updateOnly), [offline, updateOnly]);
     void _showError(Object? e) {
       error = escapeDioError(e);
       if (!silent) EasyLoading.showInfo(error);
@@ -71,8 +69,14 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     try {
-      final result = await _loadJson(offline, onUpdate, updateOnly);
-      _completer!.complete(result);
+      final result = await _loadJson(offline, onUpdate);
+      if (result.isValid) {
+        _completer!.complete(result);
+      } else {
+        logger.d('Invalid game data: ${result.version.text(false)}, '
+            '${result.servantsById.length} servants, ${result.items.length} items');
+        throw UpdateError("Invalid game data!");
+      }
     } catch (e, s) {
       if (e is! UpdateError) logger.e('load gamedata(offline=$offline)', e, s);
       _showError(e);
@@ -83,7 +87,7 @@ class GameDataLoader {
   }
 
   Future<GameData> _loadJson(
-      bool offline, ValueChanged<double>? onUpdate, bool updateOnly) async {
+      bool offline, ValueChanged<double>? onUpdate) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
@@ -157,29 +161,27 @@ class GameDataLoader {
         _dataToWrite[_file] = List.from(resp.data);
         bytes = resp.data;
       }
-      if (updateOnly) return;
-      if (!updateOnly) {
-        dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
-        l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
-        if (l2mFn != null) {
-          assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
-          fileJson = Map.fromIterable(fileJson, key: l2mFn);
-        }
-        Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
-            ? _gameJson.putIfAbsent('wiki', () => {})
-            : _gameJson;
-        String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
-        if (targetJson[key] == null) {
-          targetJson[key] = fileJson;
+
+      dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
+      l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
+      if (l2mFn != null) {
+        assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
+        fileJson = Map.fromIterable(fileJson, key: l2mFn);
+      }
+      Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
+          ? _gameJson.putIfAbsent('wiki', () => {})
+          : _gameJson;
+      String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
+      if (targetJson[key] == null) {
+        targetJson[key] = fileJson;
+      } else {
+        final value = targetJson[key]!;
+        if (value is Map) {
+          value.addAll(fileJson);
+        } else if (value is List) {
+          value.addAll(fileJson);
         } else {
-          final value = targetJson[key]!;
-          if (value is Map) {
-            value.addAll(fileJson);
-          } else if (value is List) {
-            value.addAll(fileJson);
-          } else {
-            throw "Unsupported type: ${value.runtimeType}";
-          }
+          throw "Unsupported type: ${value.runtimeType}";
         }
       }
 
@@ -229,7 +231,7 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
-    if (!updateOnly && _gameJson.isEmpty) {
+    if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
     }
     tmp.clear();

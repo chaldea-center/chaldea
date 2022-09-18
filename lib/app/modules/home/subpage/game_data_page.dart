@@ -107,6 +107,10 @@ class _GameDataPageState extends State<GameDataPage> {
                         EasyLoading.showInfo('Background Updating...');
                         final data = await loader.reload(offline: false);
                         if (data == null) return;
+                        if (!data.isValid) {
+                          EasyLoading.showError("Invalid game data");
+                          return;
+                        }
                         showDialog(
                           context: kAppKey.currentContext!,
                           useRootNavigator: false,
