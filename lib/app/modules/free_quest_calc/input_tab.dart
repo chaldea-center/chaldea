@@ -128,7 +128,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             padding: const EdgeInsets.symmetric(horizontal: 6),
             child: db.getIconImage(
               itemId == Items.bondPointId
-                  ? Items.lantern.icon
+                  ? Items.lantern?.icon
                   : itemId == Items.expPointId
                       ? null
                       : item?.borderedIcon,

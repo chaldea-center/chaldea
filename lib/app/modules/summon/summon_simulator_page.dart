@@ -599,6 +599,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   /// 无任何保底，纯随机
   List<GameCardMixin> randomSummon(
       Map<GameCardMixin, double> probMap, int times) {
+    if (probMap.isEmpty) return [];
     final probList = probMap.entries.toList();
     probList.shuffle();
     List<GameCardMixin> result = [];

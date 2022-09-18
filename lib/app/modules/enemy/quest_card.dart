@@ -801,18 +801,21 @@ class QuestWave extends StatelessWidget {
       List<QuestEnemy?> _enemies;
       if (needSort) {
         _enemies = List.filled(
-            enemies.fold(0, (p, e) => max(p, e?.deckId ?? 0)), null);
+          enemies.fold(0, (p, e) => max(p, e?.deckId ?? 0)),
+          null,
+          growable: true,
+        );
         for (final e in enemies) {
           if (e != null) {
             assert(_enemies[e.deckId - 1] == null);
             _enemies[e.deckId - 1] = e;
           }
         }
-        for (int i = 0; i < _enemies.length ~/ 3; i++) {
-          if (_enemies.sublist(i * 3, i * 3 + 3).every((e) => e == null)) {
-            _enemies.removeRange(i * 3, i * 3 + 3);
-          }
-        }
+        // for (int i = 0; i < _enemies.length ~/ 3; i++) {
+        //   if (_enemies.sublist(i * 3, i * 3 + 3).every((e) => e == null)) {
+        //     _enemies.removeRange(i * 3, i * 3 + 3);
+        //   }
+        // }
       } else {
         _enemies = enemies.toList();
       }

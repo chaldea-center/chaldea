@@ -208,22 +208,11 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     data.next = max(0, int.tryParse(_nextController.text) ?? 0);
   }
 
-  Widget _cardIcon(int rarity) {
+  Widget _itemIcon(int? itemId) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CachedImage(
-        imageUrl: Atlas.asset('/Faces/f_9770${rarity}000_bordered.png'),
-        width: 132 * 0.25,
-        height: 144 * 0.25,
-      ),
-    );
-  }
-
-  Widget _itemIcon(Item? item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: CachedImage(
-        imageUrl: item?.borderedIcon,
+        imageUrl: itemId == null ? null : Item.getIcon(itemId, bordered: true),
         width: 132 * 0.25,
         height: 144 * 0.25,
       ),
@@ -237,10 +226,10 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         decoration: BoxDecoration(color: headerColor),
         children: [
           const Center(child: Text('...')),
-          _cardIcon(expCardRarity),
-          _itemIcon(Items.qp),
-          _itemIcon(Items.grail),
-          _itemIcon(db.gameData.servantsNoDup[1]?.coin!.item),
+          _itemIcon(9770000 + expCardRarity * 100),
+          _itemIcon(Items.qpId),
+          _itemIcon(Items.grailId),
+          _itemIcon(db.gameData.servantsNoDup[1]?.coin?.item.id),
         ],
       )
     ];

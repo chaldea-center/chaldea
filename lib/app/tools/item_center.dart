@@ -553,7 +553,7 @@ Map<int, int> _sumMat(Map<int, LvlUpMaterial> matDetail, List<int> lvs) {
   for (int lv in lvs) {
     final lvMat = matDetail[lv];
     if (lvMat != null) {
-      mats.addNum(Items.qp.id, lvMat.qp);
+      mats.addNum(Items.qpId, lvMat.qp);
       for (final itemAmount in lvMat.items) {
         final itemId = itemAmount.item?.id;
         if (itemId == null) continue;

@@ -48,7 +48,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
     _plan.validate();
     return Scaffold(
       appBar: AppBar(
-        title: Text(Items.stone.lName.l),
+        title: Text(Items.stone?.lName.l ?? "Stone"),
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,

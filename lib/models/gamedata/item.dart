@@ -114,7 +114,7 @@ class Item {
                 children: [
                   ListTile(
                     leading: db.getIconImage(item?.icon),
-                    title: Text(item?.lName.l ?? ""),
+                    title: Text(item?.lName.l ?? "Grail to Lore"),
                     onTap: () {
                       Navigator.pop(context);
                       router.popDetailAndPush(
@@ -125,8 +125,8 @@ class Item {
                     },
                   ),
                   ListTile(
-                    leading: db.getIconImage(Items.grail.borderedIcon),
-                    title: Text(Items.grail.lName.l),
+                    leading: db.getIconImage(Items.grail?.borderedIcon),
+                    title: Text(Items.grail?.lName.l ?? "Grail"),
                     onTap: () {
                       Navigator.pop(context);
                       router.popDetailAndPush(
@@ -137,8 +137,8 @@ class Item {
                     },
                   ),
                   ListTile(
-                    leading: db.getIconImage(Items.crystal.borderedIcon),
-                    title: Text(Items.crystal.lName.l),
+                    leading: db.getIconImage(Items.crystal?.borderedIcon),
+                    title: Text(Items.crystal?.lName.l ?? "Lore"),
                     onTap: () {
                       Navigator.pop(context);
                       router.popDetailAndPush(
@@ -285,31 +285,31 @@ class Items {
   static const int costumeIconId = 23;
   static const int npRankUpIconId = 8;
 
-  static Item get qp => _items[qpId]!;
+  static Item? get qp => _items[qpId];
 
-  static Item get stone => _items[stoneId]!;
+  static Item? get stone => _items[stoneId];
 
-  static Item get manaPrism => _items[manaPrismId]!;
+  static Item? get manaPrism => _items[manaPrismId];
 
-  static Item get purePrism => _items[purePrismId]!;
+  static Item? get purePrism => _items[purePrismId];
 
-  static Item get rarePrism => _items[rarePrismId]!;
+  static Item? get rarePrism => _items[rarePrismId];
 
-  static Item get summonTicket => _items[summonTicketId]!;
+  static Item? get summonTicket => _items[summonTicketId];
 
-  static Item get bronzeApple => _items[bronzeAppleId]!;
+  static Item? get bronzeApple => _items[bronzeAppleId];
 
-  static Item get silverApple => _items[silverAppleId]!;
+  static Item? get silverApple => _items[silverAppleId];
 
-  static Item get goldApple => _items[goldAppleId]!;
+  static Item? get goldApple => _items[goldAppleId];
 
-  static Item get crystal => _items[crystalId]!;
+  static Item? get crystal => _items[crystalId];
 
-  static Item get grailFrag => _items[grailFragId]!;
+  static Item? get grailFrag => _items[grailFragId];
 
-  static Item get grail => _items[grailId]!;
+  static Item? get grail => _items[grailId];
 
-  static Item get lantern => _items[lanternId]!;
+  static Item? get lantern => _items[lanternId];
 
   static const List<int> specialItems = [
     //

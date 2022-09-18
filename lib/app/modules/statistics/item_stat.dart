@@ -56,10 +56,10 @@ class _ItemStatTabState extends State<ItemStatTab> {
             children: [
               CustomTile(
                 color: Theme.of(context).cardColor,
-                leading: db.getIconImage(Items.qp.borderedIcon, height: 56),
+                leading: db.getIconImage(Items.qp?.borderedIcon, height: 56),
                 title: Text((shownItems[Items.qpId] ?? 0)
                     .format(compact: false, groupSeparator: ',')),
-                onTap: () => Items.qp.routeTo(),
+                onTap: () => Items.qp?.routeTo(),
               ),
               SharedBuilder.groupItems(
                 context: context,

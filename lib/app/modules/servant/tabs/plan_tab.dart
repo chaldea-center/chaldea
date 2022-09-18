@@ -269,8 +269,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.grail))
         buildPlanRow(
           useSlider: sliderMode,
-          leading:
-              Item.iconBuilder(context: context, item: Items.grail, width: 33),
+          leading: Item.iconBuilder(
+              context: context, item: null, itemId: Items.grailId, width: 33),
           title: S.of(context).grail_up,
           start: curVal.grail,
           end: targetVal.grail,

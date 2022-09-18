@@ -185,15 +185,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 trailing: Text(user.friendCode),
               ),
               ListTile(
-                title: Text(Items.qp.lName.l),
+                title: Text(Items.qp?.lName.l ?? "QP"),
                 trailing: Text(user.qp.format()),
               ),
               ListTile(
-                title: Text(Items.manaPrism.lName.l),
+                title: Text(Items.manaPrism?.lName.l ?? "Mana Prism"),
                 trailing: Text(user.mana.format()),
               ),
               ListTile(
-                title: Text(Items.rarePrism.lName.l),
+                title: Text(Items.rarePrism?.lName.l ?? "Rare Prism"),
                 trailing: Text(user.rarePri.format()),
               ),
             ]),

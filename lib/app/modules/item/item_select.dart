@@ -50,7 +50,7 @@ class ItemSelectPage extends StatelessWidget {
                 spacing: 2,
                 runSpacing: 2,
                 children: [
-                  _oneItem(context, Items.bondPointId, Items.lantern.icon,
+                  _oneItem(context, Items.bondPointId, Items.lantern?.icon,
                       S.current.bond),
                   _oneItem(context, Items.expPointId, '', 'EXP'),
                 ],
@@ -92,7 +92,7 @@ class ItemSelectPage extends StatelessWidget {
     );
   }
 
-  Widget _oneItem(BuildContext context, int id, String icon, String name) {
+  Widget _oneItem(BuildContext context, int id, String? icon, String name) {
     return Item.iconBuilder(
       context: context,
       item: null,
