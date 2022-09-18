@@ -48,7 +48,7 @@ class _SummonListPageState extends State<SummonListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        title: Text(S.of(context).summon_title),
+        title: Text(S.current.summon_title),
         leading: const MasterBackButton(),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
@@ -69,7 +69,7 @@ class _SummonListPageState extends State<SummonListPage>
           ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
+            tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => SummonFilterPage(

@@ -145,7 +145,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     return Column(
       children: [
         ListTile(
-          title: Text(S.of(context).quest),
+          title: Text(S.current.quest),
           trailing: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

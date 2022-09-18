@@ -39,7 +39,7 @@ class _CraftFilterPageState
         update();
       }),
       content: getListViewBody(restorationId: 'ce_list_filter', children: [
-        getGroup(header: S.of(context).filter_shown_type, children: [
+        getGroup(header: S.current.filter_shown_type, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
             onChanged: (v) {

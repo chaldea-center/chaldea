@@ -71,7 +71,7 @@ class ItemListPageState extends State<ItemListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).item_title),
+        title: Text(S.current.item_title),
         leading: const MasterBackButton(),
         titleSpacing: 0,
         actions: <Widget>[
@@ -87,7 +87,7 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
-            tooltip: S.of(context).item_only_show_lack,
+            tooltip: S.current.item_only_show_lack,
             onPressed: () {
               FocusScope.of(context).unfocus();
               setState(() {
@@ -206,7 +206,7 @@ class ItemListPageState extends State<ItemListPage>
             db.userData.itemAbundantValue
                 .fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
-          child: Text(S.of(context).clear),
+          child: Text(S.current.clear),
         )
       ],
     ).showDialog(context);
@@ -225,7 +225,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
   Widget build(BuildContext context) {
     final priorityFilter = db.settings.svtFilterData.priority;
     return AlertDialog(
-      title: Text(S.of(context).priority),
+      title: Text(S.current.priority),
       actions: [
         TextButton(
           onPressed: () {
@@ -234,13 +234,13 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
             });
             db.itemCenter.updateSvts(all: true);
           },
-          child: Text(S.of(context).clear.toUpperCase()),
+          child: Text(S.current.clear.toUpperCase()),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(S.of(context).confirm.toUpperCase()),
+          child: Text(S.current.confirm.toUpperCase()),
         )
       ],
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
@@ -666,8 +666,7 @@ class _ItemListTabState extends State<ItemListTab> {
             ),
           ),
           if (coinOwner == null) ...[
-            Text(S.of(context).event_title,
-                style: const TextStyle(fontSize: 14)),
+            Text(S.current.event_title, style: const TextStyle(fontSize: 14)),
             ConstrainedBox(
               constraints: const BoxConstraints(minWidth: 36),
               child: Align(

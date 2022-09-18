@@ -28,7 +28,7 @@ class _FfoPartFilterPageState
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.current.filter_sort, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
             onChanged: (v) {
@@ -39,7 +39,7 @@ class _FfoPartFilterPageState
         ]),
         //end
 
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.current.filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',

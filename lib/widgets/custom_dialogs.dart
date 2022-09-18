@@ -85,7 +85,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(S.of(context).cancel),
+          child: Text(S.current.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
@@ -103,7 +103,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                   });
                 }
               : null,
-          child: Text(S.of(context).ok),
+          child: Text(S.current.ok),
         )
       ],
     );
@@ -146,7 +146,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     List<Widget> children = <Widget>[
       if (!hideCancel)
         TextButton(
-          child: Text(S.of(context).cancel),
+          child: Text(S.current.cancel),
           onPressed: () {
             Navigator.of(context).pop(false);
             if (onTapCancel != null) {
@@ -157,7 +157,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
       ...actions,
       if (!hideOk)
         TextButton(
-          child: Text(confirmText ?? S.of(context).confirm),
+          child: Text(confirmText ?? S.current.confirm),
           onPressed: () {
             Navigator.of(context).pop(true);
             if (onTapOk != null) {

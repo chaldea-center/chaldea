@@ -46,7 +46,7 @@ class _CmdCodeFilterPageState
           controlAffinity: ListTileControlAffinity.trailing,
         ),
         FilterGroup<SummonType>(
-          title: Text(S.of(context).filter_category),
+          title: Text(S.current.filter_category),
           options: List.of(SummonType.values),
           values: filterData.category,
           optionBuilder: (v) =>

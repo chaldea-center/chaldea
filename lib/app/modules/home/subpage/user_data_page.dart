@@ -169,7 +169,7 @@ class _UserDataPageState extends State<UserDataPage> {
       db.notifyAppUpdate();
     } catch (e, s) {
       logger.e('import user data failed', e, s);
-      EasyLoading.showError(S.of(context).import_data_error(e));
+      EasyLoading.showError(S.current.import_data_error(e));
     }
   }
 

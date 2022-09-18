@@ -259,7 +259,7 @@ class SharedBuilder {
               ? null
               : Colors.yellowAccent,
         ),
-        tooltip: S.of(context).priority,
+        tooltip: S.current.priority,
         onPressed: () {
           showDialog(
             context: context,

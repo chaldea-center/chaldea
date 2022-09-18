@@ -50,7 +50,7 @@ class _ServantFilterPageState
       }),
       content: getListViewBody(restorationId: 'svt_list_filter', children: [
         getGroup(
-          header: S.of(context).filter_shown_type,
+          header: S.current.filter_shown_type,
           children: [
             FilterGroup.display(
               useGrid: filterData.useGrid,
@@ -93,7 +93,7 @@ class _ServantFilterPageState
             ),
           ],
         ),
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.current.filter_sort, children: [
           for (int i = 0; i < min(4, filterData.sortKeys.length); i++)
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
@@ -112,7 +112,7 @@ class _ServantFilterPageState
         ]),
         buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
-          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+          title: Text(S.current.filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v$kStarChar'),
@@ -121,7 +121,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<CardType>(
-          title: Text(S.of(context).noble_phantasm, style: textStyle),
+          title: Text(S.current.noble_phantasm, style: textStyle),
           options: const [CardType.arts, CardType.buster, CardType.quick],
           values: filterData.npColor,
           optionBuilder: (v) => Text(v.name.toTitle()),
@@ -140,7 +140,7 @@ class _ServantFilterPageState
         ),
         groupDivider,
         FilterGroup<int>(
-          title: Text(S.of(context).priority, style: textStyle),
+          title: Text(S.current.priority, style: textStyle),
           options: const [1, 2, 3, 4, 5],
           values: filterData.priority,
           onFilterChanged: (value, _) {
@@ -231,7 +231,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<SvtObtain>(
-          title: Text(S.of(context).filter_obtain, style: textStyle),
+          title: Text(S.current.filter_obtain, style: textStyle),
           options: SvtObtain.values,
           values: filterData.obtain,
           optionBuilder: (v) => Text(Transl.svtObtain(v).l),
@@ -240,7 +240,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<Attribute>(
-          title: Text(S.of(context).filter_attribute, style: textStyle),
+          title: Text(S.current.filter_attribute, style: textStyle),
           options: Attribute.values.sublist(0, 5),
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtAttribute(v).l),
@@ -249,7 +249,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<ServantPolicy>(
-          title: Text(S.of(context).info_alignment, style: textStyle),
+          title: Text(S.current.info_alignment, style: textStyle),
           options:
               ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
           values: filterData.policy,
@@ -268,7 +268,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<Gender>(
-          title: Text(S.of(context).filter_gender, style: textStyle),
+          title: Text(S.current.filter_gender, style: textStyle),
           options: Gender.values.toList(),
           values: filterData.gender,
           optionBuilder: (v) => Text(Transl.gender(v).l),
@@ -277,7 +277,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<Trait>(
-          title: Text(S.of(context).info_trait, style: textStyle),
+          title: Text(S.current.info_trait, style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
           optionBuilder: (v) =>

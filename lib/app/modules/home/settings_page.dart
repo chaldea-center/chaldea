@@ -262,7 +262,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           SliverTileGroup(
-            header: S.of(context).about_app,
+            header: S.current.about_app,
             children: <Widget>[
               ListTile(
                 title: Text(MaterialLocalizations.of(context)
@@ -292,7 +292,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text(S.of(context).settings_documents),
+                title: Text(S.current.settings_documents),
                 subtitle: const Text(kProjectDocRoot),
                 trailing: const Icon(Icons.menu_book),
                 onTap: () {

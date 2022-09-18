@@ -202,7 +202,7 @@ class _NpChargeFilterPageState
           },
         ),
         FilterGroup<CardType>(
-          title: Text(S.of(context).noble_phantasm, style: textStyle),
+          title: Text(S.current.noble_phantasm, style: textStyle),
           options: const [CardType.arts, CardType.buster, CardType.quick],
           values: filterData.tdColor,
           optionBuilder: (v) => Text(v.name.toTitle()),

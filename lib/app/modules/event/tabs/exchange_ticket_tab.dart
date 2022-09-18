@@ -213,8 +213,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 itemExtent: 36,
                 height: min(250, MediaQuery.of(context).size.height - 220),
                 hideHeader: true,
-                cancelText: S.of(context).cancel,
-                confirmText: S.of(context).confirm,
+                cancelText: S.current.cancel,
+                confirmText: S.current.confirm,
                 backgroundColor: null,
                 textStyle: Theme.of(context).textTheme.headline6,
                 adapter: NumberPickerAdapter(

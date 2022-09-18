@@ -121,13 +121,13 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         TextButton(
           onPressed: onTapReset,
           child: Text(
-            S.of(context).reset.toUpperCase(),
+            S.current.reset.toUpperCase(),
             style: const TextStyle(color: Colors.redAccent),
           ),
         ),
         if (showOk)
           TextButton(
-            child: Text(S.of(context).ok.toUpperCase()),
+            child: Text(S.current.ok.toUpperCase()),
             onPressed: () => Navigator.pop(context),
           ),
       ];
@@ -254,7 +254,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(S.of(context).filter_sort_class, style: textStyle),
+          Text(S.current.filter_sort_class, style: textStyle),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Row(

@@ -41,7 +41,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).free_quest_calculator),
+        title: Text(S.current.free_quest_calculator),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')
         ],

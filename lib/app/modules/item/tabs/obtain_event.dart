@@ -126,7 +126,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       ));
     }
     return _getAccordion(
-      title: Text(S.of(context).limited_event),
+      title: Text(S.current.limited_event),
       trailing: Text(count.format()),
       children: children,
       expanded: expandedList[0],
@@ -175,7 +175,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       ));
     }
     return _getAccordion(
-      title: Text(S.of(context).exchange_ticket),
+      title: Text(S.current.exchange_ticket),
       trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[1],
@@ -230,7 +230,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       ));
     }
     return _getAccordion(
-      title: Text(S.of(context).main_story),
+      title: Text(S.current.main_story),
       trailing: Text('${count.format()}/${totalCount.format()}'),
       children: children,
       expanded: expandedList[2],

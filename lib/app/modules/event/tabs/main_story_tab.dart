@@ -42,14 +42,14 @@ class MainStoryTab extends StatelessWidget {
           Material(
             elevation: 1,
             child: CustomTile(
-              title: Text(S.of(context).main_story_chapter),
+              title: Text(S.current.main_story_chapter),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: 56),
                     child: Text(
-                      S.of(context).quest_fixed_drop_short,
+                      S.current.quest_fixed_drop_short,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -57,7 +57,7 @@ class MainStoryTab extends StatelessWidget {
                   ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: 56),
                     child: Text(
-                      S.of(context).quest_reward_short,
+                      S.current.quest_reward_short,
                       textAlign: TextAlign.center,
                     ),
                   )

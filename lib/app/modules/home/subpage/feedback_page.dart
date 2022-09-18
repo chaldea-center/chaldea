@@ -73,7 +73,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     Widget child = Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).about_feedback),
+        title: Text(S.current.about_feedback),
         leading: BackButton(onPressed: () async {
           if (await _alertPopPage() && mounted) Navigator.of(context).pop();
         }),
@@ -195,7 +195,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 child: TextFormField(
                   controller: bodyController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).feedback_content_hint,
+                    labelText: S.current.feedback_content_hint,
                     border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
@@ -233,7 +233,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
                     onPressed: sendEmail,
-                    child: Text(S.of(context).feedback_send),
+                    child: Text(S.current.feedback_send),
                   ),
                 ),
               ),

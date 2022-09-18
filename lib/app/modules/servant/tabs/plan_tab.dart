@@ -67,9 +67,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     targetVal.validate(curVal);
     // ascension part
     List<Widget> children = [];
-    if (showDetail(SvtPlanDetail.ascension) && svt.collectionNo != 1) {
+    if (showDetail(SvtPlanDetail.ascension)) {
       children.add(TileGroup(
-        header: S.of(context).ascension_up,
+        header: S.current.ascension_up,
         children: <Widget>[
           buildPlanRow(
             useSlider: sliderMode,
@@ -84,7 +84,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
               ),
             ),
-            title: S.of(context).ascension_up,
+            title: S.current.ascension_up,
             start: curVal.ascension,
             end: targetVal.ascension,
             minVal: 0,
@@ -97,7 +97,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             },
             detailPageBuilder: (context) => LevelingCostPage(
               costList: svt.ascensionMaterials,
-              title: S.of(context).ascension_up,
+              title: S.current.ascension_up,
               curLv: curVal.ascension,
               targetLv: targetVal.ascension,
             ),
@@ -225,7 +225,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       }
       if (dressWidgets.isNotEmpty) {
         children.add(TileGroup(
-            header: S.of(context).costume_unlock, children: dressWidgets));
+            header: S.current.costume_unlock, children: dressWidgets));
       }
     }
     final extraParts1 = [
@@ -271,7 +271,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           useSlider: sliderMode,
           leading: Item.iconBuilder(
               context: context, item: null, itemId: Items.grailId, width: 33),
-          title: S.of(context).grail_up,
+          title: S.current.grail_up,
           start: curVal.grail,
           end: targetVal.grail,
           minVal: 0,
@@ -295,12 +295,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             levelFormatter: (v) => svt.grailedLv(v).toString(),
           ),
         ),
-      if (showDetail(SvtPlanDetail.grail) && svt.type != SvtType.heroine)
+      if (showDetail(SvtPlanDetail.noblePhantasm))
         buildPlanRow(
           useSlider: sliderMode,
           leading:
               db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
-          title: S.of(context).noble_phantasm_level,
+          title: S.current.noble_phantasm_level,
           start: status.cur.npLv,
           end: plan.npLv,
           minVal: 0,
@@ -319,7 +319,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       children.add(TileGroup(children: extraParts1));
     }
 
-    // Extra part2: np/grail/fou-kun
+    // Extra part2: grail/fou-kun
     final extraParts2 = <Widget>[
       if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
@@ -720,7 +720,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     if (enhanceMode) {
       buttons.add(ElevatedButton(
         onPressed: _onEnhance,
-        child: Text(S.of(context).ok),
+        child: Text(S.current.ok),
       ));
     }
 

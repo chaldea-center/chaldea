@@ -314,7 +314,7 @@ class SvtInfoTab extends StatelessWidget {
                 ),
                 CustomTableRow.fromTexts(
                   texts: [
-                    S.of(context).info_bond_points_single,
+                    S.current.info_bond_points_single,
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondGrowth.length
                           ? '-'
@@ -326,7 +326,7 @@ class SvtInfoTab extends StatelessWidget {
                 ),
                 CustomTableRow.fromTexts(
                   texts: [
-                    S.of(context).info_bond_points_sum,
+                    S.current.info_bond_points_sum,
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondGrowth.length
                           ? '-'

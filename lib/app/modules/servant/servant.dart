@@ -126,7 +126,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 icon: status.favorite
                     ? const Icon(Icons.favorite, color: Colors.redAccent)
                     : const Icon(Icons.favorite_border),
-                tooltip: S.of(context).favorite,
+                tooltip: S.current.favorite,
                 onPressed: () {
                   setState(() {
                     status.cur.favorite = !status.cur.favorite;
@@ -464,7 +464,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   },
                 );
               },
-              child: Text(S.of(context).select_plan),
+              child: Text(S.current.select_plan),
             ),
             PopupMenuItem<String>(
               value: 'reset', // dialog
@@ -472,7 +472,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 await null;
                 if (!mounted) return;
                 SimpleCancelOkDialog(
-                  title: Text(S.of(context).reset),
+                  title: Text(S.current.reset),
                   onTapOk: () {
                     if (mounted) {
                       setState(() {
@@ -484,7 +484,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   },
                 ).showDialog(context);
               },
-              child: Text(S.of(context).reset),
+              child: Text(S.current.reset),
             ),
             PopupMenuItem<String>(
               value: 'reset_plan',

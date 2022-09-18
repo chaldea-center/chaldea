@@ -72,7 +72,7 @@ class EnemyListPageState extends State<EnemyListPage>
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
+            tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => EnemyFilterPage(

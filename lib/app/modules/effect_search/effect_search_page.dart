@@ -76,7 +76,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           SharedBuilder.docsHelpBtn('buff_filter.html'),
           IconButton(
             icon: const Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
+            tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => BuffFuncFilter(

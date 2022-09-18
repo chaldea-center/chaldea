@@ -136,7 +136,7 @@ class _BuffFuncFilterState
       content: getListViewBody(
           restorationId: 'effect_search_list_filter',
           children: [
-            getGroup(header: S.of(context).filter_shown_type, children: [
+            getGroup(header: S.current.filter_shown_type, children: [
               FilterGroup.display(
                 useGrid: filterData.useGrid,
                 onChanged: (v) {
@@ -149,7 +149,7 @@ class _BuffFuncFilterState
               buildClassFilter(filterData.svtClass),
             if (widget.type != SearchCardType.mc)
               FilterGroup<int>(
-                title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+                title: Text(S.current.filter_sort_rarity, style: textStyle),
                 options: const [0, 1, 2, 3, 4, 5],
                 values: filterData.rarity,
                 optionBuilder: (v) => Text('$v$kStarChar'),

@@ -163,7 +163,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         },
         icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
         label: Text(
-          S.of(context).remove_from_blacklist,
+          S.current.remove_from_blacklist,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
       );

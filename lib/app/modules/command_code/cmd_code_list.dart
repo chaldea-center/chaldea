@@ -60,7 +60,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
+            tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CmdCodeFilterPage(

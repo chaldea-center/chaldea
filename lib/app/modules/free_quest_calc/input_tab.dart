@@ -69,7 +69,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         Material(
           elevation: 1,
           child: ListTile(
-            title: Text(S.of(context).item),
+            title: Text(S.current.item),
             contentPadding: const EdgeInsetsDirectional.only(start: 18, end: 8),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -77,9 +77,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 SizedBox(
                   width: 65,
                   child: Center(
-                    child: Text(planOrEff
-                        ? S.of(context).counts
-                        : S.of(context).calc_weight),
+                    child: Text(
+                        planOrEff ? S.current.counts : S.current.calc_weight),
                   ),
                 ),
                 IconButton(
@@ -100,8 +99,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
         ),
         if (params.rows.isEmpty)
-          ListTile(
-              title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
+          ListTile(title: Center(child: Text(S.current.drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
         kDefaultDivider,
         SafeArea(child: _buildButtonBar())
@@ -242,10 +240,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   value: planOrEff,
                   isDense: true,
                   items: [
+                    DropdownMenuItem(value: true, child: Text(S.current.plan)),
                     DropdownMenuItem(
-                        value: true, child: Text(S.of(context).plan)),
-                    DropdownMenuItem(
-                        value: false, child: Text(S.of(context).efficiency))
+                        value: false, child: Text(S.current.efficiency))
                   ],
                   onChanged: (v) => setState(() => planOrEff = v ?? planOrEff),
                 ),
@@ -260,7 +257,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       params.dailyCostHalf
                   ? Theme.of(context).errorColor
                   : Theme.of(context).colorScheme.primary,
-              tooltip: S.of(context).settings_tab_name,
+              tooltip: S.current.settings_tab_name,
               onPressed: () async {
                 await showDialog(
                   context: context,
@@ -272,7 +269,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             ),
             IconButton(
               icon: const Icon(Icons.sort),
-              tooltip: S.of(context).filter_sort,
+              tooltip: S.current.filter_sort,
               color: Theme.of(context).colorScheme.primary,
               onPressed: () {
                 setState(() {
@@ -308,7 +305,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 ),
                 ElevatedButton(
                   onPressed: running ? null : solve,
-                  child: Text(S.of(context).drop_calc_solve),
+                  child: Text(S.current.drop_calc_solve),
                 ),
               ],
             )
@@ -329,7 +326,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void solve() async {
     FocusScope.of(context).unfocus();
     if (Maths.max(params.counts, 0) <= 0) {
-      EasyLoading.showToast(S.of(context).input_invalid_hint);
+      EasyLoading.showToast(S.current.input_invalid_hint);
       return;
     }
     setState(() {

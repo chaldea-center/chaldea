@@ -220,7 +220,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   Widget get viewTypeButton {
     return IconButton(
       icon: const Icon(Icons.view_carousel),
-      tooltip: S.of(context).filter_shown_type,
+      tooltip: S.current.filter_shown_type,
       onPressed: () {
         setState(() {
           db.settings.display.itemDetailViewType = EnumUtil.next(

@@ -72,10 +72,9 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     }
     if (children.isEmpty) {
       children.add(ListTile(
-        title: Text(S.of(context).no_servant_quest_hint),
-        subtitle: _favorite
-            ? Text(S.of(context).no_servant_quest_hint_subtitle)
-            : null,
+        title: Text(S.current.no_servant_quest_hint),
+        subtitle:
+            _favorite ? Text(S.current.no_servant_quest_hint_subtitle) : null,
       ));
     }
     return ListView.separated(

@@ -316,10 +316,10 @@ class ServantListPageState extends State<ServantListPage>
     }
 
     if (!status.cur.favorite) {
-      return Center(child: Text(S.of(context).svt_not_planned));
+      return Center(child: Text(S.current.svt_not_planned));
     }
     if (hiddenPlanServants.contains(svt)) {
-      return Center(child: Text(S.of(context).svt_plan_hidden));
+      return Center(child: Text(S.current.svt_plan_hidden));
     }
     final costumes = svt.profile.costume.values.toList();
     costumes.sort2((e) => e.id);
@@ -333,13 +333,13 @@ class ServantListPageState extends State<ServantListPage>
         // border: TableBorder.all(),
         children: [
           TableRow(children: [
-            _getHeader('${S.of(context).ascension}:'),
+            _getHeader('${S.current.ascension}:'),
             _getRange(cur.ascension, target.ascension),
-            _getHeader('${S.of(context).grail}:'),
+            _getHeader('${S.current.grail}:'),
             _getRange(cur.grail, target.grail),
           ]),
           TableRow(children: [
-            _getHeader('${S.of(context).skill}:'),
+            _getHeader('${S.current.skill}:'),
             for (int i = 0; i < 3; i++)
               _getRange(cur.skills[i], target.skills[i])
           ]),
@@ -351,7 +351,7 @@ class ServantListPageState extends State<ServantListPage>
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
               children: [
-                _getHeader('${S.of(context).costume}:'),
+                _getHeader('${S.current.costume}:'),
                 ...List.generate(3, (col) {
                   final dressIndex = row * 3 + col;
                   final costumeId =
@@ -697,7 +697,7 @@ class ServantListPageState extends State<ServantListPage>
       DropdownButton<int>(
         value: _changedSkill,
         icon: Container(),
-        hint: Text(S.of(context).skill),
+        hint: Text(S.current.skill),
         items: List.generate(11, (i) {
           if (i == 0) {
             return DropdownMenuItem(value: i, child: const Text('x + 1'));
@@ -787,10 +787,8 @@ class ServantListPageState extends State<ServantListPage>
         icon: Container(),
         hint: Text(S.current.costume),
         items: [
-          DropdownMenuItem(
-              value: false, child: Text('${S.of(context).costume}×')),
-          DropdownMenuItem(
-              value: true, child: Text('${S.of(context).costume}√'))
+          DropdownMenuItem(value: false, child: Text('${S.current.costume}×')),
+          DropdownMenuItem(value: true, child: Text('${S.current.costume}√'))
         ],
         onChanged: (v) {
           setState(() {
@@ -998,7 +996,7 @@ class ServantListPageState extends State<ServantListPage>
       context: context,
       useRootNavigator: false,
       builder: (context) => SimpleDialog(
-        title: Text(S.of(context).select_copy_plan_source),
+        title: Text(S.current.select_copy_plan_source),
         children: List.generate(db.curUser.plans.length, (index) {
           bool isCur = index == db.curUser.curSvtPlanNo;
           String title = db.curUser.getFriendlyPlanName(index);

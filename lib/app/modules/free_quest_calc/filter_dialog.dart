@@ -27,7 +27,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
     NiceWar? progress =
         wars.firstWhereOrNull((war) => war.id == params.progress);
     return SimpleDialog(
-      title: Text(S.of(context).settings_tab_name),
+      title: Text(S.current.settings_tab_name),
       children: [
         SwitchListTile.adaptive(
           value: params.use6th,
@@ -41,7 +41,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           },
         ),
         ListTile(
-          title: Text(S.of(context).free_progress),
+          title: Text(S.current.free_progress),
           trailing: DropdownButton<NiceWar?>(
             value: progress,
             items: [
@@ -65,7 +65,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           ),
         ),
         ListTile(
-          title: Text(S.of(context).drop_calc_min_ap),
+          title: Text(S.current.drop_calc_min_ap),
           trailing: DropdownButton<int>(
             value: params.minCost,
             items: List.generate(20,
@@ -75,26 +75,26 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           ),
         ),
         ListTile(
-          title: Text(S.of(context).plan_objective),
+          title: Text(S.current.plan_objective),
           trailing: DropdownButton<bool>(
             value: params.costMinimize,
             items: [
-              DropdownMenuItem(value: true, child: Text(S.of(context).ap)),
-              DropdownMenuItem(value: false, child: Text(S.of(context).counts))
+              DropdownMenuItem(value: true, child: Text(S.current.ap)),
+              DropdownMenuItem(value: false, child: Text(S.current.counts))
             ],
             onChanged: (v) =>
                 setState(() => params.costMinimize = v ?? params.costMinimize),
           ),
         ),
         ListTile(
-          title: Text(S.of(context).efficiency_type),
+          title: Text(S.current.efficiency_type),
           trailing: DropdownButton<bool>(
             value: params.useAP20,
             items: [
               DropdownMenuItem(
-                  value: true, child: Text(S.of(context).efficiency_type_ap)),
+                  value: true, child: Text(S.current.efficiency_type_ap)),
               DropdownMenuItem(
-                  value: false, child: Text(S.of(context).efficiency_type_drop))
+                  value: false, child: Text(S.current.efficiency_type_drop))
             ],
             onChanged: (v) =>
                 setState(() => params.useAP20 = v ?? params.useAP20),
@@ -113,7 +113,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         ),
         SimpleAccordion(
           headerBuilder: (context, _) => ListTile(
-            title: Text(S.of(context).blacklist),
+            title: Text(S.current.blacklist),
             trailing: Text(params.blacklist.length.toString()),
           ),
           contentBuilder: (context) => Column(
@@ -125,7 +125,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                 dense: true,
                 trailing: IconButton(
                   icon: const Icon(Icons.clear),
-                  tooltip: S.of(context).remove_from_blacklist,
+                  tooltip: S.current.remove_from_blacklist,
                   onPressed: () {
                     setState(() {
                       params.blacklist.remove(key);

@@ -28,7 +28,7 @@ class _EnemyFilterPageState
         update();
       }),
       content: getListViewBody(restorationId: 'enemy_list_filter', children: [
-        getGroup(header: S.of(context).filter_sort, children: [
+        getGroup(header: S.current.filter_sort, children: [
           FilterGroup.display(
             useGrid: filterData.useGrid,
             onChanged: (v) {
@@ -70,7 +70,7 @@ class _EnemyFilterPageState
         ),
         buildClassFilter(filterData.svtClass),
         FilterGroup<Attribute>(
-          title: Text(S.of(context).filter_attribute, style: textStyle),
+          title: Text(S.current.filter_attribute, style: textStyle),
           options: Attribute.values.sublist(0, 5),
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtAttribute(v).l),
@@ -79,7 +79,7 @@ class _EnemyFilterPageState
           },
         ),
         FilterGroup<SvtType>(
-          title: Text(S.of(context).general_type, style: textStyle),
+          title: Text(S.current.general_type, style: textStyle),
           options: List.of(SvtType.values)
             ..removeWhere((e) => [
                   SvtType.svtEquipMaterial,

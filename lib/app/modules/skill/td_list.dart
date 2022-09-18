@@ -53,7 +53,7 @@ class _TdListPageState extends State<TdListPage>
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
+            tooltip: S.current.filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => TdFilter(
