@@ -15,8 +15,7 @@ class ItemResultTab extends StatefulWidget {
   final ItemResult? result;
   final bool viewMode;
 
-  const ItemResultTab({Key? key, required this.result, this.viewMode = false})
-      : super(key: key);
+  const ItemResultTab({super.key, required this.result, this.viewMode = false});
 
   @override
   State<ItemResultTab> createState() => _ItemResultTabState();

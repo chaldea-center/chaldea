@@ -16,9 +16,8 @@ import 'buff_list.dart';
 class BuffDetailPage extends StatefulWidget {
   final int? id;
   final Buff? buff;
-  const BuffDetailPage({Key? key, this.id, this.buff})
-      : assert(id != null || buff != null),
-        super(key: key);
+  const BuffDetailPage({super.key, this.id, this.buff})
+      : assert(id != null || buff != null);
 
   @override
   State<BuffDetailPage> createState() => _BuffDetailPageState();
@@ -99,7 +98,7 @@ class _BuffDetailPageState extends State<BuffDetailPage>
 
 class BuffInfoTable extends StatelessWidget {
   final Buff buff;
-  const BuffInfoTable({Key? key, required this.buff}) : super(key: key);
+  const BuffInfoTable({super.key, required this.buff});
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +316,7 @@ class BuffInfoTable extends StatelessWidget {
 
 class _FuncTab extends StatelessWidget {
   final Buff buff;
-  const _FuncTab(this.buff, {Key? key}) : super(key: key);
+  const _FuncTab(this.buff);
 
   @override
   Widget build(BuildContext context) {

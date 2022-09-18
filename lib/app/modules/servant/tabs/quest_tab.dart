@@ -10,9 +10,9 @@ class SvtQuestTab extends StatelessWidget {
   final Servant svt;
 
   SvtQuestTab({
-    Key? key,
+    super.key,
     required this.svt,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

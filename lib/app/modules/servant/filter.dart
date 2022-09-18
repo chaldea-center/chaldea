@@ -12,11 +12,11 @@ import '../common/filter_page_base.dart';
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   final bool planMode;
   const ServantFilterPage({
-    Key? key,
-    required SvtFilterData filterData,
-    ValueChanged<SvtFilterData>? onChanged,
+    super.key,
+    required super.filterData,
+    super.onChanged,
     required this.planMode,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+  });
 
   @override
   _ServantFilterPageState createState() => _ServantFilterPageState();

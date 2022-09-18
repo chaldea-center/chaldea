@@ -9,8 +9,8 @@ class EventDiggingTab extends StatelessWidget {
   final Event event;
   final EventDigging digging;
 
-  const EventDiggingTab({Key? key, required this.event, required this.digging})
-      : super(key: key);
+  const EventDiggingTab(
+      {super.key, required this.event, required this.digging});
 
   @override
   Widget build(BuildContext context) {

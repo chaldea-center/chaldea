@@ -268,8 +268,7 @@ class _MultiEntriesList extends StatelessWidget {
   final Widget Function(BuildContext context, int id) builder;
 
   const _MultiEntriesList(
-      {Key? key, this.title, required this.ids, required this.builder})
-      : super(key: key);
+      {this.title, required this.ids, required this.builder});
 
   @override
   Widget build(BuildContext context) {

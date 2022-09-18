@@ -24,10 +24,10 @@ class BuffFilterData {
 
 class BuffFilter extends FilterPage<BuffFilterData> {
   const BuffFilter({
-    Key? key,
-    required BuffFilterData filterData,
-    ValueChanged<BuffFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _BuffFilterState createState() => _BuffFilterState();

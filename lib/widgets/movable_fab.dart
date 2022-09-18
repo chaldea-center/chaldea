@@ -11,7 +11,7 @@ class MovableFab extends StatefulWidget {
   final Color? backgroundColor;
 
   MovableFab({
-    Key? key,
+    super.key,
     required this.icon,
     this.initialX = 1.0,
     this.initialY = 1.0,
@@ -20,7 +20,7 @@ class MovableFab extends StatefulWidget {
     this.enabled = true,
     this.opacity = 1.0,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   _MovableFabState createState() => _MovableFabState();

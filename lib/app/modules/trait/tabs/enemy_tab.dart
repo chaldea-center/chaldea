@@ -7,7 +7,7 @@ import '../../enemy/quest_enemy_summary.dart';
 
 class TraitEnemyTab extends StatelessWidget {
   final int id;
-  const TraitEnemyTab(this.id, {Key? key}) : super(key: key);
+  const TraitEnemyTab(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {

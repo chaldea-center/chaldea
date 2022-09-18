@@ -11,7 +11,7 @@ import 'table_tab.dart';
 SaintQuartzPlan get _plan => db.curUser.saintQuartzPlan;
 
 class SaintQuartzPlanning extends StatefulWidget {
-  SaintQuartzPlanning({Key? key}) : super(key: key);
+  SaintQuartzPlanning({super.key});
 
   @override
   _SaintQuartzPlanningState createState() => _SaintQuartzPlanningState();

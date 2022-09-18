@@ -19,7 +19,7 @@ import 'leveling_cost_page.dart';
 class SvtPlanTab extends StatefulWidget {
   final Servant svt;
 
-  const SvtPlanTab({Key? key, required this.svt}) : super(key: key);
+  const SvtPlanTab({super.key, required this.svt});
 
   @override
   State<StatefulWidget> createState() => _SvtPlanTabState();

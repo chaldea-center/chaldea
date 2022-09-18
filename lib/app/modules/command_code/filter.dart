@@ -9,10 +9,10 @@ import '../common/filter_page_base.dart';
 
 class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
   const CmdCodeFilterPage({
-    Key? key,
-    required CmdCodeFilterData filterData,
-    ValueChanged<CmdCodeFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();

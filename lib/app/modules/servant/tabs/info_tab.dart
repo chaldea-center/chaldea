@@ -15,7 +15,7 @@ import '../../creator/creator_detail.dart';
 class SvtInfoTab extends StatelessWidget {
   final Servant svt;
 
-  const SvtInfoTab({Key? key, required this.svt}) : super(key: key);
+  const SvtInfoTab({super.key, required this.svt});
 
   @override
   Widget build(BuildContext context) {

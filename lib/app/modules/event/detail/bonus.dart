@@ -9,7 +9,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
-  const EventBonusTab({Key? key, required this.event}) : super(key: key);
+  const EventBonusTab({super.key, required this.event});
 
   Widget ceDetail(BuildContext context, CraftEssence ce) {
     StringBuffer subtitle = StringBuffer(Transl.ceObtain(ce.extra.obtain).l);

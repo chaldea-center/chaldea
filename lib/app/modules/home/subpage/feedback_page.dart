@@ -17,7 +17,7 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class FeedbackPage extends StatefulWidget {
-  FeedbackPage({Key? key}) : super(key: key);
+  FeedbackPage({super.key});
 
   @override
   _FeedbackPageState createState() => _FeedbackPageState();

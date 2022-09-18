@@ -14,7 +14,7 @@ import '../../../app.dart';
 class ItemInfoTab extends StatefulWidget {
   final int itemId;
 
-  const ItemInfoTab({Key? key, required this.itemId}) : super(key: key);
+  const ItemInfoTab({super.key, required this.itemId});
 
   @override
   _ItemInfoTabState createState() => _ItemInfoTabState();

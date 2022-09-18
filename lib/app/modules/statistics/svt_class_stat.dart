@@ -10,7 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class StatisticServantTab extends StatefulWidget {
-  StatisticServantTab({Key? key}) : super(key: key);
+  StatisticServantTab({super.key});
 
   @override
   _StatisticServantTabState createState() => _StatisticServantTabState();

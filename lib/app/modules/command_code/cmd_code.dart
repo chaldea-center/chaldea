@@ -24,8 +24,7 @@ class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode? cc;
   final CommandCode? Function(CommandCode current, bool reversed)? onSwitch;
 
-  const CmdCodeDetailPage({Key? key, this.id, this.cc, this.onSwitch})
-      : super(key: key);
+  const CmdCodeDetailPage({super.key, this.id, this.cc, this.onSwitch});
 
   @override
   _CmdCodeDetailPageState createState() => _CmdCodeDetailPageState();
@@ -138,12 +137,12 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   final bool enableLink;
 
   const CmdCodeDetailBasePage({
-    Key? key,
+    super.key,
     required this.cc,
     this.lang,
     this.showExtra = false,
     this.enableLink = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

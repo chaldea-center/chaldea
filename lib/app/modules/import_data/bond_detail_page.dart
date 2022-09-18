@@ -12,8 +12,7 @@ class SvtBondDetailPage extends StatefulWidget {
   // key=game id
   final Map<int, UserSvtCollection> cardCollections;
 
-  const SvtBondDetailPage({Key? key, required this.cardCollections})
-      : super(key: key);
+  const SvtBondDetailPage({super.key, required this.cardCollections});
 
   @override
   _SvtBondDetailPageState createState() => _SvtBondDetailPageState();

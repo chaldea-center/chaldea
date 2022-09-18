@@ -7,7 +7,7 @@ import 'package:chaldea/models/models.dart';
 
 class SvtIllustrationTab extends StatefulWidget {
   final Servant svt;
-  const SvtIllustrationTab({Key? key, required this.svt}) : super(key: key);
+  const SvtIllustrationTab({super.key, required this.svt});
 
   @override
   State<SvtIllustrationTab> createState() => _SvtIllustrationTabState();

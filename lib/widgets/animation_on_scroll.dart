@@ -8,11 +8,11 @@ class UserScrollListener extends StatefulWidget {
   final bool initForward;
 
   const UserScrollListener({
-    Key? key,
+    super.key,
     required this.builder,
     this.shouldAnimate,
     this.initForward = false,
-  }) : super(key: key);
+  });
 
   @override
   _UserScrollListenerState createState() => _UserScrollListenerState();

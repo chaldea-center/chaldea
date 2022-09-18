@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/modules/event/tabs/main_story_tab.dart';
 
 class FreeQuestQueryTab extends StatefulWidget {
-  FreeQuestQueryTab({Key? key}) : super(key: key);
+  FreeQuestQueryTab({super.key});
 
   @override
   _FreeQuestQueryTabState createState() => _FreeQuestQueryTabState();

@@ -80,10 +80,10 @@ class NpFilterData {
 
 class NpChargeFilterPage extends FilterPage<NpFilterData> {
   const NpChargeFilterPage({
-    Key? key,
-    required NpFilterData filterData,
-    ValueChanged<NpFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _NpChargeFilterPageState createState() => _NpChargeFilterPageState();

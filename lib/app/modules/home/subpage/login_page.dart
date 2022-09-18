@@ -15,7 +15,7 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 enum _PageMode { login, signup, changePwd, changeName }
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();

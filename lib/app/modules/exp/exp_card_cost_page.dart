@@ -12,7 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
 
 class ExpCardCostPage extends StatefulWidget {
-  ExpCardCostPage({Key? key}) : super(key: key);
+  ExpCardCostPage({super.key});
 
   @override
   _ExpCardCostPageState createState() => _ExpCardCostPageState();

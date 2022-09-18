@@ -12,12 +12,12 @@ class ValListDsc extends StatelessWidget {
   final List<DataVals> originVals;
   final int? selected; // 1-10
   const ValListDsc({
-    Key? key,
+    super.key,
     required this.func,
     required this.mutaingVals,
     required this.originVals,
     this.selected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class ValDsc extends StatelessWidget {
   final bool inList;
 
   ValDsc({
-    Key? key,
+    super.key,
     required this.func,
     required this.vals,
     this.originVals,
@@ -93,7 +93,7 @@ class ValDsc extends StatelessWidget {
     this.ignoreRate,
     this.ignoreCount = false,
     this.inList = false,
-  }) : super(key: key);
+  });
 
   final List<String> parts = [];
 

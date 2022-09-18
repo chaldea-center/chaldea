@@ -25,7 +25,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class SvtVoiceTab extends StatefulWidget {
   final Servant svt;
 
-  const SvtVoiceTab({Key? key, required this.svt}) : super(key: key);
+  const SvtVoiceTab({super.key, required this.svt});
 
   @override
   State<SvtVoiceTab> createState() => _SvtVoiceTabState();
@@ -465,8 +465,7 @@ class _PlayButton<T> extends StatefulWidget {
   final T? tag;
   final FutureOr<List<AudioSource>> Function() getSources;
   const _PlayButton(
-      {Key? key, required this.player, required this.getSources, this.tag})
-      : super(key: key);
+      {super.key, required this.player, required this.getSources, this.tag});
 
   @override
   State<_PlayButton> createState() => __PlayButtonState();

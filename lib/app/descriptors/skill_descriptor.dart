@@ -23,7 +23,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showEvent;
 
   const SkillDescriptor({
-    Key? key,
+    super.key,
     required this.skill,
     this.level,
     this.showPlayer = true,
@@ -34,10 +34,10 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.jumpToDetail = true,
     this.showExtraPassiveCond = true,
     this.showEvent = true,
-  }) : super(key: key);
+  });
 
   const SkillDescriptor.only({
-    Key? key,
+    super.key,
     required this.skill,
     required bool isPlayer,
     this.level,
@@ -48,8 +48,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showExtraPassiveCond = true,
     this.showEvent = true,
   })  : showPlayer = isPlayer,
-        showEnemy = !isPlayer,
-        super(key: key);
+        showEnemy = !isPlayer;
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +272,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool jumpToDetail;
 
   const TdDescriptor({
-    Key? key,
+    super.key,
     required this.td,
     this.level,
     this.showPlayer = true,
@@ -281,10 +280,10 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.overrideData,
     this.jumpToDetail = true,
-  }) : super(key: key);
+  });
 
   const TdDescriptor.only({
-    Key? key,
+    super.key,
     required this.td,
     required bool isPlayer,
     this.level,
@@ -292,8 +291,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.overrideData,
     this.jumpToDetail = true,
   })  : showPlayer = isPlayer,
-        showEnemy = !isPlayer,
-        super(key: key);
+        showEnemy = !isPlayer;
 
   @override
   Widget build(BuildContext context) {

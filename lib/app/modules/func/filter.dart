@@ -27,10 +27,10 @@ class FuncFilterData {
 
 class FuncFilter extends FilterPage<FuncFilterData> {
   const FuncFilter({
-    Key? key,
-    required FuncFilterData filterData,
-    ValueChanged<FuncFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _FuncFilterState createState() => _FuncFilterState();

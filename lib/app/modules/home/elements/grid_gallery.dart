@@ -13,8 +13,7 @@ class GridGallery extends StatefulWidget {
   final bool isHome;
   final double? maxWidth;
 
-  const GridGallery({Key? key, required this.isHome, this.maxWidth})
-      : super(key: key);
+  const GridGallery({super.key, required this.isHome, this.maxWidth});
 
   @override
   _GridGalleryState createState() => _GridGalleryState();

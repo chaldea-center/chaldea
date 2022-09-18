@@ -17,7 +17,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'converter.dart';
 
 class ImportCSVPage extends StatefulWidget {
-  const ImportCSVPage({Key? key}) : super(key: key);
+  const ImportCSVPage({super.key});
 
   @override
   State<ImportCSVPage> createState() => _ImportCSVPageState();

@@ -19,8 +19,7 @@ class ItemDetailPage extends StatefulWidget {
   final int itemId;
   final int initialTabIndex;
 
-  ItemDetailPage({Key? key, required this.itemId, this.initialTabIndex = 0})
-      : super(key: key);
+  ItemDetailPage({super.key, required this.itemId, this.initialTabIndex = 0});
 
   @override
   _ItemDetailPageState createState() => _ItemDetailPageState();

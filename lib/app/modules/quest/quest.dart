@@ -14,8 +14,7 @@ class QuestDetailPage extends StatefulWidget {
   final int? id;
   final Quest? quest;
   final Region? region;
-  const QuestDetailPage({Key? key, this.id, this.quest, this.region})
-      : super(key: key);
+  const QuestDetailPage({super.key, this.id, this.quest, this.region});
 
   @override
   State<QuestDetailPage> createState() => _QuestDetailPageState();

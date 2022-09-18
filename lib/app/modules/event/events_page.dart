@@ -21,7 +21,7 @@ import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
 
 class EventListPage extends StatefulWidget {
-  EventListPage({Key? key}) : super(key: key);
+  EventListPage({super.key});
 
   @override
   State<StatefulWidget> createState() => EventListPageState();

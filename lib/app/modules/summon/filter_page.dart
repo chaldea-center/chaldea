@@ -7,10 +7,10 @@ import '../common/filter_group.dart';
 
 class SummonFilterPage extends FilterPage<SummonFilterData> {
   const SummonFilterPage({
-    Key? key,
-    required SummonFilterData filterData,
-    ValueChanged<SummonFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();

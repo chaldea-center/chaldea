@@ -12,10 +12,10 @@ class ItemCostSvtDetailTab extends StatefulWidget {
   final SvtMatCostDetailType? matType;
 
   const ItemCostSvtDetailTab({
-    Key? key,
+    super.key,
     required this.itemId,
     this.matType,
-  }) : super(key: key);
+  });
 
   @override
   State<ItemCostSvtDetailTab> createState() => _ItemCostSvtDetailTabState();

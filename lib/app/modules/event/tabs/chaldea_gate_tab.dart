@@ -4,7 +4,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class ChaldeaGateTab extends StatefulWidget {
-  ChaldeaGateTab({Key? key}) : super(key: key);
+  ChaldeaGateTab({super.key});
 
   @override
   State<ChaldeaGateTab> createState() => _ChaldeaGateTabState();

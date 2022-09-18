@@ -14,8 +14,7 @@ enum _EfficiencySort {
 class QuestEfficiencyTab extends StatefulWidget {
   final LPSolution? solution;
 
-  const QuestEfficiencyTab({Key? key, required this.solution})
-      : super(key: key);
+  const QuestEfficiencyTab({super.key, required this.solution});
 
   @override
   _QuestEfficiencyTabState createState() => _QuestEfficiencyTabState();

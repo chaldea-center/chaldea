@@ -14,8 +14,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
   final BasicServant svt;
   final List<QuestEnemy> enemies;
   const QuestEnemySummaryPage(
-      {Key? key, required this.svt, required this.enemies})
-      : super(key: key);
+      {super.key, required this.svt, required this.enemies});
 
   List<T> _getValues<T>(T Function(QuestEnemy e) prop,
       [int Function(T a)? compare]) {

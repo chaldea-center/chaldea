@@ -7,7 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 class SvtSummonTab extends StatelessWidget {
   final Servant svt;
 
-  const SvtSummonTab({Key? key, required this.svt}) : super(key: key);
+  const SvtSummonTab({super.key, required this.svt});
 
   @override
   Widget build(BuildContext context) {

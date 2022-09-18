@@ -10,11 +10,11 @@ class AppShell extends StatefulWidget {
   final bool active;
 
   const AppShell({
-    Key? key,
+    super.key,
     required this.appState,
     required this.routerDelegate,
     this.active = false,
-  }) : super(key: key);
+  });
 
   @override
   _AppShellState createState() => _AppShellState();

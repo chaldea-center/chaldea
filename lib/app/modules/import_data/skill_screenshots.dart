@@ -23,8 +23,7 @@ import 'screenshot/viewer.dart';
 class ImportSkillScreenshotPage extends StatefulWidget {
   final bool isAppend;
 
-  ImportSkillScreenshotPage({Key? key, this.isAppend = false})
-      : super(key: key);
+  ImportSkillScreenshotPage({super.key, this.isAppend = false});
 
   @override
   ImportSkillScreenshotPageState createState() =>

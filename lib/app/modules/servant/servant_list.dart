@@ -23,8 +23,7 @@ class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant)? onSelected;
 
-  ServantListPage({Key? key, this.planMode = false, this.onSelected})
-      : super(key: key);
+  ServantListPage({super.key, this.planMode = false, this.onSelected});
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();

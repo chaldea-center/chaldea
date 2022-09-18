@@ -7,8 +7,7 @@ class NotFoundPage extends StatelessWidget {
   final String? url;
   final RouteConfiguration? configuration;
 
-  const NotFoundPage({Key? key, this.title, this.url, this.configuration})
-      : super(key: key);
+  const NotFoundPage({super.key, this.title, this.url, this.configuration});
 
   @override
   Widget build(BuildContext context) {

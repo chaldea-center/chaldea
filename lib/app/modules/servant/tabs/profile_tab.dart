@@ -11,7 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class SvtLoreTab extends StatefulWidget {
   final Servant svt;
 
-  const SvtLoreTab({Key? key, required this.svt}) : super(key: key);
+  const SvtLoreTab({super.key, required this.svt});
 
   @override
   State<SvtLoreTab> createState() => _SvtLoreTabState();

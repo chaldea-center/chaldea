@@ -33,7 +33,7 @@ class EventDetailPage extends StatefulWidget {
   final int? eventId;
   final Event? event;
 
-  EventDetailPage({Key? key, this.eventId, this.event}) : super(key: key);
+  EventDetailPage({super.key, this.eventId, this.event});
 
   @override
   _EventDetailPageState createState() => _EventDetailPageState();
@@ -239,8 +239,7 @@ class EventItemsOverview extends StatefulWidget {
   final Event event;
   final Region region;
   const EventItemsOverview(
-      {Key? key, required this.event, required this.region})
-      : super(key: key);
+      {super.key, required this.event, required this.region});
 
   @override
   State<EventItemsOverview> createState() => _EventItemsOverviewState();
@@ -801,9 +800,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 class _ArchiveEventDialog extends StatefulWidget {
   final Event event;
   final LimitEventPlan initPlan;
-  const _ArchiveEventDialog(
-      {Key? key, required this.event, required this.initPlan})
-      : super(key: key);
+  const _ArchiveEventDialog({required this.event, required this.initPlan});
 
   @override
   State<_ArchiveEventDialog> createState() => __ArchiveEventDialogState();

@@ -11,7 +11,7 @@ import 'filter.dart';
 
 class BuffListPage extends StatefulWidget {
   final BuffType? type;
-  const BuffListPage({Key? key, this.type}) : super(key: key);
+  const BuffListPage({super.key, this.type});
 
   @override
   _BuffListPageState createState() => _BuffListPageState();

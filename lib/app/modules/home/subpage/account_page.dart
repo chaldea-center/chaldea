@@ -7,7 +7,7 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class AccountPage extends StatefulWidget {
-  AccountPage({Key? key}) : super(key: key);
+  AccountPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _AccountPageState();

@@ -9,7 +9,7 @@ import '../../enemy/quest_card.dart';
 class ItemObtainFreeTab extends StatefulWidget {
   final int itemId;
 
-  const ItemObtainFreeTab({Key? key, required this.itemId}) : super(key: key);
+  const ItemObtainFreeTab({super.key, required this.itemId});
 
   @override
   _ItemObtainFreeTabState createState() => _ItemObtainFreeTabState();

@@ -27,7 +27,7 @@ class SimpleLineChartData<T extends num> {
 
 class SimpleLineChart<T extends num> extends StatelessWidget {
   const SimpleLineChart({
-    Key? key,
+    super.key,
     required this.data,
     this.xFormatter,
     this.minX,
@@ -36,8 +36,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
     this.maxY,
     this.intervalX,
     this.intervalY,
-  })  : assert(data.length > 0),
-        super(key: key);
+  }) : assert(data.length > 0);
 
   static List<Color> get colors => [
         Colors.blue,

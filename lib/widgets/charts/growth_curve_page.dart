@@ -14,14 +14,14 @@ class GrowthCurvePage extends StatefulWidget {
   final Widget? avatar;
 
   const GrowthCurvePage({
-    Key? key,
+    super.key,
     required this.title,
     required this.data,
     this.avatar,
-  }) : super(key: key);
+  });
 
   GrowthCurvePage.fromCard({
-    Key? key,
+    super.key,
     required this.title,
     required List<int> hps,
     required List<int> atks,
@@ -36,8 +36,7 @@ class GrowthCurvePage extends StatefulWidget {
               xx: List.generate(atks.length, (index) => index + 1),
               yy: List.of(atks),
               tooltipFormatter: (x, y) => 'ATK ${y.toInt()}'),
-        ],
-        super(key: key);
+        ];
 
   @override
   _GrowthCurvePageState createState() => _GrowthCurvePageState();

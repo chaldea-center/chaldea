@@ -23,7 +23,7 @@ import '../../../packages/logger.dart';
 import '../../../packages/network.dart';
 
 class BootstrapPage extends StatefulWidget {
-  BootstrapPage({Key? key}) : super(key: key);
+  BootstrapPage({super.key});
 
   @override
   _BootstrapPageState createState() => _BootstrapPageState();
@@ -480,7 +480,7 @@ class _BootstrapPageState extends State<BootstrapPage>
 class _OfflineLoadingPage extends StatelessWidget {
   final double? progress;
 
-  _OfflineLoadingPage({Key? key, this.progress}) : super(key: key);
+  _OfflineLoadingPage({this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -507,7 +507,7 @@ class _OfflineLoadingPage extends StatelessWidget {
 }
 
 class _DatabaseIntro extends StatefulWidget {
-  _DatabaseIntro({Key? key}) : super(key: key);
+  _DatabaseIntro();
 
   @override
   _DatabaseIntroState createState() => _DatabaseIntroState();
@@ -641,8 +641,7 @@ class _IntroPage extends StatelessWidget {
   final String? title;
   final Widget? content;
 
-  const _IntroPage({Key? key, this.icon, this.title, this.content})
-      : super(key: key);
+  const _IntroPage({this.icon, this.title, this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -671,7 +670,7 @@ class _IntroPage extends StatelessWidget {
 }
 
 class _AnimatedHello extends StatefulWidget {
-  _AnimatedHello({Key? key}) : super(key: key);
+  _AnimatedHello();
 
   @override
   _AnimatedHelloState createState() => _AnimatedHelloState();
@@ -732,8 +731,7 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
 class StartupFailedPage extends StatelessWidget {
   final dynamic error;
   final StackTrace? stackTrace;
-  const StartupFailedPage({Key? key, required this.error, this.stackTrace})
-      : super(key: key);
+  const StartupFailedPage({super.key, required this.error, this.stackTrace});
 
   @override
   Widget build(BuildContext context) {

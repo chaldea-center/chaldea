@@ -20,7 +20,7 @@ class WarDetailPage extends StatefulWidget {
   final int? warId;
   final NiceWar? war;
 
-  WarDetailPage({Key? key, this.warId, this.war}) : super(key: key);
+  WarDetailPage({super.key, this.warId, this.war});
 
   @override
   _WarDetailPageState createState() => _WarDetailPageState();

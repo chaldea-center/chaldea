@@ -9,10 +9,10 @@ import '../common/filter_page_base.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
   const CraftFilterPage({
-    Key? key,
-    required CraftFilterData filterData,
-    ValueChanged<CraftFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _CraftFilterPageState createState() => _CraftFilterPageState();

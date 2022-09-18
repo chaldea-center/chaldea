@@ -8,7 +8,7 @@ import '../enemy/quest_card.dart';
 class QuestPlanTab extends StatefulWidget {
   final LPSolution? solution;
 
-  const QuestPlanTab({Key? key, this.solution}) : super(key: key);
+  const QuestPlanTab({super.key, this.solution});
 
   @override
   _QuestPlanTabState createState() => _QuestPlanTabState();

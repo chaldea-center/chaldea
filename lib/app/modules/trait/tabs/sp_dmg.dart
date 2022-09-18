@@ -17,7 +17,7 @@ enum _SEScope {
 
 class TraitSPDMGTab extends StatefulWidget {
   final int id;
-  const TraitSPDMGTab(this.id, {Key? key}) : super(key: key);
+  const TraitSPDMGTab(this.id, {super.key});
 
   @override
   State<TraitSPDMGTab> createState() => _TraitSPDMGTabState();

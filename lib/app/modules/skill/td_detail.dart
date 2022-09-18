@@ -13,9 +13,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class TdDetailPage extends StatefulWidget {
   final int? id;
   final BaseTd? td;
-  const TdDetailPage({Key? key, this.id, this.td})
-      : assert(id != null || td != null),
-        super(key: key);
+  const TdDetailPage({super.key, this.id, this.td})
+      : assert(id != null || td != null);
 
   @override
   State<TdDetailPage> createState() => _TdDetailPageState();

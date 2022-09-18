@@ -6,7 +6,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
-  const EventCooltimePage({Key? key, required this.event}) : super(key: key);
+  const EventCooltimePage({super.key, required this.event});
 
   @override
   Widget buildContent(BuildContext context) {

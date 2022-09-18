@@ -12,7 +12,7 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
 class ShareAppDialog extends StatefulWidget {
-  ShareAppDialog({Key? key}) : super(key: key);
+  ShareAppDialog({super.key});
 
   @override
   _ShareAppDialogState createState() => _ShareAppDialogState();

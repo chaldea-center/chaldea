@@ -27,7 +27,7 @@ import 'package:chaldea/widgets/image/image_viewer.dart';
 class AppNewsCarousel extends StatefulWidget {
   final double? maxWidth;
 
-  const AppNewsCarousel({Key? key, this.maxWidth}) : super(key: key);
+  const AppNewsCarousel({super.key, this.maxWidth});
 
   @override
   _AppNewsCarouselState createState() => _AppNewsCarouselState();

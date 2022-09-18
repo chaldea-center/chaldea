@@ -8,7 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class TraitListPage extends StatefulWidget {
-  const TraitListPage({Key? key}) : super(key: key);
+  const TraitListPage({super.key});
 
   @override
   _TraitListPageState createState() => _TraitListPageState();

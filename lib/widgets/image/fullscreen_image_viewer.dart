@@ -12,33 +12,31 @@ class FullscreenImageViewer extends StatefulWidget {
   final PhotoViewGalleryOption galleryOption;
 
   FullscreenImageViewer({
-    Key? key,
+    super.key,
     required this.children,
     this.fullscreen = true,
     PhotoViewOption? photoViewOption,
     this.galleryOption = const PhotoViewGalleryOption(),
-  })  : photoViewOption = photoViewOption ??
+  }) : photoViewOption = photoViewOption ??
             PhotoViewOption.limited()
-                .copyWith(onTapUp: (ctx, _, __) => Navigator.pop(ctx)),
-        super(key: key);
+                .copyWith(onTapUp: (ctx, _, __) => Navigator.pop(ctx));
 
   FullscreenImageViewer.fromUrls({
-    Key? key,
+    super.key,
     required List<String> urls,
     this.fullscreen = true,
     this.photoViewOption = const PhotoViewOption(),
     this.galleryOption = const PhotoViewGalleryOption(),
     CachedImageOption? cachedImageOption,
     bool showSaveOnLongPress = false,
-  })  : children = urls
+  }) : children = urls
             .map((e) => CachedImage(
                   imageUrl: e,
                   cachedOption: cachedImageOption,
                   photoViewOption: photoViewOption,
                   showSaveOnLongPress: showSaveOnLongPress,
                 ))
-            .toList(),
-        super(key: key);
+            .toList();
 
   /// mostly used
   static Future show({

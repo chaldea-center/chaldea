@@ -6,8 +6,7 @@ class CommandCardWidget extends StatelessWidget {
   final CardType card;
   final double width;
 
-  const CommandCardWidget({Key? key, required this.card, required this.width})
-      : super(key: key);
+  const CommandCardWidget({super.key, required this.card, required this.width});
 
   @override
   Widget build(BuildContext context) {

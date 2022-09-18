@@ -10,10 +10,10 @@ class BlankPage extends StatelessWidget {
   final WidgetBuilder indicatorBuilder;
 
   const BlankPage({
-    Key? key,
+    super.key,
     this.showIndicator = false,
     this.indicatorBuilder = _defaultIndicatorBuilder,
-  }) : super(key: key);
+  });
 
   static Widget _defaultIndicatorBuilder(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {

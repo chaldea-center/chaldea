@@ -13,7 +13,7 @@ import 'filter_page.dart';
 import 'summon_detail_page.dart';
 
 class SummonListPage extends StatefulWidget {
-  SummonListPage({Key? key}) : super(key: key);
+  SummonListPage({super.key});
 
   @override
   _SummonListPageState createState() => _SummonListPageState();

@@ -19,7 +19,7 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
   final StatefulWidgetBuilder? searchOptionsBuilder;
 
   const SearchBar({
-    Key? key,
+    super.key,
     this.controller,
     this.preferredSize = const Size.fromHeight(36 + _kSearchBarPaddingBottom),
     this.focusNode,
@@ -28,7 +28,7 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
     this.onEditingComplete,
     this.onSubmitted,
     this.searchOptionsBuilder,
-  }) : super(key: key);
+  });
 
   @override
   _SearchBarState createState() => _SearchBarState();

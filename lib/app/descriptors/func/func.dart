@@ -87,13 +87,12 @@ class _DescriptorWrapper extends StatelessWidget {
   final int? selected;
 
   const _DescriptorWrapper({
-    Key? key,
     required this.title,
     required this.trailing,
     this.lvCells = const [],
     this.ocCells = const [],
     this.selected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -162,8 +161,7 @@ class _DescriptorWrapper extends StatelessWidget {
 
 class SkillScriptDescriptor extends StatelessWidget {
   final SkillScript script;
-  const SkillScriptDescriptor({Key? key, required this.script})
-      : super(key: key);
+  const SkillScriptDescriptor({super.key, required this.script});
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +246,7 @@ class FuncDescriptor extends StatelessWidget {
   final bool showEvent;
 
   const FuncDescriptor({
-    Key? key,
+    super.key,
     required this.func,
     this.lastFuncTarget,
     this.level,
@@ -258,7 +256,7 @@ class FuncDescriptor extends StatelessWidget {
     this.showBuffDetail = false,
     this.owner,
     this.showEvent = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -814,14 +812,13 @@ class _LazyTrigger extends StatefulWidget {
   final bool endlessLoop;
 
   const _LazyTrigger({
-    Key? key,
     required this.trigger,
     required this.buff,
     required this.isNp,
     required this.showPlayer,
     required this.showEnemy,
     required this.endlessLoop,
-  }) : super(key: key);
+  });
 
   @override
   State<_LazyTrigger> createState() => __LazyTriggerState();
@@ -917,12 +914,11 @@ class _LazyFunc extends StatefulWidget {
   final bool endlessLoop;
 
   const _LazyFunc({
-    Key? key,
     required this.dependFuncId,
     required this.trigger,
     required this.level,
     required this.endlessLoop,
-  }) : super(key: key);
+  });
 
   @override
   State<_LazyFunc> createState() => ___LazyFuncState();

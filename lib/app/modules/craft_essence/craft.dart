@@ -25,8 +25,7 @@ class CraftDetailPage extends StatefulWidget {
   final CraftEssence? ce;
   final CraftEssence? Function(CraftEssence current, bool reversed)? onSwitch;
 
-  const CraftDetailPage({Key? key, this.id, this.ce, this.onSwitch})
-      : super(key: key);
+  const CraftDetailPage({super.key, this.id, this.ce, this.onSwitch});
 
   @override
   _CraftDetailPageState createState() => _CraftDetailPageState();
@@ -154,11 +153,11 @@ class CraftDetailBasePage extends StatelessWidget {
   final bool enableLink;
 
   const CraftDetailBasePage({
-    Key? key,
+    super.key,
     required this.ce,
     this.showExtra = false,
     this.enableLink = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

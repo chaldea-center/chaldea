@@ -8,7 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'common.dart';
 
 class SQSettingTab extends StatefulWidget {
-  SQSettingTab({Key? key}) : super(key: key);
+  SQSettingTab({super.key});
 
   @override
   _SQSettingTabState createState() => _SQSettingTabState();

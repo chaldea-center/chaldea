@@ -23,18 +23,17 @@ class MyMarkdownWidget extends StatefulWidget {
   final bool disableMd;
 
   const MyMarkdownWidget({
-    Key? key,
+    super.key,
     this.data,
     this.assetKey,
     this.selectable = false,
     this.scrollable = true,
     this.extensionSet,
     this.disableMd = false,
-  })  : assert(
+  }) : assert(
             (data != null || assetKey != null) &&
                 (data == null || assetKey == null),
-            'Must provide data or assetKey'),
-        super(key: key);
+            'Must provide data or assetKey');
 
   @override
   _MyMarkdownWidgetState createState() => _MyMarkdownWidgetState();
@@ -133,7 +132,7 @@ class MarkdownHelpPage extends StatefulWidget {
   final List<Widget> actions;
 
   const MarkdownHelpPage({
-    Key? key,
+    super.key,
     this.dir = 'doc/help',
     this.data,
     this.asset,
@@ -142,14 +141,13 @@ class MarkdownHelpPage extends StatefulWidget {
     this.leading = const BackButton(),
     this.title,
     this.actions = const [],
-  })  : assert(data != null ||
+  }) : assert(data != null ||
             asset != null ||
             assetJp != null ||
-            assetEn != null),
-        super(key: key);
+            assetEn != null);
 
   const MarkdownHelpPage.localized({
-    Key? key,
+    super.key,
     this.dir = 'doc/help',
     required this.asset,
     this.leading = const BackButton(),
@@ -157,8 +155,7 @@ class MarkdownHelpPage extends StatefulWidget {
     this.actions = const [],
   })  : data = null,
         assetJp = 'jp/$asset',
-        assetEn = 'en/$asset',
-        super(key: key);
+        assetEn = 'en/$asset';
 
   static Future<String?> loadHelpAsset({
     String dir = 'doc/help',

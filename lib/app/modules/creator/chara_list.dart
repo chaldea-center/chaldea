@@ -8,7 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class CharaListPage extends StatefulWidget {
-  CharaListPage({Key? key}) : super(key: key);
+  CharaListPage({super.key});
 
   @override
   _CharaListPageState createState() => _CharaListPageState();

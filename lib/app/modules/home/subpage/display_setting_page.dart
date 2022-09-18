@@ -22,7 +22,7 @@ import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
 class DisplaySettingPage extends StatefulWidget {
-  DisplaySettingPage({Key? key}) : super(key: key);
+  DisplaySettingPage({super.key});
 
   @override
   _DisplaySettingPageState createState() => _DisplaySettingPageState();

@@ -17,7 +17,7 @@ class SimpleAccordion extends StatefulWidget {
   final Color? headerTileColor;
 
   SimpleAccordion({
-    Key? key,
+    super.key,
     this.expanded = false,
     required this.headerBuilder,
     required this.contentBuilder,
@@ -29,7 +29,7 @@ class SimpleAccordion extends StatefulWidget {
     this.expandElevation,
     this.topBorderSide = BorderSide.none,
     this.headerTileColor,
-  }) : super(key: key);
+  });
 
   @override
   _SimpleAccordionState createState() => _SimpleAccordionState();

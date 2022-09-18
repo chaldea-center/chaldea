@@ -11,7 +11,7 @@ import 'gallery_page.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();

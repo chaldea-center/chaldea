@@ -14,8 +14,7 @@ class ItemObtainEventTab extends StatefulWidget {
   final bool showOutdated;
 
   const ItemObtainEventTab(
-      {Key? key, required this.itemId, this.showOutdated = false})
-      : super(key: key);
+      {super.key, required this.itemId, this.showOutdated = false});
 
   @override
   _ItemObtainEventTabState createState() => _ItemObtainEventTabState();

@@ -9,7 +9,7 @@ import 'servant_details.dart';
 import 'svt_class_stat.dart';
 
 class GameStatisticsPage extends StatefulWidget {
-  GameStatisticsPage({Key? key}) : super(key: key);
+  GameStatisticsPage({super.key});
 
   @override
   _GameStatisticsPageState createState() => _GameStatisticsPageState();

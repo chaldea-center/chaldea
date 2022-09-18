@@ -26,10 +26,10 @@ class TdFilterData {
 
 class TdFilter extends FilterPage<TdFilterData> {
   const TdFilter({
-    Key? key,
-    required TdFilterData filterData,
-    ValueChanged<TdFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _TdFilterState createState() => _TdFilterState();

@@ -12,7 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class SvtSkillTab extends StatefulWidget {
   final Servant svt;
 
-  const SvtSkillTab({Key? key, required this.svt}) : super(key: key);
+  const SvtSkillTab({super.key, required this.svt});
 
   @override
   State<SvtSkillTab> createState() => _SvtSkillTabState();

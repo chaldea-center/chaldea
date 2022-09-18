@@ -96,7 +96,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   final String? title;
 
   SplitRoute({
-    RouteSettings? settings,
+    super.settings,
     required this.builder,
     bool? detail = false,
     int? masterRatio,
@@ -105,7 +105,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     bool? opaque,
     this.maintainState = true,
     this.title,
-    bool fullscreenDialog = false,
+    super.fullscreenDialog = false,
   })  : assert(builder != null),
         assert(masterRatio == null || masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
@@ -116,8 +116,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         reverseTransitionDuration = reverseTransitionDuration ??
             transitionDuration ??
             kSplitRouteDuration,
-        opaque = opaque ?? detail != true,
-        super(settings: settings, fullscreenDialog: fullscreenDialog);
+        opaque = opaque ?? detail != true;
 
   /// define your own builder for right space of master page
   static WidgetBuilder? defaultMasterFillPageBuilder;

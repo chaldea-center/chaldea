@@ -11,7 +11,7 @@ import '../../../descriptors/cond_target_value.dart';
 class SvtTdTab extends StatelessWidget {
   final Servant svt;
 
-  const SvtTdTab({Key? key, required this.svt}) : super(key: key);
+  const SvtTdTab({super.key, required this.svt});
 
   @override
   Widget build(BuildContext context) {

@@ -11,7 +11,7 @@ import '../item/item.dart';
 
 class ItemStatTab extends StatefulWidget {
   final bool demandMode;
-  ItemStatTab({Key? key, required this.demandMode}) : super(key: key);
+  ItemStatTab({super.key, required this.demandMode});
 
   @override
   _ItemStatTabState createState() => _ItemStatTabState();

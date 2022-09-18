@@ -22,7 +22,7 @@ import '../../app.dart';
 import 'bond_detail_page.dart';
 
 class ImportHttpPage extends StatefulWidget {
-  ImportHttpPage({Key? key}) : super(key: key);
+  ImportHttpPage({super.key});
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();

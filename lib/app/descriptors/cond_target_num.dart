@@ -22,7 +22,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final InlineSpan? leading;
 
   const CondTargetNumDescriptor({
-    Key? key,
+    super.key,
     required this.condType,
     required this.targetNum,
     required this.targetIds,
@@ -32,7 +32,7 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     this.useAnd,
-  }) : super(key: key);
+  });
 
   bool _isPlayableAll(List<int> clsIds) {
     return clsIds.toSet().equalTo(kSvtIdsPlayable.toSet()) ||

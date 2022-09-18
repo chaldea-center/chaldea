@@ -32,10 +32,10 @@ class SkillFilterData {
 
 class SkillFilter extends FilterPage<SkillFilterData> {
   const SkillFilter({
-    Key? key,
-    required SkillFilterData filterData,
-    ValueChanged<SkillFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _SkillFilterState createState() => _SkillFilterState();

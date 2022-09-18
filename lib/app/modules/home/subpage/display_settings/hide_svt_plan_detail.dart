@@ -6,7 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class HideSvtPlanDetailSettingPage extends StatefulWidget {
-  const HideSvtPlanDetailSettingPage({Key? key}) : super(key: key);
+  const HideSvtPlanDetailSettingPage({super.key});
 
   @override
   State<HideSvtPlanDetailSettingPage> createState() =>

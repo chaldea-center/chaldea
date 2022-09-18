@@ -21,7 +21,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
   final InlineSpan? leading;
 
   const VoiceCondDescriptor({
-    Key? key,
+    super.key,
     required this.condType,
     required this.value,
     this.valueList = const [],
@@ -29,7 +29,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     this.useAnd,
-  }) : super(key: key);
+  });
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {

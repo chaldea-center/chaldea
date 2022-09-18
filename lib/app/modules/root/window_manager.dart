@@ -11,7 +11,7 @@ import '../../routes/root_delegate.dart';
 class WindowManager extends StatefulWidget {
   final RootAppRouterDelegate delegate;
 
-  const WindowManager({Key? key, required this.delegate}) : super(key: key);
+  const WindowManager({super.key, required this.delegate});
 
   @override
   _WindowManagerState createState() => _WindowManagerState();
@@ -40,10 +40,10 @@ class _WindowManagerState extends State<WindowManager> {
 
 class WrapSideBar extends StatelessWidget {
   const WrapSideBar({
-    Key? key,
+    super.key,
     required this.root,
     required this.child,
-  }) : super(key: key);
+  });
 
   final RootAppRouterDelegate root;
   final Widget child;
@@ -152,9 +152,9 @@ class WrapSideBar extends StatelessWidget {
 
 class OneWindow extends StatelessWidget {
   const OneWindow({
-    Key? key,
+    super.key,
     required this.root,
-  }) : super(key: key);
+  });
 
   final RootAppRouterDelegate root;
 
@@ -190,9 +190,9 @@ class OneWindow extends StatelessWidget {
 
 class MultipleWindow extends StatelessWidget {
   const MultipleWindow({
-    Key? key,
+    super.key,
     required this.root,
-  }) : super(key: key);
+  });
 
   final RootAppRouterDelegate root;
 
@@ -227,10 +227,10 @@ class MultipleWindow extends StatelessWidget {
 
 class WindowThumb extends StatelessWidget {
   const WindowThumb({
-    Key? key,
+    super.key,
     required this.root,
     required this.index,
-  }) : super(key: key);
+  });
 
   final RootAppRouterDelegate root;
   final int index;

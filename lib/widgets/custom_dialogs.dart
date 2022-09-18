@@ -14,14 +14,13 @@ class InputCancelOkDialog extends StatefulWidget {
   final ValueChanged<String>? onSubmit;
 
   const InputCancelOkDialog(
-      {Key? key,
+      {super.key,
       this.title,
       this.text,
       this.hintText,
       this.errorText,
       this.validate,
-      this.onSubmit})
-      : super(key: key);
+      this.onSubmit});
 
   @override
   State<StatefulWidget> createState() => _InputCancelOkDialogState();
@@ -126,7 +125,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final bool wrapActionsInRow;
 
   const SimpleCancelOkDialog({
-    Key? key,
+    super.key,
     this.title,
     this.content,
     this.contentPadding =
@@ -139,7 +138,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     this.actions = const [],
     this.scrollable = false,
     this.wrapActionsInRow = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

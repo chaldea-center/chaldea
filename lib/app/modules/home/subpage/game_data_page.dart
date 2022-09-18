@@ -16,7 +16,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../../tools/icon_cache_manager.dart';
 
 class GameDataPage extends StatefulWidget {
-  GameDataPage({Key? key}) : super(key: key);
+  GameDataPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _GameDataPageState();
@@ -205,7 +205,7 @@ class _GameDataPageState extends State<GameDataPage> {
 }
 
 class _ClearCacheDialog extends StatefulWidget {
-  const _ClearCacheDialog({Key? key}) : super(key: key);
+  const _ClearCacheDialog();
 
   @override
   State<_ClearCacheDialog> createState() => __ClearCacheDialogState();

@@ -24,7 +24,7 @@ class FilterGroup<T> extends StatelessWidget {
   final bool showCollapse;
 
   const FilterGroup({
-    Key? key,
+    super.key,
     this.title,
     required this.options,
     required this.values,
@@ -37,7 +37,7 @@ class FilterGroup<T> extends StatelessWidget {
     this.combined = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.showCollapse = false,
-  }) : super(key: key);
+  });
 
   static FilterGroup display(
       {required bool useGrid, required ValueChanged<bool?> onChanged}) {
@@ -199,7 +199,7 @@ class FilterOption<T> extends StatelessWidget {
   final bool shrinkWrap;
 
   const FilterOption({
-    Key? key,
+    super.key,
     required this.selected,
     required this.value,
     this.child,
@@ -210,7 +210,7 @@ class FilterOption<T> extends StatelessWidget {
     this.selectedTextColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -460,12 +460,12 @@ class MappingBase<T> {
 @JsonSerializable(genericArgumentFactories: true)
 class MappingList<T> extends MappingBase<List<T>> {
   MappingList({
-    List<T>? jp,
-    List<T>? cn,
-    List<T>? tw,
-    List<T>? na,
-    List<T>? kr,
-  }) : super(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
+    super.jp,
+    super.cn,
+    super.tw,
+    super.na,
+    super.kr,
+  });
 
   factory MappingList.fromJson(Map<String, dynamic> json) =>
       _$MappingListFromJson(json, _fromJsonT);
@@ -474,12 +474,12 @@ class MappingList<T> extends MappingBase<List<T>> {
 @JsonSerializable(genericArgumentFactories: true)
 class MappingDict<V> extends MappingBase<Map<int, V>> {
   MappingDict({
-    Map<int, V>? jp,
-    Map<int, V>? cn,
-    Map<int, V>? tw,
-    Map<int, V>? na,
-    Map<int, V>? kr,
-  }) : super(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
+    super.jp,
+    super.cn,
+    super.tw,
+    super.na,
+    super.kr,
+  });
 
   factory MappingDict.fromJson(Map<String, dynamic> json) =>
       _$MappingDictFromJson(json, _fromJsonT);

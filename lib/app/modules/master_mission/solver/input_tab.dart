@@ -20,11 +20,11 @@ class MissionInputTab extends StatefulWidget {
   final ValueChanged<MissionSolution> onSolved;
 
   const MissionInputTab({
-    Key? key,
+    super.key,
     this.initMissions = const [],
     this.initWarId,
     required this.onSolved,
-  }) : super(key: key);
+  });
 
   @override
   State<MissionInputTab> createState() => _MissionInputTabState();
@@ -437,7 +437,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
 
 class _SearchView extends StatefulWidget {
   final CustomMissionType targetType;
-  const _SearchView({Key? key, required this.targetType}) : super(key: key);
+  const _SearchView({required this.targetType});
 
   @override
   State<_SearchView> createState() => __SearchViewState();
@@ -585,7 +585,7 @@ class __SearchViewState extends State<_SearchView> {
 
 class EventChooser extends StatelessWidget {
   final int initTab;
-  const EventChooser({Key? key, this.initTab = 0}) : super(key: key);
+  const EventChooser({super.key, this.initTab = 0});
 
   @override
   Widget build(BuildContext context) {

@@ -10,11 +10,11 @@ class MissionCondsDescriptor extends StatelessWidget {
   final List<EventMission> missions;
   final bool onlyShowClear;
   const MissionCondsDescriptor({
-    Key? key,
+    super.key,
     required this.mission,
     this.missions = const [],
     this.onlyShowClear = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

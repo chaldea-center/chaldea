@@ -15,9 +15,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class SkillDetailPage extends StatefulWidget {
   final int? id;
   final BaseSkill? skill;
-  const SkillDetailPage({Key? key, this.id, this.skill})
-      : assert(id != null || skill != null),
-        super(key: key);
+  const SkillDetailPage({super.key, this.id, this.skill})
+      : assert(id != null || skill != null);
 
   @override
   State<SkillDetailPage> createState() => _SkillDetailPageState();

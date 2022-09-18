@@ -9,7 +9,7 @@ import '../../app.dart';
 import '../misc/theme_palette.dart';
 
 class WindowManagerFab extends StatefulWidget {
-  const WindowManagerFab({Key? key}) : super(key: key);
+  const WindowManagerFab({super.key});
 
   @override
   _WindowManagerFabState createState() => _WindowManagerFabState();
@@ -54,7 +54,7 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
 }
 
 class DebugFab extends StatefulWidget {
-  const DebugFab({Key? key}) : super(key: key);
+  const DebugFab({super.key});
 
   @override
   _DebugFabState createState() => _DebugFabState();
@@ -120,7 +120,7 @@ class _DebugFabState extends State<DebugFab> {
 class _DebugMenuDialog extends StatefulWidget {
   final _DebugFabState? state;
 
-  const _DebugMenuDialog({Key? key, this.state}) : super(key: key);
+  const _DebugMenuDialog({this.state});
 
   @override
   __DebugMenuDialogState createState() => __DebugMenuDialogState();

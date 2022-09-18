@@ -32,7 +32,7 @@ class CustomTile extends StatelessWidget {
       const EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
-      {Key? key,
+      {super.key,
       this.leading,
       this.title,
       this.subtitle,
@@ -47,8 +47,7 @@ class CustomTile extends StatelessWidget {
       this.selected = false,
       this.focusNode,
       this.onTap,
-      this.onLongPress})
-      : super(key: key);
+      this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +231,7 @@ class ImageWithText extends StatelessWidget {
   final VoidCallback? onTap;
 
   const ImageWithText({
-    Key? key,
+    super.key,
     required this.image,
     this.text,
     this.textBuilder,
@@ -247,8 +246,7 @@ class ImageWithText extends StatelessWidget {
     this.shadowColor,
     this.onTap,
   })  : assert(width == null || width > 0),
-        assert(height == null || height > 0),
-        super(key: key);
+        assert(height == null || height > 0);
 
   @override
   Widget build(BuildContext context) {

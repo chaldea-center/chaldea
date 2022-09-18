@@ -65,11 +65,11 @@ class BuffFuncFilterData {
 class BuffFuncFilter extends FilterPage<BuffFuncFilterData> {
   final SearchCardType type;
   const BuffFuncFilter({
-    Key? key,
-    required BuffFuncFilterData filterData,
+    super.key,
     required this.type,
-    ValueChanged<BuffFuncFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _BuffFuncFilterState createState() => _BuffFuncFilterState();

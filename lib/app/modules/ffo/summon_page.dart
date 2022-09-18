@@ -11,7 +11,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'schema.dart';
 
 class FFOSummonPage extends StatefulWidget {
-  const FFOSummonPage({Key? key}) : super(key: key);
+  const FFOSummonPage({super.key});
 
   @override
   _FFOSummonPageState createState() => _FFOSummonPageState();

@@ -7,7 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class SvtTabsSortingSetting extends StatefulWidget {
-  SvtTabsSortingSetting({Key? key}) : super(key: key);
+  SvtTabsSortingSetting({super.key});
 
   @override
   _SvtTabsSortingSettingState createState() => _SvtTabsSortingSettingState();

@@ -7,12 +7,12 @@ class CheckboxWithLabel extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const CheckboxWithLabel({
-    Key? key,
+    super.key,
     required this.value,
     required this.label,
     required this.onChanged,
     this.padding = const EdgeInsets.only(right: 8),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +41,13 @@ class RadioWithLabel<T> extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const RadioWithLabel({
-    Key? key,
+    super.key,
     required this.value,
     required this.groupValue,
     required this.label,
     required this.onChanged,
     this.padding = const EdgeInsets.only(right: 8),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

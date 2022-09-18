@@ -376,7 +376,8 @@ SupportServantLimit _$SupportServantLimitFromJson(Map json) =>
     );
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
-      type: $enumDecode(_$GiftTypeEnumMap, json['type']),
+      type:
+          $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
       objectId: json['objectId'] as int,
       num: json['num'] as int,
       dropCount: json['dropCount'] as int,

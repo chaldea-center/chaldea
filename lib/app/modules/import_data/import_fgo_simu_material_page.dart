@@ -13,7 +13,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 
 class ImportFgoSimuMaterialPage extends StatefulWidget {
-  ImportFgoSimuMaterialPage({Key? key}) : super(key: key);
+  ImportFgoSimuMaterialPage({super.key});
 
   @override
   _ImportFgoSimuMaterialPageState createState() =>

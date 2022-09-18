@@ -11,7 +11,7 @@ import '../../command_code/cmd_code.dart';
 class SvtRelatedCardTab extends StatelessWidget {
   final Servant svt;
 
-  const SvtRelatedCardTab({Key? key, required this.svt}) : super(key: key);
+  const SvtRelatedCardTab({super.key, required this.svt});
 
   @override
   Widget build(BuildContext context) {

@@ -14,14 +14,12 @@ class CreatorDetail extends StatelessWidget {
   final String _name;
   final bool _isCV;
 
-  const CreatorDetail.cv({Key? key, required String name})
+  const CreatorDetail.cv({super.key, required String name})
       : _isCV = true,
-        _name = name,
-        super(key: key);
-  const CreatorDetail.illust({Key? key, required String name})
+        _name = name;
+  const CreatorDetail.illust({super.key, required String name})
       : _isCV = false,
-        _name = name,
-        super(key: key);
+        _name = name;
 
   List<String> _split(String name) {
     return name.split(RegExp(r'[&＆]')).map((e) => e.trim()).toList();

@@ -11,7 +11,7 @@ import '../common/filter_page_base.dart';
 import 'td_filter.dart';
 
 class TdListPage extends StatefulWidget {
-  const TdListPage({Key? key}) : super(key: key);
+  const TdListPage({super.key});
 
   @override
   _TdListPageState createState() => _TdListPageState();

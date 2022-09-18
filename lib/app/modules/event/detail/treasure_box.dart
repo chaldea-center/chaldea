@@ -7,7 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
-  const EventTreasureBoxTab({Key? key, required this.event}) : super(key: key);
+  const EventTreasureBoxTab({super.key, required this.event});
 
   @override
   Widget buildContent(BuildContext context) {

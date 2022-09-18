@@ -13,7 +13,7 @@ import 'summon_util.dart';
 class LuckyBagExpectation extends StatefulWidget {
   final LimitedSummon summon;
 
-  const LuckyBagExpectation({Key? key, required this.summon}) : super(key: key);
+  const LuckyBagExpectation({super.key, required this.summon});
 
   @override
   _LuckyBagExpectationState createState() => _LuckyBagExpectationState();

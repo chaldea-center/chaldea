@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 class JsonViewer extends StatefulWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
-  JsonViewer(this.jsonObj, {Key? key, this.defaultOpen = false})
-      : super(key: key);
+  JsonViewer(this.jsonObj, {super.key, this.defaultOpen = false});
   @override
   _JsonViewerState createState() => _JsonViewerState();
 }
@@ -39,8 +38,7 @@ class JsonObjectViewer extends StatefulWidget {
   final bool defaultOpen;
 
   JsonObjectViewer(this.jsonObj,
-      {Key? key, this.notRoot = false, this.defaultOpen = false})
-      : super(key: key);
+      {super.key, this.notRoot = false, this.defaultOpen = false});
 
   @override
   JsonObjectViewerState createState() => JsonObjectViewerState();
@@ -284,8 +282,7 @@ class JsonArrayViewer extends StatefulWidget {
   final bool defaultOpen;
 
   JsonArrayViewer(this.jsonArray,
-      {Key? key, this.notRoot = false, this.defaultOpen = false})
-      : super(key: key);
+      {super.key, this.notRoot = false, this.defaultOpen = false});
 
   @override
   _JsonArrayViewerState createState() => _JsonArrayViewerState();

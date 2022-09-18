@@ -12,7 +12,7 @@ import 'master_mission.dart';
 import 'solver/custom_mission.dart';
 
 class MasterMissionListPage extends StatefulWidget {
-  MasterMissionListPage({Key? key}) : super(key: key);
+  MasterMissionListPage({super.key});
 
   @override
   _MasterMissionListPageState createState() => _MasterMissionListPageState();

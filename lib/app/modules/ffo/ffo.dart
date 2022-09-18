@@ -13,7 +13,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'summon_page.dart';
 
 class FreedomOrderPage extends StatefulWidget {
-  FreedomOrderPage({Key? key}) : super(key: key);
+  FreedomOrderPage({super.key});
 
   @override
   _FreedomOrderPageState createState() => _FreedomOrderPageState();

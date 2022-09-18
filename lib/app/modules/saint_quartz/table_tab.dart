@@ -11,7 +11,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class SQTableTab extends StatefulWidget {
-  SQTableTab({Key? key}) : super(key: key);
+  SQTableTab({super.key});
 
   @override
   _SQTableTabState createState() => _SQTableTabState();

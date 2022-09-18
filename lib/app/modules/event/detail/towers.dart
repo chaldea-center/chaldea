@@ -7,8 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class EventTowersPage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   final EventTower tower;
-  const EventTowersPage({Key? key, required this.event, required this.tower})
-      : super(key: key);
+  const EventTowersPage({super.key, required this.event, required this.tower});
 
   @override
   Widget buildContent(BuildContext context) {

@@ -8,8 +8,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class EventLotteryTab extends StatefulWidget {
   final Event event;
   final EventLottery lottery;
-  const EventLotteryTab({Key? key, required this.event, required this.lottery})
-      : super(key: key);
+  const EventLotteryTab(
+      {super.key, required this.event, required this.lottery});
 
   @override
   State<EventLotteryTab> createState() => _EventLotteryTabState();

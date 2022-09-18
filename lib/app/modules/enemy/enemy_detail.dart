@@ -7,7 +7,7 @@ import 'package:chaldea/models/models.dart';
 
 class EnemyDetailPage extends StatefulWidget {
   final int id;
-  const EnemyDetailPage({Key? key, required this.id}) : super(key: key);
+  const EnemyDetailPage({super.key, required this.id});
 
   @override
   State<EnemyDetailPage> createState() => _EnemyDetailPageState();

@@ -206,7 +206,7 @@ class StopwatchX extends Stopwatch {
   final String? name;
   ValueChanged<String>? onLog;
 
-  StopwatchX([this.name, bool autostart = true]) : super() {
+  StopwatchX([this.name, bool autostart = true]) {
     if (autostart) start();
   }
 

@@ -8,10 +8,10 @@ import '../common/filter_page_base.dart';
 
 class EnemyFilterPage extends FilterPage<EnemyFilterData> {
   const EnemyFilterPage({
-    Key? key,
-    required EnemyFilterData filterData,
-    ValueChanged<EnemyFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _EnemyFilterPageState createState() => _EnemyFilterPageState();

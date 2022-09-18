@@ -7,8 +7,7 @@ class MasterBackButton extends StatelessWidget {
   final Color? color;
   final VoidCallback? onPressed;
 
-  const MasterBackButton({Key? key, this.color, this.onPressed})
-      : super(key: key);
+  const MasterBackButton({super.key, this.color, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

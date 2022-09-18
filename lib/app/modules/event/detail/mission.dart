@@ -11,7 +11,7 @@ import '../../master_mission/solver/scheme.dart';
 
 class EventMissionsPage extends StatefulWidget {
   final Event event;
-  const EventMissionsPage({Key? key, required this.event}) : super(key: key);
+  const EventMissionsPage({super.key, required this.event});
 
   @override
   State<EventMissionsPage> createState() => _EventMissionsPageState();

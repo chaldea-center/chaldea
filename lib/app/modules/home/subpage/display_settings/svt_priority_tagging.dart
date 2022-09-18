@@ -5,7 +5,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class SvtPriorityTagging extends StatefulWidget {
-  SvtPriorityTagging({Key? key}) : super(key: key);
+  SvtPriorityTagging({super.key});
 
   @override
   _SvtPriorityTaggingState createState() => _SvtPriorityTaggingState();

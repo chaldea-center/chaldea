@@ -5,7 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class TranslationSetting extends StatefulWidget {
-  TranslationSetting({Key? key}) : super(key: key);
+  TranslationSetting({super.key});
 
   @override
   _TranslationSettingState createState() => _TranslationSettingState();

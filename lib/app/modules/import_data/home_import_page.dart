@@ -14,7 +14,7 @@ import 'skill_screenshots.dart';
 import 'v1_backup.dart';
 
 class ImportPageHome extends StatefulWidget {
-  ImportPageHome({Key? key}) : super(key: key);
+  ImportPageHome({super.key});
 
   @override
   _ImportPageHomeState createState() => _ImportPageHomeState();

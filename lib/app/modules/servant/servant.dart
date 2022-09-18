@@ -43,7 +43,7 @@ class ServantDetailPage extends StatefulWidget {
   final int? id;
   final Servant? svt;
 
-  const ServantDetailPage({Key? key, this.id, this.svt}) : super(key: key);
+  const ServantDetailPage({super.key, this.id, this.svt});
 
   @override
   State<StatefulWidget> createState() => ServantDetailPageState();

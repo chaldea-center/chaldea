@@ -16,7 +16,7 @@ import 'mystic_code.dart';
 class MysticCodeListPage extends StatefulWidget {
   final void Function(MysticCode)? onSelected;
 
-  MysticCodeListPage({Key? key, this.onSelected}) : super(key: key);
+  MysticCodeListPage({super.key, this.onSelected});
 
   @override
   State<StatefulWidget> createState() => MysticCodeListPageState();

@@ -12,7 +12,7 @@ enum _FuncCheckPos {
 
 class TraitFuncTab extends StatefulWidget {
   final int id;
-  const TraitFuncTab(this.id, {Key? key}) : super(key: key);
+  const TraitFuncTab(this.id, {super.key});
 
   @override
   State<TraitFuncTab> createState() => _TraitFuncTabState();

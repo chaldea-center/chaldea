@@ -17,7 +17,7 @@ enum RecognizerType {
 
 class RecognizerViewerTab extends StatefulWidget {
   final RecognizerType type;
-  RecognizerViewerTab({Key? key, required this.type}) : super(key: key);
+  RecognizerViewerTab({super.key, required this.type});
 
   @override
   State<RecognizerViewerTab> createState() => _RecognizerViewerTabState();

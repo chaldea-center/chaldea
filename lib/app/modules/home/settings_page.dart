@@ -26,7 +26,7 @@ import 'subpage/translation_setting.dart';
 import 'subpage/user_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  SettingsPage({Key? key}) : super(key: key);
+  SettingsPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();

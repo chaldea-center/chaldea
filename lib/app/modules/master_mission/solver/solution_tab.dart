@@ -10,8 +10,7 @@ import 'solver.dart';
 class MissionSolutionTab extends StatefulWidget {
   final MissionSolution? solution;
   final bool showResult;
-  const MissionSolutionTab({Key? key, this.solution, this.showResult = true})
-      : super(key: key);
+  const MissionSolutionTab({super.key, this.solution, this.showResult = true});
 
   @override
   State<MissionSolutionTab> createState() => _MissionSolutionTabState();

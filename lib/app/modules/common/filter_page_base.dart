@@ -12,8 +12,7 @@ abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;
   final ValueChanged<T>? onChanged;
 
-  const FilterPage({Key? key, required this.filterData, this.onChanged})
-      : super(key: key);
+  const FilterPage({super.key, required this.filterData, this.onChanged});
 
   static void show(
       {required BuildContext context, required WidgetBuilder builder}) {

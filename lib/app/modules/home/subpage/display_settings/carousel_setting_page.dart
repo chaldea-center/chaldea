@@ -7,7 +7,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 
 class CarouselSettingPage extends StatefulWidget {
-  const CarouselSettingPage({Key? key}) : super(key: key);
+  const CarouselSettingPage({super.key});
 
   @override
   _CarouselSettingPageState createState() => _CarouselSettingPageState();

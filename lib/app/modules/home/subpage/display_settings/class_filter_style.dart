@@ -6,7 +6,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class ClassFilterStyleSetting extends StatefulWidget {
-  ClassFilterStyleSetting({Key? key}) : super(key: key);
+  ClassFilterStyleSetting({super.key});
 
   @override
   _ClassFilterStyleSettingState createState() =>

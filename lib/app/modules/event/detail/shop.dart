@@ -11,8 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class EventShopsPage extends StatefulWidget {
   final Event event;
   final int slot;
-  const EventShopsPage({Key? key, required this.event, required this.slot})
-      : super(key: key);
+  const EventShopsPage({super.key, required this.event, required this.slot});
 
   @override
   State<EventShopsPage> createState() => _EventShopsPageState();

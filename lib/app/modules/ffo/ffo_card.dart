@@ -27,15 +27,14 @@ class FfoCard extends StatefulWidget {
   final bool showFullScreen;
 
   FfoCard({
-    Key? key,
+    super.key,
     required FFOParams params,
     this.fit = BoxFit.contain,
     this.showSave = false,
     this.enableZoom = false,
     this.showFullScreen = false,
   })  : assert(!enableZoom || !showFullScreen),
-        params = params.copyWith(),
-        super(key: key);
+        params = params.copyWith();
 
   @override
   State<FfoCard> createState() => _FfoCardState();
@@ -378,12 +377,12 @@ class PartChooser extends StatelessWidget {
   final Widget? placeholder;
   final ValueChanged<FfoSvtPart?> onChanged;
   const PartChooser({
-    Key? key,
+    super.key,
     required this.where,
     required this.part,
     this.placeholder,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,8 @@
 /// Since most messages of flutter console are helpless,
 /// Wrap our logs inside a drawn box to make it easy to identify.
 
+// ignore_for_file: unused_element
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -56,26 +58,16 @@ void rollLogFiles(String fp, int maxBackup, int maxSize) {
 
 class _CustomPrettyPrinter extends PrettyPrinter {
   _CustomPrettyPrinter({
-    int stackTraceBeginIndex = 0,
-    int methodCount = 2,
-    int errorMethodCount = 8,
-    int lineLength = 120,
-    bool colors = true,
-    bool printEmojis = true,
-    bool printTime = false,
-    Map<Level, bool> excludeBox = const {},
-    bool noBoxingByDefault = false,
-  }) : super(
-          stackTraceBeginIndex: stackTraceBeginIndex,
-          methodCount: methodCount,
-          errorMethodCount: errorMethodCount,
-          lineLength: lineLength,
-          colors: colors,
-          printEmojis: printEmojis,
-          printTime: printTime,
-          excludeBox: excludeBox,
-          noBoxingByDefault: noBoxingByDefault,
-        );
+    super.stackTraceBeginIndex = 0,
+    super.methodCount = 2,
+    super.errorMethodCount = 8,
+    super.lineLength = 120,
+    super.colors = true,
+    super.printEmojis = true,
+    super.printTime = false,
+    super.excludeBox = const {},
+    super.noBoxingByDefault = false,
+  });
 
   @override
   List<String> log(LogEvent event) {

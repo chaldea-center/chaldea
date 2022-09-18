@@ -10,9 +10,9 @@ class ItemObtainInterludeTab extends StatefulWidget {
   final int itemId;
 
   const ItemObtainInterludeTab({
-    Key? key,
+    super.key,
     required this.itemId,
-  }) : super(key: key);
+  });
 
   @override
   _ItemObtainInterludeTabState createState() => _ItemObtainInterludeTabState();

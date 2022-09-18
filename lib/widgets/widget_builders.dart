@@ -8,8 +8,7 @@ class ValueStatefulBuilder<T> extends StatefulWidget {
   final ValueStatefulWidgetBuilder<T> builder;
 
   const ValueStatefulBuilder(
-      {Key? key, required this.initValue, required this.builder})
-      : super(key: key);
+      {super.key, required this.initValue, required this.builder});
 
   @override
   _ValueStatefulBuilderState<T> createState() =>
@@ -41,8 +40,7 @@ class KeepAliveBuilder extends StatefulWidget {
   final bool wantKeepAlive;
 
   const KeepAliveBuilder(
-      {Key? key, required this.builder, this.wantKeepAlive = true})
-      : super(key: key);
+      {super.key, required this.builder, this.wantKeepAlive = true});
 
   @override
   // ignore: no_logic_in_create_state
@@ -68,7 +66,7 @@ class _KeepAliveBuilderState extends State<KeepAliveBuilder>
 class AutoUnfocusBuilder extends StatelessWidget {
   final WidgetBuilder builder;
 
-  const AutoUnfocusBuilder({Key? key, required this.builder}) : super(key: key);
+  const AutoUnfocusBuilder({super.key, required this.builder});
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +81,11 @@ class AutoUnfocusBuilder extends StatelessWidget {
 
 class CenterWidgetSpan extends WidgetSpan {
   const CenterWidgetSpan({
-    required Widget child,
-    PlaceholderAlignment alignment = PlaceholderAlignment.middle,
-    TextBaseline? baseline,
-    TextStyle? style,
-  }) : super(
-          child: child,
-          alignment: alignment,
-          baseline: baseline,
-          style: style,
-        );
+    required super.child,
+    super.alignment = PlaceholderAlignment.middle,
+    super.baseline,
+    super.style,
+  });
 }
 
 mixin ScrollControllerMixin<T extends StatefulWidget> on State<T> {
@@ -115,8 +108,7 @@ mixin ScrollControllerMixin<T extends StatefulWidget> on State<T> {
 
 class PrimaryScrollBuilder extends StatefulWidget {
   final WidgetBuilder builder;
-  const PrimaryScrollBuilder({Key? key, required this.builder})
-      : super(key: key);
+  const PrimaryScrollBuilder({super.key, required this.builder});
 
   @override
   State<PrimaryScrollBuilder> createState() => _PrimaryScrollBuilderState();
@@ -135,8 +127,7 @@ class _PrimaryScrollBuilderState extends State<PrimaryScrollBuilder> {
 class ScrollControlWidget extends StatefulWidget {
   final Widget Function(BuildContext context, ScrollController controller)
       builder;
-  const ScrollControlWidget({Key? key, required this.builder})
-      : super(key: key);
+  const ScrollControlWidget({super.key, required this.builder});
 
   @override
   State<ScrollControlWidget> createState() => _ScrollControlWidgetState();
@@ -168,7 +159,7 @@ mixin PrimaryScrollMixin on StatelessWidget {
 class RefreshButton extends StatelessWidget {
   final String? text;
   final VoidCallback? onPressed;
-  const RefreshButton({Key? key, this.text, this.onPressed}) : super(key: key);
+  const RefreshButton({super.key, this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

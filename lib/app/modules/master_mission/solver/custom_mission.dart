@@ -12,8 +12,7 @@ class CustomMissionPage extends StatefulWidget {
   final List<CustomMission> initMissions;
   final int? initWarId;
 
-  CustomMissionPage({Key? key, this.initMissions = const [], this.initWarId})
-      : super(key: key);
+  CustomMissionPage({super.key, this.initMissions = const [], this.initWarId});
 
   @override
   State<CustomMissionPage> createState() => _CustomMissionPageState();

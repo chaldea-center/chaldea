@@ -177,32 +177,32 @@ class QuestPhase extends Quest {
   List<EnemyDrop> drops;
 
   QuestPhase({
-    required int id,
-    required String name,
-    required QuestType type,
-    List<QuestFlag> flags = const [],
-    ConsumeType consumeType = ConsumeType.ap,
-    required int consume,
-    List<ItemAmount> consumeItem = const [],
-    required QuestAfterClearType afterClear,
-    required String recommendLv,
-    required int spotId,
-    required String spotName,
-    required int warId,
-    String warLongName = '',
-    int chapterId = 0,
-    int chapterSubId = 0,
-    String chapterSubStr = "",
-    List<Gift> gifts = const [],
-    List<QuestRelease> releaseConditions = const [],
-    required List<int> phases,
-    List<int> phasesWithEnemies = const [],
-    List<int> phasesNoBattle = const [],
-    List<QuestPhaseScript> phaseScripts = const [],
-    required int priority,
-    required int noticeAt,
-    required int openedAt,
-    required int closedAt,
+    required super.id,
+    required super.name,
+    required super.type,
+    super.flags = const [],
+    super.consumeType = ConsumeType.ap,
+    required super.consume,
+    super.consumeItem = const [],
+    required super.afterClear,
+    required super.recommendLv,
+    required super.spotId,
+    required super.spotName,
+    required super.warId,
+    super.warLongName = '',
+    super.chapterId = 0,
+    super.chapterSubId = 0,
+    super.chapterSubStr = "",
+    super.gifts = const [],
+    super.releaseConditions = const [],
+    required super.phases,
+    super.phasesWithEnemies = const [],
+    super.phasesNoBattle = const [],
+    super.phaseScripts = const [],
+    required super.priority,
+    required super.noticeAt,
+    required super.openedAt,
+    required super.closedAt,
     required this.phase,
     this.className = const [],
     this.individuality = const [],
@@ -217,34 +217,7 @@ class QuestPhase extends Quest {
     this.supportServants = const [],
     this.stages = const [],
     this.drops = const [],
-  }) : super(
-          id: id,
-          name: name,
-          type: type,
-          flags: flags,
-          consumeType: consumeType,
-          consume: consume,
-          consumeItem: consumeItem,
-          afterClear: afterClear,
-          recommendLv: recommendLv,
-          spotId: spotId,
-          spotName: spotName,
-          warId: warId,
-          warLongName: warLongName,
-          chapterId: chapterId,
-          chapterSubId: chapterSubId,
-          chapterSubStr: chapterSubStr,
-          gifts: gifts,
-          releaseConditions: releaseConditions,
-          phases: phases,
-          phasesWithEnemies: phasesWithEnemies,
-          phasesNoBattle: phasesNoBattle,
-          phaseScripts: phaseScripts,
-          priority: priority,
-          noticeAt: noticeAt,
-          openedAt: openedAt,
-          closedAt: closedAt,
-        );
+  });
 
   int get key => getPhaseKey(phase);
 
@@ -413,12 +386,13 @@ class Gift extends BaseGift {
   List<GiftAdd> giftAdds;
   Gift({
     // required this.id,
-    GiftType type = GiftType.item,
-    required int objectId,
+    super.type = GiftType.item,
+    required super.objectId,
     // required this.priority,
-    required int num,
+    // ignore: avoid_types_as_parameter_names
+    required super.num,
     this.giftAdds = const [],
-  }) : super(type: type, objectId: objectId, num: num);
+  });
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
@@ -635,14 +609,15 @@ class EnemyDrop extends BaseGift {
   // double dropVariance;
 
   EnemyDrop({
-    required GiftType type,
-    required int objectId,
-    required int num,
+    required super.type,
+    required super.objectId,
+    // ignore: avoid_types_as_parameter_names
+    required super.num,
     required this.dropCount,
     required this.runs,
     // required this.dropExpected,
     // required this.dropVariance,
-  }) : super(type: type, objectId: objectId, num: num);
+  });
 
   factory EnemyDrop.fromJson(Map<String, dynamic> json) =>
       _$EnemyDropFromJson(json);

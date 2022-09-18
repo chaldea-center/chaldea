@@ -13,7 +13,7 @@ enum _BuffCheckPos {
 
 class TraitBuffTab extends StatefulWidget {
   final int id;
-  const TraitBuffTab(this.id, {Key? key}) : super(key: key);
+  const TraitBuffTab(this.id, {super.key});
 
   @override
   State<TraitBuffTab> createState() => _TraitBuffTabState();

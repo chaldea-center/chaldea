@@ -11,7 +11,7 @@ import '../common/builders.dart';
 // quest.openAt is not correct...
 
 class SvtQuestTimeline extends StatefulWidget {
-  const SvtQuestTimeline({Key? key}) : super(key: key);
+  const SvtQuestTimeline({super.key});
 
   @override
   State<SvtQuestTimeline> createState() => _SvtQuestTimelineState();

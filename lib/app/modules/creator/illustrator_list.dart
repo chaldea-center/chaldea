@@ -8,7 +8,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'creator_detail.dart';
 
 class IllustratorListPage extends StatefulWidget {
-  IllustratorListPage({Key? key}) : super(key: key);
+  IllustratorListPage({super.key});
 
   @override
   _IllustratorListPageState createState() => _IllustratorListPageState();

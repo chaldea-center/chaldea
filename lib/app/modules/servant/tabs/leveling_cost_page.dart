@@ -16,14 +16,13 @@ class LevelingCostPage extends StatefulWidget {
   final String Function(int level)? levelFormatter;
 
   const LevelingCostPage({
-    Key? key,
+    super.key,
     required this.costList,
     this.curLv = 0,
     this.targetLv = 0,
     this.title = '',
     this.levelFormatter,
-  })  : assert(curLv <= targetLv),
-        super(key: key);
+  }) : assert(curLv <= targetLv);
 
   @override
   State<StatefulWidget> createState() => LevelingCostPageState();

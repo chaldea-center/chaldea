@@ -13,7 +13,7 @@ import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class NetworkSettingsPage extends StatefulWidget {
-  const NetworkSettingsPage({Key? key}) : super(key: key);
+  const NetworkSettingsPage({super.key});
 
   @override
   State<NetworkSettingsPage> createState() => _NetworkSettingsPageState();

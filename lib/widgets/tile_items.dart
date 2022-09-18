@@ -11,11 +11,11 @@ class SHeader extends StatelessWidget {
 
   const SHeader(
     this.label, {
-    Key? key,
+    super.key,
     this.style,
     this.padding =
         const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +41,8 @@ class SFooter extends StatelessWidget {
   final EdgeInsetsGeometry padding;
 
   const SFooter(this.label,
-      {Key? key,
-      this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5)})
-      : super(key: key);
+      {super.key,
+      this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5)});
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +66,11 @@ class SWidget extends StatelessWidget {
   final VoidCallback? callback;
 
   const SWidget(
-      {Key? key, required this.label, this.icon, this.trailing, this.callback})
-      : super(key: key);
+      {super.key,
+      required this.label,
+      this.icon,
+      this.trailing,
+      this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +93,7 @@ class SModal extends StatelessWidget {
   final VoidCallback? callback;
 
   const SModal(
-      {Key? key, required this.label, this.icon, this.value, this.callback})
-      : super(key: key);
+      {super.key, required this.label, this.icon, this.value, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +126,11 @@ class SSwitch extends StatelessWidget {
   final ValueChanged<bool>? callback;
 
   const SSwitch(
-      {Key? key, required this.label, this.icon, this.value, this.callback})
-      : super(key: key); //handle switch/tile value change
+      {super.key,
+      required this.label,
+      this.icon,
+      this.value,
+      this.callback}); //handle switch/tile value change
 
   @override
   Widget build(BuildContext context) {
@@ -148,8 +152,7 @@ class SSelect extends StatelessWidget {
   final ValueChanged<int>? callback;
 
   const SSelect(
-      {Key? key, this.labels = const [], this.selected = 0, this.callback})
-      : super(key: key);
+      {super.key, this.labels = const [], this.selected = 0, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +188,7 @@ class TileGroup extends StatelessWidget {
   final bool shrinkWrap;
 
   const TileGroup({
-    Key? key,
+    super.key,
     this.children = const [],
     this.header,
     this.footer,
@@ -196,7 +199,7 @@ class TileGroup extends StatelessWidget {
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.scrollable = false,
     this.shrinkWrap = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +253,7 @@ class SliverTileGroup extends StatelessWidget {
   final bool shrinkWrap;
 
   SliverTileGroup({
-    Key? key,
+    super.key,
     this.children = const [],
     this.header,
     this.footer,
@@ -261,7 +264,7 @@ class SliverTileGroup extends StatelessWidget {
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.scrollable = false,
     this.shrinkWrap = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +296,7 @@ class SliverTileGroup extends StatelessWidget {
 class SRadios extends StatefulWidget {
   final List<Widget> tiles;
 
-  const SRadios({Key? key, this.tiles = const []}) : super(key: key);
+  const SRadios({super.key, this.tiles = const []});
 
   @override
   State<StatefulWidget> createState() => _SRadiosState();
@@ -321,7 +324,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
   final bool increasing;
 
   const RangeSelector(
-      {Key? key,
+      {super.key,
       required this.start,
       required this.end,
       required this.startItems,
@@ -330,8 +333,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
       this.startEnabled = true,
       this.endEnabled = true,
       this.increasing = true,
-      this.onChanged})
-      : super(key: key);
+      this.onChanged});
 
   @override
   _RangeSelectorState createState() => _RangeSelectorState<T>();

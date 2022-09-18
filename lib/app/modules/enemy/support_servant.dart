@@ -11,7 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class SupportServantPage extends StatefulWidget {
   final SupportServant svt;
 
-  const SupportServantPage(this.svt, {Key? key}) : super(key: key);
+  const SupportServantPage(this.svt, {super.key});
 
   @override
   State<SupportServantPage> createState() => _SupportServantPageState();

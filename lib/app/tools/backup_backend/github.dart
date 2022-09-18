@@ -139,5 +139,5 @@ class GithubBackup<T> extends BackupBackend<T> {
 }
 
 class ConflictError extends GitHubError {
-  ConflictError(GitHub github, String message) : super(github, message);
+  ConflictError(super.github, super.message);
 }

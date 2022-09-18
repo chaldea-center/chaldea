@@ -17,13 +17,13 @@ class MainStoryTab extends StatelessWidget {
   final bool titleOnly;
 
   const MainStoryTab({
-    Key? key,
+    super.key,
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
     required this.scrollController,
     this.titleOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

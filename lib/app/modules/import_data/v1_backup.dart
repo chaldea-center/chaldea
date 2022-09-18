@@ -15,7 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class OldVersionDataImport extends StatefulWidget {
-  OldVersionDataImport({Key? key}) : super(key: key);
+  OldVersionDataImport({super.key});
 
   @override
   State<OldVersionDataImport> createState() => _OldVersionDataImportState();

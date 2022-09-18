@@ -15,7 +15,7 @@ import 'filter.dart';
 import 'quest_enemy_summary.dart';
 
 class EnemyListPage extends StatefulWidget {
-  EnemyListPage({Key? key}) : super(key: key);
+  EnemyListPage({super.key});
 
   @override
   State<StatefulWidget> createState() => EnemyListPageState();

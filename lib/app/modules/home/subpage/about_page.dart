@@ -16,7 +16,7 @@ import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class AboutPage extends StatefulWidget {
-  AboutPage({Key? key}) : super(key: key);
+  AboutPage({super.key});
 
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -240,13 +240,12 @@ class _AboutPageState extends State<AboutPage> {
 
 class _AboutProgram extends StatelessWidget {
   const _AboutProgram({
-    Key? key,
     required this.name,
     required this.version,
     this.icon,
     this.legalese,
     this.debugInfo,
-  }) : super(key: key);
+  });
 
   final String name;
   final String version;
@@ -315,12 +314,11 @@ class _GithubMarkdownPage extends StatelessWidget {
   final bool disableMd;
 
   const _GithubMarkdownPage({
-    Key? key,
     required this.title,
     this.link,
     this.assetKey,
     this.disableMd = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

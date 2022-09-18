@@ -12,7 +12,7 @@ import 'solver/scheme.dart';
 class MasterMissionPage extends StatefulWidget {
   final MasterMission masterMission;
 
-  MasterMissionPage({Key? key, required this.masterMission}) : super(key: key);
+  MasterMissionPage({super.key, required this.masterMission});
 
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();

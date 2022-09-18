@@ -750,10 +750,10 @@ class QuestWave extends StatelessWidget {
   final bool showTrueName;
 
   const QuestWave({
-    Key? key,
+    super.key,
     required this.stage,
     this.showTrueName = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -874,11 +874,11 @@ class QuestEnemyWidget extends StatelessWidget {
   final bool showDeck;
 
   const QuestEnemyWidget({
-    Key? key,
+    super.key,
     required this.enemy,
     this.showTrueName = false,
     this.showDeck = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

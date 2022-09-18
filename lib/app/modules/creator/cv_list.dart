@@ -8,7 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class CvListPage extends StatefulWidget {
-  CvListPage({Key? key}) : super(key: key);
+  CvListPage({super.key});
 
   @override
   _CvListPageState createState() => _CvListPageState();

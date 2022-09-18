@@ -18,11 +18,10 @@ class SkillResultTab extends StatefulWidget {
   final bool viewMode;
 
   const SkillResultTab(
-      {Key? key,
+      {super.key,
       required this.isAppend,
       required this.result,
-      this.viewMode = false})
-      : super(key: key);
+      this.viewMode = false});
 
   @override
   State<SkillResultTab> createState() => _SkillResultTabState();

@@ -17,8 +17,7 @@ class SummonSimulatorPage extends StatefulWidget {
   final int initIndex;
 
   const SummonSimulatorPage(
-      {Key? key, required this.summon, this.initIndex = 0})
-      : super(key: key);
+      {super.key, required this.summon, this.initIndex = 0});
 
   @override
   _SummonSimulatorPageState createState() => _SummonSimulatorPageState();

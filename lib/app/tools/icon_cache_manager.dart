@@ -19,7 +19,7 @@ import '../api/hosts.dart';
 
 @protected
 class IconCacheManagePage extends StatefulWidget {
-  IconCacheManagePage({Key? key}) : super(key: key);
+  IconCacheManagePage({super.key});
 
   @override
   _IconCacheManagePageState createState() => _IconCacheManagePageState();

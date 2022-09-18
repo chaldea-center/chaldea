@@ -9,8 +9,7 @@ import '../../app.dart';
 class QuestListPage extends StatefulWidget {
   final List<Quest> quests;
   final String? title;
-  const QuestListPage({Key? key, this.quests = const [], this.title})
-      : super(key: key);
+  const QuestListPage({super.key, this.quests = const [], this.title});
 
   @override
   State<QuestListPage> createState() => _QuestListPageState();

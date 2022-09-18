@@ -8,10 +8,10 @@ import '../common/filter_page_base.dart';
 
 class FfoPartFilterPage extends FilterPage<FfoPartFilterData> {
   const FfoPartFilterPage({
-    Key? key,
-    required FfoPartFilterData filterData,
-    ValueChanged<FfoPartFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _FfoPartFilterPageState createState() => _FfoPartFilterPageState();

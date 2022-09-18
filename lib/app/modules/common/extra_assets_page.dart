@@ -27,14 +27,14 @@ class ExtraAssetsPage extends StatelessWidget {
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
 
   const ExtraAssetsPage({
-    Key? key,
+    super.key,
     required this.assets,
     this.aprilFoolAssets = const [],
     this.mcSprites = const [],
     this.fandomSprites = const [],
     this.scrollable = true,
     this.getUrls,
-  }) : super(key: key);
+  });
 
   Iterable<String> _getUrls(ExtraAssetsUrl urls) {
     if (getUrls != null) return getUrls!(urls);
@@ -221,8 +221,7 @@ class MergeImagePage extends StatefulWidget {
   final String? title;
   final List<String> imageUrls;
 
-  const MergeImagePage({Key? key, this.title, required this.imageUrls})
-      : super(key: key);
+  const MergeImagePage({super.key, this.title, required this.imageUrls});
 
   @override
   State<MergeImagePage> createState() => _MergeImagePageState();

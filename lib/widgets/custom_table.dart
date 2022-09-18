@@ -19,12 +19,12 @@ class CustomTable extends StatelessWidget {
   final bool hideOutline;
 
   const CustomTable({
-    Key? key,
+    super.key,
     required this.children,
     this.hideOutline = false,
     this.horizontalDivider = kHorizontalDivider,
     this.verticalDivider = kVerticalDivider,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +68,10 @@ class CustomTableRow extends StatefulWidget {
   final VerticalDivider? divider;
 
   CustomTableRow(
-      {Key? key,
+      {super.key,
       required this.children,
       this.color,
-      this.divider = kVerticalDivider})
-      : super(key: key) {
+      this.divider = kVerticalDivider}) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
     });

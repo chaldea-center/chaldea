@@ -7,8 +7,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class EventPointsPage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
   final int groupId;
-  const EventPointsPage({Key? key, required this.event, required this.groupId})
-      : super(key: key);
+  const EventPointsPage(
+      {super.key, required this.event, required this.groupId});
 
   @override
   Widget buildContent(BuildContext context) {

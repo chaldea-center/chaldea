@@ -23,7 +23,7 @@ import '../../import_data/home_import_page.dart';
 import 'github_backup_page.dart';
 
 class UserDataPage extends StatefulWidget {
-  UserDataPage({Key? key}) : super(key: key);
+  UserDataPage({super.key});
 
   @override
   _UserDataPageState createState() => _UserDataPageState();
@@ -307,7 +307,7 @@ class _UserDataPageState extends State<UserDataPage> {
 }
 
 class _BackupHistoryPage extends StatefulWidget {
-  _BackupHistoryPage({Key? key}) : super(key: key);
+  _BackupHistoryPage();
 
   @override
   __BackupHistoryPageState createState() => __BackupHistoryPageState();

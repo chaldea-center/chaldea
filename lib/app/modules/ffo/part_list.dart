@@ -17,8 +17,7 @@ class FfoPartListPage extends StatefulWidget {
   final FfoPartWhere where;
   final ValueChanged<FfoSvtPart?>? onSelected;
 
-  FfoPartListPage({Key? key, required this.where, this.onSelected})
-      : super(key: key);
+  FfoPartListPage({super.key, required this.where, this.onSelected});
 
   @override
   State<StatefulWidget> createState() => FfoPartListPageState();

@@ -17,11 +17,11 @@ class ExchangeTicketTab extends StatefulWidget {
   final bool showOutdated;
 
   const ExchangeTicketTab({
-    Key? key,
+    super.key,
     this.id,
     this.reversed = false,
     this.showOutdated = false,
-  }) : super(key: key);
+  });
 
   @override
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();

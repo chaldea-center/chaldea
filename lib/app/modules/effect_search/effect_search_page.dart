@@ -12,7 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'filter.dart';
 
 class EffectSearchPage extends StatefulWidget {
-  EffectSearchPage({Key? key}) : super(key: key);
+  EffectSearchPage({super.key});
 
   @override
   _EffectSearchPageState createState() => _EffectSearchPageState();

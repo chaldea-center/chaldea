@@ -19,7 +19,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ItemListPage extends StatefulWidget {
-  ItemListPage({Key? key}) : super(key: key);
+  ItemListPage({super.key});
 
   @override
   State<StatefulWidget> createState() => ItemListPageState();
@@ -214,7 +214,7 @@ class ItemListPageState extends State<ItemListPage>
 }
 
 class ItemFilterDialog extends StatefulWidget {
-  ItemFilterDialog({Key? key}) : super(key: key);
+  ItemFilterDialog({super.key});
 
   @override
   _ItemFilterDialogState createState() => _ItemFilterDialogState();
@@ -290,14 +290,14 @@ class ItemListTab extends StatefulWidget {
   final bool editable;
 
   const ItemListTab({
-    Key? key,
+    super.key,
     required this.category,
     required this.items,
     required this.onNavToCalculator,
     this.filtered = false,
     this.showSet999 = false,
     this.editable = true,
-  }) : super(key: key);
+  });
 
   @override
   _ItemListTabState createState() => _ItemListTabState();

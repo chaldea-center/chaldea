@@ -7,8 +7,7 @@ class StartupErrorPage extends StatelessWidget {
   final dynamic initError;
   final dynamic initStack;
 
-  const StartupErrorPage({Key? key, this.initError, this.initStack})
-      : super(key: key);
+  const StartupErrorPage({super.key, this.initError, this.initStack});
 
   @override
   Widget build(BuildContext context) {

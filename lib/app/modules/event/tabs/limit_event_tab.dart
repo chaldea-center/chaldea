@@ -15,14 +15,14 @@ class LimitEventTab extends StatelessWidget {
   final ScrollController scrollController;
 
   LimitEventTab({
-    Key? key,
+    super.key,
     required this.limitEvents,
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
     this.showEmpty = false,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class FavOptionSetting extends StatefulWidget {
-  FavOptionSetting({Key? key}) : super(key: key);
+  FavOptionSetting({super.key});
 
   @override
   _FavOptionSettingState createState() => _FavOptionSettingState();

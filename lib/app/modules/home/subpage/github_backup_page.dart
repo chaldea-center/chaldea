@@ -13,7 +13,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class GithubBackupPage extends StatefulWidget {
-  const GithubBackupPage({Key? key}) : super(key: key);
+  const GithubBackupPage({super.key});
 
   @override
   State<GithubBackupPage> createState() => _GithubBackupPageState();

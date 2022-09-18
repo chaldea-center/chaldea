@@ -18,7 +18,7 @@ import 'elements/news_carousel.dart';
 import 'subpage/account_page.dart';
 
 class GalleryPage extends StatefulWidget {
-  GalleryPage({Key? key}) : super(key: key);
+  GalleryPage({super.key});
 
   @override
   _GalleryPageState createState() => _GalleryPageState();

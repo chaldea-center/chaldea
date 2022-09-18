@@ -8,7 +8,7 @@ import 'package:chaldea/utils/constants.dart';
 class FrameRateLayer extends StatefulWidget {
   static bool showFps = false;
 
-  const FrameRateLayer({Key? key}) : super(key: key);
+  const FrameRateLayer({super.key});
 
   static GlobalKey<_FrameRateLayerState> globalKey = GlobalKey();
   static OverlayEntry? _instance;

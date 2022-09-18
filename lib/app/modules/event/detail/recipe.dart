@@ -7,7 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventRecipePage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
-  const EventRecipePage({Key? key, required this.event}) : super(key: key);
+  const EventRecipePage({super.key, required this.event});
 
   @override
   Widget buildContent(BuildContext context) {

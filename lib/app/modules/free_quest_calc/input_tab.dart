@@ -16,8 +16,7 @@ class DropCalcInputTab extends StatefulWidget {
   final Map<int, int>? objectiveCounts;
   final ValueChanged<LPSolution>? onSolved;
 
-  DropCalcInputTab({Key? key, this.objectiveCounts, this.onSolved})
-      : super(key: key);
+  DropCalcInputTab({super.key, this.objectiveCounts, this.onSolved});
 
   @override
   _DropCalcInputTabState createState() => _DropCalcInputTabState();

@@ -10,7 +10,7 @@ import '../common/filter_page_base.dart';
 import 'skill_filter.dart';
 
 class SkillListPage extends StatefulWidget {
-  const SkillListPage({Key? key}) : super(key: key);
+  const SkillListPage({super.key});
 
   @override
   _SkillListPageState createState() => _SkillListPageState();

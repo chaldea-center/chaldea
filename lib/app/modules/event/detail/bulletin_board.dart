@@ -10,8 +10,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventBulletinBoardPage extends StatelessWidget with PrimaryScrollMixin {
   final Event event;
-  const EventBulletinBoardPage({Key? key, required this.event})
-      : super(key: key);
+  const EventBulletinBoardPage({super.key, required this.event});
 
   @override
   Widget buildContent(BuildContext context) {

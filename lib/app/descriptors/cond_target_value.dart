@@ -22,7 +22,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   final List<EventMission> missions;
 
   const CondTargetValueDescriptor({
-    Key? key,
+    super.key,
     required this.condType,
     required this.target,
     required this.value,
@@ -32,7 +32,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.leading,
     this.missions = const [],
     this.useAnd,
-  }) : super(key: key);
+  });
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {

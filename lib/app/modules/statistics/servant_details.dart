@@ -11,7 +11,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ServantDemandDetailStat extends StatefulWidget {
-  ServantDemandDetailStat({Key? key}) : super(key: key);
+  ServantDemandDetailStat({super.key});
 
   @override
   State<ServantDemandDetailStat> createState() =>

@@ -16,9 +16,8 @@ import 'func_list.dart';
 class FuncDetailPage extends StatefulWidget {
   final int? id;
   final BaseFunction? func;
-  const FuncDetailPage({Key? key, this.id, this.func})
-      : assert(id != null || func != null),
-        super(key: key);
+  const FuncDetailPage({super.key, this.id, this.func})
+      : assert(id != null || func != null);
 
   @override
   State<FuncDetailPage> createState() => _FuncDetailPageState();
@@ -105,7 +104,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
 
 class FuncInfoTable extends StatelessWidget {
   final BaseFunction func;
-  const FuncInfoTable({Key? key, required this.func}) : super(key: key);
+  const FuncInfoTable({super.key, required this.func});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +264,7 @@ class FuncInfoTable extends StatelessWidget {
 
 class _SkillTab extends StatelessWidget {
   final BaseFunction func;
-  const _SkillTab(this.func, {Key? key}) : super(key: key);
+  const _SkillTab(this.func);
 
   @override
   Widget build(BuildContext context) {
@@ -320,7 +319,7 @@ class _SkillTab extends StatelessWidget {
 
 class _TdTab extends StatelessWidget {
   final BaseFunction func;
-  const _TdTab(this.func, {Key? key}) : super(key: key);
+  const _TdTab(this.func);
 
   @override
   Widget build(BuildContext context) {

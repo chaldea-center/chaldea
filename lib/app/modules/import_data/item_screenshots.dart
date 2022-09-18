@@ -21,7 +21,7 @@ import 'screenshot/screenshots.dart';
 import 'screenshot/viewer.dart';
 
 class ImportItemScreenshotPage extends StatefulWidget {
-  ImportItemScreenshotPage({Key? key}) : super(key: key);
+  ImportItemScreenshotPage({super.key});
 
   @override
   ImportItemScreenshotPageState createState() =>

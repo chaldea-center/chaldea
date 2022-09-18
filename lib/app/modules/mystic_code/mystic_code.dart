@@ -14,7 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class MysticCodePage extends StatefulWidget {
   final int? id;
 
-  MysticCodePage({Key? key, this.id}) : super(key: key);
+  MysticCodePage({super.key, this.id});
 
   @override
   _MysticCodePageState createState() => _MysticCodePageState();

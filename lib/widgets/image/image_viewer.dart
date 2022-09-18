@@ -48,7 +48,7 @@ class CachedImage extends StatefulWidget {
   final VoidCallback? onTap;
 
   const CachedImage({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.cacheDir,
     this.cacheName,
@@ -60,11 +60,10 @@ class CachedImage extends StatefulWidget {
     this.cachedOption,
     this.photoViewOption,
     this.onTap,
-  })  : imageProvider = null,
-        super(key: key);
+  }) : imageProvider = null;
 
   const CachedImage.fromProvider({
-    Key? key,
+    super.key,
     required this.imageProvider,
     this.showSaveOnLongPress = false,
     this.width,
@@ -76,8 +75,7 @@ class CachedImage extends StatefulWidget {
     this.onTap,
   })  : imageUrl = null,
         cacheDir = null,
-        cacheName = null,
-        super(key: key);
+        cacheName = null;
 
   @override
   _CachedImageState createState() => _CachedImageState();

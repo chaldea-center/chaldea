@@ -7,7 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class MasterRatioSetting extends StatefulWidget {
-  MasterRatioSetting({Key? key}) : super(key: key);
+  MasterRatioSetting({super.key});
 
   @override
   _MasterRatioSettingState createState() => _MasterRatioSettingState();

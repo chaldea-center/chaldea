@@ -11,7 +11,7 @@ import 'filter.dart';
 
 class FuncListPage extends StatefulWidget {
   final FuncType? type;
-  const FuncListPage({Key? key, this.type}) : super(key: key);
+  const FuncListPage({super.key, this.type});
 
   @override
   _FuncListPageState createState() => _FuncListPageState();

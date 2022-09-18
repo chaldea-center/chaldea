@@ -15,11 +15,11 @@ class ScreenshotsTab extends StatefulWidget {
   final VoidCallback onUpload;
   final String? debugServerRoot;
   const ScreenshotsTab({
-    Key? key,
+    super.key,
     required this.images,
     required this.onUpload,
     this.debugServerRoot,
-  }) : super(key: key);
+  });
 
   @override
   State<ScreenshotsTab> createState() => _ScreenshotsTabState();

@@ -11,7 +11,7 @@ import 'tabs/svt_tab.dart';
 
 class TraitDetailPage extends StatefulWidget {
   final int id;
-  const TraitDetailPage({Key? key, required this.id}) : super(key: key);
+  const TraitDetailPage({super.key, required this.id});
 
   @override
   State<TraitDetailPage> createState() => _TraitDetailPageState();

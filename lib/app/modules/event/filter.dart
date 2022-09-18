@@ -7,10 +7,10 @@ import '../common/filter_page_base.dart';
 
 class EventFilterPage extends FilterPage<EventFilterData> {
   const EventFilterPage({
-    Key? key,
-    required EventFilterData filterData,
-    ValueChanged<EventFilterData>? onChanged,
-  }) : super(key: key, onChanged: onChanged, filterData: filterData);
+    super.key,
+    required super.filterData,
+    super.onChanged,
+  });
 
   @override
   _EventFilterPageState createState() => _EventFilterPageState();

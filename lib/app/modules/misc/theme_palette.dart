@@ -5,7 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
-  DarkLightThemePalette({Key? key}) : super(key: key);
+  DarkLightThemePalette({super.key});
 
   @override
   _DarkLightThemePaletteState createState() => _DarkLightThemePaletteState();
@@ -43,7 +43,7 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
 }
 
 class _PaletteForTheme extends StatelessWidget {
-  const _PaletteForTheme({Key? key}) : super(key: key);
+  const _PaletteForTheme();
 
   @override
   Widget build(BuildContext context) {

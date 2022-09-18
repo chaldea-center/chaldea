@@ -6,7 +6,7 @@ class MyCacheManager extends CacheManager with ImageCacheManager {
   /// add loading/downloading delay to not stuck ui when drag scrollbar
   final Duration? delay;
 
-  MyCacheManager._(Config config, [this.delay]) : super(config);
+  MyCacheManager._(super.config, [this.delay]);
 
   factory MyCacheManager.singleton(String cacheKey, {Duration? delay}) {
     return _instances[cacheKey] ??= MyCacheManager._(Config(cacheKey), delay);

@@ -10,7 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class CostumeListPage extends StatefulWidget {
-  CostumeListPage({Key? key}) : super(key: key);
+  CostumeListPage({super.key});
 
   @override
   _CostumeListPageState createState() => _CostumeListPageState();

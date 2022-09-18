@@ -10,8 +10,7 @@ class ItemSelectPage extends StatelessWidget {
   final ValueChanged<int> onSelected;
 
   const ItemSelectPage(
-      {Key? key, this.includeSpecial = false, required this.onSelected})
-      : super(key: key);
+      {super.key, this.includeSpecial = false, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {

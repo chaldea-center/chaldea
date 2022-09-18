@@ -8,8 +8,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class FreeCalcFilterDialog extends StatefulWidget {
   final FreeLPParams params;
 
-  const FreeCalcFilterDialog({Key? key, required this.params})
-      : super(key: key);
+  const FreeCalcFilterDialog({super.key, required this.params});
 
   @override
   _FreeCalcFilterDialogState createState() => _FreeCalcFilterDialogState();

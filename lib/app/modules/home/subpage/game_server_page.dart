@@ -5,7 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 class GameServerPage extends StatefulWidget {
-  GameServerPage({Key? key}) : super(key: key);
+  GameServerPage({super.key});
 
   @override
   _GameServerPageState createState() => _GameServerPageState();

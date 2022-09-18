@@ -20,8 +20,7 @@ class SummonDetailPage extends StatefulWidget {
   final LimitedSummon? summon;
   final List<LimitedSummon>? summonList;
 
-  const SummonDetailPage({Key? key, this.id, this.summon, this.summonList})
-      : super(key: key);
+  const SummonDetailPage({super.key, this.id, this.summon, this.summonList});
 
   @override
   _SummonDetailPageState createState() => _SummonDetailPageState();

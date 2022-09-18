@@ -10,7 +10,7 @@ import 'blank_page.dart';
 class SplashPage extends StatefulWidget {
   final String? nextPageUrl;
 
-  const SplashPage({Key? key, this.nextPageUrl}) : super(key: key);
+  const SplashPage({super.key, this.nextPageUrl});
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -49,7 +49,7 @@ class _SplashPageState extends State<SplashPage> with AfterLayoutMixin {
 }
 
 class StarterGuidancePage extends StatefulWidget {
-  const StarterGuidancePage({Key? key}) : super(key: key);
+  const StarterGuidancePage({super.key});
 
   @override
   _StarterGuidancePageState createState() => _StarterGuidancePageState();

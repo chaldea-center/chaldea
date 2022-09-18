@@ -11,7 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class CharaDetail extends StatelessWidget {
   final String name;
 
-  const CharaDetail({Key? key, required this.name}) : super(key: key);
+  const CharaDetail({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {

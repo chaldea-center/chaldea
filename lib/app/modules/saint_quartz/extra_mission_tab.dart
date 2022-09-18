@@ -5,7 +5,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../descriptors/mission_conds.dart';
 
 class ExtraMissionTab extends StatefulWidget {
-  ExtraMissionTab({Key? key}) : super(key: key);
+  ExtraMissionTab({super.key});
 
   @override
   _ExtraMissionTabState createState() => _ExtraMissionTabState();

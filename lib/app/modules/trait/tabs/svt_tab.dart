@@ -6,7 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 
 class TraitServantTab extends StatelessWidget {
   final int id;
-  const TraitServantTab(this.id, {Key? key}) : super(key: key);
+  const TraitServantTab(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {

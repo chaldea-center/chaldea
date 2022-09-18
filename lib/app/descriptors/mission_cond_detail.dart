@@ -16,15 +16,14 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final InlineSpan? leading;
 
   const MissionCondDetailDescriptor({
-    Key? key,
+    super.key,
     required this.targetNum,
     required this.detail,
     this.style,
     this.textScaleFactor,
     this.leading,
     bool? useAnd,
-  })  : _useAnd = useAnd,
-        super(key: key);
+  }) : _useAnd = useAnd;
 
   @override
   bool? get useAnd {

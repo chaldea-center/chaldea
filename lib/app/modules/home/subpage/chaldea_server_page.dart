@@ -10,7 +10,7 @@ import 'package:chaldea/widgets/tile_items.dart';
 import 'network_settings.dart';
 
 class ChaldeaServerPage extends StatefulWidget {
-  const ChaldeaServerPage({Key? key}) : super(key: key);
+  const ChaldeaServerPage({super.key});
 
   @override
   _ChaldeaServerPageState createState() => _ChaldeaServerPageState();

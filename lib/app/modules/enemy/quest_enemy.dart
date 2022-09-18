@@ -12,8 +12,7 @@ class QuestEnemyDetail extends StatefulWidget {
   final QuestEnemy enemy;
   final Quest? quest;
 
-  const QuestEnemyDetail({Key? key, required this.enemy, this.quest})
-      : super(key: key);
+  const QuestEnemyDetail({super.key, required this.enemy, this.quest});
 
   @override
   State<QuestEnemyDetail> createState() => _QuestEnemyDetailState();
