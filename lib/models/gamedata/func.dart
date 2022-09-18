@@ -162,6 +162,17 @@ class NiceFunction with RouteInfo implements BaseFunction {
           .instance.tmp.gameJson!['baseFunctions']![json['funcId'].toString()]!;
       json.addAll(Map.from(baseFunction));
     }
+    final first = (json['svals'] as List?)?.getOrNull(0);
+    if (first is Map) {
+      for (final key1 in ['svals', 'svals2', 'svals3', 'svals4', 'svals5']) {
+        final svals = json[key1];
+        if (svals is! List) continue;
+        for (int index = 0; index < svals.length; index++) {
+          if (key1 == 'svals' && index == 0) continue;
+          svals[index] = Map.from(first)..addAll(svals[index] as Map);
+        }
+      }
+    }
 
     return _$NiceFunctionFromJson(json);
   }

@@ -120,8 +120,10 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         ...extraActions,
         TextButton(
           onPressed: onTapReset,
-          child: Text(S.of(context).reset.toUpperCase(),
-              style: const TextStyle(color: Colors.redAccent)),
+          child: Text(
+            S.of(context).reset.toUpperCase(),
+            style: const TextStyle(color: Colors.redAccent),
+          ),
         ),
         if (showOk)
           TextButton(
@@ -135,8 +137,9 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         IconButton(icon: const Icon(Icons.replay), onPressed: onTapReset),
         if (showOk)
           IconButton(
-              icon: const Icon(Icons.done),
-              onPressed: () => Navigator.pop(context))
+            icon: const Icon(Icons.done),
+            onPressed: () => Navigator.pop(context),
+          )
       ];
     }
   }

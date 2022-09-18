@@ -176,6 +176,7 @@
   "event_point_reward": "포인트",
   "event_progress": "진행 중인 이벤트",
   "event_quest": "이벤트 퀘스트",
+  "event_recipe": null,
   "event_rerun_replace_grail": "전승결정으로 대체되는 성배의 개수 : {n}/{total}",
   "event_shop": "상점",
   "event_title": "이벤트",

@@ -269,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point_reward": MessageLookupByLibrary.simpleMessage("点数"),
         "event_progress": MessageLookupByLibrary.simpleMessage("进度"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活动关卡"),
+        "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
         "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("商店"),
         "event_title": MessageLookupByLibrary.simpleMessage("活动"),

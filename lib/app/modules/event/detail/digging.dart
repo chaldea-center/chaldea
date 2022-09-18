@@ -48,15 +48,17 @@ class EventDiggingTab extends StatelessWidget {
       children.add(ListTile(
         leading: db.getIconImage(block.image, width: 36, aspectRatio: 1),
         title: Text.rich(TextSpan(children: [
-          CenterWidgetSpan(
-            child: Item.iconBuilder(
-              context: context,
-              item: null,
-              itemId: block.commonConsume.objectId,
-              width: 24,
+          for (final consume in block.consumes) ...[
+            CenterWidgetSpan(
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: consume.objectId,
+                width: 24,
+              ),
             ),
-          ),
-          TextSpan(text: ' ×${block.commonConsume.num}  '),
+            TextSpan(text: ' ×${consume.num}  '),
+          ],
           CenterWidgetSpan(
             child: Item.iconBuilder(
               context: context,

@@ -176,6 +176,7 @@
   "event_point_reward": "نقاط",
   "event_progress": "التقدم",
   "event_quest": "مهام الايفنت",
+  "event_recipe": null,
   "event_rerun_replace_grail": "كريستال الى لور : {n}",
   "event_shop": "المتاجر",
   "event_title": "حدث",

@@ -70,6 +70,11 @@ Event _$EventFromJson(Map json) => Event(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      recipes: (json['recipes'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventRecipe.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       bulletinBoards: (json['bulletinBoards'] as List<dynamic>?)
               ?.map((e) => EventBulletinBoard.fromJson(
                   Map<String, dynamic>.from(e as Map)))
@@ -490,8 +495,11 @@ EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
       extraGifts: (json['extraGifts'] as List<dynamic>)
           .map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      commonConsume: CommonConsume.fromJson(
-          Map<String, dynamic>.from(json['commonConsume'] as Map)),
+      consumes: (json['consumes'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) =>
@@ -575,8 +583,11 @@ EventDigging _$EventDiggingFromJson(Map json) => EventDigging(
 EventDiggingBlock _$EventDiggingBlockFromJson(Map json) => EventDiggingBlock(
       id: json['id'] as int,
       image: json['image'] as String,
-      commonConsume: CommonConsume.fromJson(
-          Map<String, dynamic>.from(json['commonConsume'] as Map)),
+      consumes: (json['consumes'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       objectId: json['objectId'] as int,
       diggingEventPoint: json['diggingEventPoint'] as int,
       blockNum: json['blockNum'] as int,
@@ -596,8 +607,11 @@ EventCooltimeReward _$EventCooltimeRewardFromJson(Map json) =>
       spotId: json['spotId'] as int,
       lv: json['lv'] as int,
       name: json['name'] as String,
-      commonRelease: CommonRelease.fromJson(
-          Map<String, dynamic>.from(json['commonRelease'] as Map)),
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       cooltime: json['cooltime'] as int,
       addEventPointRate: json['addEventPointRate'] as int,
       gifts: (json['gifts'] as List<dynamic>)
@@ -610,6 +624,42 @@ EventCooltime _$EventCooltimeFromJson(Map json) => EventCooltime(
       rewards: (json['rewards'] as List<dynamic>?)
               ?.map((e) => EventCooltimeReward.fromJson(
                   Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+EventRecipeGift _$EventRecipeGiftFromJson(Map json) => EventRecipeGift(
+      idx: json['idx'] as int,
+      displayOrder: json['displayOrder'] as int,
+      topIconId: json['topIconId'] as int? ?? 0,
+      gifts: (json['gifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+EventRecipe _$EventRecipeFromJson(Map json) => EventRecipe(
+      id: json['id'] as int,
+      icon: json['icon'] as String,
+      name: json['name'] as String,
+      maxNum: json['maxNum'] as int,
+      eventPointItem: Item.fromJson(
+          Map<String, dynamic>.from(json['eventPointItem'] as Map)),
+      eventPointNum: json['eventPointNum'] as int,
+      consumes: (json['consumes'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      closedMessage: json['closedMessage'] as String? ?? '',
+      recipeGifts: (json['recipeGifts'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventRecipeGift.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );

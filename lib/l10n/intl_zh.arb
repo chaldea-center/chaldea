@@ -176,6 +176,7 @@
   "event_point_reward": "点数",
   "event_progress": "进度",
   "event_quest": "活动关卡",
+  "event_recipe": "配方",
   "event_rerun_replace_grail": "圣杯替换为传承结晶 {n}/{total} 个",
   "event_shop": "商店",
   "event_title": "活动",

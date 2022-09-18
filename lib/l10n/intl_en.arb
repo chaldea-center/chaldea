@@ -176,6 +176,7 @@
   "event_point_reward": "Points",
   "event_progress": "Progress",
   "event_quest": "Event Quests",
+  "event_recipe": "Recipe",
   "event_rerun_replace_grail": "Grail to crystal: {n}/{total}",
   "event_shop": "Shops",
   "event_title": "Event",

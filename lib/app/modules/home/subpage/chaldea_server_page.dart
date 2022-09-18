@@ -25,8 +25,7 @@ class _ChaldeaServerPageState extends State<ChaldeaServerPage> {
       ),
       body: ListView(children: [
         TileGroup(
-          footer:
-              Language.isCHS ? '对于大陆用户，若海外路线可正常使用，请尽量使用海外路线以节约流量费！谢谢！' : null,
+          footer: Language.isCHS ? '对于大陆用户，若海外路线可正常使用，请尽量使用海外路线以节约流量费！' : null,
           children: [
             for (final useProxy in [true, false])
               RadioListTile<bool>(

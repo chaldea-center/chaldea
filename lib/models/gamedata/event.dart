@@ -33,6 +33,7 @@ class Event {
   List<EventTower> towers;
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
+  List<EventRecipe> recipes;
   List<EventBulletinBoard> bulletinBoards;
   EventDigging? digging;
   EventCooltime? cooltime;
@@ -64,6 +65,7 @@ class Event {
     this.towers = const [],
     this.lotteries = const [],
     this.treasureBoxes = const [],
+    this.recipes = const [],
     this.bulletinBoards = const [],
     this.digging,
     this.cooltime,
@@ -807,7 +809,8 @@ class EventTreasureBox {
   List<EventTreasureBoxGift> treasureBoxGifts;
   int maxDrawNumOnce;
   List<Gift> extraGifts;
-  CommonConsume commonConsume;
+  // CommonConsume commonConsume;
+  List<CommonConsume> consumes;
 
   EventTreasureBox({
     required this.slot,
@@ -816,7 +819,7 @@ class EventTreasureBox {
     required this.treasureBoxGifts,
     required this.maxDrawNumOnce,
     required this.extraGifts,
-    required this.commonConsume,
+    this.consumes = const [],
   });
 
   factory EventTreasureBox.fromJson(Map<String, dynamic> json) =>
@@ -935,7 +938,8 @@ class EventDigging {
 class EventDiggingBlock {
   int id;
   String image;
-  CommonConsume commonConsume;
+  // CommonConsume commonConsume;
+  List<CommonConsume> consumes;
   int objectId;
   int diggingEventPoint;
   int blockNum;
@@ -943,7 +947,7 @@ class EventDiggingBlock {
   EventDiggingBlock({
     required this.id,
     required this.image,
-    required this.commonConsume,
+    this.consumes = const [],
     required this.objectId,
     required this.diggingEventPoint,
     required this.blockNum,
@@ -974,7 +978,8 @@ class EventCooltimeReward {
   int spotId;
   int lv;
   String name;
-  CommonRelease commonRelease;
+  // CommonRelease commonRelease;
+  List<CommonRelease> releaseConditions;
   int cooltime;
   int addEventPointRate;
   List<Gift> gifts;
@@ -984,7 +989,7 @@ class EventCooltimeReward {
     required this.spotId,
     required this.lv,
     required this.name,
-    required this.commonRelease,
+    this.releaseConditions = const [],
     required this.cooltime,
     required this.addEventPointRate,
     required this.gifts,
@@ -1005,6 +1010,54 @@ class EventCooltime {
 
   factory EventCooltime.fromJson(Map<String, dynamic> json) =>
       _$EventCooltimeFromJson(json);
+}
+
+@JsonSerializable()
+class EventRecipeGift {
+  int idx;
+  int displayOrder;
+  int topIconId;
+  List<Gift> gifts;
+
+  EventRecipeGift({
+    required this.idx,
+    required this.displayOrder,
+    this.topIconId = 0,
+    this.gifts = const [],
+  });
+
+  factory EventRecipeGift.fromJson(Map<String, dynamic> json) =>
+      _$EventRecipeGiftFromJson(json);
+}
+
+@JsonSerializable()
+class EventRecipe {
+  int id;
+  String icon;
+  String name;
+  int maxNum;
+  Item eventPointItem;
+  int eventPointNum;
+  List<CommonConsume> consumes;
+  List<CommonRelease> releaseConditions;
+  String closedMessage;
+  List<EventRecipeGift> recipeGifts;
+
+  EventRecipe({
+    required this.id,
+    required this.icon,
+    required this.name,
+    required this.maxNum,
+    required this.eventPointItem,
+    required this.eventPointNum,
+    this.consumes = const [],
+    this.releaseConditions = const [],
+    this.closedMessage = '',
+    this.recipeGifts = const [],
+  });
+
+  factory EventRecipe.fromJson(Map<String, dynamic> json) =>
+      _$EventRecipeFromJson(json);
 }
 
 @JsonSerializable()

@@ -2000,6 +2000,17 @@ class S {
     );
   }
 
+  /// `Recipe`
+  String get event_recipe {
+    return Intl.message(
+      'Recipe',
+      name: 'event_recipe',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grail to crystal: {n}/{total}`
   String event_rerun_replace_grail(Object n, Object total) {
     return Intl.message(

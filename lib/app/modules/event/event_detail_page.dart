@@ -24,6 +24,7 @@ import 'detail/digging.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/points.dart';
+import 'detail/recipe.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
 import 'detail/treasure_box.dart';
@@ -131,6 +132,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.cooltime != null) {
       _addTab(S.current.event_cooltime, EventCooltimePage(event: event));
+    }
+    if (event.recipes.isNotEmpty) {
+      _addTab(S.current.event_recipe, EventRecipePage(event: event));
     }
     if (db.gameData.craftEssences.values
             .any((ce) => ce.eventSkills(event).isNotEmpty) ||
