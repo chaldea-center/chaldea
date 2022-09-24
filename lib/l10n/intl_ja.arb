@@ -426,6 +426,7 @@
   "not_outdated": "期限切れなし",
   "np_charge": null,
   "np_charge_type_instant": null,
+  "np_charge_type_instant_sum": null,
   "np_charge_type_perturn": null,
   "np_gain_mod": "被ダメージ補正",
   "np_short": "宝具",

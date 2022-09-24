@@ -426,6 +426,7 @@
   "not_outdated": null,
   "np_charge": null,
   "np_charge_type_instant": null,
+  "np_charge_type_instant_sum": null,
   "np_charge_type_perturn": null,
   "np_gain_mod": "غير منتهية الصلاحية",
   "np_short": "NP",

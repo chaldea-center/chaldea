@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
+import '../userdata/filter_data.dart';
 import '_helper.dart';
 import 'gamedata.dart';
 

@@ -563,6 +563,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_outdated": MessageLookupByLibrary.simpleMessage("未過期"),
         "np_charge": MessageLookupByLibrary.simpleMessage("NP充能"),
         "np_charge_type_instant": MessageLookupByLibrary.simpleMessage("直冲"),
+        "np_charge_type_instant_sum":
+            MessageLookupByLibrary.simpleMessage("直冲总计"),
         "np_charge_type_perturn": MessageLookupByLibrary.simpleMessage("缓冲"),
         "np_gain_mod": MessageLookupByLibrary.simpleMessage("敵受擊補正"),
         "np_short": MessageLookupByLibrary.simpleMessage("寶具"),

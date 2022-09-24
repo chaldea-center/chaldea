@@ -426,6 +426,7 @@
   "not_outdated": "未過期",
   "np_charge": null,
   "np_charge_type_instant": null,
+  "np_charge_type_instant_sum": null,
   "np_charge_type_perturn": null,
   "np_gain_mod": "敵受擊補正",
   "np_short": "寶具",

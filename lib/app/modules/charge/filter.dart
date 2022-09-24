@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
 
 enum NpChargeType {
+  instantSum,
   instant,
   perTurn,
   special,
@@ -15,6 +17,8 @@ enum NpChargeType {
 extension NpChargeTypeX on NpChargeType {
   String get shownName {
     switch (this) {
+      case NpChargeType.instantSum:
+        return '${S.current.np_charge_type_instant_sum}*';
       case NpChargeType.instant:
         return S.current.np_charge_type_instant;
       case NpChargeType.perTurn:
@@ -27,7 +31,7 @@ extension NpChargeTypeX on NpChargeType {
 
 class NpFilterData {
   int skillLv = 10; // -1-disable, 0-class passive, 1-10,
-  int tdLv = 1; // 0-disable, 1-5
+  int tdLv = 0; // 0-disable, 1-5
   int tdOC = 1; // 1-5
 
   final type = FilterRadioData.nonnull(NpChargeType.instant);
@@ -42,7 +46,8 @@ class NpFilterData {
 
   void reset() {
     skillLv = 10;
-    tdLv = tdOC = 1;
+    tdLv = 0;
+    tdOC = 1;
     for (var v in <FilterGroupData>[
       type,
       svtClass,
@@ -127,6 +132,10 @@ class _NpChargeFilterPageState
             update();
           },
         ),
+        SFooter(
+          '* ${S.current.np_charge_type_instant_sum} testing...',
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 5),
+        ),
         getGroup(header: S.current.level, children: [
           DropdownButton<int>(
             value: filterData.skillLv,
@@ -182,7 +191,6 @@ class _NpChargeFilterPageState
                   },
           ),
         ]),
-        buildClassFilter(filterData.svtClass),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: const [...NpFilterData.kEffectTargets, EffectTarget.special],
@@ -192,6 +200,9 @@ class _NpChargeFilterPageState
             update();
           },
         ),
+        buildGroupDivider(
+            Text('General', style: Theme.of(context).textTheme.caption)),
+        buildClassFilter(filterData.svtClass),
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),
           options: Region.values,

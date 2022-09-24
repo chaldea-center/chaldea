@@ -315,4 +315,40 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
       ),
     );
   }
+
+  Widget buildGroupDivider(Widget? header) {
+    if (header == null) {
+      return const Divider(
+        height: 16,
+        indent: 12,
+        endIndent: 12,
+        thickness: 1,
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Expanded(
+            child: Divider(
+              height: 16,
+              indent: 12,
+              endIndent: 8,
+              thickness: 1,
+            ),
+          ),
+          header,
+          const Expanded(
+            child: Divider(
+              height: 16,
+              indent: 8,
+              endIndent: 12,
+              thickness: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

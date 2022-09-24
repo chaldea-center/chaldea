@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -29,19 +31,26 @@ class _NpChargePageState extends State<NpChargePage> {
 
   @override
   Widget build(BuildContext context) {
-    final keys = groupedData.keys.toList();
-    keys.sort2((e) => groupedData[e]!.first.sortValue, reversed: true);
+    List<Widget> children =
+        filterData.type.radioValue == NpChargeType.instantSum
+            ? sumType()
+            : normalType();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.np_charge),
-      ),
+      appBar: AppBar(title: Text(S.current.np_charge)),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) =>
-                  rowBuilder(index, groupedData[keys[index]]!),
-              itemCount: keys.length,
+              itemBuilder: (context, index) => DecoratedBox(
+                decoration: BoxDecoration(
+                    color: index.isEven ? null : Theme.of(context).cardColor),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  child: children[index],
+                ),
+              ),
+              itemCount: children.length,
             ),
           ),
           kDefaultDivider,
@@ -67,69 +76,179 @@ class _NpChargePageState extends State<NpChargePage> {
     );
   }
 
-  Widget rowBuilder(int index, List<_ChargeData> details) {
-    Widget child = Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 4,
-      runSpacing: 4,
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.secondary),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: SizedBox(
-            height: 45,
-            width: 45,
-            child: Center(
-              child: AutoSizeText(
-                details.first.value,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                maxLines: 1,
-                minFontSize: 8,
-                maxFontSize: 12,
+  List<Widget> normalType() {
+    List<Widget> children = [];
+    final keys = groupedData.keys.toList();
+    keys.sort2((e) => groupedData[e]!.first.sortValue, reversed: true);
+    for (final key in keys) {
+      final details = groupedData[key]!;
+      children.add(Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        runSpacing: 4,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border:
+                  Border.all(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: SizedBox(
+              height: 45,
+              width: 45,
+              child: Center(
+                child: AutoSizeText(
+                  details.first.value,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  minFontSize: 8,
+                  maxFontSize: 12,
+                ),
               ),
             ),
           ),
-        ),
-        for (final detail in details)
-          Tooltip(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withAlpha(200),
-                  offset: const Offset(2, 2),
-                  blurRadius: 2,
-                  spreadRadius: 2,
-                )
-              ],
-            ),
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            waitDuration: const Duration(seconds: 1),
-            richMessage: WidgetSpan(child: _tooltip(detail)),
-            child: detail.svt.iconBuilder(
-              context: context,
-              width: 45,
-              text: detail.pos,
-            ),
-          )
-      ],
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          color: index.isEven ? null : Theme.of(context).cardColor),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: child,
-      ),
-    );
+          for (final detail in details)
+            Tooltip(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withAlpha(200),
+                    offset: const Offset(2, 2),
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                  )
+                ],
+              ),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              waitDuration: const Duration(seconds: 1),
+              richMessage: WidgetSpan(child: _tooltipMsg(detail)),
+              child: detail.svt.iconBuilder(
+                context: context,
+                width: 45,
+                text: detail.pos,
+              ),
+            )
+        ],
+      ));
+    }
+    return children;
   }
 
-  Widget _tooltip(_ChargeData detail) {
+  // HOW TERRIBLE!!!
+  List<Widget> sumType() {
+    // svtId, skillId, nps
+    Map<int, Map<int, List<int>>> skillDetails = {};
+    for (final details in groupedData.values) {
+      for (final detail in details) {
+        // [self,other,all,special]
+        final nps = skillDetails
+            .putIfAbsent(detail.svt.collectionNo, () => {})
+            .putIfAbsent(detail.skill.id, () => [0, 0, 0, 0]);
+        switch (detail.func.effectTarget) {
+          case EffectTarget.self:
+            nps[0] += detail.sortValue;
+            break;
+          case EffectTarget.ptAll:
+            nps[0] += detail.sortValue;
+            nps[1] += detail.sortValue;
+            nps[2] += detail.sortValue;
+            break;
+          case EffectTarget.ptOne:
+            nps[1] += detail.sortValue;
+            break;
+          case EffectTarget.ptOther:
+            nps[1] += detail.sortValue;
+            break;
+          case EffectTarget.enemy:
+          case EffectTarget.enemyAll:
+          case EffectTarget.special:
+            nps[3] = max(detail.sortValue, nps[3]);
+            break;
+        }
+      }
+    }
+    // svtId, pos, nps
+    Map<int, Map<String, List<int>>> svtDetails = {};
+    for (final details in groupedData.values) {
+      for (final detail in details) {
+        final svtDetail =
+            svtDetails.putIfAbsent(detail.svt.collectionNo, () => {});
+        final nps = svtDetail[detail.pos] ??= [0, 0, 0, 0];
+        final skillNps =
+            skillDetails[detail.svt.collectionNo]![detail.skill.id]!;
+        for (int index = 0; index < nps.length; index++) {
+          nps[index] = max(nps[index], skillNps[index]);
+        }
+      }
+    }
+    // svtId, maxNp
+    Map<int, int> svtNps = {};
+    for (final svtId in svtDetails.keys) {
+      final nps = [0, 0, 0, 0];
+      for (final detail in svtDetails[svtId]!.values) {
+        nps[0] = nps[0] + detail[0];
+        nps[1] = nps[1] + detail[1];
+        nps[2] = nps[2] + detail[2];
+        nps[3] = nps[3] + detail[3];
+      }
+      svtNps[svtId] = Maths.max(nps, 0);
+    }
+    // maxNp, <servants>
+    Map<int, List<int>> groupedServants = {};
+    for (final svtId in svtNps.keys) {
+      groupedServants.putIfAbsent(svtNps[svtId]!, () => []).add(svtId);
+    }
+    for (final svts in groupedServants.values) {
+      svts.sort((a, b) => SvtFilterData.compare(
+          db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b],
+          keys: filterData.sortKeys, reversed: filterData.sortReversed));
+    }
+    List<Widget> children = [];
+    final keys = groupedServants.keys.toList()..sort((a, b) => b - a);
+    for (final key in keys) {
+      final svtIds = groupedServants[key]!;
+      children.add(Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        runSpacing: 4,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border:
+                  Border.all(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: SizedBox(
+              height: 45,
+              width: 45,
+              child: Center(
+                child: AutoSizeText(
+                  (key / 100).format(compact: false),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  minFontSize: 8,
+                  maxFontSize: 12,
+                ),
+              ),
+            ),
+          ),
+          for (final svtId in svtIds)
+            db.gameData.servantsNoDup[svtId]
+                    ?.iconBuilder(context: context, width: 45) ??
+                Text(svtId.toString()),
+        ],
+      ));
+    }
+
+    return children;
+  }
+
+  Widget _tooltipMsg(_ChargeData detail) {
     final skill = detail.skill;
     final header = Row(
       mainAxisSize: MainAxisSize.min,
@@ -335,6 +454,7 @@ class _NpChargePageState extends State<NpChargePage> {
       details.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
           keys: filterData.sortKeys, reversed: filterData.sortReversed));
     }
+    print('${groupedData.length} groups');
   }
 
   Iterable<_ChargeData> checkSkill(
@@ -402,7 +522,35 @@ class _NpChargePageState extends State<NpChargePage> {
     }
     if (sortValue == null || value == null || type == null) return null;
     if (isTrigger) type = NpChargeType.special;
-    if (!filterData.type.matchOne(type)) return null;
+    final requiredType = filterData.type.radioValue!;
+    if (requiredType != type) {
+      if (requiredType == NpChargeType.instantSum &&
+          type == NpChargeType.instant) {
+        // pass
+      } else {
+        return null;
+      }
+    }
+    String? pos = skill is BaseTd
+        ? 'NP'
+        : skill is NiceSkill
+            ? skill.type == SkillType.active
+                ? skill.num.toString()
+                : " " // passive
+            : null;
+    if (pos == null) {
+      final rankups = svt.script.skillRankUp ?? {};
+      for (final srcSkillId in rankups.keys) {
+        if (rankups[srcSkillId]!.contains(skill.id)) {
+          final srcSkill =
+              svt.skills.firstWhereOrNull((s) => s.id == srcSkillId);
+          if (srcSkill != null) {
+            pos = srcSkill.num.toString();
+          }
+        }
+      }
+    }
+
     return _ChargeData(
       type: type,
       svt: svt,
@@ -411,13 +559,7 @@ class _NpChargePageState extends State<NpChargePage> {
       level: lv,
       sortValue: sortValue,
       value: value,
-      pos: skill is BaseTd
-          ? 'NP'
-          : skill is NiceSkill
-              ? skill.type == SkillType.active
-                  ? skill.num.toString()
-                  : ""
-              : '?',
+      pos: pos ?? '?',
       // tooltip: buildTooltip(skill),
     );
   }
@@ -451,3 +593,12 @@ class _ChargeData {
   bool get isPassive =>
       skill is BaseSkill && (skill as BaseSkill).type == SkillType.passive;
 }
+
+// class _ChargeSkill{
+//   SkillOrTd skill;
+//   List<NiceFunction> funcs;
+//   _ChargeSkill({
+//     required this.skill,
+//     required this.func,
+//   });
+// }

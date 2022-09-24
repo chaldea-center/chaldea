@@ -4757,6 +4757,17 @@ class S {
     );
   }
 
+  /// `Instant Sum`
+  String get np_charge_type_instant_sum {
+    return Intl.message(
+      'Instant Sum',
+      name: 'np_charge_type_instant_sum',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Per Turn`
   String get np_charge_type_perturn {
     return Intl.message(

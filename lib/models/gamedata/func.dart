@@ -34,6 +34,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
   bool get isEnemyOnlyFunc => _baseFunc.isEnemyOnlyFunc;
   @override
   Transl<String, String> get lPopupText => _baseFunc.lPopupText;
+  @override
+  EffectTarget get effectTarget => _baseFunc.effectTarget;
 
   List<DataVals> svals;
   List<DataVals>? svals2;
@@ -156,13 +158,16 @@ class NiceFunction with RouteInfo implements BaseFunction {
     ];
   }
 
+  /// updating if [_$NiceFunctionFromJson] changed
   factory NiceFunction.fromJson(Map<String, dynamic> json) {
+    _$NiceFunctionFromJson; // avoid unused warning
     if (json['funcType'] == null) {
       final baseFunction = GameDataLoader
           .instance.tmp.gameJson!['baseFunctions']![json['funcId'].toString()]!;
       json.addAll(Map.from(baseFunction));
     }
     final first = (json['svals'] as List?)?.getOrNull(0);
+    DataVals? firstVals;
     if (first is Map) {
       for (final key1 in ['svals', 'svals2', 'svals3', 'svals4', 'svals5']) {
         final svals = json[key1];
@@ -172,9 +177,66 @@ class NiceFunction with RouteInfo implements BaseFunction {
           svals[index] = Map.from(first)..addAll(svals[index] as Map);
         }
       }
+      firstVals = DataVals.fromJson(Map<String, dynamic>.from(first));
+    }
+    DataVals _toVals(dynamic e) {
+      if ((e as Map).isEmpty && firstVals != null) return firstVals;
+      return DataVals.fromJson(Map<String, dynamic>.from(e));
     }
 
-    return _$NiceFunctionFromJson(json);
+    return NiceFunction(
+      funcId: json['funcId'] as int,
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
+          FuncType.none,
+      funcTargetType:
+          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam:
+          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcPopupText: json['funcPopupText'] as String? ?? '',
+      funcPopupIcon: json['funcPopupIcon'] as String?,
+      functvals: (json['functvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(growable: false) ??
+          const [],
+      funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(growable: false) ??
+          const [],
+      funcGroup: (json['funcGroup'] as List<dynamic>?)
+              ?.map((e) =>
+                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(growable: false) ??
+          const [],
+      traitVals: (json['traitVals'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(growable: false) ??
+          const [],
+      buffs: (json['buffs'] as List<dynamic>?)
+              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(growable: false) ??
+          const [],
+      svals: (json['svals'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+      svals2: (json['svals2'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+      svals3: (json['svals3'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+      svals4: (json['svals4'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+      svals5: (json['svals5'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+      followerVals: (json['followerVals'] as List<dynamic>?)
+          ?.map(_toVals)
+          .toList(growable: false),
+    );
   }
 
   static Iterable<T> filterFuncs<T extends BaseFunction>({
@@ -313,6 +375,7 @@ class BaseFunction with RouteInfo {
   bool get isEnemyOnlyFunc =>
       (funcTargetTeam == FuncApplyTarget.enemy && !funcTargetType.isEnemy) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
+  EffectTarget get effectTarget => EffectTargetX.fromFunc(funcTargetType);
 }
 
 @JsonSerializable()

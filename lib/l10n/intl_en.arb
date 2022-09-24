@@ -426,6 +426,7 @@
   "not_outdated": "Not Outdated",
   "np_charge": "NP Charge",
   "np_charge_type_instant": "Instant",
+  "np_charge_type_instant_sum": "Instant Sum",
   "np_charge_type_perturn": "Per Turn",
   "np_gain_mod": "NP Gain Mod",
   "np_short": "NP",

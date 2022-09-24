@@ -673,6 +673,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_charge": MessageLookupByLibrary.simpleMessage("NP Charge"),
         "np_charge_type_instant":
             MessageLookupByLibrary.simpleMessage("Instant"),
+        "np_charge_type_instant_sum":
+            MessageLookupByLibrary.simpleMessage("Instant Sum"),
         "np_charge_type_perturn":
             MessageLookupByLibrary.simpleMessage("Per Turn"),
         "np_gain_mod": MessageLookupByLibrary.simpleMessage("NP Gain Mod"),
