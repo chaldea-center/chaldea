@@ -618,4 +618,11 @@ class _SpecialTransl {
         na: '(per target)',
         kr: '(목표당)',
       );
+  String get funcSupportOnly => M.of(
+        jp: '[サポート時]',
+        cn: '[助战时]',
+        tw: "[支援时]",
+        na: '[Support Only]',
+        kr: '[서포트 시는]',
+      );
 }

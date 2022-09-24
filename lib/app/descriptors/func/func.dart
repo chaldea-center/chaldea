@@ -84,6 +84,7 @@ class _DescriptorWrapper extends StatelessWidget {
   final Widget? trailing;
   final List<Widget> lvCells;
   final List<Widget> ocCells;
+  final List<Widget> supportCells;
   final int? selected;
 
   const _DescriptorWrapper({
@@ -91,6 +92,7 @@ class _DescriptorWrapper extends StatelessWidget {
     required this.trailing,
     this.lvCells = const [],
     this.ocCells = const [],
+    this.supportCells = const [],
     this.selected,
   });
 
@@ -118,14 +120,17 @@ class _DescriptorWrapper extends StatelessWidget {
           ],
         ));
       }
-      for (int cellIndex = 0; cellIndex < 2; cellIndex++) {
-        final _cells = [lvCells, ocCells][cellIndex];
+      final cellsList = [lvCells, ocCells, supportCells];
+      for (int cellIndex = 0; cellIndex < cellsList.length; cellIndex++) {
+        final _cells = cellsList[cellIndex];
         if (_cells.isEmpty) continue;
         List<Widget> rows = [];
-        int rowCount = (_cells.length / perLine).ceil();
+        int _perLine = perLine;
+        if (_cells.length == 1) _perLine = 1;
+        int rowCount = (_cells.length / _perLine).ceil();
         for (int i = 0; i < rowCount; i++) {
           List<Widget> cols = [];
-          for (int j = i * perLine; j < (i + 1) * perLine; j++) {
+          for (int j = i * _perLine; j < (i + 1) * _perLine; j++) {
             Widget cell = _cells.getOrNull(j) ?? const SizedBox();
             cell = Padding(
               padding: const EdgeInsets.symmetric(vertical: 2),
@@ -310,6 +315,7 @@ class FuncDescriptor extends StatelessWidget {
     Widget trailing;
     List<Widget> lvCells = [];
     List<Widget> ocCells = [];
+    List<Widget> supportCells = [];
     trailing = ValDsc(
       func: func,
       vals: staticVal,
@@ -318,7 +324,8 @@ class FuncDescriptor extends StatelessWidget {
       ignoreCount: true,
     );
 
-    Widget _listVal(DataVals mVals, DataVals? oVals, int? index) {
+    Widget _listVal(DataVals mVals, DataVals? oVals, int? index,
+        {bool support = false}) {
       Widget cell = ValDsc(
         func: func,
         vals: mVals,
@@ -327,6 +334,7 @@ class FuncDescriptor extends StatelessWidget {
             ? Theme.of(context).colorScheme.secondary
             : null,
         inList: true,
+        supportOnly: support,
       );
       return cell;
     }
@@ -344,6 +352,13 @@ class FuncDescriptor extends StatelessWidget {
           mutatingOCVals.length,
           (index) => _listVal(
               mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
+    }
+    if (func.followerVals?.isNotEmpty == true) {
+      // doesn't split static or mutating vals, it is rarely used.
+      supportCells.addAll(List.generate(
+          func.followerVals!.length,
+          (index) =>
+              _listVal(func.followerVals![index], null, index, support: true)));
     }
 
     DataVals? vals = func.svals.getOrNull(0);
@@ -643,6 +658,7 @@ class FuncDescriptor extends StatelessWidget {
       trailing: trailing,
       lvCells: lvCells,
       ocCells: ocCells,
+      supportCells: supportCells,
       selected: level,
     );
 

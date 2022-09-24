@@ -83,6 +83,7 @@ class ValDsc extends StatelessWidget {
   final bool ignoreCount;
   final Color? color;
   final bool inList;
+  final bool supportOnly;
 
   ValDsc({
     super.key,
@@ -93,6 +94,7 @@ class ValDsc extends StatelessWidget {
     this.ignoreRate,
     this.ignoreCount = false,
     this.inList = false,
+    this.supportOnly = false,
   });
 
   final List<String> parts = [];
@@ -107,10 +109,12 @@ class ValDsc extends StatelessWidget {
         color: Theme.of(context).textTheme.caption?.color,
       );
     }
+    final text =
+        parts.isEmpty ? vals.Value?.toString() ?? empty : parts.join(', ');
     return InkWell(
       child: Text(
-        parts.isEmpty ? vals.Value?.toString() ?? empty : parts.join(', '),
-        textAlign: TextAlign.center,
+        supportOnly ? '${Transl.special.funcSupportOnly} $text' : text,
+        textAlign: supportOnly ? TextAlign.end : TextAlign.center,
         style: style,
       ),
       onTap: () {
