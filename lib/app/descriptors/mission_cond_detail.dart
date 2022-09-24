@@ -31,6 +31,14 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
     final type = CustomMission.kDetailCondMapping[detail.missionCondType];
     switch (type) {
       case CustomMissionType.trait:
+        // https://github.com/atlasacademy/apps/commit/5f989cd9979a3f6313cc3e7eb349f7487bf607a7
+        if (detail.missionCondType ==
+            DetailCondType.enemyIndividualityKillNum) {
+          return false;
+        } else if (detail.missionCondType ==
+            DetailCondType.defeatEnemyIndividuality) {
+          return true;
+        }
         return true;
       case CustomMissionType.questTrait:
         return false;

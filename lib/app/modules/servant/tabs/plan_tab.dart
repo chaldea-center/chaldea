@@ -475,8 +475,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     WidgetBuilder? detailPageBuilder,
   }) {
     assert(minVal <= start && start <= maxVal);
+    start = start.clamp(minVal, maxVal);
     if (end != null) {
       assert(start <= end && end <= maxVal);
+      end = end.clamp(start, maxVal);
     }
     labelFormatter ??= (v) => v.toString();
     trailingLabelFormatter ??= (a, b) {

@@ -1227,8 +1227,8 @@ enum DetailMissionCondLinkType {
 /// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
 class DetailCondType {
   const DetailCondType._();
-  static const int enemyKillNum = 1;
-  static const int enemyIndividualityKillNum = 2;
+  static const int enemyKillNum = 1; // traits AND
+  static const int enemyIndividualityKillNum = 2; // traits OR
   static const int itemGetTotal = 3;
   static const int battleSvtInDeck = 4; // Unused
   static const int battleSvtEquipInDeck = 5; // Unused

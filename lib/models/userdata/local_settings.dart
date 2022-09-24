@@ -190,8 +190,8 @@ class DisplaySettings {
     validateSvtTabs();
   }
   void validateSvtTabs() {
+    final _unsorted = List.of(sortedSvtTabs);
     sortedSvtTabs = List.of(SvtTab.values);
-    final _unsorted = List.of(SvtTab.values);
     sortedSvtTabs.sort2((a) {
       int index = _unsorted.indexOf(a);
       return index >= 0 ? index : SvtTab.values.indexOf(a);

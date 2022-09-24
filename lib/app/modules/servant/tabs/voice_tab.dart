@@ -263,8 +263,9 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       });
       final event = _getEvent([line]);
       if (event != null) {
-        text =
-            text.replaceFirst(event.name, event.lName.l.replaceAll('\n', ' '));
+        text = text.replaceAll('\n', '');
+        text = text.replaceFirst(event.name.replaceAll('\n', ''),
+            event.lName.l.replaceAll('\n', ' '));
       }
       return text;
     }
