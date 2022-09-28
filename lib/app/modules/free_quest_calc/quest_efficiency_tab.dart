@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -60,9 +63,11 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   double getBondEff(LPVariable variable) {
     final data = db.gameData.dropRate.newData;
     final index = data.questIds.indexOf(variable.name);
-    final bond = data.bonds.getOrNull(index),
-        ap = data.apCosts.getOrNull(index);
+    int? bond = data.bonds.getOrNull(index), ap = data.apCosts.getOrNull(index);
     if (bond != null && ap != null) {
+      final bondPercent = widget.solution?.params?.bondBonusPercent ?? 0,
+          bondCount = widget.solution?.params?.bondBonusCount ?? 0;
+      bond = (bond * (1 + bondPercent * 0.05) + bondCount * 50).toInt();
       return bond / ap;
     }
     return double.negativeInfinity;
@@ -193,7 +198,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   }
 
   Widget _buildButtonBar() {
-    double height = Theme.of(context).iconTheme.size ?? 48;
+    double height = 36;
     List<int> items = allItems.toList()
       ..sort2((e) => db.gameData.items[e]?.priority ?? e);
     List<Widget> children = [];
@@ -209,7 +214,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           });
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 2),
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -231,8 +236,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -263,6 +268,48 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text('${S.current.event_bonus}(${S.current.bond})'),
+            ),
+            DropdownButton<int>(
+              isDense: true,
+              value: widget.solution?.params?.bondBonusPercent ?? 0,
+              items: [
+                for (int index = 0; index <= 9; index++)
+                  DropdownMenuItem(
+                    value: index,
+                    child: Text('+${index * 5}%', textScaleFactor: 0.9),
+                  ),
+              ],
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) widget.solution?.params?.bondBonusPercent = v;
+                });
+              },
+            ),
+            const SizedBox(width: 8),
+            DropdownButton<int>(
+              isDense: true,
+              value: widget.solution?.params?.bondBonusCount ?? 0,
+              items: [
+                for (int index = 0; index <= 2; index++)
+                  DropdownMenuItem(
+                    value: index,
+                    child: Text('+${index * 50}', textScaleFactor: 0.9),
+                  ),
+              ],
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) widget.solution?.params?.bondBonusCount = v;
+                });
+              },
+            ),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             IconButton(
               icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
               color: Theme.of(context).buttonTheme.colorScheme?.secondary,
@@ -271,6 +318,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 setState(() {
                   matchAll = !matchAll;
                 });
+                EasyLoading.showToast(
+                    matchAll ? 'Contains All' : 'Contains Any');
               },
             ),
             Expanded(

@@ -27,6 +27,10 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
           useAP20: $checkedConvert('useAP20', (v) => v as bool? ?? true),
           dailyCostHalf:
               $checkedConvert('dailyCostHalf', (v) => v as bool? ?? false),
+          bondBonusPercent:
+              $checkedConvert('bondBonusPercent', (v) => v as int? ?? 0),
+          bondBonusCount:
+              $checkedConvert('bondBonusCount', (v) => v as int? ?? 0),
           planItemCounts: $checkedConvert(
               'planItemCounts',
               (v) => (v as Map?)?.map(
@@ -59,6 +63,8 @@ Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) =>
       'integerResult': instance.integerResult,
       'useAP20': instance.useAP20,
       'dailyCostHalf': instance.dailyCostHalf,
+      'bondBonusPercent': instance.bondBonusPercent,
+      'bondBonusCount': instance.bondBonusCount,
     };
 
 LPSolution _$LPSolutionFromJson(Map json) => $checkedCreate(

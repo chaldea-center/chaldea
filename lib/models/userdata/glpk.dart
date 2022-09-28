@@ -49,6 +49,10 @@ class FreeLPParams {
 
   bool dailyCostHalf;
 
+  /// bond efficiency, percent*5, count*50
+  int bondBonusPercent;
+  int bondBonusCount;
+
   /// convert two key-value list to map
   Map<int, int> get objectiveCounts =>
       Map.fromIterable(rows, value: (k) => getPlanItemCount(k));
@@ -73,6 +77,8 @@ class FreeLPParams {
     this.integerResult = false,
     this.useAP20 = true,
     this.dailyCostHalf = false,
+    this.bondBonusPercent = 0,
+    this.bondBonusCount = 0,
     Map<int, int>? planItemCounts,
     Map<int, double>? planItemWeights,
   })  : rows = rows ?? [],
@@ -92,6 +98,8 @@ class FreeLPParams {
         integerResult = other.integerResult,
         useAP20 = other.useAP20,
         dailyCostHalf = other.dailyCostHalf,
+        bondBonusPercent = other.bondBonusPercent,
+        bondBonusCount = other.bondBonusCount,
         planItemCounts = Map.of(other.planItemCounts),
         planItemWeights = Map.of(other.planItemWeights);
 
@@ -99,6 +107,8 @@ class FreeLPParams {
 
   void validate() {
     rows.removeWhere((e) => !sheet.itemIds.contains(e));
+    bondBonusPercent = bondBonusPercent.clamp(0, 9);
+    bondBonusCount = bondBonusCount.clamp2(0, 2);
   }
 
   void sortByItem() {
