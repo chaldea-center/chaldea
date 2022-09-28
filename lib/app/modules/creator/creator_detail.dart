@@ -22,13 +22,19 @@ class CreatorDetail extends StatelessWidget {
         _name = name;
 
   List<String> _split(String name) {
-    return name.split(RegExp(r'[&＆]')).map((e) => e.trim()).toList();
+    return name
+        .split(RegExp(r'[&＆]'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
   }
 
   Transl<String, String> lName([String? name]) => _isCV
       ? Transl.cvNames(name ?? _name)
       : Transl.illustratorNames(name ?? _name);
   bool ckSvt(Servant svt) {
+    // No.83 Solomon
+    // if (_name.isEmpty) return false;
     if (_isCV) {
       return svt.profile.cv == _name || _split(svt.profile.cv).contains(_name);
     } else {
@@ -39,6 +45,8 @@ class CreatorDetail extends StatelessWidget {
 
   bool ckCE(CraftEssence ce) {
     if (_isCV) {
+      // most of CEs has no cv
+      if (_name.isEmpty) return false;
       return ce.profile.cv == _name || _split(ce.profile.cv).contains(_name);
     } else {
       return ce.profile.illustrator == _name ||
@@ -47,6 +55,7 @@ class CreatorDetail extends StatelessWidget {
   }
 
   bool ckCC(CommandCode cc) {
+    if (_name.isEmpty) return false;
     if (_isCV) return false;
     return cc.illustrator == _name || _split(cc.illustrator).contains(_name);
   }
@@ -146,13 +155,10 @@ class CreatorDetail extends StatelessWidget {
         ),
       ]);
     }
-    servants.sort2((e) => e.collectionNo);
-    ces.sort2((e) => e.collectionNo);
-    ccs.sort2((e) => e.collectionNo);
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
-          lName().l,
+          '${_isCV ? S.current.info_cv : S.current.illustrator}: ${lName().l}',
           minFontSize: 12,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

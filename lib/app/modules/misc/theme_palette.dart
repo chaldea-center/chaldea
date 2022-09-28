@@ -42,15 +42,22 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
   }
 }
 
-class _PaletteForTheme extends StatelessWidget {
+class _PaletteForTheme extends StatefulWidget {
   const _PaletteForTheme();
+
+  @override
+  State<_PaletteForTheme> createState() => _PaletteForThemeState();
+}
+
+class _PaletteForThemeState extends State<_PaletteForTheme> {
+  Color? bgColor;
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final colorScheme = themeData.colorScheme;
     return Container(
-      color: themeData.scaffoldBackgroundColor,
+      color: bgColor ?? themeData.scaffoldBackgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,32 +125,45 @@ class _PaletteForTheme extends StatelessWidget {
   }
 
   Widget oneColor(String text, Color? color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ListTile(
-          title: Center(
+    return InkWell(
+      onTap: () {
+        setState(() {
+          bgColor = color;
+        });
+      },
+      onDoubleTap: () {
+        setState(() {
+          bgColor = null;
+        });
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ListTile(
+            title: Center(
               child: AutoSizeText(
-            text,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-          )),
-          subtitle: Center(
-            child: AutoSizeText(
-              color == null
-                  ? 'null'
-                  : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
-              maxLines: 1,
-              minFontSize: 2,
-              style: kMonoStyle,
+                text,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+              ),
+            ),
+            subtitle: Center(
+              child: AutoSizeText(
+                color == null
+                    ? 'null'
+                    : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
+                maxLines: 1,
+                minFontSize: 2,
+                style: kMonoStyle,
+              ),
             ),
           ),
-        ),
-        Container(
-          color: color,
-          child: const SizedBox(width: double.infinity, height: 50),
-        )
-      ],
+          Container(
+            color: color,
+            child: const SizedBox(width: double.infinity, height: 50),
+          )
+        ],
+      ),
     );
   }
 }

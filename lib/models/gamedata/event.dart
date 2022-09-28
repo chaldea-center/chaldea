@@ -95,6 +95,7 @@ class Event {
       bulletinBoards.isEmpty &&
       digging == null &&
       cooltime == null &&
+      recipes.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -117,8 +118,21 @@ class Event {
         _end = _start + 3600 * 24 * 30;
       }
     }
-    return _end != null &&
-        _end.sec2date().isBefore(DateTime.now().subtract(diff));
+    if (_end != null) {
+      return _end.sec2date().isBefore(DateTime.now().subtract(diff));
+    }
+    // if one event is delayed more than 1 year than expected, mark as outdated/will never open
+    final months = <Region, int>{
+          Region.cn: 12,
+          Region.tw: 15,
+          Region.na: 24,
+          Region.kr: 24,
+        }[db.curUser.region] ??
+        12;
+    final days = months * 31 + 360 + diff.inDays;
+    return endedAt
+        .sec2date()
+        .isBefore(DateTime.now().subtract(Duration(days: days)));
   }
 
   Transl<String, String> get lName => Transl.eventNames(name);

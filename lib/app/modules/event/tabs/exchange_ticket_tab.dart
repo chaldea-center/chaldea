@@ -58,13 +58,17 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         });
       }
       tickets.sort2((e) => e.id, reversed: widget.reversed);
-      return ListView.builder(
+      return ListView.separated(
         controller: _scrollController,
         itemCount: tickets.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) return hintText;
           return buildOneMonth(tickets[index - 1]);
         },
+        separatorBuilder: (context, _) => const Divider(
+          height: 8,
+          indent: 12,
+        ),
       );
     });
   }
@@ -87,7 +91,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   Widget buildOneMonth(ExchangeTicket ticket) {
     return Row(
       mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: 90,
@@ -105,10 +109,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         Expanded(
           child: Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: buildItems(ticket),
-            ),
+            child: buildItems(ticket),
           ),
         )
       ],
@@ -177,79 +178,90 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       monthPlan[index] = monthPlan[index].clamp2(0, ticket.days);
       final int maxValue =
           ticket.days - Maths.sum(monthPlan.getRange(0, index));
-      trailingItems.addAll([
-        Item.iconBuilder(
-          context: context,
-          item: item,
-          itemId: itemId,
-          width: 36,
-          text: (db.curUser.items[itemId] ?? 0).format(),
-          textPadding: const EdgeInsets.only(top: 30),
-          popDetail: true,
-        ),
-        SizedBox(
-          width: 36,
-          child: MaterialButton(
-            padding: const EdgeInsets.symmetric(),
-            child: Column(
-              children: <Widget>[
-                Text(monthPlan[index] == 0
-                    ? ''
-                    : (monthPlan[index] * ticket.multiplier).toString()),
-                const Divider(height: 1),
-                AutoSizeText(
-                  leftNum.format(),
-                  maxLines: 1,
-                  minFontSize: 6,
-                  group: _autoSizeGroup,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
-                )
-              ],
-            ),
-            onPressed: () {
-              Picker(
-                title: Text('${ticket.dateStr} ${item?.lName.l}'),
-                itemExtent: 36,
-                height: min(250, MediaQuery.of(context).size.height - 220),
-                hideHeader: true,
-                cancelText: S.current.cancel,
-                confirmText: S.current.confirm,
-                backgroundColor: null,
-                textStyle: Theme.of(context).textTheme.headline6,
-                adapter: NumberPickerAdapter(
-                  data: [
-                    NumberPickerColumn(
-                      items: List.generate(
-                          maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                      initValue: monthPlan[index],
-                      onFormatValue: (v) {
-                        return ticket.multiplier == 1
-                            ? v.toString()
-                            : '$v×${ticket.multiplier}';
-                      },
-                    ),
-                  ],
-                ),
-                onConfirm: (picker, values) {
-                  monthPlan[index] = picker.getSelectedValues()[0];
-                  for (var j = 0; j < 3; j++) {
-                    final int v = min(monthPlan[j],
-                        ticket.days - Maths.sum(monthPlan.getRange(0, j)));
-                    monthPlan[j] = v;
-                  }
-                  db.itemCenter.updateExchangeTickets();
-                },
-              ).showDialog(context);
-            },
+      trailingItems.add(Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Item.iconBuilder(
+            context: context,
+            item: item,
+            itemId: itemId,
+            width: 36,
+            text: (db.curUser.items[itemId] ?? 0).format(),
+            textPadding: const EdgeInsets.only(top: 30),
+            popDetail: true,
           ),
-        )
-      ]);
+          SizedBox(
+            width: 36,
+            child: MaterialButton(
+              padding: const EdgeInsets.symmetric(),
+              child: Column(
+                children: <Widget>[
+                  Text(monthPlan[index] == 0
+                      ? ''
+                      : (monthPlan[index] * ticket.multiplier).toString()),
+                  const Divider(height: 1),
+                  AutoSizeText(
+                    leftNum.format(),
+                    maxLines: 1,
+                    minFontSize: 6,
+                    group: _autoSizeGroup,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
+                  )
+                ],
+              ),
+              onPressed: () {
+                Picker(
+                  title: Text('${ticket.dateStr} ${item?.lName.l}'),
+                  itemExtent: 36,
+                  height: min(250, MediaQuery.of(context).size.height - 220),
+                  hideHeader: true,
+                  cancelText: S.current.cancel,
+                  confirmText: S.current.confirm,
+                  backgroundColor: null,
+                  textStyle: Theme.of(context).textTheme.headline6,
+                  adapter: NumberPickerAdapter(
+                    data: [
+                      NumberPickerColumn(
+                        items: List.generate(
+                            maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
+                        initValue: monthPlan[index],
+                        onFormatValue: (v) {
+                          return ticket.multiplier == 1
+                              ? v.toString()
+                              : '$v×${ticket.multiplier}';
+                        },
+                      ),
+                    ],
+                  ),
+                  onConfirm: (picker, values) {
+                    monthPlan[index] = picker.getSelectedValues()[0];
+                    for (var j = 0; j < 3; j++) {
+                      final int v = min(monthPlan[j],
+                          ticket.days - Maths.sum(monthPlan.getRange(0, j)));
+                      monthPlan[j] = v;
+                    }
+                    db.itemCenter.updateExchangeTickets();
+                  },
+                ).showDialog(context);
+              },
+            ),
+          )
+        ],
+      ));
     }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    Widget child = Wrap(
+      alignment: WrapAlignment.end,
       children: trailingItems,
     );
+    if (items.length <= 3) {
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: child,
+      );
+    }
+    return child;
   }
 
   void _showReplaceDetail(ExchangeTicket ticket) {

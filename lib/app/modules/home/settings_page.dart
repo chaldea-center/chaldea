@@ -392,8 +392,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _wrapArrowTrailing(Widget trailing) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         trailing,
         Icon(DirectionalIcons.keyboard_arrow_forward(context))

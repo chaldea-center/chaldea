@@ -196,6 +196,10 @@ class _NpChargePageState extends State<NpChargePage> {
         nps[3] = nps[3] + detail[3];
       }
       svtNps[svtId] = Maths.max(nps, 0);
+      if (svtId == 1 && svtNps[svtId] == 4000) {
+        // Mash skill2: one is for self, another is for ptOne
+        svtNps[svtId] = 2000;
+      }
     }
     // maxNp, <servants>
     Map<int, List<int>> groupedServants = {};

@@ -13,15 +13,15 @@ class ChaldeaGateTab extends StatefulWidget {
 class _ChaldeaGateTabState extends State<ChaldeaGateTab> {
   @override
   Widget build(BuildContext context) {
-    final wars = db.gameData.wars.values
-        .where(
-          (war) =>
-              war.id > 400 &&
-              war.eventId == 0 &&
-              // Cosmos in the Lostbelt, not open yet
-              war.id != 13000,
-        )
-        .toList();
+    final wars = db.gameData.wars.values.where((war) {
+      if (war.id < 1000 || war.eventId != 0) return false;
+      if (war.id >= 11000 && war.id < 20000) {
+        return db.gameData.wars.values.any((e) => e.warAdds.any((add) =>
+            add.type == WarOverwriteType.parentWar &&
+            add.overwriteId == war.id));
+      }
+      return true;
+    }).toList();
     wars.sort2((e) => -e.priority);
     return ListView.builder(
       itemBuilder: (context, index) => buildWar(context, wars[index]),

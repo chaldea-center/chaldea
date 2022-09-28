@@ -241,10 +241,13 @@ class EventListPageState extends State<EventListPage>
       final List<EventCustomType> types = [
         if (event.lotteries.isNotEmpty) EventCustomType.lottery,
         if (event.rewards.isNotEmpty) EventCustomType.point,
+        if (event.missions.isNotEmpty) EventCustomType.mission,
         if (event.towers.isNotEmpty) EventCustomType.tower,
         if (event.treasureBoxes.isNotEmpty) EventCustomType.treasureBox,
         if (event.digging != null) EventCustomType.digging,
-        if (event.missions.isNotEmpty) EventCustomType.mission,
+        if (event.cooltime != null) EventCustomType.cooltime,
+        if (event.recipes.isNotEmpty) EventCustomType.recipe,
+        if (event.bulletinBoards.isNotEmpty) EventCustomType.bulletinBoard,
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
         if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == 1004)
           EventCustomType.mainInterlude,

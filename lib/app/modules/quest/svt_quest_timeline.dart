@@ -97,6 +97,13 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         children: grouped[t]!.map((quest) {
           final svt = relatedServants[quest.id]!;
           Set<int> iconIds = {};
+          int? skillNum;
+          for (final skill in svt.skills) {
+            if (skill.condQuestId == quest.id) {
+              skillNum = skill.num;
+              break;
+            }
+          }
           // 8-NP, 9-skill, 40-bond
           if (quest.type == QuestType.friendship) {
             iconIds.add(40);
@@ -124,7 +131,37 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
           return InkWell(
             onTap: () {
-              quest.routeTo(popDetails: true);
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  final spotImage = db.gameData.spots[quest.spotId]?.image;
+                  return SimpleDialog(
+                    children: [
+                      ListTile(
+                        leading: svt.iconBuilder(context: context),
+                        title: Text('No.${svt.collectionNo} ${svt.lName.l}'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          svt.routeTo(popDetails: true);
+                        },
+                      ),
+                      ListTile(
+                        leading: spotImage == null
+                            ? const SizedBox()
+                            : db.getIconImage(
+                                db.gameData.spots[quest.spotId]?.image),
+                        title: Text(quest.lName.l),
+                        subtitle: Text(quest.lSpot.l),
+                        onTap: () {
+                          Navigator.pop(context);
+                          quest.routeTo(popDetails: true);
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
             },
             child: Stack(
               alignment: Alignment.bottomRight,
@@ -136,7 +173,13 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     spacing: 1,
                     children: [
                       for (final iconId in iconIds)
-                        db.getIconImage(Atlas.assetItem(iconId), width: 20),
+                        GameCardMixin.cardIconBuilder(
+                          context: context,
+                          icon: Atlas.assetItem(iconId),
+                          width: 20,
+                          text: iconId == 9 ? skillNum?.toString() : null,
+                          textPadding: const EdgeInsets.only(top: 8),
+                        ),
                     ],
                   ),
                 )

@@ -116,7 +116,21 @@ class Quest with RouteInfo {
 
   int getPhaseKey(int phase) => id * 100 + phase;
 
-  Transl<String, String> get lName => Transl.questNames(name);
+  Transl<String, String> get lName {
+    final names = Transl.questNames(name);
+    if (names.maybeL == null && name.startsWith('強化クエスト')) {
+      final match = RegExp(r'^強化クエスト (.*?)(\s+\d+)?$').firstMatch(name);
+      if (match != null) {
+        final name2 = <String?>[
+          Transl.questNames('強化クエスト').l,
+          Transl.svtNames(match.group(1)!).l,
+          match.group(2)?.trim()
+        ].whereType<String>().join(' ');
+        return Transl.questNames(name2);
+      }
+    }
+    return names;
+  }
 
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
 
@@ -273,6 +287,7 @@ class BaseGift {
     bool popDetail = false,
     String? name,
     bool showName = false,
+    bool showOne = true,
   }) {
     switch (type) {
       case GiftType.servant:
@@ -308,7 +323,7 @@ class BaseGift {
       width: width,
       height: height,
       aspectRatio: aspectRatio,
-      text: text ?? (num > 0 ? num.format() : null),
+      text: text ?? ((num > 1 || (num == 1 && showOne)) ? num.format() : null),
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,

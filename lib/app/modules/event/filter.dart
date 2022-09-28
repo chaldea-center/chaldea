@@ -70,6 +70,12 @@ class _EventFilterPageState
                 return Text(S.current.war_board);
               case EventCustomType.mainInterlude:
                 return Text(S.current.main_interlude);
+              case EventCustomType.cooltime:
+                return Text(S.current.event_cooltime);
+              case EventCustomType.bulletinBoard:
+                return Text(S.current.event_bulletin_board);
+              case EventCustomType.recipe:
+                return Text(S.current.event_recipe);
             }
           },
           onFilterChanged: (value, _) {

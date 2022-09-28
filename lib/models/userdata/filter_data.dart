@@ -647,15 +647,18 @@ class EventFilterData with _FilterData {
 }
 
 enum EventCustomType {
-  lottery,
+  mainInterlude,
   hunting,
+  warBoard,
+  lottery,
   mission,
   point,
   tower,
   treasureBox,
   digging,
-  warBoard,
-  mainInterlude,
+  cooltime,
+  bulletinBoard,
+  recipe,
 }
 
 // summon

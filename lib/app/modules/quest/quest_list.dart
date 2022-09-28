@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
@@ -72,6 +74,18 @@ class _QuestListPageState extends State<QuestListPage> {
                   ),
                   textAlign: TextAlign.end,
                 );
+          if (quest.gifts.isNotEmpty) {
+            trailing = Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                trailing,
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 4),
+                  child: LoopGift(gifts: quest.gifts),
+                )
+              ],
+            );
+          }
           String chapter = quest.type == QuestType.main
               ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
                   ? S.current.quest_chapter_n(quest.chapterSubId)
@@ -89,8 +103,9 @@ class _QuestListPageState extends State<QuestListPage> {
           return ListTile(
             leading: leading,
             // minLeadingWidth: 16,
-            title: Text(chapter + quest.lDispName, textScaleFactor: 0.9),
-            subtitle: subtitle.isEmpty ? null : Text(subtitle),
+            title: Text(chapter + quest.lDispName, textScaleFactor: 0.85),
+            subtitle:
+                subtitle.isEmpty ? null : Text(subtitle, textScaleFactor: 0.85),
             trailing: trailing,
             contentPadding: leading == null
                 ? null
@@ -108,5 +123,89 @@ class _QuestListPageState extends State<QuestListPage> {
         itemCount: quests.length,
       ),
     );
+  }
+}
+
+class LoopGift extends StatefulWidget {
+  final List<Gift> gifts;
+  final double size;
+  final int giftIconId;
+  const LoopGift(
+      {super.key, required this.gifts, this.size = 32, this.giftIconId = 0});
+
+  @override
+  State<LoopGift> createState() => _LoopGiftState();
+}
+
+class _LoopGiftState extends State<LoopGift> {
+  int tick = 0;
+  int first = 0;
+  int second = 1;
+  bool showFirst = true;
+  late Timer timer;
+
+  @override
+  void didUpdateWidget(covariant LoopGift oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.gifts != oldWidget.gifts) {
+      tick = 0;
+      first = 0;
+      second = 1;
+      showFirst = true;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(milliseconds: 3000), (t) async {
+      tick += 1;
+      showFirst = !showFirst;
+      if (mounted) setState(() {});
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (showFirst) {
+        second += 2;
+      } else {
+        first += 2;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child;
+    final total = widget.gifts.length + (widget.giftIconId > 0 ? 1 : 0);
+    if (total <= 0) {
+      child = const SizedBox();
+    } else if (total == 1) {
+      child = _buildGift(0);
+    } else {
+      child = AnimatedCrossFade(
+        firstChild: _buildGift(first),
+        secondChild: _buildGift(second),
+        crossFadeState:
+            showFirst ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        duration: const Duration(milliseconds: 600),
+      );
+    }
+    return child;
+  }
+
+  Widget _buildGift(int index) {
+    if (widget.giftIconId > 0) {
+      if (index == 0) {
+        return db.getIconImage(Atlas.assetItem(widget.giftIconId),
+            width: widget.size);
+      }
+      index -= 1;
+    }
+    return widget.gifts[index % widget.gifts.length]
+        .iconBuilder(context: context, width: widget.size, showOne: false);
   }
 }

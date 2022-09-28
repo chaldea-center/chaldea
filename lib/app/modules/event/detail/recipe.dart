@@ -29,7 +29,21 @@ class EventRecipePage extends StatelessWidget with PrimaryScrollMixin {
         return ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           leading: db.getIconImage(recipe.icon, width: 36),
-          title: Text(recipe.name),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: Text(recipe.name)),
+              for (final consume in recipe.consumes) ...[
+                Item.iconBuilder(
+                  context: context,
+                  item: db.gameData.items[consume.objectId],
+                  width: 24,
+                  icon: db.gameData.items[consume.objectId]?.icon,
+                ),
+                Text(consume.num.format(), textScaleFactor: 0.9),
+              ],
+            ],
+          ),
           subtitle: Wrap(
             spacing: 2,
             runSpacing: 2,
@@ -51,7 +65,7 @@ class EventRecipePage extends StatelessWidget with PrimaryScrollMixin {
                       child: gift.iconBuilder(
                         context: context,
                         width: 32,
-                        text: gift.num > 1 ? gift.num.format() : '',
+                        showOne: false,
                       ),
                     ),
                   )
@@ -69,7 +83,15 @@ class EventRecipePage extends StatelessWidget with PrimaryScrollMixin {
               subtitle: Text.rich(
                 TextSpan(
                   children: [
-                    const TextSpan(text: 'Cost: '),
+                    const TextSpan(text: 'Rate Up: '),
+                    for (final recipeGift in recipe.recipeGifts)
+                      if (recipeGift.topIconId == 1)
+                        for (final gift in recipeGift.gifts)
+                          CenterWidgetSpan(
+                            child: gift.iconBuilder(
+                                context: context, width: 28, showOne: false),
+                          ),
+                    const TextSpan(text: '\nCost: '),
                     for (final consume in recipe.consumes) ...[
                       CenterWidgetSpan(
                         child: Item.iconBuilder(

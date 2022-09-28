@@ -230,12 +230,30 @@ class _CacheManager {
     return null;
   }
 
+  static const dwReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
+
   Future<dynamic> getJson(String url, {Duration? expireAfter}) async {
     dynamic result;
     try {
       result = await get(url, expireAfter: expireAfter);
       if (result != null) {
-        return jsonDecode(utf8.decode(result));
+        String text = utf8.decode(result);
+        dwReplace.forEach((key, value) {
+          text = text.replaceAll(key, value);
+        });
+        text = text.replaceAll('\ue000', '{jin}');
+        if (url.contains('/CN/')) {
+          String cnText = text;
+          db.gameData.mappingData.cnReplace.forEach((key, value) {
+            cnText = cnText.replaceAll(key, value);
+          });
+          try {
+            return jsonDecode(cnText);
+          } catch (e) {
+            //
+          }
+        }
+        return jsonDecode(text);
       }
     } catch (e, s) {
       logger.e('fetch $url', e, s);

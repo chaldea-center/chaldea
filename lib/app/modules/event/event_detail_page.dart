@@ -73,15 +73,35 @@ class _EventDetailPageState extends State<EventDetailPage> {
         builder: (context) => EventItemsOverview(event: event, region: _region),
       ),
     );
-
-    List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
-      ..sort();
-    for (final slot in shopSlots) {
+    // special event mechanisms
+    for (int index = 0; index < event.lotteries.length; index++) {
       _addTab(
-        S.current.event_shop + (shopSlots.length > 1 ? ' ${slot + 1}' : ''),
-        EventShopsPage(event: event, slot: slot),
+        S.current.event_lottery +
+            (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
+        EventLotteryTab(event: event, lottery: event.lotteries[index]),
       );
     }
+    for (final tower in event.towers) {
+      _addTab(tower.name, EventTowersPage(event: event, tower: tower));
+    }
+    if (event.treasureBoxes.isNotEmpty) {
+      _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
+    }
+    if (event.cooltime != null) {
+      _addTab(S.current.event_cooltime, EventCooltimePage(event: event));
+    }
+    if (event.recipes.isNotEmpty) {
+      _addTab(S.current.event_recipe, EventRecipePage(event: event));
+    }
+    if (event.digging != null) {
+      _addTab(S.current.event_digging,
+          EventDiggingTab(event: event, digging: event.digging!));
+    }
+    // missions
+    if (event.missions.isNotEmpty) {
+      _addTab(S.current.mission, EventMissionsPage(event: event));
+    }
+    // point rewards
     List<int> rewardGroups =
         event.rewards.map((e) => e.groupId).toSet().toList()..sort();
     for (final groupId in rewardGroups) {
@@ -105,36 +125,19 @@ class _EventDetailPageState extends State<EventDetailPage> {
       ));
       views.add(EventPointsPage(event: event, groupId: groupId));
     }
-    if (event.missions.isNotEmpty) {
-      _addTab(S.current.mission, EventMissionsPage(event: event));
-    }
-
-    for (final tower in event.towers) {
-      _addTab(tower.name, EventTowersPage(event: event, tower: tower));
-    }
-    for (int index = 0; index < event.lotteries.length; index++) {
+    // shop last
+    List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
+      ..sort();
+    for (final slot in shopSlots) {
       _addTab(
-        S.current.event_lottery +
-            (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
-        EventLotteryTab(event: event, lottery: event.lotteries[index]),
+        S.current.event_shop + (shopSlots.length > 1 ? ' ${slot + 1}' : ''),
+        EventShopsPage(event: event, slot: slot),
       );
     }
-    if (event.treasureBoxes.isNotEmpty) {
-      _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
-    }
+
     if (event.bulletinBoards.isNotEmpty) {
       _addTab(
           S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
-    }
-    if (event.digging != null) {
-      _addTab(S.current.event_digging,
-          EventDiggingTab(event: event, digging: event.digging!));
-    }
-    if (event.cooltime != null) {
-      _addTab(S.current.event_cooltime, EventCooltimePage(event: event));
-    }
-    if (event.recipes.isNotEmpty) {
-      _addTab(S.current.event_recipe, EventRecipePage(event: event));
     }
     if (db.gameData.craftEssences.values
             .any((ce) => ce.eventSkills(event).isNotEmpty) ||

@@ -138,7 +138,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   }
 
   Servant? svtCoinOwner;
-  final validCoins = const [2, 6, 15, 30, 50, 90];
+  final validCoins = const [0, 2, 6, 15, 30, 50, 90];
   List<int> bondCoins = <int>[
     ...List.generate(6, (index) => 5),
     ...List.generate(3, (index) => 10),
@@ -193,10 +193,12 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
       SizedBox(
         height: 36,
         child: CustomTableRow.fromChildren(
+          defaults:
+              TableCellData(padding: const EdgeInsets.symmetric(vertical: 4)),
           children: [
             const Text('Range'),
             ...List.generate(
-              5,
+              6,
               (index) {
                 int baseNp = 1 + 5 * (index + max(0, _offsetNp));
                 return InkWell(
