@@ -24,16 +24,6 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 
 class _ServantFilterPageState
     extends FilterPageState<SvtFilterData, ServantFilterPage> {
-  List<SkillEffect> effects = [];
-
-  @override
-  void initState() {
-    super.initState();
-    effects = List.of(
-        SkillEffect.values.where((v) => !SkillEffect.svtIgnores.contains(v)));
-    effects.sort2((e) => SearchUtil.getSortAlphabet(e.lName));
-  }
-
   @override
   Widget build(BuildContext context) {
     const groupDivider = Divider(
@@ -309,7 +299,7 @@ class _ServantFilterPageState
         ),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
-          options: effects,
+          options: _getValidEffects(SkillEffect.kAttack),
           values: filterData.effectType,
           showMatchAll: true,
           showInvert: false,
@@ -318,8 +308,39 @@ class _ServantFilterPageState
             update();
           },
         ),
+        const SizedBox(height: 4),
+        FilterGroup<SkillEffect>(
+          options: _getValidEffects(SkillEffect.kDefence),
+          values: filterData.effectType,
+          optionBuilder: (v) => Text(v.lName),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        const SizedBox(height: 4),
+        FilterGroup<SkillEffect>(
+          options: _getValidEffects(SkillEffect.kDebuffRelated),
+          values: filterData.effectType,
+          optionBuilder: (v) => Text(v.lName),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        const SizedBox(height: 4),
+        FilterGroup<SkillEffect>(
+          options: _getValidEffects(SkillEffect.kOthers),
+          values: filterData.effectType,
+          optionBuilder: (v) => Text(v.lName),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
       ]),
     );
+  }
+
+  List<SkillEffect> _getValidEffects(List<SkillEffect> effects) {
+    return effects.where((v) => !SkillEffect.svtIgnores.contains(v)).toList();
   }
 }
 

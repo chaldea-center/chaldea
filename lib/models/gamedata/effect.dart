@@ -63,7 +63,12 @@ class SkillEffect {
         funcTypes = [funcType];
 
   static List<SkillEffect> values = [
-    damageNpSP,
+    ...kAttack,
+    ...kDefence,
+    ...kDebuffRelated,
+    ...kOthers
+  ];
+  static List<SkillEffect> kAttack = [
     upAtk,
     upQuick,
     upArts,
@@ -75,6 +80,7 @@ class SkillEffect {
     upStarweight,
     gainStar,
     regainStar,
+    damageNpSP,
     upNpdamage,
     gainNp,
     regainNp,
@@ -83,6 +89,8 @@ class SkillEffect {
     breakAvoidance,
     pierceInvincible,
     pierceDefence,
+  ];
+  static List<SkillEffect> kDefence = [
     upDefence,
     subSelfdamage,
     avoidance,
@@ -94,6 +102,8 @@ class SkillEffect {
     upGainHp,
     regainHp,
     addMaxhp,
+  ];
+  static List<SkillEffect> kDebuffRelated = [
     upTolerance,
     avoidStateNegative,
     upGrantstate,
@@ -104,16 +114,19 @@ class SkillEffect {
     subStatePositive,
     subStateNegative,
     upToleranceSubstate,
+    instantDeath,
     upResistInstantdeath,
     upGrantInstantdeath,
     avoidInstantdeath,
+  ];
+  static List<SkillEffect> kOthers = [
     friendPointUp,
     expUp,
     userEquipExpUp,
     servantFriendshipUp,
     qpUp,
-    triggerFunc,
     eventDropUp,
+    triggerFunc,
   ];
 
   static List<SkillEffect> svtIgnores = [
@@ -145,6 +158,7 @@ class SkillEffect {
     SkillEffect.upGrantstate,
     SkillEffect.upGrantstatePositive,
     SkillEffect.upGrantstateNegative,
+    SkillEffect.instantDeath,
     SkillEffect.upResistInstantdeath,
     SkillEffect.upGrantInstantdeath,
     SkillEffect.avoidInstantdeath,
@@ -311,6 +325,9 @@ class SkillEffect {
   // 强化解除耐性提升
   static SkillEffect upToleranceSubstate =
       SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);
+  // 即死
+  static SkillEffect instantDeath = SkillEffect('instantDeath',
+      funcTypes: [FuncType.instantDeath, FuncType.forceInstantDeath]);
   // 即死耐性提升
   static SkillEffect upResistInstantdeath =
       SkillEffect._buff('upResistInstantdeath', BuffType.upResistInstantdeath);
