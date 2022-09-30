@@ -102,15 +102,6 @@ class _SkillDetailPageState extends State<SkillDetailPage> {
               TableCellData(text: S.current.general_type, isHeader: true),
               TableCellData(flex: 2, text: skill.type.name)
             ]),
-            if (skill.actIndividuality.isNotEmpty)
-              CustomTableRow(children: [
-                TableCellData(text: 'Required trait', isHeader: true),
-                TableCellData(
-                  flex: 2,
-                  child: SharedBuilder.traitList(
-                      context: context, traits: skill.actIndividuality),
-                )
-              ]),
           ]),
           if (svts.isNotEmpty) cardList(S.current.servant, svts),
           if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),

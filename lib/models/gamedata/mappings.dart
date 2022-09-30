@@ -1,10 +1,7 @@
+import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../db.dart';
 import '../userdata/userdata.dart';
 import '_helper.dart';
-import 'common.dart';
-import 'servant.dart';
-import 'skill.dart';
-import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/mappings.g.dart';
 
@@ -69,6 +66,15 @@ class Transl<K, V> {
       final redirectId = md.traitRedirect[id];
       if (redirectId != null && md.trait.containsKey(redirectId)) {
         id = redirectId;
+      }
+      final svt = db.gameData.servantsById[id];
+      if (svt != null) {
+        final nameMapping = md.svtNames[svt.name] ?? MappingBase(jp: svt.name);
+        return Transl(
+          {id: nameMapping.convert((v, _) => v == null ? null : '$v($id)')},
+          id,
+          '$id',
+        );
       }
     }
     return Transl(md.trait, id, '$id');
@@ -453,6 +459,16 @@ class MappingBase<T> {
       tw: tw ?? this.tw,
       na: na ?? this.na,
       kr: kr ?? this.kr,
+    );
+  }
+
+  MappingBase<S> convert<S>(S? Function(T? v, Region region) cvt) {
+    return MappingBase(
+      jp: cvt(jp, Region.jp),
+      cn: cvt(cn, Region.cn),
+      tw: cvt(tw, Region.tw),
+      na: cvt(na, Region.na),
+      kr: cvt(kr, Region.kr),
     );
   }
 }

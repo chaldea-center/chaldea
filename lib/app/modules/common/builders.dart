@@ -570,4 +570,44 @@ class SharedBuilder {
       tooltip: tooltip ?? S.current.help,
     );
   }
+
+  static List<InlineSpan> replaceSpan(
+      String text, Pattern pattern, List<InlineSpan> replace,
+      {bool appendIfAbsent = true}) {
+    final parts = text.split(pattern);
+    if (parts.length == 1) {
+      if (appendIfAbsent) {
+        return [TextSpan(text: text), ...replace];
+      } else {
+        return [TextSpan(text: text)];
+      }
+    } else {
+      List<InlineSpan> spans = [];
+      for (int index = 0; index < parts.length; index++) {
+        spans.add(TextSpan(text: parts[index]));
+        if (index != parts.length - 1) {
+          spans.addAll(replace);
+        }
+      }
+      return spans;
+    }
+  }
+
+  static List<InlineSpan> replaceSpanMap(String text, Pattern pattern,
+      List<InlineSpan> Function(Match match) replace) {
+    List<InlineSpan> spans = [];
+    List<String> textParts = text.split(pattern);
+    bool mapped = false;
+    text.splitMapJoin(pattern, onMatch: (match) {
+      assert(textParts.isNotEmpty);
+      spans.add(TextSpan(text: textParts.removeAt(0)));
+      spans.addAll(replace(match));
+      mapped = true;
+      return match.group(0)!;
+    });
+    assert(textParts.length == 1);
+    spans.addAll(textParts.map((e) => TextSpan(text: e)));
+    assert(mapped, [text, pattern]);
+    return spans;
+  }
 }

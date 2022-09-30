@@ -58,8 +58,11 @@ mixin FuncsDescriptor {
       return func.isPlayerOnlyFunc ? showPlayer : showEnemy;
     }).toList();
     List<Widget> children = [];
-    if (script != null && script.isNotEmpty) {
-      children.add(SkillScriptDescriptor(script: script));
+    final actIndiv =
+        owner is BaseSkill ? owner.actIndividuality : <NiceTrait>[];
+    if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
+      children.add(
+          SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
     }
 
     for (int index = 0; index < funcs.length; index++) {
@@ -165,40 +168,69 @@ class _DescriptorWrapper extends StatelessWidget {
 }
 
 class SkillScriptDescriptor extends StatelessWidget {
-  final SkillScript script;
-  const SkillScriptDescriptor({super.key, required this.script});
+  final SkillScript? script;
+  final List<NiceTrait> actIndividuality;
+  const SkillScriptDescriptor(
+      {super.key, required this.script, this.actIndividuality = const []});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    if (script.NP_HIGHER?.isNotEmpty == true) {
-      children.add(_one(context, 'NP_HIGHER', script.NP_HIGHER!, (v) => '$v%'));
+    if (actIndividuality.isNotEmpty) {
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: _DescriptorWrapper(
+          title: Text.rich(
+            TextSpan(children: [
+              ...SharedBuilder.replaceSpan(
+                Transl.misc('Skill.actIndividuality').l,
+                '{0}',
+                actIndividuality.map((indiv) {
+                  final svt = db.gameData.servantsById[indiv.id];
+                  String name = svt?.lName.l ?? '$indiv';
+                  if (svt != null) {
+                    name += '(${svt.className.lName})';
+                  }
+                  return SharedBuilder.textButtonSpan(
+                      context: context, text: name, onTap: svt?.routeTo);
+                }).toList(),
+              )
+            ]),
+            style: Theme.of(context).textTheme.caption,
+          ),
+          trailing: null,
+        ),
+      ));
     }
-    if (script.NP_LOWER?.isNotEmpty == true) {
-      children.add(_one(context, 'NP_LOWER', script.NP_LOWER!, (v) => '$v%'));
-    }
-    if (script.STAR_HIGHER?.isNotEmpty == true) {
+    if (script?.NP_HIGHER?.isNotEmpty == true) {
       children
-          .add(_one(context, 'STAR_HIGHER', script.STAR_HIGHER!, (v) => '$v'));
+          .add(_one(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
     }
-    if (script.STAR_LOWER?.isNotEmpty == true) {
+    if (script?.NP_LOWER?.isNotEmpty == true) {
+      children.add(_one(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
+    }
+    if (script?.STAR_HIGHER?.isNotEmpty == true) {
       children
-          .add(_one(context, 'STAR_LOWER', script.STAR_LOWER!, (v) => '$v'));
+          .add(_one(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
     }
-    if (script.HP_VAL_HIGHER?.isNotEmpty == true) {
+    if (script?.STAR_LOWER?.isNotEmpty == true) {
+      children
+          .add(_one(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
+    }
+    if (script?.HP_VAL_HIGHER?.isNotEmpty == true) {
       children.add(
-          _one(context, 'HP_VAL_HIGHER', script.HP_VAL_HIGHER!, (v) => '$v'));
+          _one(context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
     }
-    if (script.HP_VAL_LOWER?.isNotEmpty == true) {
+    if (script?.HP_VAL_LOWER?.isNotEmpty == true) {
       children.add(
-          _one(context, 'HP_VAL_LOWER', script.HP_VAL_LOWER!, (v) => '$v'));
+          _one(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
     }
-    if (script.HP_PER_HIGHER?.isNotEmpty == true) {
-      children.add(_one(context, 'HP_PER_HIGHER', script.HP_PER_HIGHER!,
+    if (script?.HP_PER_HIGHER?.isNotEmpty == true) {
+      children.add(_one(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
-    if (script.HP_PER_LOWER?.isNotEmpty == true) {
-      children.add(_one(context, 'HP_PER_LOWER', script.HP_PER_LOWER!,
+    if (script?.HP_PER_LOWER?.isNotEmpty == true) {
+      children.add(_one(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (children.length == 1) return children.first;
@@ -450,7 +482,7 @@ class FuncDescriptor extends StatelessWidget {
 
       InlineSpan _replaceTrait(int trait) {
         return TextSpan(
-          children: replaceSpan(text, '{0}', [
+          children: SharedBuilder.replaceSpan(text, '{0}', [
             SharedBuilder.traitSpan(
               context: context,
               trait: NiceTrait(id: trait),
@@ -471,7 +503,8 @@ class FuncDescriptor extends StatelessWidget {
           break;
         case FuncType.damageNpIndividualSum:
           if ((vals?.TargetList?.length ?? 0) > 0) {
-            spans.addAll(replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
+            spans.addAll(SharedBuilder.replaceSpanMap(
+                text, RegExp(r'\{[0-1]\}'), (match) {
               final s = match[0]!;
               if (s == "{0}") {
                 return [
@@ -593,7 +626,7 @@ class FuncDescriptor extends StatelessWidget {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
       } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
-        spans.addAll(replaceSpan(
+        spans.addAll(SharedBuilder.replaceSpan(
             Transl.special.funcTraitPerBuff,
             '{0}',
             SharedBuilder.traitSpans(
@@ -609,7 +642,7 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (func.funcquestTvals.isNotEmpty) {
-      _traitSpans.add(replaceSpan(
+      _traitSpans.add(SharedBuilder.replaceSpan(
         Transl.special.funcTraitOnField,
         '{0}',
         SharedBuilder.traitSpans(
@@ -622,7 +655,8 @@ class FuncDescriptor extends StatelessWidget {
       final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
               .replaceAll('\n', ' ') ??
           'Event ${vals?.EventId}';
-      _traitSpans.add(replaceSpan(Transl.special.funcEventOnly, '{0}', [
+      _traitSpans
+          .add(SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
         TextSpan(
           text: eventName,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
@@ -676,39 +710,6 @@ class FuncDescriptor extends StatelessWidget {
       child: last,
     );
     return last;
-  }
-
-  List<InlineSpan> replaceSpan(
-      String text, Pattern pattern, List<InlineSpan> replace) {
-    final parts = text.split(pattern);
-    assert(parts.length > 1, [text, pattern]);
-    if (parts.length == 1) return [TextSpan(text: text), ...replace];
-    List<InlineSpan> spans = [];
-    for (int index = 0; index < parts.length; index++) {
-      spans.add(TextSpan(text: parts[index]));
-      if (index != parts.length - 1) {
-        spans.addAll(replace);
-      }
-    }
-    return spans;
-  }
-
-  List<InlineSpan> replaceSpanMap(String text, Pattern pattern,
-      List<InlineSpan> Function(Match match) replace) {
-    List<InlineSpan> spans = [];
-    List<String> textParts = text.split(pattern);
-    bool mapped = false;
-    text.splitMapJoin(pattern, onMatch: (match) {
-      assert(textParts.isNotEmpty);
-      spans.add(TextSpan(text: textParts.removeAt(0)));
-      spans.addAll(replace(match));
-      mapped = true;
-      return match.group(0)!;
-    });
-    assert(textParts.length == 1);
-    spans.addAll(textParts.map((e) => TextSpan(text: e)));
-    assert(mapped, [text, pattern]);
-    return spans;
   }
 
   Widget? _buildTrigger(BuildContext context) {

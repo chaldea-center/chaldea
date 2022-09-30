@@ -121,6 +121,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         ...describeFunctions(
           funcs: skill.functions,
           script: skill.script,
+          owner: skill,
           level: level,
           showPlayer: showPlayer,
           showEnemy: showEnemy,
@@ -359,6 +360,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
         ...describeFunctions(
           funcs: td.functions,
           script: td.script,
+          owner: td,
           level: level,
           showPlayer: showPlayer,
           showEnemy: showEnemy,
