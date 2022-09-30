@@ -23,7 +23,7 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       priority: json['priority'] as int,
       parentWarId: json['parentWarId'] as int? ?? 0,
       materialParentWarId: json['materialParentWarId'] as int? ?? 0,
-      emptyMessage: json['emptyMessage'] as String? ?? "クエストがありません",
+      emptyMessage: json['emptyMessage'] as String? ?? "",
       bgm: Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
       scriptId: json['scriptId'] as String,
       script: json['script'] as String,
@@ -48,6 +48,11 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       spotRoads: (json['spotRoads'] as List<dynamic>?)
               ?.map(
                   (e) => SpotRoad.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      questSelections: (json['questSelections'] as List<dynamic>?)
+              ?.map((e) => WarQuestSelection.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -168,6 +173,12 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.clearMark: 'clearMark',
   WarOverwriteType.effectChangeWhiteMark: 'effectChangeWhiteMark',
 };
+
+WarQuestSelection _$WarQuestSelectionFromJson(Map json) => WarQuestSelection(
+      quest: Quest.fromJson(Map<String, dynamic>.from(json['quest'] as Map)),
+      shortcutBanner: json['shortcutBanner'] as String?,
+      priority: json['priority'] as int,
+    );
 
 const _$WarFlagEnumMap = {
   WarFlag.none: 'none',

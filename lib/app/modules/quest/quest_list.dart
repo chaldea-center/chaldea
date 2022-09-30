@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
@@ -92,7 +93,12 @@ class _QuestListPageState extends State<QuestListPage> {
                   : quest.chapterSubStr
               : '';
           chapter = chapter.trim();
-          if (chapter.isNotEmpty) chapter += ' ';
+          final title =
+              chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
+          final interludeOwner = quest.type == QuestType.friendship
+              ? db.gameData.servantsById.values.firstWhereOrNull(
+                  (svt) => svt.relateQuestIds.contains(quest.id))
+              : null;
 
           final spot = db.gameData.spots[quest.spotId];
           final leading = spot == null || spot.image == null
@@ -103,9 +109,19 @@ class _QuestListPageState extends State<QuestListPage> {
           return ListTile(
             leading: leading,
             // minLeadingWidth: 16,
-            title: Text(chapter + quest.lDispName, textScaleFactor: 0.85),
-            subtitle:
-                subtitle.isEmpty ? null : Text(subtitle, textScaleFactor: 0.85),
+            title: Text(title, textScaleFactor: 0.85),
+            subtitle: subtitle.isEmpty && interludeOwner == null
+                ? null
+                : Text.rich(
+                    TextSpan(children: [
+                      if (interludeOwner != null)
+                        CenterWidgetSpan(
+                            child: interludeOwner.iconBuilder(
+                                context: context, height: 32)),
+                      TextSpan(text: subtitle),
+                    ]),
+                    textScaleFactor: 0.85,
+                  ),
             trailing: trailing,
             contentPadding: leading == null
                 ? null

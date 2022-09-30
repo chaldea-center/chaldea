@@ -287,7 +287,7 @@ Stage _$StageFromJson(Map json) => Stage(
                   (e) => FieldAi.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      calls: (json['calls'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+      call: (json['call'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
       enemies: (json['enemies'] as List<dynamic>?)

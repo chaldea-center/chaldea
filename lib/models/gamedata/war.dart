@@ -35,6 +35,7 @@ class NiceWar with RouteInfo {
   List<WarMap> maps;
   List<NiceSpot> spots;
   List<SpotRoad> spotRoads;
+  List<WarQuestSelection> questSelections;
 
   NiceWar({
     required this.id,
@@ -48,7 +49,7 @@ class NiceWar with RouteInfo {
     required this.priority,
     this.parentWarId = 0,
     this.materialParentWarId = 0,
-    this.emptyMessage = "クエストがありません",
+    this.emptyMessage = "",
     required this.bgm,
     required this.scriptId,
     required this.script,
@@ -61,6 +62,7 @@ class NiceWar with RouteInfo {
     this.maps = const [],
     this.spots = const [],
     this.spotRoads = const [],
+    this.questSelections = const [],
   })  : _name = ['', '-'].contains(name) ? null : name,
         _longName = ['', '-'].contains(longName) ? null : longName;
 
@@ -372,6 +374,22 @@ List<WarFlag> toEnumListWarFlag(List<dynamic> flags) {
   return flags
       .map((e) => $enumDecode(_$WarFlagEnumMap, e, unknownValue: WarFlag.none))
       .toList();
+}
+
+@JsonSerializable()
+class WarQuestSelection {
+  Quest quest;
+  String? shortcutBanner;
+  int priority;
+
+  WarQuestSelection({
+    required this.quest,
+    this.shortcutBanner,
+    required this.priority,
+  });
+
+  factory WarQuestSelection.fromJson(Map<String, dynamic> json) =>
+      _$WarQuestSelectionFromJson(json);
 }
 
 @JsonEnum(alwaysCreate: true)

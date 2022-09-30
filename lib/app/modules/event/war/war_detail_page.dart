@@ -170,7 +170,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
         difficultQuests = [],
         oneOffQuests = [],
         bondQuests = [],
-        eventQuests = [];
+        eventQuests = [],
+        selectionQuests = [];
     for (final quest in war.quests) {
       if (quest.type == QuestType.main) {
         mainQuests.add(quest);
@@ -190,7 +191,9 @@ class _WarDetailPageState extends State<WarDetailPage> {
         eventQuests.add(quest);
       }
     }
-    if (war.spots.isNotEmpty) {
+    selectionQuests = war.questSelections.map((e) => e.quest).toList();
+    selectionQuests.sort2((e) => e.priority, reversed: true);
+    if (war.spots.isNotEmpty || selectionQuests.isNotEmpty) {
       children.add(TileGroup(
         header: S.current.quest,
         children: [
@@ -258,6 +261,17 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 router.push(
                   child: QuestListPage(
                       title: S.current.event_quest, quests: eventQuests),
+                );
+              },
+            ),
+          if (selectionQuests.isNotEmpty)
+            ListTile(
+              title: const Text('Selections'),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(
+                  child: QuestListPage(
+                      title: 'Selections', quests: selectionQuests),
                 );
               },
             ),

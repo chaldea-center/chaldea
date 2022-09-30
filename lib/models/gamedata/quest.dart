@@ -441,7 +441,7 @@ class Stage {
   Bgm bgm;
 
   List<FieldAi> fieldAis;
-  List<int> calls;
+  List<int> call;
   int? enemyFieldPosCount;
   List<QuestEnemy> enemies;
 
@@ -449,7 +449,7 @@ class Stage {
     required this.wave,
     required this.bgm,
     this.fieldAis = const [],
-    this.calls = const [],
+    this.call = const [],
     this.enemyFieldPosCount,
     this.enemies = const [],
   });
