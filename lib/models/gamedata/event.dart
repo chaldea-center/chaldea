@@ -100,7 +100,7 @@ class Event {
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
 
-  bool isOutdated([Duration diff = const Duration(days: 20)]) {
+  bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) >
           const Duration(days: 31 * 13);
@@ -115,7 +115,7 @@ class Event {
           ? startedAt
           : extra.startTime.ofRegion(db.curUser.region);
       if (_start != null) {
-        _end = _start + 3600 * 24 * 30;
+        _end = _start + const Duration(days: 30).inSeconds;
       }
     }
     if (_end != null) {

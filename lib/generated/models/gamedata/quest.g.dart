@@ -66,6 +66,7 @@ Quest _$QuestFromJson(Map json) => Quest(
       chapterId: json['chapterId'] as int? ?? 0,
       chapterSubId: json['chapterSubId'] as int? ?? 0,
       chapterSubStr: json['chapterSubStr'] as String? ?? "",
+      giftIcon: json['giftIcon'] as String?,
       gifts: (json['gifts'] as List<dynamic>?)
               ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -198,7 +199,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
                   EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-    );
+    )..giftIcon = json['giftIcon'] as String?;
 
 const _$SvtClassEnumMap = {
   SvtClass.saber: 'saber',

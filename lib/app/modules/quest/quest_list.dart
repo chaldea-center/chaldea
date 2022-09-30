@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 
 class QuestListPage extends StatefulWidget {
@@ -75,14 +75,14 @@ class _QuestListPageState extends State<QuestListPage> {
                   ),
                   textAlign: TextAlign.end,
                 );
-          if (quest.gifts.isNotEmpty) {
+          if (quest.gifts.isNotEmpty || quest.giftIcon != null) {
             trailing = Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 trailing,
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 4),
-                  child: LoopGift(gifts: quest.gifts),
+                  child: LoopGift(gifts: quest.gifts, giftIcon: quest.giftIcon),
                 )
               ],
             );
@@ -145,9 +145,9 @@ class _QuestListPageState extends State<QuestListPage> {
 class LoopGift extends StatefulWidget {
   final List<Gift> gifts;
   final double size;
-  final int giftIconId;
+  final String? giftIcon;
   const LoopGift(
-      {super.key, required this.gifts, this.size = 32, this.giftIconId = 0});
+      {super.key, required this.gifts, this.size = 32, this.giftIcon});
 
   @override
   State<LoopGift> createState() => _LoopGiftState();
@@ -196,7 +196,7 @@ class _LoopGiftState extends State<LoopGift> {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    final total = widget.gifts.length + (widget.giftIconId > 0 ? 1 : 0);
+    final total = widget.gifts.length + (widget.giftIcon != null ? 1 : 0);
     if (total <= 0) {
       child = const SizedBox();
     } else if (total == 1) {
@@ -214,10 +214,9 @@ class _LoopGiftState extends State<LoopGift> {
   }
 
   Widget _buildGift(int index) {
-    if (widget.giftIconId > 0) {
+    if (widget.giftIcon != null) {
       if (index == 0) {
-        return db.getIconImage(Atlas.assetItem(widget.giftIconId),
-            width: widget.size);
+        return db.getIconImage(widget.giftIcon, width: widget.size);
       }
       index -= 1;
     }

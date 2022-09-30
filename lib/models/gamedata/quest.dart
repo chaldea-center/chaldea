@@ -72,6 +72,7 @@ class Quest with RouteInfo {
   int chapterId;
   int chapterSubId;
   String chapterSubStr;
+  String? giftIcon;
   List<Gift> gifts;
   List<QuestRelease> releaseConditions;
   List<int> phases;
@@ -100,6 +101,7 @@ class Quest with RouteInfo {
     this.chapterId = 0,
     this.chapterSubId = 0,
     this.chapterSubStr = "",
+    this.giftIcon,
     this.gifts = const [],
     this.releaseConditions = const [],
     required this.phases,
