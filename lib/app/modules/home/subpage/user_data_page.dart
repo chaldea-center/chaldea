@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -16,6 +17,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -124,6 +126,14 @@ class _UserDataPageState extends State<UserDataPage> {
             header: S.current.userdata_local,
             footer: S.current.settings_userdata_footer,
             children: <Widget>[
+              if (kIsWeb)
+                ListTile(
+                  title: Text(S.current.save),
+                  onTap: () {
+                    kPlatformMethods.downloadString(
+                        jsonEncode(db.userData), 'userdata.json');
+                  },
+                ),
               ListTile(
                 title: Text(S.current.backup),
                 onTap: backupUserData,
@@ -371,33 +381,51 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           return ListTile(
             title: Text(p.basenameWithoutExtension(entry.key)),
             subtitle: Text('Modified: ${entry.value}'),
-            trailing: IconButton(
-              icon: const Icon(Icons.download),
-              tooltip: S.current.import_data,
-              onPressed: () {
-                SimpleCancelOkDialog(
-                  title: Text(S.current.import_data),
-                  content: Text(db.paths.convertIosPath(entry.key)),
-                  onTapOk: () async {
-                    try {
-                      final jsonData =
-                          jsonDecode(await FilePlus(entry.key).readAsString());
-                      if (jsonData['users'] == null) {
-                        EasyLoading.showError('Empty Data!');
-                        return;
-                      }
-                      final userdata = UserData.fromJson(jsonData);
-                      await db.backupUserdata();
-                      db.userData = userdata;
-                      EasyLoading.showToast(S.current.import_data_success);
-                      db.saveUserData();
-                      db.notifyAppUpdate();
-                    } catch (e) {
-                      EasyLoading.showError(S.current.import_data_error(e));
-                    }
+            trailing: Wrap(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.restore),
+                  tooltip: S.current.import_data,
+                  onPressed: () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.import_data),
+                      content: Text(db.paths.convertIosPath(entry.key)),
+                      onTapOk: () async {
+                        try {
+                          final jsonData = jsonDecode(
+                              await FilePlus(entry.key).readAsString());
+                          if (jsonData['users'] == null) {
+                            EasyLoading.showError('Empty Data!');
+                            return;
+                          }
+                          final userdata = UserData.fromJson(jsonData);
+                          await db.backupUserdata();
+                          db.userData = userdata;
+                          EasyLoading.showToast(S.current.import_data_success);
+                          db.saveUserData();
+                          db.notifyAppUpdate();
+                        } catch (e) {
+                          EasyLoading.showError(S.current.import_data_error(e));
+                        }
+                      },
+                    ).showDialog(context);
                   },
-                ).showDialog(context);
-              },
+                ),
+                if (kIsWeb)
+                  IconButton(
+                    onPressed: () async {
+                      try {
+                        kPlatformMethods.downloadFile(
+                            await FilePlus(entry.key).readAsBytes(),
+                            p.basename(entry.key));
+                      } catch (e) {
+                        EasyLoading.showError(e.toString());
+                      }
+                    },
+                    icon: const Icon(Icons.save),
+                    tooltip: S.current.save,
+                  ),
+              ],
             ),
           );
         },

@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'converter.dart';
@@ -152,27 +153,27 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
         PlanDataSheetConverter().generateCSV(includeAll, includeFavorite);
     final contents = const ListToCsvConverter().convert(data);
     final t = DateTime.now().toDateString();
-    String? fp =
-        kIsWeb ? null : joinPaths(db.paths.tempDir, 'chaldea_data_$t.csv');
-    if (fp != null) {
-      await FilePlus(fp).writeAsString(contents);
+    final fn = 'chaldea_data_$t.csv';
+    if (kIsWeb) {
+      kPlatformMethods.downloadString(contents, fn);
+      return;
     }
+    String fp = joinPaths(db.paths.tempDir, 'chaldea_data_$t.csv');
+    await FilePlus(fp).writeAsString(contents);
     if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) {
         return SimpleCancelOkDialog(
           title: const Text('Filepath'),
-          content: fp == null ? null : Text(db.paths.convertIosPath(fp)),
+          content: Text(db.paths.convertIosPath(fp)),
           hideCancel: true,
           confirmText: PlatformU.isDesktop ? S.current.open : S.current.share,
           onTapOk: () {
             if (PlatformU.isDesktop) {
-              openFile(pathlib.dirname(fp!));
-            } else if (kIsWeb) {
-              Share.share(contents);
+              openFile(pathlib.dirname(fp));
             } else {
-              Share.shareFiles([fp!]);
+              Share.shareFiles([fp]);
             }
           },
         );

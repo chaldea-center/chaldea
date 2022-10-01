@@ -1,6 +1,6 @@
 import 'platform_interface.dart';
 
-class PlatformMethods implements PlatformMethodsInterface {
+class PlatformMethods extends PlatformMethodsInterface {
   @override
   String? getLocalStorage(String key) => throw UnimplementedError();
 
@@ -9,4 +9,9 @@ class PlatformMethods implements PlatformMethodsInterface {
 
   @override
   bool get rendererCanvasKit => throw UnimplementedError();
+
+  @override
+  void downloadFile(List<int> bytes, String name) {
+    // do nothing
+  }
 }
