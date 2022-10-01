@@ -37,8 +37,65 @@ class BasicCostume {
 }
 
 const kSvtDefAscenRemap = <int, int>{
+  9935510: 1, // ゲーティア
+  9936700: 1, // アルトリア・ペンドラゴン
+  9936701: 1, // アルトリア・ペンドラゴン
+  9936870: 1, // イリヤスフィール
+  9936880: 1, // クロエ・フォン・アインツベルン
+  9936960: 1, // 佐々木小次郎
+  9936980: 3, // エミヤ
+  9936990: 2, // 天草四郎
+  9937000: 1, // アルトリア・ペンドラゴン〔オルタ〕
+  9937120: 1, // エルキドゥ
+  9937200: 1, // 牛若丸
+  9938960: 1, // 真田エミ村
+  9938980: 1, // スーパー土方
+  9939010: 1, // 新宿のアーチャー
+  9939020: 1, // 新宿のアーチャー
+  9939150: 2, // 殺生院キアラ
+  9939160: 1, // パッションリップ
   9939360: 1, // ダユー
+  9939370: 1, // メガロス
+  9939570: 1, // メイヴ監獄長
+  9939580: 1, // ネロ・クラウディウス
+  9939690: 4, // 宝蔵院胤舜
+  9939700: 2, // 酒呑童子
+  9939710: 2, // 源頼光
+  9940370: 1, // 黒聖杯
+  9940380: 1, // 火のアイリ
+  9940390: 1, // 水のアイリ
+  9940400: 1, // 風のアイリ
+  9940410: 1, // 土のアイリ
+  9940530: 1, // 茨木童子
+  9940600: 1, // 丑御前
+  9941050: 4, // アビゲイル・ウィリアムズ
+  9941170: 3, // アナスタシア
+  9941180: 4, // シグルド
+  9941400: 1, // ＢＢ
+  9941540: 1, // 始皇帝
+  9941670: 1, // ブラック・ケツァルマスク
+  9941700: 1, // おんせん魔猿
+  9941710: 1, // がんたん魔猿
+  9941720: 1, // ふろしき魔猿
+  9941750: 1, // 衛士長
+  9941880: 1, // カーマ
+  9941900: 1, // 哪吒
+  9942010: 1, // ウィリアム・シェイクスピア
+  9942080: 1, // アルジュナ〔オルタ〕
+  9942150: 1, // 宮本武蔵
+  9942250: 1, // キリシュタリア
+  9942410: 1, // タマモキャット
+  9942510: 1, // カリギュラ
+  9943090: 1, // アルトリア・キャスター
+  9943220: 1, // パーシヴァル
+  9943280: 1, // パーシヴァル
+  9943320: 0, // 妖精騎士ランスロット
+  9943330: 2, // メリュジーヌ
+  9943410: 1, // カーマ
+  9943850: 1, // ドン・キホーテ
   9943860: 1, // 張角
+  9943880: 1, // ジェームズ・モリアーティ
+  9944220: 2, // 千利休
 };
 
 @JsonSerializable()
@@ -87,7 +144,7 @@ class BasicServant with GameCardMixin {
   @override
   String get icon {
     final _remapId = kSvtDefAscenRemap[id];
-    if (_remapId != null) {
+    if (_remapId != null && face.contains(id.toString())) {
       final s = face.replaceFirst(RegExp('$id\\d\\.png\$'), '$id$_remapId.png');
       return s;
     }
@@ -336,9 +393,16 @@ class Servant with GameCardMixin {
       originalCollectionNo > 0;
 
   @override
-  String? get icon => extraAssets.faces.ascension?.values
-      .toList()
-      .getOrNull(kSvtDefAscenRemap[id] ?? 0);
+  String? get icon {
+    final _remapId = kSvtDefAscenRemap[id];
+    final _icons = extraAssets.faces.ascension?.values.toList() ?? <String>[];
+    String? _icon;
+    if (_remapId != null) {
+      _icon = _icons.firstWhereOrNull(
+          (e) => e.contains(id.toString()) && e.endsWith('$_remapId.png'));
+    }
+    return _icon ?? _icons.getOrNull(0);
+  }
 
   @override
   String? get borderedIcon => originalCollectionNo > 0 ||
