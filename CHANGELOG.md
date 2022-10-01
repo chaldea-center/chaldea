@@ -1,3 +1,9 @@
+## 2.1.2
+
+- Recollection quests
+- set bond bonus for quest efficiency
+- sortable item list 
+
 ## 2.1.1
 
 - bug fix

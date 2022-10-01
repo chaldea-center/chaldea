@@ -145,6 +145,10 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
                 text,
                 textAlign: TextAlign.center,
                 maxLines: 2,
+                style: const TextStyle(shadows: [
+                  Shadow(
+                      offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)
+                ]),
               ),
             ),
             subtitle: Center(

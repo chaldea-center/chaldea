@@ -205,6 +205,7 @@ class ValDsc extends StatelessWidget {
       if (vals.Value != null) {
         switch (func.funcType) {
           case FuncType.damageNp:
+          case FuncType.damageNpSafe:
           case FuncType.damageNpHpratioLow:
           case FuncType.damageNpIndividual:
           case FuncType.damageNpIndividualSum:
