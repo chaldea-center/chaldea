@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'descriptor_base.dart';
+import 'multi_entry.dart';
 
 class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   final CondType condType;
@@ -46,6 +47,19 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.questClear:
+        final quest = db.gameData.quests[target];
+        final war = quest?.war;
+        if (quest != null && war != null && quest.id == war.lastQuestId) {
+          final warSpan = MultiDescriptor.inkWell(
+              context: context, text: war.lShortName, onTap: quest.routeTo);
+          return localized(
+            jp: () => combineToRich(context, null, [warSpan], 'をクリアした'),
+            cn: () => combineToRich(context, '通关', [warSpan]),
+            tw: null,
+            na: () => combineToRich(context, 'Has cleared quest ', [warSpan]),
+            kr: null,
+          );
+        }
         return localized(
           jp: () => combineToRich(context, null, quests(context), 'をクリアした'),
           cn: () => combineToRich(context, '通关', quests(context)),
