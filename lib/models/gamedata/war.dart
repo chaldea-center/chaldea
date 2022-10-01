@@ -155,6 +155,16 @@ class NiceWar with RouteInfo {
         itemReward.addNum(Items.blueSaplingId, arrows);
       }
     }
+    for (final selection in questSelections) {
+      final quest = selection.quest;
+      if (quest.type == QuestType.friendship) continue;
+      Gift.checkAddGifts(itemReward, quest.gifts);
+      for (final phase in quest.phases) {
+        final fixedDrop = gameData.fixedDrops[quest.id * 100 + phase];
+        if (fixedDrop == null) continue;
+        itemDrop.addDict(fixedDrop.items);
+      }
+    }
   }
 
   int _countArrows(Quest quest) {

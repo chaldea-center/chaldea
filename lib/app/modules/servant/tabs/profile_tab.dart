@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
@@ -309,9 +312,15 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           kIndentDivider,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SelectableText(
-              comment,
-              textScaleFactor: 0.9,
+            child: GestureDetector(
+              onLongPress: () async {
+                await Clipboard.setData(ClipboardData(text: comment));
+                EasyLoading.showInfo(S.current.copied);
+              },
+              child: SelectableText(
+                comment,
+                textScaleFactor: 0.9,
+              ),
             ),
           )
         ],

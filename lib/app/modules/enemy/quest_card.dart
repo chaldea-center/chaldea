@@ -197,13 +197,16 @@ class _QuestCardState extends State<QuestCard> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  AutoSizeText(
-                    warName,
-                    maxLines: 2,
-                    maxFontSize: 14,
-                    minFontSize: 6,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  InkWell(
+                    onTap: quest.war?.routeTo,
+                    child: AutoSizeText(
+                      warName,
+                      maxLines: 2,
+                      maxFontSize: 14,
+                      minFontSize: 6,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   AutoSizeText(
                     shownQuestName,
@@ -333,6 +336,7 @@ class _QuestCardState extends State<QuestCard> {
               // maxLines: shownSpotName.split('\n').length,
               style: const TextStyle(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
+              textScaleFactor: 0.9,
             ),
           ),
         ],

@@ -23,18 +23,14 @@ class QuestEfficiencyTab extends StatefulWidget {
 }
 
 class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
-  late ScrollController _scrollController;
+  late final _scrollController = ScrollController();
 
   Set<int> allItems = {};
   Set<int> filterItems = {};
   bool matchAll = true;
   _EfficiencySort sortType = _EfficiencySort.item;
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
+  FreeLPParams get params => widget.solution?.params ?? db.curUser.freeLPParams;
 
   @override
   void dispose() {
@@ -52,7 +48,10 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         break;
       case _EfficiencySort.bond:
         quests.sort((a, b) {
-          return getBondEff(b).compareTo(getBondEff(a));
+          final aa = getBondEff(a), bb = getBondEff(b);
+          if (aa != bb) return bb.compareTo(aa);
+          return Maths.sum(b.detail.values)
+              .compareTo(Maths.sum(a.detail.values));
         });
         break;
     }
@@ -64,8 +63,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final index = data.questIds.indexOf(variable.name);
     int? bond = data.bonds.getOrNull(index), ap = data.apCosts.getOrNull(index);
     if (bond != null && ap != null) {
-      final bondPercent = widget.solution?.params?.bondBonusPercent ?? 0,
-          bondCount = widget.solution?.params?.bondBonusCount ?? 0;
+      final bondPercent = params.bondBonusPercent,
+          bondCount = params.bondBonusCount;
       bond = (bond * (1 + bondPercent * 0.05) + bondCount * 50).toInt();
       return bond / ap;
     }
@@ -135,7 +134,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                   if (state.value && quest != null)
                     QuestCard(
                       quest: quest,
-                      use6th: widget.solution?.params?.use6th,
+                      use6th: params.use6th,
                     ),
                 ],
               );
@@ -273,7 +272,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
             ),
             DropdownButton<int>(
               isDense: true,
-              value: widget.solution?.params?.bondBonusPercent ?? 0,
+              value: params.bondBonusPercent,
               items: [
                 for (int index = 0; index <= 9; index++)
                   DropdownMenuItem(
@@ -283,14 +282,14 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
               ],
               onChanged: (v) {
                 setState(() {
-                  if (v != null) widget.solution?.params?.bondBonusPercent = v;
+                  if (v != null) params.bondBonusPercent = v;
                 });
               },
             ),
             const SizedBox(width: 8),
             DropdownButton<int>(
               isDense: true,
-              value: widget.solution?.params?.bondBonusCount ?? 0,
+              value: params.bondBonusCount,
               items: [
                 for (int index = 0; index <= 2; index++)
                   DropdownMenuItem(
@@ -300,7 +299,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
               ],
               onChanged: (v) {
                 setState(() {
-                  if (v != null) widget.solution?.params?.bondBonusCount = v;
+                  if (v != null) params.bondBonusCount = v;
                 });
               },
             ),

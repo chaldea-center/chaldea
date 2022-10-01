@@ -41,9 +41,14 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     }
 
     Widget header = CustomTile(
-      title: Text('${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
-          '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
-          '${S.current.event_title} ${num2str(stat.statObtain[itemId])}'),
+      title: Text(
+        '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
+        '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
+        '${S.current.event_title} ${num2str(stat.statObtain[itemId])}',
+        style: matType == SvtMatCostDetailType.consumed
+            ? TextStyle(color: Theme.of(context).disabledColor)
+            : null,
+      ),
       trailing: Text(
         '${S.current.item_total_demand} ${num2str(svtDemands.all)}\n'
         '${svtDemands.parts.map((e) => num2str(e)).join('/')}',
