@@ -199,6 +199,15 @@ extension StringX on String {
     return [lines.sublist(0, n).join('\n'), ...lines.skip(n)].join(' ');
   }
 
+  String get breakWord {
+    String breakWord = '';
+    for (final element in runes) {
+      breakWord += String.fromCharCode(element);
+      breakWord += '\u200B';
+    }
+    return breakWord;
+  }
+
   Text toText({
     Key? key,
     TextStyle? style,
@@ -313,6 +322,12 @@ extension DialogShowMethod on material.Widget {
 extension ThemeDataX on ThemeData {
   bool get isDarkMode {
     return brightness == material.Brightness.dark;
+  }
+}
+
+extension ColorX on Color {
+  Color get inverted {
+    return Color.fromARGB(alpha, alpha - red, alpha - green, alpha - blue);
   }
 }
 

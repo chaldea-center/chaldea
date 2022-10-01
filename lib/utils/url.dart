@@ -1,6 +1,7 @@
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:url_launcher/url_launcher_string.dart' as launcher_string;
 
+import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import '../packages/language.dart';
 import 'constants.dart';
@@ -12,6 +13,12 @@ class HttpUrlHelper {
     return kProjectDocRoot +
         (isZh ? '/zh/' : '/') +
         (path.startsWith('/') ? path.substring(1) : path);
+  }
+
+  static String appUrl(String path, [bool? useCN]) {
+    useCN ??= Hosts.cn;
+    if (!path.startsWith('/')) path = '/$path';
+    return (useCN ? Hosts.kAppHostCN : Hosts.kAppHostGlobal) + path;
   }
 }
 

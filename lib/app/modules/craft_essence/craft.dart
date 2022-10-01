@@ -57,7 +57,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
     if (_ce == null) {
       return NotFoundPage(
           title: S.current.craft_essence,
-          url: Routes.commandCodeI(widget.id ?? 0));
+          url: Routes.craftEssenceI(widget.id ?? 0));
     }
     final status =
         db.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;

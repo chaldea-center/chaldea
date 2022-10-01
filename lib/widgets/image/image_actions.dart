@@ -41,6 +41,7 @@ class ImageActions {
         List<Widget> children = [...extraHeaders];
         if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
           children.add(ListTile(
+            leading: const Icon(Icons.download),
             title: Text(S.current.download),
             onTap: () async {
               if (await canLaunch(srcFp)) {

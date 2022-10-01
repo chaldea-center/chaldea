@@ -279,3 +279,7 @@ String escapeDioError(error) {
   }
   return error.toString();
 }
+
+Future<void> copyToClipboard(String text) {
+  return Clipboard.setData(ClipboardData(text: text));
+}

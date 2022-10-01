@@ -2,10 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/root/global_fab.dart';
 import 'package:chaldea/app/routes/delegate.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../../routes/root_delegate.dart';
 
 class WindowManager extends StatefulWidget {
@@ -248,6 +252,13 @@ class WindowThumb extends StatelessWidget {
           root.appState.showWindowManager = false;
           WindowManagerFab.markNeedRebuild();
         },
+        onLongPress: url == null || url.isEmpty
+            ? null
+            : () async {
+                final fullUrl = HttpUrlHelper.appUrl(url);
+                await copyToClipboard(fullUrl);
+                EasyLoading.showToast('${S.current.copied}\n$fullUrl');
+              },
         child: Stack(
           // alignment: Alignment.bottomLeft,
           children: [
@@ -282,17 +293,29 @@ class WindowThumb extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: ListTile(
-                  dense: true,
-                  title: Text('[$index] ${url == null ? '' : ': $url'}'),
-                  trailing: IconButton(
-                    onPressed: () {
-                      if (root.appState.children.length <= 1) return;
-                      root.appState.removeWindow(index);
-                    },
-                    icon: const Icon(Icons.clear),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "[$index] ${url ?? ""}".breakWord,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (root.appState.children.length <= 1) return;
+                          root.appState.removeWindow(index);
+                        },
+                        icon: const Icon(Icons.clear),
+                        padding: const EdgeInsets.all(4),
+                        iconSize: 16,
+                        constraints: const BoxConstraints(minWidth: 24),
+                      )
+                    ],
                   ),
-                  contentPadding: const EdgeInsetsDirectional.only(start: 16),
                 ),
               ),
             ),
