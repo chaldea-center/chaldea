@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -18,6 +19,28 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+enum _ItemSortType {
+  default_,
+  id,
+  owned,
+  left,
+}
+
+extension _ItemSortTypeX on _ItemSortType {
+  String get shownName {
+    switch (this) {
+      case _ItemSortType.default_:
+        return S.current.general_default;
+      case _ItemSortType.id:
+        return 'ID';
+      case _ItemSortType.owned:
+        return S.current.item_own;
+      case _ItemSortType.left:
+        return S.current.item_left;
+    }
+  }
+}
+
 class ItemListPage extends StatefulWidget {
   ItemListPage({super.key});
 
@@ -28,6 +51,7 @@ class ItemListPage extends StatefulWidget {
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
   bool filtered = false;
+  _ItemSortType sortType = _ItemSortType.default_;
 
   late TabController _tabController;
   late List<TextEditingController> _itemRedundantControllers;
@@ -85,6 +109,18 @@ class ItemListPageState extends State<ItemListPage>
           ),
           SharedBuilder.priorityIcon(context: context),
           IconButton(
+            onPressed: () {
+              setState(() {
+                sortType = _ItemSortType
+                    .values[(sortType.index + 1) % _ItemSortType.values.length];
+              });
+              EasyLoading.showToast(
+                  '${S.current.sort_order} - ${sortType.shownName}');
+            },
+            icon: const Icon(Icons.sort),
+            tooltip: '${S.current.sort_order} - ${sortType.shownName}',
+          ),
+          IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
             tooltip: S.current.item_only_show_lack,
@@ -117,14 +153,20 @@ class ItemListPageState extends State<ItemListPage>
               controller: _tabController,
               children: [
                 for (final category in shownCategories)
-                  ItemListTab(
-                    category: category,
-                    items: categorized[category] ?? [],
-                    onNavToCalculator: navToDropCalculator,
-                    filtered: filtered,
-                    showSet999: true,
-                    editable: ![ItemCategory.event, ItemCategory.other]
-                        .contains(category),
+                  db.onUserData(
+                    (context, snapshot) => ItemListTab(
+                      category: category,
+                      items: categorized[category] ?? [],
+                      onNavToCalculator: navToDropCalculator,
+                      filtered: filtered,
+                      showSet999: true,
+                      editable: ![ItemCategory.event, ItemCategory.other]
+                          .contains(category),
+                      sortType: [ItemCategory.event, ItemCategory.other]
+                              .contains(category)
+                          ? _ItemSortType.id
+                          : sortType,
+                    ),
                   )
               ],
             ),
@@ -288,6 +330,7 @@ class ItemListTab extends StatefulWidget {
   final bool filtered;
   final bool showSet999;
   final bool editable;
+  final _ItemSortType sortType;
 
   const ItemListTab({
     super.key,
@@ -297,6 +340,7 @@ class ItemListTab extends StatefulWidget {
     this.filtered = false,
     this.showSet999 = false,
     this.editable = true,
+    this.sortType = _ItemSortType.default_,
   });
 
   @override
@@ -332,19 +376,39 @@ class _ItemListTabState extends State<ItemListTab> {
     }
 
     // sort by item id
+    for (final svt in db.gameData.servantsNoDup.values) {
+      final coinId = svt.coin?.item.id;
+      if (coinId != null) _coinSvtMap[coinId] = svt;
+    }
+  }
+
+  void sort() {
     final sortedEntries = _allGroups.entries.toList();
-    if (widget.category == ItemCategory.coin) {
-      for (final svt in db.gameData.servantsNoDup.values) {
-        final coinId = svt.coin?.item.id;
-        if (coinId != null) _coinSvtMap[coinId] = svt;
-      }
-      sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
-    } else if (widget.category == ItemCategory.other) {
-      sortedEntries.sort2((e) => db.gameData.items[e.key]?.id ?? e.key);
-    } else {
-      sortedEntries.sort2((e) => e.key == Items.qpId
-          ? -1
-          : db.gameData.items[e.key]?.priority ?? e.key);
+    switch (widget.sortType) {
+      case _ItemSortType.default_:
+        if (widget.category == ItemCategory.coin) {
+          sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
+        } else if (widget.category == ItemCategory.other) {
+          sortedEntries.sort2((e) => e.key);
+        } else {
+          sortedEntries.sort2((e) => e.key == Items.qpId
+              ? -1
+              : db.gameData.items[e.key]?.priority ?? e.key);
+        }
+        break;
+      case _ItemSortType.id:
+        sortedEntries.sort2((e) => e.key);
+        break;
+      case _ItemSortType.owned:
+        sortedEntries.sort2((e) => e.key == Items.qpId
+            ? double.negativeInfinity
+            : db.curUser.items[e.key] ?? 0);
+        break;
+      case _ItemSortType.left:
+        sortedEntries.sort2((e) => e.key == Items.qpId
+            ? double.negativeInfinity
+            : db.itemCenter.itemLeft[e.key] ?? 0);
+        break;
     }
     _allGroups = Map.fromEntries(sortedEntries);
   }
@@ -382,10 +446,7 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   Widget build(BuildContext context) {
-    return db.onUserData((context, snapshot) => buildContent(context));
-  }
-
-  Widget buildContent(BuildContext context) {
+    sort();
     setTextController();
     List<WidgetBuilder> children = [];
     _shownGroups.clear();
