@@ -73,12 +73,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
     final banners = [
       ...war.extra.resolvedBanner.values.whereType<String>(),
     ];
-    // final eventBanners = war.event?.extra.titleBanner.values
-    //     .whereType<String>()
-    //     .toList();
-    // if (eventBanners != null && eventBanners.isNotEmpty) {
-    //   banners.addAll(eventBanners);
-    // }
     List<String> warBanners = {
       war.banner,
       for (final warAdd in war.warAdds) warAdd.overwriteBanner,
@@ -105,6 +99,28 @@ class _WarDetailPageState extends State<WarDetailPage> {
     String longNameJp = longNames.join('\n');
     String lShortName = shortNames.map((e) => Transl.warNames(e).l).join('\n');
     String shortNameJp = shortNames.join('\n');
+
+    Quest? firstMainQuest;
+    NiceWar? condWar;
+    if (war.startType == WarStartType.quest) {
+      firstMainQuest = war.quests.firstWhereOrNull((q) => q.id == war.targetId);
+    }
+    if (firstMainQuest == null) {
+      final mainQuests =
+          war.quests.where((e) => e.type == QuestType.main).toList();
+      mainQuests.sort2((e) => -e.priority);
+      firstMainQuest = mainQuests.getOrNull(0);
+    }
+    if (firstMainQuest != null) {
+      final targetId = firstMainQuest.releaseConditions
+          .firstWhereOrNull((cond) => cond.type == CondType.questClear)
+          ?.targetId;
+      final condQuest = db.gameData.quests[targetId];
+      if (targetId == condQuest?.war?.lastQuestId) {
+        // usually only main story use the lastQuestId
+        condWar = condQuest?.war;
+      }
+    }
 
     children.add(CustomTable(children: [
       CustomTableRow(children: [
@@ -160,6 +176,25 @@ class _WarDetailPageState extends State<WarDetailPage> {
               child: Text(
                 Transl.eventNames(war.eventName).l,
                 textAlign: TextAlign.center,
+                textScaleFactor: 0.9,
+              ),
+            ),
+          )
+        ]),
+      if (condWar != null)
+        CustomTableRow(children: [
+          TableCellData(isHeader: true, text: S.current.open_condition),
+          TableCellData(
+            flex: 3,
+            child: TextButton(
+              onPressed: () {
+                condWar?.routeTo();
+              },
+              style: kTextButtonDenseStyle,
+              child: Text(
+                condWar.lLongName.l,
+                textAlign: TextAlign.center,
+                textScaleFactor: 0.9,
               ),
             ),
           )
