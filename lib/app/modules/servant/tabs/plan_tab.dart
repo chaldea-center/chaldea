@@ -850,6 +850,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       title: S.current.enhance_warning,
       items: enhanceItems,
       hideCancel: false,
+      showSubOwned: true,
       onConfirm: () {
         if (hasItem) {
           Maths.sumDict(

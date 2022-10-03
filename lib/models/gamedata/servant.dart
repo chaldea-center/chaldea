@@ -138,6 +138,9 @@ class BasicServant with GameCardMixin {
   factory BasicServant.fromJson(Map<String, dynamic> json) =>
       _$BasicServantFromJson(json);
 
+  bool get isUserSvt =>
+      (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
+
   @override
   Transl<String, String> get lName => Transl.svtNames(name);
 

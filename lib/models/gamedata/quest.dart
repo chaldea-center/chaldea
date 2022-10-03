@@ -136,6 +136,7 @@ class Quest with RouteInfo {
 
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
 
+  NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
 
   @override

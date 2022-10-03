@@ -130,7 +130,13 @@ class LimitEventTab extends StatelessWidget {
         }
         final svt = db.gameData.servantsById[objectId];
         if (svt != null && svt.isUserSvt) {
-          rewards.add(svt.iconBuilder(context: context, width: 32));
+          rewards.add(svt.iconBuilder(
+              context: context, width: 32, text: entry.value.format()));
+        }
+        final svtTd = db.gameData.entities[objectId];
+        if (svtTd != null && svtTd.type == SvtType.svtMaterialTd) {
+          rewards.add(svtTd.iconBuilder(
+              context: context, width: 32, text: entry.value.format()));
         }
       }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/enemy/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'scheme.dart';
@@ -128,8 +129,13 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         if (name != nameJp) subtitle += ' $nameJp';
         return ListTile(
-          title: Text(quest.lDispName),
-          subtitle: Text(subtitle),
+          leading: quest.spot?.image == null
+              ? const SizedBox()
+              : db.getIconImage(quest.spot?.image, width: 48),
+          contentPadding: const EdgeInsetsDirectional.only(start: 2),
+          horizontalTitleGap: 2,
+          title: Text(quest.lDispName, textScaleFactor: 0.9),
+          subtitle: Text(subtitle, textScaleFactor: 0.9),
           trailing: Text('${widget.showResult ? '×' : '+'} $count'),
         );
       },

@@ -268,6 +268,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     return ListTile(
       leading: Text(leading),
       title: TextButton(onPressed: _onTap, child: Text(title)),
+      dense: true,
     );
   }
 
@@ -275,56 +276,60 @@ class _MissionInputTabState extends State<MissionInputTab> {
   bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
 
   Widget get buttonBar {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        DropdownButton<bool>(
-          value: isRegionNA,
-          items: [
-            for (final isNA in [false, true])
-              DropdownMenuItem(
-                value: isNA,
-                child: Text(isNA ? 'NA' : 'JP'),
-              ),
-          ],
-          onChanged: (warId < 1000)
-              ? null
-              : (v) {
-                  setState(() {
-                    if (v != null) _isRegionNA = v;
-                  });
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          DropdownButton<bool>(
+            isDense: true,
+            value: isRegionNA,
+            items: [
+              for (final isNA in [false, true])
+                DropdownMenuItem(
+                  value: isNA,
+                  child: Text(isNA ? 'NA' : 'JP'),
+                ),
+            ],
+            onChanged: (warId < 1000)
+                ? null
+                : (v) {
+                    setState(() {
+                      if (v != null) _isRegionNA = v;
+                    });
+                  },
+          ),
+          IconButton(
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.clear),
+                onTapOk: () {
+                  missions.clear();
+                  if (mounted) setState(() {});
                 },
-        ),
-        IconButton(
-          onPressed: () {
-            SimpleCancelOkDialog(
-              title: Text(S.current.clear),
-              onTapOk: () {
-                missions.clear();
-                if (mounted) setState(() {});
-              },
-            ).showDialog(context);
-          },
-          icon: const Icon(Icons.clear_all),
-        ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              missions.add(CustomMission(
-                type: CustomMissionType.trait,
-                count: 0,
-                ids: [],
-                useAnd: true,
-              ));
-            });
-          },
-          icon: const Icon(Icons.add_circle_outline),
-        ),
-        ElevatedButton(
-          onPressed: _solveProblem,
-          child: Text(S.current.drop_calc_solve),
-        )
-      ],
+              ).showDialog(context);
+            },
+            icon: const Icon(Icons.clear_all),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                missions.add(CustomMission(
+                  type: CustomMissionType.trait,
+                  count: 0,
+                  ids: [],
+                  useAnd: true,
+                ));
+              });
+            },
+            icon: const Icon(Icons.add_circle_outline),
+          ),
+          ElevatedButton(
+            onPressed: _solveProblem,
+            child: Text(S.current.drop_calc_solve),
+          )
+        ],
+      ),
     );
   }
 
@@ -616,6 +621,7 @@ class EventChooser extends StatelessWidget {
               children: [
                 for (final war in mainStories)
                   ListTile(
+                    dense: true,
                     title: Text(war.lLongName.l),
                     subtitle: Text('ID ${war.id}'),
                     onTap: () {
@@ -628,6 +634,7 @@ class EventChooser extends StatelessWidget {
               children: [
                 for (final war in eventWars)
                   ListTile(
+                    dense: true,
                     title: Text(Transl.eventNames(war.eventName).l),
                     subtitle: Text(
                         'War ${war.id}: ${war.event?.startedAt.sec2date().toDateString()} (JP)'),
