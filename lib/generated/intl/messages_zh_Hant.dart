@@ -684,6 +684,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自動旋轉"),
         "setting_auto_turn_on_plan_not_reach":
             MessageLookupByLibrary.simpleMessage("預設顯示\"規劃未滿\""),
+        "setting_drag_by_mouse":
+            MessageLookupByLibrary.simpleMessage("允许鼠标拖动滚动组件"),
         "setting_home_plan_list_page":
             MessageLookupByLibrary.simpleMessage("首頁-規劃列表頁"),
         "setting_only_change_second_append_skill":

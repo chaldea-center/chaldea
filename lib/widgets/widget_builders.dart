@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/generated/l10n.dart';
 
 typedef ValueStatefulWidgetBuilder<T> = Widget Function(
     BuildContext context, _ValueStatefulBuilderState<T> state);
@@ -239,5 +244,24 @@ class _ScrollRestorationState extends State<ScrollRestoration> {
   @override
   Widget build(BuildContext context) {
     return widget.builder(context, _scrollController);
+  }
+}
+
+class CopyLongPress extends StatelessWidget {
+  final String text;
+  final Widget child;
+  const CopyLongPress({super.key, required this.text, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onLongPress: () async {
+        await Clipboard.setData(ClipboardData(text: text));
+        final shownText =
+            text.length > 100 ? '${text.substring(0, 100)}...' : text;
+        EasyLoading.showToast('${S.current.copied}\n$shownText');
+      },
+      child: child,
+    );
   }
 }

@@ -529,6 +529,7 @@
   "setting_always_on_top": "Always On Top",
   "setting_auto_rotate": "Auto Rotate",
   "setting_auto_turn_on_plan_not_reach": "Auto Turn on PlanNotReach",
+  "setting_drag_by_mouse": "Allow mouse to drag scrollables",
   "setting_home_plan_list_page": "Home-Plan List Page",
   "setting_only_change_second_append_skill": "Only Change 2nd Append Skill",
   "setting_priority_tagging": "Priority Tagging",

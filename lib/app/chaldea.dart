@@ -62,7 +62,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: db.settings.themeMode,
-        scrollBehavior: DraggableScrollBehavior(),
+        scrollBehavior:
+            DraggableScrollBehavior(enableMouse: db.settings.enableMouseDrag),
         locale: Language.getLanguage(db.settings.language)?.locale,
         localizationsDelegates: const [
           S.delegate,
@@ -227,6 +228,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 }
 
 class DraggableScrollBehavior extends MaterialScrollBehavior {
+  final bool enableMouse;
+  const DraggableScrollBehavior({this.enableMouse = true});
   @override
-  final Set<PointerDeviceKind> dragDevices = PointerDeviceKind.values.toSet();
+  Set<PointerDeviceKind> get dragDevices => {
+        for (final v in PointerDeviceKind.values)
+          if (v != PointerDeviceKind.mouse || enableMouse) v
+      };
 }

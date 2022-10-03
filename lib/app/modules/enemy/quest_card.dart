@@ -208,14 +208,13 @@ class _QuestCardState extends State<QuestCard> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  AutoSizeText(
-                    shownQuestName,
-                    maxLines: 3,
-                    maxFontSize: 14,
-                    minFontSize: 6,
-                    textScaleFactor: 0.85,
-                    textAlign: TextAlign.center,
-                    // style: const TextStyle(fontWeight: FontWeight.w500),
+                  CopyLongPress(
+                    text: shownQuestName,
+                    child: SelectableText(
+                      shownQuestName,
+                      textScaleFactor: 0.9,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
@@ -331,12 +330,14 @@ class _QuestCardState extends State<QuestCard> {
           ),
           Expanded(
             flex: 4,
-            child: Text(
-              shownSpotName,
-              // maxLines: shownSpotName.split('\n').length,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-              textScaleFactor: 0.9,
+            child: CopyLongPress(
+              text: shownSpotName,
+              child: SelectableText(
+                shownSpotName,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+                textScaleFactor: 0.9,
+              ),
             ),
           ),
         ],

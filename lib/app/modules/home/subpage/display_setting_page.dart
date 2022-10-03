@@ -86,6 +86,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
+              if (!PlatformU.isTargetMobile)
+                SwitchListTile.adaptive(
+                  value: db.settings.enableMouseDrag,
+                  title: Text(S.current.setting_drag_by_mouse),
+                  subtitle: Text(S.current.desktop_only),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.enableMouseDrag = v;
+                    });
+                    db.notifyAppUpdate();
+                  },
+                ),
               SwitchListTile.adaptive(
                 value: db.settings.display.showAccountAtHome,
                 title: Text(S.current.setting_show_account_at_homepage),

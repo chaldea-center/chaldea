@@ -814,6 +814,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Auto Rotate"),
         "setting_auto_turn_on_plan_not_reach":
             MessageLookupByLibrary.simpleMessage("Auto Turn on PlanNotReach"),
+        "setting_drag_by_mouse": MessageLookupByLibrary.simpleMessage(
+            "Allow mouse to drag scrollables"),
         "setting_home_plan_list_page":
             MessageLookupByLibrary.simpleMessage("Home-Plan List Page"),
         "setting_only_change_second_append_skill":

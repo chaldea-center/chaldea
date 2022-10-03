@@ -25,6 +25,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) =>
                   $enumDecodeNullable(_$ThemeModeEnumMap, v) ??
                   ThemeMode.system),
+          enableMouseDrag:
+              $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
           splitMasterRatio:
               $checkedConvert('splitMasterRatio', (v) => v as int?),
           language: $checkedConvert('language', (v) => v as String?),
@@ -135,6 +137,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'launchTimes': instance.launchTimes,
       'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
+      'enableMouseDrag': instance.enableMouseDrag,
       'splitMasterRatio': instance.splitMasterRatio,
       'preferredRegions':
           instance.preferredRegions?.map((e) => _$RegionEnumMap[e]!).toList(),

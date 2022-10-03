@@ -26,6 +26,7 @@ class LocalSettings {
   int launchTimes;
   int lastBackup;
   ThemeMode themeMode;
+  bool enableMouseDrag;
   int? splitMasterRatio;
   String? _language;
   List<Region>? preferredRegions;
@@ -67,6 +68,7 @@ class LocalSettings {
     this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
+    this.enableMouseDrag = true,
     this.splitMasterRatio,
     String? language,
     List<Region>? preferredRegions,

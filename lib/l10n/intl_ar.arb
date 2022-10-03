@@ -529,6 +529,7 @@
   "setting_always_on_top": "دائما في الأعلى",
   "setting_auto_rotate": "تدوير تلقائي",
   "setting_auto_turn_on_plan_not_reach": null,
+  "setting_drag_by_mouse": null,
   "setting_home_plan_list_page": null,
   "setting_only_change_second_append_skill": null,
   "setting_priority_tagging": null,

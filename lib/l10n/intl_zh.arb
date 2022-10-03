@@ -529,6 +529,7 @@
   "setting_always_on_top": "置顶显示",
   "setting_auto_rotate": "自动旋转",
   "setting_auto_turn_on_plan_not_reach": "默认显示\"规划未满\"",
+  "setting_drag_by_mouse": "允许鼠标拖动滚动组件",
   "setting_home_plan_list_page": "首页-规划列表页",
   "setting_only_change_second_append_skill": "仅更改追加技能2",
   "setting_priority_tagging": "优先级备注",

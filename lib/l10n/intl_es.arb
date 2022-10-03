@@ -529,6 +529,7 @@
   "setting_always_on_top": "Siempre al frente",
   "setting_auto_rotate": "Auto rotar",
   "setting_auto_turn_on_plan_not_reach": "Encendido automático cuando el Plan no se alcanza",
+  "setting_drag_by_mouse": null,
   "setting_home_plan_list_page": "Página de lista de Inicio-Plan",
   "setting_only_change_second_append_skill": "Solo cambiar la 2da Append Skill",
   "setting_priority_tagging": "Prioridad de las Etiquetas",

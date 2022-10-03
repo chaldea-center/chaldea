@@ -5891,6 +5891,17 @@ class S {
     );
   }
 
+  /// `Allow mouse to drag scrollables`
+  String get setting_drag_by_mouse {
+    return Intl.message(
+      'Allow mouse to drag scrollables',
+      name: 'setting_drag_by_mouse',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Home-Plan List Page`
   String get setting_home_plan_list_page {
     return Intl.message(

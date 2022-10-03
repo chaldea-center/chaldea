@@ -529,6 +529,7 @@
   "setting_always_on_top": "항상 맨 위에 표시",
   "setting_auto_rotate": "자동 회전",
   "setting_auto_turn_on_plan_not_reach": "디폴트 표시\"계획이 가득 차지 않습니다",
+  "setting_drag_by_mouse": null,
   "setting_home_plan_list_page": "홈-계획 리스트 페이지",
   "setting_only_change_second_append_skill": "어펜드 스킬 2만 변경",
   "setting_priority_tagging": "우선순위 매기기",
