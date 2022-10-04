@@ -176,6 +176,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     }
   }
 
+  void pop() {
+    if (canPop()) {
+      _pages.removeLast();
+    }
+  }
+
   void replace({
     String? url,
     Widget? child,

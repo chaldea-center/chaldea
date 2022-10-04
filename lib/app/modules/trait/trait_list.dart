@@ -8,7 +8,9 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class TraitListPage extends StatefulWidget {
-  const TraitListPage({super.key});
+  final ValueChanged<int>? onSelected;
+  final String? initSearchString;
+  const TraitListPage({super.key, this.onSelected, this.initSearchString});
 
   @override
   _TraitListPageState createState() => _TraitListPageState();
@@ -16,6 +18,13 @@ class TraitListPage extends StatefulWidget {
 
 class _TraitListPageState extends State<TraitListPage>
     with SearchableListState<int, TraitListPage> {
+  @override
+  void initState() {
+    super.initState();
+    searchEditingController =
+        TextEditingController(text: widget.initSearchString);
+  }
+
   @override
   Iterable<int> get wholeData {
     Set<int> ids = kTraitIdMappingReverse.values.toSet();
@@ -65,7 +74,11 @@ class _TraitListPageState extends State<TraitListPage>
       title: Text(hasTransl ? name : subtitle),
       subtitle: hasTransl ? Text(subtitle) : null,
       onTap: () {
-        router.popDetailAndPush(url: Routes.traitI(id));
+        if (widget.onSelected != null) {
+          widget.onSelected!(id);
+        } else {
+          router.popDetailAndPush(url: Routes.traitI(id));
+        }
       },
     );
   }

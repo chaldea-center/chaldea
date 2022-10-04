@@ -634,6 +634,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "saved": MessageLookupByLibrary.simpleMessage("保存済み"),
         "screen_size": MessageLookupByLibrary.simpleMessage("画面サイズ"),
         "screenshots": MessageLookupByLibrary.simpleMessage("スクショ"),
+        "script_player_name": MessageLookupByLibrary.simpleMessage("藤丸"),
         "search": MessageLookupByLibrary.simpleMessage("検索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基本情報"),
         "search_options": MessageLookupByLibrary.simpleMessage("検索範囲"),

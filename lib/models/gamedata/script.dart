@@ -36,16 +36,12 @@ class ScriptLink {
 }
 
 @JsonSerializable()
-class ValentineScript implements ScriptLink {
-  @override
-  String scriptId;
-  @override
-  String script;
+class ValentineScript extends ScriptLink {
   String scriptName;
 
   ValentineScript({
-    required this.scriptId,
-    required this.script,
+    required super.scriptId,
+    required super.script,
     required this.scriptName,
   });
 

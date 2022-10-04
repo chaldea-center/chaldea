@@ -785,6 +785,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
         "screenshots": MessageLookupByLibrary.simpleMessage("Screenshots"),
+        "script_choice": MessageLookupByLibrary.simpleMessage("Choice"),
+        "script_choice_end":
+            MessageLookupByLibrary.simpleMessage("Choice Branch End"),
+        "script_player_name": MessageLookupByLibrary.simpleMessage("Hujimaru"),
+        "script_story": MessageLookupByLibrary.simpleMessage("Story"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Basic"),
         "search_options": MessageLookupByLibrary.simpleMessage("Search Scopes"),
@@ -983,6 +988,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Upload Backup"),
         "valentine_craft":
             MessageLookupByLibrary.simpleMessage("Valentine craft"),
+        "valentine_script":
+            MessageLookupByLibrary.simpleMessage("Valentine Script"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),

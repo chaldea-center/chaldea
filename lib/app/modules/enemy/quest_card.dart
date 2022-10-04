@@ -15,6 +15,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
+import '../script/script_reader.dart';
 import 'quest_enemy.dart';
 import 'support_servant.dart';
 
@@ -34,7 +35,9 @@ class QuestCard extends StatefulWidget {
     this.region = Region.jp,
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
-        super(key: key ?? Key('QuestCard_${quest?.id ?? questId}'));
+        super(
+            key:
+                key ?? Key('QuestCard_${region.name}_${quest?.id ?? questId}'));
 
   @override
   _QuestCardState createState() => _QuestCardState();
@@ -289,12 +292,13 @@ class _QuestCardState extends State<QuestCard> {
       }
     }
     if (curPhase == null) {
-      children.add(Text('  $phase/${quest.phases.length}  '));
+      List<Widget> rowChildren = [];
+      rowChildren.add(Text('  $phase/${quest.phases.length}  '));
       if (quest.phasesNoBattle.contains(phase)) {
-        children.add(const Expanded(
+        rowChildren.add(const Expanded(
             child: Text('No Battle', textAlign: TextAlign.center)));
       } else if (!widget.offline) {
-        children.add(
+        rowChildren.add(
           const Expanded(
             child: Padding(
               padding: EdgeInsets.all(4),
@@ -303,11 +307,17 @@ class _QuestCardState extends State<QuestCard> {
           ),
         );
       } else {
-        children.add(const Text('-', textAlign: TextAlign.center));
+        rowChildren.add(const Text('-', textAlign: TextAlign.center));
       }
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: rowChildren,
+          ),
+          ...getPhaseScript(phase)
+        ],
       );
     }
     String spotJp = curPhase.spotName;
@@ -520,6 +530,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
+    children.addAll(getPhaseScript(phase));
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -528,6 +539,41 @@ class _QuestCardState extends State<QuestCard> {
         divider: const Divider(height: 5, thickness: 0.5),
       ),
     );
+  }
+
+  List<Widget> getPhaseScript(int phase) {
+    final scripts =
+        quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
+    if (scripts == null || scripts.isEmpty) return [];
+    return [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _header(S.current.script_story),
+            Expanded(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  for (final s in scripts)
+                    Text.rich(SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: '[${s.scriptId}]',
+                      onTap: () {
+                        router.pushPage(
+                            ScriptReaderPage(script: s, region: widget.region));
+                      },
+                    ))
+                ],
+              ),
+            )
+          ],
+        ),
+      )
+    ];
   }
 
   Widget getSupportServants(QuestPhase curPhase) {

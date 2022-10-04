@@ -10,6 +10,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/extra_assets_page.dart';
 import 'package:chaldea/app/modules/creator/chara_detail.dart';
 import 'package:chaldea/app/modules/creator/creator_detail.dart';
+import 'package:chaldea/app/modules/script/script_reader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -315,6 +316,55 @@ class CraftDetailBasePage extends StatelessWidget {
           )
         ]),
         ..._relatedSvt(context),
+        if (ce.valentineScript.isNotEmpty) ...[
+          CustomTableRow.fromTexts(
+            texts: [S.current.valentine_script],
+            isHeader: true,
+          ),
+          for (final script in ce.valentineScript)
+            TextButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) {
+                    List<Widget> children = [];
+                    for (final region in Region.values) {
+                      final ceRelease =
+                          db.gameData.mappingData.ceRelease.ofRegion(region);
+                      final released = region == Region.jp ||
+                          ceRelease?.contains(ce.collectionNo) == true;
+                      children.add(SimpleDialogOption(
+                        onPressed: released
+                            ? () {
+                                Navigator.pop(context);
+                                router.pushPage(ScriptReaderPage(
+                                  script: script,
+                                  region: region,
+                                ));
+                              }
+                            : null,
+                        child: Text(
+                          region.localName,
+                          style: released
+                              ? null
+                              : TextStyle(
+                                  color: Theme.of(context).disabledColor,
+                                ),
+                        ),
+                      ));
+                    }
+                    return SimpleDialog(children: children);
+                  },
+                );
+              },
+              style: kTextButtonDenseStyle,
+              child: Text(
+                '${script.scriptId} ${Transl.ceNames(script.scriptName).l}',
+                textAlign: TextAlign.center,
+              ),
+            )
+        ],
         CustomTableRow(
             children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority))
@@ -447,10 +497,7 @@ class CraftDetailBasePage extends StatelessWidget {
         onPressed: () {
           router.push(url: svt.route);
         },
-        style: TextButton.styleFrom(
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
-        ),
+        style: kTextButtonDenseStyle,
         child: Text(
           svt.lName.l,
           textAlign: TextAlign.center,

@@ -38,20 +38,16 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   }
 
   Region _resolveDefaultRegion() {
-    final fixedRegion = db.settings.preferredQuestRegion;
     if (widget.region != null) return widget.region!;
+    final fixedRegion = db.settings.preferredQuestRegion;
     if (fixedRegion == null || fixedRegion == Region.jp) {
       return Region.jp;
     }
     final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
-    if (jpQuest == null) return Region.jp;
-    final eventId = db.gameData.wars[jpQuest.warId]?.eventId;
-    if (eventId == null) return Region.jp;
-    final event = db.gameData.events[eventId];
-    if (event == null) return Region.jp;
-    print([event.extra.startTime.values]);
-    if (event.extra.startTime.ofRegion(fixedRegion) != null) {
-      print(event.extra.startTime.ofRegion(fixedRegion));
+    final released = db.gameData.mappingData.warRelease
+        .ofRegion(fixedRegion)
+        ?.contains(jpQuest?.warId);
+    if (released == true) {
       return fixedRegion;
     }
     return Region.jp;
@@ -143,6 +139,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   quest: quest,
                   region: region,
                   offline: false,
+                  key: Key('${region.name}_${quest.id}'),
                 ),
                 if (db.gameData.dropRate.newData.questIds.contains(quest.id))
                   blacklistButton,

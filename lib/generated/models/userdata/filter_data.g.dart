@@ -172,3 +172,28 @@ Map<String, dynamic> _$SummonFilterDataToJson(SummonFilterData instance) =>
       'showBanner': instance.showBanner,
       'showOutdated': instance.showOutdated,
     };
+
+ScriptReaderFilterData _$ScriptReaderFilterDataFromJson(Map json) =>
+    $checkedCreate(
+      'ScriptReaderFilterData',
+      json,
+      ($checkedConvert) {
+        final val = ScriptReaderFilterData(
+          scene: $checkedConvert('scene', (v) => v as bool? ?? true),
+          soundEffect:
+              $checkedConvert('soundEffect', (v) => v as bool? ?? true),
+          bgm: $checkedConvert('bgm', (v) => v as bool? ?? true),
+          voice: $checkedConvert('voice', (v) => v as bool? ?? true),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$ScriptReaderFilterDataToJson(
+        ScriptReaderFilterData instance) =>
+    <String, dynamic>{
+      'scene': instance.scene,
+      'soundEffect': instance.soundEffect,
+      'bgm': instance.bgm,
+      'voice': instance.voice,
+    };

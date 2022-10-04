@@ -642,6 +642,14 @@ class MyAudioPlayer<T> {
     _tag = null;
   }
 
+  Future<void> playOrPause(List<AudioSource> sources, T tag) async {
+    if (tag == _tag) {
+      return stop();
+    } else {
+      play(sources, tag);
+    }
+  }
+
   Future<void> stop() async {
     _tag = null;
     if (PlatformU.isWindows || PlatformU.isLinux) {

@@ -698,6 +698,30 @@ class SummonFilterData with _FilterData {
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
 
+@JsonSerializable()
+class ScriptReaderFilterData {
+  bool scene;
+  bool soundEffect;
+  bool bgm;
+  bool voice;
+
+  ScriptReaderFilterData({
+    this.scene = true,
+    this.soundEffect = true,
+    this.bgm = true,
+    this.voice = true,
+  });
+
+  void reset() {
+    soundEffect = bgm = scene = voice = true;
+  }
+
+  factory ScriptReaderFilterData.fromJson(Map<String, dynamic> data) =>
+      _$ScriptReaderFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ScriptReaderFilterDataToJson(this);
+}
+
 class EnemyFilterData with _FilterData {
   bool useGrid;
   List<SvtCompare> sortKeys;

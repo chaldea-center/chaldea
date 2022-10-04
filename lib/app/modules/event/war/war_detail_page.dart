@@ -7,6 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/event/war/script_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -228,6 +229,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
     selectionQuests = war.questSelections.map((e) => e.quest).toList();
     selectionQuests.sort2((e) => e.priority, reversed: true);
+
     if (war.spots.isNotEmpty || selectionQuests.isNotEmpty) {
       children.add(TileGroup(
         header: S.current.quest,
@@ -313,6 +315,17 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ],
       ));
     }
+
+    children.add(TileGroup(
+      children: [
+        ListTile(
+          title: Text(S.current.script_story),
+          onTap: () {
+            router.pushPage(ScriptListPage(war: war));
+          },
+        ),
+      ],
+    ));
 
     final subWars = db.gameData.wars.values.where((w) {
       if (w.parentWarId == war.id) return true;

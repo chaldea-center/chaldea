@@ -87,12 +87,7 @@ class _QuestListPageState extends State<QuestListPage> {
               ],
             );
           }
-          String chapter = quest.type == QuestType.main
-              ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-                  ? S.current.quest_chapter_n(quest.chapterSubId)
-                  : quest.chapterSubStr
-              : '';
-          chapter = chapter.trim();
+          String chapter = quest.chapter;
           final title =
               chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
           final interludeOwner = quest.type == QuestType.friendship

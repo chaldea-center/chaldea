@@ -18,9 +18,12 @@ class NiceTrait {
 
   const NiceTrait._({required this.id, this.negative = false});
 
-  factory NiceTrait({required int id, bool negative = false}) =>
-      _instances.putIfAbsent(
-          negative ? -id : id, () => NiceTrait._(id: id, negative: negative));
+  factory NiceTrait({required int id, bool negative = false}) {
+    negative = negative || id < 0;
+    id = id.abs();
+    return _instances.putIfAbsent(
+        negative ? -id : id, () => NiceTrait._(id: id, negative: negative));
+  }
 
   factory NiceTrait.signed(int sid) => _instances.putIfAbsent(
       sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));

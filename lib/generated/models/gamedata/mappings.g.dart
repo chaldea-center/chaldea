@@ -240,6 +240,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ? null
           : MappingList<int>.fromJson(
               Map<String, dynamic>.from(json['mc_release'] as Map)),
+      warRelease: json['war_release'] == null
+          ? null
+          : MappingList<int>.fromJson(
+              Map<String, dynamic>.from(json['war_release'] as Map)),
       questRelease: (json['quest_release'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 MappingBase<int>.fromJson(Map<String, dynamic>.from(e as Map))),

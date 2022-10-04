@@ -5660,6 +5660,50 @@ class S {
     );
   }
 
+  /// `Choice`
+  String get script_choice {
+    return Intl.message(
+      'Choice',
+      name: 'script_choice',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Choice Branch End`
+  String get script_choice_end {
+    return Intl.message(
+      'Choice Branch End',
+      name: 'script_choice_end',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Hujimaru`
+  String get script_player_name {
+    return Intl.message(
+      'Hujimaru',
+      name: 'script_player_name',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Story`
+  String get script_story {
+    return Intl.message(
+      'Story',
+      name: 'script_story',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Search`
   String get search {
     return Intl.message(
@@ -7073,6 +7117,17 @@ class S {
     return Intl.message(
       'Valentine craft',
       name: 'valentine_craft',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Valentine Script`
+  String get valentine_script {
+    return Intl.message(
+      'Valentine Script',
+      name: 'valentine_script',
       desc: '',
       locale: localeName,
       args: [],

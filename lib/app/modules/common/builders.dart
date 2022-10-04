@@ -20,6 +20,38 @@ import 'package:chaldea/widgets/widgets.dart';
 class SharedBuilder {
   SharedBuilder._();
 
+  static DropdownButton appBarRegionDropdown({
+    required BuildContext context,
+    required Region region,
+    required ValueChanged<Region?> onChanged,
+  }) {
+    return DropdownButton<Region>(
+      value: region,
+      items: [
+        for (final region in Region.values)
+          DropdownMenuItem(
+            value: region,
+            child: Text(region.localName),
+          ),
+      ],
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: SharedBuilder.appBarForeground(context),
+      ),
+      selectedItemBuilder: (context) => [
+        for (final region in Region.values)
+          DropdownMenuItem(
+            child: Text(
+              region.localName,
+              style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+            ),
+          )
+      ],
+      onChanged: onChanged,
+      underline: const SizedBox(),
+    );
+  }
+
   static Color? appBarForeground(BuildContext context) {
     final theme = Theme.of(context);
     return theme.appBarTheme.foregroundColor ??

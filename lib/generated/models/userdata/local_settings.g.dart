@@ -121,6 +121,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   ? null
                   : SummonFilterData.fromJson(
                       Map<String, dynamic>.from(v as Map))),
+          scriptReaderFilterData: $checkedConvert(
+              'scriptReaderFilterData',
+              (v) => v == null
+                  ? null
+                  : ScriptReaderFilterData.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
         );
         $checkedConvert(
             'useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
@@ -166,6 +172,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),
       'eventFilterData': instance.eventFilterData.toJson(),
       'summonFilterData': instance.summonFilterData.toJson(),
+      'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'language': instance.language,
     };
 

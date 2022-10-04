@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
@@ -150,6 +151,17 @@ class Quest with RouteInfo {
           : lSpot.l;
     }
     return lName.l;
+  }
+
+  String get chapter {
+    if (type == QuestType.main) {
+      if (chapterSubStr.isEmpty && chapterSubId != 0) {
+        return S.current.quest_chapter_n(chapterSubId);
+      } else {
+        return Transl.questNames(chapterSubStr).l;
+      }
+    }
+    return '';
   }
 
   String get dispName {

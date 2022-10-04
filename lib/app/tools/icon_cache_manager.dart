@@ -175,6 +175,17 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     return localPath;
   }
 
+  Future<void> deleteFromDisk(String url) async {
+    final fp = atlasUrlToFp(url);
+    if (fp != null) {
+      final file = FilePlus(fp);
+      if (file.existsSync()) {
+        await FilePlus(fp).delete();
+      }
+    }
+    evict(url);
+  }
+
   String? atlasUrlToFp(String url) {
     String urlPath;
     if (url.startsWith(Hosts.kAtlasAssetHostGlobal)) {

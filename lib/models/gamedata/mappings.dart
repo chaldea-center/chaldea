@@ -11,7 +11,8 @@ class Transl<K, V> {
   final K key;
   final V _default;
 
-  Transl(this.mappings, this.key, this._default) : _m = mappings[key];
+  Transl(this.mappings, this.key, this._default)
+      : _m = key is String ? mappings[key.trim()] : mappings[key];
   static Transl<String, String> string(
       Map<String, MappingBase<String>> mappings, String key) {
     return Transl(mappings, key, key);
@@ -161,6 +162,7 @@ class Transl<K, V> {
   }
 
   static Transl<String, String> skillNames(String jp) {
+    jp = jp.trim();
     if (md.skillNames.containsKey(jp)) {
       return Transl(md.skillNames, jp, jp);
     } else if (md.ceNames.containsKey(jp)) {
@@ -258,6 +260,7 @@ class MappingData {
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
   final MappingList<int> mcRelease;
+  final MappingList<int> warRelease;
   final Map<int, MappingBase<int>> questRelease;
   final EnumMapping enums;
   final Map<String, MappingBase<String>> misc;
@@ -300,6 +303,7 @@ class MappingData {
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
     MappingList<int>? mcRelease,
+    MappingList<int>? warRelease,
     this.questRelease = const {},
     EnumMapping? enums,
     this.misc = const {},
@@ -308,6 +312,7 @@ class MappingData {
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),
         mcRelease = mcRelease ?? MappingList(),
+        warRelease = warRelease ?? MappingList(),
         enums = enums ?? EnumMapping() {
     _updateRegion(itemNames, Region.jp);
     _updateRegion(mcNames, Region.jp);
@@ -470,6 +475,11 @@ class MappingBase<T> {
       na: cvt(na, Region.na),
       kr: cvt(kr, Region.kr),
     );
+  }
+
+  @override
+  String toString() {
+    return 'MappingBase<$T>(jp: $jp, cn: $cn, tw: $tw, na: $na, kr: $kr)';
   }
 }
 

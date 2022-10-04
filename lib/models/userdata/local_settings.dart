@@ -59,6 +59,7 @@ class LocalSettings {
   CmdCodeFilterData cmdCodeFilterData;
   EventFilterData eventFilterData;
   SummonFilterData summonFilterData;
+  ScriptReaderFilterData scriptReaderFilterData;
 
   LocalSettings({
     this.beta = false,
@@ -95,6 +96,7 @@ class LocalSettings {
     CmdCodeFilterData? cmdCodeFilterData,
     EventFilterData? eventFilterData,
     SummonFilterData? summonFilterData,
+    ScriptReaderFilterData? scriptReaderFilterData,
   })  : _language = language,
         preferredRegions = preferredRegions == null
             ? null
@@ -111,7 +113,9 @@ class LocalSettings {
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
-        summonFilterData = summonFilterData ?? SummonFilterData() {
+        summonFilterData = summonFilterData ?? SummonFilterData(),
+        scriptReaderFilterData =
+            scriptReaderFilterData ?? ScriptReaderFilterData() {
     this.galleries.removeWhere(
         (key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }

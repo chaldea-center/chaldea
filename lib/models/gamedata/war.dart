@@ -37,6 +37,13 @@ class NiceWar with RouteInfo {
   List<SpotRoad> spotRoads;
   List<WarQuestSelection> questSelections;
 
+  ScriptLink? get startScript {
+    if (scriptId.isNotEmpty && scriptId != 'NONE') {
+      return ScriptLink(scriptId: scriptId, script: script);
+    }
+    return null;
+  }
+
   NiceWar({
     required this.id,
     required this.coordinates,

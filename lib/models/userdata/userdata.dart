@@ -739,6 +739,12 @@ extension RegionX on Region {
     return name.toUpperCase();
   }
 
+  static Region? tryParse(String s) {
+    return _$RegionEnumMap.entries
+        .firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())
+        ?.key;
+  }
+
   String get localName {
     switch (this) {
       case Region.jp:

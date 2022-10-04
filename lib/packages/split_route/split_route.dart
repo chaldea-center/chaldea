@@ -20,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/packages/platform/platform.dart';
 import '../../utils/constants.dart' show kAppKey;
 
 import 'package:flutter/cupertino.dart'
@@ -243,7 +244,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    if (kIsWeb) {
+    if (kIsWeb || !PlatformU.isTargetMobile) {
       const bool linearTransition = false;
       if (fullscreenDialog) {
         child = CupertinoFullscreenDialogTransition(
@@ -350,9 +351,6 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     return n;
   }
 
-  /// if there is any detail view and need to pop detail,
-  /// don't show pop and push animation
-  @protected
   static Future<T?> pushBuilder<T extends Object?>({
     required BuildContext context,
     required SplitPageBuilder builder,
