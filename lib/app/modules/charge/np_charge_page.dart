@@ -335,6 +335,11 @@ class _NpChargePageState extends State<NpChargePage> {
           optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
         if (filterData.tdLv != 0)
           optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
+        if (filterData.rarity.options.isNotEmpty)
+          optionBuilder(
+            text: '${S.current.rarity}:'
+                '${filterData.rarity.options.toList().sortReturn().join('/')}',
+          ),
         if (filterData.region.radioValue != null)
           optionBuilder(text: (filterData.region.radioValue!).localName),
         if (filterData.tdColor.radioValue != null)
@@ -400,6 +405,8 @@ class _NpChargePageState extends State<NpChargePage> {
       })) {
         continue;
       }
+      if (!filterData.rarity.matchOne(svt.rarity)) continue;
+
       final region = filterData.region.radioValue ?? Region.jp;
 
       final details = <_ChargeData>[];

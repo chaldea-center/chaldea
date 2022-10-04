@@ -36,6 +36,7 @@ class NpFilterData {
 
   final type = FilterRadioData.nonnull(NpChargeType.instant);
   final svtClass = FilterGroupData<SvtClass>();
+  final rarity = FilterGroupData<int>();
   final effectTarget = FilterRadioData<EffectTarget>();
   final region = FilterRadioData<Region>();
   final tdColor = FilterRadioData<CardType>();
@@ -51,6 +52,7 @@ class NpFilterData {
     for (var v in <FilterGroupData>[
       type,
       svtClass,
+      rarity,
       effectTarget,
       region,
       tdColor,
@@ -203,6 +205,15 @@ class _NpChargeFilterPageState
         buildGroupDivider(
             Text('General', style: Theme.of(context).textTheme.caption)),
         buildClassFilter(filterData.svtClass),
+        FilterGroup<int>(
+          title: Text(S.current.filter_sort_rarity, style: textStyle),
+          options: const [0, 1, 2, 3, 4, 5],
+          values: filterData.rarity,
+          optionBuilder: (v) => Text('$v$kStarChar'),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),
           options: Region.values,
