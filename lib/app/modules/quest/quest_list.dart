@@ -11,8 +11,12 @@ import '../../app.dart';
 
 class QuestListPage extends StatefulWidget {
   final List<Quest> quests;
+  final List<int> ids;
   final String? title;
-  const QuestListPage({super.key, this.quests = const [], this.title});
+  const QuestListPage({super.key, this.quests = const [], this.title})
+      : ids = const [];
+  const QuestListPage.ids({super.key, this.ids = const [], this.title})
+      : quests = const [];
 
   @override
   State<QuestListPage> createState() => _QuestListPageState();
@@ -21,20 +25,59 @@ class QuestListPage extends StatefulWidget {
 class _QuestListPageState extends State<QuestListPage> {
   @override
   Widget build(BuildContext context) {
-    final quests = List.of(widget.quests);
-    quests.sort((a, b) =>
-        a.priority == b.priority ? a.id - b.id : b.priority - a.priority);
-    final hasSpot =
-        quests.any((q) => db.gameData.spots[q.spotId]?.image != null);
+    final allQuestsMap = Map.of(db.gameData.quests);
+    for (final q in widget.quests) {
+      // override
+      allQuestsMap[q.id] = q;
+    }
+    final questIds = widget.quests.isEmpty
+        ? widget.ids.toList()
+        : widget.quests.map((e) => e.id).toList();
+    questIds.sort((a, b) {
+      final qa = allQuestsMap[a], qb = allQuestsMap[b];
+      final wa = qa?.war, wb = qb?.war;
+      if ((wa != null || wb != null) && wa?.id != wb?.id) {
+        return (wb?.id ?? 99999) - (wa?.id ?? 99999);
+      }
+      if (qa == null && qb == null) return a - b;
+      if (qa == null) return -1;
+      if (qb == null) return 1;
+      if (qa.priority == qb.priority) return a - b;
+      return qb.priority - qa.priority;
+    });
+
+    final hasSpot = questIds
+        .any((q) => db.gameData.spots[allQuestsMap[q]?.spotId]?.image != null);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title ?? '${quests.length} ${S.current.quest}'),
+        title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) =>
             const Divider(indent: 16, endIndent: 16, height: 4),
         itemBuilder: (context, index) {
-          final quest = quests[index];
+          final questId = questIds[index];
+          final quest = allQuestsMap[questId];
+
+          final spot = db.gameData.spots[quest?.spotId];
+          final leading = spot == null || spot.image == null
+              ? (hasSpot ? const SizedBox(width: 56) : null)
+              : db.getIconImage(spot.image, width: 56);
+
+          if (quest == null) {
+            return ListTile(
+              leading: leading,
+              // minLeadingWidth: 16,
+              title: Text('Quest $questId', textScaleFactor: 0.85),
+              contentPadding: leading == null
+                  ? null
+                  : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
+              horizontalTitleGap: 8,
+              onTap: () {
+                router.push(url: Routes.questI(questId), detail: true);
+              },
+            );
+          }
           bool isMainFree = quest.isMainStoryFree;
           List<InlineSpan> trailings = [];
           if (quest.consumeType == ConsumeType.ap ||
@@ -95,10 +138,6 @@ class _QuestListPageState extends State<QuestListPage> {
                   (svt) => svt.relateQuestIds.contains(quest.id))
               : null;
 
-          final spot = db.gameData.spots[quest.spotId];
-          final leading = spot == null || spot.image == null
-              ? (hasSpot ? const SizedBox(width: 56) : null)
-              : db.getIconImage(spot.image, width: 56);
           final subtitle = isMainFree ? quest.lName.l : quest.lSpot.l;
 
           return ListTile(
@@ -131,7 +170,7 @@ class _QuestListPageState extends State<QuestListPage> {
             },
           );
         },
-        itemCount: quests.length,
+        itemCount: questIds.length,
       ),
     );
   }

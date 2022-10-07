@@ -13,7 +13,6 @@ class MainStoryTab extends StatelessWidget {
   final bool reversed;
   final bool showOutdated;
   final bool showSpecialRewards;
-  final ScrollController scrollController;
   final bool titleOnly;
 
   const MainStoryTab({
@@ -21,7 +20,6 @@ class MainStoryTab extends StatelessWidget {
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
-    required this.scrollController,
     this.titleOnly = false,
   });
 
@@ -68,7 +66,6 @@ class MainStoryTab extends StatelessWidget {
         Expanded(
           child: db.onUserData(
             (context, _) => ListView.builder(
-              controller: scrollController,
               itemCount: mainStories.length,
               itemBuilder: (context, index) =>
                   buildOne(context, mainStories[index]),

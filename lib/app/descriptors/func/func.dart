@@ -452,8 +452,7 @@ class FuncDescriptor extends StatelessWidget {
     if ((vals?.Rate != null && vals!.Rate! < 0) ||
         (vals?.UseRate != null && vals!.UseRate! < 0)) {
       print(vals.Rate);
-      final hint =
-          Transl.string(Transl.md.enums.funcTargetType, "ifPrevFuncSucceed");
+      final hint = Transl.misc('Func.ifPrevFuncSucceed');
       spans.add(TextSpan(text: '(${hint.l})'));
     }
 

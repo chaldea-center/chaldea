@@ -19,6 +19,7 @@ import '../common/not_found.dart';
 import '../quest/quest_list.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
+import 'detail/campaign.dart';
 import 'detail/cooltime.dart';
 import 'detail/digging.dart';
 import 'detail/lottery.dart';
@@ -144,6 +145,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         db.gameData.servantsNoDup.values
             .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
+    }
+    if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
+      _addTab(S.current.event_campaign, EventCampaignDetailPage(event: event));
     }
     return DefaultTabController(
       length: tabs.length,

@@ -524,6 +524,8 @@ class EnumMapping {
   final Map<String, MappingBase<String>> missionProgressType;
   final Map<String, MappingBase<String>> missionType;
   final Map<String, MappingBase<String>> tdEffectFlag;
+  final Map<String, MappingBase<String>> eventType;
+  final Map<String, MappingBase<String>> combineAdjustTarget;
   final Map<String, MappingBase<String>> itemCategory;
   final Map<String, MappingBase<String>> customMissionType;
   final Map<String, MappingBase<String>> effectType;
@@ -545,6 +547,8 @@ class EnumMapping {
     this.missionProgressType = const {},
     this.missionType = const {},
     this.tdEffectFlag = const {},
+    this.eventType = const {},
+    this.combineAdjustTarget = const {},
     this.itemCategory = const {},
     this.customMissionType = const {},
     this.effectType = const {},

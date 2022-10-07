@@ -160,6 +160,7 @@
   "event_ap_cost_half": "소비 AP 50% DOWN",
   "event_bonus": "보너스",
   "event_bulletin_board": null,
+  "event_campaign": null,
   "event_collect_item_confirm": "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다",
   "event_collect_items": "아이템 수집",
   "event_cooltime": null,

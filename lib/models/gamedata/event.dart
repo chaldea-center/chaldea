@@ -88,6 +88,7 @@ class Event {
   EventExtra get extra => db.gameData.wiki.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
 
+  /// Check valuable "content", campaigns are not considered as "event" usually
   bool get isEmpty =>
       warIds.isEmpty &&
       shop.isEmpty &&
@@ -100,8 +101,8 @@ class Event {
       digging == null &&
       cooltime == null &&
       recipes.isEmpty &&
-      campaigns.isEmpty &&
-      campaignQuests.isEmpty &&
+      // campaigns.isEmpty &&
+      // campaignQuests.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -1261,7 +1262,7 @@ enum EventType {
   serialCampaign,
   loginCampaign,
   loginCampaignRepeat,
-  eventQuest,
+  eventQuest, // main
   svtequipCombineCampaign,
   terminalBanner,
   boxGacha,
@@ -1270,7 +1271,7 @@ enum EventType {
   totalLogin,
   comebackCampaign,
   locationCampaign,
-  warBoard,
+  warBoard, // main
   combineCosutumeItem,
   myroomMultipleViewCampaign,
   interludeCampaign,

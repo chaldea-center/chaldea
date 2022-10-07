@@ -621,7 +621,11 @@ class EventFilterData with _FilterData {
 
   // filter
   @JsonKey(ignore: true)
-  final type = FilterGroupData<EventCustomType>();
+  final contentType = FilterGroupData<EventCustomType>();
+  @JsonKey(ignore: true)
+  final eventType = FilterGroupData<EventType>();
+  @JsonKey(ignore: true)
+  final campaignType = FilterGroupData<CombineAdjustTarget>();
 
   EventFilterData({
     this.reversed = false,
@@ -638,7 +642,7 @@ class EventFilterData with _FilterData {
   }
 
   @override
-  List<FilterGroupData> get groups => [type];
+  List<FilterGroupData> get groups => [contentType, eventType, campaignType];
 
   factory EventFilterData.fromJson(Map<String, dynamic> data) =>
       _$EventFilterDataFromJson(data);

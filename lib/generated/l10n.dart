@@ -1824,6 +1824,17 @@ class S {
     );
   }
 
+  /// `Campaign`
+  String get event_campaign {
+    return Intl.message(
+      'Campaign',
+      name: 'event_campaign',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `All items will be added to bag and remove the event out of plan`
   String get event_collect_item_confirm {
     return Intl.message(

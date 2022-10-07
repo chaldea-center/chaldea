@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
@@ -18,6 +19,27 @@ class EventFilterPage extends FilterPage<EventFilterData> {
 
 class _EventFilterPageState
     extends FilterPageState<EventFilterData, EventFilterPage> {
+  List<EventType> eventTypes = [];
+  List<CombineAdjustTarget> campaignTypes = [];
+  @override
+  void initState() {
+    super.initState();
+    for (final event in db.gameData.events.values) {
+      eventTypes.add(event.type);
+      for (final campaign in event.campaigns) {
+        campaignTypes.add(campaign.target);
+      }
+    }
+    eventTypes = eventTypes.toSet().toList();
+    eventTypes.sort2((e) => e.index);
+    if (eventTypes.isEmpty) eventTypes = EventType.values.toList();
+    campaignTypes = campaignTypes.toSet().toList();
+    campaignTypes.sort2((e) => e.index);
+    if (campaignTypes.isEmpty) {
+      campaignTypes = CombineAdjustTarget.values.toList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -26,8 +48,9 @@ class _EventFilterPageState
         filterData.reset();
         update();
       }),
-      content: getListViewBody(children: [
+      content: getListViewBody(restorationId: 'event_list_filter', children: [
         SwitchListTile.adaptive(
+          dense: true,
           value: filterData.showOutdated,
           title: Text(S.current.show_outdated),
           onChanged: (v) {
@@ -37,8 +60,10 @@ class _EventFilterPageState
           controlAffinity: ListTileControlAffinity.trailing,
         ),
         SwitchListTile.adaptive(
+          dense: true,
           value: filterData.showEmpty,
           title: Text(S.current.show_empty_event),
+          subtitle: Text(S.current.limited_event),
           onChanged: (v) {
             filterData.showEmpty = v;
             update();
@@ -48,7 +73,7 @@ class _EventFilterPageState
         FilterGroup<EventCustomType>(
           title: Text(S.current.general_type),
           options: EventCustomType.values,
-          values: filterData.type,
+          values: filterData.contentType,
           optionBuilder: (v) {
             switch (v) {
               case EventCustomType.lottery:
@@ -78,6 +103,26 @@ class _EventFilterPageState
                 return Text(S.current.event_recipe);
             }
           },
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<EventType>(
+          title: const Text('Origin Type'),
+          options: eventTypes,
+          values: filterData.eventType,
+          optionBuilder: (v) =>
+              Text(Transl.enums(v, (enums) => enums.eventType).l),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<CombineAdjustTarget>(
+          title: Text(S.current.event_campaign),
+          options: campaignTypes,
+          values: filterData.campaignType,
+          optionBuilder: (v) =>
+              Text(Transl.enums(v, (enums) => enums.combineAdjustTarget).l),
           onFilterChanged: (value, _) {
             update();
           },

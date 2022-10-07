@@ -12,7 +12,6 @@ class LimitEventTab extends StatelessWidget {
   final bool showOutdated;
   final bool showSpecialRewards;
   final bool showEmpty;
-  final ScrollController scrollController;
 
   LimitEventTab({
     super.key,
@@ -21,15 +20,15 @@ class LimitEventTab extends StatelessWidget {
     this.showOutdated = false,
     this.showSpecialRewards = false,
     this.showEmpty = false,
-    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context) {
-    List<Event> events = limitEvents.toList();
-    if (!showEmpty) {
-      events.removeWhere((event) => event.extra.shown ?? event.isEmpty);
-    }
+    List<Event> events = limitEvents.where((event) {
+      if (event.extra.shown != null) return event.extra.shown!;
+      return showEmpty || !event.isEmpty;
+    }).toList();
+
     if (!showOutdated) {
       events.removeWhere(
           (e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
@@ -37,7 +36,6 @@ class LimitEventTab extends StatelessWidget {
 
     events.sort2((e) => e.startedAt, reversed: reversed);
     return ListView.builder(
-      controller: scrollController,
       itemCount: events.length,
       itemBuilder: (context, index) => buildOne(context, events[index]),
     );

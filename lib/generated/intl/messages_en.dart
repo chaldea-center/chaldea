@@ -288,6 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_bulletin_board":
             MessageLookupByLibrary.simpleMessage("Bulletin"),
+        "event_campaign": MessageLookupByLibrary.simpleMessage("Campaign"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":

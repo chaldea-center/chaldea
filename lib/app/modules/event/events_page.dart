@@ -15,6 +15,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../common/filter_page_base.dart';
 import 'filter.dart';
+import 'tabs/campaign_tab.dart';
 import 'tabs/chaldea_gate_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
@@ -41,8 +42,8 @@ class EventListPageState extends State<EventListPage>
         S.current.main_story,
         S.current.exchange_ticket,
         S.current.chaldea_gate,
+        S.current.event_campaign,
       ];
-  List<ScrollController> scrollControllers = [];
 
   @override
   void initState() {
@@ -56,22 +57,26 @@ class EventListPageState extends State<EventListPage>
         if (mounted) setState(() {});
       }
     });
-    scrollControllers =
-        List.generate(tabNames.length, (index) => ScrollController());
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    for (var controller in scrollControllers) {
-      controller.dispose();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     filterShownList();
+    List<Event> limitEvents = [], campaignEvents = [];
+    for (final event in shownList) {
+      if (const [EventType.eventQuest, EventType.warBoard]
+          .contains(event.type)) {
+        limitEvents.add(event);
+      } else {
+        campaignEvents.add(event);
+      }
+    }
     return Scaffold(
       appBar: AppBar(
         leading: const MasterBackButton(),
@@ -105,12 +110,11 @@ class EventListPageState extends State<EventListPage>
           children: <Widget>[
             KeepAliveBuilder(
               builder: (_) => LimitEventTab(
-                limitEvents: shownList,
+                limitEvents: limitEvents,
                 reversed: filterData.reversed,
                 showOutdated: filterData.showOutdated,
                 showSpecialRewards: filterData.showSpecialRewards,
                 showEmpty: filterData.showEmpty,
-                scrollController: scrollControllers[0],
               ),
             ),
             KeepAliveBuilder(
@@ -118,14 +122,22 @@ class EventListPageState extends State<EventListPage>
                 reversed: filterData.reversed,
                 showOutdated: filterData.showOutdated,
                 showSpecialRewards: filterData.showSpecialRewards,
-                scrollController: scrollControllers[1],
               ),
             ),
             KeepAliveBuilder(
-                builder: (_) => ExchangeTicketTab(
-                    reversed: filterData.reversed,
-                    showOutdated: filterData.showOutdated)),
+              builder: (_) => ExchangeTicketTab(
+                reversed: filterData.reversed,
+                showOutdated: filterData.showOutdated,
+              ),
+            ),
             ChaldeaGateTab(),
+            KeepAliveBuilder(
+              builder: (_) => CampaignEventTab(
+                campaignEvents: campaignEvents,
+                reversed: filterData.reversed,
+                showOutdated: filterData.showOutdated,
+              ),
+            )
           ],
         ),
       ),
@@ -135,7 +147,7 @@ class EventListPageState extends State<EventListPage>
   List<Widget> get actions {
     return <Widget>[
       if (_tabController.index == 0) searchIcon,
-      if (_tabController.index == 0)
+      if (_tabController.index == 0 || _tabController.index == 4)
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
@@ -237,7 +249,14 @@ class EventListPageState extends State<EventListPage>
 
   @override
   bool filter(Event event) {
-    if (filterData.type.options.isNotEmpty) {
+    if (!filterData.eventType.matchOne(event.type)) {
+      return false;
+    }
+    if (!filterData.campaignType
+        .matchAny(event.campaigns.map((e) => e.target))) {
+      return false;
+    }
+    if (filterData.contentType.options.isNotEmpty) {
       final List<EventCustomType> types = [
         if (event.lotteries.isNotEmpty) EventCustomType.lottery,
         if (event.rewards.isNotEmpty) EventCustomType.point,
@@ -253,7 +272,7 @@ class EventListPageState extends State<EventListPage>
           EventCustomType.mainInterlude,
         if (event.extra.huntingQuestIds.isNotEmpty) EventCustomType.hunting,
       ];
-      if (!filterData.type.matchAny(types)) {
+      if (!filterData.contentType.matchAny(types)) {
         return false;
       }
     }
