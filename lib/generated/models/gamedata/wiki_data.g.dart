@@ -175,7 +175,7 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       name: json['name'] as String,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
-      forceShown: json['forceShown'] as bool? ?? false,
+      shown: json['shown'] as bool?,
       titleBanner: json['titleBanner'] == null
           ? null
           : MappingBase<String>.fromJson(

@@ -158,7 +158,7 @@ class EventExtra {
   String name;
   String? mcLink;
   String? fandomLink;
-  bool forceShown;
+  bool? shown;
   MappingBase<String> titleBanner;
   MappingBase<String> officialBanner;
   MappingBase<String> noticeLink;
@@ -176,7 +176,7 @@ class EventExtra {
     required this.name,
     this.mcLink,
     this.fandomLink,
-    this.forceShown = false,
+    this.shown,
     MappingBase<String>? titleBanner,
     MappingBase<String>? officialBanner,
     MappingBase<String>? noticeLink,

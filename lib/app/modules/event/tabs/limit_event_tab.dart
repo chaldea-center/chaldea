@@ -28,7 +28,7 @@ class LimitEventTab extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Event> events = limitEvents.toList();
     if (!showEmpty) {
-      events.removeWhere((event) => event.isEmpty && !event.extra.forceShown);
+      events.removeWhere((event) => event.extra.shown ?? event.isEmpty);
     }
     if (!showOutdated) {
       events.removeWhere(

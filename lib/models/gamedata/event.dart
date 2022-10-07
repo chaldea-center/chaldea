@@ -37,6 +37,8 @@ class Event {
   List<EventBulletinBoard> bulletinBoards;
   EventDigging? digging;
   EventCooltime? cooltime;
+  List<EventCampaign> campaigns;
+  List<EventQuest> campaignQuests;
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
@@ -69,6 +71,8 @@ class Event {
     this.bulletinBoards = const [],
     this.digging,
     this.cooltime,
+    this.campaigns = const [],
+    this.campaignQuests = const [],
     this.voicePlays = const [],
     this.voices = const [],
   }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
@@ -96,6 +100,8 @@ class Event {
       digging == null &&
       cooltime == null &&
       recipes.isEmpty &&
+      campaigns.isEmpty &&
+      campaignQuests.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -1111,6 +1117,45 @@ class EventBulletinBoardRelease {
       _$EventBulletinBoardReleaseFromJson(json);
 }
 
+@JsonSerializable()
+class EventCampaign {
+  List<int> targetIds;
+  List<int> warIds;
+  CombineAdjustTarget target;
+  int idx;
+  int value;
+  EventCombineCalc calcType;
+  // String entryCondMessage;
+
+  EventCampaign({
+    this.targetIds = const [],
+    this.warIds = const [],
+    this.target = CombineAdjustTarget.none,
+    this.idx = 0,
+    required this.value,
+    required this.calcType,
+    // this.entryCondMessage = '',
+  });
+
+  factory EventCampaign.fromJson(Map<String, dynamic> json) =>
+      _$EventCampaignFromJson(json);
+}
+
+/// If [questId]=0 and [phase]=0, means all quests
+@JsonSerializable()
+class EventQuest {
+  int questId;
+  // int phase;  // currently all are 0
+
+  EventQuest({
+    required this.questId,
+    // this.phase = 0,
+  });
+
+  factory EventQuest.fromJson(Map<String, dynamic> json) =>
+      _$EventQuestFromJson(json);
+}
+
 enum PurchaseType {
   none,
   item,
@@ -1278,4 +1323,45 @@ enum EventRewardSceneFlag {
   npcGuide,
   isChangeSvtByChangedTab,
   isHideTab,
+}
+
+enum CombineAdjustTarget {
+  none, // custom
+  combineQp,
+  combineExp,
+  activeSkill,
+  largeSuccess,
+  superSuccess,
+  limitQp,
+  limitItem,
+  skillQp,
+  skillItem,
+  treasureDeviceQp,
+  treasureDeviceItem,
+  questAp,
+  questExp,
+  questQp,
+  questDrop,
+  svtequipCombineQp,
+  svtequipCombineExp,
+  svtequipLargeSuccess,
+  svtequipSuperSuccess,
+  questEventPoint,
+  enemySvtClassPickUp,
+  eventEachDropNum,
+  eventEachDropRate,
+  questFp,
+  questApFirstTime,
+  dailyDropUp,
+  exchangeSvtCombineExp,
+  questUseContinueItem,
+  friendPointGachaFreeDrawNum,
+  questUseFriendshipUpItem,
+  questFriendship,
+}
+
+enum EventCombineCalc {
+  addition,
+  multiplication,
+  fixedValue,
 }

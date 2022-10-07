@@ -201,4 +201,6 @@ const _$WarFlagEnumMap = {
   WarFlag.whiteMarkWithClear: 'whiteMarkWithClear',
   WarFlag.subFolder: 'subFolder',
   WarFlag.dispEarthPointWithoutMap: 'dispEarthPointWithoutMap',
+  WarFlag.isWarIconFree: 'isWarIconFree',
+  WarFlag.isWarIconCenter: 'isWarIconCenter',
 };

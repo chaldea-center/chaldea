@@ -431,6 +431,8 @@ enum WarFlag {
   whiteMarkWithClear,
   subFolder,
   dispEarthPointWithoutMap,
+  isWarIconFree,
+  isWarIconCenter,
 }
 
 enum WarOverwriteType {

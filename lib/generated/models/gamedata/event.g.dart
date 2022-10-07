@@ -88,6 +88,16 @@ Event _$EventFromJson(Map json) => Event(
           ? null
           : EventCooltime.fromJson(
               Map<String, dynamic>.from(json['cooltime'] as Map)),
+      campaigns: (json['campaigns'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventCampaign.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      campaignQuests: (json['campaignQuests'] as List<dynamic>?)
+              ?.map((e) =>
+                  EventQuest.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       voicePlays: (json['voicePlays'] as List<dynamic>?)
               ?.map((e) =>
                   EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -681,4 +691,66 @@ EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) =>
       condType: toEnumCondType(json['condType'] as Object),
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int,
+    );
+
+EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
+      targetIds: (json['targetIds'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
+      warIds:
+          (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      target:
+          $enumDecodeNullable(_$CombineAdjustTargetEnumMap, json['target']) ??
+              CombineAdjustTarget.none,
+      idx: json['idx'] as int? ?? 0,
+      value: json['value'] as int,
+      calcType: $enumDecode(_$EventCombineCalcEnumMap, json['calcType']),
+    );
+
+const _$CombineAdjustTargetEnumMap = {
+  CombineAdjustTarget.none: 'none',
+  CombineAdjustTarget.combineQp: 'combineQp',
+  CombineAdjustTarget.combineExp: 'combineExp',
+  CombineAdjustTarget.activeSkill: 'activeSkill',
+  CombineAdjustTarget.largeSuccess: 'largeSuccess',
+  CombineAdjustTarget.superSuccess: 'superSuccess',
+  CombineAdjustTarget.limitQp: 'limitQp',
+  CombineAdjustTarget.limitItem: 'limitItem',
+  CombineAdjustTarget.skillQp: 'skillQp',
+  CombineAdjustTarget.skillItem: 'skillItem',
+  CombineAdjustTarget.treasureDeviceQp: 'treasureDeviceQp',
+  CombineAdjustTarget.treasureDeviceItem: 'treasureDeviceItem',
+  CombineAdjustTarget.questAp: 'questAp',
+  CombineAdjustTarget.questExp: 'questExp',
+  CombineAdjustTarget.questQp: 'questQp',
+  CombineAdjustTarget.questDrop: 'questDrop',
+  CombineAdjustTarget.svtequipCombineQp: 'svtequipCombineQp',
+  CombineAdjustTarget.svtequipCombineExp: 'svtequipCombineExp',
+  CombineAdjustTarget.svtequipLargeSuccess: 'svtequipLargeSuccess',
+  CombineAdjustTarget.svtequipSuperSuccess: 'svtequipSuperSuccess',
+  CombineAdjustTarget.questEventPoint: 'questEventPoint',
+  CombineAdjustTarget.enemySvtClassPickUp: 'enemySvtClassPickUp',
+  CombineAdjustTarget.eventEachDropNum: 'eventEachDropNum',
+  CombineAdjustTarget.eventEachDropRate: 'eventEachDropRate',
+  CombineAdjustTarget.questFp: 'questFp',
+  CombineAdjustTarget.questApFirstTime: 'questApFirstTime',
+  CombineAdjustTarget.dailyDropUp: 'dailyDropUp',
+  CombineAdjustTarget.exchangeSvtCombineExp: 'exchangeSvtCombineExp',
+  CombineAdjustTarget.questUseContinueItem: 'questUseContinueItem',
+  CombineAdjustTarget.friendPointGachaFreeDrawNum:
+      'friendPointGachaFreeDrawNum',
+  CombineAdjustTarget.questUseFriendshipUpItem: 'questUseFriendshipUpItem',
+  CombineAdjustTarget.questFriendship: 'questFriendship',
+};
+
+const _$EventCombineCalcEnumMap = {
+  EventCombineCalc.addition: 'addition',
+  EventCombineCalc.multiplication: 'multiplication',
+  EventCombineCalc.fixedValue: 'fixedValue',
+};
+
+EventQuest _$EventQuestFromJson(Map json) => EventQuest(
+      questId: json['questId'] as int,
     );
