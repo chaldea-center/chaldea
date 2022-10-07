@@ -465,7 +465,6 @@ class _NpChargePageState extends State<NpChargePage> {
       details.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
           keys: filterData.sortKeys, reversed: filterData.sortReversed));
     }
-    print('${groupedData.length} groups');
   }
 
   Iterable<_ChargeData> checkSkill(

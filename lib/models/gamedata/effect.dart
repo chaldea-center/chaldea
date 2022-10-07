@@ -211,7 +211,11 @@ class SkillEffect {
   // );
   static SkillEffect upDamage = SkillEffect(
     'upDamage',
-    buffTypes: [BuffType.upDamage, BuffType.upDamageIndividualityActiveonly],
+    buffTypes: [
+      BuffType.upDamage,
+      BuffType.upDamageIndividuality,
+      BuffType.upDamageIndividualityActiveonly
+    ],
   );
   static SkillEffect addDamage =
       SkillEffect._buff('addDamage', BuffType.addDamage);

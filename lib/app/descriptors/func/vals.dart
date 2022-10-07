@@ -417,6 +417,8 @@ const _kBuffValuePercentTypes = {
   BuffType.downCriticalStarDamageTaken: 10,
   BuffType.upDamage: 10,
   BuffType.downDamage: 10,
+  BuffType.upDamageIndividuality: 10,
+  BuffType.downDamageIndividuality: 10,
   BuffType.upDamageIndividualityActiveonly: 10,
   BuffType.downDamageIndividualityActiveonly: 10,
   BuffType.upDamageEventPoint: 10,

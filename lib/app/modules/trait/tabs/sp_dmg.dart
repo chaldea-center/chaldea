@@ -134,7 +134,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
         final buff = func.buffs.first;
         if (![
           BuffType.upDamage,
-          BuffType.upDamageIndividuality, // not used yet
+          BuffType.upDamageIndividuality,
           BuffType.upDamageIndividualityActiveonly,
         ].contains(buff.type)) {
           continue;
