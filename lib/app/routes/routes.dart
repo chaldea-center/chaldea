@@ -123,6 +123,7 @@ class Routes {
   static const String sqPlan = '/sqPlan';
   static const String stats = '/stats';
   static const String importData = '/import_data';
+  static const String scriptHome = '/scripts';
   static const String ffo = '/ffo';
   static const String effectSearch = '/effect-search';
   static const String notFound = '/404';

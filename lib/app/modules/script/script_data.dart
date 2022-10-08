@@ -43,7 +43,9 @@ class ScriptParsedData {
     state
       ..fullscreen = false
       ..fulltext = null
-      ..player.stop();
+      ..bgmPlayer.stop()
+      ..sePlayer.stop()
+      ..voicePlayer.stop();
   }
 
   Future<void> load({bool force = false}) async {
@@ -67,16 +69,9 @@ class ScriptParsedData {
       String line = lines[lineNo].trim();
       if (line.isEmpty) continue;
       if (lineNo == 0 && line.startsWith('＄')) continue;
-      if (line.startsWith('＠')) {
-        String speaker = line.substring(1);
-        speaker =
-            RegExp(r'^[A-Z]+：(.+)$').firstMatch(speaker)?.group(1) ?? speaker;
-        lastDialog = ScriptDialog(speaker, _parseDialog(speaker), '', []);
-        continue;
-      }
+
       if (line == '[k]') {
         if (lastDialog != null) {
-          children.add(lastDialog);
           lastDialog = null;
         } else {
           print('line $lineNo: got [k] but lastDialog is empty');
@@ -95,26 +90,32 @@ class ScriptParsedData {
             _parseDialog(selectMatch.group(2)!)));
         continue;
       }
-      if (lastDialog != null) {
-        if (line.endsWith('[k]')) {
-          lastDialog.contents
-              .addAll(_parseDialog(line.substring(0, line.length - 3)));
-          children.add(lastDialog);
-          lastDialog = null;
-        } else {
-          lastDialog.contents.addAll(_parseDialog(line));
-        }
-        continue;
-      }
-      if (RegExp(r'\[[^\[\]]+\]').hasMatch(line)) {
+      if (RegExp(r'^\[[^\[\]]+\]$').hasMatch(line)) {
         final cmd = ScriptCommand.parse(line);
         if (cmd.command == 'enableFullScreen') {
           state.fullscreen = true;
         }
-        children.add(cmd);
+        (lastDialog?.contents ?? children).add(cmd);
         continue;
       }
-      children.add(UnknownScript(line));
+      if (line.startsWith('＠')) {
+        String speaker = line.substring(1);
+        speaker =
+            RegExp(r'^[A-Z]+：(.+)$').firstMatch(speaker)?.group(1) ?? speaker;
+        lastDialog = ScriptDialog(speaker, _parseDialog(speaker), '', []);
+        children.add(lastDialog);
+        continue;
+      } else if (lastDialog == null) {
+        lastDialog = ScriptDialog('', [], line, _parseDialog(line));
+        children.add(lastDialog);
+        continue;
+      } else {
+        lastDialog.contents.addAll(_parseDialog(line));
+        if (line.endsWith('[k]')) {
+          lastDialog = null;
+        }
+        continue;
+      }
     }
     components = children;
   }
@@ -155,7 +156,9 @@ class ScriptState {
   String? fulltext;
   Region region = Region.jp;
   bool fullscreen = false;
-  final player = MyAudioPlayer<String>();
+  final bgmPlayer = MyAudioPlayer<String>();
+  final sePlayer = MyAudioPlayer<String>();
+  final voicePlayer = MyAudioPlayer<String>();
   List<_TextStyleState> dialogStyleStack = [];
 
   void push(TextStyle style, ScriptComponent component, _CompType type) {
@@ -517,7 +520,7 @@ class ScriptCommand extends ScriptComponent {
             child: SoundPlayButton(
               name: filename,
               url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
-              player: state.player,
+              player: state.sePlayer,
             ),
           )
         ];
@@ -530,7 +533,7 @@ class ScriptCommand extends ScriptComponent {
             child: SoundPlayButton(
               name: filename,
               url: Atlas.asset('Audio/$filename/$filename.mp3', state.region),
-              player: state.player,
+              player: state.bgmPlayer,
             ),
           )
         ];
@@ -543,7 +546,7 @@ class ScriptCommand extends ScriptComponent {
             child: SoundPlayButton(
               name: null,
               url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
-              player: state.player,
+              player: state.voicePlayer,
             ),
           )
         ];
@@ -557,7 +560,7 @@ class ScriptCommand extends ScriptComponent {
                 url: Atlas.asset(
                     'Audio/${args[index * 2]}/${args[index * 2 + 1]}.mp3',
                     state.region),
-                player: state.player,
+                player: state.voicePlayer,
               ),
             )
         ];
@@ -649,6 +652,8 @@ class ScriptCommand extends ScriptComponent {
         return [];
       // ALWAYS ignore
       case 'backEffect':
+      case 'backEffectStart':
+      case 'backEffectPause':
       case 'backEffectDestroy':
       case 'backEffectStop':
       case 'bgmStop':
@@ -718,6 +723,8 @@ class ScriptCommand extends ScriptComponent {
       case 'flashout':
       case 'flashOff':
       case 'fowardEffect':
+      case 'fowardEffectStart':
+      case 'fowardEffectPause':
       case 'fowardEffectStop':
       case 'fowardEffectDestroy':
       case 'imageSet':

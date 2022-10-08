@@ -37,7 +37,9 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
   @override
   void dispose() {
     super.dispose();
-    data.state.player.stop();
+    data.state.bgmPlayer.stop();
+    data.state.sePlayer.stop();
+    data.state.voicePlayer.stop();
   }
 
   Future<void> fetch({bool force = false}) async {

@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
+import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -118,6 +119,7 @@ class GalleryItem {
         statistics,
         importData,
         // default hide
+        scriptHome,
         ffo,
         cvList,
         illustratorList,
@@ -289,6 +291,15 @@ class GalleryItem {
     persist: true,
   );
   // show in Lost Room
+  static GalleryItem scriptHome = GalleryItem(
+    name: 'script_home',
+    titleBuilder: () => S.current.script_story,
+    icon: FontAwesomeIcons.book,
+    url: Routes.scriptHome,
+    page: const ScriptReaderEntryPage(),
+    isDetail: true,
+    shownDefault: false,
+  );
   static GalleryItem ffo = GalleryItem(
     name: 'ffo',
     titleBuilder: () => 'Freedom Order',

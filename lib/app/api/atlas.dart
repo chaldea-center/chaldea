@@ -282,6 +282,15 @@ class AtlasApi {
 
   static String get _atlasApiHost => Hosts.atlasApiHost;
 
+  static Future<Map<String, dynamic>?> regionInfo(
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/info',
+      (data) => data[region.toUpper()],
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<Quest?> quest(int questId,
       {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
@@ -468,11 +477,11 @@ class AtlasApi {
     );
   }
 
-  static Future<Map<String, dynamic>?> regionInfo(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+  static Future<NiceScript?> script(String scriptId,
+      {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
-      '$_atlasApiHost/info',
-      (data) => data[region.toUpper()],
+      '$_atlasApiHost/nice/${region.toUpper()}/script/$scriptId',
+      (data) => NiceScript.fromJson(data),
       expireAfter: expireAfter,
     );
   }

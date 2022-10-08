@@ -4,16 +4,14 @@ import 'quest.dart';
 part '../../generated/models/gamedata/script.g.dart';
 
 @JsonSerializable()
-class NiceScript {
-  String scriptId;
+class NiceScript extends ScriptLink {
   int scriptSizeBytes;
-  String script;
   List<Quest> quests;
 
   NiceScript({
-    required this.scriptId,
+    required super.scriptId,
     required this.scriptSizeBytes,
-    required this.script,
+    required super.script,
     required this.quests,
   });
 
