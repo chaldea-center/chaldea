@@ -1,4 +1,4 @@
-name: Github Release
+name: Release
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.3.2"
+  FLUTTER_VERSION: "3.3.4"
 
 jobs:
   create-build:
