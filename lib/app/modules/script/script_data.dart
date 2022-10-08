@@ -31,10 +31,8 @@ class ScriptParsedData {
     state.region = overrideRegion ??
         RegionX.tryParse(_uri!.pathSegments.first) ??
         Region.jp;
-    _uri = _uri!.replace(pathSegments: [
-      state.region.toUpper(),
-      ..._uri!.pathSegments.sublist(1)
-    ]);
+    _uri = _uri!.replace(
+        pathSegments: [state.region.upper, ..._uri!.pathSegments.sublist(1)]);
     state.fullscreen = false;
   }
 

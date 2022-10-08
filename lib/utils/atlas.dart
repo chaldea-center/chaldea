@@ -22,7 +22,7 @@ class Atlas {
 
   /// db link
   static String dbUrl(String path, int id, [Region region = Region.jp]) {
-    return '$appHost${region.toUpper()}/$path/$id';
+    return '$appHost${region.upper}/$path/$id';
   }
 
   static String dbServant(int id, [Region region = Region.jp]) {
@@ -73,11 +73,11 @@ class Atlas {
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
-    return '$assetHost/${region.toUpper()}/$path';
+    return '$assetHost/${region.upper}/$path';
   }
 
   static String assetItem(int id, [Region region = Region.jp]) {
-    return '$assetHost/${region.toUpper()}/Items/$id.png';
+    return '$assetHost/${region.upper}/Items/$id.png';
   }
 
   static String dbAsset(String path) {

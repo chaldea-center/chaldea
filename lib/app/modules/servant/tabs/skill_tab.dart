@@ -185,7 +185,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)
             Text(
-                '${db.curUser.region.toUpper()}: ${localTime.sec2date().toDateString()}'),
+                '${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
         ],
       ),
     );

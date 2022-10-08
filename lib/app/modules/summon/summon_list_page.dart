@@ -139,8 +139,7 @@ class _SummonListPageState extends State<SummonListPage>
       };
       String subtitleText = dates.entries
           .where((e) => e.value != null)
-          .map(
-              (e) => '${e.key.toUpper()} ${e.value?.sec2date().toDateString()}')
+          .map((e) => '${e.key.upper} ${e.value?.sec2date().toDateString()}')
           .join(' / ');
       subtitle = Text(subtitleText, textScaleFactor: 0.9);
     }

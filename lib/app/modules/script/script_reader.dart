@@ -105,7 +105,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             child: Text(S.current.jump_to('Atlas')),
             onTap: () {
               launch(
-                '${Atlas.appHost}${data.state.region.toUpper()}/script/${widget.script.scriptId}',
+                '${Atlas.appHost}${data.state.region.upper}/script/${widget.script.scriptId}',
                 external: true,
               );
             },

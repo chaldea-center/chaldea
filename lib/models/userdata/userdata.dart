@@ -735,9 +735,7 @@ const _regionLanguage = {
 };
 
 extension RegionX on Region {
-  String toUpper() {
-    return name.toUpperCase();
-  }
+  String get upper => name.toUpperCase();
 
   static Region? tryParse(String s) {
     return _$RegionEnumMap.entries

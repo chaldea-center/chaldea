@@ -115,7 +115,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           combined: true,
           padding: EdgeInsets.zero,
           options: releasedRegions.toList(),
-          optionBuilder: (v) => Text(v.toUpper()),
+          optionBuilder: (v) => Text(v.upper),
           values: FilterRadioData(_region),
           onFilterChanged: (v, _) {
             if (v.radioValue != null) {
@@ -289,7 +289,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
       if (text == null) continue;
       children.add(_profileCard(
         title: Text(S.current.april_fool),
-        subtitle: Text(region.toUpper()),
+        subtitle: Text(region.upper),
         comment: text,
       ));
     }

@@ -40,7 +40,7 @@ class CampaignEventTab extends StatelessWidget {
     };
     String subtitle = dates.entries
         .where((e) => e.value != null)
-        .map((e) => '${e.key.toUpper()} ${e.value?.sec2date().toDateString()}')
+        .map((e) => '${e.key.upper} ${e.value?.sec2date().toDateString()}')
         .join(' / ');
 
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;

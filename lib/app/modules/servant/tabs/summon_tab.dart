@@ -40,7 +40,7 @@ class SvtSummonTab extends StatelessWidget {
     final localDate =
         summon.startTime.ofRegion(db.curUser.region)?.sec2date().toDateString();
     if (db.curUser.region != Region.jp && localDate != null) {
-      subtitle = '$subtitle / ${db.curUser.region.toUpper()}: $localDate';
+      subtitle = '$subtitle / ${db.curUser.region.upper}: $localDate';
     }
     return ListTile(
       dense: true,
