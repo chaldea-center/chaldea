@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:csv/csv.dart';
 import 'package:ruby_text/ruby_text.dart';
@@ -69,7 +71,7 @@ class ScriptParsedData {
         String speaker = line.substring(1);
         speaker =
             RegExp(r'^[A-Z]+：(.+)$').firstMatch(speaker)?.group(1) ?? speaker;
-        lastDialog = ScriptDialog(speaker, _parseDialog(speaker), []);
+        lastDialog = ScriptDialog(speaker, _parseDialog(speaker), '', []);
         continue;
       }
       if (line == '[k]') {
@@ -82,12 +84,14 @@ class ScriptParsedData {
         continue;
       }
       if (line == '？！' || line == '?!') {
-        children.add(ScriptSelect(null, []));
+        children.add(ScriptSelect(line, null, []));
         continue;
       }
       final selectMatch = RegExp(r'^[？?](\d+)[：:](.*)$').firstMatch(line);
       if (selectMatch != null) {
-        children.add(ScriptSelect(int.parse(selectMatch.group(1)!),
+        children.add(ScriptSelect(
+            selectMatch.group(0)!,
+            int.parse(selectMatch.group(1)!),
             _parseDialog(selectMatch.group(2)!)));
         continue;
       }
@@ -129,18 +133,94 @@ class ScriptParsedData {
   }
 }
 
+enum _CompType {
+  none,
+  color,
+  fontSize,
+  // align, cannot assign align to TextSpan
+}
+
+class _TextStyleState {
+  TextStyle style;
+  ScriptComponent component;
+  _CompType type;
+  _TextStyleState({
+    required this.style,
+    required this.component,
+    required this.type,
+  });
+}
+
 class ScriptState {
   String? fulltext;
   Region region = Region.jp;
   bool fullscreen = false;
   final player = MyAudioPlayer<String>();
+  List<_TextStyleState> dialogStyleStack = [];
+
+  void push(TextStyle style, ScriptComponent component, _CompType type) {
+    dialogStyleStack
+        .add(_TextStyleState(style: style, component: component, type: type));
+  }
+
+  void pop(bool Function(_TextStyleState c) test) {
+    final index = dialogStyleStack.lastIndexWhere((e) => test(e));
+    if (index != dialogStyleStack.length - 1) {
+      print(
+          'Warning: popping non-last style: No.${index + 1}/${dialogStyleStack.length} styles');
+    }
+    dialogStyleStack.removeAt(index);
+  }
+
+  void clear() {
+    dialogStyleStack.clear();
+  }
+
+  TextStyle mergeStyles() {
+    TextStyle style = const TextStyle();
+    for (final s in dialogStyleStack) {
+      style = style.merge(s.style);
+    }
+    return style;
+  }
+
+  TextSpan textSpan({
+    String? text,
+    List<InlineSpan>? children,
+    TextStyle? style,
+    GestureRecognizer? recognizer,
+    MouseCursor? mouseCursor,
+    PointerEnterEventListener? onEnter,
+    PointerExitEventListener? onExit,
+    String? semanticsLabel,
+    Locale? locale,
+    bool? spellOut,
+  }) {
+    TextStyle? mergedStyle;
+    if (style != null || dialogStyleStack.isNotEmpty) {
+      mergedStyle = mergeStyles();
+      if (style != null) mergedStyle = mergedStyle.merge(style);
+    }
+    return TextSpan(
+      text: text,
+      children: children,
+      style: mergedStyle,
+      recognizer: recognizer,
+      mouseCursor: mouseCursor,
+      onEnter: onEnter,
+      onExit: onExit,
+      semanticsLabel: semanticsLabel,
+      locale: locale,
+      spellOut: spellOut,
+    );
+  }
 }
 
 class ScriptDialog extends ScriptTexts {
   String speakerSrc;
   List<ScriptComponent> speaker;
 
-  ScriptDialog(this.speakerSrc, this.speaker, super.contents);
+  ScriptDialog(this.speakerSrc, this.speaker, super.contents, super.src);
 
   @override
   String toString() {
@@ -150,42 +230,49 @@ class ScriptDialog extends ScriptTexts {
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state,
       {bool hideSpeaker = false}) {
-    return [
-      if (!hideSpeaker)
-        TextSpan(
-          text: kHeaderLeading,
-          children: [
-            for (final c in speaker) ...c.build(context, state),
-            const TextSpan(text: '\n')
-          ],
-          style: headerStyle.copyWith(
-              color: Theme.of(context).colorScheme.secondaryContainer),
-        ),
-      for (final p in contents) ...p.build(context, state),
-      // const TextSpan(text: '\n'),
-    ];
+    state.clear();
+    List<InlineSpan> spans = [];
+    if (!hideSpeaker) {
+      state.push(
+        headerStyle.copyWith(
+            color: Theme.of(context).colorScheme.secondaryContainer),
+        this,
+        _CompType.none,
+      );
+      spans.add(state.textSpan(text: kHeaderLeading));
+      for (final c in speaker) {
+        spans.addAll(c.build(context, state));
+      }
+      spans.add(state.textSpan(text: '\n'));
+    }
+    state.clear();
+    state.push(bodyStyle, this, _CompType.none);
+    for (final p in contents) {
+      spans.addAll(p.build(context, state));
+    }
+    state.clear();
+    return spans;
   }
 }
 
 class ScriptText extends ScriptComponent {
-  String text;
-  ScriptText(this.text);
+  ScriptText(super.src);
 
   @override
   String toString() {
-    return 'Text: $text';
+    return 'Text: $src';
   }
 
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state) {
-    return [TextSpan(text: text)];
+    return [state.textSpan(text: src)];
   }
 }
 
 class ScriptTexts extends ScriptComponent {
   List<ScriptComponent> contents;
 
-  ScriptTexts(this.contents);
+  ScriptTexts(super.src, this.contents);
 
   @override
   String toString() {
@@ -198,10 +285,9 @@ class ScriptTexts extends ScriptComponent {
   }
 }
 
-class ScriptSelect extends ScriptComponent {
+class ScriptSelect extends ScriptTexts {
   int? index; // null = select end
-  List<ScriptComponent> contents;
-  ScriptSelect(this.index, this.contents);
+  ScriptSelect(super.src, this.index, super.contents);
 
   static const _choiceStyle = TextStyle(color: Colors.blue);
 
@@ -209,13 +295,13 @@ class ScriptSelect extends ScriptComponent {
   List<InlineSpan> build(BuildContext context, ScriptState state) {
     if (index == null) {
       return [
-        TextSpan(text: S.current.script_choice_end, style: _choiceStyle),
+        state.textSpan(text: S.current.script_choice_end, style: _choiceStyle),
         const WidgetSpan(child: Divider(thickness: 2)),
       ];
     }
     return [
       if (index == 1) const WidgetSpan(child: Divider(thickness: 2)),
-      TextSpan(
+      state.textSpan(
           text: '${S.current.script_choice} $index: ', style: _choiceStyle),
       for (final p in contents) ...p.build(context, state),
       // const TextSpan(text: '\n'),
@@ -224,27 +310,26 @@ class ScriptSelect extends ScriptComponent {
 }
 
 class UnknownScript extends ScriptComponent {
-  String content;
-  UnknownScript(this.content);
+  UnknownScript(super.src);
   @override
   String toString() {
-    return 'Unknown: $content';
+    return 'Unknown: $src';
   }
 
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state) {
     return [
-      TextSpan(text: '${kHeaderLeading}Unknown Script', style: headerStyle),
-      TextSpan(text: '\n$content'),
+      state.textSpan(
+          text: '${kHeaderLeading}Unknown Script\n', style: headerStyle),
+      state.textSpan(text: src)
     ];
   }
 }
 
 class ScriptCommand extends ScriptComponent {
-  String src;
   String command;
   List<String> args;
-  ScriptCommand(this.src, this.command, [this.args = const []]);
+  ScriptCommand(super.src, this.command, [this.args = const []]);
   static const _csv =
       CsvToListConverter(fieldDelimiter: " ", shouldParseNumbers: false);
 
@@ -269,60 +354,95 @@ class ScriptCommand extends ScriptComponent {
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state,
       {bool showMore = false}) {
+    // [#text:ruby], :ruby may not exist
     if (src.startsWith('#')) {
       final aa = src.substring(1).split(':');
       if (aa.length == 1) return [TextSpan(text: aa.first)];
       return [
         WidgetSpan(
+          alignment: PlaceholderAlignment.baseline,
+          baseline: TextBaseline.ideographic,
           child: RubyText(
             [RubyTextData(aa.first, ruby: aa.sublist(1).join(':'))],
+            style: state.mergeStyles(),
           ),
         )
       ];
     }
+    // [&male:female]
     if (src.startsWith('&') && src.contains(':')) {
       final match = RegExp(r'^&(.*):(.*)$').firstMatch(src);
       if (match != null) {
         return [
-          TextSpan(
+          state.textSpan(
             text: match.group(1),
             style: const TextStyle(decoration: TextDecoration.underline),
           ),
-          const TextSpan(text: '('),
-          TextSpan(
+          state.textSpan(text: '('),
+          state.textSpan(
             text: match.group(2),
             style: const TextStyle(decoration: TextDecoration.underline),
           ),
-          const TextSpan(text: ')'),
+          state.textSpan(text: ')'),
         ];
       }
     }
+    // color [ffffff]
     if (command.length == 6) {
       final hex = int.tryParse('0xff$command');
       if (hex != null) {
+        state.push(TextStyle(color: Color(hex)), this, _CompType.color);
         return [];
       }
     }
+
     const codeStyle = TextStyle(color: Colors.redAccent);
     const boldStyle = TextStyle(fontWeight: FontWeight.bold);
     switch (command) {
+      case '-': // color end closure
+        state.pop((c) => c.type == _CompType.color);
+        return [];
+      case 'f': // [f large] font
+        final tag = args.getOrNull(0)?.trim();
+        if (tag == '-') {
+          state.pop((c) => c.type == _CompType.fontSize);
+          return [];
+        } else {
+          final bodySize =
+              state.dialogStyleStack.getOrNull(0)?.style.fontSize ?? 16.0;
+          final sizes = <String, double>{
+            // "-", //30
+            'x-small': 18, //18?
+            'small': 24,
+            'medium': 30,
+            'large': 48,
+            'x-large': 64,
+          };
+          final size = sizes[tag];
+          print([command, args, size]);
+          if (size == null) break;
+          state.push(TextStyle(fontSize: size / 30 * bodySize), this,
+              _CompType.fontSize);
+          return [];
+        }
       case "r":
       case "sr":
       case "csr":
-        return const [TextSpan(text: '\n')];
+        return [state.textSpan(text: '\n')];
       case 'line':
         int length = double.tryParse(args.getOrNull(0) ?? '1')?.toInt() ?? 1;
         if (length < 1) length = 1;
         return [
-          TextSpan(
+          state.textSpan(
             text: '\u3000' * length,
             style: const TextStyle(decoration: TextDecoration.lineThrough),
           )
         ];
       case '%1':
         return [
-          TextSpan(
-            text: Transl.misc('Fujimaru').l,
+          state.textSpan(
+            text: Transl.misc('Fujimaru').m?.ofRegion(state.region) ??
+                Transl.misc('Fujimaru').l,
             style: TextStyle(color: Colors.amber[800]),
           )
         ];
@@ -336,7 +456,8 @@ class ScriptCommand extends ScriptComponent {
               child: CachedImage(
                 imageUrl: url,
                 showSaveOnLongPress: true,
-                placeholder: (context, url) => Text(src),
+                placeholder: (context, url) =>
+                    Text.rich(state.textSpan(text: src)),
               ),
             ),
           ];
@@ -364,6 +485,7 @@ class ScriptCommand extends ScriptComponent {
         }
         break;
       case 'pictureFrame':
+      case 'pictureFrameTop':
         if (!filterData.scene) return [];
         // closure: [pictureFrame img] ... [pictureFrame]
         if (args.isEmpty) return [];
@@ -442,10 +564,12 @@ class ScriptCommand extends ScriptComponent {
       case 'criMovie':
         if (args.isEmpty) break;
         return [
-          const TextSpan(text: 'Movie  ', style: boldStyle),
+          state.textSpan(text: 'Movie  ', style: boldStyle),
           SharedBuilder.textButtonSpan(
             context: context,
             text: args[0],
+            style: state.mergeStyles().copyWith(
+                color: Theme.of(context).colorScheme.secondaryContainer),
             onTap: () {
               launch(Atlas.asset('Movie/${args[0]}.mp4', state.region));
             },
@@ -453,39 +577,44 @@ class ScriptCommand extends ScriptComponent {
         ];
       case 'selectionUse':
         return [
-          const TextSpan(text: 'Selection Use: ', style: boldStyle),
-          for (final arg in args) TextSpan(text: '$arg ', style: codeStyle),
+          state.textSpan(text: 'Selection Use: ', style: boldStyle),
+          for (final arg in args)
+            state.textSpan(text: '$arg ', style: codeStyle),
         ];
       case 'flag':
         return [
-          const TextSpan(text: 'Flag: ', style: boldStyle),
-          const TextSpan(text: 'Set '),
-          if (args.isNotEmpty) TextSpan(text: arg1, style: codeStyle),
+          state.textSpan(text: 'Flag: ', style: boldStyle),
+          state.textSpan(text: 'Set '),
+          if (args.isNotEmpty) state.textSpan(text: arg1, style: codeStyle),
           if (args.length > 1) ...[
-            const TextSpan(text: ' to '),
-            TextSpan(text: arg2, style: codeStyle),
+            state.textSpan(text: ' to '),
+            state.textSpan(text: arg2, style: codeStyle),
           ],
         ];
       case 'label':
         return [
-          const TextSpan(text: 'Label  ', style: boldStyle),
-          for (final arg in args) TextSpan(text: '$arg  ', style: codeStyle)
+          state.textSpan(text: 'Label  ', style: boldStyle),
+          for (final arg in args)
+            state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'branch':
         return [
-          const TextSpan(text: 'Branch: ', style: boldStyle),
-          const TextSpan(text: 'Go to label '),
-          for (final arg in args) TextSpan(text: '$arg  ', style: codeStyle)
+          state.textSpan(text: 'Branch: ', style: boldStyle),
+          state.textSpan(text: 'Go to label '),
+          for (final arg in args)
+            state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'masterBranch':
         return [
-          const TextSpan(text: 'Master Branch: ', style: boldStyle),
-          for (final arg in args) TextSpan(text: '$arg  ', style: codeStyle)
+          state.textSpan(text: 'Master Branch: ', style: boldStyle),
+          for (final arg in args)
+            state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'revivalBranch':
         return [
-          const TextSpan(text: 'Revival Branch: ', style: boldStyle),
-          for (final arg in args) TextSpan(text: '$arg  ', style: codeStyle)
+          state.textSpan(text: 'Revival Branch: ', style: boldStyle),
+          for (final arg in args)
+            state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'branchQuestClear':
       case 'branchQuestNotClear':
@@ -495,12 +624,12 @@ class ScriptCommand extends ScriptComponent {
         final quest = db.gameData.quests[questId];
         bool notClear = command == 'branchQuestNotClear';
         return [
-          const TextSpan(text: 'Branch: ', style: boldStyle),
-          const TextSpan(text: 'Go to label '),
-          TextSpan(text: '$label', style: codeStyle),
-          const TextSpan(text: ' if'),
-          if (notClear) const TextSpan(text: ' NOT'),
-          const TextSpan(text: ' cleared quest '),
+          state.textSpan(text: 'Branch: ', style: boldStyle),
+          state.textSpan(text: 'Go to label '),
+          state.textSpan(text: '$label', style: codeStyle),
+          state.textSpan(text: ' if'),
+          if (notClear) state.textSpan(text: ' NOT'),
+          state.textSpan(text: ' cleared quest '),
           SharedBuilder.textButtonSpan(
             context: context,
             text: quest == null || quest.lDispName.isEmpty
@@ -512,15 +641,13 @@ class ScriptCommand extends ScriptComponent {
                     router.push(url: Routes.questI(questId));
                   },
           ),
-          if (phase != null) TextSpan(text: ' phase $phase'),
+          if (phase != null) state.textSpan(text: ' phase $phase'),
         ];
-      case 'f': // [f large] font
       // case 'tVoiceUser': // valentine voice
       case 'align': // valentine voice
         if (showMore) break;
         return [];
       // ALWAYS ignore
-      case '-': // end closure
       case 'backEffect':
       case 'backEffectDestroy':
       case 'backEffectStop':
@@ -569,6 +696,10 @@ class ScriptCommand extends ScriptComponent {
       case 'charaSpecialEffect':
       case 'charaSpecialEffectStop':
       case 'charaTalk':
+      case 'communicationChara':
+      case 'communicationCharaClear':
+      case 'communicationCharaFace':
+      case 'communicationCharaLoop':
       case 'cueSe':
       case 'cueSeStop':
       case 'cueSeVolume':
@@ -584,6 +715,7 @@ class ScriptCommand extends ScriptComponent {
       case 'fadeMove':
       case 'fadeout':
       case 'flashin':
+      case 'flashout':
       case 'flashOff':
       case 'fowardEffect':
       case 'fowardEffectStop':
@@ -631,7 +763,7 @@ class ScriptCommand extends ScriptComponent {
       default:
         break;
     }
-    return [TextSpan(text: '[$src]')];
+    return [state.textSpan(text: '[$src]')];
   }
 }
 
@@ -639,6 +771,8 @@ abstract class ScriptComponent {
   final kHeaderLeading = ' ꔷ ';
   final headerStyle =
       const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-
+  final bodyStyle = const TextStyle(fontSize: 15);
+  String src;
+  ScriptComponent(this.src);
   List<InlineSpan> build(BuildContext context, ScriptState state);
 }

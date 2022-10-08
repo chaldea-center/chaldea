@@ -64,9 +64,13 @@ class _ScriptListPageState extends State<ScriptListPage> {
           dense: true,
           title: Text(title, textScaleFactor: 1.1),
           contentPadding: EdgeInsets.zero,
-          onTap: () {
-            router.push(url: quest.route, child: QuestDetailPage(quest: quest));
-          },
+          trailing: IconButton(
+            onPressed: () {
+              router.push(
+                  url: quest.route, child: QuestDetailPage(quest: quest));
+            },
+            icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          ),
         ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 8),
@@ -83,14 +87,14 @@ class _ScriptListPageState extends State<ScriptListPage> {
       tabs.add(Tab(text: S.current.main_story));
       views.add(ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: mainPart,
+        children: mainPart..add(const SafeArea(child: SizedBox())),
       ));
     }
     if (eventPart.isNotEmpty) {
       tabs.add(Tab(text: S.current.event_quest));
       views.add(ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: eventPart,
+        children: eventPart..add(const SafeArea(child: SizedBox())),
       ));
     }
     if (tabs.isEmpty) {

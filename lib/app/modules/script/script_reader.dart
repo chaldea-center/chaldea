@@ -65,7 +65,10 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Script $title'),
+        title: Text(
+          'Script $title',
+          overflow: TextOverflow.fade,
+        ),
         actions: [
           SharedBuilder.appBarRegionDropdown(
             context: context,
@@ -76,20 +79,6 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               });
               fetch();
             },
-          ),
-          IconButton(
-            onPressed: () {
-              FilterPage.show(
-                context: context,
-                builder: (context) => ScriptReaderFilterPage(
-                  filterData: db.settings.scriptReaderFilterData,
-                  onChanged: (v) {
-                    if (mounted) setState(() {});
-                  },
-                ),
-              );
-            },
-            icon: const Icon(Icons.settings),
           ),
           popupMenu,
         ],
@@ -129,6 +118,22 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
                 );
               },
             ),
+          PopupMenuItem(
+            child: Text(S.current.settings_tab_name),
+            onTap: () async {
+              await null;
+              if (!mounted) return;
+              FilterPage.show(
+                context: context,
+                builder: (context) => ScriptReaderFilterPage(
+                  filterData: db.settings.scriptReaderFilterData,
+                  onChanged: (v) {
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            },
+          ),
         ];
       },
     );
