@@ -509,9 +509,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           divisions: divisions ?? (maxVal - minVal).round(),
           value: start.toDouble(),
           label: labelFormatter(start),
-          onChanged: (v) {
-            onValueChanged(v.round(), -1);
-          },
+          onChanged: enhanceMode
+              ? null
+              : (v) {
+                  onValueChanged(v.round(), -1);
+                },
         );
       } else {
         slider = RangeSlider(
@@ -521,8 +523,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           values: RangeValues(start.toDouble(), end.toDouble()),
           labels: RangeLabels(labelFormatter(start), labelFormatter(end)),
           onChanged: (v) {
+            // enhance mode: don't modify start
             if (v.start.round() != start || v.end.round() != end) {
-              onValueChanged(v.start.round(), v.end.round());
+              onValueChanged(
+                  enhanceMode ? start : v.start.round(), v.end.round());
             }
           },
         );
@@ -586,7 +590,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           startItems: items,
           endItems: items,
           itemBuilder: (context, v) => Text(labelFormatter!(v)),
-          onChanged: onValueChanged,
+          onChanged: (_start, _end) {
+            onValueChanged(enhanceMode ? start : _start, _end);
+          },
         );
       }
       return CustomTile(
