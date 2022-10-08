@@ -13,10 +13,19 @@ class QuestListPage extends StatefulWidget {
   final List<Quest> quests;
   final List<int> ids;
   final String? title;
-  const QuestListPage({super.key, this.quests = const [], this.title})
-      : ids = const [];
-  const QuestListPage.ids({super.key, this.ids = const [], this.title})
-      : quests = const [];
+  final bool needSort;
+  const QuestListPage({
+    super.key,
+    this.quests = const [],
+    this.title,
+    this.needSort = true,
+  }) : ids = const [];
+  const QuestListPage.ids({
+    super.key,
+    this.ids = const [],
+    this.title,
+    this.needSort = true,
+  }) : quests = const [];
 
   @override
   State<QuestListPage> createState() => _QuestListPageState();
@@ -33,18 +42,20 @@ class _QuestListPageState extends State<QuestListPage> {
     final questIds = widget.quests.isEmpty
         ? widget.ids.toList()
         : widget.quests.map((e) => e.id).toList();
-    questIds.sort((a, b) {
-      final qa = allQuestsMap[a], qb = allQuestsMap[b];
-      final wa = qa?.war, wb = qb?.war;
-      if ((wa != null || wb != null) && wa?.id != wb?.id) {
-        return (wb?.id ?? 99999) - (wa?.id ?? 99999);
-      }
-      if (qa == null && qb == null) return a - b;
-      if (qa == null) return -1;
-      if (qb == null) return 1;
-      if (qa.priority == qb.priority) return a - b;
-      return qb.priority - qa.priority;
-    });
+    if (widget.needSort) {
+      questIds.sort((a, b) {
+        final qa = allQuestsMap[a], qb = allQuestsMap[b];
+        final wa = qa?.war, wb = qb?.war;
+        if ((wa != null || wb != null) && wa?.id != wb?.id) {
+          return (wb?.id ?? 99999) - (wa?.id ?? 99999);
+        }
+        if (qa == null && qb == null) return a - b;
+        if (qa == null) return -1;
+        if (qb == null) return 1;
+        if (qa.priority == qb.priority) return a - b;
+        return qb.priority - qa.priority;
+      });
+    }
 
     final hasSpot = questIds
         .any((q) => db.gameData.spots[allQuestsMap[q]?.spotId]?.image != null);

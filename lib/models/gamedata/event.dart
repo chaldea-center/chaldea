@@ -97,7 +97,7 @@ class Event {
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
       rewards.isEmpty &&
-      bulletinBoards.isEmpty &&
+      // bulletinBoards.isEmpty &&
       digging == null &&
       cooltime == null &&
       recipes.isEmpty &&

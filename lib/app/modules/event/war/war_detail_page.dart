@@ -227,8 +227,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
         eventQuests.add(quest);
       }
     }
-    selectionQuests = war.questSelections.map((e) => e.quest).toList();
-    selectionQuests.sort2((e) => e.priority, reversed: true);
+
+    final selections = List.of(war.questSelections);
+    selections.sort2((e) => e.priority);
+    selectionQuests = selections.map((e) => e.quest).toList();
 
     if (war.spots.isNotEmpty || selectionQuests.isNotEmpty) {
       children.add(TileGroup(
@@ -308,7 +310,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
               onTap: () {
                 router.push(
                   child: QuestListPage(
-                      title: 'Selections', quests: selectionQuests),
+                    title: 'Selections',
+                    quests: selectionQuests,
+                    needSort: false,
+                  ),
                 );
               },
             ),
