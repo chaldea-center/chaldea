@@ -26,12 +26,6 @@ class _ServantFilterPageState
     extends FilterPageState<SvtFilterData, ServantFilterPage> {
   @override
   Widget build(BuildContext context) {
-    const groupDivider = Divider(
-      height: 16,
-      indent: 12,
-      endIndent: 12,
-      thickness: 1,
-    );
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
@@ -128,7 +122,7 @@ class _ServantFilterPageState
             update();
           },
         ),
-        groupDivider,
+        buildGroupDivider(text: S.current.plan),
         FilterGroup<int>(
           title: Text(S.current.priority, style: textStyle),
           options: const [1, 2, 3, 4, 5],
@@ -210,7 +204,7 @@ class _ServantFilterPageState
             });
           },
         ),
-        groupDivider,
+        buildGroupDivider(text: S.current.gamedata),
         FilterGroup<Region>(
           title: Text(S.current.game_server, style: textStyle),
           options: Region.values,
@@ -278,7 +272,7 @@ class _ServantFilterPageState
             update();
           },
         ),
-        groupDivider,
+        buildGroupDivider(text: S.current.effect_search),
         FilterGroup<SvtEffectScope>(
           title: Text(S.current.effect_scope),
           options: SvtEffectScope.values,

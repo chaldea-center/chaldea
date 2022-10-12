@@ -316,8 +316,8 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     );
   }
 
-  Widget buildGroupDivider(Widget? header) {
-    if (header == null) {
+  Widget buildGroupDivider({String? text, Widget? child}) {
+    if (text == null && child == null) {
       return const Divider(
         height: 16,
         indent: 12,
@@ -338,7 +338,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
               thickness: 1,
             ),
           ),
-          header,
+          child ?? Text(text!, style: Theme.of(context).textTheme.caption),
           const Expanded(
             child: Divider(
               height: 16,

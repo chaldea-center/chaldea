@@ -101,6 +101,7 @@ class _CraftFilterPageState
             update();
           },
         ),
+        buildGroupDivider(text: S.current.effect_search),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: EffectTarget.values,

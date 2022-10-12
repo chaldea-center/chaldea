@@ -20,8 +20,8 @@ class _LostRoomPageState extends State<LostRoomPage> {
         builder: (context, constrains) => ListView(
           children: [
             Container(
-              constraints: const BoxConstraints(maxHeight: 100),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              constraints: const BoxConstraints(maxHeight: 120),
+              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
               color:
                   Theme.of(context).colorScheme.onBackground.withOpacity(0.9),
               child: const CachedImage(

@@ -47,16 +47,17 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
               DropdownMenuItem(
                 value: null,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 180),
-                  child: Text(S.current.free_progress_newest, maxLines: 1),
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: Text(S.current.free_progress_newest,
+                      textScaleFactor: 0.8),
                 ),
               ),
               for (final war in wars)
                 DropdownMenuItem(
                   value: war,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 180),
-                    child: Text(war.lShortName, maxLines: 1),
+                    constraints: const BoxConstraints(maxWidth: 160),
+                    child: Text(war.lShortName, textScaleFactor: 0.8),
                   ),
                 )
             ],

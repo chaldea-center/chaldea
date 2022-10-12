@@ -7,6 +7,7 @@ import 'package:flutter_picker/Picker.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -189,7 +190,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             width: 36,
             text: (db.curUser.items[itemId] ?? 0).format(),
             textPadding: const EdgeInsets.only(top: 30),
-            popDetail: true,
+            popDetail: SplitRoute.of(context)?.detail == false,
           ),
           SizedBox(
             width: 36,

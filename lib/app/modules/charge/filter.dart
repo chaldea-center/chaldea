@@ -202,8 +202,7 @@ class _NpChargeFilterPageState
             update();
           },
         ),
-        buildGroupDivider(
-            Text('General', style: Theme.of(context).textTheme.caption)),
+        buildGroupDivider(text: 'General'),
         buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.current.filter_sort_rarity, style: textStyle),
