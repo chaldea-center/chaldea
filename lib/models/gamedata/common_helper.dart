@@ -198,6 +198,7 @@ const kTraitIdMapping = <int, Trait>{
   2837: Trait.valkyrie,
   2838: Trait.summerModeServant,
   2839: Trait.shinsengumiServant,
+  2840: Trait.ryozanpaku,
 // # 2xxx: CQ or Story quests buff
   3000: Trait.attackPhysical,
   // # Normal attack, including NP

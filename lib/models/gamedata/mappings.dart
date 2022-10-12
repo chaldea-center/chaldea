@@ -534,6 +534,7 @@ class EnumMapping {
   final Map<String, MappingBase<String>> svtVoiceType;
   final Map<String, MappingBase<String>> svtType;
   final Map<String, MappingBase<String>> summonType;
+  final Map<String, MappingBase<String>> eventWorkType;
 
   EnumMapping({
     this.svtClass = const {},
@@ -557,6 +558,7 @@ class EnumMapping {
     this.svtVoiceType = const {},
     this.svtType = const {},
     this.summonType = const {},
+    this.eventWorkType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>

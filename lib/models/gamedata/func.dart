@@ -46,7 +46,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
   NiceFunction({
     required int funcId,
-    FuncType funcType = FuncType.none,
+    FuncType funcType = FuncType.unknown,
     required FuncTargetType funcTargetType,
     required FuncApplyTarget funcTargetTeam,
     String funcPopupText = '',
@@ -174,7 +174,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
         if (svals is! List) continue;
         for (int index = 0; index < svals.length; index++) {
           if (key1 == 'svals' && index == 0) continue;
-          svals[index] = Map.from(first)..addAll(svals[index] as Map);
+          svals[index] = first.deepCopy()..addAll(svals[index] as Map);
         }
       }
       firstVals = DataVals.fromJson(Map<String, dynamic>.from(first));
@@ -187,7 +187,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     return NiceFunction(
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.none,
+          FuncType.unknown,
       funcTargetType:
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
@@ -734,7 +734,16 @@ enum BuffType {
   toFieldAvoidBuff,
 }
 
+const kEventFuncTypes = [
+  FuncType.eventDropUp,
+  FuncType.eventDropRateUp,
+  FuncType.eventPointUp,
+  FuncType.eventPointRateUp,
+  FuncType.eventFortificationPointUp,
+];
+
 enum FuncType {
+  unknown,
   none,
   addState,
   subState,
@@ -828,6 +837,8 @@ enum FuncType {
   buddyPointUp,
   addFieldChangeToField,
   subFieldBuff,
+  eventFortificationPointUp,
+  gainNpIndividualSum,
 }
 
 extension FuncTargetTypeX on FuncTargetType {

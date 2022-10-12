@@ -318,7 +318,7 @@ const _$ClassRelationOverwriteTypeEnumMap = {
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.none,
+          FuncType.unknown,
       funcTargetType:
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
@@ -370,6 +370,7 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
     );
 
 const _$FuncTypeEnumMap = {
+  FuncType.unknown: 'unknown',
   FuncType.none: 'none',
   FuncType.addState: 'addState',
   FuncType.subState: 'subState',
@@ -463,6 +464,8 @@ const _$FuncTypeEnumMap = {
   FuncType.buddyPointUp: 'buddyPointUp',
   FuncType.addFieldChangeToField: 'addFieldChangeToField',
   FuncType.subFieldBuff: 'subFieldBuff',
+  FuncType.eventFortificationPointUp: 'eventFortificationPointUp',
+  FuncType.gainNpIndividualSum: 'gainNpIndividualSum',
 };
 
 const _$FuncTargetTypeEnumMap = {

@@ -352,6 +352,36 @@ const kSvtClassIconIds = {
   SvtClass.unknown: 97,
 };
 
+enum SvtClassSupportGroupType {
+  all,
+  saber,
+  archer,
+  lancer,
+  rider,
+  caster,
+  assassin,
+  berserker,
+  extra,
+  mix,
+  notSupport,
+}
+
+const kSvtClassSupportGroupIds = <int, SvtClassSupportGroupType>{
+  0: SvtClassSupportGroupType.all,
+  1: SvtClassSupportGroupType.saber,
+  2: SvtClassSupportGroupType.archer,
+  3: SvtClassSupportGroupType.lancer,
+  4: SvtClassSupportGroupType.rider,
+  5: SvtClassSupportGroupType.caster,
+  6: SvtClassSupportGroupType.assassin,
+  7: SvtClassSupportGroupType.berserker,
+  8: SvtClassSupportGroupType.extra,
+  9: SvtClassSupportGroupType.mix,
+  999: SvtClassSupportGroupType.notSupport,
+};
+final kSvtClassSupportGroupIdsReverse =
+    kSvtClassSupportGroupIds.map((k, v) => MapEntry(v, k));
+
 /// Add new entry to common_helper [kTraitIdMapping]
 enum Trait {
   unknown,
@@ -609,6 +639,7 @@ enum Trait {
   immuneToPigify,
   summerModeServant,
   shinsengumiServant,
+  ryozanpaku,
 }
 
 enum CondType {
@@ -776,4 +807,5 @@ enum CondType {
   progressValueBelow,
   randomMissionTotalClearNum,
   weekdays,
+  eventFortificationRewardNum,
 }

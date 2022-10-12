@@ -88,6 +88,11 @@ Event _$EventFromJson(Map json) => Event(
           ? null
           : EventCooltime.fromJson(
               Map<String, dynamic>.from(json['cooltime'] as Map)),
+      fortifications: (json['fortifications'] as List<dynamic>?)
+              ?.map((e) => EventFortification.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       campaigns: (json['campaigns'] as List<dynamic>?)
               ?.map((e) =>
                   EventCampaign.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -673,6 +678,92 @@ EventRecipe _$EventRecipeFromJson(Map json) => EventRecipe(
               .toList() ??
           const [],
     );
+
+EventFortificationDetail _$EventFortificationDetailFromJson(Map json) =>
+    EventFortificationDetail(
+      position: json['position'] as int,
+      name: json['name'] as String,
+      className: $enumDecodeNullable(
+              _$SvtClassSupportGroupTypeEnumMap, json['className']) ??
+          SvtClassSupportGroupType.notSupport,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+const _$SvtClassSupportGroupTypeEnumMap = {
+  SvtClassSupportGroupType.all: 'all',
+  SvtClassSupportGroupType.saber: 'saber',
+  SvtClassSupportGroupType.archer: 'archer',
+  SvtClassSupportGroupType.lancer: 'lancer',
+  SvtClassSupportGroupType.rider: 'rider',
+  SvtClassSupportGroupType.caster: 'caster',
+  SvtClassSupportGroupType.assassin: 'assassin',
+  SvtClassSupportGroupType.berserker: 'berserker',
+  SvtClassSupportGroupType.extra: 'extra',
+  SvtClassSupportGroupType.mix: 'mix',
+  SvtClassSupportGroupType.notSupport: 'notSupport',
+};
+
+EventFortificationSvt _$EventFortificationSvtFromJson(Map json) =>
+    EventFortificationSvt(
+      position: json['position'] as int,
+      type: $enumDecodeNullable(
+              _$EventFortificationSvtTypeEnumMap, json['type']) ??
+          EventFortificationSvtType.none,
+      svtId: json['svtId'] as int,
+      limitCount: json['limitCount'] as int,
+      lv: json['lv'] as int,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+const _$EventFortificationSvtTypeEnumMap = {
+  EventFortificationSvtType.userSvt: 'userSvt',
+  EventFortificationSvtType.npc: 'npc',
+  EventFortificationSvtType.none: 'none',
+};
+
+EventFortification _$EventFortificationFromJson(Map json) => EventFortification(
+      idx: json['idx'] as int,
+      name: json['name'] as String,
+      x: json['x'] as int,
+      y: json['y'] as int,
+      rewardSceneX: json['rewardSceneX'] as int,
+      rewardSceneY: json['rewardSceneY'] as int,
+      maxFortificationPoint: json['maxFortificationPoint'] as int,
+      workType: $enumDecode(_$EventWorkTypeEnumMap, json['workType']),
+      gifts: (json['gifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      details: (json['details'] as List<dynamic>?)
+              ?.map((e) => EventFortificationDetail.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      servants: (json['servants'] as List<dynamic>?)
+              ?.map((e) => EventFortificationSvt.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+const _$EventWorkTypeEnumMap = {
+  EventWorkType.militsryAffairs: 'militsryAffairs',
+  EventWorkType.internalAffairs: 'internalAffairs',
+  EventWorkType.farmming: 'farmming',
+};
 
 EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
       bulletinBoardId: json['bulletinBoardId'] as int,

@@ -412,9 +412,21 @@ class FuncDescriptor extends StatelessWidget {
           ),
         );
       }
-    } else if (func.funcType == FuncType.eventDropUp ||
-        func.funcType == FuncType.eventDropRateUp ||
-        func.funcType == FuncType.eventPointUp) {
+    } else if (func.funcType == FuncType.eventFortificationPointUp) {
+      int? indiv = func.svals.getOrNull(0)?.Individuality;
+      EventWorkType? workType;
+      if (indiv != null) EventWorkType.values.getOrNull(indiv - 1);
+      String indivName;
+      indivName = workType != null
+          ? Transl.enums(workType, (enums) => enums.eventWorkType).l
+          : '$indiv';
+      spans.add(TextSpan(text: '〔$indivName〕'));
+    } else if ([
+      FuncType.eventDropUp,
+      FuncType.eventDropRateUp,
+      FuncType.eventPointUp,
+      FuncType.eventPointRateUp,
+    ].contains(func.funcType)) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;
       final items = db.gameData.items.values
           .where((item) => item.individuality.any((trait) => trait.id == indiv))
@@ -462,6 +474,7 @@ class FuncDescriptor extends StatelessWidget {
         FuncType.eventDropRateUp,
         FuncType.eventPointUp,
         FuncType.eventPointRateUp,
+        FuncType.eventFortificationPointUp,
       ].contains(func.funcType)) {
         return;
       }

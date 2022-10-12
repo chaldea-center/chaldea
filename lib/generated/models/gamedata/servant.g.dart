@@ -727,6 +727,7 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.eventDigging: 'eventDigging',
   SvtVoiceType.eventExpedition: 'eventExpedition',
   SvtVoiceType.eventRecipe: 'eventRecipe',
+  SvtVoiceType.eventFortification: 'eventFortification',
   SvtVoiceType.sum: 'sum',
 };
 

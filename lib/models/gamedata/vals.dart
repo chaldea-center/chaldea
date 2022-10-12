@@ -145,6 +145,10 @@ class DataVals {
   int? get RemoveFieldBuffActorDeath => sourceVals['RemoveFieldBuffActorDeath'];
   int? get FieldBuffGrantType => sourceVals['FieldBuffGrantType'];
   int? get Priority => sourceVals['Priority'];
+  int? get AddIndividualityEx => sourceVals['AddIndividualityEx'];
+  int? get IgnoreResistance => sourceVals['IgnoreResistance'];
+  int? get GainNpTargetPassiveIndividuality =>
+      sourceVals['GainNpTargetPassiveIndividuality'];
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];
@@ -158,9 +162,11 @@ class DataVals {
   factory DataVals.fromJson(Map<String, dynamic> json) =>
       DataVals(Map.from(json));
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool sort = true}) {
     final entries = sourceVals.entries.toList();
-    entries.sort((a, b) => a.key.compareTo(b.key));
+    if (sort) {
+      entries.sort((a, b) => a.key.compareTo(b.key));
+    }
     return Map.fromEntries(entries);
   }
 

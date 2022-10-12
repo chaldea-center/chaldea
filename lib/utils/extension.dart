@@ -131,6 +131,22 @@ extension SetX<E> on Set<E> {
   }
 }
 
+extension MapX<K, V> on Map<K, V> {
+  static Map<K1, V1> _deepCopy<K1, V1>(Map<K1, V1> src) {
+    Map<K1, V1> result = {};
+    for (final key in src.keys) {
+      var v = src[key];
+      if (v is Map) {
+        v = _deepCopy(v) as V1;
+      }
+      result[key] = v as V1;
+    }
+    return Map.of(src);
+  }
+
+  Map<K, V> deepCopy() => _deepCopy(this);
+}
+
 extension NumMapDefault<K> on Map<K, int> {
   int get(K key) {
     return this[key] ?? 0;

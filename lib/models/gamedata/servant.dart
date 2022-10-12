@@ -1452,6 +1452,7 @@ enum SvtVoiceType {
   eventDigging,
   eventExpedition,
   eventRecipe,
+  eventFortification,
   sum,
 }
 

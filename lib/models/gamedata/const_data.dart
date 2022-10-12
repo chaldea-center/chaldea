@@ -39,7 +39,7 @@ class ConstGameData {
   }) : buffActions = buffActions.map(
           (key, value) => MapEntry(
             $enumDecode(_$BuffActionEnumMap, key as String,
-                unknownValue: BuffAction.none),
+                unknownValue: BuffAction.unknown),
             value,
           ),
         );
@@ -413,6 +413,7 @@ enum SvtFrameType {
 
 @JsonEnum(alwaysCreate: true)
 enum BuffAction {
+  unknown, // custom
   none,
   commandAtk,
   commandDef,
@@ -519,6 +520,7 @@ enum BuffAction {
   notTargetSkill,
   toFieldChangeField,
   toFieldAvoidBuff,
+  grantStateUpOnly,
 }
 
 enum BuffLimit {

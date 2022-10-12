@@ -191,6 +191,7 @@ const _$CondTypeEnumMap = {
   CondType.progressValueBelow: 'progressValueBelow',
   CondType.randomMissionTotalClearNum: 'randomMissionTotalClearNum',
   CondType.weekdays: 'weekdays',
+  CondType.eventFortificationRewardNum: 'eventFortificationRewardNum',
 };
 
 BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(

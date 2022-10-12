@@ -126,7 +126,7 @@ class ValDsc extends StatelessWidget {
               data: ThemeData.light(),
               child: SimpleCancelOkDialog(
                 title: const Text('Data Vals'),
-                content: JsonViewer((originVals ?? vals).toJson(),
+                content: JsonViewer((originVals ?? vals).toJson(sort: false),
                     defaultOpen: true),
                 scrollable: true,
                 hideCancel: true,
@@ -291,6 +291,7 @@ class ValDsc extends StatelessWidget {
           case FuncType.servantFriendshipUp:
           case FuncType.userEquipExpUp:
           case FuncType.eventPointUp:
+          case FuncType.eventFortificationPointUp:
           case FuncType.expUp:
             _addPercent(vals.RateCount, 10);
             break;

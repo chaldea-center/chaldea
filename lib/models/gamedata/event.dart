@@ -37,6 +37,7 @@ class Event {
   List<EventBulletinBoard> bulletinBoards;
   EventDigging? digging;
   EventCooltime? cooltime;
+  List<EventFortification> fortifications;
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
   List<EventVoicePlay> voicePlays;
@@ -71,6 +72,7 @@ class Event {
     this.bulletinBoards = const [],
     this.digging,
     this.cooltime,
+    this.fortifications = const [],
     this.campaigns = const [],
     this.campaignQuests = const [],
     this.voicePlays = const [],
@@ -101,6 +103,7 @@ class Event {
       digging == null &&
       cooltime == null &&
       recipes.isEmpty &&
+      fortifications.isEmpty &&
       // campaigns.isEmpty &&
       // campaignQuests.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
@@ -1082,6 +1085,80 @@ class EventRecipe {
 }
 
 @JsonSerializable()
+class EventFortificationDetail {
+  int position;
+  String name;
+  SvtClassSupportGroupType className;
+  List<CommonRelease> releaseConditions;
+
+  EventFortificationDetail({
+    required this.position,
+    required this.name,
+    this.className = SvtClassSupportGroupType.notSupport,
+    this.releaseConditions = const [],
+  });
+
+  factory EventFortificationDetail.fromJson(Map<String, dynamic> json) =>
+      _$EventFortificationDetailFromJson(json);
+}
+
+@JsonSerializable()
+class EventFortificationSvt {
+  int position;
+  EventFortificationSvtType type;
+  int svtId;
+  int limitCount;
+  int lv;
+  List<CommonRelease> releaseConditions;
+
+  EventFortificationSvt({
+    required this.position,
+    this.type = EventFortificationSvtType.none,
+    required this.svtId,
+    required this.limitCount,
+    required this.lv,
+    this.releaseConditions = const [],
+  });
+
+  factory EventFortificationSvt.fromJson(Map<String, dynamic> json) =>
+      _$EventFortificationSvtFromJson(json);
+}
+
+@JsonSerializable()
+class EventFortification {
+  int idx;
+  String name;
+  int x;
+  int y;
+  int rewardSceneX;
+  int rewardSceneY;
+  int maxFortificationPoint;
+  EventWorkType workType;
+  List<Gift> gifts;
+  List<CommonRelease> releaseConditions;
+  List<EventFortificationDetail> details;
+  List<EventFortificationSvt> servants;
+
+  EventFortification({
+    required this.idx,
+    required this.name,
+    required this.x,
+    required this.y,
+    required this.rewardSceneX,
+    required this.rewardSceneY,
+    required this.maxFortificationPoint,
+    required this.workType,
+    this.gifts = const [],
+    this.releaseConditions = const [],
+    this.details = const [],
+    this.servants = const [],
+  });
+
+  factory EventFortification.fromJson(Map<String, dynamic> json) =>
+      _$EventFortificationFromJson(json);
+}
+
+@JsonSerializable()
 class EventBulletinBoard {
   int bulletinBoardId;
   String message;
@@ -1365,4 +1442,17 @@ enum EventCombineCalc {
   addition,
   multiplication,
   fixedValue,
+}
+
+// FuncType.eventFortificationPointUp: DataVal.Individuality
+enum EventWorkType {
+  militsryAffairs, // 1
+  internalAffairs, // 2
+  farmming, // 3
+}
+
+enum EventFortificationSvtType {
+  userSvt,
+  npc,
+  none,
 }

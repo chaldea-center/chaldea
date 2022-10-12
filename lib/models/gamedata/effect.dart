@@ -361,7 +361,11 @@ class SkillEffect {
     funcTypes: [
       FuncType.eventDropUp,
       FuncType.eventDropRateUp,
-      FuncType.dropUp
+      FuncType.dropUp,
+      FuncType.classDropUp,
+      FuncType.eventPointUp,
+      FuncType.eventFortificationPointUp,
+      FuncType.buddyPointUp,
     ],
   );
   // 特定时发动

@@ -412,6 +412,7 @@ const _$TraitEnumMap = {
   Trait.immuneToPigify: 'immuneToPigify',
   Trait.summerModeServant: 'summerModeServant',
   Trait.shinsengumiServant: 'shinsengumiServant',
+  Trait.ryozanpaku: 'ryozanpaku',
 };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(
@@ -567,6 +568,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
     );
 
 const _$BuffActionEnumMap = {
+  BuffAction.unknown: 'unknown',
   BuffAction.none: 'none',
   BuffAction.commandAtk: 'commandAtk',
   BuffAction.commandDef: 'commandDef',
@@ -673,4 +675,5 @@ const _$BuffActionEnumMap = {
   BuffAction.notTargetSkill: 'notTargetSkill',
   BuffAction.toFieldChangeField: 'toFieldChangeField',
   BuffAction.toFieldAvoidBuff: 'toFieldAvoidBuff',
+  BuffAction.grantStateUpOnly: 'grantStateUpOnly',
 };
