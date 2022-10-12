@@ -10,5 +10,6 @@
 - **Quest Limit**: items that have not been installed in this progress will be removed from the plan
 - **Planning goals** (planning only): minimum AP, minimum count of battles
 - **Efficiency type** (efficiency only): per 20AP drop rate or per quest drop rate
+- **AP Cost 1/2**: Chaldea Gate - Daily Quests
 - **Blacklist** (planning page only): quest blacklist
 - Click the item name to switch the item, click icon to view details
