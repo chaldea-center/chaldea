@@ -1,8 +1,10 @@
 ## 2.1.2
 
-- Recollection quests
+- gacha probability calculation
+- new event content: fortification, recollection quests, campaigns
+- script/story reader
 - set bond bonus for quest efficiency
-- sortable item list 
+- sortable item list
 
 ## 2.1.1
 
