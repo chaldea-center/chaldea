@@ -41,9 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "${site}(으)로 이동";
 
-  static String m16(shown, total) => "${shown} 표시 (합계 ${total})";
+  static String m18(shown, total) => "${shown} 표시 (합계 ${total})";
 
-  static String m17(shown, ignore, total) =>
+  static String m19(shown, ignore, total) =>
       "${shown} 표시, ${ignore} 무시 (합계 ${total})";
 
   static String m8(first) => "${Intl.select(first, {
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m20(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m22(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
   static String m13(n) => "프로필${n}";
 
@@ -485,8 +485,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
-        "list_count_shown_all": m16,
-        "list_count_shown_hidden_all": m17,
+        "list_count_shown_all": m18,
+        "list_count_shown_hidden_all": m19,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("FFO 데이터 로드"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("사용자 이름 변경"),
@@ -708,7 +708,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m20,
+        "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "sprites": MessageLookupByLibrary.simpleMessage("스프라이트"),
         "sq_fragment_convert":

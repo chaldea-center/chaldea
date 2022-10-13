@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -120,7 +121,7 @@ class ImageActions {
             onTap: () async {
               Navigator.pop(context);
               if (srcFp != null) {
-                await Share.shareFiles([srcFp], text: shareText);
+                await Share.shareXFiles([XFile(srcFp)], text: shareText);
               } else if (data != null) {
                 // Although, it may not be PNG
                 String fn =
@@ -129,7 +130,7 @@ class ImageActions {
                 File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);
-                await Share.shareFiles([tmpFp], text: shareText);
+                await Share.shareXFiles([XFile(tmpFp)], text: shareText);
               }
             },
           ));

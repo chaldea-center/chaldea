@@ -35,6 +35,7 @@ dependencies:
   catcher: ^0.6.9
   connectivity_plus: ^2.3.9
   crclib: ^3.0.0
+  cross_file: ^0.3.3+2
   crypto: ^3.0.2
   csv: ^5.0.1
   cupertino_icons: ^1.0.4
@@ -47,6 +48,7 @@ dependencies:
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.5
   flutter_email_sender: ^5.0.2
+  flutter_hooks: ^0.18.5+1
   flutter_markdown: ^0.6.12
   flutter_picker: ^2.0.5
   flutter_qjs: ^0.3.7

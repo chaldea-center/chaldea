@@ -35,15 +35,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
+  static String m16(rarity) => "${rarity}☆ CE Pick Up";
+
+  static String m17(rarity) => "${rarity}☆ SVT Pick Up";
+
   static String m5(error) => "Import failed. Error:\n${error}";
 
   static String m6(name) => "${name} already exist";
 
   static String m7(site) => "Jump to ${site}";
 
-  static String m16(shown, total) => "${shown} shown (total ${total})";
+  static String m18(shown, total) => "${shown} shown (total ${total})";
 
-  static String m17(shown, ignore, total) =>
+  static String m19(shown, ignore, total) =>
       "${shown} shown, ${ignore} ignored (total ${total})";
 
   static String m8(first) => "${Intl.select(first, {
@@ -54,10 +58,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(n) => "Section ${n}";
 
-  static String m18(region) =>
+  static String m20(region) =>
       "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m19(unknown, dup, valid, total, selected) =>
+  static String m21(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
   static String m10(region) => "${region} Notice";
@@ -66,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Reset Plan ${n}(Shown)";
 
-  static String m20(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m22(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m13(n) => "Profile ${n}";
 
@@ -383,6 +387,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("Free Quest"),
+        "gacha_prob_calc":
+            MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
+        "gacha_prob_ce_pickup": m16,
+        "gacha_prob_custom_rate":
+            MessageLookupByLibrary.simpleMessage("Custom Rate"),
+        "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
+            "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
+        "gacha_prob_svt_pickup": m17,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage(
@@ -395,6 +407,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
         "general_all": MessageLookupByLibrary.simpleMessage("All"),
         "general_close": MessageLookupByLibrary.simpleMessage("Close"),
+        "general_custom": MessageLookupByLibrary.simpleMessage("Custom"),
         "general_default": MessageLookupByLibrary.simpleMessage("Default"),
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
         "general_special": MessageLookupByLibrary.simpleMessage("Special"),
@@ -568,8 +581,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("Level"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
-        "list_count_shown_all": m16,
-        "list_count_shown_hidden_all": m17,
+        "list_count_shown_all": m18,
+        "list_count_shown_hidden_all": m19,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
@@ -722,6 +735,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
         "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
             "Tags should not be too long, otherwise it cannot be shown completely"),
+        "probability": MessageLookupByLibrary.simpleMessage("probability"),
+        "probability_expectation":
+            MessageLookupByLibrary.simpleMessage("Expectation"),
         "project_homepage":
             MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
@@ -733,7 +749,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-        "quest_not_found_error": m18,
+        "quest_not_found_error": m20,
         "quest_prefer_region":
             MessageLookupByLibrary.simpleMessage("Preferred Region"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
@@ -750,7 +766,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
-        "recognizer_result_count": m19,
+        "recognizer_result_count": m21,
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refresh_data_no_update":
             MessageLookupByLibrary.simpleMessage("No new card found"),
@@ -869,13 +885,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m20,
+        "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "special_reward_hide":
             MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
         "special_reward_show":
             MessageLookupByLibrary.simpleMessage("Show Special Rewards"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
+        "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("Pack(s)"),
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21 Fragments = 3 Quartzs"),
         "sq_short": MessageLookupByLibrary.simpleMessage("SQ"),
@@ -889,6 +906,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_gacha_footer":
             MessageLookupByLibrary.simpleMessage("Just for entertainment"),
         "summon_gacha_result": MessageLookupByLibrary.simpleMessage("Results"),
+        "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Pull(s)"),
         "summon_show_banner":
             MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),

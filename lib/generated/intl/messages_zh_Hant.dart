@@ -35,15 +35,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(filename, hash, localHash) =>
       "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
 
+  static String m16(rarity) => "${rarity}星礼装PickUp";
+
+  static String m17(rarity) => "${rarity}星从者PickUp";
+
   static String m5(error) => "導入失敗，Error:\n${error}";
 
   static String m6(name) => "${name}已存在";
 
   static String m7(site) => "跳轉到${site}";
 
-  static String m16(shown, total) => "顯示${shown}/總計${total}";
+  static String m18(shown, total) => "顯示${shown}/總計${total}";
 
-  static String m17(shown, ignore, total) =>
+  static String m19(shown, ignore, total) =>
       "顯示${shown}/忽略${ignore}/總計${total}";
 
   static String m8(first) => "${Intl.select(first, {
@@ -54,9 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(n) => "第${n}節";
 
-  static String m18(region) => "出現錯誤或${region}無此關卡資料";
+  static String m20(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m19(unknown, dup, valid, total, selected) =>
+  static String m21(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m10(region) => "${region}公告";
@@ -65,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "重置規劃${n}(已顯示)";
 
-  static String m20(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m22(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m13(n) => "個人資料${n}";
 
@@ -330,6 +334,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("FQ速查"),
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("FQ速查"),
+        "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池概率计算"),
+        "gacha_prob_ce_pickup": m16,
+        "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自定义概率"),
+        "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
+            "数值过大或过小时由于double精度问题造成计算结果不准确"),
+        "gacha_prob_svt_pickup": m17,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found":
@@ -342,6 +352,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("遊戲數據"),
         "general_all": MessageLookupByLibrary.simpleMessage("所有"),
         "general_close": MessageLookupByLibrary.simpleMessage("關閉"),
+        "general_custom": MessageLookupByLibrary.simpleMessage("自定义"),
         "general_default": MessageLookupByLibrary.simpleMessage("預設"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
@@ -481,8 +492,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("等級"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限時活動"),
         "link": MessageLookupByLibrary.simpleMessage("連結"),
-        "list_count_shown_all": m16,
-        "list_count_shown_hidden_all": m17,
+        "list_count_shown_all": m18,
+        "list_count_shown_hidden_all": m19,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("加載FFO資料"),
         "logic_type": MessageLookupByLibrary.simpleMessage("邏輯關係"),
@@ -603,6 +614,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("優先級"),
         "priority_tagging_hint":
             MessageLookupByLibrary.simpleMessage("建議備註不要太長, 否則可能顯示不全"),
+        "probability": MessageLookupByLibrary.simpleMessage("概率"),
+        "probability_expectation": MessageLookupByLibrary.simpleMessage("期望"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("項目主頁"),
         "quest": MessageLookupByLibrary.simpleMessage("關卡"),
         "quest_chapter_n": m9,
@@ -613,7 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
-        "quest_not_found_error": m18,
+        "quest_not_found_error": m20,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首選區服"),
         "quest_prefer_region_hint":
             MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
@@ -628,7 +641,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Google Play評分"),
-        "recognizer_result_count": m19,
+        "recognizer_result_count": m21,
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("無新增數據"),
         "region_cn": MessageLookupByLibrary.simpleMessage("簡中服"),
@@ -726,11 +739,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m20,
+        "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
         "special_reward_show": MessageLookupByLibrary.simpleMessage("顯示特殊報酬"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
+        "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("单"),
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),
         "sq_short": MessageLookupByLibrary.simpleMessage("石"),
@@ -743,6 +757,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_gacha_footer":
             MessageLookupByLibrary.simpleMessage("僅供娛樂, 如有雷同, 純屬巧合"),
         "summon_gacha_result": MessageLookupByLibrary.simpleMessage("抽卡結果"),
+        "summon_pull_unit": MessageLookupByLibrary.simpleMessage("抽"),
         "summon_show_banner": MessageLookupByLibrary.simpleMessage("顯示橫幅"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("呼符"),
         "summon_title": MessageLookupByLibrary.simpleMessage("卡池一覽"),

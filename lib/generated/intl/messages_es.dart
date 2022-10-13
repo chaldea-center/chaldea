@@ -42,9 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "Ir a ${site}";
 
-  static String m16(shown, total) => "${shown} mostrado (total ${total})";
+  static String m18(shown, total) => "${shown} mostrado (total ${total})";
 
-  static String m17(shown, ignore, total) =>
+  static String m19(shown, ignore, total) =>
       "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
   static String m8(first) => "${Intl.select(first, {
@@ -61,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m20(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m22(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m13(n) => "Perfil ${n}";
 
@@ -523,8 +523,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "limited_event":
             MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_count_shown_all": m16,
-        "list_count_shown_hidden_all": m17,
+        "list_count_shown_all": m18,
+        "list_count_shown_hidden_all": m19,
         "list_end_hint": m8,
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
@@ -772,7 +772,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m20,
+        "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert":

@@ -585,10 +585,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           }
         }
       }
+      assert(
+          results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
+          results.map((e) => '${e.runtimeType}-${e.rarity}').toList());
     }
-    assert(
-        results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
-        results.map((e) => '${e.runtimeType}-${e.rarity}'));
 
     return results;
   }

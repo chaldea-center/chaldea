@@ -41,9 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "${site}へ";
 
-  static String m16(shown, total) => "表示${shown}/合計${total}";
+  static String m18(shown, total) => "表示${shown}/合計${total}";
 
-  static String m17(shown, ignore, total) =>
+  static String m19(shown, ignore, total) =>
       "表示${shown}/無視${ignore}/合計${total}";
 
   static String m8(first) => "${Intl.select(first, {
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m20(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m22(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m13(n) => "プロフィール${n}";
 
@@ -480,8 +480,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),
-        "list_count_shown_all": m16,
-        "list_count_shown_hidden_all": m17,
+        "list_count_shown_all": m18,
+        "list_count_shown_hidden_all": m19,
         "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
         "login_change_password":
@@ -690,7 +690,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m20,
+        "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert":

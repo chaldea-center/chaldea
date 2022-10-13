@@ -216,6 +216,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         child: Text(
           S.current.overview,
           style: const TextStyle(fontWeight: FontWeight.bold),
+          textScaleFactor: 0.9,
         ),
       ));
     }
@@ -225,6 +226,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             SummonUtil.summonNameLocalize(e.title),
             maxLines: 2,
             maxFontSize: 14,
+            textScaleFactor: 0.9,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         )));

@@ -2628,6 +2628,61 @@ class S {
     );
   }
 
+  /// `Gacha Prob Calc`
+  String get gacha_prob_calc {
+    return Intl.message(
+      'Gacha Prob Calc',
+      name: 'gacha_prob_calc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `{rarity}☆ CE Pick Up`
+  String gacha_prob_ce_pickup(Object rarity) {
+    return Intl.message(
+      '$rarity☆ CE Pick Up',
+      name: 'gacha_prob_ce_pickup',
+      desc: '',
+      locale: localeName,
+      args: [rarity],
+    );
+  }
+
+  /// `Custom Rate`
+  String get gacha_prob_custom_rate {
+    return Intl.message(
+      'Custom Rate',
+      name: 'gacha_prob_custom_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `If the value is too large or too small, the calculation result is inaccurate due to the double precision problem.`
+  String get gacha_prob_precision_hint {
+    return Intl.message(
+      'If the value is too large or too small, the calculation result is inaccurate due to the double precision problem.',
+      name: 'gacha_prob_precision_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `{rarity}☆ SVT Pick Up`
+  String gacha_prob_svt_pickup(Object rarity) {
+    return Intl.message(
+      '$rarity☆ SVT Pick Up',
+      name: 'gacha_prob_svt_pickup',
+      desc: '',
+      locale: localeName,
+      args: [rarity],
+    );
+  }
+
   /// `Home`
   String get gallery_tab_name {
     return Intl.message(
@@ -2743,6 +2798,17 @@ class S {
     return Intl.message(
       'Close',
       name: 'general_close',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get general_custom {
+    return Intl.message(
+      'Custom',
+      name: 'general_custom',
       desc: '',
       locale: localeName,
       args: [],
@@ -5142,6 +5208,28 @@ class S {
     );
   }
 
+  /// `probability`
+  String get probability {
+    return Intl.message(
+      'probability',
+      name: 'probability',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Expectation`
+  String get probability_expectation {
+    return Intl.message(
+      'Expectation',
+      name: 'probability_expectation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Project Homepage`
   String get project_homepage {
     return Intl.message(
@@ -6331,6 +6419,17 @@ class S {
     );
   }
 
+  /// `Pack(s)`
+  String get sq_buy_pack_unit {
+    return Intl.message(
+      'Pack(s)',
+      name: 'sq_buy_pack_unit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `21 Fragments = 3 Quartzs`
   String get sq_fragment_convert {
     return Intl.message(
@@ -6435,6 +6534,17 @@ class S {
     return Intl.message(
       'Results',
       name: 'summon_gacha_result',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Pull(s)`
+  String get summon_pull_unit {
+    return Intl.message(
+      'Pull(s)',
+      name: 'summon_pull_unit',
       desc: '',
       locale: localeName,
       args: [],

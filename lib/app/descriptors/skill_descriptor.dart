@@ -107,14 +107,18 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       onTap: jumpToDetail ? skill.routeTo : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
+    final detailText = skill.lDetail ?? '???';
     return TileGroup(
       children: [
         header,
         if (!hideDetail) ...[
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-            child: Text(skill.lDetail ?? '???',
-                style: Theme.of(context).textTheme.caption),
+            child: CopyLongPress(
+              text: detailText,
+              child:
+                  Text(detailText, style: Theme.of(context).textTheme.caption),
+            ),
           ),
           divider,
         ],
@@ -348,13 +352,16 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       ),
       onTap: jumpToDetail ? td.routeTo : null,
     );
+    final detailText = td.lDetail ?? '???';
     return TileGroup(
       children: [
         header,
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-          child: Text(td.lDetail ?? '???',
-              style: Theme.of(context).textTheme.caption),
+          child: CopyLongPress(
+            text: detailText,
+            child: Text(detailText, style: Theme.of(context).textTheme.caption),
+          ),
         ),
         divider,
         ...describeFunctions(
