@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -415,11 +417,20 @@ class FuncDescriptor extends StatelessWidget {
     } else if (func.funcType == FuncType.eventFortificationPointUp) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;
       EventWorkType? workType;
-      if (indiv != null) EventWorkType.values.getOrNull(indiv - 1);
+      if (indiv != null) workType = EventWorkType.values.getOrNull(indiv - 1);
       String indivName;
       indivName = workType != null
           ? Transl.enums(workType, (enums) => enums.eventWorkType).l
           : '$indiv';
+      if (indiv != null) {
+        spans.add(CenterWidgetSpan(
+          child: db.getIconImage(
+            EventWorkTypeX.getIcon(indiv),
+            width: 20,
+            aspectRatio: 1,
+          ),
+        ));
+      }
       spans.add(TextSpan(text: '〔$indivName〕'));
     } else if ([
       FuncType.eventDropUp,
@@ -463,7 +474,7 @@ class FuncDescriptor extends StatelessWidget {
 
     if ((vals?.Rate != null && vals!.Rate! < 0) ||
         (vals?.UseRate != null && vals!.UseRate! < 0)) {
-      print(vals.Rate);
+      // print(vals.Rate);
       final hint = Transl.misc('Func.ifPrevFuncSucceed');
       spans.add(TextSpan(text: '(${hint.l})'));
     }
@@ -593,6 +604,30 @@ class FuncDescriptor extends StatelessWidget {
           },
         ));
       }
+    }
+
+    if (vals?.AddLinkageTargetIndividualty != null &&
+        vals?.BehaveAsFamilyBuff == 1) {
+      final color = Theme.of(context).textTheme.caption?.color;
+      spans.add(const TextSpan(text: '('));
+      spans.add(CenterWidgetSpan(
+        child: FaIcon(
+          FontAwesomeIcons.link,
+          size: 12,
+          color: color,
+        ),
+      ));
+      if (vals?.UnSubStateWhileLinkedToOthers == 1) {
+        spans.add(CenterWidgetSpan(
+          child: FaIcon(
+            FontAwesomeIcons.linkSlash,
+            size: 12,
+            color: color,
+          ),
+        ));
+      }
+      spans.add(TextSpan(text: '${vals?.AddLinkageTargetIndividualty}'));
+      spans.add(const TextSpan(text: ')'));
     }
 
     List<List<InlineSpan>> _traitSpans = [];

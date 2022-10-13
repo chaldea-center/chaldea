@@ -737,7 +737,8 @@ EventFortification _$EventFortificationFromJson(Map json) => EventFortification(
       rewardSceneX: json['rewardSceneX'] as int,
       rewardSceneY: json['rewardSceneY'] as int,
       maxFortificationPoint: json['maxFortificationPoint'] as int,
-      workType: $enumDecode(_$EventWorkTypeEnumMap, json['workType']),
+      workType: $enumDecodeNullable(_$EventWorkTypeEnumMap, json['workType']) ??
+          EventWorkType.unknown,
       gifts: (json['gifts'] as List<dynamic>?)
               ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -763,6 +764,7 @@ const _$EventWorkTypeEnumMap = {
   EventWorkType.militsryAffairs: 'militsryAffairs',
   EventWorkType.internalAffairs: 'internalAffairs',
   EventWorkType.farmming: 'farmming',
+  EventWorkType.unknown: 'unknown',
 };
 
 EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(

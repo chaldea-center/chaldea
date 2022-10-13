@@ -22,6 +22,7 @@ import 'detail/bulletin_board.dart';
 import 'detail/campaign.dart';
 import 'detail/cooltime.dart';
 import 'detail/digging.dart';
+import 'detail/fortification.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/points.dart';
@@ -97,6 +98,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event.digging != null) {
       _addTab(S.current.event_digging,
           EventDiggingTab(event: event, digging: event.digging!));
+    }
+    if (event.fortifications.isNotEmpty) {
+      _addTab(
+          S.current.event_fortification, EventFortificationPage(event: event));
     }
     // missions
     if (event.missions.isNotEmpty) {

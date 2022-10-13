@@ -34,6 +34,18 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.missions = const [],
     this.useAnd,
   });
+  CondTargetValueDescriptor.commonRelease({
+    super.key,
+    required CommonRelease commonRelease,
+    this.forceFalseDescription,
+    this.style,
+    this.textScaleFactor,
+    this.leading,
+    this.missions = const [],
+    this.useAnd,
+  })  : condType = commonRelease.condType,
+        target = commonRelease.condId,
+        value = commonRelease.condNum;
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {

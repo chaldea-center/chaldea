@@ -25,6 +25,7 @@ const kMonoFont = 'RobotoMono';
 const kMonoStyle = TextStyle(fontFamily: kMonoFont);
 
 const kStarChar = '☆';
+const kULLeading = ' ꔷ ';
 // 0x01ffffff
 final kOnePixel = base64.decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');

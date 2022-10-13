@@ -165,6 +165,7 @@
   "event_collect_items": "Collect Items",
   "event_cooltime": "Cooltime",
   "event_digging": "Digging",
+  "event_fortification": "Fortification",
   "event_item_extra": "Extra Items",
   "event_item_fixed_extra": "Extra Fixed Items",
   "event_lottery": "Lottery",

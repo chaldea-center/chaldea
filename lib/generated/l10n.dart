@@ -1879,6 +1879,17 @@ class S {
     );
   }
 
+  /// `Fortification`
+  String get event_fortification {
+    return Intl.message(
+      'Fortification',
+      name: 'event_fortification',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Extra Items`
   String get event_item_extra {
     return Intl.message(

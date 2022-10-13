@@ -165,6 +165,7 @@
   "event_collect_items": "아이템 수집",
   "event_cooltime": null,
   "event_digging": "파다",
+  "event_fortification": null,
   "event_item_extra": "기타 아이템",
   "event_item_fixed_extra": "기타 고정 아이템",
   "event_lottery": "룰렛",

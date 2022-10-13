@@ -1147,7 +1147,7 @@ class EventFortification {
     required this.rewardSceneX,
     required this.rewardSceneY,
     required this.maxFortificationPoint,
-    required this.workType,
+    this.workType = EventWorkType.unknown,
     this.gifts = const [],
     this.releaseConditions = const [],
     this.details = const [],
@@ -1446,9 +1446,19 @@ enum EventCombineCalc {
 
 // FuncType.eventFortificationPointUp: DataVal.Individuality
 enum EventWorkType {
-  militsryAffairs, // 1
-  internalAffairs, // 2
-  farmming, // 3
+  militsryAffairs, // 1 军务 √
+  internalAffairs, // 2 政务 x
+  farmming, // 3 内务 x
+  unknown, // in case DW correct the naming
+}
+
+extension EventWorkTypeX on EventWorkType {
+  String get shownName => Transl.enums(this, (enums) => enums.eventWorkType).l;
+  String get icon => getIcon(index + 1);
+  static String getIcon(int indiv) {
+    final suffix = indiv.toString().padLeft(2, '0');
+    return 'https://static.atlasacademy.io/JP/EventUI/Prefabs/80400/DownloadEventUIAtlas8040001/icon_event_80400$suffix.png';
+  }
 }
 
 enum EventFortificationSvtType {
