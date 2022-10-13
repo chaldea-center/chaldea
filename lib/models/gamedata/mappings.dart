@@ -261,7 +261,7 @@ class MappingData {
   final MappingList<int> ccRelease;
   final MappingList<int> mcRelease;
   final MappingList<int> warRelease;
-  final Map<int, MappingBase<int>> questRelease;
+  final Map<int, MappingBase<int>> questRelease; // only svt related quests
   final EnumMapping enums;
   final Map<String, MappingBase<String>> misc;
   final Map<String, String> cnReplace;

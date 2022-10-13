@@ -43,6 +43,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     if (fixedRegion == null || fixedRegion == Region.jp) {
       return Region.jp;
     }
+    // TODO: deal with chaldea gate wars
     final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
     final released = db.gameData.mappingData.warRelease
         .ofRegion(fixedRegion)

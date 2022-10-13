@@ -148,7 +148,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                       ),
                       ListTile(
                         leading: spotImage == null
-                            ? const SizedBox()
+                            ? null
                             : db.getIconImage(
                                 db.gameData.spots[quest.spotId]?.image),
                         title: Text(quest.lName.l),
