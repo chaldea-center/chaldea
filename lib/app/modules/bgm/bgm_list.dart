@@ -25,6 +25,9 @@ class _BgmListPageState extends State<BgmListPage>
   Iterable<BgmEntity> get wholeData => db.gameData.bgms.values;
 
   @override
+  bool get showOddBg => true;
+
+  @override
   Widget build(BuildContext context) {
     filterShownList(compare: (a, b) {
       int r = ListX.compareByList<BgmEntity, int>(
@@ -39,7 +42,7 @@ class _BgmListPageState extends State<BgmListPage>
       useGrid: false,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: const Text('BGM'),
+        title: Text(S.current.bgm),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
@@ -104,10 +107,13 @@ class _BgmListPageState extends State<BgmListPage>
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           if (bgm.shop != null)
-            Item.iconBuilder(
-              context: context,
-              item: bgm.shop!.cost.item,
-              text: bgm.shop!.cost.amount.format(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Item.iconBuilder(
+                context: context,
+                item: bgm.shop!.cost.item,
+                text: bgm.shop!.cost.amount.format(),
+              ),
             ),
           SoundPlayButton(url: bgm.audioAsset, player: player)
         ],

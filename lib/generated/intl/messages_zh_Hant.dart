@@ -114,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("備份"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("備份失敗"),
         "backup_history": MessageLookupByLibrary.simpleMessage("歷史備份"),
+        "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("黑名單"),
         "bond": MessageLookupByLibrary.simpleMessage("羈絆"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羈絆禮裝"),

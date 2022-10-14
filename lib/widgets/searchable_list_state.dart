@@ -14,6 +14,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   final List<T> shownList = [];
   T? selected;
   bool showSearchBar = false;
+  bool showOddBg = false;
 
   late ScrollController scrollController;
   late TextEditingController searchEditingController;
@@ -160,7 +161,16 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     }
     Widget? _itemBuilder(BuildContext context, int index) {
       if (index >= 0 && index < shownList.length) {
-        return listItemBuilder(shownList[index]);
+        Widget child = listItemBuilder(shownList[index]);
+        if (showOddBg) {
+          child = DecoratedBox(
+            decoration: BoxDecoration(
+              color: index.isEven ? Theme.of(context).hoverColor : null,
+            ),
+            child: child,
+          );
+        }
+        return child;
       }
       return null;
     }

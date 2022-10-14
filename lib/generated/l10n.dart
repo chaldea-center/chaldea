@@ -438,6 +438,17 @@ class S {
     );
   }
 
+  /// `BGM`
+  String get bgm {
+    return Intl.message(
+      'BGM',
+      name: 'bgm',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Blacklist`
   String get blacklist {
     return Intl.message(

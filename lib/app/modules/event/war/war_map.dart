@@ -77,6 +77,13 @@ class _WarMapPageState extends State<WarMapPage> {
         actions: [
           IconButton(
             onPressed: () {
+              map.bgm.routeTo();
+            },
+            icon: const Icon(Icons.music_note),
+            tooltip: map.bgm.tooltip,
+          ),
+          IconButton(
+            onPressed: () {
               FilterPage.show(
                 context: context,
                 builder: (context) => WarMapFilter(

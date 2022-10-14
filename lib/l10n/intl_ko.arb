@@ -34,6 +34,7 @@
   "backup": "백업",
   "backup_failed": "백업 불러오기를 실패하였습니다",
   "backup_history": "백업 기록",
+  "bgm": null,
   "blacklist": "블랙리스트",
   "bond": "인연",
   "bond_craft": "인연예장",

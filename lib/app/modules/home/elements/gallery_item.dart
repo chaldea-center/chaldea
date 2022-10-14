@@ -304,7 +304,7 @@ class GalleryItem {
   );
   static GalleryItem bgms = GalleryItem(
     name: 'bgms',
-    titleBuilder: () => 'BGM',
+    titleBuilder: () => S.current.bgm,
     icon: FontAwesomeIcons.music,
     url: Routes.bgms,
     page: BgmListPage(),

@@ -129,6 +129,8 @@ class Bgm with RouteInfo {
 
   Transl<String, String> get lName => Transl.bgmNames(name);
 
+  String get tooltip => name.isEmpty ? fileName : lName.l;
+
   factory Bgm.fromJson(Map<String, dynamic> json) {
     final bgm =
         GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];

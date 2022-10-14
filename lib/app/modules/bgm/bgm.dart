@@ -121,8 +121,19 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
     );
     return Scaffold(
       appBar: AppBar(
-          title: AutoSizeText(bgm.lName.l.replaceAll('\n', ' '),
-              minFontSize: 10, maxLines: 1)),
+        title: AutoSizeText(bgm.tooltip.setMaxLines(1),
+            minFontSize: 10, maxLines: 1),
+        actions: [
+          if (bgm.audioAsset != null)
+            IconButton(
+              onPressed: () {
+                launch(bgm.audioAsset!, external: true);
+              },
+              icon: const Icon(Icons.download),
+              tooltip: S.current.download,
+            )
+        ],
+      ),
       body: SingleChildScrollView(child: SafeArea(child: table)),
     );
   }

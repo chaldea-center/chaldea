@@ -427,12 +427,30 @@ class _QuestCardState extends State<QuestCard> {
         children: <Widget>[
           SizedBox(
             width: 32,
-            child: Text(
-              [
-                j + 1,
-                if (stage.enemyFieldPosCount != null)
-                  '(${stage.enemyFieldPosCount})'
-              ].join('\n'),
+            child: Text.rich(
+              TextSpan(
+                children: divideList(
+                  [
+                    TextSpan(text: '${j + 1}'),
+                    if (stage.enemyFieldPosCount != null)
+                      TextSpan(text: '(${stage.enemyFieldPosCount})'),
+                    if (stage.bgm.id != 0)
+                      WidgetSpan(
+                        child: IconButton(
+                          onPressed: () {
+                            stage.bgm.routeTo();
+                          },
+                          icon: const Icon(Icons.music_note, size: 18),
+                          tooltip: stage.bgm.tooltip,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      )
+                  ],
+                  const TextSpan(text: '\n'),
+                ),
+              ),
               textAlign: TextAlign.center,
             ),
           ),

@@ -51,7 +51,7 @@ class _NpChargeFilterPageState
           },
         ),
         FilterGroup<bool>(
-          title: Text('Released', style: textStyle),
+          title: Text('Released (My Room)', style: textStyle),
           options: const [true, false],
           values: filterData.released,
           combined: true,
@@ -65,7 +65,7 @@ class _NpChargeFilterPageState
           options: const [true, false],
           values: filterData.needItem,
           combined: true,
-          optionBuilder: (v) => Text(v ? 'Buyable' : 'No Cost'),
+          optionBuilder: (v) => Text(v ? 'Buyable' : 'Free/Unavailable'),
           onFilterChanged: (value, _) {
             update();
           },

@@ -327,6 +327,14 @@ class _WarDetailPageState extends State<WarDetailPage> {
             router.pushPage(ScriptListPage(war: war));
           },
         ),
+        if (war.bgm.id != 0)
+          ListTile(
+            title: Text(war.bgm.tooltip),
+            trailing: const Icon(Icons.music_note),
+            onTap: () {
+              war.bgm.routeTo();
+            },
+          )
       ],
     ));
 

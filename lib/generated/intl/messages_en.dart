@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_failed": MessageLookupByLibrary.simpleMessage("Backup failed"),
         "backup_history":
             MessageLookupByLibrary.simpleMessage("Backup History"),
+        "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
