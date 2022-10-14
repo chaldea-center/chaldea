@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
 import 'package:chaldea/generated/l10n.dart';

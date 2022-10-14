@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';

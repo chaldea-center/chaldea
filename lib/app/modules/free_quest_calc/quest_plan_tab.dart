@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../generated/l10n.dart';

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';

@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
 import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';

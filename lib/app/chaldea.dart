@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -24,7 +23,6 @@ import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import '../utils/catcher/catcher_util.dart';
-import '../widgets/after_layout.dart';
 import 'app.dart';
 import 'routes/parser.dart';
 import 'tools/backup_backend/chaldea_backend.dart';
