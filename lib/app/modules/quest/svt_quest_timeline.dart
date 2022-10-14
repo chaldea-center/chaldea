@@ -135,7 +135,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                 context: context,
                 useRootNavigator: false,
                 builder: (context) {
-                  final spotImage = db.gameData.spots[quest.spotId]?.image;
+                  final spotImage = quest.spot?.shownImage;
                   return SimpleDialog(
                     children: [
                       ListTile(
@@ -149,8 +149,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                       ListTile(
                         leading: spotImage == null
                             ? null
-                            : db.getIconImage(
-                                db.gameData.spots[quest.spotId]?.image),
+                            : db.getIconImage(quest.spot?.shownImage),
                         title: Text(quest.lName.l),
                         subtitle: Text(quest.lSpot.l),
                         onTap: () {

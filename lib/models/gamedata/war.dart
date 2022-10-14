@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
@@ -274,6 +276,7 @@ class NiceSpot {
   List<int> joinSpotIds;
   int mapId;
   String name;
+  @protected
   String? image;
   int x;
   int y;
@@ -310,6 +313,14 @@ class NiceSpot {
 
   factory NiceSpot.fromJson(Map<String, dynamic> json) =>
       _$NiceSpotFromJson(json);
+
+  WarMap? get map => db.gameData.maps[mapId];
+
+  String? get shownImage {
+    final _map = map;
+    if (_map != null && _map.mapImageW == 0 && _map.mapImageH == 0) return null;
+    return image;
+  }
 }
 
 @JsonSerializable()

@@ -131,7 +131,7 @@ class _WarMapPageState extends State<WarMapPage> {
     final spots = getSpots();
     final roads = getRoads(spots);
     for (final spot in spots.values) {
-      loadImage(spot.image);
+      loadImage(spot.shownImage);
     }
     final gimmicks = [
       for (final gimmick in map.mapGimmicks)
@@ -279,7 +279,7 @@ class _WarMapPainter extends CustomPainter {
     // spots
     const spotImageSize = 160;
     for (final spot in spots.values) {
-      final img = cachedImages[spot.image];
+      final img = cachedImages[spot.shownImage];
       if (img != null) {
         canvas.drawImageRect(
           img,

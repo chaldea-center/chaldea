@@ -129,9 +129,9 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         if (name != nameJp) subtitle += ' $nameJp';
         return ListTile(
-          leading: quest.spot?.image == null
+          leading: quest.spot?.shownImage == null
               ? const SizedBox()
-              : db.getIconImage(quest.spot?.image, width: 48),
+              : db.getIconImage(quest.spot?.shownImage, width: 48),
           contentPadding: const EdgeInsetsDirectional.only(start: 2),
           horizontalTitleGap: 2,
           title: Text(quest.lDispName, textScaleFactor: 0.9),

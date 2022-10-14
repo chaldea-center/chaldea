@@ -149,6 +149,10 @@ class GameData with _GameDataExtra {
       for (final war in wars.values)
         for (final spot in war.spots) spot.id: spot
     };
+    maps = {
+      for (final war in wars.values)
+        for (final map in war.maps) map.id: map
+    };
     quests = {
       for (final spot in spots.values)
         for (final quest in spot.quests) quest.id: quest
@@ -288,6 +292,8 @@ mixin _GameDataExtra {
   late Map<int, NiceWar> mainStories;
   @JsonKey(ignore: true)
   late Map<int, NiceSpot> spots;
+  @JsonKey(ignore: true)
+  late Map<int, WarMap> maps;
   @JsonKey(ignore: true)
   late Map<int, Quest> quests;
   @JsonKey(ignore: true)

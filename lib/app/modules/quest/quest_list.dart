@@ -57,8 +57,8 @@ class _QuestListPageState extends State<QuestListPage> {
       });
     }
 
-    final hasSpot = questIds
-        .any((q) => db.gameData.spots[allQuestsMap[q]?.spotId]?.image != null);
+    final hasSpot =
+        questIds.any((q) => allQuestsMap[q]?.spot?.shownImage != null);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
@@ -71,9 +71,9 @@ class _QuestListPageState extends State<QuestListPage> {
           final quest = allQuestsMap[questId];
 
           final spot = db.gameData.spots[quest?.spotId];
-          final leading = spot == null || spot.image == null
+          final leading = spot == null || spot.shownImage == null
               ? (hasSpot ? const SizedBox(width: 56) : null)
-              : db.getIconImage(spot.image, width: 56);
+              : db.getIconImage(spot.shownImage, width: 56);
 
           if (quest == null) {
             return ListTile(

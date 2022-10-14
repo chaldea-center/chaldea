@@ -46,7 +46,9 @@ class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
           contentPadding: const EdgeInsetsDirectional.only(start: 8),
           horizontalTitleGap: 8,
           dense: true,
-          leading: spot?.image == null ? null : db.getIconImage(spot?.image),
+          leading: spot?.shownImage == null
+              ? null
+              : db.getIconImage(spot?.shownImage),
           title: Text(Transl.spotNames(first.name).l),
           subtitle: Text(
               '${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'

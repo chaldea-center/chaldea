@@ -322,7 +322,7 @@ class _QuestCardState extends State<QuestCard> {
     }
     String spotJp = curPhase.spotName;
     String spot = curPhase.lSpot.l;
-    final spotImage = db.gameData.spots[curPhase.spotId]?.image;
+    final spotImage = curPhase.spot?.shownImage;
     final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
     bool noConsume =
         curPhase.consumeType == ConsumeType.ap && curPhase.consume == 0;
