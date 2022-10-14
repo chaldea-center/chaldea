@@ -11,11 +11,10 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../servant/tabs/voice_tab.dart';
-import 'script_reader.dart';
 
 class ScriptParsedData {
   Uri? _uri;

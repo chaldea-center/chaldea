@@ -101,6 +101,18 @@ extension ListX<T> on List<T> {
     }
   }
 
+  static int compareByList<T, V extends Comparable>(
+      T a, T b, List<V> Function(T v) test) {
+    final la = test(a), lb = test(b);
+    for (int index = 0; index < la.length; index++) {
+      if (lb.length <= index) return 1;
+      int r = la[index].compareTo(lb[index]);
+      if (r != 0) return r;
+    }
+    if (la.length < lb.length) return -1;
+    return 0;
+  }
+
   List<T> sortReturn([int Function(T a, T b)? compare]) {
     sort(compare);
     return this;

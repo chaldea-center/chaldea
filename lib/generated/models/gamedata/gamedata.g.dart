@@ -53,7 +53,7 @@ GameData _$GameDataFromJson(Map json) => GameData(
       ),
       bgms: (json['bgms'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String),
-            Bgm.fromJson(Map<String, dynamic>.from(e as Map))),
+            BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       extraMasterMission: (json['extraMasterMission'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String),

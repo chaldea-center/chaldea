@@ -11,6 +11,7 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
+import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
 import '../../charge/np_charge_page.dart';
 import '../../command_code/cmd_code_list.dart';
@@ -120,6 +121,7 @@ class GalleryItem {
         importData,
         // default hide
         scriptHome,
+        bgms,
         ffo,
         cvList,
         illustratorList,
@@ -298,6 +300,15 @@ class GalleryItem {
     url: Routes.scriptHome,
     page: const ScriptReaderEntryPage(),
     isDetail: true,
+    shownDefault: false,
+  );
+  static GalleryItem bgms = GalleryItem(
+    name: 'bgms',
+    titleBuilder: () => 'BGM',
+    icon: FontAwesomeIcons.music,
+    url: Routes.bgms,
+    page: BgmListPage(),
+    isDetail: false,
     shownDefault: false,
   );
   static GalleryItem ffo = GalleryItem(

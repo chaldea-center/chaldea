@@ -65,7 +65,8 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.questClear:
-        bool all = targetNum == targetIds.length && targetNum != 1;
+        bool all =
+            targetNum == targetIds.length && targetNum != 1 && useAnd != false;
         return localized(
           jp: () => combineToRich(
             context,

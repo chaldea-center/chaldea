@@ -1,3 +1,4 @@
+export 'audio.dart';
 export 'file_plus/file_plus.dart';
 export 'logger.dart';
 export 'platform/platform.dart' show PlatformU;

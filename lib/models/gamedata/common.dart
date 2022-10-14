@@ -1,4 +1,5 @@
 import 'package:chaldea/utils/atlas.dart';
+import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '_helper.dart';
 import 'event.dart';
@@ -86,29 +87,24 @@ class BgmRelease {
 }
 
 @JsonSerializable()
-class BgmEntity {
-  int id;
-  String name;
-  String fileName;
-  String? audioAsset;
+class BgmEntity extends Bgm {
   int priority;
   String detail;
-  bool notReleased;
   NiceShop? shop;
-  String logo;
+  String? logo;
   List<BgmRelease> releaseConditions;
 
   BgmEntity({
-    required this.id,
-    required this.name,
-    required this.fileName,
-    this.audioAsset,
-    required this.priority,
-    required this.detail,
-    required this.notReleased,
+    required super.id,
+    required super.name,
+    required super.fileName,
+    required super.notReleased,
+    super.audioAsset,
+    this.priority = 0,
+    this.detail = "",
     this.shop,
-    required this.logo,
-    required this.releaseConditions,
+    this.logo,
+    this.releaseConditions = const [],
   });
 
   factory BgmEntity.fromJson(Map<String, dynamic> json) =>
@@ -116,7 +112,7 @@ class BgmEntity {
 }
 
 @JsonSerializable()
-class Bgm {
+class Bgm with RouteInfo {
   int id;
   String name;
   String fileName;
@@ -131,6 +127,8 @@ class Bgm {
     this.audioAsset,
   });
 
+  Transl<String, String> get lName => Transl.bgmNames(name);
+
   factory Bgm.fromJson(Map<String, dynamic> json) {
     final bgm =
         GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
@@ -139,6 +137,9 @@ class Bgm {
     }
     return _$BgmFromJson(json);
   }
+
+  @override
+  String get route => Routes.bgmI(id);
 }
 
 enum CardType {

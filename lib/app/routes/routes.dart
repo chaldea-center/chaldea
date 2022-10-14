@@ -22,6 +22,8 @@ import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
+import '../modules/bgm/bgm.dart';
+import '../modules/bgm/bgm_list.dart';
 import '../modules/buff/buff_detail.dart';
 import '../modules/command_code/cmd_code.dart';
 import '../modules/command_code/cmd_code_list.dart';
@@ -89,6 +91,10 @@ class Routes {
   static String costumeI(int id) => '/costume/$id';
   static const String costume = '/costume';
   static const String costumes = '/costumes';
+
+  static String bgmI(int id) => '/bgm/$id';
+  static const String bgm = '/bgm';
+  static const String bgms = '/bgms';
 
   static String traitI(int id) => '/trait/$id';
   static const String trait = '/trait';
@@ -279,6 +285,10 @@ class RouteConfiguration {
         return CostumeListPage();
       case Routes.costume:
         return CostumeDetailPage(id: _secondInt);
+      case Routes.bgms:
+        return BgmListPage();
+      case Routes.bgm:
+        return BgmDetailPage(id: _secondInt);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

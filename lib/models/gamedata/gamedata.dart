@@ -54,7 +54,7 @@ class GameData with _GameDataExtra {
   Map<int, QuestPhase> questPhases;
   Map<int, ExchangeTicket> exchangeTickets;
   Map<int, BasicServant> entities;
-  Map<int, Bgm> bgms;
+  Map<int, BgmEntity> bgms;
   Map<int, MasterMission> extraMasterMission;
 
   Map<int, FixedDrop> fixedDrops;
@@ -82,7 +82,7 @@ class GameData with _GameDataExtra {
     Map<int, QuestPhase>? questPhases,
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, BasicServant>? entities,
-    Map<int, Bgm>? bgms,
+    Map<int, BgmEntity>? bgms,
     Map<int, MasterMission>? extraMasterMission,
     Map<int, FixedDrop>? fixedDrops,
     WikiData? wiki,
@@ -238,7 +238,7 @@ class GameData with _GameDataExtra {
       ),
       bgms: await (json['bgms'] as Map?)?.mapAsync(
         (k, e) async => MapEntry(int.parse(k as String),
-            Bgm.fromJson(Map<String, dynamic>.from(e as Map))),
+            BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       extraMasterMission: await (json['extraMasterMission'] as Map?)?.mapAsync(
         (k, e) async => MapEntry(int.parse(k as String),

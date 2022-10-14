@@ -198,17 +198,19 @@ BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
       id: json['id'] as int,
       name: json['name'] as String,
       fileName: json['fileName'] as String,
-      audioAsset: json['audioAsset'] as String?,
-      priority: json['priority'] as int,
-      detail: json['detail'] as String,
       notReleased: json['notReleased'] as bool,
+      audioAsset: json['audioAsset'] as String?,
+      priority: json['priority'] as int? ?? 0,
+      detail: json['detail'] as String? ?? "",
       shop: json['shop'] == null
           ? null
           : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
-      logo: json['logo'] as String,
-      releaseConditions: (json['releaseConditions'] as List<dynamic>)
-          .map((e) => BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      logo: json['logo'] as String?,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Bgm _$BgmFromJson(Map json) => Bgm(

@@ -1,15 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:just_audio/just_audio.dart';
 
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
-import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../servant/tabs/voice_tab.dart';
 import 'filter.dart';
 import 'script_data.dart';
 
@@ -171,52 +166,5 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       children: children,
     );
-  }
-}
-
-class SoundPlayButton extends StatelessWidget {
-  final String? name;
-  final String url;
-  final MyAudioPlayer<String> player;
-
-  const SoundPlayButton(
-      {super.key, this.name, required this.url, required this.player});
-
-  @override
-  Widget build(BuildContext context) {
-    if (name == null || name!.isEmpty) {
-      return ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          minimumSize: const Size(18, 18),
-        ),
-        child: const Icon(Icons.play_arrow, size: 18),
-      );
-    }
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 14, 2),
-      ),
-      icon: const Icon(Icons.play_arrow, size: 18),
-      label: Text(name!),
-    );
-  }
-
-  Future onPressed() async {
-    AudioSource source;
-    String? fp;
-    if (!kIsWeb) {
-      fp = await AtlasIconLoader.i.get(url);
-    }
-    source = fp != null
-        ? AudioSource.uri(Uri.file(fp), tag: url)
-        : AudioSource.uri(Uri.parse(url), tag: url);
-    player.playOrPause([source], url);
   }
 }
