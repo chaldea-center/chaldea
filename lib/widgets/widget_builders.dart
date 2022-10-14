@@ -152,15 +152,6 @@ class _ScrollControlWidgetState extends State<ScrollControlWidget> {
   }
 }
 
-mixin PrimaryScrollMixin on StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return PrimaryScrollBuilder(builder: (contex) => buildContent(context));
-  }
-
-  Widget buildContent(BuildContext context);
-}
-
 class RefreshButton extends StatelessWidget {
   final String? text;
   final VoidCallback? onPressed;

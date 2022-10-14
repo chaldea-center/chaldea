@@ -5,14 +5,15 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventTreasureBoxTab extends StatelessWidget with PrimaryScrollMixin {
+class EventTreasureBoxTab extends HookWidget {
   final Event event;
   const EventTreasureBoxTab({super.key, required this.event});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final boxes = List.of(event.treasureBoxes);
     return ListView.separated(
+      controller: useScrollController(),
       itemBuilder: (context, index) =>
           rewardBuilder(context, boxes[index], index),
       separatorBuilder: (_, __) => const Divider(height: 16),

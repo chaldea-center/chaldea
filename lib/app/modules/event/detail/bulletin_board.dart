@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,20 +7,19 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventBulletinBoardPage extends StatelessWidget with PrimaryScrollMixin {
+class EventBulletinBoardPage extends HookWidget {
   final Event event;
   const EventBulletinBoardPage({super.key, required this.event});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final bulletins = event.bulletinBoards.toList();
     bulletins.sort2((e) => e.bulletinBoardId);
-    return db.onUserData(
-      (context, snapshot) => ListView.separated(
-        itemBuilder: (context, index) => itemBuilder(context, bulletins[index]),
-        separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
-        itemCount: bulletins.length,
-      ),
+    return ListView.separated(
+      controller: useScrollController(),
+      itemBuilder: (context, index) => itemBuilder(context, bulletins[index]),
+      separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
+      itemCount: bulletins.length,
     );
   }
 

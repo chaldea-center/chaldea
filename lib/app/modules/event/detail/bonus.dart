@@ -6,8 +6,9 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
+class EventBonusTab extends HookWidget {
   final Event event;
   const EventBonusTab({super.key, required this.event});
 
@@ -51,7 +52,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
   }
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     List<Widget> ceWidgets = [], svtWidgets = [];
     final eventCEs = db.gameData.craftEssences.values
         .where((e) => e.eventSkills(event).isNotEmpty)
@@ -120,6 +121,7 @@ class EventBonusTab extends StatelessWidget with PrimaryScrollMixin {
               children: [
                 for (var children in [ceWidgets, svtWidgets])
                   ListView.builder(
+                    controller: useScrollController(),
                     itemBuilder: (context, index) => children[index],
                     itemCount: children.length,
                   )

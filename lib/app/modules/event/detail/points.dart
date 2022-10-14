@@ -4,14 +4,14 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventPointsPage extends StatelessWidget with PrimaryScrollMixin {
+class EventPointsPage extends HookWidget {
   final Event event;
   final int groupId;
   const EventPointsPage(
       {super.key, required this.event, required this.groupId});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     List<EventReward> rewards =
         event.rewards.where((e) => e.groupId == groupId).toList();
     rewards.sort2((e) => e.point);
@@ -23,6 +23,7 @@ class EventPointsPage extends StatelessWidget with PrimaryScrollMixin {
     };
 
     return ListView.separated(
+      controller: useScrollController(),
       itemBuilder: (context, index) =>
           rewardBuilder(context, rewards[index], pointBuffs),
       separatorBuilder: (_, __) => const Divider(indent: 72, height: 1),

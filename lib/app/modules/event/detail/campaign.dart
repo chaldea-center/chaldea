@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/quest/quest_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -7,12 +5,12 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventCampaignDetailPage extends StatelessWidget with PrimaryScrollMixin {
+class EventCampaignDetailPage extends HookWidget {
   final Event event;
   const EventCampaignDetailPage({super.key, required this.event});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     List<Widget> children = [];
     if (event.campaignQuests.isNotEmpty) {
       if (event.campaignQuests.any((q) => q.questId == 0)) {
@@ -41,7 +39,7 @@ class EventCampaignDetailPage extends StatelessWidget with PrimaryScrollMixin {
     for (int index = 0; index < campaigns.length; index++) {
       children.addAll(itemBuilder(context, campaigns[index], index));
     }
-    return ListView(children: children);
+    return ListView(controller: useScrollController(), children: children);
   }
 
   List<Widget> itemBuilder(

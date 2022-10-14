@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventRecipePage extends StatelessWidget with PrimaryScrollMixin {
+class EventRecipePage extends HookWidget {
   final Event event;
   const EventRecipePage({super.key, required this.event});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     return db.onUserData(
       (context, snapshot) => ListView.separated(
         itemBuilder: (context, index) =>

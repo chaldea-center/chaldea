@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
+class EventCooltimePage extends HookWidget {
   final Event event;
   const EventCooltimePage({super.key, required this.event});
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget build(BuildContext context) {
     final allRewards = event.cooltime?.rewards ?? [];
     if (allRewards.isEmpty) return const SizedBox();
     final grouped = <int, List<EventCooltimeReward>>{};
@@ -20,13 +18,12 @@ class EventCooltimePage extends StatelessWidget with PrimaryScrollMixin {
       rewards.sort2((e) => e.lv);
     }
     final keys = grouped.keys.toList();
-    return db.onUserData(
-      (context, snapshot) => ListView.separated(
-        itemBuilder: (context, index) =>
-            itemBuilder(context, grouped[keys[index]]!),
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemCount: keys.length,
-      ),
+    return ListView.separated(
+      controller: useScrollController(),
+      itemBuilder: (context, index) =>
+          itemBuilder(context, grouped[keys[index]]!),
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemCount: keys.length,
     );
   }
 
