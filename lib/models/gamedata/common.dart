@@ -121,7 +121,7 @@ class Bgm with RouteInfo {
 
   Bgm({
     required this.id,
-    required this.name,
+    this.name = '',
     required this.fileName,
     required this.notReleased,
     this.audioAsset,

@@ -1,8 +1,9 @@
 ## 2.1.2
 
-- gacha probability calculation
-- new event content: fortification, recollection quests, campaigns
 - script/story reader
+- new event content: fortification, recollection quests, campaigns
+- bgm page
+- gacha probability calculation
 - set bond bonus for quest efficiency
 - sortable item list
 

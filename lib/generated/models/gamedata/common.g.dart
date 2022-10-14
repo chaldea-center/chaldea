@@ -196,7 +196,7 @@ const _$CondTypeEnumMap = {
 
 BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
       id: json['id'] as int,
-      name: json['name'] as String,
+      name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String,
       notReleased: json['notReleased'] as bool,
       audioAsset: json['audioAsset'] as String?,
@@ -215,7 +215,7 @@ BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
 
 Bgm _$BgmFromJson(Map json) => Bgm(
       id: json['id'] as int,
-      name: json['name'] as String,
+      name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String,
       notReleased: json['notReleased'] as bool,
       audioAsset: json['audioAsset'] as String?,
