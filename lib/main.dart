@@ -31,13 +31,6 @@ void main() async {
     await _initiateCommon();
     await Executor().warmUp();
     await db.initiate();
-    await db.loadSettings();
-    if (db.settings.splitMasterRatio != null) {
-      SplitRoute.defaultMasterRatio = db.settings.splitMasterRatio!;
-    }
-    await db.loadUserData().then((value) async {
-      if (value != null) db.userData = value;
-    });
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,
       feedbackHandler: ServerFeedbackHandler(

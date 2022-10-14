@@ -43,6 +43,7 @@ extension HiveRetryOpen on HiveInterface {
         } catch (e, s) {
           logger.e('deleting box failed: $name', e, s);
         }
+        await Future.delayed(const Duration(seconds: 1));
         if (n >= retry) rethrow;
       }
     }
@@ -56,29 +57,35 @@ extension HiveRetryOpen on HiveInterface {
     CompactionStrategy compactionStrategy = defaultCompactionStrategy,
     bool crashRecovery = true,
     String? path,
+    int retry = 3,
   }) async {
-    LazyBox<E> box;
-    try {
-      box = await openLazyBox<E>(
-        name,
-        encryptionCipher: encryptionCipher,
-        keyComparator: keyComparator,
-        compactionStrategy: compactionStrategy,
-        crashRecovery: crashRecovery,
-        path: path,
-      );
-    } catch (e, s) {
-      logger.e('open Box<$E> "$name" failed', e, s);
-      await deleteBoxFromDisk(name, path: path);
-      box = await openLazyBox<E>(
-        name,
-        encryptionCipher: encryptionCipher,
-        keyComparator: keyComparator,
-        compactionStrategy: compactionStrategy,
-        crashRecovery: crashRecovery,
-        path: path,
-      );
+    LazyBox<E>? box;
+    int n = 0;
+    while (n < retry) {
+      n += 1;
+      try {
+        box = await openLazyBox<E>(
+          name,
+          encryptionCipher: encryptionCipher,
+          keyComparator: keyComparator,
+          compactionStrategy: compactionStrategy,
+          crashRecovery: crashRecovery,
+          path: path,
+        );
+        return box;
+      } catch (e, s) {
+        logger.e('open Box<$E> "$name" failed', e, s);
+        await Future.delayed(const Duration(seconds: 1));
+        logger.d('deleting box $name');
+        try {
+          await deleteBoxFromDisk(name, path: path);
+        } catch (e, s) {
+          logger.e('deleting box failed: $name', e, s);
+        }
+        await Future.delayed(const Duration(seconds: 1));
+        if (n >= retry) rethrow;
+      }
     }
-    return box;
+    throw HiveError('Failed to open hive box: $name');
   }
 }

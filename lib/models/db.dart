@@ -24,6 +24,7 @@ import '../packages/app_info.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
+import '../packages/split_route/split_route.dart';
 import '../utils/hive_extention.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
@@ -125,6 +126,15 @@ class _Database {
   Future<void> initiate() async {
     itemCenter.init();
     await paths.initRootPath();
+    await loadSettings();
+    await loadUserData().then((value) async {
+      if (value != null) userData = value;
+    });
+    if (settings.splitMasterRatio != null) {
+      SplitRoute.defaultMasterRatio = settings.splitMasterRatio!;
+    }
+
+    // init hive at last
     if (kIsWeb) {
       Hive.init(null);
       await FilePlus.initiate();
