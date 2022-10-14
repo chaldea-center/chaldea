@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:csv/csv.dart';
@@ -80,11 +79,12 @@ class ScriptParsedData {
         children.add(ScriptSelect(line, null, []));
         continue;
       }
-      final selectMatch = RegExp(r'^[？?](\d+)[：:](.*)$').firstMatch(line);
+      // ？1,1000：狩りに行く（ロビンフッド同行）
+      final selectMatch = RegExp(r'^[？?]([\d,]+)[：:](.*)$').firstMatch(line);
       if (selectMatch != null) {
         children.add(ScriptSelect(
             selectMatch.group(0)!,
-            int.parse(selectMatch.group(1)!),
+            int.parse(selectMatch.group(1)!.split(',').first),
             _parseDialog(selectMatch.group(2)!)));
         continue;
       }
@@ -420,7 +420,6 @@ class ScriptCommand extends ScriptComponent {
             'x-large': 64,
           };
           final size = sizes[tag];
-          print([command, args, size]);
           if (size == null) break;
           state.push(TextStyle(fontSize: size / 30 * bodySize), this,
               _CompType.fontSize);
@@ -568,7 +567,7 @@ class ScriptCommand extends ScriptComponent {
           state.textSpan(text: 'Movie  ', style: boldStyle),
           SharedBuilder.textButtonSpan(
             context: context,
-            text: args[0],
+            text: '▶ ${args[0]}',
             style: state.mergeStyles().copyWith(
                 color: Theme.of(context).colorScheme.secondaryContainer),
             onTap: () {
@@ -686,6 +685,10 @@ class ScriptCommand extends ScriptComponent {
       case 'charaMoveReturn':
       case 'charaMoveReturnFSL':
       case 'charaMoveReturnFSR':
+      case 'charaMoveReturnFSSideL':
+      case 'charaMoveReturnFSSideR':
+      case 'charaMoveFSSideL':
+      case 'charaMoveFSSideR':
       case 'charaMoveScale':
       case 'charaPut':
       case 'charaPutFSL':
@@ -699,6 +702,7 @@ class ScriptCommand extends ScriptComponent {
       case 'charaSpecialEffect':
       case 'charaSpecialEffectStop':
       case 'charaTalk':
+      case 'clear':
       case 'communicationChara':
       case 'communicationCharaClear':
       case 'communicationCharaFace':
@@ -732,6 +736,7 @@ class ScriptCommand extends ScriptComponent {
       case 'messageOff':
       case 'messageShake':
       case 'masterSet':
+      case 'masterImageSet':
       case 'overlayFadein':
       case 's': // dialog speed
       case 'sceneSet':
@@ -750,6 +755,10 @@ class ScriptCommand extends ScriptComponent {
       case 'subRenderFadein':
       case 'subRenderFadeinFSL':
       case 'subRenderFadeinFSR':
+      case 'subRenderFadeinFSSideL':
+      case 'subRenderFadeinFSSideR':
+      case 'subRenderMoveFSSideL':
+      case 'subRenderMoveFSSideR':
       case 'subRenderFadeout':
       case 'subRenderMove':
       case 'subRenderMoveFSL':
