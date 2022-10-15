@@ -126,6 +126,16 @@ class _Database {
   Future<void> initiate() async {
     itemCenter.init();
     await paths.initRootPath();
+
+    // init hive web fs first
+    if (kIsWeb) {
+      Hive.init(null);
+      await FilePlus.initiate();
+    } else {
+      Hive.init(paths.hiveDir);
+      HttpOverrides.global = CustomHttpOverrides();
+    }
+
     await loadSettings();
     await loadUserData().then((value) async {
       if (value != null) userData = value;
@@ -134,16 +144,10 @@ class _Database {
       SplitRoute.defaultMasterRatio = settings.splitMasterRatio!;
     }
 
-    // init hive at last
-    if (kIsWeb) {
-      Hive.init(null);
-      await FilePlus.initiate();
-    } else {
-      Hive.init(paths.hiveDir);
-      HttpOverrides.global = CustomHttpOverrides();
-    }
     await AppInfo.resolve(paths.appPath);
     MethodChannelChaldea.configMethodChannel();
+
+    // init other hive boxes at last
     security = await Hive.openBoxRetry('security');
     if (kIsWeb) setUrlStrategy(PathUrlStrategy());
     _startSavingLoop();
