@@ -165,6 +165,10 @@ class ScriptState {
 
   void pop(bool Function(_TextStyleState c) test) {
     final index = dialogStyleStack.lastIndexWhere((e) => test(e));
+    if (index < 0) {
+      print('popping style not found');
+      return;
+    }
     if (index != dialogStyleStack.length - 1) {
       print(
           'Warning: popping non-last style: No.${index + 1}/${dialogStyleStack.length} styles');
@@ -399,8 +403,8 @@ class ScriptCommand extends ScriptComponent {
     const codeStyle = TextStyle(color: Colors.redAccent);
     const boldStyle = TextStyle(fontWeight: FontWeight.bold);
     switch (command) {
-      case '-': // color end closure
-        state.pop((c) => c.type == _CompType.color);
+      case '-': // color/font end closure, should be the last one
+        state.pop((c) => true);
         return [];
       case 'f': // [f large] font
         final tag = args.getOrNull(0)?.trim();

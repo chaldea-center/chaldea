@@ -101,6 +101,26 @@ extension ListX<T> on List<T> {
     }
   }
 
+  void sortByList<V extends Comparable>(List<V> Function(T e) compare,
+      {bool reversed = false}) {
+    if (reversed) {
+      sort((a, b) => compareByList(a, b, compare));
+    } else {
+      sort((a, b) => compareByList(b, a, compare));
+    }
+  }
+
+  List<T> divided(T Function(int index) divider) {
+    List<T> list2 = [];
+    for (int index = 0; index < length; index++) {
+      list2.add(this[index]);
+      if (index != length - 1) {
+        list2.add(divider(index));
+      }
+    }
+    return list2;
+  }
+
   static int compareByList<T, V extends Comparable>(
       T a, T b, List<V> Function(T v) test) {
     final la = test(a), lb = test(b);

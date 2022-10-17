@@ -37,6 +37,7 @@ import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
+import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/skill/skill_detail.dart';
 import '../modules/skill/skill_list.dart';
@@ -120,6 +121,10 @@ class Routes {
   static const String masterMission = '/master-mission';
   static const String masterMissions = '/master-missions';
 
+  static String scriptI(String id) => '/script/$id';
+  static const String script = '/script';
+  static const String scriptHome = '/scripts';
+
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
@@ -129,7 +134,6 @@ class Routes {
   static const String sqPlan = '/sqPlan';
   static const String stats = '/stats';
   static const String importData = '/import_data';
-  static const String scriptHome = '/scripts';
   static const String ffo = '/ffo';
   static const String effectSearch = '/effect-search';
   static const String notFound = '/404';
@@ -289,6 +293,10 @@ class RouteConfiguration {
         return BgmListPage();
       case Routes.bgm:
         return BgmDetailPage(id: _secondInt);
+      case Routes.scriptHome:
+        return const ScriptReaderEntryPage();
+      case Routes.script:
+        return ScriptIdLoadingPage(scriptId: second ?? '0');
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

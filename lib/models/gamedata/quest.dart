@@ -80,7 +80,7 @@ class Quest with RouteInfo {
   List<int> phasesWithEnemies;
   List<int> phasesNoBattle;
   List<QuestPhaseScript> phaseScripts;
-  int priority;
+  int priority; // large=top
   int noticeAt;
   int openedAt;
   int closedAt;

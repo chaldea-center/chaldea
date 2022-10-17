@@ -1,5 +1,9 @@
+import 'package:tuple/tuple.dart';
+
+import '../db.dart';
 import '_helper.dart';
 import 'quest.dart';
+import 'war.dart';
 
 part '../../generated/models/gamedata/script.g.dart';
 
@@ -31,6 +35,23 @@ class ScriptLink {
 
   factory ScriptLink.fromJson(Map<String, dynamic> json) =>
       _$ScriptLinkFromJson(json);
+
+  static List<Tuple2<NiceWar, Quest?>> findQuests(String scriptId) {
+    List<Tuple2<NiceWar, Quest?>> results = [];
+    for (final war in db.gameData.wars.values) {
+      if (war.startScript?.scriptId == scriptId) {
+        results.add(Tuple2(war, null));
+      }
+      for (final quest in war.quests) {
+        for (final phase in quest.phaseScripts) {
+          if (phase.scripts.any((s) => s.scriptId == scriptId)) {
+            results.add(Tuple2(war, quest));
+          }
+        }
+      }
+    }
+    return results;
+  }
 }
 
 @JsonSerializable()

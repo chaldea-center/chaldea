@@ -85,6 +85,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.1
+  tuple: ^2.0.1
   url_launcher: ^6.1.5
   uuid: ^3.0.5
   worker_manager: ^4.4.6
