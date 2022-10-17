@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'filter.dart';
+import 'reader_entry.dart';
 import 'script_data.dart';
 
 class ScriptReaderPage extends StatefulWidget {
@@ -251,7 +252,11 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               context: context,
               text: prevScript!,
               onTap: () {
-                router.push(url: Routes.scriptI(prevScript!));
+                router.push(
+                  url: Routes.scriptI(prevScript!),
+                  child: ScriptIdLoadingPage(
+                      scriptId: prevScript!, region: data.state.region),
+                );
               },
             )
     ]));
@@ -265,7 +270,11 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               context: context,
               text: nextScript!,
               onTap: () {
-                router.push(url: Routes.scriptI(nextScript!));
+                router.push(
+                  url: Routes.scriptI(nextScript!),
+                  child: ScriptIdLoadingPage(
+                      scriptId: nextScript!, region: data.state.region),
+                );
               },
             ),
       CenterWidgetSpan(

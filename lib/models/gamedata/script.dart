@@ -1,6 +1,11 @@
+import 'package:flutter/material.dart';
+
 import 'package:tuple/tuple.dart';
 
+import '../../app/app.dart';
+import '../../app/modules/script/reader_entry.dart';
 import '../db.dart';
+import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'quest.dart';
 import 'war.dart';
@@ -24,7 +29,7 @@ class NiceScript extends ScriptLink {
 }
 
 @JsonSerializable()
-class ScriptLink {
+class ScriptLink with RouteInfo {
   String scriptId;
   String script;
 
@@ -51,6 +56,17 @@ class ScriptLink {
       }
     }
     return results;
+  }
+
+  @override
+  String get route => Routes.scriptI(scriptId);
+
+  @override
+  void routeTo({Region? region, Widget? child, bool popDetails = false}) {
+    if (region != null) {
+      child ??= ScriptIdLoadingPage(scriptId: scriptId, region: region);
+    }
+    super.routeTo(child: child, popDetails: popDetails);
   }
 }
 
