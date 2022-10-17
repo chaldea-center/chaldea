@@ -1,6 +1,5 @@
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../db.dart';
-import '../userdata/userdata.dart';
 import '_helper.dart';
 
 part '../../generated/models/gamedata/mappings.g.dart';

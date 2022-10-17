@@ -220,3 +220,11 @@ Bgm _$BgmFromJson(Map json) => Bgm(
       notReleased: json['notReleased'] as bool,
       audioAsset: json['audioAsset'] as String?,
     );
+
+const _$RegionEnumMap = {
+  Region.jp: 'jp',
+  Region.cn: 'cn',
+  Region.tw: 'tw',
+  Region.na: 'na',
+  Region.kr: 'kr',
+};

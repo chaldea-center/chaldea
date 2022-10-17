@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/app_info.dart';
-import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
@@ -716,49 +715,6 @@ class ExchangeTicketPlan {
   Map<String, dynamic> toJson() => _$ExchangeTicketPlanToJson(this);
 
   bool get enabled => counts.any((e) => e > 0);
-}
-
-enum Region {
-  jp,
-  cn,
-  tw,
-  na,
-  kr,
-}
-
-const _regionLanguage = {
-  Region.jp: Language.jp,
-  Region.cn: Language.chs,
-  Region.tw: Language.cht,
-  Region.na: Language.en,
-  Region.kr: Language.ko,
-};
-
-extension RegionX on Region {
-  String get upper => name.toUpperCase();
-
-  static Region? tryParse(String s) {
-    return _$RegionEnumMap.entries
-        .firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())
-        ?.key;
-  }
-
-  String get localName {
-    switch (this) {
-      case Region.jp:
-        return S.current.region_jp;
-      case Region.cn:
-        return S.current.region_cn;
-      case Region.tw:
-        return S.current.region_tw;
-      case Region.na:
-        return S.current.region_na;
-      case Region.kr:
-        return S.current.region_kr;
-    }
-  }
-
-  Language toLanguage() => _regionLanguage[this]!;
 }
 
 class CraftStatus {

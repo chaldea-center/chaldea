@@ -9,9 +9,9 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
+import '../gamedata/common.dart';
 import '_helper.dart';
 import 'filter_data.dart';
-import 'userdata.dart';
 
 export 'filter_data.dart';
 

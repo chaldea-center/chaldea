@@ -5,8 +5,8 @@ import 'package:tuple/tuple.dart';
 import '../../app/app.dart';
 import '../../app/modules/script/reader_entry.dart';
 import '../db.dart';
-import '../userdata/userdata.dart';
 import '_helper.dart';
+import 'common.dart';
 import 'quest.dart';
 import 'war.dart';
 

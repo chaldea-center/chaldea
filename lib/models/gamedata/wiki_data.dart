@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
+import 'common.dart';
 import 'mappings.dart';
 
 part '../../generated/models/gamedata/wiki_data.g.dart';
