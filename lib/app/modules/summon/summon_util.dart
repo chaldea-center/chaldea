@@ -66,6 +66,7 @@ class SummonUtil {
     bool category = true,
     bool npLv = true,
     double? width,
+    String? extraText,
   }) {
     return Stack(
       alignment: Alignment.topRight,
@@ -77,6 +78,7 @@ class SummonUtil {
           showCategory: category,
           showNpLv: npLv,
           width: width,
+          extraText: extraText,
         ),
         if (favorite || star)
           Column(
@@ -120,9 +122,13 @@ class SummonUtil {
     bool showCategory = false,
     bool showNpLv = true,
     double? width,
+    String? extraText,
   }) {
     if (card == null) return Container();
     List<String> texts = [];
+    if (extraText != null) {
+      texts.add(extraText);
+    }
     if (showNpLv && card is Servant && card.status.cur.favorite) {
       texts.add('NP${card.status.cur.npLv}');
     }
@@ -149,7 +155,7 @@ class SummonUtil {
         text: texts.join('\n'),
         width: width ?? 56,
         textAlign: TextAlign.right,
-        textStyle: const TextStyle(fontSize: 11),
+        textStyle: const TextStyle(fontSize: 12),
         padding: const EdgeInsets.only(bottom: 0, left: 15, right: 4),
       ),
     );

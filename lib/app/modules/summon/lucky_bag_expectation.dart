@@ -222,6 +222,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               favorite: svt.status.favorite,
               npLv: true,
               width: 48,
+              extraText: scoreOf(svt.collectionNo).toString(),
             );
           }).toList(),
         ),
@@ -234,9 +235,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       children.add(ListTile(
         // tileColor: Theme.of(context).highlightColor,
         dense: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
-        title: DefaultTextStyle(
+        // shape: const RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
+        title: DefaultTextStyle.merge(
           style: TextStyle(
               // fontSize: 14,
               color: Theme.of(context).textTheme.bodyText2?.color),
@@ -278,11 +279,15 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     }
 
     Widget _underline(Widget child, bool underline) {
-      if (!underline) return child;
+      // if (!underline) return child;
       return Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: Theme.of(context).colorScheme.secondary),
+            bottom: BorderSide(
+              color: underline
+                  ? Theme.of(context).colorScheme.secondary
+                  : Colors.transparent,
+            ),
           ),
         ),
         child: child,
@@ -297,57 +302,33 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: [
-              Expanded(
-                child: _underline(
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _sortType = _ExpSort.exp;
-                      });
-                    },
-                    child: Text(
-                      S.current.lucky_bag_expectation_short,
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
+              for (final entry in {
+                _ExpSort.exp: S.current.lucky_bag_expectation_short,
+                _ExpSort.best5: 'Best/5',
+                _ExpSort.worst1: 'Worst/1'
+              }.entries)
+                Expanded(
+                  child: _underline(
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _sortType = entry.key;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: AutoSizeText(
+                          entry.value,
+                          minFontSize: 6,
+                          maxFontSize: 14,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
+                    _sortType == entry.key,
                   ),
-                  _sortType == _ExpSort.exp,
                 ),
-              ),
-              Expanded(
-                child: _underline(
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _sortType = _ExpSort.best5;
-                      });
-                    },
-                    child: const Text(
-                      'Best/5',
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                  _sortType == _ExpSort.best5,
-                ),
-              ),
-              Expanded(
-                child: _underline(
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _sortType = _ExpSort.worst1;
-                      });
-                    },
-                    child: const Text(
-                      'Worst/1',
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                  _sortType == _ExpSort.worst1,
-                ),
-              ),
               Expanded(
                 child: _underline(
                   Center(
