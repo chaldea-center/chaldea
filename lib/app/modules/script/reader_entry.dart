@@ -89,7 +89,10 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
               onPressed: () {
                 final id = _textEditController.text.trim();
                 if (id.isEmpty) return;
-                router.pushPage(ScriptIdLoadingPage(scriptId: id));
+                router.push(
+                  url: Routes.scriptI(id),
+                  child: ScriptIdLoadingPage(scriptId: id, region: region),
+                );
               },
               icon: const Icon(Icons.menu_book_rounded),
               color: _textEditController.text.trim().isEmpty
