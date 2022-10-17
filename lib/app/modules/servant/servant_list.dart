@@ -133,16 +133,8 @@ class ServantListPageState extends State<ServantListPage>
       bottom: showSearchBar ? searchBar : null,
       actions: <Widget>[
         IconButton(
-          icon: Icon([
-            Icons.remove_circle_outline, // other
-            Icons.favorite, // owned
-            Icons.favorite_border, // planned
-          ][favoriteState.index]),
-          tooltip: [
-            S.current.general_all,
-            S.current.item_own,
-            S.current.general_others
-          ][favoriteState.index],
+          icon: Icon(favoriteState.icon),
+          tooltip: favoriteState.shownName,
           onPressed: () {
             setState(() {
               favoriteState =
@@ -380,8 +372,7 @@ class ServantListPageState extends State<ServantListPage>
   bool filter(Servant svt) {
     final svtStat = db.curUser.svtStatusOf(svt.collectionNo);
     final svtPlan = db.curUser.svtPlanOf(svt.collectionNo);
-    if ((favoriteState == FavoriteState.owned && !svtStat.cur.favorite) ||
-        (favoriteState == FavoriteState.other && svtStat.cur.favorite)) {
+    if (!favoriteState.check(svtStat.cur.favorite)) {
       return false;
     }
 

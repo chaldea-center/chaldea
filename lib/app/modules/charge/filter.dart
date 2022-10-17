@@ -32,6 +32,7 @@ class NpFilterData {
   int tdLv = 0; // 0-disable, 1-5
   int tdOC = 1; // 1-5
 
+  final favorite = FilterRadioData.nonnull(FavoriteState.all);
   final type = FilterRadioData.nonnull(NpChargeType.instant);
   final svtClass = FilterGroupData<SvtClass>();
   final rarity = FilterGroupData<int>();
@@ -48,6 +49,7 @@ class NpFilterData {
     tdLv = 0;
     tdOC = 1;
     for (var v in <FilterGroupData>[
+      favorite,
       type,
       svtClass,
       rarity,
@@ -201,6 +203,15 @@ class _NpChargeFilterPageState
           },
         ),
         buildGroupDivider(text: 'General'),
+        FilterGroup<FavoriteState>(
+          // title: Text(S.current.filter_sort_rarity, style: textStyle),
+          options: FavoriteState.values,
+          values: filterData.favorite,
+          optionBuilder: (v) => Icon(v.icon, size: 16),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.current.filter_sort_rarity, style: textStyle),

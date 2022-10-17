@@ -333,11 +333,25 @@ class _NpChargePageState extends State<NpChargePage> {
           optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
         if (filterData.tdLv != 0)
           optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
+        if (filterData.favorite.radioValue! != FavoriteState.all)
+          optionBuilder(
+              child: Text.rich(TextSpan(children: [
+            WidgetSpan(
+                child: Icon(
+              filterData.favorite.radioValue!.icon,
+              size: 16,
+            )),
+            TextSpan(text: filterData.favorite.radioValue!.shownName)
+          ]))),
         if (filterData.rarity.options.isNotEmpty)
           optionBuilder(
             text: '${S.current.rarity}:'
                 '${filterData.rarity.options.toList().sortReturn().join('/')}',
           ),
+        if (filterData.svtClass.options.isNotEmpty)
+          optionBuilder(
+              text: '${S.current.filter_sort_class}:'
+                  '${filterData.svtClass.options.map((e) => e.lName).join("/")}'),
         if (filterData.region.radioValue != null)
           optionBuilder(text: (filterData.region.radioValue!).localName),
         if (filterData.tdColor.radioValue != null)
@@ -389,6 +403,10 @@ class _NpChargePageState extends State<NpChargePage> {
   void filter() {
     groupedData.clear();
     for (final svt in db.gameData.servantsNoDup.values) {
+      if (!filterData.favorite.radioValue!
+          .check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
+        continue;
+      }
       if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.card))) {
         continue;
       }

@@ -611,6 +611,41 @@ enum FavoriteState {
   other,
 }
 
+extension FavoriteStateX on FavoriteState {
+  IconData get icon {
+    switch (this) {
+      case FavoriteState.all:
+        return Icons.remove_circle_outline;
+      case FavoriteState.owned:
+        return Icons.favorite;
+      case FavoriteState.other:
+        return Icons.favorite_border;
+    }
+  }
+
+  String get shownName {
+    switch (this) {
+      case FavoriteState.all:
+        return S.current.general_all;
+      case FavoriteState.owned:
+        return S.current.item_own;
+      case FavoriteState.other:
+        return S.current.general_others;
+    }
+  }
+
+  bool check(bool favorite) {
+    switch (this) {
+      case FavoriteState.all:
+        return true;
+      case FavoriteState.owned:
+        return favorite;
+      case FavoriteState.other:
+        return !favorite;
+    }
+  }
+}
+
 // event
 @JsonSerializable()
 class EventFilterData with _FilterData {
