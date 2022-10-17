@@ -294,6 +294,37 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ),
             ],
           ),
+          TileGroup(
+            header: S.current.quest,
+            footer: S.current.quest_region_has_enemy_hint,
+            children: [
+              ListTile(
+                title: Text(S.current.quest_prefer_region),
+                subtitle: Text(
+                  S.current.quest_prefer_region_hint,
+                  textScaleFactor: 0.9,
+                ),
+                trailing: DropdownButton<Region?>(
+                  items: [
+                    DropdownMenuItem(
+                      value: null,
+                      child: Text(S.current.general_default),
+                    ),
+                    for (final region in Region.values)
+                      DropdownMenuItem(
+                        value: region,
+                        child: Text(region.localName),
+                      ),
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.preferredQuestRegion = v;
+                    });
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
