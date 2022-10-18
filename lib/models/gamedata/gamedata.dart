@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/utils/extension.dart';
-import '../version.dart';
+import '../userdata/version.dart';
 import '_helper.dart';
 import 'command_code.dart';
 import 'common.dart';
@@ -330,7 +330,8 @@ class DataVersion {
     this.files = const {},
   });
 
-  AppVersion get appVersion => AppVersion.parse(minimalApp);
+  AppVersion get appVersion =>
+      AppVersion.tryParse(minimalApp) ?? const AppVersion(1, 0, 0);
 
   factory DataVersion.fromJson(Map<String, dynamic> json) =>
       _$DataVersionFromJson(json);

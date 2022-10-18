@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../generated/git_info.dart';
-import '../models/version.dart';
+import '../models/userdata/version.dart';
 import '../utils/constants.dart';
 
 class AppInfo {

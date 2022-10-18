@@ -35,6 +35,7 @@ targets:
       include:
         - lib/models/api/**
         - lib/models/userdata/**
+        - lib/models/shared/**
     builders:
       source_gen|combining_builder:
         options:

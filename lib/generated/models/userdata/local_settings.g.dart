@@ -380,6 +380,14 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
           content: $checkedConvert('content', (v) => v as String?),
           image: $checkedConvert('image', (v) => v as String?),
           link: $checkedConvert('link', (v) => v as String?),
+          verMin: $checkedConvert(
+              'verMin',
+              (v) => _$JsonConverterFromJson<String, AppVersion>(
+                  v, const AppVersionConverter().fromJson)),
+          verMax: $checkedConvert(
+              'verMax',
+              (v) => _$JsonConverterFromJson<String, AppVersion>(
+                  v, const AppVersionConverter().fromJson)),
         );
         return val;
       },
@@ -395,7 +403,23 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
       'content': instance.content,
       'image': instance.image,
       'link': instance.link,
+      'verMin': _$JsonConverterToJson<String, AppVersion>(
+          instance.verMin, const AppVersionConverter().toJson),
+      'verMax': _$JsonConverterToJson<String, AppVersion>(
+          instance.verMax, const AppVersionConverter().toJson),
     };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
 
 GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
       'GithubSetting',

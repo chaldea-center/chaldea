@@ -12,6 +12,7 @@ import '../../packages/language.dart';
 import '../gamedata/common.dart';
 import '_helper.dart';
 import 'filter_data.dart';
+import 'version.dart';
 
 export 'filter_data.dart';
 
@@ -275,7 +276,7 @@ class CarouselSetting {
   Map<String, dynamic> toJson() => _$CarouselSettingToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [AppVersionConverter()])
 class CarouselItem {
   // 0-default, 1-sticky
   int type;
@@ -286,6 +287,8 @@ class CarouselItem {
   String? content;
   String? image;
   String? link;
+  AppVersion? verMin;
+  AppVersion? verMax;
   @JsonKey(ignore: true)
   BoxFit? fit;
 
@@ -298,6 +301,8 @@ class CarouselItem {
     this.content,
     this.image,
     this.link,
+    this.verMin,
+    this.verMax,
     this.fit,
   })  : startTime = DateTime.tryParse(startTime) ?? DateTime(2000),
         endTime = DateTime.tryParse(endTime) ?? DateTime(2099);

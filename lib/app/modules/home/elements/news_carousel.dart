@@ -17,6 +17,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/git_tool.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -90,7 +91,6 @@ class AppNewsCarousel extends StatefulWidget {
       taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) {
         return (response.data as List)
             .map((e) => CarouselItem.fromJson(e))
-            .where((e) => carouselSetting.enableChaldea || e.type == 1)
             .toList();
       }).catchError((e, s) async {
         logger.d('parse chaldea news failed', e, s);
@@ -411,9 +411,13 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       return sliders;
     }
     final items = carouselSetting.items.toList();
+    final t = DateTime.now();
     items.removeWhere((item) {
-      final t = DateTime.now();
-      return item.startTime.isAfter(t) || item.endTime.isBefore(t);
+      if (!carouselSetting.enableChaldea && item.type != 1) return true;
+      if (item.startTime.isAfter(t) || item.endTime.isBefore(t)) return true;
+      if (item.verMin != null && item.verMin! > AppInfo.version) return true;
+      if (item.verMax != null && item.verMax! < AppInfo.version) return true;
+      return false;
     });
     items.sort((a, b) {
       if (a.priority != b.priority) return a.priority - b.priority;

@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/models/version.dart';
+import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';

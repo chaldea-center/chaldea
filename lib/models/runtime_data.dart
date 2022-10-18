@@ -7,7 +7,7 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
-import 'version.dart';
+import 'userdata/version.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;

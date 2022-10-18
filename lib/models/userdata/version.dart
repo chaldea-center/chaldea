@@ -1,3 +1,5 @@
+import 'package:chaldea/models/gamedata/_helper.dart';
+
 class AppVersion implements Comparable<AppVersion> {
   /// valid format:
   ///   - v1.2.3+4,'v' and +4 is optional
@@ -75,4 +77,17 @@ class AppVersion implements Comparable<AppVersion> {
 
   @override
   int get hashCode => toString().hashCode;
+}
+
+class AppVersionConverter extends JsonConverter<AppVersion, String> {
+  const AppVersionConverter();
+  @override
+  AppVersion fromJson(String json) {
+    return AppVersion.tryParse(json) ?? const AppVersion(0, 0, 0);
+  }
+
+  @override
+  String toJson(AppVersion object) {
+    return object.versionString;
+  }
 }
