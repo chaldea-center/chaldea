@@ -269,9 +269,7 @@ class GameDataLoader {
     Options? options,
     bool t = false,
   }) async {
-    String url = db.settings.proxyServer
-        ? '${Hosts.kDataHostGlobal}/$filename'
-        : '${Hosts.kDataHostCN}/$filename';
+    String url = '${Hosts.dataHost}/$filename';
     if (t) {
       final uri = Uri.parse(url);
       url = uri.replace(queryParameters: {

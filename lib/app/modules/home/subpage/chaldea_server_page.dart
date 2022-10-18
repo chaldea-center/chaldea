@@ -27,13 +27,13 @@ class _ChaldeaServerPageState extends State<ChaldeaServerPage> {
         TileGroup(
           footer: Language.isCHS ? '对于大陆用户，若海外路线可正常使用，请尽量使用海外路线以节约流量费！' : null,
           children: [
-            for (final useProxy in [true, false])
+            for (final useProxy in [false, true])
               RadioListTile<bool>(
                 value: useProxy,
                 groupValue: db.settings.proxyServer,
                 title: Text(useProxy
-                    ? S.current.chaldea_server_global
-                    : S.current.chaldea_server_cn),
+                    ? S.current.chaldea_server_cn
+                    : S.current.chaldea_server_global),
                 // subtitle: Text(region.toLanguage().name),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {

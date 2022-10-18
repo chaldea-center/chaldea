@@ -70,8 +70,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 horizontalTitleGap: 0,
                 trailing: _wrapArrowTrailing(db.onSettings(
                     (context, snapshot) => Text(db.settings.proxyServer
-                        ? S.current.chaldea_server_global
-                        : S.current.chaldea_server_cn))),
+                        ? S.current.chaldea_server_cn
+                        : S.current.chaldea_server_global))),
                 onTap: () {
                   router.popDetailAndPush(child: const ChaldeaServerPage());
                 },
