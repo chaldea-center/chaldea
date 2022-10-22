@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/misc.dart';
 import 'func_list.dart';
@@ -14,7 +15,8 @@ import 'func_list.dart';
 class FuncDetailPage extends StatefulWidget {
   final int? id;
   final BaseFunction? func;
-  const FuncDetailPage({super.key, this.id, this.func})
+  final Region? region;
+  const FuncDetailPage({super.key, this.id, this.func, this.region})
       : assert(id != null || func != null);
 
   @override
@@ -22,18 +24,30 @@ class FuncDetailPage extends StatefulWidget {
 }
 
 class _FuncDetailPageState extends State<FuncDetailPage>
-    with SingleTickerProviderStateMixin {
+    with
+        SingleTickerProviderStateMixin,
+        RegionBasedState<BaseFunction, FuncDetailPage> {
   late final TabController _tabController =
       TabController(length: 3, vsync: this);
-  bool loading = false;
-  BaseFunction? _func;
-  int get id => widget.func?.funcId ?? widget.id ?? _func?.funcId ?? -1;
-  BaseFunction get func => _func!;
+  int get id => widget.func?.funcId ?? widget.id ?? data?.funcId ?? -1;
+  BaseFunction get func => data!;
 
   @override
   void initState() {
     super.initState();
-    fetchFunc();
+    region = widget.region ?? (widget.func == null ? Region.jp : null);
+    doFetchData();
+  }
+
+  @override
+  Future<BaseFunction?> fetchData(Region? r) async {
+    BaseFunction? v;
+    if (r == null || r == widget.region) v = widget.func;
+    if (r == Region.jp) {
+      v ??= db.gameData.baseFunctions[id];
+    }
+    v ??= await AtlasApi.func(id, region: r ?? Region.jp);
+    return v;
   }
 
   @override
@@ -42,70 +56,50 @@ class _FuncDetailPageState extends State<FuncDetailPage>
     _tabController.dispose();
   }
 
-  Future<void> fetchFunc() async {
-    _func = null;
-    loading = true;
-    if (mounted) setState(() {});
-    _func = widget.func ??
-        db.gameData.baseFunctions[widget.id] ??
-        await AtlasApi.func(id);
-    loading = false;
-    if (mounted) setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_func == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Func $id'),
-          actions: [if (id >= 0) popupMenu],
-        ),
-        body: Center(
-          child: loading
-              ? const CircularProgressIndicator()
-              : RefreshButton(onPressed: fetchFunc),
-        ),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Func ${func.funcId} ${func.lPopupText.l}",
+          "Func $id ${data?.lPopupText.l ?? ""}",
           overflow: TextOverflow.fade,
         ),
-        actions: [popupMenu],
-        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          const Tab(text: "Info"),
-          Tab(text: S.current.skill),
-          Tab(text: S.current.noble_phantasm),
-        ])),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          SingleChildScrollView(child: FuncInfoTable(func: func)),
-          _SkillTab(func),
-          _TdTab(func),
+        actions: [
+          dropdownRegion(shownNone: widget.func != null),
+          popupMenu,
         ],
+        bottom: data == null
+            ? null
+            : FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
+                const Tab(text: "Info"),
+                Tab(text: S.current.skill),
+                Tab(text: S.current.noble_phantasm),
+              ])),
       ),
+      body: buildBody(context),
     );
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) =>
-          SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbFunc(id)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.dbFunc(id, region ?? Region.jp)),
     );
   }
-}
-
-class FuncInfoTable extends StatelessWidget {
-  final BaseFunction func;
-  const FuncInfoTable({super.key, required this.func});
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context, BaseFunction func) {
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        SingleChildScrollView(child: info),
+        _SkillTab(func),
+        _TdTab(func),
+      ],
+    );
+  }
+
+  Widget get info {
     return CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
@@ -236,7 +230,7 @@ class FuncInfoTable extends StatelessWidget {
               padding: const EdgeInsetsDirectional.only(start: 42),
               child: TextButton(
                 onPressed: () {
-                  buff.routeTo(child: BuffDetailPage(buff: buff));
+                  buff.routeTo(region: region);
                 },
                 style: kTextButtonDenseStyle,
                 child: Text(buff.lName.l),

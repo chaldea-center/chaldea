@@ -9,8 +9,10 @@ import 'package:chaldea/widgets/widgets.dart';
 class QuestEnemyDetail extends StatefulWidget {
   final QuestEnemy enemy;
   final Quest? quest;
+  final Region? region;
 
-  const QuestEnemyDetail({super.key, required this.enemy, this.quest});
+  const QuestEnemyDetail(
+      {super.key, required this.enemy, this.quest, this.region});
 
   @override
   State<QuestEnemyDetail> createState() => _QuestEnemyDetailState();
@@ -160,6 +162,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           level: enemy.skills.skillLv1,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       if (enemy.skills.skill2 != null)
         SkillDescriptor(
@@ -167,6 +170,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           level: enemy.skills.skillLv2,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       if (enemy.skills.skill3 != null)
         SkillDescriptor(
@@ -174,6 +178,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           level: enemy.skills.skillLv3,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       if (enemy.classPassive.classPassive.isNotEmpty ||
           enemy.classPassive.addPassive.isNotEmpty)
@@ -186,12 +191,14 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           skill: skill,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       for (final skill in enemy.classPassive.addPassive)
         SkillDescriptor(
           skill: skill,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       CustomTableRow.fromTexts(
         texts: [S.current.noble_phantasm],
@@ -203,6 +210,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           level: enemy.noblePhantasm.noblePhantasmLv,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         )
     ]);
   }

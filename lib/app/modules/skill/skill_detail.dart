@@ -8,61 +8,62 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class SkillDetailPage extends StatefulWidget {
   final int? id;
   final BaseSkill? skill;
-  const SkillDetailPage({super.key, this.id, this.skill})
+  final Region? region;
+  const SkillDetailPage({super.key, this.id, this.skill, this.region})
       : assert(id != null || skill != null);
 
   @override
   State<SkillDetailPage> createState() => _SkillDetailPageState();
 }
 
-class _SkillDetailPageState extends State<SkillDetailPage> {
-  bool loading = false;
-  BaseSkill? _skill;
-  int get id => widget.skill?.id ?? widget.id ?? _skill?.id ?? -1;
-  BaseSkill get skill => _skill!;
+class _SkillDetailPageState extends State<SkillDetailPage>
+    with RegionBasedState<BaseSkill, SkillDetailPage> {
+  int get id => widget.skill?.id ?? widget.id ?? data?.id ?? -1;
+  BaseSkill get skill => data!;
 
   @override
   void initState() {
     super.initState();
-    fetchSkill();
+    region = widget.region ?? (widget.skill == null ? Region.jp : null);
+    doFetchData();
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Future<void> fetchSkill() async {
-    _skill = null;
-    loading = true;
-    if (mounted) setState(() {});
-    _skill = widget.skill ??
-        db.gameData.baseSkills[widget.id] ??
-        await AtlasApi.skill(id);
-    loading = false;
-    if (mounted) setState(() {});
+  Future<BaseSkill?> fetchData(Region? r) async {
+    BaseSkill? v;
+    if (r == null || r == widget.region) v = widget.skill;
+    if (r == Region.jp) {
+      v ??= db.gameData.baseSkills[id];
+    }
+    v ??= await AtlasApi.skill(id, region: r ?? Region.jp);
+    return v;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_skill == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('${S.current.skill} $id'),
-          actions: [if (id >= 0) popupMenu],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          data?.lName.l ?? '${S.current.skill} $id',
+          overflow: TextOverflow.fade,
         ),
-        body: Center(
-          child: loading
-              ? const CircularProgressIndicator()
-              : RefreshButton(onPressed: fetchSkill),
-        ),
-      );
-    }
+        actions: [
+          dropdownRegion(shownNone: widget.skill != null),
+          popupMenu,
+        ],
+      ),
+      body: buildBody(context),
+    );
+  }
+
+  @override
+  Widget buildContent(BuildContext context, BaseSkill skill) {
     final svts = ReverseGameData.skill2Svt(id).toList()
       ..sort2((e) => e.collectionNo);
     final ces = ReverseGameData.skill2CE(id).toList()
@@ -71,42 +72,33 @@ class _SkillDetailPageState extends State<SkillDetailPage> {
       ..sort2((e) => e.collectionNo);
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          skill.lName.l,
-          overflow: TextOverflow.fade,
-        ),
-        actions: [popupMenu],
-      ),
-      body: ListView(
-        children: [
-          CustomTable(children: [
-            CustomTableRow.fromTexts(texts: ['No.${skill.id}'], isHeader: true),
-            CustomTableRow.fromChildren(children: [
-              RubyText(
-                [RubyTextData(skill.name, ruby: skill.ruby)],
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              )
-            ]),
-            SkillDescriptor(
-              skill: skill,
-              showEnemy: true,
-              showNone: true,
-              jumpToDetail: false,
-            ),
-            CustomTableRow(children: [
-              TableCellData(text: S.current.general_type, isHeader: true),
-              TableCellData(flex: 2, text: skill.type.name)
-            ]),
+    return ListView(
+      children: [
+        CustomTable(children: [
+          CustomTableRow.fromTexts(texts: ['No.${skill.id}'], isHeader: true),
+          CustomTableRow.fromChildren(children: [
+            RubyText(
+              [RubyTextData(skill.name, ruby: skill.ruby)],
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            )
           ]),
-          if (svts.isNotEmpty) cardList(S.current.servant, svts),
-          if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),
-          if (ccs.isNotEmpty) cardList(S.current.command_code, ccs),
-          if (mcs.isNotEmpty) cardList(S.current.mystic_code, mcs),
-        ],
-      ),
+          SkillDescriptor(
+            skill: skill,
+            showEnemy: true,
+            showNone: true,
+            jumpToDetail: false,
+          ),
+          CustomTableRow(children: [
+            TableCellData(text: S.current.general_type, isHeader: true),
+            TableCellData(flex: 2, text: skill.type.name)
+          ]),
+        ]),
+        if (svts.isNotEmpty) cardList(S.current.servant, svts),
+        if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),
+        if (ccs.isNotEmpty) cardList(S.current.command_code, ccs),
+        if (mcs.isNotEmpty) cardList(S.current.mystic_code, mcs),
+      ],
     );
   }
 
@@ -127,8 +119,8 @@ class _SkillDetailPageState extends State<SkillDetailPage> {
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) =>
-          SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.dbSkill(id, region ?? Region.jp)),
     );
   }
 }

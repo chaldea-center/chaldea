@@ -64,7 +64,8 @@ class GameDataLoader {
       return _completer!.future;
     }
     _completer = Completer();
-    tmp.clear();
+    tmp.reset();
+    tmp._enabled = true;
     _progress = null;
     error = null;
     cancelToken = CancelToken();
@@ -82,7 +83,7 @@ class GameDataLoader {
       _showError(e);
       _completer!.complete(null);
     }
-    tmp.clear();
+    tmp.reset();
     return _completer!.future;
   }
 
@@ -234,7 +235,7 @@ class GameDataLoader {
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
     }
-    tmp.clear();
+    tmp.reset();
     _gameJson["version"] = newVersion.toJson();
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
@@ -248,7 +249,7 @@ class GameDataLoader {
       }
     }
 
-    tmp.clear();
+    tmp.reset();
     db.runtimeData.upgradableDataVersion = newVersion;
     _progress = finished / newVersion.files.length;
     (onUpdate ?? _onUpdate)?.call(_progress!);
@@ -415,18 +416,52 @@ class UpdateError extends Error {
 }
 
 class _GameLoadingTempData {
+  bool _enabled = false;
   Map<String, dynamic>? gameJson;
-  Map<int, Buff> buffs = {};
-  Map<int, BaseFunction> baseFuncs = {};
-  Map<int, BaseSkill> baseSkills = {};
-  Map<int, BaseTd> baseTds = {};
+  final Map<int, Buff> _buffs = {};
+  final Map<int, BaseFunction> _baseFuncs = {};
+  final Map<int, BaseSkill> _baseSkills = {};
+  final Map<int, BaseTd> _baseTds = {};
 
-  void clear() {
+  void reset() {
+    _enabled = false;
     gameJson?.clear();
     gameJson = null;
-    buffs.clear();
-    baseFuncs.clear();
-    baseSkills.clear();
-    baseTds.clear();
+    _buffs.clear();
+    _baseFuncs.clear();
+    _baseSkills.clear();
+    _baseTds.clear();
+  }
+
+  Buff getBuff(int id, Buff Function() ifAbsent) {
+    if (_enabled) {
+      return _buffs.putIfAbsent(id, ifAbsent);
+    } else {
+      return ifAbsent();
+    }
+  }
+
+  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) {
+    if (_enabled) {
+      return _baseFuncs.putIfAbsent(id, ifAbsent);
+    } else {
+      return ifAbsent();
+    }
+  }
+
+  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) {
+    if (_enabled) {
+      return _baseSkills.putIfAbsent(id, ifAbsent);
+    } else {
+      return ifAbsent();
+    }
+  }
+
+  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) {
+    if (_enabled) {
+      return _baseTds.putIfAbsent(id, ifAbsent);
+    } else {
+      return ifAbsent();
+    }
   }
 }

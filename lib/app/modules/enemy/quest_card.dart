@@ -458,6 +458,7 @@ class _QuestCardState extends State<QuestCard> {
             child: QuestWave(
               stage: stage,
               showTrueName: showTrueName,
+              region: widget.region,
             ),
           )
         ],
@@ -608,7 +609,7 @@ class _QuestCardState extends State<QuestCard> {
               context: context,
               width: 32,
               onTap: () {
-                router.pushPage(SupportServantPage(svt));
+                router.pushPage(SupportServantPage(svt, region: widget.region));
               },
             ),
           ),
@@ -652,7 +653,7 @@ class _QuestCardState extends State<QuestCard> {
       supports.add(InkWell(
         child: support,
         onTap: () {
-          router.pushPage(SupportServantPage(svt));
+          router.pushPage(SupportServantPage(svt, region: widget.region));
         },
       ));
     }
@@ -824,11 +825,13 @@ class _QuestCardState extends State<QuestCard> {
 class QuestWave extends StatelessWidget {
   final Stage stage;
   final bool showTrueName;
+  final Region? region;
 
   const QuestWave({
     super.key,
     required this.stage,
     this.showTrueName = false,
+    required this.region,
   });
 
   @override
@@ -845,6 +848,7 @@ class QuestWave extends StatelessWidget {
         enemy: enemy,
         showTrueName: showTrueName,
         showDeck: showDeck,
+        region: region,
       ));
       if (enemy.enemyScript?.shift != null) {
         for (final shift in enemy.enemyScript!.shift!) {
@@ -854,6 +858,7 @@ class QuestWave extends StatelessWidget {
             enemy: shiftEnemy,
             showTrueName: showTrueName,
             showDeck: showDeck,
+            region: region,
           ));
         }
       }
@@ -948,12 +953,14 @@ class QuestEnemyWidget extends StatelessWidget {
   final QuestEnemy enemy;
   final bool showTrueName;
   final bool showDeck;
+  final Region? region;
 
   const QuestEnemyWidget({
     super.key,
     required this.enemy,
     this.showTrueName = false,
     this.showDeck = false,
+    required this.region,
   });
 
   @override
@@ -1006,11 +1013,7 @@ class QuestEnemyWidget extends StatelessWidget {
     );
     return InkWell(
       onTap: () {
-        // goto enemy page
-        // if (enemy.svt.collectionNo > 0) {
-        //   router.push(url: Routes.servantI(enemy.svt.collectionNo));
-        // }
-        router.push(child: QuestEnemyDetail(enemy: enemy));
+        router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

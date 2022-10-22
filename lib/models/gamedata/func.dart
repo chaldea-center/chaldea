@@ -79,6 +79,9 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
   @override
   String get route => _baseFunc.route;
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
+      _baseFunc.routeTo(child: child, popDetails: popDetails, region: region);
 
   List<List<DataVals>?> get svalsList =>
       [svals, svals2, svals3, svals4, svals5];
@@ -338,7 +341,7 @@ class BaseFunction with RouteInfo {
     List<NiceTrait> traitVals = const [],
     List<Buff> buffs = const [],
   }) =>
-      GameDataLoader.instance.tmp.baseFuncs.putIfAbsent(
+      GameDataLoader.instance.tmp.getFunc(
           funcId,
           () => BaseFunction.create(
                 funcId: funcId,
@@ -361,9 +364,11 @@ class BaseFunction with RouteInfo {
   String get route => Routes.funcI(funcId);
 
   @override
-  void routeTo({Widget? child, bool popDetails = false}) {
-    return super
-        .routeTo(child: FuncDetailPage(func: this), popDetails: popDetails);
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? FuncDetailPage(func: this, region: region),
+      popDetails: popDetails,
+    );
   }
 
   Transl<String, String> get lPopupText =>
@@ -446,7 +451,7 @@ class Buff with RouteInfo {
     List<NiceTrait> ckOpIndv = const [],
     int maxRate = 0,
   }) =>
-      GameDataLoader.instance.tmp.buffs.putIfAbsent(
+      GameDataLoader.instance.tmp.getBuff(
           id,
           () => Buff.create(
                 id: id,
@@ -467,6 +472,14 @@ class Buff with RouteInfo {
 
   @override
   String get route => Routes.buffI(id);
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? BuffDetailPage(buff: this, region: region),
+      popDetails: popDetails,
+    );
+  }
+
   Transl<String, String> get lName =>
       Transl.buffNames(name.isEmpty ? type.name : name);
   Transl<String, String> get lDetail => Transl.buffDetail(detail);

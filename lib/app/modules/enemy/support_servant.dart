@@ -8,8 +8,9 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class SupportServantPage extends StatefulWidget {
   final SupportServant svt;
+  final Region? region;
 
-  const SupportServantPage(this.svt, {super.key});
+  const SupportServantPage(this.svt, {super.key, this.region});
 
   @override
   State<SupportServantPage> createState() => _SupportServantPageState();
@@ -117,6 +118,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           level: svt.skills.skillLv1,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       if (svt.skills.skill2 != null)
         SkillDescriptor(
@@ -124,6 +126,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           level: svt.skills.skillLv2,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       if (svt.skills.skill3 != null)
         SkillDescriptor(
@@ -131,25 +134,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
           level: svt.skills.skillLv3,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
-      // if (enemy.classPassive.classPassive.isNotEmpty ||
-      //     enemy.classPassive.addPassive.isNotEmpty)
-      //   CustomTableRow.fromTexts(
-      //     texts: [S.current.passive_skill],
-      //     isHeader: true,
-      //   ),
-      // for (final skill in enemy.classPassive.classPassive)
-      //   SkillDescriptor(
-      //     skill: skill,
-      //     showEnemy: true,
-      //     showPlayer: true,
-      //   ),
-      // for (final skill in enemy.classPassive.addPassive)
-      //   SkillDescriptor(
-      //     skill: skill,
-      //     showEnemy: true,
-      //     showPlayer: true,
-      //   ),
       CustomTableRow.fromTexts(
         texts: [S.current.noble_phantasm],
         isHeader: true,
@@ -160,6 +146,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           level: svt.noblePhantasm.noblePhantasmLv,
           showEnemy: true,
           showPlayer: true,
+          region: widget.region,
         ),
       ...getCes(),
     ]);
@@ -182,7 +169,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
       ));
       final skills = ce.equip.skills
           .where((skill) => skill.condLimitCount == ce.limitCount);
-      children.addAll(skills.map((e) => SkillDescriptor(skill: e)));
+      children.addAll(
+          skills.map((e) => SkillDescriptor(skill: e, region: widget.region)));
     }
 
     return children;

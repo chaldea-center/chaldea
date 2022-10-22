@@ -25,6 +25,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    Region? region,
   }) =>
       describe(
         funcs: funcs,
@@ -37,6 +38,7 @@ mixin FuncsDescriptor {
         showBuffDetail: showBuffDetail,
         owner: owner,
         showEvent: showEvent,
+        region: region,
       );
 
   static List<Widget> describe({
@@ -50,6 +52,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    Region? region,
   }) {
     funcs = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
@@ -77,6 +80,7 @@ mixin FuncsDescriptor {
         showBuffDetail: showBuffDetail,
         owner: owner,
         showEvent: showEvent,
+        region: region,
       ));
     }
     return children;
@@ -282,6 +286,7 @@ class FuncDescriptor extends StatelessWidget {
   final bool showBuffDetail;
   final SkillOrTd? owner;
   final bool showEvent;
+  final Region? region;
 
   const FuncDescriptor({
     super.key,
@@ -294,6 +299,7 @@ class FuncDescriptor extends StatelessWidget {
     this.showBuffDetail = false,
     this.owner,
     this.showEvent = true,
+    this.region,
   });
 
   @override
@@ -730,7 +736,7 @@ class FuncDescriptor extends StatelessWidget {
       style: Theme.of(context).textTheme.caption,
     );
     title = InkWell(
-      onTap: func.routeTo,
+      onTap: () => func.routeTo(region: region),
       child: title,
     );
     Widget last = _DescriptorWrapper(
@@ -787,6 +793,7 @@ class FuncDescriptor extends StatelessWidget {
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
         endlessLoop: owner?.id == detail.skill &&
             (isNp ? owner is BaseTd : owner is BaseSkill),
+        region: region,
       ),
     );
   }
@@ -807,6 +814,7 @@ class FuncDescriptor extends StatelessWidget {
         trigger: func,
         level: level,
         endlessLoop: func.funcId == dependFuncId,
+        region: region,
       ),
     );
   }
@@ -873,6 +881,7 @@ class _LazyTrigger extends StatefulWidget {
   final bool showPlayer;
   final bool showEnemy;
   final bool endlessLoop;
+  final Region? region;
 
   const _LazyTrigger({
     required this.trigger,
@@ -881,6 +890,7 @@ class _LazyTrigger extends StatefulWidget {
     required this.showPlayer,
     required this.showEnemy,
     required this.endlessLoop,
+    required this.region,
   });
 
   @override
@@ -905,10 +915,13 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
   }
 
   void _fetchSkill() async {
-    if (!widget.isNp) {
-      skill = db.gameData.baseTds[widget.trigger.skill];
-    } else {
-      skill = db.gameData.baseSkills[widget.trigger.skill];
+    skill = null;
+    if (widget.region == null || widget.region == Region.jp) {
+      if (!widget.isNp) {
+        skill = db.gameData.baseTds[widget.trigger.skill];
+      } else {
+        skill = db.gameData.baseSkills[widget.trigger.skill];
+      }
     }
     if (skill != null) return;
 
@@ -916,9 +929,11 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     if (skillId == null) {
       skill = null;
     } else if (widget.isNp) {
-      skill = db.gameData.baseTds[skillId] ?? await AtlasApi.td(skillId);
+      skill = db.gameData.baseTds[skillId] ??
+          await AtlasApi.td(skillId, region: widget.region ?? Region.jp);
     } else {
-      skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+      skill = db.gameData.baseSkills[skillId] ??
+          await AtlasApi.skill(skillId, region: widget.region ?? Region.jp);
     }
     if (mounted) setState(() {});
   }
@@ -957,6 +972,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
             level: widget.trigger.level,
             padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
             owner: skill,
+            region: widget.region,
           ),
         if (widget.endlessLoop)
           Center(
@@ -975,12 +991,14 @@ class _LazyFunc extends StatefulWidget {
   final NiceFunction trigger;
   final int? level;
   final bool endlessLoop;
+  final Region? region;
 
   const _LazyFunc({
     required this.dependFuncId,
     required this.trigger,
     required this.level,
     required this.endlessLoop,
+    required this.region,
   });
 
   @override
@@ -1005,8 +1023,12 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
   }
 
   void _fetchFunc() async {
-    func = db.gameData.baseFunctions[widget.dependFuncId];
-    func ??= await AtlasApi.func(widget.dependFuncId);
+    func = null;
+    if (widget.region == null || widget.region == Region.jp) {
+      func = db.gameData.baseFunctions[widget.dependFuncId];
+    }
+    func ??= await AtlasApi.func(widget.dependFuncId,
+        region: widget.region ?? Region.jp);
     if (mounted) setState(() {});
   }
 
@@ -1044,6 +1066,7 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
             showPlayer: true,
             showEnemy: true,
             padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+            region: widget.region,
           ),
         if (widget.endlessLoop)
           Center(

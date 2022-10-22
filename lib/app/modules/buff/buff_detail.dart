@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import 'buff_list.dart';
@@ -14,7 +15,8 @@ import 'buff_list.dart';
 class BuffDetailPage extends StatefulWidget {
   final int? id;
   final Buff? buff;
-  const BuffDetailPage({super.key, this.id, this.buff})
+  final Region? region;
+  const BuffDetailPage({super.key, this.id, this.buff, this.region})
       : assert(id != null || buff != null);
 
   @override
@@ -22,17 +24,29 @@ class BuffDetailPage extends StatefulWidget {
 }
 
 class _BuffDetailPageState extends State<BuffDetailPage>
-    with SingleTickerProviderStateMixin {
+    with
+        SingleTickerProviderStateMixin,
+        RegionBasedState<Buff, BuffDetailPage> {
   late final controller = TabController(length: 2, vsync: this);
-  bool loading = false;
-  Buff? _buff;
-  int get id => widget.buff?.id ?? widget.id ?? _buff?.id ?? 0;
-  Buff get buff => _buff!;
+  int get id => widget.buff?.id ?? widget.id ?? data?.id ?? 0;
+  Buff get buff => data!;
 
   @override
   void initState() {
     super.initState();
-    fetchBuff();
+    region = widget.region ?? (widget.buff == null ? Region.jp : null);
+    doFetchData();
+  }
+
+  @override
+  Future<Buff?> fetchData(Region? r) async {
+    Buff? v;
+    if (r == null || r == widget.region) v = widget.buff;
+    if (r == Region.jp) {
+      v ??= db.gameData.baseBuffs[id];
+    }
+    v ??= await AtlasApi.buff(id, region: r ?? Region.jp);
+    return v;
   }
 
   @override
@@ -41,55 +55,42 @@ class _BuffDetailPageState extends State<BuffDetailPage>
     controller.dispose();
   }
 
-  Future<void> fetchBuff() async {
-    _buff = null;
-    loading = true;
-    if (mounted) setState(() {});
-    _buff = widget.buff ??
-        db.gameData.baseBuffs[widget.id] ??
-        await AtlasApi.buff(id);
-    loading = false;
-    if (mounted) setState(() {});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Buff $id ${data?.lName.l ?? ""}',
+            overflow: TextOverflow.fade),
+        actions: [
+          dropdownRegion(shownNone: widget.buff != null),
+          popupMenu,
+        ],
+        bottom: data == null
+            ? null
+            : FixedHeight.tabBar(TabBar(
+                controller: controller,
+                tabs: const [Tab(text: "Info"), Tab(text: 'Func')],
+              )),
+      ),
+      body: buildBody(context),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (_buff == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Buff $id'),
-          actions: [if (id > 0) popupMenu],
-        ),
-        body: Center(
-          child: loading
-              ? const CircularProgressIndicator()
-              : RefreshButton(onPressed: fetchBuff),
-        ),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Buff $id ${buff.lName.l}', overflow: TextOverflow.fade),
-        actions: [popupMenu],
-        bottom: FixedHeight.tabBar(TabBar(
-          controller: controller,
-          tabs: const [Tab(text: "Info"), Tab(text: 'Func')],
-        )),
-      ),
-      body: TabBarView(
-        controller: controller,
-        children: [
-          SingleChildScrollView(child: BuffInfoTable(buff: buff)),
-          _FuncTab(buff),
-        ],
-      ),
+  Widget buildContent(BuildContext context, Buff buff) {
+    return TabBarView(
+      controller: controller,
+      children: [
+        SingleChildScrollView(child: BuffInfoTable(buff: buff)),
+        _FuncTab(buff),
+      ],
     );
   }
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) =>
-          SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbBuff(id)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.dbBuff(id, region ?? Region.jp)),
     );
   }
 }

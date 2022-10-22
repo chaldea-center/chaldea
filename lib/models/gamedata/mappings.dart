@@ -151,7 +151,8 @@ class Transl<K, V> {
       funcPopuptextBase(func.funcPopupText, func.funcType);
 
   static Transl<String, String> funcPopuptextBase(String jp, [FuncType? type]) {
-    if ({'', '-', 'なし', 'None', 'none'}.contains(jp) && type != null) {
+    if ({'', '-', 'なし', 'None', 'none', '无', '無', '없음'}.contains(jp) &&
+        type != null) {
       return Transl(md.funcPopuptext, type.name, type.name);
     }
     if (!md.funcPopuptext.containsKey(jp) && md.buffNames.containsKey(jp)) {

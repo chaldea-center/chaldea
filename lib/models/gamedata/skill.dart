@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/buff/buff_detail.dart';
 import 'package:chaldea/app/modules/func/func_detail.dart';
+import 'package:chaldea/app/modules/skill/skill_detail.dart';
+import 'package:chaldea/app/modules/skill/td_detail.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
@@ -99,7 +102,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     Map<AiType, List<int>>? aiIds,
     required List<NiceFunction> functions,
   }) =>
-      GameDataLoader.instance.tmp.baseSkills.putIfAbsent(
+      GameDataLoader.instance.tmp.getBaseSkill(
           id,
           () => BaseSkill.create(
                 id: id,
@@ -168,6 +171,13 @@ class BaseSkill with SkillOrTd, RouteInfo {
 
   @override
   String get route => Routes.skillI(id);
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? SkillDetailPage(skill: this, region: region),
+      popDetails: popDetails,
+    );
+  }
 }
 
 @JsonSerializable()
@@ -326,7 +336,7 @@ class BaseTd extends SkillOrTd with RouteInfo {
     SkillScript? script,
     required List<NiceFunction> functions,
   }) =>
-      GameDataLoader.instance.tmp.baseTds.putIfAbsent(
+      GameDataLoader.instance.tmp.getBaseTd(
           id,
           () => BaseTd.create(
                 id: id,
@@ -394,6 +404,13 @@ class BaseTd extends SkillOrTd with RouteInfo {
 
   @override
   String get route => Routes.tdI(id);
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? TdDetailPage(td: this, region: region),
+      popDetails: popDetails,
+    );
+  }
 }
 
 @JsonSerializable()

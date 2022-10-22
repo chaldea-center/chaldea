@@ -19,6 +19,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool jumpToDetail;
   final bool showExtraPassiveCond;
   final bool showEvent;
+  final Region? region;
 
   const SkillDescriptor({
     super.key,
@@ -32,6 +33,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.jumpToDetail = true,
     this.showExtraPassiveCond = true,
     this.showEvent = true,
+    this.region,
   });
 
   const SkillDescriptor.only({
@@ -45,6 +47,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.jumpToDetail = true,
     this.showExtraPassiveCond = true,
     this.showEvent = true,
+    this.region,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer;
 
@@ -102,7 +105,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           : cd0 == cd1
               ? Text('   CD: $cd0')
               : Text('   CD: $cd0→$cd1'),
-      onTap: jumpToDetail ? skill.routeTo : null,
+      onTap: jumpToDetail ? () => skill.routeTo(region: region) : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
@@ -130,6 +133,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           showNone: showNone,
           showBuffDetail: showBuffDetail,
           showEvent: showEvent,
+          region: region,
         )
       ],
     );
@@ -273,6 +277,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final bool showNone;
   final OverrideTDData? overrideData;
   final bool jumpToDetail;
+  final Region? region;
 
   const TdDescriptor({
     super.key,
@@ -283,6 +288,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.overrideData,
     this.jumpToDetail = true,
+    this.region,
   });
 
   const TdDescriptor.only({
@@ -293,6 +299,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.showNone = false,
     this.overrideData,
     this.jumpToDetail = true,
+    this.region,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer;
 
@@ -348,7 +355,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           ]
         ],
       ),
-      onTap: jumpToDetail ? td.routeTo : null,
+      onTap: jumpToDetail ? () => td.routeTo(region: region) : null,
     );
     final detailText = td.lDetail ?? '???';
     return TileGroup(
@@ -370,6 +377,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           showPlayer: showPlayer,
           showEnemy: showEnemy,
           showNone: showNone,
+          region: region,
         ),
         CustomTable(children: [
           CustomTableRow(children: [
