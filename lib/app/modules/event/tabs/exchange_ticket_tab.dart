@@ -116,15 +116,34 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTitle(ExchangeTicket ticket) {
-    bool planned = db.curUser.ticketOf(ticket.id).enabled;
+    final plan = db.curUser.ticketOf(ticket.id);
+    bool planned = plan.enabled;
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
     bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
     bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
+    bool isThisMonth = DateUtils.isSameMonth(ticket.date, DateTime.now());
+
+    String maxHint = 'max: ${ticket.days}';
+    if (isThisMonth) {
+      final curMonthDayLeft = ticket.days - DateTime.now().day + 1;
+      maxHint += '($curMonthDayLeft)';
+    }
 
     return InkWell(
       onTap: hasAnyReplaced ? () => _showReplaceDetail(ticket) : null,
+      onLongPress: () {
+        if (plan.enabled) {
+          SimpleCancelOkDialog(
+            title: Text(S.current.clear),
+            onTapOk: () {
+              plan.clear();
+              db.itemCenter.updateExchangeTickets();
+            },
+          ).showDialog(context);
+        }
+      },
       child: Text.rich(TextSpan(children: [
         TextSpan(
           text: ticket.dateStr,
@@ -138,14 +157,14 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 : outdated
                     ? _outdatedColor
                     : null,
-            fontWeight: FontWeight.w600,
+            fontWeight: outdated ? null : FontWeight.w600,
           ),
         ),
         const TextSpan(text: '\n'),
         TextSpan(
             text: db.curUser.region == Region.jp
-                ? 'max: ${ticket.days}'
-                : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
+                ? maxHint
+                : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
             children: [
               if (ticket.multiplier != 1)
                 TextSpan(
@@ -157,8 +176,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 )
             ],
             style: TextStyle(
-              color: outdated
-                  ? _outdatedColor?.withAlpha(200)
+              color: isThisMonth
+                  ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).textTheme.caption?.color,
               fontSize: 12,
             )),

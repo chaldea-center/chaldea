@@ -715,6 +715,10 @@ class ExchangeTicketPlan {
   Map<String, dynamic> toJson() => _$ExchangeTicketPlanToJson(this);
 
   bool get enabled => counts.any((e) => e > 0);
+
+  void clear() {
+    counts.fillRange(0, length, 0);
+  }
 }
 
 class CraftStatus {

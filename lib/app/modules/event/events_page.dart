@@ -145,7 +145,7 @@ class EventListPageState extends State<EventListPage>
   List<Widget> get actions {
     return <Widget>[
       if (_tabController.index == 0) searchIcon,
-      if (_tabController.index == 0 || _tabController.index == 4)
+      if (const [0, 2, 4].contains(_tabController.index))
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
