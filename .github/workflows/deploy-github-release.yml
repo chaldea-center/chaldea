@@ -153,7 +153,7 @@ jobs:
     steps:
       - name: Get Date
         id: get-date
-        run: echo "::set-output name=date::$(/bin/date -u +"%Y/%m/%d %H:%M:%S %Z")"
+        run: echo "date=$(/bin/date -u +"%Y/%m/%d %H:%M:%S %Z")" >> $GITHUB_OUTPUT
       - uses: actions/download-artifact@v3
       - run: ls -l -R
 

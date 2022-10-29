@@ -17,7 +17,7 @@ jobs:
         id: extract-branch-name
         run: |
           echo ${GITHUB_REF#refs/heads/}
-          echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
 
       - uses: subosito/flutter-action@v2
         with:
