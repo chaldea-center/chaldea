@@ -31,9 +31,11 @@ class NpFilterData {
   int skillLv = 10; // -1-disable, 0-class passive, 1-10,
   int tdLv = 0; // 0-disable, 1-5
   int tdOC = 1; // 1-5
+  bool isSvt = true;
 
   final favorite = FilterRadioData.nonnull(FavoriteState.all);
   final type = FilterRadioData.nonnull(NpChargeType.instant);
+  final ceMax = FilterGroupData<bool>();
   final svtClass = FilterGroupData<SvtClass>();
   final rarity = FilterGroupData<int>();
   final effectTarget = FilterRadioData<EffectTarget>();
@@ -41,7 +43,8 @@ class NpFilterData {
   final tdColor = FilterRadioData<CardType>();
   final tdType = FilterRadioData<TdEffectFlag>();
 
-  List<SvtCompare> sortKeys = [SvtCompare.no, SvtCompare.no];
+  List<SvtCompare> svtSortKeys = [SvtCompare.no, SvtCompare.no];
+  List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
   List<bool> sortReversed = [false, false];
 
   void reset() {
@@ -51,6 +54,7 @@ class NpFilterData {
     for (var v in <FilterGroupData>[
       favorite,
       type,
+      ceMax,
       svtClass,
       rarity,
       effectTarget,
@@ -108,91 +112,140 @@ class _NpChargeFilterPageState
       }),
       content:
           getListViewBody(restorationId: 'np_charge_list_filter', children: [
+        FilterGroup<bool>(
+          options: const [true, false],
+          values: FilterRadioData.nonnull(filterData.isSvt),
+          optionBuilder: (v) =>
+              Text(v ? S.current.servant : S.current.craft_essence),
+          onFilterChanged: (v, _) {
+            filterData.isSvt = v.radioValue ?? true;
+            if (v.radioValue == false &&
+                filterData.type.radioValue == NpChargeType.instantSum) {
+              filterData.type.toggle(NpChargeType.instant);
+            }
+            update();
+          },
+        ),
         getGroup(header: S.current.filter_sort, children: [
-          for (int i = 0; i < filterData.sortKeys.length; i++)
-            getSortButton<SvtCompare>(
-              prefix: '${i + 1}',
-              value: filterData.sortKeys[i],
-              items: {for (final e in SvtCompare.values) e: e.showName},
-              onSortAttr: (key) {
-                filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
-                update();
-              },
-              reversed: filterData.sortReversed[i],
-              onSortDirectional: (reversed) {
-                filterData.sortReversed[i] = reversed;
-                update();
-              },
-            )
+          if (filterData.isSvt)
+            for (int i = 0; i < filterData.svtSortKeys.length; i++)
+              getSortButton<SvtCompare>(
+                prefix: '${i + 1}',
+                value: filterData.svtSortKeys[i],
+                items: {for (final e in SvtCompare.values) e: e.showName},
+                onSortAttr: (key) {
+                  filterData.svtSortKeys[i] = key ?? filterData.svtSortKeys[i];
+                  update();
+                },
+                reversed: filterData.sortReversed[i],
+                onSortDirectional: (reversed) {
+                  filterData.sortReversed[i] = reversed;
+                  update();
+                },
+              ),
+          if (!filterData.isSvt)
+            for (int i = 0; i < filterData.ceSortKeys.length; i++)
+              getSortButton<CraftCompare>(
+                prefix: '${i + 1}',
+                value: filterData.ceSortKeys[i],
+                items: {for (final e in CraftCompare.values) e: e.shownName},
+                onSortAttr: (key) {
+                  filterData.ceSortKeys[i] = key ?? filterData.ceSortKeys[i];
+                  update();
+                },
+                reversed: filterData.sortReversed[i],
+                onSortDirectional: (reversed) {
+                  filterData.sortReversed[i] = reversed;
+                  update();
+                },
+              ),
         ]),
         FilterGroup<NpChargeType>(
           title: Text(S.current.general_type, style: textStyle),
-          options: NpChargeType.values,
+          options: filterData.isSvt
+              ? NpChargeType.values
+              : NpChargeType.values
+                  .where((e) => e != NpChargeType.instantSum)
+                  .toList(),
           values: filterData.type,
           optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (v, _) {
             update();
           },
         ),
-        SFooter(
-          '* ${S.current.np_charge_type_instant_sum} testing...',
-          padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 5),
-        ),
-        getGroup(header: S.current.level, children: [
-          DropdownButton<int>(
-            value: filterData.skillLv,
-            items: [
-              for (int lv = -1; lv <= 10; lv++)
-                DropdownMenuItem(
-                  value: lv,
-                  child: Text(
-                    NpFilterData.textSkillLv(lv),
-                    textScaleFactor: 0.9,
-                  ),
-                )
-            ],
-            onChanged: (v) {
-              if (v != null) filterData.skillLv = v;
+        if (filterData.isSvt)
+          SFooter(
+            '* ${S.current.np_charge_type_instant_sum} testing...',
+            padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 5),
+          ),
+        if (filterData.isSvt)
+          getGroup(header: S.current.level, children: [
+            DropdownButton<int>(
+              value: filterData.skillLv,
+              items: [
+                for (int lv = -1; lv <= 10; lv++)
+                  DropdownMenuItem(
+                    value: lv,
+                    child: Text(
+                      NpFilterData.textSkillLv(lv),
+                      textScaleFactor: 0.9,
+                    ),
+                  )
+              ],
+              onChanged: (v) {
+                if (v != null) filterData.skillLv = v;
+                update();
+              },
+            ),
+            DropdownButton<int>(
+              value: filterData.tdLv,
+              items: [
+                for (int lv = 0; lv <= 5; lv++)
+                  DropdownMenuItem(
+                    value: lv,
+                    child: Text(
+                      NpFilterData.textTdLv(lv),
+                      textScaleFactor: 0.9,
+                    ),
+                  )
+              ],
+              onChanged: (v) {
+                if (v != null) filterData.tdLv = v;
+                update();
+              },
+            ),
+            DropdownButton<int>(
+              value: filterData.tdOC,
+              items: [
+                for (int lv = 1; lv <= 5; lv++)
+                  DropdownMenuItem(
+                    value: lv,
+                    child: Text(
+                      NpFilterData.textTdOC(lv),
+                      textScaleFactor: 0.9,
+                    ),
+                  )
+              ],
+              onChanged: filterData.tdLv == 0
+                  ? null
+                  : (v) {
+                      if (v != null) filterData.tdOC = v;
+                      update();
+                    },
+            ),
+          ]),
+        if (!filterData.isSvt)
+          FilterGroup<bool>(
+            title: Text(S.current.ce_max_limit_break),
+            options: const [false, true],
+            values: filterData.ceMax,
+            optionBuilder: (v) => Text(v
+                ? S.current.ce_max_limit_break
+                : 'NOT ${S.current.ce_max_limit_break}'),
+            onFilterChanged: (value, _) {
               update();
             },
           ),
-          DropdownButton<int>(
-            value: filterData.tdLv,
-            items: [
-              for (int lv = 0; lv <= 5; lv++)
-                DropdownMenuItem(
-                  value: lv,
-                  child: Text(
-                    NpFilterData.textTdLv(lv),
-                    textScaleFactor: 0.9,
-                  ),
-                )
-            ],
-            onChanged: (v) {
-              if (v != null) filterData.tdLv = v;
-              update();
-            },
-          ),
-          DropdownButton<int>(
-            value: filterData.tdOC,
-            items: [
-              for (int lv = 1; lv <= 5; lv++)
-                DropdownMenuItem(
-                  value: lv,
-                  child: Text(
-                    NpFilterData.textTdOC(lv),
-                    textScaleFactor: 0.9,
-                  ),
-                )
-            ],
-            onChanged: filterData.tdLv == 0
-                ? null
-                : (v) {
-                    if (v != null) filterData.tdOC = v;
-                    update();
-                  },
-          ),
-        ]),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: const [...NpFilterData.kEffectTargets, EffectTarget.special],
@@ -203,16 +256,17 @@ class _NpChargeFilterPageState
           },
         ),
         buildGroupDivider(text: 'General'),
-        FilterGroup<FavoriteState>(
-          // title: Text(S.current.filter_sort_rarity, style: textStyle),
-          options: FavoriteState.values,
-          values: filterData.favorite,
-          optionBuilder: (v) => Icon(v.icon, size: 16),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        buildClassFilter(filterData.svtClass),
+        if (filterData.isSvt)
+          FilterGroup<FavoriteState>(
+            // title: Text(S.current.filter_sort_rarity, style: textStyle),
+            options: FavoriteState.values,
+            values: filterData.favorite,
+            optionBuilder: (v) => Icon(v.icon, size: 16),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        if (filterData.isSvt) buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.current.filter_sort_rarity, style: textStyle),
           options: const [0, 1, 2, 3, 4, 5],
@@ -231,24 +285,26 @@ class _NpChargeFilterPageState
             update();
           },
         ),
-        FilterGroup<CardType>(
-          title: Text(S.current.noble_phantasm, style: textStyle),
-          options: const [CardType.arts, CardType.buster, CardType.quick],
-          values: filterData.tdColor,
-          optionBuilder: (v) => Text(v.name.toTitle()),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<TdEffectFlag>(
-          values: filterData.tdType,
-          options: TdEffectFlag.values,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
+        if (filterData.isSvt)
+          FilterGroup<CardType>(
+            title: Text(S.current.noble_phantasm, style: textStyle),
+            options: const [CardType.arts, CardType.buster, CardType.quick],
+            values: filterData.tdColor,
+            optionBuilder: (v) => Text(v.name.toTitle()),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        if (filterData.isSvt)
+          FilterGroup<TdEffectFlag>(
+            values: filterData.tdType,
+            options: TdEffectFlag.values,
+            optionBuilder: (v) =>
+                Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
       ]),
     );
   }

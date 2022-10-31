@@ -138,6 +138,7 @@ class _NpChargePageState extends State<NpChargePage> {
 
   // HOW TERRIBLE!!!
   List<Widget> sumType() {
+    if (!filterData.isSvt) return [];
     // svtId, skillId, nps
     Map<int, Map<int, List<int>>> skillDetails = {};
     for (final details in groupedData.values) {
@@ -207,7 +208,7 @@ class _NpChargePageState extends State<NpChargePage> {
     for (final svts in groupedServants.values) {
       svts.sort((a, b) => SvtFilterData.compare(
           db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b],
-          keys: filterData.sortKeys, reversed: filterData.sortReversed));
+          keys: filterData.svtSortKeys, reversed: filterData.sortReversed));
     }
     List<Widget> children = [];
     final keys = groupedServants.keys.toList()..sort((a, b) => b - a);
@@ -293,7 +294,7 @@ class _NpChargePageState extends State<NpChargePage> {
             style: Theme.of(context).textTheme.caption),
         const Divider(height: 6, thickness: 1),
         FuncDescriptor(
-          func: detail.func,
+          func: detail.triggerFunc ?? detail.func,
           level: detail.level,
           showEnemy: true, // in case it is triggered skill
           padding: EdgeInsets.zero,
@@ -325,46 +326,59 @@ class _NpChargePageState extends State<NpChargePage> {
         optionBuilder(
             text:
                 '${S.current.general_type}: ${filterData.type.radioValue!.shownName}'),
-        if (filterData.skillLv != -1)
+        if (!filterData.isSvt && filterData.ceMax.options.isNotEmpty)
           optionBuilder(
-            text: NpFilterData.textSkillLv(filterData.skillLv),
+            text: [
+              if (filterData.ceMax.options.contains(false))
+                'NOT ${S.current.ce_max_limit_break}',
+              if (filterData.ceMax.options.contains(true))
+                S.current.ce_max_limit_break
+            ].join(' & '),
           ),
-        if (filterData.tdLv != 0)
-          optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
-        if (filterData.tdLv != 0)
-          optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
-        if (filterData.favorite.radioValue! != FavoriteState.all)
-          optionBuilder(
-              child: Text.rich(TextSpan(children: [
-            WidgetSpan(
-                child: Icon(
-              filterData.favorite.radioValue!.icon,
-              size: 16,
-            )),
-            TextSpan(text: filterData.favorite.radioValue!.shownName)
-          ]))),
+        if (filterData.isSvt) ...[
+          if (filterData.skillLv != -1)
+            optionBuilder(
+              text: NpFilterData.textSkillLv(filterData.skillLv),
+            ),
+          if (filterData.tdLv != 0)
+            optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
+          if (filterData.tdLv != 0)
+            optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
+          if (filterData.favorite.radioValue! != FavoriteState.all)
+            optionBuilder(
+                child: Text.rich(TextSpan(children: [
+              WidgetSpan(
+                  child: Icon(
+                filterData.favorite.radioValue!.icon,
+                size: 16,
+              )),
+              TextSpan(text: filterData.favorite.radioValue!.shownName)
+            ]))),
+        ],
         if (filterData.rarity.options.isNotEmpty)
           optionBuilder(
             text: '${S.current.rarity}:'
                 '${filterData.rarity.options.toList().sortReturn().join('/')}',
           ),
-        if (filterData.svtClass.options.isNotEmpty)
+        if (filterData.isSvt && filterData.svtClass.options.isNotEmpty)
           optionBuilder(
               text: '${S.current.filter_sort_class}:'
                   '${filterData.svtClass.options.map((e) => e.lName).join("/")}'),
         if (filterData.region.radioValue != null)
           optionBuilder(text: (filterData.region.radioValue!).localName),
-        if (filterData.tdColor.radioValue != null)
-          optionBuilder(
-              text:
-                  '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
-        if (filterData.tdType.radioValue != null)
-          optionBuilder(
-              text: [
-            '${S.current.np_short}:',
-            Transl.enums(
-                filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l
-          ].join()),
+        if (filterData.isSvt) ...[
+          if (filterData.tdColor.radioValue != null)
+            optionBuilder(
+                text:
+                    '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
+          if (filterData.tdType.radioValue != null)
+            optionBuilder(
+                text: [
+              '${S.current.np_short}:',
+              Transl.enums(filterData.tdType.radioValue!,
+                  (enums) => enums.tdEffectFlag).l
+            ].join()),
+        ],
         if (filterData.effectTarget.radioValue != null)
           optionBuilder(text: filterData.effectTarget.radioValue!.shownName),
       ],
@@ -402,7 +416,27 @@ class _NpChargePageState extends State<NpChargePage> {
 
   void filter() {
     groupedData.clear();
+    final details = <_ChargeData>[];
+    for (final ce in db.gameData.craftEssences.values) {
+      if (filterData.isSvt) break;
+      // 0-1-2
+      if (!filterData.rarity.matchOne(ce.rarity)) continue;
+      final region = filterData.region.radioValue ?? Region.jp;
+      final released = db.gameData.mappingData.ceRelease
+          .ofRegion(region)
+          ?.contains(ce.collectionNo);
+      if (region == Region.jp || released == true) {
+        for (final skill in ce.skills) {
+          if (skill.num != 1) continue;
+          if (!filterData.ceMax.matchOne(skill.priority > 1)) {
+            continue;
+          }
+          details.addAll(checkSkill(ce, skill, 1, 1));
+        }
+      }
+    }
     for (final svt in db.gameData.servantsNoDup.values) {
+      if (!filterData.isSvt) break;
       if (!filterData.favorite.radioValue!
           .check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
         continue;
@@ -425,7 +459,6 @@ class _NpChargePageState extends State<NpChargePage> {
 
       final region = filterData.region.radioValue ?? Region.jp;
 
-      final details = <_ChargeData>[];
       if (filterData.skillLv >= 0) {
         List<BaseSkill> skills = [];
         if (filterData.skillLv == 0) {
@@ -472,30 +505,41 @@ class _NpChargePageState extends State<NpChargePage> {
           details.addAll(checkSkill(svt, td, filterData.tdLv, filterData.tdOC));
         }
       }
-      for (final detail in details) {
-        groupedData.putIfAbsent(detail.value, () => []).add(detail);
-      }
+    }
+    for (final detail in details) {
+      groupedData.putIfAbsent(detail.value, () => []).add(detail);
     }
 
     for (final details in groupedData.values) {
-      details.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
-          keys: filterData.sortKeys, reversed: filterData.sortReversed));
+      details.sort((a, b) {
+        if (a.svt is Servant && b.svt is Servant) {
+          return SvtFilterData.compare(a.svt as Servant, b.svt as Servant,
+              keys: filterData.svtSortKeys, reversed: filterData.sortReversed);
+        } else if (a.svt is CraftEssence && b.svt is CraftEssence) {
+          return CraftFilterData.compare(
+              a.svt as CraftEssence, b.svt as CraftEssence);
+        } else {
+          return a.svt.runtimeType
+              .toString()
+              .compareTo(b.svt.runtimeType.toString());
+        }
+      });
     }
   }
 
   Iterable<_ChargeData> checkSkill(
-      Servant svt, SkillOrTd skill, int lv, int oc) sync* {
+      GameCardMixin svt, SkillOrTd skill, int lv, int oc) sync* {
     final directFuncs = skill.filteredFunction<NiceFunction>();
     yield* directFuncs
-        .map((func) => checkFunc(svt, skill, func, lv, oc, false))
+        .map((func) => checkFunc(svt, skill, func, lv, oc, null))
         .whereType();
-    final triggerFuncs = skill
-        .filteredFunction<NiceFunction>(includeTrigger: true)
-        .where((e) => !directFuncs.contains(e));
-    for (final func in triggerFuncs) {
-      final d = checkFunc(svt, skill, func, lv, oc, true);
-      if (d == null) continue;
-      yield d;
+    for (final func in directFuncs) {
+      for (final tFunc
+          in NiceFunction.getTriggerFuncs<NiceFunction>(func: func)) {
+        final d = checkFunc(svt, skill, tFunc, lv, oc, func);
+        if (d == null) continue;
+        yield d;
+      }
     }
   }
 
@@ -504,12 +548,12 @@ class _NpChargePageState extends State<NpChargePage> {
   // FuncType.gainNpBuffIndividualSum
   // BuffType.regainNp
   _ChargeData? checkFunc(
-    Servant svt,
+    GameCardMixin svt,
     SkillOrTd skill,
     NiceFunction func,
     int lv,
     int oc,
-    bool isTrigger,
+    NiceFunction? triggerFunc,
   ) {
     var effectTarget = EffectTargetX.fromFunc(func.funcTargetType);
     if (!NpFilterData.kEffectTargets.contains(effectTarget)) {
@@ -547,7 +591,7 @@ class _NpChargePageState extends State<NpChargePage> {
       }
     }
     if (sortValue == null || value == null || type == null) return null;
-    if (isTrigger) type = NpChargeType.special;
+    if (triggerFunc != null) type = NpChargeType.special;
     final requiredType = filterData.type.radioValue!;
     if (requiredType != type) {
       if (requiredType == NpChargeType.instantSum &&
@@ -562,9 +606,11 @@ class _NpChargePageState extends State<NpChargePage> {
         : skill is NiceSkill
             ? skill.type == SkillType.active
                 ? skill.num.toString()
-                : " " // passive
+                : svt is CraftEssence && skill.priority > 1
+                    ? "✧"
+                    : " " // passive
             : null;
-    if (pos == null) {
+    if (pos == null && svt is Servant) {
       final rankups = svt.script.skillRankUp ?? {};
       for (final srcSkillId in rankups.keys) {
         if (rankups[srcSkillId]!.contains(skill.id)) {
@@ -582,6 +628,7 @@ class _NpChargePageState extends State<NpChargePage> {
       svt: svt,
       skill: skill,
       func: func,
+      triggerFunc: triggerFunc,
       level: lv,
       sortValue: sortValue,
       value: value,
@@ -593,9 +640,10 @@ class _NpChargePageState extends State<NpChargePage> {
 
 class _ChargeData {
   NpChargeType type;
-  Servant svt;
+  GameCardMixin svt;
   SkillOrTd skill;
   NiceFunction func;
+  NiceFunction? triggerFunc;
   int? level;
   int sortValue;
   String value;
@@ -608,6 +656,7 @@ class _ChargeData {
     required this.skill,
     required this.level,
     required this.func,
+    required this.triggerFunc,
     required this.sortValue,
     required this.value,
     required this.pos,

@@ -269,34 +269,51 @@ class NiceFunction with RouteInfo implements BaseFunction {
     if (!includeTrigger) return filteredFuncs;
     for (final func in List.of(filteredFuncs)) {
       if (func is! NiceFunction) continue;
-      if (func.svals.isEmpty) continue;
-      if (T == BaseFunction) {
-        if (func.svals.first.DependFuncId != null) {
-          final dependFunc =
-              db.gameData.baseFunctions[func.svals.first.DependFuncId];
-          if (dependFunc != null) {
-            filteredFuncs.add(dependFunc as T);
-          }
-        }
-      }
-      if (func.buffs.isEmpty) continue;
-      final trigger =
-          kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
-      if (trigger == null) continue;
-      final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
-          ? gameData.baseTds[trigger.skill]
-          : gameData.baseSkills[trigger.skill];
-      if (skill == null) continue;
-      filteredFuncs.addAll(filterFuncs<T>(
-        funcs: skill.functions.cast(),
-        showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
-        showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+      filteredFuncs.addAll(getTriggerFuncs<T>(
+        func: func,
+        showPlayer: showPlayer,
+        showEnemy: showEnemy,
         showNone: showNone,
-        includeTrigger: false, // avoid regression
+        gameData: gameData,
       ));
     }
 
     return filteredFuncs;
+  }
+
+  static Iterable<T> getTriggerFuncs<T extends BaseFunction>({
+    required NiceFunction func,
+    bool showPlayer = true,
+    bool showEnemy = false,
+    bool showNone = false,
+    GameData? gameData,
+  }) sync* {
+    if (func.svals.isEmpty) return;
+    gameData ??= db.gameData;
+    if (T == BaseFunction) {
+      if (func.svals.first.DependFuncId != null) {
+        final dependFunc =
+            db.gameData.baseFunctions[func.svals.first.DependFuncId];
+        if (dependFunc != null) {
+          yield dependFunc as T;
+        }
+      }
+    }
+    if (func.buffs.isEmpty) return;
+    final trigger =
+        kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
+    if (trigger == null) return;
+    final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
+        ? gameData.baseTds[trigger.skill]
+        : gameData.baseSkills[trigger.skill];
+    if (skill == null) return;
+    yield* filterFuncs<T>(
+      funcs: skill.functions.cast(),
+      showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
+      showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
+      showNone: showNone,
+      includeTrigger: false, // avoid regression
+    );
   }
 }
 
