@@ -578,7 +578,7 @@ class _QuestCardState extends State<QuestCard> {
                   for (final s in scripts)
                     Text.rich(SharedBuilder.textButtonSpan(
                       context: context,
-                      text: '[${s.scriptId}]',
+                      text: '[${s.removeQuestId(quest.id)}]',
                       onTap: () {
                         router.pushPage(
                             ScriptReaderPage(script: s, region: widget.region));

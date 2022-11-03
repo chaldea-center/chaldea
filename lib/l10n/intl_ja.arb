@@ -485,6 +485,7 @@
   "quest_region_has_enemy_hint": null,
   "quest_reward": "クエスト報酬",
   "quest_reward_short": "報酬",
+  "raid_quest": "レイド",
   "random": null,
   "rankup_timeline_hint": null,
   "rarity": "レアリティ",

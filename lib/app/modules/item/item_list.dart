@@ -103,7 +103,7 @@ class ItemListPageState extends State<ItemListPage>
             onChange: (index) async {
               db.curUser.curSvtPlanNo = index;
               db.itemCenter.calculate();
-              setState(() {});
+              if (mounted) setState(() {});
             },
           ),
           SharedBuilder.priorityIcon(context: context),

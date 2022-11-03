@@ -190,9 +190,15 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   }
 
   Widget get popupMenu {
-    return PopupMenuButton(
+    return PopupMenuButton<dynamic>(
       itemBuilder: (context) {
         return [
+          PopupMenuItem(
+            enabled: false,
+            height: 32,
+            child: Text('No.${widget.itemId}', textScaleFactor: 0.9),
+          ),
+          const PopupMenuDivider(),
           if (_shownTabs.length > 1 ||
               db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
             PopupMenuItem(

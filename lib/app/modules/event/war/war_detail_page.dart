@@ -198,9 +198,30 @@ class _WarDetailPageState extends State<WarDetailPage> {
             ),
           )
         ]),
+      if (war.bgm.id != 0)
+        CustomTableRow(
+          children: [
+            TableCellData(isHeader: true, text: S.current.bgm),
+            TableCellData(
+              flex: 3,
+              child: TextButton(
+                onPressed: () {
+                  war.bgm.routeTo();
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(
+                  war.bgm.tooltip.setMaxLines(1),
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 0.9,
+                ),
+              ),
+            )
+          ],
+        ),
     ]));
     List<Quest> mainQuests = [],
         freeQuests = [],
+        raidQuests = [],
         difficultQuests = [],
         oneOffQuests = [],
         bondQuests = [],
@@ -216,6 +237,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
               quest.afterClear == QuestAfterClearType.repeatLast)) {
         if (quest.afterClear != QuestAfterClearType.repeatLast) {
           oneOffQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.raid)) {
+          raidQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
           difficultQuests.add(quest);
         } else {
@@ -227,7 +250,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
 
     final selections = List.of(war.questSelections);
-    selections.sort2((e) => e.priority);
+    selections.sort2((e) => -e.priority);
     selectionQuests = selections.map((e) => e.quest).toList();
 
     if (war.spots.isNotEmpty || selectionQuests.isNotEmpty) {
@@ -253,6 +276,17 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 router.push(
                   child: QuestListPage(
                       title: S.current.free_quest, quests: freeQuests),
+                );
+              },
+            ),
+          if (raidQuests.isNotEmpty)
+            ListTile(
+              title: Text(S.current.raid_quest),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(
+                  child: QuestListPage(
+                      title: S.current.raid_quest, quests: raidQuests),
                 );
               },
             ),
@@ -327,14 +361,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
             router.pushPage(ScriptListPage(war: war));
           },
         ),
-        if (war.bgm.id != 0)
-          ListTile(
-            title: Text(war.bgm.tooltip),
-            trailing: const Icon(Icons.music_note),
-            onTap: () {
-              war.bgm.routeTo();
-            },
-          )
       ],
     ));
 

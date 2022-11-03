@@ -759,6 +759,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Only JP(after 2020/11) or NA(2020/12) may contain enemy data"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "Some quests\' start time is not correct"),

@@ -149,6 +149,29 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       CustomTableRow.fromChildren(children: [
         SharedBuilder.traitList(context: context, traits: enemy.traits)
       ]),
+      if (enemy.ai != null) ...[
+        CustomTableRow.fromTexts(
+            texts: const ['AI ID', 'Max Act', 'Act Priority'], isHeader: true),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: TextButton(
+                onPressed: () {
+                  launch(Atlas.ai(enemy.ai!.aiId, true,
+                      region: widget.region ?? Region.jp,
+                      skillId1: enemy.skills.skillId1,
+                      skillId2: enemy.skills.skillId2,
+                      skillId3: enemy.skills.skillId3));
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(enemy.ai!.aiId.toString()),
+              ),
+            ),
+            TableCellData(text: enemy.ai!.maxActNum.toString()),
+            TableCellData(text: enemy.ai!.actPriority.toString()),
+          ],
+        )
+      ],
       if (enemy.skills.skill1 != null ||
           enemy.skills.skill2 != null ||
           enemy.skills.skill3 != null)

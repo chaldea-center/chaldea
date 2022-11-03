@@ -603,6 +603,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("ドロップ"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("クエスト報酬"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("報酬"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("レイド"),
         "rarity": MessageLookupByLibrary.simpleMessage("レアリティ"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Storeで評価"),
         "rate_play_store":

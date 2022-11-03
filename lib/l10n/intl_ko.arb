@@ -485,6 +485,7 @@
   "quest_region_has_enemy_hint": null,
   "quest_reward": null,
   "quest_reward_short": null,
+  "raid_quest": null,
   "random": null,
   "rankup_timeline_hint": null,
   "rarity": "레어도",

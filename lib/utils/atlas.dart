@@ -69,6 +69,24 @@ class Atlas {
     return url;
   }
 
+  static String ai(
+    int id,
+    bool isSvt, {
+    Region region = Region.jp,
+    int skillId1 = 0,
+    int skillId2 = 0,
+    int skillId3 = 0,
+  }) {
+    String url = dbUrl(isSvt ? 'ai/svt' : 'ai/field', id, region);
+    Map<String, String> query = {
+      if (skillId1 != 0) 'skillId1': skillId1.toString(),
+      if (skillId2 != 0) 'skillId2': skillId2.toString(),
+      if (skillId3 != 0) 'skillId3': skillId3.toString(),
+    };
+    if (query.isEmpty) return url;
+    return Uri.parse(url).replace(queryParameters: query).toString();
+  }
+
   static String asset(String path, [Region region = Region.jp]) {
     if (path.startsWith('/')) {
       path = path.substring(1);

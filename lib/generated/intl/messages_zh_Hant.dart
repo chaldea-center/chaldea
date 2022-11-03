@@ -635,6 +635,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
         "rankup_timeline_hint":
             MessageLookupByLibrary.simpleMessage("部分關卡時間與實際開放時間不符"),

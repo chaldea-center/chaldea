@@ -46,7 +46,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
               onChange: (index) {
                 db.curUser.curSvtPlanNo = index;
                 db.itemCenter.calculate();
-                setState(() {});
+                if (mounted) setState(() {});
               },
             ),
             SharedBuilder.priorityIcon(context: context),

@@ -485,6 +485,7 @@
   "quest_region_has_enemy_hint": "Only JP(after 2020/11) or NA(2020/12) may contain enemy data",
   "quest_reward": "Quest Rewards",
   "quest_reward_short": "Rewards",
+  "raid_quest": "Raid Quest",
   "random": "Random",
   "rankup_timeline_hint": "Some quests' start time is not correct",
   "rarity": "Rarity",

@@ -296,7 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_form_alert":
             MessageLookupByLibrary.simpleMessage("反馈表未提交，仍然退出?"),
         "feedback_info": MessageLookupByLibrary.simpleMessage(
-            "提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:\n- 如何复现/期望表现\n- 应用/数据版本、使用设备系统及版本\n- 附加截图日志\n- 以及最好能够提供联系方式(邮箱等)"),
+            "提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:\n- 如何复现/期望表现\n- 应用/数据版本、使用设备系统及版本\n- 附加截图日志\n- 以及最好能够提供联系方式(邮箱等)\n- 不要问为什么没找到某从者"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("发送"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("主题"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),
@@ -635,6 +635,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "仅日服(2020/11之后)和美服(2020/12之后)可能含有敌方数据"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("奖励"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
         "random": MessageLookupByLibrary.simpleMessage("随机"),
         "rankup_timeline_hint":
             MessageLookupByLibrary.simpleMessage("部分关卡时间与实际开放时间不符"),

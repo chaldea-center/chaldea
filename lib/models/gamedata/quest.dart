@@ -740,7 +740,7 @@ class QuestEnemy with GameCardMixin {
   EnemyTd noblePhantasm;
   EnemyServerMod serverMod;
 
-  // EnemyAi ai;
+  EnemyAi? ai;
   EnemyScript? enemyScript;
 
   EnemyLimit? limit;
@@ -771,7 +771,7 @@ class QuestEnemy with GameCardMixin {
     EnemyPassive? classPassive,
     EnemyTd? noblePhantasm,
     required this.serverMod,
-    // required this.ai,
+    this.ai,
     this.enemyScript,
     this.limit,
     this.misc,

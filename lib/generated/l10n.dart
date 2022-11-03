@@ -5406,6 +5406,17 @@ class S {
     );
   }
 
+  /// `Raid Quest`
+  String get raid_quest {
+    return Intl.message(
+      'Raid Quest',
+      name: 'raid_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Random`
   String get random {
     return Intl.message(

@@ -485,6 +485,7 @@
   "quest_region_has_enemy_hint": "僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料",
   "quest_reward": "通關獎勵",
   "quest_reward_short": "獎勵",
+  "raid_quest": null,
   "random": "隨機",
   "rankup_timeline_hint": "部分關卡時間與實際開放時間不符",
   "rarity": "稀有度",

@@ -41,6 +41,12 @@ class ScriptLink with RouteInfo {
   factory ScriptLink.fromJson(Map<String, dynamic> json) =>
       _$ScriptLinkFromJson(json);
 
+  String removeQuestId(int questId) {
+    final id = questId.toString().padLeft(8, '0');
+    if (scriptId.startsWith(id)) return scriptId.substring(id.length);
+    return scriptId;
+  }
+
   static List<Tuple2<NiceWar, Quest?>> findQuests(String scriptId) {
     List<Tuple2<NiceWar, Quest?>> results = [];
     for (final war in db.gameData.wars.values) {

@@ -452,6 +452,9 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
               Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       serverMod: EnemyServerMod.fromJson(
           Map<String, dynamic>.from(json['serverMod'] as Map)),
+      ai: json['ai'] == null
+          ? null
+          : EnemyAi.fromJson(Map<String, dynamic>.from(json['ai'] as Map)),
       enemyScript: json['enemyScript'] == null
           ? null
           : EnemyScript.fromJson(
