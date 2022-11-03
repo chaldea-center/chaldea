@@ -13,8 +13,8 @@ import 'package:chaldea/app/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'app/error.dart';
 import 'app/modules/common/blank_page.dart';
+import 'app/modules/home/bootstrap.dart';
 import 'models/db.dart';
 import 'models/gamedata/common.dart';
 import 'packages/network.dart';
@@ -59,7 +59,8 @@ void main() async {
   }
   final app = initError == null
       ? Chaldea()
-      : StartupErrorPage(initError: initError, initStack: initStack);
+      : StartupFailedPage(
+          error: initError, stackTrace: initStack, wrapApp: true);
   if (kDebugMode) {
     runApp(app);
   } else {
