@@ -298,33 +298,18 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           )
         ]),
     ];
-    String _timeText(Region r, int? start, int? end) =>
-        '${r.name.toUpperCase()}: ${start?.toDateTimeString() ?? "?"} ~ '
-        '${end?.toDateTimeString() ?? "?"}';
     final eventJp = db.gameData.events[event.id];
-    List<String> timeInfo = [
-      _timeText(widget.region, event.startedAt, event.endedAt),
-      if (widget.region != db.curUser.region)
-        _timeText(
-            db.curUser.region,
-            event.extra.startTime.ofRegion(db.curUser.region),
-            event.extra.endTime.ofRegion(db.curUser.region)),
-      if (Region.jp != widget.region && Region.jp != widget.region)
-        _timeText(Region.jp, eventJp?.startedAt, eventJp?.endedAt)
-    ];
-    for (final time in timeInfo) {
-      rows.add(CustomTableRow(
-        children: [
-          TableCellData(
-            text: time,
-            maxLines: 1,
-            style: const TextStyle(fontSize: 14),
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
-          )
-        ],
-      ));
-    }
+    rows.add(CustomTableRow.fromChildren(children: [
+      _EventTime(
+        startTime: event.extra.startTime.copyWith(jp: eventJp?.startedAt),
+        endTime: event.extra.endTime.copyWith(jp: eventJp?.endedAt),
+        shownRegions: {
+          Region.jp,
+          db.curUser.region,
+        },
+        format: (v) => v?.sec2date().toStringShort(omitSec: true) ?? '?',
+      )
+    ]));
 
     children.add(CustomTable(children: rows));
 
@@ -983,5 +968,72 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     event.updateStat();
     EasyLoading.showSuccess(
         '${S.current.success}: ${S.current.event_collect_items}');
+  }
+}
+
+class _EventTime extends StatefulWidget {
+  final MappingBase<int> startTime;
+  final MappingBase<int>? endTime;
+  final Iterable<Region> shownRegions;
+  final String Function(int? time) format;
+  const _EventTime({
+    required this.startTime,
+    this.endTime,
+    required this.shownRegions,
+    required this.format,
+  });
+
+  @override
+  State<_EventTime> createState() => __EventTimeState();
+}
+
+class __EventTimeState extends State<_EventTime> {
+  bool showAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    bool hasExtra = false;
+    final shownRegions = widget.shownRegions.toList();
+    for (final region in Region.values) {
+      final timeStr = getTime(region);
+      if (timeStr == null) continue;
+      if (shownRegions.contains(region) || showAll) {
+        children.add(Text(timeStr,
+            style: const TextStyle(fontSize: 14, fontFamily: kMonoFont)));
+      }
+      if (!shownRegions.contains(region)) hasExtra = true;
+    }
+    if (hasExtra) {
+      children.add(Center(
+        child: Icon(
+          showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+          size: 16,
+        ),
+      ));
+    }
+    return InkWell(
+      onTap: () {
+        setState(() {
+          showAll = !showAll;
+        });
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  String? getTime(Region region) {
+    final start = widget.startTime.ofRegion(region),
+        end = widget.endTime?.ofRegion(region);
+    if (start == null && end == null && region != Region.jp) return null;
+    if (widget.endTime == null) {
+      return '${region.upper}: ${widget.format(start)}';
+    } else {
+      return '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
+    }
   }
 }
