@@ -1,34 +1,59 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
-class SvtSummonTab extends StatelessWidget {
+class SvtSummonTab extends StatefulWidget {
   final Servant svt;
 
   const SvtSummonTab({super.key, required this.svt});
+
+  @override
+  State<SvtSummonTab> createState() => _SvtSummonTabState();
+}
+
+class _SvtSummonTabState extends State<SvtSummonTab> {
+  bool includeGSSR = true;
 
   @override
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
       if (summon
-              .allCards(svt: true, includeGSSR: true)
-              .contains(svt.collectionNo) &&
+              .allCards(svt: true, includeGSSR: includeGSSR)
+              .contains(widget.svt.collectionNo) &&
           summon.startTime.jp != null) {
         summons.add(summon);
       }
     }
-
-    if (summons.isEmpty) {
-      return const ListTile(
-        title: Text('No related summons'),
-      );
-    }
     summons.sort2((e) => e.startTime.jp!, reversed: true);
+    final children = [
+      Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 4,
+        children: [
+          for (final include in [true, false])
+            RadioWithLabel<bool>(
+              value: include,
+              groupValue: includeGSSR,
+              label: Text(include
+                  ? '${S.current.lucky_bag} ✓'
+                  : '${S.current.lucky_bag} ×'),
+              onChanged: (v) {
+                if (v != null) {
+                  includeGSSR = v;
+                }
+                setState(() {});
+              },
+            ),
+        ],
+      ),
+      if (summons.isEmpty) const ListTile(title: Text('No related summons')),
+      for (final summon in summons) summonTile(context, summon)
+    ];
     return ListView.separated(
-      itemBuilder: (context, index) => summonTile(context, summons[index]),
+      itemBuilder: (context, index) => children[index],
       separatorBuilder: (context, index) => kDefaultDivider,
       itemCount: summons.length,
     );
@@ -46,7 +71,7 @@ class SvtSummonTab extends StatelessWidget {
       dense: true,
       title: Text.rich(
         TextSpan(children: [
-          if (summon.hasSinglePickupSvt(svt.collectionNo))
+          if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
             TextSpan(
                 text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
           TextSpan(
