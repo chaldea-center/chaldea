@@ -2,7 +2,7 @@
 
 # [Chaldea](https://github.com/chaldea-center/chaldea)
 
-[![platforms](https://img.shields.io/badge/platform-android_|_ios_|_windows_|_macos-blue)](https://github.com/chaldea-center/chaldea/releases)
+[![platforms](https://img.shields.io/badge/platform-web_|_android_|_ios_|_windows_|_macos-blue)](https://github.com/chaldea-center/chaldea/releases)
 [![release](https://img.shields.io/github/v/release/chaldea-center/chaldea?sort=semver)](https://github.com/chaldea-center/chaldea/releases)
 [![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
@@ -14,7 +14,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 ## Features
 
-- support all platform: Android, iOS, Windows, macOS, Linux and Web.
+- support all platforms: Android, iOS, Windows, macOS, Linux and Web.
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
   **Items** and **Summons**
 - item/material planning
@@ -58,13 +58,13 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 ### Installer
 
-You can download binary assets in [release](https://github.com/chaldea-center/chaldea/releases)
+You can download binary assets in [Releases](https://github.com/chaldea-center/chaldea/releases)
 page for Android, Windows and Linux.
 
 ### Web
 
 - [https://chaldea.center](https://chaldea.center)
-- [https://cn.chaldea.center](https://cn.chaldea.center)
+- [https://cn.chaldea.center](https://cn.chaldea.center) for China Mainland(中国大陆)
 
 ## Donation
 
