@@ -291,11 +291,20 @@ Stage _$StageFromJson(Map json) => Stage(
       call: (json['call'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
+      waveStartMovies: (json['waveStartMovies'] as List<dynamic>?)
+              ?.map((e) =>
+                  StageStartMovie.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       enemies: (json['enemies'] as List<dynamic>?)
               ?.map((e) =>
                   QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+    );
+
+StageStartMovie _$StageStartMovieFromJson(Map json) => StageStartMovie(
+      waveStartMovie: json['waveStartMovie'] as String,
     );
 
 QuestRelease _$QuestReleaseFromJson(Map json) => QuestRelease(

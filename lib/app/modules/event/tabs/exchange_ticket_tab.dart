@@ -108,7 +108,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         Expanded(
           child: Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: buildItems(ticket),
+            child: LayoutBuilder(
+              builder: (context, constraints) =>
+                  buildItems(ticket, constraints.maxWidth),
+            ),
           ),
         )
       ],
@@ -185,7 +188,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     );
   }
 
-  Widget buildItems(ExchangeTicket ticket) {
+  Widget buildItems(ExchangeTicket ticket, double width) {
     final monthPlan = db.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
     final items = ticket.of(db.curUser.region);
@@ -274,8 +277,13 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       children: trailingItems,
     );
     if (items.length <= 3) {
-      return FittedBox(
+      child = FittedBox(
         fit: BoxFit.scaleDown,
+        child: child,
+      );
+    } else if (width < 72 * 5) {
+      child = ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 72 * 4 - 2),
         child: child,
       );
     }

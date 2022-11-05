@@ -354,8 +354,8 @@ class LimitedSummon with RouteInfo {
     List<int> cards = [];
     for (final sub in subSummons) {
       for (final prob in sub.probs) {
-        if (includeGSSR && isLuckyBag && prob.rarity == 5 && prob.isSvt) {
-          cards.addAll(prob.ids);
+        if (isLuckyBag && prob.rarity == 5 && prob.isSvt) {
+          if (includeGSSR) cards.addAll(prob.ids);
           continue;
         }
         if (!prob.display && !includeHidden) continue;

@@ -186,6 +186,12 @@ class Quest with RouteInfo {
       afterClear == QuestAfterClearType.repeatLast &&
       !(consumeType == ConsumeType.ap && consume <= 5) &&
       !flags.any((flag) => flag.name.toLowerCase().contains('raid'));
+
+  List<String> get allScriptIds {
+    return [
+      for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)
+    ];
+  }
 }
 
 @JsonSerializable()
@@ -458,6 +464,7 @@ class Stage {
   List<FieldAi> fieldAis;
   List<int> call;
   int? enemyFieldPosCount;
+  List<StageStartMovie> waveStartMovies;
   List<QuestEnemy> enemies;
 
   Stage({
@@ -466,10 +473,21 @@ class Stage {
     this.fieldAis = const [],
     this.call = const [],
     this.enemyFieldPosCount,
+    this.waveStartMovies = const [],
     this.enemies = const [],
   });
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
+}
+
+@JsonSerializable()
+class StageStartMovie {
+  String waveStartMovie;
+
+  StageStartMovie({required this.waveStartMovie});
+
+  factory StageStartMovie.fromJson(Map<String, dynamic> json) =>
+      _$StageStartMovieFromJson(json);
 }
 
 @JsonSerializable()

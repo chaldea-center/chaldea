@@ -77,8 +77,7 @@ class _EventFilterPageState
           optionBuilder: (v) {
             switch (v) {
               case EventCustomType.lottery:
-                return Text(
-                    '${S.current.event_lottery}/${S.current.event_lottery_limited}');
+                return Text(S.current.event_lottery);
               case EventCustomType.hunting:
                 return Text(S.current.hunting_quest);
               case EventCustomType.mission:

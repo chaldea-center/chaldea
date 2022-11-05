@@ -186,6 +186,12 @@ class _QuestCardState extends State<QuestCard> {
       shownQuestName = names.join('/');
     }
     String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
+    String scriptPrefix = '';
+    final allScriptIds = quest.allScriptIds;
+    if (allScriptIds.isNotEmpty && allScriptIds.last.length > 2) {
+      scriptPrefix =
+          allScriptIds.last.substring(0, allScriptIds.last.length - 2);
+    }
 
     List<Widget> children = [
       Row(
@@ -239,7 +245,7 @@ class _QuestCardState extends State<QuestCard> {
       if (quest.phases.isNotEmpty)
         for (final phase
             in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
-          _buildPhases(phase),
+          _buildPhases(phase, scriptPrefix),
       if (quest.gifts.isNotEmpty || quest.giftIcon != null) _questRewards(),
       if (!widget.offline) releaseConditions(),
       if (widget.offline)
@@ -278,7 +284,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget _buildPhases(int phase) {
+  Widget _buildPhases(int phase, String scriptPrefix) {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
@@ -314,7 +320,7 @@ class _QuestCardState extends State<QuestCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: rowChildren,
           ),
-          ...getPhaseScript(phase)
+          ...getPhaseScript(phase, scriptPrefix)
         ],
       );
     }
@@ -547,7 +553,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
-    children.addAll(getPhaseScript(phase));
+    children.addAll(getPhaseScript(phase, scriptPrefix));
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -558,7 +564,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  List<Widget> getPhaseScript(int phase) {
+  List<Widget> getPhaseScript(int phase, String scriptPrefix) {
     final scripts =
         quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
     if (scripts == null || scripts.isEmpty) return [];
@@ -578,7 +584,10 @@ class _QuestCardState extends State<QuestCard> {
                   for (final s in scripts)
                     Text.rich(SharedBuilder.textButtonSpan(
                       context: context,
-                      text: '[${s.removeQuestId(quest.id)}]',
+                      text: '{${s.removePrefix(scriptPrefix)}}',
+                      style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
                       onTap: () {
                         router.pushPage(
                             ScriptReaderPage(script: s, region: widget.region));

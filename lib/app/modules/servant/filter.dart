@@ -1,11 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
 
@@ -51,10 +50,10 @@ class _ServantFilterPageState
                   : filterData.favorite),
               padding: EdgeInsets.zero,
               optionBuilder: (v) {
-                return Tooltip(
-                  message: v.shownName,
-                  child: Icon(v.icon, size: 16),
-                );
+                return Text.rich(TextSpan(children: [
+                  CenterWidgetSpan(child: Icon(v.icon, size: 16)),
+                  TextSpan(text: v.shownName),
+                ]));
               },
               onFilterChanged: (v, _) {
                 if (widget.planMode) {

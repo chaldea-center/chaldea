@@ -325,12 +325,13 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             child: child,
           ),
         const Divider(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [prevButton, nextButton]
-              .map((e) => Expanded(child: Center(child: e)))
-              .toList(),
-        )
+        if (!_loading)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [prevButton, nextButton]
+                .map((e) => Expanded(child: Center(child: e)))
+                .toList(),
+          )
       ],
     );
   }

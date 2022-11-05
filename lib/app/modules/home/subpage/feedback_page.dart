@@ -275,12 +275,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
       return;
     }
     if (contactController.text.trim().isEmpty) {
-      final confirmed = await SimpleCancelOkDialog(
-        title: Text(S.current.contact_information_not_filled),
-        content: Text(S.current.contact_information_not_filled_warning),
-        confirmText: S.current.still_send,
-      ).showDialog(context);
-      if (confirmed != true) return;
+      EasyLoading.showInfo(S.current.contact_information_not_filled);
+      return;
     }
     EasyLoading.show(
         status: S.current.sending, maskType: EasyLoadingMaskType.clear);
