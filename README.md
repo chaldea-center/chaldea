@@ -30,18 +30,20 @@ For more details or usage, please check our document: [English](https://docs.cha
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
-  - from `fgosimulator.webcrow.jp/Material`
+  - from `https://fgosim.github.io/Material`
 
-## Support Platforms
+## Supported Platforms
 
 | Platform | Minimum Version                      |
 | -------- | ------------------------------------ |
 | Android  | Android 6.0 (API level 23)           |
-| iOS      | iOS 10.0                             |
+| iOS      | iOS 11.0                             |
 | Windows  | Windows 7 SP1 (64-bit), x86-64 based |
-| macOS    | macOS 10.12.2                        |
+| macOS    | macOS 10.13                          |
 | Linux    | Debian 10 & above                    |
 | Web      | Any modern browser                   |
+
+More about [Supported Platforms](https://docs.flutter.dev/development/tools/sdk/release-notes/supported-platforms)
 
 ## Installation
 
@@ -89,7 +91,7 @@ Thanks all contributors and translators help developing the app!
 
 Chaldea is greatly inspired from
 
-- iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088)
+- iOS app [Guda](https://bbs.nga.cn/read.php?tid=12082000)
 - WeChat mini program [FGO material programe](https://github.com/lacus87/fgo)
 
 And the dataset is powered by
