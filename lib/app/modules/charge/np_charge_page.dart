@@ -426,9 +426,12 @@ class _NpChargePageState extends State<NpChargePage> {
           .ofRegion(region)
           ?.contains(ce.collectionNo);
       if (region == Region.jp || released == true) {
-        for (final skill in ce.skills) {
-          if (skill.num != 1) continue;
-          if (!filterData.ceMax.matchOne(skill.priority > 1)) {
+        final skills = ce.skills.where((e) => e.num == 1).toList();
+        for (final skill in skills) {
+          // some CE has the same skill for all ascensions
+          // such as bond CE or campaign CE, though no one yet
+          if (skills.length > 1 &&
+              !filterData.ceMax.matchOne(skill.priority > 1)) {
             continue;
           }
           details.addAll(checkSkill(ce, skill, 1, 1));
@@ -519,9 +522,7 @@ class _NpChargePageState extends State<NpChargePage> {
           return CraftFilterData.compare(
               a.svt as CraftEssence, b.svt as CraftEssence);
         } else {
-          return a.svt.runtimeType
-              .toString()
-              .compareTo(b.svt.runtimeType.toString());
+          return a.svt.toString().compareTo(b.svt.toString());
         }
       });
     }

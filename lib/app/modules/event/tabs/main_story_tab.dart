@@ -91,6 +91,7 @@ class MainStoryTab extends StatelessWidget {
       style: outdated
           ? TextStyle(color: Theme.of(context).textTheme.caption?.color)
           : null,
+      textScaleFactor: 0.9,
     );
     if (subtitleText.isNotEmpty) {
       subtitle = AutoSizeText(
