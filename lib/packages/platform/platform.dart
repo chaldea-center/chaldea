@@ -31,6 +31,7 @@ class PlatformU {
 
   static bool get isTargetMobile => [TargetPlatform.android, TargetPlatform.iOS]
       .contains(defaultTargetPlatform);
+  static bool get isTargetDesktop => !isTargetMobile;
 }
 
 final kPlatformMethods = PlatformMethods();

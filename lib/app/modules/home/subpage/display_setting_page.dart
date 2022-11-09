@@ -86,7 +86,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
-              if (!PlatformU.isTargetMobile)
+              if (PlatformU.isTargetDesktop)
                 SwitchListTile.adaptive(
                   value: db.settings.enableMouseDrag,
                   title: Text(S.current.setting_drag_by_mouse),
@@ -98,18 +98,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
-              if (!PlatformU.isTargetMobile)
-                SwitchListTile.adaptive(
-                  value: db.settings.globalSelection,
-                  title: Text(S.current.global_text_selection),
-                  // subtitle: Text(S.current.desktop_only),
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.globalSelection = v;
-                    });
-                    db.notifyAppUpdate();
-                  },
-                ),
+              SwitchListTile.adaptive(
+                value: db.settings.globalSelection,
+                title: Text(S.current.global_text_selection),
+                // subtitle: Text(S.current.desktop_only),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.globalSelection = v;
+                  });
+                  db.notifyAppUpdate();
+                },
+              ),
               ListTile(
                 title: Text(S.current.carousel_setting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
