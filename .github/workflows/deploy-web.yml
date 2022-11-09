@@ -35,7 +35,7 @@ jobs:
           dart ./scripts/patch_web_build.dart
 
       - name: Publish to app repo ${{ steps.extract-branch-name.outputs.BRANCH_NAME }} branch
-        uses: crazy-max/ghaction-github-pages@v2.2.0
+        uses: crazy-max/ghaction-github-pages@v3
         with:
           repo: chaldea-center/app
           target_branch: ${{ steps.extract-branch-name.outputs.BRANCH_NAME }}
