@@ -63,6 +63,7 @@ class CreatorDetail extends StatelessWidget {
     List<String> subCreators = _split(_name);
     List<Widget> children = [];
     final table = CustomTable(
+      selectable: true,
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(

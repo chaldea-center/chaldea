@@ -127,7 +127,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
 
     return Column(
       children: [
-        Expanded(child: view),
+        Expanded(child: InheritSelectionArea(child: view)),
         SafeArea(
           child: ButtonBar(
             alignment: MainAxisAlignment.center,

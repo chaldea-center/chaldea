@@ -60,17 +60,19 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           ),
         ),
         Expanded(
-          child: ListView(children: [
-            ...buildQuests(),
-            const Divider(
-                height: 16, thickness: 0.5, indent: 16, endIndent: 16),
-            const ListTile(
-              subtitle: Center(
-                child:
-                    Text('Drop rate has been adjusted after 6th anniversary'),
-              ),
-            )
-          ]),
+          child: InheritSelectionArea(
+            child: ListView(children: [
+              ...buildQuests(),
+              const Divider(
+                  height: 16, thickness: 0.5, indent: 16, endIndent: 16),
+              const ListTile(
+                subtitle: Center(
+                  child:
+                      Text('Drop rate has been adjusted after 6th anniversary'),
+                ),
+              )
+            ]),
+          ),
         )
       ],
     );

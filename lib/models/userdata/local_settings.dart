@@ -29,6 +29,7 @@ class LocalSettings {
   ThemeMode themeMode;
   bool enableMouseDrag;
   int? splitMasterRatio;
+  bool globalSelection;
   String? _language;
   List<Region>? preferredRegions;
   bool autoUpdateData; // dataset
@@ -72,6 +73,7 @@ class LocalSettings {
     this.themeMode = ThemeMode.system,
     this.enableMouseDrag = true,
     this.splitMasterRatio,
+    this.globalSelection = false,
     String? language,
     List<Region>? preferredRegions,
     this.autoUpdateData = true,

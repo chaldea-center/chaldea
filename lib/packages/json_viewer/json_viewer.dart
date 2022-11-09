@@ -3,6 +3,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/widgets/inherit_selection_area.dart';
+
 class JsonViewer extends StatefulWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
@@ -14,9 +16,11 @@ class JsonViewer extends StatefulWidget {
 class _JsonViewerState extends State<JsonViewer> {
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: getContentWidget(widget.jsonObj, widget.defaultOpen),
+    return InheritSelectionArea(
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: getContentWidget(widget.jsonObj, widget.defaultOpen),
+      ),
     );
   }
 

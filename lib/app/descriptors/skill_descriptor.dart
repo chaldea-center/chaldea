@@ -109,7 +109,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
-    return TileGroup(
+    Widget child = TileGroup(
       children: [
         header,
         if (!hideDetail) ...[
@@ -137,6 +137,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         )
       ],
     );
+
+    return InheritSelectionArea(child: child);
   }
 
   Widget _skillAddDialog(BuildContext context) {
@@ -358,7 +360,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       onTap: jumpToDetail ? () => td.routeTo(region: region) : null,
     );
     final detailText = td.lDetail ?? '???';
-    return TileGroup(
+    Widget child = TileGroup(
       children: [
         header,
         Padding(
@@ -410,5 +412,6 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
         ]),
       ],
     );
+    return InheritSelectionArea(child: child);
   }
 }

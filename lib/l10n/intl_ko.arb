@@ -255,6 +255,7 @@
   "general_others": "기타",
   "general_special": "스페셜",
   "general_type": "타이프",
+  "global_text_selection": null,
   "glpk_error_no_valid_target": null,
   "gold": "금색",
   "grail": "성배",

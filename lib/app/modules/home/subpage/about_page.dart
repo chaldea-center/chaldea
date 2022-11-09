@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -12,8 +11,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/markdown_page.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class AboutPage extends StatefulWidget {
   AboutPage({super.key});
@@ -56,7 +54,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: ListView(
         children: <Widget>[
-          GestureDetector(
+          InkWell(
             onDoubleTap: () {
               setState(() {
                 showDebugInfo = true;
@@ -70,19 +68,21 @@ class _AboutPageState extends State<AboutPage> {
               await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
               EasyLoading.showToast('UUID ${S.current.copied}');
             },
-            child: _AboutProgram(
-              name: AppInfo.appName,
-              version: AppInfo.fullVersion2,
-              icon: SizedBox(
-                height: 120,
-                child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
-                    height: 120),
+            child: InheritSelectionArea(
+              child: _AboutProgram(
+                name: AppInfo.appName,
+                version: AppInfo.fullVersion2,
+                icon: SizedBox(
+                  height: 120,
+                  child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
+                      height: 120),
+                ),
+                legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
+                debugInfo: showDebugInfo
+                    ? 'UUID\n${AppInfo.uuid}\n'
+                        'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
+                    : null,
               ),
-              legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
-              debugInfo: showDebugInfo
-                  ? 'UUID\n${AppInfo.uuid}\n'
-                      'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
-                  : null,
             ),
           ),
           TileGroup(

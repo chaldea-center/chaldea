@@ -159,6 +159,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
   Widget buildDetails(MysticCode mysticCode) {
     List<int> expRequired = [0, ...mysticCode.expRequired];
     return CustomTable(
+      selectable: true,
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(

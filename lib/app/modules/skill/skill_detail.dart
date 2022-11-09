@@ -47,18 +47,20 @@ class _SkillDetailPageState extends State<SkillDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          data?.lName.l ?? '${S.current.skill} $id',
-          overflow: TextOverflow.fade,
+    return InheritSelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            data?.lName.l ?? '${S.current.skill} $id',
+            overflow: TextOverflow.fade,
+          ),
+          actions: [
+            dropdownRegion(shownNone: widget.skill != null),
+            popupMenu,
+          ],
         ),
-        actions: [
-          dropdownRegion(shownNone: widget.skill != null),
-          popupMenu,
-        ],
+        body: buildBody(context),
       ),
-      body: buildBody(context),
     );
   }
 

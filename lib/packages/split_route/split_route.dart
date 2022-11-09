@@ -20,7 +20,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/widgets/inherit_selection_area.dart';
 import '../../utils/constants.dart' show kAppKey;
 
 import 'package:flutter/cupertino.dart'
@@ -159,6 +161,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         changedExternalState();
       });
       return Offstage(child: child);
+    }
+    if (db.settings.globalSelection) {
+      child = InheritSelectionArea(child: child);
     }
     return child;
   }

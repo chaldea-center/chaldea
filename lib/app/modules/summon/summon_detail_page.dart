@@ -102,7 +102,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         context: context,
         imageUrls: summon.resolvedBanner.values.toList(),
       ),
-      CustomTable(children: [
+      CustomTable(selectable: true, children: [
         CustomTableRow(children: [
           TableCellData(
             text: summon.lName,

@@ -153,6 +153,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     );
 
     return CustomTable(
+      selectable: true,
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(
@@ -258,8 +259,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: SelectableText(
-                    cc.extra.profile.ofRegion(Transl.current) ?? '???'),
+                child: Text(cc.extra.profile.ofRegion(Transl.current) ?? '???'),
                 alignment: Alignment.centerLeft,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -269,7 +269,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(
           children: [
             TableCellData(
-              child: SelectableText(cc.comment),
+              child: Text(cc.comment),
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             )

@@ -16,6 +16,7 @@ class CharaDetail extends StatelessWidget {
     final lName = Transl.charaNames(name);
     List<Widget> children = [];
     final table = CustomTable(
+      selectable: true,
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(

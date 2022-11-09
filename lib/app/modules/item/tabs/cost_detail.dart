@@ -53,6 +53,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         textAlign: TextAlign.end,
       ),
     );
+    header = InheritSelectionArea(child: header);
 
     /////////////////////////////////////////////////////////
     List<Widget> children = [

@@ -121,86 +121,87 @@ class _WarDetailPageState extends State<WarDetailPage> {
       }
     }
 
-    children.add(CustomTable(children: [
-      CustomTableRow(children: [
-        TableCellData(
-          text: lLongName,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 14),
-          color: TableCellData.resolveHeaderColor(context),
-        )
-      ]),
-      if (!Transl.isJP)
+    children.add(CustomTable(
+      selectable: true,
+      children: [
         CustomTableRow(children: [
           TableCellData(
-            text: longNameJp,
+            text: lLongName,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
-            color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+            color: TableCellData.resolveHeaderColor(context),
           )
         ]),
-      if (lShortName != lLongName)
-        CustomTableRow.fromTexts(texts: [lShortName]),
-      if (shortNameJp != longNameJp && !Transl.isJP)
-        CustomTableRow.fromTexts(texts: [shortNameJp]),
-      CustomTableRow(children: [
-        TableCellData(text: S.current.war_age, isHeader: true),
-        TableCellData(text: war.age, flex: 3),
-      ]),
-      if (warBanners.isNotEmpty)
+        if (!Transl.isJP)
+          CustomTableRow(children: [
+            TableCellData(
+              text: longNameJp,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14),
+              color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+            )
+          ]),
+        if (lShortName != lLongName)
+          CustomTableRow.fromTexts(texts: [lShortName]),
+        if (shortNameJp != longNameJp && !Transl.isJP)
+          CustomTableRow.fromTexts(texts: [shortNameJp]),
         CustomTableRow(children: [
-          TableCellData(text: S.current.war_banner, isHeader: true),
-          TableCellData(
-            flex: 3,
-            child: Wrap(
-              spacing: 4,
-              alignment: WrapAlignment.center,
-              children: warBanners
-                  .map((e) => db.getIconImage(e, height: 48))
-                  .take(6)
-                  .toList(),
-            ),
-          ),
+          TableCellData(text: S.current.war_age, isHeader: true),
+          TableCellData(text: war.age, flex: 3),
         ]),
-      if (war.eventId > 0)
-        CustomTableRow(children: [
-          TableCellData(isHeader: true, text: S.current.event_title),
-          TableCellData(
-            flex: 3,
-            child: TextButton(
-              onPressed: () {
-                router.push(url: Routes.eventI(war.eventId), detail: true);
-              },
-              style: kTextButtonDenseStyle,
-              child: Text(
-                Transl.eventNames(war.eventName).l,
-                textAlign: TextAlign.center,
-                textScaleFactor: 0.9,
+        if (warBanners.isNotEmpty)
+          CustomTableRow(children: [
+            TableCellData(text: S.current.war_banner, isHeader: true),
+            TableCellData(
+              flex: 3,
+              child: Wrap(
+                spacing: 4,
+                alignment: WrapAlignment.center,
+                children: warBanners
+                    .map((e) => db.getIconImage(e, height: 48))
+                    .take(6)
+                    .toList(),
               ),
             ),
-          )
-        ]),
-      if (condWar != null)
-        CustomTableRow(children: [
-          TableCellData(isHeader: true, text: S.current.open_condition),
-          TableCellData(
-            flex: 3,
-            child: TextButton(
-              onPressed: () {
-                condWar?.routeTo();
-              },
-              style: kTextButtonDenseStyle,
-              child: Text(
-                condWar.lLongName.l,
-                textAlign: TextAlign.center,
-                textScaleFactor: 0.9,
+          ]),
+        if (war.eventId > 0)
+          CustomTableRow(children: [
+            TableCellData(isHeader: true, text: S.current.event_title),
+            TableCellData(
+              flex: 3,
+              child: TextButton(
+                onPressed: () {
+                  router.push(url: Routes.eventI(war.eventId), detail: true);
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(
+                  Transl.eventNames(war.eventName).l,
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 0.9,
+                ),
               ),
-            ),
-          )
-        ]),
-      if (war.bgm.id != 0)
-        CustomTableRow(
-          children: [
+            )
+          ]),
+        if (condWar != null)
+          CustomTableRow(children: [
+            TableCellData(isHeader: true, text: S.current.open_condition),
+            TableCellData(
+              flex: 3,
+              child: TextButton(
+                onPressed: () {
+                  condWar?.routeTo();
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(
+                  condWar.lLongName.l,
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 0.9,
+                ),
+              ),
+            )
+          ]),
+        if (war.bgm.id != 0)
+          CustomTableRow(children: [
             TableCellData(isHeader: true, text: S.current.bgm),
             TableCellData(
               flex: 3,
@@ -216,9 +217,9 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 ),
               ),
             )
-          ],
-        ),
-    ]));
+          ]),
+      ],
+    ));
     List<Quest> mainQuests = [],
         freeQuests = [],
         raidQuests = [],

@@ -255,6 +255,7 @@
   "general_others": "Others",
   "general_special": "Special",
   "general_type": "Type",
+  "global_text_selection": "Global Text Selectable",
   "glpk_error_no_valid_target": "Invalid input or no valid target found",
   "gold": "Gold",
   "grail": "Grail",

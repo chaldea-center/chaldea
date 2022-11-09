@@ -45,18 +45,20 @@ class _TdDetailPageState extends State<TdDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          data?.lName.l ?? '${S.current.noble_phantasm} $id',
-          overflow: TextOverflow.fade,
+    return InheritSelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            data?.lName.l ?? '${S.current.noble_phantasm} $id',
+            overflow: TextOverflow.fade,
+          ),
+          actions: [
+            dropdownRegion(shownNone: widget.td != null),
+            popupMenu,
+          ],
         ),
-        actions: [
-          dropdownRegion(shownNone: widget.td != null),
-          popupMenu,
-        ],
+        body: buildBody(context),
       ),
-      body: buildBody(context),
     );
   }
 

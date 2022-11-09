@@ -29,6 +29,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
           splitMasterRatio:
               $checkedConvert('splitMasterRatio', (v) => v as int?),
+          globalSelection:
+              $checkedConvert('globalSelection', (v) => v as bool? ?? false),
           language: $checkedConvert('language', (v) => v as String?),
           preferredRegions: $checkedConvert(
               'preferredRegions',
@@ -145,6 +147,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'enableMouseDrag': instance.enableMouseDrag,
       'splitMasterRatio': instance.splitMasterRatio,
+      'globalSelection': instance.globalSelection,
       'preferredRegions':
           instance.preferredRegions?.map((e) => _$RegionEnumMap[e]!).toList(),
       'autoUpdateData': instance.autoUpdateData,

@@ -413,6 +413,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "general_others": MessageLookupByLibrary.simpleMessage("Others"),
         "general_special": MessageLookupByLibrary.simpleMessage("Special"),
         "general_type": MessageLookupByLibrary.simpleMessage("Type"),
+        "global_text_selection":
+            MessageLookupByLibrary.simpleMessage("Global Text Selectable"),
         "glpk_error_no_valid_target": MessageLookupByLibrary.simpleMessage(
             "Invalid input or no valid target found"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),

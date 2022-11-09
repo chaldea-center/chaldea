@@ -91,7 +91,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             ],
           ),
           kDefaultDivider,
-          stageCostList,
+          InheritSelectionArea(child: stageCostList),
         ],
       ),
     );

@@ -217,7 +217,7 @@ class _QuestCardState extends State<QuestCard> {
                   ),
                   CopyLongPress(
                     text: shownQuestName,
-                    child: SelectableText(
+                    child: Text(
                       shownQuestName,
                       textScaleFactor: 0.9,
                       textAlign: TextAlign.center,
@@ -261,25 +261,27 @@ class _QuestCardState extends State<QuestCard> {
         ),
     ];
 
-    return Card(
-      elevation: 0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 8),
-          ...divideTiles(
-            children.map(
-              (e) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                child: e,
+    return InheritSelectionArea(
+      child: Card(
+        elevation: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            ...divideTiles(
+              children.map(
+                (e) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  child: e,
+                ),
               ),
+              divider: const Divider(height: 8, thickness: 2),
             ),
-            divider: const Divider(height: 8, thickness: 2),
-          ),
-          const SizedBox(height: 8),
-        ],
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -346,7 +348,7 @@ class _QuestCardState extends State<QuestCard> {
             flex: 4,
             child: CopyLongPress(
               text: shownSpotName,
-              child: SelectableText(
+              child: Text(
                 shownSpotName,
                 style: const TextStyle(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,

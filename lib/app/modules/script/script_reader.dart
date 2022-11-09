@@ -100,27 +100,29 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     } else {
       title = widget.script.scriptId;
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Script $title',
-          overflow: TextOverflow.fade,
-        ),
-        actions: [
-          SharedBuilder.appBarRegionDropdown(
-            context: context,
-            region: data.state.region,
-            onChanged: (v) {
-              setState(() {
-                if (v != null) data.init(widget.script.script, v);
-              });
-              fetch();
-            },
+    return InheritSelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Script $title',
+            overflow: TextOverflow.fade,
           ),
-          popupMenu,
-        ],
+          actions: [
+            SharedBuilder.appBarRegionDropdown(
+              context: context,
+              region: data.state.region,
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) data.init(widget.script.script, v);
+                });
+                fetch();
+              },
+            ),
+            popupMenu,
+          ],
+        ),
+        body: reader(),
       ),
-      body: reader(),
     );
   }
 
@@ -309,11 +311,12 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
         spans.addAll(part.build(context, data.state));
       }
       if (spans.isEmpty) continue;
-      children.add(SelectableText.rich(TextSpan(children: spans)));
+      children.add(Text.rich(TextSpan(children: spans)));
       children.add(const SizedBox(height: 8));
     }
     children.add(
         const SafeArea(child: Text('- End -', textAlign: TextAlign.center)));
+
     return ListView(
       padding: const EdgeInsets.only(bottom: 12),
       children: [
@@ -331,7 +334,8 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             children: [prevButton, nextButton]
                 .map((e) => Expanded(child: Center(child: e)))
                 .toList(),
-          )
+          ),
+        const SafeArea(child: SizedBox(height: 8)),
       ],
     );
   }

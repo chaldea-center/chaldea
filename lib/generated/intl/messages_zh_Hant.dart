@@ -358,6 +358,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
         "general_type": MessageLookupByLibrary.simpleMessage("類型"),
+        "global_text_selection":
+            MessageLookupByLibrary.simpleMessage("全局文本可选择"),
         "glpk_error_no_valid_target":
             MessageLookupByLibrary.simpleMessage("無相關目標"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),

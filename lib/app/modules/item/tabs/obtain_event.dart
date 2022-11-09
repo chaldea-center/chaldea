@@ -29,10 +29,12 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         _ticketAccordion,
         _mainRecordAccordion,
       ];
-      return ListView.separated(
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => kDefaultDivider,
-        itemCount: children.length,
+      return InheritSelectionArea(
+        child: ListView.separated(
+          itemBuilder: (context, index) => children[index],
+          separatorBuilder: (context, index) => kDefaultDivider,
+          itemCount: children.length,
+        ),
       );
     });
   }
@@ -154,6 +156,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           title: Text(
             '${S.current.exchange_ticket_short} ${ticket.dateStr}',
             style: _textStyle(false, ticket.isOutdated()),
+            textScaleFactor: 0.9,
           ),
           subtitle: AutoSizeText(
               ticket

@@ -102,41 +102,43 @@ class EventListPageState extends State<EventListPage>
               )),
         actions: actions,
       ),
-      body: db.onUserData(
-        (context, snapshot) => TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            KeepAliveBuilder(
-              builder: (_) => LimitEventTab(
-                limitEvents: limitEvents,
-                reversed: filterData.reversed,
-                showOutdated: filterData.showOutdated,
-                showSpecialRewards: filterData.showSpecialRewards,
-                showEmpty: filterData.showEmpty,
+      body: InheritSelectionArea(
+        child: db.onUserData(
+          (context, snapshot) => TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              KeepAliveBuilder(
+                builder: (_) => LimitEventTab(
+                  limitEvents: limitEvents,
+                  reversed: filterData.reversed,
+                  showOutdated: filterData.showOutdated,
+                  showSpecialRewards: filterData.showSpecialRewards,
+                  showEmpty: filterData.showEmpty,
+                ),
               ),
-            ),
-            KeepAliveBuilder(
-              builder: (_) => MainStoryTab(
-                reversed: filterData.reversed,
-                showOutdated: filterData.showOutdated,
-                showSpecialRewards: filterData.showSpecialRewards,
+              KeepAliveBuilder(
+                builder: (_) => MainStoryTab(
+                  reversed: filterData.reversed,
+                  showOutdated: filterData.showOutdated,
+                  showSpecialRewards: filterData.showSpecialRewards,
+                ),
               ),
-            ),
-            KeepAliveBuilder(
-              builder: (_) => ExchangeTicketTab(
-                reversed: filterData.reversed,
-                showOutdated: filterData.showOutdated,
+              KeepAliveBuilder(
+                builder: (_) => ExchangeTicketTab(
+                  reversed: filterData.reversed,
+                  showOutdated: filterData.showOutdated,
+                ),
               ),
-            ),
-            ChaldeaGateTab(),
-            KeepAliveBuilder(
-              builder: (_) => CampaignEventTab(
-                campaignEvents: campaignEvents,
-                reversed: filterData.reversed,
-                showOutdated: filterData.showOutdated,
-              ),
-            )
-          ],
+              ChaldeaGateTab(),
+              KeepAliveBuilder(
+                builder: (_) => CampaignEventTab(
+                  campaignEvents: campaignEvents,
+                  reversed: filterData.reversed,
+                  showOutdated: filterData.showOutdated,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

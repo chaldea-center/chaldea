@@ -255,6 +255,7 @@
   "general_others": "其他",
   "general_special": "特殊",
   "general_type": "類型",
+  "global_text_selection": null,
   "glpk_error_no_valid_target": "無相關目標",
   "gold": "金",
   "grail": "聖杯",

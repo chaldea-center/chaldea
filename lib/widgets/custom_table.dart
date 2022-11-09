@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../utils/utils.dart';
+import 'inherit_selection_area.dart';
 
 const Divider kHorizontalDivider = Divider(
     color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
@@ -17,6 +18,7 @@ class CustomTable extends StatelessWidget {
 
   /// could hide outline if table inside another table
   final bool hideOutline;
+  final bool selectable;
 
   const CustomTable({
     super.key,
@@ -24,6 +26,7 @@ class CustomTable extends StatelessWidget {
     this.hideOutline = false,
     this.horizontalDivider = kHorizontalDivider,
     this.verticalDivider = kVerticalDivider,
+    this.selectable = false,
   });
 
   @override
@@ -49,14 +52,21 @@ class CustomTable extends StatelessWidget {
                       verticalDivider.thickness ?? kVerticalDivider.thickness!),
             ),
           );
-    return DecoratedBox(
-      decoration: outlineDecoration ?? const BoxDecoration(),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _all,
-      ),
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: _all,
     );
+    if (outlineDecoration != null) {
+      child = DecoratedBox(
+        decoration: outlineDecoration,
+        child: child,
+      );
+    }
+    if (selectable) {
+      child = InheritSelectionArea(child: child);
+    }
+    return child;
   }
 }
 

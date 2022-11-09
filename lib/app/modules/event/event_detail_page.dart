@@ -311,7 +311,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       )
     ]));
 
-    children.add(CustomTable(children: rows));
+    children.add(CustomTable(selectable: true, children: rows));
 
     List<Widget> warTiles = [];
     for (final warId in event.warIds) {
@@ -1005,11 +1005,9 @@ class __EventTimeState extends State<_EventTime> {
       if (!shownRegions.contains(region)) hasExtra = true;
     }
     if (hasExtra) {
-      children.add(Center(
-        child: Icon(
-          showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-          size: 16,
-        ),
+      children.add(Icon(
+        showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+        size: 16,
       ));
     }
     return InkWell(
@@ -1020,7 +1018,7 @@ class __EventTimeState extends State<_EventTime> {
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: children,
       ),
     );

@@ -28,6 +28,7 @@ class CostumeDetailPage extends StatelessWidget {
     final svt = costume.owner;
     final unlockMats = svt?.costumeMaterials[costume.battleCharaId];
     final table = CustomTable(
+      selectable: true,
       children: <Widget>[
         CustomTableRow(
           children: [

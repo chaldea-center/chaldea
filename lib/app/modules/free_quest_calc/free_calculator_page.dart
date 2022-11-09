@@ -58,31 +58,33 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
           },
         )),
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        behavior: HitTestBehavior.translucent,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            KeepAliveBuilder(
-                builder: (context) => DropCalcInputTab(
-                    objectiveCounts: widget.objectiveCounts,
-                    onSolved: onSolved)),
-            KeepAliveBuilder(
-                builder: (context) => QuestPlanTab(solution: solution)),
-            KeepAliveBuilder(
-                builder: (context) => QuestEfficiencyTab(solution: solution)),
-            KeepAliveBuilder(
-              builder: (context) => const MainStoryTab(
-                showOutdated: true,
-                showSpecialRewards: false,
-                reversed: true,
-                titleOnly: true,
-              ),
-            )
-          ],
+      body: InheritSelectionArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          behavior: HitTestBehavior.translucent,
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              KeepAliveBuilder(
+                  builder: (context) => DropCalcInputTab(
+                      objectiveCounts: widget.objectiveCounts,
+                      onSolved: onSolved)),
+              KeepAliveBuilder(
+                  builder: (context) => QuestPlanTab(solution: solution)),
+              KeepAliveBuilder(
+                  builder: (context) => QuestEfficiencyTab(solution: solution)),
+              KeepAliveBuilder(
+                builder: (context) => const MainStoryTab(
+                  showOutdated: true,
+                  showSpecialRewards: false,
+                  reversed: true,
+                  titleOnly: true,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

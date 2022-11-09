@@ -39,6 +39,7 @@ class SvtInfoTab extends StatelessWidget {
       padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: SafeArea(
         child: CustomTable(
+          selectable: true,
           children: <Widget>[
             CustomTableRow(children: [
               TableCellData(

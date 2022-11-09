@@ -100,7 +100,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
   }
 
   Widget get info {
-    return CustomTable(children: [
+    return CustomTable(selectable: true, children: [
       CustomTableRow(children: [
         TableCellData(
           child: Text.rich(

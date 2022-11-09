@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/simple_accordion.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/mission_conds.dart';
 import 'solver/custom_mission.dart';
 import 'solver/scheme.dart';
@@ -22,34 +20,37 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
   MasterMission get masterMission => widget.masterMission;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${S.current.master_mission} ${masterMission.id}'),
-      ),
-      body: Column(
-        children: [
-          Expanded(child: missionList()),
-          kDefaultDivider,
-          SafeArea(
-            child: ButtonBar(
-              alignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    final customMissions = masterMission.missions
-                        .map((e) => CustomMission.fromEventMission(e))
-                        .whereType<CustomMission>()
-                        .toList();
-                    router.push(
-                        child: CustomMissionPage(initMissions: customMissions));
-                  },
-                  icon: const Icon(Icons.search),
-                  label: Text(S.current.drop_calc_solve),
-                )
-              ],
-            ),
-          )
-        ],
+    return InheritSelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${S.current.master_mission} ${masterMission.id}'),
+        ),
+        body: Column(
+          children: [
+            Expanded(child: missionList()),
+            kDefaultDivider,
+            SafeArea(
+              child: ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      final customMissions = masterMission.missions
+                          .map((e) => CustomMission.fromEventMission(e))
+                          .whereType<CustomMission>()
+                          .toList();
+                      router.push(
+                          child:
+                              CustomMissionPage(initMissions: customMissions));
+                    },
+                    icon: const Icon(Icons.search),
+                    label: Text(S.current.drop_calc_solve),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

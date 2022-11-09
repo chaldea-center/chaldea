@@ -37,6 +37,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
     final BgmEntity? bgmEntity =
         bgm is BgmEntity ? bgm : db.gameData.bgms[bgm.id];
     final table = CustomTable(
+      selectable: true,
       children: <Widget>[
         if (bgmEntity?.logo != null)
           CustomTableRow.fromChildren(

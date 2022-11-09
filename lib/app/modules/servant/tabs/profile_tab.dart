@@ -92,9 +92,11 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            itemCount: children.length,
-            itemBuilder: (context, index) => children[index],
+          child: InheritSelectionArea(
+            child: ListView.builder(
+              itemCount: children.length,
+              itemBuilder: (context, index) => children[index],
+            ),
           ),
         ),
         SafeArea(child: buttonBar)
@@ -316,7 +318,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
                 await Clipboard.setData(ClipboardData(text: comment));
                 EasyLoading.showInfo(S.current.copied);
               },
-              child: SelectableText(
+              child: Text(
                 comment,
                 textScaleFactor: 0.9,
               ),

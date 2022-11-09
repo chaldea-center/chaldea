@@ -98,17 +98,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
-              SwitchListTile.adaptive(
-                value: db.settings.display.showAccountAtHome,
-                title: Text(S.current.setting_show_account_at_homepage),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.display.showAccountAtHome = v;
-                    db.saveSettings();
-                  });
-                  db.notifyUserdata();
-                },
-              ),
+              if (!PlatformU.isTargetMobile)
+                SwitchListTile.adaptive(
+                  value: db.settings.globalSelection,
+                  title: Text(S.current.global_text_selection),
+                  // subtitle: Text(S.current.desktop_only),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.globalSelection = v;
+                    });
+                    db.notifyAppUpdate();
+                  },
+                ),
               ListTile(
                 title: Text(S.current.carousel_setting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
@@ -122,6 +123,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   router.pushPage(MasterRatioSetting());
+                },
+              ),
+              SwitchListTile.adaptive(
+                value: db.settings.display.showAccountAtHome,
+                title: Text(S.current.setting_show_account_at_homepage),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.display.showAccountAtHome = v;
+                    db.saveSettings();
+                  });
+                  db.notifyUserdata();
                 },
               ),
             ],

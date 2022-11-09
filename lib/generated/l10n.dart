@@ -2870,6 +2870,17 @@ class S {
     );
   }
 
+  /// `Global Text Selectable`
+  String get global_text_selection {
+    return Intl.message(
+      'Global Text Selectable',
+      name: 'global_text_selection',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Invalid input or no valid target found`
   String get glpk_error_no_valid_target {
     return Intl.message(

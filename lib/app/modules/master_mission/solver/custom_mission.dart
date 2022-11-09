@@ -50,25 +50,27 @@ class _CustomMissionPageState extends State<CustomMissionPage>
           SharedBuilder.docsHelpBtn('master_mission.html'),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          KeepAliveBuilder(
-            builder: (context) => MissionInputTab(
-              initMissions: widget.initMissions,
-              initWarId: widget.initWarId,
-              onSolved: _onSolved,
+      body: InheritSelectionArea(
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            KeepAliveBuilder(
+              builder: (context) => MissionInputTab(
+                initMissions: widget.initMissions,
+                initWarId: widget.initWarId,
+                onSolved: _onSolved,
+              ),
             ),
-          ),
-          KeepAliveBuilder(
-              builder: (context) => MissionSolutionTab(solution: solution)),
-          KeepAliveBuilder(
-            builder: (context) => MissionSolutionTab(
-              solution: solution,
-              showResult: false,
+            KeepAliveBuilder(
+                builder: (context) => MissionSolutionTab(solution: solution)),
+            KeepAliveBuilder(
+              builder: (context) => MissionSolutionTab(
+                solution: solution,
+                showResult: false,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

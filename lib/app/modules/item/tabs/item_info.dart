@@ -45,6 +45,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
     return SingleChildScrollView(
       child: SafeArea(
         child: CustomTable(
+          selectable: true,
           children: <Widget>[
             CustomTableRow(
               children: [

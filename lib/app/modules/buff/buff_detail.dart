@@ -101,7 +101,7 @@ class BuffInfoTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(children: [
+    return CustomTable(selectable: true, children: [
       CustomTableRow(children: [
         TableCellData(
           child: Text.rich(TextSpan(children: [
