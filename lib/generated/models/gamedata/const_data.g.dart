@@ -676,4 +676,6 @@ const _$BuffActionEnumMap = {
   BuffAction.toFieldChangeField: 'toFieldChangeField',
   BuffAction.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffAction.grantStateUpOnly: 'grantStateUpOnly',
+  BuffAction.turnendHpReduceToRegain: 'turnendHpReduceToRegain',
+  BuffAction.functionSelfturnstart: 'functionSelfturnstart',
 };

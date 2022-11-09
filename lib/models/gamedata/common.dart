@@ -858,4 +858,8 @@ enum CondType {
   randomMissionTotalClearNum,
   weekdays,
   eventFortificationRewardNum,
+  questClearBeforeEventStart,
+  notQuestClearBeforeEventStart,
+  eventTutorialFlagOn,
+  eventTutorialFlagOff,
 }

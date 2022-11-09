@@ -736,6 +736,8 @@ const _$BuffTypeEnumMap = {
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
   BuffType.counterFunction: 'counterFunction',
   BuffType.notTargetSkill: 'notTargetSkill',
+  BuffType.hpReduceToRegain: 'hpReduceToRegain',
+  BuffType.selfturnstartFunction: 'selfturnstartFunction',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
 };

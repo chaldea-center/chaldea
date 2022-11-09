@@ -149,6 +149,7 @@ class DataVals {
   int? get IgnoreResistance => sourceVals['IgnoreResistance'];
   int? get GainNpTargetPassiveIndividuality =>
       sourceVals['GainNpTargetPassiveIndividuality'];
+  int? get HpReduceToRegainIndiv => sourceVals['HpReduceToRegainIndiv'];
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];

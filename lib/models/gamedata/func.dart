@@ -565,6 +565,11 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)>
       skill: v.Value,
       level: v.Value2,
       rate: v.UseRate),
+  BuffType.selfturnstartFunction: (v) => BuffValueTriggerType(
+      BuffType.selfturnstartFunction,
+      skill: v.Value,
+      level: v.Value2,
+      rate: v.UseRate),
   BuffType.wavestartFunction: (v) => BuffValueTriggerType(
       BuffType.wavestartFunction,
       skill: v.Value,
@@ -760,8 +765,10 @@ enum BuffType {
   invisibleBattleChara,
   counterFunction,
   notTargetSkill,
-  toFieldChangeField,
-  toFieldAvoidBuff,
+  hpReduceToRegain,
+  selfturnstartFunction,
+  toFieldChangeField, // 10001
+  toFieldAvoidBuff, // 10002
 }
 
 const kEventFuncTypes = [

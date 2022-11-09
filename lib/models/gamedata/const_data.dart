@@ -521,6 +521,8 @@ enum BuffAction {
   toFieldChangeField,
   toFieldAvoidBuff,
   grantStateUpOnly,
+  turnendHpReduceToRegain,
+  functionSelfturnstart,
 }
 
 enum BuffLimit {

@@ -192,6 +192,10 @@ const _$CondTypeEnumMap = {
   CondType.randomMissionTotalClearNum: 'randomMissionTotalClearNum',
   CondType.weekdays: 'weekdays',
   CondType.eventFortificationRewardNum: 'eventFortificationRewardNum',
+  CondType.questClearBeforeEventStart: 'questClearBeforeEventStart',
+  CondType.notQuestClearBeforeEventStart: 'notQuestClearBeforeEventStart',
+  CondType.eventTutorialFlagOn: 'eventTutorialFlagOn',
+  CondType.eventTutorialFlagOff: 'eventTutorialFlagOff',
 };
 
 BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
