@@ -424,7 +424,12 @@ class Servant with GameCardMixin {
       _icon = aprilFoolBorderedIcon;
       if (_icon != null) return _icon;
     }
-    _icon = extraAssets.faces.ascension?[db.userData.svtAscensionIcon] ?? icon;
+    int ascension = db.userData.svtAscensionIcon;
+    if (db.userData.svtAscensionIcon == -1 && isUserSvt) {
+      ascension = status.cur.ascension;
+    }
+
+    _icon = extraAssets.faces.ascension?[ascension] ?? icon;
     return bordered(_icon);
   }
 

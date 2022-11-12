@@ -113,8 +113,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   List<Widget> _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
     final ascensions = svt.extraAssets.charaGraph.ascension;
-    final ascension = ascensions?[db.userData.svtAscensionIcon] ??
-        ascensions?.values.toList().getOrNull(0);
+    final asc = db.userData.svtAscensionIcon == -1 && svt.isUserSvt
+        ? svt.status.cur.ascension
+        : db.userData.svtAscensionIcon;
+    final ascension =
+        ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
     return [
       SliverAppBar(
         title: AutoSizeText(svt.lName.l, maxLines: 1),

@@ -176,6 +176,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                         value: index,
                         child: Text('${S.current.ascension} $index'),
                       ),
+                    DropdownMenuItem(
+                      value: -1,
+                      child: Text(S.current.plan),
+                    ),
                   ],
                   onChanged: (v) {
                     if (v != null) {
