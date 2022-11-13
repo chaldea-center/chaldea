@@ -301,6 +301,7 @@ class UserSvt {
       _$UserSvtFromJson(data);
 
   Servant? get dbSvt => db.gameData.servantsById[svtId];
+  CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
 }
 
 //  {

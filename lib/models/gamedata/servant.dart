@@ -749,6 +749,8 @@ class CraftEssence with GameCardMixin {
 
   @override
   String get route => Routes.craftEssenceI(id);
+
+  CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
 }
 
 @JsonSerializable()

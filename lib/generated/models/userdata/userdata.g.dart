@@ -87,7 +87,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
           craftEssences: $checkedConvert(
               'craftEssences',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int?),
+                    (k, e) => MapEntry(int.parse(k as String), e),
                   )),
           mysticCodes: $checkedConvert(
               'mysticCodes',
@@ -133,8 +133,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'sameEventPlan': instance.sameEventPlan,
       'curSvtPlanNo': instance.curSvtPlanNo,
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
-      'craftEssences':
-          instance.craftEssences.map((k, e) => MapEntry(k.toString(), e)),
+      'craftEssences': instance.craftEssences
+          .map((k, e) => MapEntry(k.toString(), e.toJson())),
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
@@ -387,6 +387,27 @@ ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
     <String, dynamic>{
       'counts': instance.counts,
+    };
+
+CraftStatus _$CraftStatusFromJson(Map json) => $checkedCreate(
+      'CraftStatus',
+      json,
+      ($checkedConvert) {
+        final val = CraftStatus(
+          status:
+              $checkedConvert('status', (v) => v as int? ?? CraftStatus.notMet),
+          lv: $checkedConvert('lv', (v) => v as int? ?? 1),
+          limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 0),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$CraftStatusToJson(CraftStatus instance) =>
+    <String, dynamic>{
+      'status': instance.status,
+      'lv': instance.lv,
+      'limitCount': instance.limitCount,
     };
 
 SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(

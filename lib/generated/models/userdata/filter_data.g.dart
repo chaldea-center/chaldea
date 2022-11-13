@@ -65,7 +65,6 @@ CraftFilterData _$CraftFilterDataFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = CraftFilterData(
           useGrid: $checkedConvert('useGrid', (v) => v as bool? ?? false),
-          favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
           sortKeys: $checkedConvert(
               'sortKeys',
               (v) => (v as List<dynamic>?)
@@ -81,7 +80,6 @@ CraftFilterData _$CraftFilterDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
     <String, dynamic>{
       'useGrid': instance.useGrid,
-      'favorite': instance.favorite,
       'sortKeys':
           instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]!).toList(),
       'sortReversed': instance.sortReversed,

@@ -92,6 +92,15 @@ class _CraftFilterPageState
             update();
           },
         ),
+        buildGroupDivider(text: S.current.ce_status),
+        FilterGroup<int>(
+          title: Text(S.current.ascension),
+          options: const [0, 1, 2, 3, 4],
+          values: filterData.limitCount,
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
         FilterGroup<int>(
           title: Text(S.current.ce_status),
           options: CraftStatus.values,

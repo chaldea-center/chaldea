@@ -427,8 +427,6 @@ class CraftFilterData with _FilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
-  bool favorite;
-  @JsonKey()
   List<CraftCompare> sortKeys;
   @JsonKey()
   List<bool> sortReversed;
@@ -438,13 +436,13 @@ class CraftFilterData with _FilterData {
   final region = FilterRadioData<Region>();
   final obtain = FilterGroupData<CEObtain>();
   final atkType = FilterGroupData<CraftATKType>();
+  final limitCount = FilterGroupData<int>();
   final status = FilterGroupData<int>();
   final effectTarget = FilterGroupData<EffectTarget>();
   final effectType = FilterGroupData<SkillEffect>();
 
   CraftFilterData({
     this.useGrid = false,
-    this.favorite = false,
     List<CraftCompare?>? sortKeys,
     List<bool>? sortReversed,
   })  : sortKeys = List.generate(CraftCompare.values.length,
@@ -460,6 +458,7 @@ class CraftFilterData with _FilterData {
         region,
         obtain,
         atkType,
+        limitCount,
         status,
         effectTarget,
         effectType,
@@ -468,7 +467,6 @@ class CraftFilterData with _FilterData {
   @override
   void reset() {
     super.reset();
-    favorite = false;
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region == Region.jp) {
         region.options.clear();

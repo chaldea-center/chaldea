@@ -51,7 +51,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   BiliTopLogin? topLogin;
   List<List<UserSvt>> servants = [];
   List<UserItem> items = [];
-  Map<int, int> crafts = {}; // craft.no: status
+  Map<int, CraftStatus> crafts = {}; // craft.no: status
 
   BiliReplaced? get replacedResponse => topLogin?.body;
 
@@ -185,15 +185,18 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ),
               ListTile(
                 title: Text(Items.qp?.lName.l ?? "QP"),
-                trailing: Text(user.qp.format()),
+                trailing:
+                    Text(user.qp.format(compact: false, groupSeparator: ',')),
               ),
               ListTile(
                 title: Text(Items.manaPrism?.lName.l ?? "Mana Prism"),
-                trailing: Text(user.mana.format()),
+                trailing:
+                    Text(user.mana.format(compact: false, groupSeparator: ',')),
               ),
               ListTile(
                 title: Text(Items.rarePrism?.lName.l ?? "Rare Prism"),
-                trailing: Text(user.rarePri.format()),
+                trailing: Text(
+                    user.rarePri.format(compact: false, groupSeparator: ',')),
               ),
             ]),
           )
@@ -431,9 +434,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get craftSliver {
-    int owned = crafts.values.where((e) => e == CraftStatus.owned).length,
-        met = crafts.values.where((e) => e == CraftStatus.met).length,
-        notMet = crafts.values.where((e) => e == CraftStatus.notMet).length;
+    int owned =
+            crafts.values.where((e) => e.status == CraftStatus.owned).length,
+        met = crafts.values.where((e) => e.status == CraftStatus.met).length,
+        notMet =
+            crafts.values.where((e) => e.status == CraftStatus.notMet).length;
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
@@ -462,9 +467,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               children: [
                 ListTile(
                   leading: const Text(''),
-                  title: Text('Owned: $owned\n'
-                      'Met: $met\n'
-                      'NotMet: $notMet\n'
+                  title: Text(
+                      '${CraftStatus.shownText(CraftStatus.owned)}: $owned\n'
+                      '${CraftStatus.shownText(CraftStatus.met)}: $met\n'
+                      '${CraftStatus.shownText(CraftStatus.notMet)}: $notMet\n'
                       'ALL:   ${crafts.length}'),
                 )
               ],
@@ -563,7 +569,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       });
     }
     if (_includeCraft) {
-      user.craftEssences = Map.of(crafts);
+      user.craftEssences.addAll(Map.of(crafts));
     }
     // 不删除原本信息
     // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
@@ -676,12 +682,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   void parseResponseBody(String contents) {
     BiliTopLogin _topLogin = BiliTopLogin.tryBase64(contents);
+    final body = _topLogin.body;
 
     // clear before import
     _validSvts.clear();
     cardCollections.clear();
     servants.clear();
-    items = _topLogin.body.userItem
+    items = body.userItem
         .where((e) =>
             e.num >= 0 &&
             db.gameData.items[e.itemId]?.category != ItemCategory.other)
@@ -692,13 +699,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
     // collections
     cardCollections = Map.fromEntries(
-        _topLogin.body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
+        body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
 
     // svt
-    for (final svt in _topLogin.body.userSvt) {
+    for (final svt in body.userSvt) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = false;
-      svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
+      svt.appendLvs = body.getSvtAppendSkillLv(svt);
       final group = servants.firstWhereOrNull(
           (group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
@@ -708,10 +715,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       }
     }
     // svtStorage
-    for (final svt in _topLogin.body.userSvtStorage) {
+    for (final svt in body.userSvtStorage) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = true;
-      svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
+      svt.appendLvs = body.getSvtAppendSkillLv(svt);
       final group = servants.firstWhereOrNull(
           (group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
@@ -751,10 +758,23 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
 
     // crafts
-    crafts = db.gameData.craftEssencesById.map((gameId, craft) {
-      int status = cardCollections[gameId]?.status ?? 0;
-      return MapEntry(craft.collectionNo, status);
-    });
+    for (final card in cardCollections.values) {
+      final ce = db.gameData.craftEssencesById[card.svtId];
+      if (ce == null) continue;
+      crafts.putIfAbsent(ce.collectionNo, () => CraftStatus()).status =
+          card.status;
+    }
+
+    for (final ce in [...body.userSvt, ...body.userSvtStorage]) {
+      if (ce.dbCE == null) continue;
+      final status =
+          crafts.putIfAbsent(ce.dbCE!.collectionNo, () => CraftStatus());
+      if (status.lv < ce.lv ||
+          (status.lv == ce.lv && status.limitCount < ce.limitCount)) {
+        status.lv = ce.lv;
+        status.limitCount = ce.limitCount;
+      }
+    }
 
     _refreshValidSvts();
 

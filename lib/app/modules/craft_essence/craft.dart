@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ruby_text/ruby_text.dart';
@@ -15,10 +13,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
-import 'package:chaldea/widgets/custom_table.dart';
-import 'package:chaldea/widgets/custom_tile.dart';
-import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 
 class CraftDetailPage extends StatefulWidget {
@@ -60,28 +55,26 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
           title: S.current.craft_essence,
           url: Routes.craftEssenceI(widget.id ?? 0));
     }
-    final status =
-        db.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;
+    final status = ce.status;
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(ce.lName.l, maxLines: 1),
         titleSpacing: 0,
         actions: [
           IconButton(
-            // tooltip:
-            //     Localized.craftFilter.of(CraftFilterData.statusTexts[status]),
             onPressed: () {
               setState(() {
-                db.curUser.craftEssences[ce.collectionNo] = (status + 1) % 3;
+                status.status = (status.status + 1) % 3;
               });
               db.notifyUserdata();
+              EasyLoading.showToast(status.statusText);
             },
-            icon: status == CraftStatus.owned
+            icon: status.status == CraftStatus.owned
                 ? const Icon(Icons.favorite, color: Colors.redAccent)
-                : status == CraftStatus.met
+                : status.status == CraftStatus.met
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_outline),
-            tooltip: CraftStatus.shownText(status),
+            tooltip: status.statusText,
           ),
           _popupButton,
         ],
@@ -93,42 +86,84 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               child: CraftDetailBasePage(ce: ce, showExtra: true),
             ),
           ),
-          SafeArea(
-            child: ButtonBar(alignment: MainAxisAlignment.center, children: [
-              // ProfileLangSwitch(
-              //   primary: lang,
-              //   onChanged: (v) {
-              //     setState(() {
-              //       lang = v;
-              //     });
-              //   },
-              // ),
-              for (var i = 0; i < 2; i++)
-                ElevatedButton(
-                  onPressed: () {
-                    CraftEssence? nextCe;
-                    if (widget.onSwitch != null) {
-                      // if navigated from filter list, let filter list decide which is the next one
-                      nextCe = widget.onSwitch!(ce, i == 0);
-                    } else {
-                      nextCe = db
-                          .gameData.craftEssences[ce.collectionNo + [-1, 1][i]];
-                    }
-                    if (nextCe == null) {
-                      EasyLoading.showToast(S.current.list_end_hint(i == 0));
-                    } else {
-                      setState(() {
-                        _ce = nextCe!;
-                      });
-                    }
+          if (status.status == CraftStatus.owned)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('${status.statusText}: '),
+                const SizedBox(width: 8),
+                Text(S.current.ascension),
+                const SizedBox(width: 4),
+                DropdownButton<int>(
+                  isDense: true,
+                  value: status.limitCount,
+                  items: [
+                    for (int asc = 0; asc <= 4; asc++)
+                      DropdownMenuItem(value: asc, child: Text(asc.toString())),
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) status.limitCount = v;
+                    });
                   },
-                  style: ElevatedButton.styleFrom(
-                      textStyle:
-                          const TextStyle(fontWeight: FontWeight.normal)),
-                  child:
-                      Text([S.current.previous_card, S.current.next_card][i]),
                 ),
-            ]),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return InputCancelOkDialog(
+                          title: 'Lv (1~${ce.lvMax})',
+                          text: status.lv.toString(),
+                          validate: (s) {
+                            final v = int.tryParse(s);
+                            if (v == null) return false;
+                            return v > 0 && v <= ce.lvMax;
+                          },
+                          onSubmit: (v) {
+                            status.lv = int.tryParse(v) ?? status.lv;
+                            if (mounted) setState(() {});
+                          },
+                        );
+                      },
+                    );
+                  },
+                  child: Text('Lv. ${status.lv}'),
+                ),
+              ],
+            ),
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                for (var i = 0; i < 2; i++)
+                  ElevatedButton(
+                    onPressed: () {
+                      CraftEssence? nextCe;
+                      if (widget.onSwitch != null) {
+                        // if navigated from filter list, let filter list decide which is the next one
+                        nextCe = widget.onSwitch!(ce, i == 0);
+                      } else {
+                        nextCe = db.gameData
+                            .craftEssences[ce.collectionNo + [-1, 1][i]];
+                      }
+                      if (nextCe == null) {
+                        EasyLoading.showToast(S.current.list_end_hint(i == 0));
+                      } else {
+                        setState(() {
+                          _ce = nextCe!;
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        textStyle:
+                            const TextStyle(fontWeight: FontWeight.normal)),
+                    child:
+                        Text([S.current.previous_card, S.current.next_card][i]),
+                  ),
+              ],
+            ),
           )
         ],
       ),

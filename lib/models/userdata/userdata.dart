@@ -231,8 +231,7 @@ class User {
 
   Map<int, int> items;
 
-  // 1-met, 2-owned, else 0
-  Map<int, int> craftEssences;
+  Map<int, CraftStatus> craftEssences;
   Map<int, int> mysticCodes;
   Set<String> summons;
 
@@ -251,7 +250,7 @@ class User {
     this.sameEventPlan = true,
     int curSvtPlanNo = 0,
     Map<int, int>? items,
-    Map<int, int?>? craftEssences,
+    Map<int, dynamic>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     FreeLPParams? freeLPParams,
@@ -266,7 +265,7 @@ class User {
         craftEssences = {
           if (craftEssences != null)
             for (final e in craftEssences.entries)
-              if (e.value != null) e.key: e.value!
+              if (e.value != null) e.key: CraftStatus.fromJson(e.value!)
         },
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
@@ -296,6 +295,9 @@ class User {
     return status;
   }
 
+  CraftStatus ceStatusOf(int no) =>
+      craftEssences.putIfAbsent(no, () => CraftStatus());
+
   LimitEventPlan limitEventPlanOf(int eventId) =>
       _curEventPlan.limitEvents.putIfAbsent(eventId, () => LimitEventPlan());
 
@@ -320,6 +322,9 @@ class User {
             servants[plan.key]?.cur, db.gameData.servantsWithDup[plan.key]);
       }
     }
+    craftEssences.forEach((key, value) {
+      value.validate(db.gameData.craftEssences[key]?.lvMax);
+    });
   }
 
   String getFriendlyPlanName([int? planNo]) {
@@ -723,8 +728,8 @@ class ExchangeTicketPlan {
   }
 }
 
+@JsonSerializable()
 class CraftStatus {
-  CraftStatus._();
   static const notMet = 0;
   static const met = 1;
   static const owned = 2;
@@ -740,4 +745,36 @@ class CraftStatus {
         ].getOrNull(status) ??
         status.toString();
   }
+
+  String get statusText => shownText(status);
+
+  int status;
+  int lv;
+  int limitCount;
+
+  CraftStatus({
+    this.status = CraftStatus.notMet,
+    this.lv = 1,
+    this.limitCount = 0,
+  });
+
+  void validate(int? maxLv) {
+    status = status.clamp(0, 2);
+    limitCount = limitCount.clamp(0, 4);
+    if (maxLv != null && maxLv > 1) {
+      lv = lv.clamp(1, maxLv);
+    }
+  }
+
+  factory CraftStatus.fromJson(dynamic json) {
+    if (json is Map) {
+      return _$CraftStatusFromJson(Map<String, dynamic>.from(json));
+    } else if (json is int) {
+      return CraftStatus(status: json);
+    } else {
+      return CraftStatus();
+    }
+  }
+
+  Map<String, dynamic> toJson() => _$CraftStatusToJson(this);
 }

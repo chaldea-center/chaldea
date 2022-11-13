@@ -99,6 +99,10 @@ class CraftListPageState extends State<CraftListPage>
       default:
         break;
     }
+    String? status;
+    if (ce.status.status == CraftStatus.owned) {
+      status = '${ce.status.limitCount} - Lv.${ce.status.lv}';
+    }
     return CustomTile(
       leading: db.getIconImage(
         ce.borderedIcon,
@@ -110,7 +114,12 @@ class CraftListPageState extends State<CraftListPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(ce.name, maxLines: 1),
-          Text('No.${ce.collectionNo}$additionalText'),
+          Row(
+            children: [
+              Expanded(child: Text('No.${ce.collectionNo}$additionalText')),
+              if (status != null) Text(status)
+            ],
+          ),
         ],
       ),
       trailing: IconButton(
@@ -151,8 +160,10 @@ class CraftListPageState extends State<CraftListPage>
     if (!filterData.atkType.matchOne(ce.atkType)) {
       return false;
     }
-    if (!filterData.status
-        .matchOne(db.curUser.craftEssences[ce.collectionNo] ?? 0)) {
+    if (!filterData.limitCount.matchOne(ce.status.limitCount)) {
+      return false;
+    }
+    if (!filterData.status.matchOne(ce.status.status)) {
       return false;
     }
 
