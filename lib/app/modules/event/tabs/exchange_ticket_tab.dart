@@ -93,7 +93,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 90,
+          width: 120,
           child: Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(12, 2, 8, 2),
             child: Align(

@@ -168,7 +168,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             ],
           ),
         ),
-      if (curIndex >= 0)
+      if (curIndex >= 0 && summon.subSummons.isNotEmpty)
         Center(
           child: ExpandIcon(
             isExpanded: _expanded,

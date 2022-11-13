@@ -55,7 +55,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
     return ListView.separated(
       itemBuilder: (context, index) => children[index],
       separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: summons.length,
+      itemCount: children.length,
     );
   }
 

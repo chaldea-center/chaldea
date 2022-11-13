@@ -326,6 +326,11 @@ class FuncDescriptor extends StatelessWidget {
           funcText.write(Transl.buffNames(buff.name).l);
         }
       }
+      // } else if ([
+      //   FuncType.enemyEncountRateUp,
+      //   FuncType.enemyEncountCopyRateUp,
+      // ].contains(func.funcType)) {
+      //   funcText.write(Transl.funcPopuptext(func).l);
     } else {
       funcText.write(Transl.funcPopuptext(func).l);
     }
@@ -609,6 +614,18 @@ class FuncDescriptor extends StatelessWidget {
           },
         ));
       }
+    } else if ([
+          FuncType.enemyEncountRateUp,
+          FuncType.enemyEncountCopyRateUp,
+        ].contains(func.funcType) &&
+        vals?.Individuality != null) {
+      spans.add(TextSpan(children: [
+        const TextSpan(text: ' '),
+        SharedBuilder.traitSpan(
+          context: context,
+          trait: NiceTrait(id: vals!.Individuality!),
+        ),
+      ]));
     }
 
     if (vals?.AddLinkageTargetIndividualty != null &&
