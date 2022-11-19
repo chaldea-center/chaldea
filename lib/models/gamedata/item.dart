@@ -313,7 +313,7 @@ class Items {
     //
     qpId, stoneId, quartzFragmentId, manaPrismId, purePrismId, rarePrismId,
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
-    grailFragId, grailId, grailToCrystalId, lanternId,
+    blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId,
   ];
   static const List<int> specialSvtMat = [
     hpFou3,

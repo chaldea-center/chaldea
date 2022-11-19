@@ -397,18 +397,6 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
             kr: null,
           );
         }
-      case CondType.eventMissionAchieve:
-        final mission = missions
-            .firstWhereOrNull((mission) => mission.id == targetIds.first);
-        final targets =
-            '${mission?.dispNo}-${mission?.name ?? targetIds.first}';
-        return localized(
-          jp: () => text('クエストをクリアせよ $targets'),
-          cn: () => text('完成任务 $targets'),
-          tw: null,
-          na: () => text('Achieve mission $targets'),
-          kr: () => text('미션을 완수하다 $targets'),
-        );
       case CondType.eventTotalPoint:
         return localized(
           jp: () => text('イベントポイントを$targetNum点獲得'),
@@ -417,12 +405,49 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           na: () => text('Reach $targetNum event points'),
           kr: () => text('이벤트 포인트 $targetNum점'),
         );
-      case CondType.eventMissionClear:
-        final missionMap = {for (final m in missions) m.id: m};
-        final dispNos =
-            targetIds.map((e) => missionMap[e]?.dispNo ?? e).toList();
+      case CondType.eventMissionAchieve: // clear and get rewards
+        var missionMap = {for (final m in missions) m.id: m};
 
-        if (dispNos.length == targetNum) {
+        if (targetIds.length == targetNum) {
+          if (targetNum == 1) {
+            return localized(
+              jp: null,
+              cn: () => combineToRich(
+                  context, '收取任务: ', missionList(context, missionMap)),
+              tw: null,
+              na: () => combineToRich(
+                  context, 'Claim mission: ', missionList(context, missionMap)),
+              kr: null,
+            );
+          } else {
+            return localized(
+              jp: null,
+              cn: () => combineToRich(
+                  context, '收取以下全部任务:', missionList(context, missionMap)),
+              tw: null,
+              na: () => combineToRich(context, 'Claim all missions of ',
+                  missionList(context, missionMap)),
+              kr: null,
+            );
+          }
+        } else {
+          return localized(
+            jp: null,
+            cn: () => combineToRich(context, '收取$targetNum个不同的任务',
+                missionList(context, missionMap)),
+            tw: null,
+            na: () => combineToRich(
+              context,
+              'Claim $targetNum different missions from ',
+              missionList(context, missionMap),
+            ),
+            kr: null,
+          );
+        }
+      case CondType.eventMissionClear: // clear only
+        var missionMap = {for (final m in missions) m.id: m};
+
+        if (targetIds.length == targetNum) {
           if (targetNum == 1) {
             return localized(
               jp: () => combineToRich(

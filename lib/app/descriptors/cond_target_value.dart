@@ -326,11 +326,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
             missions.firstWhereOrNull((mission) => mission.id == target);
         final targets = '${mission?.dispNo}-${mission?.name ?? target}';
         return localized(
-          jp: () => text('クエストをクリアせよ $targets'),
-          cn: () => text('完成任务 $targets'),
+          jp: () => text('ミッションを集めせよ $targets'),
+          cn: () => text('收取任务 $targets'),
           tw: null,
-          na: () => text('Achieve mission $targets'),
-          kr: () => text('미션을 완수하다 $targets'),
+          na: () => text('Claim mission $targets'),
+          kr: null,
         );
 
       default:

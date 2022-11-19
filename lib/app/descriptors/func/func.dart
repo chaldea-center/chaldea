@@ -192,12 +192,15 @@ class SkillScriptDescriptor extends StatelessWidget {
                 '{0}',
                 actIndividuality.map((indiv) {
                   final svt = db.gameData.servantsById[indiv.id];
-                  String name = svt?.lName.l ?? '$indiv';
+                  String name = indiv.shownName(addSvtId: false);
                   if (svt != null) {
                     name += '(${svt.className.lName})';
                   }
                   return SharedBuilder.textButtonSpan(
-                      context: context, text: name, onTap: svt?.routeTo);
+                    context: context,
+                    text: name,
+                    onTap: svt?.routeTo ?? indiv.routeTo,
+                  );
                 }).toList(),
               )
             ]),
@@ -839,7 +842,7 @@ class FuncDescriptor extends StatelessWidget {
   // ignore: unused_element
   Map<String, dynamic> _getFuncJson() {
     List<String> _traitList(List<NiceTrait> traits) {
-      return traits.map((e) => e.shownName).toList();
+      return traits.map((e) => e.shownName()).toList();
     }
 
     final buff = func.buffs.getOrNull(0);
@@ -881,7 +884,7 @@ class FuncDescriptor extends StatelessWidget {
           if (script.DamageRelease != null)
             "DamageRelease": script.DamageRelease,
           if (script.INDIVIDUALITIE != null)
-            "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName,
+            "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName(),
           if (script.UpBuffRateBuffIndiv != null)
             "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
           if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,

@@ -249,7 +249,7 @@ const kTraitIdMapping = <int, Trait>{
   3037: Trait.buffCritDamageDown,
   3038: Trait.buffCritRateDown,
   3039: Trait.buffDeathResistDown,
-  3040: Trait.buffDefenceUpRelated,
+  3040: Trait.buffDefenceUp,
   3041: Trait.buffMaxHpUpPercent,
   3042: Trait.buffMaxHpDownPercent,
   3043: Trait.buffMaxHpUp,
@@ -269,7 +269,7 @@ const kTraitIdMapping = <int, Trait>{
   // # Summer BB
   3056: Trait.buffDisableColorCard,
   3057: Trait.buffChangeField,
-  3058: Trait.buffDefenceUp,
+  3058: Trait.buffDefUp,
   // # Unsure
   3059: Trait.buffInvinciblePierce,
   3060: Trait.buffHpRecoveryPerTurn,
@@ -293,6 +293,7 @@ const kTraitIdMapping = <int, Trait>{
   // # Normal Buster, Arts, Quick, Extra Attack
   4100: Trait.criticalHit,
   4101: Trait.aoeNP,
+  4102: Trait.stNP,
   5000: Trait.canBeInBattle,
   // # can be NPC, enemy or playable servant i.e. not CE
   5010: Trait.notBasedOnServant,

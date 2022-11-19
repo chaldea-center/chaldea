@@ -61,7 +61,7 @@ class Transl<K, V> {
       : _m = m,
         mappings = {key: m};
 
-  static Transl<int, String> trait(int id) {
+  static Transl<int, String> trait(int id, {bool addSvtId = true}) {
     if (!md.trait.containsKey(id)) {
       final redirectId = md.traitRedirect[id];
       if (redirectId != null && md.trait.containsKey(redirectId)) {
@@ -69,12 +69,12 @@ class Transl<K, V> {
       }
       final svt = db.gameData.servantsById[id];
       if (svt != null) {
-        final nameMapping = md.svtNames[svt.name] ?? MappingBase(jp: svt.name);
-        return Transl(
-          {id: nameMapping.convert((v, _) => v == null ? null : '$v($id)')},
-          id,
-          '$id',
-        );
+        var nameMapping = md.svtNames[svt.name] ?? MappingBase(jp: svt.name);
+        if (addSvtId) {
+          nameMapping =
+              nameMapping.convert((v, _) => v == null ? null : '$v($id)');
+        }
+        return Transl({id: nameMapping}, id, '$id');
       }
     }
     return Transl(md.trait, id, '$id');

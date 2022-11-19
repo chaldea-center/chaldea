@@ -68,8 +68,10 @@ abstract class DescriptorBase {
   List<InlineSpan> items(BuildContext context) =>
       MultiDescriptor.items(context, targetIds, useAnd: useAnd);
   List<InlineSpan> missionList(
-          BuildContext context, Map<int, EventMission> missions) =>
-      MultiDescriptor.missions(context, targetIds, missions, useAnd: useAnd);
+          BuildContext context, Map<int, EventMission> missions,
+          {bool sort = true}) =>
+      MultiDescriptor.missions(context, targetIds, missions,
+          useAnd: useAnd, sort: sort);
   List<InlineSpan> event(BuildContext context) {
     final _event = db.gameData.events[targetIds.first];
     return [

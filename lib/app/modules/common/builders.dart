@@ -333,7 +333,7 @@ class SharedBuilder {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
-          trait.shownName,
+          trait.shownName(),
           style: style ??
               TextStyle(
                   color: Theme.of(context).colorScheme.secondaryContainer),
@@ -350,7 +350,7 @@ class SharedBuilder {
   }) {
     return textButtonSpan(
       context: context,
-      text: trait.shownName,
+      text: trait.shownName(),
       style: style ??
           TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
       onTap: () {

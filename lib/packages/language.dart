@@ -16,7 +16,7 @@ class Language {
   static const jp = Language('ja', '日本語', 'Japanese', Locale('ja', ''));
   static const chs = Language('zh', '简体中文', 'Simplified Chinese',
       Locale.fromSubtags(languageCode: 'zh'));
-  static const cht = Language('zh_Hant', '繁体中文', 'Traditional Chinese',
+  static const cht = Language('zh_Hant', '繁體中文', 'Traditional Chinese',
       Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const ko = Language('ko', '한국어', 'Korean', Locale('ko', ''));

@@ -159,12 +159,6 @@ class _QuestCardState extends State<QuestCard> {
         ),
       );
     }
-    QuestPhase? questPhase;
-    for (final phase in quest.phases) {
-      questPhase ??=
-          _getCachedPhase(phase) ?? db.gameData.getQuestPhase(quest.id);
-      if (questPhase != null) break;
-    }
 
     String questName = quest.lName.l;
     String chapter = quest.type == QuestType.main

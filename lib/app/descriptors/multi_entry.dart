@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../app.dart';
 
@@ -230,9 +231,13 @@ class MultiDescriptor {
     );
   }
 
-  static List<InlineSpan> missions(BuildContext context, List<int> targetIds,
-      Map<int, EventMission> missions,
-      {bool? useAnd}) {
+  static List<InlineSpan> missions(
+    BuildContext context,
+    List<int> targetIds,
+    Map<int, EventMission> missions, {
+    bool? useAnd,
+    bool sort = true,
+  }) {
     if (targetIds.length == 1) {
       return list(
         context,
@@ -244,6 +249,10 @@ class MultiDescriptor {
         useAnd,
       );
     } else {
+      if (sort) {
+        targetIds = targetIds.toList();
+        targetIds.sort2((e) => missions[e]?.dispNo ?? e);
+      }
       return [
         MultiDescriptor.collapsed(
           context,
@@ -252,7 +261,11 @@ class MultiDescriptor {
           (context, id) {
             final mission = missions[id];
             return ListTile(
-                title: Text('${mission?.dispNo} - ${mission?.name}'));
+              leading: Text('${mission?.dispNo}'),
+              title: Text('${mission?.name}'),
+              horizontalTitleGap: 0,
+              dense: true,
+            );
           },
           useAnd,
         ),

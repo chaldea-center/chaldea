@@ -56,7 +56,7 @@ extension RegionX on Region {
 }
 
 @JsonSerializable()
-class NiceTrait {
+class NiceTrait with RouteInfo {
   static final Map<int, NiceTrait> _instances = {};
 
   final int id;
@@ -83,11 +83,11 @@ class NiceTrait {
 
   @override
   String toString() {
-    return '$runtimeType($id)';
+    return '$runtimeType($signedId)';
   }
 
-  String get shownName {
-    final s = Transl.trait(id).l;
+  String shownName({bool addSvtId = true}) {
+    final s = Transl.trait(id, addSvtId: addSvtId).l;
     if (negative == true) {
       return '${M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null)} $s';
     }
@@ -106,6 +106,9 @@ class NiceTrait {
     if (targets.isEmpty) return true;
     return targets.any((traitId) => traits.any((trait) => trait.id == traitId));
   }
+
+  @override
+  String get route => Routes.traitI(id);
 }
 
 @JsonSerializable()
@@ -571,7 +574,7 @@ enum Trait {
   buffCritDamageDown,
   buffCritRateDown,
   buffDeathResistDown,
-  buffDefenceUpRelated, // buffDefenceUp
+  buffDefenceUp, // buffDefenceUp related
   buffMaxHpUpPercent,
   buffMaxHpDownPercent,
   buffMaxHpUp,
@@ -587,7 +590,7 @@ enum Trait {
   buffLockCardsDeck,
   buffDisableColorCard,
   buffChangeField,
-  buffDefenceUp, // buffDefenceUpAgainstIndividuality
+  buffDefUp,
   buffInvinciblePierce,
   buffHpRecoveryPerTurn,
   buffNegativeEffectImmunity,
@@ -608,6 +611,7 @@ enum Trait {
   fieldCity,
   shadowServant,
   aoeNP,
+  stNP,
   giant,
   childServant,
   buffSpecialInvincible,
