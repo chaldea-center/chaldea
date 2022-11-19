@@ -235,6 +235,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             e.campaignQuests.any((q) => q.questId == quest.id) ||
             e.campaigns.any((c) => c.targetIds.contains(quest.id)))
         .toList();
+    if (events.isEmpty) return const [];
     if (!_showAllCampaign) {
       events.removeWhere((e) => e.isOutdated());
     }
@@ -257,20 +258,19 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         ));
       }
     }
-    if (events.isNotEmpty) {
-      children.add(Center(
-        child: IconButton(
-          onPressed: () {
-            setState(() {
-              _showAllCampaign = !_showAllCampaign;
-            });
-          },
-          icon: Icon(_showAllCampaign
-              ? Icons.keyboard_arrow_up
-              : Icons.keyboard_arrow_down),
-        ),
-      ));
-    }
+
+    children.add(Center(
+      child: IconButton(
+        onPressed: () {
+          setState(() {
+            _showAllCampaign = !_showAllCampaign;
+          });
+        },
+        icon: Icon(_showAllCampaign
+            ? Icons.keyboard_arrow_up
+            : Icons.keyboard_arrow_down),
+      ),
+    ));
     if (children.isEmpty) {
       children.add(const ListTile(
         title: Text('No future event'),

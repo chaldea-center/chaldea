@@ -104,9 +104,9 @@ extension ListX<T> on List<T> {
   void sortByList<V extends Comparable>(List<V> Function(T e) compare,
       {bool reversed = false}) {
     if (reversed) {
-      sort((a, b) => compareByList(a, b, compare));
-    } else {
       sort((a, b) => compareByList(b, a, compare));
+    } else {
+      sort((a, b) => compareByList(a, b, compare));
     }
   }
 

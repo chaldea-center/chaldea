@@ -674,15 +674,21 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  int _compareItem(int a, int b) {
-    final itemA = db.gameData.items[a], itemB = db.gameData.items[b];
-    if (itemA != null && itemB != null) {
-      return itemB.priority.compareTo(itemA.priority);
-    } else if (itemA == null && itemB == null) {
-      return b.compareTo(a);
-    } else {
-      return itemA == null ? 1 : -1;
-    }
+  List<int> _compareItem(int e) {
+    final item = db.gameData.items[e];
+    final ce = db.gameData.craftEssencesById[e];
+    return <int>[
+      ce != null
+          ? -2
+          : item != null
+              ? -1
+              : 0,
+      ce != null
+          ? ce.collectionNo
+          : item != null
+              ? -item.priority
+              : e,
+    ];
   }
 
   /// only drops of free quest useApRate
@@ -691,7 +697,7 @@ class _QuestCardState extends State<QuestCard> {
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.questId).entries.toList();
-      drops.sort((a, b) => _compareItem(a.key, b.key));
+      drops.sortByList((e) => _compareItem(e.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value > 1000
             ? entry.value.toInt().toString()
@@ -699,7 +705,7 @@ class _QuestCardState extends State<QuestCard> {
       }
     } else {
       final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
-      drops.sort((a, b) => _compareItem(a.key, b.key));
+      drops.sortByList((e) => _compareItem(e.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 4);
       }
@@ -722,7 +728,7 @@ class _QuestCardState extends State<QuestCard> {
 
   Widget _getRayshiftDrops(List<EnemyDrop> drops) {
     drops = List.of(drops);
-    drops.sort((a, b) => _compareItem(a.objectId, b.objectId));
+    drops.sortByList((e) => _compareItem(e.objectId));
     List<Widget> children = [];
     for (final drop in drops) {
       String? text;
