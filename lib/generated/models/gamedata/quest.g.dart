@@ -581,6 +581,8 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) =>
           ?.map((e) => e as int)
           .toList(),
       singleForceSvtId: json['singleForceSvtId'] as int?,
+      hintTitle: json['hintTitle'] as String?,
+      hintMessage: json['hintMessage'] as String?,
     );
 
 const _$QuestFlagEnumMap = {

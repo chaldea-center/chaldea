@@ -496,7 +496,7 @@ enum Trait {
   chimera,
   wyvern,
   dragonType,
-  gazer,
+  demon2, // gazer,
   handOrDoor,
   demonGodPillar,
   oni,

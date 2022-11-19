@@ -208,7 +208,7 @@ const _$TraitEnumMap = {
   Trait.chimera: 'chimera',
   Trait.wyvern: 'wyvern',
   Trait.dragonType: 'dragonType',
-  Trait.gazer: 'gazer',
+  Trait.demon2: 'demon2',
   Trait.handOrDoor: 'handOrDoor',
   Trait.demonGodPillar: 'demonGodPillar',
   Trait.oni: 'oni',

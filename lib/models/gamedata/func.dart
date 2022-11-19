@@ -510,6 +510,7 @@ class BuffScript {
   final String? ReleaseText;
   final int? DamageRelease; // remove this buff when receive damage
   final NiceTrait? INDIVIDUALITIE; // self indiv?
+  final int? INDIVIDUALITIE_COUNT_ABOVE;
   final List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
   final int? HP_LOWER; // Passionlip
 
@@ -520,6 +521,7 @@ class BuffScript {
     this.ReleaseText,
     this.DamageRelease,
     this.INDIVIDUALITIE,
+    this.INDIVIDUALITIE_COUNT_ABOVE,
     this.UpBuffRateBuffIndiv,
     this.HP_LOWER,
   });

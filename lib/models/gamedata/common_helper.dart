@@ -76,7 +76,7 @@ const kTraitIdMapping = <int, Trait>{
   1113: Trait.chimera,
   1117: Trait.wyvern,
   1118: Trait.dragonType,
-  1119: Trait.gazer,
+  1119: Trait.demon2,
   1120: Trait.handOrDoor,
   1121: Trait.demonGodPillar,
   1122: Trait.shadowServant,

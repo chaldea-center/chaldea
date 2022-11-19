@@ -386,13 +386,6 @@ class BaseGift {
     }
   }
 }
-// class NiceGiftAdd(BaseModelORJson):
-//     priority: int
-//     replacementGiftIcon: HttpUrl
-//     condType: NiceCondType
-//     targetId: int
-//     targetNum: int
-//     replacementGifts: list[NiceBaseGift]
 
 @JsonSerializable()
 class GiftAdd {
@@ -981,10 +974,14 @@ class FieldAi {
 class QuestPhaseExtraDetail {
   List<int>? questSelect;
   int? singleForceSvtId;
+  String? hintTitle;
+  String? hintMessage;
 
   QuestPhaseExtraDetail({
     this.questSelect,
     this.singleForceSvtId,
+    this.hintTitle,
+    this.hintMessage,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>
