@@ -96,6 +96,8 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           summons: $checkedConvert('summons',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+          myRoomMusic: $checkedConvert('myRoomMusic',
+              (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           freeLPParams: $checkedConvert(
               'freeLPParams',
               (v) => v == null
@@ -138,6 +140,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
+      'myRoomMusic': instance.myRoomMusic.toList(),
       'freeLPParams': instance.freeLPParams.toJson(),
       'luckyBagSvtScores': instance.luckyBagSvtScores.map(
           (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),

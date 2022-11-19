@@ -90,7 +90,7 @@ class SoundPlayButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           minimumSize: const Size(18, 18),
         ),
         child: const Icon(Icons.play_arrow, size: 18),

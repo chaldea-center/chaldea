@@ -115,9 +115,14 @@ class SharedBuilder {
     double? width,
     double? height,
     ValueChanged<int>? onTap,
+    bool sort = false,
   }) {
     if (width == null && height == null) {
       width = 48;
+    }
+    if (sort) {
+      items = items.toList()
+        ..sort2((e) => db.gameData.items[e.key]?.priority ?? e.key);
     }
     return Wrap(
       spacing: 1,

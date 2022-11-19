@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -46,6 +47,35 @@ class _BgmListPageState extends State<BgmListPage>
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
+            onPressed: () {
+              Map<int, int> cost = {};
+              for (final id in db.curUser.myRoomMusic) {
+                final shop = db.gameData.bgms[id]?.shop;
+                if (shop == null) continue;
+                cost.addNum(shop.cost.itemId, shop.cost.amount);
+              }
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SimpleCancelOkDialog(
+                    title: Text(S.current.statistics_title),
+                    content: SharedBuilder.itemGrid(
+                      context: context,
+                      items: cost.entries,
+                      width: 40,
+                      sort: true,
+                    ),
+                    hideCancel: true,
+                    scrollable: true,
+                  );
+                },
+              );
+            },
+            icon: const Icon(Icons.analytics),
+            tooltip: S.current.statistics_title,
+          ),
+          IconButton(
             icon: FaIcon(
               filterData.reversed
                   ? FontAwesomeIcons.arrowDownWideShort
@@ -86,6 +116,10 @@ class _BgmListPageState extends State<BgmListPage>
   bool filter(BgmEntity bgm) {
     if (!filterData.released.matchOne(!bgm.notReleased)) return false;
     if (!filterData.needItem.matchOne(bgm.shop != null)) return false;
+    if (!filterData.favorite
+        .matchOne(db.curUser.myRoomMusic.contains(bgm.id))) {
+      return false;
+    }
     return true;
   }
 
@@ -96,34 +130,48 @@ class _BgmListPageState extends State<BgmListPage>
 
   @override
   Widget listItemBuilder(BgmEntity bgm) {
-    return ListTile(
-      dense: true,
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
-      leading: db.getIconImage(
-        bgm.logo,
-        aspectRatio: 124 / 60,
-      ),
-      trailing: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          if (bgm.shop != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Item.iconBuilder(
-                context: context,
-                item: bgm.shop!.cost.item,
-                text: bgm.shop!.cost.amount.format(),
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: ListTile(
+            dense: true,
+            contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
+            leading: db.getIconImage(
+              bgm.logo,
+              aspectRatio: 124 / 60,
+              width: 56,
             ),
-          SoundPlayButton(url: bgm.audioAsset, player: player)
-        ],
-      ),
-      horizontalTitleGap: 8,
-      title: Text(bgm.lName.l, textScaleFactor: 1),
-      subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaleFactor: 1),
-      onTap: () {
-        bgm.routeTo();
-      },
+            horizontalTitleGap: 8,
+            title: Text(bgm.lName.l, textScaleFactor: 1),
+            subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaleFactor: 1),
+            onTap: () {
+              bgm.routeTo();
+            },
+          ),
+        ),
+        if (bgm.shop != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Item.iconBuilder(
+              context: context,
+              item: bgm.shop!.cost.item,
+              text: bgm.shop!.cost.amount.format(),
+            ),
+          ),
+        if (bgm.shop != null)
+          Checkbox(
+            value: db.curUser.myRoomMusic.contains(bgm.id),
+            visualDensity: VisualDensity.compact,
+            onChanged: (v) {
+              setState(() {
+                db.curUser.myRoomMusic.toggle(bgm.id);
+              });
+            },
+          ),
+        SoundPlayButton(url: bgm.audioAsset, player: player),
+        const SizedBox(width: 8),
+      ],
     );
   }
 

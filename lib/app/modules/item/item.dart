@@ -66,7 +66,6 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   void initState() {
     super.initState();
     final item = db.gameData.items[widget.itemId];
-    print(item?.category);
     switch (item?.category) {
       case ItemCategory.normal:
       case ItemCategory.ascension:

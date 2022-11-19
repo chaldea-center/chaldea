@@ -234,6 +234,7 @@ class User {
   Map<int, CraftStatus> craftEssences;
   Map<int, int> mysticCodes;
   Set<String> summons;
+  Set<int> myRoomMusic;
 
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
@@ -253,6 +254,7 @@ class User {
     Map<int, dynamic>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
+    Set<int>? myRoomMusic,
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
@@ -269,6 +271,7 @@ class User {
         },
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
+        myRoomMusic = myRoomMusic ?? {},
         freeLPParams = freeLPParams ?? FreeLPParams(),
         luckyBagSvtScores = luckyBagSvtScores ?? {},
         saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan();
@@ -344,6 +347,7 @@ class User {
     craftEssences = sortDict(craftEssences);
     mysticCodes = sortDict(mysticCodes);
     summons = (summons.toList()..sort()).toSet();
+    myRoomMusic = (myRoomMusic.toList()..sort()).toSet();
     luckyBagSvtScores = sortDict(luckyBagSvtScores);
     freeLPParams.planItemCounts = sortDict(freeLPParams.planItemCounts);
     freeLPParams.planItemWeights = sortDict(freeLPParams.planItemWeights);
