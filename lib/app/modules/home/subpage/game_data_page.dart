@@ -284,7 +284,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
           await ImageViewerCacheManager().emptyCache();
         }
         if (temp) {
-          await AtlasApi.cacheManager.clearCache();
+          await AtlasApi.clear();
           if (!kIsWeb) {
             Directory(db.paths.tempDir)
               ..deleteSync(recursive: true)

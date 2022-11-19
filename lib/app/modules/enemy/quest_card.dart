@@ -95,19 +95,10 @@ class _QuestCardState extends State<QuestCard> {
         in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
       AtlasApi.questPhase(questId, phase,
               region: region, expireAfter: expireAfter)
-          .then((phaseData) {
-        if (phaseData != null) {
-          _cachedPhaseData['${region.name}/$questId/$phase'] = phaseData;
-          if (mounted) setState(() {});
-        }
+          .then((_) {
+        if (mounted) setState(() {});
       });
     }
-  }
-
-  static final Map<String, QuestPhase> _cachedPhaseData = {};
-
-  QuestPhase? _getCachedPhase(int phase) {
-    return _cachedPhaseData['${widget.region.name}/${widget.questId}/$phase'];
   }
 
   @override
@@ -286,7 +277,7 @@ class _QuestCardState extends State<QuestCard> {
     if (widget.offline) {
       curPhase = db.gameData.getQuestPhase(quest.id, phase);
     } else {
-      curPhase = _getCachedPhase(phase);
+      curPhase = AtlasApi.questPhaseCache(quest.id, phase, widget.region);
       if (widget.region == Region.jp) {
         curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }

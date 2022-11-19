@@ -127,12 +127,25 @@ class _CacheManager {
     }
   }
 
+  void removeWhere(bool Function(_CachedInfo info) test) {
+    _data.removeWhere((key, info) {
+      final remove = test(info);
+      if (remove) {
+        _memoryCache.remove(info.key);
+        _downloading.remove(info.url);
+      }
+      return remove;
+    });
+  }
+
   final RateLimiter _rateLimiter = RateLimiter();
 
   Future<List<int>?> _download(String url) async {
     print('fetching Atlas API: $url');
+    final _t = StopwatchX(url);
     final response = await DioE().get<List<int>>(url,
         options: Options(responseType: ResponseType.bytes));
+    _t.log();
     if (statusCodes.contains(response.statusCode) && response.data != null) {
       try {
         await _saveEntry(url, response);
@@ -277,10 +290,16 @@ class _CacheManager {
 class AtlasApi {
   const AtlasApi._();
   static final _CacheManager cacheManager = _CacheManager('atlas_api');
+  static final Map<String, QuestPhase> cachedQuestPhases = {};
 
   static RateLimiter get rateLimiter => cacheManager._rateLimiter;
 
   static String get _atlasApiHost => Hosts.atlasApiHost;
+
+  static Future<void> clear() async {
+    cachedQuestPhases.clear();
+    await cacheManager.clearCache();
+  }
 
   static Future<Map<String, dynamic>?> regionInfo(
       {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
@@ -327,11 +346,18 @@ class AtlasApi {
         }
       }
     }
+    final url = '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase';
     return cacheManager.getModel(
-      '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase',
-      (data) => QuestPhase.fromJson(data),
+      url,
+      (data) => cachedQuestPhases[url] = QuestPhase.fromJson(data),
       expireAfter: expireAfter,
     );
+  }
+
+  static QuestPhase? questPhaseCache(int questId, int phase,
+      [Region region = Region.jp]) {
+    return cachedQuestPhases[
+        '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase'];
   }
 
   static Future<List<MasterMission>?> masterMissions(

@@ -24,6 +24,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   int? questId;
   bool _loading = false;
   late Region region;
+  Key uniqueKey = UniqueKey();
 
   @override
   void initState() {
@@ -112,6 +113,18 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                 child: Text('No.$questId', textScaleFactor: 0.9),
               ),
               const PopupMenuDivider(),
+              PopupMenuItem(
+                onTap: () {
+                  final key = '/quest/$questId/';
+                  AtlasApi.cachedQuestPhases
+                      .removeWhere((key, value) => key.contains(key));
+                  AtlasApi.cacheManager
+                      .removeWhere((info) => info.url.contains(key));
+                  uniqueKey = UniqueKey();
+                  if (mounted) setState(() {});
+                },
+                child: Text(S.current.refresh),
+              ),
               ...SharedBuilder.websitesPopupMenuItems(
                 atlas: _quest == null
                     ? null
@@ -138,7 +151,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   quest: quest,
                   region: region,
                   offline: false,
-                  key: Key('${region.name}_${quest.id}'),
+                  key: uniqueKey,
                 ),
                 if (db.gameData.dropRate.newData.questIds.contains(quest.id))
                   blacklistButton,
