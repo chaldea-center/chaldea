@@ -381,6 +381,7 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
           endTime: $checkedConvert('endTime', (v) => v as String? ?? ""),
           title: $checkedConvert('title', (v) => v as String?),
           content: $checkedConvert('content', (v) => v as String?),
+          md: $checkedConvert('md', (v) => v as bool? ?? false),
           image: $checkedConvert('image', (v) => v as String?),
           link: $checkedConvert('link', (v) => v as String?),
           verMin: $checkedConvert(
@@ -404,6 +405,7 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
       'endTime': instance.endTime.toIso8601String(),
       'title': instance.title,
       'content': instance.content,
+      'md': instance.md,
       'image': instance.image,
       'link': instance.link,
       'verMin': _$JsonConverterToJson<String, AppVersion>(

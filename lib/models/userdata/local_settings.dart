@@ -287,6 +287,7 @@ class CarouselItem {
   DateTime endTime;
   String? title;
   String? content;
+  bool md;
   String? image;
   String? link;
   AppVersion? verMin;
@@ -301,6 +302,7 @@ class CarouselItem {
     String endTime = "",
     this.title,
     this.content,
+    this.md = false,
     this.image,
     this.link,
     this.verMin,

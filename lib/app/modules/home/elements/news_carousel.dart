@@ -8,6 +8,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
@@ -314,7 +315,12 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     final limitOption =
         CarouselUtil.limitHeight(width: widget.maxWidth, maxHeight: 150);
 
-    final pages = getPages();
+    final pages = getPages(
+        limitOption.height ??
+            (widget.maxWidth == null
+                ? null
+                : widget.maxWidth! / limitOption.aspectRatio),
+        limitOption.aspectRatio);
 
     if (pages.isEmpty) {
       pages.add(GestureDetector(
@@ -402,7 +408,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     );
   }
 
-  List<Widget> getPages() {
+  List<Widget> getPages(double? height, double aspectRatio) {
     List<Widget> sliders = [];
     if (carouselSetting.needUpdate) {
       AppNewsCarousel.resolveSliderImageUrls().then((_) {
@@ -429,25 +435,41 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       if (item.image != null && isURL(item.image!)) {
         child = CachedImage(
           imageUrl: item.image,
-          aspectRatio: 8 / 3,
+          aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
             errorWidget: (context, url, error) => Container(),
             fit: item.fit,
           ),
         );
       } else if (item.content?.isNotEmpty == true) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-          child: Center(
-            child: AutoSizeText(
-              item.content!,
-              textAlign: TextAlign.center,
-              maxFontSize: 20,
-              minFontSize: 5,
-              maxLines: item.content!.split('\n').length,
-            ),
+        if (item.md) {
+          child = FittedBox(
+            fit: BoxFit.scaleDown,
+            child: MarkdownBody(data: item.content!),
+          );
+        } else {
+          child = AutoSizeText(
+            item.content!,
+            textAlign: TextAlign.center,
+            maxFontSize: 20,
+            minFontSize: 5,
+            maxLines: item.content!.split('\n').length,
+          );
+        }
+
+        child = Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+            child: child,
           ),
         );
+        if (height != null && height > 0) {
+          child = SizedBox(
+            height: height,
+            width: height * aspectRatio,
+            child: Card(child: child),
+          );
+        }
       }
       if (child == null) continue;
       if (item.link != null) {
