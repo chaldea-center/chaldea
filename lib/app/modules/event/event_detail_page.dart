@@ -150,9 +150,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
             .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
-    if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
-      _addTab(S.current.event_campaign, EventCampaignDetailPage(event: event));
-    }
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
@@ -257,17 +254,11 @@ class EventItemsOverview extends StatefulWidget {
 }
 
 class _EventItemsOverviewState extends State<EventItemsOverview> {
-  late final ScrollController _scrollController;
+  late final ScrollController _scrollController = ScrollController();
 
   Event get event => widget.event;
 
   LimitEventPlan get plan => db.curUser.limitEventPlanOf(event.id);
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -646,6 +637,10 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             )
         ],
       ));
+    }
+
+    if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
+      children.add(EventCampaignDetailPage(event: event));
     }
 
     if (event.extra.relatedSummons.isNotEmpty) {

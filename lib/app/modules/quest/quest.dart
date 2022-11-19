@@ -143,6 +143,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                 if (db.gameData.dropRate.newData.questIds.contains(quest.id))
                   blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
+                ...getCampaigns(),
+                const SafeArea(child: SizedBox())
               ],
             ),
     );
@@ -210,5 +212,63 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             ],
           );
         });
+  }
+
+  bool _showAllCampaign = false;
+  List<Widget> getCampaigns() {
+    List<Widget> children = [];
+    final events = db.gameData.events.values
+        .where((e) =>
+            e.campaignQuests.any((q) => q.questId == quest.id) ||
+            e.campaigns.any((c) => c.targetIds.contains(quest.id)))
+        .toList();
+    if (!_showAllCampaign) {
+      events.removeWhere((e) => e.isOutdated());
+    }
+    events.sort2((e) => -e.startedAt);
+    for (final event in events) {
+      if (_showAllCampaign || !event.isOutdated()) {
+        List<String> times = [];
+        for (final r in <Region>{Region.jp, db.curUser.region, region}) {
+          final start = r == Region.jp
+              ? event.startedAt
+              : event.extra.startTime.ofRegion(r);
+          if (start == null) continue;
+          times.add('${r.upper}: ${start.sec2date().toDateString()}');
+        }
+        children.add(ListTile(
+          dense: true,
+          title: Text(event.lName.l),
+          subtitle: Text(times.join(' / ')),
+          onTap: event.routeTo,
+        ));
+      }
+    }
+    if (events.isNotEmpty) {
+      children.add(Center(
+        child: IconButton(
+          onPressed: () {
+            setState(() {
+              _showAllCampaign = !_showAllCampaign;
+            });
+          },
+          icon: Icon(_showAllCampaign
+              ? Icons.keyboard_arrow_up
+              : Icons.keyboard_arrow_down),
+        ),
+      ));
+    }
+    if (children.isEmpty) {
+      children.add(const ListTile(
+        title: Text('No future event'),
+        dense: true,
+      ));
+    }
+    return [
+      TileGroup(
+        header: S.current.event_campaign,
+        children: children,
+      )
+    ];
   }
 }

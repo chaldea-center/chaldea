@@ -5,7 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventCampaignDetailPage extends HookWidget {
+class EventCampaignDetailPage extends StatelessWidget {
   final Event event;
   const EventCampaignDetailPage({super.key, required this.event});
 
@@ -23,6 +23,7 @@ class EventCampaignDetailPage extends HookWidget {
           counts.addNum(quest?.type, 1);
         }
         children.add(ListTile(
+          dense: true,
           title: const Text('Target Quests'),
           subtitle: Text(counts.entries
               .map((e) => '${e.value} ${getQuestTypeName(e.key)}')
@@ -39,7 +40,7 @@ class EventCampaignDetailPage extends HookWidget {
     for (int index = 0; index < campaigns.length; index++) {
       children.addAll(itemBuilder(context, campaigns[index], index));
     }
-    return ListView(controller: useScrollController(), children: children);
+    return TileGroup(header: S.current.event_campaign, children: children);
   }
 
   List<Widget> itemBuilder(
