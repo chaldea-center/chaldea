@@ -136,7 +136,7 @@ class _BgmListPageState extends State<BgmListPage>
         Expanded(
           child: ListTile(
             dense: true,
-            contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
+            contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
             leading: db.getIconImage(
               bgm.logo,
               aspectRatio: 124 / 60,
@@ -151,18 +151,14 @@ class _BgmListPageState extends State<BgmListPage>
           ),
         ),
         if (bgm.shop != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Item.iconBuilder(
-              context: context,
-              item: bgm.shop!.cost.item,
-              text: bgm.shop!.cost.amount.format(),
-            ),
+          Item.iconBuilder(
+            context: context,
+            item: bgm.shop!.cost.item,
+            text: bgm.shop!.cost.amount.format(),
           ),
         if (bgm.shop != null)
           Checkbox(
             value: db.curUser.myRoomMusic.contains(bgm.id),
-            visualDensity: VisualDensity.compact,
             onChanged: (v) {
               setState(() {
                 db.curUser.myRoomMusic.toggle(bgm.id);
@@ -170,7 +166,7 @@ class _BgmListPageState extends State<BgmListPage>
             },
           ),
         SoundPlayButton(url: bgm.audioAsset, player: player),
-        const SizedBox(width: 8),
+        const SizedBox(width: 12),
       ],
     );
   }

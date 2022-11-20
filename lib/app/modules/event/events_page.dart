@@ -259,7 +259,7 @@ class EventListPageState extends State<EventListPage>
     if (filterData.contentType.options.isNotEmpty) {
       final List<EventCustomType> types = [
         if (event.lotteries.isNotEmpty) EventCustomType.lottery,
-        if (event.rewards.isNotEmpty) EventCustomType.point,
+        if (event.pointRewards.isNotEmpty) EventCustomType.point,
         if (event.missions.isNotEmpty) EventCustomType.mission,
         if (event.towers.isNotEmpty) EventCustomType.tower,
         if (event.treasureBoxes.isNotEmpty) EventCustomType.treasureBox,

@@ -106,11 +106,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     // missions
     if (event.missions.isNotEmpty) {
-      _addTab(S.current.mission, EventMissionsPage(event: event));
+      final randomMissions =
+          event.missions.where((e) => e.type == MissionType.random).toList();
+      final normalMissions =
+          event.missions.where((e) => e.type != MissionType.random).toList();
+      print(['random+normal:', randomMissions.length, normalMissions.length]);
+      if (randomMissions.isNotEmpty) {
+        _addTab(S.current.random_mission,
+            EventMissionsPage(event: event, missions: randomMissions));
+      }
+      if (normalMissions.isNotEmpty) {
+        _addTab(S.current.mission,
+            EventMissionsPage(event: event, missions: normalMissions));
+      }
     }
     // point rewards
     List<int> rewardGroups =
-        event.rewards.map((e) => e.groupId).toSet().toList()..sort();
+        event.pointRewards.map((e) => e.groupId).toSet().toList()..sort();
     for (final groupId in rewardGroups) {
       EventPointGroup? pointGroup =
           event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
@@ -133,12 +145,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
       views.add(EventPointsPage(event: event, groupId: groupId));
     }
     // shop last
-    List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList()
-      ..sort();
-    for (final slot in shopSlots) {
+    List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList();
+    shopSlots.sort();
+    for (int index = 0; index < shopSlots.length; index++) {
       _addTab(
-        S.current.event_shop + (shopSlots.length > 1 ? ' ${slot + 1}' : ''),
-        EventShopsPage(event: event, slot: slot),
+        S.current.event_shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
+        EventShopsPage(event: event, slot: shopSlots[index]),
       );
     }
     if (db.gameData.craftEssences.values
@@ -463,7 +475,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         );
       }));
     }
-    if (event.rewards.isNotEmpty) {
+    if (event.pointRewards.isNotEmpty) {
       children.addAll(_buildSwitchGroup(
         value: () => plan.point,
         enabled: () => plan.enabled,
@@ -862,7 +874,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
         onChanged: (v) => plan.shop = v,
       );
     }
-    if (event.rewards.isNotEmpty) {
+    if (event.pointRewards.isNotEmpty) {
       _addOption(
         title: S.current.event_point_reward,
         value: plan.point,

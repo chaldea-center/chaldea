@@ -9,7 +9,9 @@ import '../../master_mission/solver/scheme.dart';
 
 class EventMissionsPage extends StatefulWidget {
   final Event event;
-  const EventMissionsPage({super.key, required this.event});
+  final List<EventMission> missions;
+  const EventMissionsPage(
+      {super.key, required this.event, required this.missions});
 
   @override
   State<EventMissionsPage> createState() => _EventMissionsPageState();
@@ -19,7 +21,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
   Set<EventMission> selected = {};
   @override
   Widget build(BuildContext context) {
-    final missions = widget.event.missions.toList();
+    final missions = widget.missions.toList();
     missions.sort2((e) => e.dispNo);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -61,7 +63,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
           return missionBuilder(context, index - 1, missions);
         },
         separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
-        itemCount: widget.event.missions.length + 1,
+        itemCount: missions.length + 1,
       ),
     );
   }

@@ -30,9 +30,9 @@ Event _$EventFromJson(Map json) => Event(
                   (e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      rewards: (json['rewards'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventReward.fromJson(Map<String, dynamic>.from(e as Map)))
+      pointRewards: (json['rewards'] as List<dynamic>?)
+              ?.map((e) => EventPointReward.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       rewardScenes: (json['rewardScenes'] as List<dynamic>?)
@@ -274,7 +274,7 @@ ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
       closedItemName: json['closedItemName'] as String,
     );
 
-EventReward _$EventRewardFromJson(Map json) => EventReward(
+EventPointReward _$EventPointRewardFromJson(Map json) => EventPointReward(
       groupId: json['groupId'] as int,
       point: json['point'] as int,
       gifts: (json['gifts'] as List<dynamic>)

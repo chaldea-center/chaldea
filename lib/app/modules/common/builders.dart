@@ -40,6 +40,7 @@ class SharedBuilder {
       selectedItemBuilder: (context) => [
         for (final region in Region.values)
           DropdownMenuItem(
+            value: region,
             child: Text(
               region.localName,
               style: TextStyle(color: SharedBuilder.appBarForeground(context)),

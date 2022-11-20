@@ -24,8 +24,9 @@ class Event {
   int materialOpenedAt;
   List<int> warIds;
   List<NiceShop> shop;
-  List<EventReward> rewards; // point rewards
   List<EventRewardScene> rewardScenes;
+  @JsonKey(name: 'rewards')
+  List<EventPointReward> pointRewards; // point rewards
   List<EventPointGroup> pointGroups;
   List<EventPointBuff> pointBuffs;
   List<EventMission> missions;
@@ -59,7 +60,7 @@ class Event {
     required this.materialOpenedAt,
     this.warIds = const [],
     this.shop = const [],
-    this.rewards = const [],
+    this.pointRewards = const [],
     this.rewardScenes = const [],
     this.pointGroups = const [],
     this.pointBuffs = const [],
@@ -97,8 +98,9 @@ class Event {
       missions.isEmpty &&
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
-      rewards.isEmpty &&
+      pointRewards.isEmpty &&
       // bulletinBoards.isEmpty &&
+      // rewardScenes.isEmpty &&
       digging == null &&
       cooltime == null &&
       recipes.isEmpty &&
@@ -250,7 +252,7 @@ class Event {
 
     // point rewards
     itemPointReward.clear();
-    for (final point in rewards) {
+    for (final point in pointRewards) {
       Gift.checkAddGifts(itemPointReward, point.gifts);
     }
     statItemFixed.addDict(itemPointReward);
@@ -464,7 +466,7 @@ class ShopRelease {
 }
 
 @JsonSerializable()
-class EventReward {
+class EventPointReward {
   int groupId;
   int point;
   List<Gift> gifts;
@@ -472,7 +474,7 @@ class EventReward {
   // String bgImagePoint;
   // String bgImageGet;
 
-  EventReward({
+  EventPointReward({
     required this.groupId,
     required this.point,
     required this.gifts,
@@ -480,8 +482,8 @@ class EventReward {
     // required this.bgImageGet,
   });
 
-  factory EventReward.fromJson(Map<String, dynamic> json) =>
-      _$EventRewardFromJson(json);
+  factory EventPointReward.fromJson(Map<String, dynamic> json) =>
+      _$EventPointRewardFromJson(json);
 }
 
 @JsonSerializable()

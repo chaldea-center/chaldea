@@ -10,8 +10,8 @@ class EventPointsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<EventReward> rewards =
-        event.rewards.where((e) => e.groupId == groupId).toList();
+    List<EventPointReward> rewards =
+        event.pointRewards.where((e) => e.groupId == groupId).toList();
     rewards.sort2((e) => e.point);
 
     // <groupId, <point, buff>>
@@ -29,7 +29,7 @@ class EventPointsPage extends HookWidget {
     );
   }
 
-  Widget rewardBuilder(BuildContext context, EventReward reward,
+  Widget rewardBuilder(BuildContext context, EventPointReward reward,
       Map<int, EventPointBuff> pointBuffs) {
     List<InlineSpan> titles = [];
     for (final gift in reward.gifts) {
@@ -47,7 +47,7 @@ class EventPointsPage extends HookWidget {
           .add(CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 36)));
       titles.add(TextSpan(text: '${buff.name}\n'));
       titles.add(TextSpan(
-          text: 'Value: ${buff.value.format(percent: true, base: 100)}'));
+          text: 'Value: ${buff.value.format(percent: true, base: 10)}'));
     }
 
     return ListTile(

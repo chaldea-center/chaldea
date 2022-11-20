@@ -623,6 +623,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lottery_cost_per_roll":
             MessageLookupByLibrary.simpleMessage("Cost of 1 roll"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
+        "lucky_bag_best": MessageLookupByLibrary.simpleMessage("Best"),
         "lucky_bag_expectation":
             MessageLookupByLibrary.simpleMessage("Expectation"),
         "lucky_bag_expectation_short":
@@ -632,6 +633,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unwanted"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("Wanted"),
+        "lucky_bag_worst": MessageLookupByLibrary.simpleMessage("Worst"),
         "main_interlude":
             MessageLookupByLibrary.simpleMessage("Main Interlude"),
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
@@ -763,6 +765,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
+        "random_mission":
+            MessageLookupByLibrary.simpleMessage("Random Missions"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "Some quests\' start time is not correct"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),

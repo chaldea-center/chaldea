@@ -304,8 +304,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
             children: [
               for (final entry in {
                 _ExpSort.exp: S.current.lucky_bag_expectation_short,
-                _ExpSort.best5: 'Best/5',
-                _ExpSort.worst1: 'Worst/1'
+                _ExpSort.best5: '${S.current.lucky_bag_best}=5',
+                _ExpSort.worst1: '${S.current.lucky_bag_worst}=1'
               }.entries)
                 Expanded(
                   child: _underline(

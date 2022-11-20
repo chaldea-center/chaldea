@@ -523,6 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage("长按保存"),
         "lottery_cost_per_roll": MessageLookupByLibrary.simpleMessage("每抽消耗"),
         "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
+        "lucky_bag_best": MessageLookupByLibrary.simpleMessage("最优"),
         "lucky_bag_expectation": MessageLookupByLibrary.simpleMessage("期望值"),
         "lucky_bag_expectation_short":
             MessageLookupByLibrary.simpleMessage("期望"),
@@ -531,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("非常不想要"),
         "lucky_bag_tooltip_wanted":
             MessageLookupByLibrary.simpleMessage("非常想要！"),
+        "lucky_bag_worst": MessageLookupByLibrary.simpleMessage("最差"),
         "main_interlude": MessageLookupByLibrary.simpleMessage("主线物语"),
         "main_quest": MessageLookupByLibrary.simpleMessage("主线关卡"),
         "main_story": MessageLookupByLibrary.simpleMessage("主线记录"),
@@ -639,6 +641,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("奖励"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
         "random": MessageLookupByLibrary.simpleMessage("随机"),
+        "random_mission": MessageLookupByLibrary.simpleMessage("随机任务"),
         "rankup_timeline_hint":
             MessageLookupByLibrary.simpleMessage("部分关卡时间与实际开放时间不符"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),

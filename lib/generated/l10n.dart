@@ -4416,6 +4416,17 @@ class S {
     );
   }
 
+  /// `Best`
+  String get lucky_bag_best {
+    return Intl.message(
+      'Best',
+      name: 'lucky_bag_best',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Expectation`
   String get lucky_bag_expectation {
     return Intl.message(
@@ -4465,6 +4476,17 @@ class S {
     return Intl.message(
       'Wanted',
       name: 'lucky_bag_tooltip_wanted',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Worst`
+  String get lucky_bag_worst {
+    return Intl.message(
+      'Worst',
+      name: 'lucky_bag_worst',
       desc: '',
       locale: localeName,
       args: [],
@@ -5433,6 +5455,17 @@ class S {
     return Intl.message(
       'Random',
       name: 'random',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Random Missions`
+  String get random_mission {
+    return Intl.message(
+      'Random Missions',
+      name: 'random_mission',
       desc: '',
       locale: localeName,
       args: [],

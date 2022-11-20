@@ -157,6 +157,7 @@ class _NpChargePageState extends State<NpChargePage> {
             nps[2] += detail.sortValue;
             break;
           case EffectTarget.ptOne:
+            nps[0] += detail.sortValue;
             nps[1] += detail.sortValue;
             break;
           case EffectTarget.ptOther:

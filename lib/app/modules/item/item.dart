@@ -300,7 +300,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text(S.current.cancel),
+              child: Text(S.current.confirm),
             )
           ],
         );

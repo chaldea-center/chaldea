@@ -212,6 +212,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       CustomScrollView(
         controller: scrollController,
         slivers: slivers,
+        physics: const AlwaysScrollableScrollPhysics(),
       ),
     );
   }
@@ -251,6 +252,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       CustomScrollView(
         controller: scrollController,
         slivers: slivers,
+        physics: const AlwaysScrollableScrollPhysics(),
       ),
     );
   }

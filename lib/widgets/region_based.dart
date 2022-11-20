@@ -42,12 +42,14 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
       selectedItemBuilder: (context) {
         final style = TextStyle(color: SharedBuilder.appBarForeground(context));
         return [
-          DropdownMenuItem(
-            value: null,
-            child: Text('Inherit', style: style),
-          ),
+          if (shownNone)
+            DropdownMenuItem(
+              value: null,
+              child: Text('Inherit', style: style),
+            ),
           for (final region in Region.values)
             DropdownMenuItem(
+              value: region,
               child: Text(region.localName, style: style),
             )
         ];
