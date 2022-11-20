@@ -102,7 +102,11 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     List<VoiceGroup> groups = List.of(_svt?.profile.voices ?? []);
     for (final group in groups) {
       if (group.voiceLines.isEmpty) continue;
-      children.add(_buildGroup(context, group));
+      children.add(VoiceGroupAccordion(
+        group: group,
+        svt: _svt ?? widget.svt,
+        player: audioPlayer,
+      ));
     }
     Widget view;
     if (groups.isEmpty) {
@@ -152,38 +156,55 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
     );
   }
 
-  Event? _getEvent(List<VoiceLine> lines) {
-    for (final line in lines) {
-      for (final cond in line.conds) {
-        final event = db.gameData.events[cond.value];
-        if (event != null) return event;
-      }
-    }
-    return null;
-  }
+  final audioPlayer = MyAudioPlayer<VoiceLine>();
 
-  Widget _buildGroup(BuildContext context, VoiceGroup group) {
-    final svt = _svt ?? widget.svt;
+  @override
+  void dispose() {
+    super.dispose();
+    audioPlayer.stop();
+  }
+}
+
+class VoiceGroupAccordion extends StatelessWidget {
+  final VoiceGroup group;
+  final MyAudioPlayer<VoiceLine> player;
+  final Servant? _svt;
+  final Event? event;
+
+  const VoiceGroupAccordion({
+    super.key,
+    required this.group,
+    required this.player,
+    Servant? svt,
+    this.event,
+  }) : _svt = svt;
+
+  @override
+  Widget build(BuildContext context) {
     final voiceLines = group.voiceLines.toList()
       ..sort2((e) => e.priority ?? 0, reversed: true);
+    final svt =
+        _svt?.id == group.svtId ? _svt : db.gameData.servantsById[group.svtId];
     return SimpleAccordion(
       headerBuilder: (context, _) {
         List<InlineSpan> suffixes = [];
         if (group.voicePrefix != 0) {
-          final ascensions = svt.ascensionAdd.voicePrefix.ascension.entries
-              .where((e) => e.value == group.voicePrefix)
-              .map((e) => e.key)
-              .toList();
-          final costumes = svt.ascensionAdd.voicePrefix.costume.entries
-              .where((e) => e.value == group.voicePrefix)
-              .map((e) => e.key)
-              .toList();
+          final ascensions = svt?.ascensionAdd.voicePrefix.ascension.entries
+                  .where((e) => e.value == group.voicePrefix)
+                  .map((e) => e.key)
+                  .toList() ??
+              [];
+          final costumes = svt?.ascensionAdd.voicePrefix.costume.entries
+                  .where((e) => e.value == group.voicePrefix)
+                  .map((e) => e.key)
+                  .toList() ??
+              [];
           if (ascensions.isNotEmpty) {
             suffixes.add(TextSpan(
                 text: '${S.current.ascension_short} ${ascensions.join("&")}'));
           }
           for (final costumeId in costumes) {
-            final costume = svt.profile.costume.values
+            final costume = svt?.profile.costume.values
                 .firstWhereOrNull((e) => e.battleCharaId == costumeId);
             suffixes.add(SharedBuilder.textButtonSpan(
               context: context,
@@ -202,9 +223,26 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
             onTap: () => event.routeTo(),
           ));
         }
-        String name = Transl.enums(group.type, (enums) => enums.svtVoiceType).l;
+        InlineSpan? svtSpan;
+        if (group.svtId != _svt?.id) {
+          var curSvt = db.gameData.servantsById[group.svtId] ??
+              db.gameData.entities[group.svtId];
+          svtSpan = curSvt == null
+              ? TextSpan(text: '${group.svtId} ')
+              : SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '${curSvt.lName.l} ',
+                  onTap: curSvt.routeTo,
+                );
+        }
+        group.svtId;
         return ListTile(
-          title: Text(name),
+          title: Text.rich(TextSpan(children: [
+            if (svtSpan != null) svtSpan,
+            TextSpan(
+                text:
+                    Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
+          ])),
           subtitle: suffixes.isEmpty
               ? null
               : Text.rich(
@@ -221,14 +259,15 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
       },
       contentBuilder: (context) {
         List<Widget> children = [];
-        if (group.svtId != svt.id) {
+        if (group.svtId != svt?.id) {
           children.add(ListTile(
             title: Text(S.current.card_asset_chara_figure),
             trailing: Text(group.svtId.toString()),
             dense: true,
             onTap: () {
+              const limitCount = 0;
               FullscreenImageViewer.show(context: context, urls: [
-                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}0/${group.svtId}0_merged.png'
+                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}0/${group.svtId}$limitCount.png'
               ]);
             },
           ));
@@ -241,6 +280,32 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         return Column(children: children);
       },
     );
+  }
+
+  Event? _getEvent(List<VoiceLine> lines) {
+    for (final line in lines) {
+      for (final cond in line.conds) {
+        final e = db.gameData.events[cond.value];
+        if (e != null && e.id != event?.id) return e;
+      }
+    }
+    return null;
+  }
+
+  Future<List<AudioSource>> getSources(VoiceLine line) async {
+    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
+    List<AudioSource> sources = [];
+    for (int index = 0; index < line.audioAssets.length; index++) {
+      int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
+      if (delay > 0) {
+        sources
+            .add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
+      }
+      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
+      if (fp == null) continue;
+      sources.add(AudioSource.uri(Uri.file(fp)));
+    }
+    return sources;
   }
 
   Widget _buildVoiceLine(
@@ -350,7 +415,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                     );
                   } else {
                     return _PlayButton(
-                      player: audioPlayer,
+                      player: player,
                       getSources: () {
                         return getSources(line);
                       },
@@ -388,7 +453,6 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                         localFiles.add(await AtlasIconLoader.i.get(url));
                       }
                       EasyLoading.dismiss();
-                      if (!mounted) return;
                       String? _dir =
                           localFiles.firstWhereOrNull((e) => e != null);
                       if (_dir != null) _dir = pathlib.dirname(_dir);
@@ -415,7 +479,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
                                 S.current.open_in_file_manager);
                           }
                         },
-                      ).showDialog(context);
+                      ).showDialog(null);
                     },
                     icon: const Icon(Icons.file_download),
                     tooltip: S.current.download,
@@ -433,30 +497,6 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         const SizedBox(height: 8),
       ],
     );
-  }
-
-  static final audioPlayer = MyAudioPlayer<VoiceLine>();
-
-  Future<List<AudioSource>> getSources(VoiceLine line) async {
-    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
-    List<AudioSource> sources = [];
-    for (int index = 0; index < line.audioAssets.length; index++) {
-      int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
-      if (delay > 0) {
-        sources
-            .add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
-      }
-      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
-      if (fp == null) continue;
-      sources.add(AudioSource.uri(Uri.file(fp)));
-    }
-    return sources;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    audioPlayer.stop();
   }
 }
 

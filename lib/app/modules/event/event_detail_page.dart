@@ -30,6 +30,7 @@ import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
 import 'detail/treasure_box.dart';
+import 'detail/voice.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
@@ -152,6 +153,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.rewardScenes.isNotEmpty) {
       _addTab('Scenes', EventRewardScenePage(event: event));
+    }
+    if (event.voices.isNotEmpty) {
+      _addTab(S.current.voice, EventVoicePage(event: event));
     }
     return DefaultTabController(
       length: tabs.length,
