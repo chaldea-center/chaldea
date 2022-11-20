@@ -626,6 +626,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   context: context, item: null, itemId: itemId, width: 36),
               title: Text(Item.getName(itemId)),
               subtitle: extraItems.items[itemId]?.l?.toText(),
+              horizontalTitleGap: 8,
               trailing: _inputGroup(
                 value: () => plan.extraItems[extraItems.id]?[itemId],
                 onChanged: (value) {

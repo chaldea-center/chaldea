@@ -192,8 +192,8 @@ class _LoginPageState extends State<LoginPage> {
             useRootNavigator: false,
             builder: (context) => SimpleCancelOkDialog(
               title: Text(S.current.login_forget_pwd),
-              content: const Text(
-                  'Please contact developer through feedback page with *Email*'),
+              content:
+                  const Text('Contact via Email or Feedback, check <FAQ>.'),
               scrollable: true,
               hideOk: true,
               actions: [
@@ -203,6 +203,12 @@ class _LoginPageState extends State<LoginPage> {
                     router.push(child: FeedbackPage());
                   },
                   child: Text(S.current.about_feedback),
+                ),
+                TextButton(
+                  onPressed: () {
+                    launch(HttpUrlHelper.projectDocUrl('faq'));
+                  },
+                  child: Text(S.current.faq),
                 )
               ],
             ),

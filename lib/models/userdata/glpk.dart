@@ -211,7 +211,7 @@ class LPVariable<T> {
 
 T _fromJsonT<T>(Object? data) => data as T;
 
-Object? _toJsonT<T>(T value) => value.toString();
+Object? _toJsonT<T>(T value) => value;
 
 /// min c'x
 ///   Ax>=b

@@ -278,11 +278,37 @@ MappingBase<T> _$MappingBaseFromJson<T>(
       kr: _$nullableGenericFromJson(json['KR'], fromJsonT),
     );
 
+Map<String, dynamic> _$MappingBaseToJson<T>(
+  MappingBase<T> instance,
+  Object? Function(T value) toJsonT,
+) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('JP', _$nullableGenericToJson(instance.jp, toJsonT));
+  writeNotNull('CN', _$nullableGenericToJson(instance.cn, toJsonT));
+  writeNotNull('TW', _$nullableGenericToJson(instance.tw, toJsonT));
+  writeNotNull('NA', _$nullableGenericToJson(instance.na, toJsonT));
+  writeNotNull('KR', _$nullableGenericToJson(instance.kr, toJsonT));
+  return val;
+}
+
 T? _$nullableGenericFromJson<T>(
   Object? input,
   T Function(Object? json) fromJson,
 ) =>
     input == null ? null : fromJson(input);
+
+Object? _$nullableGenericToJson<T>(
+  T? input,
+  Object? Function(T value) toJson,
+) =>
+    input == null ? null : toJson(input);
 
 MappingList<T> _$MappingListFromJson<T>(
   Map json,

@@ -361,11 +361,12 @@ class M {
   }
 }
 
-T _fromJsonT<T>(Object? obj) {
-  return obj as T;
-}
+T _fromJsonT<T>(Object? obj) => obj as T;
 
-@JsonSerializable(genericArgumentFactories: true)
+Object? _toJsonT<T>(T value) => value;
+
+@JsonSerializable(
+    genericArgumentFactories: true, createToJson: true, includeIfNull: false)
 class MappingBase<T> {
   @JsonKey(name: 'JP')
   T? jp;
@@ -450,6 +451,8 @@ class MappingBase<T> {
 
   factory MappingBase.fromJson(Map<String, dynamic> json) =>
       _$MappingBaseFromJson(json, _fromJsonT);
+
+  Map<String, dynamic> toJson() => _$MappingBaseToJson(this, _toJsonT);
 
   MappingBase<T> copyWith({
     T? jp,
