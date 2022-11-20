@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/root/global_fab.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../routes/root_delegate.dart';
@@ -206,7 +209,39 @@ class MultipleWindow extends StatelessWidget {
     int crossCount = windowSize.width ~/ 300;
     return Scaffold(
       backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
-      appBar: AppBar(title: const Text('Tabs')),
+      appBar: AppBar(
+        title: const Text('Tabs'),
+        actions: [
+          DropdownButton<Language>(
+            value: Language.getLanguage(S.current.localeName),
+            items: [
+              for (final lang in Language.supportLanguages)
+                DropdownMenuItem(value: lang, child: Text(lang.name))
+            ],
+            icon: Icon(
+              Icons.arrow_drop_down,
+              color: SharedBuilder.appBarForeground(context),
+            ),
+            selectedItemBuilder: (context) => [
+              for (final lang in Language.supportLanguages)
+                DropdownMenuItem(
+                  value: lang,
+                  child: Text(
+                    lang.name,
+                    style: TextStyle(
+                        color: SharedBuilder.appBarForeground(context)),
+                  ),
+                )
+            ],
+            onChanged: (lang) {
+              if (lang == null) return;
+              db.settings.setLanguage(lang);
+              db.notifyAppUpdate();
+            },
+            underline: const SizedBox(),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: GridView.count(
           crossAxisCount: max(crossCount, 2),
