@@ -106,6 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reinicio automático"),
         "auto_update":
             MessageLookupByLibrary.simpleMessage("Actualizar automáticamente"),
+        "background": MessageLookupByLibrary.simpleMessage("Fondo"),
         "backup": MessageLookupByLibrary.simpleMessage("Respaldo"),
         "backup_failed":
             MessageLookupByLibrary.simpleMessage("Copia de seguridad fallida"),
@@ -303,7 +304,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Consulte las <**FAQ**> antes de enviar comentarios. Los siguientes detalles son deseados:\n- Cómo reproducir el problema, comportamiento esperado\n- Versión de la aplicación/conjunto de datos, sistema del dispositivo y versión\n- Adjunte capturas de pantalla y registros\n- Es mejor proporcionar información de contacto (por ejemplo, correo electrónico)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Enviar"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("Asunto"),
-        "ffo_background": MessageLookupByLibrary.simpleMessage("Fondo"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("Cuerpo"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("Cortar"),
         "ffo_head": MessageLookupByLibrary.simpleMessage("Cabeza"),

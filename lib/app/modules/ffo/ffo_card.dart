@@ -352,7 +352,7 @@ abstract class FFOUtil {
         String partName = [
           S.current.ffo_head,
           S.current.ffo_body,
-          S.current.ffo_background
+          S.current.background
         ][index];
         parts.add('$partName: No.${part.collectionNo}-${part.svt?.shownName}');
       }

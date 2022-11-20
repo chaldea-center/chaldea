@@ -95,6 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attachment": MessageLookupByLibrary.simpleMessage("مرفق"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("إعادة ضبط تلقائي"),
         "auto_update": MessageLookupByLibrary.simpleMessage("تحديث تلقائي"),
+        "background": MessageLookupByLibrary.simpleMessage("خلفية"),
         "backup": MessageLookupByLibrary.simpleMessage("النسخ احتياطي"),
         "backup_failed":
             MessageLookupByLibrary.simpleMessage("فشل النسخ الاحتياطي"),
@@ -268,7 +269,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "يرجى مراجعة <** FAQ **> أولاً قبل التواصل .  والتفاصيل التالية مطلوبة:\n - كيف يجب ان يكون / المتوقع \n - إصدار التطبيق / إصدار حزمة البيانات الحالية ونظام الجهاز والإصدار\n - إرفاق لقطات وسجلات\n - من الأفضل تقديم معلومات الاتصال (مثل البريد الإلكتروني)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("ارسل"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("هدف"),
-        "ffo_background": MessageLookupByLibrary.simpleMessage("خلفية"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("جسد"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("تكبير"),
         "ffo_head": MessageLookupByLibrary.simpleMessage("رأس"),

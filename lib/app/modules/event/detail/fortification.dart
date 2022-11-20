@@ -41,12 +41,12 @@ class EventFortificationPage extends HookWidget {
       ));
     }
     if (event.id == 80400) {
-      children.add(const SHeader('Background Images'));
+      children.add(SHeader(S.current.background));
       for (final bgId in [1, 2, 3]) {
         final bgStr = bgId.toString().padLeft(2, '0');
         _withColor(ListTile(
           dense: true,
-          title: Text('Background $bgId'),
+          title: Text('${S.current.background} $bgId'),
           trailing: const Icon(Icons.photo),
           onTap: () {
             FullscreenImageViewer.show(context: context, urls: [

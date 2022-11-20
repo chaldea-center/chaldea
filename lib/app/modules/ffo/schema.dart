@@ -20,7 +20,7 @@ extension FfoPartWhereX on FfoPartWhere {
   static Map<FfoPartWhere, String> get _map => {
         FfoPartWhere.head: S.current.ffo_head,
         FfoPartWhere.body: S.current.ffo_body,
-        FfoPartWhere.bg: S.current.ffo_background,
+        FfoPartWhere.bg: S.current.background,
       };
   String get shownName => _map[this]!;
 }

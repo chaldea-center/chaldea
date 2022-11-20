@@ -18,7 +18,7 @@ class EventDiggingTab extends StatelessWidget {
         dense: true,
         title: const Text('Map'),
         subtitle: Text('Size ${digging.sizeX}x${digging.sizeY}'),
-        trailing: const Icon(Icons.photo),
+        trailing: db.getIconImage(digging.bgImage),
         onTap: () {
           FullscreenImageViewer.show(context: context, urls: [digging.bgImage]);
         },

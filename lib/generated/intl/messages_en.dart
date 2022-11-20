@@ -115,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
+        "background": MessageLookupByLibrary.simpleMessage("Background"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("Backup failed"),
         "backup_history":
@@ -348,7 +349,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("Subject"),
-        "ffo_background": MessageLookupByLibrary.simpleMessage("Background"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("Body"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("Crop"),
         "ffo_head": MessageLookupByLibrary.simpleMessage("Head"),

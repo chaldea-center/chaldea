@@ -405,6 +405,17 @@ class S {
     );
   }
 
+  /// `Background`
+  String get background {
+    return Intl.message(
+      'Background',
+      name: 'background',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Backup`
   String get backup {
     return Intl.message(
@@ -2269,17 +2280,6 @@ class S {
     return Intl.message(
       'Subject',
       name: 'feedback_subject',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Background`
-  String get ffo_background {
-    return Intl.message(
-      'Background',
-      name: 'ffo_background',
       desc: '',
       locale: localeName,
       args: [],

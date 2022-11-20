@@ -26,6 +26,7 @@ import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/points.dart';
 import 'detail/recipe.dart';
+import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
 import 'detail/treasure_box.dart';
@@ -139,16 +140,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
         EventShopsPage(event: event, slot: slot),
       );
     }
-
-    if (event.bulletinBoards.isNotEmpty) {
-      _addTab(
-          S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
-    }
     if (db.gameData.craftEssences.values
             .any((ce) => ce.eventSkills(event).isNotEmpty) ||
         db.gameData.servantsNoDup.values
             .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
+    }
+    if (event.bulletinBoards.isNotEmpty) {
+      _addTab(
+          S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
+    }
+    if (event.rewardScenes.isNotEmpty) {
+      _addTab('Scenes', EventRewardScenePage(event: event));
     }
     return DefaultTabController(
       length: tabs.length,

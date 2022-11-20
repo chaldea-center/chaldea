@@ -178,7 +178,9 @@ class SSelect extends StatelessWidget {
 class TileGroup extends StatelessWidget {
   final List<Widget> children;
   final String? header;
+  final Widget? headerWidget;
   final String? footer;
+  final Widget? footerWidget;
   final EdgeInsets? padding;
   final Widget divider;
   final bool innerDivider;
@@ -191,7 +193,9 @@ class TileGroup extends StatelessWidget {
     super.key,
     this.children = const [],
     this.header,
+    this.headerWidget,
     this.footer,
+    this.footerWidget,
     this.padding,
     this.divider = const Divider(height: 1, thickness: 0.5),
     this.innerDivider = false,
@@ -209,8 +213,15 @@ class TileGroup extends StatelessWidget {
     } else {
       group = [divider, ...children, divider];
     }
+    Widget? headerWidget = this.headerWidget, footerWidget = this.footerWidget;
+    if (header != null) {
+      headerWidget ??= SHeader(header!);
+    }
+    if (footer != null) {
+      footerWidget ??= SFooter(footer!);
+    }
     final _children = <Widget>[
-      if (header != null) SHeader(header!),
+      if (headerWidget != null) headerWidget,
       Material(
         color: tileColor ?? Theme.of(context).cardColor,
         child: Column(
@@ -219,7 +230,7 @@ class TileGroup extends StatelessWidget {
           children: group,
         ),
       ),
-      if (footer != null) SFooter(footer!)
+      if (footerWidget != null) footerWidget,
     ];
     if (scrollable) {
       return ListView(
