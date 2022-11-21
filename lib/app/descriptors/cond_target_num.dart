@@ -489,6 +489,15 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
                 missionList(context, missionMap)),
           );
         }
+      case CondType.startRandomMission:
+        final targets = targetIds.join(', ');
+        return localized(
+          jp: null,
+          cn: () => text('开始随机任务: $targets'),
+          tw: null,
+          na: () => text('Start Random Mission: $targets'),
+          kr: null,
+        );
       // case CondType.missionConditionDetail:
       case CondType.date:
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)

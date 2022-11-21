@@ -199,6 +199,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敵攻撃補正"),
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
         "demands": MessageLookupByLibrary.simpleMessage("要件"),
+        "detective_mission": MessageLookupByLibrary.simpleMessage("探偵ミッション"),
+        "detective_rank": MessageLookupByLibrary.simpleMessage("探偵ランク"),
         "display_grid": MessageLookupByLibrary.simpleMessage("グリッド"),
         "display_list": MessageLookupByLibrary.simpleMessage("リスト"),
         "display_setting": MessageLookupByLibrary.simpleMessage("設定表示"),

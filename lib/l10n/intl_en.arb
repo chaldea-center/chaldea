@@ -121,6 +121,8 @@
   "delete": "Delete",
   "demands": "Demands",
   "desktop_only": "Desktop only",
+  "detective_mission": "Detective Missions",
+  "detective_rank": "Detective Rank",
   "display_grid": "Grid",
   "display_list": "List",
   "display_setting": "Display Settings",

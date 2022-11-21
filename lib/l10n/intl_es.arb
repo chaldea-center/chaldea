@@ -121,6 +121,8 @@
   "delete": "Eliminar",
   "demands": "Demandado",
   "desktop_only": null,
+  "detective_mission": null,
+  "detective_rank": null,
   "display_grid": null,
   "display_list": null,
   "display_setting": "Configuración de pantalla",

@@ -55,6 +55,11 @@ Event _$EventFromJson(Map json) => Event(
                   EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      randomMissions: (json['randomMissions'] as List<dynamic>?)
+              ?.map((e) => EventRandomMission.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       towers: (json['towers'] as List<dynamic>?)
               ?.map((e) =>
                   EventTower.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -410,6 +415,16 @@ const _$MissionRewardTypeEnumMap = {
   MissionRewardType.extra: 'extra',
   MissionRewardType.set: 'set',
 };
+
+EventRandomMission _$EventRandomMissionFromJson(Map json) => EventRandomMission(
+      missionId: json['missionId'] as int,
+      missionRank: json['missionRank'] as int,
+      condType: json['condType'] == null
+          ? CondType.none
+          : toEnumCondType(json['condType'] as Object),
+      condId: json['condId'] as int,
+      condNum: json['condNum'] as int,
+    );
 
 EventTowerReward _$EventTowerRewardFromJson(Map json) => EventTowerReward(
       floor: json['floor'] as int,

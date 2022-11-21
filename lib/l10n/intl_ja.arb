@@ -121,6 +121,8 @@
   "delete": "削除",
   "demands": "要件",
   "desktop_only": null,
+  "detective_mission": "探偵ミッション",
+  "detective_rank": "探偵ランク",
   "display_grid": "グリッド",
   "display_list": "リスト",
   "display_setting": "設定表示",

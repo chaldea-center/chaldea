@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/models/models.dart';
 import 'descriptor_base.dart';
+import 'multi_entry.dart';
 
 class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final int targetNum;
@@ -116,7 +117,9 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
           kr: () => text('1부 또는 2부의 메인 퀘스트를 $targetNum회 클리어'),
         );
       case DetailCondType.enemyKillNum:
+      case DetailCondType.targetQuestEnemyKillNum:
         return localized(
+          context: context,
           jp: () => combineToRich(
               context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () =>
@@ -132,7 +135,9 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.defeatEnemyIndividuality:
       case DetailCondType.enemyIndividualityKillNum:
+      case DetailCondType.targetQuestEnemyIndividualityKillNum:
         return localized(
+          context: context,
           jp: () => combineToRich(
               context, null, traits(context), '特性を持つ敵を$targetNum体倒せ'),
           cn: () => combineToRich(
@@ -204,7 +209,9 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.itemGetBattle:
       case DetailCondType.itemGetTotal:
+      case DetailCondType.targetQuestItemGetTotal:
         return localized(
+          context: context,
           jp: () =>
               combineToRich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () =>
@@ -275,5 +282,34 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       kr: () =>
           text('알 수 없는 조건(${detail.missionCondType}): $targetIds, $targetNum'),
     );
+  }
+
+  @override
+  List<InlineSpan> localized({
+    BuildContext? context,
+    required List<InlineSpan> Function()? jp,
+    required List<InlineSpan> Function()? cn,
+    required List<InlineSpan> Function()? tw,
+    required List<InlineSpan> Function()? na,
+    required List<InlineSpan> Function()? kr,
+  }) {
+    final spans = super.localized(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
+    if (detail.targetQuestIndividualities.isEmpty) return spans;
+    assert(context != null);
+    final questTraits =
+        detail.targetQuestIndividualities.map((e) => e.signedId).toList();
+    return [
+      ...spans,
+      if (context != null)
+        ...super.localized(
+          jp: null,
+          cn: () => combineToRich(null, '[所需关卡特性: ',
+              MultiDescriptor.traits(context, questTraits), ']'),
+          tw: null,
+          na: () => combineToRich(null, '[Required Quest Trait: ',
+              MultiDescriptor.traits(context, questTraits), ']'),
+          kr: null,
+        )
+    ];
   }
 }

@@ -236,6 +236,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
+        "detective_mission":
+            MessageLookupByLibrary.simpleMessage("Detective Missions"),
+        "detective_rank":
+            MessageLookupByLibrary.simpleMessage("Detective Rank"),
         "display_grid": MessageLookupByLibrary.simpleMessage("Grid"),
         "display_list": MessageLookupByLibrary.simpleMessage("List"),
         "display_setting":

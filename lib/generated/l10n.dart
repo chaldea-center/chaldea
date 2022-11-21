@@ -1395,6 +1395,28 @@ class S {
     );
   }
 
+  /// `Detective Missions`
+  String get detective_mission {
+    return Intl.message(
+      'Detective Missions',
+      name: 'detective_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Detective Rank`
+  String get detective_rank {
+    return Intl.message(
+      'Detective Rank',
+      name: 'detective_rank',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grid`
   String get display_grid {
     return Intl.message(

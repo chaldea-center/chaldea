@@ -30,6 +30,7 @@ class Event {
   List<EventPointGroup> pointGroups;
   List<EventPointBuff> pointBuffs;
   List<EventMission> missions;
+  List<EventRandomMission> randomMissions;
   List<EventTower> towers;
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
@@ -65,6 +66,7 @@ class Event {
     this.pointGroups = const [],
     this.pointBuffs = const [],
     this.missions = const [],
+    this.randomMissions = const [],
     this.towers = const [],
     this.lotteries = const [],
     this.treasureBoxes = const [],
@@ -96,6 +98,7 @@ class Event {
       shop.isEmpty &&
       lotteries.isEmpty &&
       missions.isEmpty &&
+      randomMissions.isEmpty &&
       treasureBoxes.isEmpty &&
       towers.isEmpty &&
       pointRewards.isEmpty &&
@@ -644,6 +647,28 @@ class EventMission {
 
   factory EventMission.fromJson(Map<String, dynamic> json) =>
       _$EventMissionFromJson(json);
+}
+
+@JsonSerializable()
+class EventRandomMission {
+  // int  eventId;
+  int missionId;
+  int missionRank;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType condType; // CondType.progressValueEqual
+  int condId; // eventId
+  int condNum; // 0-5, detective rank
+
+  EventRandomMission({
+    required this.missionId,
+    required this.missionRank,
+    this.condType = CondType.none,
+    required this.condId,
+    required this.condNum,
+  });
+
+  factory EventRandomMission.fromJson(Map<String, dynamic> json) =>
+      _$EventRandomMissionFromJson(json);
 }
 
 @JsonSerializable()

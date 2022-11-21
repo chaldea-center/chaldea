@@ -121,6 +121,8 @@
   "delete": "刪除",
   "demands": "需求",
   "desktop_only": "僅限桌面版",
+  "detective_mission": null,
+  "detective_rank": null,
   "display_grid": "網格",
   "display_list": "列表",
   "display_setting": "顯示設置",

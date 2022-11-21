@@ -121,6 +121,8 @@
   "delete": "삭제",
   "demands": "요구량",
   "desktop_only": "데스크탑 만",
+  "detective_mission": null,
+  "detective_rank": null,
   "display_grid": "그리드",
   "display_list": "리스트",
   "display_setting": "화면 설정",

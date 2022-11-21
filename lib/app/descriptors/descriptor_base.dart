@@ -11,6 +11,7 @@ abstract class DescriptorBase {
   bool? get useAnd;
 
   List<InlineSpan> localized({
+    BuildContext? context,
     required List<InlineSpan> Function()? jp,
     required List<InlineSpan> Function()? cn,
     required List<InlineSpan> Function()? tw,
@@ -41,7 +42,7 @@ abstract class DescriptorBase {
   }
 
   List<InlineSpan> combineToRich(
-    BuildContext context,
+    BuildContext? context,
     String? text1, [
     List<InlineSpan>? children2,
     String? text3,

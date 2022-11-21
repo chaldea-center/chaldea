@@ -35,7 +35,8 @@ class CustomMission {
     required bool useAnd,
   }) : _useAnd = useAnd;
 
-  static CustomMission? fromEventMission(EventMission eventMission) {
+  static CustomMission? fromEventMission(EventMission? eventMission) {
+    if (eventMission == null) return null;
     for (final cond in eventMission.conds) {
       if (cond.missionProgressType != MissionProgressType.clear ||
           cond.condType != CondType.missionConditionDetail ||

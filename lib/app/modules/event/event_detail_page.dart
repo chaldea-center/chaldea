@@ -25,6 +25,7 @@ import 'detail/fortification.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/points.dart';
+import 'detail/random_mission.dart';
 import 'detail/recipe.dart';
 import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
@@ -105,20 +106,15 @@ class _EventDetailPageState extends State<EventDetailPage> {
           S.current.event_fortification, EventFortificationPage(event: event));
     }
     // missions
-    if (event.missions.isNotEmpty) {
-      final randomMissions =
-          event.missions.where((e) => e.type == MissionType.random).toList();
-      final normalMissions =
-          event.missions.where((e) => e.type != MissionType.random).toList();
-      print(['random+normal:', randomMissions.length, normalMissions.length]);
-      if (randomMissions.isNotEmpty) {
-        _addTab(S.current.random_mission,
-            EventMissionsPage(event: event, missions: randomMissions));
-      }
-      if (normalMissions.isNotEmpty) {
-        _addTab(S.current.mission,
-            EventMissionsPage(event: event, missions: normalMissions));
-      }
+    if (event.randomMissions.isNotEmpty) {
+      _addTab(
+          S.current.detective_mission, EventRandomMissionsPage(event: event));
+    }
+    final normalMissions =
+        event.missions.where((e) => e.type != MissionType.random).toList();
+    if (normalMissions.isNotEmpty) {
+      _addTab(S.current.mission,
+          EventMissionsPage(event: event, missions: normalMissions));
     }
     // point rewards
     List<int> rewardGroups =

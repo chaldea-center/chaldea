@@ -76,12 +76,14 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
       key: Key('event_mission_${mission.id}'),
       headerBuilder: (context, _) => ListTile(
         leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
-        title: Text(mission.name, textScaleFactor: 0.9),
+        title: Text(mission.name, textScaleFactor: 0.8),
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        minLeadingWidth: 32,
         trailing: customMission == null
             ? null
             : Checkbox(
+                visualDensity: VisualDensity.compact,
                 value: selected.contains(mission),
                 onChanged: (v) {
                   selected.toggle(mission);
