@@ -689,6 +689,7 @@ enum EventCustomType {
   warBoard,
   lottery,
   mission,
+  randomMission,
   point,
   tower,
   treasureBox,

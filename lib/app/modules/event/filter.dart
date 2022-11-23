@@ -82,6 +82,8 @@ class _EventFilterPageState
                 return Text(S.current.hunting_quest);
               case EventCustomType.mission:
                 return Text(S.current.mission);
+              case EventCustomType.randomMission:
+                return Text(S.current.detective_mission);
               case EventCustomType.point:
                 return Text(S.current.event_point);
               case EventCustomType.tower:
