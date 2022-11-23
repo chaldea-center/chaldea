@@ -93,8 +93,9 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
   }
 
   Widget getGuide(EventRewardSceneGuide guide) {
+    final svtId = db.gameData.storyCharaFigures[guide.imageId] ?? guide.imageId;
     String name = guide.displayName ??
-        db.gameData.servantsById[guide.imageId]?.lName.jp ??
+        db.gameData.servantsById[svtId]?.lName.jp ??
         guide.imageId.toString();
     return ListTile(
       title: Text(Transl.svtNames(name).l),

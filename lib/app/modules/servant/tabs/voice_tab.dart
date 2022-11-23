@@ -225,8 +225,10 @@ class VoiceGroupAccordion extends StatelessWidget {
         }
         InlineSpan? svtSpan;
         if (group.svtId != _svt?.id) {
-          var curSvt = db.gameData.servantsById[group.svtId] ??
-              db.gameData.entities[group.svtId];
+          final svtId =
+              db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
+          var curSvt =
+              db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
           svtSpan = curSvt == null
               ? TextSpan(text: '${group.svtId} ')
               : SharedBuilder.textButtonSpan(
@@ -235,7 +237,6 @@ class VoiceGroupAccordion extends StatelessWidget {
                   onTap: curSvt.routeTo,
                 );
         }
-        group.svtId;
         return ListTile(
           title: Text.rich(TextSpan(children: [
             if (svtSpan != null) svtSpan,
@@ -267,7 +268,7 @@ class VoiceGroupAccordion extends StatelessWidget {
             onTap: () {
               const limitCount = 0;
               FullscreenImageViewer.show(context: context, urls: [
-                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}0/${group.svtId}$limitCount.png'
+                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}$limitCount/${group.svtId}${limitCount}_merged.png'
               ]);
             },
           ));

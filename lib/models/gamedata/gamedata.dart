@@ -169,6 +169,11 @@ class GameData with _GameDataExtra {
     for (final event in events.values) {
       event.calcItems(this);
     }
+    for (final svt in servants.values) {
+      svt.extraAssets.charaFigure.story?.keys.forEach((charaId) {
+        storyCharaFigures[charaId ~/ 10] = svt.id;
+      });
+    }
     others = _ProcessedData(this);
   }
 
@@ -190,6 +195,7 @@ class GameData with _GameDataExtra {
   factory GameData.fromJson(Map<String, dynamic> json) =>
       _$GameDataFromJson(json);
 
+  @protected
   static Future<GameData> fromJsonAsync(Map<String, dynamic> json) async {
     return GameData(
       version: json['version'] == null
@@ -304,6 +310,8 @@ mixin _GameDataExtra {
   late Map<int, CommandCode> commandCodesById;
   @JsonKey(ignore: true)
   Map<int, Servant> servantsWithDup = {};
+  @JsonKey(ignore: true)
+  Map<int, int> storyCharaFigures = {};
 }
 
 extension _AsyncIterMap<K, V> on Map<K, V> {
