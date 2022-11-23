@@ -1,3 +1,14 @@
+# 2.1.3
+
+- custom mission: support multiple conditions
+- add event reward scenes, event voices, random missions
+- add CE status/limit count/lv tracking
+- np charge list: add CE
+- svt icon: use planned ascension value
+- bgm unlock materials
+- exchange ticket: show left days of current month
+- switch regions in skill/np/func/buff pages
+
 ## 2.1.2
 
 - script/story reader

@@ -5,12 +5,9 @@ There are plenty of work need to do.
 
 ## Misc
 
-- [ ] pass locale to `Text` for Region-based gamedata text.
-      which translation found, then pass that locale
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
 - [ ] command card: add svt assets
-- [ ] Summon prob calc
 - [ ] userdata: make all constructor params nullable, catch error when converting token 
 - [ ] remember svt tabs
 - [ ] logger.level
@@ -18,26 +15,22 @@ There are plenty of work need to do.
 - [ ] android: external SD card
 - [ ] filter_group_data: default value
 - [ ] svt icon: custom image
-- [ ] event shop: event item calc and plan
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
-- [ ] more selectable text
 - [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 - [ ] routeTo: add this as argument
 - [ ] generate skill/np in one image
-- [ ] quest: refresh
 - [ ] trait: dynamic tabs(fixed some tabs), items
-- [ ] skill/td/func/buff: change region
 - [ ] list view: pull to show outdated
 - [ ] daily quests: name, hand/door name
-- [ ] item_list: sort
 - [ ] forgot password: add hint what to add
 - [ ] class icon+name
 - [ ] breaking change: FixedDrop
 - [ ] event: custom extra items
 - [ ] filter_group: add onReset
 - [ ] separate cn proxy 
+- [ ] iconBuilder add fontSize
 
 ## Quest Related
 
