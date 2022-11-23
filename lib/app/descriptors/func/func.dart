@@ -182,13 +182,18 @@ class SkillScriptDescriptor extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (actIndividuality.isNotEmpty) {
+      final isSvt = actIndividuality
+          .any((indiv) => db.gameData.servantsById.containsKey(indiv));
       children.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: _DescriptorWrapper(
           title: Text.rich(
             TextSpan(children: [
               ...SharedBuilder.replaceSpan(
-                Transl.misc('Skill.actIndividuality').l,
+                Transl.misc(isSvt
+                        ? 'Skill.actIndividuality'
+                        : 'Skill.actIndividuality2')
+                    .l,
                 '{0}',
                 actIndividuality.map((indiv) {
                   final svt = db.gameData.servantsById[indiv.id];
@@ -211,44 +216,97 @@ class SkillScriptDescriptor extends StatelessWidget {
       ));
     }
     if (script?.NP_HIGHER?.isNotEmpty == true) {
-      children
-          .add(_one(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
+      children.add(
+          _lvBased(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
     }
     if (script?.NP_LOWER?.isNotEmpty == true) {
-      children.add(_one(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
+      children
+          .add(_lvBased(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
     }
     if (script?.STAR_HIGHER?.isNotEmpty == true) {
-      children
-          .add(_one(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
+      children.add(
+          _lvBased(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
     }
     if (script?.STAR_LOWER?.isNotEmpty == true) {
-      children
-          .add(_one(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
+      children.add(
+          _lvBased(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
     }
     if (script?.HP_VAL_HIGHER?.isNotEmpty == true) {
-      children.add(
-          _one(context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
+      children.add(_lvBased(
+          context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
     }
     if (script?.HP_VAL_LOWER?.isNotEmpty == true) {
-      children.add(
-          _one(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
+      children.add(_lvBased(
+          context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
     }
     if (script?.HP_PER_HIGHER?.isNotEmpty == true) {
-      children.add(_one(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
+      children.add(_lvBased(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (script?.HP_PER_LOWER?.isNotEmpty == true) {
-      children.add(_one(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
+      children.add(_lvBased(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
-    if (children.length == 1) return children.first;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
+    if (script?.additionalSkillId?.isNotEmpty == true) {
+      children.add(_pad(Text.rich(
+        TextSpan(children: [
+          TextSpan(text: Transl.misc('SkillScript.additionalSkillId').l),
+          ...divideList(
+            List.generate(script!.additionalSkillId!.length, (index) {
+              final skillId = script!.additionalSkillId![index];
+              final lv = script!.additionalSkillLv?.getOrNull(index);
+              // final actorType=script!.additionalSkillActorType?.getOrNull(index);
+              return SharedBuilder.textButtonSpan(
+                context: context,
+                text: [skillId, if (lv != null) '($lv)'].join(),
+                onTap: () {
+                  router.push(url: Routes.skillI(skillId));
+                },
+              );
+            }),
+            const TextSpan(text: ', '),
+          ),
+        ]),
+        style: Theme.of(context).textTheme.caption,
+      )));
+    }
+    if (script?.tdTypeChangeIDs?.isNotEmpty == true) {
+      children.add(_pad(Text.rich(
+        TextSpan(children: [
+          TextSpan(text: Transl.misc('SkillScript.tdTypeChangeIDs').l),
+          ...divideList(
+            List.generate(script!.tdTypeChangeIDs!.length, (index) {
+              final tdId = script!.tdTypeChangeIDs![index];
+              return SharedBuilder.textButtonSpan(
+                context: context,
+                text: '$tdId',
+                onTap: () {
+                  router.push(url: Routes.tdI(tdId));
+                },
+              );
+            }),
+            const TextSpan(text: ' / '),
+          ),
+        ]),
+        style: Theme.of(context).textTheme.caption,
+      )));
+    }
+    if (children.isEmpty) return const SizedBox();
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: Theme.of(context).hoverColor,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
     );
   }
 
-  Widget _one(BuildContext context, String key, List<int> vals,
+  Widget _lvBased(BuildContext context, String key, List<int> vals,
       String Function(int v) builder) {
     String title = Transl.misc('SkillScript.$key').l;
     Widget? trailing;
@@ -268,13 +326,19 @@ class SkillScriptDescriptor extends StatelessWidget {
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: _DescriptorWrapper(
+    return _pad(
+      _DescriptorWrapper(
         title: Text(title, style: Theme.of(context).textTheme.caption),
         trailing: trailing,
         lvCells: cells,
       ),
+    );
+  }
+
+  Widget _pad(Widget child) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: child,
     );
   }
 }

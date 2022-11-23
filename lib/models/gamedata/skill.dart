@@ -582,7 +582,8 @@ class SkillScript {
   final List<int>? HP_PER_HIGHER; // 500->50%
   final List<int>? HP_PER_LOWER;
   final List<int>? additionalSkillId;
-  final List<int>? additionalSkillActorType;
+  final List<int>? additionalSkillLv;
+  final List<int>? additionalSkillActorType; // BattleLogicTask.ACTORTYPE
   final List<int>? tdTypeChangeIDs;
   final List<int>? excludeTdChangeTypes;
 
@@ -596,6 +597,7 @@ class SkillScript {
       HP_PER_HIGHER?.isNotEmpty == true ||
       HP_PER_LOWER?.isNotEmpty == true ||
       additionalSkillId?.isNotEmpty == true ||
+      additionalSkillLv?.isNotEmpty == true ||
       additionalSkillActorType?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true;
@@ -610,6 +612,7 @@ class SkillScript {
     this.HP_PER_HIGHER,
     this.HP_PER_LOWER,
     this.additionalSkillId,
+    this.additionalSkillLv,
     this.additionalSkillActorType,
     this.tdTypeChangeIDs,
     this.excludeTdChangeTypes,

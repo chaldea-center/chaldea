@@ -275,7 +275,8 @@ class _QuestCardState extends State<QuestCard> {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
-      curPhase = db.gameData.getQuestPhase(quest.id, phase);
+      curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
+          AtlasApi.questPhaseCache(quest.id, phase, widget.region);
     } else {
       curPhase = AtlasApi.questPhaseCache(quest.id, phase, widget.region);
       if (widget.region == Region.jp) {

@@ -215,6 +215,9 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)
           ?.map((e) => e as int)
           .toList(),
+      additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
       additionalSkillActorType:
           (json['additionalSkillActorType'] as List<dynamic>?)
               ?.map((e) => e as int)

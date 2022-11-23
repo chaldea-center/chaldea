@@ -331,19 +331,25 @@ class MappingData {
     _updateRegion(bgmNames, Region.jp);
     _updateRegion(summonNames, Region.cn);
     _updateRegion(charaNames, Region.cn);
-    _updateRegion(buffNames, Region.jp);
     _updateRegion(buffDetail, Region.jp);
-    _updateRegion(funcPopuptext, Region.jp);
     _updateRegion(skillNames, Region.jp);
     _updateRegion(skillDetail, Region.jp);
     _updateRegion(tdNames, Region.jp);
     _updateRegion(tdRuby, Region.jp);
     _updateRegion(tdDetail, Region.jp);
     _updateRegion(voiceLineNames, Region.jp);
+    final excludes = {
+      ...BuffType.values.map((e) => e.name),
+      ...FuncType.values.map((e) => e.name)
+    };
+    _updateRegion(buffNames, Region.jp, excludes: excludes);
+    _updateRegion(funcPopuptext, Region.jp, excludes: excludes);
   }
 
-  static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region) {
+  static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region,
+      {Set<T>? excludes}) {
     mapping.forEach((key, value) {
+      if (excludes?.contains(key) == true) return;
       value.update(key, region, true);
     });
   }
