@@ -81,7 +81,7 @@ Future<void> _initiateCommon() async {
   // (This is a prototype, and in the long term is expected to be replaced by functionality within the Flutter framework.)
   if (PlatformU.isDesktop) {
     setWindowTitle(kAppName);
-    setWindowMinSize(const Size(375, 568));
+    setWindowMinSize(kDebugMode ? const Size(100, 100) : const Size(375, 568));
     setWindowMaxSize(Size.infinite);
   }
 

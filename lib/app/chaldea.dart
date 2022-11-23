@@ -98,15 +98,14 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   }
 
   ThemeData _getThemeData({required bool dark}) {
-    var themeData = dark ? ThemeData.dark() : ThemeData.light();
+    final themeData = ThemeData(
+      brightness: dark ? Brightness.dark : Brightness.light,
+      // TODO: fontFamilyFallback:
+    );
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(
         titleSpacing: 0,
         toolbarHeight: 48, // kToolbarHeight=56,
-        titleTextStyle: kIsWeb
-            ? null
-            : (themeData.appBarTheme.titleTextStyle ?? const TextStyle())
-                .copyWith(fontSize: 20),
       ),
     );
   }
