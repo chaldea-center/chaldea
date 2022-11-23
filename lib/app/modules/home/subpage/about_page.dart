@@ -54,35 +54,33 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: ListView(
         children: <Widget>[
-          InkWell(
-            onDoubleTap: () {
-              setState(() {
-                showDebugInfo = true;
-              });
-            },
-            onLongPress: () async {
-              setState(() {
-                showDebugInfo = true;
-                db.runtimeData.enableDebugTools = true;
-              });
-              await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
-              EasyLoading.showToast('UUID ${S.current.copied}');
-            },
-            child: InheritSelectionArea(
-              child: _AboutProgram(
-                name: AppInfo.appName,
-                version: AppInfo.fullVersion2,
-                icon: SizedBox(
-                  height: 120,
-                  child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
-                      height: 120),
-                ),
-                legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
-                debugInfo: showDebugInfo
-                    ? 'UUID\n${AppInfo.uuid}\n'
-                        'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
-                    : null,
+          InheritSelectionArea(
+            child: _AboutProgram(
+              name: AppInfo.appName,
+              version: AppInfo.fullVersion2,
+              icon: SizedBox(
+                height: 120,
+                child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
+                    height: 120),
               ),
+              legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
+              debugInfo: showDebugInfo
+                  ? 'UUID\n${AppInfo.uuid}\n'
+                      'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
+                  : null,
+              onDoubleTap: () {
+                setState(() {
+                  showDebugInfo = true;
+                });
+              },
+              onLongPress: () async {
+                setState(() {
+                  showDebugInfo = true;
+                  db.runtimeData.enableDebugTools = true;
+                });
+                await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
+                EasyLoading.showToast('UUID ${S.current.copied}');
+              },
             ),
           ),
           TileGroup(
@@ -245,6 +243,8 @@ class _AboutProgram extends StatelessWidget {
     this.icon,
     this.legalese,
     this.debugInfo,
+    this.onLongPress,
+    this.onDoubleTap,
   });
 
   final String name;
@@ -252,57 +252,67 @@ class _AboutProgram extends StatelessWidget {
   final Widget? icon;
   final String? legalese;
   final String? debugInfo;
+  final VoidCallback? onLongPress;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
+    Widget child = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
+      child: Column(
+        children: <Widget>[
+          if (icon != null)
+            IconTheme(data: Theme.of(context).iconTheme, child: icon!),
+          Text(
+            name,
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            version,
+            style: Theme.of(context).textTheme.bodyText2,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 3),
+          Text.rich(
+            TextSpan(
+              text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
+              // recognizer: TapGestureRecognizer()
+              //   ..onTap = () => launch(AppInfo.commitUrl),
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            legalese ?? '',
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          if (debugInfo != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              debugInfo!,
+              style: Theme.of(context).textTheme.caption,
+              textAlign: TextAlign.center,
+            )
+          ],
+        ],
+      ),
+    );
+    if (onLongPress != null) {
+      child = InkWell(
+        onLongPress: onLongPress,
+        onDoubleTap: onDoubleTap,
+        child: child,
+      );
+    }
     return Card(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
-        child: Column(
-          children: <Widget>[
-            if (icon != null)
-              IconTheme(data: Theme.of(context).iconTheme, child: icon!),
-            Text(
-              name,
-              style: Theme.of(context).textTheme.headline5,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              version,
-              style: Theme.of(context).textTheme.bodyText2,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 3),
-            Text.rich(
-              TextSpan(
-                text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
-                // recognizer: TapGestureRecognizer()
-                //   ..onTap = () => launch(AppInfo.commitUrl),
-                style: Theme.of(context).textTheme.caption,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              legalese ?? '',
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            if (debugInfo != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                debugInfo!,
-                style: Theme.of(context).textTheme.caption,
-                textAlign: TextAlign.center,
-              )
-            ],
-          ],
-        ),
-      ),
+      child: child,
     );
   }
 }

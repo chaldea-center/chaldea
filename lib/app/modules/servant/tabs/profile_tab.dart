@@ -309,20 +309,22 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
           CustomTile(
             title: title,
             subtitle: subtitle,
+            trailing: IconButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: comment));
+                EasyLoading.showInfo(S.current.copied);
+              },
+              icon: const Icon(Icons.copy_rounded),
+              tooltip: S.current.copy,
+              padding: const EdgeInsets.all(0),
+              constraints: const BoxConstraints(),
+              iconSize: 18,
+            ),
           ),
           kIndentDivider,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: GestureDetector(
-              onLongPress: () async {
-                await Clipboard.setData(ClipboardData(text: comment));
-                EasyLoading.showInfo(S.current.copied);
-              },
-              child: Text(
-                comment,
-                textScaleFactor: 0.9,
-              ),
-            ),
+            child: Text(comment, textScaleFactor: 0.9),
           )
         ],
       ),

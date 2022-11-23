@@ -200,13 +200,10 @@ class _QuestCardState extends State<QuestCard> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  CopyLongPress(
-                    text: shownQuestName,
-                    child: Text(
-                      shownQuestName,
-                      textScaleFactor: 0.9,
-                      textAlign: TextAlign.center,
-                    ),
+                  Text(
+                    shownQuestName,
+                    textScaleFactor: 0.9,
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -332,14 +329,11 @@ class _QuestCardState extends State<QuestCard> {
           ),
           Expanded(
             flex: 4,
-            child: CopyLongPress(
-              text: shownSpotName,
-              child: Text(
-                shownSpotName,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-                textScaleFactor: 0.9,
-              ),
+            child: Text(
+              shownSpotName,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+              textScaleFactor: 0.9,
             ),
           ),
         ],

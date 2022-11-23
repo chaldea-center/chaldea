@@ -115,11 +115,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         if (!hideDetail) ...[
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-            child: CopyLongPress(
-              text: detailText,
-              child:
-                  Text(detailText, style: Theme.of(context).textTheme.caption),
-            ),
+            child: Text(detailText, style: Theme.of(context).textTheme.caption),
           ),
           divider,
         ],
@@ -365,10 +361,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
         header,
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-          child: CopyLongPress(
-            text: detailText,
-            child: Text(detailText, style: Theme.of(context).textTheme.caption),
-          ),
+          child: Text(detailText, style: Theme.of(context).textTheme.caption),
         ),
         divider,
         ...describeFunctions(
