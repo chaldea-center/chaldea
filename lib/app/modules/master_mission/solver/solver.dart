@@ -18,11 +18,15 @@ class MissionSolver extends BaseLPSolver {
     required List<CustomMission> missions,
   }) {
     missions = List.of(missions);
-    missions
-        .removeWhere((mission) => mission.ids.isEmpty || mission.count <= 0);
-
+    missions.removeWhere((mission) =>
+        mission.conds.every((e) => e.taregtIds.isEmpty) || mission.count <= 0);
     List<List<num>> matA = [];
     for (final mission in List.of(missions)) {
+      if (!(mission.conds.every((cond) => cond.type.isQuestType) ||
+          mission.conds.every((cond) => cond.type.isEnemyType))) {
+        throw ArgumentError(
+            'Quest type and Enemy type conditions must not be mixed');
+      }
       final row = <int>[];
       for (final quest in quests) {
         row.add(countMissionTarget(mission, quest));
@@ -30,8 +34,12 @@ class MissionSolver extends BaseLPSolver {
       if (row.any((e) => e > 0)) {
         matA.add(row);
       } else {
-        print(
-            'remove invalid mission: ${mission.type}/${mission.count}/${mission.ids}');
+        print([
+          'remove invalid mission: ',
+          mission.condAnd,
+          mission.count,
+          mission.conds.map((e) => [e.type, e.useAnd, e.taregtIds].toList())
+        ]);
         missions.remove(mission);
       }
     }
@@ -47,45 +55,62 @@ class MissionSolver extends BaseLPSolver {
   }
 
   static int countMissionTarget(CustomMission mission, QuestPhase quest) {
-    final enemies =
-        quest.allEnemies.where((e) => e.deck == DeckType.enemy).toList();
-    switch (mission.type) {
-      case CustomMissionType.trait:
-        return enemies
-            .where((enemy) => mission.useAnd
-                ? NiceTrait.hasAllTraits(enemy.traits, mission.ids)
-                : NiceTrait.hasAnyTrait(enemy.traits, mission.ids))
-            .length;
-      case CustomMissionType.questTrait:
-        return (mission.useAnd
-                ? NiceTrait.hasAllTraits(quest.individuality, mission.ids)
-                : NiceTrait.hasAnyTrait(quest.individuality, mission.ids))
-            ? 1
-            : 0;
-      case CustomMissionType.quest:
-        return mission.ids.contains(quest.id) ? 1 : 0;
-      case CustomMissionType.enemy:
-        return enemies
-            .where((enemy) => mission.ids.contains(enemy.svt.id))
-            .length;
-      case CustomMissionType.servantClass:
-        return enemies
-            .where((enemy) =>
-                enemy.traits
-                    .any((trait) => trait.name == Trait.basedOnServant) &&
-                mission.ids.contains(enemy.svt.className.id))
-            .length;
-      case CustomMissionType.enemyClass:
-        return enemies
-            .where((enemy) => mission.ids.contains(enemy.svt.className.id))
-            .length;
-      case CustomMissionType.enemyNotServantClass:
-        return enemies
-            .where((enemy) =>
-                enemy.traits
-                    .any((trait) => trait.name == Trait.notBasedOnServant) &&
-                mission.ids.contains(enemy.svt.className.id))
-            .length;
+    int count = 0;
+    if (mission.conds.first.type.isQuestType) {
+      List<bool> results = mission.conds.map((cond) {
+        switch (cond.type) {
+          case CustomMissionType.quest:
+            assert(!cond.useAnd);
+            return cond.taregtIds.contains(quest.id);
+          case CustomMissionType.questTrait:
+            return mission.condAnd
+                ? NiceTrait.hasAllTraits(quest.individuality, cond.taregtIds)
+                : NiceTrait.hasAnyTrait(quest.individuality, cond.taregtIds);
+          default:
+            return false;
+        }
+      }).toList();
+      if (mission.condAnd) {
+        if (!results.contains(false)) count += 1;
+      } else {
+        if (results.contains(true)) count += 1;
+      }
+      return count;
+    } else {
+      for (final enemy in quest.allEnemies) {
+        if (enemy.deck != DeckType.enemy) continue;
+        final results = mission.conds.map((cond) {
+          switch (cond.type) {
+            case CustomMissionType.trait:
+              return cond.useAnd
+                  ? NiceTrait.hasAllTraits(enemy.traits, cond.taregtIds)
+                  : NiceTrait.hasAnyTrait(enemy.traits, cond.taregtIds);
+            case CustomMissionType.enemy:
+              assert(!cond.useAnd);
+              return cond.taregtIds.contains(enemy.svt.id);
+            case CustomMissionType.enemyClass:
+              assert(!cond.useAnd);
+              return cond.taregtIds.contains(enemy.svt.className.id);
+            case CustomMissionType.servantClass:
+              assert(!cond.useAnd);
+              return enemy.traits.any((t) => t.name == Trait.basedOnServant) &&
+                  cond.taregtIds.contains(enemy.svt.className.id);
+            case CustomMissionType.enemyNotServantClass:
+              assert(!cond.useAnd);
+              return enemy.traits
+                      .any((t) => t.name == Trait.notBasedOnServant) &&
+                  cond.taregtIds.contains(enemy.svt.className.id);
+            default:
+              return false;
+          }
+        }).toList();
+        if (mission.condAnd) {
+          if (!results.contains(false)) count += 1;
+        } else {
+          if (results.contains(true)) count += 1;
+        }
+      }
+      return count;
     }
   }
 }

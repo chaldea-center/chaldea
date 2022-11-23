@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'descriptor_base.dart';
@@ -321,18 +322,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => text('Reach $value event points'),
           kr: null,
         );
+      case CondType.eventMissionClear:
       case CondType.eventMissionAchieve:
-        final mission =
-            missions.firstWhereOrNull((mission) => mission.id == target);
-        final targets = '${mission?.dispNo}-${mission?.name ?? target}';
-        return localized(
-          jp: () => text('ミッションを集めせよ $targets'),
-          cn: () => text('收取任务 $targets'),
-          tw: null,
-          na: () => text('Claim mission $targets'),
-          kr: null,
-        );
-
+        return CondTargetNumDescriptor(
+          condType: condType,
+          targetNum: 1,
+          targetIds: [target],
+          missions: missions,
+        ).buildContent(context);
       default:
         break;
     }

@@ -317,7 +317,7 @@ const _$ItemBGTypeEnumMap = {
 EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) =>
     EventMissionConditionDetail(
       id: json['id'] as int,
-      missionTargetId: json['missionTargetId'] as int,
+      missionTargetId: json['missionTargetId'] as int? ?? 0,
       missionCondType: json['missionCondType'] as int,
       logicType: json['logicType'] as int,
       targetIds: (json['targetIds'] as List<dynamic>?)
@@ -366,6 +366,10 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) =>
           ? null
           : EventMissionConditionDetail.fromJson(
               Map<String, dynamic>.from(json['detail'] as Map)),
+      details: (json['details'] as List<dynamic>?)
+          ?.map((e) => EventMissionConditionDetail.fromJson(
+              Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 const _$MissionProgressTypeEnumMap = {

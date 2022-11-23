@@ -545,10 +545,13 @@ class EventMissionConditionDetail {
   List<NiceTrait> targetQuestIndividualities;
   DetailMissionCondLinkType conditionLinkType;
   List<int>? targetEventIds;
+  // used for custom mission
+  @JsonKey(ignore: true)
+  bool? useAnd;
 
   EventMissionConditionDetail({
     required this.id,
-    required this.missionTargetId,
+    this.missionTargetId = 0,
     required this.missionCondType,
     required this.logicType,
     this.targetIds = const [],
@@ -556,6 +559,7 @@ class EventMissionConditionDetail {
     this.targetQuestIndividualities = const [],
     required this.conditionLinkType,
     this.targetEventIds,
+    this.useAnd,
   });
 
   factory EventMissionConditionDetail.fromJson(Map<String, dynamic> json) =>
@@ -578,7 +582,9 @@ class EventMissionCondition {
   String conditionMessage;
   String closedMessage;
   int flag;
+  @Deprecated('Use `details`')
   EventMissionConditionDetail? detail;
+  List<EventMissionConditionDetail>? details;
 
   EventMissionCondition({
     required this.id,
@@ -593,7 +599,8 @@ class EventMissionCondition {
     this.closedMessage = "",
     this.flag = 0,
     this.detail,
-  });
+    List<EventMissionConditionDetail>? details,
+  }) : details = details ?? (detail == null ? null : [detail]);
 
   factory EventMissionCondition.fromJson(Map<String, dynamic> json) =>
       _$EventMissionConditionFromJson(json);

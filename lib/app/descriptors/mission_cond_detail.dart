@@ -6,7 +6,7 @@ import 'descriptor_base.dart';
 import 'multi_entry.dart';
 
 class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
-  final int targetNum;
+  final int? targetNum;
   final EventMissionConditionDetail detail;
   final bool? _useAnd;
   @override
@@ -59,6 +59,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {
+    String targetNum = this.targetNum?.toString() ?? 'x';
     switch (detail.missionCondType) {
       case DetailCondType.questClearIndividuality:
         return localized(

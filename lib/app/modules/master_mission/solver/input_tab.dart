@@ -100,28 +100,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
             ),
           ListTile(
             dense: true,
-            leading: Text(S.current.general_type),
-            trailing: DropdownButton<CustomMissionType>(
-              value: mission.type,
-              items: [
-                for (final type in CustomMissionType.values)
-                  DropdownMenuItem(
-                    value: type,
-                    child: Text(
-                      Transl.enums(type, (enums) => enums.customMissionType).l,
-                      textScaleFactor: 0.9,
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) mission.type = v;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            dense: true,
             leading: Text(S.current.counts),
             trailing: SizedBox(
               width: 72,
@@ -143,80 +121,172 @@ class _MissionInputTabState extends State<MissionInputTab> {
               ),
             ),
           ),
-          ListTile(
-            dense: true,
-            leading: Text(S.current.logic_type),
-            trailing: FilterGroup<bool>(
-              options: const [true, false],
-              values: FilterRadioData.nonnull(mission.useAnd),
-              enabled: mission.fixedLogicType == null,
-              optionBuilder: (v) =>
-                  Text(v ? S.current.logic_type_and : S.current.logic_type_or),
-              combined: true,
-              padding: EdgeInsets.zero,
-              onFilterChanged: (v, _) {
-                setState(() {
-                  mission.useAnd = v.radioValue!;
-                });
-              },
+          if (mission.conds.length > 1)
+            ListTile(
+              dense: true,
+              leading: Text(S.current.logic_type),
+              trailing: FilterGroup<bool>(
+                options: const [true, false],
+                values: FilterRadioData.nonnull(mission.condAnd),
+                optionBuilder: (v) => Text(
+                    v ? S.current.logic_type_and : S.current.logic_type_or),
+                combined: true,
+                padding: EdgeInsets.zero,
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    mission.condAnd = v.radioValue!;
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: Wrap(
-              spacing: 2,
-              runSpacing: 2,
-              crossAxisAlignment: WrapCrossAlignment.center,
+          Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              // spacing: 8,
               children: [
-                const Text('IDs   '),
-                for (final id in mission.ids)
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        mission.ids.remove(id);
-                      });
-                    },
-                    child: AbsorbPointer(
-                      child: FilterOption(
-                        selected: false,
-                        value: id,
-                        child: Text(_idDescriptor(mission.type, id)),
-                      ),
-                    ),
-                  ),
-                IconButton(
-                  onPressed: () async {
-                    final result = await SplitRoute.push<int?>(
-                        context, _SearchView(targetType: mission.type));
-                    if (result != null) {
-                      if (mission.ids.contains(result)) {
-                        EasyLoading.showInfo(S.current
-                            .item_already_exist_hint(result.toString()));
-                      } else {
-                        mission.ids.add(result);
-                      }
-                    }
-                    if (mounted) setState(() {});
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      missions.remove(mission);
+                    });
                   },
-                  icon: Icon(
-                    Icons.add,
-                    color: Theme.of(context).colorScheme.secondary,
+                  child: Text(
+                    'Remove Mission',
+                    style: TextStyle(color: Theme.of(context).errorColor),
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minHeight: 36),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      final prev = mission.conds.getOrNull(0);
+                      mission.conds.add(CustomMissionCond(
+                        type: prev?.type ?? CustomMissionType.trait,
+                        taregtIds: [],
+                        useAnd: prev?.useAnd ?? false,
+                      ));
+                    });
+                  },
+                  child: const Text('Add Condition'),
                 ),
               ],
             ),
           ),
-          Center(
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  missions.remove(mission);
-                });
-              },
-              icon: const Icon(Icons.clear),
+          for (final cond in mission.conds) ...[
+            DividerWithTitle(
+              indent: 12,
+              title:
+                  '${S.current.open_condition} ${mission.conds.indexOf(cond) + 1}',
             ),
-          )
+            ListTile(
+              dense: true,
+              leading: Text(S.current.general_type),
+              trailing: DropdownButton<CustomMissionType>(
+                value: cond.type,
+                items: [
+                  for (final type in CustomMissionType.values)
+                    DropdownMenuItem(
+                      value: type,
+                      child: Text(
+                        Transl.enums(type, (enums) => enums.customMissionType)
+                            .l,
+                        textScaleFactor: 0.9,
+                      ),
+                    ),
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    if (v != null) {
+                      bool mixed = v.isQuestType
+                          ? mission.conds.any((c) => c.type.isEnemyType)
+                          : mission.conds.any((c) => c.type.isQuestType);
+                      if (mixed) {
+                        EasyLoading.showError(
+                            'Quest related and Enemy related conditions must not be mixed!');
+                        return;
+                      }
+                      cond.type = v;
+                    }
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              dense: true,
+              leading: Text(S.current.logic_type),
+              trailing: FilterGroup<bool>(
+                options: const [true, false],
+                values: FilterRadioData.nonnull(cond.useAnd),
+                enabled: cond.fixedLogicType == null,
+                optionBuilder: (v) => Text(
+                    v ? S.current.logic_type_and : S.current.logic_type_or),
+                combined: true,
+                padding: EdgeInsets.zero,
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    cond.useAnd = v.radioValue!;
+                  });
+                },
+              ),
+            ),
+            ListTile(
+              title: Wrap(
+                spacing: 2,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  const Text('IDs   '),
+                  for (final id in cond.taregtIds)
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          cond.taregtIds.remove(id);
+                        });
+                      },
+                      child: AbsorbPointer(
+                        child: FilterOption(
+                          selected: false,
+                          value: id,
+                          child: Text(_idDescriptor(cond.type, id)),
+                        ),
+                      ),
+                    ),
+                  IconButton(
+                    onPressed: () async {
+                      final result = await SplitRoute.push<int?>(
+                          context, _SearchView(targetType: cond.type));
+                      if (result != null) {
+                        if (cond.taregtIds.contains(result)) {
+                          EasyLoading.showInfo(S.current
+                              .item_already_exist_hint(result.toString()));
+                        } else {
+                          cond.taregtIds.add(result);
+                        }
+                      }
+                      if (mounted) setState(() {});
+                    },
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minHeight: 36),
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: TextButton(
+                onPressed: mission.conds.length < 2
+                    ? null
+                    : () {
+                        setState(() {
+                          mission.conds.remove(cond);
+                        });
+                      },
+                child: const Text('Remove Condition'),
+              ),
+            )
+          ],
         ],
       ),
     );
@@ -314,10 +384,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
             onPressed: () {
               setState(() {
                 missions.add(CustomMission(
-                  type: CustomMissionType.trait,
                   count: 0,
-                  ids: [],
-                  useAnd: true,
+                  conds: [],
+                  condAnd: false,
+                  enemyDeckOnly: true,
                 ));
               });
             },
@@ -333,15 +403,21 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   Future<void> _solveProblem() async {
-    if (!missions
-        .any((mission) => mission.ids.isNotEmpty && mission.count > 0)) {
-      EasyLoading.showError('No valid missions');
+    if (!missions.every((mission) {
+      if (mission.count <= 0) return false;
+      if (mission.conds.isEmpty) return false;
+      for (final cond in mission.conds) {
+        if (cond.taregtIds.isEmpty) return false;
+      }
+      return true;
+    })) {
+      EasyLoading.showError('Invalid missions');
       return;
     }
     final region = isRegionNA ? Region.na : Region.jp;
     void _showHint(String hint) =>
         EasyLoading.show(status: hint, maskType: EasyLoadingMaskType.clear);
-    _showHint('Solving.');
+    _showHint('Solving...');
     try {
       List<QuestPhase> quests = [];
       List<Future> futures = [];

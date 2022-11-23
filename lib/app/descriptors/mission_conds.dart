@@ -43,7 +43,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         condType: cond.condType,
         targetNum: cond.targetNum,
         targetIds: cond.targetIds,
-        detail: cond.detail,
+        details: cond.details,
         missions: missions,
       ));
     }

@@ -58,21 +58,26 @@ abstract class DescriptorBase {
     ];
   }
 
+  List<InlineSpan> emptyHint(List<InlineSpan> spans) {
+    if (spans.isEmpty && targetIds.isEmpty) return [const TextSpan(text: '[]')];
+    return spans;
+  }
+
   List<InlineSpan> quests(BuildContext context) =>
-      MultiDescriptor.quests(context, targetIds, useAnd: useAnd);
+      emptyHint(MultiDescriptor.quests(context, targetIds, useAnd: useAnd));
   List<InlineSpan> traits(BuildContext context) =>
-      MultiDescriptor.traits(context, targetIds, useAnd: useAnd);
+      emptyHint(MultiDescriptor.traits(context, targetIds, useAnd: useAnd));
   List<InlineSpan> svtClasses(BuildContext context) =>
-      MultiDescriptor.svtClass(context, targetIds, useAnd: useAnd);
+      emptyHint(MultiDescriptor.svtClass(context, targetIds, useAnd: useAnd));
   List<InlineSpan> servants(BuildContext context) =>
-      MultiDescriptor.servants(context, targetIds, useAnd: useAnd);
+      emptyHint(MultiDescriptor.servants(context, targetIds, useAnd: useAnd));
   List<InlineSpan> items(BuildContext context) =>
-      MultiDescriptor.items(context, targetIds, useAnd: useAnd);
+      emptyHint(MultiDescriptor.items(context, targetIds, useAnd: useAnd));
   List<InlineSpan> missionList(
           BuildContext context, Map<int, EventMission> missions,
           {bool sort = true}) =>
-      MultiDescriptor.missions(context, targetIds, missions,
-          useAnd: useAnd, sort: sort);
+      emptyHint(MultiDescriptor.missions(context, targetIds, missions,
+          useAnd: useAnd, sort: sort));
   List<InlineSpan> event(BuildContext context) {
     final _event = db.gameData.events[targetIds.first];
     return [

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/descriptors/mission_cond_detail.dart';
+import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
 
-class CustomMission {
+class CustomMissionCond {
   CustomMissionType type;
-  int count;
-  List<int> ids;
-  String? originDetail;
-
+  List<int> taregtIds;
   bool _useAnd;
   set useAnd(bool v) => _useAnd = v;
   bool get useAnd => fixedLogicType ?? _useAnd;
+
+  CustomMissionCond({
+    required this.type,
+    required this.taregtIds,
+    required bool useAnd,
+  }) : _useAnd = useAnd;
 
   bool? get fixedLogicType {
     switch (type) {
@@ -20,59 +23,84 @@ class CustomMission {
         return null;
       case CustomMissionType.quest:
       case CustomMissionType.enemy:
-      case CustomMissionType.servantClass:
       case CustomMissionType.enemyClass:
+      case CustomMissionType.servantClass:
       case CustomMissionType.enemyNotServantClass:
         return false;
     }
   }
 
+  CustomMissionCond copy() {
+    return CustomMissionCond(
+      type: type,
+      taregtIds: taregtIds.toList(),
+      useAnd: useAnd,
+    );
+  }
+}
+
+class CustomMission {
+  int count;
+
+  /// only if [CustomMissionType.trait], can have multi conds and [condAnd]
+  List<CustomMissionCond> conds;
+  bool condAnd;
+  bool enemyDeckOnly;
+
+  final String? originDetail;
+
   CustomMission({
-    required this.type,
     required this.count,
-    required this.ids,
+    required this.conds,
+    this.condAnd = false,
+    this.enemyDeckOnly = true,
     this.originDetail,
-    required bool useAnd,
-  }) : _useAnd = useAnd;
+  });
 
   static CustomMission? fromEventMission(EventMission? eventMission) {
     if (eventMission == null) return null;
     for (final cond in eventMission.conds) {
       if (cond.missionProgressType != MissionProgressType.clear ||
           cond.condType != CondType.missionConditionDetail ||
-          cond.detail == null) {
+          cond.details?.isNotEmpty != true) {
         continue;
       }
-      final type = kDetailCondMapping[cond.detail!.missionCondType];
-      if (type == null) continue;
-      if (type == CustomMissionType.quest &&
-          cond.detail!.targetIds.length == 1 &&
-          cond.detail!.targetIds.first == 0) {
-        // any quest
-        continue;
+      List<CustomMissionCond> conds = [];
+      for (final detail in cond.details!) {
+        final type = kDetailCondMapping[detail.missionCondType];
+        if (type == null) continue;
+        if (type == CustomMissionType.quest &&
+            detail.targetIds.length == 1 &&
+            detail.targetIds.first == 0) {
+          // any quest
+          continue;
+        }
+        bool useAnd;
+        switch (type) {
+          case CustomMissionType.trait:
+            useAnd = true;
+            break;
+          case CustomMissionType.questTrait:
+            useAnd = false;
+            break;
+          case CustomMissionType.quest:
+          case CustomMissionType.enemy:
+          case CustomMissionType.enemyClass:
+          case CustomMissionType.servantClass:
+          case CustomMissionType.enemyNotServantClass:
+            useAnd = false;
+            break;
+        }
+        conds.add(CustomMissionCond(
+            type: type, taregtIds: detail.targetIds, useAnd: useAnd));
       }
-      bool useAnd;
-      switch (type) {
-        case CustomMissionType.trait:
-          useAnd = true;
-          break;
-        case CustomMissionType.questTrait:
-          useAnd = false;
-          break;
-        case CustomMissionType.quest:
-        case CustomMissionType.enemy:
-        case CustomMissionType.servantClass:
-        case CustomMissionType.enemyClass:
-        case CustomMissionType.enemyNotServantClass:
-          useAnd = false;
-          break;
-      }
+      if (conds.isEmpty) continue;
+
       return CustomMission(
-        type: type,
         count: cond.targetNum,
-        ids: cond.detail!.targetIds,
+        conds: conds,
+        condAnd: false,
         originDetail: cond.conditionMessage,
-        useAnd: useAnd,
       );
     }
     return null;
@@ -80,28 +108,33 @@ class CustomMission {
 
   CustomMission copy() {
     return CustomMission(
-      type: type,
       count: count,
-      ids: List.of(ids),
+      conds: conds.map((e) => e.copy()).toList(),
+      condAnd: condAnd,
+      enemyDeckOnly: enemyDeckOnly,
       originDetail: originDetail,
-      useAnd: useAnd,
     );
   }
 
   Widget buildDescriptor(BuildContext context, {double? textScaleFactor}) {
-    int missionCondType = kDetailCondMappingReverse[type] ?? -1;
-    return MissionCondDetailDescriptor(
+    return CondTargetNumDescriptor(
+      condType: CondType.missionConditionDetail,
       targetNum: count,
-      detail: EventMissionConditionDetail(
-        id: 0,
-        missionTargetId: 0,
-        missionCondType: missionCondType,
-        targetIds: ids,
-        logicType: 0,
-        conditionLinkType: DetailMissionCondLinkType.missionStart,
-      ),
+      targetIds: List.generate(conds.length, (index) => index),
+      details: List.generate(conds.length, (index) {
+        final cond = conds[index];
+        return EventMissionConditionDetail(
+          id: index,
+          missionTargetId: 0,
+          missionCondType: kDetailCondMappingReverse[cond.type] ?? -1,
+          targetIds: cond.taregtIds,
+          logicType: 1,
+          conditionLinkType: DetailMissionCondLinkType.missionStart,
+          useAnd: cond.useAnd,
+        );
+      }),
       textScaleFactor: textScaleFactor ?? 0.9,
-      useAnd: useAnd,
+      useAnd: condAnd,
     );
   }
 
@@ -109,8 +142,11 @@ class CustomMission {
     DetailCondType.questClearNum1: CustomMissionType.quest,
     DetailCondType.questClearNum2: CustomMissionType.quest,
     DetailCondType.enemyKillNum: CustomMissionType.enemy,
+    DetailCondType.targetQuestEnemyKillNum: CustomMissionType.enemy,
     DetailCondType.defeatEnemyIndividuality: CustomMissionType.trait,
     DetailCondType.enemyIndividualityKillNum: CustomMissionType.trait,
+    DetailCondType.targetQuestEnemyIndividualityKillNum:
+        CustomMissionType.enemy,
     DetailCondType.defeatServantClass: CustomMissionType.servantClass,
     DetailCondType.defeatEnemyClass: CustomMissionType.enemyClass,
     DetailCondType.defeatEnemyNotServantClass:
@@ -144,10 +180,16 @@ class MissionSolution {
 
 enum CustomMissionType {
   trait,
-  questTrait,
-  quest,
   enemy,
-  servantClass,
   enemyClass,
-  enemyNotServantClass
+  servantClass,
+  enemyNotServantClass,
+  quest,
+  questTrait,
+}
+
+extension CustomMissionTypeX on CustomMissionType {
+  bool get isQuestType =>
+      this == CustomMissionType.questTrait || this == CustomMissionType.quest;
+  bool get isEnemyType => !isQuestType;
 }
