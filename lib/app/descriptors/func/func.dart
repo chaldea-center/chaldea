@@ -166,6 +166,7 @@ class _DescriptorWrapper extends StatelessWidget {
       if (children.length == 1) return children.first;
       return Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       );
     });
@@ -216,58 +217,86 @@ class SkillScriptDescriptor extends StatelessWidget {
       ));
     }
     if (script?.NP_HIGHER?.isNotEmpty == true) {
-      children.add(
-          _lvBased(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
+      children
+          .add(_keyLv(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
     }
     if (script?.NP_LOWER?.isNotEmpty == true) {
       children
-          .add(_lvBased(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
+          .add(_keyLv(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
     }
     if (script?.STAR_HIGHER?.isNotEmpty == true) {
       children.add(
-          _lvBased(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
+          _keyLv(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
     }
     if (script?.STAR_LOWER?.isNotEmpty == true) {
-      children.add(
-          _lvBased(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
+      children
+          .add(_keyLv(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
     }
     if (script?.HP_VAL_HIGHER?.isNotEmpty == true) {
-      children.add(_lvBased(
+      children.add(_keyLv(
           context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
     }
     if (script?.HP_VAL_LOWER?.isNotEmpty == true) {
-      children.add(_lvBased(
-          context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
+      children.add(
+          _keyLv(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
     }
     if (script?.HP_PER_HIGHER?.isNotEmpty == true) {
-      children.add(_lvBased(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
+      children.add(_keyLv(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (script?.HP_PER_LOWER?.isNotEmpty == true) {
-      children.add(_lvBased(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
+      children.add(_keyLv(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
           (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (script?.additionalSkillId?.isNotEmpty == true) {
-      children.add(_pad(Text.rich(
-        TextSpan(children: [
-          TextSpan(text: Transl.misc('SkillScript.additionalSkillId').l),
-          ...divideList(
-            List.generate(script!.additionalSkillId!.length, (index) {
-              final skillId = script!.additionalSkillId![index];
-              final lv = script!.additionalSkillLv?.getOrNull(index);
-              // final actorType=script!.additionalSkillActorType?.getOrNull(index);
-              return SharedBuilder.textButtonSpan(
-                context: context,
-                text: [skillId, if (lv != null) '($lv)'].join(),
-                onTap: () {
-                  router.push(url: Routes.skillI(skillId));
-                },
-              );
-            }),
-            const TextSpan(text: ', '),
-          ),
-        ]),
-        style: Theme.of(context).textTheme.caption,
+      final ids = script!.additionalSkillId!;
+      final lvs = script?.additionalSkillLv ?? <int>[];
+      List<InlineSpan> titleSpans = [
+        TextSpan(text: Transl.misc('SkillScript.additionalSkillId').l)
+      ];
+      Widget? trailing;
+      List<Widget> cells = [];
+
+      if (lvs.toSet().length == 1) {
+        trailing =
+            Text('Lv.${lvs.first}', style: const TextStyle(fontSize: 13));
+      }
+      if (ids.toSet().length == 1) {
+        titleSpans.add(SharedBuilder.textButtonSpan(
+          context: context,
+          text: ids.first.toString(),
+          onTap: () {
+            router.push(url: Routes.skillI(ids.first));
+          },
+        ));
+        if (lvs.toSet().length > 1) {
+          cells = lvs
+              .map((e) => Text('Lv.$e', style: const TextStyle(fontSize: 13)))
+              .toList();
+        }
+      } else {
+        cells = List.generate(ids.length, (index) {
+          final id = ids[index];
+          final lv = lvs.getOrNull(index);
+          return Text.rich(
+            TextSpan(children: [
+              SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: id.toString(),
+                  onTap: () {
+                    router.push(url: Routes.skillI(id));
+                  }),
+              if (lv != null) TextSpan(text: '\n(Lv.$lv)')
+            ]),
+            textAlign: TextAlign.center,
+          );
+        });
+      }
+      children.add(_pad(_DescriptorWrapper(
+        title: Text.rich(TextSpan(children: titleSpans),
+            style: Theme.of(context).textTheme.caption),
+        trailing: trailing,
+        lvCells: cells,
       )));
     }
     if (script?.tdTypeChangeIDs?.isNotEmpty == true) {
@@ -298,21 +327,31 @@ class SkillScriptDescriptor extends StatelessWidget {
         color: Theme.of(context).hoverColor,
       ),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
     );
   }
 
-  Widget _lvBased(BuildContext context, String key, List<int> vals,
+  Widget _keyLv(BuildContext context, String key, List<int> vals,
       String Function(int v) builder) {
     String title = Transl.misc('SkillScript.$key').l;
+    if (vals.toSet().length == 1) {
+      title = title.replaceAll('{0}', builder(vals.first));
+    }
+    return _richLv(context, TextSpan(text: title), vals, builder);
+  }
+
+  Widget _richLv(BuildContext context, TextSpan title, List<int> vals,
+      String Function(int v) builder) {
     Widget? trailing;
     List<Widget> cells = [];
     if (vals.toSet().length == 1) {
-      title = title.replaceAll('{0}', builder(vals.first));
       trailing = Text(
         builder(vals.first),
         style: const TextStyle(fontSize: 13),
@@ -326,18 +365,16 @@ class SkillScriptDescriptor extends StatelessWidget {
       }
     }
 
-    return _pad(
-      _DescriptorWrapper(
-        title: Text(title, style: Theme.of(context).textTheme.caption),
-        trailing: trailing,
-        lvCells: cells,
-      ),
-    );
+    return _pad(_DescriptorWrapper(
+      title: Text.rich(title, style: Theme.of(context).textTheme.caption),
+      trailing: trailing,
+      lvCells: cells,
+    ));
   }
 
   Widget _pad(Widget child) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: child,
     );
   }
