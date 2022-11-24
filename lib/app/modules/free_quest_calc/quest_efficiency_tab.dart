@@ -118,7 +118,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                           bondEff == double.negativeInfinity
                               ? '???'
                               : bondEff.toStringAsFixed(2),
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         )
                       ],
                     ),
@@ -152,7 +152,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
               Text(S.current.item_eff),
               Text(
                 S.current.bond_eff,
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ],
           ),

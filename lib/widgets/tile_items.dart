@@ -20,7 +20,7 @@ class SHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 138
-    final color = Theme.of(context).textTheme.caption?.color?.withAlpha(175);
+    final color = Theme.of(context).textTheme.bodySmall?.color?.withAlpha(175);
     return Container(
       padding: padding,
       child: Text(
@@ -51,7 +51,7 @@ class SFooter extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-            color: Theme.of(context).textTheme.caption?.color,
+            color: Theme.of(context).textTheme.bodySmall?.color,
             fontSize: 13.0,
             letterSpacing: -0.08),
       ),

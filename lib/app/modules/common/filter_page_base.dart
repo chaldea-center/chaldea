@@ -336,7 +336,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
               thickness: 1,
             ),
           ),
-          child ?? Text(text!, style: Theme.of(context).textTheme.caption),
+          child ?? Text(text!, style: Theme.of(context).textTheme.bodySmall),
           const Expanded(
             child: Divider(
               height: 16,

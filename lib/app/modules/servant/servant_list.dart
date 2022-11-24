@@ -315,7 +315,7 @@ class ServantListPageState extends State<ServantListPage>
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 12,
-        color: Theme.of(context).textTheme.caption?.color,
+        color: Theme.of(context).textTheme.bodySmall?.color,
         fontFamily: kMonoFont,
       ),
       child: Table(
@@ -895,7 +895,7 @@ class ServantListPageState extends State<ServantListPage>
         ],
       );
       statusText = DefaultTextStyle(
-        style: Theme.of(context).textTheme.caption ?? const TextStyle(),
+        style: Theme.of(context).textTheme.bodySmall ?? const TextStyle(),
         child: statusText,
       );
       return statusText;

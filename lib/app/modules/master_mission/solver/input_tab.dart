@@ -152,7 +152,8 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   },
                   child: Text(
                     'Remove Mission',
-                    style: TextStyle(color: Theme.of(context).errorColor),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
                 TextButton(

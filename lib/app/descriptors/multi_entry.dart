@@ -280,7 +280,8 @@ class MultiDescriptor {
         targetIds,
         (context, id) {
           final event = db.gameData.events[id];
-          return TextSpan(text: event?.lShortName.l ?? id.toString());
+          return TextSpan(
+              text: event?.lShortName.l.setMaxLines(1) ?? id.toString());
         },
         false,
       );
@@ -293,7 +294,7 @@ class MultiDescriptor {
           (context, id) {
             final event = db.gameData.events[id];
             return ListTile(
-              title: Text(event?.lName.l ?? 'Event $id'),
+              title: Text(event?.lName.l.setMaxLines(1) ?? 'Event $id'),
               horizontalTitleGap: 0,
               dense: true,
             );

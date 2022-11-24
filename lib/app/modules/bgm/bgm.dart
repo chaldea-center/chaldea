@@ -109,7 +109,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
                         release.closedMessage,
                         style: Theme.of(context)
                             .textTheme
-                            .caption
+                            .bodySmall
                             ?.copyWith(fontStyle: FontStyle.italic),
                       )
                   ]

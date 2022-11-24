@@ -329,7 +329,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
           Text(
             '~~~ Github docs ~~~',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           Center(
             child: TextButton(

@@ -652,7 +652,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     onTap: code?.routeTo,
                     child: Text(
                       code?.skills.getOrNull(0)?.lDetail ?? '',
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ),

@@ -29,13 +29,13 @@ class MissionCondsDescriptor extends StatelessWidget {
           '~~~ ${Transl.enums(cond.missionProgressType, (enums) => enums.missionProgressType).l} ~~~',
           textAlign: TextAlign.center,
           textScaleFactor: 0.9,
-          style: TextStyle(color: Theme.of(context).textTheme.caption?.color),
+          style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
         ));
       }
       if (![mission.name, "???", "？？？"].contains(cond.conditionMessage)) {
         children.add(Text(
           cond.conditionMessage,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
           textScaleFactor: 0.9,
         ));
       }
@@ -52,7 +52,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         '~~~ ${S.current.game_rewards} ~~~',
         textAlign: TextAlign.center,
         textScaleFactor: 0.9,
-        style: TextStyle(color: Theme.of(context).textTheme.caption?.color),
+        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ));
       children
           .add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));

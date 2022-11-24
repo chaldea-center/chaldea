@@ -77,7 +77,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
           TextSpan(
             text: summon.name.l ?? summon.id,
             style: outdated
-                ? TextStyle(color: Theme.of(context).textTheme.caption?.color)
+                ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
                 : null,
           )
         ]),

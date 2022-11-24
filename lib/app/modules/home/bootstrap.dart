@@ -104,7 +104,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             children: [
               Text(
                 _d('U29tZXRoaW5nIHdlbnQgd3Jvbmch'),
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               TextButton(
@@ -190,7 +190,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         ),
         Text(
           'Chaldea',
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headlineMedium,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 24),
@@ -274,7 +274,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             child: Text(
               S.current.download_source_hint,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           )
         ],
@@ -601,7 +601,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   _loader.error != null ? Icons.clear_rounded : Icons.done,
                   size: 80,
                   color: _loader.error != null
-                      ? Theme.of(context).errorColor
+                      ? Theme.of(context).colorScheme.error
                       : Theme.of(context).colorScheme.primary,
                 ),
               if (_loader.progress != null && _loader.progress! < 1.0)
@@ -616,9 +616,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   child: CircularProgressIndicator(
                     value: _loader.progress ?? 0,
                     color: _loader.error != null
-                        ? Theme.of(context).errorColor
+                        ? Theme.of(context).colorScheme.error
                         : null,
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ),
@@ -659,7 +659,7 @@ class _IntroPage extends StatelessWidget {
         if (title != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(title!, style: Theme.of(context).textTheme.headline6),
+            child: Text(title!, style: Theme.of(context).textTheme.titleLarge),
           ),
         if (content != null) Expanded(child: content!),
         const SizedBox(height: 48),
@@ -777,9 +777,9 @@ class StartupFailedPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Text('Error: $error', style: Theme.of(context).textTheme.subtitle1),
+        Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
         if (stackTrace != null)
-          Text('\n\n$stackTrace', style: Theme.of(context).textTheme.caption),
+          Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
         const SafeArea(child: SizedBox())
       ],
     );

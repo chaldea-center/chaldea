@@ -121,7 +121,7 @@ class _ItemResultTabState extends State<ItemResultTab>
               style: TextStyle(
                 color: item.valid && item.checked
                     ? null
-                    : Theme.of(context).errorColor,
+                    : Theme.of(context).colorScheme.error,
               ),
             ),
           ),

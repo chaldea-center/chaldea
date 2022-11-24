@@ -77,7 +77,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           title: const Text('Mooncell'),
           trailing: Text(
             '${Region.jp.localName}/${Region.cn.localName}',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           onTap: () {
             launch('https://fgo.wiki/w/${widget.svt.extra.mcLink}/语音');
@@ -89,7 +89,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
           title: const Text('Fandom'),
           trailing: Text(
             '${Region.jp.localName}/${Region.na.localName}',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           onTap: () {
             launch(
@@ -379,7 +379,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                     '· $name',
                     maxLines: 2,
                     maxFontSize: 12,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primaryContainer),
                   ),
@@ -397,7 +397,8 @@ class VoiceGroupAccordion extends StatelessWidget {
                         valueList: cond.valueList,
                         textScaleFactor: 0.85,
                         style: TextStyle(
-                            color: Theme.of(context).textTheme.caption?.color),
+                            color:
+                                Theme.of(context).textTheme.bodySmall?.color),
                       ),
                 ],
               ),

@@ -265,13 +265,13 @@ class _AboutProgram extends StatelessWidget {
             IconTheme(data: Theme.of(context).iconTheme, child: icon!),
           Text(
             name,
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 6),
           Text(
             version,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 3),
@@ -280,13 +280,13 @@ class _AboutProgram extends StatelessWidget {
               text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
               // recognizer: TapGestureRecognizer()
               //   ..onTap = () => launch(AppInfo.commitUrl),
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             legalese ?? '',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
@@ -294,7 +294,7 @@ class _AboutProgram extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               debugInfo!,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.center,
             )
           ],

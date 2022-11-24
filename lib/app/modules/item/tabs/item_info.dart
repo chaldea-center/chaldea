@@ -171,7 +171,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: _summonCoin == validCoins[index]
-                          ? Theme.of(context).errorColor
+                          ? Theme.of(context).colorScheme.error
                           : null,
                       fontWeight: _summonCoin == validCoins[index]
                           ? FontWeight.bold
@@ -216,7 +216,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                         minFontSize: 6,
                         style: baseNp == _baseNp
                             ? TextStyle(
-                                color: Theme.of(context).errorColor,
+                                color: Theme.of(context).colorScheme.error,
                                 fontWeight: FontWeight.bold,
                               )
                             : null,

@@ -115,7 +115,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         if (!hideDetail) ...[
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-            child: Text(detailText, style: Theme.of(context).textTheme.caption),
+            child:
+                Text(detailText, style: Theme.of(context).textTheme.bodySmall),
           ),
           divider,
         ],
@@ -329,7 +330,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             tdRuby.l,
             style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).textTheme.caption?.color),
+                color: Theme.of(context).textTheme.bodySmall?.color),
             maxLines: 1,
           ),
           AutoSizeText(
@@ -342,7 +343,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
               tdRuby.jp,
               style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).textTheme.caption?.color),
+                  color: Theme.of(context).textTheme.bodySmall?.color),
               maxLines: 1,
             ),
             AutoSizeText(
@@ -361,7 +362,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
         header,
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-          child: Text(detailText, style: Theme.of(context).textTheme.caption),
+          child: Text(detailText, style: Theme.of(context).textTheme.bodySmall),
         ),
         divider,
         ...describeFunctions(

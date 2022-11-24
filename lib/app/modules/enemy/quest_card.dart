@@ -364,21 +364,21 @@ class _QuestCardState extends State<QuestCard> {
             child: Text(
               'Lv.${curPhase.recommendLv}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Expanded(
             child: Text(
               '${S.current.bond} ${noConsume ? "-" : curPhase.bond}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Expanded(
             child: Text(
               'EXP ${noConsume ? "-" : curPhase.exp}',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],
@@ -623,7 +623,7 @@ class _QuestCardState extends State<QuestCard> {
             ],
             style: svt.script?.eventDeckIndex == null
                 ? null
-                : TextStyle(color: Theme.of(context).errorColor),
+                : TextStyle(color: Theme.of(context).colorScheme.error),
           ),
           for (final ce in svt.equips) ...[
             CenterWidgetSpan(
@@ -634,7 +634,7 @@ class _QuestCardState extends State<QuestCard> {
                 _mono(ce.lv, 2),
               ],
               style: ce.limitCount == 4
-                  ? TextStyle(color: Theme.of(context).errorColor)
+                  ? TextStyle(color: Theme.of(context).colorScheme.error)
                   : null,
             ),
           ]

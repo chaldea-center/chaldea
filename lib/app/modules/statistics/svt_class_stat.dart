@@ -88,7 +88,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       ListTile(
         title: Text(
           S.current.priority,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: Text(priority.options.isEmpty
             ? S.current.general_all

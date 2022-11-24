@@ -210,7 +210,7 @@ class SkillScriptDescriptor extends StatelessWidget {
                 }).toList(),
               )
             ]),
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing: null,
         ),
@@ -294,7 +294,7 @@ class SkillScriptDescriptor extends StatelessWidget {
       }
       children.add(_pad(_DescriptorWrapper(
         title: Text.rich(TextSpan(children: titleSpans),
-            style: Theme.of(context).textTheme.caption),
+            style: Theme.of(context).textTheme.bodySmall),
         trailing: trailing,
         lvCells: cells,
       )));
@@ -317,7 +317,7 @@ class SkillScriptDescriptor extends StatelessWidget {
             const TextSpan(text: ' / '),
           ),
         ]),
-        style: Theme.of(context).textTheme.caption,
+        style: Theme.of(context).textTheme.bodySmall,
       )));
     }
     if (children.isEmpty) return const SizedBox();
@@ -366,7 +366,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     }
 
     return _pad(_DescriptorWrapper(
-      title: Text.rich(title, style: Theme.of(context).textTheme.caption),
+      title: Text.rich(title, style: Theme.of(context).textTheme.bodySmall),
       trailing: trailing,
       lvCells: cells,
     ));
@@ -734,7 +734,7 @@ class FuncDescriptor extends StatelessWidget {
 
     if (vals?.AddLinkageTargetIndividualty != null &&
         vals?.BehaveAsFamilyBuff == 1) {
-      final color = Theme.of(context).textTheme.caption?.color;
+      final color = Theme.of(context).textTheme.bodySmall?.color;
       spans.add(const TextSpan(text: '('));
       spans.add(CenterWidgetSpan(
         child: FaIcon(
@@ -854,7 +854,7 @@ class FuncDescriptor extends StatelessWidget {
 
     Widget title = Text.rich(
       TextSpan(children: spans),
-      style: Theme.of(context).textTheme.caption,
+      style: Theme.of(context).textTheme.bodySmall,
     );
     title = InkWell(
       onTap: () => func.routeTo(region: region),
@@ -1071,7 +1071,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
         InkWell(
           onTap: () => skill?.routeTo(),
           child: Text.rich(TextSpan(
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
             children: [
               TextSpan(
                 text: '  $title ',
@@ -1099,7 +1099,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
           Center(
             child: Text(
               '∞',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           )
       ],
@@ -1193,7 +1193,7 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
           Center(
             child: Text(
               '∞',
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           )
       ],

@@ -25,13 +25,13 @@ class _TranslationSettingState extends State<TranslationSetting> {
                 text: 'Auto',
                 style: db.settings.preferredRegions == null
                     ? null
-                    : Theme.of(context).textTheme.caption,
+                    : Theme.of(context).textTheme.bodySmall,
               ),
               const TextSpan(text: ' / '),
               TextSpan(
                 text: 'Fixed',
                 style: db.settings.preferredRegions == null
-                    ? Theme.of(context).textTheme.caption
+                    ? Theme.of(context).textTheme.bodySmall
                     : null,
               ),
             ]),

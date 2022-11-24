@@ -102,12 +102,12 @@ class EventBonusTab extends HookWidget {
       if (ceWidgets.isNotEmpty)
         Tab(
           child: Text(S.current.craft_essence,
-              style: Theme.of(context).textTheme.bodyText2),
+              style: Theme.of(context).textTheme.bodyMedium),
         ),
       if (svtWidgets.isNotEmpty)
         Tab(
           child: Text(S.current.servant,
-              style: Theme.of(context).textTheme.bodyText2),
+              style: Theme.of(context).textTheme.bodyMedium),
         )
     ];
     if (tabs.isEmpty) return const SizedBox();

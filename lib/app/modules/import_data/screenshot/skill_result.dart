@@ -127,7 +127,7 @@ class _SkillResultTabState extends State<SkillResultTab>
               style: TextStyle(
                 color: item.valid && item.checked
                     ? null
-                    : Theme.of(context).errorColor,
+                    : Theme.of(context).colorScheme.error,
               ),
               maxLines: 2,
               textAlign: TextAlign.center,

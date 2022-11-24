@@ -236,7 +236,7 @@ The other campaign events, maintenance compensation, and other rewards directly 
 엑스트라 마스터 미션 보상은 마지막 날에 추가로 지급됩니다.
 기타 캠페인 이벤트, 유지 보수, 기타 기프트 박스로 직접 발송되는 보상은 자동 집계가 불가능하여 계산되지 않습니다. """,
               ),
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ),

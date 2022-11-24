@@ -45,7 +45,8 @@ class DividerWithTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? titleWidget = this.titleWidget;
     if (title != null) {
-      titleWidget ??= Text(title!, style: Theme.of(context).textTheme.caption);
+      titleWidget ??=
+          Text(title!, style: Theme.of(context).textTheme.bodySmall);
     }
     if (titleWidget == null) {
       return Divider(

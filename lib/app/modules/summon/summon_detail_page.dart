@@ -158,12 +158,12 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                 '$kStarChar ',
                 style: Theme.of(context)
                     .textTheme
-                    .caption
+                    .bodySmall
                     ?.copyWith(color: Colors.yellow),
               ),
               Text(
                 'PickUp',
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ],
           ),

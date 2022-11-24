@@ -31,7 +31,7 @@ class TraitEnemyTab extends StatelessWidget {
             child: Text(
               S.current.only_show_main_story_enemy,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           );
         }

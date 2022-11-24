@@ -54,7 +54,7 @@ class EventCampaignDetailPage extends StatelessWidget {
                   Divider(indent: 16, endIndent: 8, thickness: 1, height: 16)),
           Text(
             '${S.current.event_campaign} ${index + 1}',
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const Expanded(
               child:

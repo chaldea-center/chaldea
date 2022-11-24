@@ -377,7 +377,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         ),
         Text(
           '${_curHistory + 1}/${history.length}',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 6),
       ],

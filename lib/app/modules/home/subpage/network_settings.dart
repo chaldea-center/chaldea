@@ -146,7 +146,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
         TextSpan(
           text: ' ●',
           style: TextStyle(
-            color: success ? Colors.green : Theme.of(context).errorColor,
+            color: success ? Colors.green : Theme.of(context).colorScheme.error,
           ),
         )
       ],

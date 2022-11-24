@@ -304,7 +304,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               children: [
                 Text(
                   '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt)}',
-                  style: TextStyle(color: Theme.of(context).errorColor),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 )
               ],
             ),

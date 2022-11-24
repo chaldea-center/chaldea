@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
           Text(
             S.current.chaldea_account_system_hint,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
           mainAction(),
@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: doLogout,
         child: Text(
           S.current.login_logout,
-          style: TextStyle(color: Theme.of(context).errorColor),
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       );
 
@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: doDelete,
         child: Text(
           S.current.delete,
-          style: TextStyle(color: Theme.of(context).errorColor),
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       );
 

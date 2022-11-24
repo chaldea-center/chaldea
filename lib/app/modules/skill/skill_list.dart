@@ -114,7 +114,7 @@ class _SkillListPageState extends State<SkillListPage>
             if (skill != null)
               TextSpan(
                   text: '\n${skill.id} ${skill.type.name}',
-                  style: Theme.of(context).textTheme.caption)
+                  style: Theme.of(context).textTheme.bodySmall)
           ],
         ),
       ),

@@ -242,7 +242,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         ),
         Text(
           '${_curHistory + 1}/${history.length}',
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 6),
       ],

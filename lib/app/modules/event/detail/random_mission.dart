@@ -53,7 +53,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
                           CenterWidgetSpan(child: rankIcon(rank, width: 24)),
                           TextSpan(text: ' ${rankText(rank)}')
                         ]),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                 ],

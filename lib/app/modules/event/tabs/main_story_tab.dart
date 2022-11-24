@@ -89,7 +89,7 @@ class MainStoryTab extends StatelessWidget {
       maxLines: 2,
       // maxFontSize: 16,
       style: outdated
-          ? TextStyle(color: Theme.of(context).textTheme.caption?.color)
+          ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
           : null,
       textScaleFactor: 0.9,
     );

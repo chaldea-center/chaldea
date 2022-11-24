@@ -55,7 +55,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                 child: Text(
                   'Menu - ${S.current.switch_region}',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             );

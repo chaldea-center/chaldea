@@ -43,7 +43,7 @@ class CampaignEventTab extends StatelessWidget {
         .map((e) => '${e.key.upper} ${e.value?.sec2date().toDateString()}')
         .join(' / ');
 
-    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
+    Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
     Widget tile = ListTile(
       title: AutoSizeText(
         event.shownName,

@@ -117,13 +117,13 @@ class _QuestListPageState extends State<QuestListPage> {
           Widget trailing = trailings.isEmpty
               ? Text(
                   'Lv.${quest.recommendLv}',
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme.of(context).textTheme.bodySmall,
                 )
               : Text.rich(
                   TextSpan(
                     text: 'Lv.${quest.recommendLv}\n',
                     children: trailings,
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   textAlign: TextAlign.end,
                 );

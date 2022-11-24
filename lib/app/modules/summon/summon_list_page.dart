@@ -137,7 +137,7 @@ class _SummonListPageState extends State<SummonListPage>
           title,
           Text(
             summon.lName,
-            style: Theme.of(context).textTheme.caption?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontStyle: summon.isOutdated() ? FontStyle.italic : null),
             textAlign: TextAlign.center,
           )

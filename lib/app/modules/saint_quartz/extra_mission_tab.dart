@@ -48,7 +48,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
             style: plan.isInRange(mission.startedAt)
                 ? null
                 : TextStyle(
-                    color: Theme.of(context).textTheme.caption?.color,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                     fontStyle: FontStyle.italic,
                   ),
           ),

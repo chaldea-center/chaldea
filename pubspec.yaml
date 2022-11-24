@@ -3,7 +3,7 @@ description: Chaldea Center
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -63,13 +63,20 @@ dependencies:
   intl: ^0.17.0
   json_annotation: ^4.7.0
   just_audio: ^0.9.28
-  just_audio_windows: ^0.1.0
+  just_audio_windows: # ^0.1.0
+    git: 
+      url: https://github.com/narumi147/just_audio_windows.git
+      path: just_audio_windows
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
   kana_kit: ^2.0.0
   logger: ^1.1.0
   lpinyin: ^2.0.3
   markdown: ^6.0.1
-  modal_bottom_sheet: ^2.1.0
+  modal_bottom_sheet:
+    git:
+      url: https://github.com/CoolDude53/modal_bottom_sheet.git
+      ref: d3779be7d661481cc0d99090d6356a286ae4f86b
+      path: modal_bottom_sheet
   package_info_plus: ^1.4.2
   path: ^1.8.1
   path_provider: ^2.0.10
@@ -107,7 +114,6 @@ dev_dependencies:
       url: https://github.com/chaldea-center/intl_utils
   # flutter_launcher_icons: ^0.8.1
 
-
 #flutter_icons:
 #  #  image_path: "assets/images/icon-128x128.png"
 #  ios: true # can specify file name here e.g. "My-Launcher-Icon"
@@ -117,13 +123,11 @@ dev_dependencies:
 ##  adaptive_icon_background: "#FFFFFF" # only available for Android 8.0 devices and above
 ##  adaptive_icon_foreground: "res/img/launcher_icon/ic_android_foreground.png" # only available for Android 8.0 devices and above
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

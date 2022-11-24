@@ -119,7 +119,7 @@ class _TdListPageState extends State<TdListPage>
               TextSpan(
                   text:
                       '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
-                  style: Theme.of(context).textTheme.caption)
+                  style: Theme.of(context).textTheme.bodySmall)
           ],
         ),
       ),

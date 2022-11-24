@@ -252,7 +252,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       params.blacklist.isNotEmpty ||
                       !params.use6th ||
                       params.dailyCostHalf
-                  ? Theme.of(context).errorColor
+                  ? Theme.of(context).colorScheme.error
                   : Theme.of(context).colorScheme.primary,
               tooltip: S.current.settings_tab_name,
               onPressed: () async {

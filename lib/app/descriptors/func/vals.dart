@@ -104,7 +104,7 @@ class ValDsc extends StatelessWidget {
     if (parts.isEmpty) {
       style = style.copyWith(
         fontStyle: FontStyle.italic,
-        color: Theme.of(context).textTheme.caption?.color,
+        color: Theme.of(context).textTheme.bodySmall?.color,
       );
     }
     final text =

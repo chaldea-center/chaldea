@@ -295,7 +295,7 @@ class _SkillTab extends StatelessWidget {
                         if (cards.length > 3)
                           Text(
                             '+${cards.length - 3}',
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                           )
                       ],
                     ),
@@ -350,7 +350,7 @@ class _TdTab extends StatelessWidget {
                         if (cards.length > 3)
                           Text(
                             '+${cards.length - 3}',
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodySmall,
                           )
                       ],
                     ),

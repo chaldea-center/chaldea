@@ -270,7 +270,7 @@ class _NpChargePageState extends State<NpChargePage> {
                     : detail.isTd
                         ? S.current.noble_phantasm
                         : "${S.current.skill} ${detail.pos}",
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ],
           )),
@@ -292,7 +292,7 @@ class _NpChargePageState extends State<NpChargePage> {
         ),
         const SizedBox(height: 2),
         Text(skill.lDetail ?? '???',
-            style: Theme.of(context).textTheme.caption),
+            style: Theme.of(context).textTheme.bodySmall),
         const Divider(height: 6, thickness: 1),
         FuncDescriptor(
           func: detail.triggerFunc ?? detail.func,

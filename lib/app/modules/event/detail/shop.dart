@@ -99,7 +99,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
           ),
           TextSpan(text: ' ×${shop.cost.amount}'),
         ]),
-        style: Theme.of(context).textTheme.caption,
+        style: Theme.of(context).textTheme.bodySmall,
       );
     }
     final planCount = plan.shopBuyCount[shop.id] ?? shop.limitNum;
@@ -132,7 +132,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
             '${planCount.format()}/$limitCount',
             style: planCount == shop.limitNum
                 ? null
-                : TextStyle(color: Theme.of(context).errorColor),
+                : TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
         IconButton(

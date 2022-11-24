@@ -272,7 +272,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     : Text(
                         '${db.runtimeData.upgradableVersion!.versionString} ↑',
                         style: TextStyle(
-                            color: Theme.of(context).errorColor.withAlpha(200)),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .error
+                                .withAlpha(200)),
                       ),
                 onTap: () => router.popDetailAndPush(child: AboutPage()),
               ),

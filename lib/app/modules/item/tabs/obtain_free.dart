@@ -86,7 +86,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         value ? S.current.ap_efficiency : S.current.drop_rate,
         style: value == sortByAP
             ? null
-            : TextStyle(color: Theme.of(context).textTheme.caption?.color),
+            : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ),
       onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
     );

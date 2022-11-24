@@ -80,7 +80,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           child: Text(
             '${S.current.game_server}: ${db.curUser.region.localName}',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
       ),
@@ -123,7 +123,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     bool planned = plan.enabled;
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
-    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
+    Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
     bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
     bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     bool isThisMonth = DateUtils.isSameMonth(ticket.date, DateTime.now());
@@ -181,7 +181,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             style: TextStyle(
               color: isThisMonth
                   ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).textTheme.caption?.color,
+                  : Theme.of(context).textTheme.bodySmall?.color,
               fontSize: 12,
             )),
       ])),
@@ -227,7 +227,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                     maxLines: 1,
                     minFontSize: 6,
                     group: _autoSizeGroup,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                   )
                 ],
@@ -241,7 +241,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   cancelText: S.current.cancel,
                   confirmText: S.current.confirm,
                   backgroundColor: null,
-                  textStyle: Theme.of(context).textTheme.headline6,
+                  textStyle: Theme.of(context).textTheme.titleLarge,
                   adapter: NumberPickerAdapter(
                     data: [
                       NumberPickerColumn(
@@ -320,7 +320,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             children: [
               TextSpan(
                 text: '\nJP ${ticket.year}-${ticket.month}',
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.bodySmall,
               )
             ],
           )),

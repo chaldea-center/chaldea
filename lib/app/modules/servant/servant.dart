@@ -242,7 +242,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               ),
               child: Text(
                 'ATK ${svt.atkMax}  HP ${svt.hpMax}',
-                // style: Theme.of(context).textTheme.caption,
+                // style: Theme.of(context).textTheme.bodySmall,
                 textScaleFactor: 0.9,
               ),
             ),

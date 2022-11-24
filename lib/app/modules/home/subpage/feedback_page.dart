@@ -75,7 +75,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
       appBar: AppBar(
         title: Text(S.current.about_feedback),
         leading: BackButton(onPressed: () async {
-          if (await _alertPopPage() && mounted) Navigator.of(context).pop();
+          if (await _alertPopPage()) {
+            if (mounted) Navigator.of(context).pop();
+          }
         }),
       ),
       body: ListView(
@@ -130,10 +132,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   if (await canLaunch(uri.toString())) {
                     launch(uri.toString());
                   } else {
-                    SimpleCancelOkDialog(
-                      title: Text(S.current.send_email_to),
-                      content: const Text(kSupportTeamEmailAddress),
-                    ).showDialog(context);
+                    if (mounted) {
+                      SimpleCancelOkDialog(
+                        title: Text(S.current.send_email_to),
+                        content: const Text(kSupportTeamEmailAddress),
+                      ).showDialog(context);
+                    }
                   }
                 },
               ),
@@ -254,6 +258,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         .catchError((e, s) async {
       logger.e('pick attachment failed', e, s);
       EasyLoading.showError(e.toString());
+      return null;
     });
 
     if (result != null) {

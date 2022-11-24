@@ -156,7 +156,7 @@ class _SQTableTabState extends State<SQTableTab> {
                         )),
                       TextSpan(
                         text: summon.lName,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ]),
                     maxLines: 1,
@@ -183,7 +183,7 @@ class _SQTableTabState extends State<SQTableTab> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(acc),
-        Text(add, style: Theme.of(context).textTheme.caption),
+        Text(add, style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }

@@ -240,7 +240,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         title: DefaultTextStyle.merge(
           style: TextStyle(
               // fontSize: 14,
-              color: Theme.of(context).textTheme.bodyText2?.color),
+              color: Theme.of(context).textTheme.bodyMedium?.color),
           textAlign: TextAlign.center,
           overflow: TextOverflow.visible,
           child: Row(
