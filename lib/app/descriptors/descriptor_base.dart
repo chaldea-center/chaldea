@@ -11,7 +11,6 @@ abstract class DescriptorBase {
   bool? get useAnd;
 
   List<InlineSpan> localized({
-    BuildContext? context,
     required List<InlineSpan> Function()? jp,
     required List<InlineSpan> Function()? cn,
     required List<InlineSpan> Function()? tw,
@@ -78,15 +77,6 @@ abstract class DescriptorBase {
           {bool sort = true}) =>
       emptyHint(MultiDescriptor.missions(context, targetIds, missions,
           useAnd: useAnd, sort: sort));
-  List<InlineSpan> event(BuildContext context) {
-    final _event = db.gameData.events[targetIds.first];
-    return [
-      MultiDescriptor.inkWell(
-        context: context,
-        text: _event?.shownName.replaceAll('\n', ' ') ??
-            targetIds.first.toString(),
-        onTap: () => _event?.routeTo(),
-      )
-    ];
-  }
+  List<InlineSpan> events(BuildContext context) =>
+      emptyHint(MultiDescriptor.events(context, targetIds));
 }

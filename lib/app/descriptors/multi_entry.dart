@@ -272,6 +272,37 @@ class MultiDescriptor {
       ];
     }
   }
+
+  static List<InlineSpan> events(BuildContext context, List<int> targetIds) {
+    if (targetIds.length == 1) {
+      return list(
+        context,
+        targetIds,
+        (context, id) {
+          final event = db.gameData.events[id];
+          return TextSpan(text: event?.lShortName.l ?? id.toString());
+        },
+        false,
+      );
+    } else {
+      return [
+        MultiDescriptor.collapsed(
+          context,
+          targetIds,
+          S.current.mission,
+          (context, id) {
+            final event = db.gameData.events[id];
+            return ListTile(
+              title: Text(event?.lName.l ?? 'Event $id'),
+              horizontalTitleGap: 0,
+              dense: true,
+            );
+          },
+          false,
+        ),
+      ];
+    }
+  }
 }
 
 class _MultiEntriesList extends StatelessWidget {

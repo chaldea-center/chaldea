@@ -113,9 +113,19 @@ class _ServantFilterPageState
         ),
         buildGroupDivider(text: S.current.plan),
         FilterGroup<int>(
-          title: Text(S.current.priority, style: textStyle),
+          title: Text(
+              '${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
+              style: textStyle),
           options: const [1, 2, 3, 4, 5],
           values: filterData.priority,
+          optionBuilder: (value) {
+            String text = value.toString();
+            final tag = db.settings.priorityTags[value];
+            if (tag != null && tag.isNotEmpty) {
+              text += ' $tag';
+            }
+            return Text(text);
+          },
           onFilterChanged: (value, _) {
             update();
           },

@@ -168,11 +168,11 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventEnd:
         return localized(
-          jp: () => combineToRich(context, 'イベント', event(context), 'は終了した'),
-          cn: () => combineToRich(context, '活动', event(context), '结束'),
+          jp: () => combineToRich(context, 'イベント', events(context), 'は終了した'),
+          cn: () => combineToRich(context, '活动', events(context), '结束'),
           tw: null,
           na: () =>
-              combineToRich(context, 'Event ', event(context), ' has ended'),
+              combineToRich(context, 'Event ', events(context), ' has ended'),
           kr: null,
         );
       case CondType.questNotClear:
@@ -225,12 +225,12 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventRewardDispCount:
         return localized(
-          jp: () => combineToRich(context, null, event(context),
+          jp: () => combineToRich(context, null, events(context),
               ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
           cn: () => combineToRich(
-              context, null, event(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
+              context, null, events(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
           tw: null,
-          na: () => combineToRich(context, 'Event ', event(context),
+          na: () => combineToRich(context, 'Event ', events(context),
               ' reward voice line and at least ${value - 1} other reward lines played before this one'),
           kr: null,
         );

@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'descriptor_base.dart';
 import 'multi_entry.dart';
 
-class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
+class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   final int? targetNum;
   final EventMissionConditionDetail detail;
   final bool? _useAnd;
@@ -16,7 +15,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   @override
   final InlineSpan? leading;
 
-  const MissionCondDetailDescriptor({
+  MissionCondDetailDescriptor({
     super.key,
     required this.targetNum,
     required this.detail,
@@ -59,6 +58,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {
+    context.mounted;
     String targetNum = this.targetNum?.toString() ?? 'x';
     switch (detail.missionCondType) {
       case DetailCondType.questClearIndividuality:
@@ -78,6 +78,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
         );
       case DetailCondType.questClearNum1:
       case DetailCondType.questClearNum2:
+      case DetailCondType.questClearNumIncludingGrailFront:
         if (targetIds.length == 1 && targetIds.first == 0) {
           return localized(
             jp: () => text('いずれかのクエストを$targetNum回クリアせよ'),
@@ -99,16 +100,7 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
                 context, '아래의 퀘스트를 $targetNum회 클리어', quests(context)),
           );
         }
-      case DetailCondType.questClearNumIncludingGrailFront:
-        return localized(
-          jp: () => text('いずれかのクエスト（聖杯戦線含め）を$targetNum回クリアせよ'),
-          cn: () => text('通关$targetNum次任意关卡(包括圣杯战线)'),
-          tw: null,
-          na: () => text(
-              'Clear any quest including grail front quest $targetNum times'),
-          kr: () => text('퀘스트를 (성배전선 포함) $targetNum회 클리어'),
-        );
-      case DetailCondType.mainQuestDone:
+      case DetailCondType.questTypeClear:
         return localized(
           jp: () => text('1部または2部のメインクエストを$targetNum回クリアせよ'),
           cn: () => text('通关$targetNum次第一部和第二部的主线关卡'),
@@ -120,7 +112,6 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.enemyKillNum:
       case DetailCondType.targetQuestEnemyKillNum:
         return localized(
-          context: context,
           jp: () => combineToRich(
               context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () =>
@@ -138,7 +129,6 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.enemyIndividualityKillNum:
       case DetailCondType.targetQuestEnemyIndividualityKillNum:
         return localized(
-          context: context,
           jp: () => combineToRich(
               context, null, traits(context), '特性を持つ敵を$targetNum体倒せ'),
           cn: () => combineToRich(
@@ -212,7 +202,6 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.itemGetTotal:
       case DetailCondType.targetQuestItemGetTotal:
         return localized(
-          context: context,
           jp: () =>
               combineToRich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () =>
@@ -287,7 +276,6 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
 
   @override
   List<InlineSpan> localized({
-    BuildContext? context,
     required List<InlineSpan> Function()? jp,
     required List<InlineSpan> Function()? cn,
     required List<InlineSpan> Function()? tw,
@@ -296,21 +284,32 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   }) {
     final spans = super.localized(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
     if (detail.targetQuestIndividualities.isEmpty) return spans;
-    assert(context != null);
     final questTraits =
         detail.targetQuestIndividualities.map((e) => e.signedId).toList();
+    final events = detail.targetEventIds ?? [];
+    final context = useContext();
     return [
       ...spans,
-      if (context != null)
+      if (questTraits.isNotEmpty)
         ...super.localized(
           jp: null,
-          cn: () => combineToRich(null, '[所需关卡特性: ',
-              MultiDescriptor.traits(context, questTraits), ']'),
+          cn: () => combineToRich(null, '(所需关卡特性: ',
+              MultiDescriptor.traits(context, questTraits), ')'),
           tw: null,
-          na: () => combineToRich(null, '[Required Quest Trait: ',
-              MultiDescriptor.traits(context, questTraits), ']'),
+          na: () => combineToRich(null, '(Required Quest Trait: ',
+              MultiDescriptor.traits(context, questTraits), ')'),
           kr: null,
-        )
+        ),
+      if (events.isNotEmpty)
+        ...super.localized(
+          jp: null,
+          cn: () => combineToRich(
+              null, '(活动: ', MultiDescriptor.events(context, events), ')'),
+          tw: null,
+          na: () => combineToRich(
+              null, '(Event: ', MultiDescriptor.events(context, events), ')'),
+          kr: null,
+        ),
     ];
   }
 }

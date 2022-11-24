@@ -290,9 +290,11 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
         children: List.generate(5, (index) {
           int priority = 5 - index;
           bool checked = priorityFilter.options.contains(priority);
+          String text = '${S.current.priority} $priority ';
+          final tag = db.settings.priorityTags[priority] ?? "";
           return CheckboxListTile(
             value: checked,
-            title: Text('${S.current.priority} $priority'),
+            title: Text(text + tag),
             controlAffinity: ListTileControlAffinity.leading,
             // dense: true,
             onChanged: (v) {

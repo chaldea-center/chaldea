@@ -217,12 +217,12 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventEnd:
         return localized(
-          jp: () => combineToRich(context, 'イベント', event(context), 'は終了した'),
-          cn: () => combineToRich(context, '活动', event(context), '结束'),
+          jp: () => combineToRich(context, 'イベント', events(context), 'は終了した'),
+          cn: () => combineToRich(context, '活动', events(context), '结束'),
           tw: null,
           na: () =>
-              combineToRich(context, 'Event ', event(context), ' has ended'),
-          kr: () => combineToRich(context, '이벤트 ', event(context), ' 종료'),
+              combineToRich(context, 'Event ', events(context), ' has ended'),
+          kr: () => combineToRich(context, '이벤트 ', events(context), ' 종료'),
         );
       case CondType.svtHaving:
         return localized(
