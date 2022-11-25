@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'descriptor_base.dart';
 import 'mission_cond_detail.dart';
 
-class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
+class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   final CondType condType;
   final int targetNum;
   @override
@@ -527,7 +526,14 @@ class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
           na: () => text('Start Random Mission: $targets'),
           kr: null,
         );
-      // case CondType.missionConditionDetail:
+      case CondType.latestMainScenarioWarClear:
+        return localized(
+          jp: null,
+          cn: () => text('通关最新主线剧情'),
+          tw: null,
+          na: () => text('Clear latest main scenario'),
+          kr: null,
+        );
       case CondType.date:
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000)
             .toStringShort(omitSec: true);

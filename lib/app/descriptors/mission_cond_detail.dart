@@ -1,4 +1,5 @@
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'descriptor_base.dart';
@@ -101,13 +102,25 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           );
         }
       case DetailCondType.questTypeClear:
+        final types = targetIds
+            .map((e) => kQuestTypeIds[e]?.shownName ?? 'Unknown QuestType $e')
+            .join('/');
         return localized(
-          jp: () => text('1部または2部のメインクエストを$targetNum回クリアせよ'),
-          cn: () => text('通关$targetNum次第一部和第二部的主线关卡'),
+          jp: null,
+          cn: () => text('通关$targetNum次类型为[$types]的关卡'),
           tw: null,
-          na: () =>
-              text('Clear any main quest in Arc 1 and Arc 2 $targetNum times'),
-          kr: () => text('1부 또는 2부의 메인 퀘스트를 $targetNum회 클리어'),
+          na: () => text('Clear $targetNum times of [$types] quests'),
+          kr: null,
+        );
+      case DetailCondType.warMainQuestClear:
+        return localized(
+          jp: null,
+          cn: () =>
+              combineToRich(context, '通关$targetNum次以下章节的主线关卡: ', wars(context)),
+          tw: null,
+          na: () => combineToRich(context,
+              'Clear $targetNum times main quests from ', wars(context)),
+          kr: null,
         );
       case DetailCondType.enemyKillNum:
       case DetailCondType.targetQuestEnemyKillNum:
@@ -283,25 +296,26 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     required List<InlineSpan> Function()? kr,
   }) {
     final spans = super.localized(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
-    if (detail.targetQuestIndividualities.isEmpty) return spans;
     final questTraits =
         detail.targetQuestIndividualities.map((e) => e.signedId).toList();
-    final events = detail.targetEventIds ?? [];
+    final events = List<int>.of(detail.targetEventIds ?? []);
     final context = useContext();
-    return [
-      ...spans,
-      if (questTraits.isNotEmpty)
-        ...super.localized(
-          jp: null,
-          cn: () => combineToRich(null, '(所需关卡特性: ',
-              MultiDescriptor.traits(context, questTraits), ')'),
-          tw: null,
-          na: () => combineToRich(null, '(Required Quest Trait: ',
-              MultiDescriptor.traits(context, questTraits), ')'),
-          kr: null,
-        ),
-      if (events.isNotEmpty)
-        ...super.localized(
+    if (questTraits.isNotEmpty) {
+      spans.addAll(super.localized(
+        jp: null,
+        cn: () => combineToRich(null, '(所需关卡特性: ',
+            MultiDescriptor.traits(context, questTraits), ')'),
+        tw: null,
+        na: () => combineToRich(null, '(Required Quest Trait: ',
+            MultiDescriptor.traits(context, questTraits), ')'),
+        kr: null,
+      ));
+    }
+    if (events.isNotEmpty) {
+      if (events.length == 1 && events.first == 0) {
+        spans.add(TextSpan(text: '(${S.current.main_story})'));
+      } else {
+        spans.addAll(super.localized(
           jp: null,
           cn: () => combineToRich(
               null, '(活动: ', MultiDescriptor.events(context, events), ')'),
@@ -309,7 +323,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => combineToRich(
               null, '(Event: ', MultiDescriptor.events(context, events), ')'),
           kr: null,
-        ),
-    ];
+        ));
+      }
+    }
+    return spans;
   }
 }

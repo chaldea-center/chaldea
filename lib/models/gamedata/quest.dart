@@ -996,12 +996,41 @@ List<QuestFlag> toEnumListQuestFlag(List<dynamic> flags) {
 }
 
 enum QuestType {
-  main,
-  free,
-  friendship,
-  event,
-  heroballad,
-  warBoard,
+  main, // 1
+  free, // 2
+  friendship, // 3
+  event, //5
+  heroballad, //6
+  warBoard, // 7
+}
+
+const kQuestTypeIds = {
+  1: QuestType.main,
+  2: QuestType.free,
+  3: QuestType.friendship,
+  5: QuestType.event,
+  6: QuestType.heroballad,
+  7: QuestType.warBoard,
+};
+
+extension QuestTypeX on QuestType {
+  String get shownName {
+    switch (this) {
+      case QuestType.main:
+        return S.current.main_quest;
+      case QuestType.free:
+        return S.current.free_quest;
+      case QuestType.friendship:
+        return S.current.interlude;
+      case QuestType.event:
+        return S.current.event_title;
+      case QuestType.heroballad:
+      case QuestType.warBoard:
+        return S.current.war_board;
+    }
+  }
+
+  int get id => kQuestTypeIds.entries.firstWhere((e) => e.value == this).key;
 }
 
 enum ConsumeType {

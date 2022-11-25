@@ -244,7 +244,7 @@ class MultiDescriptor {
         targetIds,
         (context, id) {
           final mission = missions[id];
-          return TextSpan(text: '[${mission?.dispNo} - ${mission?.name}]');
+          return TextSpan(text: '${mission?.dispNo} - ${mission?.name}');
         },
         useAnd,
       );
@@ -273,15 +273,18 @@ class MultiDescriptor {
     }
   }
 
-  static List<InlineSpan> events(BuildContext context, List<int> targetIds) {
+  static List<InlineSpan> wars(BuildContext context, List<int> targetIds) {
     if (targetIds.length == 1) {
       return list(
         context,
         targetIds,
         (context, id) {
-          final event = db.gameData.events[id];
-          return TextSpan(
-              text: event?.lShortName.l.setMaxLines(1) ?? id.toString());
+          final war = db.gameData.wars[id];
+          return inkWell(
+            context: context,
+            text: war?.lShortName.setMaxLines(1) ?? id.toString(),
+            onTap: () => router.push(url: Routes.warI(id)),
+          );
         },
         false,
       );
@@ -290,13 +293,50 @@ class MultiDescriptor {
         MultiDescriptor.collapsed(
           context,
           targetIds,
-          S.current.mission,
+          S.current.war_title,
+          (context, id) {
+            final war = db.gameData.wars[id];
+            return ListTile(
+              title: Text(war?.lLongName.l.setMaxLines(1) ?? 'War $id'),
+              horizontalTitleGap: 0,
+              dense: true,
+              onTap: () => router.push(url: Routes.warI(id)),
+            );
+          },
+          false,
+        ),
+      ];
+    }
+  }
+
+  static List<InlineSpan> events(BuildContext context, List<int> targetIds) {
+    if (targetIds.length == 1) {
+      return list(
+        context,
+        targetIds,
+        (context, id) {
+          final event = db.gameData.events[id];
+          return inkWell(
+            context: context,
+            text: event?.lShortName.l.setMaxLines(1) ?? id.toString(),
+            onTap: () => router.push(url: Routes.eventI(id)),
+          );
+        },
+        false,
+      );
+    } else {
+      return [
+        MultiDescriptor.collapsed(
+          context,
+          targetIds,
+          S.current.event_title,
           (context, id) {
             final event = db.gameData.events[id];
             return ListTile(
               title: Text(event?.lName.l.setMaxLines(1) ?? 'Event $id'),
               horizontalTitleGap: 0,
               dense: true,
+              onTap: () => router.push(url: Routes.eventI(id)),
             );
           },
           false,

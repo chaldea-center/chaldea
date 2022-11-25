@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -330,14 +332,26 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           targetIds: [target],
           missions: missions,
         ).buildContent(context);
+      case CondType.weekdays:
+        List<String> weekdays = [];
+        target;
+        print([target, target.toRadixString(2)]);
+        for (int day = 1; day <= 7; day++) {
+          print([(1 << (day % 7 + 1)), (1 << (day % 7 + 1)).toRadixString(2)]);
+          if (target & (1 << (day % 7 + 1)) != 0) {
+            weekdays.add(DateFormat('EEEE').format(DateTime(2000, 1, 2 + day)));
+          }
+        }
+        if (weekdays.isEmpty) break;
+        return [TextSpan(text: weekdays.join(' / '))];
       default:
         break;
     }
     return localized(
       jp: () => text('不明な条件(${condType.name}): $value, $target'),
-      cn: () => text('未知条件(${condType.name}): $value, 目标$target'),
+      cn: () => text('未知条件(${condType.name}): $value, $target'),
       tw: null,
-      na: () => text('Unknown Cond(${condType.name}): $value, target $target'),
+      na: () => text('Unknown Cond(${condType.name}): $value, $target'),
       kr: null,
     );
   }
