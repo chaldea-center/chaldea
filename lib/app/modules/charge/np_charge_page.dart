@@ -380,8 +380,11 @@ class _NpChargePageState extends State<NpChargePage> {
                   (enums) => enums.tdEffectFlag).l
             ].join()),
         ],
-        if (filterData.effectTarget.radioValue != null)
-          optionBuilder(text: filterData.effectTarget.radioValue!.shownName),
+        if (filterData.effectTarget.options.isNotEmpty)
+          optionBuilder(
+              text: filterData.effectTarget.options
+                  .map((e) => e.shownName)
+                  .join('/')),
       ],
     );
 

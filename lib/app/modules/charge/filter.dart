@@ -38,7 +38,7 @@ class NpFilterData {
   final ceMax = FilterGroupData<bool>();
   final svtClass = FilterGroupData<SvtClass>();
   final rarity = FilterGroupData<int>();
-  final effectTarget = FilterRadioData<EffectTarget>();
+  final effectTarget = FilterGroupData<EffectTarget>();
   final region = FilterRadioData<Region>();
   final tdColor = FilterRadioData<CardType>();
   final tdType = FilterRadioData<TdEffectFlag>();
