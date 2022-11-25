@@ -35,6 +35,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(filename, hash, localHash) =>
       "${filename} 파일을 찾을 수 없거나 해시가 일치하지 않습니다 : ${hash} - ${localHash}";
 
+  static String m16(rarity) => "${rarity}☆ 개념예장 픽업";
+
+  static String m17(rarity) => "${rarity}☆ 서번트 픽업";
+
   static String m5(error) => "불러오기 실패. Error:\n${error}";
 
   static String m6(name) => "${name}은 이미 존재합니다";
@@ -112,6 +116,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_failed":
             MessageLookupByLibrary.simpleMessage("백업 불러오기를 실패하였습니다"),
         "backup_history": MessageLookupByLibrary.simpleMessage("백업 기록"),
+        "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("블랙리스트"),
         "bond": MessageLookupByLibrary.simpleMessage("인연"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("인연예장"),
@@ -228,6 +233,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("최소 AP"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("풀이"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("드롭률"),
+        "duplicated_servant": MessageLookupByLibrary.simpleMessage("2호기"),
+        "duplicated_servant_duplicated":
+            MessageLookupByLibrary.simpleMessage("2호기"),
+        "duplicated_servant_primary":
+            MessageLookupByLibrary.simpleMessage("초호기"),
         "edit": MessageLookupByLibrary.simpleMessage("수정"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("효과 범위"),
         "effect_search": MessageLookupByLibrary.simpleMessage("효과 검색"),
@@ -254,9 +264,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_ap_cost_half":
             MessageLookupByLibrary.simpleMessage("소비 AP 50% DOWN"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("보너스"),
+        "event_bulletin_board": MessageLookupByLibrary.simpleMessage("피전 레포트"),
+        "event_campaign": MessageLookupByLibrary.simpleMessage("캠페인"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("아이템 수집"),
+        "event_cooltime": MessageLookupByLibrary.simpleMessage("쿨타임"),
         "event_digging": MessageLookupByLibrary.simpleMessage("파다"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("기타 아이템"),
         "event_item_fixed_extra":
@@ -273,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point_reward": MessageLookupByLibrary.simpleMessage("포인트"),
         "event_progress": MessageLookupByLibrary.simpleMessage("진행 중인 이벤트"),
         "event_quest": MessageLookupByLibrary.simpleMessage("이벤트 퀘스트"),
+        "event_recipe": MessageLookupByLibrary.simpleMessage("레시피"),
         "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("상점"),
         "event_title": MessageLookupByLibrary.simpleMessage("이벤트"),
@@ -334,6 +348,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
+        "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("가차 확률 계산"),
+        "gacha_prob_ce_pickup": m16,
+        "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("맞춤 확률"),
+        "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
+            "값이 너무 크거나 작으면 double 정밀도 문제로 인해 계산 결과가 부정확합니다."),
+        "gacha_prob_svt_pickup": m17,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("홈"),
         "game_account": MessageLookupByLibrary.simpleMessage("게임 계정"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage(
@@ -346,6 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("게임 데이터"),
         "general_all": MessageLookupByLibrary.simpleMessage("모두"),
         "general_close": MessageLookupByLibrary.simpleMessage("닫기"),
+        "general_custom": MessageLookupByLibrary.simpleMessage("맞춤"),
         "general_default": MessageLookupByLibrary.simpleMessage("디폴트"),
         "general_others": MessageLookupByLibrary.simpleMessage("기타"),
         "general_special": MessageLookupByLibrary.simpleMessage("스페셜"),
@@ -623,6 +644,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("우선 순위"),
         "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
             "태그는 짧게 해주세요. 너무 길면 전부 표시되지 않습니다"),
+        "probability": MessageLookupByLibrary.simpleMessage("확률"),
+        "probability_expectation": MessageLookupByLibrary.simpleMessage("기대"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("프로젝트 홈페이지"),
         "quest": MessageLookupByLibrary.simpleMessage("퀘스트"),
         "quest_chapter_n": m9,
@@ -664,11 +687,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
         "reset_custom_ascension_icon":
-            MessageLookupByLibrary.simpleMessage("사용자 지정 서번트 아이콘 초기화"),
+            MessageLookupByLibrary.simpleMessage("사용자 맞춤 서번트 아이콘 초기화"),
         "reset_plan_all": m11,
         "reset_plan_shown": m12,
         "resettable_digged_num":
-            MessageLookupByLibrary.simpleMessage("필요한 발굴 수 초기화"),
+            MessageLookupByLibrary.simpleMessage("필요한 파다 수 초기화"),
         "restart_to_apply_changes":
             MessageLookupByLibrary.simpleMessage("다시 시작하여 적용시키기"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

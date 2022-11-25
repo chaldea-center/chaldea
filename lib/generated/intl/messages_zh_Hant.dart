@@ -35,9 +35,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(filename, hash, localHash) =>
       "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
 
-  static String m16(rarity) => "${rarity}星礼装PickUp";
+  static String m16(rarity) => "${rarity}星禮裝PickUp";
 
-  static String m17(rarity) => "${rarity}星从者PickUp";
+  static String m17(rarity) => "${rarity}星從者PickUp";
 
   static String m5(error) => "導入失敗，Error:\n${error}";
 
@@ -189,7 +189,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("當前帳號"),
         "current_": MessageLookupByLibrary.simpleMessage("當前"),
         "current_version": MessageLookupByLibrary.simpleMessage("當前版本"),
-        "custom_mission": MessageLookupByLibrary.simpleMessage("自定義任務"),
+        "custom_mission": MessageLookupByLibrary.simpleMessage("自訂任務"),
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("無任務，點擊+添加"),
         "custom_mission_source_mission":
@@ -231,11 +231,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("最低AP"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
-        "duplicated_servant": MessageLookupByLibrary.simpleMessage("2号机"),
+        "duplicated_servant": MessageLookupByLibrary.simpleMessage("2號機"),
         "duplicated_servant_duplicated":
-            MessageLookupByLibrary.simpleMessage("2号机"),
+            MessageLookupByLibrary.simpleMessage("2號機"),
         "duplicated_servant_primary":
-            MessageLookupByLibrary.simpleMessage("初号机"),
+            MessageLookupByLibrary.simpleMessage("初號機"),
         "edit": MessageLookupByLibrary.simpleMessage("編輯"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("效果範圍"),
         "effect_search": MessageLookupByLibrary.simpleMessage("效果檢索"),
@@ -259,10 +259,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_required_app_version": m2,
         "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP消費減半"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("加成"),
-        "event_bulletin_board": MessageLookupByLibrary.simpleMessage("咕咕报"),
+        "event_bulletin_board": MessageLookupByLibrary.simpleMessage("咕咕報"),
+        "event_campaign": MessageLookupByLibrary.simpleMessage("活動"),
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材倉庫，並將該活動移出規劃"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
+        "event_cooltime": MessageLookupByLibrary.simpleMessage("冷卻時間"),
         "event_digging": MessageLookupByLibrary.simpleMessage("發掘"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外素材"),
         "event_item_fixed_extra":
@@ -337,16 +339,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("FQ速查"),
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("FQ速查"),
-        "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池概率计算"),
+        "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池概率計算"),
         "gacha_prob_ce_pickup": m16,
-        "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自定义概率"),
+        "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自訂概率"),
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
-            "数值过大或过小时由于double精度问题造成计算结果不准确"),
+            "數值過大或過小時由於double精度問題造成計算結果不準確"),
         "gacha_prob_svt_pickup": m17,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found":
-            MessageLookupByLibrary.simpleMessage("数据加载失败，请先前往游戏数据页面下载"),
+            MessageLookupByLibrary.simpleMessage("數據加載失敗, 請先前往遊戲數據頁面下載"),
         "game_drop": MessageLookupByLibrary.simpleMessage("掉落"),
         "game_experience": MessageLookupByLibrary.simpleMessage("經驗"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羈絆"),
@@ -355,13 +357,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "gamedata": MessageLookupByLibrary.simpleMessage("遊戲數據"),
         "general_all": MessageLookupByLibrary.simpleMessage("所有"),
         "general_close": MessageLookupByLibrary.simpleMessage("關閉"),
-        "general_custom": MessageLookupByLibrary.simpleMessage("自定义"),
+        "general_custom": MessageLookupByLibrary.simpleMessage("自訂"),
         "general_default": MessageLookupByLibrary.simpleMessage("預設"),
         "general_others": MessageLookupByLibrary.simpleMessage("其他"),
         "general_special": MessageLookupByLibrary.simpleMessage("特殊"),
         "general_type": MessageLookupByLibrary.simpleMessage("類型"),
         "global_text_selection":
-            MessageLookupByLibrary.simpleMessage("全局文本可选择"),
+            MessageLookupByLibrary.simpleMessage("全局文本可選擇"),
         "glpk_error_no_valid_target":
             MessageLookupByLibrary.simpleMessage("無相關目標"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
