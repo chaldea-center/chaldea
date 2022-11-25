@@ -353,17 +353,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ],
       ));
     }
-
-    children.add(TileGroup(
-      children: [
-        ListTile(
-          title: Text(S.current.script_story),
-          onTap: () {
-            router.pushPage(ScriptListPage(war: war));
-          },
-        ),
-      ],
-    ));
+    if (war.quests.any((q) => q.phaseScripts.isNotEmpty)) {
+      children.add(TileGroup(
+        children: [
+          ListTile(
+            title: Text(S.current.script_story),
+            onTap: () {
+              router.pushPage(ScriptListPage(war: war));
+            },
+          ),
+        ],
+      ));
+    }
 
     final subWars = db.gameData.wars.values.where((w) {
       if (w.parentWarId == war.id) return true;

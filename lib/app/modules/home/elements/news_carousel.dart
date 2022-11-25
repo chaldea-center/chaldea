@@ -18,6 +18,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/git_tool.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -89,10 +90,28 @@ class AppNewsCarousel extends StatefulWidget {
       final _dio = DioE();
 
       // app news
-      taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) {
-        return (response.data as List)
-            .map((e) => CarouselItem.fromJson(e))
-            .toList();
+      taskChaldea =
+          _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
+        List<CarouselItem> items = [];
+        try {
+          final data =
+              (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
+          final minVer = AppVersion.parse(data['minimalApp']);
+          if (minVer > AppInfo.version || kDebugMode) {
+            items.add(CarouselItem(
+              type: 1,
+              title: S.current.update,
+              content: '${S.current.dataset_version}: ${data["utc"]}\n'
+                  '${S.current.error_required_app_version(minVer.versionString)}',
+              link: HttpUrlHelper.projectDocUrl('installation'),
+            ));
+          }
+        } finally {
+          //
+        }
+        items.addAll(
+            (response.data as List).map((e) => CarouselItem.fromJson(e)));
+        return items;
       }).catchError((e, s) async {
         logger.d('parse chaldea news failed', e, s);
         return <CarouselItem>[];
