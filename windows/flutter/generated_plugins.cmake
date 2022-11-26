@@ -3,12 +3,12 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  catcher
-  connectivity_plus_windows
-  flutter_qjs
+  connectivity_plus
+  flutter_js
   flutter_window_close
   just_audio_windows
   permission_handler_windows
+  share_plus
   url_launcher_windows
   window_size
 )

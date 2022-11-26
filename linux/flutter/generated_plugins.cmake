@@ -3,8 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  catcher
-  flutter_qjs
+  flutter_js
   flutter_window_close
   url_launcher_linux
   window_size

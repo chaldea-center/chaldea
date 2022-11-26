@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_qjs/flutter_qjs.dart';
+import 'package:flutter_js/flutter_js.dart';
 
 import 'js_engine_interface.dart';
 
 class JsEngine implements JsEngineInterface {
-  final IsolateQjs engine = IsolateQjs();
+  final JavascriptRuntime engine = getJavascriptRuntime(xhr: false);
 
   JsEngine();
 
@@ -32,11 +32,11 @@ class JsEngine implements JsEngineInterface {
 
   @override
   Future<String?> eval(String command, {String? name}) async {
-    return (await engine.evaluate(command, name: name)).toString();
+    return (await engine.evaluateAsync(command)).stringResult;
   }
 
   @override
   void dispose() {
-    engine.close();
+    engine.dispose();
   }
 }

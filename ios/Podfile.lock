@@ -1,8 +1,6 @@
 PODS:
   - audio_session (0.0.1):
     - Flutter
-  - catcher (0.0.1):
-    - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
@@ -45,9 +43,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_email_sender (0.0.1):
     - Flutter
-  - flutter_mailer (0.0.1):
+  - flutter_js (0.1.0):
     - Flutter
-  - flutter_qjs (0.0.1):
+  - flutter_mailer (0.0.1):
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
@@ -83,14 +81,13 @@ PODS:
 
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
-  - catcher (from `.symlinks/plugins/catcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
-  - flutter_qjs (from `.symlinks/plugins/flutter_qjs/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
@@ -115,8 +112,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
-  catcher:
-    :path: ".symlinks/plugins/catcher/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
@@ -127,10 +122,10 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_email_sender:
     :path: ".symlinks/plugins/flutter_email_sender/ios"
+  flutter_js:
+    :path: ".symlinks/plugins/flutter_js/ios"
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
-  flutter_qjs:
-    :path: ".symlinks/plugins/flutter_qjs/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   image_gallery_saver:
@@ -154,7 +149,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
@@ -162,8 +156,8 @@ SPEC CHECKSUMS:
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_email_sender: 02d7443217d8c41483223627972bfdc09f74276b
+  flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
-  flutter_qjs: 00a5691bdef3079061466f6fd88cd7d6986fb8b6
   fluttertoast: 74526702fea2c060ea55dde75895b7e1bde1c86b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2

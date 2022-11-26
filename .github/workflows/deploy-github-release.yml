@@ -54,6 +54,7 @@ jobs:
           channel: "beta"
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
+          cache-key: flutter-${{ matrix.os }}-${{ matrix.target }}-${{ env.FLUTTER_VERSION }}
       - name: Get Version
         shell: bash
         run: |

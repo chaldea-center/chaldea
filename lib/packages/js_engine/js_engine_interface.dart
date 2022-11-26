@@ -5,7 +5,7 @@ abstract class JsEngineInterface {
   Future<void> ensureInitiated();
 
   /// JSON.stringify returned object
-  Future<String?> eval(String command, {String name});
+  Future<String?> eval(String command, {String? name});
 
   void dispose();
 }

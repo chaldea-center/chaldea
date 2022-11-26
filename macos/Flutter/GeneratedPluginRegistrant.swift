@@ -6,15 +6,14 @@ import FlutterMacOS
 import Foundation
 
 import audio_session
-import catcher
-import connectivity_plus_macos
-import device_info_plus_macos
-import flutter_qjs
+import connectivity_plus
+import device_info_plus
+import flutter_js
 import flutter_window_close
 import just_audio
-import package_info_plus_macos
+import package_info_plus
 import path_provider_macos
-import share_plus_macos
+import share_plus
 import shared_preferences_macos
 import sqflite
 import url_launcher_macos
@@ -22,10 +21,9 @@ import window_size
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioSessionPlugin.register(with: registry.registrar(forPlugin: "AudioSessionPlugin"))
-  CatcherPlugin.register(with: registry.registrar(forPlugin: "CatcherPlugin"))
   ConnectivityPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
-  FlutterQjsPlugin.register(with: registry.registrar(forPlugin: "FlutterQjsPlugin"))
+  FlutterJsPlugin.register(with: registry.registrar(forPlugin: "FlutterJsPlugin"))
   FlutterWindowClosePlugin.register(with: registry.registrar(forPlugin: "FlutterWindowClosePlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))

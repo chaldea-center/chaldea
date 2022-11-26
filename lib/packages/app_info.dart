@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,25 +28,31 @@ class AppInfo {
   static Future<void> _loadDeviceInfo() async {
     if (PlatformU.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
+      // ignore: deprecated_member_use
       deviceParams.addAll(androidInfo.toMap()..remove('systemFeatures'));
       _androidSdk = androidInfo.version.sdkInt;
     } else if (PlatformU.isIOS) {
       final iosInfo = await DeviceInfoPlugin().iosInfo;
+      // ignore: deprecated_member_use
       deviceParams.addAll(iosInfo.toMap());
       _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
     } else if (PlatformU.isMacOS) {
       final macOsInfo = await DeviceInfoPlugin().macOsInfo;
+      // ignore: deprecated_member_use
       deviceParams.addAll(macOsInfo.toMap());
     } else if (PlatformU.isMacOS) {
       final linuxInfo = await DeviceInfoPlugin().linuxInfo;
+      // ignore: deprecated_member_use
       deviceParams.addAll(linuxInfo.toMap());
     } else if (PlatformU.isWindows) {
       final windowsInfo = await DeviceInfoPlugin().windowsInfo;
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
-      deviceParams.addAll(windowsInfo.toMap());
+      // ignore: deprecated_member_use
+      deviceParams.addAll(windowsInfo.toMap()..remove('digitalProductId'));
     } else if (PlatformU.isWeb) {
       final webInfo = await DeviceInfoPlugin().webBrowserInfo;
+      // ignore: deprecated_member_use
       deviceParams.addAll(webInfo.toMap());
     } else {
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
@@ -94,7 +101,7 @@ class AppInfo {
       // _uuid = '00000000-0000-0000-0000-000000000000';
       // return;
     } else if (PlatformU.isAndroid) {
-      originId = (await deviceInfoPlugin.androidInfo).androidId;
+      originId = await const AndroidId().getId();
     } else if (PlatformU.isIOS) {
       originId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
     } else if (PlatformU.isWindows) {
@@ -130,28 +137,7 @@ class AppInfo {
       // Output containing:
       //  "IOPlatformUUID" = "8-4-4-4-12 standard uuid"
       // need to parse output
-      final result = await Process.run(
-        'ioreg',
-        [
-          '-rd1',
-          '-c',
-          'IOPlatformExpertDevice',
-        ],
-        runInShell: true,
-      );
-      for (String line in result.stdout.toString().split('\n')) {
-        if (line.contains('IOPlatformSerialNumber')) {
-          final _snMatches =
-              RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
-          if (_snMatches.isNotEmpty) {
-            final _sn = _snMatches.last.group(0);
-            if (_sn != null) {
-              originId = _sn;
-              break;
-            }
-          }
-        }
-      }
+      originId = (await DeviceInfoPlugin().macOsInfo).systemGUID;
     } else if (PlatformU.isLinux) {
       //cat /etc/machine-id
       final result = await Process.run(
