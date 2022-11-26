@@ -1,4 +1,4 @@
-# 2.1.3
+# 2.2.0
 
 - custom mission: support multiple conditions
 - add event reward scenes, event voices, random missions

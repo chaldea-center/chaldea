@@ -24,7 +24,6 @@ There are plenty of work need to do.
 - [ ] trait: dynamic tabs(fixed some tabs), items
 - [ ] list view: pull to show outdated
 - [ ] daily quests: name, hand/door name
-- [ ] forgot password: add hint what to add
 - [ ] class icon+name
 - [ ] breaking change: FixedDrop
 - [ ] event: custom extra items
