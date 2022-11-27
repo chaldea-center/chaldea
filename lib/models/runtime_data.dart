@@ -15,6 +15,7 @@ class RuntimeData {
   DataVersion? upgradableDataVersion;
 
   double? criticalWidth;
+  bool showSkillOriginText = false;
 
   Set<Uint8List> recognizerItems = {};
   Set<Uint8List> recognizerActive = {};

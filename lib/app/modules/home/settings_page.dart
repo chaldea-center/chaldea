@@ -371,6 +371,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     }
                   },
                 ),
+                SwitchListTile.adaptive(
+                  value: db.runtimeData.showSkillOriginText,
+                  title: const Text('Show Origin Skill/NP Description'),
+                  onChanged: (v) {
+                    setState(() {
+                      db.runtimeData.showSkillOriginText = v;
+                    });
+                  },
+                ),
                 ListTile(
                   title: Text(S.current.master_detail_width),
                   trailing: DropdownButtonHideUnderline(

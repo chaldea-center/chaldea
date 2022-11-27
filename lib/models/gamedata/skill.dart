@@ -129,6 +129,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
     String content = Transl.skillDetail(detail ?? '').l;
+    if (db.runtimeData.showSkillOriginText) return content;
     return content.replaceAll('{0}', 'Lv.').replaceFirstMapped(
       RegExp(r'\[servantName (\d+)\]'),
       (match) {
@@ -399,7 +400,9 @@ class BaseTd extends SkillOrTd with RouteInfo {
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
-    return Transl.tdDetail(detail ?? '').l.replaceAll('{0}', 'Lv.');
+    final content = Transl.tdDetail(detail ?? '').l;
+    if (db.runtimeData.showSkillOriginText) return content;
+    return content.replaceAll('{0}', 'Lv.');
   }
 
   @override
