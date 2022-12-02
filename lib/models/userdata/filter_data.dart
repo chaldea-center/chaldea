@@ -422,6 +422,21 @@ extension CraftCompareX on CraftCompare {
 
 enum CraftATKType { none, hp, atk, mix }
 
+extension CraftATKTypeX on CraftATKType {
+  String get shownName {
+    switch (this) {
+      case CraftATKType.none:
+        return S.current.ce_type_none_hp_atk;
+      case CraftATKType.hp:
+        return S.current.ce_type_pure_hp;
+      case CraftATKType.atk:
+        return S.current.ce_type_pure_atk;
+      case CraftATKType.mix:
+        return S.current.ce_type_mix_hp_atk;
+    }
+  }
+}
+
 @JsonSerializable(ignoreUnannotated: true)
 class CraftFilterData with _FilterData {
   @JsonKey()

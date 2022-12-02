@@ -327,15 +327,23 @@ class _NpChargePageState extends State<NpChargePage> {
         optionBuilder(
             text:
                 '${S.current.general_type}: ${filterData.type.radioValue!.shownName}'),
-        if (!filterData.isSvt && filterData.ceMax.options.isNotEmpty)
-          optionBuilder(
-            text: [
-              if (filterData.ceMax.options.contains(false))
-                'NOT ${S.current.ce_max_limit_break}',
-              if (filterData.ceMax.options.contains(true))
-                S.current.ce_max_limit_break
-            ].join(' & '),
-          ),
+        if (!filterData.isSvt) ...[
+          if (filterData.ceMax.options.isNotEmpty)
+            optionBuilder(
+              text: [
+                if (filterData.ceMax.options.contains(false))
+                  'NOT ${S.current.ce_max_limit_break}',
+                if (filterData.ceMax.options.contains(true))
+                  S.current.ce_max_limit_break
+              ].join(' & '),
+            ),
+          if (filterData.ceAtkType.options.isNotEmpty)
+            optionBuilder(
+              text: filterData.ceAtkType.options
+                  .map((e) => e.shownName)
+                  .join('/'),
+            ),
+        ],
         if (filterData.isSvt) ...[
           if (filterData.skillLv != -1)
             optionBuilder(
@@ -425,21 +433,22 @@ class _NpChargePageState extends State<NpChargePage> {
       if (filterData.isSvt) break;
       // 0-1-2
       if (!filterData.rarity.matchOne(ce.rarity)) continue;
+      if (!filterData.ceAtkType.matchOne(ce.atkType)) continue;
       final region = filterData.region.radioValue ?? Region.jp;
       final released = db.gameData.mappingData.ceRelease
           .ofRegion(region)
           ?.contains(ce.collectionNo);
-      if (region == Region.jp || released == true) {
-        final skills = ce.skills.where((e) => e.num == 1).toList();
-        for (final skill in skills) {
-          // some CE has the same skill for all ascensions
-          // such as bond CE or campaign CE, though no one yet
-          if (skills.length > 1 &&
-              !filterData.ceMax.matchOne(skill.priority > 1)) {
-            continue;
-          }
-          details.addAll(checkSkill(ce, skill, 1, 1));
+      if (region != Region.jp && released != true) continue;
+
+      final skills = ce.skills.where((e) => e.num == 1).toList();
+      for (final skill in skills) {
+        // some CE has the same skill for all ascensions
+        // such as bond CE or campaign CE, though no one yet
+        if (skills.length > 1 &&
+            !filterData.ceMax.matchOne(skill.priority > 1)) {
+          continue;
         }
+        details.addAll(checkSkill(ce, skill, 1, 1));
       }
     }
     for (final svt in db.gameData.servantsNoDup.values) {

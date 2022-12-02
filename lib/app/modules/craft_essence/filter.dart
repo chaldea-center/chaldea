@@ -87,7 +87,7 @@ class _CraftFilterPageState
           title: Text(S.current.filter_atk_hp_type),
           options: CraftATKType.values,
           values: filterData.atkType,
-          optionBuilder: (v) => Text(_getHpAtkType(v)),
+          optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value, _) {
             update();
           },
@@ -157,25 +157,12 @@ class _CraftFilterPageState
           onFilterChanged: (value, _) {
             update();
           },
-        ), // SFooter(Localized.niceSkillFilterHint.localized)
+        ),
       ]),
     );
   }
 
   List<SkillEffect> _getValidEffects(List<SkillEffect> effects) {
     return effects.where((v) => !SkillEffect.ceIgnores.contains(v)).toList();
-  }
-
-  String _getHpAtkType(CraftATKType type) {
-    switch (type) {
-      case CraftATKType.none:
-        return S.current.ce_type_none_hp_atk;
-      case CraftATKType.hp:
-        return S.current.ce_type_pure_hp;
-      case CraftATKType.atk:
-        return S.current.ce_type_pure_atk;
-      case CraftATKType.mix:
-        return S.current.ce_type_mix_hp_atk;
-    }
   }
 }

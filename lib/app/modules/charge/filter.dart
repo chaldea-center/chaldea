@@ -36,6 +36,7 @@ class NpFilterData {
   final favorite = FilterRadioData.nonnull(FavoriteState.all);
   final type = FilterRadioData.nonnull(NpChargeType.instant);
   final ceMax = FilterGroupData<bool>();
+  final ceAtkType = FilterGroupData<CraftATKType>();
   final svtClass = FilterGroupData<SvtClass>();
   final rarity = FilterGroupData<int>();
   final effectTarget = FilterGroupData<EffectTarget>();
@@ -55,6 +56,7 @@ class NpFilterData {
       favorite,
       type,
       ceMax,
+      ceAtkType,
       svtClass,
       rarity,
       effectTarget,
@@ -242,6 +244,16 @@ class _NpChargeFilterPageState
             optionBuilder: (v) => Text(v
                 ? S.current.ce_max_limit_break
                 : 'NOT ${S.current.ce_max_limit_break}'),
+            onFilterChanged: (value, _) {
+              update();
+            },
+          ),
+        if (!filterData.isSvt)
+          FilterGroup<CraftATKType>(
+            title: Text(S.current.filter_atk_hp_type),
+            options: CraftATKType.values,
+            values: filterData.ceAtkType,
+            optionBuilder: (v) => Text(v.shownName),
             onFilterChanged: (value, _) {
               update();
             },
