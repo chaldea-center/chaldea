@@ -20,6 +20,7 @@ import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
+import 'package:chaldea/models/gamedata/event.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/bgm/bgm.dart';
@@ -46,6 +47,8 @@ import '../modules/skill/td_list.dart';
 import '../modules/statistics/game_stat.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
+import '../shop/shop.dart';
+import '../shop/shop_list.dart';
 
 class Routes {
   static const String home = '/';
@@ -124,6 +127,11 @@ class Routes {
   static String scriptI(String id) => '/script/$id';
   static const String script = '/script';
   static const String scriptHome = '/scripts';
+
+  static String shopI(int id) => '/shop/$id';
+  static const String shop = '/shop';
+  static const String shopHome = '/shops';
+  static String shops(ShopType type) => '/shops/${type.name}';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -297,6 +305,11 @@ class RouteConfiguration {
         return const ScriptReaderEntryPage();
       case Routes.script:
         return ScriptIdLoadingPage(scriptId: second ?? '0');
+      case Routes.shop:
+        return ShopDetailPage(id: _secondInt);
+      case Routes.shopHome:
+        final type = ShopType.values.firstWhereOrNull((e) => e.name == second);
+        return type == null ? const ShopListHome() : ShopListPage(type: type);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

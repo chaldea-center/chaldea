@@ -145,6 +145,10 @@ class GameData with _GameDataExtra {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war
     };
+    shops = {
+      for (final event in events.values)
+        for (final shop in event.shop) shop.id: shop
+    };
     spots = {
       for (final war in wars.values)
         for (final spot in war.spots) spot.id: spot
@@ -296,6 +300,8 @@ mixin _GameDataExtra {
   Map<int, NiceCostume> costumesById = {};
   @JsonKey(ignore: true)
   late Map<int, NiceWar> mainStories;
+  @JsonKey(ignore: true)
+  late Map<int, NiceShop> shops;
   @JsonKey(ignore: true)
   late Map<int, NiceSpot> spots;
   @JsonKey(ignore: true)

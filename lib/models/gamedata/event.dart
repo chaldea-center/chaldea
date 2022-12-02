@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../app/shop/shop.dart';
 import '_helper.dart';
 import 'gamedata.dart';
 
@@ -218,8 +221,8 @@ class Event {
       if (![
         PurchaseType.item,
         PurchaseType.servant,
-        PurchaseType.eventSvtGet,
         PurchaseType.setItem,
+        PurchaseType.eventSvtGet,
         PurchaseType.costumeRelease,
         PurchaseType.itemAsPresent,
         PurchaseType.commandCode,
@@ -240,6 +243,8 @@ class Event {
             statItemFixed.addNum(
                 set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
+          _items
+              .addDict({for (final gift in set.gifts) gift.objectId: gift.num});
         }
       } else {
         for (final id in shopItem.targetIds) {
@@ -251,6 +256,8 @@ class Event {
           statItemFixed.addNum(id, shopItem.setNum * shopItem.limitNum);
         }
       }
+      _items.addDict(
+          {for (final gift in shopItem.gifts) gift.objectId: gift.num});
     }
 
     // point rewards
@@ -366,12 +373,14 @@ class ItemSet {
   PurchaseType purchaseType;
   int targetId;
   int setNum;
+  List<Gift> gifts;
 
   ItemSet({
     required this.id,
-    required this.purchaseType,
+    this.purchaseType = PurchaseType.none,
     required this.targetId,
     required this.setNum,
+    this.gifts = const [],
   });
 
   factory ItemSet.fromJson(Map<String, dynamic> json) =>
@@ -379,26 +388,28 @@ class ItemSet {
 }
 
 @JsonSerializable()
-class NiceShop {
+class NiceShop with RouteInfo {
   int id;
   // int baseShopId;
   ShopType shopType;
   List<ShopRelease> releaseConditions;
-
   // int eventId;
   int slot;
   int priority;
 
   String name;
-  // String detail;
+  String detail;
   String infoMessage;
-
-  // String warningMessage;
+  String warningMessage;
   PayType payType;
-  ItemAmount cost;
+  ItemAmount? cost;
+  List<CommonConsume> consumes;
+
   PurchaseType purchaseType;
-  List<int> targetIds; // only kiaraPunisherReset using more than 1?
+  List<int> targetIds; // only kiaraPunisherReset and quest using more than 1
   List<ItemSet> itemSet;
+  List<Gift> gifts;
+
   int setNum;
   int limitNum;
   int defaultLv;
@@ -406,9 +417,10 @@ class NiceShop {
   String? scriptName;
   String? scriptId;
   String? script;
+  String? image;
 
-  // int openedAt;
-  // int closedAt;
+  int openedAt;
+  int closedAt;
 
   NiceShop({
     required this.id,
@@ -419,14 +431,16 @@ class NiceShop {
     required this.slot,
     required this.priority,
     required this.name,
-    // required this.detail,
+    this.detail = "",
     this.infoMessage = "",
-    // this.warningMessage = "",
-    required this.payType,
-    required this.cost,
-    required this.purchaseType,
+    this.warningMessage = "",
+    this.payType = PayType.item,
+    ItemAmount? cost,
+    this.consumes = const [],
+    this.purchaseType = PurchaseType.none,
     this.targetIds = const [],
     this.itemSet = const [],
+    this.gifts = const [],
     this.setNum = 1,
     required this.limitNum,
     this.defaultLv = 0,
@@ -434,12 +448,24 @@ class NiceShop {
     this.scriptName,
     this.scriptId,
     this.script,
-    // required this.openedAt,
-    // required this.closedAt,
-  });
+    this.image,
+    this.openedAt = 0,
+    this.closedAt = 0,
+  }) : cost = cost == null || cost.itemId == 0 ? null : cost;
 
   factory NiceShop.fromJson(Map<String, dynamic> json) =>
       _$NiceShopFromJson(json);
+
+  @override
+  String get route => Routes.shopI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? ShopDetailPage(shop: this, region: region),
+      popDetails: popDetails,
+    );
+  }
 }
 
 @JsonSerializable()
@@ -456,12 +482,12 @@ class ShopRelease {
 
   ShopRelease({
     this.condValues = const [],
-    required this.condType,
+    this.condType = CondType.none,
     required this.condNum,
     this.priority = 0,
     required this.isClosedDisp,
-    required this.closedMessage,
-    required this.closedItemName,
+    this.closedMessage = "",
+    this.closedItemName = "",
   });
 
   factory ShopRelease.fromJson(Map<String, dynamic> json) =>
@@ -866,7 +892,6 @@ class EventTreasureBox {
   List<EventTreasureBoxGift> treasureBoxGifts;
   int maxDrawNumOnce;
   List<Gift> extraGifts;
-  // CommonConsume commonConsume;
   List<CommonConsume> consumes;
 
   EventTreasureBox({
@@ -995,7 +1020,6 @@ class EventDigging {
 class EventDiggingBlock {
   int id;
   String image;
-  // CommonConsume commonConsume;
   List<CommonConsume> consumes;
   int objectId;
   int diggingEventPoint;

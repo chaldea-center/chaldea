@@ -17,6 +17,8 @@ class Transl<K, V> {
     return Transl(mappings, key, key);
   }
 
+  V get default_ => _default;
+
   V get jp => mappings[key]?.jp ?? _default;
 
   V get cn => mappings[key]?.cn ?? _default;
@@ -544,6 +546,8 @@ class EnumMapping {
   final Map<String, MappingBase<String>> svtType;
   final Map<String, MappingBase<String>> summonType;
   final Map<String, MappingBase<String>> eventWorkType;
+  final Map<String, MappingBase<String>> shopType;
+  final Map<String, MappingBase<String>> purchaseType;
 
   EnumMapping({
     this.svtClass = const {},
@@ -568,6 +572,8 @@ class EnumMapping {
     this.svtType = const {},
     this.summonType = const {},
     this.eventWorkType = const {},
+    this.shopType = const {},
+    this.purchaseType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>

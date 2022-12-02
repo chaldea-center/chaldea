@@ -1,30 +1,42 @@
 import 'package:flutter/services.dart';
 
-import 'package:chaldea/app/descriptors/cond_target_num.dart';
-import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../shop/shop.dart';
 
 class EventShopsPage extends StatefulWidget {
-  final Event event;
-  final int slot;
-  const EventShopsPage({super.key, required this.event, required this.slot});
+  final Event? event;
+  final List<NiceShop> shops;
+  final bool showTime;
+
+  const EventShopsPage({
+    super.key,
+    required this.event,
+    required this.shops,
+    this.showTime = false,
+  });
 
   @override
   State<EventShopsPage> createState() => _EventShopsPageState();
 }
 
 class _EventShopsPageState extends State<EventShopsPage> {
-  Event get event => widget.event;
+  Event? get event => widget.event;
+  late final LimitEventPlan plan;
+
+  @override
+  void initState() {
+    super.initState();
+    plan = event == null
+        ? LimitEventPlan()
+        : db.curUser.limitEventPlanOf(event!.id);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final plan = db.curUser.limitEventPlanOf(event.id);
-    final shops = event.shop.where((e) => e.slot == widget.slot).toList();
-    shops.sort2((e) => e.priority);
-
+    final shops = widget.shops.toList();
     return db.onUserData(
       (context, snapshot) => Column(
         children: [
@@ -50,58 +62,32 @@ class _EventShopsPageState extends State<EventShopsPage> {
 
   Widget shopItemBuilder(
       BuildContext context, NiceShop shop, LimitEventPlan plan) {
+    final rewards =
+        ShopHelper.purchases(context, shop, showSpecialName: true).toList();
     Widget? leading;
-    String? title;
-    Widget? titleWidget;
-    int? targetId = shop.targetIds.getOrNull(0);
-
-    if (shop.purchaseType == PurchaseType.setItem) {
-      titleWidget = Text.rich(
-        TextSpan(
-          children: [
-            for (final itemSet in shop.itemSet) ...[
-              WidgetSpan(
-                  child: _iconBuilder(
-                      context, itemSet.purchaseType, itemSet.targetId, 28)),
-              TextSpan(
-                  text: _getItemName(
-                      itemSet.purchaseType, itemSet.targetId, itemSet.setNum)),
-            ],
-            if (shop.setNum != 1) TextSpan(text: ' (x${shop.setNum})'),
-          ],
-        ),
-        textScaleFactor: 0.9,
-      );
-    } else if (targetId != null) {
-      leading = _iconBuilder(context, shop.purchaseType, targetId, 42);
-      title = _getItemName(shop.purchaseType, targetId, null);
-      title ??= shop.name;
-      if (shop.setNum != 1) {
-        title += ' x${shop.setNum}';
-      }
-    }
-    if (title != null) {
-      titleWidget ??= Text(title, textScaleFactor: 0.9);
-    }
-
-    Widget subtitle;
-    if (shop.cost.amount == 0) {
-      subtitle = const Text(' ');
+    Widget title;
+    if (rewards.length == 1) {
+      leading = rewards.first.item1;
+      title = Text.rich(rewards.first.item2, textScaleFactor: 0.8);
     } else {
-      subtitle = Text.rich(
-        TextSpan(text: 'Cost: ', children: [
-          WidgetSpan(
-            child: GameCardMixin.anyCardItemBuilder(
-              context: context,
-              id: shop.cost.itemId,
-              height: 24,
-            ),
-          ),
-          TextSpan(text: ' ×${shop.cost.amount}'),
-        ]),
-        style: Theme.of(context).textTheme.bodySmall,
-      );
+      List<InlineSpan> spans = [];
+      for (int index = 0; index < rewards.length; index++) {
+        final reward = rewards[index];
+        if (reward.item1 != null) {
+          spans.add(CenterWidgetSpan(
+              child: SizedBox(height: 28, child: reward.item1)));
+        }
+        spans.add(reward.item2);
+        if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
+      }
+      title = Text.rich(TextSpan(children: spans), textScaleFactor: 0.8);
     }
+    if (shop.image != null) {
+      leading ??= db.getIconImage(shop.image, aspectRatio: 1, width: 40);
+    }
+
+    List<InlineSpan> costs = ShopHelper.cost(context, shop);
+
     final planCount = plan.shopBuyCount[shop.id] ?? shop.limitNum;
     final limitCount = shop.limitNum == 0 ? '∞' : shop.limitNum.format();
     Widget trailing = Row(
@@ -121,7 +107,8 @@ class _EventShopsPageState extends State<EventShopsPage> {
                 plan.shopBuyCount.remove(shop.id);
               }
             }
-            event.updateStat();
+            event?.updateStat();
+            setState(() {});
           },
           style: OutlinedButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -142,7 +129,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
               context: context,
               builder: (context) {
                 return _EditShopNumDialog(
-                  title: titleWidget,
+                  title: title,
                   initValue: plan.shopBuyCount[shop.id],
                   limitNum: shop.limitNum,
                   onChanged: (v) {
@@ -151,12 +138,12 @@ class _EventShopsPageState extends State<EventShopsPage> {
                     } else {
                       plan.shopBuyCount[shop.id] = v;
                     }
-                    event.updateStat();
+                    event?.updateStat();
+                    setState(() {});
                   },
                 );
               },
             );
-            TextFormField();
           },
           icon: const Icon(Icons.edit, size: 16),
           padding: const EdgeInsets.all(6),
@@ -167,168 +154,64 @@ class _EventShopsPageState extends State<EventShopsPage> {
     return ListTile(
       key: Key('event_shop_${shop.id}'),
       leading: leading,
-      title: titleWidget,
-      subtitle: subtitle,
+      title: title,
+      subtitle: Text.rich(
+        TextSpan(text: '${S.current.cost}:  ', children: [
+          ...costs,
+          if (widget.showTime)
+            TextSpan(
+                text: '\n${shop.openedAt.sec2date().toDateString()}'
+                    ' ~ ${shop.closedAt.sec2date().toDateString()}')
+        ]),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
       trailing: trailing,
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      onTap: () => showDialog(
-        context: context,
-        useRootNavigator: false,
-        builder: (context) => showConditions(context, shop, titleWidget),
-      ),
-    );
-  }
-
-  String? _getItemName(PurchaseType purchaseType, int targetId, int? setNum) {
-    String? title;
-    switch (purchaseType) {
-      case PurchaseType.item:
-        title = Item.getName(targetId);
-        break;
-      case PurchaseType.equip:
-        title = db.gameData.mysticCodes[targetId]?.lName.l;
-        break;
-      case PurchaseType.friendGacha:
-        title = 'Friend Points';
-        break;
-      case PurchaseType.servant:
-        final svt = db.gameData.servantsById[targetId] ??
-            db.gameData.craftEssencesById[targetId] ??
-            db.gameData.entities[targetId];
-        title = svt?.lName.l;
-        break;
-      case PurchaseType.quest:
-        final quest = db.gameData.quests[targetId];
-        title = 'Quest ${quest?.lName.l ?? targetId}';
-        break;
-      case PurchaseType.eventSvtJoin:
-      case PurchaseType.eventSvtGet:
-        final svt = db.gameData.servantsById[targetId];
-        title = '${svt?.lName.l ?? targetId} join';
-        break;
-      case PurchaseType.costumeRelease:
-        int svtId = targetId ~/ 100, costumeId = targetId % 100;
-        final svt = db.gameData.servantsById[svtId];
-        final costume = svt?.profile.costume.values
-            .firstWhereOrNull((costume) => costume.id == costumeId);
-        title = costume?.lName.l;
-        break;
-      case PurchaseType.lotteryShop:
-        title = 'A random item';
-        // leading = const SizedBox();
-        break;
-      case PurchaseType.commandCode:
-        title = db.gameData.commandCodesById[targetId]?.lName.l;
-        break;
-      case PurchaseType.kiaraPunisherReset:
-        title = 'Kiara Punisher Reset';
-        break;
-      default:
-        break;
-    }
-    if (title != null && setNum != null) {
-      title += ' ×$setNum';
-    }
-    return title;
-  }
-
-  Widget _iconBuilder(BuildContext context, PurchaseType purchaseType,
-      int targetId, double? width) {
-    switch (purchaseType) {
-      case PurchaseType.lotteryShop:
-      // return const SizedBox();
-      case PurchaseType.kiaraPunisherReset:
-        return const SizedBox();
-      default:
-        return GameCardMixin.anyCardItemBuilder(
-          context: context,
-          id: targetId,
-          width: width,
-          onDefault: () {
-            if (purchaseType == PurchaseType.costumeRelease) {
-              return db.getIconImage(Atlas.assetItem(23),
-                  width: width, height: width);
-            }
-            return null;
-          },
-        );
-    }
-  }
-
-  Widget showConditions(BuildContext context, NiceShop shop, Widget? title) {
-    return SimpleCancelOkDialog(
-      title: title,
-      scrollable: true,
-      hideCancel: true,
-      contentPadding:
-          const EdgeInsetsDirectional.fromSTEB(8.0, 20.0, 20.0, 24.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SHeader('Original Name'),
-          ListTile(
-            dense: true,
-            title: Text(shop.name),
-          ),
-          if (shop.releaseConditions.isNotEmpty)
-            SHeader(S.current.open_condition),
-          ...List.generate(
-            shop.releaseConditions.length,
-            (index) {
-              final release = shop.releaseConditions[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CondTargetNumDescriptor(
-                      condType: release.condType,
-                      targetNum: release.condNum,
-                      targetIds: release.condValues,
-                      textScaleFactor: 0.85,
-                      leading: const TextSpan(text: ' ꔷ '),
-                    ),
-                    if (release.closedMessage.isNotEmpty)
-                      Text(
-                        release.closedMessage,
-                        textScaleFactor: 0.75,
-                        style: const TextStyle(fontStyle: FontStyle.italic),
-                      )
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      onTap: shop.routeTo,
     );
   }
 
   Widget getEventItemCost() {
-    final plan = db.curUser.limitEventPlanOf(event.id);
     Map<int, int> items = {};
-    for (final shop in event.shop) {
+    for (final shop in widget.shops) {
       final count = plan.shopBuyCount[shop.id] ?? shop.limitNum;
-      items.addNum(shop.cost.itemId, shop.cost.amount * count);
+      if (shop.cost != null) {
+        items.addNum(shop.cost!.itemId, shop.cost!.amount * count);
+      }
+      for (final consume in shop.consumes) {
+        if (consume.type == CommonConsumeType.item) {
+          items.addNum(consume.objectId, consume.num);
+        }
+      }
     }
     items.removeWhere((key, value) => value <= 0);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text('Cost: '),
+        Text('${S.current.cost}: '),
         Expanded(
-          child: SharedBuilder.itemGrid(
-            context: context,
-            items: items.entries,
-            width: 36,
+          child: SizedBox(
+            height: 36,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (final entry in items.entries)
+                  if (entry.value != 0)
+                    Item.iconBuilder(
+                      context: context,
+                      item: null,
+                      itemId: entry.key,
+                      text: entry.value.format(),
+                      width: 36,
+                    ),
+              ],
+            ),
           ),
         ),
         IconButton(
           onPressed: () {
             plan.shopBuyCount.clear();
-            event.updateStat();
+            event?.updateStat();
             setState(() {});
           },
           icon: const Icon(Icons.replay),

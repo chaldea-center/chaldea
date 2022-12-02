@@ -170,7 +170,7 @@ class _CharaOptions with SearchOptionsMixin<String> {
   @override
   Iterable<String?> getSummary(String chara) sync* {
     if (charaName) {
-      yield* getAllKeys(Transl.charaNames(chara));
+      yield* getAllKeys(Transl.charaNames(chara), dft: Region.cn);
     }
     if (cardName) {
       for (final ce in state.ceMap[chara] ?? <CraftEssence>[]) {

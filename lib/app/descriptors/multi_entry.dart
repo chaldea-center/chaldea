@@ -344,6 +344,39 @@ class MultiDescriptor {
       ];
     }
   }
+
+  static List<InlineSpan> shops(BuildContext context, List<int> targetIds,
+      {bool? useAnd}) {
+    if (targetIds.length < 3) {
+      return list(
+        context,
+        targetIds,
+        (context, id) {
+          return inkWell(
+            context: context,
+            onTap: () => router.push(url: Routes.shopI(id)),
+            text: '$id',
+          );
+        },
+        useAnd,
+      );
+    }
+    return [
+      collapsed(
+        context,
+        targetIds,
+        S.current.event_shop,
+        (context, id) {
+          return ListTile(
+            dense: true,
+            title: Text('Shop $id'),
+            onTap: () => router.push(url: Routes.shopI(id)),
+          );
+        },
+        useAnd,
+      )
+    ];
+  }
 }
 
 class _MultiEntriesList extends StatelessWidget {

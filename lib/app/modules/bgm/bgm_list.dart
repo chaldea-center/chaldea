@@ -52,7 +52,14 @@ class _BgmListPageState extends State<BgmListPage>
               for (final id in db.curUser.myRoomMusic) {
                 final shop = db.gameData.bgms[id]?.shop;
                 if (shop == null) continue;
-                cost.addNum(shop.cost.itemId, shop.cost.amount);
+                if (shop.cost != null && shop.cost!.itemId != 0) {
+                  cost.addNum(shop.cost!.itemId, shop.cost!.amount);
+                }
+                for (final consume in shop.consumes) {
+                  if (consume.type == CommonConsumeType.item) {
+                    cost.addNum(consume.objectId, consume.num);
+                  }
+                }
               }
               showDialog(
                 context: context,
@@ -150,12 +157,21 @@ class _BgmListPageState extends State<BgmListPage>
             },
           ),
         ),
-        if (bgm.shop != null)
+        if (bgm.shop?.cost != null)
           Item.iconBuilder(
             context: context,
-            item: bgm.shop!.cost.item,
-            text: bgm.shop!.cost.amount.format(),
+            item: bgm.shop!.cost!.item,
+            text: bgm.shop!.cost!.amount.format(),
           ),
+        if (bgm.shop != null)
+          for (final consume in bgm.shop!.consumes)
+            if (consume.type == CommonConsumeType.item)
+              Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: consume.objectId,
+                text: consume.num.format(),
+              ),
         if (bgm.shop != null)
           Checkbox(
             value: db.curUser.myRoomMusic.contains(bgm.id),

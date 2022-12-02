@@ -119,7 +119,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 CustomTile(
                   title: Text(quest?.lDispName ?? 'Quest $questId'),
                   subtitle: Text(
-                      'cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
+                      'Cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
                   trailing:
                       Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
                   onTap: quest == null

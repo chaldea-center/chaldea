@@ -73,12 +73,12 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
               children: [TableCellData(text: S.current.item, isHeader: true)]),
           CustomTableRow(children: [
             TableCellData(
-              child: bgmEntity.shop == null
+              child: bgmEntity.shop?.cost == null
                   ? const Text('-')
                   : Item.iconBuilder(
                       context: context,
-                      item: bgmEntity.shop!.cost.item,
-                      text: bgmEntity.shop!.cost.amount.format(),
+                      item: bgmEntity.shop!.cost!.item,
+                      text: bgmEntity.shop!.cost!.amount.format(),
                     ),
             )
           ]),

@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

@@ -144,9 +144,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList();
     shopSlots.sort();
     for (int index = 0; index < shopSlots.length; index++) {
+      final shops =
+          event.shop.where((s) => s.slot == shopSlots[index]).toList();
+      shops.sort2((e) => e.priority);
       _addTab(
         S.current.event_shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
-        EventShopsPage(event: event, slot: shopSlots[index]),
+        EventShopsPage(event: event, shops: shops),
       );
     }
     if (db.gameData.craftEssences.values

@@ -278,6 +278,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
         if (memory) {
           AtlasIconLoader.i.clearAll();
           imageCache.clear();
+          await AtlasApi.clear();
         }
         if (app) {
           await DefaultCacheManager().emptyCache();

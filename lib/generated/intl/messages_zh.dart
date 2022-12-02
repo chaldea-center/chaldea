@@ -178,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copied": MessageLookupByLibrary.simpleMessage("已复制"),
         "copy": MessageLookupByLibrary.simpleMessage("复制"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("拷贝自其它规划"),
+        "cost": MessageLookupByLibrary.simpleMessage("消耗"),
         "costume": MessageLookupByLibrary.simpleMessage("灵衣"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("灵衣开放"),
         "counts": MessageLookupByLibrary.simpleMessage("计数"),
@@ -495,6 +496,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language_en": MessageLookupByLibrary.simpleMessage("Chinese"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限时活动"),
+        "limited_time": MessageLookupByLibrary.simpleMessage("限时"),
         "link": MessageLookupByLibrary.simpleMessage("链接"),
         "list_count_shown_all": m18,
         "list_count_shown_hidden_all": m19,
@@ -594,10 +596,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "open_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
         "open_in_file_manager":
             MessageLookupByLibrary.simpleMessage("请用文件管理器打开"),
+        "opening_time": MessageLookupByLibrary.simpleMessage("开放时间"),
         "outdated": MessageLookupByLibrary.simpleMessage("已过期"),
         "overview": MessageLookupByLibrary.simpleMessage("概览"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),
+        "permanent": MessageLookupByLibrary.simpleMessage("永久"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
         "plan_list_only_unlock_append":
             MessageLookupByLibrary.simpleMessage("仅已解锁追加"),
@@ -820,6 +824,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("单次最多抽数"),
         "trial_quest": MessageLookupByLibrary.simpleMessage("体验关卡"),
+        "unlock_quest": MessageLookupByLibrary.simpleMessage("解锁关卡"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("已经是最新版本"),

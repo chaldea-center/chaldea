@@ -166,9 +166,15 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
 
 ItemSet _$ItemSetFromJson(Map json) => ItemSet(
       id: json['id'] as int,
-      purchaseType: $enumDecode(_$PurchaseTypeEnumMap, json['purchaseType']),
+      purchaseType:
+          $enumDecodeNullable(_$PurchaseTypeEnumMap, json['purchaseType']) ??
+              PurchaseType.none,
       targetId: json['targetId'] as int,
       setNum: json['setNum'] as int,
+      gifts: (json['gifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 const _$PurchaseTypeEnumMap = {
@@ -209,10 +215,22 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
       slot: json['slot'] as int,
       priority: json['priority'] as int,
       name: json['name'] as String,
+      detail: json['detail'] as String? ?? "",
       infoMessage: json['infoMessage'] as String? ?? "",
-      payType: $enumDecode(_$PayTypeEnumMap, json['payType']),
-      cost: ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
-      purchaseType: $enumDecode(_$PurchaseTypeEnumMap, json['purchaseType']),
+      warningMessage: json['warningMessage'] as String? ?? "",
+      payType: $enumDecodeNullable(_$PayTypeEnumMap, json['payType']) ??
+          PayType.item,
+      cost: json['cost'] == null
+          ? null
+          : ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
+      consumes: (json['consumes'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      purchaseType:
+          $enumDecodeNullable(_$PurchaseTypeEnumMap, json['purchaseType']) ??
+              PurchaseType.none,
       targetIds: (json['targetIds'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
@@ -222,6 +240,10 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
                   (e) => ItemSet.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      gifts: (json['gifts'] as List<dynamic>?)
+              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       setNum: json['setNum'] as int? ?? 1,
       limitNum: json['limitNum'] as int,
       defaultLv: json['defaultLv'] as int? ?? 0,
@@ -229,6 +251,9 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
       scriptName: json['scriptName'] as String?,
       scriptId: json['scriptId'] as String?,
       script: json['script'] as String?,
+      image: json['image'] as String?,
+      openedAt: json['openedAt'] as int? ?? 0,
+      closedAt: json['closedAt'] as int? ?? 0,
     );
 
 const _$ShopTypeEnumMap = {
@@ -271,12 +296,14 @@ ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
               ?.map((e) => e as int)
               .toList() ??
           const [],
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: json['condType'] == null
+          ? CondType.none
+          : toEnumCondType(json['condType'] as Object),
       condNum: json['condNum'] as int,
       priority: json['priority'] as int? ?? 0,
       isClosedDisp: json['isClosedDisp'] as bool,
-      closedMessage: json['closedMessage'] as String,
-      closedItemName: json['closedItemName'] as String,
+      closedMessage: json['closedMessage'] as String? ?? "",
+      closedItemName: json['closedItemName'] as String? ?? "",
     );
 
 EventPointReward _$EventPointRewardFromJson(Map json) => EventPointReward(

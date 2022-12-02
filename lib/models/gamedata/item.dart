@@ -264,6 +264,7 @@ class Items {
   static const int qpId = 1;
   static const int stoneId = 2;
   static const int manaPrismId = 3;
+  static const int friendPointId = 4;
   static const int quartzFragmentId = 16;
   static const int purePrismId = 46;
   static const int rarePrismId = 18;
@@ -288,6 +289,8 @@ class Items {
   static Item? get stone => _items[stoneId];
 
   static Item? get manaPrism => _items[manaPrismId];
+
+  static Item? get friendPoint => _items[friendPointId];
 
   static Item? get purePrism => _items[purePrismId];
 
@@ -374,7 +377,7 @@ class ItemAmount {
     required this.amount,
   })  : assert(item != null || itemId != null),
         _item = item,
-        itemId = item?.id ?? itemId!;
+        itemId = item?.id ?? itemId ?? 0;
 
   Item? get item => _item ?? db.gameData.items[itemId];
 

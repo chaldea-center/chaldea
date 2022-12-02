@@ -184,37 +184,34 @@ class SkillScriptDescriptor extends StatelessWidget {
     List<Widget> children = [];
     if (actIndividuality.isNotEmpty) {
       final isSvt = actIndividuality
-          .any((indiv) => db.gameData.servantsById.containsKey(indiv));
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: _DescriptorWrapper(
-          title: Text.rich(
-            TextSpan(children: [
-              ...SharedBuilder.replaceSpan(
-                Transl.misc(isSvt
-                        ? 'Skill.actIndividuality'
-                        : 'Skill.actIndividuality2')
-                    .l,
-                '{0}',
-                actIndividuality.map((indiv) {
-                  final svt = db.gameData.servantsById[indiv.id];
-                  String name = indiv.shownName(addSvtId: false);
-                  if (svt != null) {
-                    name += '(${svt.className.lName})';
-                  }
-                  return SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: name,
-                    onTap: svt?.routeTo ?? indiv.routeTo,
-                  );
-                }).toList(),
-              )
-            ]),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          trailing: null,
+          .any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
+      children.add(_pad(_DescriptorWrapper(
+        title: Text.rich(
+          TextSpan(children: [
+            ...SharedBuilder.replaceSpan(
+              Transl.misc(isSvt
+                      ? 'Skill.actIndividuality'
+                      : 'Skill.actIndividuality2')
+                  .l,
+              '{0}',
+              actIndividuality.map((indiv) {
+                final svt = db.gameData.servantsById[indiv.id];
+                String name = indiv.shownName(addSvtId: false);
+                if (svt != null) {
+                  name += '(${svt.className.lName})';
+                }
+                return SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: name,
+                  onTap: svt?.routeTo ?? indiv.routeTo,
+                );
+              }).toList(),
+            )
+          ]),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
-      ));
+        trailing: null,
+      )));
     }
     if (script?.NP_HIGHER?.isNotEmpty == true) {
       children

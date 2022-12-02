@@ -198,6 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
             MessageLookupByLibrary.simpleMessage("Copy Plan from..."),
+        "cost": MessageLookupByLibrary.simpleMessage("Cost"),
         "costume": MessageLookupByLibrary.simpleMessage("Costume"),
         "costume_unlock":
             MessageLookupByLibrary.simpleMessage("Costume Unlock"),
@@ -587,6 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
+        "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
         "list_count_shown_all": m18,
         "list_count_shown_hidden_all": m19,
@@ -713,10 +715,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
         "open_in_file_manager": MessageLookupByLibrary.simpleMessage(
             "Please open with file manager"),
+        "opening_time": MessageLookupByLibrary.simpleMessage("Opening Time"),
         "outdated": MessageLookupByLibrary.simpleMessage("Outdated"),
         "overview": MessageLookupByLibrary.simpleMessage("Overview"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
+        "permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_list_only_unlock_append":
             MessageLookupByLibrary.simpleMessage("Unlocked Append"),
@@ -986,6 +990,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("Max Draws at once:"),
         "trial_quest": MessageLookupByLibrary.simpleMessage("Trail Quest"),
+        "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),

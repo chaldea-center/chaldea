@@ -511,4 +511,33 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  static Future<NiceShop?> shop(int shopId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.upper}/shop/$shopId',
+      (data) => NiceShop.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<NiceShop>?> searchShop({
+    ShopType? type,
+    int? eventId,
+    PayType? payType,
+    Region region = Region.jp,
+    Duration? expireAfter,
+  }) async {
+    if (type == null && eventId == null && payType == null) return [];
+    return cacheManager.getModel(
+      Uri.parse('$_atlasApiHost/nice/${region.upper}/shop/search')
+          .replace(queryParameters: {
+        if (type != null) 'type': type.name,
+        if (eventId != null) 'eventId': eventId.toString(),
+        if (payType != null) 'payType': payType.name,
+      }).toString(),
+      (data) => (data as List).map((e) => NiceShop.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
 }

@@ -11,6 +11,7 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
+import '../../../shop/shop_list.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
 import '../../charge/np_charge_page.dart';
@@ -120,6 +121,7 @@ class GalleryItem {
         statistics,
         importData,
         // default hide
+        shops,
         scriptHome,
         bgms,
         ffo,
@@ -293,6 +295,15 @@ class GalleryItem {
     persist: true,
   );
   // show in Lost Room
+  static GalleryItem shops = GalleryItem(
+    name: 'shops',
+    titleBuilder: () => S.current.event_shop,
+    icon: FontAwesomeIcons.shop,
+    url: Routes.shopHome,
+    page: const ShopListHome(),
+    isDetail: true,
+    shownDefault: false,
+  );
   static GalleryItem scriptHome = GalleryItem(
     name: 'script_home',
     titleBuilder: () => S.current.script_story,

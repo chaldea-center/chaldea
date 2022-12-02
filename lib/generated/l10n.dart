@@ -1087,6 +1087,17 @@ class S {
     );
   }
 
+  /// `Cost`
+  String get cost {
+    return Intl.message(
+      'Cost',
+      name: 'cost',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Costume`
   String get costume {
     return Intl.message(
@@ -4135,6 +4146,17 @@ class S {
     );
   }
 
+  /// `Limited Time`
+  String get limited_time {
+    return Intl.message(
+      'Limited Time',
+      name: 'limited_time',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `link`
   String get link {
     return Intl.message(
@@ -5032,6 +5054,17 @@ class S {
     );
   }
 
+  /// `Opening Time`
+  String get opening_time {
+    return Intl.message(
+      'Opening Time',
+      name: 'opening_time',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Outdated`
   String get outdated {
     return Intl.message(
@@ -5070,6 +5103,17 @@ class S {
     return Intl.message(
       'Passive',
       name: 'passive_skill_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Permanent`
+  String get permanent {
+    return Intl.message(
+      'Permanent',
+      name: 'permanent',
       desc: '',
       locale: localeName,
       args: [],
@@ -7117,6 +7161,17 @@ class S {
     return Intl.message(
       'Trail Quest',
       name: 'trial_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unlock Quest`
+  String get unlock_quest {
+    return Intl.message(
+      'Unlock Quest',
+      name: 'unlock_quest',
       desc: '',
       locale: localeName,
       args: [],

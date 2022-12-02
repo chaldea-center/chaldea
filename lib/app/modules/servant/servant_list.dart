@@ -1109,6 +1109,12 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       for (final td in svt.noblePhantasms) {
         yield* getSkillKeys(td);
       }
+      for (final name in svt.ascensionAdd.overWriteTDName.all.values) {
+        yield* getAllKeys(Transl.tdNames(name));
+      }
+      for (final name in svt.ascensionAdd.overWriteTDRuby.all.values) {
+        yield* getAllKeys(Transl.tdRuby(name));
+      }
     }
   }
 }

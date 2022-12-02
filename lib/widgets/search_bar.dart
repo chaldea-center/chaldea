@@ -150,8 +150,9 @@ abstract class SearchOptionsMixin<T> {
         '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
   }
 
-  Iterable<String?> getAllKeys(Transl<dynamic, String> transl) =>
-      SearchUtil.getAllKeys(transl);
+  Iterable<String?> getAllKeys(Transl<dynamic, String> transl,
+          {Region? dft = Region.jp}) =>
+      SearchUtil.getAllKeys(transl, dft: dft);
 
   Iterable<String?> getListKeys(
       List<String>? items, String? Function(String word) getter) sync* {

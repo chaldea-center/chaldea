@@ -45,12 +45,35 @@ class SearchUtil {
     return _krNorm[words] ??= words.replaceAll(' ', '');
   }
 
-  static Iterable<String?> getAllKeys(Transl<dynamic, String> transl) sync* {
-    yield getJP(transl.m?.jp);
-    yield getCN(transl.m?.cn ?? transl.m?.jp);
-    yield getCN(transl.m?.tw);
-    yield getEn(transl.m?.na);
-    yield getKr(transl.m?.kr);
+  static Iterable<String?> getAllKeys(Transl<dynamic, String> transl,
+      {Region? dft = Region.jp}) sync* {
+    String? keyJP, keyCN, keyTW, keyNA, keyKR;
+    String key = transl.default_.toString();
+    switch (dft) {
+      case Region.jp:
+        keyJP = key;
+        break;
+      case Region.cn:
+        keyCN = key;
+        break;
+      case Region.tw:
+        keyTW = key;
+        break;
+      case Region.na:
+        keyNA = key;
+        break;
+      case Region.kr:
+        keyKR = key;
+        break;
+      case null:
+        yield key;
+        break;
+    }
+    yield getJP(transl.m?.jp ?? keyJP);
+    yield getCN(transl.m?.cn ?? transl.m?.jp ?? keyCN ?? keyJP);
+    yield getCN(transl.m?.tw ?? keyTW);
+    yield getEn(transl.m?.na ?? keyNA);
+    yield getKr(transl.m?.kr ?? keyKR);
   }
 
   static Iterable<String?> getSkillKeys(SkillOrTd skill) sync* {

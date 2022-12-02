@@ -355,6 +355,15 @@ class BaseGift {
     );
   }
 
+  String get shownName {
+    String? name;
+    if (type == GiftType.equip) {
+      name = db.gameData.mysticCodes[objectId]?.lName.l;
+    }
+    name ??= GameCardMixin.anyCardItemName(objectId).l;
+    return name;
+  }
+
   void routeTo() {
     String? route;
     switch (type) {
