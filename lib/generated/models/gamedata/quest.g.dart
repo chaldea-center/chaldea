@@ -185,6 +185,11 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
                   QuestMessage.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      restrictions: (json['restrictions'] as List<dynamic>?)
+              ?.map((e) => QuestPhaseRestriction.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       supportServants: (json['supportServants'] as List<dynamic>?)
               ?.map((e) =>
                   SupportServant.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -327,6 +332,29 @@ QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
       condType: toEnumCondType(json['condType'] as Object),
       targetId: json['targetId'] as int,
       targetNum: json['targetNum'] as int,
+    );
+
+NpcServant _$NpcServantFromJson(Map json) => NpcServant(
+      name: json['name'] as String,
+      svt: BasicServant.fromJson(Map<String, dynamic>.from(json['svt'] as Map)),
+      lv: json['lv'] as int,
+      atk: json['atk'] as int,
+      hp: json['hp'] as int,
+      traits: (json['traits'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      skills: json['skills'] == null
+          ? null
+          : EnemySkill.fromJson(
+              Map<String, dynamic>.from(json['skills'] as Map)),
+      noblePhantasm: json['noblePhantasm'] == null
+          ? null
+          : SupportServantTd.fromJson(
+              Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+      limit: SupportServantLimit.fromJson(
+          Map<String, dynamic>.from(json['limit'] as Map)),
     );
 
 SupportServant _$SupportServantFromJson(Map json) => SupportServant(
@@ -575,6 +603,12 @@ FieldAi _$FieldAiFromJson(Map json) => FieldAi(
       id: json['id'] as int,
     );
 
+QuestPhaseAiNpc _$QuestPhaseAiNpcFromJson(Map json) => QuestPhaseAiNpc(
+      npc: NpcServant.fromJson(Map<String, dynamic>.from(json['npc'] as Map)),
+      aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+          const [],
+    );
+
 QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) =>
     QuestPhaseExtraDetail(
       questSelect: (json['questSelect'] as List<dynamic>?)
@@ -583,7 +617,81 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) =>
       singleForceSvtId: json['singleForceSvtId'] as int?,
       hintTitle: json['hintTitle'] as String?,
       hintMessage: json['hintMessage'] as String?,
+      aiNpc: json['aiNpc'] == null
+          ? null
+          : QuestPhaseAiNpc.fromJson(
+              Map<String, dynamic>.from(json['aiNpc'] as Map)),
     );
+
+Restriction _$RestrictionFromJson(Map json) => Restriction(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
+      type: $enumDecodeNullable(_$RestrictionTypeEnumMap, json['type']) ??
+          RestrictionType.none,
+      rangeType: $enumDecodeNullable(
+              _$RestrictionRangeTypeEnumMap, json['rangeType']) ??
+          RestrictionRangeType.none,
+      targetVals: (json['targetVals'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
+      targetVals2: (json['targetVals2'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
+    );
+
+const _$RestrictionTypeEnumMap = {
+  RestrictionType.none: 'none',
+  RestrictionType.individuality: 'individuality',
+  RestrictionType.rarity: 'rarity',
+  RestrictionType.totalCost: 'totalCost',
+  RestrictionType.lv: 'lv',
+  RestrictionType.supportOnly: 'supportOnly',
+  RestrictionType.uniqueSvtOnly: 'uniqueSvtOnly',
+  RestrictionType.fixedSupportPosition: 'fixedSupportPosition',
+  RestrictionType.fixedMySvtIndividualityPositionMain:
+      'fixedMySvtIndividualityPositionMain',
+  RestrictionType.fixedMySvtIndividualitySingle:
+      'fixedMySvtIndividualitySingle',
+  RestrictionType.svtNum: 'svtNum',
+  RestrictionType.mySvtNum: 'mySvtNum',
+  RestrictionType.mySvtOrNpc: 'mySvtOrNpc',
+  RestrictionType.alloutBattleUniqueSvt: 'alloutBattleUniqueSvt',
+  RestrictionType.fixedSvtIndividualityPositionMain:
+      'fixedSvtIndividualityPositionMain',
+  RestrictionType.uniqueIndividuality: 'uniqueIndividuality',
+};
+
+const _$RestrictionRangeTypeEnumMap = {
+  RestrictionRangeType.none: 'none',
+  RestrictionRangeType.equal: 'equal',
+  RestrictionRangeType.notEqual: 'notEqual',
+  RestrictionRangeType.above: 'above',
+  RestrictionRangeType.below: 'below',
+  RestrictionRangeType.between: 'between',
+};
+
+QuestPhaseRestriction _$QuestPhaseRestrictionFromJson(Map json) =>
+    QuestPhaseRestriction(
+      restriction: Restriction.fromJson(
+          Map<String, dynamic>.from(json['restriction'] as Map)),
+      frequencyType:
+          $enumDecodeNullable(_$FrequencyTypeEnumMap, json['frequencyType']) ??
+              FrequencyType.none,
+      dialogMessage: json['dialogMessage'] as String? ?? '',
+      noticeMessage: json['noticeMessage'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+    );
+
+const _$FrequencyTypeEnumMap = {
+  FrequencyType.once: 'once',
+  FrequencyType.onceUntilReboot: 'onceUntilReboot',
+  FrequencyType.everyTime: 'everyTime',
+  FrequencyType.valentine: 'valentine',
+  FrequencyType.everyTimeAfter: 'everyTimeAfter',
+  FrequencyType.none: 'none',
+};
 
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',

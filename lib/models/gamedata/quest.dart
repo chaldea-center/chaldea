@@ -207,6 +207,7 @@ class QuestPhase extends Quest {
   QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
+  List<QuestPhaseRestriction> restrictions;
   List<SupportServant> supportServants;
   List<Stage> stages;
   List<EnemyDrop> drops;
@@ -249,6 +250,7 @@ class QuestPhase extends Quest {
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
+    this.restrictions = const [],
     this.supportServants = const [],
     this.stages = const [],
     this.drops = const [],
@@ -544,6 +546,34 @@ class QuestMessage {
 
   factory QuestMessage.fromJson(Map<String, dynamic> json) =>
       _$QuestMessageFromJson(json);
+}
+
+@JsonSerializable()
+class NpcServant {
+  String name;
+  BasicServant svt;
+  int lv;
+  int atk;
+  int hp;
+  List<NiceTrait> traits;
+  EnemySkill? skills;
+  SupportServantTd? noblePhantasm;
+  SupportServantLimit limit;
+
+  NpcServant({
+    required this.name,
+    required this.svt,
+    required this.lv,
+    required this.atk,
+    required this.hp,
+    this.traits = const [],
+    this.skills,
+    this.noblePhantasm,
+    required this.limit,
+  });
+
+  factory NpcServant.fromJson(Map<String, dynamic> json) =>
+      _$NpcServantFromJson(json);
 }
 
 @JsonSerializable()
@@ -980,22 +1010,82 @@ class FieldAi {
 }
 
 @JsonSerializable()
+class QuestPhaseAiNpc {
+  NpcServant npc;
+  List<int> aiIds;
+
+  QuestPhaseAiNpc({
+    required this.npc,
+    this.aiIds = const [],
+  });
+
+  factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) =>
+      _$QuestPhaseAiNpcFromJson(json);
+}
+
+@JsonSerializable()
 class QuestPhaseExtraDetail {
   List<int>? questSelect;
   int? singleForceSvtId;
   String? hintTitle;
   String? hintMessage;
+  QuestPhaseAiNpc? aiNpc;
 
   QuestPhaseExtraDetail({
     this.questSelect,
     this.singleForceSvtId,
     this.hintTitle,
     this.hintMessage,
+    this.aiNpc,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>
       _$QuestPhaseExtraDetailFromJson(json);
 }
+
+@JsonSerializable()
+class Restriction {
+  int id;
+  String name;
+  RestrictionType type;
+  RestrictionRangeType rangeType;
+  List<int> targetVals;
+  List<int> targetVals2;
+
+  Restriction({
+    required this.id,
+    this.name = '',
+    this.type = RestrictionType.none,
+    this.rangeType = RestrictionRangeType.none,
+    this.targetVals = const [],
+    this.targetVals2 = const [],
+  });
+
+  factory Restriction.fromJson(Map<String, dynamic> json) =>
+      _$RestrictionFromJson(json);
+}
+
+@JsonSerializable()
+class QuestPhaseRestriction {
+  Restriction restriction;
+  FrequencyType frequencyType;
+  String dialogMessage;
+  String noticeMessage;
+  String title;
+
+  QuestPhaseRestriction({
+    required this.restriction,
+    this.frequencyType = FrequencyType.none,
+    this.dialogMessage = '',
+    this.noticeMessage = '',
+    this.title = '',
+  });
+
+  factory QuestPhaseRestriction.fromJson(Map<String, dynamic> json) =>
+      _$QuestPhaseRestrictionFromJson(json);
+}
+
+///
 
 List<QuestFlag> toEnumListQuestFlag(List<dynamic> flags) {
   return flags
@@ -1159,4 +1249,41 @@ enum DeckType {
   transform,
   skillShift,
   missionTargetSkillShift,
+}
+
+enum RestrictionType {
+  none, // custom
+  individuality,
+  rarity,
+  totalCost,
+  lv,
+  supportOnly,
+  uniqueSvtOnly,
+  fixedSupportPosition,
+  fixedMySvtIndividualityPositionMain,
+  fixedMySvtIndividualitySingle,
+  svtNum,
+  mySvtNum,
+  mySvtOrNpc,
+  alloutBattleUniqueSvt,
+  fixedSvtIndividualityPositionMain,
+  uniqueIndividuality,
+}
+
+enum RestrictionRangeType {
+  none,
+  equal,
+  notEqual,
+  above,
+  below,
+  between,
+}
+
+enum FrequencyType {
+  once,
+  onceUntilReboot,
+  everyTime,
+  valentine,
+  everyTimeAfter,
+  none,
 }
