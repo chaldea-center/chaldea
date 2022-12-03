@@ -232,6 +232,7 @@ class _CacheManager {
         }).catchError((e, s) {
           _downloading.remove(url);
           _completer.complete(null);
+          if (kDebugMode) print(e);
         });
         _downloading[url] = _completer;
         return _completer.future;

@@ -407,6 +407,8 @@ class ScriptCommand extends ScriptComponent {
         state.pop((c) => true);
         return [];
       case 'f': // [f large] font
+      case 'font':
+      case 'fontSize':
         final tag = args.getOrNull(0)?.trim();
         if (tag == '-') {
           state.pop((c) => c.type == _CompType.fontSize);

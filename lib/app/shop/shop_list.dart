@@ -115,8 +115,7 @@ class _ShopListPageState extends State<ShopListPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.event_shop}: '
-            '${Transl.enums(widget.type, (enums) => enums.shopType).l}'),
+        title: Text(Transl.enums(widget.type, (enums) => enums.shopType).l),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           searchIcon,
