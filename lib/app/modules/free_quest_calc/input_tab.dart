@@ -145,6 +145,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             router.push(
               child: ItemSelectPage(
                 includeSpecial: true,
+                disabledItems: params.rows.toList(),
                 onSelected: (v) {
                   if (params.rows.contains(v)) {
                     EasyLoading.showInfo(
@@ -286,18 +287,20 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   tooltip: 'Add',
                   onPressed: () {
                     router.push(
-                        child: ItemSelectPage(
-                      includeSpecial: true,
-                      onSelected: (v) {
-                        if (params.rows.contains(v)) {
-                          EasyLoading.showInfo(S.current
-                              .item_already_exist_hint(_getItemName(v)));
-                        } else {
-                          params.rows.add(v);
-                        }
-                        if (mounted) setState(() {});
-                      },
-                    ));
+                      child: ItemSelectPage(
+                        includeSpecial: true,
+                        disabledItems: params.rows.toList(),
+                        onSelected: (v) {
+                          if (params.rows.contains(v)) {
+                            EasyLoading.showInfo(S.current
+                                .item_already_exist_hint(_getItemName(v)));
+                          } else {
+                            params.rows.add(v);
+                          }
+                          if (mounted) setState(() {});
+                        },
+                      ),
+                    );
                   },
                 ),
                 ElevatedButton(

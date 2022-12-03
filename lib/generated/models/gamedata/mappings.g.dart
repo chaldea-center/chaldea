@@ -513,4 +513,11 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      restrictionType: (json['restriction_type'] as Map?)?.map(
+            (k, e) => MapEntry(
+                k as String,
+                MappingBase<String>.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );

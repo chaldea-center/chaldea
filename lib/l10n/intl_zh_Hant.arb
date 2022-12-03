@@ -169,6 +169,8 @@
   "event_collect_item_confirm": "所有素材添加到素材倉庫，並將該活動移出規劃",
   "event_collect_items": "收取素材",
   "event_cooltime": "冷卻時間",
+  "event_custom_item": null,
+  "event_custom_item_empty_hint": null,
   "event_digging": "發掘",
   "event_fortification": null,
   "event_item_extra": "額外素材",

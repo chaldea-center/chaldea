@@ -15,6 +15,7 @@ import 'package:chaldea/widgets/animation_on_scroll.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
+import '../item/item_select.dart';
 import '../quest/quest_list.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
@@ -658,6 +659,72 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ));
     }
 
+    if (!event.isEmpty) {
+      children.add(ListTile(
+        title: Text(S.current.event_custom_item),
+        trailing: IconButton(
+          onPressed: () {
+            router.push(
+              child: ItemSelectPage(
+                disabledItems: plan.customItems.keys.toList(),
+                onSelected: (v) {
+                  plan.customItems[v] = 0;
+                  event.updateStat();
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
+          },
+          icon: const Icon(Icons.add),
+          tooltip: S.current.add,
+        ),
+      ));
+      final itemIds = Item.sortMapByPriority(plan.customItems,
+              category: true, removeZero: false)
+          .keys
+          .toList();
+      children.add(TileGroup(
+        children: [
+          if (itemIds.isEmpty)
+            ListTile(
+              title: Text(
+                S.current.event_custom_item_empty_hint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          for (final itemId in itemIds)
+            ListTile(
+              leading: Item.iconBuilder(
+                  context: context, item: null, itemId: itemId, width: 36),
+              title: Text(Item.getName(itemId)),
+              horizontalTitleGap: 8,
+              trailing: Wrap(
+                children: [
+                  _inputGroup(
+                    value: () => plan.customItems[itemId],
+                    onChanged: (value) {
+                      plan.customItems[itemId] = value;
+                    },
+                    tag: 'custom_item_$itemId',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      plan.customItems.remove(itemId);
+                      event.updateStat();
+                      if (mounted) setState(() {});
+                    },
+                    icon: const Icon(Icons.clear),
+                    color: Theme.of(context).colorScheme.error,
+                    constraints:
+                        const BoxConstraints(minWidth: 24, minHeight: 48),
+                  )
+                ],
+              ),
+            )
+        ],
+      ));
+    }
+
     if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
       children.add(EventCampaignDetailPage(event: event));
     }
@@ -687,8 +754,11 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             (context, snapshot) => FloatingActionButton(
               backgroundColor: plan.enabled ? null : Colors.grey,
               onPressed: plan.enabled
-                  ? () => _ArchiveEventDialog(event: event, initPlan: plan)
-                      .showDialog(context)
+                  ? () async {
+                      await _ArchiveEventDialog(event: event, initPlan: plan)
+                          .showDialog(context);
+                      if (mounted) setState(() {});
+                    }
                   : null,
               child: const Icon(Icons.archive_outlined),
             ),
@@ -746,12 +816,17 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     bool showValue = false,
     // required bool readOnly,
   }) {
+    final v = value() ?? 0;
+    final controller =
+        _controllers[tag] ??= TextEditingController(text: value()?.toString());
+    if ((int.tryParse(controller.text) ?? 0) != v) {
+      controller.text = v.toString();
+    }
     Widget child = SizedBox(
       width: 64,
       child: TextFormField(
         // readOnly: readOnly,
-        controller: _controllers[tag] ??=
-            TextEditingController(text: value()?.toString()),
+        controller: controller,
         onChanged: (v) {
           int? n;
           if (v.trim().isEmpty) {
@@ -818,16 +893,20 @@ class _ArchiveEventDialog extends StatefulWidget {
 
 class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
   late final LimitEventPlan plan;
+  Event get event => widget.event;
+
   Map<int, int> items = {};
 
   Map<int, bool> lotteries = {};
   Map<int, bool> treasureBoxes = {};
   Map<int, bool> extraItems = {};
-  Event get event => widget.event;
+  bool customItem = true;
+
   @override
   void initState() {
     super.initState();
     plan = widget.initPlan.copy();
+    customItem = widget.initPlan.customItems.isNotEmpty;
   }
 
   @override
@@ -926,6 +1005,13 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
         onChanged: (v) => extraItems[detail.id] = v,
       );
     }
+    if (plan.customItems.isNotEmpty) {
+      _addOption(
+        title: S.current.event_custom_item,
+        value: customItem,
+        onChanged: (v) => customItem = v,
+      );
+    }
     if (items.values.any((v) => v != 0)) {
       children.add(
           SharedBuilder.groupItems(context: context, items: items, width: 36));
@@ -953,6 +1039,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     plan2.treasureBoxItems
         .removeWhere((key, value) => treasureBoxes[key] != true);
     plan2.extraItems.removeWhere((key, value) => extraItems[key] != true);
+    if (!customItem) plan2.customItems.clear();
     items =
         db.itemCenter.calcOneEvent(event, plan2, includingGrailToLore: false);
     final validItems = db.itemCenter.validItems;
@@ -978,6 +1065,10 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     extraItems.forEach((key, value) {
       if (value) widget.initPlan.extraItems[key]?.clear();
     });
+    if (customItem) {
+      widget.initPlan.customItems =
+          widget.initPlan.customItems.map((key, value) => MapEntry(key, 0));
+    }
     db.curUser.items.addDict(items);
     event.updateStat();
     EasyLoading.showSuccess(

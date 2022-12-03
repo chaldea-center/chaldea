@@ -607,6 +607,8 @@ class LimitEventPlan {
   Map<int, bool> extraFixedItems;
   Map<int, Map<int, int>> extraItems;
 
+  Map<int, int> customItems;
+
   LimitEventPlan({
     this.enabled = false,
     this.rerunGrails = 0,
@@ -622,12 +624,14 @@ class LimitEventPlan {
     this.questReward = true,
     Map<int, bool>? extraFixedItems,
     Map<int, Map<int, int>>? extraItems,
+    Map<int, int>? customItems,
   })  : shopBuyCount = shopBuyCount ?? {},
         lotteries = lotteries ?? {},
         treasureBoxItems = treasureBoxItems ?? {},
         digging = digging ?? {},
         extraFixedItems = extraFixedItems ?? {},
-        extraItems = extraItems ?? {};
+        extraItems = extraItems ?? {},
+        customItems = customItems ?? {};
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> json) =>
       _$LimitEventPlanFromJson(json);
@@ -647,6 +651,7 @@ class LimitEventPlan {
     fixedDrop = true;
     questReward = true;
     extraItems.clear();
+    customItems.clear();
   }
 
   void planAll() {
@@ -680,6 +685,7 @@ class LimitEventPlan {
       questReward: questReward,
       extraFixedItems: Map.of(extraFixedItems),
       extraItems: extraItems.map((key, value) => MapEntry(key, Map.of(value))),
+      customItems: Map.of(customItems),
     );
   }
 }

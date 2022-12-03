@@ -6,9 +6,14 @@ import 'package:chaldea/widgets/widgets.dart';
 class ItemSelectPage extends StatelessWidget {
   final bool includeSpecial;
   final ValueChanged<int> onSelected;
+  final List<int> disabledItems;
 
-  const ItemSelectPage(
-      {super.key, this.includeSpecial = false, required this.onSelected});
+  const ItemSelectPage({
+    super.key,
+    this.includeSpecial = false,
+    required this.onSelected,
+    this.disabledItems = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +95,7 @@ class ItemSelectPage extends StatelessWidget {
   }
 
   Widget _oneItem(BuildContext context, int id, String? icon, String name) {
-    return Item.iconBuilder(
+    Widget child = Item.iconBuilder(
       context: context,
       item: null,
       icon: icon,
@@ -100,5 +105,12 @@ class ItemSelectPage extends StatelessWidget {
         Navigator.pop(context);
       },
     );
+    if (disabledItems.contains(id)) {
+      child = Opacity(
+        opacity: 0.3,
+        child: AbsorbPointer(child: child),
+      );
+    }
+    return child;
   }
 }

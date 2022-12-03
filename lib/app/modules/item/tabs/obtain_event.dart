@@ -71,7 +71,10 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       bool hasExtra = event.statItemExtra.contains(widget.itemId);
       bool hasLottery =
           event.statItemLottery.values.any((e) => (e[widget.itemId] ?? 0) > 0);
-      if (itemFixed <= 0 && !hasLottery && !hasExtra) {
+      bool hasCustom = plan.enabled &&
+          !event.isEmpty &&
+          plan.customItems.containsKey(widget.itemId);
+      if (itemFixed <= 0 && !hasLottery && !hasExtra && !hasCustom) {
         continue;
       }
       if (!_whetherToShow(plan.enabled, event.isOutdated())) {

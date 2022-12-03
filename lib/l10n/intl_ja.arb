@@ -169,6 +169,8 @@
   "event_collect_item_confirm": "すべてのアイテムを倉庫に追加し、プランからこのイベントを削除します",
   "event_collect_items": "アイテム収集",
   "event_cooltime": null,
+  "event_custom_item": null,
+  "event_custom_item_empty_hint": null,
   "event_digging": null,
   "event_fortification": null,
   "event_item_extra": "追加アイテム",

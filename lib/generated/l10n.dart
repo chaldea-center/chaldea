@@ -1923,6 +1923,28 @@ class S {
     );
   }
 
+  /// `Custom Getatable Items`
+  String get event_custom_item {
+    return Intl.message(
+      'Custom Getatable Items',
+      name: 'event_custom_item',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Click + button to customize items`
+  String get event_custom_item_empty_hint {
+    return Intl.message(
+      'Click + button to customize items',
+      name: 'event_custom_item_empty_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Digging`
   String get event_digging {
     return Intl.message(

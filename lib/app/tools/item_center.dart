@@ -323,6 +323,9 @@ class ItemCenter {
           itemId: plan.extraItems[extraItems.id]?[itemId] ?? 0,
       });
     }
+    if (!event.isEmpty) {
+      result.addDict(plan.customItems);
+    }
     int grailToCrystal = result[Items.grailToCrystalId] ?? 0;
     if (grailToCrystal > 0 && includingGrailToLore) {
       plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystal);

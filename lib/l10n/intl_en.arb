@@ -169,6 +169,8 @@
   "event_collect_item_confirm": "All items will be added to bag and remove the event out of plan",
   "event_collect_items": "Collect Items",
   "event_cooltime": "Cooltime",
+  "event_custom_item": "Custom Getatable Items",
+  "event_custom_item_empty_hint": "Click + button to customize items",
   "event_digging": "Digging",
   "event_fortification": "Fortification",
   "event_item_extra": "Extra Items",

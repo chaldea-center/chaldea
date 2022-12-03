@@ -169,6 +169,8 @@
   "event_collect_item_confirm": "所有素材添加到素材仓库，并将该活动移出规划",
   "event_collect_items": "收取素材",
   "event_cooltime": null,
+  "event_custom_item": "自定义可获得素材",
+  "event_custom_item_empty_hint": "点击+按钮自定义可获得素材",
   "event_digging": "发掘",
   "event_fortification": null,
   "event_item_extra": "额外素材",

@@ -329,6 +329,11 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
                           (k, e) => MapEntry(int.parse(k as String), e as int),
                         )),
                   )),
+          customItems: $checkedConvert(
+              'customItems',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
         );
         return val;
       },
@@ -354,6 +359,8 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
           instance.extraFixedItems.map((k, e) => MapEntry(k.toString(), e)),
       'extraItems': instance.extraItems.map((k, e) =>
           MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'customItems':
+          instance.customItems.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 MainStoryPlan _$MainStoryPlanFromJson(Map json) => $checkedCreate(

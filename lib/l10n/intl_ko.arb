@@ -169,6 +169,8 @@
   "event_collect_item_confirm": "모든 아이템을 창고에 추가하고 플랜에서 이벤트를 삭제합니다",
   "event_collect_items": "아이템 수집",
   "event_cooltime": "쿨타임",
+  "event_custom_item": null,
+  "event_custom_item_empty_hint": null,
   "event_digging": "파다",
   "event_fortification": null,
   "event_item_extra": "기타 아이템",

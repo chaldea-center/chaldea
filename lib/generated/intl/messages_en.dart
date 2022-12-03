@@ -305,6 +305,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_items":
             MessageLookupByLibrary.simpleMessage("Collect Items"),
         "event_cooltime": MessageLookupByLibrary.simpleMessage("Cooltime"),
+        "event_custom_item":
+            MessageLookupByLibrary.simpleMessage("Custom Getatable Items"),
+        "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage(
+            "Click + button to customize items"),
         "event_digging": MessageLookupByLibrary.simpleMessage("Digging"),
         "event_fortification":
             MessageLookupByLibrary.simpleMessage("Fortification"),

@@ -215,8 +215,13 @@ class Item {
     return a == null ? -1 : 1;
   }
 
-  static Map<int, int> sortMapByPriority(Map<int, int> items,
-      {bool qpFirst = true, bool reversed = false, bool category = false}) {
+  static Map<int, int> sortMapByPriority(
+    Map<int, int> items, {
+    bool qpFirst = true,
+    bool reversed = false,
+    bool category = false,
+    bool removeZero = true,
+  }) {
     int _getPriority(int id) {
       if (id == Items.qpId && !qpFirst) return 9999999;
       final item = db.gameData.items[id];
@@ -228,7 +233,7 @@ class Item {
     return {
       for (final k
           in items.keys.toList()..sort2(_getPriority, reversed: reversed))
-        if (items[k]! > 0) k: items[k]!
+        if (items[k]! > 0 || !removeZero) k: items[k]!
     };
   }
 
