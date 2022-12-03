@@ -492,6 +492,7 @@
   "quest_prefer_region": "선호하는 지역",
   "quest_prefer_region_hint": "퀘스트의 관련 이벤트가 선택된 지역에서 시작되지 않은 경우 JP로 돌아갑니다.",
   "quest_region_has_enemy_hint": "JP(2020/11년 이후) 또는 NA(2020/12년 이후)만 적 데이터를 포함할 수 있습니다.",
+  "quest_restriction": null,
   "quest_reward": "보너스",
   "quest_reward_short": "보너스",
   "raid_quest": null,

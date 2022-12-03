@@ -548,6 +548,7 @@ class EnumMapping {
   final Map<String, MappingBase<String>> eventWorkType;
   final Map<String, MappingBase<String>> shopType;
   final Map<String, MappingBase<String>> purchaseType;
+  final Map<String, MappingBase<String>> restrictionType;
 
   EnumMapping({
     this.svtClass = const {},
@@ -574,6 +575,7 @@ class EnumMapping {
     this.eventWorkType = const {},
     this.shopType = const {},
     this.purchaseType = const {},
+    this.restrictionType = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) =>

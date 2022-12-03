@@ -492,6 +492,7 @@
   "quest_prefer_region": null,
   "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
+  "quest_restriction": "編成制限",
   "quest_reward": "クエスト報酬",
   "quest_reward_short": "報酬",
   "raid_quest": "レイド",

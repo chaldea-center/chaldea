@@ -492,6 +492,7 @@
   "quest_prefer_region": "Preferred Region",
   "quest_prefer_region_hint": "If the related event of the quest has not started at chosen region, it will fallback to JP",
   "quest_region_has_enemy_hint": "Only JP(after 2020/11) or NA(2020/12) may contain enemy data",
+  "quest_restriction": "Restrictions",
   "quest_reward": "Quest Rewards",
   "quest_reward_short": "Rewards",
   "raid_quest": "Raid Quest",

@@ -603,6 +603,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("フィールド"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("必定のドロップ"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("ドロップ"),
+        "quest_restriction": MessageLookupByLibrary.simpleMessage("編成制限"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("クエスト報酬"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("報酬"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("レイド"),

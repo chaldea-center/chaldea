@@ -476,6 +476,29 @@ class _QuestCardState extends State<QuestCard> {
     if (!widget.offline && curPhase.supportServants.isNotEmpty) {
       children.add(getSupportServants(curPhase));
     }
+    if (!widget.offline && curPhase.restrictions.isNotEmpty) {
+      final shortMsg = curPhase.restrictions
+          .map((e) => _QuestRestriction.getText(
+              restriction: e, all: false, leading: false))
+          .firstWhereOrNull((e) => e.isNotEmpty);
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: InkWell(
+          onTap: () {
+            router.pushPage(
+                _QuestRestriction(restrictions: curPhase?.restrictions ?? []));
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _header(S.current.quest_restriction),
+              Text(shortMsg ?? '??????'),
+              const SizedBox(width: double.infinity),
+            ],
+          ),
+        ),
+      ));
+    }
 
     if (show6th || curPhase.drops.isNotEmpty) {
       children.add(Wrap(
@@ -607,7 +630,8 @@ class _QuestCardState extends State<QuestCard> {
           TextSpan(
             children: [
               const TextSpan(text: ' Lv.'),
-              _mono(svt.lv, 2),
+              _mono(svt.lv,
+                  curPhase.supportServants.any((e) => e.lv >= 100) ? 3 : 2),
               TextSpan(text: ' ${S.current.np_short} Lv.'),
               _mono(
                   _nullLevel(svt.noblePhantasm.noblePhantasmLv,
@@ -658,6 +682,77 @@ class _QuestCardState extends State<QuestCard> {
           ),
           ...supports,
         ],
+      ),
+    );
+  }
+
+  Widget getRestriction(QuestPhase curPhase) {
+    List<Widget> children = [_header(S.current.quest_restriction)];
+    for (final restriction in curPhase.restrictions) {
+      for (final msg in [
+        restriction.noticeMessage,
+        restriction.dialogMessage,
+        restriction.restriction.name
+      ]) {
+        if (msg.isNotEmpty && msg != '0') {
+          children.add(Text(msg.replaceAll('\n', ' ')));
+          break;
+        }
+      }
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              List<Widget> rows = [];
+              for (int index = 0;
+                  index < curPhase.restrictions.length;
+                  index++) {
+                final restriction = curPhase.restrictions[index];
+                if (curPhase.restrictions.length > 1) {
+                  rows.add(
+                      SHeader('${S.current.quest_restriction} ${index + 1}'));
+                }
+                final messages = <String>{};
+                for (final msg in [
+                  restriction.title,
+                  restriction.noticeMessage,
+                  restriction.dialogMessage,
+                  restriction.restriction.name
+                ]) {
+                  if (msg.isEmpty || msg == '0') continue;
+                  messages.add(msg.replaceAll('\n', ' '));
+                }
+                if (messages.isNotEmpty) {
+                  rows.add(
+                      CustomTableRow.fromTexts(texts: [messages.join('\n')]));
+                }
+                rows.add(CustomTableRow.fromTexts(texts: [
+                  restriction.restriction.type.name,
+                  restriction.restriction.rangeType.name,
+                  if (restriction.restriction.targetVals.isNotEmpty)
+                    restriction.restriction.targetVals.join(', '),
+                  if (restriction.restriction.targetVals2.isNotEmpty)
+                    restriction.restriction.targetVals2.join(', '),
+                ]));
+              }
+              return SimpleCancelOkDialog(
+                title: Text(S.current.quest_restriction),
+                content: CustomTable(selectable: true, children: rows),
+                scrollable: true,
+                hideCancel: true,
+              );
+            },
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
       ),
     );
   }
@@ -816,6 +911,111 @@ class _QuestCardState extends State<QuestCard> {
             '${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
       ],
     );
+  }
+}
+
+class _QuestRestriction extends StatelessWidget {
+  final List<QuestPhaseRestriction> restrictions;
+  const _QuestRestriction({required this.restrictions});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int index = 0; index < restrictions.length; index++) {
+      final restriction = restrictions[index];
+      if (restrictions.length > 1) {
+        children.add(SHeader('${S.current.quest_restriction} ${index + 1}'));
+      }
+      final re = restriction.restriction;
+      String rangeText = '';
+      switch (re.rangeType) {
+        case RestrictionRangeType.none:
+          break;
+        case RestrictionRangeType.equal:
+          rangeText += 'Equal(=) ';
+          break;
+        case RestrictionRangeType.notEqual:
+          rangeText += 'NotEqual(≠) ';
+          break;
+        case RestrictionRangeType.above:
+          rangeText += 'Above(>)';
+          break;
+        case RestrictionRangeType.below:
+          rangeText += 'Above(<)';
+          break;
+        case RestrictionRangeType.between:
+          rangeText += 'Between(a≤x≤b)';
+          break;
+      }
+      children.add(CustomTable(
+        children: [
+          CustomTableRow(children: [
+            TableCellData(
+              text: getText(restriction: restriction, all: true, leading: true),
+              alignment: AlignmentDirectional.centerStart,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            )
+          ]),
+          CustomTableRow(children: [
+            TableCellData(text: S.current.general_type, isHeader: true),
+            TableCellData(text: restriction.restriction.type.name, flex: 3)
+          ]),
+          CustomTableRow(children: [
+            TableCellData(text: 'Value', isHeader: true),
+            TableCellData(
+              child: Text.rich(TextSpan(text: rangeText, children: [
+                if (re.targetVals.isNotEmpty && rangeText.isNotEmpty)
+                  const TextSpan(text: ': '),
+                ...guessVal(context, re.targetVals),
+                if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
+                ...guessVal(context, re.targetVals2),
+              ])),
+              flex: 3,
+            )
+          ]),
+        ],
+      ));
+    }
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.quest_restriction)),
+      body: ListView(children: children),
+    );
+  }
+
+  List<InlineSpan> guessVal(BuildContext context, List<int> vals) {
+    return divideList([
+      for (final val in vals)
+        val > 99
+            ? SharedBuilder.textButtonSpan(
+                context: context,
+                text: val.toString(),
+                onTap: () => router.push(url: Routes.traitI(val)),
+              )
+            : TextSpan(text: val.toString())
+    ], const TextSpan(text: ', '));
+  }
+
+  static String getText({
+    required QuestPhaseRestriction restriction,
+    required bool all,
+    required bool leading,
+  }) {
+    final messages = <String>{};
+    for (final msg in [
+      restriction.noticeMessage,
+      restriction.dialogMessage,
+      restriction.restriction.name
+    ]) {
+      if (msg.isNotEmpty && msg != '0') {
+        messages.add(msg.replaceAll('\n', ' '));
+      }
+    }
+    if (messages.isEmpty) return '';
+    if (all) {
+      return messages.map((e) => leading ? '$kULLeading $e' : e).join('\n');
+    } else {
+      return leading ? '$kULLeading ${messages.first}' : messages.first;
+    }
   }
 }
 

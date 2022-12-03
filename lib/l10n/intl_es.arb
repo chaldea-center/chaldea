@@ -492,6 +492,7 @@
   "quest_prefer_region": null,
   "quest_prefer_region_hint": null,
   "quest_region_has_enemy_hint": null,
+  "quest_restriction": null,
   "quest_reward": null,
   "quest_reward_short": null,
   "raid_quest": null,

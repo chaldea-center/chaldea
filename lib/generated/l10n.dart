@@ -5483,6 +5483,17 @@ class S {
     );
   }
 
+  /// `Restrictions`
+  String get quest_restriction {
+    return Intl.message(
+      'Restrictions',
+      name: 'quest_restriction',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Quest Rewards`
   String get quest_reward {
     return Intl.message(

@@ -645,6 +645,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
         "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage(
             "僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料"),
+        "quest_restriction": MessageLookupByLibrary.simpleMessage("编队限制"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
