@@ -582,8 +582,6 @@ class SupportServant {
   int priority;
   String name;
   BasicServant svt;
-
-  // releaseConditions
   int lv;
   int atk;
   int hp;
@@ -592,6 +590,7 @@ class SupportServant {
   SupportServantTd noblePhantasm;
   List<SupportServantEquip> equips;
   SupportServantScript? script;
+  List<SupportServantRelease> releaseConditions;
   SupportServantLimit limit;
   // misc
 
@@ -608,6 +607,7 @@ class SupportServant {
     required this.noblePhantasm,
     this.equips = const [],
     this.script,
+    this.releaseConditions = const [],
     required this.limit,
   });
 
@@ -620,6 +620,23 @@ class SupportServant {
     }
     return name;
   }
+}
+
+@JsonSerializable()
+class SupportServantRelease {
+  @JsonKey(fromJson: toEnumCondType)
+  CondType type;
+  int targetId;
+  int value;
+
+  SupportServantRelease({
+    this.type = CondType.none,
+    required this.targetId,
+    required this.value,
+  });
+
+  factory SupportServantRelease.fromJson(Map<String, dynamic> json) =>
+      _$SupportServantReleaseFromJson(json);
 }
 
 @JsonSerializable()

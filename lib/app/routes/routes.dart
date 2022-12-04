@@ -38,8 +38,11 @@ import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
+import '../modules/misc/common_release.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
+import '../modules/shop/shop.dart';
+import '../modules/shop/shop_list.dart';
 import '../modules/skill/skill_detail.dart';
 import '../modules/skill/skill_list.dart';
 import '../modules/skill/td_detail.dart';
@@ -47,8 +50,6 @@ import '../modules/skill/td_list.dart';
 import '../modules/statistics/game_stat.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
-import '../shop/shop.dart';
-import '../shop/shop_list.dart';
 
 class Routes {
   static const String home = '/';
@@ -132,6 +133,9 @@ class Routes {
   static const String shop = '/shop';
   static const String shopHome = '/shops';
   static String shops(ShopType type) => '/shops/${type.name}';
+
+  static String commonRelease(int id) => '/common-release/$id';
+  static const commonReleasePrefix = '/common-release';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -310,6 +314,8 @@ class RouteConfiguration {
       case Routes.shopHome:
         final type = ShopType.values.firstWhereOrNull((e) => e.name == second);
         return type == null ? const ShopListHome() : ShopListPage(type: type);
+      case Routes.commonReleasePrefix:
+        return CommonReleasesPage.id(id: _secondInt ?? 0);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

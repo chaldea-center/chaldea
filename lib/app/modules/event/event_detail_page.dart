@@ -149,7 +149,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           event.shop.where((s) => s.slot == shopSlots[index]).toList();
       shops.sort2((e) => e.priority);
       _addTab(
-        S.current.event_shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
+        S.current.shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
         EventShopsPage(event: event, shops: shops),
       );
     }
@@ -468,7 +468,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               plan.shop = v;
               event.updateStat();
             },
-            title: S.current.event_shop,
+            title: S.current.shop,
             subtitle: customCount > 0 ? '$customCount Customized' : null,
             items: shopItems,
           ),
@@ -947,7 +947,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     }
     if (event.shop.isNotEmpty) {
       _addOption(
-        title: S.current.event_shop,
+        title: S.current.shop,
         value: plan.shop,
         onChanged: (v) => plan.shop = v,
       );

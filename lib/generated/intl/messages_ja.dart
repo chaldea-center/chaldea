@@ -133,7 +133,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("所持"),
         "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
         "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
@@ -263,7 +263,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_progress": MessageLookupByLibrary.simpleMessage("現在のイベント"),
         "event_quest": MessageLookupByLibrary.simpleMessage("イベントクエスト"),
         "event_rerun_replace_grail": m4,
-        "event_shop": MessageLookupByLibrary.simpleMessage("ショップ"),
         "event_title": MessageLookupByLibrary.simpleMessage("イベント"),
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("宝箱"),
@@ -683,6 +682,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "アップデート/バッグが大量あう時、お先にバックアップしてください。アプリのアンインストールで内部バックアップが失われることがありますから、頼りになった位置へ移動するようにしてください"),
         "share": MessageLookupByLibrary.simpleMessage("シェア"),
+        "shop": MessageLookupByLibrary.simpleMessage("ショップ"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("カルーセルを表示"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("フレームレートを表示"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("フルスクリーンを表示"),

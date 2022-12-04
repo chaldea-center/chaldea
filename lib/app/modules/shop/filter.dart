@@ -4,7 +4,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../../../models/models.dart';
+import '../../../../models/models.dart';
 
 enum ShopSort {
   priority,

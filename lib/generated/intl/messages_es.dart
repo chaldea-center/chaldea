@@ -144,7 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No Cumplido"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("Poseído"),
         "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
         "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
@@ -277,7 +277,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_quest":
             MessageLookupByLibrary.simpleMessage("Misiones de Evento"),
         "event_rerun_replace_grail": m4,
-        "event_shop": MessageLookupByLibrary.simpleMessage("Tiendas"),
         "event_title": MessageLookupByLibrary.simpleMessage("Eventos"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Torre"),
         "event_treasure_box":
@@ -754,6 +753,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Realice una copia de seguridad de los datos del usuario antes de actualizar la aplicación y traslade las copias de seguridad a ubicaciones seguras fuera de la carpeta de documentos de la aplicación"),
         "share": MessageLookupByLibrary.simpleMessage("Compartir"),
+        "shop": MessageLookupByLibrary.simpleMessage("Tiendas"),
         "show_carousel":
             MessageLookupByLibrary.simpleMessage("Mostrar Carrusel"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage(

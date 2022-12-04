@@ -81,4 +81,6 @@ abstract class DescriptorBase {
       emptyHint(MultiDescriptor.events(context, targetIds));
   List<InlineSpan> wars(BuildContext context) =>
       emptyHint(MultiDescriptor.wars(context, targetIds));
+  List<InlineSpan> shops(BuildContext context) =>
+      emptyHint(MultiDescriptor.shops(context, targetIds));
 }

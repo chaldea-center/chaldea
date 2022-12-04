@@ -62,25 +62,42 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.questClear:
-        final quest = db.gameData.quests[target];
-        final war = quest?.war;
-        if (quest != null && war != null && quest.id == war.lastQuestId) {
-          final warSpan = MultiDescriptor.inkWell(
-              context: context, text: war.lShortName, onTap: quest.routeTo);
-          return localized(
-            jp: () => combineToRich(context, null, [warSpan], 'をクリアした'),
-            cn: () => combineToRich(context, '通关', [warSpan]),
-            tw: null,
-            na: () => combineToRich(context, 'Has cleared quest ', [warSpan]),
-            kr: null,
-          );
-        }
         return localized(
           jp: () => combineToRich(context, null, quests(context), 'をクリアした'),
           cn: () => combineToRich(context, '通关', quests(context)),
           tw: null,
           na: () =>
               combineToRich(context, 'Has cleared quest ', quests(context)),
+          kr: null,
+        );
+      case CondType.questClearBeforeEventStart:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(
+            context,
+            '在活动',
+            MultiDescriptor.events(context, [value]),
+            '开始前通关',
+            quests(context),
+          ),
+          tw: null,
+          na: () => combineToRich(context, 'Clear ', quests(context),
+              ' before event start', MultiDescriptor.events(context, [value])),
+          kr: null,
+        );
+      case CondType.notQuestClearBeforeEventStart:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(
+            context,
+            '在活动',
+            MultiDescriptor.events(context, [value]),
+            '开始前未通关',
+            quests(context),
+          ),
+          tw: null,
+          na: () => combineToRich(context, 'Have not cleared ', quests(context),
+              ' before event start', MultiDescriptor.events(context, [value])),
           kr: null,
         );
       case CondType.svtLimit:
@@ -158,16 +175,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.costumeGet:
-        final costume = db.gameData.servantsById[target]?.profile.costume.values
-            .firstWhereOrNull((c) => c.id == value);
-        final costumeName = costume?.lName.l.replaceAll('\n', ' ');
-        return localized(
-          jp: () => text('霊衣 $costumeNameを手に入れた'),
-          cn: () => text('获得灵衣 $costumeName'),
-          tw: null,
-          na: () => text('Costume $costumeName get'),
-          kr: null,
-        );
+      case CondType.notCostumeGet:
+      case CondType.purchaseShop:
+      case CondType.notShopPurchase:
+        return CondTargetNumDescriptor(
+          condType: condType,
+          targetNum: value,
+          targetIds: [target],
+        ).buildContent(context);
       case CondType.eventEnd:
         return localized(
           jp: () => combineToRich(context, 'イベント', events(context), 'は終了した'),
@@ -332,6 +347,15 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           targetIds: [target],
           missions: missions,
         ).buildContent(context);
+      case CondType.commonRelease:
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => combineToRich(context, 'Common Release',
+              MultiDescriptor.commonRelease(context, [target])),
+          kr: null,
+        );
       case CondType.weekdays:
         List<String> weekdays = [];
         target;

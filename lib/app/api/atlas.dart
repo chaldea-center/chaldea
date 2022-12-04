@@ -487,6 +487,15 @@ class AtlasApi {
     );
   }
 
+  static Future<List<CommonRelease>?> commonRelease(int releaseId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.upper}/common-release/$releaseId',
+      (data) => (data as List).map((e) => CommonRelease.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   // export
   static Future<List<BasicServant>?> basicServants(
       {Region region = Region.jp,
@@ -548,6 +557,7 @@ class AtlasApi {
     );
   }
 
+  /// search
   static Future<List<NiceShop>?> searchShop({
     ShopType? type,
     int? eventId,

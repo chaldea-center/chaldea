@@ -262,6 +262,7 @@ class EventListPageState extends State<EventListPage>
         if (event.pointRewards.isNotEmpty) EventCustomType.point,
         if (event.missions.isNotEmpty) EventCustomType.mission,
         if (event.randomMissions.isNotEmpty) EventCustomType.randomMission,
+        if (event.shop.isNotEmpty) EventCustomType.shop,
         if (event.towers.isNotEmpty) EventCustomType.tower,
         if (event.treasureBoxes.isNotEmpty) EventCustomType.treasureBox,
         if (event.digging != null) EventCustomType.digging,

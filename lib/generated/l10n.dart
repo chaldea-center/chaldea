@@ -757,10 +757,10 @@ class S {
     );
   }
 
-  /// `ATK`
+  /// `NONE`
   String get ce_type_none_hp_atk {
     return Intl.message(
-      'ATK',
+      'NONE',
       name: 'ce_type_none_hp_atk',
       desc: '',
       locale: localeName,
@@ -2121,10 +2121,10 @@ class S {
     );
   }
 
-  /// `Shops`
+  /// `Event Shop`
   String get event_shop {
     return Intl.message(
-      'Shops',
+      'Event Shop',
       name: 'event_shop',
       desc: '',
       locale: localeName,
@@ -6391,6 +6391,17 @@ class S {
     return Intl.message(
       'Share',
       name: 'share',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Shops`
+  String get shop {
+    return Intl.message(
+      'Shops',
+      name: 'shop',
       desc: '',
       locale: localeName,
       args: [],

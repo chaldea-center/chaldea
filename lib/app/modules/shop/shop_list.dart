@@ -6,9 +6,9 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../../widgets/searchable_list_state.dart';
-import '../modules/common/filter_page_base.dart';
-import '../modules/event/detail/shop.dart';
+import '../../../widgets/searchable_list_state.dart';
+import '../common/filter_page_base.dart';
+import '../event/detail/shop.dart';
 import 'filter.dart';
 
 class ShopListHome extends StatefulWidget {
@@ -37,7 +37,7 @@ class _ShopListHomeState extends State<ShopListHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.event_shop),
+        title: Text(S.current.shop),
         actions: [
           SharedBuilder.appBarRegionDropdown(
             context: context,

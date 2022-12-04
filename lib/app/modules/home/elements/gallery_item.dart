@@ -11,7 +11,6 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
-import '../../../shop/shop_list.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
 import '../../charge/np_charge_page.dart';
@@ -31,6 +30,7 @@ import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../saint_quartz/sq_main.dart';
 import '../../servant/servant_list.dart';
+import '../../shop/shop_list.dart';
 import '../../skill/skill_list.dart';
 import '../../skill/td_list.dart';
 import '../../statistics/game_stat.dart';
@@ -297,7 +297,7 @@ class GalleryItem {
   // show in Lost Room
   static GalleryItem shops = GalleryItem(
     name: 'shops',
-    titleBuilder: () => S.current.event_shop,
+    titleBuilder: () => S.current.shop,
     icon: FontAwesomeIcons.shop,
     url: Routes.shopHome,
     page: const ShopListHome(),

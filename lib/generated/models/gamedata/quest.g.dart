@@ -381,8 +381,22 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
           ? null
           : SupportServantScript.fromJson(
               Map<String, dynamic>.from(json['script'] as Map)),
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => SupportServantRelease.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       limit: SupportServantLimit.fromJson(
           Map<String, dynamic>.from(json['limit'] as Map)),
+    );
+
+SupportServantRelease _$SupportServantReleaseFromJson(Map json) =>
+    SupportServantRelease(
+      type: json['type'] == null
+          ? CondType.none
+          : toEnumCondType(json['type'] as Object),
+      targetId: json['targetId'] as int,
+      value: json['value'] as int,
     );
 
 SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(

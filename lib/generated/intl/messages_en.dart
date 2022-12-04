@@ -155,7 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
         "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
         "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
@@ -330,7 +330,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_quest": MessageLookupByLibrary.simpleMessage("Event Quests"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("Recipe"),
         "event_rerun_replace_grail": m4,
-        "event_shop": MessageLookupByLibrary.simpleMessage("Shops"),
+        "event_shop": MessageLookupByLibrary.simpleMessage("Event Shop"),
         "event_title": MessageLookupByLibrary.simpleMessage("Event"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Tower"),
         "event_treasure_box":
@@ -889,6 +889,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "shop": MessageLookupByLibrary.simpleMessage("Shops"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("Show Carousel"),
         "show_empty_event":
             MessageLookupByLibrary.simpleMessage("Show Empty Event"),

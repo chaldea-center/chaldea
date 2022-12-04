@@ -283,7 +283,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_quest": MessageLookupByLibrary.simpleMessage("活动关卡"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
         "event_rerun_replace_grail": m4,
-        "event_shop": MessageLookupByLibrary.simpleMessage("商店"),
+        "event_shop": MessageLookupByLibrary.simpleMessage("活动商店"),
         "event_title": MessageLookupByLibrary.simpleMessage("活动"),
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("宝箱"),
@@ -744,6 +744,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
+        "shop": MessageLookupByLibrary.simpleMessage("商店"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("显示轮播图"),
         "show_empty_event": MessageLookupByLibrary.simpleMessage("显示无内容活动"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("显示刷新率"),

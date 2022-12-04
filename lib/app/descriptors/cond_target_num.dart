@@ -1,3 +1,6 @@
+import 'package:flutter/gestures.dart';
+
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -121,7 +124,25 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           tw: null,
           na: () => combineToRich(
             context,
-            'Clear ${all ? "all" : ""} $targetNum quests of ',
+            'Clear ${all ? "all " : ""}$targetNum quests of ',
+            quests(context),
+          ),
+          kr: null,
+        );
+      case CondType.questNotClear:
+      case CondType.questNotClearAnd:
+        bool and = condType == CondType.questNotClearAnd;
+        return localized(
+          jp: null,
+          cn: () => combineToRich(
+            context,
+            '未通关以下${and ? "所有" : "任意"}关卡',
+            quests(context),
+          ),
+          tw: null,
+          na: () => combineToRich(
+            context,
+            'Have not cleared ${and ? "all " : "any "}quests of ',
             quests(context),
           ),
           kr: null,
@@ -154,6 +175,45 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             '$targetNum 퀘스트 탐색 ',
             quests(context),
           ),
+        );
+      case CondType.svtCostumeReleased:
+      case CondType.notSvtCostumeReleased:
+      case CondType.costumeGet: // cond target value
+      case CondType.notCostumeGet: // cond target value
+        final svt = db.gameData.servantsById[targetIds.getOrNull(0)];
+        final costume = svt?.profile.costume.values
+            .firstWhereOrNull((e) => e.id == targetNum);
+        if (svt == null || costume == null) break;
+        final costumeWidget = TextSpan(
+          children: [
+            CenterWidgetSpan(
+              child: svt.iconBuilder(
+                context: context,
+                overrideIcon:
+                    svt.extraAssets.faces.costume?[costume.battleCharaId],
+                onTap: costume.routeTo,
+                width: 36,
+              ),
+            ),
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: costume.lName.l.setMaxLines(1),
+              onTap: costume.routeTo,
+            ),
+          ],
+          recognizer: TapGestureRecognizer()..onTap = costume.routeTo,
+        );
+        bool got = condType == CondType.svtCostumeReleased ||
+            condType == CondType.costumeGet;
+        final gotText = M.of(
+            cn: got ? '已获得' : '未获得', na: got ? 'Have got' : 'Have not got');
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '$gotText灵衣', [costumeWidget]),
+          tw: null,
+          na: () =>
+              combineToRich(context, '$gotText Costume ', [costumeWidget]),
+          kr: null,
         );
       case CondType.svtLimit:
         return localized(
@@ -231,6 +291,25 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           tw: null,
           na: () =>
               combineToRich(context, 'Presence of Servant ', servants(context)),
+          kr: null,
+        );
+      case CondType.notSvtHaving:
+        return localized(
+          jp: () =>
+              combineToRich(context, 'サーヴァント', servants(context), 'を持ってない'),
+          cn: () => combineToRich(context, '未持有从者', servants(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Does not presence of Servant ', servants(context)),
+          kr: null,
+        );
+      case CondType.svtHavingLimitMax:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '持有从者且满破', servants(context)),
+          tw: null,
+          na: () => combineToRich(context,
+              'Having servant and reached Max Limit Break', servants(context)),
           kr: null,
         );
       case CondType.svtRecoverd:
@@ -437,6 +516,49 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             kr: null,
           );
         }
+      case CondType.notShopPurchase:
+        final countText = targetNum == 1
+            ? ""
+            : M.of(cn: "$targetNum次", na: '$targetNum times of ');
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '未兑换$countText商店', shops(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Have not purchased ${countText}shop', shops(context)),
+          kr: null,
+        );
+      case CondType.purchaseShop:
+        final countText = targetNum <= 1
+            ? ""
+            : M.of(cn: "$targetNum次", na: '$targetNum times of ');
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '已兑换$countText商店', shops(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Have purchased ${countText}shop', shops(context)),
+          kr: null,
+        );
+      case CondType.notEventShopPurchase:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '未兑换活动商店', events(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Have not purchased event shop', events(context)),
+          kr: null,
+        );
+      case CondType.shopGroupLimitNum:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(
+              context, '同组(${targetIds.join(",")})商店最多可兑换$targetNum次'),
+          tw: null,
+          na: () => combineToRich(context,
+              'Max $targetNum time(s) purchasing shop group ${targetIds.join(",")}'),
+          kr: null,
+        );
       case CondType.eventTotalPoint:
         return localized(
           jp: () => text('イベントポイントを$targetNum点獲得'),
@@ -532,6 +654,24 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           cn: () => text('通关最新主线剧情'),
           tw: null,
           na: () => text('Clear latest main scenario'),
+          kr: null,
+        );
+      case CondType.itemGet:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '持有$targetNum个素材', items(context)),
+          tw: null,
+          na: () =>
+              combineToRich(context, 'Have $targetNum item(s)', items(context)),
+          kr: null,
+        );
+      case CondType.notItemGet:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '未持有$targetNum个素材', items(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Don not have $targetNum item(s)', items(context)),
           kr: null,
         );
       case CondType.date:

@@ -705,6 +705,7 @@ enum EventCustomType {
   lottery,
   mission,
   randomMission,
+  shop,
   point,
   tower,
   treasureBox,

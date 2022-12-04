@@ -4,7 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../shop/shop.dart';
+import '../../shop/shop.dart';
 
 class EventShopsPage extends StatefulWidget {
   final Event? event;
@@ -83,7 +83,10 @@ class _EventShopsPageState extends State<EventShopsPage> {
       title = Text.rich(TextSpan(children: spans), textScaleFactor: 0.8);
     }
     if (shop.image != null) {
-      leading ??= db.getIconImage(shop.image, aspectRatio: 1, width: 40);
+      leading ??= db.getIconImage(shop.image, aspectRatio: 1);
+    }
+    if (leading != null) {
+      leading = SizedBox(width: 40, child: leading);
     }
 
     List<InlineSpan> costs = ShopHelper.cost(context, shop);
@@ -152,7 +155,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
     );
 
     return ListTile(
-      key: Key('event_shop_${shop.id}'),
+      key: Key('shop_${shop.id}'),
       leading: leading,
       title: title,
       subtitle: Text.rich(

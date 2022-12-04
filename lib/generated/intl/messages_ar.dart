@@ -122,7 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
         "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("ميكس"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("ATK"),
+        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
         "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
@@ -243,7 +243,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_progress": MessageLookupByLibrary.simpleMessage("التقدم"),
         "event_quest": MessageLookupByLibrary.simpleMessage("مهام الايفنت"),
         "event_rerun_replace_grail": m4,
-        "event_shop": MessageLookupByLibrary.simpleMessage("المتاجر"),
         "event_title": MessageLookupByLibrary.simpleMessage("حدث"),
         "event_tower": MessageLookupByLibrary.simpleMessage("برج"),
         "event_treasure_box":
@@ -591,6 +590,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "قم بعمل نسخة احتياطية قبل التحديث واحفظها خارج مجلدات التطبيق احتياطا"),
         "share": MessageLookupByLibrary.simpleMessage("مشاركة"),
+        "shop": MessageLookupByLibrary.simpleMessage("المتاجر"),
         "show_frame_rate":
             MessageLookupByLibrary.simpleMessage("عرض نسبة الاطارات"),
         "show_fullscreen":

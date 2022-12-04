@@ -74,8 +74,8 @@ class DividerWithTitle extends StatelessWidget {
           child: Divider(
             height: height,
             thickness: thickness,
-            indent: indent ?? 8,
-            endIndent: endIndent,
+            indent: endIndent ?? 8,
+            endIndent: indent,
             color: color,
           ),
         )

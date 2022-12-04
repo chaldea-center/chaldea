@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../../app/shop/shop.dart';
+import '../../app/modules/shop/shop.dart';
 import '_helper.dart';
 import 'gamedata.dart';
 

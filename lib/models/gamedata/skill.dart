@@ -520,7 +520,7 @@ class NiceTd extends BaseTd {
 }
 
 @JsonSerializable()
-class CommonRelease {
+class CommonRelease with RouteInfo {
   int id;
   int priority;
   int condGroup;
@@ -540,6 +540,9 @@ class CommonRelease {
 
   factory CommonRelease.fromJson(Map<String, dynamic> json) =>
       _$CommonReleaseFromJson(json);
+
+  @override
+  String get route => Routes.commonRelease(id);
 }
 
 @JsonSerializable()

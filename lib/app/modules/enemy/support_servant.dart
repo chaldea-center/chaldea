@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -149,6 +150,27 @@ class _SupportServantPageState extends State<SupportServantPage> {
           region: widget.region,
         ),
       ...getCes(),
+      if (svt.releaseConditions.isNotEmpty) ...[
+        CustomTableRow.fromTexts(
+          texts: [S.current.open_condition],
+          isHeader: true,
+        ),
+        CustomTableRow.fromChildren(children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final cond in svt.releaseConditions)
+                CondTargetValueDescriptor(
+                  condType: cond.type,
+                  target: cond.targetId,
+                  value: cond.value,
+                  leading: const TextSpan(text: kULLeading),
+                )
+            ],
+          )
+        ])
+      ],
     ]);
   }
 

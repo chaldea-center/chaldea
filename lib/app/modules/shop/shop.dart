@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -10,7 +12,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../descriptors/multi_entry.dart';
+import '../../descriptors/multi_entry.dart';
 
 class ShopDetailPage extends StatefulWidget {
   final int? id;
@@ -52,12 +54,12 @@ class _ShopDetailPageState extends State<ShopDetailPage>
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            data?.name ?? '${S.current.event_shop} $id',
+            data?.name ?? '${S.current.shop} $id',
             overflow: TextOverflow.fade,
           ),
           actions: [
             dropdownRegion(shownNone: widget.shop != null),
-            popupMenu,
+            if (kDebugMode) popupMenu,
           ],
         ),
         body: buildBody(context),
@@ -87,8 +89,10 @@ class _ShopDetailPageState extends State<ShopDetailPage>
               shop.closedAt.sec2date().toStringShort(omitSec: true),
             ].join(' ~ ')
           ]),
-          CustomTableRow.fromTexts(texts: [S.current.cost], isHeader: true),
+          CustomTableRow.fromTexts(
+              texts: ['可交换次数', S.current.cost], isHeader: true),
           CustomTableRow.fromChildren(children: [
+            Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
             Text.rich(TextSpan(
                 children: ShopHelper.cost(context, shop, iconSize: 36)))
           ]),
@@ -188,7 +192,8 @@ class _ShopDetailPageState extends State<ShopDetailPage>
   Widget get popupMenu {
     return PopupMenuButton(
       itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+        atlas: 'https://api.atlasacademy.io/nice/JP/shop/${shop.id}',
+      ),
     );
   }
 }
@@ -349,8 +354,8 @@ class ShopHelper {
         yield Tuple2(
           null,
           TextSpan(
-            text: 'Shop ',
-            children: MultiDescriptor.shops(context, [targetId]),
+            text: S.current.event_shop,
+            children: MultiDescriptor.events(context, [targetId]),
           ),
         );
         return;
@@ -375,27 +380,36 @@ class ShopHelper {
         }
         yield Tuple2(
           null,
-          TextSpan(text: 'Mana Shop ', children: [
-            ...MultiDescriptor.shops(context, manaShops),
-            if (showSpecialName) shopName
-          ]),
+          TextSpan(
+            text: Transl.enums(
+                PurchaseType.manaShop, (enums) => enums.purchaseType).l,
+            children: [
+              ...MultiDescriptor.shops(context, manaShops),
+              if (showSpecialName) shopName
+            ],
+          ),
         );
         return;
       case PurchaseType.storageSvt:
-        yield const Tuple2(null, TextSpan(text: 'サーヴァント保管枠の拡張'));
-        return;
       case PurchaseType.storageSvtequip:
-        yield const Tuple2(null, TextSpan(text: '概念礼装保管枠の拡張'));
+        yield Tuple2(
+          null,
+          TextSpan(
+            text:
+                '${Transl.enums(purchaseType, (enums) => enums.purchaseType).l}'
+                ' ×$targetNum',
+          ),
+        );
         return;
       case PurchaseType.bgm:
       case PurchaseType.bgmRelease:
         final bgm = db.gameData.bgms.values
             .firstWhereOrNull((e) => e.shop?.id == shop.id);
         yield Tuple2(
-          bgm?.logo == null ? null : db.getIconImage(bgm?.logo, width: 48),
+          bgm?.logo == null ? null : db.getIconImage(bgm?.logo),
           SharedBuilder.textButtonSpan(
             context: context,
-            text: bgm?.lName.l ?? shop.name,
+            text: (bgm?.lName.l ?? shop.name).replaceAll('\n', ' '),
             onTap: bgm?.routeTo,
           ),
         );
