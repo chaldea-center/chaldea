@@ -287,14 +287,27 @@ class _QuestCardState extends State<QuestCard> {
         rowChildren.add(const Expanded(
             child: Text('No Battle', textAlign: TextAlign.center)));
       } else if (!widget.offline) {
-        rowChildren.add(
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Center(child: CircularProgressIndicator()),
+        final failed = AtlasApi.cacheManager
+            .isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
+        if (failed) {
+          rowChildren.add(
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Center(child: Icon(Icons.error_outline)),
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          rowChildren.add(
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          );
+        }
       } else {
         rowChildren.add(const Text('-', textAlign: TextAlign.center));
       }

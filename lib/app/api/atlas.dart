@@ -57,9 +57,10 @@ class _CacheManager {
   bool _initiated = false;
   final String cacheKey;
   final List<int> statusCodes = const [200];
-  final Map<String, _CachedInfo> _data = {};
-  final Map<String, List<int>> _memoryCache = {};
-  final Map<String, Completer<List<int>?>> _downloading = {};
+  final Map<String, _CachedInfo> _data = {}; // key=uuid
+  final Map<String, List<int>> _memoryCache = {}; // key=uuid
+  final Map<String, Completer<List<int>?>> _downloading = {}; // key=url
+  final Map<String, DateTime> _failed = {}; // key=url
 
   LazyBox<Uint8List>? _webBox;
   late final FilePlus _infoFile;
@@ -72,6 +73,7 @@ class _CacheManager {
     _memoryCache.clear();
     _data.clear();
     _downloading.clear();
+    _failed.clear();
     await _saveCacheInfo();
   }
 
@@ -226,13 +228,16 @@ class _CacheManager {
         return _downloading[url]!.future;
       } else {
         Completer<List<int>?> _completer = Completer();
+        _failed.remove(url);
         _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {
           _downloading.remove(url);
+          _failed.remove(url);
           _completer.complete(value);
         }).catchError((e, s) {
           _downloading.remove(url);
           _completer.complete(null);
-          if (kDebugMode) print(e);
+          _failed[url] = DateTime.now();
+          if (kDebugMode) print(escapeDioError(e));
         });
         _downloading[url] = _completer;
         return _completer.future;
@@ -285,6 +290,27 @@ class _CacheManager {
       logger.e('load model($T) failed', e, s);
     }
     return null;
+  }
+
+  static String removeHost(String url) {
+    final match = RegExp(r"^https?://([^/]+)(/.+)$", caseSensitive: false)
+        .firstMatch(url);
+    return match?.group(2) ?? url;
+  }
+
+  bool isDownloading(String url, {bool skipHost = false}) {
+    if (skipHost) url = removeHost(url);
+    if (skipHost) {
+      return _downloading.keys.any((e) => removeHost(e) == e);
+    }
+    return _downloading.containsKey(url);
+  }
+
+  bool isFailed(String url, {bool skipHost = false}) {
+    if (skipHost) {
+      return _failed.keys.any((e) => removeHost(e) == e);
+    }
+    return _failed.containsKey(url);
   }
 }
 
