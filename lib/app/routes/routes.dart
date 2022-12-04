@@ -38,6 +38,7 @@ import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
+import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
@@ -129,10 +130,11 @@ class Routes {
   static const String script = '/script';
   static const String scriptHome = '/scripts';
 
-  static String shopI(int id) => '/shop/$id';
-  static const String shop = '/shop';
   static const String shopHome = '/shops';
   static String shops(ShopType type) => '/shops/${type.name}';
+  static const String shopsPrefix = '/shops';
+  static String shopI(int id) => '/shop/$id';
+  static const String shop = '/shop';
 
   static String commonRelease(int id) => '/common-release/$id';
   static const commonReleasePrefix = '/common-release';
@@ -149,6 +151,7 @@ class Routes {
   static const String ffo = '/ffo';
   static const String effectSearch = '/effect-search';
   static const String notFound = '/404';
+  static const String routes = '/routes';
 
   static const List<String> masterRoutes = [
     home,
@@ -350,6 +353,8 @@ class RouteConfiguration {
         return const TdListPage();
       case Routes.td:
         return TdDetailPage(id: _secondInt);
+      case Routes.routes:
+        return const AppRouteEntrancePage();
     }
     return null;
   }

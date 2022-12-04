@@ -27,6 +27,7 @@ import '../../func/func_list.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
+import '../../misc/app_route_entrance.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../saint_quartz/sq_main.dart';
 import '../../servant/servant_list.dart';
@@ -134,6 +135,7 @@ class GalleryItem {
         tds,
         funcs,
         buffs,
+        appRoutes,
       ];
 
   static GalleryItem servants = GalleryItem(
@@ -408,6 +410,15 @@ class GalleryItem {
     icon: FontAwesomeIcons.b, // FontAwesomeIcons.fire
     url: Routes.buffs,
     page: const BuffListPage(),
+    isDetail: false,
+    shownDefault: false,
+  );
+  static GalleryItem appRoutes = GalleryItem(
+    name: 'app_routes',
+    titleBuilder: () => 'Routes',
+    icon: FontAwesomeIcons.route,
+    url: Routes.routes,
+    page: const AppRouteEntrancePage(),
     isDetail: false,
     shownDefault: false,
   );
