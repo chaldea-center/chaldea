@@ -16,10 +16,8 @@ class TraitEnemyTab extends StatelessWidget {
       allEnemies.addAll(quest.allEnemies
           .where((enemy) => enemy.traits.any((e) => e.id == id)));
     }
-    Map<int, List<QuestEnemy>> grouped = {};
-    for (final enemy in allEnemies) {
-      grouped.putIfAbsent(enemy.svt.id, () => []).add(enemy);
-    }
+    Map<int, List<QuestEnemy>> grouped =
+        ReverseGameData.questEnemies((e) => true);
     final svtIds = grouped.keys.toList()..sort();
     if (svtIds.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(

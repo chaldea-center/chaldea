@@ -59,4 +59,22 @@ class ReverseGameData {
       }
     }
   }
+
+  static Map<int, List<QuestEnemy>> questEnemies(
+      bool Function(QuestEnemy enemy) test) {
+    Map<int, QuestEnemy> npcs = {};
+    for (final quest in db.gameData.questPhases.values) {
+      for (final enemy in quest.allEnemies) {
+        if (npcs.containsKey(enemy.npcId)) continue;
+        if (test(enemy)) {
+          npcs[enemy.npcId] = enemy;
+        }
+      }
+    }
+    Map<int, List<QuestEnemy>> results = {};
+    for (final enemy in npcs.values) {
+      results.putIfAbsent(enemy.svt.id, () => []).add(enemy);
+    }
+    return results;
+  }
 }

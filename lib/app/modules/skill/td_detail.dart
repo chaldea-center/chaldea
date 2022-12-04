@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -8,6 +9,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../enemy/quest_enemy_summary.dart';
 
 class TdDetailPage extends StatefulWidget {
   final int? id;
@@ -66,6 +68,8 @@ class _TdDetailPageState extends State<TdDetailPage>
   Widget buildContent(BuildContext context, BaseTd td) {
     final svts = ReverseGameData.td2Svt(id).toList()
       ..sort2((e) => e.collectionNo);
+    final enemies = ReverseGameData.questEnemies(
+        (e) => e.noblePhantasm.noblePhantasmId == id);
 
     return ListView(
       children: [
@@ -88,6 +92,7 @@ class _TdDetailPageState extends State<TdDetailPage>
           ]),
         ]),
         if (svts.isNotEmpty) cardList(S.current.servant, svts),
+        if (enemies.isNotEmpty) enemyList(enemies),
       ],
     );
   }
@@ -104,6 +109,27 @@ class _TdDetailPageState extends State<TdDetailPage>
             onTap: card.routeTo,
           )
       ],
+    );
+  }
+
+  Widget enemyList(Map<int, List<QuestEnemy>> allEnemies) {
+    List<Widget> children = [];
+    for (final enemies in allEnemies.values) {
+      if (enemies.isEmpty) continue;
+      final enemy = enemies.first;
+      children.add(ListTile(
+        dense: true,
+        leading: enemy.iconBuilder(context: context),
+        title: Text(enemy.lName.l),
+        onTap: () {
+          router.pushPage(
+              QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+        },
+      ));
+    }
+    return TileGroup(
+      header: '${S.current.enemy_list}(${S.current.free_quest})',
+      children: children,
     );
   }
 

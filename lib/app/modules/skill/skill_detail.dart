@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/enemy/quest_enemy_summary.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -73,6 +75,8 @@ class _SkillDetailPageState extends State<SkillDetailPage>
     final ccs = ReverseGameData.skill2CC(id).toList()
       ..sort2((e) => e.collectionNo);
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
+    final enemies =
+        ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id));
 
     return ListView(
       children: [
@@ -100,6 +104,7 @@ class _SkillDetailPageState extends State<SkillDetailPage>
         if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),
         if (ccs.isNotEmpty) cardList(S.current.command_code, ccs),
         if (mcs.isNotEmpty) cardList(S.current.mystic_code, mcs),
+        if (enemies.isNotEmpty) enemyList(enemies),
       ],
     );
   }
@@ -116,6 +121,27 @@ class _SkillDetailPageState extends State<SkillDetailPage>
             onTap: card.routeTo,
           )
       ],
+    );
+  }
+
+  Widget enemyList(Map<int, List<QuestEnemy>> allEnemies) {
+    List<Widget> children = [];
+    for (final enemies in allEnemies.values) {
+      if (enemies.isEmpty) continue;
+      final enemy = enemies.first;
+      children.add(ListTile(
+        dense: true,
+        leading: enemy.iconBuilder(context: context),
+        title: Text(enemy.lName.l),
+        onTap: () {
+          router.pushPage(
+              QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+        },
+      ));
+    }
+    return TileGroup(
+      header: '${S.current.enemy_list}(${S.current.free_quest})',
+      children: children,
     );
   }
 

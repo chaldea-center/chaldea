@@ -870,7 +870,10 @@ class QuestEnemy with GameCardMixin {
   int get collectionNo => svt.collectionNo;
 
   @override
-  String? get icon => throw UnimplementedError();
+  String? get icon => svt.icon;
+
+  @override
+  String? get borderedIcon => icon;
 
   @override
   int get id => svt.id;
@@ -954,6 +957,9 @@ class EnemySkill {
     this.skillLv2 = 0,
     this.skillLv3 = 0,
   });
+
+  List<int> get skillIds =>
+      [skillId1, skillId2, skillId3].where((e) => e != 0).toList();
 
   factory EnemySkill.fromJson(Map<String, dynamic> json) =>
       _$EnemySkillFromJson(json);

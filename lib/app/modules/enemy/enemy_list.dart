@@ -24,7 +24,7 @@ class EnemyListPageState extends State<EnemyListPage>
   @override
   Iterable<BasicServant> get wholeData =>
       db.gameData.entities.values.where((svt) => svt.collectionNo <= 0);
-  final Map<int, List<QuestEnemy>> _allEnemies = {};
+  Map<int, List<QuestEnemy>> _allEnemies = {};
 
   final filterData = EnemyFilterData();
 
@@ -37,18 +37,9 @@ class EnemyListPageState extends State<EnemyListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
-    for (final quest in db.gameData.questPhases.values) {
-      for (final stage in quest.stages) {
-        for (final enemy in stage.enemies) {
-          assert(db.gameData.entities.containsKey(enemy.svt.id), enemy.svt.id);
-          if (enemy.svt.collectionNo > 0 &&
-              [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)) {
-            continue;
-          }
-          _allEnemies.putIfAbsent(enemy.svt.id, () => []).add(enemy);
-        }
-      }
-    }
+    _allEnemies = ReverseGameData.questEnemies((enemy) =>
+        !(enemy.svt.collectionNo > 0 &&
+            [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)));
     for (final enemies in _allEnemies.values) {
       enemies.sort2((e) => e.svt.icon);
     }
