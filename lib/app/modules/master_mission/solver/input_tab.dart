@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -90,7 +91,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (mission.originDetail?.isNotEmpty == true)
             ListTile(
@@ -139,44 +140,62 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 },
               ),
             ),
-          Center(
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              // spacing: 8,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      missions.remove(mission);
-                    });
-                  },
-                  child: Text(
-                    'Remove Mission',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
+          Wrap(
+            alignment: WrapAlignment.spaceEvenly,
+            // spacing: 8,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    missions.remove(mission);
+                  });
+                },
+                child: Text(
+                  S.current.remove_mission,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      final prev = mission.conds.getOrNull(0);
-                      mission.conds.add(CustomMissionCond(
-                        type: prev?.type ?? CustomMissionType.trait,
-                        taregtIds: [],
-                        useAnd: prev?.useAnd ?? false,
-                      ));
-                    });
-                  },
-                  child: const Text('Add Condition'),
-                ),
-              ],
-            ),
+              ),
+              // const SizedBox(width: 48),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    final prev = mission.conds.getOrNull(0);
+                    mission.conds.add(CustomMissionCond(
+                      type: prev?.type ?? CustomMissionType.trait,
+                      targetIds: [],
+                      useAnd: prev?.useAnd ?? false,
+                    ));
+                  });
+                },
+                child: Text(S.current.add_condition),
+              ),
+            ],
           ),
           for (final cond in mission.conds) ...[
             DividerWithTitle(
               indent: 12,
               title:
                   '${S.current.open_condition} ${mission.conds.indexOf(cond) + 1}',
+              titleWidget: Text.rich(
+                TextSpan(
+                    text:
+                        '${S.current.open_condition} ${mission.conds.indexOf(cond) + 1}',
+                    children: [
+                      if (mission.conds.length > 1)
+                        TextSpan(
+                          text: '(${S.current.delete})',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              setState(() {
+                                mission.conds.remove(cond);
+                              });
+                            },
+                        )
+                    ]),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
             ListTile(
               dense: true,
@@ -196,17 +215,22 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 ],
                 onChanged: (v) {
                   setState(() {
-                    if (v != null) {
-                      bool mixed = v.isQuestType
-                          ? mission.conds.any((c) => c.type.isEnemyType)
-                          : mission.conds.any((c) => c.type.isQuestType);
+                    if (v == null) return;
+                    if (mission.conds.length > 1) {
+                      final types = <bool>{
+                        v.isEnemyType,
+                        ...mission.conds
+                            .where((e) => e != cond)
+                            .map((e) => e.type.isEnemyType)
+                      };
+                      bool mixed = types.length > 1;
                       if (mixed) {
                         EasyLoading.showError(
-                            'Quest related and Enemy related conditions must not be mixed!');
+                            S.current.custom_mission_mixed_type_hint);
                         return;
                       }
-                      cond.type = v;
                     }
+                    cond.type = v;
                   });
                 },
               ),
@@ -236,11 +260,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   const Text('IDs   '),
-                  for (final id in cond.taregtIds)
+                  for (final id in cond.targetIds)
                     InkWell(
                       onTap: () {
                         setState(() {
-                          cond.taregtIds.remove(id);
+                          cond.targetIds.remove(id);
                         });
                       },
                       child: AbsorbPointer(
@@ -253,16 +277,17 @@ class _MissionInputTabState extends State<MissionInputTab> {
                     ),
                   IconButton(
                     onPressed: () async {
-                      final result = await SplitRoute.push<int?>(
-                          context, _SearchView(targetType: cond.type));
-                      if (result != null) {
-                        if (cond.taregtIds.contains(result)) {
-                          EasyLoading.showInfo(S.current
-                              .item_already_exist_hint(result.toString()));
-                        } else {
-                          cond.taregtIds.add(result);
-                        }
-                      }
+                      await SplitRoute.push(
+                        context,
+                        _SearchView(
+                          targetType: cond.type,
+                          selected: cond.targetIds,
+                          onChanged: (v) {
+                            cond.targetIds = v.toList();
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      );
                       if (mounted) setState(() {});
                     },
                     icon: Icon(
@@ -275,40 +300,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 ],
               ),
             ),
-            Center(
-              child: TextButton(
-                onPressed: mission.conds.length < 2
-                    ? null
-                    : () {
-                        setState(() {
-                          mission.conds.remove(cond);
-                        });
-                      },
-                child: const Text('Remove Condition'),
-              ),
-            )
           ],
         ],
       ),
     );
-  }
-
-  String _idDescriptor(CustomMissionType type, int id) {
-    switch (type) {
-      case CustomMissionType.trait:
-      case CustomMissionType.questTrait:
-        return Transl.trait(id).l;
-      case CustomMissionType.quest:
-        return db.gameData.quests[id]?.lName.l ?? id.toString();
-      case CustomMissionType.enemy:
-        return db.gameData.servantsById[id]?.lName.l ??
-            db.gameData.entities[id]?.lName.l ??
-            id.toString();
-      case CustomMissionType.servantClass:
-      case CustomMissionType.enemyClass:
-      case CustomMissionType.enemyNotServantClass:
-        return Transl.svtClassId(id).l;
-    }
   }
 
   Widget get eventSelector {
@@ -386,16 +381,23 @@ class _MissionInputTabState extends State<MissionInputTab> {
               setState(() {
                 missions.add(CustomMission(
                   count: 0,
-                  conds: [],
+                  conds: [
+                    CustomMissionCond(
+                      type: CustomMissionType.trait,
+                      targetIds: [],
+                      useAnd: true,
+                    )
+                  ],
                   condAnd: false,
                   enemyDeckOnly: true,
                 ));
               });
             },
             icon: const Icon(Icons.add_circle_outline),
+            tooltip: S.current.add_mission,
           ),
           ElevatedButton(
-            onPressed: _solveProblem,
+            onPressed: missions.isEmpty ? null : _solveProblem,
             child: Text(S.current.drop_calc_solve),
           )
         ],
@@ -408,11 +410,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
       if (mission.count <= 0) return false;
       if (mission.conds.isEmpty) return false;
       for (final cond in mission.conds) {
-        if (cond.taregtIds.isEmpty) return false;
+        if (cond.targetIds.isEmpty) return false;
       }
       return true;
     })) {
-      EasyLoading.showError('Invalid missions');
+      EasyLoading.showError(S.current.invalid_input);
       return;
     }
     final region = isRegionNA ? Region.na : Region.jp;
@@ -433,8 +435,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
             phases[quest.id] = quest.phases.last;
           }
         }
-        // door quest 10AP
-        phases[94061636] = 1;
+        // door/QP quest 初級 - 極級
+        for (int id = 94061636; id <= 94061640; id++) {
+          phases[id] = 1;
+        }
       } else {
         NiceWar? war = isRegionNA
             ? await AtlasApi.war(warId, region: Region.na)
@@ -518,7 +522,13 @@ class _MissionInputTabState extends State<MissionInputTab> {
 
 class _SearchView extends StatefulWidget {
   final CustomMissionType targetType;
-  const _SearchView({required this.targetType});
+  final List<int> selected;
+  final ValueChanged<List<int>> onChanged;
+  const _SearchView({
+    required this.targetType,
+    required this.selected,
+    required this.onChanged,
+  });
 
   @override
   State<_SearchView> createState() => __SearchViewState();
@@ -527,6 +537,7 @@ class _SearchView extends StatefulWidget {
 class __SearchViewState extends State<_SearchView> {
   late TextEditingController _textEditingController;
   String get query => _textEditingController.text.trim().toLowerCase();
+  Set<int> selected = {};
 
   @override
   void initState() {
@@ -534,6 +545,7 @@ class __SearchViewState extends State<_SearchView> {
     _textEditingController = TextEditingController(
       text: widget.targetType == CustomMissionType.questTrait ? 'field' : null,
     );
+    selected = widget.selected.toSet();
   }
 
   @override
@@ -549,27 +561,42 @@ class __SearchViewState extends State<_SearchView> {
     if ([CustomMissionType.trait, CustomMissionType.questTrait]
         .contains(widget.targetType)) {
       ids = _searchTraits();
-      tileBuilder = _buildTraitTile;
+      tileBuilder = (id) {
+        final names = {Transl.trait(id).l, Transl.trait(id).jp};
+        return _buildTile(id, '$id - ${names.join("/")}',
+            kTraitIdMapping[id]?.name ?? 'Unknown');
+      };
     } else if ([
       CustomMissionType.servantClass,
       CustomMissionType.enemyClass,
       CustomMissionType.enemyNotServantClass
     ].contains(widget.targetType)) {
       ids = _searchSvtClasses();
-      tileBuilder = _buildClassTile;
+      tileBuilder = (id) {
+        final names = {Transl.svtClassId(id).l, Transl.svtClassId(id).jp};
+        return _buildTile(id, '$id - ${names.join("/")}',
+            kSvtClassIds[id]?.name ?? 'Unknown');
+      };
     } else {
       int? queryId = int.tryParse(query);
       if (queryId != null) ids.add(queryId);
-      tileBuilder = (id) => ListTile(
-            title: Text(id.toString()),
-            onTap: () => Navigator.pop(context, id),
-          );
+      tileBuilder = (id) {
+        return _buildTile(id, id.toString(), null);
+      };
     }
+    final searchTextStyle = Theme.of(context).isDarkMode
+        ? null
+        : TextStyle(color: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
       appBar: AppBar(
         title: TextFormField(
           controller: _textEditingController,
-          decoration: InputDecoration(hintText: S.current.search),
+          decoration: InputDecoration(
+            hintText: S.current.search,
+            hintStyle: searchTextStyle?.copyWith(
+                color: searchTextStyle.color?.withOpacity(0.8)),
+          ),
+          style: searchTextStyle,
           onChanged: (s) {
             EasyDebounce.debounce('search_${widget.targetType}',
                 const Duration(milliseconds: 500), () {
@@ -578,7 +605,28 @@ class __SearchViewState extends State<_SearchView> {
           },
         ),
       ),
-      body: ListView(children: ids.map(tileBuilder).toList()),
+      body: Column(
+        children: [
+          Expanded(child: ListView(children: ids.map(tileBuilder).toList())),
+          if (selected.isNotEmpty)
+            SafeArea(
+              child: ButtonBar(
+                alignment: MainAxisAlignment.start,
+                children: [
+                  FilterGroup<int>(
+                    options: selected.toList(),
+                    values: FilterGroupData(),
+                    optionBuilder: (v) =>
+                        Text(_idDescriptor(widget.targetType, v)),
+                    onFilterChanged: (_, last) {
+                      if (last != null) onChanged(last);
+                    },
+                  )
+                ],
+              ),
+            )
+        ],
+      ),
     );
   }
 
@@ -606,20 +654,7 @@ class __SearchViewState extends State<_SearchView> {
   Iterable<String> _getTraitStrings(int id) sync* {
     final trait = kTraitIdMapping[id];
     if (trait != null) yield trait.name.toLowerCase();
-    final mapping = Transl.trait(id);
-    yield mapping.l;
-    yield mapping.jp;
-  }
-
-  Widget _buildTraitTile(int id) {
-    final names = {Transl.trait(id).l, Transl.trait(id).jp};
-    return ListTile(
-      title: Text('$id - ${names.join("/")}'),
-      subtitle: Text(kTraitIdMapping[id]?.name ?? 'Unknown'),
-      onTap: () {
-        Navigator.pop(context, id);
-      },
-    );
+    yield* SearchUtil.getAllKeys(Transl.trait(id)).whereType();
   }
 
   List<int> _searchSvtClasses() {
@@ -647,20 +682,24 @@ class __SearchViewState extends State<_SearchView> {
   Iterable<String> _getClassStrings(int id) sync* {
     final svtClass = kSvtClassIds[id];
     if (svtClass != null) yield svtClass.name.toLowerCase();
-    final mapping = Transl.svtClass(svtClass!);
-    yield mapping.l;
-    yield mapping.jp;
+    yield* SearchUtil.getAllKeys(Transl.svtClassId(id)).whereType();
   }
 
-  Widget _buildClassTile(int id) {
-    final names = {Transl.svtClassId(id).l, Transl.svtClassId(id).jp};
-    return ListTile(
-      title: Text('$id - ${names.join("/")}'),
-      subtitle: Text(kSvtClassIds[id]?.name ?? 'Unknown'),
-      onTap: () {
-        Navigator.pop(context, id);
-      },
+  Widget _buildTile(int id, String title, String? subtitle) {
+    return CheckboxListTile(
+      value: selected.contains(id),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      dense: true,
+      onChanged: (_) => onChanged(id),
     );
+  }
+
+  void onChanged(int id) {
+    setState(() {
+      selected.toggle(id);
+    });
+    widget.onChanged(selected.toList());
   }
 }
 
@@ -724,5 +763,23 @@ class EventChooser extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+String _idDescriptor(CustomMissionType type, int id) {
+  switch (type) {
+    case CustomMissionType.trait:
+    case CustomMissionType.questTrait:
+      return Transl.trait(id).l;
+    case CustomMissionType.quest:
+      return db.gameData.quests[id]?.lName.l ?? id.toString();
+    case CustomMissionType.enemy:
+      return db.gameData.servantsById[id]?.lName.l ??
+          db.gameData.entities[id]?.lName.l ??
+          id.toString();
+    case CustomMissionType.servantClass:
+    case CustomMissionType.enemyClass:
+    case CustomMissionType.enemyNotServantClass:
+      return Transl.svtClassId(id).l;
   }
 }

@@ -9,8 +9,9 @@ import 'solver/scheme.dart';
 
 class MasterMissionPage extends StatefulWidget {
   final MasterMission masterMission;
+  final Region? region;
 
-  MasterMissionPage({super.key, required this.masterMission});
+  MasterMissionPage({super.key, required this.masterMission, this.region});
 
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
@@ -39,9 +40,23 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
                           .map((e) => CustomMission.fromEventMission(e))
                           .whereType<CustomMission>()
                           .toList();
+                      int? warId;
+                      final region = widget.region ?? Region.jp;
+                      if (region != Region.jp) {
+                        final wars = db.gameData.mappingData.warRelease
+                            .ofRegion(region)
+                            ?.where((e) => e < 1000)
+                            .toList();
+                        if (wars != null && wars.isNotEmpty) {
+                          warId = Maths.max(wars);
+                        }
+                      }
                       router.push(
-                          child:
-                              CustomMissionPage(initMissions: customMissions));
+                        child: CustomMissionPage(
+                          initMissions: customMissions,
+                          initWarId: warId,
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.search),
                     label: Text(S.current.drop_calc_solve),

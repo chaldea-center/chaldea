@@ -63,6 +63,12 @@ class Transl<K, V> {
       : _m = m,
         mappings = {key: m};
 
+  static Transl<dynamic, String> traitEnum(Trait t) {
+    final id = t.id;
+    if (id != null) return trait(id);
+    return Transl<String, String>(const {}, t.name, t.name);
+  }
+
   static Transl<int, String> trait(int id, {bool addSvtId = true}) {
     if (!md.trait.containsKey(id)) {
       final redirectId = md.traitRedirect[id];

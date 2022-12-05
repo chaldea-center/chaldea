@@ -91,8 +91,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("Active"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "add_condition": MessageLookupByLibrary.simpleMessage("Add Condition"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("Please add feedback details"),
+        "add_mission": MessageLookupByLibrary.simpleMessage("Add Mission"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "anniversary": MessageLookupByLibrary.simpleMessage("Anniversary"),
@@ -187,6 +189,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("Summon Coins"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
+        "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
+            "Only need to meet one *Group* of conditions"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
         "contact_information_not_filled": MessageLookupByLibrary.simpleMessage(
@@ -215,6 +219,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Current Version"),
         "custom_mission":
             MessageLookupByLibrary.simpleMessage("Custom Mission"),
+        "custom_mission_mixed_type_hint": MessageLookupByLibrary.simpleMessage(
+            "Enemy conditions and Quest conditions must not be mixed in one mission"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage(
             "No mission, click + to add mission"),
         "custom_mission_source_mission":
@@ -271,6 +277,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("Effect Scope"),
         "effect_search": MessageLookupByLibrary.simpleMessage("Effect Search"),
+        "effect_search_trait_hint": MessageLookupByLibrary.simpleMessage(
+            "Effective condition of Func or Buff. Poison/Curse/Burn also search buffs containing the trait."),
         "effect_target": MessageLookupByLibrary.simpleMessage("Effect Target"),
         "effect_type": MessageLookupByLibrary.simpleMessage("Effect Type"),
         "effective_condition":
@@ -798,10 +806,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
         "region_notice": m10,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
+        "related_traits":
+            MessageLookupByLibrary.simpleMessage("Related Traits"),
+        "remove_condition":
+            MessageLookupByLibrary.simpleMessage("Remove Condition"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Remove duplicated"),
         "remove_from_blacklist":
             MessageLookupByLibrary.simpleMessage("Remove from blacklist"),
+        "remove_mission":
+            MessageLookupByLibrary.simpleMessage("Remove Mission"),
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),

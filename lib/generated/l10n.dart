@@ -196,11 +196,33 @@ class S {
     );
   }
 
+  /// `Add Condition`
+  String get add_condition {
+    return Intl.message(
+      'Add Condition',
+      name: 'add_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Please add feedback details`
   String get add_feedback_details_warning {
     return Intl.message(
       'Please add feedback details',
       name: 'add_feedback_details_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Add Mission`
+  String get add_mission {
+    return Intl.message(
+      'Add Mission',
+      name: 'add_mission',
       desc: '',
       locale: localeName,
       args: [],
@@ -1010,6 +1032,17 @@ class S {
     );
   }
 
+  /// `Only need to meet one *Group* of conditions`
+  String get common_release_group_hint {
+    return Intl.message(
+      'Only need to meet one *Group* of conditions',
+      name: 'common_release_group_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(
@@ -1213,6 +1246,17 @@ class S {
     return Intl.message(
       'Custom Mission',
       name: 'custom_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enemy conditions and Quest conditions must not be mixed in one mission`
+  String get custom_mission_mixed_type_hint {
+    return Intl.message(
+      'Enemy conditions and Quest conditions must not be mixed in one mission',
+      name: 'custom_mission_mixed_type_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -1653,6 +1697,17 @@ class S {
     return Intl.message(
       'Effect Search',
       name: 'effect_search',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Effective condition of Func or Buff. Poison/Curse/Burn also search buffs containing the trait.`
+  String get effect_search_trait_hint {
+    return Intl.message(
+      'Effective condition of Func or Buff. Poison/Curse/Burn also search buffs containing the trait.',
+      name: 'effect_search_trait_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -5715,6 +5770,28 @@ class S {
     );
   }
 
+  /// `Related Traits`
+  String get related_traits {
+    return Intl.message(
+      'Related Traits',
+      name: 'related_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Remove Condition`
+  String get remove_condition {
+    return Intl.message(
+      'Remove Condition',
+      name: 'remove_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Remove duplicated`
   String get remove_duplicated_svt {
     return Intl.message(
@@ -5731,6 +5808,17 @@ class S {
     return Intl.message(
       'Remove from blacklist',
       name: 'remove_from_blacklist',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Remove Mission`
+  String get remove_mission {
+    return Intl.message(
+      'Remove Mission',
+      name: 'remove_mission',
       desc: '',
       locale: localeName,
       args: [],

@@ -29,6 +29,8 @@ abstract class DescriptorBase {
         children: [
           if (leading != null) leading!,
           ...buildContent(context),
+          // in case the last [GestureRecognizer] use the remaining space
+          const TextSpan(text: ' '),
         ],
       ),
       textScaleFactor: textScaleFactor,

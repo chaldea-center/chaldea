@@ -5,14 +5,14 @@ import 'package:chaldea/models/models.dart';
 
 class CustomMissionCond {
   CustomMissionType type;
-  List<int> taregtIds;
+  List<int> targetIds;
   bool _useAnd;
   set useAnd(bool v) => _useAnd = v;
   bool get useAnd => fixedLogicType ?? _useAnd;
 
   CustomMissionCond({
     required this.type,
-    required this.taregtIds,
+    required this.targetIds,
     required bool useAnd,
   }) : _useAnd = useAnd;
 
@@ -33,7 +33,7 @@ class CustomMissionCond {
   CustomMissionCond copy() {
     return CustomMissionCond(
       type: type,
-      taregtIds: taregtIds.toList(),
+      targetIds: targetIds.toList(),
       useAnd: useAnd,
     );
   }
@@ -92,7 +92,7 @@ class CustomMission {
             break;
         }
         conds.add(CustomMissionCond(
-            type: type, taregtIds: detail.targetIds, useAnd: useAnd));
+            type: type, targetIds: detail.targetIds, useAnd: useAnd));
       }
       if (conds.isEmpty) continue;
 
@@ -127,7 +127,7 @@ class CustomMission {
           id: index,
           missionTargetId: 0,
           missionCondType: kDetailCondMappingReverse[cond.type] ?? -1,
-          targetIds: cond.taregtIds,
+          targetIds: cond.targetIds,
           logicType: 1,
           conditionLinkType: DetailMissionCondLinkType.missionStart,
           useAnd: cond.useAnd,

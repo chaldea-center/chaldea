@@ -29,6 +29,7 @@ class DividerWithTitle extends StatelessWidget {
   final double? indent;
   final double? endIndent;
   final Color? color;
+  final EdgeInsetsGeometry? padding;
 
   const DividerWithTitle({
     this.title,
@@ -39,6 +40,7 @@ class DividerWithTitle extends StatelessWidget {
     this.indent,
     this.endIndent,
     this.color,
+    this.padding,
   });
 
   @override
@@ -48,38 +50,44 @@ class DividerWithTitle extends StatelessWidget {
       titleWidget ??=
           Text(title!, style: Theme.of(context).textTheme.bodySmall);
     }
+    Widget child;
     if (titleWidget == null) {
-      return Divider(
+      child = Divider(
         height: height,
         thickness: thickness,
         indent: indent,
         endIndent: endIndent,
         color: color,
       );
+    } else {
+      child = Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Divider(
+              height: height,
+              thickness: thickness,
+              indent: indent,
+              endIndent: endIndent ?? 8,
+              color: color,
+            ),
+          ),
+          titleWidget,
+          Expanded(
+            child: Divider(
+              height: height,
+              thickness: thickness,
+              indent: endIndent ?? 8,
+              endIndent: indent,
+              color: color,
+            ),
+          )
+        ],
+      );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Divider(
-            height: height,
-            thickness: thickness,
-            indent: indent,
-            endIndent: endIndent ?? 8,
-            color: color,
-          ),
-        ),
-        titleWidget,
-        Expanded(
-          child: Divider(
-            height: height,
-            thickness: thickness,
-            indent: endIndent ?? 8,
-            endIndent: indent,
-            color: color,
-          ),
-        )
-      ],
-    );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+    return child;
   }
 }

@@ -8,6 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'master_mission.dart';
 import 'solver/custom_mission.dart';
+import 'solver/scheme.dart';
 
 class MasterMissionListPage extends StatefulWidget {
   MasterMissionListPage({super.key});
@@ -22,6 +23,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   String? errorMsg;
   bool showOutdated = false;
   final typeOptions = FilterGroupData<MissionType?>();
+  Set<int> selected = {};
 
   final _allMissionTypes = const <MissionType?>[
     MissionType.weekly,
@@ -32,7 +34,11 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   Future<void> _resolveMissions(Region region, {bool force = false}) async {
     errorMsg = null;
     _allRegionMissions.remove(region);
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {
+        selected.clear();
+      });
+    }
     final missions = await AtlasApi.masterMissions(
         region: region, expireAfter: force ? Duration.zero : null);
     if (missions == null || missions.isEmpty) {
@@ -53,12 +59,14 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   @override
   Widget build(BuildContext context) {
     final missions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
-    if (!showOutdated) {
-      final now = DateTime.now().timestamp;
-      missions.removeWhere((e) => e.endedAt < now);
-    }
-    missions.removeWhere((mission) => !typeOptions.matchAny(mission.missions
-        .map((e) => _allMissionTypes.contains(e.type) ? e.type : null)));
+    missions.retainWhere((mission) {
+      if (selected.contains(mission.id)) return true;
+      if (!showOutdated) {
+        if (mission.endedAt < DateTime.now().timestamp) return false;
+      }
+      return typeOptions.matchAny(mission.missions
+          .map((e) => _allMissionTypes.contains(e.type) ? e.type : null));
+    });
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
       return a.startedAt.compareTo(b.startedAt);
@@ -135,13 +143,13 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                         onRefresh: () => _resolveMissions(_region, force: true),
                       ),
           ),
-          SafeArea(child: buttonBar)
+          SafeArea(child: buttonBar(missions))
         ],
       ),
     );
   }
 
-  Widget get buttonBar {
+  Widget buttonBar(List<MasterMission> mms) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
@@ -159,9 +167,19 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         ),
         ElevatedButton(
           onPressed: () {
-            router.push(child: CustomMissionPage());
+            List<CustomMission> customMissions = [];
+            for (final mm in mms) {
+              if (!selected.contains(mm.id)) continue;
+              for (final m in mm.missions) {
+                final cm = CustomMission.fromEventMission(m);
+                if (cm != null) customMissions.add(cm);
+              }
+            }
+            router.push(child: CustomMissionPage(initMissions: customMissions));
           },
-          child: Text(S.current.custom_mission),
+          child: Text(selected.isEmpty
+              ? S.current.custom_mission
+              : S.current.drop_calc_solve),
         )
       ],
     );
@@ -189,10 +207,19 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           Flexible(child: Text(_showTime(masterMission.endedAt))),
         ],
       ),
+      trailing: Checkbox(
+        value: selected.contains(masterMission.id),
+        onChanged: (v) {
+          setState(() {
+            selected.toggle(masterMission.id);
+          });
+        },
+      ),
       selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
         router.push(
-          child: MasterMissionPage(masterMission: masterMission),
+          child:
+              MasterMissionPage(masterMission: masterMission, region: _region),
           detail: true,
         );
       },

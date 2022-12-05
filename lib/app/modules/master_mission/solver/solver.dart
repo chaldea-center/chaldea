@@ -19,7 +19,7 @@ class MissionSolver extends BaseLPSolver {
   }) {
     missions = List.of(missions);
     missions.removeWhere((mission) =>
-        mission.conds.every((e) => e.taregtIds.isEmpty) || mission.count <= 0);
+        mission.conds.every((e) => e.targetIds.isEmpty) || mission.count <= 0);
     List<List<num>> matA = [];
     for (final mission in List.of(missions)) {
       if (!(mission.conds.every((cond) => cond.type.isQuestType) ||
@@ -38,7 +38,7 @@ class MissionSolver extends BaseLPSolver {
           'remove invalid mission: ',
           mission.condAnd,
           mission.count,
-          mission.conds.map((e) => [e.type, e.useAnd, e.taregtIds].toList())
+          mission.conds.map((e) => [e.type, e.useAnd, e.targetIds].toList())
         ]);
         missions.remove(mission);
       }
@@ -61,11 +61,11 @@ class MissionSolver extends BaseLPSolver {
         switch (cond.type) {
           case CustomMissionType.quest:
             assert(!cond.useAnd);
-            return cond.taregtIds.contains(quest.id);
+            return cond.targetIds.contains(quest.id);
           case CustomMissionType.questTrait:
             return mission.condAnd
-                ? NiceTrait.hasAllTraits(quest.individuality, cond.taregtIds)
-                : NiceTrait.hasAnyTrait(quest.individuality, cond.taregtIds);
+                ? NiceTrait.hasAllTraits(quest.individuality, cond.targetIds)
+                : NiceTrait.hasAnyTrait(quest.individuality, cond.targetIds);
           default:
             return false;
         }
@@ -83,23 +83,23 @@ class MissionSolver extends BaseLPSolver {
           switch (cond.type) {
             case CustomMissionType.trait:
               return cond.useAnd
-                  ? NiceTrait.hasAllTraits(enemy.traits, cond.taregtIds)
-                  : NiceTrait.hasAnyTrait(enemy.traits, cond.taregtIds);
+                  ? NiceTrait.hasAllTraits(enemy.traits, cond.targetIds)
+                  : NiceTrait.hasAnyTrait(enemy.traits, cond.targetIds);
             case CustomMissionType.enemy:
               assert(!cond.useAnd);
-              return cond.taregtIds.contains(enemy.svt.id);
+              return cond.targetIds.contains(enemy.svt.id);
             case CustomMissionType.enemyClass:
               assert(!cond.useAnd);
-              return cond.taregtIds.contains(enemy.svt.className.id);
+              return cond.targetIds.contains(enemy.svt.className.id);
             case CustomMissionType.servantClass:
               assert(!cond.useAnd);
               return enemy.traits.any((t) => t.name == Trait.basedOnServant) &&
-                  cond.taregtIds.contains(enemy.svt.className.id);
+                  cond.targetIds.contains(enemy.svt.className.id);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
               return enemy.traits
                       .any((t) => t.name == Trait.notBasedOnServant) &&
-                  cond.taregtIds.contains(enemy.svt.className.id);
+                  cond.targetIds.contains(enemy.svt.className.id);
             default:
               return false;
           }

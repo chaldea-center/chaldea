@@ -89,8 +89,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "active_skill": MessageLookupByLibrary.simpleMessage("主动技能"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("主动"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
+        "add_condition": MessageLookupByLibrary.simpleMessage("添加条件"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("请填写反馈内容"),
+        "add_mission": MessageLookupByLibrary.simpleMessage("添加任务"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名单"),
         "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
@@ -169,6 +171,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("清除数据"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召唤所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
+        "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
+            "当存在多组(Group)时，仅需满足其中一组(Group)条件即可"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
         "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
         "contact_information_not_filled":
@@ -191,6 +195,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
         "current_version": MessageLookupByLibrary.simpleMessage("当前版本"),
         "custom_mission": MessageLookupByLibrary.simpleMessage("自定义任务"),
+        "custom_mission_mixed_type_hint":
+            MessageLookupByLibrary.simpleMessage("同一任务中敌人类条件与关卡类条件不可一起使用"),
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("无任务，点击+添加"),
         "custom_mission_source_mission":
@@ -240,6 +246,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("效果范围"),
         "effect_search": MessageLookupByLibrary.simpleMessage("效果检索"),
+        "effect_search_trait_hint": MessageLookupByLibrary.simpleMessage(
+            "Func/Buff的生效条件，其中毒/诅咒/灼伤也筛选含有该特性的buff"),
         "effect_target": MessageLookupByLibrary.simpleMessage("效果对象"),
         "effect_type": MessageLookupByLibrary.simpleMessage("效果类型"),
         "effective_condition": MessageLookupByLibrary.simpleMessage("生效条件"),
@@ -667,8 +675,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_na": MessageLookupByLibrary.simpleMessage("美服"),
         "region_notice": m10,
         "region_tw": MessageLookupByLibrary.simpleMessage("台服"),
+        "related_traits": MessageLookupByLibrary.simpleMessage("关联特性"),
+        "remove_condition": MessageLookupByLibrary.simpleMessage("删除条件"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("销毁2号机"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("移出黑名单"),
+        "remove_mission": MessageLookupByLibrary.simpleMessage("删除任务"),
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
