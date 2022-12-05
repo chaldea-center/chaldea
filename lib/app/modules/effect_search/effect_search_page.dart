@@ -174,14 +174,12 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         for (final skill in card.skills) ..._filterFunc(skill),
       ];
     }
-    if (card.collectionNo == 266) {
-      print('266: ${functions.any((e) => e.funcType == FuncType.lossNp)}');
-    }
     functions.retainWhere((func) => filterData.effectTarget
             .matchOne(func.funcTargetType, compares: {
           null: (value, option) =>
               BuffFuncFilterData.specialFuncTarget.contains(value)
         }));
+    const reduceHpTraits = {Trait.buffPoison, Trait.buffCurse, Trait.buffBurn};
     if (filterData.targetTrait.options.isNotEmpty) {
       final traits = filterData.targetTrait.options;
       functions.retainWhere((func) {
@@ -190,6 +188,10 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         for (final buff in func.buffs) {
           if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) ||
               buff.ckOpIndv.any((e) => traits.contains(e.id))) {
+            return true;
+          }
+          if (buff.vals.any((e) =>
+              reduceHpTraits.contains(e.name) && traits.contains(e.id))) {
             return true;
           }
         }

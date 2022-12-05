@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/tile_items.dart';
 import '../../../models/models.dart';
 
 enum SearchCardType {
@@ -193,27 +196,45 @@ class _BuffFuncFilterState
               },
             ),
             FilterGroup<int>(
-              title: const Text('Card'),
+              title: Text.rich(
+                TextSpan(text: S.current.related_traits, children: const [
+                  TextSpan(
+                    text: '1*',
+                    style:
+                        TextStyle(fontFeatures: [FontFeature.enable('sups')]),
+                  )
+                ]),
+              ),
               options: [
-                Trait.cardQuick.id!,
-                Trait.cardArts.id!,
-                Trait.cardBuster.id!,
-                Trait.cardExtra.id!,
-                Trait.faceCard.id!,
-                Trait.cardNP.id!,
-              ],
+                Trait.cardQuick,
+                Trait.cardArts,
+                Trait.cardBuster,
+                Trait.cardExtra,
+                Trait.faceCard,
+                Trait.cardNP,
+                // Trait.criticalHit,
+                Trait.buffPositiveEffect,
+                Trait.buffNegativeEffect,
+                Trait.buffPoison,
+                Trait.buffCurse,
+                Trait.buffBurn,
+              ].map((e) => e.id!).toList(),
               values: filterData.targetTrait,
               showMatchAll: false,
               showInvert: false,
-              optionBuilder: (v) => Text({
-                    Trait.cardQuick.id!: 'Quick',
-                    Trait.cardArts.id!: 'Arts',
-                    Trait.cardBuster.id!: 'Buster',
-                    Trait.cardExtra.id!: 'Extra',
-                    Trait.faceCard.id!: Transl.trait(Trait.faceCard.id!).l,
-                    Trait.cardNP.id!: Transl.trait(Trait.cardNP.id!).l,
-                  }[v] ??
-                  v.toString()),
+              optionBuilder: (v) {
+                String text = {
+                      Trait.cardQuick: 'Quick',
+                      Trait.cardArts: 'Arts',
+                      Trait.cardBuster: 'Buster',
+                      Trait.cardExtra: 'Extra',
+                    }[kTraitIdMapping[v]] ??
+                    Transl.trait(v).l;
+                if (text.startsWith('buff') && text.length > 4) {
+                  text = text.substring(4).trim();
+                }
+                return Text(text);
+              },
               onFilterChanged: (value, _) {
                 update();
               },
@@ -251,6 +272,7 @@ class _BuffFuncFilterState
                 update();
               },
             ),
+            SFooter('1: ${S.current.effect_search_trait_hint}'),
           ]),
     );
   }
