@@ -131,6 +131,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         );
       case CondType.questNotClear:
       case CondType.questNotClearAnd:
+        // condNum is not used I think
         bool and = condType == CondType.questNotClearAnd;
         return localized(
           jp: null,

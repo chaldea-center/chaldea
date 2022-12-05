@@ -17,6 +17,7 @@ class CommonReleasesPage extends StatefulWidget {
   final int? id;
   final List<CommonRelease>? releases;
   final Region? region;
+  @protected
   const CommonReleasesPage(
       {super.key, required List<CommonRelease> this.releases, this.region})
       : id = null;
@@ -29,15 +30,18 @@ class CommonReleasesPage extends StatefulWidget {
 
 class _CommonReleasesPageState extends State<CommonReleasesPage>
     with RegionBasedState<List<CommonRelease>, CommonReleasesPage> {
-  List<CommonRelease> get skill => data!;
-
   bool get useId => widget.id != null;
 
   @override
   void initState() {
     super.initState();
     region = widget.region ?? Region.jp;
-    if (useId) doFetchData();
+    if (useId) {
+      doFetchData();
+    } else {
+      data = widget.releases?.toList() ?? [];
+      assert(data!.map((e) => e.id).toSet().length <= 1);
+    }
   }
 
   @override
@@ -68,26 +72,42 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
 
   @override
   Widget buildContent(BuildContext context, List<CommonRelease> releases) {
-    if (useId) {
-      releases = releases.toList();
-      releases.sort2((e) => e.priority);
+    releases = releases.toList();
+    Map<int, List<CommonRelease>> grouped = {};
+    for (final release in releases) {
+      grouped.putIfAbsent(release.condGroup, () => []).add(release);
     }
-    return ListView.separated(
-      itemBuilder: (context, index) =>
-          buildRelease(context, index, releases[index], !useId),
-      separatorBuilder: (context, index) => const DividerWithTitle(
-        height: 36,
-        title: '·  ·  ·  ·  ·  ·',
-        indent: 16,
-        thickness: 1,
-      ),
-      itemCount: releases.length,
-    );
+
+    List<Widget> children = [];
+    for (final groupId in grouped.keys.toList()..sort()) {
+      final rs = grouped[groupId]!;
+      if (grouped.length > 1) {
+        children.add(DividerWithTitle(
+          title: 'Group $groupId',
+          height: 36,
+          indent: 16,
+          thickness: 1,
+          padding: const EdgeInsets.only(top: 8),
+        ));
+      }
+      children.addAll(divideList(
+        List.generate(rs.length,
+            (index) => buildRelease(context, index, rs[index], !useId)),
+        const DividerWithTitle(
+            height: 16, title: '·  ·  ·  ·  ·  ·', indent: 64),
+      ));
+    }
+    children.add(SafeArea(
+        child: grouped.length > 1
+            ? SFooter(S.current.common_release_group_hint)
+            : const SizedBox()));
+
+    return ListView(children: children);
   }
 
   Widget buildRelease(
       BuildContext context, int index, CommonRelease release, bool enableLink) {
-    final title = '$index  -  ${release.id}';
+    final title = '${release.condGroup}.${index + 1}  -  ${release.id}';
     return CustomTable(children: [
       enableLink
           ? CustomTableRow(children: [
@@ -110,7 +130,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
             commonRelease: release,
             leading: const TextSpan(text: kULLeading),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         )
       ]),
       CustomTableRow.fromTexts(texts: [S.current.general_type], isHeader: true),
