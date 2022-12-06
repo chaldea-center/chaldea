@@ -8,6 +8,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'summon_util.dart';
 
+const int _kScoreMin = 0, _kScoreMax = 5;
+
 class LuckyBagExpectation extends StatefulWidget {
   final LimitedSummon summon;
 
@@ -20,15 +22,13 @@ class LuckyBagExpectation extends StatefulWidget {
 class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late ScrollController _scrollController1;
-  late ScrollController _scrollController2;
+  late final ScrollController _scrollController1 = ScrollController();
+  late final ScrollController _scrollController2 = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _scrollController1 = ScrollController();
-    _scrollController2 = ScrollController();
   }
 
   @override
@@ -44,6 +44,39 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(widget.summon.lName, maxLines: 1),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: Text(S.current.reset),
+                    children: [
+                      SimpleDialogOption(
+                        onPressed: () => reset(context, _kScoreMin),
+                        child: const Text('All $_kScoreMin'),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () => reset(context, _kScoreMax),
+                        child: const Text('All $_kScoreMax'),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () => reset(context, null),
+                        child: Text(
+                            '${FavoriteState.owned.shownName}→$_kScoreMin,'
+                            ' ${FavoriteState.other.shownName}→$_kScoreMax'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: const Icon(Icons.replay),
+            tooltip: S.current.reset,
+          ),
+        ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           tabs: [
@@ -66,7 +99,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
 
   int scoreOf(int id) {
-    return _svtScores[id] ?? (db.curUser.svtStatusOf(id).favorite ? 1 : 5);
+    return _svtScores[id] ??
+        (db.curUser.svtStatusOf(id).favorite ? _kScoreMin : _kScoreMax);
   }
 
   Widget get inputTab {
@@ -90,10 +124,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               horizontalTitleGap: 0,
               title: Row(
                 children: List.generate(
-                  5,
+                  _kScoreMax - _kScoreMin + 1,
                   (index) => Expanded(
                     child: Radio<int>(
-                      value: index + 1,
+                      value: index,
                       groupValue: scoreOf(svtId),
                       onChanged: (v) {
                         setState(() {
@@ -119,12 +153,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: List.generate(
-              5,
+              _kScoreMax - _kScoreMin + 1,
               (index) => Expanded(
                 child: Center(
                     child: Tooltip(
-                        message: _scoreTooltip(index + 1),
-                        child: Text('${index + 1}'))),
+                        message: _scoreTooltip(index), child: Text('$index'))),
               ),
             ),
           ),
@@ -142,21 +175,38 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
 
   String _scoreTooltip(int score) {
     switch (score) {
-      case 1:
+      case _kScoreMin:
         return S.current.lucky_bag_tooltip_unwanted;
+      // case 1:
       // case 2:
       // case 3:
       // case 4:
-      case 5:
+      case _kScoreMax:
         return S.current.lucky_bag_tooltip_wanted;
       default:
         return score.toString();
     }
   }
 
+  void reset(BuildContext context, int? v) {
+    final scores = _svtScores;
+    scores.clear();
+    if (v != null) {
+      for (final data in widget.summon.subSummons) {
+        final block = data.svts.firstWhereOrNull((e) => e.rarity == 5);
+        if (block == null) continue;
+        for (final id in block.ids) {
+          scores[id] = v;
+        }
+      }
+    }
+    Navigator.pop(context);
+    if (mounted) setState(() {});
+  }
+
   _ExpSort _sortType = _ExpSort.exp;
-  int minScore = 4;
-  int maxScore = 2;
+  int minScore = _kScoreMax - 1;
+  int maxScore = _kScoreMin + 1;
 
   Widget get resultTab {
     List<_ExpResult> results = [];
@@ -180,8 +230,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       }
 
       // return temp / (a.length - 1);
-      _result.best5 = block.ids.where((id) => scoreOf(id) == 5).length;
-      _result.worst1 = block.ids.where((id) => scoreOf(id) == 1).length;
+      _result.best5 = block.ids.where((id) => scoreOf(id) == _kScoreMax).length;
+      _result.worst0 =
+          block.ids.where((id) => scoreOf(id) == _kScoreMin).length;
       _result.moreThan =
           block.ids.where((id) => scoreOf(id) >= minScore).length;
       _result.lessThan =
@@ -195,8 +246,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       case _ExpSort.best5:
         results.sort((a, b) => b.pBest5.compareTo(a.pBest5));
         break;
-      case _ExpSort.worst1:
-        results.sort((a, b) => b.pWorst1.compareTo(a.pWorst1));
+      case _ExpSort.worst0:
+        results.sort((a, b) => b.pWorst0.compareTo(a.pWorst0));
         break;
       case _ExpSort.moreThan:
         results.sort((a, b) => b.pMoreThan.compareTo(a.pMoreThan));
@@ -258,7 +309,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               ),
               Expanded(
                 child: Text(
-                  '${_toPercent(_result.pWorst1)}\n${_result.worst1}/$n',
+                  '${_toPercent(_result.pWorst0)}\n${_result.worst0}/$n',
                 ),
               ),
               Expanded(
@@ -304,8 +355,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
             children: [
               for (final entry in {
                 _ExpSort.exp: S.current.lucky_bag_expectation_short,
-                _ExpSort.best5: '${S.current.lucky_bag_best}=5',
-                _ExpSort.worst1: '${S.current.lucky_bag_worst}=1'
+                _ExpSort.best5: '${S.current.lucky_bag_best}=$_kScoreMax',
+                _ExpSort.worst0: '${S.current.lucky_bag_worst}=$_kScoreMin'
               }.entries)
                 Expanded(
                   child: _underline(
@@ -335,7 +386,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     child: DropdownButton<int>(
                       value: minScore,
                       items: [
-                        for (int score in [2, 3, 4])
+                        for (int score = _kScoreMin + 1;
+                            score <= _kScoreMax - 1;
+                            score++)
                           DropdownMenuItem(value: score, child: Text('≥$score'))
                       ],
                       onChanged: (v) {
@@ -357,7 +410,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     child: DropdownButton<int>(
                       value: maxScore,
                       items: [
-                        for (int score in [2, 3, 4])
+                        for (int score = _kScoreMin + 1;
+                            score <= _kScoreMax - 1;
+                            score++)
                           DropdownMenuItem(value: score, child: Text('≤$score'))
                       ],
                       onChanged: (v) {
@@ -391,7 +446,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
 enum _ExpSort {
   exp,
   best5,
-  worst1,
+  worst0,
   moreThan,
   lessThan,
 }
@@ -402,7 +457,7 @@ class _ExpResult {
   double exp = 0;
   double sd = 0;
   int best5 = 0;
-  int worst1 = 0;
+  int worst0 = 0;
   int moreThan = 0;
   int lessThan = 0;
 
@@ -410,7 +465,7 @@ class _ExpResult {
 
   double get pBest5 => best5 / block.ids.length;
 
-  double get pWorst1 => worst1 / block.ids.length;
+  double get pWorst0 => worst0 / block.ids.length;
 
   double get pMoreThan => moreThan / block.ids.length;
 
