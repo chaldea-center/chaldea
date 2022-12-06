@@ -979,9 +979,11 @@ class _QuestRestriction extends StatelessWidget {
               child: Text.rich(TextSpan(text: rangeText, children: [
                 if (re.targetVals.isNotEmpty && rangeText.isNotEmpty)
                   const TextSpan(text: ': '),
-                ...guessVal(context, re.targetVals),
+                ...guessVal(
+                    context, re.targetVals, restriction.restriction.type),
                 if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
-                ...guessVal(context, re.targetVals2),
+                ...guessVal(
+                    context, re.targetVals2, restriction.restriction.type),
               ])),
               flex: 3,
             )
@@ -995,14 +997,21 @@ class _QuestRestriction extends StatelessWidget {
     );
   }
 
-  List<InlineSpan> guessVal(BuildContext context, List<int> vals) {
+  List<InlineSpan> guessVal(
+      BuildContext context, List<int> vals, RestrictionType type) {
     return divideList([
       for (final val in vals)
         val > 99
             ? SharedBuilder.textButtonSpan(
                 context: context,
                 text: val.toString(),
-                onTap: () => router.push(url: Routes.traitI(val)),
+                onTap: () {
+                  if (type == RestrictionType.alloutBattleUniqueSvt) {
+                    router.push(url: Routes.eventI(val));
+                  } else {
+                    router.push(url: Routes.traitI(val));
+                  }
+                },
               )
             : TextSpan(text: val.toString())
     ], const TextSpan(text: ', '));

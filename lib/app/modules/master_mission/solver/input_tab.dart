@@ -365,16 +365,19 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   },
           ),
           IconButton(
-            onPressed: () {
-              SimpleCancelOkDialog(
-                title: Text(S.current.clear),
-                onTapOk: () {
-                  missions.clear();
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.clear_all),
+            onPressed: missions.isEmpty
+                ? null
+                : () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.clear),
+                      onTapOk: () {
+                        missions.clear();
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  },
+            icon: const Icon(Icons.delete_outline),
+            tooltip: S.current.clear,
           ),
           IconButton(
             onPressed: () {
@@ -616,8 +619,8 @@ class __SearchViewState extends State<_SearchView> {
                   FilterGroup<int>(
                     options: selected.toList(),
                     values: FilterGroupData(),
-                    optionBuilder: (v) =>
-                        Text(_idDescriptor(widget.targetType, v)),
+                    optionBuilder: (v) => Text(
+                        _idDescriptor(widget.targetType, v, prefixId: true)),
                     onFilterChanged: (_, last) {
                       if (last != null) onChanged(last);
                     },
@@ -637,7 +640,7 @@ class __SearchViewState extends State<_SearchView> {
       ids = kTraitIdMapping.keys
           .where((e) => e.toString().contains(query))
           .toList();
-      if (!ids.contains(queryId)) ids.add(queryId);
+      if (!ids.contains(queryId)) ids.insert(0, queryId);
       return ids;
     }
     for (final id in kTraitIdMapping.keys) {
@@ -664,7 +667,7 @@ class __SearchViewState extends State<_SearchView> {
       ids = kSvtClassIds.keys
           .where((e) => e < 97 && e.toString().contains(query))
           .toList();
-      if (!ids.contains(queryId)) ids.add(queryId);
+      if (!ids.contains(queryId)) ids.insert(0, queryId);
       return ids;
     }
     for (final id in kSvtClassIds.keys) {
@@ -766,20 +769,29 @@ class EventChooser extends StatelessWidget {
   }
 }
 
-String _idDescriptor(CustomMissionType type, int id) {
+String _idDescriptor(CustomMissionType type, int id, {bool prefixId = false}) {
+  String text;
   switch (type) {
     case CustomMissionType.trait:
     case CustomMissionType.questTrait:
-      return Transl.trait(id).l;
+      text = Transl.trait(id).l;
+      break;
     case CustomMissionType.quest:
-      return db.gameData.quests[id]?.lName.l ?? id.toString();
+      text = db.gameData.quests[id]?.lName.l ?? id.toString();
+      break;
     case CustomMissionType.enemy:
-      return db.gameData.servantsById[id]?.lName.l ??
+      text = db.gameData.servantsById[id]?.lName.l ??
           db.gameData.entities[id]?.lName.l ??
           id.toString();
+      break;
     case CustomMissionType.servantClass:
     case CustomMissionType.enemyClass:
     case CustomMissionType.enemyNotServantClass:
-      return Transl.svtClassId(id).l;
+      text = Transl.svtClassId(id).l;
+      break;
   }
+  if (prefixId && text != id.toString()) {
+    text = '$id-$text';
+  }
+  return text;
 }

@@ -359,9 +359,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.weekdays:
         List<String> weekdays = [];
         target;
-        print([target, target.toRadixString(2)]);
         for (int day = 1; day <= 7; day++) {
-          print([(1 << (day % 7 + 1)), (1 << (day % 7 + 1)).toRadixString(2)]);
           if (target & (1 << (day % 7 + 1)) != 0) {
             weekdays.add(DateFormat('EEEE').format(DateTime(2000, 1, 2 + day)));
           }

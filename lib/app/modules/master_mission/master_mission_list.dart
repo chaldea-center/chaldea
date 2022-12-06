@@ -116,7 +116,14 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
             tooltip: S.current.outdated,
             icon: Icon(
                 showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
-          )
+          ),
+          IconButton(
+            onPressed: () {
+              _resolveMissions(_region, force: true);
+            },
+            tooltip: S.current.refresh,
+            icon: const Icon(Icons.refresh),
+          ),
         ],
       ),
       body: Column(

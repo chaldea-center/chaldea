@@ -298,6 +298,7 @@ class _AboutProgram extends StatelessWidget {
               textAlign: TextAlign.center,
             )
           ],
+          const SizedBox(width: double.infinity),
         ],
       ),
     );
