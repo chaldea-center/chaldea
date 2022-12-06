@@ -125,7 +125,9 @@ jobs:
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Linux
         if: matrix.target == 'linux'
-        run: tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
+        run: |
+          mv ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ./lib/libquickjs_c_bridge_plugin.so
+          tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for macOS
         if: matrix.target == 'macOS'
