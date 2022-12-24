@@ -457,6 +457,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               value: 'plan', // dialog
               onTap: () async {
                 await null;
+                if (!mounted) return;
                 SharedBuilder.showSwitchPlanDialog(
                   context: context,
                   onChange: (index) {
@@ -502,6 +503,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               child: Text(S.current.svt_ascension_icon),
               onTap: () async {
                 await null;
+                if (!mounted) return;
                 await showDialog(
                   context: context,
                   useRootNavigator: false,

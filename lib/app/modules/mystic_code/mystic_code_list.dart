@@ -31,11 +31,6 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   final bool prototypeExtent = true;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     filterShownList(compare: (a, b) => a.id.compareTo(b.id));
     return scrollListener(

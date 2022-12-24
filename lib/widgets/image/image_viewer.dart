@@ -315,6 +315,7 @@ class _CachedImageState extends State<CachedImage> {
           } else {
             File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
             String fn = pathlib.basename(file.path);
+            if (!mounted) return;
             return ImageActions.showSaveShare(
               context: context,
               srcFp: file.path,

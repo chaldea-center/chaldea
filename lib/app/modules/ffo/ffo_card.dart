@@ -357,16 +357,19 @@ abstract class FFOUtil {
         parts.add('$partName: No.${part.collectionNo}-${part.svt?.shownName}');
       }
     }
-    return ImageActions.showSaveShare(
-      context: context,
-      data: data,
-      srcFp: null,
-      gallery: gallery,
-      destFp: destFp,
-      share: share,
-      shareText: shareText ?? fn,
-      extraHeaders: [SHeader(parts.join('\n'))],
-    );
+    if (context.mounted) {
+      return ImageActions.showSaveShare(
+        context: context,
+        data: data,
+        srcFp: null,
+        gallery: gallery,
+        destFp: destFp,
+        share: share,
+        shareText: shareText ?? fn,
+        extraHeaders: [SHeader(parts.join('\n'))],
+      );
+    }
+    return;
   }
 }
 

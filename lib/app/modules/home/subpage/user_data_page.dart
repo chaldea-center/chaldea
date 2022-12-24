@@ -198,6 +198,7 @@ class _UserDataPageState extends State<UserDataPage> {
         } else {
           hint += '${fps[0]}\n';
         }
+        if (!mounted) return;
         showDialog(
           context: context,
           useRootNavigator: false,

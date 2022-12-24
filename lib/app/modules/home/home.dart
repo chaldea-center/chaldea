@@ -18,11 +18,6 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(

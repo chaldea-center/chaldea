@@ -180,6 +180,7 @@ class EventListPageState extends State<EventListPage>
             child: Text(S.current.select_plan),
             onTap: () async {
               await null;
+              if (!mounted) return;
               SharedBuilder.showSwitchPlanDialog(
                 context: context,
                 onChange: (index) {

@@ -107,6 +107,7 @@ class _AccountPageState extends State<AccountPage> {
 
   void renameUser(User user) async {
     await Future.delayed(Duration.zero);
+    if (!mounted) return;
     showDialog(
       context: context,
       useRootNavigator: false,

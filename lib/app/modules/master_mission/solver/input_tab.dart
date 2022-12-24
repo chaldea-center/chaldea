@@ -481,8 +481,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
       }
 
       await Future.wait(futures);
+      EasyLoading.dismiss();
+      if (!mounted) return;
+
       if (countError + countNoEnemy > 0) {
-        EasyLoading.dismiss();
         final _continue = await showDialog(
           context: context,
           builder: (context) => SimpleCancelOkDialog(
@@ -494,7 +496,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
           ),
         );
         if (_continue != true) {
-          EasyLoading.dismiss();
           return;
         }
       }

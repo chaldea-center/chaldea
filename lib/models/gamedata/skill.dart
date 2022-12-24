@@ -219,19 +219,19 @@ class NiceSkill extends BaseSkill {
   int condLimitCount;
 
   NiceSkill({
-    required int id,
-    required String name,
-    String ruby = '',
-    String? unmodifiedDetail,
-    required SkillType type,
-    String? icon,
-    List<int> coolDown = const [],
-    List<NiceTrait> actIndividuality = const [],
-    SkillScript? script,
+    required super.id,
+    required super.name,
+    super.ruby = '',
+    super.unmodifiedDetail,
+    required super.type,
+    super.icon,
+    super.coolDown = const [],
+    super.actIndividuality = const [],
+    super.script,
     this.extraPassive = const [],
-    List<SkillAdd> skillAdd = const [],
-    Map<AiType, List<int>>? aiIds,
-    List<NiceFunction> functions = const [],
+    super.skillAdd = const [],
+    super.aiIds,
+    super.functions = const [],
     this.num = 0,
     this.strengthStatus = 0,
     this.priority = 0,
@@ -253,20 +253,7 @@ class NiceSkill extends BaseSkill {
           aiIds: aiIds,
           functions: functions,
         ),
-        super.create(
-          id: id,
-          name: name,
-          ruby: ruby,
-          unmodifiedDetail: unmodifiedDetail,
-          type: type,
-          icon: icon,
-          coolDown: coolDown,
-          actIndividuality: actIndividuality,
-          script: script,
-          skillAdd: skillAdd,
-          aiIds: aiIds,
-          functions: functions,
-        );
+        super.create();
 
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
@@ -291,8 +278,8 @@ class BaseTd extends SkillOrTd with RouteInfo {
   String? icon;
   String rank;
   String type;
-  // @Deprecated('The support flag is not accurate')
-  // List<TdEffectFlag> effectFlags;
+  @Deprecated('The support flag is not accurate')
+  List<TdEffectFlag> effectFlags;
   @override
   String? unmodifiedDetail;
   NpGain npGain;
@@ -311,7 +298,7 @@ class BaseTd extends SkillOrTd with RouteInfo {
     this.icon,
     required this.rank,
     required this.type,
-    // this.effectFlags = const [],
+    this.effectFlags = const [],
     // this.detail,
     this.unmodifiedDetail,
     required this.npGain,
@@ -347,7 +334,7 @@ class BaseTd extends SkillOrTd with RouteInfo {
                 icon: icon,
                 rank: rank,
                 type: type,
-                // effectFlags: effectFlags,
+                effectFlags: effectFlags,
                 unmodifiedDetail: unmodifiedDetail,
                 npGain: npGain,
                 npDistribution: npDistribution,
@@ -423,13 +410,9 @@ class NiceTd extends BaseTd {
   @override
   int get id => _baseTd.id;
   @override
-  CardType card;
-  @override
   String get name => _baseTd.name;
   @override
   String get ruby => _baseTd.ruby;
-  @override
-  String? icon;
   @override
   String get rank => _baseTd.rank;
   @override
@@ -438,8 +421,6 @@ class NiceTd extends BaseTd {
   String? get unmodifiedDetail => _baseTd.unmodifiedDetail;
   @override
   NpGain get npGain => _baseTd.npGain;
-  @override
-  List<int> npDistribution;
   @override
   List<NiceTrait> get individuality => _baseTd.individuality;
   @override
@@ -454,26 +435,26 @@ class NiceTd extends BaseTd {
   int condQuestPhase;
 
   NiceTd({
-    required int id,
+    required super.id,
     required this.num,
-    required this.card,
-    required String name,
-    String ruby = "",
-    this.icon,
-    required String rank,
-    required String type,
+    required super.card,
+    required super.name,
+    super.ruby = "",
+    super.icon,
+    required super.rank,
+    required super.type,
     List<TdEffectFlag> effectFlags = const [],
     // this.detail,
-    String? unmodifiedDetail,
-    required NpGain npGain,
-    required this.npDistribution,
+    super.unmodifiedDetail,
+    required super.npGain,
+    required super.npDistribution,
+    required super.individuality,
+    super.script,
+    required super.functions,
     this.strengthStatus = 0,
     required this.priority,
     this.condQuestId = 0,
     this.condQuestPhase = 0,
-    required List<NiceTrait> individuality,
-    SkillScript? script,
-    required List<NiceFunction> functions,
   })  : _baseTd = BaseTd(
           id: id,
           card: card,
@@ -490,22 +471,7 @@ class NiceTd extends BaseTd {
           script: script,
           functions: functions,
         ),
-        super.create(
-          id: id,
-          card: card,
-          name: name,
-          ruby: ruby,
-          icon: icon,
-          rank: rank,
-          type: type,
-          // effectFlags: effectFlags,
-          unmodifiedDetail: unmodifiedDetail,
-          npGain: npGain,
-          npDistribution: npDistribution,
-          individuality: individuality,
-          script: script,
-          functions: functions,
-        );
+        super.create();
 
   factory NiceTd.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {

@@ -123,11 +123,6 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   GlobalKey<NavigatorState> get navigatorKey => kAppKey;
 
   @override
-  Future<void> setInitialRoutePath(RouteConfiguration configuration) {
-    return super.setInitialRoutePath(configuration);
-  }
-
-  @override
   Future<void> setNewRoutePath(RouteConfiguration configuration) {
     return appState.activeRouter.setNewRoutePath(configuration);
   }
