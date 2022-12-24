@@ -599,6 +599,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
           ..grail = svt.exceedCount
+          ..fouHp3 = min(100, svt.adjustHp ~/ 5)
+          ..fouAtk3 = min(100, svt.adjustAtk ~/ 5)
           ..fouHp = max(0, (svt.adjustHp - 100) ~/ 2)
           ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2)
           ..bondLimit = min(collection.friendshipRank + 1,

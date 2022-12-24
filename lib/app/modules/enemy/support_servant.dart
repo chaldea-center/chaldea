@@ -104,7 +104,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
         isHeader: true,
       ),
       CustomTableRow.fromChildren(children: [
-        SharedBuilder.traitList(context: context, traits: svt.traits)
+        SharedBuilder.traitList(
+            context: context, traits: svt.traits.toList()..sort2((e) => e.id))
       ]),
       if (svt.skills.skill1 != null ||
           svt.skills.skill2 != null ||

@@ -66,20 +66,10 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
         onChanged: (value) {
           setState(() {});
         },
+        onFieldSubmitted: (s) => goTo(s),
       ),
       trailing: IconButton(
-        onPressed: v.isEmpty
-            ? null
-            : () {
-                final uri = Uri.tryParse(v);
-                if (uri != null &&
-                    uri.host.toLowerCase().contains('chaldea.center')) {
-                  v = uri.path;
-                  router.push(url: v);
-                } else {
-                  router.push(url: '/$v');
-                }
-              },
+        onPressed: v.isEmpty ? null : () => goTo(v),
         icon: const Icon(Icons.keyboard_double_arrow_right),
         tooltip: 'GO!',
       ),
@@ -108,6 +98,10 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
               },
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onFieldSubmitted: (s) {
+                final v = int.tryParse(s);
+                if (v != null) router.push(url: '$path/$v');
+              },
             ),
           ),
           IconButton(
@@ -118,6 +112,22 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
         ],
       ),
     );
+  }
+
+  void goTo(String route) {
+    if (route.startsWith('/')) {
+      router.push(url: route);
+    } else {
+      String v = route.trim().trimCharLeft('/').trim();
+      if (v.isEmpty) return;
+      final uri = Uri.tryParse(v);
+      if (uri != null && uri.host.toLowerCase().contains('chaldea.center')) {
+        v = uri.path;
+        router.push(url: v);
+      } else {
+        router.push(url: '/$v');
+      }
+    }
   }
 
   @override

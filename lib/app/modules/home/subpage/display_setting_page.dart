@@ -320,6 +320,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   textScaleFactor: 0.9,
                 ),
                 trailing: DropdownButton<Region?>(
+                  value: db.settings.preferredQuestRegion,
                   items: [
                     DropdownMenuItem(
                       value: null,

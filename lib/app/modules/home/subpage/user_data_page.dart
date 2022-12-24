@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -128,10 +129,12 @@ class _UserDataPageState extends State<UserDataPage> {
             children: <Widget>[
               if (kIsWeb)
                 ListTile(
-                  title: Text(S.current.save),
+                  title: Text(S.current.save_as),
                   onTap: () {
+                    final fn =
+                        'chaldea-userdata-${DateFormat.yMd('en_US').format(DateTime.now())}.json';
                     kPlatformMethods.downloadString(
-                        jsonEncode(db.userData), 'userdata.json');
+                        jsonEncode(db.userData), fn);
                   },
                 ),
               ListTile(

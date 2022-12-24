@@ -37,15 +37,14 @@ class QuestEnemySummaryPage extends StatelessWidget {
         critStarMods = _getValues((e) => e.serverMod.starRate);
     List<int> allTraits = {
           for (final enemy in enemies) ...enemy.traits.map((e) => e.signedId)
-        }.toList(),
+        }.toList()
+          ..sort(),
         staticTraits = allTraits
             .where((e) => enemies.every(
                 (enemy) => enemy.traits.any((trait) => trait.signedId == e)))
             .toList(),
         mutatingTraits =
             allTraits.where((e) => !staticTraits.contains(e)).toList();
-    staticTraits.sort();
-    mutatingTraits.sort();
 
     List<int> skillIds = {
           for (final enemy in enemies) ...[
@@ -65,7 +64,8 @@ class QuestEnemySummaryPage extends StatelessWidget {
         }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text('[${S.current.enemy}] ${svt.lName.l}')),
+      appBar:
+          AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),
       body: ListView(
         children: [
           CustomTable(

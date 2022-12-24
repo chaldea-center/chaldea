@@ -22,7 +22,7 @@ class UserData {
   static const int modelVersion = 4;
 
   final int version;
-  final String appVer;
+  String get appVer => AppInfo.versionString;
   @JsonKey(ignore: true)
   int previousVersion;
 
@@ -58,7 +58,6 @@ class UserData {
     this.preferAprilFoolIcon = false,
     Map<int, String?>? customSvtIcon,
   })  : version = UserData.modelVersion,
-        appVer = AppInfo.versionString,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(

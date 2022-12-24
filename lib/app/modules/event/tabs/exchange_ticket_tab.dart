@@ -124,7 +124,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
-    bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
+    // bool hasReplaced = ticket.replaced.ofRegion(db.curUser.region) != null;
     bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     bool isThisMonth = DateUtils.isSameMonth(ticket.date, DateTime.now());
 
@@ -151,7 +151,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         TextSpan(
           text: ticket.dateStr,
           children: [
-            if (hasReplaced)
+            if (hasAnyReplaced)
               const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18))
           ],
           style: TextStyle(

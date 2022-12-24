@@ -77,6 +77,8 @@ class _AboutPageState extends State<AboutPage> {
                 setState(() {
                   showDebugInfo = true;
                   db.runtimeData.enableDebugTools = true;
+                  Future.delayed(
+                      const Duration(seconds: 1), db.notifyAppUpdate);
                 });
                 await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
                 EasyLoading.showToast('UUID ${S.current.copied}');

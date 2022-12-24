@@ -147,7 +147,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         isHeader: true,
       ),
       CustomTableRow.fromChildren(children: [
-        SharedBuilder.traitList(context: context, traits: enemy.traits)
+        SharedBuilder.traitList(
+            context: context, traits: enemy.traits.toList()..sort2((e) => e.id))
       ]),
       if (enemy.ai != null) ...[
         CustomTableRow.fromTexts(

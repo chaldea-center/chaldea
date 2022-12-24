@@ -354,8 +354,8 @@ class _QuestCardState extends State<QuestCard> {
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 48,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
               TextSpan(children: [
                 if (curPhase.consumeType != ConsumeType.item)
@@ -366,7 +366,7 @@ class _QuestCardState extends State<QuestCard> {
                       context: context,
                       item: itemAmount.item,
                       text: itemAmount.amount.format(),
-                      width: 36,
+                      width: 28,
                     ),
                   )
               ]),

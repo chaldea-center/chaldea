@@ -289,10 +289,11 @@ class ItemCenter {
           result.addDict(boxItems[boxIndex] ?? {});
         }
       }
-      int maxBoxIndex = Maths.max(boxItems.keys); //0-9,10
+      int maxBoxIndex = Maths.max(boxItems.keys, 0); //0-9,10
       if (!lottery.limited && planBoxNum > maxBoxIndex) {
         result.addDict(
-            boxItems[maxBoxIndex]?.multiple(planBoxNum - maxBoxIndex) ?? {});
+            boxItems[maxBoxIndex]?.multiple(planBoxNum - maxBoxIndex - 1) ??
+                {});
       }
     }
     for (final box in event.treasureBoxes) {

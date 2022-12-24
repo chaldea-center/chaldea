@@ -448,7 +448,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       if (a.priority != b.priority) return a.priority - b.priority;
       return a.startTime.compareTo(b.startTime);
     });
-    for (final item in carouselSetting.items) {
+    for (final item in items) {
       if (item.priority < 0 && !kDebugMode) continue;
       Widget? child;
       if (item.image != null && isURL(item.image!)) {
