@@ -128,10 +128,6 @@ Servant _$ServantFromJson(Map json) => Servant(
       cards: (json['cards'] as List<dynamic>)
           .map((e) => $enumDecode(_$CardTypeEnumMap, e))
           .toList(),
-      hitsDistribution: (json['hitsDistribution'] as Map).map(
-        (k, e) => MapEntry($enumDecode(_$CardTypeEnumMap, k),
-            (e as List<dynamic>).map((e) => e as int).toList()),
-      ),
       cardDetails: (json['cardDetails'] as Map).map(
         (k, e) => MapEntry($enumDecode(_$CardTypeEnumMap, k),
             CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -413,10 +409,22 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
     );
 
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(
+      hitsDistribution: (json['hitsDistribution'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
       attackIndividuality: (json['attackIndividuality'] as List<dynamic>)
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      attackType: $enumDecodeNullable(
+              _$CommandCardAttackTypeEnumMap, json['attackType']) ??
+          CommandCardAttackType.one,
     );
+
+const _$CommandCardAttackTypeEnumMap = {
+  CommandCardAttackType.one: 'one',
+  CommandCardAttackType.all: 'all',
+};
 
 AscensionAddEntry<T> _$AscensionAddEntryFromJson<T>(
   Map json,

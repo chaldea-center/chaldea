@@ -221,25 +221,28 @@ class SvtInfoTab extends StatelessWidget {
                 flex: 4,
               )
             ]),
-            if (svt.cards
-                .any((card) => !svt.hitsDistribution.containsKey(card)))
+            if (svt.cards.any((card) => !svt.cardDetails.containsKey(card)))
               CustomTableRow(children: [
                 TableCellData(
                   text: S.current.svt_card_deck_incorrect,
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               ]),
-            if (svt.hitsDistribution.isNotEmpty)
+            if (svt.cardDetails.isNotEmpty)
               CustomTableRow.fromTexts(
                   texts: const ['Hits'], defaults: headerData),
-            for (final entry in svt.hitsDistribution.entries)
+            for (final entry in svt.cardDetails.entries)
               CustomTableRow(children: [
                 TableCellData(text: entry.key.name.toTitle(), isHeader: true),
                 TableCellData(
-                  text: entry.value.isEmpty
-                      ? '   -'
-                      : '   ${entry.value.length} Hits '
-                          '(${entry.value.join(', ')})',
+                  text: [
+                    entry.value.hitsDistribution.isEmpty
+                        ? '   -'
+                        : '   ${entry.value.hitsDistribution.length} Hits '
+                            '(${entry.value.hitsDistribution.join(', ')})',
+                    if (entry.value.attackType == CommandCardAttackType.all)
+                      ' ${Transl.enums(TdEffectFlag.attackEnemyAll, (enums) => enums.tdEffectFlag).l}'
+                  ].join(),
                   flex: 5,
                   alignment: Alignment.centerLeft,
                 )

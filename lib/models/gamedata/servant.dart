@@ -197,7 +197,6 @@ class Servant with GameCardMixin {
   int starGen;
   int instantDeathChance;
   List<CardType> cards;
-  Map<CardType, List<int>> hitsDistribution;
   Map<CardType, CardDetail> cardDetails;
   int atkBase;
   int atkMax;
@@ -257,7 +256,6 @@ class Servant with GameCardMixin {
     required this.starGen,
     required this.instantDeathChance,
     required this.cards,
-    required this.hitsDistribution,
     required this.cardDetails,
     required this.atkBase,
     required this.atkMax,
@@ -321,7 +319,6 @@ class Servant with GameCardMixin {
       starGen: starGen,
       instantDeathChance: instantDeathChance,
       cards: cards,
-      hitsDistribution: hitsDistribution,
       cardDetails: cardDetails,
       atkBase: atkBase,
       atkMax: atkMax,
@@ -841,10 +838,14 @@ class ExtraAssets implements ExtraCCAssets {
 
 @JsonSerializable()
 class CardDetail {
+  List<int> hitsDistribution;
   List<NiceTrait> attackIndividuality;
+  CommandCardAttackType attackType;
 
   CardDetail({
+    this.hitsDistribution = const [],
     required this.attackIndividuality,
+    this.attackType = CommandCardAttackType.one,
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) =>
@@ -1467,4 +1468,9 @@ enum Gender {
   male,
   female,
   unknown,
+}
+
+enum CommandCardAttackType {
+  one,
+  all,
 }
