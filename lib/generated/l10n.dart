@@ -1835,6 +1835,17 @@ class S {
     );
   }
 
+  /// `Summary`
+  String get enemy_summary {
+    return Intl.message(
+      'Summary',
+      name: 'enemy_summary',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enhance`
   String get enhance {
     return Intl.message(
@@ -5979,6 +5990,17 @@ class S {
     );
   }
 
+  /// `Save As`
+  String get save_as {
+    return Intl.message(
+      'Save As',
+      name: 'save_as',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Save to Photos`
   String get save_to_photos {
     return Intl.message(
@@ -6925,6 +6947,17 @@ class S {
     );
   }
 
+  /// `Enemy's card deck may be incorrect, the hits distribution shall prevail.`
+  String get svt_card_deck_incorrect {
+    return Intl.message(
+      'Enemy\'s card deck may be incorrect, the hits distribution shall prevail.',
+      name: 'svt_card_deck_incorrect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Svt Class`
   String get svt_class_dist {
     return Intl.message(
@@ -7153,6 +7186,39 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `For the same NP id, different owners may have different card type and hit distributions.`
+  String get td_base_hits_hint {
+    return Intl.message(
+      'For the same NP id, different owners may have different card type and hit distributions.',
+      name: 'td_base_hits_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `This Nobel Phantasm is displayed as a {color} card, but doesn't have [{trait}] trait.`
+  String td_cardcolor_hint(Object color, Object trait) {
+    return Intl.message(
+      'This Nobel Phantasm is displayed as a $color card, but doesn\'t have [$trait] trait.',
+      name: 'td_cardcolor_hint',
+      desc: '',
+      locale: localeName,
+      args: [color, trait],
+    );
+  }
+
+  /// `This is a Nobel Phantasm, but doesn't have [{trait}] trait.`
+  String td_cardnp_hint(Object trait) {
+    return Intl.message(
+      'This is a Nobel Phantasm, but doesn\'t have [$trait] trait.',
+      name: 'td_cardnp_hint',
+      desc: '',
+      locale: localeName,
+      args: [trait],
     );
   }
 

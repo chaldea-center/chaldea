@@ -221,6 +221,14 @@ class SvtInfoTab extends StatelessWidget {
                 flex: 4,
               )
             ]),
+            if (svt.cards
+                .any((card) => !svt.hitsDistribution.containsKey(card)))
+              CustomTableRow(children: [
+                TableCellData(
+                  text: S.current.svt_card_deck_incorrect,
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              ]),
             if (svt.hitsDistribution.isNotEmpty)
               CustomTableRow.fromTexts(
                   texts: const ['Hits'], defaults: headerData),
@@ -349,6 +357,7 @@ class SvtInfoTab extends StatelessWidget {
     List<NiceTrait> baseTraits = const [],
   ]) {
     if (traits.isEmpty) return [];
+    traits = traits.toList()..sort2((e) => e.id);
     List<NiceTrait> shownTraits = [];
     bool showMore = false;
     final baseTraitIds = baseTraits.map((e) => e.signedId).toSet();

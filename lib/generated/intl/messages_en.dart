@@ -74,6 +74,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "Profile ${n}";
 
+  static String m23(color, trait) =>
+      "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
+
+  static String m24(trait) =>
+      "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
+
   static String m14(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -293,6 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage(
             "Trait filter is only used for enemies in Main Story\'s free quests"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
+        "enemy_summary": MessageLookupByLibrary.simpleMessage("Summary"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             "The following items will be consumed for enhancement"),
@@ -835,6 +842,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "same_event_plan":
             MessageLookupByLibrary.simpleMessage("Keep Same Event Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "save_as": MessageLookupByLibrary.simpleMessage("Save As"),
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
@@ -961,6 +969,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
+        "svt_card_deck_incorrect": MessageLookupByLibrary.simpleMessage(
+            "Enemy\'s card deck may be incorrect, the hits distribution shall prevail."),
         "svt_class_dist": MessageLookupByLibrary.simpleMessage("Svt Class"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Hidden"),
@@ -993,6 +1003,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),
+        "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
+            "For the same NP id, different owners may have different card type and hit distributions."),
+        "td_cardcolor_hint": m23,
+        "td_cardnp_hint": m24,
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),

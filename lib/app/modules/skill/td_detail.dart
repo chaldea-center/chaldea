@@ -81,6 +81,7 @@ class _TdDetailPageState extends State<TdDetailPage>
             showNone: true,
             jumpToDetail: false,
             region: region,
+            isBaseTd: true,
           ),
           CustomTableRow(children: [
             TableCellData(text: S.current.info_trait, isHeader: true),

@@ -423,25 +423,23 @@ class NiceTd extends BaseTd {
   @override
   int get id => _baseTd.id;
   @override
-  CardType get card => _baseTd.card;
+  CardType card;
   @override
   String get name => _baseTd.name;
   @override
   String get ruby => _baseTd.ruby;
   @override
-  String? get icon => _baseTd.icon;
+  String? icon;
   @override
   String get rank => _baseTd.rank;
   @override
   String get type => _baseTd.type;
-  // @override
-  // List<TdEffectFlag> get effectFlags => _baseTd.effectFlags;
   @override
   String? get unmodifiedDetail => _baseTd.unmodifiedDetail;
   @override
   NpGain get npGain => _baseTd.npGain;
   @override
-  List<int> get npDistribution => _baseTd.npDistribution;
+  List<int> npDistribution;
   @override
   List<NiceTrait> get individuality => _baseTd.individuality;
   @override
@@ -458,17 +456,17 @@ class NiceTd extends BaseTd {
   NiceTd({
     required int id,
     required this.num,
-    required CardType card,
+    required this.card,
     required String name,
     String ruby = "",
-    String? icon,
+    this.icon,
     required String rank,
     required String type,
     List<TdEffectFlag> effectFlags = const [],
     // this.detail,
     String? unmodifiedDetail,
     required NpGain npGain,
-    required List<int> npDistribution,
+    required this.npDistribution,
     this.strengthStatus = 0,
     required this.priority,
     this.condQuestId = 0,
@@ -513,7 +511,7 @@ class NiceTd extends BaseTd {
     if (json['type'] == null) {
       final baseTd = GameDataLoader
           .instance.tmp.gameJson!['baseTds']![json['id'].toString()]!;
-      json.addAll(Map.from(baseTd));
+      json = Map.from(baseTd)..addAll(json);
     }
     return _$NiceTdFromJson(json);
   }

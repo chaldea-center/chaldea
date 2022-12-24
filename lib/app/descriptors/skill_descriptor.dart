@@ -277,6 +277,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final OverrideTDData? overrideData;
   final bool jumpToDetail;
   final Region? region;
+  final bool isBaseTd;
 
   const TdDescriptor({
     super.key,
@@ -288,6 +289,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.overrideData,
     this.jumpToDetail = true,
     this.region,
+    this.isBaseTd = false,
   });
 
   const TdDescriptor.only({
@@ -299,11 +301,13 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.overrideData,
     this.jumpToDetail = true,
     this.region,
+    this.isBaseTd = false,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer;
 
   @override
   Widget build(BuildContext context) {
+    final ref = RefMemo();
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
     final tdRank = overrideData?.tdRank ?? td.rank;
     final tdName = Transl.tdNames(overrideData?.tdName ?? td.name);
@@ -376,20 +380,6 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           region: region,
         ),
         CustomTable(children: [
-          CustomTableRow(children: [
-            TableCellData(text: 'Hits', isHeader: true),
-            TableCellData(
-              text: td.npDistribution.isEmpty
-                  ? '   -  '
-                  : '   ${td.npDistribution.length} Hits '
-                      '(${td.npDistribution.join(', ')})  ',
-              flex: 5,
-              alignment: Alignment.centerLeft,
-              style: td.damageType == TdEffectFlag.support
-                  ? const TextStyle(decoration: TextDecoration.lineThrough)
-                  : null,
-            )
-          ]),
           CustomTableRow.fromTexts(
               texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
               defaults: TableCellData(isHeader: true, maxLines: 1)),
@@ -403,9 +393,77 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
               td.npGain.defence,
             ].map((e) => '${e.first / 100}%').toList(),
           ),
+          CustomTableRow(children: [
+            TableCellData(
+              child: Text.rich(TextSpan(text: 'Hits', children: [
+                if (isBaseTd)
+                  SpecialTextSpan.superscript('[${ref.add("base")}]')
+              ])),
+              isHeader: true,
+            ),
+            TableCellData(
+              text: td.npDistribution.isEmpty
+                  ? '   -  '
+                  : '   ${td.npDistribution.length} Hits '
+                      '(${td.npDistribution.join(', ')})  ',
+              flex: 5,
+              alignment: Alignment.centerLeft,
+              style: TextStyle(
+                fontStyle: isBaseTd ? FontStyle.italic : null,
+                decoration: td.damageType == TdEffectFlag.support
+                    ? TextDecoration.lineThrough
+                    : null,
+              ),
+            )
+          ]),
         ]),
+        if (isBaseTd)
+          SFooter([
+            '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
+            if (ref.contain("cardNP"))
+              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.traitEnum(Trait.cardNP).l)}',
+            for (final entry in <CardType, Trait>{
+              CardType.quick: Trait.cardQuick,
+              CardType.arts: Trait.cardArts,
+              CardType.buster: Trait.cardBuster,
+            }.entries)
+              if (td.card == entry.key &&
+                  td.individuality.every((e) => e.name != entry.value))
+                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(entry.key.name.toTitle(), Transl.traitEnum(entry.value).l)}',
+          ].join('\n')),
       ],
     );
     return InheritSelectionArea(child: child);
+  }
+}
+
+class RefMemo {
+  bool alphabetic;
+  RefMemo([this.alphabetic = false]);
+  final List<String> _tags = [];
+
+  bool contain(String key) => _tags.contains(key);
+
+  String add(String key) {
+    int index = _tags.indexOf(key);
+    if (index < 0) {
+      _tags.add(key);
+      index = _tags.length - 1;
+    }
+    if (alphabetic) {
+      return index2alpha(index);
+    } else {
+      return index.toString();
+    }
+  }
+
+  static String index2alpha(int index) {
+    const ab = 'abcdefghijklmnopqrstuvwxyz';
+    String s = '';
+    do {
+      s = ab[index % ab.length] + s;
+      index ~/= ab.length;
+    } while (index > 0);
+    return s;
   }
 }

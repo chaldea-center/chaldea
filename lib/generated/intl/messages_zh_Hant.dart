@@ -73,6 +73,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(n) => "個人資料${n}";
 
+  static String m23(color, trait) => "此宝具显示为${color}卡，但不持有[${trait}]特性";
+
+  static String m24(trait) => "这是一个宝具，但不持有[${trait}]特性";
+
   static String m14(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -260,6 +264,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("特性篩選僅適用於主線FQ的敵人"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
+        "enemy_summary": MessageLookupByLibrary.simpleMessage("敌人汇总"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("強化將扣除以下素材"),
         "error": MessageLookupByLibrary.simpleMessage("錯誤"),
@@ -700,6 +705,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("掙石"),
         "same_event_plan": MessageLookupByLibrary.simpleMessage("保持相同活動規劃"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
+        "save_as": MessageLookupByLibrary.simpleMessage("另存为"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相簿"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "screen_size": MessageLookupByLibrary.simpleMessage("螢幕尺寸"),
@@ -799,6 +805,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_servant_short": MessageLookupByLibrary.simpleMessage("助战"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("從者頭像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("資料"),
+        "svt_card_deck_incorrect":
+            MessageLookupByLibrary.simpleMessage("敌方配卡及卡色可能不准确，以Hits分布为准"),
         "svt_class_dist": MessageLookupByLibrary.simpleMessage("職階分佈"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("自動適配"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("隱藏"),
@@ -826,6 +834,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切換滾動條/下拉框"),
         "switch_region": MessageLookupByLibrary.simpleMessage("切換區服"),
+        "td_base_hits_hint":
+            MessageLookupByLibrary.simpleMessage("同一宝具不同持有者可能拥有不同的色卡和Hit分布"),
+        "td_cardcolor_hint": m23,
+        "td_cardnp_hint": m24,
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
         "testing": MessageLookupByLibrary.simpleMessage("測試中"),
         "time_close": MessageLookupByLibrary.simpleMessage("關閉"),
