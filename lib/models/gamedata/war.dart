@@ -26,8 +26,8 @@ class NiceWar with RouteInfo {
   int materialParentWarId;
   String emptyMessage;
   Bgm bgm;
-  String scriptId;
-  String script;
+  String? scriptId;
+  String? script;
   WarStartType startType;
   int targetId;
   int eventId;
@@ -40,8 +40,11 @@ class NiceWar with RouteInfo {
   List<WarQuestSelection> questSelections;
 
   ScriptLink? get startScript {
-    if (scriptId.isNotEmpty && scriptId != 'NONE') {
-      return ScriptLink(scriptId: scriptId, script: script);
+    if (script != null &&
+        scriptId != null &&
+        scriptId!.isNotEmpty &&
+        scriptId != 'NONE') {
+      return ScriptLink(scriptId: scriptId!, script: script!);
     }
     return null;
   }
@@ -60,8 +63,8 @@ class NiceWar with RouteInfo {
     this.materialParentWarId = 0,
     this.emptyMessage = "",
     required this.bgm,
-    required this.scriptId,
-    required this.script,
+    this.scriptId,
+    this.script,
     required this.startType,
     required this.targetId,
     this.eventId = 0,

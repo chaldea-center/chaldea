@@ -194,7 +194,7 @@ class Quest with RouteInfo {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [SvtClassConverter()])
 class QuestPhase extends Quest {
   int phase;
   List<SvtClass> className;

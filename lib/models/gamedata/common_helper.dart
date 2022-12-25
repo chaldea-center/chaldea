@@ -39,6 +39,7 @@ const kTraitIdMapping = <int, Trait>{
   119: Trait.classBeastUnknown,
   120: Trait.classPretender,
   121: Trait.classBeastIV,
+  123: Trait.classUOlgaMarie,
   200: Trait.attributeSky,
   201: Trait.attributeEarth,
   202: Trait.attributeHuman,

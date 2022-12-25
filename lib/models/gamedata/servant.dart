@@ -98,7 +98,7 @@ const kSvtDefAscenRemap = <int, int>{
   9944220: 2, // 千利休
 };
 
-@JsonSerializable()
+@JsonSerializable(converters: [SvtClassConverter()])
 class BasicServant with GameCardMixin {
   @override
   int id;
@@ -126,7 +126,7 @@ class BasicServant with GameCardMixin {
     this.overwriteName,
     required this.type,
     required this.flag,
-    required this.className,
+    this.className = SvtClass.none,
     required this.attribute,
     required this.rarity,
     required this.atkMax,
@@ -172,7 +172,7 @@ class BasicServant with GameCardMixin {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [SvtClassConverter()])
 class Servant with GameCardMixin {
   @override
   int id;
@@ -242,7 +242,7 @@ class Servant with GameCardMixin {
     required this.name,
     this.ruby = "",
     this.battleName = "",
-    required this.className,
+    this.className = SvtClass.none,
     required this.type,
     required this.flag,
     required this.rarity,

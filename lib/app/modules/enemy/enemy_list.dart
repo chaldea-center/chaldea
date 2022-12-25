@@ -151,7 +151,7 @@ class EnemyListPageState extends State<EnemyListPage>
     if (!filterData.svtClass.matchOne(svt.className, compares: {
       SvtClass.caster: (v, o) =>
           v == SvtClass.caster || v == SvtClass.grandCaster,
-      SvtClass.beastII: (v, o) => SvtClassX.beasts.contains(v),
+      SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
     })) {
       return false;
     }

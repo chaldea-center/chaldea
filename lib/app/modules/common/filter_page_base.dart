@@ -244,7 +244,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
 
   Widget buildClassFilter(FilterGroupData<SvtClass> data,
       {VoidCallback? onChanged}) {
-    final shownClasses = SvtClassX.regularAllWithB2;
+    final shownClasses = SvtClassX.regularAllWithOlga;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -289,7 +289,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                       Widget icon = db.getIconImage(
                           className.icon(selected ? 5 : 1),
                           aspectRatio: 1);
-                      if (className == SvtClass.beastII && !selected) {
+                      if (className == SvtClassX.beast && !selected) {
                         icon = ColorFiltered(
                           colorFilter: ImageUtil.greyscalBeast,
                           child: icon,

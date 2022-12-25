@@ -131,7 +131,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       if (!filterData.svtClass.matchOne(card.className, compares: {
         SvtClass.caster: (v, o) =>
             v == SvtClass.caster || v == SvtClass.grandCaster,
-        SvtClass.beastII: (v, o) => SvtClassX.beasts.contains(v),
+        SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
       })) {
         return false;
       }

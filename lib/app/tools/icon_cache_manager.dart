@@ -87,7 +87,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
     }
     Set<String?> urls = {
       for (final svtClass in [
-        ...SvtClassX.regularAllWithB2,
+        ...SvtClassX.regularAllWithOlga,
         SvtClass.ALL,
         SvtClass.EXTRA,
         SvtClass.MIX

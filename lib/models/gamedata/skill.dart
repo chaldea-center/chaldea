@@ -640,7 +640,7 @@ class NpGain {
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [SvtClassConverter()])
 class BuffRelationOverwrite {
   final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> atkSide;
   final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> defSide;

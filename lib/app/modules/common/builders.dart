@@ -454,11 +454,11 @@ class SharedBuilder {
     VoidCallback? onChanged,
   }) {
     Widget _oneClsBtn(SvtClass clsName) {
-      final extraClasses = [...SvtClassX.extra, SvtClass.beastII];
+      final extraClasses = [...SvtClassX.extra, SvtClassX.beast];
       int rarity = 1;
       if (clsName == SvtClass.ALL) {
-        rarity = data.isEmpty(SvtClassX.regularAllWithB2) ||
-                data.isAll(SvtClassX.regularAllWithB2)
+        rarity = data.isEmpty(SvtClassX.regularAllWithOlga) ||
+                data.isAll(SvtClassX.regularAllWithOlga)
             ? 5
             : 1;
       } else if (clsName == SvtClass.EXTRA) {
@@ -477,7 +477,7 @@ class SharedBuilder {
         aspectRatio: 1,
         width: 32,
       );
-      if (rarity != 5 && clsName == SvtClass.beastII) {
+      if (rarity != 5 && clsName == SvtClassX.beast) {
         icon = ColorFiltered(
           colorFilter: ImageUtil.greyscalBeast,
           child: icon,
@@ -507,7 +507,7 @@ class SharedBuilder {
       for (var clsName in SvtClassX.regular) _oneClsBtn(clsName),
     ];
     final clsExtraBtns = [
-      for (var clsName in [...SvtClassX.extra, SvtClass.beastII])
+      for (var clsName in [...SvtClassX.extra, SvtClassX.beast])
         _oneClsBtn(clsName),
     ];
     final extraBtn = _oneClsBtn(SvtClass.EXTRA);

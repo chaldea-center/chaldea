@@ -20,7 +20,9 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       overwriteName: json['overwriteName'] as String?,
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
-      className: $enumDecode(_$SvtClassEnumMap, json['className']),
+      className: json['className'] == null
+          ? SvtClass.none
+          : const SvtClassConverter().fromJson(json['className'] as String),
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
       rarity: json['rarity'] as int,
       atkMax: json['atkMax'] as int,
@@ -59,39 +61,6 @@ const _$SvtFlagEnumMap = {
   SvtFlag.matDropRateUpCe: 'matDropRateUpCe',
 };
 
-const _$SvtClassEnumMap = {
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
-};
-
 const _$AttributeEnumMap = {
   Attribute.human: 'human',
   Attribute.sky: 'sky',
@@ -107,7 +76,9 @@ Servant _$ServantFromJson(Map json) => Servant(
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       battleName: json['battleName'] as String? ?? "",
-      className: $enumDecode(_$SvtClassEnumMap, json['className']),
+      className: json['className'] == null
+          ? SvtClass.none
+          : const SvtClassConverter().fromJson(json['className'] as String),
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
       rarity: json['rarity'] as int,

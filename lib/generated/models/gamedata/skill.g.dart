@@ -269,58 +269,25 @@ BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
     BuffRelationOverwrite(
       atkSide: (json['atkSide'] as Map).map(
         (k, e) => MapEntry(
-            $enumDecode(_$SvtClassEnumMap, k),
+            const SvtClassConverter().fromJson(k as String),
             (e as Map).map(
               (k, e) => MapEntry(
-                  $enumDecode(_$SvtClassEnumMap, k),
+                  const SvtClassConverter().fromJson(k as String),
                   RelationOverwriteDetail.fromJson(
                       Map<String, dynamic>.from(e as Map))),
             )),
       ),
       defSide: (json['defSide'] as Map).map(
         (k, e) => MapEntry(
-            $enumDecode(_$SvtClassEnumMap, k),
+            const SvtClassConverter().fromJson(k as String),
             (e as Map).map(
               (k, e) => MapEntry(
-                  $enumDecode(_$SvtClassEnumMap, k),
+                  const SvtClassConverter().fromJson(k as String),
                   RelationOverwriteDetail.fromJson(
                       Map<String, dynamic>.from(e as Map))),
             )),
       ),
     );
-
-const _$SvtClassEnumMap = {
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
-};
 
 RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) =>
     RelationOverwriteDetail(

@@ -158,7 +158,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       closedAt: json['closedAt'] as int,
       phase: json['phase'] as int,
       className: (json['className'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$SvtClassEnumMap, e))
+              ?.map((e) => const SvtClassConverter().fromJson(e as String))
               .toList() ??
           const [],
       individuality: (json['individuality'] as List<dynamic>?)
@@ -205,39 +205,6 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
               .toList() ??
           const [],
     )..giftIcon = json['giftIcon'] as String?;
-
-const _$SvtClassEnumMap = {
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
-};
 
 BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
       type:

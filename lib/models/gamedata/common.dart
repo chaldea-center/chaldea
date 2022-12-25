@@ -205,7 +205,9 @@ enum CardType {
   strength,
 }
 
+@JsonEnum(alwaysCreate: true)
 enum SvtClass {
+  none,
   saber,
   archer,
   lancer,
@@ -233,12 +235,33 @@ enum SvtClass {
   agarthaPenth,
   cccFinaleEmiyaAlter,
   salemAbby,
+  uOlgaMarieAlienGod,
+  uOlgaMarie,
+  // OTHER,
   ALL, // ignore: constant_identifier_names
   EXTRA, // ignore: constant_identifier_names
   MIX, // ignore: constant_identifier_names
 }
 
+class SvtClassConverter implements JsonConverter<SvtClass, String> {
+  const SvtClassConverter();
+
+  @override
+  SvtClass fromJson(String value) {
+    for (final cls in _$SvtClassEnumMap.keys) {
+      if (_$SvtClassEnumMap[cls] == value) return cls;
+    }
+    return SvtClass.none;
+  }
+
+  @override
+  String toJson(SvtClass cls) {
+    return _$SvtClassEnumMap[cls] ?? cls.name;
+  }
+}
+
 const kSvtClassShotName = {
+  SvtClass.none: '?',
   SvtClass.saber: '剣',
   SvtClass.archer: '弓',
   SvtClass.lancer: '槍',
@@ -266,11 +289,14 @@ const kSvtClassShotName = {
   SvtClass.agarthaPenth: '?',
   SvtClass.cccFinaleEmiyaAlter: '?',
   SvtClass.salemAbby: '?',
+  SvtClass.uOlgaMarieAlienGod: '?',
+  SvtClass.uOlgaMarie: '?',
 };
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
 
 extension SvtClassX on SvtClass {
+  static const beast = SvtClass.uOlgaMarieAlienGod;
   int get id => kSvtClassIdsReverse[this]!;
   int get iconId => kSvtClassIconIds[this] ?? kUnknownClassIconId;
 
@@ -288,13 +314,13 @@ extension SvtClassX on SvtClass {
     ...extra,
   ];
 
-  static List<SvtClass> regularAllWithB2 = [
+  static List<SvtClass> regularAllWithOlga = [
     ...regular,
     ...extra,
-    SvtClass.beastII,
+    SvtClassX.beast,
   ];
 
-  static List<SvtClass> regularWithBeast = [
+  static List<SvtClass> regularWithBeasts = [
     ...regularAll,
     ...beasts,
   ];
@@ -324,6 +350,7 @@ extension SvtClassX on SvtClass {
     SvtClass.beastIIIL,
     SvtClass.beastIV,
     SvtClass.beastUnknown,
+    SvtClass.uOlgaMarieAlienGod,
   ];
 }
 
@@ -332,6 +359,7 @@ const kSvtIdsPlayable = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
 const kSvtIdsPlayableNA = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25];
 
 const kSvtClassIds = {
+  0: SvtClass.none,
   1: SvtClass.saber,
   2: SvtClass.archer,
   3: SvtClass.lancer,
@@ -361,6 +389,8 @@ const kSvtClassIds = {
   27: SvtClass.beastUnknown, //  # LB 5.2 beast
   28: SvtClass.pretender,
   29: SvtClass.beastIV,
+  31: SvtClass.uOlgaMarieAlienGod,
+  32: SvtClass.uOlgaMarie,
   97: SvtClass.unknown,
 // # 98
 // # 99
@@ -400,6 +430,8 @@ const kSvtClassIconIds = {
   SvtClass.pretender: 28,
   SvtClass.beastIV: 29,
   SvtClass.cccFinaleEmiyaAlter: 124,
+  SvtClass.uOlgaMarieAlienGod: 31,
+  SvtClass.uOlgaMarie: 32,
   SvtClass.ALL: 1001,
   SvtClass.EXTRA: 1002,
   SvtClass.unknown: 97,
@@ -462,6 +494,7 @@ enum Trait {
   classBeastIIIL,
   classBeastUnknown,
   classPretender,
+  classUOlgaMarie,
   attributeSky,
   attributeEarth,
   attributeHuman,

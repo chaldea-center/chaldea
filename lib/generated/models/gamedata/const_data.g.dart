@@ -32,13 +32,15 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             )),
       ),
       classAttackRate: (json['classAttackRate'] as Map).map(
-        (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e as int),
+        (k, e) =>
+            MapEntry(const SvtClassConverter().fromJson(k as String), e as int),
       ),
       classRelation: (json['classRelation'] as Map).map(
         (k, e) => MapEntry(
-            $enumDecode(_$SvtClassEnumMap, k),
+            const SvtClassConverter().fromJson(k as String),
             (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$SvtClassEnumMap, k), e as int),
+              (k, e) => MapEntry(
+                  const SvtClassConverter().fromJson(k as String), e as int),
             )),
       ),
       constants: GameConstants.fromJson(
@@ -79,39 +81,6 @@ const _$CardTypeEnumMap = {
   CardType.strength: 'strength',
 };
 
-const _$SvtClassEnumMap = {
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
-};
-
 BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
       plusTypes: toEnumListBuffType(json['plusTypes'] as List),
@@ -132,7 +101,8 @@ const _$BuffLimitEnumMap = {
 
 SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       id: json['id'] as int,
-      className: $enumDecodeNullable(_$SvtClassEnumMap, json['className']),
+      className: _$JsonConverterFromJson<String, SvtClass>(
+          json['className'], const SvtClassConverter().fromJson),
       name: json['name'] as String,
       individuality:
           $enumDecodeNullable(_$TraitEnumMap, json['individuality']) ??
@@ -147,6 +117,12 @@ SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       supportGroup: json['supportGroup'] as int,
       autoSelSupportType: json['autoSelSupportType'] as int,
     );
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
 
 const _$TraitEnumMap = {
   Trait.unknown: 'unknown',
@@ -174,6 +150,7 @@ const _$TraitEnumMap = {
   Trait.classBeastIIIL: 'classBeastIIIL',
   Trait.classBeastUnknown: 'classBeastUnknown',
   Trait.classPretender: 'classPretender',
+  Trait.classUOlgaMarie: 'classUOlgaMarie',
   Trait.attributeSky: 'attributeSky',
   Trait.attributeEarth: 'attributeEarth',
   Trait.attributeHuman: 'attributeHuman',
