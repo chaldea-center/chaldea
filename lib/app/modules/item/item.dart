@@ -205,7 +205,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               onTap: () async {
                 await null;
                 if (!mounted) return;
-                _showChangeAmount();
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => _ItemAmountEditDialog(widget.itemId),
+                );
               },
             ),
           ...SharedBuilder.websitesPopupMenuItems(
@@ -270,41 +274,45 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       },
     );
   }
+}
 
-  void _showChangeAmount() {
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(S.current.item_edit_owned_amount),
-          content: TextFormField(
-            initialValue: (db.curUser.items[widget.itemId] ?? 0).toString(),
-            keyboardType: TextInputType.number,
-            onChanged: (s) {
-              final v = int.tryParse(s);
-              if (v != null) {
-                db.curUser.items[widget.itemId] = v;
-                EasyDebounce.debounce(
-                  'item_owned_changed',
-                  const Duration(milliseconds: 500),
-                  () {
-                    db.itemCenter.updateLeftItems();
-                  },
-                );
-              }
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(S.current.confirm),
-            )
-          ],
-        );
-      },
+class _ItemAmountEditDialog extends HookWidget {
+  final int itemId;
+  const _ItemAmountEditDialog(this.itemId);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = (db.curUser.items[itemId] ?? 0).toString();
+    final controller = useTextEditingController.fromValue(TextEditingValue(
+      text: s,
+      selection: TextSelection(baseOffset: 0, extentOffset: s.length),
+    ));
+    return AlertDialog(
+      title: Text(S.current.item_edit_owned_amount),
+      content: TextFormField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(signed: true),
+        autofocus: true,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: () {
+            final v = int.tryParse(controller.text);
+            if (v != null) {
+              db.curUser.items[itemId] = v;
+              db.itemCenter.updateLeftItems();
+            }
+            Navigator.pop(context);
+          },
+          child: Text(S.current.confirm),
+        )
+      ],
     );
   }
 }

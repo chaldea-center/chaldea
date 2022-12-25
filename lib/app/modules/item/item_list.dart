@@ -214,7 +214,8 @@ class ItemListPageState extends State<ItemListPage>
                   width: 40,
                   child: TextFormField(
                     controller: _itemRedundantControllers[index],
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: true),
                     textAlign: TextAlign.center,
                     decoration: const InputDecoration(isDense: true),
                     onChanged: (s) {

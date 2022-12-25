@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/services.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -641,8 +639,20 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         children: [
           for (final itemId in extraItems.items.keys)
             ListTile(
-              leading: Item.iconBuilder(
-                  context: context, item: null, itemId: itemId, width: 36),
+              leading: db.onUserData(
+                (context, snapshot) => Item.iconBuilder(
+                  context: context,
+                  item: null,
+                  itemId: itemId,
+                  width: 42,
+                  text: [
+                    db.curUser.items[itemId] ?? 0,
+                    db.itemCenter.itemLeft[itemId] ?? 0
+                  ].map((e) => e.format()).join('\n'),
+                  textPadding:
+                      const EdgeInsets.only(top: 30, right: 4, bottom: 4),
+                ),
+              ),
               title: Text(Item.getName(itemId)),
               subtitle: extraItems.items[itemId]?.l?.toText(),
               horizontalTitleGap: 8,
@@ -694,8 +704,20 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             ),
           for (final itemId in itemIds)
             ListTile(
-              leading: Item.iconBuilder(
-                  context: context, item: null, itemId: itemId, width: 36),
+              leading: db.onUserData(
+                (context, snapshot) => Item.iconBuilder(
+                  context: context,
+                  item: null,
+                  itemId: itemId,
+                  width: 42,
+                  text: [
+                    db.curUser.items[itemId] ?? 0,
+                    db.itemCenter.itemLeft[itemId] ?? 0
+                  ].map((e) => e.format()).join('\n'),
+                  textPadding:
+                      const EdgeInsets.only(top: 30, right: 4, bottom: 4),
+                ),
+              ),
               title: Text(Item.getName(itemId)),
               horizontalTitleGap: 8,
               trailing: Wrap(
@@ -851,7 +873,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           isDense: true,
           // hintText: value()?.toString(),
         ),
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        keyboardType: const TextInputType.numberWithOptions(signed: true),
       ),
     );
     if (showValue) {

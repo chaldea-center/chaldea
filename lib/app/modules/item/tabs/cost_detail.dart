@@ -43,7 +43,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
         '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
         '${S.current.event_title} ${num2str(stat.statObtain[itemId])}',
-        style: matType == SvtMatCostDetailType.consumed
+        style: matType != SvtMatCostDetailType.demands
             ? TextStyle(color: Theme.of(context).disabledColor)
             : null,
       ),
