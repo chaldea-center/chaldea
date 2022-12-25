@@ -679,4 +679,5 @@ const _$BuffActionEnumMap = {
   BuffAction.grantStateUpOnly: 'grantStateUpOnly',
   BuffAction.turnendHpReduceToRegain: 'turnendHpReduceToRegain',
   BuffAction.functionSelfturnstart: 'functionSelfturnstart',
+  BuffAction.overwriteDeadType: 'overwriteDeadType',
 };

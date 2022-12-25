@@ -523,6 +523,7 @@ enum BuffAction {
   grantStateUpOnly,
   turnendHpReduceToRegain,
   functionSelfturnstart,
+  overwriteDeadType,
 }
 
 enum BuffLimit {

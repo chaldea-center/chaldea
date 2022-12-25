@@ -1291,6 +1291,7 @@ enum RestrictionType {
   alloutBattleUniqueSvt,
   fixedSvtIndividualityPositionMain,
   uniqueIndividuality,
+  mySvtOrSupport,
 }
 
 enum RestrictionRangeType {

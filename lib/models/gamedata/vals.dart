@@ -150,6 +150,10 @@ class DataVals {
   int? get GainNpTargetPassiveIndividuality =>
       sourceVals['GainNpTargetPassiveIndividuality'];
   int? get HpReduceToRegainIndiv => sourceVals['HpReduceToRegainIndiv'];
+  int? get DisplayActualRecoveryHpFlag =>
+      sourceVals['DisplayActualRecoveryHpFlag'];
+  int? get ShiftDeckIndex => sourceVals['ShiftDeckIndex'];
+  dynamic get PopValueText => sourceVals['PopValueText']; // int or str?
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];

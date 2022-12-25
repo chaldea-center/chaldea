@@ -467,6 +467,8 @@ enum WarOverwriteType {
   noticeDialogText,
   clearMark,
   effectChangeWhiteMark,
+  commandSpellIcon,
+  masterFaceIcon,
 }
 
 enum WarStartType {

@@ -485,6 +485,7 @@ const _$FuncTypeEnumMap = {
   FuncType.subFieldBuff: 'subFieldBuff',
   FuncType.eventFortificationPointUp: 'eventFortificationPointUp',
   FuncType.gainNpIndividualSum: 'gainNpIndividualSum',
+  FuncType.setQuestRouteFlag: 'setQuestRouteFlag',
 };
 
 const _$FuncTargetTypeEnumMap = {
@@ -529,7 +530,7 @@ const _$FuncApplyTargetEnumMap = {
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.none,
+          FuncType.unknown,
       funcTargetType:
           $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
@@ -577,8 +578,8 @@ Buff _$BuffFromJson(Map json) => Buff(
       name: json['name'] as String,
       detail: json['detail'] as String,
       icon: json['icon'] as String?,
-      type:
-          $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ?? BuffType.none,
+      type: $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ??
+          BuffType.unknown,
       buffGroup: json['buffGroup'] as int? ?? 0,
       script: json['script'] == null
           ? null
@@ -603,6 +604,7 @@ Buff _$BuffFromJson(Map json) => Buff(
     );
 
 const _$BuffTypeEnumMap = {
+  BuffType.unknown: 'unknown',
   BuffType.none: 'none',
   BuffType.upCommandatk: 'upCommandatk',
   BuffType.upStarweight: 'upStarweight',
@@ -757,6 +759,7 @@ const _$BuffTypeEnumMap = {
   BuffType.notTargetSkill: 'notTargetSkill',
   BuffType.hpReduceToRegain: 'hpReduceToRegain',
   BuffType.selfturnstartFunction: 'selfturnstartFunction',
+  BuffType.overwriteDeadType: 'overwriteDeadType',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
 };

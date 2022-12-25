@@ -882,6 +882,8 @@ const _$CombineAdjustTargetEnumMap = {
       'friendPointGachaFreeDrawNum',
   CombineAdjustTarget.questUseFriendshipUpItem: 'questUseFriendshipUpItem',
   CombineAdjustTarget.questFriendship: 'questFriendship',
+  CombineAdjustTarget.largeSuccessByClass: 'largeSuccessByClass',
+  CombineAdjustTarget.superSuccessByClass: 'superSuccessByClass',
 };
 
 const _$EventCombineCalcEnumMap = {

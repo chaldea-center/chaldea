@@ -1495,6 +1495,8 @@ enum CombineAdjustTarget {
   friendPointGachaFreeDrawNum,
   questUseFriendshipUpItem,
   questFriendship,
+  largeSuccessByClass,
+  superSuccessByClass,
 }
 
 enum EventCombineCalc {

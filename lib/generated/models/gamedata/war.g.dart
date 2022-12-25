@@ -172,6 +172,8 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.noticeDialogText: 'noticeDialogText',
   WarOverwriteType.clearMark: 'clearMark',
   WarOverwriteType.effectChangeWhiteMark: 'effectChangeWhiteMark',
+  WarOverwriteType.commandSpellIcon: 'commandSpellIcon',
+  WarOverwriteType.masterFaceIcon: 'masterFaceIcon',
 };
 
 WarQuestSelection _$WarQuestSelectionFromJson(Map json) => WarQuestSelection(

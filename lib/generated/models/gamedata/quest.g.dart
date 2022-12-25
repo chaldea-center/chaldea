@@ -675,6 +675,7 @@ const _$RestrictionTypeEnumMap = {
   RestrictionType.fixedSvtIndividualityPositionMain:
       'fixedSvtIndividualityPositionMain',
   RestrictionType.uniqueIndividuality: 'uniqueIndividuality',
+  RestrictionType.mySvtOrSupport: 'mySvtOrSupport',
 };
 
 const _$RestrictionRangeTypeEnumMap = {

@@ -333,7 +333,7 @@ class BaseFunction with RouteInfo {
 
   const BaseFunction.create({
     required this.funcId,
-    this.funcType = FuncType.none,
+    this.funcType = FuncType.unknown,
     required this.funcTargetType,
     required this.funcTargetTeam,
     this.funcPopupText = "",
@@ -347,7 +347,7 @@ class BaseFunction with RouteInfo {
 
   factory BaseFunction({
     required int funcId,
-    FuncType funcType = FuncType.none,
+    FuncType funcType = FuncType.unknown,
     required FuncTargetType funcTargetType,
     required FuncApplyTarget funcTargetTeam,
     String funcPopupText = '',
@@ -444,7 +444,7 @@ class Buff with RouteInfo {
     required this.name,
     required this.detail,
     this.icon,
-    this.type = BuffType.none,
+    this.type = BuffType.unknown,
     this.buffGroup = 0,
     this.script,
     this.vals = const [],
@@ -459,7 +459,7 @@ class Buff with RouteInfo {
     required String name,
     required String detail,
     String? icon,
-    BuffType type = BuffType.none,
+    BuffType type = BuffType.unknown,
     int buffGroup = 0,
     BuffScript? script,
     List<NiceTrait> vals = const [],
@@ -616,6 +616,7 @@ class BuffValueTriggerType {
 }
 
 enum BuffType {
+  unknown, // custom
   none,
   upCommandatk,
   upStarweight,
@@ -769,6 +770,7 @@ enum BuffType {
   notTargetSkill,
   hpReduceToRegain,
   selfturnstartFunction,
+  overwriteDeadType,
   toFieldChangeField, // 10001
   toFieldAvoidBuff, // 10002
 }
@@ -878,6 +880,7 @@ enum FuncType {
   subFieldBuff,
   eventFortificationPointUp,
   gainNpIndividualSum,
+  setQuestRouteFlag,
 }
 
 extension FuncTargetTypeX on FuncTargetType {
