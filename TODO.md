@@ -26,10 +26,11 @@ There are plenty of work need to do.
 - [ ] daily quests: name, hand/door name
 - [ ] class icon+name
 - [ ] breaking change: FixedDrop
-- [ ] event: custom extra items
 - [ ] filter_group: add onReset
 - [ ] separate cn proxy 
 - [ ] iconBuilder add fontSize
+- [ ] free quest drop table
+- [ ] assets list
 
 ## Quest Related
 
@@ -59,6 +60,7 @@ There are plenty of work need to do.
 - [x] item/skill recognition
 - [x] account system: server or cloudflare?
   - [ ] ~~auto-backup user data~~: must manually backup
+- [ ] recognizer: invalid image error
 
 ## Battles
 

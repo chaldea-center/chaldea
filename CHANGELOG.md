@@ -1,3 +1,10 @@
+# 2.2.1
+
+- New: Da Vinci shop
+- Event plan: customize getable items
+- Fix and improve master mission/custom mission
+- Fix missing linux plugin which crash free quest or mission solver
+
 # 2.2.0
 
 - custom mission: support multiple conditions
