@@ -149,34 +149,68 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 
   @override
-  Future<String?> download(String url, {RateLimiter? limiter}) async {
-    final localPath = atlasUrlToFp(url);
+  Future<String?> download(String url,
+      {RateLimiter? limiter, bool allowWeb = false}) async {
+    final localPath = atlasUrlToFp(url, allowWeb: allowWeb);
+    if (Hosts.cn) {
+      url = Atlas.proxyAssetUrl(url);
+    }
     if (localPath == null) return null;
-    final file = File(localPath);
+    limiter ??= _rateLimiter;
+
+    if (kIsWeb) {
+      return _webDownload(url, localPath, limiter);
+    } else {
+      return _ioDownload(url, localPath, limiter);
+    }
+  }
+
+  Future<String?> _ioDownload(
+      String url, String path, RateLimiter limiter) async {
+    final file = File(path);
     if (await _fsLimiter.limited(() async {
       if (!await file.exists()) {
         return false;
       }
       return file.statSync().size > 0;
     })) {
-      return localPath;
+      return path;
     }
-    if (Hosts.cn) {
-      url = Atlas.proxyAssetUrl(url);
+    final resp = await limiter.limited(() => DioE().get(url,
+        options: Options(responseType: ResponseType.bytes, headers: {
+          if (!kIsWeb)
+            HttpHeaders.userAgentHeader:
+                'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})'
+        })));
+    file.parent.createSync(recursive: true);
+    await file.writeAsBytes(List.from(resp.data));
+    print('download file: $url');
+    return path;
+  }
+
+  Future<String?> _webDownload(
+      String url, String path, RateLimiter limiter) async {
+    final file = FilePlus(path);
+    if (await _fsLimiter.limited(() async {
+      if (!await file.exists()) {
+        return false;
+      }
+      return (await file.readAsBytes()).isNotEmpty;
+    })) {
+      return path;
     }
-    final resp = await (limiter ?? _rateLimiter).limited(() => DioE().get(url,
+    final resp = await limiter.limited(() => DioE().get(url,
         options: Options(responseType: ResponseType.bytes, headers: {
           HttpHeaders.userAgentHeader:
               'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})'
         })));
-    file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
-    print('download image: $url');
-    return localPath;
+    print('download file: $url');
+    return path;
   }
 
   Future<void> deleteFromDisk(String url) async {
-    final fp = atlasUrlToFp(url);
+    final fp = atlasUrlToFp(url, allowWeb: true);
     if (fp != null) {
       final file = FilePlus(fp);
       if (file.existsSync()) {
@@ -186,7 +220,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     evict(url);
   }
 
-  String? atlasUrlToFp(String url) {
+  String? atlasUrlToFp(String url, {bool allowWeb = false}) {
+    if (kIsWeb && !allowWeb) return null;
     String urlPath;
     if (url.startsWith(Hosts.kAtlasAssetHostGlobal)) {
       urlPath = url.replaceFirst(Hosts.kAtlasAssetHostGlobal, '');
@@ -215,8 +250,6 @@ abstract class _CachedLoader<K, V> {
   final Map<K, Completer<V?>> _completers = {};
   final Map<K, V> _success = {};
   final Map<K, _FailureDetail> _failed = {};
-
-  Future<V?> download(K key, {RateLimiter? limiter});
 
   V? getCached(K key) {
     if (_success.containsKey(key)) return _success[key];
@@ -250,12 +283,20 @@ abstract class _CachedLoader<K, V> {
     _completers.clear();
   }
 
-  Future<V?> get(K key, {RateLimiter? limiter}) async {
+  Future<V?> download(K key, {RateLimiter? limiter, bool allowWeb = false});
+
+  Future<V?> get(K key, {RateLimiter? limiter, bool allowWeb = false}) async {
+    if (!allowWeb && kIsWeb) {
+      assert(() {
+        throw FileSystemException("Web is not allowed: $key");
+      }());
+      return null;
+    }
     if (_success.containsKey(key)) return _success[key];
     if (_completers.containsKey(key)) return _completers[key]?.future;
     if (isFailed(key)) return null;
     Completer<V?> _cmpl = Completer();
-    download(key, limiter: limiter).then<void>((value) {
+    download(key, limiter: limiter, allowWeb: allowWeb).then<void>((value) {
       if (value != null) _success[key] = value;
       _failed.remove(key);
       _cmpl.complete(value);

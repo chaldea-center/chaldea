@@ -30,7 +30,7 @@ class ScriptParsedData {
         RegionX.tryParse(_uri!.pathSegments.first) ??
         Region.jp;
     _uri = _uri!.replace(
-        pathSegments: [state.region.upper, ..._uri!.pathSegments.sublist(1)]);
+        pathSegments: [state.region.upper, ..._uri!.pathSegments.skip(1)]);
     state.fullscreen = false;
   }
 
@@ -49,11 +49,12 @@ class ScriptParsedData {
     if (force) {
       await AtlasIconLoader.i.deleteFromDisk(_uri!.toString());
     }
-    final fp = await AtlasIconLoader.i.get(_uri!.toString());
+
+    final fp = await AtlasIconLoader.i.get(_uri!.toString(), allowWeb: true);
     if (fp != null) {
       state.fulltext = await FilePlus(fp).readAsString();
-      _parseScript(state.fulltext ?? "");
     }
+    _parseScript(state.fulltext ?? "");
   }
 
   void _parseScript(String fulltext) {
