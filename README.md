@@ -2,7 +2,7 @@
 
 # [Chaldea](https://github.com/chaldea-center/chaldea)
 
-[![platforms](https://img.shields.io/badge/platform-web_|_android_|_ios_|_windows_|_macos-blue)](https://github.com/chaldea-center/chaldea/releases)
+[![platforms](https://img.shields.io/badge/platform-web_|_android_|_ios_|_windows_|_macos_|_linux-blue)](https://github.com/chaldea-center/chaldea/releases)
 [![release](https://img.shields.io/github/v/release/chaldea-center/chaldea?sort=semver)](https://github.com/chaldea-center/chaldea/releases)
 [![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
@@ -22,15 +22,15 @@ For more details or usage, please check our document: [English](https://docs.cha
   - limit events, main records, exchange tickets and campaigns
   - owned items
   - Saint Quartz planning
-- free quest solution
+- free quest solver
   - calculate the best solution of least AP or battle times according to item demands
-  - compare free quest efficiency by define items' weight
+  - compare free quest efficiency by giving item weight
   - master mission/weekly mission/event mission solver, customization is supported
 - summon/gacha simulator
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
-  - from `https://fgosim.github.io/Material`
+  - from [https://fgosim.github.io/Material](https://fgosim.github.io/Material)
 
 ## Supported Platforms
 
@@ -38,7 +38,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 | -------- | ------------------------------------ |
 | Android  | Android 6.0 (API level 23)           |
 | iOS      | iOS 11.0                             |
-| Windows  | Windows 7 SP1 (64-bit), x86-64 based |
+| Windows  | Windows 8 (64-bit), x86-64 based     |
 | macOS    | macOS 10.13                          |
 | Linux    | Debian 10 & above                    |
 | Web      | Any modern browser                   |
