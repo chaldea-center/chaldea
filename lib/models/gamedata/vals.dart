@@ -153,7 +153,7 @@ class DataVals {
   int? get DisplayActualRecoveryHpFlag =>
       sourceVals['DisplayActualRecoveryHpFlag'];
   int? get ShiftDeckIndex => sourceVals['ShiftDeckIndex'];
-  dynamic get PopValueText => sourceVals['PopValueText']; // int or str?
+  String? get PopValueText => sourceVals['PopValueText'];
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];

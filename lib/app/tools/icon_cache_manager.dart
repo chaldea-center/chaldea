@@ -178,9 +178,10 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     }
     final resp = await limiter.limited(() => DioE().get(url,
         options: Options(responseType: ResponseType.bytes, headers: {
-          if (!kIsWeb)
-            HttpHeaders.userAgentHeader:
-                'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})'
+          HttpHeaders.userAgentHeader:
+              'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})',
+          HttpHeaders.refererHeader:
+              'https://chaldea.app/${Platform.operatingSystem}/${AppInfo.versionString}',
         })));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
@@ -199,11 +200,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() => DioE().get(url,
-        options: Options(responseType: ResponseType.bytes, headers: {
-          HttpHeaders.userAgentHeader:
-              'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})'
-        })));
+    final resp = await limiter.limited(() =>
+        DioE().get(url, options: Options(responseType: ResponseType.bytes)));
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;

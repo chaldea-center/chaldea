@@ -218,6 +218,7 @@ class WarExtra {
   })  : titleBanner = titleBanner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase();
+
   MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
   factory WarExtra.fromJson(Map<String, dynamic> json) =>

@@ -251,6 +251,17 @@ class _CacheManager {
 
   static const dwReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
 
+  Future<String?> getText(String url, {Duration? expireAfter}) async {
+    try {
+      final data = await get(url, expireAfter: expireAfter);
+      if (data == null) return null;
+      return utf8.decode(data);
+    } catch (e, s) {
+      logger.e('fetch $url', e, s);
+      return null;
+    }
+  }
+
   Future<dynamic> getJson(String url, {Duration? expireAfter}) async {
     dynamic result;
     try {

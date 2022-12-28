@@ -244,7 +244,7 @@ class GameDataLoader {
           'Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
       _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
       for (final entry in _dataToWrite.entries) {
-        print('writing ${basename(entry.key.path)}');
+        if (kDebugMode) print('writing ${basename(entry.key.path)}');
         await entry.key.writeAsBytes(entry.value);
       }
     }
