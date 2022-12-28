@@ -473,7 +473,7 @@ ServantChange _$ServantChangeFromJson(Map json) => ServantChange(
           .toList(),
       svtId: json['svtId'] as int,
       priority: json['priority'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
       condValue: json['condValue'] as int,
       name: json['name'] as String,
@@ -489,7 +489,7 @@ ServantLimitImage _$ServantLimitImageFromJson(Map json) => ServantLimitImage(
       limitCount: json['limitCount'] as int,
       priority: json['priority'] as int? ?? 0,
       defaultLimitCount: json['defaultLimitCount'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int,
     );
@@ -516,14 +516,21 @@ ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       limitCount: json['limitCount'] as int,
-      condType: toEnumNullCondType(json['condType']),
+      condType: _$JsonConverterFromJson<String, CondType>(
+          json['condType'], const CondTypeConverter().fromJson),
       condId: json['condId'] as int?,
       condNum: json['condNum'] as int?,
     );
 
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
 LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
       idx: json['idx'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condValues:
           (json['condValues'] as List<dynamic>).map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int? ?? 0,
@@ -534,7 +541,7 @@ LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
       priority: json['priority'] as int? ?? 0,
       condMessage: json['condMessage'] as String? ?? "",
       comment: json['comment'] as String? ?? '',
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condValues:
           (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int? ?? 0,
@@ -631,7 +638,7 @@ const _$VoiceCondTypeEnumMap = {
 
 VoicePlayCond _$VoicePlayCondFromJson(Map json) => VoicePlayCond(
       condGroup: json['condGroup'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int,
       condValue: json['condValue'] as int,
       condValues: (json['condValues'] as List<dynamic>?)
@@ -642,7 +649,8 @@ VoicePlayCond _$VoicePlayCondFromJson(Map json) => VoicePlayCond(
 
 VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
       name: json['name'] as String?,
-      condType: toEnumNullCondType(json['condType']),
+      condType: _$JsonConverterFromJson<String, CondType>(
+          json['condType'], const CondTypeConverter().fromJson),
       condValue: json['condValue'] as int?,
       priority: json['priority'] as int?,
       svtVoiceType:

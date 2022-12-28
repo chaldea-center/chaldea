@@ -298,7 +298,7 @@ ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
           const [],
       condType: json['condType'] == null
           ? CondType.none
-          : toEnumCondType(json['condType'] as Object),
+          : const CondTypeConverter().fromJson(json['condType'] as String),
       condNum: json['condNum'] as int,
       priority: json['priority'] as int? ?? 0,
       isClosedDisp: json['isClosedDisp'] as bool,
@@ -382,7 +382,7 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) =>
           _$MissionProgressTypeEnumMap, json['missionProgressType']),
       priority: json['priority'] as int? ?? 0,
       condGroup: json['condGroup'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetIds:
           (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
       targetNum: json['targetNum'] as int,
@@ -452,7 +452,7 @@ EventRandomMission _$EventRandomMissionFromJson(Map json) => EventRandomMission(
       missionRank: json['missionRank'] as int,
       condType: json['condType'] == null
           ? CondType.none
-          : toEnumCondType(json['condType'] as Object),
+          : const CondTypeConverter().fromJson(json['condType'] as String),
       condId: json['condId'] as int,
       condNum: json['condNum'] as int,
     );
@@ -616,7 +616,7 @@ EventVoicePlay _$EventVoicePlayFromJson(Map json) => EventVoicePlay(
                   VoiceLine.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condValue: json['condValue'] as int,
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
@@ -827,7 +827,7 @@ EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
 EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) =>
     EventBulletinBoardRelease(
       condGroup: json['condGroup'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int,
     );

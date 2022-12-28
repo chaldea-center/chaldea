@@ -17,7 +17,7 @@ class NiceWar with RouteInfo {
   String age;
   String? _name;
   String? _longName;
-  @JsonKey(fromJson: toEnumListWarFlag)
+  @WarFlagConverter()
   List<WarFlag> flags;
   String? banner;
   String? headerImage;
@@ -233,7 +233,7 @@ class WarMap {
   factory WarMap.fromJson(Map<String, dynamic> json) => _$WarMapFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [CondTypeConverter()])
 class MapGimmick {
   int id;
   String? image;
@@ -241,11 +241,9 @@ class MapGimmick {
   int y;
   int depthOffset;
   int scale;
-  @JsonKey(fromJson: toEnumCondType)
   CondType dispCondType;
   int dispTargetId;
   int dispTargetValue;
-  @JsonKey(fromJson: toEnumCondType)
   CondType dispCondType2;
   int dispTargetId2;
   int dispTargetValue2;
@@ -326,7 +324,7 @@ class NiceSpot {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [CondTypeConverter()])
 class SpotRoad {
   int id;
   int warId;
@@ -334,15 +332,12 @@ class SpotRoad {
   String image;
   int srcSpotId;
   int dstSpotId;
-  @JsonKey(fromJson: toEnumCondType)
   CondType dispCondType;
   int dispTargetId;
   int dispTargetValue;
-  @JsonKey(fromJson: toEnumCondType)
   CondType dispCondType2;
   int dispTargetId2;
   int dispTargetValue2;
-  @JsonKey(fromJson: toEnumCondType)
   CondType activeCondType;
   int activeTargetId;
   int activeTargetValue;
@@ -377,7 +372,7 @@ class WarAdd {
   int overwriteId;
   String overwriteStr;
   String? overwriteBanner;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int targetId;
   int value;
@@ -401,12 +396,6 @@ class WarAdd {
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);
 }
 
-List<WarFlag> toEnumListWarFlag(List<dynamic> flags) {
-  return flags
-      .map((e) => $enumDecode(_$WarFlagEnumMap, e, unknownValue: WarFlag.none))
-      .toList();
-}
-
 @JsonSerializable()
 class WarQuestSelection {
   Quest quest;
@@ -421,6 +410,15 @@ class WarQuestSelection {
 
   factory WarQuestSelection.fromJson(Map<String, dynamic> json) =>
       _$WarQuestSelectionFromJson(json);
+}
+
+class WarFlagConverter extends JsonConverter<WarFlag, String> {
+  const WarFlagConverter();
+  @override
+  WarFlag fromJson(String value) =>
+      decodeEnum(_$WarFlagEnumMap, value, WarFlag.none);
+  @override
+  String toJson(WarFlag obj) => _$WarFlagEnumMap[obj] ?? obj.name;
 }
 
 @JsonEnum(alwaysCreate: true)

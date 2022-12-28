@@ -15,8 +15,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             )),
       ),
       buffActions: (json['buffActions'] as Map).map(
-        (k, e) => MapEntry(
-            k, BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(const BuffActionConverter().fromJson(k as String),
+            BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       classInfo: (json['classInfo'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
@@ -83,8 +83,12 @@ const _$CardTypeEnumMap = {
 
 BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
-      plusTypes: toEnumListBuffType(json['plusTypes'] as List),
-      minusTypes: toEnumListBuffType(json['minusTypes'] as List),
+      plusTypes: (json['plusTypes'] as List<dynamic>)
+          .map((e) => const BuffTypeConverter().fromJson(e as String))
+          .toList(),
+      minusTypes: (json['minusTypes'] as List<dynamic>)
+          .map((e) => const BuffTypeConverter().fromJson(e as String))
+          .toList(),
       baseParam: json['baseParam'] as int,
       baseValue: json['baseValue'] as int,
       isRec: json['isRec'] as bool,
@@ -408,7 +412,9 @@ CardInfo _$CardInfoFromJson(Map json) => CardInfo(
 GrailCostDetail _$GrailCostDetailFromJson(Map json) => GrailCostDetail(
       qp: json['qp'] as int,
       addLvMax: json['addLvMax'] as int,
-      frameType: $enumDecode(_$SvtFrameTypeEnumMap, json['frameType']),
+      frameType:
+          $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ??
+              SvtFrameType.gold,
     );
 
 const _$SvtFrameTypeEnumMap = {

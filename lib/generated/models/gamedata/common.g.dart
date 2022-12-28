@@ -13,8 +13,7 @@ NiceTrait _$NiceTraitFromJson(Map json) => NiceTrait(
 
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       id: json['id'] as int,
-      type: $enumDecode(_$CondTypeEnumMap, json['type'],
-          unknownValue: CondType.none),
+      type: const CondTypeConverter().fromJson(json['type'] as String),
       condGroup: json['condGroup'] as int,
       targetIds:
           (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
@@ -22,6 +21,77 @@ BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       priority: json['priority'] as int,
       closedMessage: json['closedMessage'] as String,
     );
+
+BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
+      fileName: json['fileName'] as String,
+      notReleased: json['notReleased'] as bool,
+      audioAsset: json['audioAsset'] as String?,
+      priority: json['priority'] as int? ?? 0,
+      detail: json['detail'] as String? ?? "",
+      shop: json['shop'] == null
+          ? null
+          : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
+      logo: json['logo'] as String?,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Bgm _$BgmFromJson(Map json) => Bgm(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? '',
+      fileName: json['fileName'] as String,
+      notReleased: json['notReleased'] as bool,
+      audioAsset: json['audioAsset'] as String?,
+    );
+
+const _$RegionEnumMap = {
+  Region.jp: 'jp',
+  Region.cn: 'cn',
+  Region.tw: 'tw',
+  Region.na: 'na',
+  Region.kr: 'kr',
+};
+
+const _$SvtClassEnumMap = {
+  SvtClass.none: 'none',
+  SvtClass.saber: 'saber',
+  SvtClass.archer: 'archer',
+  SvtClass.lancer: 'lancer',
+  SvtClass.rider: 'rider',
+  SvtClass.caster: 'caster',
+  SvtClass.assassin: 'assassin',
+  SvtClass.berserker: 'berserker',
+  SvtClass.shielder: 'shielder',
+  SvtClass.ruler: 'ruler',
+  SvtClass.alterEgo: 'alterEgo',
+  SvtClass.avenger: 'avenger',
+  SvtClass.demonGodPillar: 'demonGodPillar',
+  SvtClass.moonCancer: 'moonCancer',
+  SvtClass.foreigner: 'foreigner',
+  SvtClass.pretender: 'pretender',
+  SvtClass.grandCaster: 'grandCaster',
+  SvtClass.beastII: 'beastII',
+  SvtClass.ushiChaosTide: 'ushiChaosTide',
+  SvtClass.beastI: 'beastI',
+  SvtClass.beastIIIR: 'beastIIIR',
+  SvtClass.beastIIIL: 'beastIIIL',
+  SvtClass.beastIV: 'beastIV',
+  SvtClass.beastUnknown: 'beastUnknown',
+  SvtClass.unknown: 'unknown',
+  SvtClass.agarthaPenth: 'agarthaPenth',
+  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
+  SvtClass.salemAbby: 'salemAbby',
+  SvtClass.uOlgaMarieAlienGod: 'uOlgaMarieAlienGod',
+  SvtClass.uOlgaMarie: 'uOlgaMarie',
+  SvtClass.ALL: 'ALL',
+  SvtClass.EXTRA: 'EXTRA',
+  SvtClass.MIX: 'MIX',
+};
 
 const _$CondTypeEnumMap = {
   CondType.none: 'none',
@@ -196,75 +266,4 @@ const _$CondTypeEnumMap = {
   CondType.notQuestClearBeforeEventStart: 'notQuestClearBeforeEventStart',
   CondType.eventTutorialFlagOn: 'eventTutorialFlagOn',
   CondType.eventTutorialFlagOff: 'eventTutorialFlagOff',
-};
-
-BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
-      fileName: json['fileName'] as String,
-      notReleased: json['notReleased'] as bool,
-      audioAsset: json['audioAsset'] as String?,
-      priority: json['priority'] as int? ?? 0,
-      detail: json['detail'] as String? ?? "",
-      shop: json['shop'] == null
-          ? null
-          : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
-      logo: json['logo'] as String?,
-      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
-              ?.map((e) =>
-                  BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-    );
-
-Bgm _$BgmFromJson(Map json) => Bgm(
-      id: json['id'] as int,
-      name: json['name'] as String? ?? '',
-      fileName: json['fileName'] as String,
-      notReleased: json['notReleased'] as bool,
-      audioAsset: json['audioAsset'] as String?,
-    );
-
-const _$RegionEnumMap = {
-  Region.jp: 'jp',
-  Region.cn: 'cn',
-  Region.tw: 'tw',
-  Region.na: 'na',
-  Region.kr: 'kr',
-};
-
-const _$SvtClassEnumMap = {
-  SvtClass.none: 'none',
-  SvtClass.saber: 'saber',
-  SvtClass.archer: 'archer',
-  SvtClass.lancer: 'lancer',
-  SvtClass.rider: 'rider',
-  SvtClass.caster: 'caster',
-  SvtClass.assassin: 'assassin',
-  SvtClass.berserker: 'berserker',
-  SvtClass.shielder: 'shielder',
-  SvtClass.ruler: 'ruler',
-  SvtClass.alterEgo: 'alterEgo',
-  SvtClass.avenger: 'avenger',
-  SvtClass.demonGodPillar: 'demonGodPillar',
-  SvtClass.moonCancer: 'moonCancer',
-  SvtClass.foreigner: 'foreigner',
-  SvtClass.pretender: 'pretender',
-  SvtClass.grandCaster: 'grandCaster',
-  SvtClass.beastII: 'beastII',
-  SvtClass.ushiChaosTide: 'ushiChaosTide',
-  SvtClass.beastI: 'beastI',
-  SvtClass.beastIIIR: 'beastIIIR',
-  SvtClass.beastIIIL: 'beastIIIL',
-  SvtClass.beastIV: 'beastIV',
-  SvtClass.beastUnknown: 'beastUnknown',
-  SvtClass.unknown: 'unknown',
-  SvtClass.agarthaPenth: 'agarthaPenth',
-  SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
-  SvtClass.salemAbby: 'salemAbby',
-  SvtClass.uOlgaMarieAlienGod: 'uOlgaMarieAlienGod',
-  SvtClass.uOlgaMarie: 'uOlgaMarie',
-  SvtClass.ALL: 'ALL',
-  SvtClass.EXTRA: 'EXTRA',
-  SvtClass.MIX: 'MIX',
 };

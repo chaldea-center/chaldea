@@ -488,7 +488,7 @@ class CommonRelease with RouteInfo {
   int id;
   int priority;
   int condGroup;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condId;
   int condNum;
@@ -666,10 +666,6 @@ class RelationOverwriteDetail {
 
   factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) =>
       _$RelationOverwriteDetailFromJson(json);
-}
-
-List<BuffType> toEnumListBuffType(List<dynamic> json) {
-  return json.map((e) => $enumDecode(_$BuffTypeEnumMap, e)).toList();
 }
 
 enum SkillType {

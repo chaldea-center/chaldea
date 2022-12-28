@@ -986,7 +986,7 @@ class ServantChange {
   List<int> afterTreasureDeviceIds;
   int svtId;
   int priority;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condTargetId;
   int condValue;
@@ -1024,7 +1024,7 @@ class ServantLimitImage {
   int limitCount;
   int priority;
   int defaultLimitCount;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condTargetId;
   int condNum;
@@ -1079,7 +1079,7 @@ class ServantTrait {
   int idx;
   List<NiceTrait> trait;
   int limitCount;
-  @JsonKey(fromJson: toEnumNullCondType)
+  @CondTypeConverter()
   CondType? condType;
   int? condId;
   int? condNum;
@@ -1100,7 +1100,7 @@ class ServantTrait {
 @JsonSerializable()
 class LoreCommentAdd {
   int idx;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   List<int> condValues;
   int condValue2;
@@ -1122,7 +1122,7 @@ class LoreComment {
   int priority;
   String condMessage;
   String comment;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   List<int>? condValues;
   int condValue2;
@@ -1234,7 +1234,7 @@ class VoiceCond {
 @JsonSerializable()
 class VoicePlayCond {
   int condGroup;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int targetId;
   int condValue;
@@ -1255,7 +1255,7 @@ class VoicePlayCond {
 @JsonSerializable()
 class VoiceLine {
   String? name;
-  @JsonKey(fromJson: toEnumNullCondType)
+  @CondTypeConverter()
   CondType? condType;
   int? condValue;
   int? priority;

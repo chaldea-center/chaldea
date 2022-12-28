@@ -187,7 +187,7 @@ CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       id: json['id'] as int,
       priority: json['priority'] as int,
       condGroup: json['condGroup'] as int,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condId: json['condId'] as int,
       condNum: json['condNum'] as int,
     );
@@ -545,8 +545,9 @@ Buff _$BuffFromJson(Map json) => Buff(
       name: json['name'] as String,
       detail: json['detail'] as String,
       icon: json['icon'] as String?,
-      type: $enumDecodeNullable(_$BuffTypeEnumMap, json['type']) ??
-          BuffType.unknown,
+      type: json['type'] == null
+          ? BuffType.unknown
+          : const BuffTypeConverter().fromJson(json['type'] as String),
       buffGroup: json['buffGroup'] as int? ?? 0,
       script: json['script'] == null
           ? null
@@ -568,6 +569,28 @@ Buff _$BuffFromJson(Map json) => Buff(
               .toList() ??
           const [],
       maxRate: json['maxRate'] as int? ?? 0,
+    );
+
+BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
+      checkIndvType: json['checkIndvType'] as int?,
+      CheckOpponentBuffTypes: (json['CheckOpponentBuffTypes'] as List<dynamic>?)
+          ?.map((e) => const BuffTypeConverter().fromJson(e as String))
+          .toList(),
+      relationId: json['relationId'] == null
+          ? null
+          : BuffRelationOverwrite.fromJson(
+              Map<String, dynamic>.from(json['relationId'] as Map)),
+      ReleaseText: json['ReleaseText'] as String?,
+      DamageRelease: json['DamageRelease'] as int?,
+      INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
+          ? null
+          : NiceTrait.fromJson(
+              Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
+      INDIVIDUALITIE_COUNT_ABOVE: json['INDIVIDUALITIE_COUNT_ABOVE'] as int?,
+      UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      HP_LOWER: json['HP_LOWER'] as int?,
     );
 
 const _$BuffTypeEnumMap = {
@@ -730,25 +753,3 @@ const _$BuffTypeEnumMap = {
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
 };
-
-BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
-      checkIndvType: json['checkIndvType'] as int?,
-      CheckOpponentBuffTypes: (json['CheckOpponentBuffTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$BuffTypeEnumMap, e))
-          .toList(),
-      relationId: json['relationId'] == null
-          ? null
-          : BuffRelationOverwrite.fromJson(
-              Map<String, dynamic>.from(json['relationId'] as Map)),
-      ReleaseText: json['ReleaseText'] as String?,
-      DamageRelease: json['DamageRelease'] as int?,
-      INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
-          ? null
-          : NiceTrait.fromJson(
-              Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
-      INDIVIDUALITIE_COUNT_ABOVE: json['INDIVIDUALITIE_COUNT_ABOVE'] as int?,
-      UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
-          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      HP_LOWER: json['HP_LOWER'] as int?,
-    );

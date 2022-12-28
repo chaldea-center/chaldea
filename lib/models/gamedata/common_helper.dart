@@ -1,11 +1,47 @@
 part of 'common.dart';
 
-CondType toEnumCondType(Object value) {
-  return $enumDecode(_$CondTypeEnumMap, value, unknownValue: CondType.none);
+const _regionLanguage = {
+  Region.jp: Language.jp,
+  Region.cn: Language.chs,
+  Region.tw: Language.cht,
+  Region.na: Language.en,
+  Region.kr: Language.ko,
+};
+
+extension RegionX on Region {
+  String get upper => name.toUpperCase();
+
+  static Region? tryParse(String s) {
+    return _$RegionEnumMap.entries
+        .firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())
+        ?.key;
+  }
+
+  String get localName {
+    switch (this) {
+      case Region.jp:
+        return S.current.region_jp;
+      case Region.cn:
+        return S.current.region_cn;
+      case Region.tw:
+        return S.current.region_tw;
+      case Region.na:
+        return S.current.region_na;
+      case Region.kr:
+        return S.current.region_kr;
+    }
+  }
+
+  Language toLanguage() => _regionLanguage[this]!;
 }
 
-CondType? toEnumNullCondType(Object? value) {
-  return $enumDecodeNullable(_$CondTypeEnumMap, value);
+class CondTypeConverter extends JsonConverter<CondType, String> {
+  const CondTypeConverter();
+  @override
+  CondType fromJson(String value) =>
+      decodeEnum(_$CondTypeEnumMap, value, CondType.none);
+  @override
+  String toJson(CondType obj) => _$CondTypeEnumMap[obj] ?? obj.name;
 }
 
 extension TraitX on Trait {

@@ -6,7 +6,7 @@ import 'skill.dart';
 
 part '../../generated/models/gamedata/const_data.g.dart';
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable(converters: [SvtClassConverter(), BuffActionConverter()])
 class ConstGameData {
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
@@ -28,7 +28,7 @@ class ConstGameData {
 
   ConstGameData({
     required this.attributeRelation,
-    required Map<dynamic, BuffActionDetail> buffActions,
+    required this.buffActions,
     this.classInfo = const {},
     required this.cardInfo,
     required this.classAttackRate,
@@ -36,13 +36,7 @@ class ConstGameData {
     required this.constants,
     required this.svtGrailCost,
     required this.userLevel,
-  }) : buffActions = buffActions.map(
-          (key, value) => MapEntry(
-            $enumDecode(_$BuffActionEnumMap, key as String,
-                unknownValue: BuffAction.unknown),
-            value,
-          ),
-        );
+  });
 
   ConstGameData.empty()
       : attributeRelation = const {},
@@ -59,12 +53,10 @@ class ConstGameData {
       _$ConstGameDataFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [BuffTypeConverter()])
 class BuffActionDetail {
   BuffLimit limit;
-  @JsonKey(fromJson: toEnumListBuffType)
   List<BuffType> plusTypes;
-  @JsonKey(fromJson: toEnumListBuffType)
   List<BuffType> minusTypes;
   int baseParam;
   int baseValue;
@@ -74,15 +66,14 @@ class BuffActionDetail {
 
   BuffActionDetail({
     required this.limit,
-    required List<BuffType?> plusTypes,
-    required List<BuffType?> minusTypes,
+    required this.plusTypes,
+    required this.minusTypes,
     required this.baseParam,
     required this.baseValue,
     required this.isRec,
     required this.plusAction,
     required this.maxRate,
-  })  : plusTypes = plusTypes.whereType<BuffType>().toList(),
-        minusTypes = minusTypes.whereType<BuffType>().toList();
+  });
 
   factory BuffActionDetail.fromJson(Map<String, dynamic> json) =>
       _$BuffActionDetailFromJson(json);
@@ -157,7 +148,7 @@ class GrailCostDetail {
   GrailCostDetail({
     required this.qp,
     required this.addLvMax,
-    required this.frameType,
+    this.frameType = SvtFrameType.gold,
   });
 
   factory GrailCostDetail.fromJson(Map<String, dynamic> json) =>
@@ -409,6 +400,15 @@ enum SvtFrameType {
   frame0802,
   frame0803,
   frame0804,
+}
+
+class BuffActionConverter extends JsonConverter<BuffAction, String> {
+  const BuffActionConverter();
+  @override
+  BuffAction fromJson(String value) =>
+      decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+  @override
+  String toJson(BuffAction obj) => _$BuffActionEnumMap[obj] ?? obj.name;
 }
 
 @JsonEnum(alwaysCreate: true)

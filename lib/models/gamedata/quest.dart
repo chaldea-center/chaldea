@@ -22,7 +22,7 @@ class BasicQuest {
   int id;
   String name;
   QuestType type;
-  @JsonKey(fromJson: toEnumListQuestFlag)
+  @QuestFlagConverter()
   List<QuestFlag> flags;
   ConsumeType consumeType;
   int consume;
@@ -59,7 +59,7 @@ class Quest with RouteInfo {
   int id;
   String name;
   QuestType type;
-  @JsonKey(fromJson: toEnumListQuestFlag)
+  @QuestFlagConverter()
   List<QuestFlag> flags;
   ConsumeType consumeType;
   int consume;
@@ -402,7 +402,7 @@ class BaseGift {
 class GiftAdd {
   int priority;
   String replacementGiftIcon;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int targetId;
   int targetNum;
@@ -496,7 +496,7 @@ class StageStartMovie {
 
 @JsonSerializable()
 class QuestRelease {
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType type;
   int targetId;
   int value;
@@ -531,7 +531,7 @@ class QuestPhaseScript {
 class QuestMessage {
   int idx;
   String message;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int targetId;
   int targetNum;
@@ -624,7 +624,7 @@ class SupportServant {
 
 @JsonSerializable()
 class SupportServantRelease {
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType type;
   int targetId;
   int value;
@@ -1110,11 +1110,13 @@ class QuestPhaseRestriction {
 
 ///
 
-List<QuestFlag> toEnumListQuestFlag(List<dynamic> flags) {
-  return flags
-      .map((e) =>
-          $enumDecode(_$QuestFlagEnumMap, e, unknownValue: QuestFlag.none))
-      .toList();
+class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
+  const QuestFlagConverter();
+  @override
+  QuestFlag fromJson(String value) =>
+      decodeEnum(_$QuestFlagEnumMap, value, QuestFlag.none);
+  @override
+  String toJson(QuestFlag obj) => _$QuestFlagEnumMap[obj] ?? obj.name;
 }
 
 enum QuestType {

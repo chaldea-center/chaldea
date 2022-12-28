@@ -53,3 +53,10 @@ K? $enumDecodeNullable<K extends Enum, V>(
         unknownValue ?? json_annotation.JsonKey.nullForUndefinedEnumValue,
   );
 }
+
+K decodeEnum<K, V>(Map<K, V> map, V value, K unknown) {
+  for (final k in map.keys) {
+    if (map[k] == value) return k;
+  }
+  return unknown;
+}

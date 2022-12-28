@@ -20,41 +20,6 @@ enum Region {
   kr,
 }
 
-const _regionLanguage = {
-  Region.jp: Language.jp,
-  Region.cn: Language.chs,
-  Region.tw: Language.cht,
-  Region.na: Language.en,
-  Region.kr: Language.ko,
-};
-
-extension RegionX on Region {
-  String get upper => name.toUpperCase();
-
-  static Region? tryParse(String s) {
-    return _$RegionEnumMap.entries
-        .firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())
-        ?.key;
-  }
-
-  String get localName {
-    switch (this) {
-      case Region.jp:
-        return S.current.region_jp;
-      case Region.cn:
-        return S.current.region_cn;
-      case Region.tw:
-        return S.current.region_tw;
-      case Region.na:
-        return S.current.region_na;
-      case Region.kr:
-        return S.current.region_kr;
-    }
-  }
-
-  Language toLanguage() => _regionLanguage[this]!;
-}
-
 @JsonSerializable()
 class NiceTrait with RouteInfo {
   static final Map<int, NiceTrait> _instances = {};
@@ -114,7 +79,7 @@ class NiceTrait with RouteInfo {
 @JsonSerializable()
 class BgmRelease {
   int id;
-  @JsonKey(unknownEnumValue: CondType.none)
+  @CondTypeConverter()
   CondType type;
   int condGroup;
   List<int> targetIds;
@@ -729,6 +694,7 @@ enum Trait {
   ryozanpaku,
 }
 
+@JsonEnum(alwaysCreate: true)
 enum CondType {
   none,
   questClear,

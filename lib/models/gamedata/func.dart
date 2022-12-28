@@ -430,6 +430,7 @@ class Buff with RouteInfo {
   final String name;
   final String detail;
   final String? icon;
+  @BuffTypeConverter()
   final BuffType type;
   final int buffGroup;
   final BuffScript? script;
@@ -505,6 +506,7 @@ class Buff with RouteInfo {
 @JsonSerializable()
 class BuffScript {
   final int? checkIndvType; // 1-AND, default-OR
+  @BuffTypeConverter()
   final List<BuffType>? CheckOpponentBuffTypes;
   final BuffRelationOverwrite? relationId;
   final String? ReleaseText;
@@ -615,6 +617,16 @@ class BuffValueTriggerType {
   });
 }
 
+class BuffTypeConverter extends JsonConverter<BuffType, String> {
+  const BuffTypeConverter();
+  @override
+  BuffType fromJson(String value) =>
+      decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
+  @override
+  String toJson(BuffType obj) => _$BuffTypeEnumMap[obj] ?? obj.name;
+}
+
+@JsonEnum(alwaysCreate: true)
 enum BuffType {
   unknown, // custom
   none,

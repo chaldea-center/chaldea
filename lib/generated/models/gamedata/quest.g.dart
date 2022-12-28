@@ -10,9 +10,10 @@ BasicQuest _$BasicQuestFromJson(Map json) => BasicQuest(
       id: json['id'] as int,
       name: json['name'] as String,
       type: $enumDecode(_$QuestTypeEnumMap, json['type']),
-      flags: json['flags'] == null
-          ? const []
-          : toEnumListQuestFlag(json['flags'] as List),
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => const QuestFlagConverter().fromJson(e as String))
+              .toList() ??
+          const [],
       consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
       consume: json['consume'] as int,
       spotId: json['spotId'] as int,
@@ -45,9 +46,10 @@ Quest _$QuestFromJson(Map json) => Quest(
       id: json['id'] as int,
       name: json['name'] as String,
       type: $enumDecode(_$QuestTypeEnumMap, json['type']),
-      flags: json['flags'] == null
-          ? const []
-          : toEnumListQuestFlag(json['flags'] as List),
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => const QuestFlagConverter().fromJson(e as String))
+              .toList() ??
+          const [],
       consumeType:
           $enumDecodeNullable(_$ConsumeTypeEnumMap, json['consumeType']) ??
               ConsumeType.ap,
@@ -108,9 +110,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       id: json['id'] as int,
       name: json['name'] as String,
       type: $enumDecode(_$QuestTypeEnumMap, json['type']),
-      flags: json['flags'] == null
-          ? const []
-          : toEnumListQuestFlag(json['flags'] as List),
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => const QuestFlagConverter().fromJson(e as String))
+              .toList() ??
+          const [],
       consumeType:
           $enumDecodeNullable(_$ConsumeTypeEnumMap, json['consumeType']) ??
               ConsumeType.ap,
@@ -232,7 +235,7 @@ const _$GiftTypeEnumMap = {
 GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
       priority: json['priority'] as int,
       replacementGiftIcon: json['replacementGiftIcon'] as String,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int,
       targetNum: json['targetNum'] as int,
       replacementGifts: (json['replacementGifts'] as List<dynamic>)
@@ -280,7 +283,7 @@ StageStartMovie _$StageStartMovieFromJson(Map json) => StageStartMovie(
     );
 
 QuestRelease _$QuestReleaseFromJson(Map json) => QuestRelease(
-      type: toEnumCondType(json['type'] as Object),
+      type: const CondTypeConverter().fromJson(json['type'] as String),
       targetId: json['targetId'] as int,
       value: json['value'] as int? ?? 0,
       closedMessage: json['closedMessage'] as String? ?? "",
@@ -296,7 +299,7 @@ QuestPhaseScript _$QuestPhaseScriptFromJson(Map json) => QuestPhaseScript(
 QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
       idx: json['idx'] as int,
       message: json['message'] as String,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int,
       targetNum: json['targetNum'] as int,
     );
@@ -361,7 +364,7 @@ SupportServantRelease _$SupportServantReleaseFromJson(Map json) =>
     SupportServantRelease(
       type: json['type'] == null
           ? CondType.none
-          : toEnumCondType(json['type'] as Object),
+          : const CondTypeConverter().fromJson(json['type'] as String),
       targetId: json['targetId'] as int,
       value: json['value'] as int,
     );

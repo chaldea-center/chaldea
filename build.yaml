@@ -5,8 +5,6 @@ targets:
         - $package$
         - lib/$lib$
         - pubspec.*
-      exclude:
-        - lib/components/**  # exclude old models for V1
 
   gamedata:
     sources:

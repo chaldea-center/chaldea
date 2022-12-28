@@ -472,7 +472,7 @@ class NiceShop with RouteInfo {
 class ShopRelease {
   List<int> condValues;
   // int shopId;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condNum;
   int priority;
@@ -600,7 +600,7 @@ class EventMissionCondition {
 
   // int missionTargetId;
   int condGroup;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   List<int> targetIds;
   int targetNum;
@@ -687,7 +687,7 @@ class EventRandomMission {
   // int  eventId;
   int missionId;
   int missionRank;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType; // CondType.progressValueEqual
   int condId; // eventId
   int condNum; // 0-5, detective rank
@@ -971,7 +971,7 @@ class EventVoicePlay {
   int guideImageId;
   List<VoiceLine> voiceLines;
   List<VoiceLine> confirmVoiceLines;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condValue;
   int startedAt;
@@ -1236,7 +1236,7 @@ class EventBulletinBoard {
 @JsonSerializable()
 class EventBulletinBoardRelease {
   int condGroup;
-  @JsonKey(fromJson: toEnumCondType)
+  @CondTypeConverter()
   CondType condType;
   int condTargetId;
   int condNum;

@@ -15,9 +15,10 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       age: json['age'] as String,
       name: json['name'] as String,
       longName: json['longName'] as String,
-      flags: json['flags'] == null
-          ? const []
-          : toEnumListWarFlag(json['flags'] as List),
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => const WarFlagConverter().fromJson(e as String))
+              .toList() ??
+          const [],
       banner: json['banner'] as String?,
       headerImage: json['headerImage'] as String?,
       priority: json['priority'] as int,
@@ -84,10 +85,12 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
       y: json['y'] as int,
       depthOffset: json['depthOffset'] as int,
       scale: json['scale'] as int,
-      dispCondType: toEnumCondType(json['dispCondType'] as Object),
+      dispCondType:
+          const CondTypeConverter().fromJson(json['dispCondType'] as String),
       dispTargetId: json['dispTargetId'] as int,
       dispTargetValue: json['dispTargetValue'] as int,
-      dispCondType2: toEnumCondType(json['dispCondType2'] as Object),
+      dispCondType2:
+          const CondTypeConverter().fromJson(json['dispCondType2'] as String),
       dispTargetId2: json['dispTargetId2'] as int,
       dispTargetValue2: json['dispTargetValue2'] as int,
     );
@@ -125,13 +128,16 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       image: json['image'] as String,
       srcSpotId: json['srcSpotId'] as int,
       dstSpotId: json['dstSpotId'] as int,
-      dispCondType: toEnumCondType(json['dispCondType'] as Object),
+      dispCondType:
+          const CondTypeConverter().fromJson(json['dispCondType'] as String),
       dispTargetId: json['dispTargetId'] as int,
       dispTargetValue: json['dispTargetValue'] as int,
-      dispCondType2: toEnumCondType(json['dispCondType2'] as Object),
+      dispCondType2:
+          const CondTypeConverter().fromJson(json['dispCondType2'] as String),
       dispTargetId2: json['dispTargetId2'] as int,
       dispTargetValue2: json['dispTargetValue2'] as int,
-      activeCondType: toEnumCondType(json['activeCondType'] as Object),
+      activeCondType:
+          const CondTypeConverter().fromJson(json['activeCondType'] as String),
       activeTargetId: json['activeTargetId'] as int,
       activeTargetValue: json['activeTargetValue'] as int,
     );
@@ -144,7 +150,7 @@ WarAdd _$WarAddFromJson(Map json) => WarAdd(
       overwriteId: json['overwriteId'] as int,
       overwriteStr: json['overwriteStr'] as String? ?? "",
       overwriteBanner: json['overwriteBanner'] as String?,
-      condType: toEnumCondType(json['condType'] as Object),
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int,
       value: json['value'] as int,
       startedAt: json['startedAt'] as int,
