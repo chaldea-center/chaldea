@@ -33,7 +33,7 @@ class _GameServerPageState extends State<GameServerPage> {
       value: region,
       groupValue: db.curUser.region,
       title: Text(region.localName),
-      subtitle: Text(region.toLanguage().name),
+      subtitle: Text(region.language.name),
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (v) {
         setState(() {

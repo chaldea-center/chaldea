@@ -263,8 +263,7 @@ class _ServantFilterPageState
           title: Text(S.current.info_trait, style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
-          optionBuilder: (v) =>
-              Text(v.id != null ? Transl.trait(v.id!).l : v.name),
+          optionBuilder: (v) => Text(Transl.trait(v.id).l),
           showMatchAll: true,
           showInvert: true,
           onFilterChanged: (value, _) {

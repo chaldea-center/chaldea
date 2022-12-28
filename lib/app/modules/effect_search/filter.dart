@@ -218,7 +218,7 @@ class _BuffFuncFilterState
                 Trait.buffPoison,
                 Trait.buffCurse,
                 Trait.buffBurn,
-              ].map((e) => e.id!).toList(),
+              ].map((e) => e.id).toList(),
               values: filterData.targetTrait,
               showMatchAll: false,
               showInvert: false,

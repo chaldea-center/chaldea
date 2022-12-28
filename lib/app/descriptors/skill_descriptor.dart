@@ -421,7 +421,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           SFooter([
             '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
             if (ref.contain("cardNP"))
-              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.traitEnum(Trait.cardNP).l)}',
+              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.id).l)}',
             for (final entry in <CardType, Trait>{
               CardType.quick: Trait.cardQuick,
               CardType.arts: Trait.cardArts,
@@ -429,7 +429,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             }.entries)
               if (td.card == entry.key &&
                   td.individuality.every((e) => e.name != entry.value))
-                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(entry.key.name.toTitle(), Transl.traitEnum(entry.value).l)}',
+                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(entry.key.name.toTitle(), Transl.trait(entry.value.id).l)}',
           ].join('\n')),
       ],
     );

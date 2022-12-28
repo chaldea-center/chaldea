@@ -71,7 +71,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
             leading: Text((index + 1).toString()),
             horizontalTitleGap: 0,
             title: Text(region.localName),
-            subtitle: Text(region.toLanguage().name),
+            subtitle: Text(region.language.name),
           ),
         );
       }),
