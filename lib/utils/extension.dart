@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../packages/app_info.dart';
+import '../packages/platform/platform.dart';
 import 'constants.dart';
 
 extension NumX on num {
@@ -392,9 +395,20 @@ extension ResponseX<T> on Response<T> {
 }
 
 // ignore: non_constant_identifier_names
-Dio DioE([BaseOptions? options]) => Dio(options?.copyWith(
-    headers: {HttpHeaders.acceptEncodingHeader: 'gzip, deflate'}
-      ..addAll(options.headers)));
+Dio DioE([BaseOptions? options]) {
+  options ??= BaseOptions();
+  final ver = AppInfo.versionString, ver2 = ver.replaceAll('.', '');
+  final platform = PlatformU.operatingSystem;
+
+  return Dio(options.copyWith(
+    headers: {
+      if (kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
+      if (!kIsWeb)
+        HttpHeaders.refererHeader: 'https://$ver2.$platform.chaldea.app',
+      ...options.headers,
+    },
+  ));
+}
 
 extension DioErrorX on DioError {
   String _limit(String s) {

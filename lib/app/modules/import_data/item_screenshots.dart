@@ -45,7 +45,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       if (!_tabController.indexIsChanging) setState(() {});
     });
 
-    _dio = Dio(ChaldeaApi.dio.options.copyWith(
+    _dio = DioE(ChaldeaApi.dio.options.copyWith(
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
     ));

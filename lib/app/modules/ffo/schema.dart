@@ -71,7 +71,7 @@ class FfoDB {
       }
     }
     print('downloading: $url');
-    final resp = await Dio()
+    final resp = await DioE()
         .get(url, options: Options(responseType: ResponseType.plain));
     await file.create(recursive: true);
     await file.writeAsString(resp.data as String);

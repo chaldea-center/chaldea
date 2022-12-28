@@ -191,7 +191,7 @@ class AppUpdater {
   }
 
   static Future<String?> _downloadFileWithCheck(AppUpdateDetail detail) async {
-    String checksum = (await Dio().get(detail.checksum.downloadUrl,
+    String checksum = (await DioE().get(detail.checksum.downloadUrl,
             options: Options(responseType: ResponseType.plain)))
         .data;
     checksum = checksum.toLowerCase();
@@ -203,7 +203,7 @@ class AppUpdater {
           sha1.convert(await file.readAsBytes()).toString().toLowerCase();
       if (localChecksum == checksum) return savePath;
     }
-    final resp = await Dio().get(detail.installer.downloadUrl,
+    final resp = await DioE().get(detail.installer.downloadUrl,
         options: Options(responseType: ResponseType.bytes));
     final data = List<int>.from(resp.data);
     if (sha1.convert(data).toString().toLowerCase() == checksum) {
@@ -230,7 +230,7 @@ class AppUpdateDetail {
 }
 
 Future<List<_Release>> _githubReleases(String org, String repo) async {
-  final dio = Dio();
+  final dio = DioE();
   final root = db.settings.proxyServer
       ? '${Hosts.kWorkerHostCN}/proxy/github/api.github.com'
       : 'https://api.github.com';
