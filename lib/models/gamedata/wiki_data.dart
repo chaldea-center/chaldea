@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
@@ -152,6 +154,18 @@ class EventExtraFixedItems {
       _$EventExtraFixedItemsFromJson(json);
 }
 
+MappingBase<String> _mergeBanners(
+    MappingBase<String> wiki, MappingBase<String> official) {
+  final useWiki = kIsWeb && kPlatformMethods.rendererCanvasKit;
+  return MappingBase(
+    jp: useWiki ? wiki.jp : official.jp ?? wiki.jp,
+    cn: wiki.cn,
+    tw: wiki.tw,
+    na: useWiki ? wiki.jp : official.na ?? wiki.na,
+    kr: wiki.kr,
+  );
+}
+
 @JsonSerializable()
 class EventExtra {
   int id;
@@ -193,7 +207,8 @@ class EventExtra {
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
 
-  MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
+  MappingBase<String> get resolvedBanner =>
+      _mergeBanners(titleBanner, officialBanner);
 
   factory EventExtra.fromJson(Map<String, dynamic> json) =>
       _$EventExtraFromJson(json);
@@ -219,7 +234,8 @@ class WarExtra {
         officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase();
 
-  MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
+  MappingBase<String> get resolvedBanner =>
+      _mergeBanners(titleBanner, officialBanner);
 
   factory WarExtra.fromJson(Map<String, dynamic> json) =>
       _$WarExtraFromJson(json);
@@ -344,7 +360,8 @@ class LimitedSummon with RouteInfo {
   @override
   String get route => Routes.summonI(id);
 
-  MappingBase<String> get resolvedBanner => banner.merge(officialBanner);
+  MappingBase<String> get resolvedBanner =>
+      _mergeBanners(banner, officialBanner);
 
   List<int> allCards({
     bool svt = false,
