@@ -392,10 +392,22 @@ class Servant with GameCardMixin {
       (type == SvtType.normal || type == SvtType.heroine) &&
       originalCollectionNo > 0;
 
+  bool get isNormalSvt => [
+        SvtType.normal,
+        SvtType.heroine,
+        SvtType.enemy,
+        SvtType.enemyCollection,
+        SvtType.enemyCollectionDetail,
+      ].contains(type);
+
   @override
   String? get icon {
     final _remapId = kSvtDefAscenRemap[id];
-    final _icons = extraAssets.faces.ascension?.values.toList() ?? <String>[];
+    final _icons = <String>[
+      ...?extraAssets.faces.ascension?.values,
+      ...?extraAssets.faces.equip?.values,
+      // ...?extraAssets.faces.cc?.values,
+    ];
     String? _icon;
     if (_remapId != null) {
       _icon = _icons.firstWhereOrNull(
@@ -511,8 +523,13 @@ class Servant with GameCardMixin {
     };
   }
 
-  ServantExtra get extra => db.gameData.wiki.servants[originalCollectionNo] ??=
-      ServantExtra(collectionNo: originalCollectionNo);
+  ServantExtra get extra {
+    if (isNormalSvt && collectionNo > 0) {
+      return db.gameData.wiki.servants[originalCollectionNo] ??=
+          ServantExtra(collectionNo: originalCollectionNo);
+    }
+    return ServantExtra(collectionNo: originalCollectionNo);
+  }
 
   Set<int> get traitsAll {
     if (_traitsAll != null) return _traitsAll!;

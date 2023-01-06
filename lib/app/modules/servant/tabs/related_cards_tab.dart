@@ -47,68 +47,70 @@ class SvtRelatedCardTab extends StatelessWidget {
       ));
     }
 
-    final charaCEs = db.gameData.craftEssences.values
-        .where((ce) => ce.extra.characters.contains(svt.collectionNo))
-        .toList();
-    final charaCCs = db.gameData.commandCodes.values
-        .where((cc) => cc.extra.characters.contains(svt.collectionNo))
-        .toList();
-    if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
-      tabs.add(S.current.svt_related_ce);
-      pages.add(ListView(
-        children: [
-          if (charaCEs.isNotEmpty)
-            TileGroup(
-              header: S.current.craft_essence,
-              children: [
-                for (final ce in charaCEs)
-                  ListTile(
-                    leading: ImageWithText(
-                        image: db.getIconImage(ce.borderedIcon,
-                            height: 45, width: 45 / 144 * 132)),
-                    title: Text(ce.lName.l),
-                    onTap: () {
-                      router.push(
-                        url: ce.route,
-                        child: CraftDetailPage(
-                          ce: ce,
-                          onSwitch: (cur, next) =>
-                              Utility.findNextOrPrevious<CraftEssence>(
-                                  list: charaCEs, cur: cur, reversed: next),
-                        ),
-                        detail: true,
-                      );
-                    },
-                  )
-              ],
-            ),
-          if (charaCCs.isNotEmpty)
-            TileGroup(
-              header: S.current.command_code,
-              children: [
-                for (final cc in charaCCs)
-                  ListTile(
-                    leading: ImageWithText(
-                        image: db.getIconImage(cc.icon,
-                            height: 45, width: 45 / 144 * 132)),
-                    title: Text(cc.lName.l),
-                    onTap: () {
-                      router.push(
-                        url: cc.route,
-                        child: CmdCodeDetailPage(
-                          cc: cc,
-                          onSwitch: (cur, next) =>
-                              Utility.findNextOrPrevious<CommandCode>(
-                                  list: charaCCs, cur: cur, reversed: next),
-                        ),
-                        detail: true,
-                      );
-                    },
-                  ),
-              ],
-            ),
-        ],
-      ));
+    if (svt.isNormalSvt && svt.collectionNo > 0) {
+      final charaCEs = db.gameData.craftEssences.values
+          .where((ce) => ce.extra.characters.contains(svt.collectionNo))
+          .toList();
+      final charaCCs = db.gameData.commandCodes.values
+          .where((cc) => cc.extra.characters.contains(svt.collectionNo))
+          .toList();
+      if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
+        tabs.add(S.current.svt_related_ce);
+        pages.add(ListView(
+          children: [
+            if (charaCEs.isNotEmpty)
+              TileGroup(
+                header: S.current.craft_essence,
+                children: [
+                  for (final ce in charaCEs)
+                    ListTile(
+                      leading: ImageWithText(
+                          image: db.getIconImage(ce.borderedIcon,
+                              height: 45, width: 45 / 144 * 132)),
+                      title: Text(ce.lName.l),
+                      onTap: () {
+                        router.push(
+                          url: ce.route,
+                          child: CraftDetailPage(
+                            ce: ce,
+                            onSwitch: (cur, next) =>
+                                Utility.findNextOrPrevious<CraftEssence>(
+                                    list: charaCEs, cur: cur, reversed: next),
+                          ),
+                          detail: true,
+                        );
+                      },
+                    )
+                ],
+              ),
+            if (charaCCs.isNotEmpty)
+              TileGroup(
+                header: S.current.command_code,
+                children: [
+                  for (final cc in charaCCs)
+                    ListTile(
+                      leading: ImageWithText(
+                          image: db.getIconImage(cc.icon,
+                              height: 45, width: 45 / 144 * 132)),
+                      title: Text(cc.lName.l),
+                      onTap: () {
+                        router.push(
+                          url: cc.route,
+                          child: CmdCodeDetailPage(
+                            cc: cc,
+                            onSwitch: (cur, next) =>
+                                Utility.findNextOrPrevious<CommandCode>(
+                                    list: charaCCs, cur: cur, reversed: next),
+                          ),
+                          detail: true,
+                        );
+                      },
+                    ),
+                ],
+              ),
+          ],
+        ));
+      }
     }
     final tabbar = TabBar(
       isScrollable: true,

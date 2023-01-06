@@ -400,6 +400,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtIllustrationTab(svt: svt),
         );
       case SvtTab.relatedCards:
+        if (!svt.isNormalSvt) return null;
         if (svt.bondEquip == 0 &&
             svt.valentineEquip.isEmpty &&
             db.gameData.craftEssences.values.every((e) =>
