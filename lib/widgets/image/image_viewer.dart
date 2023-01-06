@@ -19,6 +19,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/icon_cache_manager.dart';
 import '../../packages/network.dart';
+import '../layout_try_builder.dart';
 import 'cached_image_option.dart';
 import 'fullscreen_image_viewer.dart';
 import 'image_actions.dart';
@@ -88,7 +89,7 @@ class CachedImage extends StatefulWidget {
   /// If download is available, use [CircularProgressIndicator].
   /// Otherwise, use an empty Container.
   static Widget defaultProgressPlaceholder(BuildContext context, String? url) {
-    return LayoutBuilder(
+    return LayoutTryBuilder(
       builder: (context, constraints) {
         double width =
             0.3 * min(constraints.biggest.width, constraints.biggest.height);

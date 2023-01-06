@@ -1,5 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
-
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
@@ -346,31 +344,23 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          AutoSizeText(
+          Text(
             tdRuby.l,
+            textScaleFactor: 0.95,
             style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).textTheme.bodySmall?.color),
-            maxLines: 1,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
           ),
-          AutoSizeText(
-            tdName.l,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-            maxLines: 2,
-          ),
+          Text(tdName.l, style: const TextStyle(fontWeight: FontWeight.w600)),
           if (!Transl.isJP) ...[
-            AutoSizeText(
+            Text(
               tdRuby.jp,
+              textScaleFactor: 0.95,
               style: TextStyle(
-                  fontSize: 16,
                   color: Theme.of(context).textTheme.bodySmall?.color),
-              maxLines: 1,
             ),
-            AutoSizeText(
-              tdName.jp,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-              maxLines: 1,
-            ),
+            Text(tdName.jp,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
           ]
         ],
       ),

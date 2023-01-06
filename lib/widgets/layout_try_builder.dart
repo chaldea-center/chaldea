@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Attention: [AutoSizeText] uses [LayoutBuilder]
 class LayoutTryBuilder extends StatelessWidget {
   final Widget Function(BuildContext, BoxConstraints) builder;
   const LayoutTryBuilder({super.key, required this.builder});

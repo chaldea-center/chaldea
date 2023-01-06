@@ -119,7 +119,7 @@ class CarouselUtil {
     baseOption ??= CarouselOptions(
         autoPlay: items.length > 1,
         autoPlayInterval: const Duration(seconds: 6));
-    return LayoutBuilder(builder: (context, constraints) {
+    return LayoutTryBuilder(builder: (context, constraints) {
       return CarouselSlider(
         items: items,
         options: limitHeightOption(

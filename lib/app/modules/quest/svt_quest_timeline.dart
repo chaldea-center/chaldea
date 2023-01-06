@@ -86,7 +86,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
       }
       final timeStr =
           DateTime.fromMillisecondsSinceEpoch(t.abs() * 1000).toDateString();
-      children.add(SHeader(t < 0 ? '$timeStr (JP)' : timeStr));
+      children
+          .add(SHeader(t < 0 ? '$timeStr (JP)' : '$timeStr (${region.upper})'));
       children.add(GridView.extent(
         maxCrossAxisExtent: 64,
         childAspectRatio: 132 / 144,
