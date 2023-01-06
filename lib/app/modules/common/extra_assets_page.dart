@@ -23,6 +23,7 @@ class ExtraAssetsPage extends StatelessWidget {
   final List<String> fandomSprites;
   final bool scrollable;
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
+  final PlaceholderWidgetBuilder? charaGraphPlaceholder;
 
   const ExtraAssetsPage({
     super.key,
@@ -32,6 +33,7 @@ class ExtraAssetsPage extends StatelessWidget {
     this.fandomSprites = const [],
     this.scrollable = true,
     this.getUrls,
+    this.charaGraphPlaceholder,
   });
 
   Iterable<String> _getUrls(ExtraAssetsUrl urls) {
@@ -52,6 +54,7 @@ class ExtraAssetsPage extends StatelessWidget {
         ],
         300,
         showMerge: true,
+        placeholder: charaGraphPlaceholder,
       ),
       _oneGroup(
           S.current.card_asset_face,
@@ -123,6 +126,7 @@ class ExtraAssetsPage extends StatelessWidget {
     double height, {
     bool expanded = true,
     bool showMerge = true,
+    PlaceholderWidgetBuilder? placeholder,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -155,9 +159,18 @@ class ExtraAssetsPage extends StatelessWidget {
               imageUrl: _urls[index],
               onTap: () {
                 FullscreenImageViewer.show(
-                    context: context, urls: _urls, initialPage: index);
+                  context: context,
+                  urls: _urls,
+                  initialPage: index,
+                  placeholder: placeholder,
+                );
               },
               showSaveOnLongPress: true,
+              placeholder: placeholder,
+              cachedOption: const CachedImageOption(
+                fadeOutDuration: Duration(milliseconds: 1200),
+                fadeInDuration: Duration(milliseconds: 800),
+              ),
             ),
             separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),

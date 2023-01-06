@@ -10,6 +10,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
+import 'package:octo_image/octo_image.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
@@ -19,6 +20,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/icon_cache_manager.dart';
 import '../../packages/network.dart';
 import 'cached_image_option.dart';
+import 'fullscreen_image_viewer.dart';
 import 'image_actions.dart';
 import 'photo_view_option.dart';
 
@@ -45,6 +47,7 @@ class CachedImage extends StatefulWidget {
 
   final CachedImageOption? cachedOption;
   final PhotoViewOption? photoViewOption;
+  final bool viewFullOnTap;
   final VoidCallback? onTap;
 
   const CachedImage({
@@ -59,6 +62,7 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption,
     this.photoViewOption,
+    this.viewFullOnTap = false,
     this.onTap,
   }) : imageProvider = null;
 
@@ -72,6 +76,7 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
+    this.viewFullOnTap = false,
     this.onTap,
   })  : imageUrl = null,
         cacheDir = null,
@@ -150,11 +155,31 @@ class _CachedImageState extends State<CachedImage> {
       height: widget.height,
       aspectRatio: widget.aspectRatio,
     );
-    if (widget.onTap != null) {
-      child = GestureDetector(
-        onTap: widget.onTap,
-        child: child,
-      );
+    VoidCallback? onTap = widget.onTap;
+    if (onTap == null && widget.viewFullOnTap) {
+      onTap = () {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (context, _, __) => FullscreenImageViewer(children: [
+              CachedImage(
+                imageUrl: widget.imageUrl,
+                cacheDir: widget.cacheDir,
+                cacheName: widget.cacheName,
+                showSaveOnLongPress: true,
+                placeholder: widget.placeholder,
+                cachedOption: widget.cachedOption,
+                photoViewOption: widget.photoViewOption,
+                viewFullOnTap: false,
+                onTap: null,
+              )
+            ]),
+          ),
+        );
+      };
+    }
+    if (onTap != null) {
+      child = GestureDetector(onTap: onTap, child: child);
     }
     return child;
   }
@@ -167,26 +192,17 @@ class _CachedImageState extends State<CachedImage> {
     if (url == null) return _withPlaceholder(context, '');
     url = Atlas.proxyAssetUrl(url);
     url = CachedImage.proxyMooncellImage(url);
-    if (AtlasIconLoader.i.shouldCacheImage(url)) {
-      String? _cachedPath = _loader.getCached(url);
-      if (_cachedPath != null) {
-        final provider = FileImage(File(_cachedPath));
-        return _withProvider(provider, onClearCache: () async {
-          AtlasIconLoader.i.evict(url!);
-          if (provider.file.existsSync()) {
-            provider.file.deleteSync();
-          }
-          await provider.evict();
+    if (!kIsWeb && _loader.shouldCacheImage(url)) {
+      final provider = MyCacheImage(url);
+      return _withProvider(
+        provider,
+        onClearCache: () async {
+          _loader.evict(url!);
+          await _loader.deleteFromDisk(url);
+          print([await provider.evict(), mounted]);
           if (mounted) setState(() {});
-        });
-      } else if (!_loader.isFailed(url)) {
-        _loader.get(url).then((localPath) {
-          if (mounted) setState(() {});
-        });
-        return _withPlaceholder(context, url);
-      } else {
-        return _withError(context, url);
-      }
+        },
+      );
     }
     return _withCached(url);
   }
@@ -198,24 +214,7 @@ class _CachedImageState extends State<CachedImage> {
 
   Widget _withProvider(ImageProvider provider,
       {Future<void> Function()? onClearCache}) {
-    Widget child = FadeInImage(
-      placeholder: MemoryImage(kOnePixel),
-      image: provider,
-      imageErrorBuilder: cachedOption.errorWidget == null
-          ? (ctx, e, s) => CachedImage.defaultErrorWidget(ctx, '', e)
-          : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
-      placeholderErrorBuilder: (ctx, e, s) => const SizedBox(),
-      // width: widget.width,
-      // height: widget.height,
-      fit: cachedOption.fit,
-      alignment: cachedOption.alignment,
-      repeat: cachedOption.repeat,
-      matchTextDirection: cachedOption.matchTextDirection,
-      fadeInCurve: cachedOption.fadeInCurve,
-      fadeOutCurve: cachedOption.fadeOutCurve,
-      fadeInDuration: cachedOption.fadeInDuration,
-      fadeOutDuration: cachedOption.fadeOutDuration,
-    );
+    Widget child = _withOcto(context, provider);
     if (widget.showSaveOnLongPress) {
       child = GestureDetector(
         child: child,
@@ -234,6 +233,7 @@ class _CachedImageState extends State<CachedImage> {
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
+            url: widget.imageUrl,
             destFp: joinPaths(db.paths.downloadDir, fn),
             gallery: true,
             share: true,
@@ -268,35 +268,17 @@ class _CachedImageState extends State<CachedImage> {
 
     String url = uri?.toString() ?? fullUrl;
 
-    Widget child = CachedNetworkImage(
-      imageUrl: url,
-      httpHeaders: cachedOption.httpHeaders,
-      imageBuilder: cachedOption.imageBuilder,
-      placeholder: _withPlaceholder,
-      progressIndicatorBuilder: cachedOption.progressIndicatorBuilder,
-      errorWidget: cachedOption.errorWidget ?? CachedImage.defaultErrorWidget,
-      fadeOutDuration: cachedOption.fadeOutDuration,
-      fadeOutCurve: cachedOption.fadeOutCurve,
-      fadeInDuration: cachedOption.fadeInDuration,
-      fadeInCurve: cachedOption.fadeInCurve,
-      width: widget.width ?? cachedOption.width,
-      height: widget.height ?? cachedOption.height,
-      fit: cachedOption.fit,
-      alignment: cachedOption.alignment,
-      repeat: cachedOption.repeat,
-      matchTextDirection: cachedOption.matchTextDirection,
-      cacheManager: _cacheManager,
-      useOldImageOnUrlChange: cachedOption.useOldImageOnUrlChange,
-      color: cachedOption.color,
-      filterQuality: cachedOption.filterQuality,
-      colorBlendMode: cachedOption.colorBlendMode,
-      placeholderFadeInDuration: cachedOption.placeholderFadeInDuration,
-      memCacheWidth: cachedOption.memCacheWidth,
-      memCacheHeight: cachedOption.memCacheHeight,
-      cacheKey: cachedOption.cacheKey,
-      maxWidthDiskCache: cachedOption.maxWidthDiskCache,
-      maxHeightDiskCache: cachedOption.maxHeightDiskCache,
-    );
+    Widget child = _withOcto(
+        context,
+        CachedNetworkImageProvider(
+          url,
+          headers: cachedOption.httpHeaders,
+          cacheManager: _cacheManager,
+          cacheKey: cachedOption.cacheKey,
+          imageRenderMethodForWeb: cachedOption.imageRenderMethodForWeb,
+          maxWidth: cachedOption.maxWidthDiskCache,
+          maxHeight: cachedOption.maxHeightDiskCache,
+        ));
     if (widget.showSaveOnLongPress) {
       Future<void> onClearCache() async {
         await _cacheManager.removeFile(cachedOption.cacheKey ?? url);
@@ -310,6 +292,7 @@ class _CachedImageState extends State<CachedImage> {
             return ImageActions.showSaveShare(
               context: context,
               srcFp: fullUrl,
+              url: widget.imageUrl,
               onClearCache: onClearCache,
             );
           } else {
@@ -319,6 +302,7 @@ class _CachedImageState extends State<CachedImage> {
             return ImageActions.showSaveShare(
               context: context,
               srcFp: file.path,
+              url: widget.imageUrl,
               destFp: joinPaths(db.paths.downloadDir, fn),
               gallery: true,
               share: true,
@@ -343,6 +327,49 @@ class _CachedImageState extends State<CachedImage> {
       child: network.available
           ? CachedImage.defaultProgressPlaceholder(context, url)
           : const SizedBox(),
+    );
+  }
+
+  Widget _withOcto(BuildContext context, ImageProvider image) {
+    return OctoImage(
+      image: image,
+      imageBuilder: cachedOption.imageBuilder == null
+          ? null
+          : (context, _) => cachedOption.imageBuilder!(context, image),
+      placeholderBuilder: (context) =>
+          _withPlaceholder(context, widget.imageUrl ?? ''),
+      progressIndicatorBuilder: cachedOption.progressIndicatorBuilder == null
+          ? null
+          : (context, progress) => cachedOption.progressIndicatorBuilder!(
+                context,
+                widget.imageUrl ?? "",
+                DownloadProgress(
+                    widget.imageUrl ?? "",
+                    progress?.expectedTotalBytes,
+                    progress?.cumulativeBytesLoaded ?? 0),
+              ),
+      errorBuilder: cachedOption.errorWidget == null
+          ? null
+          : (context, e, s) =>
+              (cachedOption.errorWidget ?? CachedImage.defaultErrorWidget)(
+                  context, widget.imageUrl ?? '', e),
+      fadeOutDuration: cachedOption.fadeOutDuration,
+      fadeOutCurve: cachedOption.fadeOutCurve,
+      fadeInDuration: cachedOption.fadeInDuration,
+      fadeInCurve: cachedOption.fadeInCurve,
+      width: widget.width ?? cachedOption.width,
+      height: widget.height ?? cachedOption.height,
+      fit: cachedOption.fit,
+      alignment: cachedOption.alignment,
+      repeat: cachedOption.repeat,
+      matchTextDirection: cachedOption.matchTextDirection,
+      color: cachedOption.color,
+      filterQuality: cachedOption.filterQuality,
+      colorBlendMode: cachedOption.colorBlendMode,
+      placeholderFadeInDuration: cachedOption.placeholderFadeInDuration,
+      gaplessPlayback: cachedOption.useOldImageOnUrlChange,
+      memCacheWidth: cachedOption.memCacheWidth,
+      memCacheHeight: cachedOption.memCacheHeight,
     );
   }
 }

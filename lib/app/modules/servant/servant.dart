@@ -198,10 +198,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           FullscreenImageViewer.show(
             context: context,
             urls: svt.extraAssets.charaGraph.allUrls.toList(),
-            placeholder: (context, url) {
-              final card = svt.classCard;
-              return card == null ? const SizedBox() : db.getIconImage(card);
-            },
+            placeholder: (context, url) => db.getIconImage(svt.classCard),
           );
         },
       ),

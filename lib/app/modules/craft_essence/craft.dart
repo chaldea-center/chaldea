@@ -239,7 +239,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   FullscreenImageViewer.show(
                     context: context,
                     urls: [ce.charaGraph],
-                    placeholder: placeholder,
+                    placeholder: cardBackPlaceholder,
                   );
                 },
               ),
@@ -334,7 +334,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   FullscreenImageViewer.show(
                     context: context,
                     urls: [ce.charaGraph],
-                    placeholder: placeholder,
+                    placeholder: cardBackPlaceholder,
                   );
                 },
               ),
@@ -439,7 +439,11 @@ class CraftDetailBasePage extends StatelessWidget {
           texts: [S.current.illustration],
           isHeader: true,
         ),
-        ExtraAssetsPage(assets: ce.extraAssets, scrollable: false),
+        ExtraAssetsPage(
+          assets: ce.extraAssets,
+          scrollable: false,
+          charaGraphPlaceholder: (_, __) => db.getIconImage(ce.cardBack),
+        ),
         if (showExtra && summons.isNotEmpty) ...[
           CustomTableRow(children: [
             TableCellData(text: S.current.summon, isHeader: true)
@@ -515,8 +519,7 @@ class CraftDetailBasePage extends StatelessWidget {
     return summons;
   }
 
-  Widget placeholder(BuildContext context, String? url) {
-    // class_b_103, class_s_103, class_g_103
+  Widget cardBackPlaceholder(BuildContext context, String? url) {
     final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(ce.rarity)];
     return db.getIconImage(Atlas.asset('ClassCard/class_${color}_103.png'));
   }

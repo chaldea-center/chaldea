@@ -401,7 +401,7 @@ AscensionAddEntry<T> _$AscensionAddEntryFromJson<T>(
   Map json,
   T Function(Object? json) fromJsonT,
 ) =>
-    AscensionAddEntry<T>.typed(
+    AscensionAddEntry<T>(
       ascension: (json['ascension'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), fromJsonT(e)),
           ) ??
@@ -414,53 +414,64 @@ AscensionAddEntry<T> _$AscensionAddEntryFromJson<T>(
 
 AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
       individuality: json['individuality'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<List<NiceTrait>>.fromJson(
               Map<String, dynamic>.from(json['individuality'] as Map)),
       voicePrefix: json['voicePrefix'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(
               Map<String, dynamic>.from(json['voicePrefix'] as Map)),
       overWriteServantName: json['overWriteServantName'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteServantName'] as Map)),
       overWriteServantBattleName: json['overWriteServantBattleName'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(Map<String, dynamic>.from(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(
               json['overWriteServantBattleName'] as Map)),
       overWriteTDName: json['overWriteTDName'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteTDName'] as Map)),
       overWriteTDRuby: json['overWriteTDRuby'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteTDRuby'] as Map)),
       overWriteTDFileName: json['overWriteTDFileName'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteTDFileName'] as Map)),
       overWriteTDRank: json['overWriteTDRank'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteTDRank'] as Map)),
       overWriteTDTypeText: json['overWriteTDTypeText'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['overWriteTDTypeText'] as Map)),
       lvMax: json['lvMax'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(
               Map<String, dynamic>.from(json['lvMax'] as Map)),
       charaGraphChange: json['charaGraphChange'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
       faceChange: json['faceChange'] == null
-          ? null
-          : AscensionAddEntry<dynamic>.fromJson(
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<String>.fromJson(
               Map<String, dynamic>.from(json['faceChange'] as Map)),
+      charaGraphChangeCommonRelease:
+          json['charaGraphChangeCommonRelease'] == null
+              ? const AscensionAddEntry()
+              : AscensionAddEntry<List<CommonRelease>>.fromJson(
+                  Map<String, dynamic>.from(
+                      json['charaGraphChangeCommonRelease'] as Map)),
+      faceChangeCommonRelease: json['faceChangeCommonRelease'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<List<CommonRelease>>.fromJson(
+              Map<String, dynamic>.from(
+                  json['faceChangeCommonRelease'] as Map)),
     );
 
 ServantChange _$ServantChangeFromJson(Map json) => ServantChange(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /// Options for [CachedNetworkImage], excluding [imgUrl]
@@ -32,6 +33,7 @@ class CachedImageOption {
   final String? cacheKey;
   final int? maxWidthDiskCache;
   final int? maxHeightDiskCache;
+  final ImageRenderMethodForWeb imageRenderMethodForWeb;
 
   const CachedImageOption({
     this.httpHeaders,
@@ -60,6 +62,7 @@ class CachedImageOption {
     this.cacheKey,
     this.maxWidthDiskCache,
     this.maxHeightDiskCache,
+    this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HtmlImage,
   });
 
   CachedImageOption copyWith({

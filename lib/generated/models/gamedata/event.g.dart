@@ -389,10 +389,6 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) =>
       conditionMessage: json['conditionMessage'] as String,
       closedMessage: json['closedMessage'] as String? ?? "",
       flag: json['flag'] as int? ?? 0,
-      detail: json['detail'] == null
-          ? null
-          : EventMissionConditionDetail.fromJson(
-              Map<String, dynamic>.from(json['detail'] as Map)),
       details: (json['details'] as List<dynamic>?)
           ?.map((e) => EventMissionConditionDetail.fromJson(
               Map<String, dynamic>.from(e as Map)))

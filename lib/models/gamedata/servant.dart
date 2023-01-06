@@ -445,27 +445,21 @@ class Servant with GameCardMixin {
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
-  String? get classCard {
-    const suffixes = {
-      SvtClass.saber: "1@1",
-      SvtClass.archer: "1@2",
-      SvtClass.lancer: "3@1",
-      SvtClass.rider: "3@2",
-      SvtClass.caster: "5@1",
-      SvtClass.assassin: "5@2",
-      SvtClass.berserker: "7@1",
-      SvtClass.shielder: "13@1",
-      SvtClass.ruler: "7@2",
-      SvtClass.alterEgo: "11@2",
-      SvtClass.avenger: "11@1",
-      SvtClass.moonCancer: "23@1",
-      SvtClass.foreigner: "25@1",
-      SvtClass.pretender: "27@1",
-    };
-    final suffix =
-        originalCollectionNo == 285 ? "123@1" : suffixes[className] ?? "13@1";
+  String get classCard {
+    int imageId = db.gameData.constData.classInfo[className.id]?.imageId ?? 13;
+    int subId = 1;
+    if (imageId == 9999) imageId = 13;
+    if (imageId.isEven) {
+      imageId -= 1;
+      subId = 2;
+    }
     final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
-    return Atlas.asset('ClassCard/class_${color}_$suffix.png');
+    return Atlas.asset('ClassCard/class_${color}_$imageId@$subId.png');
+  }
+
+  String get cardBack {
+    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
+    return Atlas.asset('ClassCard/class_${color}_101@2.png');
   }
 
   @override
@@ -744,6 +738,12 @@ class CraftEssence with GameCardMixin {
         }));
   }
 
+  String get cardBack {
+    final color =
+        ['b', 's', 'g'].getOrNull(GameCardMixin.bsgColor(rarity)) ?? 'g';
+    return Atlas.asset('ClassCard/class_${color}_101@2.png');
+  }
+
   @override
   String get route => Routes.craftEssenceI(id);
 
@@ -852,8 +852,7 @@ class CardDetail {
       _$CardDetailFromJson(json);
 }
 
-// TODO: manually convert List<NiceTrait>
-@JsonSerializable(constructor: 'typed')
+@JsonSerializable(genericArgumentFactories: true)
 class AscensionAddEntry<T> {
   final Map<int, T> ascension;
   final Map<int, T> costume;
@@ -861,50 +860,27 @@ class AscensionAddEntry<T> {
   Map<int, T> get all => {...ascension, ...costume};
 
   @protected
-  AscensionAddEntry({
-    Map<dynamic, dynamic> ascension = const {},
-    Map<dynamic, dynamic> costume = const {},
-  })  : ascension = ascension.cast(),
-        costume = costume.cast();
-
-  AscensionAddEntry.typed({
+  const AscensionAddEntry({
     this.ascension = const {},
     this.costume = const {},
   });
 
-  AscensionAddEntry<S> cast<S>() {
-    // print('casting $S');
-    if (S == int || S == double || S == String) {
-      return AscensionAddEntry<S>.typed(
-        ascension: ascension.cast<int, S>(),
-        costume: costume.cast<int, S>(),
-      );
-    }
-    // print([S, S.toString(), List, S == List]);
-    // if (S == List) {
-    // now only List<NiceTrait>
-    // print([ascension.runtimeType]);
-    return AscensionAddEntry<S>.typed(
-      ascension: ascension.map((key, value) =>
-          MapEntry(key, (value as List).cast<NiceTrait>() as S)),
-      costume: costume.map((key, value) =>
-          MapEntry(key, (value as List).cast<NiceTrait>() as S)),
-    );
-    // }
-    // throw ArgumentError.value(S, 'type', 'Unknown cast type');
-  }
-
   factory AscensionAddEntry.fromJson(Map<String, dynamic> json) =>
-      _$AscensionAddEntryFromJson(json, _fromJsonT);
+      _$AscensionAddEntryFromJson(json, _fromJsonT<T>);
 
   static T _fromJsonT<T>(Object? obj) {
-    // obj: List<dynamic>
-    if (obj == null) return null as T;
-    if (obj is int || obj is double || obj is String) return obj as T;
-    if (obj is List) {
-      // now only List<NiceTrait>
-      return obj
+    if (obj == null) {
+      return null as T;
+    } else if (obj is int || obj is double || obj is String) {
+      return obj as T;
+    } else if (T == List<NiceTrait>) {
+      return (obj as List<dynamic>)
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() as T;
+    } else if (T == List<CommonRelease>) {
+      return (obj as List<dynamic>)
+          .map((e) =>
+              CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() as T;
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
@@ -925,56 +901,25 @@ class AscensionAdd {
   AscensionAddEntry<int> lvMax;
   AscensionAddEntry<String> charaGraphChange;
   AscensionAddEntry<String> faceChange;
-  // AscensionAddEntry<List<CommonRelease>> charaGraphChangeCommonRelease;
-  // AscensionAddEntry<List<CommonRelease>> faceChangeCommonRelease;
+  AscensionAddEntry<List<CommonRelease>> charaGraphChangeCommonRelease;
+  AscensionAddEntry<List<CommonRelease>> faceChangeCommonRelease;
 
   AscensionAdd({
-    AscensionAddEntry? individuality,
-    AscensionAddEntry? voicePrefix,
-    AscensionAddEntry? overWriteServantName,
-    AscensionAddEntry? overWriteServantBattleName,
-    AscensionAddEntry? overWriteTDName,
-    AscensionAddEntry? overWriteTDRuby,
-    AscensionAddEntry? overWriteTDFileName,
-    AscensionAddEntry? overWriteTDRank,
-    AscensionAddEntry? overWriteTDTypeText,
-    AscensionAddEntry? lvMax,
-    AscensionAddEntry? charaGraphChange,
-    AscensionAddEntry? faceChange,
-  })  : voicePrefix = voicePrefix?.cast<int>() ?? AscensionAddEntry(),
-        overWriteServantName =
-            overWriteServantName?.cast<String>() ?? AscensionAddEntry(),
-        overWriteServantBattleName =
-            overWriteServantBattleName?.cast<String>() ?? AscensionAddEntry(),
-        overWriteTDName =
-            overWriteTDName?.cast<String>() ?? AscensionAddEntry(),
-        individuality =
-            individuality?.cast<List<NiceTrait>>() ?? AscensionAddEntry(),
-        overWriteTDRuby =
-            overWriteTDRuby?.cast<String>() ?? AscensionAddEntry(),
-        overWriteTDFileName =
-            overWriteTDFileName?.cast<String>() ?? AscensionAddEntry(),
-        overWriteTDRank =
-            overWriteTDRank?.cast<String>() ?? AscensionAddEntry(),
-        overWriteTDTypeText =
-            overWriteTDTypeText?.cast<String>() ?? AscensionAddEntry(),
-        lvMax = lvMax?.cast<int>() ?? AscensionAddEntry(),
-        charaGraphChange =
-            charaGraphChange?.cast<String>() ?? AscensionAddEntry(),
-        faceChange = faceChange?.cast<String>() ?? AscensionAddEntry();
-
-  // AscensionAdd({
-  //   this.individuality = const AscensionAddEntry(),
-  //   this.voicePrefix = const AscensionAddEntry(),
-  //   this.overWriteServantName = const AscensionAddEntry(),
-  //   this.overWriteServantBattleName = const AscensionAddEntry(),
-  //   this.overWriteTDName = const AscensionAddEntry(),
-  //   this.overWriteTDRuby = const AscensionAddEntry(),
-  //   this.overWriteTDFileName = const AscensionAddEntry(),
-  //   this.overWriteTDRank = const AscensionAddEntry(),
-  //   this.overWriteTDTypeText = const AscensionAddEntry(),
-  //   this.lvMax = const AscensionAddEntry(),
-  // });
+    this.individuality = const AscensionAddEntry(),
+    this.voicePrefix = const AscensionAddEntry(),
+    this.overWriteServantName = const AscensionAddEntry(),
+    this.overWriteServantBattleName = const AscensionAddEntry(),
+    this.overWriteTDName = const AscensionAddEntry(),
+    this.overWriteTDRuby = const AscensionAddEntry(),
+    this.overWriteTDFileName = const AscensionAddEntry(),
+    this.overWriteTDRank = const AscensionAddEntry(),
+    this.overWriteTDTypeText = const AscensionAddEntry(),
+    this.lvMax = const AscensionAddEntry(),
+    this.charaGraphChange = const AscensionAddEntry(),
+    this.faceChange = const AscensionAddEntry(),
+    this.charaGraphChangeCommonRelease = const AscensionAddEntry(),
+    this.faceChangeCommonRelease = const AscensionAddEntry(),
+  });
 
   factory AscensionAdd.fromJson(Map<String, dynamic> json) =>
       _$AscensionAddFromJson(json);
