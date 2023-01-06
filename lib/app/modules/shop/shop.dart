@@ -318,8 +318,23 @@ class ShopHelper {
       case PurchaseType.servant:
       case PurchaseType.commandCode:
       case PurchaseType.costumeRelease:
+        String? text;
+        if (shop.shopType == ShopType.startUpSummon &&
+            purchaseType == PurchaseType.servant) {
+          final svt = db.gameData.servantsById[targetId];
+          if (svt != null) {
+            final status = db.curUser.svtStatusOf(svt.collectionNo);
+            if (status.favorite) {
+              text = 'NP${status.cur.npLv}';
+            }
+          }
+        }
         yield Tuple2(
-          GameCardMixin.anyCardItemBuilder(context: context, id: targetId),
+          GameCardMixin.anyCardItemBuilder(
+            context: context,
+            id: targetId,
+            text: text,
+          ),
           TextSpan(
               text: GameCardMixin.anyCardItemName(targetId).l +
                   (targetNum == 1 ? "" : " ×${targetNum.format()}")),

@@ -332,6 +332,7 @@ class ItemCenter {
       plan.rerunGrails = plan.rerunGrails.clamp(0, grailToCrystal);
       result.addNum(Items.grailId, plan.rerunGrails);
       result.addNum(Items.crystalId, grailToCrystal - plan.rerunGrails);
+      result.remove(Items.grailToCrystalId);
     }
     return result;
   }

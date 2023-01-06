@@ -608,8 +608,6 @@ class EventMissionCondition {
   String conditionMessage;
   String closedMessage;
   int flag;
-  @Deprecated('Use `details`')
-  EventMissionConditionDetail? detail;
   List<EventMissionConditionDetail>? details;
 
   EventMissionCondition({
@@ -624,9 +622,8 @@ class EventMissionCondition {
     required this.conditionMessage,
     this.closedMessage = "",
     this.flag = 0,
-    this.detail,
-    List<EventMissionConditionDetail>? details,
-  }) : details = details ?? (detail == null ? null : [detail]);
+    this.details,
+  });
 
   factory EventMissionCondition.fromJson(Map<String, dynamic> json) =>
       _$EventMissionConditionFromJson(json);

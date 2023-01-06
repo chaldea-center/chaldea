@@ -421,8 +421,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       return;
     }
     final region = isRegionNA ? Region.na : Region.jp;
-    void _showHint(String hint) =>
-        EasyLoading.show(status: hint, maskType: EasyLoadingMaskType.clear);
+    void _showHint(String hint) => EasyLoading.show(status: hint);
     _showHint('Solving...');
     try {
       List<QuestPhase> quests = [];
@@ -438,10 +437,12 @@ class _MissionInputTabState extends State<MissionInputTab> {
             phases[quest.id] = quest.phases.last;
           }
         }
+        phases[94061636] = 1;
+        // phases[94061640] = 1;
         // door/QP quest 初級 - 極級
-        for (int id = 94061636; id <= 94061640; id++) {
-          phases[id] = 1;
-        }
+        // for (int id = 94061636; id <= 94061640; id++) {
+        //   phases[id] = 1;
+        // }
       } else {
         NiceWar? war = isRegionNA
             ? await AtlasApi.war(warId, region: Region.na)
@@ -477,6 +478,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           await Future.delayed(const Duration(milliseconds: 100));
           _showHint('Resolve Quests: total ${phases.length + countNoEnemy},'
               ' $countSuccess success, $countError error, $countNoEnemy no data');
+          await Future.delayed(const Duration(milliseconds: 100));
         }));
       }
 

@@ -25,6 +25,7 @@ class ImageActions {
     required BuildContext context,
     Uint8List? data,
     String? srcFp,
+    String? url,
     bool gallery = true,
     String? destFp,
     bool share = true,
@@ -38,7 +39,18 @@ class ImageActions {
       context: context,
       duration: const Duration(milliseconds: 250),
       builder: (context) {
-        List<Widget> children = [...extraHeaders];
+        List<Widget> children = [
+          ...extraHeaders,
+          if (url != null)
+            ListTile(
+              dense: true,
+              title: Text(url, style: Theme.of(context).textTheme.bodySmall),
+              onTap: () {
+                copyToClipboard(url);
+                EasyLoading.showToast(S.current.copied);
+              },
+            )
+        ];
         if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
           children.add(ListTile(
             leading: const Icon(Icons.download),

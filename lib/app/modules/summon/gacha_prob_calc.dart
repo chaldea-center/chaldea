@@ -18,10 +18,11 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
   final upTypes = <RateEntry>[
     // RateEntry(0, 'Custom'),
     RateEntry(0.8, S.current.gacha_prob_svt_pickup(5)),
-    RateEntry(
-        1.5, S.current.gacha_prob_svt_pickup(4)), // 1.5x1, 1.2x2, 0.7x3, 0.7x4
-    RateEntry(4.0, S.current.gacha_prob_svt_pickup(4)),
+    // 2.1x1, 1.2x2, 0.8x3
+    RateEntry(2.1, S.current.gacha_prob_svt_pickup(4)),
     RateEntry(0.7, '${S.current.gacha_prob_svt_pickup(5)}(old)'),
+    // 1.5x1, 1.2x2, 0.7x3, 0.7x4
+    RateEntry(1.5, '${S.current.gacha_prob_svt_pickup(4)}(old)'),
     RateEntry(2.8, S.current.gacha_prob_ce_pickup(5)),
     RateEntry(4.0, S.current.gacha_prob_ce_pickup(4)),
     RateEntry(8.0, S.current.gacha_prob_ce_pickup(3)),

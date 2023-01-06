@@ -456,4 +456,5 @@ const _kBuffValuePercentTypes = {
   BuffType.gutsRatio: 10,
   BuffType.buffRate: 10,
   BuffType.regainNp: 100,
+  BuffType.downFuncgainNp: 10,
 };

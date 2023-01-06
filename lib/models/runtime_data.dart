@@ -13,6 +13,7 @@ class RuntimeData {
   AppVersion? upgradableVersion;
   AppUpdateDetail? releaseDetail;
   DataVersion? upgradableDataVersion;
+  AppVersion? dataRequiredAppVer;
 
   double? criticalWidth;
   bool showSkillOriginText = false;

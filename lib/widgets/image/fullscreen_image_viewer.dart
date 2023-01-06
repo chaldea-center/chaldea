@@ -69,6 +69,10 @@ class FullscreenImageViewer extends StatefulWidget {
                   Navigator.pop(ctx, index);
                 },
               ),
+              cachedOption: const CachedImageOption(
+                fadeOutDuration: Duration(milliseconds: 1200),
+                fadeInDuration: Duration(milliseconds: 800),
+              ),
             ),
           ),
         ),
@@ -104,7 +108,8 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context, _curIndex);
+        // why?
+        Navigator.maybeOf(context)?.pop(_curIndex);
       },
       child: Scaffold(
         body: Padding(

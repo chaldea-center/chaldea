@@ -216,8 +216,12 @@ class _CacheManager {
       if (entry != null) {
         final file = FilePlus(entry.fp, box: _webBox);
         if (!_isExpired(key, entry.timestamp, expireAfter)) {
-          final bytes = _memoryCache[key] ?? await file.readAsBytes();
-          if (Crc32Xz().convert(bytes).toString() == entry.crc) {
+          List<int>? bytes = _memoryCache[key];
+          if (bytes == null && file.existsSync()) {
+            bytes = await file.readAsBytes();
+          }
+          if (bytes != null &&
+              Crc32Xz().convert(bytes).toString() == entry.crc) {
             return SynchronousFuture(bytes);
           }
         }
@@ -233,11 +237,13 @@ class _CacheManager {
           _downloading.remove(url);
           _failed.remove(url);
           _completer.complete(value);
+          return Future.value();
         }).catchError((e, s) {
           _downloading.remove(url);
           _completer.complete(null);
           _failed[url] = DateTime.now();
           if (kDebugMode) print(escapeDioError(e));
+          return Future.value();
         });
         _downloading[url] = _completer;
         return _completer.future;

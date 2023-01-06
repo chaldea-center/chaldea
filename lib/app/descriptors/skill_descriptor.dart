@@ -304,10 +304,26 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     this.isBaseTd = false,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer;
-
+  final cardMap = const <CardType, Trait>{
+    CardType.quick: Trait.cardQuick,
+    CardType.arts: Trait.cardArts,
+    CardType.buster: Trait.cardBuster,
+    CardType.weak: Trait.cardWeak,
+    CardType.strength: Trait.cardStrength
+  };
   @override
   Widget build(BuildContext context) {
     final ref = RefMemo();
+    if (isBaseTd) {
+      ref.add('base');
+      if (td.individuality.every((e) => e.name != Trait.cardNP)) {
+        ref.add('cardNP');
+      }
+      if (cardMap.containsKey(td.card) &&
+          td.individuality.every((e) => e.name != cardMap[td.card])) {
+        ref.add('cardQAB');
+      }
+    }
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
     final tdRank = overrideData?.tdRank ?? td.rank;
     final tdName = Transl.tdNames(overrideData?.tdName ?? td.name);
@@ -422,14 +438,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
             if (ref.contain("cardNP"))
               '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.id).l)}',
-            for (final entry in <CardType, Trait>{
-              CardType.quick: Trait.cardQuick,
-              CardType.arts: Trait.cardArts,
-              CardType.buster: Trait.cardBuster,
-            }.entries)
-              if (td.card == entry.key &&
-                  td.individuality.every((e) => e.name != entry.value))
-                '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(entry.key.name.toTitle(), Transl.trait(entry.value.id).l)}',
+            if (ref.contain("cardQAB"))
+              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.card.name.toTitle(), Transl.trait(cardMap[td.card]!.id).l)}',
           ].join('\n')),
       ],
     );

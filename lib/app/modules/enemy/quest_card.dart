@@ -954,7 +954,7 @@ class _QuestRestriction extends StatelessWidget {
           rangeText += 'Above(>)';
           break;
         case RestrictionRangeType.below:
-          rangeText += 'Above(<)';
+          rangeText += 'Below(<)';
           break;
         case RestrictionRangeType.between:
           rangeText += 'Between(a≤x≤b)';

@@ -326,15 +326,8 @@ abstract class _CachedLoader<K, V> {
 
 @immutable
 class MyCacheImage extends ImageProvider<MyCacheImage> {
-  /// Creates an object that decodes a [File] as an image.
-  ///
-  /// The arguments must not be null.
   const MyCacheImage(this.url, {this.scale = 1.0});
-
-  /// The file to decode into an image.
   final String url;
-
-  /// The scale to place in the [ImageInfo] object of the image.
   final double scale;
 
   @override

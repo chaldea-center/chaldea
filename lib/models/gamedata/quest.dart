@@ -158,7 +158,7 @@ class Quest with RouteInfo {
       if (chapterSubStr.isEmpty && chapterSubId != 0) {
         return S.current.quest_chapter_n(chapterSubId);
       } else {
-        return Transl.questNames(chapterSubStr).l;
+        return Transl.questNames(chapterSubStr).l.trim();
       }
     }
     return '';

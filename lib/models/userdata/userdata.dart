@@ -671,6 +671,7 @@ class LimitEventPlan {
   LimitEventPlan copy() {
     return LimitEventPlan(
       enabled: enabled,
+      rerunGrails: rerunGrails,
       shop: shop,
       shopBuyCount: Map.of(shopBuyCount),
       point: point,

@@ -22,9 +22,11 @@ class _LostRoomPageState extends State<LostRoomPage> {
               padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
               color:
                   Theme.of(context).colorScheme.onBackground.withOpacity(0.9),
-              child: const CachedImage(
-                  imageUrl:
-                      'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png'),
+              child: CachedImage(
+                imageUrl:
+                    'https://anime.fate-go.jp/mllr/assets/img/kv/logo.png',
+                placeholder: (_, __) => Container(),
+              ),
             ),
             kDefaultDivider,
             GridGallery(
