@@ -222,4 +222,6 @@ class AssetURL {
       "$baseUrl/$region/Servants/$itemId/manifest.json";
   String movie(String itemId) => "$baseUrl/$region/Movie/$itemId.mp4";
   String marks(String itemId) => "$baseUrl/$region/Marks/$itemId.png";
+  String svtTexture(dynamic battleCharaId) =>
+      "$baseUrl/$region/Servants/$battleCharaId/textures/$battleCharaId.png";
 }

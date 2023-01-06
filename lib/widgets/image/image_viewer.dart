@@ -348,11 +348,8 @@ class _CachedImageState extends State<CachedImage> {
                     progress?.expectedTotalBytes,
                     progress?.cumulativeBytesLoaded ?? 0),
               ),
-      errorBuilder: cachedOption.errorWidget == null
-          ? null
-          : (context, e, s) =>
-              (cachedOption.errorWidget ?? CachedImage.defaultErrorWidget)(
-                  context, widget.imageUrl ?? '', e),
+      errorBuilder: (context, e, s) =>
+          _withError(context, widget.imageUrl ?? ""),
       fadeOutDuration: cachedOption.fadeOutDuration,
       fadeOutCurve: cachedOption.fadeOutCurve,
       fadeInDuration: cachedOption.fadeInDuration,

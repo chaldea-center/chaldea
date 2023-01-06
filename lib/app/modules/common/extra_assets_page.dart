@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -103,6 +104,8 @@ class ExtraAssetsPage extends StatelessWidget {
           fandomSprites.map(WikiTool.fandomFileUrl), 300,
           expanded: false),
       spriteViewer(),
+      _oneGroup('Texture', _getUrls(assets.spriteModel), 300,
+          expanded: false, showMerge: false),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(
@@ -130,6 +133,7 @@ class ExtraAssetsPage extends StatelessWidget {
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
+    placeholder ??= CachedImage.defaultProgressPlaceholder;
     return SimpleAccordion(
       expanded: expanded,
       headerBuilder: (context, expanded) => Row(
@@ -155,23 +159,61 @@ class ExtraAssetsPage extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             itemCount: _urls.length,
-            itemBuilder: (context, index) => CachedImage(
-              imageUrl: _urls[index],
-              onTap: () {
-                FullscreenImageViewer.show(
-                  context: context,
-                  urls: _urls,
-                  initialPage: index,
-                  placeholder: placeholder,
+            itemBuilder: (context, index) {
+              String url = _urls[index];
+              if (url.endsWith('manifest.json')) {
+                return FutureBuilder(
+                  future: AtlasApi.cacheManager
+                      .getJson(url, expireAfter: const Duration(days: 7)),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
+                    if (data is List) {
+                      Map? part = data.firstWhereOrNull(
+                          (m) => m is Map && m['type'] == 'Texture2D');
+                      String? path = part?['path'];
+                      if (path != null) {
+                        final texture = Uri.parse(url).resolve(path).toString();
+                        return CachedImage(
+                          imageUrl: texture,
+                          onTap: () {
+                            FullscreenImageViewer.show(
+                              context: context,
+                              urls: [texture],
+                              initialPage: index,
+                              placeholder: placeholder,
+                            );
+                          },
+                          showSaveOnLongPress: true,
+                          placeholder: placeholder,
+                          cachedOption: const CachedImageOption(
+                            fadeOutDuration: Duration(milliseconds: 1200),
+                            fadeInDuration: Duration(milliseconds: 800),
+                          ),
+                        );
+                      }
+                    }
+                    return placeholder?.call(context, url) ?? const SizedBox();
+                  },
                 );
-              },
-              showSaveOnLongPress: true,
-              placeholder: placeholder,
-              cachedOption: const CachedImageOption(
-                fadeOutDuration: Duration(milliseconds: 1200),
-                fadeInDuration: Duration(milliseconds: 800),
-              ),
-            ),
+              }
+              return CachedImage(
+                imageUrl: url,
+                onTap: () {
+                  FullscreenImageViewer.show(
+                    context: context,
+                    urls: _urls,
+                    initialPage: index,
+                    placeholder: placeholder,
+                  );
+                },
+                showSaveOnLongPress: true,
+                placeholder: placeholder,
+                cachedOption: const CachedImageOption(
+                  fadeOutDuration: Duration(milliseconds: 1200),
+                  fadeInDuration: Duration(milliseconds: 800),
+                ),
+              );
+            },
             separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),
         ),
