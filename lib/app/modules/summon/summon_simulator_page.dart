@@ -22,10 +22,12 @@ class SummonSimulatorPage extends StatefulWidget {
 }
 
 class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
-  LimitedSummon get summon => widget.summon;
+  late final summon = widget.summon;
   int curIndex = 0;
 
-  SubSummon get data => summon.subSummons[curIndex];
+  SubSummon get data =>
+      // SubSummon get data =>
+      summon.subSummons.getOrNull(curIndex) ?? SubSummon(title: 'Error');
 
   int totalQuartz = 0;
   int totalPulls = 0;
@@ -34,24 +36,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Map<GameCardMixin, int> allSummons = {};
 
-  // [(card1,0),(card2,0.4),...,(cardN,99.0)]
-  List<MapEntry<GameCardMixin, double>> probabilityList = [];
-
   @override
   void initState() {
     super.initState();
-    curIndex = max(0, widget.initIndex);
-    double acc = 0; //max 100
-    for (var block in [...data.svts, ...data.crafts]) {
-      for (int i = 0; i < block.ids.length; i++) {
-        var card = block.isSvt
-            ? db.gameData.servantsNoDup[block.ids[i]]
-            : db.gameData.craftEssences[block.ids[i]];
-        double value = acc + i * block.weight / block.ids.length;
-        if (card != null) probabilityList.add(MapEntry(card, value));
-      }
-      acc += block.weight;
-    }
+    curIndex = widget.initIndex.clamp2(0, summon.subSummons.length - 1);
   }
 
   void reset() {
@@ -90,55 +78,67 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return CustomScrollView(
       slivers: [
         SliverList(
-            delegate: SliverChildListDelegate([
-          CarouselUtil.limitHeightWidget(
-            context: context,
-            imageUrls: summon.resolvedBanner.values.toList(),
-          ),
-          if (summon.subSummons.length > 1) dropdownButton,
-          details,
-        ])),
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: _SliverPersistentHeaderDelegate(
-            height: 60,
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Row(
-                      children:
-                          summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
+          delegate: SliverChildListDelegate([
+            CarouselUtil.limitHeightWidget(
+              context: context,
+              imageUrls: summon.resolvedBanner.values.toList(),
+            ),
+            if (summon.subSummons.length > 1) dropdownButton,
+            if (data.probs.isNotEmpty) details,
+            if (data.probs.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(
+                  child: Text('No data'),
+                ),
+              ),
+          ]),
+        ),
+        if (data.probs.isNotEmpty) ...[
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SliverPersistentHeaderDelegate(
+              height: 60,
+              child: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Row(
+                        children: summon.isLuckyBag
+                            ? [gachaLucky]
+                            : [gacha1, gacha10]),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        SliverList(
+          SliverList(
             delegate: SliverChildListDelegate([
-          statisticHint,
-          SimpleAccordion(
-            expanded: true,
-            headerBuilder: (context, _) => ListTile(
-              dense: true,
-              title: Text(S.current.summon_gacha_result),
-            ),
-            contentBuilder: (context) => curResult(),
-          ),
-          for (bool isSvt in [true, false])
-            for (int rarity in [5, 4, 3]) accResultOf(isSvt, rarity),
-          kDefaultDivider,
-          SafeArea(
-            child: Center(
-              child: Text(
-                S.current.summon_gacha_footer,
-                style: const TextStyle(color: Colors.grey),
-                textAlign: TextAlign.center,
+              statisticHint,
+              SimpleAccordion(
+                expanded: true,
+                headerBuilder: (context, _) => ListTile(
+                  dense: true,
+                  title: Text(S.current.summon_gacha_result),
+                ),
+                contentBuilder: (context) => curResult(),
               ),
-            ),
+              for (bool isSvt in [true, false])
+                for (int rarity in [5, 4, 3]) accResultOf(isSvt, rarity),
+              kDefaultDivider,
+              SafeArea(
+                child: Center(
+                  child: Text(
+                    S.current.summon_gacha_footer,
+                    style: const TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            ]),
           )
-        ]))
+        ],
       ],
     );
   }
