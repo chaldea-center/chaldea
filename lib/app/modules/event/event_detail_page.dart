@@ -320,6 +320,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     ]));
 
     children.add(CustomTable(selectable: true, children: rows));
+    if (event.type == EventType.questCampaign) {
+      children.add(SFooter(S.current.ap_campaign_time_mismatch_hint));
+    }
 
     List<Widget> warTiles = [];
     for (final warId in event.warIds) {
@@ -1126,16 +1129,30 @@ class __EventTimeState extends State<_EventTime> {
       final timeStr = getTime(region);
       if (timeStr == null) continue;
       if (shownRegions.contains(region) || showAll) {
-        children.add(Text(timeStr,
-            style: const TextStyle(fontSize: 14, fontFamily: kMonoFont)));
+        children.add(Text(
+          timeStr,
+          style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),
+          textAlign: TextAlign.center,
+        ));
       }
       if (!shownRegions.contains(region)) hasExtra = true;
     }
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
+    );
     if (hasExtra) {
-      children.add(Icon(
-        showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-        size: 16,
-      ));
+      child = Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: child),
+          Icon(
+            showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            size: 16,
+          ),
+        ],
+      );
     }
     return InkWell(
       onTap: () {
@@ -1143,11 +1160,7 @@ class __EventTimeState extends State<_EventTime> {
           showAll = !showAll;
         });
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
-      ),
+      child: child,
     );
   }
 

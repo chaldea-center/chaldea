@@ -24,6 +24,20 @@ enum Region {
 
   final Language language;
   const Region(this.language);
+
+  int get eventDelayMonth {
+    switch (this) {
+      case Region.jp:
+        return 12;
+      case Region.cn:
+        return 12;
+      case Region.tw:
+        return 15;
+      case Region.na:
+      case Region.kr:
+        return 24;
+    }
+  }
 }
 
 @JsonSerializable()

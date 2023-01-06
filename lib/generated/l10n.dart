@@ -262,6 +262,17 @@ class S {
     );
   }
 
+  /// `Quest Campaigns' start time of non-JP regions may be incorrect`
+  String get ap_campaign_time_mismatch_hint {
+    return Intl.message(
+      'Quest Campaigns\' start time of non-JP regions may be incorrect',
+      name: 'ap_campaign_time_mismatch_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `AP rate`
   String get ap_efficiency {
     return Intl.message(
@@ -5626,6 +5637,28 @@ class S {
     );
   }
 
+  /// `AP Cost Event Time`
+  String get quest_timeline_sort_campaign_open {
+    return Intl.message(
+      'AP Cost Event Time',
+      name: 'quest_timeline_sort_campaign_open',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Quest Open Time`
+  String get quest_timeline_sort_quest_open {
+    return Intl.message(
+      'Quest Open Time',
+      name: 'quest_timeline_sort_quest_open',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Raid Quest`
   String get raid_quest {
     return Intl.message(
@@ -5659,10 +5692,21 @@ class S {
     );
   }
 
-  /// `Some quests' start time is not correct`
+  /// `Rank Up`
+  String get rankup_quest {
+    return Intl.message(
+      'Rank Up',
+      name: 'rankup_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Some quests' start time is not correct.\nIf show by AP campaign time, only JP time is used.`
   String get rankup_timeline_hint {
     return Intl.message(
-      'Some quests\' start time is not correct',
+      'Some quests\' start time is not correct.\nIf show by AP campaign time, only JP time is used.',
       name: 'rankup_timeline_hint',
       desc: '',
       locale: localeName,
@@ -6628,6 +6672,17 @@ class S {
     );
   }
 
+  /// `Skill Rank Up`
+  String get skill_rankup {
+    return Intl.message(
+      'Skill Rank Up',
+      name: 'skill_rankup',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Skill Up`
   String get skill_up {
     return Intl.message(
@@ -7241,6 +7296,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [trait],
+    );
+  }
+
+  /// `NP Rank Up`
+  String get td_rankup {
+    return Intl.message(
+      'NP Rank Up',
+      name: 'td_rankup',
+      desc: '',
+      locale: localeName,
+      args: [],
     );
   }
 

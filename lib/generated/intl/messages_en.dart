@@ -105,6 +105,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "anniversary": MessageLookupByLibrary.simpleMessage("Anniversary"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
+        "ap_campaign_time_mismatch_hint": MessageLookupByLibrary.simpleMessage(
+            "Quest Campaigns\' start time of non-JP regions may be incorrect"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage(
@@ -795,12 +797,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restrictions"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
+        "quest_timeline_sort_campaign_open":
+            MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
+        "quest_timeline_sort_quest_open":
+            MessageLookupByLibrary.simpleMessage("Quest Open Time"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
         "random_mission":
             MessageLookupByLibrary.simpleMessage("Random Missions"),
+        "rankup_quest": MessageLookupByLibrary.simpleMessage("Rank Up"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
-            "Some quests\' start time is not correct"),
+            "Some quests\' start time is not correct.\nIf show by AP campaign time, only JP time is used."),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),
@@ -926,6 +933,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
+        "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Rank Up"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
@@ -1010,6 +1018,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "For the same NP id, different owners may have different card type and hit distributions."),
         "td_cardcolor_hint": m23,
         "td_cardnp_hint": m24,
+        "td_rankup": MessageLookupByLibrary.simpleMessage("NP Rank Up"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),

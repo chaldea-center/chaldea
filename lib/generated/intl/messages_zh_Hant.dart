@@ -100,6 +100,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名單"),
         "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
+        "ap_campaign_time_mismatch_hint":
+            MessageLookupByLibrary.simpleMessage("关卡AP等相关活动显示的时间(日服除外)可能不准确"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("數據目錄"),
         "app_data_use_external_storage":
@@ -666,11 +668,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("编队限制"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
+        "quest_timeline_sort_campaign_open":
+            MessageLookupByLibrary.simpleMessage("AP消耗活动开放时间"),
+        "quest_timeline_sort_quest_open":
+            MessageLookupByLibrary.simpleMessage("关卡开放时间"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
         "random_mission": MessageLookupByLibrary.simpleMessage("随机任务"),
-        "rankup_timeline_hint":
-            MessageLookupByLibrary.simpleMessage("部分關卡時間與實際開放時間不符"),
+        "rankup_quest": MessageLookupByLibrary.simpleMessage("强化关卡"),
+        "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
+            "部分关卡时间与实际开放时间不符\n若按AP消耗活动时间排序，则只使用日服时间"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store":
@@ -774,6 +781,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "simulator": MessageLookupByLibrary.simpleMessage("模擬器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
+        "skill_rankup": MessageLookupByLibrary.simpleMessage("技能强化"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升級"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
@@ -840,6 +848,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("同一宝具不同持有者可能拥有不同的色卡和Hit分布"),
         "td_cardcolor_hint": m23,
         "td_cardnp_hint": m24,
+        "td_rankup": MessageLookupByLibrary.simpleMessage("宝具强化"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
         "testing": MessageLookupByLibrary.simpleMessage("測試中"),
         "time_close": MessageLookupByLibrary.simpleMessage("關閉"),
