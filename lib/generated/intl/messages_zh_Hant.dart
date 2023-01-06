@@ -568,6 +568,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("方案"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任務列表"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("每週任務"),
+        "media_assets": MessageLookupByLibrary.simpleMessage("资源"),
         "migrate_external_storage_btn_no":
             MessageLookupByLibrary.simpleMessage("不轉移"),
         "migrate_external_storage_btn_yes":
@@ -884,11 +885,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "valentine_craft": MessageLookupByLibrary.simpleMessage("情人節禮裝"),
         "valentine_script": MessageLookupByLibrary.simpleMessage("情人节剧情"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),
+        "video": MessageLookupByLibrary.simpleMessage("视频"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("語音"),
         "war_age": MessageLookupByLibrary.simpleMessage("年代"),
         "war_banner": MessageLookupByLibrary.simpleMessage("標題圖"),
         "war_board": MessageLookupByLibrary.simpleMessage("聖杯戰線"),
+        "war_map": MessageLookupByLibrary.simpleMessage("地图"),
         "war_title": MessageLookupByLibrary.simpleMessage("關卡配置"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),

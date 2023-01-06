@@ -354,11 +354,13 @@ class ScriptCommand extends ScriptComponent {
 
   String get arg1 => args[0];
   String get arg2 => args[1];
+  String? get arg1n => args.getOrNull(0);
+  String? get arg2n => args.getOrNull(1);
   ScriptReaderFilterData get filterData => db.settings.scriptReaderFilterData;
-
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state,
       {bool showMore = false}) {
+    final assetUrl = AssetURL(state.region);
     // [#text:ruby], :ruby may not exist
     if (src.startsWith('#')) {
       final aa = src.substring(1).split(':');
@@ -452,11 +454,13 @@ class ScriptCommand extends ScriptComponent {
             style: TextStyle(color: Colors.amber[800]),
           )
         ];
+      case 'i':
       case 'image':
         // npc languages etc, mostly inline
-        final imgName = args.getOrNull(0)?.split(':').first;
+        final segs = args.getOrNull(0)?.split(':');
+        final imgName = segs?.getOrNull(0), ruby = segs?.getOrNull(1);
         if (imgName != null) {
-          final url = Atlas.asset('/Marks/$imgName.png', state.region);
+          final url = assetUrl.marks(imgName);
           return [
             WidgetSpan(
               child: CachedImage(
@@ -466,43 +470,39 @@ class ScriptCommand extends ScriptComponent {
                     Text.rich(state.textSpan(text: src)),
               ),
             ),
+            if (ruby != null && ruby.isNotEmpty) TextSpan(text: '($ruby) '),
           ];
         }
         break;
       case 'scene':
         if (!filterData.scene) return [];
-        final imgName = args.getOrNull(0)?.split(':').first.trim();
-        if (imgName != null) {
-          // black, white
-          if (['10000', '10001'].contains(imgName)) return [];
-          final url = Atlas.asset(
-              state.fullscreen
-                  ? 'Back/back${imgName}_1344_626.png'
-                  : 'Back/back$imgName.png',
-              state.region);
-          return [
-            WidgetSpan(
-              child: CachedImage(
-                imageUrl: url,
-                showSaveOnLongPress: true,
-              ),
-            ),
-          ];
-        }
-        break;
+        return _buildImages([assetUrl.back(arg1n, state.fullscreen)]);
+      // case 'sceneSet':
+      //   if (!filterData.scene) return [];
+      //   return _buildImages([assetUrl.back(arg2n,state.fullscreen)]);
+      case 'masterScene':
+        if (!filterData.scene) return [];
+        return _buildImages(args
+            .skip(1)
+            .take(2)
+            .map((e) => assetUrl.back(e, state.fullscreen)));
+      // case 'masterSet':
+      // case 'masterImageSet':
+      //   if (!filterData.scene) return [];
+      //   return _buildImages(args.skip(1).take(2).map((e) => assetUrl.image(e)));
       case 'pictureFrame':
       case 'pictureFrameTop':
         if (!filterData.scene) return [];
         // closure: [pictureFrame img] ... [pictureFrame]
         if (args.isEmpty) return [];
-        return [
-          WidgetSpan(
-            child: CachedImage(
-              imageUrl: Atlas.asset('Image/$arg1/$arg1.png', state.region),
-              showSaveOnLongPress: true,
-            ),
-          ),
-        ];
+        return _buildImages([assetUrl.image(arg1)]);
+      // case "horizontalImageSet":
+      // case "verticalImageSet":
+      case "imageChange":
+        // case "imageSet":
+        if (!filterData.scene) return [];
+        if (args.length < 2) return [];
+        return _buildImages([assetUrl.image(arg2)]);
       case 'se':
       case 'seLoop':
         if (!filterData.soundEffect) return [];
@@ -523,6 +523,18 @@ class ScriptCommand extends ScriptComponent {
             child: SoundPlayButton(
               name: filename,
               url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
+              player: state.sePlayer,
+            ),
+          )
+        ];
+      case 'cueSe':
+        if (!filterData.bgm) return [];
+        if (args.length < 2) break;
+        return [
+          WidgetSpan(
+            child: SoundPlayButton(
+              name: arg2,
+              url: Atlas.asset('Audio/$arg1/$arg2.mp3', state.region),
               player: state.sePlayer,
             ),
           )
@@ -567,6 +579,20 @@ class ScriptCommand extends ScriptComponent {
               ),
             )
         ];
+      case 'voice':
+        if (!filterData.voice) return [];
+        return [
+          WidgetSpan(
+            child: SoundPlayButton(
+              name: null,
+              url: Atlas.asset(
+                  'Audio/ChrVoice_${arg1.replaceFirst('_', '/')}.mp3',
+                  state.region),
+              player: state.voicePlayer,
+            ),
+          )
+        ];
+      case 'movie':
       case 'criMovie':
         if (args.isEmpty) break;
         return [
@@ -713,7 +739,6 @@ class ScriptCommand extends ScriptComponent {
       case 'communicationCharaClear':
       case 'communicationCharaFace':
       case 'communicationCharaLoop':
-      case 'cueSe':
       case 'cueSeStop':
       case 'cueSeVolume':
       case 'distortionstart':
@@ -754,9 +779,13 @@ class ScriptCommand extends ScriptComponent {
       case 'soundStopAll':
       case 'soundStopAllFade':
       case 'speed':
+      case 'subBlur':
+      case 'subBlurOff':
       case 'subCameraFilter':
       case 'subCameraOff':
       case 'subCameraOn':
+      case 'subCameraMove':
+      case 'subCameraHome':
       case 'subRenderDepth':
       case 'subRenderFadein':
       case 'subRenderFadeinFSL':
@@ -784,6 +813,31 @@ class ScriptCommand extends ScriptComponent {
         break;
     }
     return [state.textSpan(text: '[$src]')];
+  }
+
+  List<InlineSpan> _buildImages(Iterable<String?> urls) {
+    return [
+      for (final url in urls)
+        // black, white
+        if (url != null &&
+            [
+              '/Back/back10000.png',
+              '/Back/back10001.png',
+              '/Back/back10000_1344_626.png',
+              '/Back/back10001_1344_626.png',
+              '/Image/back10000/back10000.png',
+              '/Image/back10001/back10001.png',
+              '/Image/cut063_cinema/cut063_cinema.png',
+              '/Image/cut063_cinema_fs/cut063_cinema_fs.png'
+            ].every((e) => !url.endsWith(e)))
+          WidgetSpan(
+            child: CachedImage(
+              imageUrl: url,
+              showSaveOnLongPress: true,
+              viewFullOnTap: true,
+            ),
+          ),
+    ];
   }
 }
 

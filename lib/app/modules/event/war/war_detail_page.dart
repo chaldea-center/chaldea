@@ -13,6 +13,9 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
+import 'asset_list.dart';
+import 'map_list.dart';
+import 'war_bgm_list.dart';
 import 'war_map.dart';
 
 class WarDetailPage extends StatefulWidget {
@@ -353,17 +356,69 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ],
       ));
     }
+
+    List<Widget> extraTiles = [];
     if (war.quests.any((q) => q.phaseScripts.isNotEmpty)) {
-      children.add(TileGroup(
-        children: [
-          ListTile(
-            title: Text(S.current.script_story),
-            onTap: () {
-              router.pushPage(ScriptListPage(war: war));
-            },
-          ),
-        ],
+      extraTiles.add(ListTile(
+        title: Text(S.current.script_story),
+        onTap: () {
+          router.pushPage(ScriptListPage(war: war));
+        },
       ));
+      extraTiles.add(ListTile(
+        title: Text(S.current.media_assets),
+        onTap: () {
+          router.pushPage(WarAssetListPage(war: war));
+        },
+      ));
+    }
+    Set<int> bgms = {
+      war.bgm.id,
+      ...war.warAdds
+          .where((e) => e.type == WarOverwriteType.bgm)
+          .map((e) => e.overwriteId),
+      ...war.maps.map((e) => e.bgm.id),
+    }.where((e) => e != 0).toSet();
+    if (bgms.isNotEmpty) {
+      if (bgms.length == 1) {
+        final bgm = db.gameData.bgms[bgms.first];
+        final name = bgm?.tooltip.setMaxLines(1);
+        extraTiles.add(ListTile(
+          title: Text(S.current.bgm),
+          subtitle: name?.toText(),
+          onTap: bgm?.routeTo,
+        ));
+      } else {
+        extraTiles.add(ListTile(
+          title: Text(S.current.bgm),
+          onTap: () {
+            router.pushPage(WarBgmListPage(bgmIds: bgms.toList()));
+          },
+        ));
+      }
+    }
+    final maps =
+        war.maps.where((e) => e.mapImageW > 0 && e.mapImageH > 0).toList();
+    if (maps.isNotEmpty) {
+      if (maps.length == 1) {
+        final map = maps.first;
+        extraTiles.add(ListTile(
+          title: Text('${S.current.war_map} ${map.id}'),
+          onTap: () {
+            router.push(child: WarMapPage(war: war, map: map));
+          },
+        ));
+      } else {
+        extraTiles.add(ListTile(
+          title: Text(S.current.war_map),
+          onTap: () {
+            router.push(child: WarMapListPage(war: war));
+          },
+        ));
+      }
+    }
+    if (extraTiles.isNotEmpty) {
+      children.add(TileGroup(children: extraTiles));
     }
 
     final subWars = db.gameData.wars.values.where((w) {
@@ -403,26 +458,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
       children.add(TileGroup(
         header: 'Sub Wars',
         children: warTiles,
-      ));
-    }
-
-    // war map
-    final maps = war.maps
-        .where((map) => map.mapImageW > 0 && map.mapImageH > 0)
-        .toList();
-    if (maps.isNotEmpty) {
-      children.add(TileGroup(
-        header: 'Maps',
-        children: [
-          for (final map in maps)
-            ListTile(
-              title: Text('Map ${map.id}'),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(child: WarMapPage(war: war, map: map));
-              },
-            )
-        ],
       ));
     }
 

@@ -26,7 +26,9 @@ class NiceWar with RouteInfo {
   int materialParentWarId;
   String emptyMessage;
   Bgm bgm;
+  @protected
   String? scriptId;
+  @protected
   String? script;
   WarStartType startType;
   int targetId;

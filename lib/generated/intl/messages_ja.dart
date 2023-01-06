@@ -786,6 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "war_age": MessageLookupByLibrary.simpleMessage("時代"),
         "war_banner": MessageLookupByLibrary.simpleMessage("バナー"),
         "war_board": MessageLookupByLibrary.simpleMessage("聖杯戦線"),
+        "war_map": MessageLookupByLibrary.simpleMessage("マップ"),
         "war_title": MessageLookupByLibrary.simpleMessage("クエスト一覧"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Webレンダラ"),

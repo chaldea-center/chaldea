@@ -26,7 +26,8 @@ class _ScriptListPageState extends State<ScriptListPage> {
     if (war.startScript != null) {
       mainPart.add(ListTile(
         dense: true,
-        title: Text('Start Script ${war.scriptId}', textScaleFactor: 1.1),
+        title: Text('Start Script ${war.startScript?.scriptId}',
+            textScaleFactor: 1.1),
         contentPadding: EdgeInsets.zero,
         onTap: () => onTap(war.startScript!),
       ));

@@ -4735,6 +4735,17 @@ class S {
     );
   }
 
+  /// `Assets`
+  String get media_assets {
+    return Intl.message(
+      'Assets',
+      name: 'media_assets',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `NOT MIGRATE`
   String get migrate_external_storage_btn_no {
     return Intl.message(
@@ -7354,10 +7365,10 @@ class S {
     );
   }
 
-  /// `Trail Quest`
+  /// `Trial Quest`
   String get trial_quest {
     return Intl.message(
-      'Trail Quest',
+      'Trial Quest',
       name: 'trial_quest',
       desc: '',
       locale: localeName,
@@ -7618,6 +7629,17 @@ class S {
     );
   }
 
+  /// `Video`
+  String get video {
+    return Intl.message(
+      'Video',
+      name: 'video',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `View Illustration`
   String get view_illustration {
     return Intl.message(
@@ -7667,6 +7689,17 @@ class S {
     return Intl.message(
       'War Board',
       name: 'war_board',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Map`
+  String get war_map {
+    return Intl.message(
+      'Map',
+      name: 'war_map',
       desc: '',
       locale: localeName,
       args: [],

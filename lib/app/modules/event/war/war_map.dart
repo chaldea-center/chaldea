@@ -6,6 +6,7 @@ import 'package:photo_view/photo_view.dart';
 
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'map_filter.dart';
@@ -73,7 +74,7 @@ class _WarMapPageState extends State<WarMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map ${map.id}'),
+        title: Text('${S.current.war_map} ${map.id}'),
         actions: [
           IconButton(
             onPressed: () {

@@ -32,6 +32,7 @@ dependencies:
   args: ^2.3.1
   auto_size_text: ^3.0.0
   cached_network_image: ^3.2.3
+  cached_network_image_platform_interface: ^2.0.0
   carousel_slider: ^4.1.1
   catcher: # ^0.7.0
     git:
@@ -42,7 +43,7 @@ dependencies:
   crypto: ^3.0.2
   csv: ^5.0.1
   cupertino_icons: ^1.0.4
-  device_info_plus: ^7.0.1
+  device_info_plus: ^8.0.0
   dio: 4.0.4
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
@@ -81,8 +82,9 @@ dependencies:
       url: https://github.com/CoolDude53/modal_bottom_sheet.git
       ref: d3779be7d661481cc0d99090d6356a286ae4f86b
       path: modal_bottom_sheet
+  octo_image: ^1.0.2
   package_info_plus: ^3.0.2
-  path: ^1.8.1
+  path: ^1.8.2
   path_provider: ^2.0.10
   permission_handler: ^10.1.0
   pool: ^1.5.0

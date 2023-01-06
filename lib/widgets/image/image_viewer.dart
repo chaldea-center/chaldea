@@ -168,8 +168,8 @@ class _CachedImageState extends State<CachedImage> {
                 cacheName: widget.cacheName,
                 showSaveOnLongPress: true,
                 placeholder: widget.placeholder,
-                cachedOption: widget.cachedOption,
-                photoViewOption: widget.photoViewOption,
+                // cachedOption: widget.cachedOption,
+                // photoViewOption: widget.photoViewOption,
                 viewFullOnTap: false,
                 onTap: null,
               )

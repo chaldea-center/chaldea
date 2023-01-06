@@ -676,6 +676,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Missions"),
         "master_mission_weekly":
             MessageLookupByLibrary.simpleMessage("Weekly Mission"),
+        "media_assets": MessageLookupByLibrary.simpleMessage("Assets"),
         "migrate_external_storage_btn_no":
             MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),
         "migrate_external_storage_btn_yes":
@@ -1024,7 +1025,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Extra Gifts per box"),
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("Max Draws at once:"),
-        "trial_quest": MessageLookupByLibrary.simpleMessage("Trail Quest"),
+        "trial_quest": MessageLookupByLibrary.simpleMessage("Trial Quest"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
@@ -1064,12 +1065,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "valentine_script":
             MessageLookupByLibrary.simpleMessage("Valentine Script"),
         "version": MessageLookupByLibrary.simpleMessage("Version"),
+        "video": MessageLookupByLibrary.simpleMessage("Video"),
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
         "war_age": MessageLookupByLibrary.simpleMessage("Age"),
         "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
         "war_board": MessageLookupByLibrary.simpleMessage("War Board"),
+        "war_map": MessageLookupByLibrary.simpleMessage("Map"),
         "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),

@@ -372,6 +372,8 @@ const _$TraitEnumMap = {
   Trait.cardBuster: 'cardBuster',
   Trait.cardQuick: 'cardQuick',
   Trait.cardExtra: 'cardExtra',
+  Trait.cardWeak: 'cardWeak',
+  Trait.cardStrength: 'cardStrength',
   Trait.cardNP: 'cardNP',
   Trait.faceCard: 'faceCard',
   Trait.criticalHit: 'criticalHit',
