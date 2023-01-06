@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import 'package:catcher/catcher.dart';
 
@@ -29,22 +28,5 @@ class CatcherUtil {
 
   static bool reportFilter(Report report) {
     return true;
-  }
-
-  static Widget errorWidgetBuilder(FlutterErrorDetails details) {
-    if (details.silent) return Container();
-    return const Center(
-      child: Text.rich(
-        TextSpan(
-          children: [
-            WidgetSpan(
-                child: Icon(Icons.announcement, color: Colors.red, size: 40)),
-            TextSpan(text: '\nThere is an Error')
-          ],
-        ),
-        overflow: TextOverflow.clip,
-        textAlign: TextAlign.center,
-      ),
-    );
   }
 }

@@ -309,6 +309,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("No internet"),
         "error_required_app_version": m2,
+        "error_widget_hint":
+            MessageLookupByLibrary.simpleMessage("Error! Click to go back >_<"),
         "event_ap_cost_half":
             MessageLookupByLibrary.simpleMessage("AP Cost 1/2"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),

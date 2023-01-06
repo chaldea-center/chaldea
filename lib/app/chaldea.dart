@@ -22,7 +22,6 @@ import '../packages/logger.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
-import '../utils/catcher/catcher_util.dart';
 import 'app.dart';
 import 'routes/parser.dart';
 import 'tools/backup_backend/chaldea_backend.dart';
@@ -71,7 +70,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             Language.getSortedSupportedLanguage(db.settings.language)
                 .map((e) => e.locale),
         builder: (context, widget) {
-          ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
+          ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
           return FlutterEasyLoading(child: widget);
         },
       ),
@@ -232,4 +231,63 @@ class DraggableScrollBehavior extends MaterialScrollBehavior {
         for (final v in PointerDeviceKind.values)
           if (v != PointerDeviceKind.mouse || enableMouse) v
       };
+}
+
+class _ErrorWidget extends StatelessWidget {
+  final FlutterErrorDetails details;
+  const _ErrorWidget(this.details);
+
+  static Widget errorWidgetBuilder(FlutterErrorDetails details) =>
+      _ErrorWidget(details);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          final nav = Navigator.maybeOf(context);
+          if (nav == null) return;
+          if (nav.canPop()) nav.pop();
+        },
+        onLongPress: () {
+          final nav = Navigator.maybeOf(context);
+          if (nav == null) return;
+          nav.push(PageRouteBuilder(pageBuilder: (context, _, __) {
+            return Scaffold(
+              appBar: AppBar(title: Text(S.current.error)),
+              body: ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                children: [
+                  const DividerWithTitle(title: 'URL'),
+                  Text(router.currentConfiguration?.url ?? 'Unknown'),
+                  const DividerWithTitle(title: 'Error'),
+                  Text(details.exception.toString()),
+                  if (details.stack != null) ...[
+                    const DividerWithTitle(title: 'StackTrace'),
+                    Text(
+                      details.stack.toString(),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ]
+                ],
+              ),
+            );
+          }));
+        },
+        child: Text.rich(
+          TextSpan(
+            children: [
+              const WidgetSpan(
+                child: Icon(Icons.announcement, color: Colors.red, size: 40),
+              ),
+              TextSpan(text: '\n${S.current.error_widget_hint}')
+            ],
+          ),
+          overflow: TextOverflow.clip,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 }

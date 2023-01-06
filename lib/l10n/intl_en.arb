@@ -168,6 +168,7 @@
   "error_no_data_found": "No data found",
   "error_no_internet": "No internet",
   "error_required_app_version": "Required app version: ≥ {version}",
+  "error_widget_hint": "Error! Click to go back >_<",
   "event_ap_cost_half": "AP Cost 1/2",
   "event_bonus": "Bonus",
   "event_bulletin_board": "Bulletin",

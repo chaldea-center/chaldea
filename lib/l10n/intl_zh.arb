@@ -168,6 +168,7 @@
   "error_no_data_found": "未找到数据文件",
   "error_no_internet": "无网络连接",
   "error_required_app_version": "App版本需不低于{version}",
+  "error_widget_hint": "错误!点击返回>_<",
   "event_ap_cost_half": "AP消耗减半",
   "event_bonus": "加成",
   "event_bulletin_board": "咕咕报",

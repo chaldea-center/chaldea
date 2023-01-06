@@ -168,6 +168,7 @@
   "error_no_data_found": "버전 정보를 찾을 수 없습니다",
   "error_no_internet": "인터넷 연결 없음",
   "error_required_app_version": "필요한 앱 버전: ≥ {version}",
+  "error_widget_hint": null,
   "event_ap_cost_half": "소비 AP 50% DOWN",
   "event_bonus": "보너스",
   "event_bulletin_board": "피전 레포트",

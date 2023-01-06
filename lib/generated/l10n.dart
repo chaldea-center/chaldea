@@ -1912,6 +1912,17 @@ class S {
     );
   }
 
+  /// `Error! Click to go back >_<`
+  String get error_widget_hint {
+    return Intl.message(
+      'Error! Click to go back >_<',
+      name: 'error_widget_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `AP Cost 1/2`
   String get event_ap_cost_half {
     return Intl.message(
