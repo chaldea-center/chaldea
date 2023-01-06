@@ -20,6 +20,7 @@ class EventBonusTab extends HookWidget {
         leading: ce.iconBuilder(context: context),
         title: Text(ce.lName.l, maxLines: 1),
         subtitle: Text(subtitle.toString()),
+        onTap: ce.routeTo,
       )
     ];
 

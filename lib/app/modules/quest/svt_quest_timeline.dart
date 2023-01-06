@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -95,10 +96,17 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         children: grouped[t]!.map((quest) {
           final svt = relatedServants[quest.id]!;
           Set<int> iconIds = {};
-          int? skillNum;
+          NiceSkill? targetSkill;
+          NiceTd? targetTd;
           for (final skill in svt.skills) {
             if (skill.condQuestId == quest.id) {
-              skillNum = skill.num;
+              targetSkill = skill;
+              break;
+            }
+          }
+          for (final td in svt.noblePhantasms) {
+            if (td.condQuestId == quest.id) {
+              targetTd = td;
               break;
             }
           }
@@ -154,7 +162,12 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                           Navigator.pop(context);
                           quest.routeTo(popDetails: true);
                         },
-                      )
+                      ),
+                      if (targetSkill != null)
+                        DisableLayoutBuilder(
+                            child: SkillDescriptor(skill: targetSkill)),
+                      if (targetTd != null)
+                        DisableLayoutBuilder(child: TdDescriptor(td: targetTd)),
                     ],
                   );
                 },
@@ -174,7 +187,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                           context: context,
                           icon: Atlas.assetItem(iconId),
                           width: 20,
-                          text: iconId == 9 ? skillNum?.toString() : null,
+                          text:
+                              iconId == 9 ? targetSkill?.num.toString() : null,
                           textPadding: const EdgeInsets.only(top: 8),
                         ),
                     ],
