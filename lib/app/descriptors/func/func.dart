@@ -106,13 +106,17 @@ class _DescriptorWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
+    return LayoutTryBuilder(builder: (context, constraints) {
       double maxWidth = 80;
-      if (constraints.maxWidth != double.infinity) {
+      int perLine = 5;
+      if (constraints.maxWidth.isFinite) {
         maxWidth = max(maxWidth, constraints.maxWidth / 3);
         maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
+        if (constraints.maxWidth > 600 &&
+            [lvCells, ocCells, supportCells].any((e) => e.length > 5)) {
+          perLine = 10;
+        }
       }
-      int perLine = constraints.maxWidth > 600 && lvCells.length > 5 ? 10 : 5;
 
       List<Widget> children = [];
       if (trailing == null) {

@@ -1239,7 +1239,7 @@ class QuestEnemyWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           face,
-          LayoutBuilder(builder: (context, constraints) {
+          LayoutTryBuilder(builder: (context, constraints) {
             return AutoSizeText(
               [
                 displayName,

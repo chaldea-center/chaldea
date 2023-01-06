@@ -19,9 +19,12 @@ class ValListDsc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      int perLine =
-          constraints.maxWidth > 600 && originVals.length > 5 ? 10 : 5;
+    return LayoutTryBuilder(builder: (context, constraints) {
+      int perLine = (constraints.maxWidth.isFinite &&
+              constraints.maxWidth > 600 &&
+              originVals.length > 5)
+          ? 10
+          : 5;
       List<Widget> rows = [];
       int rowCount = (mutaingVals.length / perLine).ceil();
       for (int i = 0; i < rowCount; i++) {
