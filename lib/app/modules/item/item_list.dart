@@ -23,9 +23,8 @@ enum _ItemSortType {
   id,
   owned,
   left,
-}
+  ;
 
-extension _ItemSortTypeX on _ItemSortType {
   String get shownName {
     switch (this) {
       case _ItemSortType.default_:

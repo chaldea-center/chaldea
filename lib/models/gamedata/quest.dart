@@ -1120,24 +1120,16 @@ class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
 }
 
 enum QuestType {
-  main, // 1
-  free, // 2
-  friendship, // 3
-  event, //5
-  heroballad, //6
-  warBoard, // 7
-}
+  main(1),
+  free(2),
+  friendship(3),
+  event(5),
+  heroballad(6),
+  warBoard(7),
+  ;
 
-const kQuestTypeIds = {
-  1: QuestType.main,
-  2: QuestType.free,
-  3: QuestType.friendship,
-  5: QuestType.event,
-  6: QuestType.heroballad,
-  7: QuestType.warBoard,
-};
-
-extension QuestTypeX on QuestType {
+  final int id;
+  const QuestType(this.id);
   String get shownName {
     switch (this) {
       case QuestType.main:
@@ -1153,9 +1145,9 @@ extension QuestTypeX on QuestType {
         return S.current.war_board;
     }
   }
-
-  int get id => kQuestTypeIds.entries.firstWhere((e) => e.value == this).key;
 }
+
+final kQuestTypeIds = {for (final t in QuestType.values) t.id: t};
 
 enum ConsumeType {
   none,

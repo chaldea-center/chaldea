@@ -160,9 +160,15 @@ class FilterRadioData<T> extends FilterGroupData<T> {
 }
 
 /// Servant
-enum SvtCompare { no, className, rarity, atk, hp, priority }
+enum SvtCompare {
+  no,
+  className,
+  rarity,
+  atk,
+  hp,
+  priority,
+  ;
 
-extension SvtCompareX on SvtCompare {
   String get showName {
     switch (this) {
       case SvtCompare.no:
@@ -181,9 +187,13 @@ extension SvtCompareX on SvtCompare {
   }
 }
 
-enum SvtEffectScope { active, passive, append, td }
+enum SvtEffectScope {
+  active,
+  passive,
+  append,
+  td,
+  ;
 
-extension SvtEffectScopeX on SvtEffectScope {
   String get shownName {
     switch (this) {
       case SvtEffectScope.active:
@@ -206,6 +216,20 @@ enum EffectTarget {
   enemy,
   enemyAll,
   special,
+  ;
+
+  static EffectTarget fromFunc(FuncTargetType funcTarget) {
+    return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
+  }
+
+  String get shownName {
+    for (final entry in _funcEffectMapping.entries) {
+      if (entry.value == this) {
+        return Transl.funcTargetType(entry.key).l;
+      }
+    }
+    return S.current.general_special;
+  }
 }
 
 enum SvtPlanScope {
@@ -233,22 +257,6 @@ const _funcEffectMapping = {
   FuncTargetType.enemy: EffectTarget.enemy,
   FuncTargetType.enemyAll: EffectTarget.enemyAll,
 };
-
-extension EffectTargetX on EffectTarget {
-  static const List<EffectTarget> svtTargets = EffectTarget.values;
-  static EffectTarget fromFunc(FuncTargetType funcTarget) {
-    return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
-  }
-
-  String get shownName {
-    for (final entry in _funcEffectMapping.entries) {
-      if (entry.value == this) {
-        return Transl.funcTargetType(entry.key).l;
-      }
-    }
-    return S.current.general_special;
-  }
-}
 
 abstract class _FilterData {
   List<FilterGroupData> get groups;
@@ -403,9 +411,13 @@ class SvtFilterData with _FilterData {
 
 /// Craft Essence
 
-enum CraftCompare { no, rarity, atk, hp }
+enum CraftCompare {
+  no,
+  rarity,
+  atk,
+  hp,
+  ;
 
-extension CraftCompareX on CraftCompare {
   String get shownName {
     switch (this) {
       case CraftCompare.no:
@@ -420,9 +432,13 @@ extension CraftCompareX on CraftCompare {
   }
 }
 
-enum CraftATKType { none, hp, atk, mix }
+enum CraftATKType {
+  none,
+  hp,
+  atk,
+  mix,
+  ;
 
-extension CraftATKTypeX on CraftATKType {
   String get shownName {
     switch (this) {
       case CraftATKType.none:
@@ -529,9 +545,11 @@ class CraftFilterData with _FilterData {
 }
 
 /// Command Code
-enum CmdCodeCompare { no, rarity }
+enum CmdCodeCompare {
+  no,
+  rarity,
+  ;
 
-extension CmdCodeCompareX on CmdCodeCompare {
   String get shownName {
     switch (this) {
       case CmdCodeCompare.no:
@@ -622,9 +640,8 @@ enum FavoriteState {
   all,
   owned,
   other,
-}
+  ;
 
-extension FavoriteStateX on FavoriteState {
   IconData get icon {
     switch (this) {
       case FavoriteState.all:

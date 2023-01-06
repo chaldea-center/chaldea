@@ -176,7 +176,7 @@ class CraftListPageState extends State<CraftListPage>
       if (filterData.effectTarget.options.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget
-              .matchOne(EffectTargetX.fromFunc(func.funcTargetType));
+              .matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
       if (funcs.isEmpty) return false;

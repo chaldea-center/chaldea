@@ -282,7 +282,7 @@ class _ServantFilterPageState
         ),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
-          options: EffectTargetX.svtTargets,
+          options: EffectTarget.values,
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value, _) {

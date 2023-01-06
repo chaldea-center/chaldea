@@ -14,15 +14,22 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'ffo_card.dart';
 
-enum FfoPartWhere { head, body, bg }
+enum FfoPartWhere {
+  head,
+  body,
+  bg,
+  ;
 
-extension FfoPartWhereX on FfoPartWhere {
-  static Map<FfoPartWhere, String> get _map => {
-        FfoPartWhere.head: S.current.ffo_head,
-        FfoPartWhere.body: S.current.ffo_body,
-        FfoPartWhere.bg: S.current.background,
-      };
-  String get shownName => _map[this]!;
+  String get shownName {
+    switch (this) {
+      case FfoPartWhere.head:
+        return S.current.ffo_head;
+      case FfoPartWhere.body:
+        return S.current.ffo_body;
+      case FfoPartWhere.bg:
+        return S.current.background;
+    }
+  }
 }
 
 class FfoDB {

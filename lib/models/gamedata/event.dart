@@ -1508,9 +1508,8 @@ enum EventWorkType {
   internalAffairs, // 2 政务 x
   farmming, // 3 内务 x
   unknown, // in case DW correct the naming
-}
+  ;
 
-extension EventWorkTypeX on EventWorkType {
   String get shownName => Transl.enums(this, (enums) => enums.eventWorkType).l;
   String get icon => getIcon(index + 1);
   static String getIcon(int indiv) {

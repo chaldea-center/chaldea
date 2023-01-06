@@ -540,7 +540,7 @@ class FuncDescriptor extends StatelessWidget {
       if (indiv != null) {
         spans.add(CenterWidgetSpan(
           child: db.getIconImage(
-            EventWorkTypeX.getIcon(indiv),
+            EventWorkType.getIcon(indiv),
             width: 20,
             aspectRatio: 1,
           ),

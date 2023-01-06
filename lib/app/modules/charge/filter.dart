@@ -10,9 +10,8 @@ enum NpChargeType {
   instant,
   perTurn,
   special,
-}
+  ;
 
-extension NpChargeTypeX on NpChargeType {
   String get shownName {
     switch (this) {
       case NpChargeType.instantSum:

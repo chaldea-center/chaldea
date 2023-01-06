@@ -512,7 +512,7 @@ class ServantListPageState extends State<ServantListPage>
       if (filterData.effectTarget.options.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget
-              .matchOne(EffectTargetX.fromFunc(func.funcTargetType));
+              .matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
       if (funcs.isEmpty) return false;

@@ -186,9 +186,8 @@ enum CustomMissionType {
   enemyNotServantClass,
   quest,
   questTrait,
-}
+  ;
 
-extension CustomMissionTypeX on CustomMissionType {
   bool get isQuestType =>
       this == CustomMissionType.questTrait || this == CustomMissionType.quest;
   bool get isEnemyType => !isQuestType;

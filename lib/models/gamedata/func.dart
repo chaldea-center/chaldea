@@ -397,7 +397,7 @@ class BaseFunction with RouteInfo {
   bool get isEnemyOnlyFunc =>
       (funcTargetTeam == FuncApplyTarget.enemy && !funcTargetType.isEnemy) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
-  EffectTarget get effectTarget => EffectTargetX.fromFunc(funcTargetType);
+  EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 }
 
 @JsonSerializable()

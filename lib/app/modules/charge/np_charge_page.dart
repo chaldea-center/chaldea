@@ -569,7 +569,7 @@ class _NpChargePageState extends State<NpChargePage> {
     int oc,
     NiceFunction? triggerFunc,
   ) {
-    var effectTarget = EffectTargetX.fromFunc(func.funcTargetType);
+    var effectTarget = EffectTarget.fromFunc(func.funcTargetType);
     if (!NpFilterData.kEffectTargets.contains(effectTarget)) {
       effectTarget = EffectTarget.special;
     }
