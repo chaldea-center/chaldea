@@ -1,5 +1,6 @@
 import 'package:tuple/tuple.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -372,11 +373,43 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
           dense: true,
           title: Text(name),
           onTap: () {
-            launch(movies[index]);
+            router.pushPage(_VideoPlayPage(url: movies[index], title: name));
           },
         );
       },
       itemCount: movies.length,
+    );
+  }
+}
+
+class _VideoPlayPage extends StatefulWidget {
+  final String? title;
+  final String url;
+  const _VideoPlayPage({required this.url, this.title});
+
+  @override
+  State<_VideoPlayPage> createState() => __VideoPlayPageState();
+}
+
+class __VideoPlayPageState extends State<_VideoPlayPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title ?? 'Video Player'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              launch(widget.url, external: true);
+            },
+            icon: const Icon(Icons.open_in_browser),
+            tooltip: S.current.jump_to(''),
+          ),
+        ],
+      ),
+      body: Center(
+        child: MyVideoPlayer.url(url: widget.url),
+      ),
     );
   }
 }

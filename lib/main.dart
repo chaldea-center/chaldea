@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:catcher/catcher.dart';
+import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_size/window_size.dart';
 import 'package:worker_manager/worker_manager.dart';
 
@@ -104,4 +105,6 @@ Future<void> _initiateCommon() async {
     HttpOverrides.global = CustomHttpOverrides();
   }
   SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
+
+  if (PlatformU.isWindows) WindowsVideoPlayer.registerWith();
 }

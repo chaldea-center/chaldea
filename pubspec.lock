@@ -1486,6 +1486,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  video_player:
+    dependency: "direct main"
+    description:
+      name: video_player
+      sha256: "86b4fb9e30613ef4ff7e47367bfec4b080ab17205b7d969cd12bbebde49476b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.10"
+  video_player_android:
+    dependency: transitive
+    description:
+      name: video_player_android
+      sha256: "984388511230bac63feb53b2911a70e829fe0976b6b2213f5c579c4e0a882db3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.10"
+  video_player_avfoundation:
+    dependency: transitive
+    description:
+      name: video_player_avfoundation
+      sha256: d9f7a46d6a77680adb03ec05a381025d6e890ebe636637c6c3014cc3926b97e9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.8"
+  video_player_macos:
+    dependency: "direct main"
+    description:
+      name: video_player_macos
+      sha256: "9155542ea434f777767dafa3f73ba0ca88950baa194750a569582ee37893fed7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      sha256: "318a6d20577e1c78cf0bf40670883cc571ea860c72a4f7426d7dacce4bdd4343"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.4"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      sha256: b649b07b8f8f553bee4a97a0a53d0fe78a70b115eafaf0105b612b32b05ddb99
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.13"
+  video_player_win:
+    dependency: "direct main"
+    description:
+      name: video_player_win
+      sha256: fe5a8fc0b4c382588c28f8d5392fd1cf30ce1a4f156dc11996048f873ffd0f87
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   watcher:
     dependency: transitive
     description:

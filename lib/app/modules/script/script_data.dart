@@ -11,8 +11,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/audio.dart';
-import 'package:chaldea/packages/file_plus/file_plus.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -596,16 +595,21 @@ class ScriptCommand extends ScriptComponent {
       case 'criMovie':
         if (args.isEmpty) break;
         return [
-          state.textSpan(text: 'Movie  ', style: boldStyle),
-          SharedBuilder.textButtonSpan(
-            context: context,
-            text: '▶ ${args[0]}',
-            style: state.mergeStyles().copyWith(
-                color: Theme.of(context).colorScheme.secondaryContainer),
-            onTap: () {
-              launch(Atlas.asset('Movie/${args[0]}.mp4', state.region));
-            },
-          )
+          WidgetSpan(
+            child: MyVideoPlayer.url(
+              url: Atlas.asset('Movie/${args[0]}.mp4', state.region),
+            ),
+          ),
+          // state.textSpan(text: 'Movie  ', style: boldStyle),
+          // SharedBuilder.textButtonSpan(
+          //   context: context,
+          //   text: '▶ ${args[0]}',
+          //   style: state.mergeStyles().copyWith(
+          //       color: Theme.of(context).colorScheme.secondaryContainer),
+          //   onTap: () {
+          //     launch(Atlas.asset('Movie/${args[0]}.mp4', state.region));
+          //   },
+          // )
         ];
       case 'selectionUse':
         return [
