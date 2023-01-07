@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自動重設"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
+        "autoplay": MessageLookupByLibrary.simpleMessage("自动播放"),
         "background": MessageLookupByLibrary.simpleMessage("背景"),
         "backup": MessageLookupByLibrary.simpleMessage("備份"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("備份失敗"),
@@ -407,6 +408,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ignore": MessageLookupByLibrary.simpleMessage("忽略"),
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("畫師"),
+        "image": MessageLookupByLibrary.simpleMessage("图片"),
         "import_active_skill_hint":
             MessageLookupByLibrary.simpleMessage("強化 - 從者技能強化"),
         "import_active_skill_screenshots":
@@ -788,6 +790,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
         "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
+        "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
         "special_reward_show": MessageLookupByLibrary.simpleMessage("顯示特殊報酬"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),

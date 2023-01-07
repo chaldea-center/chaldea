@@ -125,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
+        "autoplay": MessageLookupByLibrary.simpleMessage("Autoplay"),
         "background": MessageLookupByLibrary.simpleMessage("Background"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("Backup failed"),
@@ -469,6 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ignore": MessageLookupByLibrary.simpleMessage("Ignore"),
         "illustration": MessageLookupByLibrary.simpleMessage("Illustration"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Illustrator"),
+        "image": MessageLookupByLibrary.simpleMessage("Image"),
         "import_active_skill_hint":
             MessageLookupByLibrary.simpleMessage("Enhance - Skill"),
         "import_active_skill_screenshots":
@@ -943,6 +945,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Target Count"),
         "solution_total_battles_ap": m22,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
+        "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide":
             MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
         "special_reward_show":

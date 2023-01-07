@@ -32,15 +32,16 @@ class _ScriptReaderFilterPageState
             filterData.scene = v;
             update();
           },
-          title: const Text('Images'),
+          title: Text(S.current.image),
         ),
+        buildGroupDivider(),
         SwitchListTile.adaptive(
           value: filterData.soundEffect,
           onChanged: (v) {
             filterData.soundEffect = v;
             update();
           },
-          title: const Text('Sound Effect'),
+          title: Text(S.current.sound_effect),
         ),
         SwitchListTile.adaptive(
           value: filterData.bgm,
@@ -48,7 +49,7 @@ class _ScriptReaderFilterPageState
             filterData.bgm = v;
             update();
           },
-          title: const Text('BGM'),
+          title: Text(S.current.bgm),
         ),
         SwitchListTile.adaptive(
           value: filterData.voice,
@@ -58,6 +59,24 @@ class _ScriptReaderFilterPageState
           },
           title: Text(S.current.voice),
           subtitle: Text(S.current.valentine_script),
+        ),
+        buildGroupDivider(),
+        SwitchListTile.adaptive(
+          value: filterData.video,
+          onChanged: (v) {
+            filterData.video = v;
+            update();
+          },
+          title: Text(S.current.video),
+        ),
+        SwitchListTile.adaptive(
+          value: filterData.autoPlayVideo,
+          // secondary: const Icon(Icons.subdirectory_arrow_right),
+          onChanged: (v) {
+            filterData.autoPlayVideo = v;
+            update();
+          },
+          title: Text(S.current.autoplay),
         ),
       ]),
     );

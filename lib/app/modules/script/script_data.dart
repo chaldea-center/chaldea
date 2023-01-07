@@ -151,7 +151,14 @@ class _TextStyleState {
 
 class ScriptState {
   String? fulltext;
-  Region region = Region.jp;
+  AssetURL assetUrl = AssetURL(Region.jp);
+  Region _region = Region.jp;
+  Region get region => _region;
+  set region(Region v) {
+    _region = v;
+    assetUrl = AssetURL(_region);
+  }
+
   bool fullscreen = false;
   final bgmPlayer = MyAudioPlayer<String>();
   final sePlayer = MyAudioPlayer<String>();
@@ -359,7 +366,6 @@ class ScriptCommand extends ScriptComponent {
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state,
       {bool showMore = false}) {
-    final assetUrl = AssetURL(state.region);
     // [#text:ruby], :ruby may not exist
     if (src.startsWith('#')) {
       final aa = src.substring(1).split(':');
@@ -459,7 +465,7 @@ class ScriptCommand extends ScriptComponent {
         final segs = args.getOrNull(0)?.split(':');
         final imgName = segs?.getOrNull(0), ruby = segs?.getOrNull(1);
         if (imgName != null) {
-          final url = assetUrl.marks(imgName);
+          final url = state.assetUrl.marks(imgName);
           return [
             WidgetSpan(
               child: CachedImage(
@@ -475,7 +481,7 @@ class ScriptCommand extends ScriptComponent {
         break;
       case 'scene':
         if (!filterData.scene) return [];
-        return _buildImages([assetUrl.back(arg1n, state.fullscreen)]);
+        return _buildImages([state.assetUrl.back(arg1n, state.fullscreen)]);
       // case 'sceneSet':
       //   if (!filterData.scene) return [];
       //   return _buildImages([assetUrl.back(arg2n,state.fullscreen)]);
@@ -484,7 +490,7 @@ class ScriptCommand extends ScriptComponent {
         return _buildImages(args
             .skip(1)
             .take(2)
-            .map((e) => assetUrl.back(e, state.fullscreen)));
+            .map((e) => state.assetUrl.back(e, state.fullscreen)));
       // case 'masterSet':
       // case 'masterImageSet':
       //   if (!filterData.scene) return [];
@@ -494,14 +500,14 @@ class ScriptCommand extends ScriptComponent {
         if (!filterData.scene) return [];
         // closure: [pictureFrame img] ... [pictureFrame]
         if (args.isEmpty) return [];
-        return _buildImages([assetUrl.image(arg1)]);
+        return _buildImages([state.assetUrl.image(arg1)]);
       // case "horizontalImageSet":
       // case "verticalImageSet":
       case "imageChange":
         // case "imageSet":
         if (!filterData.scene) return [];
         if (args.length < 2) return [];
-        return _buildImages([assetUrl.image(arg2)]);
+        return _buildImages([state.assetUrl.image(arg2)]);
       case 'se':
       case 'seLoop':
         if (!filterData.soundEffect) return [];
@@ -594,22 +600,19 @@ class ScriptCommand extends ScriptComponent {
       case 'movie':
       case 'criMovie':
         if (args.isEmpty) break;
+        final url = state.assetUrl.movie(arg1);
         return [
           WidgetSpan(
-            child: MyVideoPlayer.url(
-              url: Atlas.asset('Movie/${args[0]}.mp4', state.region),
-            ),
+            child: filterData.video
+                ? GestureDetector(
+                    onLongPress: () {
+                      router.pushPage(VideoPlayPage(url: url, title: arg1));
+                    },
+                    child: MyVideoPlayer.url(
+                        url: url, autoPlay: filterData.autoPlayVideo),
+                  )
+                : MyVideoPlayer.defaultFailedBuilder(context, url, null),
           ),
-          // state.textSpan(text: 'Movie  ', style: boldStyle),
-          // SharedBuilder.textButtonSpan(
-          //   context: context,
-          //   text: '▶ ${args[0]}',
-          //   style: state.mergeStyles().copyWith(
-          //       color: Theme.of(context).colorScheme.secondaryContainer),
-          //   onTap: () {
-          //     launch(Atlas.asset('Movie/${args[0]}.mp4', state.region));
-          //   },
-          // )
         ];
       case 'selectionUse':
         return [

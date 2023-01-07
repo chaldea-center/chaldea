@@ -63,7 +63,9 @@ class _CacheManager {
   final Map<String, DateTime> _failed = {}; // key=url
 
   LazyBox<Uint8List>? _webBox;
-  late final FilePlus _infoFile;
+  late final FilePlus _infoFile = FilePlus(kIsWeb
+      ? 'api_cache/$cacheKey.json'
+      : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
   _CacheManager(this.cacheKey);
 
@@ -82,9 +84,6 @@ class _CacheManager {
     _initCompleter = Completer();
     try {
       _data.clear();
-      _infoFile = FilePlus(kIsWeb
-          ? 'api_cache/$cacheKey.json'
-          : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
       if (kIsWeb) {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
       }

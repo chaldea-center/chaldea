@@ -236,3 +236,34 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     return stack;
   }
 }
+
+class VideoPlayPage extends StatefulWidget {
+  final String? title;
+  final String url;
+  const VideoPlayPage({super.key, required this.url, this.title});
+
+  @override
+  State<VideoPlayPage> createState() => _VideoPlayPageState();
+}
+
+class _VideoPlayPageState extends State<VideoPlayPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title ?? 'Video Player'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              launch(widget.url, external: true);
+            },
+            icon: const Icon(Icons.open_in_browser),
+          ),
+        ],
+      ),
+      body: Center(
+        child: MyVideoPlayer.url(url: widget.url),
+      ),
+    );
+  }
+}

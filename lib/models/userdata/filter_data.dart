@@ -775,16 +775,21 @@ class ScriptReaderFilterData {
   bool soundEffect;
   bool bgm;
   bool voice;
+  bool video;
+
+  bool autoPlayVideo;
 
   ScriptReaderFilterData({
     this.scene = true,
     this.soundEffect = true,
     this.bgm = true,
     this.voice = true,
+    this.video = true,
+    this.autoPlayVideo = true,
   });
 
   void reset() {
-    soundEffect = bgm = scene = voice = true;
+    soundEffect = bgm = scene = voice = video = autoPlayVideo = true;
   }
 
   factory ScriptReaderFilterData.fromJson(Map<String, dynamic> data) =>

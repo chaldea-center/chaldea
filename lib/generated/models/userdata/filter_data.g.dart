@@ -182,6 +182,9 @@ ScriptReaderFilterData _$ScriptReaderFilterDataFromJson(Map json) =>
               $checkedConvert('soundEffect', (v) => v as bool? ?? true),
           bgm: $checkedConvert('bgm', (v) => v as bool? ?? true),
           voice: $checkedConvert('voice', (v) => v as bool? ?? true),
+          video: $checkedConvert('video', (v) => v as bool? ?? true),
+          autoPlayVideo:
+              $checkedConvert('autoPlayVideo', (v) => v as bool? ?? true),
         );
         return val;
       },
@@ -194,4 +197,6 @@ Map<String, dynamic> _$ScriptReaderFilterDataToJson(
       'soundEffect': instance.soundEffect,
       'bgm': instance.bgm,
       'voice': instance.voice,
+      'video': instance.video,
+      'autoPlayVideo': instance.autoPlayVideo,
     };

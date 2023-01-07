@@ -226,6 +226,7 @@ class _CachedImageState extends State<CachedImage> {
               .asUint8List();
           if (bytes == null) {
             EasyLoading.showError('Failed');
+            if (widget.imageUrl != null) copyToClipboard(widget.imageUrl!);
             return;
           }
           if (!mounted) return;

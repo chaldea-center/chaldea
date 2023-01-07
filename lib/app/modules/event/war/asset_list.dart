@@ -79,17 +79,26 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     // script assets
     final reg = RegExp(r'\[([^\]]+)\]');
     bool anyFullscreen = false;
-    final futures = scripts.map((script) async {
+
+    final futures = scripts.map<Future<String?>>((script) async {
       if (force) await AtlasIconLoader.i.deleteFromDisk(script);
       final fp = await AtlasIconLoader.i.get(script);
-      if (fp == null) return;
-      String content;
+      if (fp == null) return null;
       try {
-        content = await FilePlus(fp).readAsString();
+        return FilePlus(fp).readAsString();
       } catch (e, s) {
         logger.e('read $fp failed', e, s);
-        return;
+        return null;
+      } finally {
+        progress += 1;
+        if (mounted) {
+          setState(() {});
+        }
       }
+    }).toList();
+    for (final _content in futures) {
+      final content = await _content;
+      if (content == null) continue;
       final fullscreen = content.contains('[enableFullScreen]');
       if (fullscreen) anyFullscreen = true;
       for (final match in reg.allMatches(content)) {
@@ -103,12 +112,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
           logger.d('parse cmd failed', e, s);
         }
       }
-      progress += 1;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-    await Future.wait(futures);
+    }
 
     // post war assets
     bgImages = {
@@ -298,6 +302,10 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
                 child: Text(url.breakWord),
               ),
             ),
+            onTap: () {
+              FullscreenImageViewer.show(
+                  context: context, urls: bgImages, initialPage: index);
+            },
           ),
         );
       },
@@ -310,7 +318,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     return GridView.extent(
       maxCrossAxisExtent: 300,
       childAspectRatio: 1024 / 768,
-      children: figures.map((fig) {
+      children: List.generate(figures.length, (index) {
+        final fig = figures[index];
         final charaFigure = fig.contains('CharaFigure');
         return CachedImage(
           imageUrl: fig,
@@ -324,8 +333,12 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               child: Text(url.breakWord),
             ),
           ),
+          onTap: () {
+            FullscreenImageViewer.show(
+                context: context, urls: figures, initialPage: index);
+          },
         );
-      }).toList(),
+      }),
     );
   }
 
@@ -373,43 +386,11 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
           dense: true,
           title: Text(name),
           onTap: () {
-            router.pushPage(_VideoPlayPage(url: movies[index], title: name));
+            router.pushPage(VideoPlayPage(url: movies[index], title: name));
           },
         );
       },
       itemCount: movies.length,
-    );
-  }
-}
-
-class _VideoPlayPage extends StatefulWidget {
-  final String? title;
-  final String url;
-  const _VideoPlayPage({required this.url, this.title});
-
-  @override
-  State<_VideoPlayPage> createState() => __VideoPlayPageState();
-}
-
-class __VideoPlayPageState extends State<_VideoPlayPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title ?? 'Video Player'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              launch(widget.url, external: true);
-            },
-            icon: const Icon(Icons.open_in_browser),
-            tooltip: S.current.jump_to(''),
-          ),
-        ],
-      ),
-      body: Center(
-        child: MyVideoPlayer.url(url: widget.url),
-      ),
     );
   }
 }

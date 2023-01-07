@@ -438,6 +438,17 @@ class S {
     );
   }
 
+  /// `Autoplay`
+  String get autoplay {
+    return Intl.message(
+      'Autoplay',
+      name: 'autoplay',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Background`
   String get background {
     return Intl.message(
@@ -3238,6 +3249,17 @@ class S {
     return Intl.message(
       'Illustrator',
       name: 'illustrator',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get image {
+    return Intl.message(
+      'Image',
+      name: 'image',
       desc: '',
       locale: localeName,
       args: [],
@@ -6743,6 +6765,17 @@ class S {
     return Intl.message(
       'Sort',
       name: 'sort_order',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sound Effect`
+  String get sound_effect {
+    return Intl.message(
+      'Sound Effect',
+      name: 'sound_effect',
       desc: '',
       locale: localeName,
       args: [],

@@ -45,7 +45,7 @@ class ImageActions {
             ListTile(
               dense: true,
               title: Text(url, style: Theme.of(context).textTheme.bodySmall),
-              onTap: () {
+              onLongPress: () {
                 copyToClipboard(url);
                 EasyLoading.showToast(S.current.copied);
               },
