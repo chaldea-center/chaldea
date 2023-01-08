@@ -10,6 +10,8 @@ import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/basic.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
@@ -27,6 +29,7 @@ import '../../func/func_list.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
+import '../../misc/apk_list.dart';
 import '../../misc/app_route_entrance.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../saint_quartz/sq_main.dart';
@@ -121,6 +124,7 @@ class GalleryItem {
         npCharge,
         statistics,
         importData,
+        if (!db.settings.hideApple) apk,
         // default hide
         shops,
         scriptHome,
@@ -295,6 +299,15 @@ class GalleryItem {
     page: const LostRoomPage(),
     isDetail: false,
     persist: true,
+  );
+  static GalleryItem apk = GalleryItem(
+    name: 'apk',
+    titleBuilder: () => db.settings.hideApple ? 'App' : 'APK',
+    icon: FontAwesomeIcons.android,
+    url: Routes.apk,
+    page: const ApkListPage(),
+    isDetail: true,
+    shownDefault: !PlatformU.isApple,
   );
   // show in Lost Room
   static GalleryItem shops = GalleryItem(

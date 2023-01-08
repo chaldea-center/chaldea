@@ -592,7 +592,7 @@ enum Trait {
   cardQuick(4003),
   cardExtra(4004),
   cardWeak(4005),
-  cardStrength(4006),
+  cardStrong(4006),
   cardNP(4007),
   faceCard(4008),
   criticalHit(4100),

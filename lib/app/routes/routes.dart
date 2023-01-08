@@ -38,6 +38,7 @@ import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
+import '../modules/misc/apk_list.dart';
 import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
 import '../modules/script/reader_entry.dart';
@@ -150,6 +151,7 @@ class Routes {
   static const String importData = '/import_data';
   static const String ffo = '/ffo';
   static const String effectSearch = '/effect-search';
+  static const String apk = '/apk';
   static const String notFound = '/404';
   static const String routes = '/routes';
 
@@ -353,6 +355,8 @@ class RouteConfiguration {
         return const TdListPage();
       case Routes.td:
         return TdDetailPage(id: _secondInt);
+      case Routes.apk:
+        return const ApkListPage();
       case Routes.routes:
         return const AppRouteEntrancePage();
     }

@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
@@ -129,6 +130,8 @@ class LocalSettings {
     _language = Intl.defaultLocale = lang.code;
     return S.load(lang.locale, override: true);
   }
+
+  bool get hideApple => PlatformU.isApple && launchTimes < 5;
 
   List<Region> get resolvedPreferredRegions {
     if (preferredRegions != null && preferredRegions!.isNotEmpty) {

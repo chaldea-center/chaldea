@@ -5,17 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/utils/constants.dart';
 
 class SHeader extends StatelessWidget {
-  final String label;
+  final String? label;
+  final InlineSpan? richSpan;
   final TextStyle? style;
   final EdgeInsetsGeometry padding;
 
   const SHeader(
-    this.label, {
+    String this.label, {
     super.key,
     this.style,
     this.padding =
         const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
-  });
+  }) : richSpan = null;
+  const SHeader.rich(
+    InlineSpan this.richSpan, {
+    super.key,
+    this.style,
+    this.padding =
+        const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+  }) : label = null;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +31,8 @@ class SHeader extends StatelessWidget {
     final color = Theme.of(context).textTheme.bodySmall?.color?.withAlpha(175);
     return Container(
       padding: padding,
-      child: Text(
-        label,
+      child: Text.rich(
+        richSpan ?? TextSpan(text: label),
         style: style ??
             TextStyle(
               color: color,

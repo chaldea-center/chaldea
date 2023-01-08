@@ -307,7 +307,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     CardType.arts: Trait.cardArts,
     CardType.buster: Trait.cardBuster,
     CardType.weak: Trait.cardWeak,
-    CardType.strength: Trait.cardStrength
+    CardType.strength: Trait.cardStrong,
   };
   @override
   Widget build(BuildContext context) {

@@ -302,7 +302,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   launch(HttpUrlHelper.projectDocUrl(''));
                 },
               ),
-              if (!PlatformU.isApple || db.settings.launchTimes > 5)
+              if (!db.settings.hideApple)
                 ListTile(
                   title: Text(S.current.support_chaldea),
                   trailing: const Icon(Icons.favorite),
