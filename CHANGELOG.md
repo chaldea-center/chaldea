@@ -1,3 +1,11 @@
+# 2.2.2
+
+- WHY didn't release 2.2.2 before 2022 ended!!!
+- Add war assets listing
+- Support playing video except linux
+- Support sort by AP campaign time in RankUp&Interlude timeline
+- Add APK page
+
 # 2.2.1
 
 - New: Da Vinci shop

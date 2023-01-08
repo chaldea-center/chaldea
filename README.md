@@ -96,6 +96,8 @@ Chaldea is greatly inspired from
 
 And the dataset is powered by
 
+- [TYPE-MOON/FGO PROJECT](https://www.fate-go.jp/)
+- ~~DELiGHTWORKS~~ [Lasengle Inc](https://www.lasengle.co.jp/)
 - [Atlas Academy](https://atlasacademy.io/)
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)

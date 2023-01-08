@@ -23,14 +23,15 @@ There are plenty of work need to do.
 - [ ] generate skill/np in one image
 - [ ] trait: dynamic tabs(fixed some tabs), items
 - [ ] list view: pull to show outdated
-- [ ] daily quests: name, hand/door name
 - [ ] class icon+name
 - [ ] breaking change: FixedDrop
 - [ ] filter_group: add onReset
 - [ ] separate cn proxy 
 - [ ] iconBuilder add fontSize
 - [ ] free quest drop table
-- [ ] assets list
+- [ ] parser: add new SVT/CE/CC before exported
+- [ ] parser: check summon prob correct
+- [ ] summon: add wiki prob edit util
 
 ## Quest Related
 
