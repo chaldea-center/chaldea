@@ -7519,6 +7519,39 @@ class S {
     );
   }
 
+  /// `Update on Startup`
+  String get update_data_at_start {
+    return Intl.message(
+      'Update on Startup',
+      name: 'update_data_at_start',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Load local data then background update, apply updates at next startup`
+  String get update_data_at_start_off_hint {
+    return Intl.message(
+      'Load local data then background update, apply updates at next startup',
+      name: 'update_data_at_start_off_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `May take more time to startup`
+  String get update_data_at_start_on_hint {
+    return Intl.message(
+      'May take more time to startup',
+      name: 'update_data_at_start_on_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Update Dataset`
   String get update_dataset {
     return Intl.message(

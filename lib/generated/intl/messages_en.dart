@@ -1044,6 +1044,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),
+        "update_data_at_start":
+            MessageLookupByLibrary.simpleMessage("Update on Startup"),
+        "update_data_at_start_off_hint": MessageLookupByLibrary.simpleMessage(
+            "Load local data then background update, apply updates at next startup"),
+        "update_data_at_start_on_hint": MessageLookupByLibrary.simpleMessage(
+            "May take more time to startup"),
         "update_dataset":
             MessageLookupByLibrary.simpleMessage("Update Dataset"),
         "update_msg_error":

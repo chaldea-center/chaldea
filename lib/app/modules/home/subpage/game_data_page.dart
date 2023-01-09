@@ -119,6 +119,24 @@ class _GameDataPageState extends State<GameDataPage> {
                 },
               ),
               SwitchListTile.adaptive(
+                value: db.settings.updateDataBeforeStart,
+                title: Text(S.current.update_data_at_start),
+                subtitle: Text(
+                  db.settings.updateDataBeforeStart
+                      ? S.current.update_data_at_start_on_hint
+                      : S.current.update_data_at_start_off_hint,
+                  textScaleFactor: 0.8,
+                ),
+                onChanged: db.settings.autoUpdateData
+                    ? (v) {
+                        setState(() {
+                          db.settings.updateDataBeforeStart = v;
+                          db.saveSettings();
+                        });
+                      }
+                    : null,
+              ),
+              SwitchListTile.adaptive(
                 value: db.settings.checkDataHash,
                 title: Text(S.current.check_file_hash),
                 onChanged: (v) {

@@ -81,13 +81,14 @@ class _BootstrapPageState extends State<BootstrapPage>
     if (_fa_) return;
     try {
       if (!db.settings.tips.starter) {
+        bool update = network.available && db.settings.updateDataBeforeStart;
         final data = await _loader.reload(
-          offline: true,
+          offline: !update,
           silent: true,
         );
         if (data != null) {
           db.gameData = data;
-          onDataReady(true);
+          onDataReady(!update);
         } else {
           _offlineLoading = false;
         }

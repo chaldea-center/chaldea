@@ -872,6 +872,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("已經是最新版本"),
+        "update_data_at_start": MessageLookupByLibrary.simpleMessage("启动时更新"),
+        "update_data_at_start_off_hint":
+            MessageLookupByLibrary.simpleMessage("加载本地数据并后台更新,下次启动应用更新"),
+        "update_data_at_start_on_hint":
+            MessageLookupByLibrary.simpleMessage("启动时间可能变长"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("更新資源包"),
         "update_msg_error": MessageLookupByLibrary.simpleMessage("更新失敗"),
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("無可用更新"),
