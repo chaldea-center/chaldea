@@ -53,13 +53,32 @@ class _CachedInfo {
       };
 }
 
+class _DownloadingTask {
+  String url;
+  Completer<List<int>?> completer;
+  DateTime startedAt;
+  bool canceled;
+
+  _DownloadingTask({
+    required this.url,
+    required this.completer,
+    DateTime? startedAt,
+  })  : startedAt = startedAt ?? DateTime.now(),
+        canceled = false;
+
+  void cancel() {
+    canceled = true;
+    completer.complete(null);
+  }
+}
+
 class _CacheManager {
   bool _initiated = false;
   final String cacheKey;
   final List<int> statusCodes = const [200];
   final Map<String, _CachedInfo> _data = {}; // key=uuid
   final Map<String, List<int>> _memoryCache = {}; // key=uuid
-  final Map<String, Completer<List<int>?>> _downloading = {}; // key=url
+  final Map<String, _DownloadingTask> _downloading = {}; // key=url
   final Map<String, DateTime> _failed = {}; // key=url
 
   LazyBox<Uint8List>? _webBox;
@@ -227,28 +246,38 @@ class _CacheManager {
         _data.remove(key);
         await file.delete().catchError((e, s) => null);
       }
-      if (_downloading[url] != null) {
-        return _downloading[url]!.future;
-      } else {
-        Completer<List<int>?> _completer = Completer();
-        _failed.remove(url);
-        _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {
-          _downloading.remove(url);
-          _failed.remove(url);
-          _completer.complete(value);
-          return Future.value();
-        }).catchError((e, s) {
-          _downloading.remove(url);
-          _completer.complete(null);
-          _failed[url] = DateTime.now();
-          if (kDebugMode) print(escapeDioError(e));
-          return Future.value();
-        });
-        _downloading[url] = _completer;
-        return _completer.future;
+      var prevTask = _downloading[url];
+      if (prevTask != null) {
+        if (DateTime.now().difference(prevTask.startedAt) <
+            const Duration(seconds: 30)) {
+          return prevTask.completer.future;
+        }
+        print('api cancel timeout: $url');
+        _downloading.remove(url);
+        prevTask.cancel();
       }
+
+      print('api get: $url');
+
+      final task = _downloading[url] =
+          _DownloadingTask(url: url, completer: Completer());
+      _failed.remove(url);
+      _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {
+        _downloading.remove(url);
+        _failed.remove(url);
+        if (!task.completer.isCompleted) task.completer.complete(value);
+        return Future.value();
+      }).catchError((e, s) {
+        _downloading.remove(url);
+        if (!task.completer.isCompleted) task.completer.complete(null);
+        if (!task.canceled) _failed[url] = DateTime.now();
+        if (kDebugMode) print(escapeDioError(e));
+        return Future.value();
+      });
+      return task.completer.future;
     } catch (e, s) {
       _data.remove(key);
+      _downloading.remove(url);
       logger.e('get api cache failed', e, s);
     }
     return null;
