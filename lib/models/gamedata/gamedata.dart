@@ -65,6 +65,8 @@ class GameData with _GameDataExtra {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
+  @protected
+  _GameDataAdd? addData;
 
   Map<int, Servant> get servantsNoDup => servants;
   bool get isValid =>
@@ -92,6 +94,7 @@ class GameData with _GameDataExtra {
     Map<int, BaseTd>? baseTds,
     Map<int, BaseSkill>? baseSkills,
     Map<int, BaseFunction>? baseFunctions,
+    this.addData,
   })  : version = version ?? DataVersion(),
         servants = servants ?? {},
         craftEssences = craftEssences ?? {},
@@ -118,6 +121,18 @@ class GameData with _GameDataExtra {
         baseBuffs[buff.id] = buff;
       }
     }
+    if (addData != null) {
+      for (final svt in addData!.svt) {
+        if (svt.collectionNo > 0) this.servants[svt.collectionNo] ??= svt;
+      }
+      for (final ce in addData!.ce) {
+        if (ce.collectionNo > 0) this.craftEssences[ce.collectionNo] ??= ce;
+      }
+      for (final cc in addData!.cc) {
+        if (cc.collectionNo > 0) this.commandCodes[cc.collectionNo] ??= cc;
+      }
+    }
+
     preprocess();
   }
 
@@ -287,6 +302,22 @@ class GameData with _GameDataExtra {
       ),
     );
   }
+}
+
+@JsonSerializable()
+class _GameDataAdd {
+  List<Servant> svt;
+  List<CraftEssence> ce;
+  List<CommandCode> cc;
+
+  _GameDataAdd({
+    this.svt = const [],
+    this.ce = const [],
+    this.cc = const [],
+  });
+
+  factory _GameDataAdd.fromJson(Map<String, dynamic> json) =>
+      _$GameDataAddFromJson(json);
 }
 
 mixin _GameDataExtra {

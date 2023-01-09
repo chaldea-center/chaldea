@@ -90,6 +90,28 @@ GameData _$GameDataFromJson(Map json) => GameData(
         (k, e) => MapEntry(int.parse(k as String),
             BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
+      addData: json['addData'] == null
+          ? null
+          : _GameDataAdd.fromJson(
+              Map<String, dynamic>.from(json['addData'] as Map)),
+    );
+
+_GameDataAdd _$GameDataAddFromJson(Map json) => _GameDataAdd(
+      svt: (json['svt'] as List<dynamic>?)
+              ?.map(
+                  (e) => Servant.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      ce: (json['ce'] as List<dynamic>?)
+              ?.map((e) =>
+                  CraftEssence.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      cc: (json['cc'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
