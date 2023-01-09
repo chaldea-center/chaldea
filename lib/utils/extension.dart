@@ -17,7 +17,7 @@ extension NumX on num {
   String format({
     bool compact = true,
     bool percent = false,
-    double base = 0.01, // 0.01: 0.87 -> 87%, 10: 200->20%
+    num base = 0.01, // 0.01: 0.87 -> 87%, 10: 200->20%
     bool omit = true,
     int precision = 3,
     String? groupSeparator,

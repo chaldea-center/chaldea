@@ -501,6 +501,14 @@ class Buff with RouteInfo {
   Transl<String, String> get lName =>
       Transl.buffNames(name.isEmpty ? type.name : name);
   Transl<String, String> get lDetail => Transl.buffDetail(detail);
+
+  BuffAction get buffAction => type.buffAction;
+
+  static String formatRate(BuffType type, int rate) {
+    final base = kBuffActionPercentTypes[type.buffAction];
+    if (base == null) return rate.toString();
+    return rate.format(percent: true, base: base);
+  }
 }
 
 @JsonSerializable()
@@ -785,6 +793,10 @@ enum BuffType {
   overwriteDeadType,
   toFieldChangeField, // 10001
   toFieldAvoidBuff, // 10002
+  ;
+
+  BuffAction get buffAction =>
+      db.gameData.constData.buffTypeActionMap[this] ?? BuffAction.unknown;
 }
 
 const kEventFuncTypes = [

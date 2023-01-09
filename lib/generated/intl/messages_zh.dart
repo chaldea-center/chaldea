@@ -133,6 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引导页"),
         "branch_quest": MessageLookupByLibrary.simpleMessage("分支关卡"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),
+        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("对方"),
+        "buff_check_self": MessageLookupByLibrary.simpleMessage("自身"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("缓存图标"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
@@ -224,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("仅限桌面版"),
+        "details": MessageLookupByLibrary.simpleMessage("详情"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("侦探任务"),
         "detective_rank": MessageLookupByLibrary.simpleMessage("侦探等级"),
         "display_grid": MessageLookupByLibrary.simpleMessage("网格"),
@@ -839,7 +842,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("关联礼装"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
-        "svt_stat_details": MessageLookupByLibrary.simpleMessage("明细"),
         "svt_stat_own_total":
             MessageLookupByLibrary.simpleMessage("(999)拥有/总计"),
         "svt_switch_slider_dropdown":

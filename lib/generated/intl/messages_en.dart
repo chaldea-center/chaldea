@@ -141,6 +141,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "branch_quest": MessageLookupByLibrary.simpleMessage("Branch Quest"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
+        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("Opponent"),
+        "buff_check_self": MessageLookupByLibrary.simpleMessage("Self"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("Cache Icons"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Weight"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -252,6 +254,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
+        "details": MessageLookupByLibrary.simpleMessage("Details"),
         "detective_mission":
             MessageLookupByLibrary.simpleMessage("Detective Missions"),
         "detective_rank":
@@ -1011,7 +1014,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive":
             MessageLookupByLibrary.simpleMessage("Second Archive"),
-        "svt_stat_details": MessageLookupByLibrary.simpleMessage("Details"),
         "svt_stat_own_total":
             MessageLookupByLibrary.simpleMessage("(SkillMax) Owned/Total"),
         "svt_switch_slider_dropdown":

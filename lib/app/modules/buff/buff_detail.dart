@@ -78,10 +78,49 @@ class _BuffDetailPageState extends State<BuffDetailPage>
 
   @override
   Widget buildContent(BuildContext context, Buff buff) {
+    BuffAction? buffAction = buff.buffAction;
     return TabBarView(
       controller: controller,
       children: [
-        SingleChildScrollView(child: BuffInfoTable(buff: buff)),
+        ListView(
+          children: [
+            BuffInfoTable(buff: buff),
+            if (buffAction != BuffAction.unknown) ...[
+              const DividerWithTitle(
+                title: '  ·   ·   ·  ',
+                indent: 16,
+                padding: EdgeInsets.only(top: 16, bottom: 8),
+              ),
+              // const SizedBox(height: 16),
+              SimpleAccordion(
+                expanded: true,
+                headerBuilder: (context, _) {
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 42),
+                    child: TextButton(
+                      onPressed: () {
+                        router.push(url: Routes.buffActionI(buffAction));
+                      },
+                      style: kTextButtonDenseStyle,
+                      child: Text('Buff Action - ${buffAction.name}'),
+                    ),
+                  );
+                },
+                contentBuilder: (context) => Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Theme.of(context).hintColor, width: 0.75),
+                        borderRadius: BorderRadius.circular(5)),
+                    position: DecorationPosition.foreground,
+                    child: BuffActionInfoTable(action: buffAction),
+                  ),
+                ),
+              ),
+            ]
+          ],
+        ),
         _FuncTab(buff),
       ],
     );
@@ -120,7 +159,7 @@ class BuffInfoTable extends StatelessWidget {
       CustomTableRow.fromTexts(texts: [
         buff.id.toString(),
         buff.buffGroup.toString(),
-        buff.maxRate.toString()
+        Buff.formatRate(buff.type, buff.maxRate),
       ]),
       CustomTableRow(children: [
         TableCellData(text: S.current.general_type, isHeader: true),
@@ -131,7 +170,7 @@ class BuffInfoTable extends StatelessWidget {
               text: '${buff.type.name}\n${Transl.buffType(buff.type).l}',
               onTap: () {
                 router.push(
-                  url: Routes.funcs,
+                  url: Routes.buffs,
                   child: BuffListPage(type: buff.type),
                   detail: false,
                 );
@@ -143,7 +182,7 @@ class BuffInfoTable extends StatelessWidget {
         ),
       ]),
       CustomTableRow(children: [
-        TableCellData(text: "Detail", isHeader: true),
+        TableCellData(text: S.current.details, isHeader: true),
         TableCellData(
           text: buff.lDetail.l,
           flex: 3,
@@ -164,7 +203,7 @@ class BuffInfoTable extends StatelessWidget {
         isHeader: true,
       ),
       CustomTableRow(children: [
-        TableCellData(text: "Self", isHeader: true),
+        TableCellData(text: S.current.buff_check_self, isHeader: true),
         TableCellData(
           child: buff.ckSelfIndv.isEmpty
               ? const Text('-')
@@ -177,7 +216,7 @@ class BuffInfoTable extends StatelessWidget {
         )
       ]),
       CustomTableRow(children: [
-        TableCellData(text: "Opponent", isHeader: true),
+        TableCellData(text: S.current.buff_check_opponent, isHeader: true),
         TableCellData(
           child: buff.ckOpIndv.isEmpty
               ? const Text('-')
@@ -348,5 +387,151 @@ class _FuncTab extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class BuffActionPage extends StatelessWidget {
+  final BuffAction action;
+  const BuffActionPage({super.key, required this.action});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('BuffAction ${action.name}')),
+      body: SingleChildScrollView(child: BuffActionInfoTable(action: action)),
+    );
+  }
+}
+
+class BuffActionInfoTable extends StatelessWidget {
+  final BuffAction action;
+
+  const BuffActionInfoTable({super.key, required this.action});
+
+  @override
+  Widget build(BuildContext context) {
+    final detail = db.gameData.constData.buffActions[action];
+
+    if (action == BuffAction.unknown || detail == null) {
+      return CustomTable(children: [
+        CustomTableRow.fromTexts(
+            texts: const ['Unknown BuffAction'], isHeader: true)
+      ]);
+    }
+
+    final plusAction =
+        BuffAction.values.firstWhereOrNull((e) => e.id == detail.plusAction);
+
+    int? valueBase = kBuffActionPercentTypes[action];
+
+    String fmtBuffValue(int value) {
+      if (valueBase == null) return value.toString();
+      return value.format(percent: true, base: valueBase.toDouble());
+    }
+
+    String limitText = detail.limit == BuffLimit.none ? 'no limit' : 'v';
+    String formula = 'buffs + baseParam';
+    if (const [BuffLimit.normal, BuffLimit.lower].contains(detail.limit)) {
+      limitText = '${fmtBuffValue(-detail.baseParam)} ≤ $limitText';
+      formula = 'max($formula, 0)';
+    }
+    formula = '$formula - baseValue';
+    if (const [BuffLimit.normal, BuffLimit.upper].contains(detail.limit)) {
+      limitText +=
+          ' ≤ ${detail.maxRate.map((e) => fmtBuffValue(e)).join(' or ')}';
+      formula = 'min($formula, maxRate)';
+    }
+
+    return CustomTable(selectable: true, children: [
+      CustomTableRow.fromTexts(texts: const ['BuffAction'], isHeader: true),
+      CustomTableRow.fromTexts(texts: ['${action.id} - ${action.name}']),
+      ...buffTypes(context, 'Plus Buffs', detail.plusTypes),
+      ...buffTypes(context, 'Minus Buffs', detail.minusTypes),
+      if (plusAction != null &&
+          plusAction != BuffAction.none &&
+          plusAction != BuffAction.unknown) ...[
+        CustomTableRow.fromTexts(
+            texts: const ['Plus Buff Action'], isHeader: true),
+        CustomTableRow.fromChildren(children: [
+          Text.rich(SharedBuilder.textButtonSpan(
+            context: context,
+            text: '${plusAction.id} - ${plusAction.name}',
+            onTap: () {
+              router.push(url: Routes.buffActionI(plusAction));
+            },
+          ))
+        ])
+      ],
+      CustomTableRow.fromTexts(
+        texts: const ['Base Param', 'Base Value', 'Max Rates', "Limit Type"],
+        isHeader: true,
+      ),
+      CustomTableRow.fromTexts(
+        texts: [
+          fmtBuffValue(detail.baseParam),
+          fmtBuffValue(detail.baseValue),
+          detail.maxRate.length == 1
+              ? fmtBuffValue(detail.maxRate.first)
+              : detail.maxRate.map((e) => fmtBuffValue(e)).join(','),
+          detail.limit.name,
+        ],
+      ),
+      CustomTableRow(children: [
+        TableCellData(text: 'Default Value', isHeader: true),
+        TableCellData(text: 'Limit', isHeader: true, flex: 3),
+      ]),
+      CustomTableRow(children: [
+        TableCellData(text: fmtBuffValue(detail.baseParam - detail.baseValue)),
+        TableCellData(text: limitText, flex: 3),
+      ]),
+      CustomTableRow.fromChildren(children: [
+        Text(
+          formula,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
+        )
+      ]),
+    ]);
+  }
+
+  Iterable<Widget> buffTypes(
+      BuildContext context, String header, List<BuffType> buffTypes) sync* {
+    if (buffTypes.isEmpty) return;
+    yield CustomTableRow.fromTexts(texts: [header], isHeader: true);
+    List<InlineSpan> spans = [];
+    for (final type in buffTypes) {
+      final icon = getBuffIcon(type);
+      spans.add(TextSpan(children: [
+        if (icon != null)
+          CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: ' [${type.name}] ${Transl.buffType(type).l}',
+          onTap: () {
+            router.push(
+              url: Routes.buffs,
+              child: BuffListPage(type: type),
+              detail: false,
+            );
+          },
+        )
+      ]));
+    }
+    yield CustomTableRow.fromChildren(children: [
+      Text.rich(
+        TextSpan(children: divideList(spans, const TextSpan(text: '\n'))),
+        textAlign: TextAlign.center,
+      )
+    ]);
+  }
+
+  String? getBuffIcon(BuffType type) {
+    Map<String, int> counts = {};
+    for (final buff in db.gameData.baseBuffs.values) {
+      if (buff.type == type && buff.icon != null) counts.addNum(buff.icon!, 1);
+    }
+    if (counts.isEmpty) return null;
+    final maxCount = Maths.max(counts.values, 0);
+    return counts.entries.firstWhereOrNull((e) => e.value == maxCount)?.key;
   }
 }

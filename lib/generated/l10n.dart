@@ -592,6 +592,28 @@ class S {
     );
   }
 
+  /// `Opponent`
+  String get buff_check_opponent {
+    return Intl.message(
+      'Opponent',
+      name: 'buff_check_opponent',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Self`
+  String get buff_check_self {
+    return Intl.message(
+      'Self',
+      name: 'buff_check_self',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Cache Icons`
   String get cache_icons {
     return Intl.message(
@@ -1466,6 +1488,17 @@ class S {
     return Intl.message(
       'Desktop only',
       name: 'desktop_only',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get details {
+    return Intl.message(
+      'Details',
+      name: 'details',
       desc: '',
       locale: localeName,
       args: [],
@@ -7249,17 +7282,6 @@ class S {
     return Intl.message(
       'Second Archive',
       name: 'svt_second_archive',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Details`
-  String get svt_stat_details {
-    return Intl.message(
-      'Details',
-      name: 'svt_stat_details',
       desc: '',
       locale: localeName,
       args: [],

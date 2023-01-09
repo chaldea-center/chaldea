@@ -57,7 +57,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
             tabs: [
               Tab(text: S.current.demands),
               Tab(text: S.current.consumed),
-              Tab(text: S.current.svt_stat_details),
+              Tab(text: S.current.details),
               Tab(text: S.current.svt_class_dist),
             ],
           )),

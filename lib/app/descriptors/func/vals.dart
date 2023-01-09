@@ -318,7 +318,7 @@ class ValDsc extends StatelessWidget {
 
   final empty = '';
   void describeBuff(Buff buff) {
-    final base = _kBuffValuePercentTypes[buff.type];
+    final base = kBuffActionPercentTypes[buff.buffAction];
     final trigger = kBuffValueTriggerTypes[buff.type];
     if (base != null) {
       _addPercent(vals.Value, base);
@@ -399,65 +399,3 @@ class ValDsc extends StatelessWidget {
     }
   }
 }
-
-const _kBuffValuePercentTypes = {
-  BuffType.upAtk: 10,
-  BuffType.downAtk: 10,
-  BuffType.upCommandall: 10,
-  BuffType.downCommandall: 10,
-  BuffType.upCommandatk: 10,
-  BuffType.downCommandatk: 10,
-  BuffType.upCriticaldamage: 10,
-  BuffType.downCriticaldamage: 10,
-  BuffType.upCriticalpoint: 10,
-  BuffType.downCriticalpoint: 10,
-  BuffType.upCriticalrate: 10,
-  BuffType.downCriticalrate: 10,
-  BuffType.upCriticalRateDamageTaken: 10,
-  BuffType.downCriticalRateDamageTaken: 10,
-  BuffType.upCriticalStarDamageTaken: 10,
-  BuffType.downCriticalStarDamageTaken: 10,
-  BuffType.upDamage: 10,
-  BuffType.downDamage: 10,
-  BuffType.upDamageIndividuality: 10,
-  BuffType.downDamageIndividuality: 10,
-  BuffType.upDamageIndividualityActiveonly: 10,
-  BuffType.downDamageIndividualityActiveonly: 10,
-  BuffType.upDamageEventPoint: 10,
-  BuffType.upDamagedropnp: 10,
-  BuffType.downDamagedropnp: 10,
-  BuffType.upDefence: 10,
-  BuffType.downDefence: 10,
-  BuffType.upDefencecommandall: 10,
-  BuffType.downDefencecommandall: 10,
-  BuffType.upDropnp: 10,
-  BuffType.downDropnp: 10,
-  BuffType.upFuncHpReduce: 10,
-  BuffType.downFuncHpReduce: 10,
-  BuffType.upGainHp: 10,
-  BuffType.downGainHp: 10,
-  BuffType.upGrantstate: 10,
-  BuffType.downGrantstate: 10,
-  BuffType.upHate: 10,
-  BuffType.upResistInstantdeath: 10,
-  BuffType.upNonresistInstantdeath: 10,
-  BuffType.upGrantInstantdeath: 10,
-  BuffType.downGrantInstantdeath: 10,
-  BuffType.upNpdamage: 10,
-  BuffType.downNpdamage: 10,
-  BuffType.upSpecialdefence: 10,
-  BuffType.downSpecialdefence: 10,
-  BuffType.upDamageSpecial: 10,
-  BuffType.upStarweight: 10,
-  BuffType.downStarweight: 10,
-  BuffType.upTolerance: 10,
-  BuffType.downTolerance: 10,
-  BuffType.upToleranceSubstate: 10,
-  BuffType.downToleranceSubstate: 10,
-  BuffType.upGivegainHp: 10,
-  BuffType.downGivegainHp: 10,
-  BuffType.gutsRatio: 10,
-  BuffType.buffRate: 10,
-  BuffType.regainNp: 100,
-  BuffType.downFuncgainNp: 10,
-};

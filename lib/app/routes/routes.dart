@@ -21,6 +21,7 @@ import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/models/gamedata/event.dart';
+import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/bgm/bgm.dart';
@@ -110,6 +111,10 @@ class Routes {
   static String buffI(int id) => '/buff/$id';
   static const String buff = '/buff';
   static const String buffs = '/buffs';
+
+  static String buffActionI(BuffAction action) => '/buffAction/${action.name}';
+  static const String buffAction = '/buffAction';
+  static const String buffActions = '/buffActions';
 
   static String funcI(int id) => '/func/$id';
   static const String func = '/func';
@@ -343,6 +348,10 @@ class RouteConfiguration {
         return const BuffListPage();
       case Routes.buff:
         return BuffDetailPage(id: _secondInt);
+      case Routes.buffActions:
+      case Routes.buffAction:
+        return BuffActionPage(
+            action: const BuffActionConverter().fromJson(second ?? "unknown"));
       case Routes.masterMissions:
         return MasterMissionListPage();
       case Routes.effectSearch:
