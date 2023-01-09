@@ -44,6 +44,7 @@ class _BootstrapPageState extends State<BootstrapPage>
     super.initState();
     _pageController = PageController();
     _accountEditing = TextEditingController(text: db.curUser.name);
+    _loader.progress.addListener(update);
 
     if (PlatformU.isWindows) {
       final startupPath = db.paths.appPath.toLowerCase();
@@ -62,6 +63,18 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+    _accountEditing.dispose();
+    _loader.progress.removeListener(update);
+  }
+
+  void update() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) async {
     if (invalidStartup) return;
     _fa_ = AppInfo.packageName.startsWith(_d('Y29tLmxkcy4='));
@@ -71,9 +84,6 @@ class _BootstrapPageState extends State<BootstrapPage>
         final data = await _loader.reload(
           offline: true,
           silent: true,
-          onUpdate: (v) {
-            if (mounted) setState(() {});
-          },
         );
         if (data != null) {
           db.gameData = data;
@@ -139,7 +149,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         dataPage,
       ];
     } else if (_offlineLoading) {
-      pages = [_OfflineLoadingPage(progress: _loader.progress)];
+      pages = [_OfflineLoadingPage(progress: _loader.progress.value)];
     } else {
       pages = [dataPage];
     }
@@ -467,13 +477,6 @@ class _BootstrapPageState extends State<BootstrapPage>
       await _loader.reload(silent: true);
     }
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-    _accountEditing.dispose();
-  }
 }
 
 class _OfflineLoadingPage extends StatelessWidget {
@@ -518,6 +521,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
 
   @override
   Widget build(BuildContext context) {
+    final progress = _loader.progress.value;
     return ListView(
       children: [
         SwitchListTile.adaptive(
@@ -573,9 +577,6 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 final gamedata = await _loader.reload(
                   offline: false,
                   silent: false,
-                  onUpdate: (v) {
-                    if (mounted) setState(() {});
-                  },
                 );
                 if (gamedata != null) {
                   db.gameData = gamedata;
@@ -596,7 +597,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              if (_loader.progress == 1.0)
+              if (progress == 1.0)
                 Icon(
                   _loader.error != null ? Icons.clear_rounded : Icons.done,
                   size: 80,
@@ -604,9 +605,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                       ? Theme.of(context).colorScheme.error
                       : Theme.of(context).colorScheme.primary,
                 ),
-              if (_loader.progress != null && _loader.progress! < 1.0)
+              if (progress != null && progress < 1.0)
                 Text(
-                  '${(_loader.progress! * 100).toInt()}%',
+                  '${(progress * 100).toInt()}%',
                   style: const TextStyle(fontSize: 24),
                 ),
               Center(
@@ -614,7 +615,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   width: 120,
                   height: 120,
                   child: CircularProgressIndicator(
-                    value: _loader.progress ?? 0,
+                    value: progress ?? 0,
                     color: _loader.error != null
                         ? Theme.of(context).colorScheme.error
                         : null,

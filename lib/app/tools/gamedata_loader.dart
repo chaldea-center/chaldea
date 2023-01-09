@@ -34,19 +34,11 @@ class GameDataLoader {
 
   _GameLoadingTempData tmp = _GameLoadingTempData();
 
-  double? get progress => _progress;
-  double? _progress;
+  final progress = ValueNotifier<double?>(null);
 
   dynamic error;
 
-  ValueChanged<double>? _onUpdate;
-  void setOnUpdate(ValueChanged<double>? onUpdate) {
-    _onUpdate = onUpdate;
-    _onUpdate?.call(0);
-  }
-
   Future<GameData?> reload({
-    ValueChanged<double>? onUpdate,
     bool offline = false,
     bool silent = false,
   }) async {
@@ -66,11 +58,11 @@ class GameDataLoader {
     _completer = Completer();
     tmp.reset();
     tmp._enabled = true;
-    _progress = null;
+    progress.value = null;
     error = null;
     cancelToken = CancelToken();
     try {
-      final result = await _loadJson(offline, onUpdate);
+      final result = await _loadJson(offline);
       if (result.isValid) {
         _completer!.complete(result);
       } else {
@@ -87,8 +79,7 @@ class GameDataLoader {
     return _completer!.future;
   }
 
-  Future<GameData> _loadJson(
-      bool offline, ValueChanged<double>? onUpdate) async {
+  Future<GameData> _loadJson(bool offline) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
@@ -189,8 +180,7 @@ class GameDataLoader {
 
       // print('loaded ${fv.filename}');
       finished += 1;
-      _progress = finished / (newVersion.files.length + 0.1);
-      (onUpdate ?? _onUpdate)?.call(_progress!);
+      progress.value = finished / (newVersion.files.length + 0.1);
     }
 
     List<Future> futures = [];
@@ -252,9 +242,7 @@ class GameDataLoader {
 
     tmp.reset();
     db.runtimeData.upgradableDataVersion = newVersion;
-    _progress = finished / newVersion.files.length;
-    (onUpdate ?? _onUpdate)?.call(_progress!);
-    _onUpdate = null;
+    progress.value = finished / newVersion.files.length;
     return _gamedata;
   }
 

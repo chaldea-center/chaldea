@@ -56,34 +56,14 @@ class _GameDataPageState extends State<GameDataPage> {
             header: S.current.gamedata,
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
-              SwitchListTile.adaptive(
-                value: db.settings.autoUpdateData,
-                title: Text(S.current.auto_update),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.autoUpdateData = v;
-                    db.saveSettings();
-                  });
-                },
-              ),
-              SwitchListTile.adaptive(
-                value: db.settings.checkDataHash,
-                title: Text(S.current.check_file_hash),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.checkDataHash = v;
-                    db.saveSettings();
-                  });
-                },
-              ),
-              ValueStatefulBuilder<double?>(
-                  initValue: loader.progress,
-                  builder: (context, state) {
+              ValueListenableBuilder<double?>(
+                  valueListenable: loader.progress,
+                  builder: (context, progress, child) {
                     String hint;
-                    if (state.value == null) {
+                    if (progress == null) {
                       hint = 'not started';
                     } else {
-                      hint = '${(state.value! * 100).toStringAsFixed(2)}%';
+                      hint = '${(progress * 100).toStringAsFixed(2)}%';
                     }
                     if (loader.error != null) {
                       hint = loader.error!.toString();
@@ -99,10 +79,6 @@ class _GameDataPageState extends State<GameDataPage> {
                       subtitle: Text('Progress: $hint', maxLines: 2),
                       trailing: newVersion?.toText(textAlign: TextAlign.end),
                       onTap: () async {
-                        loader.setOnUpdate((value) {
-                          state.value = value;
-                          state.updateState();
-                        });
                         EasyLoading.showInfo('Background Updating...');
                         final data = await loader.fetchUpdates(rtnData: true);
                         if (data == null) return;
@@ -129,10 +105,29 @@ class _GameDataPageState extends State<GameDataPage> {
                             );
                           },
                         );
-                        state.updateState();
                       },
                     );
                   }),
+              SwitchListTile.adaptive(
+                value: db.settings.autoUpdateData,
+                title: Text(S.current.auto_update),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.autoUpdateData = v;
+                    db.saveSettings();
+                  });
+                },
+              ),
+              SwitchListTile.adaptive(
+                value: db.settings.checkDataHash,
+                title: Text(S.current.check_file_hash),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.checkDataHash = v;
+                    db.saveSettings();
+                  });
+                },
+              ),
               // if (!PlatformU.isWeb)
               //   ListTile(
               //     title: Text(S.current.import_data),
