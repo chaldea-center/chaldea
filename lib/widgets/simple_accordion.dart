@@ -97,7 +97,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
       child: Material(
         elevation:
             expanded ? (widget.expandElevation ?? 2) : (widget.elevation ?? 0),
-        color: Material.maybeOf(context)?.color,
+        color: Material.of(context)?.color,
         child: DecoratedBox(
           decoration: BoxDecoration(border: Border(top: widget.topBorderSide)),
           child: Column(

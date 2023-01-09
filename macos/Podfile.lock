@@ -95,14 +95,14 @@ SPEC CHECKSUMS:
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_js: c664361655af1d8fc24e278c7d086e9cbe0d68bc
   flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
-  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  FlutterMacOS: ae6af50a8ea7d6103d888583d46bd8328a7e9811
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
   path_provider_macos: 3c0c3b4b0d4a76d2bf989a913c2de869c5641a19
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
-  shared_preferences_macos: a64dc611287ed6cbe28fd1297898db1336975727
+  shared_preferences_macos: 8b221d457159a85f478c0b9d2f19aeae9feff475
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   url_launcher_macos: 597e05b8e514239626bcf4a850fcf9ef5c856ec3
   video_player_macos: 7a50b407d775a45392851b1218a9cf4be395cf7f

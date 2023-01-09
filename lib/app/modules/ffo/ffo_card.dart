@@ -99,8 +99,17 @@ class _FfoCardState extends State<FfoCard> {
                     )
                 : null,
         onLongPress: widget.showSave
-            ? () =>
-                FFOUtil.showSaveShare(context: context, params: widget.params)
+            ? () async {
+                final data = await FFOUtil.toBinary(widget.params);
+                if (data == null) {
+                  EasyLoading.showError(S.current.failed);
+                  return;
+                }
+                if (mounted) {
+                  FFOUtil.showSaveShare(
+                      context: context, params: widget.params, data: data);
+                }
+              }
             : null,
         child: child,
       );
@@ -332,16 +341,12 @@ abstract class FFOUtil {
   static Future showSaveShare({
     required BuildContext context,
     required FFOParams params,
+    required Uint8List data,
     bool gallery = true,
     String? destFp,
     bool share = true,
     String? shareText,
-  }) async {
-    Uint8List? data = await toBinary(params);
-    if (data == null) {
-      EasyLoading.showError(S.current.failed);
-      return;
-    }
+  }) {
     String fn =
         'ffo-${params.parts.map((e) => e?.collectionNo ?? 0).join('-')}.png';
     destFp ??= joinPaths(db.paths.appPath, 'ffo_output', fn);
@@ -357,19 +362,16 @@ abstract class FFOUtil {
         parts.add('$partName: No.${part.collectionNo}-${part.svt?.shownName}');
       }
     }
-    if (context.mounted) {
-      return ImageActions.showSaveShare(
-        context: context,
-        data: data,
-        srcFp: null,
-        gallery: gallery,
-        destFp: destFp,
-        share: share,
-        shareText: shareText ?? fn,
-        extraHeaders: [SHeader(parts.join('\n'))],
-      );
-    }
-    return;
+    return ImageActions.showSaveShare(
+      context: context,
+      data: data,
+      srcFp: null,
+      gallery: gallery,
+      destFp: destFp,
+      share: share,
+      shareText: shareText ?? fn,
+      extraHeaders: [SHeader(parts.join('\n'))],
+    );
   }
 }
 

@@ -94,9 +94,11 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               expands: true,
               maxLines: null,
               textAlignVertical: TextAlignVertical.top,
-              contextMenuBuilder: (context, editableTextState) =>
-                  AdaptiveTextSelectionToolbar.editableText(
-                      editableTextState: editableTextState),
+              toolbarOptions: const ToolbarOptions(
+                  copy: true, cut: true, paste: true, selectAll: true),
+              // contextMenuBuilder: (context, editableTextState) =>
+              //     AdaptiveTextSelectionToolbar.editableText(
+              //         editableTextState: editableTextState),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 helperText:

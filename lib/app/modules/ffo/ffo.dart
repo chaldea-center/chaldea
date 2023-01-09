@@ -147,7 +147,17 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           ElevatedButton(
             onPressed: params.isEmpty
                 ? null
-                : () => FFOUtil.showSaveShare(context: context, params: params),
+                : () async {
+                    final data = await FFOUtil.toBinary(params);
+                    if (data == null) {
+                      EasyLoading.showError(S.current.failed);
+                      return;
+                    }
+                    if (mounted) {
+                      FFOUtil.showSaveShare(
+                          context: context, params: params, data: data);
+                    }
+                  },
             child: Text(S.current.save),
           ),
           ElevatedButton(

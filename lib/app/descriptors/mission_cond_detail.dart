@@ -59,7 +59,6 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
 
   @override
   List<InlineSpan> buildContent(BuildContext context) {
-    context.mounted;
     String targetNum = this.targetNum?.toString() ?? 'x';
     switch (detail.missionCondType) {
       case DetailCondType.questClearIndividuality:
