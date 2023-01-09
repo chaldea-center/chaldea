@@ -307,7 +307,7 @@ class GameDataLoader {
     // }
   }
 
-  Future<void> fetchUpdates() async {
+  Future<GameData?> fetchUpdates({bool rtnData = false}) async {
     DataVersion dataVer;
     try {
       dataVer = DataVersion.fromJson(
@@ -315,20 +315,30 @@ class GameDataLoader {
     } catch (e, s) {
       EasyLoading.showError(escapeDioError(e));
       logger.e('fetch data version failed', e, s);
-      return;
+      return null;
     }
 
     if (dataVer.timestamp > db.gameData.version.timestamp) {
       final newData = await reload();
       if (newData != null) {
-        db.gameData = newData;
-        db.notifyAppUpdate();
-        EasyLoading.showSuccess(S.current.update_msg_succuss);
-        return;
+        if (!rtnData) {
+          db.gameData = newData;
+          db.notifyAppUpdate();
+          EasyLoading.showSuccess(S.current.update_msg_succuss);
+          return null;
+        } else {
+          return newData;
+        }
       } else {
-        return;
+        EasyLoading.showError(S.current.error);
+        return null;
       }
     }
+    await fetchNewCards();
+    return null;
+  }
+
+  Future<void> fetchNewCards({bool silent = false}) async {
     final info = await AtlasApi.regionInfo();
     final remoteTime = info?['timestamp'] as int?;
     if (remoteTime == null) {
@@ -338,55 +348,70 @@ class GameDataLoader {
       EasyLoading.showInfo(S.current.update_already_latest);
       return;
     }
-    final items = await AtlasApi.niceItems(expireAfter: Duration.zero) ?? [];
+
+    List<Future> futures = [];
     int _addedItem = 0;
-    for (final item in items) {
-      if (db.gameData.items.containsKey(item.id)) {
-        continue;
+    futures.add(AtlasApi.niceItems(expireAfter: Duration.zero).then((items) {
+      if (items == null) return;
+      for (final item in items) {
+        if (db.gameData.items.containsKey(item.id)) {
+          continue;
+        }
+        db.gameData.items[item.id] = item;
+        _addedItem += 1;
       }
-      db.gameData.items[item.id] = item;
-      _addedItem += 1;
-    }
+    }));
 
     // svts
-    final servants =
-        await AtlasApi.basicServants(expireAfter: Duration.zero) ?? [];
     int _addedSvt = 0;
-    for (final basicSvt in servants) {
-      if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo)) {
-        continue;
+    futures.add(AtlasApi.basicServants(expireAfter: Duration.zero)
+        .then((servants) async {
+      if (servants == null) return;
+      for (final basicSvt in servants) {
+        if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo) ||
+            basicSvt.collectionNo == 0 ||
+            ![SvtType.normal, SvtType.enemyCollectionDetail]
+                .contains(basicSvt.type)) {
+          continue;
+        }
+        final svt = await AtlasApi.svt(basicSvt.id);
+        if (svt == null) continue;
+        db.gameData.servantsNoDup[svt.collectionNo] = svt;
+        _addedSvt += 1;
       }
-      final svt = await AtlasApi.svt(basicSvt.id);
-      if (svt == null) continue;
-      db.gameData.servantsNoDup[svt.collectionNo] = svt;
-      _addedSvt += 1;
-    }
+    }));
 
-    final crafts =
-        await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
     int _addedCE = 0;
-    for (final basicCard in crafts) {
-      if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
-        continue;
+    futures.add(AtlasApi.basicCraftEssences(expireAfter: Duration.zero)
+        .then((crafts) async {
+      if (crafts == null) return;
+      for (final basicCard in crafts) {
+        if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
+          continue;
+        }
+        final card = await AtlasApi.ce(basicCard.id);
+        if (card == null) continue;
+        db.gameData.craftEssences[card.collectionNo] = card;
+        _addedCE += 1;
       }
-      final card = await AtlasApi.ce(basicCard.id);
-      if (card == null) continue;
-      db.gameData.craftEssences[card.collectionNo] = card;
-      _addedCE += 1;
-    }
+    }));
 
-    final codes =
-        await AtlasApi.basicCommandCodes(expireAfter: Duration.zero) ?? [];
     int _addedCC = 0;
-    for (final basicCard in codes) {
-      if (db.gameData.commandCodes.containsKey(basicCard.collectionNo)) {
-        continue;
+    futures.add(AtlasApi.basicCommandCodes(expireAfter: Duration.zero)
+        .then((codes) async {
+      if (codes == null) return;
+      for (final basicCard in codes) {
+        if (db.gameData.commandCodes.containsKey(basicCard.collectionNo)) {
+          continue;
+        }
+        final card = await AtlasApi.cc(basicCard.id);
+        if (card == null) continue;
+        db.gameData.commandCodes[card.collectionNo] = card;
+        _addedCC += 1;
       }
-      final card = await AtlasApi.cc(basicCard.id);
-      if (card == null) continue;
-      db.gameData.commandCodes[card.collectionNo] = card;
-      _addedCC += 1;
-    }
+    }));
+
+    await Future.wait(futures);
 
     if (_addedItem + _addedSvt + _addedCE + _addedCC > 0) {
       db.gameData.preprocess();
@@ -399,9 +424,9 @@ class GameDataLoader {
         if (_addedCC > 0) '$_addedCC ${S.current.command_code}',
         if (_addedItem > 0) '$_addedItem ${S.current.item}',
       ].join(', ');
-      EasyLoading.showSuccess(msg);
+      if (!silent) EasyLoading.showSuccess(msg);
     } else {
-      EasyLoading.showInfo(S.current.refresh_data_no_update);
+      if (!silent) EasyLoading.showInfo(S.current.refresh_data_no_update);
     }
   }
 }

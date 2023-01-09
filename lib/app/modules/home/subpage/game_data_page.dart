@@ -104,7 +104,7 @@ class _GameDataPageState extends State<GameDataPage> {
                           state.updateState();
                         });
                         EasyLoading.showInfo('Background Updating...');
-                        final data = await loader.reload(offline: false);
+                        final data = await loader.fetchUpdates(rtnData: true);
                         if (data == null) return;
                         if (!data.isValid) {
                           EasyLoading.showError("Invalid game data");
@@ -121,8 +121,9 @@ class _GameDataPageState extends State<GameDataPage> {
                                   'Latest : ${data.version.text(false)}'),
                               hideOk: data.version.timestamp <=
                                   db.gameData.version.timestamp,
-                              onTapOk: () {
+                              onTapOk: () async {
                                 db.gameData = data;
+                                await loader.fetchNewCards(silent: true);
                                 db.notifyAppUpdate();
                               },
                             );
