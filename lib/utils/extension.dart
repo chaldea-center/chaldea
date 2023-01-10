@@ -339,6 +339,10 @@ extension DateTimeX on DateTime {
     ].join(sep);
   }
 
+  String toSafeFileName([Pattern? pattern]) {
+    return toString().replaceAll(pattern ?? RegExp(r'[^\d]'), '_');
+  }
+
   static int compare(DateTime? a, DateTime? b) {
     if (a != null && b != null) {
       return a.compareTo(b);

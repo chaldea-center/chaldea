@@ -12,6 +12,7 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
@@ -319,22 +320,17 @@ abstract class FFOUtil {
   }
 
   static Future<Uint8List?> toBinary(FFOParams params) async {
-    final recorder = ui.PictureRecorder();
-    final size = params.canvasSize;
-    final canvas = Canvas(
-      recorder,
-      Rect.fromPoints(const Offset(0, 0), Offset(size.width, size.height)),
+    return ImageUtil.recordCanvas(
+      width: params.canvasSize.width,
+      height: params.canvasSize.height,
+      paint: (canvas, size) async {
+        final images = FfoCanvasImages();
+        await FFOUtil.setPart(images, params.headPart, FfoPartWhere.head);
+        await FFOUtil.setPart(images, params.bodyPart, FfoPartWhere.body);
+        await FFOUtil.setPart(images, params.bgPart, FfoPartWhere.bg);
+        drawCanvas(canvas, params, images);
+      },
     );
-    final images = FfoCanvasImages();
-    await FFOUtil.setPart(images, params.headPart, FfoPartWhere.head);
-    await FFOUtil.setPart(images, params.bodyPart, FfoPartWhere.body);
-    await FFOUtil.setPart(images, params.bgPart, FfoPartWhere.bg);
-    drawCanvas(canvas, params, images);
-    final picture = recorder.endRecording();
-    ui.Image img =
-        await picture.toImage(size.width.toInt(), size.height.toInt());
-    ByteData? data = (await img.toByteData(format: ui.ImageByteFormat.png));
-    return data?.buffer.asUint8List();
   }
 
   /// save to temp file first, then open sheet

@@ -13,6 +13,7 @@ import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -336,41 +337,31 @@ class _MergeImagePageState extends State<MergeImagePage> {
     int colCount = sqrt(images.length).ceil();
     int rowCount = (images.length / colCount).ceil();
 
-    final canvasSize =
-        size = Size(w * colCount.toDouble(), h * rowCount.toDouble());
-
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(
-      recorder,
-      Rect.fromPoints(
-          const Offset(0, 0), Offset(canvasSize.width, canvasSize.height)),
+    imgBytes = await ImageUtil.recordCanvas(
+      width: w * colCount,
+      height: h * rowCount,
+      paint: (canvas, size) async {
+        for (int row = 0; row < rowCount; row++) {
+          for (int col = 0; col < colCount; col++) {
+            int index = row * colCount + col;
+            final img = images.getOrNull(index);
+            if (img == null) continue;
+            update('Drawing $index/${images.length}...');
+            await Future.delayed(const Duration(milliseconds: 50));
+            canvas.drawImageRect(
+              img,
+              Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+              Rect.fromLTWH(col * w, row * h, img.width.toDouble(),
+                  img.height.toDouble()),
+              Paint()
+                ..filterQuality = FilterQuality.high
+                ..isAntiAlias = true,
+            );
+          }
+        }
+        update('Rendering...');
+      },
     );
-    for (int row = 0; row < rowCount; row++) {
-      for (int col = 0; col < colCount; col++) {
-        int index = row * colCount + col;
-        final img = images.getOrNull(index);
-        if (img == null) continue;
-        update('Drawing $index/${images.length}...');
-        await Future.delayed(const Duration(milliseconds: 50));
-        canvas.drawImageRect(
-          img,
-          Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-          Rect.fromLTWH(
-              col * w, row * h, img.width.toDouble(), img.height.toDouble()),
-          Paint()
-            ..filterQuality = FilterQuality.high
-            ..isAntiAlias = true,
-        );
-      }
-    }
-    final picture = recorder.endRecording();
-    update('Rendering...');
-    await Future.delayed(const Duration(milliseconds: 50));
-    ui.Image img = await picture.toImage(
-        canvasSize.width.toInt(), canvasSize.height.toInt());
-    imgBytes = (await img.toByteData(format: ui.ImageByteFormat.png))
-        ?.buffer
-        .asUint8List();
     update('done');
   }
 
@@ -422,7 +413,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
                     context: context,
                     data: imgBytes,
                     destFp: joinPaths(db.paths.downloadDir,
-                        'merged-${DateTime.now().toString().replaceAll(':', '-')}.png'),
+                        'merged-${DateTime.now().toSafeFileName()}.png'),
                   );
                 },
           child: Text('${S.current.save}/${S.current.share}'),

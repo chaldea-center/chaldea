@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -109,5 +111,38 @@ class ImageUtil {
       }
     }
     return img;
+  }
+
+  static Future<Uint8List?> recordCanvas({
+    required num width,
+    required num height,
+    required FutureOr<void> Function(Canvas canvas, Size size) paint,
+    num? imgWidth,
+    num? imgHeight,
+    ui.ImageByteFormat format = ui.ImageByteFormat.png,
+    FutureOr<Uint8List?> Function(dynamic e, dynamic s) onError =
+        _defaultOnError,
+  }) async {
+    try {
+      final recorder = ui.PictureRecorder();
+      final size = Size(width.toDouble(), height.toDouble());
+      final canvas =
+          Canvas(recorder, Rect.fromLTWH(0, 0, size.width, size.height));
+      await paint(canvas, size);
+      final picture = recorder.endRecording();
+      await Future.delayed(const Duration(milliseconds: 50));
+      final img = await picture.toImage(
+          (imgWidth ?? width).toInt(), (imgHeight ?? height).toInt());
+      final imgBytes =
+          (await img.toByteData(format: format))?.buffer.asUint8List();
+      return imgBytes;
+    } catch (e, s) {
+      return onError(e, s);
+    }
+  }
+
+  static FutureOr<Uint8List?> _defaultOnError(dynamic e, dynamic s) {
+    logger.e('record canvas failed', e, s);
+    return null;
   }
 }

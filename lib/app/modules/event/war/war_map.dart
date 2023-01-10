@@ -2,12 +2,15 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/img_util.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'map_filter.dart';
 
@@ -77,6 +80,35 @@ class _WarMapPageState extends State<WarMapPage> {
         title: Text('${S.current.war_map} ${map.id}'),
         actions: [
           IconButton(
+            onPressed: map.mapImageW == 0 || map.mapImageH == 0
+                ? null
+                : () async {
+                    EasyLoading.show(status: 'Rendering...');
+                    final bytes = await ImageUtil.recordCanvas(
+                      width: map.mapImageW,
+                      height: map.mapImageH,
+                      paint: (canvas, size) {
+                        final painter = getPainter(size);
+                        painter.paint(canvas, size);
+                      },
+                    );
+                    EasyLoading.dismiss();
+                    if (bytes == null) {
+                      EasyLoading.showError(S.current.error);
+                      return;
+                    }
+                    if (!mounted) return;
+                    ImageActions.showSaveShare(
+                      context: context,
+                      data: bytes,
+                      destFp: joinPaths(db.paths.downloadDir,
+                          'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png'),
+                    );
+                  },
+            icon: const Icon(Icons.save_outlined),
+            tooltip: S.current.save,
+          ),
+          IconButton(
             onPressed: () {
               map.bgm.routeTo();
             },
@@ -129,12 +161,7 @@ class _WarMapPageState extends State<WarMapPage> {
     return war.spotRoads.where((road) => isInMap(road.mapId)).toList();
   }
 
-  Widget buildMap() {
-    if (map.mapImageW <= 0 || map.mapImageH <= 0) {
-      return Center(
-        child: Text('Invalid Map Size: ${map.mapImageW}×${map.mapImageH}'),
-      );
-    }
+  _WarMapPainter getPainter(Size size) {
     final spots = getSpots();
     final roads = getRoads(spots);
     for (final spot in spots.values) {
@@ -144,6 +171,22 @@ class _WarMapPageState extends State<WarMapPage> {
       for (final gimmick in map.mapGimmicks)
         if (filterData.gimmick.options.contains(gimmick.id)) gimmick
     ];
+    return _WarMapPainter(
+      cachedImages: Map.of(_cachedImages),
+      map: map,
+      gimmicks: gimmicks,
+      spots: spots,
+      allSpots: {for (final spot in war.spots) spot.id: spot},
+      roads: roads,
+    );
+  }
+
+  Widget buildMap() {
+    if (map.mapImageW <= 0 || map.mapImageH <= 0) {
+      return Center(
+        child: Text('Invalid Map Size: ${map.mapImageW}×${map.mapImageH}'),
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         final ratio = map.mapImageW / map.mapImageH;
@@ -161,14 +204,7 @@ class _WarMapPageState extends State<WarMapPage> {
               BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
           child: CustomPaint(
             size: size,
-            painter: _WarMapPainter(
-              cachedImages: Map.of(_cachedImages),
-              map: map,
-              gimmicks: gimmicks,
-              spots: spots,
-              allSpots: {for (final spot in war.spots) spot.id: spot},
-              roads: roads,
-            ),
+            painter: getPainter(size),
           ),
         );
       },
@@ -239,7 +275,7 @@ class _WarMapPainter extends CustomPainter {
     final bgScale = size.width / map.mapImageW;
     // resize to aspect ratio
     size = Size(size.width, size.width / map.mapImageW * map.mapImageH);
-    print('Canvas size: $size, scale=$bgScale');
+    // print('Canvas size: $size, scale=$bgScale');
 
     final bgImg = cachedImages[map.mapImage];
     if (bgImg != null) {
