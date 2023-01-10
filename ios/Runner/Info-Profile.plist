@@ -54,7 +54,7 @@
 		<string>_dartobservatory._tcp</string>
 	</array>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Export FFO picture to photos</string>
+	<string>Export images to photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chaldea needs to import data and export backup</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
