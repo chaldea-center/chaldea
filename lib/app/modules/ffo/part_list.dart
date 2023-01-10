@@ -33,6 +33,9 @@ class FfoPartListPageState extends State<FfoPartListPage>
   final bool prototypeExtent = true;
 
   @override
+  String get scrollRestorationId => 'ffo_part_list';
+
+  @override
   void initState() {
     super.initState();
     if (db.settings.autoResetFilter) {

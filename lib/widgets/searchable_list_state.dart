@@ -4,6 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/query.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widget_builders.dart';
 import 'animation_on_scroll.dart';
 import 'custom_tile.dart';
 import 'search_bar.dart';
@@ -16,6 +17,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   bool showSearchBar = false;
   bool showOddBg = false;
 
+  String? scrollRestorationId;
   late ScrollController scrollController;
   late TextEditingController searchEditingController;
 
@@ -50,15 +52,26 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
+    scrollController = ScrollController(
+        initialScrollOffset: scrollRestorationId == null
+            ? 0.0
+            : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
     searchEditingController = TextEditingController();
   }
 
   @override
+  void deactivate() {
+    super.deactivate();
+    if (scrollRestorationId != null && scrollController.hasClients) {
+      ScrollRestoration.set(scrollRestorationId!, scrollController.offset);
+    }
+  }
+
+  @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
     searchEditingController.dispose();
+    super.dispose();
   }
 
   bool _allowSummary = false;
@@ -119,9 +132,11 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
                 EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
             child: FloatingActionButton(
               child: const Icon(Icons.arrow_upward),
-              onPressed: () => scrollController.animateTo(0,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeOut),
+              onPressed: () => scrollController.hasClients
+                  ? scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeOut)
+                  : null,
             ),
           ),
         ),

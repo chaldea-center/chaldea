@@ -196,6 +196,10 @@ class ScrollRestoration extends StatefulWidget {
 
   static final Map<String, double> _offsets = {};
 
+  static double? get(String restorationId) => _offsets[restorationId];
+  static void set(String restorationId, double offset) =>
+      _offsets[restorationId] = offset;
+
   static void reset(String restorationId) {
     _offsets.remove(restorationId);
   }
