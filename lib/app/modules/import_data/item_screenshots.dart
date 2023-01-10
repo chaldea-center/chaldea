@@ -112,6 +112,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         if (bytes.length / 1024 > 1.0) {
           bytes = await compressToJpgAsync(
               src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
+        } else {
+          bytes = await compressToJpgAsync(src: bytes, quality: 90);
         }
         files.add(MultipartFile.fromBytes(bytes, filename: 'file$index'));
       }

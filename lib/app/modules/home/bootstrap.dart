@@ -81,7 +81,9 @@ class _BootstrapPageState extends State<BootstrapPage>
     if (_fa_) return;
     try {
       if (!db.settings.tips.starter) {
-        bool update = network.available && db.settings.updateDataBeforeStart;
+        bool update = network.available &&
+            db.settings.autoUpdateData &&
+            db.settings.updateDataBeforeStart;
         final data = await _loader.reload(
           offline: !update,
           silent: true,

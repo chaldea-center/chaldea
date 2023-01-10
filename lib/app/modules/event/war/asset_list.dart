@@ -55,7 +55,9 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     if (war.startScript != null) {
       scripts.add(war.startScript!.script);
     }
-    for (final quest in war.quests) {
+    final quests = war.quests;
+    quests.sort2((e) => -e.priority);
+    for (final quest in quests) {
       for (final phase in quest.phaseScripts) {
         scripts.addAll(phase.scripts.map((e) => e.script));
       }

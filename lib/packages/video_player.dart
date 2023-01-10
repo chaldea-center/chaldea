@@ -35,7 +35,7 @@ class MyVideoPlayer extends StatefulWidget {
     required VideoPlayerController this.controller,
     this.autoPlay = true,
     this.initAspectRatio = _kDefaultAspectRatio,
-    this.indicatorPadding = const EdgeInsets.only(top: 5.0),
+    this.indicatorPadding = const EdgeInsets.only(top: 5.0, bottom: 3.0),
     this.indicatorHeight = 4.0,
     this.indicatorBelow = true,
     this.onFailed = defaultFailedBuilder,
@@ -46,7 +46,7 @@ class MyVideoPlayer extends StatefulWidget {
     required String this.url,
     this.autoPlay = true,
     this.initAspectRatio = _kDefaultAspectRatio,
-    this.indicatorPadding = const EdgeInsets.only(top: 5.0),
+    this.indicatorPadding = const EdgeInsets.only(top: 5.0, bottom: 3.0),
     this.indicatorHeight = 4.0,
     this.indicatorBelow = true,
     this.onFailed = defaultFailedBuilder,
@@ -168,9 +168,6 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
         return widget.onFailed(context, widget.url, error);
       }
     }
-    if (2 > 1) {
-      // return widget.onFailed(context, widget.url, error);
-    }
 
     Widget progressIndicator = VideoProgressIndicator(
       controller,
@@ -192,7 +189,9 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
       children: [
         Padding(
           padding: widget.indicatorBelow
-              ? EdgeInsets.only(bottom: widget.indicatorHeight)
+              ? EdgeInsets.only(
+                  bottom:
+                      widget.indicatorHeight + widget.indicatorPadding.bottom)
               : EdgeInsets.zero,
           child: AspectRatio(
             aspectRatio: controller.value.isInitialized

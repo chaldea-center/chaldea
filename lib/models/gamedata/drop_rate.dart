@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/packages/logger.dart';
+import '../db.dart';
 import '_helper.dart';
 
 part '../../generated/models/gamedata/drop_rate.g.dart';
@@ -82,9 +83,10 @@ class DropRateSheet {
   }
 
   Map<int, double> getQuestApRate(int questId) {
-    int questIndex = questIds.indexOf(questId);
+    final ap = db.gameData.quests[questId]?.consume ??
+        apCosts[questIds.indexOf(questId)];
     return getQuestDropRate(questId)
-        .map((key, value) => MapEntry(key, apCosts[questIndex] / value));
+        .map((key, value) => MapEntry(key, ap / value));
   }
 
   /// DON'T call the following methods on original data
