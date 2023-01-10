@@ -6,11 +6,12 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
 class WarMapFilterData {
-  bool showRoads = true;
   bool showSpots = true;
   bool freeSpotsOnly = true;
+  bool showRoads = true;
+  bool showHeader = true;
 
-  final gimmick = FilterGroupData<int>();
+  final gimmick = FilterGroupData<int?>();
   final validGimmickIds = <int>{};
 
   void reset() {
@@ -19,6 +20,7 @@ class WarMapFilterData {
     }
     showRoads = showSpots = true;
     freeSpotsOnly = true;
+    showHeader = true;
   }
 }
 
@@ -41,42 +43,42 @@ class _WarMapFilterPageState
     extends FilterPageState<WarMapFilterData, WarMapFilter> {
   @override
   Widget build(BuildContext context) {
-    return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
-      actions: getDefaultActions(onTapReset: () {
-        filterData.reset();
-        update();
-      }),
-      content: getListViewBody(restorationId: 'war_map_filter', children: [
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         if (filterData.validGimmickIds.isNotEmpty)
-          FilterGroup<int>(
-            title: const Text('Gimmicks'),
-            options: filterData.validGimmickIds.toList()..sort(),
+          FilterGroup<int?>(
+            title: Text(S.current.map_gimmicks),
+            options: [null, ...filterData.validGimmickIds.toList()..sort()],
             values: filterData.gimmick,
             optionBuilder: (v) {
+              if (v == null) {
+                return Text('(${S.current.general_all})');
+              }
               String text = v.toString();
               String warId = widget.war.id.toString();
               if (text.startsWith(warId)) text = text.substring(warId.length);
               return Text(text);
             },
-            onFilterChanged: (value, _) {
+            onFilterChanged: (value, last) {
+              if (last == null) {
+                if (filterData.validGimmickIds
+                    .any((e) => !filterData.gimmick.options.contains(e))) {
+                  filterData.gimmick.options =
+                      filterData.validGimmickIds.toSet();
+                } else {
+                  filterData.gimmick.options = {};
+                }
+                filterData.gimmick.options.remove(null);
+              }
               update();
             },
           ),
         SwitchListTile.adaptive(
           controlAffinity: ListTileControlAffinity.trailing,
-          value: filterData.showRoads,
-          title: const Text('Show Roads'),
-          dense: true,
-          onChanged: (v) {
-            filterData.showRoads = v;
-            update();
-          },
-        ),
-        SwitchListTile.adaptive(
-          controlAffinity: ListTileControlAffinity.trailing,
           value: filterData.showSpots,
-          title: const Text('Show Spots'),
+          title: Text(S.current.map_show_spots),
           dense: true,
           onChanged: (v) {
             filterData.showSpots = v;
@@ -86,7 +88,7 @@ class _WarMapFilterPageState
         SwitchListTile.adaptive(
           controlAffinity: ListTileControlAffinity.trailing,
           value: filterData.freeSpotsOnly,
-          title: const Text('FQ Spots only'),
+          title: Text(S.current.map_show_fq_spots_only),
           dense: true,
           onChanged: filterData.showSpots
               ? (v) {
@@ -95,7 +97,27 @@ class _WarMapFilterPageState
                 }
               : null,
         ),
-      ]),
+        SwitchListTile.adaptive(
+          controlAffinity: ListTileControlAffinity.trailing,
+          value: filterData.showRoads,
+          title: Text(S.current.map_show_roads),
+          dense: true,
+          onChanged: (v) {
+            filterData.showRoads = v;
+            update();
+          },
+        ),
+        SwitchListTile.adaptive(
+          controlAffinity: ListTileControlAffinity.trailing,
+          value: filterData.showHeader,
+          title: Text(S.current.map_show_header_image),
+          dense: true,
+          onChanged: (v) {
+            filterData.showHeader = v;
+            update();
+          },
+        ),
+      ],
     );
   }
 }

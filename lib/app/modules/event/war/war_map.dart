@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:photo_view/photo_view.dart';
 
-import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -33,7 +33,9 @@ class WarMapPage extends StatefulWidget {
 class _WarMapPageState extends State<WarMapPage> {
   WarMap get map => widget.map;
   NiceWar get war => widget.war;
+  final audioPlayer = MyAudioPlayer<String>();
   final filterData = WarMapFilterData();
+  bool _showFilter = false;
 
   final Map<String, ui.Image> _cachedImages = {};
   final Set<String> _tasks = {};
@@ -43,6 +45,7 @@ class _WarMapPageState extends State<WarMapPage> {
     if (url == null || url.isEmpty || _tasks.contains(url)) {
       return SynchronousFuture(null);
     }
+    if (_cachedImages[url] != null) return _cachedImages[url];
     final img = await ImageActions.resolveImage(MyCacheImage(url));
     _tasks.add(url);
     if (img != null) {
@@ -71,6 +74,12 @@ class _WarMapPageState extends State<WarMapPage> {
       });
     }
     filterData.gimmick.options = map.mapGimmicks.map((e) => e.id).toSet();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    audioPlayer.stop();
   }
 
   @override
@@ -117,17 +126,9 @@ class _WarMapPageState extends State<WarMapPage> {
           ),
           IconButton(
             onPressed: () {
-              FilterPage.show(
-                context: context,
-                builder: (context) => WarMapFilter(
-                  filterData: filterData,
-                  war: widget.war,
-                  map: map,
-                  onChanged: (v) {
-                    if (mounted) setState(() {});
-                  },
-                ),
-              );
+              setState(() {
+                _showFilter = !_showFilter;
+              });
             },
             icon: const Icon(Icons.filter_alt),
           ),
@@ -178,6 +179,7 @@ class _WarMapPageState extends State<WarMapPage> {
       spots: spots,
       allSpots: {for (final spot in war.spots) spot.id: spot},
       roads: roads,
+      showHeader: filterData.showHeader,
     );
   }
 
@@ -189,6 +191,10 @@ class _WarMapPageState extends State<WarMapPage> {
     }
     return LayoutBuilder(
       builder: (context, constraints) {
+        if (_showFilter) {
+          constraints =
+              constraints.copyWith(maxHeight: constraints.maxHeight * 2 / 3);
+        }
         final ratio = map.mapImageW / map.mapImageH;
         final Size size;
         if (constraints.maxWidth / constraints.maxHeight > ratio) {
@@ -197,47 +203,66 @@ class _WarMapPageState extends State<WarMapPage> {
         } else {
           size = Size(constraints.maxWidth, constraints.maxWidth / ratio);
         }
-        return PhotoView.customChild(
+        Widget mapWidget = CustomPaint(
+          size: size,
+          painter: getPainter(size),
+        );
+        mapWidget = PhotoView.customChild(
           childSize: size,
           minScale: 1.0,
           backgroundDecoration:
               BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-          child: CustomPaint(
-            size: size,
-            painter: getPainter(size),
-          ),
+          child: mapWidget,
         );
-      },
-    );
-  }
-
-  Widget get buttonBar {
-    return ButtonBar(
-      children: [
-        Wrap(
-          spacing: 4,
-          runSpacing: 4,
+        if (!_showFilter) return mapWidget;
+        return ListView(
           children: [
-            IconButton(
-              onPressed: () {
-                // setState(() {});
+            ClipRect(
+              child: SizedBox(
+                width: constraints.maxWidth,
+                height: size.height,
+                child: mapWidget,
+              ),
+            ),
+            DividerWithTitle(
+              title: S.current.filter,
+              indent: 16,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+            ),
+            WarMapFilter(
+              filterData: filterData,
+              war: war,
+              map: map,
+              onChanged: (_) {
+                if (mounted) setState(() {});
               },
-              icon: const Icon(Icons.refresh),
+            ),
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.music_note),
+              horizontalTitleGap: 0,
+              title: Text(map.bgm.tooltip.setMaxLines(1)),
+              trailing: SoundPlayButton(
+                url: map.bgm.audioAsset,
+                player: audioPlayer,
+                name: map.bgm.fileName,
+              ),
             ),
           ],
-        )
-      ],
+        );
+      },
     );
   }
 }
 
 class _WarMapPainter extends CustomPainter {
+  final Map<String, ui.Image> cachedImages;
+  final WarMap map;
   final Map<int, NiceSpot> spots;
   final Map<int, NiceSpot> allSpots;
   final List<SpotRoad> roads;
   final List<MapGimmick> gimmicks;
-  final WarMap map;
-  final Map<String, ui.Image> cachedImages;
+  final bool showHeader;
 
   _WarMapPainter({
     required this.cachedImages,
@@ -246,6 +271,7 @@ class _WarMapPainter extends CustomPainter {
     required this.spots,
     required this.allSpots,
     required this.roads,
+    required this.showHeader,
   });
 
   @override
@@ -375,7 +401,7 @@ class _WarMapPainter extends CustomPainter {
 
     // top-right header
     final headerImage = cachedImages[map.headerImage];
-    if (headerImage != null) {
+    if (headerImage != null && showHeader) {
       final h = size.width / 2 * headerImage.height / headerImage.width;
       canvas.drawRect(
         Rect.fromLTWH(0, 0, size.width, h),

@@ -565,6 +565,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("主线关卡"),
         "main_story": MessageLookupByLibrary.simpleMessage("主线记录"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("章节"),
+        "map_gimmicks": MessageLookupByLibrary.simpleMessage("小部件"),
+        "map_show_fq_spots_only":
+            MessageLookupByLibrary.simpleMessage("仅Free关卡地点"),
+        "map_show_header_image": MessageLookupByLibrary.simpleMessage("显示标题图"),
+        "map_show_roads": MessageLookupByLibrary.simpleMessage("显示道路"),
+        "map_show_spots": MessageLookupByLibrary.simpleMessage("显示地点"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("御主任务"),

@@ -4746,6 +4746,61 @@ class S {
     );
   }
 
+  /// `Gimmicks`
+  String get map_gimmicks {
+    return Intl.message(
+      'Gimmicks',
+      name: 'map_gimmicks',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `FQ spots only`
+  String get map_show_fq_spots_only {
+    return Intl.message(
+      'FQ spots only',
+      name: 'map_show_fq_spots_only',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Header Image`
+  String get map_show_header_image {
+    return Intl.message(
+      'Show Header Image',
+      name: 'map_show_header_image',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Roads`
+  String get map_show_roads {
+    return Intl.message(
+      'Show Roads',
+      name: 'map_show_roads',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Spots`
+  String get map_show_spots {
+    return Intl.message(
+      'Show Spots',
+      name: 'map_show_spots',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Master-Detail width`
   String get master_detail_width {
     return Intl.message(

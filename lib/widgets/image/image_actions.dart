@@ -203,8 +203,9 @@ class ImageActions {
           logger.e('onError why completed!', e, s);
           return;
         }
-        FlutterError.dumpErrorToConsole(
-            FlutterErrorDetails(exception: e, stack: s));
+        print(e);
+        // FlutterError.dumpErrorToConsole(
+        //     FlutterErrorDetails(exception: e, stack: s));
         completer.complete(null);
         if (listener != null) stream.removeListener(listener);
       },

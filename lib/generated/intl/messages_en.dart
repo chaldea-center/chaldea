@@ -673,6 +673,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
+        "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
+        "map_show_fq_spots_only":
+            MessageLookupByLibrary.simpleMessage("FQ spots only"),
+        "map_show_header_image":
+            MessageLookupByLibrary.simpleMessage("Show Header Image"),
+        "map_show_roads": MessageLookupByLibrary.simpleMessage("Show Roads"),
+        "map_show_spots": MessageLookupByLibrary.simpleMessage("Show Spots"),
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission":
