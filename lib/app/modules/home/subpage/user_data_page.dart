@@ -127,15 +127,10 @@ class _UserDataPageState extends State<UserDataPage> {
             header: S.current.userdata_local,
             footer: S.current.settings_userdata_footer,
             children: <Widget>[
-              if (kIsWeb)
+              if (kIsWeb || PlatformU.isMobile)
                 ListTile(
                   title: Text(S.current.save_as),
-                  onTap: () {
-                    final fn =
-                        'chaldea-userdata-${DateFormat.yMd('en_US').format(DateTime.now())}.json';
-                    kPlatformMethods.downloadString(
-                        jsonEncode(db.userData), fn);
-                  },
+                  onTap: saveAsUserData,
                 ),
               ListTile(
                 title: Text(S.current.backup),
@@ -186,6 +181,19 @@ class _UserDataPageState extends State<UserDataPage> {
     }
   }
 
+  Future saveAsUserData() async {
+    final fn =
+        'chaldea-userdata-${DateFormat('yyyyMMddTHHmmss').format(DateTime.now())}.json';
+    final content = jsonEncode(db.userData);
+    if (kIsWeb) {
+      kPlatformMethods.downloadString(content, fn);
+    } else if (PlatformU.isMobile) {
+      final fp = joinPaths(db.paths.tempDir, fn);
+      await File(fp).writeAsString(content);
+      return ShareX.shareFile(fp, context: context);
+    }
+  }
+
   Future backupUserData() async {
     return SimpleCancelOkDialog(
       title: Text(S.current.backup),
@@ -207,21 +215,20 @@ class _UserDataPageState extends State<UserDataPage> {
             content: Text(hint),
             hideCancel: true,
             actions: [
-              if (PlatformU.isAndroid || PlatformU.isIOS && fps.isNotEmpty)
-                TextButton(
-                  child: Text(S.current.share),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Share.shareXFiles([XFile(fps.first)]);
-                  },
-                ),
-              if (PlatformU.isDesktop)
-                TextButton(
-                  child: Text(S.current.open),
-                  onPressed: () {
-                    openFile(db.paths.backupDir);
-                  },
-                ),
+              PlatformU.isDesktop
+                  ? TextButton(
+                      child: Text(S.current.open),
+                      onPressed: () {
+                        openFile(db.paths.backupDir);
+                      },
+                    )
+                  : TextButton(
+                      child: Text(S.current.share),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        ShareX.shareFile(fps.first, context: context);
+                      },
+                    ),
             ],
           ),
         );

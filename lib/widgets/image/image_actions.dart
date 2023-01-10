@@ -132,7 +132,8 @@ class ImageActions {
             onTap: () async {
               Navigator.pop(context);
               if (srcFp != null) {
-                await Share.shareXFiles([XFile(srcFp)], text: shareText);
+                await ShareX.shareFile(srcFp,
+                    text: shareText, context: context);
               } else if (data != null) {
                 // Although, it may not be PNG
                 String fn =
@@ -141,7 +142,8 @@ class ImageActions {
                 File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);
-                await Share.shareXFiles([XFile(tmpFp)], text: shareText);
+                await ShareX.shareFile(tmpFp,
+                    text: shareText, context: context);
               }
             },
           ));

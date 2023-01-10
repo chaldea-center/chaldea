@@ -172,7 +172,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
             if (PlatformU.isDesktop) {
               openFile(pathlib.dirname(fp));
             } else {
-              Share.shareXFiles([XFile(fp)]);
+              ShareX.shareFile(fp, context: context);
             }
           },
         );

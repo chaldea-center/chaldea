@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb, protected;
 
 import 'package:hive/hive.dart';
+import 'package:path/path.dart' as p;
 
 import 'file_plus_io.dart';
 import 'file_plus_web.dart';
@@ -64,4 +65,15 @@ abstract class FilePlus {
   Future<void> delete();
 
   String get path;
+}
+
+// ignore: camel_case_types
+class pathlib {
+  const pathlib._();
+  static const basename = p.basename;
+  static const basenameWithoutExtension = p.basenameWithoutExtension;
+  static const dirname = p.dirname;
+  static const absolute = p.absolute;
+  static const join = p.join;
+  static const joinAll = p.joinAll;
 }

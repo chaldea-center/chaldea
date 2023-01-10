@@ -238,17 +238,20 @@ class _Database {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
 
     List<String> _saved = [];
+    Future<void> _saveBytes(List<int> bytes, String fn) async {
+      final fp = joinPaths(paths.backupDir, fn);
+      await FilePlus(fp).writeAsBytes(bytes);
+      _saved.add(fp);
+    }
+
     final _lastSavedFile = FilePlus(paths.userDataPath);
-    List<List<int>> objs = [
-      if (disk && _lastSavedFile.existsSync())
-        await _lastSavedFile.readAsBytes(),
-      if (memory) utf8.encode(jsonEncode(userData)),
-    ];
-    for (var obj in objs) {
-      String filename =
-          '$timeStamp${obj is FilePlus ? 'd' : 'm-${userData.appVer}'}.json';
-      await FilePlus(joinPaths(paths.backupDir, filename)).writeAsBytes(obj);
-      _saved.add(filename);
+    if (memory) {
+      await _saveBytes(utf8.encode(jsonEncode(userData)),
+          '${timeStamp}m-${userData.appVer}.json');
+    }
+    if (disk && _lastSavedFile.existsSync()) {
+      await _saveBytes(
+          await _lastSavedFile.readAsBytes(), '${timeStamp}d.json');
     }
     if (_saved.isNotEmpty) {
       db.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;

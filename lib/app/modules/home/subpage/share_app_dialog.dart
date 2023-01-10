@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:share_plus/share_plus.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/packages/sharex.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
@@ -73,9 +73,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
         if (!PlatformU.isWindows)
           TextButton(
             onPressed: () {
-              Share.share(_controller.text).catchError((e, s) async {
-                logger.e('Share text failed', e, s);
-              });
+              ShareX.share(_controller.text, context: context);
             },
             child: Text(S.current.share),
           ),
