@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:dio/dio.dart';
 import 'package:github/github.dart';
 
@@ -66,7 +68,7 @@ class GithubBackup<T> extends BackupBackend<T> {
     final d = DioE(BaseOptions(baseUrl: 'https://api.github.com', headers: {
       'Accept': 'application/vnd.github.v3+json',
       if (config.token.isNotEmpty) 'Authorization': 'token ${config.token}',
-      'User-Agent': 'chaldea/2.0',
+      if (!kIsWeb) 'User-Agent': 'chaldea/2.0',
     }));
     return d;
   }

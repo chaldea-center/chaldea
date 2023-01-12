@@ -128,6 +128,7 @@
               if (["html", "canvaskit", "auto"].indexOf(_renderer) === -1) {
                 _renderer = "html";
               }
+              window.flutterWebRenderer = _renderer
               return engineInitializer.initializeEngine({
                 canvasKitBaseUrl: "/canvaskit/",
                 renderer: _renderer,

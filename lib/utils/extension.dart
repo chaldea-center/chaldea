@@ -415,7 +415,7 @@ Dio DioE([BaseOptions? options]) {
 
   return Dio(options.copyWith(
     headers: {
-      if (kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
+      if (!kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
       if (!kIsWeb)
         HttpHeaders.refererHeader: 'https://$ver2.$platform.chaldea.app',
       ...options.headers,
