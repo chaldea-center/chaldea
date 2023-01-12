@@ -18,6 +18,8 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
           saveDataVer: $checkedConvert('saveDataVer', (v) => v as String?),
           userCreateServer:
               $checkedConvert('userCreateServer', (v) => v as String?),
+          friendCode: $checkedConvert('friendCode', (v) => v as String?),
+          name: $checkedConvert('name', (v) => v as String?),
         );
         return val;
       },
@@ -30,6 +32,8 @@ Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
       'secretKey': instance.secretKey,
       'saveDataVer': instance.saveDataVer,
       'userCreateServer': instance.userCreateServer,
+      'friendCode': instance.friendCode,
+      'name': instance.name,
     };
 
 AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(

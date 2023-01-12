@@ -65,10 +65,14 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                   value: allData.indexOf(args),
                   items: List.generate(allData.length, (index) {
                     final user = allData[index];
+                    String text = '[${user.region.upper}] ${user.auth?.userId}';
+                    if (user.auth?.friendCode != null) {
+                      text +=
+                          '\n (${user.auth?.friendCode} ${user.auth?.name})';
+                    }
                     return DropdownMenuItem(
                       value: index,
-                      child:
-                          Text('[${user.region.upper}] ${user.auth?.userId}'),
+                      child: Text(text, textScaleFactor: 0.9),
                     );
                   }),
                   onChanged: (v) {

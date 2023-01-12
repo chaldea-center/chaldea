@@ -15,6 +15,8 @@ class UserAuth {
   final String secretKey;
   final String? saveDataVer;
   final String? userCreateServer;
+  String? friendCode;
+  String? name;
   //
   UserAuth({
     this.code,
@@ -23,6 +25,8 @@ class UserAuth {
     required this.secretKey,
     this.saveDataVer,
     this.userCreateServer,
+    this.friendCode,
+    this.name,
   });
 
   bool get isValid => isValidKeys(userId, authKey, secretKey);

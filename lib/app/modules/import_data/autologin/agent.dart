@@ -227,6 +227,11 @@ class LoginAgent {
     }
     final resp = await post('${gameTop.host}/login/top?_userId=${auth.userId}');
     reset();
+    final sr = ServerResponse(resp);
+    if (sr.userGame != null) {
+      auth.friendCode = sr.userGame?.friendCode;
+      auth.name = sr.userGame?.name;
+    }
     return resp;
   }
 
