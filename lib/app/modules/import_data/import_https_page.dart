@@ -21,7 +21,8 @@ import '../../app.dart';
 import 'bond_detail_page.dart';
 
 class ImportHttpPage extends StatefulWidget {
-  ImportHttpPage({super.key});
+  final String? toploginText;
+  ImportHttpPage({super.key, this.toploginText});
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();
@@ -61,15 +62,20 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   @override
   void initState() {
     super.initState();
-    load();
+    loadOrSave();
   }
 
-  Future load() async {
+  Future<void> loadOrSave() async {
     try {
-      final f = FilePlus(tmpPath);
-      if (f.existsSync()) {
-        parseResponseBody(await f.readAsString());
-        if (mounted) setState(() {});
+      if (widget.toploginText != null) {
+        parseResponseBody(widget.toploginText!);
+        await FilePlus(tmpPath).writeAsString(widget.toploginText!);
+      } else {
+        final f = FilePlus(tmpPath);
+        if (f.existsSync()) {
+          parseResponseBody(await f.readAsString());
+          if (mounted) setState(() {});
+        }
       }
     } catch (e, s) {
       logger.e('reading http packages cache failed', e, s);

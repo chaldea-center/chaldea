@@ -416,6 +416,17 @@ class S {
     );
   }
 
+  /// `Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import`
+  String get auth_data_hints {
+    return Intl.message(
+      'Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import',
+      name: 'auth_data_hints',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Auto reset`
   String get auto_reset {
     return Intl.message(
@@ -3343,6 +3354,17 @@ class S {
     );
   }
 
+  /// `Auth File (Transfer Code)`
+  String get import_auth_file {
+    return Intl.message(
+      'Auth File (Transfer Code)',
+      name: 'import_auth_file',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Import Backup`
   String get import_backup {
     return Intl.message(
@@ -4410,6 +4432,17 @@ class S {
     return Intl.message(
       'OR',
       name: 'logic_type_or',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Login Auth`
+  String get login_auth {
+    return Intl.message(
+      'Login Auth',
+      name: 'login_auth',
       desc: '',
       locale: localeName,
       args: [],

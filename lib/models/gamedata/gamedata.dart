@@ -1,6 +1,10 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
+import 'package:crclib/catalog.dart';
 
 import 'package:chaldea/utils/extension.dart';
 import '../userdata/version.dart';
@@ -424,6 +428,71 @@ class FileVersion {
       _$FileVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileVersionToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.screamingSnake)
+class GameTops {
+  GameTop jp;
+  GameTop na;
+
+  GameTops({
+    required this.jp,
+    required this.na,
+  });
+
+  factory GameTops.fromJson(Map<String, dynamic> json) =>
+      _$GameTopsFromJson(json);
+
+  GameTop? of(Region region) {
+    switch (region) {
+      case Region.jp:
+        return jp;
+      case Region.na:
+        return na;
+      default:
+        return null;
+    }
+  }
+}
+
+@JsonSerializable()
+class GameTop {
+  @RegionConverter()
+  Region region;
+  String gameServer;
+  String appVer;
+  String verCode;
+  int dataVer;
+  int dateVer;
+  String assetbundle;
+  String assetbundleFolder;
+
+  GameTop({
+    required this.region,
+    required this.gameServer,
+    required this.appVer,
+    required this.verCode,
+    required this.dataVer,
+    required this.dateVer,
+    required this.assetbundle,
+    required this.assetbundleFolder,
+  });
+
+  String get host {
+    String _host = gameServer.endsWith('/')
+        ? gameServer.substring(0, gameServer.length - 1)
+        : gameServer;
+    if (!_host.toLowerCase().startsWith(RegExp(r'http(s)?://'))) {
+      return 'https://$_host';
+    }
+    return _host;
+  }
+
+  int get folderCrc =>
+      Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
+
+  factory GameTop.fromJson(Map<String, dynamic> json) =>
+      _$GameTopFromJson(json);
 }
 
 class _ProcessedData {

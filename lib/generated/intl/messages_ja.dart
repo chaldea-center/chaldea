@@ -363,6 +363,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("強化 - アペンドスキル強化"),
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("アペンドスキルのスクショ"),
+        "import_auth_file": MessageLookupByLibrary.simpleMessage("引き継ぎ"),
         "import_backup": MessageLookupByLibrary.simpleMessage("バックアップのインポート"),
         "import_csv_export_all":
             MessageLookupByLibrary.simpleMessage("全てのサーヴァント"),

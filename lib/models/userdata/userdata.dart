@@ -216,7 +216,7 @@ const kSvtPlanMaxNum = 5;
 class User {
   String name;
   bool isGirl;
-
+  @RegionConverter()
   Region region;
   Map<int, int> dupServantMapping; // <new id, original id>
   Map<int, SvtStatus> servants;

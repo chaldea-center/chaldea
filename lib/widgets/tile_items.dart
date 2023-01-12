@@ -45,23 +45,32 @@ class SHeader extends StatelessWidget {
 }
 
 class SFooter extends StatelessWidget {
-  final String label;
+  final String? label;
+  final InlineSpan? richSpan;
   final EdgeInsetsGeometry padding;
 
-  const SFooter(this.label,
-      {super.key,
-      this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5)});
+  const SFooter(
+    String this.label, {
+    super.key,
+    this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5),
+  }) : richSpan = null;
+  const SFooter.rich(
+    InlineSpan this.richSpan, {
+    super.key,
+    this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5),
+  }) : label = null;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
-      child: Text(
-        label,
+      child: Text.rich(
+        richSpan ?? TextSpan(text: label),
         style: TextStyle(
-            color: Theme.of(context).textTheme.bodySmall?.color,
-            fontSize: 13.0,
-            letterSpacing: -0.08),
+          color: Theme.of(context).textTheme.bodySmall?.color,
+          fontSize: 13.0,
+          letterSpacing: -0.08,
+        ),
       ),
     );
   }

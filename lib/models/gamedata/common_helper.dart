@@ -25,6 +25,23 @@ extension RegionX on Region {
   }
 }
 
+class RegionConverter extends JsonConverter<Region, String> {
+  const RegionConverter();
+  @override
+  Region fromJson(String value) {
+    for (final k in _$RegionEnumMap.keys) {
+      final v = _$RegionEnumMap[k]!;
+      if (v == value || v == value.toLowerCase()) {
+        return k;
+      }
+    }
+    return Region.jp;
+  }
+
+  @override
+  String toJson(Region obj) => _$RegionEnumMap[obj] ?? obj.name;
+}
+
 class CondTypeConverter extends JsonConverter<CondType, String> {
   const CondTypeConverter();
   @override

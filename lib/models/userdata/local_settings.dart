@@ -12,6 +12,7 @@ import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
 import '../gamedata/common.dart';
 import '_helper.dart';
+import 'autologin.dart';
 import 'filter_data.dart';
 import 'version.dart';
 
@@ -19,7 +20,7 @@ export 'filter_data.dart';
 
 part '../../generated/models/userdata/local_settings.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(converters: [RegionConverter()])
 class LocalSettings {
   bool beta;
   bool showDebugFab;
@@ -65,6 +66,8 @@ class LocalSettings {
   SummonFilterData summonFilterData;
   ScriptReaderFilterData scriptReaderFilterData;
 
+  List<AutoLoginData> autologins;
+
   LocalSettings({
     this.beta = false,
     this.showDebugFab = false,
@@ -103,6 +106,7 @@ class LocalSettings {
     EventFilterData? eventFilterData,
     SummonFilterData? summonFilterData,
     ScriptReaderFilterData? scriptReaderFilterData,
+    List<AutoLoginData>? autologins,
   })  : _language = language,
         preferredRegions = preferredRegions == null
             ? null
@@ -121,7 +125,8 @@ class LocalSettings {
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData(),
         scriptReaderFilterData =
-            scriptReaderFilterData ?? ScriptReaderFilterData() {
+            scriptReaderFilterData ?? ScriptReaderFilterData(),
+        autologins = autologins ?? [] {
     this.galleries.removeWhere(
         (key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }

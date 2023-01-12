@@ -123,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage(
             "If you have trouble picking images, use files instead"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
+        "auth_data_hints": MessageLookupByLibrary.simpleMessage(
+            "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
         "autoplay": MessageLookupByLibrary.simpleMessage("Autoplay"),
@@ -482,6 +484,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enhance - Append Skill"),
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("Append Skill Screenshots"),
+        "import_auth_file":
+            MessageLookupByLibrary.simpleMessage("Auth File (Transfer Code)"),
         "import_backup": MessageLookupByLibrary.simpleMessage("Import Backup"),
         "import_csv_export_all":
             MessageLookupByLibrary.simpleMessage("All servants"),
@@ -625,6 +629,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("OR"),
+        "login_auth": MessageLookupByLibrary.simpleMessage("Login Auth"),
         "login_change_name":
             MessageLookupByLibrary.simpleMessage("Change Name"),
         "login_change_password":

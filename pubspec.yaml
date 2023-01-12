@@ -38,6 +38,7 @@ dependencies:
     git:
       url: https://github.com/narumi147/catcher.git
   connectivity_plus: ^3.0.2
+  cookie_jar: ^3.0.1
   crclib: ^3.0.0
   cross_file: ^0.3.3+2
   crypto: ^3.0.2

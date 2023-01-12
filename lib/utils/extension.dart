@@ -207,6 +207,15 @@ extension NumMapDefault<K> on Map<K, int> {
 }
 
 extension StringX on String {
+  String substring2(int start, [int? end]) {
+    if (start >= length) return '';
+    if (end != null) {
+      if (end <= start) end = start;
+      if (end > length) end = length;
+    }
+    return substring(start, end);
+  }
+
   DateTime? toDateTime() {
     return DateTimeX.tryParse(this);
   }

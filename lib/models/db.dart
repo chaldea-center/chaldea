@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'package:intl/intl.dart';
 
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
-import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -133,7 +131,6 @@ class _Database {
       await FilePlus.initiate();
     } else {
       Hive.init(paths.hiveDir);
-      HttpOverrides.global = CustomHttpOverrides();
     }
 
     await loadSettings();

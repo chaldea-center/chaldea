@@ -117,6 +117,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help":
             MessageLookupByLibrary.simpleMessage("如果图片模式存在问题，请使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
+        "auth_data_hints": MessageLookupByLibrary.simpleMessage(
+            "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自动重置"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
         "autoplay": MessageLookupByLibrary.simpleMessage("自动播放"),
@@ -418,6 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("强化 - 被动技能强化"),
         "import_append_skill_screenshots":
             MessageLookupByLibrary.simpleMessage("追加技能截图解析"),
+        "import_auth_file": MessageLookupByLibrary.simpleMessage("引继文件"),
         "import_backup": MessageLookupByLibrary.simpleMessage("导入备份"),
         "import_csv_export_all": MessageLookupByLibrary.simpleMessage("所有从者"),
         "import_csv_export_empty": MessageLookupByLibrary.simpleMessage("空模板"),
@@ -529,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logic_type": MessageLookupByLibrary.simpleMessage("逻辑关系"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("且"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("或"),
+        "login_auth": MessageLookupByLibrary.simpleMessage("登陆凭据(Auth)"),
         "login_change_name": MessageLookupByLibrary.simpleMessage("修改用户名"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密码"),
         "login_confirm_password": MessageLookupByLibrary.simpleMessage("确认密码"),

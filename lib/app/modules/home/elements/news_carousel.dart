@@ -30,7 +30,7 @@ import 'package:chaldea/widgets/image/image_viewer.dart';
 class AppNewsCarousel extends StatefulWidget {
   final double? maxWidth;
 
-  const AppNewsCarousel({super.key, this.maxWidth});
+  AppNewsCarousel({super.key, this.maxWidth});
 
   @override
   _AppNewsCarouselState createState() => _AppNewsCarouselState();
@@ -106,7 +106,10 @@ class AppNewsCarousel extends StatefulWidget {
               link: HttpUrlHelper.projectDocUrl('installation'),
             ));
           }
-        } finally {
+          if (!carouselSetting.enableChaldea) {
+            items.removeWhere((item) => item.type != 1);
+          }
+        } catch (e) {
           //
         }
         items.addAll(
@@ -127,7 +130,8 @@ class AppNewsCarousel extends StatefulWidget {
             var doc = parser.parse(response.data.toString());
             var ele = doc.getElementById('transImageBox');
             updated = true;
-            return _getImageLinks(element: ele, uri: Uri.parse(mcUrl));
+            return _getImageLinks(
+                element: ele, uri: Uri.parse('https://fgo.wiki/'));
           }).catchError((e, s) async {
             logger.d('parse mc slides failed', e, s);
             return <CarouselItem>[];
@@ -438,7 +442,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     final items = carouselSetting.items.toList();
     final t = DateTime.now();
     items.removeWhere((item) {
-      if (!carouselSetting.enableChaldea && item.type != 1) return true;
+      // if (!carouselSetting.enableChaldea && item.type != 1) return true;
       if (item.startTime.isAfter(t) || item.endTime.isBefore(t)) return true;
       if (item.verMin != null && item.verMin! > AppInfo.version) return true;
       if (item.verMax != null && item.verMax! < AppInfo.version) return true;
@@ -456,7 +460,11 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           imageUrl: item.image,
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
-            errorWidget: (context, url, error) => Container(),
+            errorWidget: (context, url, error) => Container(
+              child: kDebugMode
+                  ? Text(url)
+                  : const SizedBox(width: 80, height: 30),
+            ),
             fit: item.fit,
           ),
         );

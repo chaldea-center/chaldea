@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/import_data/autologin/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -115,6 +117,17 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.pushPage(const ImportCSVPage(), popDetail: true);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.manage_accounts),
+            title: Text(S.current.import_auth_file),
+            subtitle:
+                Text(['JP/NA', if (kIsWeb) 'web is not supported'].join(', ')),
+            onTap: kIsWeb
+                ? null
+                : () {
+                    router.pushPage(const AutoLoginPage());
+                  },
+          )
         ],
       ),
     );

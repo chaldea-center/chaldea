@@ -55,8 +55,11 @@ User _$UserFromJson(Map json) => $checkedCreate(
         final val = User(
           name: $checkedConvert('name', (v) => v as String? ?? 'Gudako'),
           isGirl: $checkedConvert('isGirl', (v) => v as bool? ?? true),
-          region: $checkedConvert('region',
-              (v) => $enumDecodeNullable(_$RegionEnumMap, v) ?? Region.jp),
+          region: $checkedConvert(
+              'region',
+              (v) => v == null
+                  ? Region.jp
+                  : const RegionConverter().fromJson(v as String)),
           servants: $checkedConvert(
               'servants',
               (v) => (v as Map?)?.map(
@@ -126,7 +129,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'isGirl': instance.isGirl,
-      'region': _$RegionEnumMap[instance.region]!,
+      'region': const RegionConverter().toJson(instance.region),
       'dupServantMapping':
           instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
       'servants':
@@ -146,14 +149,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
       'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
     };
-
-const _$RegionEnumMap = {
-  Region.jp: 'jp',
-  Region.cn: 'cn',
-  Region.tw: 'tw',
-  Region.na: 'na',
-  Region.kr: 'kr',
-};
 
 SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(
       'SvtStatus',

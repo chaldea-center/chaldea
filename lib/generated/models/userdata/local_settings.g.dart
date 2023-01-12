@@ -35,7 +35,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           preferredRegions: $checkedConvert(
               'preferredRegions',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => $enumDecode(_$RegionEnumMap, e))
+                  ?.map((e) => const RegionConverter().fromJson(e as String))
                   .toList()),
           autoUpdateData:
               $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
@@ -56,8 +56,10 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           preferApRate:
               $checkedConvert('preferApRate', (v) => v as bool? ?? true),
-          preferredQuestRegion: $checkedConvert('preferredQuestRegion',
-              (v) => $enumDecodeNullable(_$RegionEnumMap, v)),
+          preferredQuestRegion: $checkedConvert(
+              'preferredQuestRegion',
+              (v) => _$JsonConverterFromJson<String, Region>(
+                  v, const RegionConverter().fromJson)),
           alertUploadUserData: $checkedConvert(
               'alertUploadUserData', (v) => v as bool? ?? false),
           forceOnline:
@@ -131,6 +133,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   ? null
                   : ScriptReaderFilterData.fromJson(
                       Map<String, dynamic>.from(v as Map))),
+          autologins: $checkedConvert(
+              'autologins',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => AutoLoginData.fromJson(
+                      Map<String, dynamic>.from(e as Map)))
+                  .toList()),
         );
         $checkedConvert(
             'useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
@@ -150,8 +158,9 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'enableMouseDrag': instance.enableMouseDrag,
       'splitMasterRatio': instance.splitMasterRatio,
       'globalSelection': instance.globalSelection,
-      'preferredRegions':
-          instance.preferredRegions?.map((e) => _$RegionEnumMap[e]!).toList(),
+      'preferredRegions': instance.preferredRegions
+          ?.map(const RegionConverter().toJson)
+          .toList(),
       'autoUpdateData': instance.autoUpdateData,
       'updateDataBeforeStart': instance.updateDataBeforeStart,
       'checkDataHash': instance.checkDataHash,
@@ -162,7 +171,8 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'preferApRate': instance.preferApRate,
-      'preferredQuestRegion': _$RegionEnumMap[instance.preferredQuestRegion],
+      'preferredQuestRegion': _$JsonConverterToJson<String, Region>(
+          instance.preferredQuestRegion, const RegionConverter().toJson),
       'alertUploadUserData': instance.alertUploadUserData,
       'forceOnline': instance.forceOnline,
       'priorityTags':
@@ -179,6 +189,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'eventFilterData': instance.eventFilterData.toJson(),
       'summonFilterData': instance.summonFilterData.toJson(),
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
+      'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'language': instance.language,
     };
 
@@ -188,19 +199,23 @@ const _$ThemeModeEnumMap = {
   ThemeMode.dark: 'dark',
 };
 
-const _$RegionEnumMap = {
-  Region.jp: 'jp',
-  Region.cn: 'cn',
-  Region.tw: 'tw',
-  Region.na: 'na',
-  Region.kr: 'kr',
-};
-
 const _$FavoriteStateEnumMap = {
   FavoriteState.all: 'all',
   FavoriteState.owned: 'owned',
   FavoriteState.other: 'other',
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
 
 DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
       'DisplaySettings',
@@ -416,18 +431,6 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
       'verMax': _$JsonConverterToJson<String, AppVersion>(
           instance.verMax, const AppVersionConverter().toJson),
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
-
-Json? _$JsonConverterToJson<Json, Value>(
-  Value? value,
-  Json? Function(Value value) toJson,
-) =>
-    value == null ? null : toJson(value);
 
 GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
       'GithubSetting',

@@ -622,4 +622,13 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  // game top
+  static Future<GameTops?> gametops({Duration? expireAfter = Duration.zero}) {
+    return cacheManager.getModel(
+      '${Hosts.dataHost}/gametop.json',
+      (data) => GameTops.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 }

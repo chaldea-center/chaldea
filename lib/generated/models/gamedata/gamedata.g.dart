@@ -153,3 +153,19 @@ Map<String, dynamic> _$FileVersionToJson(FileVersion instance) =>
       'minSize': instance.minSize,
       'minHash': instance.minHash,
     };
+
+GameTops _$GameTopsFromJson(Map json) => GameTops(
+      jp: GameTop.fromJson(Map<String, dynamic>.from(json['JP'] as Map)),
+      na: GameTop.fromJson(Map<String, dynamic>.from(json['NA'] as Map)),
+    );
+
+GameTop _$GameTopFromJson(Map json) => GameTop(
+      region: const RegionConverter().fromJson(json['region'] as String),
+      gameServer: json['gameServer'] as String,
+      appVer: json['appVer'] as String,
+      verCode: json['verCode'] as String,
+      dataVer: json['dataVer'] as int,
+      dateVer: json['dateVer'] as int,
+      assetbundle: json['assetbundle'] as String,
+      assetbundleFolder: json['assetbundleFolder'] as String,
+    );
