@@ -66,7 +66,7 @@ class _EnemyFilterPageState
             update();
           },
         ),
-        buildClassFilter(filterData.svtClass),
+        buildClassFilter(filterData.svtClass, showUnknown: true),
         FilterGroup<Attribute>(
           title: Text(S.current.filter_attribute, style: textStyle),
           options: Attribute.values.sublist(0, 5),
@@ -81,7 +81,7 @@ class _EnemyFilterPageState
           options: List.of(SvtType.values)
             ..removeWhere((e) => [
                   SvtType.svtEquipMaterial,
-                  SvtType.enemyCollectionDetail,
+                  // SvtType.enemyCollectionDetail,
                   SvtType.all,
                   SvtType.commandCode
                 ].contains(e)),

@@ -371,7 +371,7 @@ class SvtFilterData with _FilterData {
       if (db.gameData.constData.classInfo.isNotEmpty) {
         return -(db.gameData.constData.classInfo[cls.id]?.priority ?? 0);
       }
-      int k = SvtClassX.regularWithBeasts.indexOf(cls);
+      int k = SvtClassX.regularAllWithBeasts.indexOf(cls);
       return k < 0 ? 999 : k;
     }
 

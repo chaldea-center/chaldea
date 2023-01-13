@@ -23,7 +23,10 @@ class EnemyListPageState extends State<EnemyListPage>
     with SearchableListState<BasicServant, EnemyListPage> {
   @override
   Iterable<BasicServant> get wholeData =>
-      db.gameData.entities.values.where((svt) => svt.collectionNo <= 0);
+      db.gameData.entities.values.where((svt) {
+        if (svt.collectionNo == 0) return true;
+        return svt.type != SvtType.normal && svt.type != SvtType.servantEquip;
+      });
   Map<int, List<QuestEnemy>> _allEnemies = {};
 
   final filterData = EnemyFilterData();
@@ -94,6 +97,7 @@ class EnemyListPageState extends State<EnemyListPage>
                 context: context,
                 maxWidth: constraints.maxWidth,
                 data: filterData.svtClass,
+                showUnknown: true,
                 onChanged: () {
                   setState(() {});
                 },
@@ -148,11 +152,8 @@ class EnemyListPageState extends State<EnemyListPage>
     if (filterData.onlyShowQuestEnemy && enemies.isEmpty) {
       return false;
     }
-    if (!filterData.svtClass.matchOne(svt.className, compares: {
-      SvtClass.caster: (v, o) =>
-          v == SvtClass.caster || v == SvtClass.grandCaster,
-      SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
-    })) {
+    if (!filterData.svtClass
+        .matchOne(svt.className, compare: SvtClassX.match)) {
       return false;
     }
     if (!filterData.attribute.matchOne(svt.attribute)) {

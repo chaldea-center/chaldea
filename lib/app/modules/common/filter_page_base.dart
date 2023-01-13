@@ -242,9 +242,16 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     );
   }
 
-  Widget buildClassFilter(FilterGroupData<SvtClass> data,
-      {VoidCallback? onChanged}) {
-    final shownClasses = SvtClassX.regularAllWithOlga;
+  Widget buildClassFilter(
+    FilterGroupData<SvtClass> data, {
+    VoidCallback? onChanged,
+    bool showUnknown = false,
+  }) {
+    final shownClasses = [
+      ...SvtClassX.regularAllWithOlga,
+      if (showUnknown) SvtClass.unknown,
+    ];
+    int crossCount = (shownClasses.length / 2).ceil();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -278,9 +285,9 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                 ),
                 Container(width: 10),
                 Expanded(
-                  flex: 8,
+                  flex: crossCount,
                   child: GridView.count(
-                    crossAxisCount: 8,
+                    crossAxisCount: crossCount,
                     shrinkWrap: true,
                     childAspectRatio: 1.2,
                     physics: const NeverScrollableScrollPhysics(),

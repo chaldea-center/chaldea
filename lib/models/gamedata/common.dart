@@ -285,7 +285,7 @@ extension SvtClassX on SvtClass {
     SvtClassX.beast,
   ];
 
-  static List<SvtClass> regularWithBeasts = [
+  static List<SvtClass> regularAllWithBeasts = [
     ...regularAll,
     ...beasts,
   ];
@@ -317,6 +317,21 @@ extension SvtClassX on SvtClass {
     SvtClass.beastUnknown,
     SvtClass.uOlgaMarieAlienGod,
   ];
+
+  static bool match(SvtClass value, SvtClass option) {
+    if (option == value) return true;
+    if (option == SvtClass.caster) return value == SvtClass.grandCaster;
+    if (option == SvtClassX.beast) {
+      return beasts.contains(value);
+    }
+    if (option == SvtClass.EXTRA) {
+      return extra.contains(value) || beasts.contains(value);
+    }
+    if (option == SvtClass.unknown) {
+      return !SvtClassX.regularAllWithBeasts.contains(value);
+    }
+    return false;
+  }
 }
 
 /// non-JP may not contains the last class

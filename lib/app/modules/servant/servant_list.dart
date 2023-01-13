@@ -428,11 +428,8 @@ class ServantListPageState extends State<ServantListPage>
     }
 
     // class name
-    if (!filterData.svtClass.matchOne(svt.className, compares: {
-      SvtClass.caster: (v, o) =>
-          v == SvtClass.caster || v == SvtClass.grandCaster,
-      SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
-    })) {
+    if (!filterData.svtClass
+        .matchOne(svt.className, compare: SvtClassX.match)) {
       return false;
     }
     if (!filterData.rarity.matchOne(svt.rarity)) {

@@ -452,6 +452,7 @@ class SharedBuilder {
     required double maxWidth,
     required FilterGroupData<SvtClass> data,
     VoidCallback? onChanged,
+    bool showUnknown = false,
   }) {
     Widget _oneClsBtn(SvtClass clsName) {
       final extraClasses = [...SvtClassX.extra, SvtClassX.beast];
@@ -511,6 +512,7 @@ class SharedBuilder {
         _oneClsBtn(clsName),
     ];
     final extraBtn = _oneClsBtn(SvtClass.EXTRA);
+    final unknownBtn = _oneClsBtn(SvtClass.unknown);
     SvtListClassFilterStyle style = db.settings.display.classFilterStyle;
     // full window mode
     if (SplitRoute.isSplit(context) && SplitRoute.of(context)!.detail == null) {
@@ -546,13 +548,17 @@ class SharedBuilder {
           constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [...clsRegularBtns, extraBtn]
+            children: [...clsRegularBtns, extraBtn, if (showUnknown) unknownBtn]
                 .map((e) => Expanded(child: e))
                 .toList(),
           ),
         );
       case SvtListClassFilterStyle.singleRowExpanded:
-        final allBtns = [...clsRegularBtns, ...clsExtraBtns];
+        final allBtns = [
+          ...clsRegularBtns,
+          ...clsExtraBtns,
+          if (showUnknown) unknownBtn
+        ];
         return SizedBox(
           height: 40,
           child: Row(
@@ -575,6 +581,7 @@ class SharedBuilder {
           ),
         );
       case SvtListClassFilterStyle.twoRow:
+        if (showUnknown) clsExtraBtns.add(unknownBtn);
         int crossCount = max(clsRegularBtns.length, clsExtraBtns.length);
         clsRegularBtns.addAll(List.generate(
             crossCount - clsRegularBtns.length, (index) => Container()));

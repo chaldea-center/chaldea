@@ -464,11 +464,8 @@ class _NpChargePageState extends State<NpChargePage> {
           .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
         continue;
       }
-      if (!filterData.svtClass.matchOne(svt.className, compares: {
-        SvtClass.caster: (v, o) =>
-            v == SvtClass.caster || v == SvtClass.grandCaster,
-        SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
-      })) {
+      if (!filterData.svtClass
+          .matchOne(svt.className, compare: SvtClassX.match)) {
         continue;
       }
       if (!filterData.rarity.matchOne(svt.rarity)) continue;

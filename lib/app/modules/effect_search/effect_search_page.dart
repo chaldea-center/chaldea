@@ -128,11 +128,8 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       }
     }
     if (card is Servant) {
-      if (!filterData.svtClass.matchOne(card.className, compares: {
-        SvtClass.caster: (v, o) =>
-            v == SvtClass.caster || v == SvtClass.grandCaster,
-        SvtClassX.beast: (v, o) => SvtClassX.beasts.contains(v),
-      })) {
+      if (!filterData.svtClass
+          .matchOne(card.className, compare: SvtClassX.match)) {
         return false;
       }
     }
