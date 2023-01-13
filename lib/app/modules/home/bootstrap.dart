@@ -36,6 +36,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   List<Widget> pages = [];
   final _loader = GameDataLoader();
   bool _offlineLoading = true;
+  String? _loadingHint;
   bool invalidStartup = false;
   bool _fa_ = false;
 
@@ -84,10 +85,12 @@ class _BootstrapPageState extends State<BootstrapPage>
         bool update = network.available &&
             db.settings.autoUpdateData &&
             db.settings.updateDataBeforeStart;
-        final data = await _loader.reload(
-          offline: !update,
-          silent: true,
-        );
+        GameData? data = await _loader.reload(offline: !update, silent: true);
+        if (update && data == null) {
+          _loadingHint = 'Update failed, loading local caches...';
+          if (mounted) setState(() {});
+          data = await _loader.reload(offline: true, silent: true);
+        }
         if (data != null) {
           db.gameData = data;
           onDataReady(!update);
@@ -152,7 +155,10 @@ class _BootstrapPageState extends State<BootstrapPage>
         dataPage,
       ];
     } else if (_offlineLoading) {
-      pages = [_OfflineLoadingPage(progress: _loader.progress.value)];
+      pages = [
+        _OfflineLoadingPage(
+            progress: _loader.progress.value, hint: _loadingHint)
+      ];
     } else {
       pages = [dataPage];
     }
@@ -484,8 +490,9 @@ class _BootstrapPageState extends State<BootstrapPage>
 
 class _OfflineLoadingPage extends StatelessWidget {
   final double? progress;
+  final String? hint;
 
-  _OfflineLoadingPage({this.progress});
+  _OfflineLoadingPage({this.progress, this.hint});
 
   @override
   Widget build(BuildContext context) {
@@ -498,6 +505,10 @@ class _OfflineLoadingPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: Center(child: img)),
+        SizedBox(
+          height: 24,
+          child: Text(hint ?? ' ', textAlign: TextAlign.center),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 48),
           child: LinearProgressIndicator(
