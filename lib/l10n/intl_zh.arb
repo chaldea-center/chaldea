@@ -250,6 +250,7 @@
   "filter_sort_number": "序号",
   "filter_sort_rarity": "星级",
   "foukun": "芙芙",
+  "fq_plan_decimal_hint": "小数未显示，显示结果与计算结果可能存在±1的误差",
   "free_progress": "Free进度",
   "free_progress_newest": "日服最新",
   "free_quest": "Free本",

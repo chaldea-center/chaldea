@@ -186,7 +186,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           ),
         ));
       }
-      children.add(TextSpan(text: '*$v '));
+      children.add(TextSpan(text: '×$v '));
     }
     return Text.rich(
       TextSpan(children: children),

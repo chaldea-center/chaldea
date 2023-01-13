@@ -2815,6 +2815,17 @@ class S {
     );
   }
 
+  /// `Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result`
+  String get fq_plan_decimal_hint {
+    return Intl.message(
+      'Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result',
+      name: 'fq_plan_decimal_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Quest Limit`
   String get free_progress {
     return Intl.message(

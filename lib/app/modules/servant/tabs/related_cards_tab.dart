@@ -50,10 +50,12 @@ class SvtRelatedCardTab extends StatelessWidget {
     if (svt.isNormalSvt && svt.collectionNo > 0) {
       final charaCEs = db.gameData.craftEssences.values
           .where((ce) => ce.extra.characters.contains(svt.collectionNo))
-          .toList();
+          .toList()
+        ..sort2((e) => -e.collectionNo);
       final charaCCs = db.gameData.commandCodes.values
           .where((cc) => cc.extra.characters.contains(svt.collectionNo))
-          .toList();
+          .toList()
+        ..sort2((e) => -e.collectionNo);
       if (charaCEs.isNotEmpty || charaCCs.isNotEmpty) {
         tabs.add(S.current.svt_related_ce);
         pages.add(ListView(

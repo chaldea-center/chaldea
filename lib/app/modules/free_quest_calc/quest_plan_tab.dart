@@ -50,72 +50,12 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         ),
       ));
     }
-    widget.solution?.countVars.forEach((variable) {
-      final questId = variable.name;
-      final Quest? quest =
-          db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
-      children.add(Container(
-        decoration: BoxDecoration(
-            border: Border(bottom: Divider.createBorderSide(context))),
-        child: ValueStatefulBuilder<bool>(
-            key: Key('plan_quest_$questId'),
-            initValue: false,
-            builder: (context, state) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CustomTile(
-                    title: Text(quest?.lDispName ?? 'Quest $questId'),
-                    subtitle: buildRichDetails(variable.detail.entries),
-                    trailing: Text('${variable.value}*${variable.cost} AP'),
-                    onTap: () {
-                      state.value = !state.value;
-                      state.updateState();
-                    },
-                  ),
-                  if (state.value && widget.solution?.params != null)
-                    widget.solution!.params!.blacklist.contains(questId)
-                        ? TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                widget.solution!.params!.blacklist
-                                    .remove(questId);
-                              });
-                            },
-                            icon: Icon(Icons.clear,
-                                color: Theme.of(context).colorScheme.secondary),
-                            label: Text(
-                              S.current.remove_from_blacklist,
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
-                          )
-                        : TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                widget.solution!.params!.blacklist.add(questId);
-                              });
-                            },
-                            icon:
-                                const Icon(Icons.add, color: Colors.redAccent),
-                            label: Text(
-                              S.current.add_to_blacklist,
-                              style: const TextStyle(color: Colors.redAccent),
-                            ),
-                          ),
-                  if (state.value)
-                    QuestCard(
-                      quest: quest,
-                      questId: questId,
-                      use6th: widget.solution?.params?.use6th,
-                    ),
-                ],
-              );
-            }),
-      ));
-    });
+    for (final v in widget.solution?.countVars ?? []) {
+      children.add(buildQuest(v));
+    }
+    if (widget.solution?.countVars.isNotEmpty == true) {
+      children.add(SFooter(S.current.fq_plan_decimal_hint));
+    }
 
     return Column(
       children: <Widget>[
@@ -139,6 +79,72 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
     );
   }
 
+  Widget buildQuest(LPVariable variable) {
+    final questId = variable.name;
+    final Quest? quest =
+        db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
+    Widget child = ValueStatefulBuilder<bool>(
+      key: Key('plan_quest_$questId'),
+      initValue: false,
+      builder: (context, state) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CustomTile(
+              title: Text(quest?.lDispName ?? 'Quest $questId'),
+              subtitle: buildRichDetails(variable.detail.entries),
+              trailing: Text('${variable.value}*${variable.cost} AP'),
+              onTap: () {
+                state.value = !state.value;
+                state.updateState();
+              },
+            ),
+            if (state.value && widget.solution?.params != null)
+              widget.solution!.params!.blacklist.contains(questId)
+                  ? TextButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist.remove(questId);
+                        });
+                      },
+                      icon: Icon(Icons.clear,
+                          color: Theme.of(context).colorScheme.secondary),
+                      label: Text(
+                        S.current.remove_from_blacklist,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    )
+                  : TextButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist.add(questId);
+                        });
+                      },
+                      icon: const Icon(Icons.add, color: Colors.redAccent),
+                      label: Text(
+                        S.current.add_to_blacklist,
+                        style: const TextStyle(color: Colors.redAccent),
+                      ),
+                    ),
+            if (state.value)
+              QuestCard(
+                quest: quest,
+                questId: questId,
+                use6th: widget.solution?.params?.use6th,
+              ),
+          ],
+        );
+      },
+    );
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(bottom: Divider.createBorderSide(context))),
+      child: child,
+    );
+  }
+
   // (icon name, display text)
   Widget buildRichDetails(Iterable<MapEntry<int, double>> entries) {
     List<InlineSpan> children = [];
@@ -159,7 +165,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
       String s = entry.value.abs() < 1
           ? entry.value.toStringAsPrecision(1)
           : entry.value.floor().toString();
-      children.add(TextSpan(text: '*$s '));
+      children.add(TextSpan(text: '×$s '));
     }
     return Text.rich(
       TextSpan(children: children),

@@ -362,6 +362,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("序號"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("星級"),
         "foukun": MessageLookupByLibrary.simpleMessage("芙芙"),
+        "fq_plan_decimal_hint":
+            MessageLookupByLibrary.simpleMessage("小数未显示，显示结果与计算结果可能存在±1的误差"),
         "free_progress": MessageLookupByLibrary.simpleMessage("FQ進度"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("日服最新"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),

@@ -177,7 +177,7 @@ class _GameDataPageState extends State<GameDataPage> {
           ),
           TileGroup(
             header: 'TEMP',
-            footer: 'Installer for Android/Windows/macOS/Linux.',
+            footer: 'Installer for Android/Windows/Linux.',
             children: [
               ListTile(
                 leading: const Icon(Icons.cloud_circle, size: 28),

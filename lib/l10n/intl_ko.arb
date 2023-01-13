@@ -250,6 +250,7 @@
   "filter_sort_number": "번호",
   "filter_sort_rarity": "레어도",
   "foukun": "포우",
+  "fq_plan_decimal_hint": null,
   "free_progress": "퀘스트",
   "free_progress_newest": "최신(일그오)",
   "free_quest": "프리 퀘스트",

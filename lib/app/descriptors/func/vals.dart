@@ -223,6 +223,16 @@ class ValDsc extends StatelessWidget {
           case FuncType.lossNp:
             _addPercent(vals.Value, 100);
             break;
+          case FuncType.lossHp:
+          case FuncType.lossHpSafe:
+          case FuncType.lossHpPer:
+          case FuncType.lossHpPerSafe:
+            if (vals.Value2 != null) {
+              parts.add('${vals.Value}~${vals.Value2}');
+            } else {
+              parts.add(vals.Value.toString());
+            }
+            break;
           case FuncType.transformServant:
             // already added in func text
             break;

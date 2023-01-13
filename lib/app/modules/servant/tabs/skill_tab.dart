@@ -110,11 +110,15 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 shrinkWrap: true,
                 combined: true,
                 options: skills,
-                optionBuilder: (v) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Text(Transl.skillNames(v.name).l),
-                ),
+                optionBuilder: (v) {
+                  String name = Transl.skillNames(v.name).l;
+                  if (name.trim().isEmpty) name = '???';
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    child: Text(name),
+                  );
+                },
                 values: FilterRadioData.nonnull(skill),
                 onFilterChanged: (v, _) {
                   state.value = v.radioValue!;

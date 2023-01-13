@@ -77,6 +77,7 @@ class SvtTdTab extends StatelessWidget {
                   if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
                     name = '$name $rank';
                   }
+                  if (name.trim().isEmpty) name = '???';
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 6),

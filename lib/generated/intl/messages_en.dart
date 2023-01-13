@@ -419,6 +419,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
+        "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
+            "Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result"),
         "free_progress": MessageLookupByLibrary.simpleMessage("Quest Limit"),
         "free_progress_newest":
             MessageLookupByLibrary.simpleMessage("Latest(JP)"),
