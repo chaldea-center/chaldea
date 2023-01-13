@@ -482,6 +482,14 @@ class Stage {
   });
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
+
+  bool hasExtraInfo() {
+    return bgm.id != 0 ||
+        fieldAis.isNotEmpty ||
+        call.isNotEmpty ||
+        enemyFieldPosCount != null ||
+        waveStartMovies.isNotEmpty;
+  }
 }
 
 @JsonSerializable()
