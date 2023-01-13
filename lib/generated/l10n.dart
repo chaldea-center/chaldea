@@ -416,6 +416,17 @@ class S {
     );
   }
 
+  /// `Attack NP Rate`
+  String get attack_np_rate {
+    return Intl.message(
+      'Attack NP Rate',
+      name: 'attack_np_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import`
   String get auth_data_hints {
     return Intl.message(
@@ -1340,6 +1351,17 @@ class S {
     );
   }
 
+  /// `Damage Rate`
+  String get damage_rate {
+    return Intl.message(
+      'Damage Rate',
+      name: 'damage_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Dark mode`
   String get dark_mode {
     return Intl.message(
@@ -1466,6 +1488,17 @@ class S {
     return Intl.message(
       'Def NP Gain Mod',
       name: 'def_np_gain_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Defense NP Rate`
+  String get defense_np_rate {
+    return Intl.message(
+      'Defense NP Rate',
+      name: 'defense_np_rate',
       desc: '',
       locale: localeName,
       args: [],

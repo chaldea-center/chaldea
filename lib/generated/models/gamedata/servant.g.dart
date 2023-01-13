@@ -390,6 +390,10 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
       attackType: $enumDecodeNullable(
               _$CommandCardAttackTypeEnumMap, json['attackType']) ??
           CommandCardAttackType.one,
+      damageRate: json['damageRate'] as int?,
+      attackNpRate: json['attackNpRate'] as int?,
+      defenseNpRate: json['defenseNpRate'] as int?,
+      dropStarRate: json['dropStarRate'] as int?,
     );
 
 const _$CommandCardAttackTypeEnumMap = {

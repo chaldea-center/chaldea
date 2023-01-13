@@ -232,21 +232,7 @@ class SvtInfoTab extends StatelessWidget {
               CustomTableRow.fromTexts(
                   texts: const ['Hits'], defaults: headerData),
             for (final entry in svt.cardDetails.entries)
-              CustomTableRow(children: [
-                TableCellData(text: entry.key.name.toTitle(), isHeader: true),
-                TableCellData(
-                  text: [
-                    entry.value.hitsDistribution.isEmpty
-                        ? '   -'
-                        : '   ${entry.value.hitsDistribution.length} Hits '
-                            '(${entry.value.hitsDistribution.join(', ')})',
-                    if (entry.value.attackType == CommandCardAttackType.all)
-                      ' ${Transl.enums(TdEffectFlag.attackEnemyAll, (enums) => enums.tdEffectFlag).l}'
-                  ].join(),
-                  flex: 5,
-                  alignment: Alignment.centerLeft,
-                )
-              ]),
+              _addCardDetail(context, entry.key, entry.value),
             if (svt.noblePhantasms.isNotEmpty) ...[
               CustomTableRow.fromTexts(
                   texts: [S.current.info_np_rate], defaults: headerData),
@@ -412,6 +398,49 @@ class SvtInfoTab extends StatelessWidget {
         )
       ]),
     ];
+  }
+
+  Widget _addCardDetail(
+      BuildContext context, CardType card, CardDetail detail) {
+    List<InlineSpan> spans = [];
+    final buffer = StringBuffer('  ');
+    if (detail.hitsDistribution.isEmpty) {
+      buffer.write('-');
+    } else {
+      buffer.write('${detail.hitsDistribution.length} Hits '
+          '(${detail.hitsDistribution.join(', ')})');
+    }
+    if (detail.attackType == CommandCardAttackType.all) {
+      buffer.write(' ');
+      buffer.write(Transl.enums(
+          TdEffectFlag.attackEnemyAll, (enums) => enums.tdEffectFlag).l);
+    }
+    spans.add(TextSpan(text: buffer.toString()));
+    final scripts = {
+      S.current.damage_rate: detail.damageRate?.format(percent: true, base: 10),
+      S.current.attack_np_rate:
+          detail.attackNpRate?.format(percent: true, base: 10),
+      S.current.defense_np_rate:
+          detail.defenseNpRate?.format(percent: true, base: 10),
+      S.current.info_star_rate:
+          detail.dropStarRate?.format(percent: true, base: 10),
+    };
+    scripts.removeWhere(((key, value) => value == null));
+    if (scripts.isNotEmpty) {
+      spans.add(const TextSpan(text: '\n'));
+      spans.add(TextSpan(
+          text:
+              '   (${scripts.entries.map((e) => '${e.key} ${e.value}').join(', ')})',
+          style: const TextStyle(fontSize: 12)));
+    }
+    return CustomTableRow(children: [
+      TableCellData(text: card.name.toTitle(), isHeader: true),
+      TableCellData(
+        child: Text.rich(TextSpan(children: spans)),
+        flex: 5,
+        alignment: Alignment.centerLeft,
+      )
+    ]);
   }
 
   Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals,

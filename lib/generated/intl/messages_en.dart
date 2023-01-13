@@ -123,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage(
             "If you have trouble picking images, use files instead"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
+        "attack_np_rate":
+            MessageLookupByLibrary.simpleMessage("Attack NP Rate"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
@@ -238,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "No mission, click + to add mission"),
         "custom_mission_source_mission":
             MessageLookupByLibrary.simpleMessage("Original Mission"),
+        "damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light"),
@@ -253,6 +256,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod":
             MessageLookupByLibrary.simpleMessage("Def NP Gain Mod"),
+        "defense_np_rate":
+            MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),

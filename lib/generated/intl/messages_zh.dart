@@ -117,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help":
             MessageLookupByLibrary.simpleMessage("如果图片模式存在问题，请使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
+        "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻击NP率"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自动重置"),
@@ -212,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("无任务，点击+添加"),
         "custom_mission_source_mission":
             MessageLookupByLibrary.simpleMessage("原任务"),
+        "damage_rate": MessageLookupByLibrary.simpleMessage("伤害系数"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),
@@ -225,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敌攻击补正"),
+        "defense_np_rate": MessageLookupByLibrary.simpleMessage("受击NP率"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("仅限桌面版"),

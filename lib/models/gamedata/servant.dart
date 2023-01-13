@@ -858,11 +858,19 @@ class CardDetail {
   List<int> hitsDistribution;
   List<NiceTrait> attackIndividuality;
   CommandCardAttackType attackType;
+  int? damageRate;
+  int? attackNpRate;
+  int? defenseNpRate;
+  int? dropStarRate;
 
   CardDetail({
     this.hitsDistribution = const [],
     required this.attackIndividuality,
     this.attackType = CommandCardAttackType.one,
+    this.damageRate,
+    this.attackNpRate,
+    this.defenseNpRate,
+    this.dropStarRate,
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) =>
