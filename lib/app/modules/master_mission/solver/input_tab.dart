@@ -614,23 +614,34 @@ class __SearchViewState extends State<_SearchView> {
       body: Column(
         children: [
           Expanded(child: ListView(children: ids.map(tileBuilder).toList())),
-          if (selected.isNotEmpty)
-            SafeArea(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.start,
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  FilterGroup<int>(
-                    options: selected.toList(),
-                    values: FilterGroupData(),
-                    optionBuilder: (v) => Text(
-                        _idDescriptor(widget.targetType, v, prefixId: true)),
-                    onFilterChanged: (_, last) {
-                      if (last != null) onChanged(last);
+                  Expanded(
+                    child: FilterGroup<int>(
+                      options: selected.toList(),
+                      values: FilterGroupData(),
+                      optionBuilder: (v) => Text(
+                          _idDescriptor(widget.targetType, v, prefixId: true)),
+                      onFilterChanged: (_, last) {
+                        if (last != null) onChanged(last);
+                      },
+                      // combined: true,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
+                    icon: const Icon(Icons.done),
                   )
                 ],
               ),
-            )
+            ),
+          )
         ],
       ),
     );
@@ -644,16 +655,22 @@ class __SearchViewState extends State<_SearchView> {
           .where((e) => e.toString().contains(query))
           .toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
-      return ids;
-    }
-    for (final id in kTraitIdMapping.keys) {
-      for (final key in _getTraitStrings(id)) {
-        if (key.contains(query)) {
-          ids.add(id);
-          break;
+    } else {
+      for (final id in kTraitIdMapping.keys) {
+        for (final key in _getTraitStrings(id)) {
+          if (key.contains(query)) {
+            ids.add(id);
+            break;
+          }
         }
       }
     }
+    if (ids.length > 5) {
+      ids.insertAll(0,
+          _preferredTraits.where((e) => ids.contains(e.id)).map((e) => e.id));
+    }
+    ids.remove(Trait.unknown.id);
+
     return ids;
   }
 
@@ -708,6 +725,27 @@ class __SearchViewState extends State<_SearchView> {
     widget.onChanged(selected.toList());
   }
 }
+
+const _preferredTraits = <Trait>[
+  Trait.basedOnServant,
+  Trait.notBasedOnServant,
+  Trait.humanoid,
+  Trait.attributeEarth,
+  Trait.attributeSky,
+  Trait.attributeHuman,
+  Trait.alignmentChaotic,
+  Trait.alignmentLawful,
+  Trait.alignmentNeutral,
+  Trait.alignmentGood,
+  Trait.alignmentEvil,
+  Trait.alignmentBalanced,
+  Trait.demonic,
+  Trait.wildbeast,
+  Trait.divine,
+  Trait.undead,
+  Trait.dragon,
+  Trait.superGiant,
+];
 
 class EventChooser extends StatelessWidget {
   final int initTab;
