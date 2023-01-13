@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:photo_view/photo_view.dart';
 
-import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/audio.dart';
@@ -46,8 +45,8 @@ class _WarMapPageState extends State<WarMapPage> {
       return SynchronousFuture(null);
     }
     if (_cachedImages[url] != null) return _cachedImages[url];
-    final img = await ImageActions.resolveImage(MyCacheImage(url));
     _tasks.add(url);
+    final img = await ImageActions.resolveImageUrl(url);
     if (img != null) {
       _cachedImages[url] = img;
     }

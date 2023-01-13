@@ -324,6 +324,7 @@ abstract class _CachedLoader<K, V> {
   }
 }
 
+@Deprecated('will raise error in debug mode')
 @immutable
 class MyCacheImage extends ImageProvider<MyCacheImage> {
   const MyCacheImage(this.url, {this.scale = 1.0});
@@ -354,6 +355,9 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
 
     final localPath = await AtlasIconLoader.i.get(key.url);
     if (localPath == null) {
+      // if (kDebugMode) {
+      //   return decode(await ui.ImmutableBuffer.fromUint8List(kOnePixel));
+      // }
       throw StateError('${key.url} cannot be cached to local');
     }
     final bytes = await File(localPath).readAsBytes();

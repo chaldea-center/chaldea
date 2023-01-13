@@ -148,6 +148,28 @@ class _CachedImageState extends State<CachedImage> {
       widget.cachedOption ?? const CachedImageOption();
 
   @override
+  void initState() {
+    super.initState();
+    _resolve(widget.imageUrl);
+  }
+
+  @override
+  void didUpdateWidget(covariant CachedImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _resolve(widget.imageUrl);
+    }
+  }
+
+  Future<void> _resolve(String? url) async {
+    if (url == null) return;
+    if (_loader.isFailed(url)) return;
+    if (_loader.getCached(url) != null) return;
+    await _loader.get(url);
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child = resolveChild();
     child = CachedImage.sizeChild(
@@ -194,16 +216,23 @@ class _CachedImageState extends State<CachedImage> {
     url = Atlas.proxyAssetUrl(url);
     url = CachedImage.proxyMooncellImage(url);
     if (!kIsWeb && _loader.shouldCacheImage(url)) {
-      final provider = MyCacheImage(url);
-      return _withProvider(
-        provider,
-        onClearCache: () async {
-          _loader.evict(url!);
-          await _loader.deleteFromDisk(url);
-          print([await provider.evict(), mounted]);
-          if (mounted) setState(() {});
-        },
-      );
+      final fp = AtlasIconLoader.i.getCached(url);
+      if (fp != null && !kIsWeb) {
+        final provider = FileImage(File(fp));
+        return _withProvider(
+          provider,
+          onClearCache: () async {
+            _loader.evict(url!);
+            await _loader.deleteFromDisk(url);
+            print([await provider.evict(), mounted]);
+            if (mounted) setState(() {});
+          },
+        );
+      }
+      if (AtlasIconLoader.i.isFailed(url)) {
+        return _withError(context, url);
+      }
+      return _withPlaceholder(context, url);
     }
     return _withCached(url);
   }

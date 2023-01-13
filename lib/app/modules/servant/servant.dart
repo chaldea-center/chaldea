@@ -1,14 +1,11 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -153,13 +150,13 @@ class ServantDetailPageState extends State<ServantDetailPage>
               ),
               if (ascension != null)
                 Positioned.fill(
-                  child: FadeInImage(
-                    placeholder: MemoryImage(kOnePixel),
-                    image: kIsWeb
-                        ? NetworkImage(ascension) as ImageProvider
-                        : MyCacheImage(ascension),
-                    fit: BoxFit.fitWidth,
-                    alignment: const Alignment(0.0, -0.8),
+                  child: CachedImage(
+                    imageUrl: ascension,
+                    placeholder: (context, url) => const SizedBox(),
+                    cachedOption: const CachedImageOption(
+                      fit: BoxFit.fitWidth,
+                      alignment: Alignment(0.0, -0.8),
+                    ),
                   ),
                 ),
               if (ascension != null)
@@ -427,7 +424,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
-        if (!svt.isUserSvt) return null;
+        if (svt.profile.voices.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.voice,

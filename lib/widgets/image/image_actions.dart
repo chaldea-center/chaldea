@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -13,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart' show launchUrl;
 import 'package:uuid/uuid.dart';
 
+import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -180,6 +182,18 @@ class ImageActions {
         );
       },
     );
+  }
+
+  static Future<ui.Image?> resolveImageUrl(String url,
+      {BuildContext? context}) async {
+    if (AtlasIconLoader.i.shouldCacheImage(url)) {
+      final fp = await AtlasIconLoader.i.get(url);
+      if (fp == null) {
+        return null;
+      }
+      return resolveImage(FileImage(File(fp)), context: context);
+    }
+    return resolveImage(CachedNetworkImageProvider(url), context: context);
   }
 
   // resolve one frame
