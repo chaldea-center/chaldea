@@ -19,6 +19,7 @@ class StartupLoadingPage extends StatefulWidget {
 class _StartupLoadingPageState extends State<StartupLoadingPage> {
   final _loader = GameDataLoader.instance;
   String? hint;
+  DateTime startTime = DateTime.now();
 
   bool onlineUpdate = network.available &&
       db.settings.autoUpdateData &&
@@ -32,6 +33,10 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   }
 
   Future _updateData() async {
+    startTime = DateTime.now();
+    Future.delayed(const Duration(seconds: 32), () {
+      if (mounted) setState(() {});
+    });
     GameData? data = await _loader.reload(offline: !onlineUpdate, silent: true);
     if (onlineUpdate && data == null) {
       hint = 'Loading local cache...';
@@ -69,9 +74,11 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
           builder: ((context, value, child) {
             return Text.rich(
               TextSpan(
-                children: onlineUpdate && value > 0
+                children: onlineUpdate &&
+                        value > 0 &&
+                        DateTime.now().difference(startTime).inSeconds > 30
                     ? [
-                        TextSpan(text: hint ?? 'Updating... '),
+                        TextSpan(text: hint ?? 'Updating '),
                         CenterWidgetSpan(
                           child: IconButton(
                             onPressed: () {
@@ -81,7 +88,7 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
                             color:
                                 Theme.of(context).colorScheme.primaryContainer,
                             icon: const Icon(Icons.clear),
-                            iconSize: 16,
+                            iconSize: 12,
                           ),
                         ),
                       ]
