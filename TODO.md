@@ -32,6 +32,9 @@ There are plenty of work need to do.
 - [ ] parser: add new SVT/CE/CC before exported
 - [ ] parser: check summon prob correct
 - [ ] summon: add wiki prob edit util
+- [ ] add daily quests' enemy traits for missions
+- [ ] improve audio player
+- [ ] enhanced spoiler
 
 ## Quest Related
 

@@ -1,10 +1,12 @@
 # 2.2.2
 
-- WHY didn't release 2.2.2 before 2022 ended!!!
+- Add new import method for JP/NA: auto login
 - Add war assets listing
+- Add APK download page
+- Support updating data on startup
 - Support playing video except linux
 - Support sort by AP campaign time in RankUp&Interlude timeline
-- Add APK page
+- Revert engine to avoid crash on iOS
 
 # 2.2.1
 
