@@ -271,6 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每場掉率"),
         "email": MessageLookupByLibrary.simpleMessage("郵箱"),
+        "empty_hint": MessageLookupByLibrary.simpleMessage("无内容"),
         "enemy": MessageLookupByLibrary.simpleMessage("敵人"),
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("特性篩選僅適用於主線FQ的敵人"),

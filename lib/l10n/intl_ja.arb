@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20AP効率",
   "efficiency_type_drop": "ドロップ率",
   "email": "メール",
+  "empty_hint": null,
   "enemy": "エネミー",
   "enemy_filter_trait_hint": "特性のフィルターは、フリークエストの敵にのみ適用される",
   "enemy_list": "エネミー",

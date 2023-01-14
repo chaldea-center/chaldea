@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20AP 효율",
   "efficiency_type_drop": "드롭률",
   "email": "메일",
+  "empty_hint": null,
   "enemy": "적인",
   "enemy_filter_trait_hint": "특성 필터는 프리퀘스트 적에게만 적용",
   "enemy_list": "적",

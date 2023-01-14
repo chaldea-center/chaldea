@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 
 class CommandCardWidget extends StatelessWidget {
   final CardType card;
@@ -11,7 +12,7 @@ class CommandCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (![CardType.arts, CardType.buster, CardType.quick].contains(card)) {
-      return const SizedBox();
+      return Text(' ${card.name.toTitle()} ');
     }
     final cardName = card.name;
     return SizedBox(

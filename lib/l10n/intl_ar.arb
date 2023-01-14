@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20APنسبة",
   "efficiency_type_drop": "نسبة الدروب",
   "email": "بريد",
+  "empty_hint": null,
   "enemy": null,
   "enemy_filter_trait_hint": "فلتر العلامة \"ترايت\" يستخدم فقط للفري كويست من القصة الأساسية.",
   "enemy_list": "الاعداء",

@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20AP效率",
   "efficiency_type_drop": "每場掉率",
   "email": "郵箱",
+  "empty_hint": null,
   "enemy": "敵人",
   "enemy_filter_trait_hint": "特性篩選僅適用於主線FQ的敵人",
   "enemy_list": "敵人一覽",

@@ -290,7 +290,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     if (_loading) {
       children.add(const Center(child: CircularProgressIndicator()));
     } else if (data.components.isEmpty) {
-      children.add(const Center(child: Text('Empty')));
+      children.add(Center(child: Text(S.current.empty_hint)));
     }
 
     for (int index = 0; index < data.components.length; index++) {

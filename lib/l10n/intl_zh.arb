@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20AP效率",
   "efficiency_type_drop": "每场掉率",
   "email": "邮箱",
+  "empty_hint": "无内容",
   "enemy": "敌人",
   "enemy_filter_trait_hint": "特性筛选仅适用于主线Free的敌人",
   "enemy_list": "敌人一览",

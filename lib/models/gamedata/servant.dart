@@ -275,7 +275,7 @@ class Servant with GameCardMixin {
     this.bondEquipOwner,
     this.valentineEquipOwner,
     AscensionAdd? ascensionAdd,
-    required this.traitAdd,
+    this.traitAdd = const [],
     this.svtChange = const [],
     this.ascensionImage = const [],
     required this.ascensionMaterials,

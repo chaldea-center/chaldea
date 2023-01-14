@@ -1901,6 +1901,17 @@ class S {
     );
   }
 
+  /// `Empty`
+  String get empty_hint {
+    return Intl.message(
+      'Empty',
+      name: 'empty_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemy`
   String get enemy {
     return Intl.message(

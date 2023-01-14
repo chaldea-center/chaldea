@@ -500,9 +500,9 @@ class BuffActionInfoTable extends StatelessWidget {
     yield CustomTableRow.fromTexts(texts: [header], isHeader: true);
     List<InlineSpan> spans = [];
     for (final type in buffTypes) {
-      final icon = getBuffIcon(type);
+      final icons = getBuffIcons(type);
       spans.add(TextSpan(children: [
-        if (icon != null)
+        for (final icon in icons)
           CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
         SharedBuilder.textButtonSpan(
           context: context,
@@ -525,13 +525,13 @@ class BuffActionInfoTable extends StatelessWidget {
     ]);
   }
 
-  String? getBuffIcon(BuffType type) {
+  List<String> getBuffIcons(BuffType type) {
     Map<String, int> counts = {};
     for (final buff in db.gameData.baseBuffs.values) {
       if (buff.type == type && buff.icon != null) counts.addNum(buff.icon!, 1);
     }
-    if (counts.isEmpty) return null;
-    final maxCount = Maths.max(counts.values, 0);
-    return counts.entries.firstWhereOrNull((e) => e.value == maxCount)?.key;
+    if (counts.isEmpty) return [];
+    final entries = counts.entries.toList()..sort2((e) => -e.value);
+    return entries.take(3).map((e) => e.key).toList();
   }
 }

@@ -145,10 +145,11 @@ Servant _$ServantFromJson(Map json) => Servant(
           ? null
           : AscensionAdd.fromJson(
               Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
-      traitAdd: (json['traitAdd'] as List<dynamic>)
-          .map(
-              (e) => ServantTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      traitAdd: (json['traitAdd'] as List<dynamic>?)
+              ?.map((e) =>
+                  ServantTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       svtChange: (json['svtChange'] as List<dynamic>?)
               ?.map((e) =>
                   ServantChange.fromJson(Map<String, dynamic>.from(e as Map)))

@@ -292,11 +292,15 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     final bgImages = this.bgImages.toList();
     return ListView.builder(
       itemBuilder: (context, index) {
+        final url = bgImages[index];
         return ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 300),
           child: CachedImage(
             imageUrl: bgImages[index],
-            placeholder: (_, __) => const SizedBox(height: 200),
+            placeholder: (_, __) => AspectRatio(
+              aspectRatio:
+                  url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626,
+            ),
             showSaveOnLongPress: true,
             viewFullOnTap: true,
             cachedOption: CachedImageOption(

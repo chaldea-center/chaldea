@@ -101,7 +101,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
     if (tabs.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: Text(war.lLongName.l.setMaxLines(1))),
-        body: const Center(child: Text('Empty')),
+        body: Center(child: Text(S.current.empty_hint)),
       );
     }
 

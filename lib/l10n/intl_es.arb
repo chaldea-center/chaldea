@@ -167,6 +167,7 @@
   "efficiency_type_ap": "20 AP Rate",
   "efficiency_type_drop": "Drop Rate",
   "email": "Correo electrónico",
+  "empty_hint": null,
   "enemy": null,
   "enemy_filter_trait_hint": null,
   "enemy_list": "Enemigos",

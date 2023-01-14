@@ -115,12 +115,14 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         child: Center(
           child: _loading
               ? const CircularProgressIndicator()
-              : RefreshButton(
-                  text: '???',
-                  onPressed: () {
-                    fetchSvt(_region);
-                  },
-                ),
+              : _svt == null
+                  ? RefreshButton(
+                      text: '???',
+                      onPressed: () {
+                        fetchSvt(_region);
+                      },
+                    )
+                  : Text(S.current.empty_hint),
         ),
       ));
     }
