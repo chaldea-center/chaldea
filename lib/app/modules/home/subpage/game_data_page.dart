@@ -294,6 +294,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
         if (memory) {
           AtlasIconLoader.i.clearAll();
           imageCache.clear();
+          imageCache.clearLiveImages();
           await AtlasApi.clear();
         }
         if (app) {
@@ -312,6 +313,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
           //
         }
         EasyLoading.showToast(S.current.clear_cache_finish);
+        db.notifyAppUpdate();
       },
     );
   }

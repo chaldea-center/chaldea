@@ -131,6 +131,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     error = null;
     if (mounted) setState(() {});
     final fp = await AtlasIconLoader.i.get(url);
+    if (!mounted) return;
     if (fp != null) {
       _fallbackController = VideoPlayerController.file(File(fp),
           videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));

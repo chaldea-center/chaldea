@@ -200,7 +200,7 @@ class ImageActions {
   static Future<ui.Image?> resolveImage(ImageProvider provider,
       {BuildContext? context}) async {
     final completer = Completer<ui.Image?>();
-    context ??= kAppKey.currentContext;
+    // context ??= kAppKey.currentContext;
     final stream = provider.resolve(context == null
         ? ImageConfiguration.empty
         : createLocalImageConfiguration(context));

@@ -14,12 +14,6 @@ class Atlas {
         url.startsWith(Hosts.kAtlasAssetHostCN);
   }
 
-  static String proxyAssetUrl(String url) {
-    return Hosts.cn && url.startsWith(Hosts.kAtlasAssetHostGlobal)
-        ? url.replaceFirst(Hosts.kAtlasAssetHostGlobal, Hosts.kAtlasAssetHostCN)
-        : url;
-  }
-
   /// db link
   static String dbUrl(String path, int id, [Region region = Region.jp]) {
     return '$appHost${region.upper}/$path/$id';
