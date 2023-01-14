@@ -35,6 +35,7 @@ class GameDataLoader {
   _GameLoadingTempData tmp = _GameLoadingTempData();
 
   final progress = ValueNotifier<double?>(null);
+  final downloading = ValueNotifier<int>(0);
 
   dynamic error;
 
@@ -66,6 +67,7 @@ class GameDataLoader {
     tmp.reset();
     tmp._enabled = true;
     progress.value = null;
+    downloading.value = 0;
     error = null;
     cancelToken = CancelToken();
     try {
@@ -141,6 +143,7 @@ class GameDataLoader {
           throw S.current.file_not_found_or_mismatched_hash(
               fv.filename, fv.hash, _localHash ?? '');
         }
+        downloading.value += 1;
         var resp = await _downFile(
           fv.filename,
           options: Options(responseType: ResponseType.bytes),

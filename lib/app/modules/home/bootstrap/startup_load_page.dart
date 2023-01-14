@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/app/tools/gamedata_loader.dart';
-import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/utils/img_util.dart';
@@ -35,7 +34,7 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   Future _updateData() async {
     GameData? data = await _loader.reload(offline: !onlineUpdate, silent: true);
     if (onlineUpdate && data == null) {
-      hint = 'Loading local caches...';
+      hint = 'Loading local cache...';
       needBackgroundUpdate = false;
       if (mounted) setState(() {});
       data = await _loader.reload(offline: true, silent: true);
@@ -65,23 +64,32 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
       children: [
         Expanded(child: Center(child: img)),
         const SizedBox(height: 12),
-        Text.rich(
-          TextSpan(children: [
-            if (onlineUpdate)
-              TextSpan(text: hint ?? '${S.current.update_dataset}... '),
-            if (onlineUpdate && hint == null)
-              CenterWidgetSpan(
-                child: IconButton(
-                  onPressed: () {
-                    _loader.interrupt();
-                    setState(() {});
-                  },
-                  color: Theme.of(context).colorScheme.error,
-                  icon: const Icon(Icons.clear),
-                ),
+        ValueListenableBuilder<int>(
+          valueListenable: _loader.downloading,
+          builder: ((context, value, child) {
+            return Text.rich(
+              TextSpan(
+                children: onlineUpdate && value > 0
+                    ? [
+                        TextSpan(text: hint ?? 'Updating... '),
+                        CenterWidgetSpan(
+                          child: IconButton(
+                            onPressed: () {
+                              _loader.interrupt();
+                              setState(() {});
+                            },
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            icon: const Icon(Icons.clear),
+                            iconSize: 16,
+                          ),
+                        ),
+                      ]
+                    : [const TextSpan(text: '  ')],
               ),
-          ]),
-          textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
+            );
+          }),
         ),
         const SizedBox(height: 8),
         ValueListenableBuilder<double?>(
