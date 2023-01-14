@@ -113,6 +113,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             leading: const Icon(Icons.table_view),
             title: Text(S.current.import_csv_title),
             subtitle: const Text('Edit in Excel/Google Sheet'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               router.pushPage(const ImportCSVPage(), popDetail: true);
             },
@@ -120,8 +121,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.manage_accounts),
             title: Text(S.current.import_auth_file),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             subtitle:
                 Text(['JP/NA', if (kIsWeb) 'web is not supported'].join(', ')),
+            enabled: !kIsWeb,
             onTap: kIsWeb
                 ? null
                 : () {
