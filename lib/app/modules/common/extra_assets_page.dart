@@ -42,6 +42,15 @@ class ExtraAssetsPage extends StatelessWidget {
     return urls.allUrls;
   }
 
+  Iterable<String> bordered(Iterable<String> urls) sync* {
+    yield* urls;
+    for (final url in urls) {
+      if (RegExp(r'/Faces/f_\d+\.png$').hasMatch(url)) {
+        yield GameCardMixin.makeBordered(url)!;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final children = <Widget?>[
@@ -59,10 +68,10 @@ class ExtraAssetsPage extends StatelessWidget {
       ),
       _oneGroup(
           S.current.card_asset_face,
-          [
+          bordered([
             ..._getUrls(assets.faces),
             ..._getUrls(assets.facesChange),
-          ],
+          ]),
           80),
       _oneGroup(S.current.card_asset_status, _getUrls(assets.status), 120),
       _oneGroup(S.current.card_asset_command, _getUrls(assets.commands), 120),

@@ -424,7 +424,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
-        if (svt.profile.voices.isEmpty) return null;
+        if (svt.collectionNo == 0 && svt.profile.voices.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.voice,

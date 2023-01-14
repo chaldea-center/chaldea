@@ -270,6 +270,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
 
   Widget? _oneGroup(String title, List<String> urls, double height,
       [bool expanded = true]) {
+    urls = urls.toSet().toList();
     if (urls.isEmpty) return null;
     return SimpleAccordion(
       expanded: expanded,
