@@ -12,7 +12,6 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';

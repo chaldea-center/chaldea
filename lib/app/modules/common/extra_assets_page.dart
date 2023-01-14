@@ -13,7 +13,6 @@ import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';

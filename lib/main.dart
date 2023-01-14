@@ -10,17 +10,17 @@ import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_size/window_size.dart';
 import 'package:worker_manager/worker_manager.dart';
 
-import 'package:chaldea/app/chaldea.dart';
-import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
-import 'package:chaldea/utils/http_override.dart';
-import 'package:chaldea/utils/utils.dart';
+import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
-import 'app/modules/home/bootstrap.dart';
+import 'app/modules/home/bootstrap/startup_failed_page.dart';
 import 'models/db.dart';
 import 'packages/network.dart';
 import 'packages/packages.dart';
 import 'packages/split_route/split_route.dart';
 import 'utils/catcher/catcher_util.dart';
+import 'utils/catcher/server_feedback_handler.dart';
+import 'utils/http_override.dart';
+import 'utils/utils.dart';
 
 void main() async {
   // make sure flutter packages like path_provider is working now

@@ -10,7 +10,7 @@ import 'package:chaldea/app/modules/effect_search/effect_search_page.dart';
 import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
 import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
-import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/modules/home/bootstrap/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/app/modules/master_mission/master_mission_list.dart';

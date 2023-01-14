@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/modules/home/bootstrap/bootstrap.dart';
 import 'package:chaldea/app/modules/root/global_fab.dart';
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';

@@ -119,7 +119,9 @@ class _GameDataPageState extends State<GameDataPage> {
                 },
               ),
               SwitchListTile.adaptive(
-                value: db.settings.updateDataBeforeStart,
+                value: kIsWeb
+                    ? db.settings.autoUpdateData
+                    : db.settings.updateDataBeforeStart,
                 title: Text(S.current.update_data_at_start),
                 subtitle: Text(
                   db.settings.updateDataBeforeStart
@@ -127,7 +129,7 @@ class _GameDataPageState extends State<GameDataPage> {
                       : S.current.update_data_at_start_off_hint,
                   textScaleFactor: 0.8,
                 ),
-                onChanged: db.settings.autoUpdateData
+                onChanged: !kIsWeb && db.settings.autoUpdateData
                     ? (v) {
                         setState(() {
                           db.settings.updateDataBeforeStart = v;

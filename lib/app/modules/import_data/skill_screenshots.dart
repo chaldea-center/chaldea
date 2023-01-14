@@ -11,7 +11,6 @@ import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';

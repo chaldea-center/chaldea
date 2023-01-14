@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -9,17 +8,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/home/bootstrap/startup_load_page.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../generated/l10n.dart';
-import '../../../packages/language.dart';
-import '../../../packages/logger.dart';
-import '../../../packages/network.dart';
+import 'startup_failed_page.dart';
 
 class BootstrapPage extends StatefulWidget {
   BootstrapPage({super.key});
@@ -29,23 +27,19 @@ class BootstrapPage extends StatefulWidget {
 }
 
 class _BootstrapPageState extends State<BootstrapPage>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin {
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late TextEditingController _accountEditing;
   int page = 0;
   List<Widget> pages = [];
-  final _loader = GameDataLoader();
-  bool _offlineLoading = true;
-  String? _loadingHint;
+  bool _startupLoadingFailed = false;
   bool invalidStartup = false;
-  bool _fa_ = false;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _accountEditing = TextEditingController(text: db.curUser.name);
-    _loader.progress.addListener(update);
 
     if (PlatformU.isWindows) {
       final startupPath = db.paths.appPath.toLowerCase();
@@ -68,100 +62,39 @@ class _BootstrapPageState extends State<BootstrapPage>
     super.dispose();
     _pageController.dispose();
     _accountEditing.dispose();
-    _loader.progress.removeListener(update);
-  }
-
-  void update() {
-    if (mounted) setState(() {});
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) async {
-    if (invalidStartup) return;
-    _fa_ = AppInfo.packageName.startsWith(_d('Y29tLmxkcy4='));
-    if (_fa_) return;
-    try {
-      if (!db.settings.tips.starter) {
-        bool update = network.available &&
-            db.settings.autoUpdateData &&
-            db.settings.updateDataBeforeStart;
-        GameData? data = await _loader.reload(offline: !update, silent: true);
-        if (update && data == null) {
-          _loadingHint = 'Update failed, loading local caches...';
-          if (mounted) setState(() {});
-          data = await _loader.reload(offline: true, silent: true);
-        }
-        if (data != null) {
-          db.gameData = data;
-          onDataReady(!update);
-        } else {
-          _offlineLoading = false;
-        }
-      }
-    } catch (e, s) {
-      _offlineLoading = false;
-      if (e is! UpdateError) logger.e('init data error', e, s);
-    } finally {
-      if (mounted) setState(() {});
-    }
-  }
-
-  String _d(String s) {
-    return utf8.decode(base64Decode(s));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_fa_) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _d('U29tZXRoaW5nIHdlbnQgd3Jvbmch'),
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              TextButton(
-                onPressed: () {
-                  launch(kGooglePlayLink);
-                },
-                child: Text(_d('UmVkb3dubG9hZCA=') + kPackageName),
-              ),
-              const SizedBox(height: 48),
-              SFooter(_d(
-                  '64u57Iug7J2AIOyVhOuniCDrtojrspUg67O17KCcIOyGjO2UhO2KuOybqOyWtOydmCDtlLztlbTsnpDsnbwg6rKD7J2064uk')),
-            ],
-          ),
-        ),
-      );
-    }
     if (invalidStartup) {
-      pages = [
-        StartupFailedPage(
-          error: '${S.current.invalid_startup_path}\n'
-              '${db.paths.appPath}\n\n'
-              '${S.current.invalid_startup_path_info}',
-        )
-      ];
-    } else if (db.settings.tips.starter) {
-      pages = [
-        welcomePage,
-        languagePage,
-        if (kIsWeb) webDomainPage,
-        darkModePage,
-        createAccountPage,
-        dataPage,
-      ];
-    } else if (_offlineLoading) {
-      pages = [
-        _OfflineLoadingPage(
-            progress: _loader.progress.value, hint: _loadingHint)
-      ];
-    } else {
-      pages = [dataPage];
+      return wrapChild(StartupFailedPage(
+        error: '${S.current.invalid_startup_path}\n'
+            '${db.paths.appPath}\n\n'
+            '${S.current.invalid_startup_path_info}',
+      ));
     }
+    if (!_startupLoadingFailed && !db.settings.tips.starter) {
+      return wrapChild(StartupLoadingPage(
+        onSuccess: () {
+          rootRouter.appState.dataReady = true;
+        },
+        onFailed: () {
+          _startupLoadingFailed = true;
+          if (mounted) setState(() {});
+        },
+      ));
+    }
+    pages = db.settings.tips.starter
+        ? [
+            welcomePage,
+            languagePage,
+            if (kIsWeb) webDomainPage,
+            darkModePage,
+            createAccountPage,
+            dataPage,
+          ]
+        : [dataPage];
+
     Widget child = PageView(
       controller: _pageController,
       children: pages,
@@ -174,9 +107,11 @@ class _BootstrapPageState extends State<BootstrapPage>
       },
     );
 
-    if (!invalidStartup && (db.settings.tips.starter || !_offlineLoading)) {
-      child = Stack(children: [child, _bottom()]);
-    }
+    child = Stack(children: [child, _bottom()]);
+    return wrapChild(child);
+  }
+
+  Widget wrapChild(Widget child) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -401,123 +336,81 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   Widget _bottom() {
+    List<Widget> children = [];
+    if (page <= 0) {
+      children.add(const SizedBox(width: 64));
+    } else {
+      children.add(TextButton(
+        child: Text(S.current.prev_page),
+        onPressed: () {
+          _pageController.previousPage(
+            duration: kTabScrollDuration,
+            curve: Curves.easeInOut,
+          );
+        },
+      ));
+    }
+    children.add(Expanded(
+      flex: 2,
+      child: Center(
+        child: SmoothPageIndicator(
+          controller: _pageController,
+          count: pages.length,
+          effect: const WormEffect(
+              dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
+          onDotClicked: (i) {
+            setState(() {
+              page = i;
+              _pageController.animateToPage(
+                i,
+                duration: kTabScrollDuration,
+                curve: Curves.easeInOut,
+              );
+            });
+          },
+        ),
+      ),
+    ));
+    if (page >= pages.length - 1) {
+      children.add(TextButton(
+        child: Text(S.current.done),
+        onPressed: () {
+          if (db.gameData.version.timestamp > 0) {
+            db.settings.tips.starter = false;
+            rootRouter.appState.dataReady = true;
+            db.saveSettings();
+          } else {
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => SimpleCancelOkDialog(
+                content: Text(S.current.database_not_downloaded),
+                onTapOk: () {
+                  db.settings.tips.starter = false;
+                  db.saveSettings();
+                  rootRouter.appState.dataReady = true;
+                },
+              ),
+            );
+          }
+        },
+      ));
+    } else {
+      children.add(TextButton(
+        child: Text(S.current.next_page),
+        onPressed: () {
+          _pageController.nextPage(
+            duration: kTabScrollDuration,
+            curve: Curves.easeInOut,
+          );
+        },
+      ));
+    }
     return PositionedDirectional(
       bottom: 10.0,
       start: 10.0,
       end: 10.0,
-      child: Row(
-        children: <Widget>[
-          page <= 0
-              ? const SizedBox(width: 64)
-              : TextButton(
-                  child: Text(S.current.prev_page),
-                  onPressed: () {
-                    _pageController.previousPage(
-                      duration: kTabScrollDuration,
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                ),
-          Expanded(
-            flex: 2,
-            child: Center(
-              child: SmoothPageIndicator(
-                controller: _pageController,
-                count: pages.length,
-                effect: const WormEffect(
-                    dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
-                onDotClicked: (i) {
-                  setState(() {
-                    page = i;
-                    _pageController.animateToPage(
-                      i,
-                      duration: kTabScrollDuration,
-                      curve: Curves.easeInOut,
-                    );
-                  });
-                },
-              ),
-            ),
-          ),
-          page >= pages.length - 1
-              ? TextButton(
-                  child: Text(S.current.done),
-                  onPressed: () {
-                    if (db.gameData.version.timestamp > 0) {
-                      db.settings.tips.starter = false;
-                      onDataReady(false);
-                      db.saveSettings();
-                    } else {
-                      showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) => SimpleCancelOkDialog(
-                          content: Text(S.current.database_not_downloaded),
-                          onTapOk: () {
-                            db.settings.tips.starter = false;
-                            db.saveSettings();
-                            onDataReady(false);
-                          },
-                        ),
-                      );
-                    }
-                  },
-                )
-              : TextButton(
-                  child: Text(S.current.next_page),
-                  onPressed: () {
-                    _pageController.nextPage(
-                      duration: kTabScrollDuration,
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                ),
-        ],
-      ),
-    );
-  }
-
-  void onDataReady(bool needCheckUpdate) async {
-    needCheckUpdate = needCheckUpdate && db.settings.autoUpdateData;
-    print('onDataReady: needCheckUpdate=$needCheckUpdate');
-    rootRouter.appState.dataReady = true;
-    if (needCheckUpdate && network.available && kReleaseMode) {
-      await Future.delayed(const Duration(seconds: 3));
-      await _loader.reload(silent: true);
-    }
-  }
-}
-
-class _OfflineLoadingPage extends StatelessWidget {
-  final double? progress;
-  final String? hint;
-
-  _OfflineLoadingPage({this.progress, this.hint});
-
-  @override
-  Widget build(BuildContext context) {
-    Widget img = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: ImageUtil.getChaldeaBackground(context),
-    );
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(child: Center(child: img)),
-        SizedBox(
-          height: 24,
-          child: Text(hint ?? ' ', textAlign: TextAlign.center),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 48),
-          child: LinearProgressIndicator(
-            value: progress ?? 0,
-            color: Theme.of(context).primaryColorLight,
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-      ],
+      child: Row(children: children),
     );
   }
 }
@@ -535,7 +428,6 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
 
   @override
   Widget build(BuildContext context) {
-    final progress = _loader.progress.value;
     return ListView(
       children: [
         SwitchListTile.adaptive(
@@ -606,7 +498,21 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             child: Text(S.current.update),
           ),
         ),
-        Padding(
+        progressIcon,
+        if (_loader.error != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Center(child: Text(escapeDioError(_loader.error))),
+          ),
+      ],
+    );
+  }
+
+  Widget get progressIcon {
+    return ValueListenableBuilder<double?>(
+      valueListenable: GameDataLoader.instance.progress,
+      builder: (context, progress, _) {
+        return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
           child: Stack(
             alignment: Alignment.center,
@@ -639,13 +545,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               ),
             ],
           ),
-        ),
-        if (_loader.error != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(child: Text(escapeDioError(_loader.error))),
-          ),
-      ],
+        );
+      },
     );
   }
 }
@@ -738,65 +639,6 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
           textAlign: TextAlign.center,
         ),
       ),
-    );
-  }
-}
-
-class StartupFailedPage extends StatelessWidget {
-  final dynamic error;
-  final StackTrace? stackTrace;
-  final bool wrapApp;
-  const StartupFailedPage({
-    super.key,
-    required this.error,
-    this.stackTrace,
-    this.wrapApp = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (wrapApp) {
-      return MaterialApp(
-        title: kAppName,
-        themeMode: ThemeMode.light,
-        home: Scaffold(body: buildContent(context)),
-      );
-    }
-    return buildContent(context);
-  }
-
-  Widget buildContent(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsetsDirectional.all(24),
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ImageUtil.getChaldeaBackground(context),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                launch('$kProjectDocRoot/faq', external: true);
-              },
-              child: const Text('FAQ(English)'),
-            ),
-            TextButton(
-              onPressed: () {
-                launch('$kProjectDocRoot/zh/faq', external: true);
-              },
-              child: const Text('FAQ(中文)'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
-        if (stackTrace != null)
-          Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
-        const SafeArea(child: SizedBox())
-      ],
     );
   }
 }

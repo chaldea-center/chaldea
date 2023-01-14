@@ -8,7 +8,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/audio.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'map_filter.dart';

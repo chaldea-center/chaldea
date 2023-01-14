@@ -38,6 +38,13 @@ class GameDataLoader {
 
   dynamic error;
 
+  void interrupt() {
+    if (_completer?.isCompleted == false) {
+      _completer?.complete(null);
+      error = 'manual interrupted';
+    }
+  }
+
   Future<GameData?> reload({
     bool offline = false,
     bool silent = false,
@@ -55,7 +62,7 @@ class GameDataLoader {
     if (_completer != null && !_completer!.isCompleted) {
       return _completer!.future;
     }
-    _completer = Completer();
+    final completer = _completer = Completer();
     tmp.reset();
     tmp._enabled = true;
     progress.value = null;
@@ -64,7 +71,7 @@ class GameDataLoader {
     try {
       final result = await _loadJson(offline);
       if (result.isValid) {
-        _completer!.complete(result);
+        if (!completer.isCompleted) completer.complete(result);
       } else {
         logger.d('Invalid game data: ${result.version.text(false)}, '
             '${result.servantsById.length} servants, ${result.items.length} items');
@@ -73,10 +80,10 @@ class GameDataLoader {
     } catch (e, s) {
       if (e is! UpdateError) logger.e('load gamedata(offline=$offline)', e, s);
       _showError(e);
-      _completer!.complete(null);
+      if (!completer.isCompleted) completer.complete(null);
     }
     tmp.reset();
-    return _completer!.future;
+    return completer.future;
   }
 
   Future<GameData> _loadJson(bool offline) async {
