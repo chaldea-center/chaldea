@@ -14,7 +14,7 @@ void main(List<String> args) {
   } else if (target == 'linux') {
     _patchLinux();
   } else if (target == 'android' && ref == 'refs/heads/main') {
-    _patchAndroidPreview();
+    // _patchAndroidPreview();
   }
 }
 
@@ -59,6 +59,7 @@ void _patchLinux() {
   pubspec.writeAsStringSync(contents);
 }
 
+// ignore: unused_element
 void _patchAndroidPreview() {
   final buildFile = File('android/app/build.gradle');
   print('Patching ${buildFile.path}...');

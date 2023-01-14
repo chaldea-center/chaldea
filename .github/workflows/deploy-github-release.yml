@@ -160,20 +160,20 @@ jobs:
       - uses: actions/download-artifact@v3
       - run: ls -l -R
 
-      - name: Delete previous canary build
+      - name: Delete previous beta build
         if: github.ref == 'refs/heads/main'
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
-          tag_name: canary
+          tag_name: beta
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
 
-      - name: Publish Canary
+      - name: Publish Beta
         if: github.ref == 'refs/heads/main'
         uses: ncipollo/release-action@v1
         with:
-          tag: canary
+          tag: beta
           name: Chaldea Preview
           body: Built at ${{ steps.get-date.outputs.date }}
           draft: false
