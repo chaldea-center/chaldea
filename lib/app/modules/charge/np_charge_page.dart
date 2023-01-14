@@ -287,7 +287,14 @@ class _NpChargePageState extends State<NpChargePage> {
                 child: skill is BaseTd
                     ? CommandCardWidget(card: skill.card, width: 42)
                     : db.getIconImage(skill.icon, width: 24, aspectRatio: 1)),
-            TextSpan(text: '  ${skill.lName.l}')
+            TextSpan(text: '  ${skill.lName.l}'),
+            if (skill is BaseSkill &&
+                skill.type == SkillType.active &&
+                skill.coolDown.isNotEmpty)
+              TextSpan(
+                text: '     CD ${skill.coolDown.first}→${skill.coolDown.last}',
+                style: Theme.of(context).textTheme.bodySmall,
+              )
           ]),
         ),
         const SizedBox(height: 2),
@@ -349,6 +356,8 @@ class _NpChargePageState extends State<NpChargePage> {
             optionBuilder(
               text: NpFilterData.textSkillLv(filterData.skillLv),
             ),
+          if (filterData.skillCD > 0 && filterData.skillLv >= 1)
+            optionBuilder(text: 'CD≤${filterData.skillCD}'),
           if (filterData.tdLv != 0)
             optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
           if (filterData.tdLv != 0)
@@ -488,6 +497,12 @@ class _NpChargePageState extends State<NpChargePage> {
             final priority = skillRelease?[skill.id];
             if (region != Region.jp && priority == null) {
               continue;
+            }
+            if (filterData.skillCD > 0) {
+              if (skill.coolDown.isEmpty) continue;
+              int? cd = skill.coolDown.getOrNull(filterData.skillLv - 1);
+              cd ??= skill.coolDown.last;
+              if (cd > filterData.skillCD) continue;
             }
             skills.add(skill);
             if (svt.script.skillRankUp != null) {

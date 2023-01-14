@@ -28,6 +28,7 @@ enum NpChargeType {
 
 class NpFilterData {
   int skillLv = 10; // -1-disable, 0-class passive, 1-10,
+  int skillCD = 0;
   int tdLv = 0; // 0-disable, 1-5
   int tdOC = 1; // 1-5
   bool isSvt = true;
@@ -49,6 +50,7 @@ class NpFilterData {
 
   void reset() {
     skillLv = 10;
+    skillCD = 0;
     tdLv = 0;
     tdOC = 1;
     for (var v in <FilterGroupData>[
@@ -197,6 +199,34 @@ class _NpChargeFilterPageState
                 if (v != null) filterData.skillLv = v;
                 update();
               },
+            ),
+            DropdownButton<int>(
+              value: filterData.skillCD >= 3 && filterData.skillCD <= 8
+                  ? filterData.skillCD
+                  : 0,
+              items: [
+                 const DropdownMenuItem(
+                    value: 0,
+                    child: Text(
+                      'CD',
+                      textScaleFactor: 0.9,
+                    ),
+                  ),
+                for (int cd = 3; cd <= 8; cd++)
+                  DropdownMenuItem(
+                    value: cd,
+                    child: Text(
+                      'CD≤$cd',
+                      textScaleFactor: 0.9,
+                    ),
+                  )
+              ],
+              onChanged: filterData.skillLv >= 1
+                  ? (v) {
+                      if (v != null) filterData.skillCD = v;
+                      update();
+                    }
+                  : null,
             ),
             DropdownButton<int>(
               value: filterData.tdLv,
