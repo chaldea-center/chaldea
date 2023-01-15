@@ -318,13 +318,19 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     if (resp.data['HasErrors'] == true) {
       throw Exception(output);
     }
+    Map data;
+    if (output is String) {
+      data = jsonDecode(output);
+    } else {
+      data = Map.from(output);
+    }
     return auth = UserAuth(
       code: code,
-      authKey: output['authKey'] as String,
-      secretKey: output['secretKey'] as String,
-      userId: output['userId'] as String,
-      saveDataVer: output['SaveDataVer'] as String,
-      userCreateServer: output['userCreateServer'] as String,
+      authKey: data['authKey'] as String,
+      secretKey: data['secretKey'] as String,
+      userId: data['userId'] as String,
+      saveDataVer: data['SaveDataVer'] as String,
+      userCreateServer: data['userCreateServer'] as String,
     );
   }
 

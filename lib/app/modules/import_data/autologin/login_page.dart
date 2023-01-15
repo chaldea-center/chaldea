@@ -95,18 +95,18 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                 tooltip: S.current.add,
               ),
               IconButton(
-                onPressed: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.delete),
-                    onTapOk: allData.length > 1
-                        ? () {
+                onPressed: allData.length > 1
+                    ? () {
+                        SimpleCancelOkDialog(
+                          title: Text(S.current.delete),
+                          onTapOk: () {
                             allData.remove(args);
                             args = allData.first;
                             if (mounted) setState(() {});
-                          }
-                        : null,
-                  ).showDialog(context);
-                },
+                          },
+                        ).showDialog(context);
+                      }
+                    : null,
                 icon: const Icon(Icons.remove_circle_outline),
                 color: Theme.of(context).colorScheme.error,
                 tooltip: S.current.add,
@@ -321,14 +321,36 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       children: [
         ElevatedButton(
           onPressed: response?.success == true
-              ? () =>
-                  router.pushPage(ImportHttpPage(toploginText: response!.text))
+              ? () => _doImport(response!.text)
               : null,
           child: Text(S.current.import_data),
         ),
         const SizedBox(height: 8),
         Text(buffer.toString())
       ],
+    );
+  }
+
+  void _doImport(String responseText) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.account_title),
+          children: List.generate(db.userData.users.length, (index) {
+            final user = db.userData.users[index];
+            return SimpleDialogOption(
+              child: Text('[${user.region.localName}] ${user.name}'),
+              onPressed: () {
+                db.userData.curUserKey = index;
+                db.itemCenter.init();
+                router.pushPage(ImportHttpPage(toploginText: responseText));
+              },
+            );
+          }),
+        );
+      },
     );
   }
 
