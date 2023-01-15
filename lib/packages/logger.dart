@@ -138,7 +138,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       buffer.add('├ $errorStr');
     }
     buffer.add('├ [$timeStr][$levelStr] $messageStr');
-    buffer.add('└'.padRight(lineLength, '-'));
+    buffer.add('└'.padRight(kReleaseMode ? 10 : lineLength, '-'));
     return buffer;
   }
 }

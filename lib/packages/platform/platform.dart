@@ -7,6 +7,8 @@ import 'platform_io.dart' if (dart.library.js) 'platform_web.dart';
 export 'platform_interface.dart' show WebRenderMode;
 
 class PlatformU {
+  const PlatformU._();
+
   static const bool isWeb = kIsWeb;
   static final bool isLinux = !kIsWeb && Platform.isLinux;
   static final bool isMacOS = !kIsWeb && Platform.isMacOS;

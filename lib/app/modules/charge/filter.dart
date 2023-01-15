@@ -205,13 +205,13 @@ class _NpChargeFilterPageState
                   ? filterData.skillCD
                   : 0,
               items: [
-                 const DropdownMenuItem(
-                    value: 0,
-                    child: Text(
-                      'CD',
-                      textScaleFactor: 0.9,
-                    ),
+                const DropdownMenuItem(
+                  value: 0,
+                  child: Text(
+                    'CD',
+                    textScaleFactor: 0.9,
                   ),
+                ),
                 for (int cd = 3; cd <= 8; cd++)
                   DropdownMenuItem(
                     value: cd,

@@ -12,6 +12,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'dev_page.dart';
 
 class AboutPage extends StatefulWidget {
   AboutPage({super.key});
@@ -231,7 +232,19 @@ class _AboutPageState extends State<AboutPage> {
                 },
               )
             ],
-          )
+          ),
+          if (db.runtimeData.enableDebugTools)
+            TileGroup(
+              header: 'Dev',
+              children: [
+                ListTile(
+                  title: const Text('Device Info'),
+                  onTap: () {
+                    router.pushPage(const DevInfoPage());
+                  },
+                )
+              ],
+            )
         ],
       ),
     );
@@ -279,7 +292,7 @@ class _AboutProgram extends StatelessWidget {
           const SizedBox(height: 3),
           Text.rich(
             TextSpan(
-              text: "${AppInfo.commmitHash} - ${AppInfo.commitDate}",
+              text: "${AppInfo.commitHash} - ${AppInfo.commitDate}",
               // recognizer: TapGestureRecognizer()
               //   ..onTap = () => launch(AppInfo.commitUrl),
               style: Theme.of(context).textTheme.bodySmall,

@@ -204,14 +204,14 @@ class AppInfo {
 
   static AppVersion get version => AppVersion.tryParse(fullVersion)!;
 
-  static const String commmitHash = kCommitHash;
+  static const String commitHash = kCommitHash;
 
-  static const int commmitTimestamp = kCommitTimestamp;
+  static const int commitTimestamp = kCommitTimestamp;
 
   static String get commitDate => DateFormat.yMd()
-      .format(DateTime.fromMillisecondsSinceEpoch(commmitTimestamp * 1000));
+      .format(DateTime.fromMillisecondsSinceEpoch(commitTimestamp * 1000));
 
-  static String get commitUrl => "$kProjectHomepage/commit/$commmitHash";
+  static String get commitUrl => "$kProjectHomepage/commit/$commitHash";
 
   /// e.g. "1.2.3"
   static String get versionString => _packageInfo?.version ?? '';

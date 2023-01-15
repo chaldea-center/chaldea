@@ -240,7 +240,7 @@ class ServerFeedbackHandler extends ReportHandler {
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
       'app':
-          '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commmitHash}-${AppInfo.commitDate}',
+          '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commitHash}-${AppInfo.commitDate}',
       'dataset': db.gameData.version.utc,
       'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
