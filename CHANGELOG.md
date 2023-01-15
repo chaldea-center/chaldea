@@ -1,3 +1,9 @@
+# 2.2.3
+
+- Fix auth file decode for auto login
+- Fix image didn't shown
+- Add skill CD filter for NP charge list
+
 # 2.2.2
 
 - Add new import method for JP/NA: auto login
