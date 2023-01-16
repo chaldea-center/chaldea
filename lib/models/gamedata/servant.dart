@@ -647,6 +647,7 @@ class BasicCraftEssence with GameCardMixin {
 class CraftEssence with GameCardMixin {
   @override
   int id;
+  double? sortId; // for CN CEs
   @override
   int collectionNo;
   @override
@@ -677,6 +678,7 @@ class CraftEssence with GameCardMixin {
 
   CraftEssence({
     required this.id,
+    this.sortId,
     required this.collectionNo,
     required this.name,
     this.ruby = "",

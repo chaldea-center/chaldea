@@ -199,7 +199,7 @@ class CraftDetailBasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final summons = getPickupSummons();
     final name = RubyText(
-      [RubyTextData(ce.name, ruby: ce.ruby)],
+      [RubyTextData(ce.lName.jp, ruby: ce.ruby)],
       style: const TextStyle(fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     );

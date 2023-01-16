@@ -235,6 +235,7 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
 
 CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       id: json['id'] as int,
+      sortId: (json['sortId'] as num?)?.toDouble(),
       collectionNo: json['collectionNo'] as int,
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
