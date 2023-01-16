@@ -523,6 +523,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   : () {
                       router.push(
                         child: SvtBondDetailPage(
+                          friendCode: replacedResponse?.firstUser?.friendCode,
                           cardCollections: cardCollections,
                         ),
                       );

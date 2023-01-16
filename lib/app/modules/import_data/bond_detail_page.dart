@@ -1,18 +1,26 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:csv/csv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/packages/sharex.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class SvtBondDetailPage extends StatefulWidget {
+  final String? friendCode;
   // key=game id
   final Map<int, UserSvtCollection> cardCollections;
 
-  const SvtBondDetailPage({super.key, required this.cardCollections});
+  const SvtBondDetailPage(
+      {super.key, this.friendCode, required this.cardCollections});
 
   @override
   _SvtBondDetailPageState createState() => _SvtBondDetailPageState();
@@ -109,7 +117,16 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.bond)),
+      appBar: AppBar(
+        title: Text(S.current.bond),
+        actions: [
+          IconButton(
+            onPressed: exportCSV,
+            icon: const Icon(Icons.save_alt),
+            tooltip: '${S.current.save_as} CSV',
+          )
+        ],
+      ),
       body: Column(
         children: [
           ListTile(
@@ -164,7 +181,8 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                             child: Align(
                               alignment: Alignment.center,
                               child: AutoSizeText(
-                                'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}',
+                                'Lv.${collection.friendshipRank}/'
+                                '${(svt.collectionNo == 1 ? 5 : 10) + collection.friendshipExceedCount}',
                                 maxLines: 1,
                                 maxFontSize: 14,
                                 minFontSize: 6,
@@ -277,5 +295,50 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
       }
       sort();
     });
+  }
+
+  void exportCSV() async {
+    List<List> table = [];
+    table.add([
+      'svtId',
+      'ID',
+      'Name',
+      'Rarity',
+      'Rank',
+      'RankMax',
+      'Total',
+      'Next',
+      for (int bond = 4; bond < 15; bond++) 'Total(Lv${bond + 1})'
+    ]);
+    for (final entry in collections) {
+      final svt = entry.key, status = entry.value;
+      table.add([
+        svt.id,
+        svt.collectionNo,
+        svt.lName.l,
+        svt.rarity,
+        status.friendshipRank,
+        (svt.collectionNo == 1 ? 5 : 10) + status.friendshipExceedCount,
+        status.friendship,
+        _getBondNext(svt, status),
+        for (int bond = 4; bond < 15; bond++)
+          svt.bondGrowth.getOrNull(bond) ?? "",
+      ]);
+    }
+    final content = const ListToCsvConverter().convert(table);
+
+    final fn =
+        'bond-detail-${widget.friendCode ?? ""}-${DateTime.now().toDateString()}.csv';
+    if (kIsWeb) {
+      kPlatformMethods.downloadString(content, fn);
+    } else {
+      final file = File(joinPaths(db.paths.downloadDir, fn));
+      await file.writeAsString(content);
+      if (PlatformU.isDesktop) {
+        openFile(db.paths.downloadDir);
+      } else {
+        ShareX.shareFile(file.path);
+      }
+    }
   }
 }

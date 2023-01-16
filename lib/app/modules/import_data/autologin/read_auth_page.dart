@@ -259,14 +259,14 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
   }
 
   Future<UserAuth?> readAuthFile() async {
-    final result = await FilePicker.platform.pickFiles(withData: true);
-    if (result == null || result.files.isEmpty) return null;
-    final bytes = result.files.first.bytes?.toList();
-    if (bytes == null) {
-      EasyLoading.showError(S.current.failed);
-      return null;
-    }
     try {
+      final result = await FilePicker.platform.pickFiles(withData: true);
+      if (result == null || result.files.isEmpty) return null;
+      final bytes = result.files.first.bytes?.toList();
+      if (bytes == null) {
+        EasyLoading.showError(S.current.failed);
+        return null;
+      }
       // xx 01 5A 53 76 2F
       // ?  ?  Z  S  v  /
       print(bytes.length);
