@@ -80,7 +80,7 @@ class _GameDataPageState extends State<GameDataPage> {
                       trailing: newVersion?.toText(textAlign: TextAlign.end),
                       onTap: () async {
                         EasyLoading.showInfo('Background Updating...');
-                        final data = await loader.fetchUpdates(rtnData: true);
+                        final data = await loader.reload();
                         if (data == null) return;
                         if (!data.isValid) {
                           EasyLoading.showError("Invalid game data");
@@ -99,7 +99,6 @@ class _GameDataPageState extends State<GameDataPage> {
                                   db.gameData.version.timestamp,
                               onTapOk: () async {
                                 db.gameData = data;
-                                await loader.fetchNewCards(silent: true);
                                 db.notifyAppUpdate();
                               },
                             );

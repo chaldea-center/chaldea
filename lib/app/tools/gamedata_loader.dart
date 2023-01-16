@@ -46,6 +46,18 @@ class GameDataLoader {
     }
   }
 
+  Future<GameData?> reloadAndUpdate({
+    bool offline = false,
+    bool silent = false,
+  }) async {
+    final data = await reload(offline: offline, silent: silent);
+    if (data != null) {
+      db.gameData = data;
+      db.notifyAppUpdate();
+    }
+    return data;
+  }
+
   Future<GameData?> reload({
     bool offline = false,
     bool silent = false,
@@ -305,37 +317,7 @@ class GameDataLoader {
     // }
   }
 
-  Future<GameData?> fetchUpdates({bool rtnData = false}) async {
-    DataVersion dataVer;
-    try {
-      dataVer = DataVersion.fromJson(
-          Map.from((await _downFile('version.json')).data));
-    } catch (e, s) {
-      EasyLoading.showError(escapeDioError(e));
-      logger.e('fetch data version failed', e, s);
-      return null;
-    }
-
-    if (dataVer.timestamp > db.gameData.version.timestamp) {
-      final newData = await reload();
-      if (newData != null) {
-        if (!rtnData) {
-          db.gameData = newData;
-          db.notifyAppUpdate();
-          EasyLoading.showSuccess(S.current.update_msg_succuss);
-          return null;
-        } else {
-          return newData;
-        }
-      } else {
-        EasyLoading.showError(S.current.error);
-        return null;
-      }
-    }
-    await fetchNewCards();
-    return null;
-  }
-
+  @Deprecated('unnecessary')
   Future<void> fetchNewCards({bool silent = false}) async {
     final info = await AtlasApi.regionInfo();
     final remoteTime = info?['timestamp'] as int?;

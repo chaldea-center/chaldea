@@ -72,11 +72,13 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
         ValueListenableBuilder<int>(
           valueListenable: _loader.downloading,
           builder: ((context, value, child) {
+            bool showHint = onlineUpdate &&
+                value > 0 &&
+                DateTime.now().difference(startTime).inSeconds > 30;
+            showHint = showHint || hint != null;
             return Text.rich(
               TextSpan(
-                children: onlineUpdate &&
-                        value > 0 &&
-                        DateTime.now().difference(startTime).inSeconds > 30
+                children: showHint
                     ? [
                         TextSpan(text: hint ?? 'Updating '),
                         CenterWidgetSpan(

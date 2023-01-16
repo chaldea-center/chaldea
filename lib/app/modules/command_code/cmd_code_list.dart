@@ -80,7 +80,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     return RefreshIndicator(
       child: super.buildScrollable(useGrid: useGrid),
       onRefresh: () async {
-        await GameDataLoader.instance.fetchUpdates();
+        await GameDataLoader.instance.reloadAndUpdate();
         if (mounted) setState(() {});
       },
     );
