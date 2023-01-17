@@ -296,7 +296,9 @@ class VoiceGroupAccordion extends StatelessWidget {
   }
 
   Future<List<AudioSource>> getSources(VoiceLine line) async {
-    await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
+    if (!kIsWeb) {
+      await Future.wait(line.audioAssets.map((e) => AtlasIconLoader.i.get(e)));
+    }
     List<AudioSource> sources = [];
     for (int index = 0; index < line.audioAssets.length; index++) {
       int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
@@ -304,9 +306,14 @@ class VoiceGroupAccordion extends StatelessWidget {
         sources
             .add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
       }
-      final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
-      if (fp == null) continue;
-      sources.add(AudioSource.uri(Uri.file(fp)));
+      if (kIsWeb) {
+        sources.add(AudioSource.uri(Uri.parse(
+            AtlasIconLoader.i.proxyAssetUrl(line.audioAssets[index]))));
+      } else {
+        final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
+        if (fp == null) continue;
+        sources.add(AudioSource.uri(Uri.file(fp)));
+      }
     }
     return sources;
   }

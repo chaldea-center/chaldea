@@ -760,7 +760,7 @@ class CraftEssence with GameCardMixin {
   String get cardBack {
     final color =
         ['b', 's', 'g'].getOrNull(GameCardMixin.bsgColor(rarity)) ?? 'g';
-    return Atlas.asset('ClassCard/class_${color}_101@2.png');
+    return Atlas.asset('ClassCard/class_${color}_103.png');
   }
 
   @override

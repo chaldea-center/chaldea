@@ -123,7 +123,7 @@ class _GameDataPageState extends State<GameDataPage> {
                     : db.settings.updateDataBeforeStart,
                 title: Text(S.current.update_data_at_start),
                 subtitle: Text(
-                  db.settings.updateDataBeforeStart
+                  !kIsWeb && db.settings.autoUpdateData
                       ? S.current.update_data_at_start_on_hint
                       : S.current.update_data_at_start_off_hint,
                   textScaleFactor: 0.8,

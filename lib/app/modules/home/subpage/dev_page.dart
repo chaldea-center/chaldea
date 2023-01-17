@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -20,6 +21,24 @@ class DevInfoPage extends StatefulWidget {
 }
 
 class _DevInfoPageState extends State<DevInfoPage> {
+  List<String> logNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (!kIsWeb) {
+      final dir = Directory(db.paths.logDir);
+      if (dir.existsSync()) {
+        for (final file in dir.listSync()) {
+          if (file is File && RegExp(r'\.log(\.\d+)?$').hasMatch(file.path)) {
+            logNames.add(file.path);
+          }
+        }
+      }
+      logNames.sort();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,21 +84,20 @@ class _DevInfoPageState extends State<DevInfoPage> {
                   _info(key, AppInfo.deviceParams[key].toString())
               ],
             ),
-            TileGroup(
-              header: 'Logs',
-              children: [
-                for (final flog in [db.paths.appLog, db.paths.crashLog])
-                  ListTile(
-                    dense: true,
-                    title: Text(pathlib.basenameWithoutExtension(flog)),
-                    onTap: () {
-                      router.pushPage(_LogViewer(
-                          name: pathlib.basenameWithoutExtension(flog),
-                          fp: flog));
-                    },
-                  ),
-              ],
-            )
+            if (logNames.isNotEmpty)
+              TileGroup(
+                header: 'Logs',
+                children: [
+                  for (final log in logNames)
+                    ListTile(
+                      dense: true,
+                      title: Text(pathlib.basename(log)),
+                      onTap: () {
+                        router.pushPage(_LogViewer(fp: log));
+                      },
+                    ),
+                ],
+              )
           ],
         );
       }),
@@ -88,9 +106,8 @@ class _DevInfoPageState extends State<DevInfoPage> {
 }
 
 class _LogViewer extends StatefulWidget {
-  final String name;
   final String fp;
-  const _LogViewer({required this.name, required this.fp});
+  const _LogViewer({required this.fp});
 
   @override
   State<_LogViewer> createState() => __LogViewerState();
@@ -109,6 +126,7 @@ class __LogViewerState extends State<_LogViewer> {
   }
 
   Future<void> readLogs() async {
+    await Future.delayed(kSplitRouteDuration);
     final file = FilePlus(widget.fp);
     if (file.existsSync()) {
       final content = await file.readAsString();
@@ -136,7 +154,7 @@ class __LogViewerState extends State<_LogViewer> {
     final shownText = lines.sublist(start, end).join('\n');
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Text(pathlib.basename(widget.fp)),
         actions: [
           if (kDebugMode)
             IconButton(onPressed: readLogs, icon: const Icon(Icons.refresh)),

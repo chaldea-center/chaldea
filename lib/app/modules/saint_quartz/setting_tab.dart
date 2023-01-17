@@ -251,8 +251,7 @@ The other campaign events, maintenance compensation, and other rewards directly 
   }
 
   void update() {
-    setState(() {
-      plan.solve();
-    });
+    if (mounted) setState(() {});
+    plan.solve();
   }
 }

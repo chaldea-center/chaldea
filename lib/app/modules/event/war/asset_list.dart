@@ -84,7 +84,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
 
     final futures = scripts.map<Future<String?>>((script) async {
       if (force) await AtlasIconLoader.i.deleteFromDisk(script);
-      final fp = await AtlasIconLoader.i.get(script);
+      final fp = await AtlasIconLoader.i.get(script, allowWeb: true);
       if (fp == null) return null;
       try {
         return FilePlus(fp).readAsString();

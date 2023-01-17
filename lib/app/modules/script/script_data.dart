@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
@@ -307,11 +308,11 @@ class ScriptSelect extends ScriptTexts {
     if (index == null) {
       return [
         state.textSpan(text: S.current.script_choice_end, style: _choiceStyle),
-        const WidgetSpan(child: Divider(thickness: 2)),
+        if (!kIsWeb) const WidgetSpan(child: Divider(thickness: 2)),
       ];
     }
     return [
-      if (index == 1) const WidgetSpan(child: Divider(thickness: 2)),
+      if (!kIsWeb && index == 1) const WidgetSpan(child: Divider(thickness: 2)),
       state.textSpan(
           text: '${S.current.script_choice} $index: ', style: _choiceStyle),
       for (final p in contents) ...p.build(context, state),

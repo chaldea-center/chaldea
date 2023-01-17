@@ -531,7 +531,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               child: Text(S.current.bond),
             ),
             ElevatedButton(
-              onPressed: replacedResponse == null ? null : didImportData,
+              onPressed:
+                  replacedResponse?.firstUser == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
           ],
@@ -558,13 +559,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     ).showDialog(context);
     if (confirmed != true) return;
     final user = db.curUser;
-    user.isGirl = replacedResponse!.firstUser!.genderType == 2;
+    final userGame = replacedResponse?.firstUser;
+    user.isGirl = userGame?.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
-      if (replacedResponse!.firstUser != null) {
-        user.items[Items.qpId] = replacedResponse!.firstUser!.qp;
-        user.items[Items.manaPrismId] = replacedResponse!.firstUser!.mana;
-        user.items[Items.rarePrismId] = replacedResponse!.firstUser!.rarePri;
+      if (userGame != null) {
+        user.items[Items.qpId] = userGame.qp;
+        user.items[Items.manaPrismId] = userGame.mana;
+        user.items[Items.rarePrismId] = userGame.rarePri;
       }
       for (final svtCoin in replacedResponse!.userSvtCoin) {
         final coinId = db.gameData.servantsById[svtCoin.svtId]?.coin?.item.id;
