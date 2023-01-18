@@ -67,6 +67,22 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   setState(() {});
                 },
               ),
+              SwitchListTile.adaptive(
+                value: db.settings.showDebugFab,
+                title: Text(S.current.debug_fab),
+                subtitle: Text('${S.current.screenshots} etc.'),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.showDebugFab = v;
+                    db.saveSettings();
+                  });
+                  if (v) {
+                    DebugFab.createOverlay(context);
+                  } else {
+                    DebugFab.removeOverlay();
+                  }
+                },
+              ),
               // only show on mobile phone, not desktop and tablet
               // on Android, cannot detect phone or mobile
               if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)

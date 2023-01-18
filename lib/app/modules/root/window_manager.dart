@@ -336,7 +336,7 @@ class WindowThumb extends StatelessWidget {
                       Expanded(
                         child: Text(
                           "[$index] ${url ?? ""}".breakWord,
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                       IconButton(

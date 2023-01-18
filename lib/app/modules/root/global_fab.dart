@@ -1,10 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../misc/theme_palette.dart';
 
@@ -172,6 +177,18 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
+          leading: const Icon(Icons.screenshot_monitor),
+          title: Text(S.current.screenshots),
+          horizontalTitleGap: 0,
+          onTap: () {
+            Navigator.pop(context);
+            showDialog(
+              context: context,
+              builder: (context) => const _ScreenshotDialog(),
+            );
+          },
+        ),
+        ListTile(
           horizontalTitleGap: 0,
           leading: const Icon(Icons.timer),
           title: const Text('Hide 60s'),
@@ -187,10 +204,11 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             db.itemCenter.init();
           },
         ),
-        ListTile(
-          title: const Text('TestFunc'),
-          onTap: () => testFunction(context),
-        ),
+        if (!kReleaseMode)
+          ListTile(
+            title: const Text('TestFunc'),
+            onTap: () => testFunction(context),
+          ),
         ListTile(
           title: const Text('Save User Data'),
           onTap: () {
@@ -207,6 +225,76 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         )
       ],
+    );
+  }
+}
+
+class _ScreenshotDialog extends StatefulWidget {
+  const _ScreenshotDialog();
+
+  @override
+  State<_ScreenshotDialog> createState() => __ScreenshotDialogState();
+}
+
+class __ScreenshotDialogState extends State<_ScreenshotDialog> {
+  late double ratio = MediaQuery.of(context).devicePixelRatio;
+  @override
+  Widget build(BuildContext context) {
+    final dftRatio = MediaQuery.of(context).devicePixelRatio;
+    final minRatio = (dftRatio * 2.5).toInt() / 10,
+        maxRatio = (dftRatio * 50).toInt() / 10;
+    ratio = ratio.clamp(minRatio, maxRatio);
+    return SimpleCancelOkDialog(
+      title: Text(S.current.screenshots),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            title: const Text('Device Pixel Ratio'),
+            subtitle: Text('${S.current.general_default}: $dftRatio'),
+            trailing: Text(ratio.toStringAsFixed(1)),
+            contentPadding: EdgeInsets.zero,
+          ),
+          Slider.adaptive(
+            value: ratio,
+            min: minRatio,
+            max: maxRatio,
+            divisions: (maxRatio - minRatio) ~/ 0.1 + 1,
+            label: ratio.toStringAsFixed(1),
+            onChanged: (v) {
+              setState(() {
+                ratio = v;
+              });
+            },
+          ),
+          Text('3s delay', style: Theme.of(context).textTheme.bodySmall),
+        ],
+      ),
+      scrollable: true,
+      confirmText: S.current.screenshots,
+      onTapOk: () async {
+        await EasyLoading.showInfo('Ready',
+            duration: const Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 3));
+        try {
+          final data = await db.runtimeData.screenshotController
+              .capture(pixelRatio: ratio);
+          if (data == null) {
+            EasyLoading.showError(S.current.failed);
+            return;
+          }
+          await ImageActions.showSaveShare(
+            context: kAppKey.currentContext!,
+            data: data,
+            destFp: joinPaths(db.paths.downloadDir,
+                'screenshot-${DateTime.now().toSafeFileName()}.png'),
+          );
+        } catch (e, s) {
+          logger.e('take screenshot failed', e, s);
+          EasyLoading.showError('${S.current.failed}\n$e');
+        }
+      },
     );
   }
 }

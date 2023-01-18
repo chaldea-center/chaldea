@@ -5,6 +5,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -74,6 +75,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   }
 
   Widget buildOne(Servant svt, SvtMatCostDetail<Map<int, int>> detail) {
+    final ratio = SplitRoute.isSplit(context) ? 1.5 : 1.0;
     return SimpleAccordion(
       key: ValueKey(svt),
       headerBuilder: (context, _) {
@@ -83,7 +85,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(width: 16),
-            svt.iconBuilder(context: context, width: 36),
+            svt.iconBuilder(context: context, width: 36 * ratio),
             const SizedBox(width: 8),
             Expanded(
               child: Text.rich(
@@ -92,7 +94,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
                     child: SharedBuilder.itemGrid(
                       context: context,
                       items: items,
-                      width: 42,
+                      width: 42 * ratio,
                     ),
                   )
                 ]),
@@ -117,7 +119,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
           children.add(SharedBuilder.itemGrid(
             context: context,
             items: Item.sortMapByPriority(items, reversed: true).entries,
-            width: 42 * .8,
+            width: 42 * .8 * ratio,
           ));
         }
 
@@ -128,7 +130,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
         _addPart(detail.special, S.current.general_special);
 
         return Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(60, 0, 16, 4),
+          padding: EdgeInsetsDirectional.fromSTEB(56 * ratio, 0, 16, 4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,

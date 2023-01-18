@@ -337,10 +337,11 @@ class _SettingsPageState extends State<SettingsPage> {
             SliverTileGroup(
               header: S.current.debug,
               children: <Widget>[
-                ListTile(
-                  title: const Text('Test Func'),
-                  onTap: () => testFunction(context),
-                ),
+                if (!kReleaseMode)
+                  ListTile(
+                    title: const Text('Test Func'),
+                    onTap: () => testFunction(context),
+                  ),
                 SwitchListTile.adaptive(
                   value: FrameRateLayer.showFps,
                   title: Text(S.current.show_frame_rate),
