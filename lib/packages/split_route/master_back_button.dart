@@ -20,12 +20,7 @@ class MasterBackButton extends StatelessWidget {
         if (onPressed != null) {
           onPressed!();
         } else {
-          if (ModalRoute.of(context)?.isFirst != true) {
-            Navigator.pop(context);
-          } else {
-            // won't ignore WillPopScope
-            Navigator.maybePop(context);
-          }
+          Navigator.maybePop(context);
         }
       },
     );

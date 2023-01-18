@@ -337,14 +337,17 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   /// return the number of popped pages
   static int popDetailRoutes(BuildContext context) {
     // whether to store all values returned by routes?
+    final curRoute = SplitRoute.of(context);
+    final isMaster = curRoute?.detail == false;
     assert(() {
-      final curRoute = SplitRoute.of(context);
-      if (curRoute == null || curRoute.detail == true) {
+      if (!isMaster) {
         throw StateError(
             'DO NOT call popDetails outside SplitRoute or inside detail page');
       }
       return true;
     }());
+    if (!isMaster) return 0;
+
     int n = 0;
     Navigator.of(context).popUntil((route) {
       bool isDetail = route is SplitRoute && route.detail == true;
