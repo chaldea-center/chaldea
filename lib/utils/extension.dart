@@ -410,14 +410,13 @@ extension ResponseX<T> on Response<T> {
 // ignore: non_constant_identifier_names
 Dio DioE([BaseOptions? options]) {
   options ??= BaseOptions();
-  final ver = AppInfo.versionString, ver2 = ver.replaceAll('.', '');
+  final ver = AppInfo.versionString;
   final platform = PlatformU.operatingSystem;
 
   return Dio(options.copyWith(
     headers: {
       if (!kIsWeb) HttpHeaders.userAgentHeader: 'chaldea/$ver ($platform)',
-      if (!kIsWeb)
-        HttpHeaders.refererHeader: 'https://$ver2.$platform.chaldea.app',
+      if (!kIsWeb) HttpHeaders.refererHeader: 'https://$platform.chaldea.app',
       ...options.headers,
     },
   ));

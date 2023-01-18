@@ -14,7 +14,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../../packages/app_info.dart';
 import '../api/hosts.dart';
 
 @protected
@@ -182,13 +181,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() => DioE().get(url,
-        options: Options(responseType: ResponseType.bytes, headers: {
-          HttpHeaders.userAgentHeader:
-              'chaldea/${AppInfo.version.versionString} (${PlatformU.operatingSystem})',
-          HttpHeaders.refererHeader:
-              'https://chaldea.app/${Platform.operatingSystem}/${AppInfo.versionString}',
-        })));
+    final resp = await limiter.limited(() =>
+        DioE().get(url, options: Options(responseType: ResponseType.bytes)));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
