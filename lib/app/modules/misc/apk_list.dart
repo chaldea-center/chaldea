@@ -82,7 +82,7 @@ class _ApkListPageState extends State<ApkListPage> {
         }
       } else {
         // 'https://gplay-ver.atlasacademy.workers.dev/'
-        final resp = await Dio()
+        final resp = await DioE()
             .get('${Hosts.kWorkerHostCN}/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,
           // "t": (DateTime.now().timestamp ~/ 1000).toString()

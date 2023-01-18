@@ -124,29 +124,32 @@ class AppNewsCarousel extends StatefulWidget {
       Future<Response> _getUrl(String url,
           {Map<String, String>? headers}) async {
         Map<String, String>? queryParameters;
-        const _kIsWeb = kIsWeb || kDebugMode;
-        if (_kIsWeb) {
+        if (kIsWeb) {
           queryParameters = {'url': url};
           url = '${Hosts.workerHost}/corsproxy/';
         }
-        final resp = await _dio.get(
+        return _dio.get(
           url,
           queryParameters: queryParameters,
           options: headers != null
               ? Options(
                   headers: {
-                    if (_kIsWeb) 'x-cors-headers': jsonEncode(headers),
-                    if (!_kIsWeb) ...headers,
+                    if (kIsWeb) 'x-cors-headers': jsonEncode(headers),
+                    if (!kIsWeb) ...headers,
                   },
                 )
               : null,
         );
-        print('=========================');
-        print(resp.realUri);
-        print(resp.data.toString().substring2(0, 200));
-        print(resp.headers);
-        print('=========================');
-        return resp;
+      }
+
+      String? _proxyImage(String? img) {
+        if (img == null) return null;
+        if (img.contains('https://i0.hdslb.com') ||
+            img.contains('https://cafeskthumb-phinf.pstatic.net')) {
+          return Uri.parse(Hosts.workerHost).replace(
+              path: '/corsproxy/', queryParameters: {'url': img}).toString();
+        }
+        return img;
       }
 
       // mc slides
@@ -293,11 +296,14 @@ class AppNewsCarousel extends StatefulWidget {
           var ele = doc.getElementsByTagName('table').getOrNull(0);
           updated = true;
           final items = _getImageLinks(element: ele, uri: Uri.parse(krUrl));
-          items.removeWhere((element) => {
+          items.retainWhere((e) =>
+              e.image != null &&
+              e.image!.contains('https://cafeskthumb-phinf.pstatic.net') &&
+              ![
                 'http://fgo.netmarble.com/',
                 'https://www.facebook.com/FateGO.KR',
                 'https://twitter.com/FateGO_KR'
-              }.contains(element.link));
+              ].contains(e.link));
           return items;
         }).catchError((e, s) async {
           logger.d('parse KR slides failed', e, s);
@@ -311,6 +317,9 @@ class AppNewsCarousel extends StatefulWidget {
           if (e != null) result.addAll(await e);
         },
       );
+      for (final item in result) {
+        item.image = _proxyImage(item.image);
+      }
 
       // key: img url, value: href url
       if (carouselSetting.options.every((e) => !e)) {

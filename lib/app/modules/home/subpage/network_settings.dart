@@ -9,6 +9,7 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class NetworkSettingsPage extends StatefulWidget {
@@ -194,7 +195,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
           if (mounted) setState(() {});
           try {
             // await Future.delayed(const Duration(seconds: 2));
-            final resp = await Dio().get(url);
+            final resp = await DioE().get(url);
             completer.complete(resp);
             testResults[url] = resp;
           } catch (e) {
