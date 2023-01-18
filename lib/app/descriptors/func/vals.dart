@@ -396,14 +396,19 @@ class ValDsc extends StatelessWidget {
   }
 
   void _maybeAddRate() {
-    final _jsonVals = vals.toJson().keys.toSet();
-    // _jsonVals.removeAll(['Turn', 'Count']);
-    if ((_jsonVals.length == 1 &&
-            _jsonVals.first == 'Rate' &&
-            ignoreRate != true) ||
-        (vals.Rate != null && vals.Rate != 1000)) {
-      _addPercent(vals.Rate, 10, (v) => Transl.special.funcValChance(v));
+    if (vals.Rate != null) {
+      final _jsonVals = vals.toJson().keys.toSet();
+      // _jsonVals.removeAll(['Turn', 'Count']);
+      if ((_jsonVals.length == 1 &&
+              _jsonVals.first == 'Rate' &&
+              ignoreRate != true) ||
+          vals.Rate != 1000 ||
+          [FuncType.instantDeath, FuncType.forceInstantDeath]
+              .contains(func.funcType)) {
+        _addPercent(vals.Rate, 10, (v) => Transl.special.funcValChance(v));
+      }
     }
+
     if (vals.ActSetWeight != null) {
       _addPercent(vals.ActSetWeight, 1, (v) => Transl.special.funcValWeight(v));
     }
