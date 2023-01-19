@@ -432,6 +432,32 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
           instance.verMax, const AppVersionConverter().toJson),
     };
 
+RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
+      'RemoteConfig',
+      json,
+      ($checkedConvert) {
+        final val = RemoteConfig(
+          blockedCarousels: $checkedConvert(
+              'blockedCarousels',
+              (v) =>
+                  (v as List<dynamic>?)?.map((e) => e as String).toList() ??
+                  const []),
+          blockedErrors: $checkedConvert(
+              'blockedErrors',
+              (v) =>
+                  (v as List<dynamic>?)?.map((e) => e as String).toList() ??
+                  const []),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) =>
+    <String, dynamic>{
+      'blockedCarousels': instance.blockedCarousels,
+      'blockedErrors': instance.blockedErrors,
+    };
+
 GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
       'GithubSetting',
       json,

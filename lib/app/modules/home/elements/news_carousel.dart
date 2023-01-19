@@ -14,17 +14,15 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/tools/git_tool.dart';
-import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -45,22 +43,6 @@ class AppNewsCarousel extends StatefulWidget {
     }
     final carouselSetting = db.settings.carousel;
     carouselSetting.needUpdate = false;
-
-    String? _proxyImage(String? img) {
-      if (img == null || !kIsWeb) return img;
-      if (AtlasIconLoader.i.atlasUrlToFp(img, allowWeb: true) != null ||
-          img.contains('chaldea.center')) {
-        return img;
-      }
-
-      if (kPlatformMethods.rendererCanvasKit ||
-          img.contains('https://i0.hdslb.com') ||
-          img.contains('https://cafeskthumb-phinf.pstatic.net')) {
-        return Uri.parse(Hosts.workerHost).replace(
-            path: '/corsproxy/', queryParameters: {'url': img}).toString();
-      }
-      return img;
-    }
 
     List<CarouselItem> _getImageLinks({
       required dom.Element? element,
@@ -326,25 +308,17 @@ class AppNewsCarousel extends StatefulWidget {
           if (e != null) result.addAll(await e);
         },
       );
-      for (final item in result) {
-        item.image = _proxyImage(item.image);
-      }
-
       // key: img url, value: href url
       if (carouselSetting.options.every((e) => !e)) {
         carouselSetting.items.clear();
       }
       if ((result.isNotEmpty || updated)) {
-        if (!kIsWeb) {
-          final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
-          List<String> blocked = blockedWiki
-              .split('\n')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList();
-          result.removeWhere((item) =>
-              blocked.any((word) => item.image?.contains(word) == true));
-        }
+        List<String> blocked =
+            (await AtlasApi.remoteConfig())?.blockedCarousels ?? [];
+        blocked.removeWhere((e) => e.isEmpty);
+        result.removeWhere((item) =>
+            blocked.any((word) => item.image?.contains(word) == true));
+
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
@@ -498,9 +472,10 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     for (final item in items) {
       if (item.priority < 0 && !kDebugMode) continue;
       Widget? child;
-      if (item.image != null && isURL(item.image!)) {
+      final img = item.proxyImage;
+      if (img != null && isURL(img)) {
         child = CachedImage(
-          imageUrl: item.image,
+          imageUrl: img,
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
             errorWidget: (context, url, error) => Container(

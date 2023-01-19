@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:chaldea/app/api/hosts.dart';
+import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
@@ -325,6 +328,39 @@ class CarouselItem {
       _$CarouselItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselItemToJson(this);
+
+  String? get proxyImage {
+    final img = image;
+    if (img == null || !kIsWeb) return img;
+    if (AtlasIconLoader.i.atlasUrlToFp(img, allowWeb: true) != null ||
+        img.contains('chaldea.center')) {
+      return img;
+    }
+
+    if (kPlatformMethods.rendererCanvasKit ||
+        img.contains('https://i0.hdslb.com') ||
+        img.contains('https://cafeskthumb-phinf.pstatic.net')) {
+      return Uri.parse(Hosts.workerHost).replace(
+          path: '/corsproxy/', queryParameters: {'url': img}).toString();
+    }
+    return img;
+  }
+}
+
+@JsonSerializable()
+class RemoteConfig {
+  List<String> blockedCarousels;
+  List<String> blockedErrors;
+
+  RemoteConfig({
+    this.blockedCarousels = const [],
+    this.blockedErrors = const [],
+  });
+
+  factory RemoteConfig.fromJson(Map<String, dynamic> data) =>
+      _$RemoteConfigFromJson(data);
+
+  Map<String, dynamic> toJson() => _$RemoteConfigToJson(this);
 }
 
 @JsonSerializable()

@@ -631,4 +631,13 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
   }
+
+  // chaldea
+  static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '${Hosts.dataHost}/config.json',
+      (data) => RemoteConfig.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 }

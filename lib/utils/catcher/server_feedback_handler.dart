@@ -17,12 +17,12 @@ import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
-import '../../app/tools/git_tool.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
@@ -174,12 +174,8 @@ class ServerFeedbackHandler extends ReportHandler {
       }
     }
     if (_blockedErrors == null && !kIsWeb) {
-      final String content = await GitTool.giteeWikiPage('blocked_error');
-      _blockedErrors = [];
-      content.trim().split('\n\n').forEach((line) {
-        line = line.trim().replaceAll('\r', '');
-        if (line.isNotEmpty) _blockedErrors!.add(line);
-      });
+      _blockedErrors = (await AtlasApi.remoteConfig())?.blockedErrors ?? [];
+      _blockedErrors?.removeWhere((e) => e.isEmpty);
       // logger_.logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
