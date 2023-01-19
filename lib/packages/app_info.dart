@@ -157,7 +157,7 @@ class AppInfo {
         originId = await uuidFile.readAsString();
       }
       if (originId?.isNotEmpty != true) {
-        originId = const Uuid().v1();
+        originId = const Uuid().v4();
         await uuidFile.writeAsString(originId);
       }
     }

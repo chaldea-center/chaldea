@@ -194,19 +194,25 @@ class ServerFeedbackHandler extends ReportHandler {
   }
 
   Future<Uint8List?> _captureScreenshot() async {
-    Uint8List? shotBinary = await screenshotController?.capture(
-      pixelRatio:
-          MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,
-      delay: const Duration(milliseconds: 500),
-    );
-    if (shotBinary == null) return null;
-    final img = decodePng(shotBinary);
-    if (img == null) return null;
-    final bytes = Uint8List.fromList(encodeJpg(img, quality: 60));
-    if (!kIsWeb && screenshotPath != null) {
-      FilePlus(screenshotPath!).writeAsBytes(bytes);
+    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) return null;
+    try {
+      Uint8List? shotBinary = await screenshotController?.capture(
+        pixelRatio:
+            MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,
+        delay: const Duration(milliseconds: 500),
+      );
+      if (shotBinary == null) return null;
+      final img = decodePng(shotBinary);
+      if (img == null) return null;
+      final bytes = Uint8List.fromList(encodeJpg(img, quality: 60));
+      if (!kIsWeb && screenshotPath != null) {
+        FilePlus(screenshotPath!).writeAsBytes(bytes);
+      }
+      return bytes;
+    } catch (e, s) {
+      logger_.logger.e('screenshot failed', e, s);
+      return null;
     }
-    return bytes;
   }
 
   String? _getEmailTitle(Report report) {

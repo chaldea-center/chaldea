@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -132,6 +133,7 @@ class _DebugMenuDialog extends StatefulWidget {
 }
 
 class __DebugMenuDialogState extends State<_DebugMenuDialog> {
+  bool get enableScreenshot => !kIsWeb || kPlatformMethods.rendererCanvasKit;
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
@@ -179,14 +181,19 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           leading: const Icon(Icons.screenshot_monitor),
           title: Text(S.current.screenshots),
+          subtitle: enableScreenshot
+              ? null
+              : const Text('Only available in canvaskit renderer'),
           horizontalTitleGap: 0,
-          onTap: () {
-            Navigator.pop(context);
-            showDialog(
-              context: context,
-              builder: (context) => const _ScreenshotDialog(),
-            );
-          },
+          onTap: enableScreenshot
+              ? () {
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder: (context) => const _ScreenshotDialog(),
+                  );
+                }
+              : null,
         ),
         ListTile(
           horizontalTitleGap: 0,

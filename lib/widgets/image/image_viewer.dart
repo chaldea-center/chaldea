@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -240,17 +241,29 @@ class _CachedImageState extends State<CachedImage> {
       child = GestureDetector(
         child: child,
         onLongPress: () async {
-          final img = await ImageActions.resolveImage(provider);
-          final bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))
-              ?.buffer
-              .asUint8List();
+          Uint8List? bytes;
+          try {
+            final img = await ImageActions.resolveImage(provider);
+            bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))
+                ?.buffer
+                .asUint8List();
+          } catch (e, s) {
+            logger.e('resolve image provider failed', e, s);
+          }
           if (bytes == null) {
             EasyLoading.showError('Failed');
             if (widget.imageUrl != null) copyToClipboard(widget.imageUrl!);
             return;
           }
           if (!mounted) return;
-          String fn =
+
+          String? fn;
+          Uri? uri;
+          if (widget.imageUrl != null) uri = Uri.tryParse(widget.imageUrl!);
+          if (uri != null && uri.pathSegments.isNotEmpty) {
+            fn = Uri.decodeComponent(uri.pathSegments.last);
+          }
+          fn ??=
               '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,

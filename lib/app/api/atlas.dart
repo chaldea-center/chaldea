@@ -161,7 +161,7 @@ class _CacheManager {
   final RateLimiter _rateLimiter = RateLimiter();
 
   Future<List<int>?> _download(String url) async {
-    print('fetching Atlas API: $url');
+    if (!kReleaseMode) print('fetching Atlas API: $url');
     final _t = StopwatchX(url);
     final response = await DioE().get<List<int>>(url,
         options: Options(responseType: ResponseType.bytes));
@@ -197,7 +197,7 @@ class _CacheManager {
     await file.create(recursive: true);
     await file.writeAsBytes(bytes);
     final fp = _getCacheFile(key).path;
-    print('caching api $url to $fp');
+    if (!kReleaseMode) print('caching api $url to $fp');
     _data[key] = _CachedInfo(
       url: url,
       statusCode: response.statusCode!,

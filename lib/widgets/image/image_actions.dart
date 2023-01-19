@@ -11,12 +11,12 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart' show launchUrl;
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../packages/packages.dart';
 import '../custom_dialogs.dart';
@@ -122,7 +122,8 @@ class ImageActions {
             title: Text(S.current.save),
             onTap: () {
               Navigator.pop(context);
-              launchUrl(Uri.dataFromBytes(data));
+              kPlatformMethods.downloadFile(
+                  data, pathlib.basename(destFp ?? 'downloadimage.png'));
             },
           ));
         }
