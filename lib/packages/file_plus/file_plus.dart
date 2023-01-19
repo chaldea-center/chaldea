@@ -62,6 +62,8 @@ abstract class FilePlus {
 
   Future<void> create({bool recursive = false});
 
+  void createSync({bool recursive = false});
+
   Future<void> delete();
 
   String get path;

@@ -123,5 +123,8 @@ class FilePlusWeb implements FilePlus {
   Future<void> create({bool recursive = false}) => Future.value();
 
   @override
+  void createSync({bool recursive = false}) {}
+
+  @override
   Future<void> delete() => effectiveBox.delete(_path);
 }

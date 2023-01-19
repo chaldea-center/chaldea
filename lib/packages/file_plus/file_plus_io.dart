@@ -43,20 +43,24 @@ class FilePlusNative implements FilePlus {
   @override
   Future<FilePlus> writeAsBytes(List<int> bytes,
       {FileMode mode = FileMode.write, bool flush = false}) async {
+    await create(recursive: true);
     await _file.writeAsBytes(bytes, mode: mode, flush: flush);
     return this;
   }
 
   @override
   void writeAsBytesSync(List<int> bytes,
-          {FileMode mode = FileMode.write, bool flush = false}) =>
-      _file.writeAsBytesSync(bytes, mode: mode, flush: flush);
+      {FileMode mode = FileMode.write, bool flush = false}) {
+    createSync(recursive: true);
+    _file.writeAsBytesSync(bytes, mode: mode, flush: flush);
+  }
 
   @override
   Future<FilePlus> writeAsString(String contents,
       {FileMode mode = FileMode.write,
       Encoding encoding = utf8,
       bool flush = false}) async {
+    await create(recursive: true);
     await _file.writeAsString(contents,
         mode: mode, encoding: encoding, flush: flush);
     return this;
@@ -64,15 +68,21 @@ class FilePlusNative implements FilePlus {
 
   @override
   void writeAsStringSync(String contents,
-          {FileMode mode = FileMode.write,
-          Encoding encoding = utf8,
-          bool flush = false}) =>
-      _file.writeAsStringSync(contents,
-          mode: mode, encoding: encoding, flush: flush);
+      {FileMode mode = FileMode.write,
+      Encoding encoding = utf8,
+      bool flush = false}) {
+    createSync(recursive: true);
+    _file.writeAsStringSync(contents,
+        mode: mode, encoding: encoding, flush: flush);
+  }
 
   @override
   Future<void> create({bool recursive = false}) =>
       _file.create(recursive: recursive);
+
+  @override
+  void createSync({bool recursive = false}) =>
+      _file.createSync(recursive: recursive);
 
   @override
   Future<void> delete() => _file.delete();

@@ -69,6 +69,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     try {
       if (widget.toploginText != null) {
         parseResponseBody(widget.toploginText!);
+        await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsString(widget.toploginText!);
       } else {
         final f = FilePlus(tmpPath);
@@ -78,7 +79,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         }
       }
     } catch (e, s) {
-      logger.e('reading http packages cache failed', e, s);
+      logger.e('init http packages cache failed', e, s);
     }
   }
 
