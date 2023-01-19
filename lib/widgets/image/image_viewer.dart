@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +15,7 @@ import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/icon_cache_manager.dart';

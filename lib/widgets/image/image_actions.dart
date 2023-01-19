@@ -219,7 +219,7 @@ class ImageActions {
           logger.e('onError why completed!', e, s);
           return;
         }
-        print(e);
+        print('resolve image provider failed $e');
         // FlutterError.dumpErrorToConsole(
         //     FlutterErrorDetails(exception: e, stack: s));
         completer.complete(null);

@@ -185,15 +185,14 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               ? null
               : const Text('Only available in canvaskit renderer'),
           horizontalTitleGap: 0,
-          onTap: enableScreenshot
-              ? () {
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (context) => const _ScreenshotDialog(),
-                  );
-                }
-              : null,
+          enabled: enableScreenshot,
+          onTap: () {
+            Navigator.pop(context);
+            showDialog(
+              context: context,
+              builder: (context) => const _ScreenshotDialog(),
+            );
+          },
         ),
         ListTile(
           horizontalTitleGap: 0,

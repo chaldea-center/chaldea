@@ -243,7 +243,7 @@ class RouteConfiguration {
 
   @override
   String toString() {
-    return '$runtimeType(url=$url, detail=$detail)';
+    return 'RouteConfiguration(url=$url, detail=$detail)';
   }
 
   RouteConfiguration copyWith({
@@ -411,6 +411,6 @@ class SplitPage extends MaterialPage {
 
   @override
   String toString() {
-    return '$runtimeType("$name", $key, $arguments, ${child.runtimeType})';
+    return 'SplitPage("$name", $key, $arguments, ${child.runtimeType})';
   }
 }

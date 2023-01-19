@@ -18,6 +18,7 @@ import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
@@ -252,6 +253,8 @@ class ServerFeedbackHandler extends ReportHandler {
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
+      if (kIsWeb)
+        'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
     };
     for (var entry in summary.entries) {
       buffer
@@ -281,6 +284,13 @@ class ServerFeedbackHandler extends ReportHandler {
       }
     }
 
+    buffer.write("<h3>Pages</h3>");
+    for (final page in router.pages.reversed.take(5)) {
+      buffer.write(escape(page.toString()));
+      buffer.write("<br>");
+    }
+    buffer.write("<hr>");
+
     if (enableDeviceParameters) {
       buffer.write("<h3>Device parameters:</h3>");
       for (var entry in report.deviceParameters.entries) {
@@ -298,7 +308,7 @@ class ServerFeedbackHandler extends ReportHandler {
       buffer.write("<hr>");
     }
 
-    if (enableCustomParameters) {
+    if (enableCustomParameters && report.customParameters.isNotEmpty) {
       buffer.write("<h3>Custom parameters:</h3>");
       for (var entry in report.customParameters.entries) {
         buffer.write(
