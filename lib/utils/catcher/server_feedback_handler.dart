@@ -223,6 +223,7 @@ class ServerFeedbackHandler extends ReportHandler {
   Future<String> _setupHtmlMessageText(Report report) async {
     final escape = const HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
+
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
     if (emailHeader?.isNotEmpty == true) {
       buffer.write(emailHeader!);
@@ -264,6 +265,13 @@ class ServerFeedbackHandler extends ReportHandler {
       if (report.error.toString().trim().isEmpty &&
           report.errorDetails != null) {
         buffer.write(escape(report.errorDetails!.exceptionAsString()));
+      }
+      if (kIsWeb &&
+          (report.error ?? report.errorDetails?.exception)
+              .toString()
+              .contains('Unsupported operation: NaN.floor()')) {
+        kPlatformMethods.setLocalStorage('flutterWebRenderer', 'canvaskit');
+        buffer.write('<br>Set canvaskit renderer!<br>');
       }
       buffer.write("<hr>");
 

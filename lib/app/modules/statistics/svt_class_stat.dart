@@ -215,6 +215,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     int total = Maths.sum(svtClassCount.values);
     if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
       // TODO: https://github.com/flutter/flutter/issues/44572
+      // https://github.com/imaNNeoFighT/fl_chart/issues/955
       return const Padding(
         padding: EdgeInsets.all(16),
         child: Center(
