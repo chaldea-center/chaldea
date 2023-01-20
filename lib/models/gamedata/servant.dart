@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
@@ -484,6 +483,7 @@ class Servant with GameCardMixin {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
+    ImageWithTextOption? option,
     bool jumpToDetail = true,
     bool popDetail = false,
     String? overrideIcon,
@@ -500,6 +500,7 @@ class Servant with GameCardMixin {
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,
+      option: option,
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
       overrideIcon: overrideIcon ?? customIcon,

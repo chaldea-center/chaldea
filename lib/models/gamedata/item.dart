@@ -88,6 +88,7 @@ class Item {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
+    ImageWithTextOption? option,
     bool jumpToDetail = true,
     bool popDetail = false,
     String? name,
@@ -161,7 +162,7 @@ class Item {
         };
       }
     }
-    Widget child = GameCardMixin.cardIconBuilder(
+    return GameCardMixin.cardIconBuilder(
       context: context,
       icon: icon,
       width: width,
@@ -171,18 +172,9 @@ class Item {
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,
+      name: showName ? name : null,
+      option: option,
     );
-    if (showName) {
-      String name = item?.lName.l ?? Item.getName(itemId ?? -1);
-      child = InkWell(
-        onTap: onTap,
-        child: Text.rich(TextSpan(children: [
-          CenterWidgetSpan(child: child),
-          TextSpan(text: ' $name '),
-        ])),
-      );
-    }
-    return child;
   }
 
   Transl<String, String> get lName => Transl.itemNames(name);

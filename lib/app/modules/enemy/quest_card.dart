@@ -859,7 +859,8 @@ class _QuestCardState extends State<QuestCard> {
         id: drop.objectId,
         width: 42,
         text: text ?? '-',
-        textPadding: const EdgeInsets.only(top: 20),
+        textPadding: EdgeInsets.zero,
+        option: ImageWithTextOption(fontSize: 42 * 0.27),
       ));
     }
     return Wrap(

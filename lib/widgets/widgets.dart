@@ -6,6 +6,7 @@ export 'custom_table.dart';
 export 'custom_tile.dart';
 export 'form_elements.dart';
 export 'image/image_viewer.dart';
+export 'image_with_text.dart';
 export 'inherit_selection_area.dart';
 export 'layout_try_builder.dart';
 export 'markdown_page.dart';

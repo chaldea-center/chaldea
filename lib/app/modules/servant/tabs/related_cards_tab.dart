@@ -66,9 +66,8 @@ class SvtRelatedCardTab extends StatelessWidget {
                 children: [
                   for (final ce in charaCEs)
                     ListTile(
-                      leading: ImageWithText(
-                          image: db.getIconImage(ce.borderedIcon,
-                              height: 45, width: 45 / 144 * 132)),
+                      leading: db.getIconImage(ce.borderedIcon,
+                          height: 45, width: 45 / 144 * 132),
                       title: Text(ce.lName.l),
                       onTap: () {
                         router.push(
@@ -91,9 +90,8 @@ class SvtRelatedCardTab extends StatelessWidget {
                 children: [
                   for (final cc in charaCCs)
                     ListTile(
-                      leading: ImageWithText(
-                          image: db.getIconImage(cc.icon,
-                              height: 45, width: 45 / 144 * 132)),
+                      leading: db.getIconImage(cc.icon,
+                          height: 45, width: 45 / 144 * 132),
                       title: Text(cc.lName.l),
                       onTap: () {
                         router.push(

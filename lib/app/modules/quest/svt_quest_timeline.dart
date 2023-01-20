@@ -413,7 +413,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     icon: Atlas.assetItem(iconId),
                     width: 20,
                     text: iconId == 9 ? targetSkill?.num.toString() : null,
-                    textPadding: const EdgeInsets.only(top: 8),
+                    option: ImageWithTextOption(fontSize: 12),
                   ),
               ],
             ),

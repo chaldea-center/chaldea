@@ -209,7 +209,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             itemId: itemId,
             width: 36,
             text: (db.curUser.items[itemId] ?? 0).format(),
-            textPadding: const EdgeInsets.only(top: 30),
+            option: ImageWithTextOption(fontSize: 36 * 0.27),
             popDetail: SplitRoute.of(context)?.detail == false,
           ),
           SizedBox(

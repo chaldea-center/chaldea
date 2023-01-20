@@ -42,18 +42,19 @@ mixin GameCardMixin implements RouteInfo {
 
   Widget iconBuilder({
     required BuildContext context,
+    String? overrideIcon,
     double? width,
     double? height,
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
     EdgeInsets? textPadding,
-    VoidCallback? onTap,
-    bool jumpToDetail = true,
-    bool popDetail = false,
-    String? overrideIcon,
     String? name,
     bool showName = false,
+    VoidCallback? onTap,
+    ImageWithTextOption? option,
+    bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
     if (onTap == null && jumpToDetail) {
       if (this is Servant) {
@@ -91,6 +92,7 @@ mixin GameCardMixin implements RouteInfo {
       padding: padding,
       textPadding: textPadding,
       onTap: onTap,
+      option: option,
       name: showName ? name ?? lName.l : null,
     );
   }
@@ -101,16 +103,33 @@ mixin GameCardMixin implements RouteInfo {
     double? width,
     double? height,
     double? aspectRatio = 132 / 144,
+    // image padding
     String? text,
     EdgeInsets? padding,
+    // @Deprecated('do not use')
     EdgeInsets? textPadding,
+    //
     VoidCallback? onTap,
+    // name after the image
     String? name,
+    ImageWithTextOption? option,
   }) {
     final size = Maths.fitSize(width, height, aspectRatio);
-    textPadding ??= size == null
-        ? EdgeInsets.zero
-        : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
+    if (size != null) {
+      textPadding ??= EdgeInsets.only(
+          right: size.key == null ? 0 : size.key! / 22,
+          bottom: size.value == null ? 0 : size.value! / 12);
+    }
+
+    var extraOption = ImageWithTextOption(
+      width: size?.key,
+      height: size?.value,
+      padding: textPadding,
+    );
+    if (option != null) {
+      extraOption = option.merge(extraOption);
+    }
+
     Widget child = ImageWithText(
       image: db.getIconImage(
         icon,
@@ -120,9 +139,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
       ),
       text: text,
-      width: size?.key,
-      height: size?.value,
-      padding: textPadding,
+      option: extraOption,
     );
     if (name != null) {
       child = Text.rich(TextSpan(children: [
@@ -162,6 +179,7 @@ mixin GameCardMixin implements RouteInfo {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
+    ImageWithTextOption? option,
     bool jumpToDetail = true,
     bool popDetail = false,
     String? name,
@@ -181,6 +199,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap,
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         name: name,
@@ -196,6 +215,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap,
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         name: name,
@@ -211,6 +231,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap,
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         name: name,
@@ -226,6 +247,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap,
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         name: name,
@@ -241,6 +263,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap,
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         name: name,
@@ -255,6 +278,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
         textPadding: textPadding,
         onTap: onTap ?? () => router.push(url: costume.route),
+        option: option,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
         overrideIcon: icon ?? costume.icon,
@@ -278,6 +302,7 @@ mixin GameCardMixin implements RouteInfo {
             padding: padding,
             textPadding: textPadding,
             onTap: onTap,
+            option: option,
             jumpToDetail: jumpToDetail,
             popDetail: popDetail,
             name: name,
@@ -295,6 +320,7 @@ mixin GameCardMixin implements RouteInfo {
             padding: padding,
             textPadding: textPadding,
             onTap: onTap,
+            option: option,
             name: name,
           );
         }
@@ -308,10 +334,12 @@ mixin GameCardMixin implements RouteInfo {
               minFontSize: 6,
             ),
           ),
-          width: size?.key,
-          height: size?.value,
+          option: ImageWithTextOption(
+            width: size?.key,
+            height: size?.value,
+            padding: padding,
+          ).merge(option),
           text: text,
-          padding: padding ?? EdgeInsets.zero,
           onTap: onTap,
         );
       },

@@ -626,12 +626,14 @@ class ServantListPageState extends State<ServantListPage>
         child: ImageWithText(
           image:
               svt.iconBuilder(context: context, jumpToDetail: false, width: 72),
-          shadowSize: 4,
           textBuilder: status.cur.favorite ? textBuilder : null,
-          textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-          shadowColor: Colors.white,
-          alignment: AlignmentDirectional.bottomStart,
-          padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
+          option: ImageWithTextOption(
+            shadowSize: 4,
+            textStyle: const TextStyle(fontSize: 11, color: Colors.black),
+            shadowColor: Colors.white,
+            alignment: AlignmentDirectional.bottomStart,
+            padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
+          ),
           onTap: () => _onTapSvt(svt),
         ),
       ),

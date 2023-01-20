@@ -125,9 +125,10 @@ class Maths {
     }
   }
 
-  static MapEntry<double, double>? fitSize(
+  static MapEntry<double?, double?>? fitSize(
       double? width, double? height, double? aspectRatio) {
-    if (aspectRatio == null || (width == null && height == null)) return null;
+    if ((width == null && height == null)) return null;
+    if (aspectRatio == null) return MapEntry(width, height);
     if (width != null && height != null) {
       if (width / aspectRatio < height) {
         return MapEntry(width, width / aspectRatio);

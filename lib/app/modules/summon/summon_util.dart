@@ -144,7 +144,7 @@ class SummonUtil {
         }
       }
     }
-
+    width ??= 56;
     return InkWell(
       onTap: () {
         card.routeTo();
@@ -153,10 +153,12 @@ class SummonUtil {
         image: db.getIconImage(card.borderedIcon,
             width: width, aspectRatio: 132 / 144),
         text: texts.join('\n'),
-        width: width ?? 56,
-        textAlign: TextAlign.right,
-        textStyle: const TextStyle(fontSize: 12),
-        padding: const EdgeInsets.only(bottom: 0, left: 15, right: 4),
+        option: ImageWithTextOption(
+          width: width,
+          fontSize: width * 0.2,
+          textAlign: TextAlign.right,
+          textStyle: const TextStyle(fontSize: 12),
+        ),
       ),
     );
   }

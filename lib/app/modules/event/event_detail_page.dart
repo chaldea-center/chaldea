@@ -652,8 +652,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                     db.curUser.items[itemId] ?? 0,
                     db.itemCenter.itemLeft[itemId] ?? 0
                   ].map((e) => e.format()).join('\n'),
-                  textPadding:
-                      const EdgeInsets.only(top: 30, right: 4, bottom: 4),
                 ),
               ),
               title: Text(Item.getName(itemId)),
@@ -717,8 +715,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                     db.curUser.items[itemId] ?? 0,
                     db.itemCenter.itemLeft[itemId] ?? 0
                   ].map((e) => e.format()).join('\n'),
-                  textPadding:
-                      const EdgeInsets.only(top: 30, right: 4, bottom: 4),
                 ),
               ),
               title: Text(Item.getName(itemId)),
