@@ -152,6 +152,33 @@ class Event {
         .isBefore(DateTime.now().subtract(Duration(days: days)));
   }
 
+  int? startTimeOf(Region? region) {
+    if (region == Region.jp) return startedAt;
+    return extra.startTime.ofRegion(region);
+  }
+
+  int? endTimeOf(Region? region) {
+    if (region == Region.jp) return endedAt;
+    return extra.endTime.ofRegion(region);
+  }
+
+  bool isOnGoing(Region? region) {
+    int now = DateTime.now().timestamp;
+    final starts = region == null
+        ? [startedAt, ...extra.startTime.values]
+        : [startTimeOf(region)];
+    final ends = region == null
+        ? [endedAt, ...extra.endTime.values]
+        : [endTimeOf(region)];
+    for (int index = 0; index < starts.length; index++) {
+      final start = starts[index], end = ends[index];
+      if (start != null && end != null && now > start && end > now) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Transl<String, String> get lName => Transl.eventNames(name);
 
   String get shownName {

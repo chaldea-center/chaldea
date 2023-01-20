@@ -55,9 +55,14 @@ class LimitEventTab extends StatelessWidget {
         .join(' / ');
 
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
+
     Widget tile = ListTile(
-      title: AutoSizeText(
-        event.shownName,
+      title: AutoSizeText.rich(
+        TextSpan(children: [
+          if (event.isOnGoing(null))
+            const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+          TextSpan(text: event.shownName),
+        ]),
         maxFontSize: 14,
         maxLines: 2,
         style: outdated ? TextStyle(color: _outdatedColor) : null,

@@ -684,6 +684,8 @@ class EventFilterData with _FilterData {
 
   // filter
   @JsonKey(ignore: true)
+  final ongoing = FilterGroupData<Region?>();
+  @JsonKey(ignore: true)
   final contentType = FilterGroupData<EventCustomType>();
   @JsonKey(ignore: true)
   final eventType = FilterGroupData<EventType>();
@@ -705,7 +707,8 @@ class EventFilterData with _FilterData {
   }
 
   @override
-  List<FilterGroupData> get groups => [contentType, eventType, campaignType];
+  List<FilterGroupData> get groups =>
+      [ongoing, contentType, eventType, campaignType];
 
   factory EventFilterData.fromJson(Map<String, dynamic> data) =>
       _$EventFilterDataFromJson(data);

@@ -70,6 +70,32 @@ class _EventFilterPageState
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        FilterGroup<Region?>(
+          title: const Text('Ongoing'),
+          options: const [null, ...Region.values],
+          values: filterData.ongoing,
+          optionBuilder: (v) {
+            if (v == null) return Text('(${S.current.general_all})');
+            return Text(v.localName);
+          },
+          onFilterChanged: (value, last) {
+            if (last == null) {
+              if (value.options.where((e) => e != null).length ==
+                  Region.values.length) {
+                value.options = {};
+              } else {
+                value.options = {null, ...Region.values};
+              }
+            } else {
+              final options = value.options.where((e) => e != null).toSet();
+              if (options.length == Region.values.length) {
+                options.add(null);
+              }
+              value.options = options;
+            }
+            update();
+          },
+        ),
         FilterGroup<EventCustomType>(
           title: Text(S.current.general_type),
           options: EventCustomType.values,

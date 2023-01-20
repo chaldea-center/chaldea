@@ -250,6 +250,12 @@ class EventListPageState extends State<EventListPage>
 
   @override
   bool filter(Event event) {
+    if (filterData.ongoing.options.isNotEmpty) {
+      if (filterData.ongoing.options
+          .every((region) => !event.isOnGoing(region))) {
+        return false;
+      }
+    }
     if (!filterData.eventType.matchOne(event.type)) {
       return false;
     }
