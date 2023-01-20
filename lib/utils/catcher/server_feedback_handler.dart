@@ -20,9 +20,11 @@ import 'package:screenshot/screenshot.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/home/subpage/feedback_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
@@ -266,10 +268,28 @@ class ServerFeedbackHandler extends ReportHandler {
           report.errorDetails != null) {
         buffer.write(escape(report.errorDetails!.exceptionAsString()));
       }
-      if (kIsWeb &&
-          (report.error ?? report.errorDetails?.exception)
-              .toString()
-              .contains('Unsupported operation: NaN.floor()')) {
+      final error = (report.error ?? report.errorDetails?.exception).toString();
+      if (kIsWeb && error.contains('Unsupported operation: NaN.floor()')) {
+        final context = kAppKey.currentContext;
+        final nav = context == null ? null : Navigator.maybeOf(context);
+        if (context != null && nav != null) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return SimpleCancelOkDialog(
+                title: const Text('Help'),
+                content: Text('Error: $error\n'
+                    'I have trouble to figure out the just happened bug.\n'
+                    'Would you like to share details? such as which page, screenshots,'
+                    ' operations in recent seconds, browser Console output(F12)...\n'
+                    'Looking forward to your response.'),
+                onTapOk: () {
+                  router.pushPage(FeedbackPage());
+                },
+              );
+            },
+          );
+        }
         kPlatformMethods.setLocalStorage('flutterWebRenderer', 'canvaskit');
         buffer.write('<br>Set canvaskit renderer!<br>');
       }
