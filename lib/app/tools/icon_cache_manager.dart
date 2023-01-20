@@ -172,7 +172,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   Future<String?> _ioDownload(
       String url, String path, RateLimiter limiter) async {
-    final file = File(path);
+    final file = File(path).absolute;
     if (await _fsLimiter.limited(() async {
       if (!await file.exists()) {
         return false;

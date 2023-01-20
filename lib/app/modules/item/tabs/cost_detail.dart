@@ -140,8 +140,9 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         Widget avatar = svt.iconBuilder(
           context: context,
           text: count.format(),
-          textPadding: const EdgeInsets.only(right: 2, bottom: 14),
           overrideIcon: svt.customIcon,
+          option: ImageWithTextOption(
+              padding: const EdgeInsets.only(right: 2, bottom: 14)),
         );
         if (shouldHighlight) {
           avatar = Stack(

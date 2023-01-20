@@ -436,7 +436,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       text: text,
       width: 48,
       padding: const EdgeInsets.all(1),
-      textPadding: const EdgeInsets.only(right: 4, bottom: 4),
+      option: ImageWithTextOption(
+          padding: const EdgeInsets.only(right: 4, bottom: 4)),
     );
   }
 

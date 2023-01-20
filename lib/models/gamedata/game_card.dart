@@ -48,7 +48,6 @@ mixin GameCardMixin implements RouteInfo {
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
-    EdgeInsets? textPadding,
     String? name,
     bool showName = false,
     VoidCallback? onTap,
@@ -90,7 +89,6 @@ mixin GameCardMixin implements RouteInfo {
       aspectRatio: aspectRatio,
       text: text,
       padding: padding,
-      textPadding: textPadding,
       onTap: onTap,
       option: option,
       name: showName ? name ?? lName.l : null,
@@ -106,8 +104,6 @@ mixin GameCardMixin implements RouteInfo {
     // image padding
     String? text,
     EdgeInsets? padding,
-    // @Deprecated('do not use')
-    EdgeInsets? textPadding,
     //
     VoidCallback? onTap,
     // name after the image
@@ -115,6 +111,7 @@ mixin GameCardMixin implements RouteInfo {
     ImageWithTextOption? option,
   }) {
     final size = Maths.fitSize(width, height, aspectRatio);
+    EdgeInsets? textPadding;
     if (size != null) {
       textPadding ??= EdgeInsets.only(
           right: size.key == null ? 0 : size.key! / 22,
@@ -127,7 +124,7 @@ mixin GameCardMixin implements RouteInfo {
       padding: textPadding,
     );
     if (option != null) {
-      extraOption = option.merge(extraOption);
+      option = option.merge(extraOption);
     }
 
     Widget child = ImageWithText(
@@ -139,7 +136,7 @@ mixin GameCardMixin implements RouteInfo {
         padding: padding,
       ),
       text: text,
-      option: extraOption,
+      option: option,
     );
     if (name != null) {
       child = Text.rich(TextSpan(children: [
@@ -177,7 +174,6 @@ mixin GameCardMixin implements RouteInfo {
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
-    EdgeInsets? textPadding,
     VoidCallback? onTap,
     ImageWithTextOption? option,
     bool jumpToDetail = true,
@@ -197,7 +193,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap,
         option: option,
         jumpToDetail: jumpToDetail,
@@ -213,7 +208,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap,
         option: option,
         jumpToDetail: jumpToDetail,
@@ -229,7 +223,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap,
         option: option,
         jumpToDetail: jumpToDetail,
@@ -245,7 +238,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap,
         option: option,
         jumpToDetail: jumpToDetail,
@@ -261,7 +253,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap,
         option: option,
         jumpToDetail: jumpToDetail,
@@ -276,7 +267,6 @@ mixin GameCardMixin implements RouteInfo {
         aspectRatio: aspectRatio,
         text: text,
         padding: padding,
-        textPadding: textPadding,
         onTap: onTap ?? () => router.push(url: costume.route),
         option: option,
         jumpToDetail: jumpToDetail,
@@ -300,7 +290,6 @@ mixin GameCardMixin implements RouteInfo {
             aspectRatio: aspectRatio,
             text: text,
             padding: padding,
-            textPadding: textPadding,
             onTap: onTap,
             option: option,
             jumpToDetail: jumpToDetail,
@@ -318,7 +307,6 @@ mixin GameCardMixin implements RouteInfo {
             aspectRatio: aspectRatio,
             text: text,
             padding: padding,
-            textPadding: textPadding,
             onTap: onTap,
             option: option,
             name: name,
