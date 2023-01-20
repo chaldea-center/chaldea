@@ -100,8 +100,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       return;
     }
     try {
-      EasyLoading.show(
-          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
+      EasyLoading.show(status: 'Uploading...');
 
       final Map<String, dynamic> map = {};
       List<MultipartFile> files = [];
@@ -118,7 +117,26 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       }
       map['files'] = files;
       var formData = FormData.fromMap(map);
-      final resp2 = await _dio.post('/recognizer/item', data: formData);
+      final resp2 = await _dio.post(
+        '/recognizer/item',
+        data: formData,
+        onSendProgress: (count, total) {
+          if (total <= 0) {
+            EasyLoading.show(status: 'Uploaded ${count ~/ 1000}KB...');
+          } else {
+            final progress = (count / total).format(percent: true);
+            EasyLoading.show(status: 'Uploaded $progress...');
+          }
+        },
+        onReceiveProgress: (count, total) {
+          if (total <= 0) {
+            EasyLoading.show(status: 'Downloaded ${count ~/ 1000}KB...');
+          } else {
+            final progress = (count / total).format(percent: true);
+            EasyLoading.show(status: 'Downloaded $progress...');
+          }
+        },
+      );
       result = ItemResult.fromJson(resp2.data);
       logger.i('received recognized: ${result?.details.length} items');
       if (mounted) {

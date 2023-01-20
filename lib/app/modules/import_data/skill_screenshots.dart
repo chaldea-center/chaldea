@@ -137,7 +137,26 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       }
       map['files'] = files;
       var formData = FormData.fromMap(map);
-      final resp2 = await _dio.post('/recognizer/skill', data: formData);
+      final resp2 = await _dio.post(
+        '/recognizer/skill',
+        data: formData,
+        onSendProgress: (count, total) {
+          if (total <= 0) {
+            EasyLoading.show(status: 'Uploaded ${count ~/ 1000}KB...');
+          } else {
+            final progress = (count / total).format(percent: true);
+            EasyLoading.show(status: 'Uploaded $progress...');
+          }
+        },
+        onReceiveProgress: (count, total) {
+          if (total <= 0) {
+            EasyLoading.show(status: 'Downloaded ${count ~/ 1000}KB...');
+          } else {
+            final progress = (count / total).format(percent: true);
+            EasyLoading.show(status: 'Downloaded $progress...');
+          }
+        },
+      );
       output = SkillResult.fromJson(resp2.data);
       logger.i('received recognized: ${output?.details.length} servants');
 

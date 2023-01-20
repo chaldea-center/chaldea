@@ -31,13 +31,23 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
       ),
       body: ListView(
         children: [
-          ListTile(
-            title: Text(
-                '${S.current.script_story}: ${S.current.main_story}/${S.current.limited_event}'),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.push(url: Routes.events);
-            },
+          TileGroup(
+            header: [
+              S.current.event_title,
+              S.current.war_title,
+              S.current.script_story
+            ].join('→'),
+            children: [
+              ListTile(
+                title: Text(
+                    '${S.current.script_story}: ${S.current.main_story}/${S.current.limited_event}'),
+                trailing:
+                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.push(url: Routes.events);
+                },
+              ),
+            ],
           ),
           TileGroup(
             header: 'Input Script ID',
