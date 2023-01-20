@@ -272,8 +272,9 @@ class ServerFeedbackHandler extends ReportHandler {
         final context = kAppKey.currentContext;
         final nav = context == null ? null : Navigator.maybeOf(context);
         if (context != null && nav != null) {
-          showDialog(
+          await showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (context) {
               return SimpleCancelOkDialog(
                 title: const Text('Help'),
@@ -282,12 +283,19 @@ class ServerFeedbackHandler extends ReportHandler {
                     'Would you like to share details? such as which page, screenshots,'
                     ' operations in recent seconds, browser Console output(F12)...\n'
                     'Looking forward to your response.'),
+                confirmText: S.current.about_feedback,
+                onTapCancel: () {
+                  buffer.write('<br>canceled<br>');
+                },
                 onTapOk: () {
+                  buffer.write('<br>feedback<br>');
                   router.pushPage(FeedbackPage());
                 },
               );
             },
           );
+        } else {
+          buffer.write('<br>navigator not found<br>');
         }
         kPlatformMethods.setLocalStorage('flutterWebRenderer', 'canvaskit');
         buffer.write('<br>Set canvaskit renderer!<br>');

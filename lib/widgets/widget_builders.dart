@@ -84,6 +84,8 @@ class AutoUnfocusBuilder extends StatelessWidget {
   }
 }
 
+// Incorrect align top with html renderer
+// https://github.com/flutter/flutter/issues/98588
 class CenterWidgetSpan extends WidgetSpan {
   const CenterWidgetSpan({
     required super.child,
