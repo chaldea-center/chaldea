@@ -88,6 +88,26 @@ class Atlas {
     return '$assetHost/${region.upper}/$path';
   }
 
+  static String classColor(int svtRarity) {
+    return const {0: 'n', 1: 'b', 2: 'b', 3: 's', 4: 'g', 5: 'g'}[svtRarity] ??
+        'g';
+  }
+
+  static String classCard(int svtRarity, int imageId) {
+    int subId = 1;
+    if (imageId.isEven) {
+      imageId -= 1;
+      subId += 1;
+    }
+    return Atlas.asset(
+        'ClassCard/class_${classColor(svtRarity)}_$imageId@$subId.png');
+  }
+
+  static String classIcon(int svtRarity, int iconId) {
+    int rarity = const {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3}[svtRarity] ?? 3;
+    return Atlas.asset('ClassIcons/class${rarity}_$iconId.png');
+  }
+
   static String assetItem(int id, [Region region = Region.jp]) {
     return '$assetHost/${region.upper}/Items/$id.png';
   }

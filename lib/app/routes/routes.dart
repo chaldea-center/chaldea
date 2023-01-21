@@ -14,12 +14,14 @@ import 'package:chaldea/app/modules/home/bootstrap/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/app/modules/master_mission/master_mission_list.dart';
+import 'package:chaldea/app/modules/misc/class_info_page.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
+import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/event.dart';
 import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';
@@ -144,6 +146,9 @@ class Routes {
 
   static String commonRelease(int id) => '/common-release/$id';
   static const commonReleasePrefix = '/common-release';
+
+  static String svtClassI(SvtClass cls) => '/class/${cls.name}';
+  static const String svtClass = '/class';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -326,6 +331,10 @@ class RouteConfiguration {
         return type == null ? const ShopListHome() : ShopListPage(type: type);
       case Routes.commonReleasePrefix:
         return CommonReleasesPage.id(id: _secondInt ?? 0);
+      case Routes.svtClass:
+        final cls = SvtClass.values.firstWhereOrNull((e) => e.name == second);
+        if (cls == null) break;
+        return ClassInfoPage(cls: cls);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

@@ -520,7 +520,7 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   Widget cardBackPlaceholder(BuildContext context, String? url) {
-    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(ce.rarity)];
+    final color = Atlas.classColor(ce.rarity);
     return db.getIconImage(Atlas.asset('ClassCard/class_${color}_103.png'));
   }
 

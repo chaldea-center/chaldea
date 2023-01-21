@@ -457,19 +457,22 @@ class Servant with GameCardMixin {
   }
 
   String get classCard {
-    int imageId = db.gameData.constData.classInfo[className.id]?.imageId ?? 13;
+    int imageId =
+        db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
+            db.gameData.constData.classInfo[className.id]?.imageId ??
+            13;
     int subId = 1;
     if (imageId == 9999) imageId = 13;
     if (imageId.isEven) {
       imageId -= 1;
       subId = 2;
     }
-    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
+    final color = Atlas.classColor(rarity);
     return Atlas.asset('ClassCard/class_${color}_$imageId@$subId.png');
   }
 
   String get cardBack {
-    final color = ['n', 'b', 's', 'g'][GameCardMixin.bsgColor(rarity)];
+    final color = Atlas.classColor(rarity);
     return Atlas.asset('ClassCard/class_${color}_101@2.png');
   }
 
@@ -757,8 +760,7 @@ class CraftEssence with GameCardMixin {
   }
 
   String get cardBack {
-    final color =
-        ['b', 's', 'g'].getOrNull(GameCardMixin.bsgColor(rarity)) ?? 'g';
+    final color = Atlas.classColor(rarity);
     return Atlas.asset('ClassCard/class_${color}_103.png');
   }
 

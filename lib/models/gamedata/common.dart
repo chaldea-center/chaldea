@@ -267,9 +267,13 @@ extension SvtClassX on SvtClass {
   SvtClassInfo? get info => db.gameData.constData.classInfo[id];
   int get iconId => info?.iconImageId ?? 12;
 
-  String icon(int rarity) {
-    rarity = _kSvtClassRarityMap[rarity] ?? rarity;
+  String icon(int svtRarity) {
+    int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
     return Atlas.asset('ClassIcons/class${rarity}_$iconId.png');
+  }
+
+  void routeTo() {
+    router.push(url: Routes.svtClassI(this));
   }
 
   String get lName => Transl.svtClass(this).l;

@@ -133,17 +133,20 @@ class QuestEnemySummaryPage extends StatelessWidget {
               CustomTableRow(children: [
                 TableCellData(
                   textAlign: TextAlign.center,
-                  child: Text.rich(
-                    TextSpan(children: [
-                      CenterWidgetSpan(
-                        child: db.getIconImage(
-                          svt.className.icon(svt.rarity),
-                          width: 24,
+                  child: InkWell(
+                    onTap: svt.className.routeTo,
+                    child: Text.rich(
+                      TextSpan(children: [
+                        CenterWidgetSpan(
+                          child: db.getIconImage(
+                            svt.className.icon(svt.rarity),
+                            width: 24,
+                          ),
                         ),
-                      ),
-                      TextSpan(text: Transl.svtClass(svt.className).l)
-                    ]),
-                    textAlign: TextAlign.center,
+                        TextSpan(text: Transl.svtClass(svt.className).l)
+                      ]),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 TableCellData(

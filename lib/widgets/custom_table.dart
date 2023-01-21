@@ -77,11 +77,12 @@ class CustomTableRow extends StatefulWidget {
   final Color? color;
   final VerticalDivider? divider;
 
-  CustomTableRow(
-      {super.key,
-      required this.children,
-      this.color,
-      this.divider = kVerticalDivider}) {
+  CustomTableRow({
+    super.key,
+    required this.children,
+    this.color,
+    this.divider = kVerticalDivider,
+  }) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
     });
@@ -238,12 +239,11 @@ class _CustomTableRowState extends State<CustomTableRow> {
       }
     }
     if (!_needRebuild) _needRebuild = true;
-    Widget body = IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
-      ),
+    Widget body = Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
     );
+    body = IntrinsicHeight(child: body);
     if (constraints != null) {
       body = ConstrainedBox(
         constraints: constraints,

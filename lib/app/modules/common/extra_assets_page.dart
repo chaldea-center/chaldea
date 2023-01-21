@@ -54,7 +54,7 @@ class ExtraAssetsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = <Widget?>[
-      _oneGroup(
+      oneGroup(
         S.current.illustration,
         [
           ..._getUrls(assets.charaGraph),
@@ -66,16 +66,16 @@ class ExtraAssetsPage extends StatelessWidget {
         showMerge: true,
         placeholder: charaGraphPlaceholder,
       ),
-      _oneGroup(
+      oneGroup(
           S.current.card_asset_face,
           bordered([
             ..._getUrls(assets.faces),
             ..._getUrls(assets.facesChange),
           ]),
           80),
-      _oneGroup(S.current.card_asset_status, _getUrls(assets.status), 120),
-      _oneGroup(S.current.card_asset_command, _getUrls(assets.commands), 120),
-      _oneGroup(
+      oneGroup(S.current.card_asset_status, _getUrls(assets.status), 120),
+      oneGroup(S.current.card_asset_command, _getUrls(assets.commands), 120),
+      oneGroup(
         S.current.card_asset_narrow_figure,
         [
           ..._getUrls(assets.narrowFigure),
@@ -83,13 +83,13 @@ class ExtraAssetsPage extends StatelessWidget {
         ],
         300,
       ),
-      _oneGroup(
+      oneGroup(
         S.current.card_asset_chara_figure,
         _getUrls(assets.charaFigure),
         300,
         expanded: false,
       ),
-      _oneGroup(
+      oneGroup(
         'Forms',
         [
           for (final form in assets.charaFigureForm.values) ..._getUrls(form),
@@ -97,7 +97,7 @@ class ExtraAssetsPage extends StatelessWidget {
         300,
         expanded: false,
       ),
-      _oneGroup(
+      oneGroup(
         'Characters',
         [
           for (final form in assets.charaFigureMulti.values) ..._getUrls(form),
@@ -105,15 +105,15 @@ class ExtraAssetsPage extends StatelessWidget {
         300,
         expanded: false,
       ),
-      _oneGroup('equipFace', _getUrls(assets.equipFace), 50),
-      _oneGroup('${S.current.sprites} (Mooncell)',
+      oneGroup('equipFace', _getUrls(assets.equipFace), 50),
+      oneGroup('${S.current.sprites} (Mooncell)',
           mcSprites.map(WikiTool.mcFileUrl), 300,
           expanded: false),
-      _oneGroup('${S.current.sprites} (Fandom)',
+      oneGroup('${S.current.sprites} (Fandom)',
           fandomSprites.map(WikiTool.fandomFileUrl), 300,
           expanded: false),
       spriteViewer(),
-      _oneGroup('Texture', _getUrls(assets.spriteModel), 300,
+      oneGroup('Texture', _getUrls(assets.spriteModel), 300,
           expanded: false, showMerge: false),
     ].whereType<Widget>().toList();
     if (scrollable) {
@@ -132,7 +132,7 @@ class ExtraAssetsPage extends StatelessWidget {
     }
   }
 
-  Widget? _oneGroup(
+  static Widget? oneGroup(
     String title,
     Iterable<String> urls,
     double height, {

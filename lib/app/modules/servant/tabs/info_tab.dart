@@ -5,6 +5,7 @@ import 'package:ruby_text/ruby_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/app/modules/misc/class_info_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -72,15 +73,23 @@ class SvtInfoTab extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),
-                Text.rich(
-                  TextSpan(children: [
-                    CenterWidgetSpan(
-                        child: db.getIconImage(svt.className.icon(svt.rarity),
-                            width: 20, aspectRatio: 1)),
-                    TextSpan(text: ' ${Transl.svtClass(svt.className).l}')
-                  ]),
-                  textAlign: TextAlign.center,
-                ),
+                GestureDetector(
+                  onTap: () {
+                    router.pushPage(ClassInfoPage(cls: svt.className));
+                  },
+                  child: Text.rich(
+                    TextSpan(children: [
+                      CenterWidgetSpan(
+                          child: db.getIconImage(svt.className.icon(svt.rarity),
+                              width: 20, aspectRatio: 1)),
+                      SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: ' ${Transl.svtClass(svt.className).l}',
+                      )
+                    ]),
+                    textAlign: TextAlign.center,
+                  ),
+                )
               ],
             ),
             CustomTableRow.fromTexts(texts: [

@@ -82,8 +82,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
               ),
               CustomTableRow.fromTextsWithHeader(
                 texts: [
-                  S.current.filter_sort_class,
-                  Transl.svtClass(enemy.svt.className).l,
+                  S.current.rarity,
+                  enemy.svt.rarity.toString(),
                   S.current.filter_attribute,
                   Transl.svtAttribute(enemy.svt.attribute).l,
                 ],
@@ -99,6 +99,29 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 ],
                 isHeaders: const [true, false, true, false],
               ),
+              CustomTableRow(children: [
+                TableCellData(
+                    text: S.current.filter_sort_class, isHeader: true),
+                TableCellData(
+                  flex: 3,
+                  textAlign: TextAlign.center,
+                  child: InkWell(
+                    onTap: enemy.svt.className.routeTo,
+                    child: Text.rich(
+                      TextSpan(children: [
+                        CenterWidgetSpan(
+                          child: db.getIconImage(
+                            enemy.svt.className.icon(enemy.svt.rarity),
+                            width: 24,
+                          ),
+                        ),
+                        TextSpan(text: Transl.svtClass(enemy.svt.className).l)
+                      ]),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ]),
               // CustomTableRow.fromTextsWithHeader(
               //   texts: [
               //     S.current.info_death_rate,

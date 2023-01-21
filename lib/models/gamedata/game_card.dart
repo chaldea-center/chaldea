@@ -29,10 +29,6 @@ mixin GameCardMixin implements RouteInfo {
     return icon.replaceAll('.png', '_bordered.png');
   }
 
-  static int bsgColor(int rarity) {
-    return const {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3}[rarity] ?? 3;
-  }
-
   Transl<String, String> get lName;
 
   @override

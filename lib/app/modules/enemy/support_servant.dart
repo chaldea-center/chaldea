@@ -78,8 +78,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
               ),
               CustomTableRow.fromTextsWithHeader(
                 texts: [
-                  S.current.filter_sort_class,
-                  Transl.svtClass(svt.svt.className).l,
+                  S.current.rarity,
+                  svt.svt.rarity.toString(),
                   S.current.filter_attribute,
                   Transl.svtAttribute(svt.svt.attribute).l,
                 ],
@@ -95,6 +95,29 @@ class _SupportServantPageState extends State<SupportServantPage> {
                 ],
                 isHeaders: const [true, false, true, false],
               ),
+              CustomTableRow(children: [
+                TableCellData(
+                    text: S.current.filter_sort_class, isHeader: true),
+                TableCellData(
+                  flex: 3,
+                  textAlign: TextAlign.center,
+                  child: InkWell(
+                    onTap: svt.svt.className.routeTo,
+                    child: Text.rich(
+                      TextSpan(children: [
+                        CenterWidgetSpan(
+                          child: db.getIconImage(
+                            svt.svt.className.icon(svt.svt.rarity),
+                            width: 24,
+                          ),
+                        ),
+                        TextSpan(text: Transl.svtClass(svt.svt.className).l)
+                      ]),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ]),
             ],
           ),
         )

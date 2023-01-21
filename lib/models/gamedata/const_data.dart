@@ -27,6 +27,11 @@ class ConstGameData {
   };
   final Map<BuffType, BuffAction> buffTypeActionMap;
 
+  final Map<int, int> svtClassCardImageIdRemap = {
+    285: 123,
+    351: 223,
+  };
+
   ConstGameData({
     required this.attributeRelation,
     required this.buffActions,
