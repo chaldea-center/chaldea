@@ -119,9 +119,7 @@ mixin GameCardMixin implements RouteInfo {
       height: size?.value,
       padding: textPadding,
     );
-    if (option != null) {
-      option = option.merge(extraOption);
-    }
+    option = option == null ? extraOption : option.merge(extraOption);
 
     Widget child = ImageWithText(
       image: db.getIconImage(

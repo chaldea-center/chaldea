@@ -231,13 +231,15 @@ class VoiceGroupAccordion extends StatelessWidget {
               db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
           var curSvt =
               db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
-          svtSpan = curSvt == null
-              ? TextSpan(text: '${group.svtId} ')
-              : SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: '${curSvt.lName.l} ',
-                  onTap: curSvt.routeTo,
-                );
+          if (_svt?.id != curSvt?.id || curSvt == null) {
+            svtSpan = curSvt == null
+                ? TextSpan(text: '${group.svtId} ')
+                : SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: '${curSvt.lName.l} ',
+                    onTap: curSvt.routeTo,
+                  );
+          }
         }
         return ListTile(
           title: Text.rich(TextSpan(children: [

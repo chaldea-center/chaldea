@@ -61,44 +61,6 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           child: CustomTable(
             hideOutline: true,
             children: [
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'Lv',
-                  '${enemy.lv}',
-                  S.current.info_charge,
-                  enemy.chargeTurn.toString(),
-                ],
-                isHeaders: const [true, false, true, false],
-              ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'Deck',
-                  enemy.deck.name,
-                  'DeckId',
-                  enemy.deckId.toString(),
-                ],
-                isHeaders: const [true, false, true, false],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  S.current.rarity,
-                  enemy.svt.rarity.toString(),
-                  S.current.filter_attribute,
-                  Transl.svtAttribute(enemy.svt.attribute).l,
-                ],
-                isHeaders: const [true, false, true, false],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'HP',
-                  enemy.hp.format(compact: false),
-                  'ATK',
-                  enemy.atk.format(compact: false)
-                ],
-                isHeaders: const [true, false, true, false],
-              ),
               CustomTableRow(children: [
                 TableCellData(
                     text: S.current.filter_sort_class, isHeader: true),
@@ -122,6 +84,44 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                   ),
                 ),
               ]),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  'Deck',
+                  enemy.deck.name,
+                  'DeckId',
+                  enemy.deckId.toString(),
+                ],
+                isHeaders: const [true, false, true, false],
+                defaults: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  S.current.rarity,
+                  enemy.svt.rarity.toString(),
+                  S.current.filter_attribute,
+                  Transl.svtAttribute(enemy.svt.attribute).l,
+                ],
+                isHeaders: const [true, false, true, false],
+                defaults: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  'Lv',
+                  '${enemy.lv}',
+                  S.current.info_charge,
+                  enemy.chargeTurn.toString(),
+                ],
+                isHeaders: const [true, false, true, false],
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  'HP',
+                  enemy.hp.format(compact: false),
+                  'ATK',
+                  enemy.atk.format(compact: false)
+                ],
+                isHeaders: const [true, false, true, false],
+              ),
               // CustomTableRow.fromTextsWithHeader(
               //   texts: [
               //     S.current.info_death_rate,

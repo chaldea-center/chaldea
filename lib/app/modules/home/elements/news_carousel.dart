@@ -93,26 +93,22 @@ class AppNewsCarousel extends StatefulWidget {
 
       // app news
       taskChaldea =
-          _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
+          _dio.get('${Hosts.dataHost}/news.json').then((response) async {
         List<CarouselItem> items = [];
-        try {
-          final data =
-              (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
-          final minVer = AppVersion.parse(data['minimalApp']);
-          if (minVer > AppInfo.version || kDebugMode) {
-            items.add(CarouselItem(
-              type: 1,
-              title: S.current.update,
-              content: '${S.current.dataset_version}: ${data["utc"]}\n'
-                  '${S.current.error_required_app_version(minVer.versionString)}',
-              link: HttpUrlHelper.projectDocUrl('installation'),
-            ));
-          }
-          if (!carouselSetting.enableChaldea) {
-            items.removeWhere((item) => item.type != 1);
-          }
-        } catch (e) {
-          //
+        final data =
+            (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
+        final minVer = AppVersion.parse(data['minimalApp']);
+        if (minVer > AppInfo.version || kDebugMode) {
+          items.add(CarouselItem(
+            type: 1,
+            title: S.current.update,
+            content: '${S.current.dataset_version}: ${data["utc"]}\n'
+                '${S.current.error_required_app_version(minVer.versionString)}',
+            link: HttpUrlHelper.projectDocUrl('installation'),
+          ));
+        }
+        if (!carouselSetting.enableChaldea) {
+          items.removeWhere((item) => item.type != 1);
         }
         items.addAll(
             (response.data as List).map((e) => CarouselItem.fromJson(e)));
@@ -525,7 +521,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             if (link.toLowerCase().startsWith(routePrefix) &&
                 link.length > routePrefix.length + 1) {
               router.push(url: link.substring(routePrefix.length));
-            } else if (await canLaunch(link)) {
+            } else {
               jumpToExternalLinkAlert(url: link, content: item.title);
             }
           },

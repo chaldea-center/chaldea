@@ -157,7 +157,12 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
       return;
     }
     String fp = joinPaths(db.paths.tempDir, 'chaldea_data_$t.csv');
-    await FilePlus(fp).writeAsString(contents);
+    try {
+      await FilePlus(fp).writeAsString(contents);
+    } catch (e) {
+      EasyLoading.showError(e.toString());
+      return;
+    }
     if (!mounted) return;
     showDialog(
       context: context,

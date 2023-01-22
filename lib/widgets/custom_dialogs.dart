@@ -193,6 +193,9 @@ Future<void> jumpToExternalLinkAlert(
   if (safeLink != null) {
     shownLink = Uri.decodeFull(safeLink);
   }
+  safeLink ??= url;
+
+  bool valid = await canLaunch(safeLink);
 
   return showDialog(
     context: kAppKey.currentContext!,
@@ -206,6 +209,7 @@ Future<void> jumpToExternalLinkAlert(
           style: const TextStyle(decoration: TextDecoration.underline),
         )
       ])),
+      hideOk: !valid,
       onTapOk: () async {
         String link = safeLink ?? url;
         if (await canLaunch(link)) {

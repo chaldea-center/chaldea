@@ -251,14 +251,14 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageNpIndividual:
           case FuncType.damageNpRare:
           case FuncType.damageNpStateIndividualFix:
-            _addPercent(vals.Correction, 10);
+            _addPercent(vals.Correction, 10, (s) => '×$s');
             break;
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
               parts.add(
                   '${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
             } else {
-              _addPercent(vals.Correction, 10);
+              _addPercent(vals.Correction, 10, (s) => '×$s');
             }
             break;
           default:

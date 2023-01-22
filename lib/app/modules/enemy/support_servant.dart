@@ -63,38 +63,6 @@ class _SupportServantPageState extends State<SupportServantPage> {
           child: CustomTable(
             hideOutline: true,
             children: [
-              // CustomTableRow(children: [
-              //   TableCellData(text: 'Lv', isHeader: true),
-              //   TableCellData(text: svt.limit.limitCount.toString(), flex: 3),
-              // ]),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'Lv',
-                  '${svt.lv}',
-                  S.current.ascension_short,
-                  svt.limit.limitCount.toString(),
-                ],
-                isHeaders: const [true, false, true, false],
-              ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  S.current.rarity,
-                  svt.svt.rarity.toString(),
-                  S.current.filter_attribute,
-                  Transl.svtAttribute(svt.svt.attribute).l,
-                ],
-                isHeaders: const [true, false, true, false],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'HP',
-                  svt.hp.format(compact: false),
-                  'ATK',
-                  svt.atk.format(compact: false)
-                ],
-                isHeaders: const [true, false, true, false],
-              ),
               CustomTableRow(children: [
                 TableCellData(
                     text: S.current.filter_sort_class, isHeader: true),
@@ -118,6 +86,34 @@ class _SupportServantPageState extends State<SupportServantPage> {
                   ),
                 ),
               ]),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  S.current.rarity,
+                  svt.svt.rarity.toString(),
+                  S.current.filter_attribute,
+                  Transl.svtAttribute(svt.svt.attribute).l,
+                ],
+                isHeaders: const [true, false, true, false],
+                defaults: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  'Lv',
+                  '${svt.lv}',
+                  S.current.ascension_short,
+                  svt.limit.limitCount.toString(),
+                ],
+                isHeaders: const [true, false, true, false],
+              ),
+              CustomTableRow.fromTextsWithHeader(
+                texts: [
+                  'HP',
+                  svt.hp.format(compact: false),
+                  'ATK',
+                  svt.atk.format(compact: false)
+                ],
+                isHeaders: const [true, false, true, false],
+              ),
             ],
           ),
         )

@@ -8,7 +8,9 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/packages/sharex.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -128,12 +130,17 @@ class __LogViewerState extends State<_LogViewer> {
   Future<void> readLogs() async {
     await Future.delayed(kSplitRouteDuration);
     final file = FilePlus(widget.fp);
-    if (file.existsSync()) {
-      final content = await file.readAsString();
-      lines = LineSplitter.split(content)
-          .map((e) => RegExp(r'^[└├┌└][-┄─]+$').hasMatch(e) ? ' ' : e)
-          .toList();
+    try {
+      if (file.existsSync()) {
+        final content = await file.readAsString();
+        lines = LineSplitter.split(content)
+            .map((e) => RegExp(r'^[└├┌└][-┄─]+$').hasMatch(e) ? ' ' : e)
+            .toList();
+      }
+    } catch (e, s) {
+      logger.e('read log file failed', e, s);
     }
+
     int maxPage = (lines.length / linesPerPage).floor();
     if (page == -1) page = maxPage;
     page = page.clamp(0, maxPage);
@@ -160,7 +167,11 @@ class __LogViewerState extends State<_LogViewer> {
             IconButton(onPressed: readLogs, icon: const Icon(Icons.refresh)),
           IconButton(
             onPressed: () {
-              openFile(pathlib.dirname(widget.fp));
+              if (PlatformU.isDesktop) {
+                openFile(pathlib.dirname(widget.fp));
+              } else if (PlatformU.isMobile) {
+                ShareX.shareFile(widget.fp);
+              }
             },
             icon: const Icon(Icons.file_open),
           ),
