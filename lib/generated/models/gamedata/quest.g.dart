@@ -480,6 +480,16 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
           ? null
           : EnemyScript.fromJson(
               Map<String, dynamic>.from(json['enemyScript'] as Map)),
+      originalEnemyScript: (json['originalEnemyScript'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
+      infoScript: json['infoScript'] == null
+          ? null
+          : EnemyInfoScript.fromJson(
+              Map<String, dynamic>.from(json['infoScript'] as Map)),
+      originalInfoScript: (json['originalInfoScript'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
       limit: json['limit'] == null
           ? null
           : EnemyLimit.fromJson(
@@ -530,6 +540,10 @@ const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.wait: 'wait',
   EnemyDeathType.energy: 'energy',
 };
+
+EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript(
+      isAddition: json['isAddition'] as bool?,
+    );
 
 EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
       skillId1: json['skillId1'] as int? ?? 0,

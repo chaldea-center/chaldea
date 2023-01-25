@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:chaldea/packages/logger.dart';
 import '../db.dart';
 import '_helper.dart';

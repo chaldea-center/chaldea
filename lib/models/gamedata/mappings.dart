@@ -64,11 +64,12 @@ class Transl<K, V> {
         mappings = {key: m};
 
   static Transl<int, String> trait(int id, {bool addSvtId = true}) {
+    final eventTrait = md.eventTrait[id];
+    if (eventTrait != null) {
+      return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"$v"')},
+          id, '$id');
+    }
     if (!md.trait.containsKey(id)) {
-      final redirectId = md.traitRedirect[id];
-      if (redirectId != null && md.trait.containsKey(redirectId)) {
-        id = redirectId;
-      }
       final svt = db.gameData.servantsById[id];
       if (svt != null) {
         var nameMapping = md.svtNames[svt.name] ?? MappingBase(jp: svt.name);
@@ -252,7 +253,8 @@ class MappingData {
   final Map<String, MappingBase<String>> tdDetail;
   final Map<String, MappingBase<String>> voiceLineNames;
   final Map<int, MappingBase<String>> trait; // key: trait id
-  final Map<int, int> traitRedirect; // key: trait id
+  // final Map<int, int> traitRedirect; // key: trait id
+  final Map<int, EventTraitMapping> eventTrait; // key: trait id
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>>
@@ -296,7 +298,7 @@ class MappingData {
     this.tdDetail = const {},
     this.voiceLineNames = const {},
     this.trait = const {},
-    this.traitRedirect = const {},
+    this.eventTrait = const {},
     this.mcDetail = const {},
     this.costumeDetail = const {},
     this.skillPriority = const {},
@@ -520,6 +522,25 @@ class MappingDict<V> extends MappingBase<Map<int, V>> {
 
   factory MappingDict.fromJson(Map<String, dynamic> json) =>
       _$MappingDictFromJson(json, _fromJsonT);
+}
+
+@JsonSerializable()
+class EventTraitMapping extends MappingBase<String> {
+  int? eventId;
+  int? relatedTrait;
+
+  EventTraitMapping({
+    this.eventId,
+    this.relatedTrait,
+    super.jp,
+    super.cn,
+    super.tw,
+    super.na,
+    super.kr,
+  });
+
+  factory EventTraitMapping.fromJson(Map<String, dynamic> json) =>
+      _$EventTraitMappingFromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

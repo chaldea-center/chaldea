@@ -2,8 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:crclib/catalog.dart';
 
 import 'package:chaldea/utils/extension.dart';

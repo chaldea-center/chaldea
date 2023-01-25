@@ -1219,6 +1219,17 @@ class S {
     );
   }
 
+  /// `Count Rare Enemy`
+  String get count_rare_enemy {
+    return Intl.message(
+      'Count Rare Enemy',
+      name: 'count_rare_enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Counts`
   String get counts {
     return Intl.message(
@@ -1934,6 +1945,17 @@ class S {
     );
   }
 
+  /// `Leader: battle ends if defeated`
+  String get enemy_leader_hint {
+    return Intl.message(
+      'Leader: battle ends if defeated',
+      name: 'enemy_leader_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemies`
   String get enemy_list {
     return Intl.message(
@@ -2236,6 +2258,17 @@ class S {
     return Intl.message(
       'Event not planned',
       name: 'event_not_planned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `This trait may be event only.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with 'Servant', but they may be servant only trait in event.`
+  String get event_only_trait_hint {
+    return Intl.message(
+      'This trait may be event only.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event.',
+      name: 'event_only_trait_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -3882,10 +3915,10 @@ class S {
     );
   }
 
-  /// `Traits`
+  /// `Trait`
   String get info_trait {
     return Intl.message(
-      'Traits',
+      'Trait',
       name: 'info_trait',
       desc: '',
       locale: localeName,
@@ -5906,6 +5939,17 @@ class S {
     return Intl.message(
       'Some quests\' start time is not correct.\nIf show by AP campaign time, only JP time is used.',
       name: 'rankup_timeline_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Rare enemy, chance to appear`
+  String get rare_enemy_hint {
+    return Intl.message(
+      'Rare enemy, chance to appear',
+      name: 'rare_enemy_hint',
       desc: '',
       locale: localeName,
       args: [],

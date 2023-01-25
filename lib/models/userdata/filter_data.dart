@@ -134,7 +134,8 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   bool get invert => false;
 
   @override
-  Set<T> get options => {if (_selected != null) _selected!};
+  Set<T> get options =>
+      {if (_selected != null || _selected is T) _selected as T};
 
   FilterRadioData([this._selected])
       : _nonnull = false,

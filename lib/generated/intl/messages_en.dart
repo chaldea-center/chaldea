@@ -221,6 +221,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "costume": MessageLookupByLibrary.simpleMessage("Costume"),
         "costume_unlock":
             MessageLookupByLibrary.simpleMessage("Costume Unlock"),
+        "count_rare_enemy":
+            MessageLookupByLibrary.simpleMessage("Count Rare Enemy"),
         "counts": MessageLookupByLibrary.simpleMessage("Counts"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
         "create_account_textfield_helper": MessageLookupByLibrary.simpleMessage(
@@ -312,6 +314,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage(
             "Trait filter is only used for enemies in Main Story\'s free quests"),
+        "enemy_leader_hint": MessageLookupByLibrary.simpleMessage(
+            "Leader: battle ends if defeated"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("Summary"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
@@ -355,6 +359,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
         "event_not_planned":
             MessageLookupByLibrary.simpleMessage("Event not planned"),
+        "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
+            "This trait may be event only.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event."),
         "event_point": MessageLookupByLibrary.simpleMessage("Event Point"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
         "event_progress": MessageLookupByLibrary.simpleMessage("Progress"),
@@ -556,7 +562,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Strength"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Traits"),
+        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "info_value": MessageLookupByLibrary.simpleMessage("Value"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Invalid inputs"),
@@ -833,6 +839,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rankup_quest": MessageLookupByLibrary.simpleMessage("Rank Up"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "Some quests\' start time is not correct.\nIf show by AP campaign time, only JP time is used."),
+        "rare_enemy_hint": MessageLookupByLibrary.simpleMessage(
+            "Rare enemy, chance to appear"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store":
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),

@@ -197,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("消耗"),
         "costume": MessageLookupByLibrary.simpleMessage("灵衣"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("灵衣开放"),
+        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("计算稀有敌人"),
         "counts": MessageLookupByLibrary.simpleMessage("计数"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "create_account_textfield_helper":
@@ -275,6 +276,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy": MessageLookupByLibrary.simpleMessage("敌人"),
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("特性筛选仅适用于主线Free的敌人"),
+        "enemy_leader_hint":
+            MessageLookupByLibrary.simpleMessage("首领: 被击败时战斗结束"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敌人一览"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("敌人汇总"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
@@ -303,6 +306,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("无限池"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活动未列入规划"),
+        "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
+            "这可能是一个活动限定的特性。\n常规从者/敌人可能不包含此特性，但可能包含同名但不同ID的特性。\n部分特性虽未翻译出从者，但活动中可能是从者限定特性。"),
         "event_point": MessageLookupByLibrary.simpleMessage("活动点数"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("点数"),
         "event_progress": MessageLookupByLibrary.simpleMessage("进度"),
@@ -697,6 +702,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rankup_quest": MessageLookupByLibrary.simpleMessage("强化关卡"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "部分关卡时间与实际开放时间不符\n若按AP消耗活动时间排序，则只使用日服时间"),
+        "rare_enemy_hint": MessageLookupByLibrary.simpleMessage("稀有敌人 概率出现"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
         "rate_play_store":

@@ -54,7 +54,8 @@ class MissionSolver extends BaseLPSolver {
     );
   }
 
-  static int countMissionTarget(CustomMission mission, QuestPhase quest) {
+  static int countMissionTarget(CustomMission mission, QuestPhase quest,
+      {bool includeRare = true}) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {
       List<bool> results = mission.conds.map((cond) {
@@ -79,6 +80,9 @@ class MissionSolver extends BaseLPSolver {
     } else {
       for (final enemy in quest.allEnemies) {
         if (enemy.deck != DeckType.enemy) continue;
+        if (!includeRare && enemy.isRare) {
+          continue;
+        }
         final results = mission.conds.map((cond) {
           switch (cond.type) {
             case CustomMissionType.trait:

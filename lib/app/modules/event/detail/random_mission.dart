@@ -132,7 +132,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
 
         final customMissions = [
           for (final m in randomMissions)
-            if (allMissions.containsKey(m.missionId)) allMissions[m.missionId]!
+            CustomMission.fromEventMission(allMissions[m.missionId])
         ];
 
         int? warId;

@@ -815,6 +815,9 @@ class QuestEnemy with GameCardMixin {
 
   EnemyAi? ai;
   EnemyScript? enemyScript;
+  Map<String, dynamic>? originalEnemyScript;
+  EnemyInfoScript? infoScript;
+  Map<String, dynamic>? originalInfoScript;
 
   EnemyLimit? limit;
   EnemyMisc? misc;
@@ -846,6 +849,9 @@ class QuestEnemy with GameCardMixin {
     required this.serverMod,
     this.ai,
     this.enemyScript,
+    this.originalEnemyScript,
+    this.infoScript,
+    this.originalInfoScript,
     this.limit,
     this.misc,
   })  : skills = skills ?? EnemySkill(),
@@ -897,6 +903,9 @@ class QuestEnemy with GameCardMixin {
       popDetails: popDetails,
     );
   }
+
+  bool get isRare =>
+      originalEnemyScript?.containsKey('probability_type') == true;
 }
 
 @JsonSerializable()
@@ -917,6 +926,48 @@ class EnemyServerMod {
       _$EnemyServerModFromJson(json);
 }
 
+// appear
+// billBoardGroup
+// boss
+// call
+// Cane
+// change
+// changeAttri
+// deadChangePos
+// death
+// dispLimitCount
+// forceDropItem
+// hpBarType
+// isHideShadow
+// isSkillShiftInfo
+// kill
+// leader
+// leave
+// missionTargetSkillShift
+// multiTargetCore
+// multiTargetUnder
+// multiTargetUp
+// NoMotion
+// NoSkipDead
+// noVoice
+// npc
+// probability_type
+// raid
+// shift
+// shiftClear
+// shiftPosition
+// skillShift
+// speed1_dead
+// startPos
+// superBoss
+// surt
+// svt_change
+// svtVoiceId
+// transformAfterName
+// treasureDeviceVoiceId
+// treasureDeviceName
+// treasureDeviceRuby
+// voice
 @JsonSerializable()
 class EnemyScript {
   // lots of fields are skipped
@@ -938,6 +989,18 @@ class EnemyScript {
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) =>
       _$EnemyScriptFromJson(json);
+}
+
+@JsonSerializable()
+class EnemyInfoScript {
+  bool? isAddition;
+
+  EnemyInfoScript({
+    this.isAddition,
+  });
+
+  factory EnemyInfoScript.fromJson(Map<String, dynamic> json) =>
+      _$EnemyInfoScriptFromJson(json);
 }
 
 @JsonSerializable()

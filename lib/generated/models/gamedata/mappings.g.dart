@@ -196,8 +196,11 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      traitRedirect: (json['trait_redirect'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String), e as int),
+      eventTrait: (json['event_trait'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                EventTraitMapping.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
@@ -342,6 +345,16 @@ MappingDict<V> _$MappingDictFromJson<V>(
       kr: (json['KR'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), fromJsonV(e)),
       ),
+    );
+
+EventTraitMapping _$EventTraitMappingFromJson(Map json) => EventTraitMapping(
+      eventId: json['eventId'] as int?,
+      relatedTrait: json['relatedTrait'] as int?,
+      jp: json['JP'] as String?,
+      cn: json['CN'] as String?,
+      tw: json['TW'] as String?,
+      na: json['NA'] as String?,
+      kr: json['KR'] as String?,
     );
 
 EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(

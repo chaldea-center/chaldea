@@ -23,7 +23,8 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
 
   bool onlineUpdate = network.available &&
       db.settings.autoUpdateData &&
-      (db.settings.updateDataBeforeStart || kIsWeb);
+      (db.settings.updateDataBeforeStart || kIsWeb) &&
+      !kDebugMode;
   bool needBackgroundUpdate = !kIsWeb && db.settings.autoUpdateData;
 
   @override

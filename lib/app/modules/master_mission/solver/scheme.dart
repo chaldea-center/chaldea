@@ -37,6 +37,14 @@ class CustomMissionCond {
       useAnd: useAnd,
     );
   }
+
+  @override
+  int get hashCode => Object.hash(type, _useAnd, Object.hashAll(targetIds));
+
+  @override
+  bool operator ==(Object other) {
+    return other is CustomMissionCond && other.hashCode == hashCode;
+  }
 }
 
 class CustomMission {
@@ -78,7 +86,15 @@ class CustomMission {
         bool useAnd;
         switch (type) {
           case CustomMissionType.trait:
-            useAnd = true;
+            if (detail.missionCondType ==
+                DetailCondType.enemyIndividualityKillNum) {
+              useAnd = false;
+            } else if (detail.missionCondType ==
+                DetailCondType.defeatEnemyIndividuality) {
+              useAnd = true;
+            } else {
+              useAnd = true;
+            }
             break;
           case CustomMissionType.questTrait:
             useAnd = false;
@@ -191,4 +207,6 @@ enum CustomMissionType {
   bool get isQuestType =>
       this == CustomMissionType.questTrait || this == CustomMissionType.quest;
   bool get isEnemyType => !isQuestType;
+  bool get isTraitType =>
+      this == CustomMissionType.trait || this == CustomMissionType.questTrait;
 }

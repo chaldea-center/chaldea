@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -29,6 +30,7 @@ import 'detail/recipe.dart';
 import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
+import 'detail/trait_table.dart';
 import 'detail/treasure_box.dart';
 import 'detail/voice.dart';
 
@@ -114,6 +116,19 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (normalMissions.isNotEmpty) {
       _addTab(S.current.mission,
           EventMissionsPage(event: event, missions: normalMissions));
+    }
+    if (event.missions.isNotEmpty && event.warIds.isNotEmpty) {
+      if (event.missions.any((em) =>
+          CustomMission.fromEventMission(em)
+              ?.conds
+              .any((cond) => cond.type.isTraitType) ==
+          true)) {
+        _addTab(
+          S.current.info_trait,
+          KeepAliveBuilder(
+              builder: (context) => EventMissionTablePage(event: event)),
+        );
+      }
     }
     // point rewards
     List<int> rewardGroups =

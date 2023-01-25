@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
