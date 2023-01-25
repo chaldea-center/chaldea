@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/language.dart';
@@ -201,6 +202,16 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           onTap: () {
             widget.state?.hide(60);
             Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: const Text('Reload GameData'),
+          onTap: () async {
+            EasyLoading.show();
+            final data = await GameDataLoader.instance.reload(force: true);
+            if (data != null) db.gameData = data;
+            EasyLoading.dismiss();
+            EasyLoading.showSuccess(S.current.update_msg_succuss);
           },
         ),
         ListTile(

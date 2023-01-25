@@ -61,6 +61,7 @@ class GameDataLoader {
   Future<GameData?> reload({
     bool offline = false,
     bool silent = false,
+    bool force = false,
   }) async {
     void _showError(Object? e) {
       error = escapeDioError(e);
@@ -83,7 +84,7 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     try {
-      final result = await _loadJson(offline);
+      final result = await _loadJson(offline, force);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
       } else {
@@ -100,7 +101,7 @@ class GameDataLoader {
     return completer.future;
   }
 
-  Future<GameData> _loadJson(bool offline) async {
+  Future<GameData> _loadJson(bool offline, bool force) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
@@ -123,17 +124,18 @@ class GameDataLoader {
       newVersion =
           DataVersion.fromJson((await _downFile('version.json')).json());
     }
-    if (newVersion.appVersion > AppInfo.version) {
-      final String versionString = newVersion.appVersion.versionString;
-      db.runtimeData.dataRequiredAppVer = newVersion.appVersion;
-      throw UpdateError(S.current.error_required_app_version(versionString));
+    if (!force) {
+      if (newVersion.appVersion > AppInfo.version) {
+        final String versionString = newVersion.appVersion.versionString;
+        db.runtimeData.dataRequiredAppVer = newVersion.appVersion;
+        throw UpdateError(S.current.error_required_app_version(versionString));
+      }
+      if (newVersion.timestamp <= db.gameData.version.timestamp &&
+          db.gameData.servantsById.isNotEmpty &&
+          db.gameData.items.isNotEmpty) {
+        throw UpdateError(S.current.update_already_latest);
+      }
     }
-    if (newVersion.timestamp <= db.gameData.version.timestamp &&
-        db.gameData.servantsById.isNotEmpty &&
-        db.gameData.items.isNotEmpty) {
-      throw UpdateError(S.current.update_already_latest);
-    }
-
     Map<String, dynamic> _gameJson = {};
     Map<FilePlus, List<int>> _dataToWrite = {};
     int finished = 0;
@@ -417,7 +419,7 @@ class UpdateError extends Error {
 
   @override
   String toString() {
-    return 'UpdateError: $message';
+    return message;
   }
 }
 
