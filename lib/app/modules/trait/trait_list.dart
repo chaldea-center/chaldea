@@ -27,8 +27,10 @@ class _TraitListPageState extends State<TraitListPage>
   Iterable<int> get wholeData {
     Set<int> ids = Trait.values.map((e) => e.id).toSet();
     ids.addAll(db.gameData.mappingData.trait.keys);
+    ids.addAll(db.gameData.mappingData.eventTrait.keys);
     int? _searchInt = int.tryParse(searchEditingController.text);
     if (_searchInt != null) ids.add(_searchInt);
+    ids.remove(Trait.unknown.id);
     return ids.toList();
   }
 

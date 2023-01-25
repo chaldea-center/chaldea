@@ -196,6 +196,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           ],
         )
       ],
+      ...enemyScriptInfo(),
       if (enemy.skills.skill1 != null ||
           enemy.skills.skill2 != null ||
           enemy.skills.skill3 != null)
@@ -258,8 +259,38 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showEnemy: true,
           showPlayer: true,
           region: widget.region,
-        )
+        ),
+      if (enemy.originalEnemyScript?.isNotEmpty == true) ...[
+        CustomTableRow.fromTexts(
+          texts: const ['Enemy Script'],
+          isHeader: true,
+        ),
+        for (final entry in enemy.originalEnemyScript!.entries)
+          CustomTableRow(children: [
+            TableCellData(
+                text: entry.key,
+                alignment: AlignmentDirectional.centerEnd,
+                textAlign: TextAlign.end),
+            TableCellData(
+                text: entry.value.toString(),
+                alignment: AlignmentDirectional.centerStart),
+          ])
+      ]
     ]);
+  }
+
+  List<Widget> enemyScriptInfo() {
+    List<Widget> children = [
+      if (enemy.isRare)
+        CustomTableRow.fromTexts(texts: [S.current.rare_enemy_hint]),
+      if (enemy.enemyScript?.leader == true)
+        CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
+    ];
+    if (children.isNotEmpty) {
+      children.insert(
+          0, CustomTableRow.fromTexts(texts: const ['Hint'], isHeader: true));
+    }
+    return children;
   }
 }
 

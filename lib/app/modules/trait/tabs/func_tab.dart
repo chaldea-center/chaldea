@@ -21,7 +21,7 @@ class TraitFuncTab extends StatefulWidget {
 class _TraitFuncTabState extends State<TraitFuncTab> {
   int get id => widget.id;
 
-  final filter = FilterGroupData<_FuncCheckPos>();
+  final filter = FilterRadioData<_FuncCheckPos>();
 
   @override
   Widget build(BuildContext context) {
