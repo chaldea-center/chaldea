@@ -431,11 +431,11 @@ class FuncDescriptor extends StatelessWidget {
           funcText.write(Transl.buffNames(buff.name).l);
         }
       }
-      // } else if ([
-      //   FuncType.enemyEncountRateUp,
-      //   FuncType.enemyEncountCopyRateUp,
-      // ].contains(func.funcType)) {
-      //   funcText.write(Transl.funcPopuptext(func).l);
+    } else if ([
+      FuncType.enemyEncountRateUp,
+      FuncType.enemyEncountCopyRateUp,
+    ].contains(func.funcType)) {
+      funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
     } else {
       funcText.write(Transl.funcPopuptext(func).l);
     }
@@ -568,10 +568,7 @@ class FuncDescriptor extends StatelessWidget {
                     Item.iconBuilder(context: context, item: item, width: 20)),
             TextSpan(text: ' ${item.lName.l}  ')
           ],
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              item.routeTo();
-            },
+          recognizer: TapGestureRecognizer()..onTap = item.routeTo,
         ));
       }
     }
@@ -601,6 +598,8 @@ class FuncDescriptor extends StatelessWidget {
         FuncType.eventPointUp,
         FuncType.eventPointRateUp,
         FuncType.eventFortificationPointUp,
+        FuncType.enemyEncountRateUp,
+        FuncType.enemyEncountCopyRateUp,
       ].contains(func.funcType)) {
         return;
       }
@@ -672,6 +671,14 @@ class FuncDescriptor extends StatelessWidget {
             return;
           }
           break;
+        case FuncType.enemyEncountRateUp:
+        case FuncType.enemyEncountCopyRateUp:
+          int? indiv = vals?.Individuality;
+          if (indiv != null) {
+            spans.add(_replaceTrait(indiv));
+            return;
+          }
+          break;
         default:
           break;
       }
@@ -719,18 +726,6 @@ class FuncDescriptor extends StatelessWidget {
           },
         ));
       }
-    } else if ([
-          FuncType.enemyEncountRateUp,
-          FuncType.enemyEncountCopyRateUp,
-        ].contains(func.funcType) &&
-        vals?.Individuality != null) {
-      spans.add(TextSpan(children: [
-        const TextSpan(text: ' '),
-        SharedBuilder.traitSpan(
-          context: context,
-          trait: NiceTrait(id: vals!.Individuality!),
-        ),
-      ]));
     }
 
     if (vals?.AddLinkageTargetIndividualty != null &&

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/buff/buff_detail.dart';
@@ -60,9 +62,11 @@ class _FuncDetailPageState extends State<FuncDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: AutoSizeText(
           "Func $id ${data?.lPopupText.l ?? ""}",
           overflow: TextOverflow.fade,
+          maxLines: 1,
+          minFontSize: 14,
         ),
         actions: [
           dropdownRegion(shownNone: widget.func != null),

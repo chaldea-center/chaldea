@@ -24,6 +24,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   final double? textScaleFactor;
   @override
   final InlineSpan? leading;
+  final int? eventId;
 
   const CondTargetNumDescriptor({
     super.key,
@@ -36,6 +37,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     this.useAnd,
+    this.eventId,
   }) : details = details ?? const [];
 
   bool _isPlayableAll(List<int> clsIds) {
@@ -54,6 +56,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           textScaleFactor: textScaleFactor,
           leading: leading,
           useAnd: details.first.useAnd,
+          eventId: eventId,
         );
       }
 
@@ -76,6 +79,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           targetNum: null,
           detail: details[index],
           useAnd: details[index].useAnd,
+          eventId: eventId,
         ).buildContent(context));
         spans.add(const TextSpan(text: '』'));
         if (index != details.length - 1) {

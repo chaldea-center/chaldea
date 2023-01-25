@@ -9,11 +9,14 @@ class MissionCondsDescriptor extends StatelessWidget {
   final EventMission mission;
   final List<EventMission> missions;
   final bool onlyShowClear;
+  final int? eventId;
+
   const MissionCondsDescriptor({
     super.key,
     required this.mission,
     this.missions = const [],
     this.onlyShowClear = false,
+    this.eventId,
   });
 
   @override
@@ -45,6 +48,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         targetIds: cond.targetIds,
         details: cond.details,
         missions: missions,
+        eventId: eventId,
       ));
     }
     if (!onlyShowClear && mission.gifts.isNotEmpty) {

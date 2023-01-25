@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -52,9 +53,11 @@ class _SkillDetailPageState extends State<SkillDetailPage>
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: AutoSizeText(
             data?.lName.l ?? '${S.current.skill} $id',
             overflow: TextOverflow.fade,
+            maxLines: 1,
+            minFontSize: 14,
           ),
           actions: [
             dropdownRegion(shownNone: widget.skill != null),

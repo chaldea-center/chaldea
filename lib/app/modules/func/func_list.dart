@@ -56,7 +56,7 @@ class _FuncListPageState extends State<FuncListPage>
       useGrid: false,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: const Text("Funcs"),
+        title: const Text("Functions"),
         bottom: searchBar,
         actions: [
           IconButton(

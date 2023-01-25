@@ -93,7 +93,11 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
       ),
       contentBuilder: (context) => Padding(
         padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: MissionCondsDescriptor(mission: mission, missions: missions),
+        child: MissionCondsDescriptor(
+          mission: mission,
+          missions: missions,
+          eventId: widget.event.id,
+        ),
       ),
     );
   }

@@ -15,6 +15,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   final double? textScaleFactor;
   @override
   final InlineSpan? leading;
+  final int? eventId;
 
   MissionCondDetailDescriptor({
     super.key,
@@ -24,6 +25,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     bool? useAnd,
+    this.eventId,
   }) : _useAnd = useAnd;
 
   @override
@@ -313,6 +315,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     if (events.isNotEmpty) {
       if (events.length == 1 && events.first == 0) {
         spans.add(TextSpan(text: '(${S.current.main_story})'));
+      } else if (events.length == 1 && events.first == eventId) {
+        // don't show event info inside event page
       } else {
         spans.addAll(super.localized(
           jp: null,
