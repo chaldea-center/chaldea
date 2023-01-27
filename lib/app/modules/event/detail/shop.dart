@@ -37,26 +37,81 @@ class _EventShopsPageState extends State<EventShopsPage> {
   @override
   Widget build(BuildContext context) {
     final shops = widget.shops.toList();
+    Map<int, List<NiceShop>> payItems = {};
+    for (final shop in shops) {
+      payItems.putIfAbsent(shop.cost?.itemId ?? -1, () => []).add(shop);
+    }
+
     return db.onUserData(
-      (context, snapshot) => Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              itemBuilder: (context, index) =>
-                  shopItemBuilder(context, shops[index], plan),
-              separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
-              itemCount: shops.length,
-            ),
+      (context, snapshot) {
+        List<Widget> headers = [], views = [];
+        final style = Theme.of(context).textTheme.bodyMedium;
+        headers.add(Tab(child: Text(S.current.general_all, style: style)));
+        views.add(shopList(context, shops, plan));
+        // valentine shop
+        if (payItems.length > 2 || payItems.values.every((e) => e.length > 1)) {
+          final itemIds = payItems.keys.toList();
+          itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 999999);
+          for (final itemId in itemIds) {
+            views.add(shopList(context, payItems[itemId]!, plan));
+            if (itemId == -1) {
+              headers.add(
+                  Tab(child: Text(S.current.general_others, style: style)));
+            } else {
+              headers.add(Tab(
+                child: Text.rich(
+                  TextSpan(children: [
+                    CenterWidgetSpan(
+                      child: Item.iconBuilder(
+                        context: context,
+                        item: null,
+                        itemId: itemId,
+                        width: 18,
+                        icon: db.gameData.items[itemId]?.icon,
+                        jumpToDetail: false,
+                      ),
+                    ),
+                    TextSpan(text: Item.getName(itemId)),
+                  ]),
+                  style: style,
+                ),
+              ));
+            }
+          }
+        }
+        return DefaultTabController(
+          length: views.length,
+          child: Column(
+            children: [
+              if (views.length > 1)
+                FixedHeight.tabBar(TabBar(tabs: headers, isScrollable: true)),
+              Expanded(
+                child: views.length == 1
+                    ? views.single
+                    : TabBarView(children: views),
+              ),
+              kDefaultDivider,
+              SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: getEventItemCost(),
+                ),
+              )
+            ],
           ),
-          kDefaultDivider,
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: getEventItemCost(),
-            ),
-          )
-        ],
-      ),
+        );
+      },
+    );
+  }
+
+  Widget shopList(
+      BuildContext context, List<NiceShop> shops, LimitEventPlan plan) {
+    return ListView.separated(
+      itemBuilder: (context, index) =>
+          shopItemBuilder(context, shops[index], plan),
+      separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
+      itemCount: shops.length,
     );
   }
 
