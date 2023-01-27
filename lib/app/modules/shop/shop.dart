@@ -90,7 +90,8 @@ class _ShopDetailPageState extends State<ShopDetailPage>
             ].join(' ~ ')
           ]),
           CustomTableRow.fromTexts(
-              texts: ['可交换次数', S.current.cost], isHeader: true),
+              texts: [S.current.exchange_count, S.current.cost],
+              isHeader: true),
           CustomTableRow.fromChildren(children: [
             Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
             Text.rich(TextSpan(
@@ -451,7 +452,7 @@ class ShopHelper {
         }
         return;
       case PurchaseType.assist:
-        yield Tuple2(null, TextSpan(text: 'Assist $targetId'));
+        yield Tuple2(null, TextSpan(text: 'Assist $targetId: ${shop.name}'));
         return;
       case PurchaseType.kiaraPunisherReset:
         assert(false, 'Should not reach here');

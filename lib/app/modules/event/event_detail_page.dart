@@ -1137,11 +1137,27 @@ class __EventTimeState extends State<_EventTime> {
     bool hasExtra = false;
     final shownRegions = widget.shownRegions.toList();
     for (final region in Region.values) {
-      final timeStr = getTime(region);
-      if (timeStr == null) continue;
+      String? timeStr;
+      final start = widget.startTime.ofRegion(region),
+          end = widget.endTime?.ofRegion(region),
+          now = DateTime.now().timestamp;
+      if (start == null && end == null && region != Region.jp) continue;
+      if (widget.endTime == null) {
+        timeStr = '${region.upper}: ${widget.format(start)}';
+      } else {
+        timeStr =
+            '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
+      }
+      bool ongoing = start != null && end != null && now >= start && now <= end;
       if (shownRegions.contains(region) || showAll) {
-        children.add(Text(
-          timeStr,
+        children.add(Text.rich(
+          TextSpan(children: [
+            TextSpan(
+                text: '● ',
+                style: TextStyle(
+                    color: ongoing ? Colors.green : Colors.transparent)),
+            TextSpan(text: timeStr),
+          ]),
           style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),
           textAlign: TextAlign.center,
         ));
@@ -1173,16 +1189,5 @@ class __EventTimeState extends State<_EventTime> {
       },
       child: child,
     );
-  }
-
-  String? getTime(Region region) {
-    final start = widget.startTime.ofRegion(region),
-        end = widget.endTime?.ofRegion(region);
-    if (start == null && end == null && region != Region.jp) return null;
-    if (widget.endTime == null) {
-      return '${region.upper}: ${widget.format(start)}';
-    } else {
-      return '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
-    }
   }
 }

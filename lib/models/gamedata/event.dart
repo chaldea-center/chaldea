@@ -428,10 +428,11 @@ class NiceShop with RouteInfo {
   String detail;
   String infoMessage;
   String warningMessage;
+  // pay
   PayType payType;
   ItemAmount? cost;
   List<CommonConsume> consumes;
-
+  // purchase
   PurchaseType purchaseType;
   List<int> targetIds; // only kiaraPunisherReset and quest using more than 1
   List<ItemSet> itemSet;

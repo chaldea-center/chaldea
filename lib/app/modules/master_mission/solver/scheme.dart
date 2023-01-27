@@ -196,10 +196,10 @@ class MissionSolution {
 
 enum CustomMissionType {
   trait,
-  enemy,
   enemyClass,
   servantClass,
   enemyNotServantClass,
+  enemy,
   quest,
   questTrait,
   ;

@@ -1109,6 +1109,17 @@ class S {
     );
   }
 
+  /// `Condition`
+  String get condition {
+    return Intl.message(
+      'Condition',
+      name: 'condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Confirm`
   String get confirm {
     return Intl.message(
@@ -2379,6 +2390,17 @@ class S {
     return Intl.message(
       'Treasure Box',
       name: 'event_treasure_box',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Exchange Count`
+  String get exchange_count {
+    return Intl.message(
+      'Exchange Count',
+      name: 'exchange_count',
       desc: '',
       locale: localeName,
       args: [],

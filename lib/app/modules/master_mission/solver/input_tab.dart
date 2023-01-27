@@ -174,12 +174,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
           for (final cond in mission.conds) ...[
             DividerWithTitle(
               indent: 12,
-              title:
-                  '${S.current.open_condition} ${mission.conds.indexOf(cond) + 1}',
               titleWidget: Text.rich(
                 TextSpan(
                     text:
-                        '${S.current.open_condition} ${mission.conds.indexOf(cond) + 1}',
+                        '${S.current.condition} ${mission.conds.indexOf(cond) + 1}',
                     children: [
                       if (mission.conds.length > 1)
                         TextSpan(
@@ -209,7 +207,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                       child: Text(
                         Transl.enums(type, (enums) => enums.customMissionType)
                             .l,
-                        textScaleFactor: 0.9,
+                        textScaleFactor: 0.8,
                       ),
                     ),
                 ],
@@ -712,7 +710,7 @@ class __SearchViewState extends State<_SearchView> {
     return CheckboxListTile(
       value: selected.contains(id),
       title: Text(title),
-      subtitle: subtitle == null ? null : Text(subtitle),
+      // subtitle: subtitle == null ? null : Text(subtitle),
       dense: true,
       onChanged: (_) => onChanged(id),
     );

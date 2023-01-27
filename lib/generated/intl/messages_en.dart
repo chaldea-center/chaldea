@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
             "Only need to meet one *Group* of conditions"),
+        "condition": MessageLookupByLibrary.simpleMessage("Condition"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
         "contact_information_not_filled": MessageLookupByLibrary.simpleMessage(
@@ -372,6 +373,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_tower": MessageLookupByLibrary.simpleMessage("Tower"),
         "event_treasure_box":
             MessageLookupByLibrary.simpleMessage("Treasure Box"),
+        "exchange_count":
+            MessageLookupByLibrary.simpleMessage("Exchange Count"),
         "exchange_ticket":
             MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),

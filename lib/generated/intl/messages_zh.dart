@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
             "当存在多组(Group)时，仅需满足其中一组(Group)条件即可"),
+        "condition": MessageLookupByLibrary.simpleMessage("条件"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
         "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
         "contact_information_not_filled":
@@ -318,6 +319,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_title": MessageLookupByLibrary.simpleMessage("活动"),
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("宝箱"),
+        "exchange_count": MessageLookupByLibrary.simpleMessage("可交换次数"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交换券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交换券"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等级"),
