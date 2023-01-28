@@ -723,7 +723,7 @@ class __SearchViewState extends State<_SearchView> {
 }
 
 const _preferredTraits = <Trait>[
-  Trait.basedOnServant,
+  Trait.servant,
   Trait.notBasedOnServant,
   Trait.humanoid,
   Trait.attributeEarth,

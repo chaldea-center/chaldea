@@ -507,6 +507,7 @@ const _$DeckTypeEnumMap = {
   DeckType.transform: 'transform',
   DeckType.skillShift: 'skillShift',
   DeckType.missionTargetSkillShift: 'missionTargetSkillShift',
+  DeckType.aiNpc: 'aiNpc',
 };
 
 const _$EnemyRoleTypeEnumMap = {
@@ -603,6 +604,10 @@ FieldAi _$FieldAiFromJson(Map json) => FieldAi(
 
 QuestPhaseAiNpc _$QuestPhaseAiNpcFromJson(Map json) => QuestPhaseAiNpc(
       npc: NpcServant.fromJson(Map<String, dynamic>.from(json['npc'] as Map)),
+      detail: json['detail'] == null
+          ? null
+          : QuestEnemy.fromJson(
+              Map<String, dynamic>.from(json['detail'] as Map)),
       aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
     );

@@ -1104,10 +1104,12 @@ class FieldAi {
 @JsonSerializable()
 class QuestPhaseAiNpc {
   NpcServant npc;
+  QuestEnemy? detail;
   List<int> aiIds;
 
   QuestPhaseAiNpc({
     required this.npc,
+    this.detail,
     this.aiIds = const [],
   });
 
@@ -1335,6 +1337,7 @@ enum DeckType {
   transform,
   skillShift,
   missionTargetSkillShift,
+  aiNpc,
 }
 
 enum RestrictionType {

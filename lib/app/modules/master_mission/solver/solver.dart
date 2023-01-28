@@ -97,7 +97,7 @@ class MissionSolver extends BaseLPSolver {
               return cond.targetIds.contains(enemy.svt.className.id);
             case CustomMissionType.servantClass:
               assert(!cond.useAnd);
-              return enemy.traits.any((t) => t.name == Trait.basedOnServant) &&
+              return enemy.traits.any((t) => t.name == Trait.servant) &&
                   cond.targetIds.contains(enemy.svt.className.id);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
