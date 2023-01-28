@@ -312,9 +312,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       title = 'Invalid Choice';
     } else if (war.isMainStory) {
       leading = 'Free ~ ';
-      title = Transl.warNames(
-              war.name.trimChar('-').isEmpty ? war.longName : war.name)
-          .l;
+      title = war.lShortName;
     } else {
       title = Transl.eventNames(war.eventName).l;
     }

@@ -209,9 +209,14 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(child: Text(_showTime(masterMission.startedAt))),
+          Flexible(
+            child:
+                Text(_showTime(masterMission.startedAt), textScaleFactor: 0.9),
+          ),
           const Text(' ~ '),
-          Flexible(child: Text(_showTime(masterMission.endedAt))),
+          Flexible(
+            child: Text(_showTime(masterMission.endedAt), textScaleFactor: 0.9),
+          ),
         ],
       ),
       trailing: Checkbox(
@@ -222,7 +227,9 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           });
         },
       ),
-      selected: masterMission.startedAt <= now && masterMission.endedAt > now,
+      selected: showOutdated &&
+          masterMission.startedAt <= now &&
+          masterMission.endedAt > now,
       onTap: () {
         router.push(
           child:

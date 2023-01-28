@@ -79,18 +79,22 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
     return ListView(
       children: [
         ListTile(
+          dense: true,
           title: Text(S.current.time_start),
           trailing: Text(masterMission.startedAt.toDateTimeString()),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.time_end),
           trailing: Text(masterMission.endedAt.toDateTimeString()),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.time_close),
           trailing: Text(masterMission.closedAt.toDateTimeString()),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.mission),
           trailing: Text(categorized.entries
               .map((e) =>

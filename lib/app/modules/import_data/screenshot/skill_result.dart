@@ -141,17 +141,17 @@ class _SkillResultTabState extends State<SkillResultTab>
               DropdownButton<int>(
                 icon: const SizedBox(),
                 value: item.skills[index],
-                items: List.generate(12, (index) {
+                items: List.generate(12, (lv) {
                   return DropdownMenuItem(
-                    value: index - 1,
-                    child: Text((index - 1).toString()),
+                    value: lv - 1,
+                    child: Text((lv - 1).toString()),
                   );
                 }),
                 onChanged: widget.viewMode
                     ? null
                     : (v) {
                         setState(() {
-                          if (v != null) item.setSkill(index, v);
+                          if (v != null && v >= 0) item.setSkill(index, v);
                         });
                       },
               ),

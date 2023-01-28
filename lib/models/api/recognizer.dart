@@ -110,7 +110,10 @@ class SkillDetail {
 
   void setSkill(int index, int v) {
     if (v < 0 || v > 10) {
-      throw ArgumentError.value(v, 'v');
+      assert(() {
+        throw ArgumentError.value(v, 'v');
+      }());
+      return;
     }
     if (index == 0) {
       skill1 = v;
