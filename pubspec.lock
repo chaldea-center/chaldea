@@ -290,6 +290,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.4"
+  data_table_2:
+    dependency: "direct main"
+    description:
+      name: data_table_2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.10"
   dbus:
     dependency: transitive
     description:

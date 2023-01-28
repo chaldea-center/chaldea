@@ -14,6 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../common/not_found.dart';
 import '../../quest/quest_list.dart';
 import 'asset_list.dart';
+import 'free_overview.dart';
 import 'map_list.dart';
 import 'war_bgm_list.dart';
 import 'war_map.dart';
@@ -245,6 +246,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
           raidQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
           difficultQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.noBattle)) {
+          eventQuests.add(quest);
         } else {
           freeQuests.add(quest);
         }
@@ -281,6 +284,14 @@ class _WarDetailPageState extends State<WarDetailPage> {
                   child: QuestListPage(
                       title: S.current.free_quest, quests: freeQuests),
                 );
+              },
+            ),
+          if (freeQuests.isNotEmpty)
+            ListTile(
+              title: const Text('Free Quest Overview'),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.pushPage(FreeQuestOverview(quests: freeQuests));
               },
             ),
           if (raidQuests.isNotEmpty)
