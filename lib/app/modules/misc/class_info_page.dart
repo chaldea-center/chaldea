@@ -108,7 +108,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     if (rate == null) return null;
     Color? color;
     if (rate > 1000) {
-      color = Theme.of(context).errorColor;
+      color = Theme.of(context).colorScheme.error;
     } else if (rate < 1000) {
       color = Theme.of(context).colorScheme.primaryContainer;
     }

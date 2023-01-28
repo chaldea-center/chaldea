@@ -189,7 +189,7 @@ class _UserDataPageState extends State<UserDataPage> {
     } else if (PlatformU.isMobile) {
       final fp = joinPaths(db.paths.tempDir, fn);
       await File(fp).writeAsString(content);
-      return ShareX.shareFile(fp, context: context);
+      if (context.mounted) return ShareX.shareFile(fp, context: context);
     }
   }
 

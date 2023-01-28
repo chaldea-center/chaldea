@@ -187,14 +187,20 @@ class ImageActions {
 
   static Future<ui.Image?> resolveImageUrl(String url,
       {BuildContext? context}) async {
+    ImageProvider provider;
     if (AtlasIconLoader.i.shouldCacheImage(url)) {
       final fp = await AtlasIconLoader.i.get(url);
       if (fp == null) {
         return null;
       }
-      return resolveImage(FileImage(File(fp)), context: context);
+      provider = FileImage(File(fp));
+    } else {
+      provider = CachedNetworkImageProvider(url);
     }
-    return resolveImage(CachedNetworkImageProvider(url), context: context);
+    if (context != null && context.mounted) {
+      return resolveImage(provider, context: context);
+    }
+    return resolveImage(provider);
   }
 
   // resolve one frame
@@ -202,9 +208,9 @@ class ImageActions {
       {BuildContext? context}) async {
     final completer = Completer<ui.Image?>();
     // context ??= kAppKey.currentContext;
-    final stream = provider.resolve(context == null
-        ? ImageConfiguration.empty
-        : createLocalImageConfiguration(context));
+    final stream = provider.resolve(context != null && context.mounted
+        ? createLocalImageConfiguration(context)
+        : ImageConfiguration.empty);
     ImageStreamListener? listener;
     listener = ImageStreamListener(
       (image, synchronousCall) {

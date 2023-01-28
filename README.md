@@ -4,7 +4,7 @@
 
 [![platforms](https://img.shields.io/badge/platform-web_|_android_|_ios_|_windows_|_macos_|_linux-blue)](https://github.com/chaldea-center/chaldea/releases)
 [![release](https://img.shields.io/github/v/release/chaldea-center/chaldea?sort=semver)](https://github.com/chaldea-center/chaldea/releases)
-[![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
+[![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/main/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
 Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning materials, servants, events and their trip of taking back the future.
@@ -39,7 +39,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 | Android  | Android 6.0 (API level 23)           |
 | iOS      | iOS 11.0                             |
 | Windows  | Windows 8 (64-bit), x86-64 based     |
-| macOS    | macOS 10.13                          |
+| macOS    | macOS 10.14                          |
 | Linux    | Debian 10 & above                    |
 | Web      | Any modern browser                   |
 

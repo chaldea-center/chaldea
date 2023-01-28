@@ -121,8 +121,9 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
                       : "Invalid",
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
-            toolbarOptions: const ToolbarOptions(
-                selectAll: true, copy: true, paste: true, cut: true),
+            contextMenuBuilder: (context, editableTextState) =>
+                AdaptiveTextSelectionToolbar.editableText(
+                    editableTextState: editableTextState),
             maxLines: 4,
             onChanged: (v) {
               EasyDebounce.debounce(
@@ -252,8 +253,9 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           border: const OutlineInputBorder(),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
-        toolbarOptions: const ToolbarOptions(
-            selectAll: true, copy: true, paste: true, cut: true),
+        contextMenuBuilder: (context, editableTextState) =>
+            AdaptiveTextSelectionToolbar.editableText(
+                editableTextState: editableTextState),
       ),
     );
   }

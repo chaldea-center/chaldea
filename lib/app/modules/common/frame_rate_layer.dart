@@ -18,7 +18,7 @@ class FrameRateLayer extends StatefulWidget {
     _instance = OverlayEntry(
       builder: (context) => FrameRateLayer(key: globalKey),
     );
-    Overlay.of(context)?.insert(_instance!);
+    Overlay.maybeOf(context)?.insert(_instance!);
   }
 
   static void removeOverlay() {

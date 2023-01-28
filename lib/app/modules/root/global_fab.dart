@@ -29,7 +29,7 @@ class WindowManagerFab extends StatefulWidget {
     _instance?.remove();
     _instance =
         OverlayEntry(builder: (context) => WindowManagerFab(key: globalKey));
-    Overlay.of(context, rootOverlay: true)?.insert(_instance!);
+    Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
   }
 
   static void removeOverlay() {
@@ -72,7 +72,7 @@ class DebugFab extends StatefulWidget {
   static void createOverlay(BuildContext context) {
     _instance?.remove();
     _instance = OverlayEntry(builder: (context) => DebugFab(key: globalKey));
-    Overlay.of(context, rootOverlay: true)?.insert(_instance!);
+    Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
   }
 
   static void removeOverlay() {
