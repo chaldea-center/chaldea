@@ -177,8 +177,17 @@ class ExtraAssetsPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     final data = snapshot.data;
                     if (data is List) {
-                      Map? part = data.firstWhereOrNull(
-                          (m) => m is Map && m['type'] == 'Texture2D');
+                      List<Map>? parts = data
+                          .whereType<Map>()
+                          .where((m) => m['type'] == 'Texture2D')
+                          .toList();
+                      Map? part = parts.firstWhereOrNull((m) {
+                        final p = m['path'].toString();
+                        return p.contains('textures/') && !p.contains('aura_');
+                      });
+                      if (parts.isNotEmpty) {
+                        part ??= parts.first;
+                      }
                       String? path = part?['path'];
                       if (path != null) {
                         final texture = Uri.parse(url).resolve(path).toString();
