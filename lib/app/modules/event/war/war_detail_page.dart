@@ -73,8 +73,9 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ),
       );
     }
-    final banners = [
-      ...war.extra.resolvedBanner.values.whereType<String>(),
+    final banners = <String>[
+      ...war.extra.resolvedBanner.values.whereType(),
+      for (final v in war.extra.extraBanners.values) ...?v,
     ];
     List<String> warBanners = {
       war.banner,

@@ -290,6 +290,7 @@ class EventListPageState extends State<EventListPage>
 
   @override
   Iterable<String?> getSummary(Event event) sync* {
+    yield event.id.toString();
     yield* SearchUtil.getAllKeys(event.lName);
     yield* SearchUtil.getAllKeys(event.lShortName);
   }

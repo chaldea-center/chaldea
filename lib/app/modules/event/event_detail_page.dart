@@ -294,8 +294,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
   @override
   Widget build(BuildContext context) {
-    final banners = [
-      ...event.extra.resolvedBanner.values.whereType<String>(),
+    final banners = <String>[
+      ...event.extra.resolvedBanner.values.whereType(),
+      for (final v in event.extra.extraBanners.values) ...?v,
     ];
 
     List<Widget> children = [

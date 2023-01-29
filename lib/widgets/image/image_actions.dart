@@ -18,6 +18,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/image/image_viewer.dart';
 import '../../packages/packages.dart';
 import '../custom_dialogs.dart';
 
@@ -195,7 +196,7 @@ class ImageActions {
       }
       provider = FileImage(File(fp));
     } else {
-      provider = CachedNetworkImageProvider(url);
+      provider = CachedNetworkImageProvider(CachedImage.corsProxyImage(url));
     }
     if (context != null && context.mounted) {
       return resolveImage(provider, context: context);

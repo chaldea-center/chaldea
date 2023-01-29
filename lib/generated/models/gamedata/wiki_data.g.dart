@@ -172,7 +172,7 @@ EventExtraFixedItems _$EventExtraFixedItemsFromJson(Map json) =>
 
 EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       id: json['id'] as int,
-      name: json['name'] as String,
+      name: json['name'] as String?,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
       shown: json['shown'] as bool?,
@@ -184,6 +184,10 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['officialBanner'] as Map)),
+      extraBanners: json['extraBanners'] == null
+          ? null
+          : MappingList<String>.fromJson(
+              Map<String, dynamic>.from(json['extraBanners'] as Map)),
       noticeLink: json['noticeLink'] == null
           ? null
           : MappingBase<String>.fromJson(
@@ -221,6 +225,10 @@ WarExtra _$WarExtraFromJson(Map json) => WarExtra(
       id: json['id'] as int,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
+      noticeLink: json['noticeLink'] == null
+          ? null
+          : MappingBase<String>.fromJson(
+              Map<String, dynamic>.from(json['noticeLink'] as Map)),
       titleBanner: json['titleBanner'] == null
           ? null
           : MappingBase<String>.fromJson(
@@ -229,10 +237,10 @@ WarExtra _$WarExtraFromJson(Map json) => WarExtra(
           ? null
           : MappingBase<String>.fromJson(
               Map<String, dynamic>.from(json['officialBanner'] as Map)),
-      noticeLink: json['noticeLink'] == null
+      extraBanners: json['extraBanners'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['noticeLink'] as Map)),
+          : MappingList<String>.fromJson(
+              Map<String, dynamic>.from(json['extraBanners'] as Map)),
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(

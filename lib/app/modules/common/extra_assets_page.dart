@@ -336,7 +336,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
           provider = FileImage(File(fp));
         }
       } else {
-        url = CachedImage.proxyMooncellImage(url);
+        url = CachedImage.corsProxyImage(url);
         provider = CachedNetworkImageProvider(url,
             cacheManager: ImageViewerCacheManager());
       }

@@ -14,6 +14,7 @@ import 'package:octo_image/octo_image.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
+import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -128,17 +129,41 @@ class CachedImage extends StatefulWidget {
     return child;
   }
 
-  static String proxyMooncellImage(String url) {
-    Uri? uri = Uri.tryParse(url);
-    if (uri == null) return url;
-    if (!uri.host.contains('fgo.wiki')) return url;
-    final hashValue = uri.queryParameters['sha1'];
-    if (hashValue == null) return url;
-    if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
-      return '$kStaticHostRoot/${uri.host}/$hashValue';
-    } else {
-      return url.split('?').first;
+  /// host            html  canvaskit
+  /// fgo.wiki        √     x
+  /// fate-go.jp      √     x
+  /// fate-go.us      √     x
+  /// fate-go.com.tw  √     x
+  /// i0.hdslb.com    x     x
+  /// *.pstatic.net   x     x
+  static String corsProxyImage(String url) {
+    if (url.contains('fgo.wiki')) {
+      url = url.split('?sha').first;
     }
+    if (!kIsWeb) return url;
+    final uri = Uri.tryParse(url);
+    if (uri == null) return url;
+    bool cors = false;
+    if (kPlatformMethods.rendererCanvasKit) {
+      cors = const [
+        'fgo.wiki',
+        'fate-go.jp',
+        'fate-go.us',
+        'fate-go.com.tw',
+        'hdslb.com',
+        'pstatic.net',
+      ].any((e) => uri.host.endsWith(e));
+    } else {
+      cors = const [
+        'hdslb.com',
+        'pstatic.net',
+      ].any((e) => uri.host.endsWith(e));
+    }
+    if (cors) {
+      return Uri.parse(Hosts.workerHost).replace(
+          path: '/corsproxy/', queryParameters: {'url': url}).toString();
+    }
+    return url;
   }
 }
 
@@ -201,7 +226,6 @@ class _CachedImageState extends State<CachedImage> {
     }
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
-    url = CachedImage.proxyMooncellImage(url);
     if (_loader.shouldCacheImage(url)) {
       final fp = AtlasIconLoader.i.getCached(url);
       if (fp != null) {
@@ -283,25 +307,7 @@ class _CachedImageState extends State<CachedImage> {
   Widget _withCached(String fullUrl) {
     final _cacheManager =
         cachedOption.cacheManager ?? ImageViewerCacheManager();
-    Uri? uri = Uri.tryParse(fullUrl);
-    if (uri != null && uri.host == 'fgo.wiki') {
-      final hashValue = uri.queryParameters['sha1'];
-      if (hashValue != null) {
-        if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
-          fullUrl = '$kStaticHostRoot/${uri.host}/$hashValue';
-        } else {
-          fullUrl = fullUrl.split('?sha1').first;
-        }
-        uri = Uri.tryParse(fullUrl);
-      }
-    }
-    if (kIsWeb &&
-        kPlatformMethods.rendererCanvasKit &&
-        fullUrl.contains('fgo.wiki')) {
-      return _withError(context, fullUrl);
-    }
-
-    String url = uri?.toString() ?? fullUrl;
+    String url = CachedImage.corsProxyImage(fullUrl);
 
     final provider = CachedNetworkImageProvider(
       url,

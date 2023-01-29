@@ -468,7 +468,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     for (final item in items) {
       if (item.priority < 0 && !kDebugMode) continue;
       Widget? child;
-      final img = item.proxyImage;
+      final img = item.image;
       if (img != null && isURL(img)) {
         child = CachedImage(
           imageUrl: img,
