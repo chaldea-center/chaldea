@@ -171,18 +171,18 @@ jobs:
 
       - name: Publish Beta
         if: github.ref == 'refs/heads/main'
-        uses: ncipollo/release-action@v1
+        uses: softprops/action-gh-release@v1
         with:
-          tag: beta
+          tag_name: beta
           name: Chaldea Preview
           body: Built at ${{ steps.get-date.outputs.date }}
           draft: false
           prerelease: true
-          artifacts: "chaldea-*/*"
+          files: "chaldea-*/*"
 
       - name: Publish ${GITHUB_REF/refs\/tags\/v/}
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: ncipollo/release-action@v1
+        uses: softprops/action-gh-release@v1
         with:
           body: Built at ${{ steps.get-date.outputs.date }}
-          artifacts: "chaldea-*/*"
+          files: "chaldea-*/*"
