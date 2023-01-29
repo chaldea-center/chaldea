@@ -84,7 +84,7 @@ If you have any bug report, feature request, question or want to contribute to t
 
 ## Acknowledgements
 
-This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://flutter.dev).
+This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://docs.flutter.dev/).
 
 Thanks all contributors and translators help developing the app!
 - [CONTRIBUTORS](./CONTRIBUTORS)

@@ -116,27 +116,27 @@
       } else {
         window.addEventListener("load", function (ev) {
           // Download main.dart.js
-          _flutter.loader
-            .loadEntrypoint({
-              serviceWorker: {
-                serviceWorkerVersion: serviceWorkerVersion,
-              },
-            })
-            .then(function (engineInitializer) {
+          _flutter.loader.loadEntrypoint({
+            serviceWorker: {
+              serviceWorkerVersion: serviceWorkerVersion,
+            },
+            onEntrypointLoaded: function (engineInitializer) {
               // config web renderer, only work when built with "auto" option
               let _renderer = window.localStorage.getItem("flutterWebRenderer");
               if (["html", "canvaskit", "auto"].indexOf(_renderer) === -1) {
                 _renderer = "html";
               }
-              window.flutterWebRenderer = _renderer
-              return engineInitializer.initializeEngine({
-                canvasKitBaseUrl: "/canvaskit/",
-                renderer: _renderer,
-              });
-            })
-            .then(function (appRunner) {
-              return appRunner.runApp();
-            });
+              window.flutterWebRenderer = _renderer;
+              engineInitializer
+                .initializeEngine({
+                  canvasKitBaseUrl: "/canvaskit/",
+                  renderer: _renderer,
+                })
+                .then(function (appRunner) {
+                  appRunner.runApp();
+                });
+            },
+          });
         });
       }
     </script>

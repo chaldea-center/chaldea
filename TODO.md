@@ -27,18 +27,12 @@ There are plenty of work need to do.
 - [ ] breaking change: FixedDrop
 - [ ] filter_group: add onReset
 - [ ] separate cn proxy 
-- [ ] iconBuilder add fontSize
 - [ ] free quest drop table
-- [ ] parser: add new SVT/CE/CC before exported
 - [ ] parser: check summon prob correct
 - [ ] summon: add wiki prob edit util
 - [ ] add daily quests' enemy traits for missions
 - [ ] improve audio player
 - [ ] enhanced spoiler
-
-## Quest Related
-
-- [ ] add AI link
 
 ## Servant
 

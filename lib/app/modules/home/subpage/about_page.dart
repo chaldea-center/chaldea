@@ -64,7 +64,7 @@ class _AboutPageState extends State<AboutPage> {
                 child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
                     height: 120),
               ),
-              legalese: 'Copyright © 2022 cc.narumi.\nAll rights reserved.',
+              legalese: 'Copyright © 2023 cc.narumi.\nAll rights reserved.',
               debugInfo: showDebugInfo
                   ? 'UUID\n${AppInfo.uuid}\n'
                       'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
@@ -225,7 +225,7 @@ class _AboutPageState extends State<AboutPage> {
                           height: 120,
                         ),
                         applicationLegalese:
-                            'Copyright © 2022 cc.narumi.\nAll rights reserved.',
+                            'Copyright © 2023 cc.narumi.\nAll rights reserved.',
                       ),
                     ),
                   );
