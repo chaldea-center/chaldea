@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/db.dart';
 import '../../app.dart';
+import '../battle/battle_home.dart';
 import '../root/global_fab.dart';
 import 'gallery_page.dart';
 import 'settings_page.dart';
@@ -16,13 +20,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
+  final bool showBattle = kDebugMode || AppInfo.isDebugDevice;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: _curIndex,
-        children: [GalleryPage(), SettingsPage()],
+        children: [
+          GalleryPage(),
+          if (showBattle) BattleHomePage(),
+          SettingsPage(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _curIndex,
@@ -30,6 +39,10 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.layers)),
               label: S.current.gallery_tab_name),
+          if (showBattle)
+            const BottomNavigationBarItem(
+                icon: SafeArea(child: Icon(Icons.catching_pokemon)),
+                label: 'Simulator'),
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.settings)),
               label: S.current.settings_tab_name),
