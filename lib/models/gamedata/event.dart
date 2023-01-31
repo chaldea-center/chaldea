@@ -25,7 +25,7 @@ class Event {
   int endedAt;
   int finishedAt;
   int materialOpenedAt;
-  List<int> warIds;
+  List<int> _warIds;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
   @JsonKey(name: 'rewards')
@@ -47,6 +47,15 @@ class Event {
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
+  List<int> get warIds {
+    if (_warIds.isEmpty) {
+      for (final entry in kExtraWarEventMapping.entries) {
+        if (entry.value == id) return [entry.key];
+      }
+    }
+    return _warIds;
+  }
+
   Event({
     required this.id,
     this.type = EventType.none,
@@ -62,7 +71,7 @@ class Event {
     required this.endedAt,
     required this.finishedAt,
     required this.materialOpenedAt,
-    this.warIds = const [],
+    List<int> warIds = const [],
     this.shop = const [],
     this.pointRewards = const [],
     this.rewardScenes = const [],
@@ -82,7 +91,8 @@ class Event {
     this.campaignQuests = const [],
     this.voicePlays = const [],
     this.voices = const [],
-  }) : _shortName = ['', '-'].contains(shortName) ? null : shortName;
+  })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
+        _warIds = warIds;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 

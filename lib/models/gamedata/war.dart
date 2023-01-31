@@ -8,6 +8,14 @@ import 'gamedata.dart';
 
 part '../../generated/models/gamedata/war.g.dart';
 
+const kExtraWarEventMapping = <int, int>{
+  108: 80038,
+  201: 80044,
+  202: 80059,
+  203: 80072,
+  204: 80077,
+};
+
 @JsonSerializable()
 class NiceWar with RouteInfo {
   int id;
@@ -30,7 +38,7 @@ class NiceWar with RouteInfo {
   String? script;
   WarStartType startType;
   int targetId;
-  int eventId;
+  int _eventId;
   String eventName;
   int lastQuestId;
   List<WarAdd> warAdds;
@@ -38,6 +46,11 @@ class NiceWar with RouteInfo {
   List<NiceSpot> spots;
   List<SpotRoad> spotRoads;
   List<WarQuestSelection> questSelections;
+
+  int get eventId {
+    if (_eventId == 0) return kExtraWarEventMapping[id] ?? _eventId;
+    return _eventId;
+  }
 
   ScriptLink? get startScript {
     if (script != null &&
@@ -67,7 +80,7 @@ class NiceWar with RouteInfo {
     this.script,
     required this.startType,
     required this.targetId,
-    this.eventId = 0,
+    int eventId = 0,
     this.eventName = "",
     required this.lastQuestId,
     this.warAdds = const [],
@@ -76,7 +89,8 @@ class NiceWar with RouteInfo {
     this.spotRoads = const [],
     this.questSelections = const [],
   })  : _name = ['', '-'].contains(name) ? null : name,
-        _longName = ['', '-'].contains(longName) ? null : longName;
+        _longName = ['', '-'].contains(longName) ? null : longName,
+        _eventId = eventId;
 
   factory NiceWar.fromJson(Map<String, dynamic> json) =>
       _$NiceWarFromJson(json);
