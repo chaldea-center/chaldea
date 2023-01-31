@@ -209,6 +209,7 @@
   "event_recipe": "配方",
   "event_rerun_replace_grail": "聖杯替換為傳承結晶 {n}/{total} 個",
   "event_shop": null,
+  "event_skill": null,
   "event_title": "活動",
   "event_tower": "塔",
   "event_treasure_box": "寶箱",

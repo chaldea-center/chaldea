@@ -209,6 +209,7 @@
   "event_recipe": "Recipe",
   "event_rerun_replace_grail": "Grail to crystal: {n}/{total}",
   "event_shop": "Event Shop",
+  "event_skill": "Event Skill",
   "event_title": "Event",
   "event_tower": "Tower",
   "event_treasure_box": "Treasure Box",

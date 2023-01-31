@@ -209,6 +209,7 @@
   "event_recipe": null,
   "event_rerun_replace_grail": "كريستال الى لور : {n}",
   "event_shop": null,
+  "event_skill": null,
   "event_title": "حدث",
   "event_tower": "برج",
   "event_treasure_box": "بطاقة استبدال",

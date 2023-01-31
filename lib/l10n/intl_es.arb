@@ -209,6 +209,7 @@
   "event_recipe": null,
   "event_rerun_replace_grail": "Griales a Lore: {n}/{total}",
   "event_shop": null,
+  "event_skill": null,
   "event_title": "Eventos",
   "event_tower": "Torre",
   "event_treasure_box": "Cofre del tesoro",

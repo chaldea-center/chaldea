@@ -2363,6 +2363,17 @@ class S {
     );
   }
 
+  /// `Event Skill`
+  String get event_skill {
+    return Intl.message(
+      'Event Skill',
+      name: 'event_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Event`
   String get event_title {
     return Intl.message(

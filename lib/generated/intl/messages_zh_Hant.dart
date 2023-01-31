@@ -318,6 +318,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
         "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("活动商店"),
+        "event_skill": MessageLookupByLibrary.simpleMessage("活动技能"),
         "event_title": MessageLookupByLibrary.simpleMessage("活動"),
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("寶箱"),

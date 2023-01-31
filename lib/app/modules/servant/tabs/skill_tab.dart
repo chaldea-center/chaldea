@@ -82,6 +82,29 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
             : -1,
       ));
     }
+    final extraPassives = svt.extraPassive
+        .where((e) => e.extraPassive.any((cond) => cond.eventId != 0))
+        .toList();
+    if (extraPassives.isNotEmpty) {
+      children.add(SimpleAccordion(
+        headerBuilder: (context, expanded) {
+          return SHeader('${extraPassives.length} ${S.current.event_skill}');
+        },
+        contentBuilder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final skill in extraPassives)
+                SkillDescriptor(
+                  skill: skill,
+                  showEnemy: !svt.isUserSvt,
+                )
+            ],
+          );
+        },
+      ));
+    }
+    children.add(const SafeArea(child: SizedBox()));
     return ListView.builder(
       itemCount: children.length,
       itemBuilder: (context, index) => children[index],
