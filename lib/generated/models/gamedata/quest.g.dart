@@ -665,6 +665,7 @@ const _$RestrictionTypeEnumMap = {
       'fixedSvtIndividualityPositionMain',
   RestrictionType.uniqueIndividuality: 'uniqueIndividuality',
   RestrictionType.mySvtOrSupport: 'mySvtOrSupport',
+  RestrictionType.dataLostBattleUniqueSvt: 'dataLostBattleUniqueSvt',
 };
 
 const _$RestrictionRangeTypeEnumMap = {
@@ -757,4 +758,5 @@ const _$QuestFlagEnumMap = {
   QuestFlag.forceDisplayEnemyInfo: 'forceDisplayEnemyInfo',
   QuestFlag.alloutBattle: 'alloutBattle',
   QuestFlag.recollection: 'recollection',
+  QuestFlag.notSingleSupportOnly: 'notSingleSupportOnly',
 };

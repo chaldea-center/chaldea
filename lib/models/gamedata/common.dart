@@ -817,4 +817,8 @@ enum CondType {
   notQuestClearBeforeEventStart,
   eventTutorialFlagOn,
   eventTutorialFlagOff,
+  eventSuperBossValueEqual,
+  notEventSuperBossValueEqual,
+  superBossDamageAbove,
+  superBossDamageBelow,
 }

@@ -267,4 +267,8 @@ const _$CondTypeEnumMap = {
   CondType.notQuestClearBeforeEventStart: 'notQuestClearBeforeEventStart',
   CondType.eventTutorialFlagOn: 'eventTutorialFlagOn',
   CondType.eventTutorialFlagOff: 'eventTutorialFlagOff',
+  CondType.eventSuperBossValueEqual: 'eventSuperBossValueEqual',
+  CondType.notEventSuperBossValueEqual: 'notEventSuperBossValueEqual',
+  CondType.superBossDamageAbove: 'superBossDamageAbove',
+  CondType.superBossDamageBelow: 'superBossDamageBelow',
 };

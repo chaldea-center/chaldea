@@ -791,8 +791,16 @@ enum BuffType {
   hpReduceToRegain,
   selfturnstartFunction,
   overwriteDeadType,
+  upActionCount,
+  downActionCount,
+  shiftGuts,
+  shiftGutsRatio,
+  masterSkillValueUp,
+  buffConvert,
+  subFieldIndividuality,
   toFieldChangeField, // 10001
   toFieldAvoidBuff, // 10002
+  toFieldSubIndividualityField, // 10003
   ;
 
   BuffAction get buffAction =>
@@ -905,6 +913,7 @@ enum FuncType {
   eventFortificationPointUp,
   gainNpIndividualSum,
   setQuestRouteFlag,
+  lastUsePlayerSkillCopy,
 }
 
 extension FuncTargetTypeX on FuncTargetType {

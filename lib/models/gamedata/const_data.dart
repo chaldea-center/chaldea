@@ -538,6 +538,12 @@ enum BuffAction {
   turnendHpReduceToRegain(107),
   functionSelfturnstart(108),
   overwriteDeadType(109),
+  actionCount(110),
+  shiftGuts(111),
+  toFieldSubIndividualityField(112),
+  masterSkillValueUp(113),
+  buffConvert(114),
+  subFieldIndividuality(115),
   ;
 
   final int id;

@@ -1297,6 +1297,7 @@ enum QuestFlag {
   forceDisplayEnemyInfo,
   alloutBattle,
   recollection,
+  notSingleSupportOnly,
 }
 
 enum GiftType {
@@ -1358,6 +1359,7 @@ enum RestrictionType {
   fixedSvtIndividualityPositionMain,
   uniqueIndividuality,
   mySvtOrSupport,
+  dataLostBattleUniqueSvt,
 }
 
 enum RestrictionRangeType {

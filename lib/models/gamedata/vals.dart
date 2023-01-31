@@ -154,6 +154,14 @@ class DataVals {
       sourceVals['DisplayActualRecoveryHpFlag'];
   int? get ShiftDeckIndex => sourceVals['ShiftDeckIndex'];
   String? get PopValueText => sourceVals['PopValueText'];
+  int? get IsLossHpPerNow => sourceVals['IsLossHpPerNow'];
+  int? get CopyTargetFunctionType => sourceVals['CopyTargetFunctionType'];
+  int? get CopyFunctionTargetPTOnly => sourceVals['CopyFunctionTargetPTOnly'];
+  int? get IgnoreValueUp => sourceVals['IgnoreValueUp'];
+  int? get ApplyValueUp => sourceVals['ApplyValueUp'];
+  int? get ActNoDamageBuff => sourceVals['ActNoDamageBuff'];
+  int? get ActSelectIndex => sourceVals['ActSelectIndex'];
+  int? get CopyTargetBuffType => sourceVals['CopyTargetBuffType'];
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];

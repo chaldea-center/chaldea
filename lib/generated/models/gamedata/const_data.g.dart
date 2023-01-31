@@ -670,4 +670,10 @@ const _$BuffActionEnumMap = {
   BuffAction.turnendHpReduceToRegain: 'turnendHpReduceToRegain',
   BuffAction.functionSelfturnstart: 'functionSelfturnstart',
   BuffAction.overwriteDeadType: 'overwriteDeadType',
+  BuffAction.actionCount: 'actionCount',
+  BuffAction.shiftGuts: 'shiftGuts',
+  BuffAction.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
+  BuffAction.masterSkillValueUp: 'masterSkillValueUp',
+  BuffAction.buffConvert: 'buffConvert',
+  BuffAction.subFieldIndividuality: 'subFieldIndividuality',
 };

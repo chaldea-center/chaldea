@@ -453,6 +453,7 @@ const _$FuncTypeEnumMap = {
   FuncType.eventFortificationPointUp: 'eventFortificationPointUp',
   FuncType.gainNpIndividualSum: 'gainNpIndividualSum',
   FuncType.setQuestRouteFlag: 'setQuestRouteFlag',
+  FuncType.lastUsePlayerSkillCopy: 'lastUsePlayerSkillCopy',
 };
 
 const _$FuncTargetTypeEnumMap = {
@@ -750,6 +751,14 @@ const _$BuffTypeEnumMap = {
   BuffType.hpReduceToRegain: 'hpReduceToRegain',
   BuffType.selfturnstartFunction: 'selfturnstartFunction',
   BuffType.overwriteDeadType: 'overwriteDeadType',
+  BuffType.upActionCount: 'upActionCount',
+  BuffType.downActionCount: 'downActionCount',
+  BuffType.shiftGuts: 'shiftGuts',
+  BuffType.shiftGutsRatio: 'shiftGutsRatio',
+  BuffType.masterSkillValueUp: 'masterSkillValueUp',
+  BuffType.buffConvert: 'buffConvert',
+  BuffType.subFieldIndividuality: 'subFieldIndividuality',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
+  BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
 };
