@@ -180,7 +180,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 },
                 style: kTextButtonDenseStyle,
                 child: Text(
-                  Transl.eventNames(war.eventName).l,
+                  war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
                   textAlign: TextAlign.center,
                   textScaleFactor: 0.9,
                 ),
@@ -198,7 +198,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 },
                 style: kTextButtonDenseStyle,
                 child: Text(
-                  condWar.lLongName.l,
+                  condWar.lShortName,
                   textAlign: TextAlign.center,
                   textScaleFactor: 0.9,
                 ),
@@ -287,7 +287,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 );
               },
             ),
-          if (freeQuests.isNotEmpty)
+          if (freeQuests.isNotEmpty && war.id != 1002 && war.id != 9999)
             ListTile(
               title: const Text('Free Quest Overview'),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

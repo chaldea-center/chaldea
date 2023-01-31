@@ -48,7 +48,7 @@ class TraitServantTab extends StatelessWidget {
             final event = db.gameData.events[traitAdd.idx ~/ 100];
             String name = traitAdd.idx.toString();
             if (event != null) {
-              name += '(${event.lName.l})';
+              name += '(${event.lName.l.setMaxLines(1)})';
             }
             details.addAll(_addComment(traitAdd.trait, id, name));
           }

@@ -31,8 +31,8 @@ class QuestCard extends StatefulWidget {
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
         super(
-            key:
-                key ?? Key('QuestCard_${region.name}_${quest?.id ?? questId}'));
+          key: key ?? Key('QuestCard_${region.name}_${quest?.id ?? questId}'),
+        );
 
   @override
   _QuestCardState createState() => _QuestCardState();
@@ -806,7 +806,7 @@ class _QuestCardState extends State<QuestCard> {
       final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
       drops.sortByList((e) => _compareItem(e.key));
       for (final entry in drops) {
-        dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 4);
+        dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 3);
       }
     }
     if (dropTexts.isEmpty) return const Text('-');
@@ -820,6 +820,8 @@ class _QuestCardState extends State<QuestCard> {
             id: entry.key,
             text: entry.value,
             width: 42,
+            option: ImageWithTextOption(
+                fontSize: 42 * 0.27, padding: EdgeInsets.zero),
           )
       ],
     );
@@ -833,7 +835,6 @@ class _QuestCardState extends State<QuestCard> {
       String? text;
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
-
         if (preferApRate) {
           if (quest.consumeType == ConsumeType.ap &&
               quest.consume > 0 &&
@@ -841,10 +842,10 @@ class _QuestCardState extends State<QuestCard> {
             double apRate = quest.consume / dropRate;
             text = apRate >= 1000
                 ? apRate.toInt().toString()
-                : apRate.format(precision: 3, maxDigits: 3);
+                : apRate.format(precision: 3, maxDigits: 4);
           }
         } else {
-          text = dropRate.format(percent: true, precision: 3, maxDigits: 3);
+          text = dropRate.format(percent: true, maxDigits: 3);
         }
       }
       if (text != null) {
