@@ -26,37 +26,38 @@ class AppInfo {
   static final Map<String, dynamic> appParams = {};
 
   static Future<void> _loadDeviceInfo() async {
-    if (PlatformU.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(androidInfo.toMap()..remove('systemFeatures'));
-      _androidSdk = androidInfo.version.sdkInt;
-    } else if (PlatformU.isIOS) {
-      final iosInfo = await DeviceInfoPlugin().iosInfo;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(iosInfo.toMap());
-      _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
-    } else if (PlatformU.isMacOS) {
-      final macOsInfo = await DeviceInfoPlugin().macOsInfo;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(macOsInfo.toMap());
-    } else if (PlatformU.isMacOS) {
-      final linuxInfo = await DeviceInfoPlugin().linuxInfo;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(linuxInfo.toMap());
-    } else if (PlatformU.isWindows) {
-      final windowsInfo = await DeviceInfoPlugin().windowsInfo;
-      deviceParams['operatingSystem'] = PlatformU.operatingSystem;
-      deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(windowsInfo.toMap()..remove('digitalProductId'));
-    } else if (PlatformU.isWeb) {
-      final webInfo = await DeviceInfoPlugin().webBrowserInfo;
-      // ignore: deprecated_member_use
-      deviceParams.addAll(webInfo.toMap());
-    } else {
-      deviceParams['operatingSystem'] = PlatformU.operatingSystem;
-      deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
+    try {
+      if (PlatformU.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        deviceParams
+            .addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
+        _androidSdk = androidInfo.version.sdkInt;
+        deviceParams['androidId'] = await const AndroidId().getId();
+      } else if (PlatformU.isIOS) {
+        final iosInfo = await DeviceInfoPlugin().iosInfo;
+        _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
+        deviceParams.addAll(Map.from(iosInfo.data)..remove('name'));
+      } else if (PlatformU.isMacOS) {
+        final macOsInfo = await DeviceInfoPlugin().macOsInfo;
+        deviceParams.addAll(Map.from(macOsInfo.data)..remove('computerName'));
+      } else if (PlatformU.isLinux) {
+        final linuxInfo = await DeviceInfoPlugin().linuxInfo;
+        deviceParams.addAll(Map.from(linuxInfo.data));
+      } else if (PlatformU.isWindows) {
+        final windowsInfo = await DeviceInfoPlugin().windowsInfo;
+        deviceParams
+            .addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
+      } else if (PlatformU.isWeb) {
+        final webInfo = await DeviceInfoPlugin().webBrowserInfo;
+        deviceParams.addAll(Map.from(webInfo.data));
+      } else {
+        deviceParams['operatingSystem'] = PlatformU.operatingSystem;
+        deviceParams['operatingSystemVersion'] =
+            PlatformU.operatingSystemVersion;
+      }
+    } catch (e, s) {
+      logger.e('failed to load device info', e, s);
+      deviceParams['failed'] = e.toString();
     }
   }
 

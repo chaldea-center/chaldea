@@ -441,18 +441,39 @@ class _MyHttpFileService extends FileService {
     if (headers != null) {
       req.headers.addAll(headers);
     }
-    final httpResponse = await _httpClient.send(req);
-    if ([
-      'webview.fate-go.jp',
-      'news.fate-go.jp',
-      'i0.hdslb.com',
-      'webview.fate-go.us',
-      'static.fate-go.com.tw',
-    ].contains(uri.host)) {
-      // 30days=2,592,000
-      httpResponse.headers
-          .addAll({HttpHeaders.cacheControlHeader: 'max-age=2592000'});
+    try {
+      final httpResponse = await _httpClient.send(req);
+      if ([
+        'fgo.wiki',
+        'fate-go.jp',
+        'fate-go.us',
+        'fate-go.com.tw',
+        'hdslb.com',
+        'pstatic.net',
+      ].any((e) => uri.host.contains(e))) {
+        // 30days=2,592,000
+        String? controlHeader =
+            httpResponse.headers[HttpHeaders.cacheControlHeader];
+        if (controlHeader == null) {
+          httpResponse.headers[HttpHeaders.cacheControlHeader] =
+              'max-age=2592000';
+        } else {
+          controlHeader = controlHeader
+              .replaceFirstMapped(RegExp(r'max-age=(\d+)'), (match) {
+            final maxAge = int.tryParse(match.group(1) ?? '');
+            if (maxAge != null && maxAge < 2592000) {
+              return 'max-age=2592000';
+            } else {
+              return match.group(0)!;
+            }
+          });
+          httpResponse.headers[HttpHeaders.cacheControlHeader] = controlHeader;
+        }
+      }
+      return HttpGetResponse(httpResponse);
+    } catch (e) {
+      return HttpGetResponse(
+          http.StreamedResponse(Stream.fromIterable([]), 400));
     }
-    return HttpGetResponse(httpResponse);
   }
 }
