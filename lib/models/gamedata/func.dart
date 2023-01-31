@@ -505,7 +505,8 @@ class Buff with RouteInfo {
   BuffAction get buffAction => type.buffAction;
 
   static String formatRate(BuffType type, int rate) {
-    final base = kBuffActionPercentTypes[type.buffAction];
+    final base =
+        kBuffActionPercentTypes[type.buffAction] ?? kBuffTypePercentType[type];
     if (base == null) return rate.toString();
     return rate.format(percent: true, base: base);
   }

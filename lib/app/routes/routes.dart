@@ -332,9 +332,10 @@ class RouteConfiguration {
       case Routes.commonReleasePrefix:
         return CommonReleasesPage.id(id: _secondInt ?? 0);
       case Routes.svtClass:
-        final cls = SvtClass.values.firstWhereOrNull((e) => e.name == second);
-        if (cls == null) break;
-        return ClassInfoPage(cls: cls);
+        int? clsId = _secondInt ??
+            SvtClass.values.firstWhereOrNull((e) => e.name == second)?.id;
+        if (clsId == null) break;
+        return ClassInfoPage(clsId: clsId);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

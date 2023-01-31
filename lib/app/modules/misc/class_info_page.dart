@@ -9,8 +9,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ClassInfoPage extends StatefulWidget {
-  final SvtClass cls;
-  const ClassInfoPage({super.key, required this.cls});
+  final int clsId;
+  const ClassInfoPage({super.key, required this.clsId});
 
   @override
   State<ClassInfoPage> createState() => _ClassInfoPageState();
@@ -18,12 +18,15 @@ class ClassInfoPage extends StatefulWidget {
 
 class _ClassInfoPageState extends State<ClassInfoPage> {
   bool showIcon = true;
-  SvtClass get cls => widget.cls;
+
+  int get clsId => widget.clsId;
+  late SvtClass? cls = kSvtClassIds[clsId];
 
   @override
   Widget build(BuildContext context) {
-    final info = db.gameData.constData.classInfo[cls.id];
-    final rarities = [if (cls == SvtClass.avenger) 0, 1, 3, 5];
+    final info = db.gameData.constData.classInfo[clsId];
+    final rarities =
+        cls == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
     Set<String> cardImages = {};
     if (info != null) {
       cardImages.addAll(rarities.map((e) => Atlas.classCard(e, info.imageId)));
@@ -36,7 +39,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.filter_sort_class}: ${widget.cls.lName}'),
+        title: Text('${S.current.filter_sort_class}: ${cls?.lName ?? clsId}'),
       ),
       body: ListView(
         children: [
@@ -49,7 +52,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
                     children: [
                       for (final rarity in rarities)
                         db.getIconImage(
-                          cls.icon(rarity),
+                          SvtClassX.clsIcon(rarity, info?.iconImageId),
                           height: 24,
                           // width: 24,
                         ),
@@ -61,8 +64,8 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
             CustomTableRow.fromTexts(
                 texts: const ['ID', 'Class'], isHeader: true),
             CustomTableRow(children: [
-              TableCellData(text: cls.id.toString()),
-              TableCellData(text: cls.lName),
+              TableCellData(text: clsId.toString()),
+              TableCellData(text: cls?.lName ?? clsId.toString()),
             ]),
             CustomTableRow.fromTexts(
                 texts: const ['Attack Rate', 'Trait'], isHeader: true),
@@ -70,7 +73,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
               TableCellData(text: _fmt(info?.attackRate)),
               TableCellData(
                 child: info == null
-                    ? null
+                    ? const Text('')
                     : Text.rich(
                         SharedBuilder.textButtonSpan(
                             context: context,

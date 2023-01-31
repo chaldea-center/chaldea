@@ -730,11 +730,23 @@ class CraftEssence with GameCardMixin {
       db.gameData.wiki.craftEssences[collectionNo] ??=
           CraftEssenceExtra(collectionNo: collectionNo);
 
-  CEObtain get obtain => bondEquipOwner != null
-      ? CEObtain.bond
-      : valentineEquipOwner != null
-          ? CEObtain.valentine
-          : extra.obtain;
+  CEObtain get obtain {
+    switch (flag) {
+      case SvtFlag.svtEquipFriendShip:
+        return CEObtain.bond;
+      case SvtFlag.svtEquipChocolate:
+        return CEObtain.valentine;
+      case SvtFlag.matDropRateUpCe:
+        return CEObtain.drop;
+      case SvtFlag.svtEquipExp:
+      case SvtFlag.ignoreCombineLimitSpecial:
+      case SvtFlag.normal:
+      case SvtFlag.goetia:
+      case SvtFlag.onlyUseForNpc:
+        break;
+    }
+    return extra.obtain;
+  }
 
   CraftATKType get atkType {
     return atkMax > 0
@@ -1342,7 +1354,7 @@ enum SvtFlag {
   onlyUseForNpc,
   svtEquipFriendShip,
   ignoreCombineLimitSpecial,
-  svtEquipExp,
+  svtEquipExp, // may be normal for some EXP CEs
   svtEquipChocolate,
   normal,
   goetia,

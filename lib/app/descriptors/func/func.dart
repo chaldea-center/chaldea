@@ -419,10 +419,12 @@ class FuncDescriptor extends StatelessWidget {
         funcText.write(Transl.buffDetail(buff.detail).l);
       } else {
         if ([
-          BuffType.fieldIndividuality,
           BuffType.addIndividuality,
           BuffType.subIndividuality,
-          BuffType.toFieldChangeField
+          BuffType.fieldIndividuality,
+          BuffType.subFieldIndividuality,
+          BuffType.toFieldChangeField,
+          BuffType.toFieldSubIndividualityField,
         ].contains(buff.type)) {
           funcText.write(Transl.buffNames(buff.type.name).l);
         } else if (buff.name.isEmpty) {
@@ -588,7 +590,13 @@ class FuncDescriptor extends StatelessWidget {
         (vals?.UseRate != null && vals!.UseRate! < 0)) {
       // print(vals.Rate);
       final hint = Transl.misc('Func.ifPrevFuncSucceed');
-      spans.add(TextSpan(text: '(${hint.l})'));
+      spans.insert(0, TextSpan(text: '(${hint.l})'));
+    }
+
+    if (vals?.ActSelectIndex != null) {
+      String hint = Transl.misc('Func.ActSelectIndex').l;
+      hint = hint.replaceAll('{0}', (vals!.ActSelectIndex! + 1).toString());
+      spans.insert(0, TextSpan(text: '($hint)'));
     }
 
     void _addFuncTarget() {
@@ -691,6 +699,27 @@ class FuncDescriptor extends StatelessWidget {
             int? indiv = vals?.Value;
             if (indiv != null) {
               spans.add(_replaceTrait(indiv));
+              return;
+            }
+            break;
+          case BuffType.subFieldIndividuality:
+          case BuffType.toFieldSubIndividualityField: // need verify
+            List<int>? indivs = vals?.TargetList;
+            if (indivs != null && indivs.isNotEmpty) {
+              spans.add(TextSpan(
+                children: SharedBuilder.replaceSpan(
+                  text,
+                  '{0}',
+                  divideList([
+                    for (final indiv in indivs)
+                      SharedBuilder.traitSpan(
+                        context: context,
+                        trait: NiceTrait(id: indiv),
+                      )
+                  ], const TextSpan(text: ' / ')),
+                ),
+                style: style,
+              ));
               return;
             }
             break;

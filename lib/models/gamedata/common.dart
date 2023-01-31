@@ -222,6 +222,7 @@ enum SvtClass {
   beastUnknown(27, '獸?'), // LB 5.2 beast
   pretender(28, '偽'),
   beastIV(29, '獸Ⅳ'),
+  // 30
   uOlgaMarieAlienGod(31, '獸?'),
   uOlgaMarie(32, '?'),
   unknown(97),
@@ -267,9 +268,11 @@ extension SvtClassX on SvtClass {
   SvtClassInfo? get info => db.gameData.constData.classInfo[id];
   int get iconId => info?.iconImageId ?? 12;
 
-  String icon(int svtRarity) {
+  String icon(int svtRarity) => clsIcon(svtRarity, iconId);
+
+  static String clsIcon(int svtRarity, int? iconId) {
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
-    return Atlas.asset('ClassIcons/class${rarity}_$iconId.png');
+    return Atlas.asset('ClassIcons/class${rarity}_${iconId ?? 12}.png');
   }
 
   void routeTo() {

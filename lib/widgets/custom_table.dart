@@ -174,7 +174,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
           /// TODO: AutoSizeText supported here:
           /// LayoutBuilder does not support returning intrinsic dimensions
           /// see https://github.com/leisim/auto_size_text/issues/77
-          String text = cell.text!;
+          String text = cell.text ?? "";
           if (cell.maxLines == null || text.isEmpty) {
             _child = Text(
               text,

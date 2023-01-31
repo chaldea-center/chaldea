@@ -595,4 +595,9 @@ const kBuffActionPercentTypes = {
   BuffAction.starweight: 10,
   BuffAction.toleranceSubstate: 10,
   BuffAction.turnendNp: 100,
+  BuffAction.masterSkillValueUp: 10,
+};
+
+const kBuffTypePercentType = <BuffType, int>{
+  BuffType.masterSkillValueUp: 10,
 };

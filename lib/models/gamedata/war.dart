@@ -110,13 +110,18 @@ class NiceWar with RouteInfo {
 
   Transl<String, String> get lLongName {
     final warName =
-        (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? 'War $id';
+        (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
     return Transl.warNames(warName);
   }
 
   Transl<String, String> get lName {
-    final warName = _name ?? _longName ?? 'War $id';
+    final warName = _name ?? _longName ?? _defaultName;
     return Transl.warNames(warName);
+  }
+
+  String get _defaultName {
+    if (id == 312) return '奏章 プロローグ';
+    return 'War $id';
   }
 
   bool get isMainStory => id >= 100 && id < 1000;

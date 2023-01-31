@@ -820,7 +820,7 @@ class EnemyFilterData with _FilterData {
 
   EnemyFilterData({
     this.useGrid = false,
-    this.onlyShowQuestEnemy = true,
+    this.onlyShowQuestEnemy = false,
     List<SvtCompare?>? sortKeys,
     List<bool>? sortReversed,
   })  : sortKeys = List.generate(enemyCompares.length,

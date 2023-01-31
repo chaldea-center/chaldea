@@ -1,11 +1,8 @@
-import 'package:flutter/gestures.dart';
-
 import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
-import 'package:chaldea/app/modules/misc/class_info_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -75,7 +72,7 @@ class SvtInfoTab extends StatelessWidget {
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),
                 GestureDetector(
                   onTap: () {
-                    router.pushPage(ClassInfoPage(cls: svt.className));
+                    svt.className.routeTo();
                   },
                   child: Text.rich(
                     TextSpan(children: [
@@ -293,18 +290,30 @@ class SvtInfoTab extends StatelessWidget {
               if (traitAdd.idx != 1)
                 ..._addTraits(
                   context,
-                  TextSpan(
-                    text: '${traitAdd.idx}: ',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        final event = db.gameData.events[traitAdd.idx ~/ 100];
-                        if (event != null) {
-                          event.routeTo();
-                        }
-                      },
-                  ),
+                  () {
+                    final event = db.gameData.events[traitAdd.idx ~/ 100];
+                    return TextSpan(
+                      children: [
+                        if (event != null) ...[
+                          SharedBuilder.textButtonSpan(
+                            context: context,
+                            text: event.id.toString(),
+                            onTap: event.routeTo,
+                          ),
+                          TextSpan(
+                              text: (traitAdd.idx % 100)
+                                  .toString()
+                                  .padLeft(2, '0'))
+                        ],
+                        if (event == null)
+                          TextSpan(text: traitAdd.idx.toString()),
+                        const TextSpan(text: ': ')
+                      ],
+                    );
+                  }(),
                   traitAdd.trait,
                   baseTraits,
+                  0.9,
                 ),
             if (svt.bondGrowth.isNotEmpty) ...[
               CustomTableRow.fromTexts(
@@ -355,6 +364,7 @@ class SvtInfoTab extends StatelessWidget {
     InlineSpan? prefix,
     List<NiceTrait> traits, [
     List<NiceTrait> baseTraits = const [],
+    double? textScaleFactor,
   ]) {
     if (traits.isEmpty) return [];
     traits = traits.toList()..sort2((e) => e.id);
@@ -405,7 +415,8 @@ class SvtInfoTab extends StatelessWidget {
       CustomTableRow(children: [
         TableCellData(
           alignment: null,
-          child: Text.rich(TextSpan(children: children)),
+          child: Text.rich(TextSpan(children: children),
+              textScaleFactor: textScaleFactor),
         )
       ]),
     ];
