@@ -113,7 +113,7 @@ class GameData with _GameDataExtra {
         fixedDrops = fixedDrops ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
-        constData = constData ?? ConstGameData.empty(),
+        constData = constData ?? ConstGameData(),
         dropRate = dropRate ?? DropRateData(),
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},

@@ -189,7 +189,7 @@ class SvtInfoTab extends StatelessWidget {
                 svt.atkGrowth.getOrNull(99),
                 svt.atkGrowth.getOrNull(119),
               ],
-              db.gameData.constData.classAttackRate[svt.className],
+              db.gameData.constData.classInfo[svt.className.id]?.attackRate,
             ),
             _addAtkHpRow(context, 'HP', [
               svt.hpBase,

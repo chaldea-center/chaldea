@@ -7,58 +7,65 @@ part of '../../../models/gamedata/const_data.dart';
 // **************************************************************************
 
 ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
-      attributeRelation: (json['attributeRelation'] as Map).map(
-        (k, e) => MapEntry(
-            $enumDecode(_$AttributeEnumMap, k),
-            (e as Map).map(
-              (k, e) => MapEntry($enumDecode(_$AttributeEnumMap, k), e as int),
-            )),
-      ),
-      buffActions: (json['buffActions'] as Map).map(
-        (k, e) => MapEntry(const BuffActionConverter().fromJson(k as String),
-            BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      classInfo: (json['classInfo'] as Map?)?.map(
+      attributeRelation: (json['attributeRelation'] as Map?)?.map(
+            (k, e) => MapEntry(
+                $enumDecode(_$AttributeEnumMap, k),
+                (e as Map).map(
+                  (k, e) =>
+                      MapEntry($enumDecode(_$AttributeEnumMap, k), e as int),
+                )),
+          ) ??
+          const {},
+      buffActions: (json['buffActions'] as Map?)?.map(
+            (k, e) => MapEntry(
+                const BuffActionConverter().fromJson(k as String),
+                BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      cardInfo: (json['cardInfo'] as Map?)?.map(
+            (k, e) => MapEntry(
+                $enumDecode(_$CardTypeEnumMap, k),
+                (e as Map).map(
+                  (k, e) => MapEntry(int.parse(k as String),
+                      CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
+                )),
+          ) ??
+          const {},
+      classInfo: (json['classInfo2'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 SvtClassInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      cardInfo: (json['cardInfo'] as Map).map(
-        (k, e) => MapEntry(
-            $enumDecode(_$CardTypeEnumMap, k),
-            (e as Map).map(
-              (k, e) => MapEntry(int.parse(k as String),
-                  CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
-            )),
-      ),
-      classAttackRate: (json['classAttackRate'] as Map).map(
-        (k, e) =>
-            MapEntry(const SvtClassConverter().fromJson(k as String), e as int),
-      ),
-      classRelation: (json['classRelation'] as Map).map(
-        (k, e) => MapEntry(
-            const SvtClassConverter().fromJson(k as String),
-            (e as Map).map(
-              (k, e) => MapEntry(
-                  const SvtClassConverter().fromJson(k as String), e as int),
-            )),
-      ),
-      constants: GameConstants.fromJson(
-          Map<String, dynamic>.from(json['constants'] as Map)),
-      svtGrailCost: (json['svtGrailCost'] as Map).map(
-        (k, e) => MapEntry(
-            int.parse(k as String),
-            (e as Map).map(
-              (k, e) => MapEntry(
-                  int.parse(k as String),
-                  GrailCostDetail.fromJson(
-                      Map<String, dynamic>.from(e as Map))),
-            )),
-      ),
-      userLevel: (json['userLevel'] as Map).map(
-        (k, e) => MapEntry(int.parse(k as String),
-            MasterUserLvDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
+      classRelation: (json['classRelation2'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                (e as Map).map(
+                  (k, e) => MapEntry(int.parse(k as String), e as int),
+                )),
+          ) ??
+          const {},
+      constants: json['constants'] == null
+          ? const GameConstants()
+          : GameConstants.fromJson(
+              Map<String, dynamic>.from(json['constants'] as Map)),
+      svtGrailCost: (json['svtGrailCost'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                (e as Map).map(
+                  (k, e) => MapEntry(
+                      int.parse(k as String),
+                      GrailCostDetail.fromJson(
+                          Map<String, dynamic>.from(e as Map))),
+                )),
+          ) ??
+          const {},
+      userLevel: (json['userLevel'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                MasterUserLvDetail.fromJson(
+                    Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 const _$AttributeEnumMap = {
@@ -105,12 +112,9 @@ const _$BuffLimitEnumMap = {
 
 SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       id: json['id'] as int,
-      className: _$JsonConverterFromJson<String, SvtClass>(
-          json['className'], const SvtClassConverter().fromJson),
-      name: json['name'] as String,
-      individuality:
-          $enumDecodeNullable(_$TraitEnumMap, json['individuality']) ??
-              Trait.unknown,
+      attri: json['attri'] as int,
+      name: json['name'] as String? ?? '',
+      individuality: json['individuality'] as int? ?? 0,
       attackRate: json['attackRate'] as int,
       imageId: json['imageId'] as int,
       iconImageId: json['iconImageId'] as int,
@@ -121,288 +125,6 @@ SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       supportGroup: json['supportGroup'] as int,
       autoSelSupportType: json['autoSelSupportType'] as int,
     );
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
-
-const _$TraitEnumMap = {
-  Trait.unknown: 'unknown',
-  Trait.genderMale: 'genderMale',
-  Trait.genderFemale: 'genderFemale',
-  Trait.genderUnknown: 'genderUnknown',
-  Trait.classSaber: 'classSaber',
-  Trait.classLancer: 'classLancer',
-  Trait.classArcher: 'classArcher',
-  Trait.classRider: 'classRider',
-  Trait.classCaster: 'classCaster',
-  Trait.classAssassin: 'classAssassin',
-  Trait.classBerserker: 'classBerserker',
-  Trait.classShielder: 'classShielder',
-  Trait.classRuler: 'classRuler',
-  Trait.classAlterEgo: 'classAlterEgo',
-  Trait.classAvenger: 'classAvenger',
-  Trait.classDemonGodPillar: 'classDemonGodPillar',
-  Trait.classGrandCaster: 'classGrandCaster',
-  Trait.classBeastI: 'classBeastI',
-  Trait.classBeastII: 'classBeastII',
-  Trait.classMoonCancer: 'classMoonCancer',
-  Trait.classBeastIIIR: 'classBeastIIIR',
-  Trait.classForeigner: 'classForeigner',
-  Trait.classBeastIIIL: 'classBeastIIIL',
-  Trait.classBeastUnknown: 'classBeastUnknown',
-  Trait.classPretender: 'classPretender',
-  Trait.classBeastIV: 'classBeastIV',
-  Trait.classUOlgaMarie: 'classUOlgaMarie',
-  Trait.attributeSky: 'attributeSky',
-  Trait.attributeEarth: 'attributeEarth',
-  Trait.attributeHuman: 'attributeHuman',
-  Trait.attributeStar: 'attributeStar',
-  Trait.attributeBeast: 'attributeBeast',
-  Trait.alignmentLawful: 'alignmentLawful',
-  Trait.alignmentChaotic: 'alignmentChaotic',
-  Trait.alignmentNeutral: 'alignmentNeutral',
-  Trait.alignmentGood: 'alignmentGood',
-  Trait.alignmentEvil: 'alignmentEvil',
-  Trait.alignmentBalanced: 'alignmentBalanced',
-  Trait.alignmentMadness: 'alignmentMadness',
-  Trait.alignmentSummer: 'alignmentSummer',
-  Trait.servant: 'servant',
-  Trait.human: 'human',
-  Trait.undead: 'undead',
-  Trait.artificialDemon: 'artificialDemon',
-  Trait.demonBeast: 'demonBeast',
-  Trait.divineDemon: 'divineDemon',
-  Trait.soldier: 'soldier',
-  Trait.amazoness: 'amazoness',
-  Trait.skeleton: 'skeleton',
-  Trait.zombie: 'zombie',
-  Trait.ghost: 'ghost',
-  Trait.automata: 'automata',
-  Trait.golem: 'golem',
-  Trait.spellBook: 'spellBook',
-  Trait.homunculus: 'homunculus',
-  Trait.lamia: 'lamia',
-  Trait.centaur: 'centaur',
-  Trait.werebeast: 'werebeast',
-  Trait.chimera: 'chimera',
-  Trait.wyvern: 'wyvern',
-  Trait.dragonType: 'dragonType',
-  Trait.demon: 'demon',
-  Trait.handOrDoor: 'handOrDoor',
-  Trait.demonGodPillar: 'demonGodPillar',
-  Trait.shadow: 'shadow',
-  Trait.enemyGardenOfSinnersLivingCorpse: 'enemyGardenOfSinnersLivingCorpse',
-  Trait.enemyGardenOfSinnersApartmentGhostAndSkeleton:
-      'enemyGardenOfSinnersApartmentGhostAndSkeleton',
-  Trait.enemyGardenOfSinnersBaseModel: 'enemyGardenOfSinnersBaseModel',
-  Trait.enemyGardenOfSinnersVengefulSpiritOfSevenPeople:
-      'enemyGardenOfSinnersVengefulSpiritOfSevenPeople',
-  Trait.oni: 'oni',
-  Trait.hand: 'hand',
-  Trait.door: 'door',
-  Trait.enemySaberEliWerebeastAndHomunculusAndKnight:
-      'enemySaberEliWerebeastAndHomunculusAndKnight',
-  Trait.enemySaberEliSkeletonAndGhostAndLamia:
-      'enemySaberEliSkeletonAndGhostAndLamia',
-  Trait.enemySaberEliBugAndGolem: 'enemySaberEliBugAndGolem',
-  Trait.enemySeraphEater: 'enemySeraphEater',
-  Trait.enemySeraphShapeshifter: 'enemySeraphShapeshifter',
-  Trait.enemySeraphTypeI: 'enemySeraphTypeI',
-  Trait.enemySeraphTypeSakura: 'enemySeraphTypeSakura',
-  Trait.enemyHimejiCastleKnightAndGazerAndMassProduction:
-      'enemyHimejiCastleKnightAndGazerAndMassProduction',
-  Trait.enemyHimejiCastleDronesAndHomunculusAndAutomata:
-      'enemyHimejiCastleDronesAndHomunculusAndAutomata',
-  Trait.enemyHimejiCastleSkeletonAndScarecrow:
-      'enemyHimejiCastleSkeletonAndScarecrow',
-  Trait.enemyGuda3MiniNobu: 'enemyGuda3MiniNobu',
-  Trait.threatToHumanity: 'threatToHumanity',
-  Trait.fae: 'fae',
-  Trait.divine: 'divine',
-  Trait.humanoid: 'humanoid',
-  Trait.dragon: 'dragon',
-  Trait.dragonSlayer: 'dragonSlayer',
-  Trait.roman: 'roman',
-  Trait.wildbeast: 'wildbeast',
-  Trait.moon: 'moon',
-  Trait.saberface: 'saberface',
-  Trait.weakToEnumaElish: 'weakToEnumaElish',
-  Trait.riding: 'riding',
-  Trait.arthur: 'arthur',
-  Trait.skyOrEarthServant: 'skyOrEarthServant',
-  Trait.brynhildsBeloved: 'brynhildsBeloved',
-  Trait.undeadOrDemon: 'undeadOrDemon',
-  Trait.demonic: 'demonic',
-  Trait.enemyDavinciTrueEnemy: 'enemyDavinciTrueEnemy',
-  Trait.enemyDavinciFalseEnemy: 'enemyDavinciFalseEnemy',
-  Trait.skyOrEarthExceptPseudoAndDemiServant:
-      'skyOrEarthExceptPseudoAndDemiServant',
-  Trait.fieldSunlight: 'fieldSunlight',
-  Trait.fieldShore: 'fieldShore',
-  Trait.divineOrDemonOrUndead: 'divineOrDemonOrUndead',
-  Trait.fieldForest: 'fieldForest',
-  Trait.blessedByKur: 'blessedByKur',
-  Trait.saberClassServant: 'saberClassServant',
-  Trait.superGiant: 'superGiant',
-  Trait.king: 'king',
-  Trait.greekMythologyMales: 'greekMythologyMales',
-  Trait.fieldBurning: 'fieldBurning',
-  Trait.buffCharmFemale: 'buffCharmFemale',
-  Trait.enemyGudaMiniNobu: 'enemyGudaMiniNobu',
-  Trait.illya: 'illya',
-  Trait.feminineLookingServant: 'feminineLookingServant',
-  Trait.cursedBook: 'cursedBook',
-  Trait.kingproteaProliferation: 'kingproteaProliferation',
-  Trait.kingproteaInfiniteProliferation: 'kingproteaInfiniteProliferation',
-  Trait.fieldCity: 'fieldCity',
-  Trait.enemyCaseFilesRareEnemy: 'enemyCaseFilesRareEnemy',
-  Trait.enemyLasVegasBonusEnemy: 'enemyLasVegasBonusEnemy',
-  Trait.associatedToTheArgo: 'associatedToTheArgo',
-  Trait.weakPointsRevealed: 'weakPointsRevealed',
-  Trait.genderCaenisServant: 'genderCaenisServant',
-  Trait.hominidaeServant: 'hominidaeServant',
-  Trait.demonicBeastServant: 'demonicBeastServant',
-  Trait.livingHuman: 'livingHuman',
-  Trait.enemySummerCampRareEnemy: 'enemySummerCampRareEnemy',
-  Trait.kingproteaProliferationNPDefense: 'kingproteaProliferationNPDefense',
-  Trait.giant: 'giant',
-  Trait.childServant: 'childServant',
-  Trait.nobunaga: 'nobunaga',
-  Trait.curse: 'curse',
-  Trait.fieldImaginarySpace: 'fieldImaginarySpace',
-  Trait.existenceOutsideTheDomain: 'existenceOutsideTheDomain',
-  Trait.fieldShoreOrImaginarySpace: 'fieldShoreOrImaginarySpace',
-  Trait.shutenOnField: 'shutenOnField',
-  Trait.shuten: 'shuten',
-  Trait.genji: 'genji',
-  Trait.enemyLittleBigTenguTsuwamonoEnemy: 'enemyLittleBigTenguTsuwamonoEnemy',
-  Trait.vengeance: 'vengeance',
-  Trait.hasCostume: 'hasCostume',
-  Trait.mechanical: 'mechanical',
-  Trait.knightsOfTheRound: 'knightsOfTheRound',
-  Trait.divineSpirit: 'divineSpirit',
-  Trait.burningLove: 'burningLove',
-  Trait.buffStrongAgainstDragon: 'buffStrongAgainstDragon',
-  Trait.buffStrongAgainstWildBeast: 'buffStrongAgainstWildBeast',
-  Trait.fairyTaleServant: 'fairyTaleServant',
-  Trait.havingAnimalsCharacteristics: 'havingAnimalsCharacteristics',
-  Trait.like: 'like',
-  Trait.exaltation: 'exaltation',
-  Trait.milleniumCastle: 'milleniumCastle',
-  Trait.yuMeiren: 'yuMeiren',
-  Trait.immuneToPigify: 'immuneToPigify',
-  Trait.protoMerlinNPChargeBlock: 'protoMerlinNPChargeBlock',
-  Trait.valkyrie: 'valkyrie',
-  Trait.summerModeServant: 'summerModeServant',
-  Trait.shinsengumiServant: 'shinsengumiServant',
-  Trait.ryozanpaku: 'ryozanpaku',
-  Trait.levitating: 'levitating',
-  Trait.obstacleMaker: 'obstacleMaker',
-  Trait.defender: 'defender',
-  Trait.hasGoddessMetamorphosis: 'hasGoddessMetamorphosis',
-  Trait.attackPhysical: 'attackPhysical',
-  Trait.attackProjectile: 'attackProjectile',
-  Trait.attackMagical: 'attackMagical',
-  Trait.buffPositiveEffect: 'buffPositiveEffect',
-  Trait.buffNegativeEffect: 'buffNegativeEffect',
-  Trait.buffIncreaseDamage: 'buffIncreaseDamage',
-  Trait.buffIncreaseDefence: 'buffIncreaseDefence',
-  Trait.buffDecreaseDamage: 'buffDecreaseDamage',
-  Trait.buffDecreaseDefence: 'buffDecreaseDefence',
-  Trait.buffMentalEffect: 'buffMentalEffect',
-  Trait.buffPoison: 'buffPoison',
-  Trait.buffCharm: 'buffCharm',
-  Trait.buffPetrify: 'buffPetrify',
-  Trait.buffStun: 'buffStun',
-  Trait.buffBurn: 'buffBurn',
-  Trait.buffSpecialResistUp: 'buffSpecialResistUp',
-  Trait.buffSpecialResistDown: 'buffSpecialResistDown',
-  Trait.buffEvadeAndInvincible: 'buffEvadeAndInvincible',
-  Trait.buffSureHit: 'buffSureHit',
-  Trait.buffNpSeal: 'buffNpSeal',
-  Trait.buffEvade: 'buffEvade',
-  Trait.buffInvincible: 'buffInvincible',
-  Trait.buffTargetFocus: 'buffTargetFocus',
-  Trait.buffGuts: 'buffGuts',
-  Trait.skillSeal: 'skillSeal',
-  Trait.buffCurse: 'buffCurse',
-  Trait.buffAtkUp: 'buffAtkUp',
-  Trait.buffPowerModStrUp: 'buffPowerModStrUp',
-  Trait.buffDamagePlus: 'buffDamagePlus',
-  Trait.buffNpDamageUp: 'buffNpDamageUp',
-  Trait.buffCritDamageUp: 'buffCritDamageUp',
-  Trait.buffCritRateUp: 'buffCritRateUp',
-  Trait.buffAtkDown: 'buffAtkDown',
-  Trait.buffPowerModStrDown: 'buffPowerModStrDown',
-  Trait.buffDamageMinus: 'buffDamageMinus',
-  Trait.buffNpDamageDown: 'buffNpDamageDown',
-  Trait.buffCritDamageDown: 'buffCritDamageDown',
-  Trait.buffCritRateDown: 'buffCritRateDown',
-  Trait.buffDeathResistDown: 'buffDeathResistDown',
-  Trait.buffDefenceUp: 'buffDefenceUp',
-  Trait.buffMaxHpUpPercent: 'buffMaxHpUpPercent',
-  Trait.buffMaxHpDownPercent: 'buffMaxHpDownPercent',
-  Trait.buffMaxHpUp: 'buffMaxHpUp',
-  Trait.buffMaxHpDown: 'buffMaxHpDown',
-  Trait.buffImmobilize: 'buffImmobilize',
-  Trait.buffIncreasePoisonEffectiveness: 'buffIncreasePoisonEffectiveness',
-  Trait.buffPigify: 'buffPigify',
-  Trait.buffCurseEffectUp: 'buffCurseEffectUp',
-  Trait.buffTerrorStunChanceAfterTurn: 'buffTerrorStunChanceAfterTurn',
-  Trait.buffConfusion: 'buffConfusion',
-  Trait.buffOffensiveMode: 'buffOffensiveMode',
-  Trait.buffDefensiveMode: 'buffDefensiveMode',
-  Trait.buffLockCardsDeck: 'buffLockCardsDeck',
-  Trait.buffDisableColorCard: 'buffDisableColorCard',
-  Trait.buffChangeField: 'buffChangeField',
-  Trait.buffDefUp: 'buffDefUp',
-  Trait.buffInvinciblePierce: 'buffInvinciblePierce',
-  Trait.buffHpRecoveryPerTurn: 'buffHpRecoveryPerTurn',
-  Trait.buffNegativeEffectImmunity: 'buffNegativeEffectImmunity',
-  Trait.buffDelayedNegativeEffect: 'buffDelayedNegativeEffect',
-  Trait.buffSpecialInvincible: 'buffSpecialInvincible',
-  Trait.buffSkillRankUp: 'buffSkillRankUp',
-  Trait.buffSleep: 'buffSleep',
-  Trait.chenGongNp: 'chenGongNp',
-  Trait.buffNullifyBuff: 'buffNullifyBuff',
-  Trait.cantBeSacrificed: 'cantBeSacrificed',
-  Trait.cardArts: 'cardArts',
-  Trait.cardBuster: 'cardBuster',
-  Trait.cardQuick: 'cardQuick',
-  Trait.cardExtra: 'cardExtra',
-  Trait.cardWeak: 'cardWeak',
-  Trait.cardStrong: 'cardStrong',
-  Trait.cardNP: 'cardNP',
-  Trait.faceCard: 'faceCard',
-  Trait.criticalHit: 'criticalHit',
-  Trait.aoeNP: 'aoeNP',
-  Trait.stNP: 'stNP',
-  Trait.canBeInBattle: 'canBeInBattle',
-  Trait.notBasedOnServant: 'notBasedOnServant',
-  Trait.eventSaberWars: 'eventSaberWars',
-  Trait.eventRashomon: 'eventRashomon',
-  Trait.eventOnigashima: 'eventOnigashima',
-  Trait.eventOnigashimaRaid: 'eventOnigashimaRaid',
-  Trait.eventPrisma: 'eventPrisma',
-  Trait.eventPrismaWorldEndMatch: 'eventPrismaWorldEndMatch',
-  Trait.eventNeroFest2: 'eventNeroFest2',
-  Trait.eventGuda2: 'eventGuda2',
-  Trait.eventNeroFest3: 'eventNeroFest3',
-  Trait.eventSetsubun: 'eventSetsubun',
-  Trait.eventApocrypha: 'eventApocrypha',
-  Trait.eventBattleInNewYork1: 'eventBattleInNewYork1',
-  Trait.eventOniland: 'eventOniland',
-  Trait.eventOoku: 'eventOoku',
-  Trait.eventGuda4: 'eventGuda4',
-  Trait.eventLasVegas: 'eventLasVegas',
-  Trait.eventBattleInNewYork2: 'eventBattleInNewYork2',
-  Trait.eventSaberWarsII: 'eventSaberWarsII',
-  Trait.eventSummerCamp: 'eventSummerCamp',
-  Trait.eventGuda5: 'eventGuda5',
-};
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(
       individuality: (json['individuality'] as List<dynamic>)

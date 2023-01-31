@@ -11,9 +11,10 @@ class ConstGameData {
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
+  @JsonKey(name: 'classInfo2')
   final Map<int, SvtClassInfo> classInfo;
-  final Map<SvtClass, int> classAttackRate;
-  final Map<SvtClass, Map<SvtClass, int>> classRelation;
+  @JsonKey(name: 'classRelation2')
+  final Map<int, Map<int, int>> classRelation;
   final GameConstants constants;
   final Map<int, Map<int, GrailCostDetail>>
       svtGrailCost; // <rarity, <grail_count, detail>>
@@ -33,15 +34,14 @@ class ConstGameData {
   };
 
   ConstGameData({
-    required this.attributeRelation,
-    required this.buffActions,
+    this.attributeRelation = const {},
+    this.buffActions = const {},
+    this.cardInfo = const {},
     this.classInfo = const {},
-    required this.cardInfo,
-    required this.classAttackRate,
-    required this.classRelation,
-    required this.constants,
-    required this.svtGrailCost,
-    required this.userLevel,
+    this.classRelation = const {},
+    this.constants = const GameConstants(),
+    this.svtGrailCost = const {},
+    this.userLevel = const {},
   }) : buffTypeActionMap = {
           for (final entry in buffActions.entries)
             for (final type in [
@@ -50,18 +50,6 @@ class ConstGameData {
             ])
               type: entry.key
         };
-
-  ConstGameData.empty()
-      : attributeRelation = const {},
-        buffActions = const {},
-        cardInfo = const {},
-        classInfo = const {},
-        classAttackRate = const {},
-        classRelation = const {},
-        constants = const GameConstants(),
-        svtGrailCost = const {},
-        userLevel = const {},
-        buffTypeActionMap = const {};
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) =>
       _$ConstGameDataFromJson(json);
@@ -93,12 +81,12 @@ class BuffActionDetail {
       _$BuffActionDetailFromJson(json);
 }
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable()
 class SvtClassInfo {
   int id;
-  SvtClass? className;
+  int attri;
   String name;
-  Trait individuality;
+  int individuality;
   int attackRate;
   int imageId;
   int iconImageId;
@@ -108,12 +96,13 @@ class SvtClassInfo {
   int relationId;
   int supportGroup;
   int autoSelSupportType;
+  SvtClass? get className => kSvtClassIds[id];
 
   SvtClassInfo({
     required this.id,
-    this.className,
-    required this.name,
-    this.individuality = Trait.unknown,
+    required this.attri,
+    this.name = '',
+    this.individuality = 0,
     required this.attackRate,
     required this.imageId,
     required this.iconImageId,

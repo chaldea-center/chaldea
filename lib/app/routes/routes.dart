@@ -147,7 +147,7 @@ class Routes {
   static String commonRelease(int id) => '/common-release/$id';
   static const commonReleasePrefix = '/common-release';
 
-  static String svtClassI(SvtClass cls) => '/class/${cls.name}';
+  static String svtClassI(int clsId) => '/class/$clsId';
   static const String svtClass = '/class';
 
   static const String cvs = '/cvs';

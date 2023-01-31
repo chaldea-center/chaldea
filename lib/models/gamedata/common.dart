@@ -276,7 +276,7 @@ extension SvtClassX on SvtClass {
   }
 
   void routeTo() {
-    router.push(url: Routes.svtClassI(this));
+    router.push(url: Routes.svtClassI(id));
   }
 
   String get lName => Transl.svtClass(this).l;

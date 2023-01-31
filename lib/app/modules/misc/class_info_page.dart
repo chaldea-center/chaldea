@@ -77,9 +77,9 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
                     : Text.rich(
                         SharedBuilder.textButtonSpan(
                             context: context,
-                            text: Transl.trait(info.individuality.id).l,
+                            text: Transl.trait(info.individuality).l,
                             onTap: () => router.push(
-                                url: Routes.traitI(info.individuality.id))),
+                                url: Routes.traitI(info.individuality))),
                       ),
               )
             ]),
@@ -121,33 +121,47 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     );
   }
 
-  Widget clsIcon(SvtClass cls) {
+  Widget clsIcon(int _clsId) {
+    final cls = kSvtClassIds[_clsId];
+    final info = db.gameData.constData.classInfo[_clsId];
     return InkWell(
       onTap: () {
         // setState(() {
         //   showIcon = !showIcon;
         // });
-        cls.routeTo();
+        router.push(url: Routes.svtClassI(_clsId));
       },
       child: Padding(
         padding: const EdgeInsets.all(2),
         child: showIcon
             ? Tooltip(
-                message: cls.lName,
-                child: db.getIconImage(cls.icon(5), height: 24, aspectRatio: 1),
+                message: cls?.lName ?? 'Class $_clsId',
+                child: db.getIconImage(
+                  SvtClassX.clsIcon(5, info?.iconImageId),
+                  height: 24,
+                  aspectRatio: 1,
+                  errorWidget: (context, url, error) => Text(_clsId.toString()),
+                ),
               )
-            : Text(cls.lName),
+            : Text(cls?.lName ?? '$_clsId'),
       ),
     );
   }
 
   Widget clsAffinity() {
-    final data = db.gameData.constData.classRelation;
-    final attackRates = Map<SvtClass, int?>.of(data[cls] ?? {});
-    final defenseRates = data.map((key, value) => MapEntry(key, value[cls]));
-    final allClasses = {...attackRates.keys, ...defenseRates.keys}.toList();
+    final relations = db.gameData.constData.classRelation;
+    final attackRates = Map<int, int>.of(relations[clsId] ?? {});
+    final defenseRates = <int, int>{
+      for (final key in relations.keys)
+        if (relations[key]![cls] != null) key: relations[key]![cls]!
+    };
+    final allClasses = <int>{
+      ...attackRates.keys,
+      ...defenseRates.keys,
+      ...SvtClassX.regularAll.map((e) => e.id)
+    }.toList();
     allClasses
-        .sort2((e) => -(db.gameData.constData.classInfo[e.id]?.priority ?? -1));
+        .sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
     return LayoutBuilder(builder: (context, constraints) {
       int crossCount = constraints.maxWidth ~/ 42;
       if (crossCount < 8) crossCount = 8;
