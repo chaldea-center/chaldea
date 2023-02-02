@@ -54,6 +54,7 @@ class GameDataLoader {
     if (data != null) {
       db.gameData = data;
       db.notifyAppUpdate();
+      EasyLoading.showSuccess(S.current.update_msg_succuss);
     }
     return data;
   }
@@ -178,8 +179,11 @@ class GameDataLoader {
         _dataToWrite[_file] = List.from(resp.data);
         bytes = resp.data;
       }
-
-      dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
+      String text = utf8.decode(bytes!);
+      for (final key in kDWCharReplace.keys) {
+        text = text.replaceAll(key, kDWCharReplace[key]!);
+      }
+      dynamic fileJson = await JsonHelper.decodeString(text);
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
       if (l2mFn != null) {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
@@ -224,6 +228,7 @@ class GameDataLoader {
       'fixedDrops': 'id',
       'items': 'id',
       // mappingData
+      // mappingPatch
       'mysticCodes': 'id',
       // 'questPhases':'',
       'servants': 'collectionNo',
@@ -247,6 +252,8 @@ class GameDataLoader {
           () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
+    _patchMappings(_gameJson);
+
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
     }
@@ -268,6 +275,27 @@ class GameDataLoader {
     db.runtimeData.upgradableDataVersion = newVersion;
     progress.value = finished / newVersion.files.length;
     return _gamedata;
+  }
+
+  void _patchMappings(Map<String, dynamic> gamedata) {
+    final Map? data = gamedata['mappingData'],
+        patches = gamedata['mappingPatch'];
+    if (data == null || patches == null) return;
+
+    void _applyPatch(Map old, Map patch) {
+      for (final key in patch.keys) {
+        var vOld = old[key], vNew = patch[key];
+        if (vOld == null && vNew != null) {
+          old[key] = vNew;
+        } else if (vOld is Map && vNew is Map) {
+          _applyPatch(vOld, vNew);
+        } else {
+          old[key] = vNew;
+        }
+      }
+    }
+
+    _applyPatch(data, patches);
   }
 
   static bool checkHash(List<int> bytes, String hash) {
