@@ -73,14 +73,16 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ),
       );
     }
-    final banners = <String>[
-      ...war.extra.resolvedBanner.values.whereType(),
-      for (final v in war.extra.extraBanners.values) ...?v,
-    ];
+    final banners = war.extra.allBanners;
+    final warAdds = war.warAdds.toList();
+    warAdds.sort2((e) => e.startedAt);
     List<String> warBanners = {
-      war.banner,
-      for (final warAdd in war.warAdds) warAdd.overwriteBanner,
+      for (final warAdd in warAdds) warAdd.overwriteBanner,
     }.whereType<String>().toList();
+    warBanners = {
+      if (war.banner != null) war.banner!,
+      ...warBanners.reversed.take(6).toList().reversed
+    }.toList();
 
     List<Widget> children = [
       if (banners.isNotEmpty)
@@ -163,8 +165,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 spacing: 4,
                 alignment: WrapAlignment.center,
                 children: warBanners
-                    .map((e) => db.getIconImage(e, height: 48))
-                    .take(6)
+                    .map((e) => CachedImage(
+                        imageUrl: e, height: 48, showSaveOnLongPress: true))
                     .toList(),
               ),
             ),
@@ -289,7 +291,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
             ),
           if (freeQuests.isNotEmpty && war.id != 1002 && war.id != 9999)
             ListTile(
-              title: const Text('Free Quest Overview'),
+              title: Text("${S.current.item} (${S.current.free_quest})"),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 router.pushPage(FreeQuestOverview(quests: freeQuests));

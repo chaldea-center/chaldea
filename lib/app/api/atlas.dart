@@ -283,8 +283,6 @@ class _CacheManager {
     return null;
   }
 
-  static const dwReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
-
   Future<String?> getText(String url, {Duration? expireAfter}) async {
     try {
       final data = await get(url, expireAfter: expireAfter);
@@ -302,10 +300,9 @@ class _CacheManager {
       result = await get(url, expireAfter: expireAfter);
       if (result != null) {
         String text = utf8.decode(result);
-        dwReplace.forEach((key, value) {
+        kDWCharReplace.forEach((key, value) {
           text = text.replaceAll(key, value);
         });
-        text = text.replaceAll('\ue000', '{jin}');
         if (url.contains('/CN/')) {
           String cnText = text;
           db.gameData.mappingData.cnReplace.forEach((key, value) {

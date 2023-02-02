@@ -29,3 +29,4 @@ const kULLeading = ' ꔷ ';
 // 0x01ffffff
 final kOnePixel = base64.decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');
+const kDWCharReplace = {"\ue000": "{jin}", "\ue001": "鯖"};

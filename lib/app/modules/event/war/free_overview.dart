@@ -31,13 +31,13 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     _loading = true;
     phases.clear();
     if (mounted) setState(() {});
-    for (final quest in widget.quests) {
-      if (quest.phases.isEmpty) continue;
+    await Future.wait(widget.quests.map((quest) async {
+      if (quest.phases.isEmpty) return null;
       await Future.delayed(const Duration(milliseconds: 800));
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
       if (phase != null) phases[quest.id] = phase;
       if (mounted) setState(() {});
-    }
+    }).toList());
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -170,26 +170,22 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         }
       }
     }
+    Widget wrap(List<Widget> children) {
+      if (children.isEmpty) return const SizedBox();
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Wrap(children: children),
+      );
+    }
 
     return DataRow2(cells: [
       header,
-      DataCell(FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Wrap(
-          children: phase.className
-              .take(2)
-              .map((e) => db.getIconImage(e.icon(5), width: 26))
-              .toList(),
-        ),
-      )),
-      DataCell(FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Wrap(children: eventItems),
-      )),
-      DataCell(FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Wrap(children: normalItems),
-      )),
+      DataCell(wrap(phase.className
+          .take(2)
+          .map((e) => db.getIconImage(e.icon(5), width: 26))
+          .toList())),
+      DataCell(wrap(eventItems)),
+      DataCell(wrap(normalItems)),
     ]);
   }
 }

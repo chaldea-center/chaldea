@@ -66,7 +66,7 @@ class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
           },
         ),
         FilterGroup<BuffType>(
-          title: Text(S.current.effect_target),
+          title: const Text('Buff Type'),
           options: buffTypes.keys.toList(),
           values: filterData.buffType,
           optionBuilder: (v) => Text(Transl.buffType(v).l),

@@ -158,7 +158,8 @@ class DataVals {
   int? get CopyTargetFunctionType => sourceVals['CopyTargetFunctionType'];
   int? get CopyFunctionTargetPTOnly => sourceVals['CopyFunctionTargetPTOnly'];
   int? get IgnoreValueUp => sourceVals['IgnoreValueUp'];
-  int? get ApplyValueUp => sourceVals['ApplyValueUp'];
+  // skill 964295 ["Value", "Value2"]
+  dynamic get ApplyValueUp => sourceVals['ApplyValueUp'];
   int? get ActNoDamageBuff => sourceVals['ActNoDamageBuff'];
   int? get ActSelectIndex => sourceVals['ActSelectIndex'];
   int? get CopyTargetBuffType => sourceVals['CopyTargetBuffType'];

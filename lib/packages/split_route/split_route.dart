@@ -24,6 +24,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/inherit_selection_area.dart';
 import '../../utils/constants.dart' show kAppKey;
+import '../logger.dart';
 
 import 'package:flutter/cupertino.dart'
     show
@@ -349,13 +350,18 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     if (!isMaster) return 0;
 
     int n = 0;
-    Navigator.of(context).popUntil((route) {
-      bool isDetail = route is SplitRoute && route.detail == true;
-      if (isDetail) {
-        n += 1;
-      }
-      return !isDetail;
-    });
+    try {
+      Navigator.of(context).popUntil((route) {
+        bool isDetail = route is SplitRoute && route.detail == true;
+        if (isDetail) {
+          n += 1;
+        }
+        return !isDetail;
+      });
+    } on StateError catch (e, s) {
+      logger.e('failed to popUntil', e, s);
+    }
+
     return n;
   }
 

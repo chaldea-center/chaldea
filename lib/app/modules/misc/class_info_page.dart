@@ -153,7 +153,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     final attackRates = Map<int, int>.of(relations[clsId] ?? {});
     final defenseRates = <int, int>{
       for (final key in relations.keys)
-        if (relations[key]![cls] != null) key: relations[key]![cls]!
+        if (relations[key]![clsId] != null) key: relations[key]![clsId]!
     };
     final allClasses = <int>{
       ...attackRates.keys,

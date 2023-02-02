@@ -59,8 +59,8 @@ class _BuffDetailPageState extends State<BuffDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buff $id ${data?.lName.l ?? ""}',
-            overflow: TextOverflow.fade),
+        title: AutoSizeText('Buff $id ${data?.lName.l ?? ""}',
+            maxLines: 1, minFontSize: 10, overflow: TextOverflow.fade),
         actions: [
           dropdownRegion(shownNone: widget.buff != null),
           popupMenu,

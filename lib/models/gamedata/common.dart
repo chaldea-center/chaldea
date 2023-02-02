@@ -222,7 +222,7 @@ enum SvtClass {
   beastUnknown(27, '獸?'), // LB 5.2 beast
   pretender(28, '偽'),
   beastIV(29, '獸Ⅳ'),
-  // 30
+  beastILost(30, '獸I?'),
   uOlgaMarieAlienGod(31, '獸?'),
   uOlgaMarie(32, '?'),
   unknown(97),
@@ -323,6 +323,7 @@ extension SvtClassX on SvtClass {
     SvtClass.beastIV,
     SvtClass.beastUnknown,
     SvtClass.uOlgaMarieAlienGod,
+    SvtClass.beastILost,
   ];
 
   static bool match(SvtClass value, SvtClass option) {
@@ -404,6 +405,7 @@ enum Trait {
   classBeastUnknown(119),
   classPretender(120),
   classBeastIV(121),
+  classBeastILost(122),
   classUOlgaMarie(123),
   attributeSky(200),
   attributeEarth(201),
@@ -610,6 +612,7 @@ enum Trait {
   chenGongNp(3068),
   buffNullifyBuff(3070),
   cantBeSacrificed(3076),
+  gutsBlock(3086),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),
