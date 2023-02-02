@@ -68,7 +68,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                   flex: 3,
                   textAlign: TextAlign.center,
                   child: InkWell(
-                    onTap: enemy.svt.className.routeTo,
+                    onTap: () => SvtClassX.routeTo(enemy.svt.classId),
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(

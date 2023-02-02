@@ -166,7 +166,11 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 alignment: WrapAlignment.center,
                 children: warBanners
                     .map((e) => CachedImage(
-                        imageUrl: e, height: 48, showSaveOnLongPress: true))
+                          imageUrl: e,
+                          height: 48,
+                          aspectRatio: 450 / 134,
+                          showSaveOnLongPress: true,
+                        ))
                     .toList(),
               ),
             ),

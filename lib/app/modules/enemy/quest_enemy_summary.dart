@@ -134,7 +134,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 TableCellData(
                   textAlign: TextAlign.center,
                   child: InkWell(
-                    onTap: svt.className.routeTo,
+                    onTap: () => SvtClassX.routeTo(svt.classId),
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(

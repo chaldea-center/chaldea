@@ -23,6 +23,7 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       className: json['className'] == null
           ? SvtClass.none
           : const SvtClassConverter().fromJson(json['className'] as String),
+      classId: json['classId'] as int? ?? 0,
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
       rarity: json['rarity'] as int,
       atkMax: json['atkMax'] as int,
@@ -79,6 +80,7 @@ Servant _$ServantFromJson(Map json) => Servant(
       className: json['className'] == null
           ? SvtClass.none
           : const SvtClassConverter().fromJson(json['className'] as String),
+      classId: json['classId'] as int? ?? 0,
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
       rarity: json['rarity'] as int,

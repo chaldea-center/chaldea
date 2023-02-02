@@ -275,7 +275,7 @@ extension SvtClassX on SvtClass {
     return Atlas.asset('ClassIcons/class${rarity}_${iconId ?? 12}.png');
   }
 
-  void routeTo() {
+  static void routeTo(int id) {
     router.push(url: Routes.svtClassI(id));
   }
 

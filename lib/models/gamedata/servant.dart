@@ -109,6 +109,7 @@ class BasicServant with GameCardMixin {
   SvtType type;
   SvtFlag flag;
   SvtClass className;
+  int classId;
   Attribute attribute;
   @override
   int rarity;
@@ -126,6 +127,7 @@ class BasicServant with GameCardMixin {
     required this.type,
     required this.flag,
     this.className = SvtClass.none,
+    this.classId = 0,
     required this.attribute,
     required this.rarity,
     required this.atkMax,
@@ -182,6 +184,7 @@ class Servant with GameCardMixin {
   String ruby;
   String battleName;
   SvtClass className;
+  int classId;
   SvtType type;
   SvtFlag flag;
   @override
@@ -242,6 +245,7 @@ class Servant with GameCardMixin {
     this.ruby = "",
     this.battleName = "",
     this.className = SvtClass.none,
+    this.classId = 0,
     required this.type,
     required this.flag,
     required this.rarity,

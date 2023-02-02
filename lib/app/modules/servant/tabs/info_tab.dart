@@ -72,7 +72,7 @@ class SvtInfoTab extends StatelessWidget {
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),
                 GestureDetector(
                   onTap: () {
-                    svt.className.routeTo();
+                    SvtClassX.routeTo(svt.classId);
                   },
                   child: Text.rich(
                     TextSpan(children: [

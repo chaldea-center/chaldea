@@ -70,7 +70,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
                   flex: 3,
                   textAlign: TextAlign.center,
                   child: InkWell(
-                    onTap: svt.svt.className.routeTo,
+                    onTap: () => SvtClassX.routeTo(svt.svt.classId),
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(
