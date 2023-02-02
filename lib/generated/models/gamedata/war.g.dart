@@ -115,11 +115,38 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       nextOfsX: json['nextOfsX'] as int? ?? 0,
       nextOfsY: json['nextOfsY'] as int? ?? 0,
       closedMessage: json['closedMessage'] as String? ?? "",
+      spotAdds: (json['spotAdds'] as List<dynamic>?)
+              ?.map(
+                  (e) => SpotAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       quests: (json['quests'] as List<dynamic>?)
               ?.map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
+
+SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
+      priority: json['priority'] as int,
+      overrideType: $enumDecodeNullable(
+              _$SpotOverwriteTypeEnumMap, json['overrideType']) ??
+          SpotOverwriteType.none,
+      targetId: json['targetId'] as int? ?? 0,
+      targetText: json['targetText'] as String? ?? "",
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
+      condTargetId: json['condTargetId'] as int,
+      condNum: json['condNum'] as int,
+    );
+
+const _$SpotOverwriteTypeEnumMap = {
+  SpotOverwriteType.none: 'none',
+  SpotOverwriteType.flag: 'flag',
+  SpotOverwriteType.pathPointRatio: 'pathPointRatio',
+  SpotOverwriteType.pathPointRatioLimit: 'pathPointRatioLimit',
+  SpotOverwriteType.namePanelOffsetX: 'namePanelOffsetX',
+  SpotOverwriteType.namePanelOffsetY: 'namePanelOffsetY',
+  SpotOverwriteType.name: 'name',
+};
 
 SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       id: json['id'] as int,

@@ -309,6 +309,7 @@ class NiceSpot {
   int nextOfsX;
   int nextOfsY;
   String closedMessage;
+  List<SpotAdd> spotAdds;
   List<Quest> quests;
 
   NiceSpot({
@@ -328,6 +329,7 @@ class NiceSpot {
     this.nextOfsX = 0,
     this.nextOfsY = 0,
     this.closedMessage = "",
+    this.spotAdds = const [],
     this.quests = const [],
   });
 
@@ -341,6 +343,31 @@ class NiceSpot {
     if (_map != null && _map.mapImageW == 0 && _map.mapImageH == 0) return null;
     return image;
   }
+}
+
+@JsonSerializable(converters: [CondTypeConverter()])
+class SpotAdd {
+  // # spotId: int
+  int priority;
+  SpotOverwriteType overrideType;
+  int targetId;
+  String targetText;
+  CondType condType;
+  int condTargetId;
+  int condNum;
+
+  SpotAdd({
+    this.priority = 0,
+    this.overrideType = SpotOverwriteType.none,
+    this.targetId = 0,
+    this.targetText = "",
+    this.condType = CondType.none,
+    required this.condTargetId,
+    this.condNum = 0,
+  });
+
+  factory SpotAdd.fromJson(Map<String, dynamic> json) =>
+      _$SpotAddFromJson(json);
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
@@ -495,4 +522,14 @@ enum WarStartType {
   none,
   script,
   quest,
+}
+
+enum SpotOverwriteType {
+  none,
+  flag,
+  pathPointRatio,
+  pathPointRatioLimit,
+  namePanelOffsetX,
+  namePanelOffsetY,
+  name,
 }

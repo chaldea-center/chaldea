@@ -319,7 +319,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       );
     }
-    String spotJp = curPhase.spotName;
+    String spotJp = curPhase.lSpot.jp;
     String spot = curPhase.lSpot.l;
     final spotImage = curPhase.spot?.shownImage;
     final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';

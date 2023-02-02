@@ -67,6 +67,7 @@ class Quest with RouteInfo {
   QuestAfterClearType afterClear;
   String recommendLv;
   int spotId;
+  @protected
   String spotName;
   int warId;
   String warLongName;
@@ -135,13 +136,29 @@ class Quest with RouteInfo {
     return names;
   }
 
-  Transl<String, String> get lSpot => Transl.spotNames(spotName);
-
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
 
   @override
   String get route => Routes.questI(id);
+
+  Transl<String, String> get lSpot {
+    final spot = this.spot;
+    if (spot == null) return Transl.spotNames(spotName);
+    String shownName = spotName;
+    for (final add in spot.spotAdds) {
+      if (add.overrideType != SpotOverwriteType.name ||
+          add.targetText.isEmpty) {
+        continue;
+      }
+      if ((add.condType == CondType.questClear && id > add.condTargetId) ||
+          (add.condType == CondType.questClearPhase &&
+              id >= add.condTargetId)) {
+        shownName = add.targetText;
+      }
+    }
+    return Transl.spotNames(shownName);
+  }
 
   String get lDispName {
     // 群島-10308, 裏山-20314
@@ -260,6 +277,28 @@ class QuestPhase extends Quest {
 
   List<QuestEnemy> get allEnemies =>
       [for (final stage in stages) ...stage.enemies];
+
+  @override
+  Transl<String, String> get lSpot {
+    final spot = this.spot;
+    if (spot == null) return Transl.spotNames(spotName);
+    String shownName = spotName;
+    for (final add in spot.spotAdds) {
+      if (add.overrideType != SpotOverwriteType.name ||
+          add.targetText.isEmpty) {
+        continue;
+      }
+      if (add.condType == CondType.questClear && id > add.condTargetId) {
+        shownName = add.targetText;
+      } else if (add.condType == CondType.questClearPhase) {
+        if (id > add.condTargetId ||
+            (id == add.condTargetId && phase > add.condNum)) {
+          shownName = add.targetText;
+        }
+      }
+    }
+    return Transl.spotNames(shownName);
+  }
 
   factory QuestPhase.fromJson(Map<String, dynamic> json) =>
       _$QuestPhaseFromJson(json);
