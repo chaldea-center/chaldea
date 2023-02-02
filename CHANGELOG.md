@@ -1,3 +1,14 @@
+# 2.2.4
+
+- Add free quest drop item table
+- Add servant class info page
+- Add event ongoing indicator and filter
+- Add event skills in svt skill tab
+- Add in-app screenshot (debug mode)
+- Add event trait
+- Export bond detail to csv (https sniffing)
+- Split shops by pay item
+
 # 2.2.3
 
 - Fix auth file decode for auto login
