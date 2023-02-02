@@ -168,7 +168,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
                     .map((e) => CachedImage(
                           imageUrl: e,
                           height: 48,
-                          aspectRatio: 450 / 134,
                           showSaveOnLongPress: true,
                         ))
                     .toList(),

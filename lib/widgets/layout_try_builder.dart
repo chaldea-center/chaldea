@@ -7,7 +7,10 @@ class LayoutTryBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (DisableLayoutBuilder.of(context)) {
+    bool hasIntrinsic =
+        context.findAncestorWidgetOfExactType<IntrinsicHeight>() != null ||
+            context.findAncestorWidgetOfExactType<IntrinsicWidth>() != null;
+    if (hasIntrinsic || DisableLayoutBuilder.of(context)) {
       return builder(context, const BoxConstraints.tightForFinite());
     }
     return LayoutBuilder(builder: builder);
