@@ -278,10 +278,10 @@ packages:
     dependency: "direct main"
     description:
       name: cross_file
-      sha256: f71079978789bc2fe78d79227f1f8cfe195b31bbd8db2399b0d15a4b96fb843b
+      sha256: "0b0036e8cccbfbe0555fd83c1d31a6f30b77a96b598b35a5d36dd41f718695e9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3+2"
+    version: "0.3.3+4"
   crypto:
     dependency: "direct main"
     description:
@@ -334,10 +334,10 @@ packages:
     dependency: "direct main"
     description:
       name: data_table_2
-      sha256: f1e4ab1d5d5b3eb12ac6080887adec6403fd77ea45e29588ef8d50b277173149
+      sha256: e5c0459872228d93698f93e0da1b2bee972bf1f4e9c5651b3f9f6f72f0b5f430
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.10"
+    version: "2.3.11"
   dbus:
     dependency: transitive
     description:
@@ -430,10 +430,10 @@ packages:
     dependency: transitive
     description:
       name: fixnum
-      sha256: "04be3e934c52e082558cc9ee21f42f5c1cd7a1262f4c63cd0357c08d5bba81ec"
+      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   fl_chart:
     dependency: "direct main"
     description:
@@ -520,18 +520,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "981442432b632237ffc1cf8092b4173b9e9f2278b5740637287c3069b51c8f09"
+      sha256: "818cf6c28377ba2c91ed283c96fd712e9c175dd2d2488eb7fc93b6afb9ad2e08"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.13"
+    version: "0.6.13+1"
   flutter_picker:
     dependency: "direct main"
     description:
       name: flutter_picker
-      sha256: "2b4b766fa781d8557b5b463e075aaadb7d65e941a39652037eee52ba82370c2d"
+      sha256: "2f94c6eefba8697b07e3cd008b75f06b4ba7053cb26d23ae0fcd5932b7dc75af"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.5"
+    version: "2.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -594,10 +594,10 @@ packages:
     dependency: "direct main"
     description:
       name: github
-      sha256: "826a554f071fb51fd1076d20a79d4a6b43974189b5498a64434bdfd34746a5e3"
+      sha256: "2f78b5cdb21fdc54740a2476344718ab4d1eb59971fbac7962714b1a87fa9862"
       url: "https://pub.dev"
     source: hosted
-    version: "9.8.0"
+    version: "9.9.0"
   glob:
     dependency: transitive
     description:
@@ -1165,10 +1165,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_foundation
-      sha256: "1ffa239043ab8baf881ec3094a3c767af9d10399b2839020b9e4d44c0bb23951"
+      sha256: "2b55c18636a4edc529fa5cd44c03d3f3100c00513f518c5127c951978efcccd0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -1226,10 +1226,10 @@ packages:
     dependency: "direct main"
     description:
       name: sliver_tools
-      sha256: edf005f1a47c2ffa6f1e1a4f24dd99c45b8bccfff9b928d39170d36dc6fda871
+      sha256: bfa69411ebb203cc1a115b1e8bc7935b893eb381fdcf8d453b40c0d4e1db3247
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.8"
+    version: "0.2.9"
   smooth_page_indicator:
     dependency: "direct main"
     description:
@@ -1600,5 +1600,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.0 <4.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=3.7.0"

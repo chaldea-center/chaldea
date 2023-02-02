@@ -56,7 +56,7 @@ dependencies:
   flutter_email_sender: ^5.0.2
   flutter_hooks: ^0.18.5+1
   flutter_markdown: ^0.6.12
-  flutter_picker: ^2.0.5
+  flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.6.0
   flutter_window_close: ^0.2.2
