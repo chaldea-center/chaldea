@@ -14,7 +14,6 @@ import 'package:chaldea/app/modules/home/bootstrap/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/app/modules/master_mission/master_mission_list.dart';
-import 'package:chaldea/app/modules/misc/class_info_page.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
@@ -55,6 +54,8 @@ import '../modules/skill/td_list.dart';
 import '../modules/statistics/game_stat.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
+import '../modules/svt_class/svt_class_info_page.dart';
+import '../modules/svt_class/svt_class_list.dart';
 
 class Routes {
   static const String home = '/';
@@ -149,6 +150,7 @@ class Routes {
 
   static String svtClassI(int clsId) => '/class/$clsId';
   static const String svtClass = '/class';
+  static const String svtClasses = '/classes';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -331,11 +333,13 @@ class RouteConfiguration {
         return type == null ? const ShopListHome() : ShopListPage(type: type);
       case Routes.commonReleasePrefix:
         return CommonReleasesPage.id(id: _secondInt ?? 0);
+      case Routes.svtClasses:
+        return const SvtClassListPage();
       case Routes.svtClass:
         int? clsId = _secondInt ??
             SvtClass.values.firstWhereOrNull((e) => e.name == second)?.id;
         if (clsId == null) break;
-        return ClassInfoPage(clsId: clsId);
+        return SvtClassInfoPage(clsId: clsId);
       case Routes.freeCalc:
         return FreeQuestCalcPage();
       case Routes.cvs:

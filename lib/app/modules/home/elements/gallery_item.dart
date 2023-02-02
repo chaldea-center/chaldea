@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
+import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -134,6 +135,7 @@ class GalleryItem {
         illustratorList,
         charaList,
         svtQuestTimeline,
+        svtClass,
         traits,
         skills,
         tds,
@@ -378,6 +380,15 @@ class GalleryItem {
     titleBuilder: () => S.current.interlude_and_rankup,
     icon: FontAwesomeIcons.timeline,
     page: const SvtQuestTimeline(),
+    isDetail: false,
+    shownDefault: false,
+  );
+  static GalleryItem svtClass = GalleryItem(
+    name: 'svt_class',
+    titleBuilder: () => S.current.filter_sort_class,
+    icon: FontAwesomeIcons.chessKing,
+    url: Routes.svtClasses,
+    page: const SvtClassListPage(),
     isDetail: false,
     shownDefault: false,
   );

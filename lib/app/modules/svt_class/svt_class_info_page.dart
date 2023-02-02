@@ -8,15 +8,15 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class ClassInfoPage extends StatefulWidget {
+class SvtClassInfoPage extends StatefulWidget {
   final int clsId;
-  const ClassInfoPage({super.key, required this.clsId});
+  const SvtClassInfoPage({super.key, required this.clsId});
 
   @override
-  State<ClassInfoPage> createState() => _ClassInfoPageState();
+  State<SvtClassInfoPage> createState() => _SvtClassInfoPageState();
 }
 
-class _ClassInfoPageState extends State<ClassInfoPage> {
+class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   bool showIcon = true;
 
   int get clsId => widget.clsId;
@@ -49,14 +49,11 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
                 TableCellData(
                   child: Wrap(
                     alignment: WrapAlignment.center,
-                    children: [
-                      for (final rarity in rarities)
-                        db.getIconImage(
-                          SvtClassX.clsIcon(rarity, info?.iconImageId),
-                          height: 24,
-                          // width: 24,
-                        ),
-                    ],
+                    children: rarities
+                        .map((e) => SvtClassX.clsIcon(e, info?.iconImageId))
+                        .toSet()
+                        .map((e) => db.getIconImage(e, height: 24))
+                        .toList(),
                   ),
                 )
               ],
@@ -72,7 +69,7 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
             CustomTableRow(children: [
               TableCellData(text: _fmt(info?.attackRate)),
               TableCellData(
-                child: info == null
+                child: info == null || info.individuality == 0
                     ? const Text('')
                     : Text.rich(
                         SharedBuilder.textButtonSpan(

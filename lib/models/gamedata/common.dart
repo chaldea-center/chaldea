@@ -272,6 +272,11 @@ extension SvtClassX on SvtClass {
 
   static String clsIcon(int svtRarity, int? iconId) {
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
+    rarity = const <int, int>{
+          1003: 2,
+          17: 3,
+        }[iconId] ??
+        rarity;
     return Atlas.asset('ClassIcons/class${rarity}_${iconId ?? 12}.png');
   }
 
