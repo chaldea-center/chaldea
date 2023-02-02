@@ -46,7 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(n) => "القسم ${n}";
 
-  static String m10(region) => "${region} Notice";
+  static String m10(region) => "${region} ميّز";
 
   static String m11(n) => "إعادة الخطة ${n}(All)";
 
@@ -71,10 +71,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "active_skill": MessageLookupByLibrary.simpleMessage("المهارة النشطة"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("النشط"),
         "add": MessageLookupByLibrary.simpleMessage("أضف"),
+        "add_condition": MessageLookupByLibrary.simpleMessage("أضافة شرط"),
         "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage(
             "رجاءا ،أضف تفاصيل إلى المرجعية"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("ضف الى اللائحة السوداء"),
+        "anniversary": MessageLookupByLibrary.simpleMessage("الذكرى السنوية"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP نسبة"),
         "app_data_folder":
@@ -93,8 +95,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage(
             "اذا كنت تواجه مشكله في اختيار الصور، اختر ملفات بدلا عن ذلك"),
         "attachment": MessageLookupByLibrary.simpleMessage("مرفق"),
+        "auth_data_hints": MessageLookupByLibrary.simpleMessage(
+            "\"تلميحات:\n - معرف المستخدم \"ID\" هنا ليس كود الصداقه الذي تراه في صفحة تسجيل الدخول / صفحة الاصدقاء\n - لا تشارك المفاتيح أعلاه أو لقطة الشاشة للآخرين !!!\n - اختر إحدى الطرق التالية للاستيراد \""),
         "auto_reset": MessageLookupByLibrary.simpleMessage("إعادة ضبط تلقائي"),
         "auto_update": MessageLookupByLibrary.simpleMessage("تحديث تلقائي"),
+        "autoplay": MessageLookupByLibrary.simpleMessage("تشغيل تلقائي"),
         "background": MessageLookupByLibrary.simpleMessage("خلفية"),
         "backup": MessageLookupByLibrary.simpleMessage("النسخ احتياطي"),
         "backup_failed":
@@ -108,7 +113,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_limit": MessageLookupByLibrary.simpleMessage("حد البوند"),
         "bootstrap_page_title":
             MessageLookupByLibrary.simpleMessage("الصفحة التمهيدية"),
+        "branch_quest": MessageLookupByLibrary.simpleMessage("المهام الفرعية"),
         "bronze": MessageLookupByLibrary.simpleMessage("برونز"),
+        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("الخصم"),
+        "buff_check_self": MessageLookupByLibrary.simpleMessage("شخصي"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("حفظ الأيقونات"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("وزن"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
@@ -116,19 +124,27 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("الشخصية"),
         "card_asset_command":
             MessageLookupByLibrary.simpleMessage("الكوماند كارد"),
+        "card_asset_face":
+            MessageLookupByLibrary.simpleMessage("الصورة المصغرة"),
+        "card_asset_narrow_figure":
+            MessageLookupByLibrary.simpleMessage("تكوين"),
+        "card_asset_status": MessageLookupByLibrary.simpleMessage("رمز الحالة"),
         "card_description": MessageLookupByLibrary.simpleMessage("الوصف"),
         "card_info": MessageLookupByLibrary.simpleMessage("عن"),
         "card_name": MessageLookupByLibrary.simpleMessage("اسم البطاقة"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
-        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("ميكس"),
+        "ce_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
+        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("خلط"),
         "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
         "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
         "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
+        "chaldea_account": MessageLookupByLibrary.simpleMessage("حساب كاليديا"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "غير متوافق مع بيانات الاصدار V1.\n نظام الحساب البسيط للنسخ الاحتياطي لبيانات المستخدم إلى الخادم والتزامن متعدد الأجهزة\n لا يوجد ضمان أمني ، يرجى عدم تعيين كلمات المرور التي تستخدمها بشكل متكرر !!!\n لا حاجة للتسجيل إذا كنت لا تحتاج إلى هاتين الميزتين."),
         "chaldea_backup": MessageLookupByLibrary.simpleMessage(
             "النسخ الاحتياطي لتطبيق كاليديا"),
+        "chaldea_server": MessageLookupByLibrary.simpleMessage("سيرفر كاليديا"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("الصين"),
         "chaldea_server_global":
             MessageLookupByLibrary.simpleMessage("العالمي"),
@@ -137,7 +153,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m1,
         "change_log": MessageLookupByLibrary.simpleMessage("سجل التغييرات"),
         "characters_in_card":
-            MessageLookupByLibrary.simpleMessage("الشخصية في البطاقة"),
+            MessageLookupByLibrary.simpleMessage("الشخصية التي بالكرافت"),
         "check_update": MessageLookupByLibrary.simpleMessage("تفقد عن تحديث"),
         "clear": MessageLookupByLibrary.simpleMessage("مسح"),
         "clear_cache":
@@ -205,6 +221,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("احسب"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("نسبة الدروب"),
         "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
+        "effect_search": MessageLookupByLibrary.simpleMessage("البحث عن بف"),
         "effect_target": MessageLookupByLibrary.simpleMessage("هدف التأثير"),
         "effect_type": MessageLookupByLibrary.simpleMessage("نوع التأثير"),
         "efficiency": MessageLookupByLibrary.simpleMessage("كفاءة"),
@@ -305,6 +322,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("فري كويست"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("الرئيسية"),
+        "game_account": MessageLookupByLibrary.simpleMessage("حساب اللعبة"),
         "game_drop": MessageLookupByLibrary.simpleMessage("دروب"),
         "game_experience": MessageLookupByLibrary.simpleMessage("خبرة"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("بوند"),
@@ -466,7 +484,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_down": MessageLookupByLibrary.simpleMessage("تحرك لأسفل"),
         "move_up": MessageLookupByLibrary.simpleMessage("تحرك لأعلى"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("الميستك كود"),
+        "network_settings":
+            MessageLookupByLibrary.simpleMessage("اعدادت الشبكة"),
         "new_account": MessageLookupByLibrary.simpleMessage("حساب جديد"),
+        "new_data_available":
+            MessageLookupByLibrary.simpleMessage("بيانات جديدة متاحة"),
         "next_card": MessageLookupByLibrary.simpleMessage("التالي"),
         "no_servant_quest_hint":
             MessageLookupByLibrary.simpleMessage("لا يوجد رانك اب او مهمة"),
@@ -477,6 +499,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("الوهم النبيل"),
         "not_found": MessageLookupByLibrary.simpleMessage("غير موجود"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("لم تنفذ بعد"),
+        "np_charge": MessageLookupByLibrary.simpleMessage("NP شحن ال"),
         "np_gain_mod":
             MessageLookupByLibrary.simpleMessage("غير منتهية الصلاحية"),
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
@@ -521,12 +544,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("قيمنا على آب ستور"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("قيمنا على متجر بلاي"),
-        "region_cn": MessageLookupByLibrary.simpleMessage("الصين"),
+        "region_cn": MessageLookupByLibrary.simpleMessage("الصينية"),
         "region_jp": MessageLookupByLibrary.simpleMessage("اليابانية"),
-        "region_kr": MessageLookupByLibrary.simpleMessage("كوريا"),
-        "region_na": MessageLookupByLibrary.simpleMessage("أمريكا"),
+        "region_kr": MessageLookupByLibrary.simpleMessage("الكورية"),
+        "region_na": MessageLookupByLibrary.simpleMessage("الأمريكية"),
         "region_notice": m10,
-        "region_tw": MessageLookupByLibrary.simpleMessage("تايوان"),
+        "region_tw": MessageLookupByLibrary.simpleMessage("التايوانية"),
         "remove_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("إزالة المكررة"),
         "remove_from_blacklist":
@@ -568,7 +591,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("صفحة تفاصيل الخادم"),
         "servant_list_page":
             MessageLookupByLibrary.simpleMessage("صفحة قائمة الخدم"),
-        "servant_title": MessageLookupByLibrary.simpleMessage("الخادم"),
+        "servant_title": MessageLookupByLibrary.simpleMessage("الخدم"),
         "set_plan_name":
             MessageLookupByLibrary.simpleMessage("اعداد اسم الخطة"),
         "setting_always_on_top":
