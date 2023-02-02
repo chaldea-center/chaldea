@@ -57,7 +57,7 @@ void main() {
   print('[patch-web] patched $patched google fonts code lines.');
 
   // replace all main.dart.js reference to new hashed filename
-  final newMainJsFn = 'main.dart.${mainJs.newHash.substring(0, 8)}.js';
+  final newMainJsFn = 'main.${mainJs.newHash.substring(0, 8)}.dart.js';
 
   for (final file in [indexHtml, /*jsMap, */ sw]) {
     print('Replacing "main.dart.js" to "$newMainJsFn" in file "${file.fn}"');

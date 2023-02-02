@@ -9,10 +9,10 @@ void main(List<String> args) {
   final String target = args[0];
   final String ref = args[1];
   if (target == 'windows') {
-    _patchWindows();
+    // _patchWindows();
     return;
   } else if (target == 'linux') {
-    _patchLinux();
+    // _patchLinux();
   } else if (target == 'android' && ref == 'refs/heads/main') {
     // _patchAndroidPreview();
   }
@@ -38,25 +38,6 @@ void _replaceFlutterFile(String fp, String s1, String s2) {
   targetFile
       .writeAsStringSync(targetFile.readAsStringSync().replaceFirst(s1, s2));
   return;
-}
-
-void _patchWindows() {
-  // print('patching quickjs.c');
-  // final qjs = File(
-  //     r'windows\flutter\ephemeral\.plugin_symlinks\flutter_qjs\cxx\quickjs\quickjs.c');
-  // String contents = qjs.readAsStringSync();
-  // contents = contents.replaceFirst('#pragma function (floor)',
-  //     '#pragma function (floor)\n#pragma function (log2)');
-  // qjs.writeAsStringSync(contents);
-}
-
-void _patchLinux() {
-  print('remove just_audio_libwinmedia for linux');
-  final pubspec = File('pubspec.yaml');
-  String contents = pubspec.readAsStringSync();
-  contents = contents.replaceFirst(
-      'just_audio_libwinmedia', '# just_audio_libwinmedia');
-  pubspec.writeAsStringSync(contents);
 }
 
 // ignore: unused_element

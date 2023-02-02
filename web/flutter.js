@@ -53,8 +53,7 @@ _flutter.loader = null;
      * @param {String} policyName the policy name (optional)
      */
     constructor(validPatterns, policyName = "flutter-js") {
-      // MOD 4: add /\.dart.*\.js$/
-      const patterns = validPatterns || [/\.dart.*\.js$/, /\.dart\.js$/, /^flutter_service_worker.js$/];
+      const patterns = validPatterns || [/\.dart\.js$/, /^flutter_service_worker.js$/];
       if (window.trustedTypes) {
         this.policy = trustedTypes.createPolicy(policyName, {
           createScriptURL: function (url) {
