@@ -556,6 +556,7 @@ class SkillScript {
   final List<int>? additionalSkillActorType; // BattleLogicTask.ACTORTYPE
   final List<int>? tdTypeChangeIDs;
   final List<int>? excludeTdChangeTypes;
+  final List<SkillSelectAddInfo>? SelectAddInfo;
 
   bool get isNotEmpty =>
       NP_HIGHER?.isNotEmpty == true ||
@@ -570,6 +571,7 @@ class SkillScript {
       additionalSkillLv?.isNotEmpty == true ||
       additionalSkillActorType?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
+      SelectAddInfo?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true;
 
   const SkillScript({
@@ -586,10 +588,53 @@ class SkillScript {
     this.additionalSkillActorType,
     this.tdTypeChangeIDs,
     this.excludeTdChangeTypes,
+    this.SelectAddInfo,
   });
 
   factory SkillScript.fromJson(Map<String, dynamic> json) =>
       _$SkillScriptFromJson(json);
+}
+
+@JsonSerializable()
+class SkillSelectAddInfo {
+  final String title;
+  final List<SkillSelectAddInfoBtn> btn;
+
+  SkillSelectAddInfo({
+    this.title = '',
+    this.btn = const [],
+  });
+
+  factory SkillSelectAddInfo.fromJson(Map<String, dynamic> json) =>
+      _$SkillSelectAddInfoFromJson(json);
+}
+
+@JsonSerializable()
+class SkillSelectAddInfoBtn {
+  final String name;
+  final List<SkillSelectAddInfoBtnCond> conds;
+
+  SkillSelectAddInfoBtn({
+    this.name = '',
+    this.conds = const [],
+  });
+
+  factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) =>
+      _$SkillSelectAddInfoBtnFromJson(json);
+}
+
+@JsonSerializable()
+class SkillSelectAddInfoBtnCond {
+  final SkillScriptCond cond;
+  final int? value;
+
+  SkillSelectAddInfoBtnCond({
+    this.cond = SkillScriptCond.none,
+    this.value,
+  });
+
+  factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) =>
+      _$SkillSelectAddInfoBtnCondFromJson(json);
 }
 
 @JsonSerializable()
@@ -688,4 +733,17 @@ enum ClassRelationOverwriteType {
 enum AiType {
   svt,
   field,
+}
+
+@JsonEnum(fieldRename: FieldRename.screamingSnake)
+enum SkillScriptCond {
+  none,
+  npHigher,
+  npLower,
+  starHigher,
+  starLower,
+  hpValHigher,
+  hpValLower,
+  hpPerHigher,
+  hpPerLower,
 }

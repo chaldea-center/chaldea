@@ -127,15 +127,17 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
     );
 
 SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
-      priority: json['priority'] as int,
+      priority: json['priority'] as int? ?? 0,
       overrideType: $enumDecodeNullable(
               _$SpotOverwriteTypeEnumMap, json['overrideType']) ??
           SpotOverwriteType.none,
       targetId: json['targetId'] as int? ?? 0,
       targetText: json['targetText'] as String? ?? "",
-      condType: const CondTypeConverter().fromJson(json['condType'] as String),
+      condType: json['condType'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
-      condNum: json['condNum'] as int,
+      condNum: json['condNum'] as int? ?? 0,
     );
 
 const _$SpotOverwriteTypeEnumMap = {

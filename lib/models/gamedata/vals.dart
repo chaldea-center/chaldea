@@ -155,14 +155,14 @@ class DataVals {
   int? get ShiftDeckIndex => sourceVals['ShiftDeckIndex'];
   String? get PopValueText => sourceVals['PopValueText'];
   int? get IsLossHpPerNow => sourceVals['IsLossHpPerNow'];
-  int? get CopyTargetFunctionType => sourceVals['CopyTargetFunctionType'];
+  List<int>? get CopyTargetFunctionType => sourceVals['CopyTargetFunctionType'];
   int? get CopyFunctionTargetPTOnly => sourceVals['CopyFunctionTargetPTOnly'];
   int? get IgnoreValueUp => sourceVals['IgnoreValueUp'];
   // skill 964295 ["Value", "Value2"]
-  dynamic get ApplyValueUp => sourceVals['ApplyValueUp'];
+  List<String>? get ApplyValueUp => sourceVals['ApplyValueUp'];
   int? get ActNoDamageBuff => sourceVals['ActNoDamageBuff'];
   int? get ActSelectIndex => sourceVals['ActSelectIndex'];
-  int? get CopyTargetBuffType => sourceVals['CopyTargetBuffType'];
+  List<int>? get CopyTargetBuffType => sourceVals['CopyTargetBuffType'];
 
   int? get ApplySupportSvt => sourceVals['ApplySupportSvt'];
   int? get Individuality => sourceVals['Individuality'];

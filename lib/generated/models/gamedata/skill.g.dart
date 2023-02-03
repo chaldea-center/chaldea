@@ -244,7 +244,49 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)
           ?.map((e) => e as int)
           .toList(),
+      SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
+          ?.map((e) =>
+              SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
+
+SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
+      title: json['title'] as String? ?? '',
+      btn: (json['btn'] as List<dynamic>?)
+              ?.map((e) => SkillSelectAddInfoBtn.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) =>
+    SkillSelectAddInfoBtn(
+      name: json['name'] as String? ?? '',
+      conds: (json['conds'] as List<dynamic>?)
+              ?.map((e) => SkillSelectAddInfoBtnCond.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+SkillSelectAddInfoBtnCond _$SkillSelectAddInfoBtnCondFromJson(Map json) =>
+    SkillSelectAddInfoBtnCond(
+      cond: $enumDecodeNullable(_$SkillScriptCondEnumMap, json['cond']) ??
+          SkillScriptCond.none,
+      value: json['value'] as int?,
+    );
+
+const _$SkillScriptCondEnumMap = {
+  SkillScriptCond.none: 'NONE',
+  SkillScriptCond.npHigher: 'NP_HIGHER',
+  SkillScriptCond.npLower: 'NP_LOWER',
+  SkillScriptCond.starHigher: 'STAR_HIGHER',
+  SkillScriptCond.starLower: 'STAR_LOWER',
+  SkillScriptCond.hpValHigher: 'HP_VAL_HIGHER',
+  SkillScriptCond.hpValLower: 'HP_VAL_LOWER',
+  SkillScriptCond.hpPerHigher: 'HP_PER_HIGHER',
+  SkillScriptCond.hpPerLower: 'HP_PER_LOWER',
+};
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
       priority: json['priority'] as int,
@@ -592,6 +634,46 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       HP_LOWER: json['HP_LOWER'] as int?,
+      convert: json['convert'] == null
+          ? null
+          : BuffConvert.fromJson(
+              Map<String, dynamic>.from(json['convert'] as Map)),
+    );
+
+BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
+      targetLimit: $enumDecodeNullable(
+              _$BuffConvertLimitTypeEnumMap, json['targetLimit']) ??
+          BuffConvertLimitType.all,
+      convertType:
+          $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ??
+              BuffConvertType.none,
+      targets: json['targets'] as List<dynamic>? ?? const [],
+      convertBuffs: (json['convertBuffs'] as List<dynamic>?)
+              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      script: json['script'] == null
+          ? null
+          : BuffConvertScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
+      effectId: json['effectId'] as int? ?? 0,
+    );
+
+const _$BuffConvertLimitTypeEnumMap = {
+  BuffConvertLimitType.all: 'all',
+  BuffConvertLimitType.self: 'self',
+};
+
+const _$BuffConvertTypeEnumMap = {
+  BuffConvertType.none: 'none',
+  BuffConvertType.buff: 'buff',
+  BuffConvertType.individuality: 'individuality',
+};
+
+BuffConvertScript _$BuffConvertScriptFromJson(Map json) => BuffConvertScript(
+      OverwritePopupText: (json['OverwritePopupText'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 const _$BuffTypeEnumMap = {

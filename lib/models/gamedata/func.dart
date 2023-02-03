@@ -524,6 +524,7 @@ class BuffScript {
   final int? INDIVIDUALITIE_COUNT_ABOVE;
   final List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
   final int? HP_LOWER; // Passionlip
+  final BuffConvert? convert;
 
   const BuffScript({
     this.checkIndvType,
@@ -535,10 +536,43 @@ class BuffScript {
     this.INDIVIDUALITIE_COUNT_ABOVE,
     this.UpBuffRateBuffIndiv,
     this.HP_LOWER,
+    this.convert,
   });
 
   factory BuffScript.fromJson(Map<String, dynamic> json) =>
       _$BuffScriptFromJson(json);
+}
+
+@JsonSerializable()
+class BuffConvert {
+  BuffConvertLimitType targetLimit;
+  BuffConvertType convertType;
+  //  list[int] | list[NiceTrait] | list[dict[str, Any]=Buff]
+  List<dynamic> targets;
+  List<Buff> convertBuffs;
+  BuffConvertScript? script;
+  int effectId;
+
+  BuffConvert({
+    this.targetLimit = BuffConvertLimitType.all,
+    this.convertType = BuffConvertType.none,
+    this.targets = const [],
+    this.convertBuffs = const [],
+    this.script,
+    this.effectId = 0,
+  });
+  factory BuffConvert.fromJson(Map<String, dynamic> json) =>
+      _$BuffConvertFromJson(json);
+}
+
+@JsonSerializable()
+class BuffConvertScript {
+  List<String>? OverwritePopupText;
+  BuffConvertScript({
+    this.OverwritePopupText,
+  });
+  factory BuffConvertScript.fromJson(Map<String, dynamic> json) =>
+      _$BuffConvertScriptFromJson(json);
 }
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)>
@@ -958,4 +992,15 @@ enum FuncApplyTarget {
   player,
   enemy,
   playerAndEnemy,
+}
+
+enum BuffConvertType {
+  none,
+  buff,
+  individuality,
+}
+
+enum BuffConvertLimitType {
+  all,
+  self,
 }
