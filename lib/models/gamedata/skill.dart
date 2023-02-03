@@ -2,20 +2,17 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/app/modules/buff/buff_detail.dart';
-import 'package:chaldea/app/modules/func/func_detail.dart';
 import 'package:chaldea/app/modules/skill/skill_detail.dart';
 import 'package:chaldea/app/modules/skill/td_detail.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
-import '../userdata/filter_data.dart';
 import '_helper.dart';
 import 'gamedata.dart';
 
-part 'func.dart';
-part 'vals.dart';
+export 'func.dart';
+export 'vals.dart';
 part '../../generated/models/gamedata/skill.g.dart';
 
 abstract class SkillOrTd implements RouteInfo {
@@ -685,34 +682,6 @@ class NpGain {
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);
 }
 
-@JsonSerializable(converters: [SvtClassConverter()])
-class BuffRelationOverwrite {
-  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> atkSide;
-  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> defSide;
-
-  const BuffRelationOverwrite({
-    required this.atkSide,
-    required this.defSide,
-  });
-
-  factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) =>
-      _$BuffRelationOverwriteFromJson(json);
-}
-
-@JsonSerializable()
-class RelationOverwriteDetail {
-  int damageRate;
-  ClassRelationOverwriteType type;
-
-  RelationOverwriteDetail({
-    required this.damageRate,
-    required this.type,
-  });
-
-  factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) =>
-      _$RelationOverwriteDetailFromJson(json);
-}
-
 enum SkillType {
   active,
   passive,
@@ -722,12 +691,6 @@ enum TdEffectFlag {
   support,
   attackEnemyAll,
   attackEnemyOne,
-}
-
-enum ClassRelationOverwriteType {
-  overwriteForce,
-  overwriteMoreThanTarget,
-  overwriteLessThanTarget,
 }
 
 enum AiType {

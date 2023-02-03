@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-part of 'skill.dart';
-
 class DataVals {
   Map<String, dynamic> sourceVals;
   DataVals? get DependFuncVals => sourceVals['DependFuncVals'] == null
