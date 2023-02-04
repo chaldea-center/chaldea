@@ -41,6 +41,7 @@ class QuestWave extends StatelessWidget {
         region: region,
       ));
       if (enemy.enemyScript?.shift != null) {
+        QuestEnemy prev = enemy;
         for (final shift in enemy.enemyScript!.shift!) {
           final shiftEnemy = npcs[shift];
           if (shiftEnemy == null || shiftEnemy.deck != DeckType.shift) continue;
@@ -48,8 +49,10 @@ class QuestWave extends StatelessWidget {
             enemy: shiftEnemy,
             showTrueName: showTrueName,
             showDeck: showDeck,
+            showIcon: shiftEnemy.svt.icon != prev.svt.icon,
             region: region,
           ));
+          prev = shiftEnemy;
         }
       }
       if (parts.length == 1) return parts.first;
@@ -155,14 +158,30 @@ class WaveInfoPage extends StatelessWidget {
               trailing: Text(stage.bgm.tooltip, textAlign: TextAlign.end),
               onTap: stage.bgm.routeTo,
             ),
+          if (stage.turn != null)
+            ListTile(
+              title: Text(S.current.turn_remain_limit),
+              subtitle: Text({
+                    1: S.current.turn_remain_limit_win,
+                    2: S.current.turn_remain_limit_lose,
+                  }[stage.limitAct] ??
+                  stage.limitAct?.toString() ??
+                  "?"),
+              trailing: Text(stage.turn.toString()),
+            ),
           if (stage.enemyFieldPosCount != null)
             ListTile(
-              title: const Text('Max Enemies on Stage'),
+              title: Text(S.current.max_enemy_on_stage),
               trailing: Text(stage.enemyFieldPosCount.toString()),
+            ),
+          if (stage.enemyActCount != null)
+            ListTile(
+              title: Text(S.current.max_enemy_act_count),
+              trailing: Text(stage.enemyActCount.toString()),
             ),
           if (stage.fieldAis.isNotEmpty)
             ListTile(
-              title: const Text('Field AI'),
+              title: Text(S.current.field_ai),
               trailing: Text.rich(
                 TextSpan(
                   children: List.generate(stage.fieldAis.length, (index) {
@@ -186,7 +205,7 @@ class WaveInfoPage extends StatelessWidget {
               ),
             ),
           if (stage.waveStartMovies.isNotEmpty)
-            const ListTile(title: Text('Opening Movie')),
+            ListTile(title: Text(S.current.stage_opening_movie)),
           for (final movie in stage.waveStartMovies)
             MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false)
         ],
@@ -200,12 +219,14 @@ class QuestEnemyWidget extends StatelessWidget {
   final bool showTrueName;
   final bool showDeck;
   final Region? region;
+  final bool showIcon;
 
   const QuestEnemyWidget({
     super.key,
     required this.enemy,
     this.showTrueName = false,
     this.showDeck = false,
+    this.showIcon = true,
     required this.region,
   });
 
@@ -265,7 +286,7 @@ class QuestEnemyWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          face,
+          if (showIcon) face,
           LayoutTryBuilder(builder: (context, constraints) {
             return AutoSizeText(
               [

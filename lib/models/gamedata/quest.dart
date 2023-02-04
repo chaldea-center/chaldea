@@ -146,18 +146,28 @@ class Quest with RouteInfo {
     final spot = this.spot;
     if (spot == null) return Transl.spotNames(spotName);
     String shownName = spotName;
+    Set<String> allNames = {spotName};
     for (final add in spot.spotAdds) {
-      if (add.overrideType != SpotOverwriteType.name ||
-          add.targetText.isEmpty) {
-        continue;
-      }
+      final name2 = add.overwriteSpotName;
+      if (name2 == null) continue;
+      allNames.add(name2);
       if ((add.condType == CondType.questClear && id > add.condTargetId) ||
           (add.condType == CondType.questClearPhase &&
               id >= add.condTargetId)) {
         shownName = add.targetText;
       }
     }
-    return Transl.spotNames(shownName);
+    final extraNames = allNames.where((e) => e != shownName).toList();
+    if (extraNames.isEmpty) return Transl.spotNames(shownName);
+    final m = MappingBase<String>(jp: '$shownName (${extraNames.join(" / ")})')
+        .convert((v, region) => region == Region.jp
+            ? v
+            : extraNames.any(
+                    (e) => Transl.md.spotNames[e]?.ofRegion(region) != null)
+                ? '$shownName (${extraNames.join(" / ")})'
+                : '${Transl.spotNames(shownName).of(region)}'
+                    ' (${extraNames.map((e) => Transl.spotNames(e).of(region)).join(" / ")})');
+    return Transl({m.jp!: m}, m.jp!, m.jp!);
   }
 
   String get lDispName {
@@ -504,7 +514,10 @@ class Stage {
 
   List<FieldAi> fieldAis;
   List<int> call;
+  int? turn;
+  int? limitAct; // 1-win, 2-lose
   int? enemyFieldPosCount;
+  int? enemyActCount;
   List<StageStartMovie> waveStartMovies;
   List<QuestEnemy> enemies;
 
@@ -513,7 +526,10 @@ class Stage {
     required this.bgm,
     this.fieldAis = const [],
     this.call = const [],
+    this.turn,
+    this.limitAct,
     this.enemyFieldPosCount,
+    this.enemyActCount,
     this.waveStartMovies = const [],
     this.enemies = const [],
   });
@@ -524,7 +540,10 @@ class Stage {
     return bgm.id != 0 ||
         fieldAis.isNotEmpty ||
         call.isNotEmpty ||
+        turn != null ||
+        // limitAct != null ||
         enemyFieldPosCount != null ||
+        enemyActCount != null ||
         waveStartMovies.isNotEmpty;
   }
 }
@@ -1008,7 +1027,7 @@ class EnemyServerMod {
 // treasureDeviceRuby
 // voice
 @JsonSerializable()
-class EnemyScript {
+class EnemyScript with DataScriptBase {
   // lots of fields are skipped
   EnemyDeathType? deathType;
   int? hpBarType;
@@ -1027,11 +1046,11 @@ class EnemyScript {
   });
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) =>
-      _$EnemyScriptFromJson(json);
+      _$EnemyScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable()
-class EnemyInfoScript {
+class EnemyInfoScript with DataScriptBase {
   bool? isAddition;
 
   EnemyInfoScript({
@@ -1039,7 +1058,7 @@ class EnemyInfoScript {
   });
 
   factory EnemyInfoScript.fromJson(Map<String, dynamic> json) =>
-      _$EnemyInfoScriptFromJson(json);
+      _$EnemyInfoScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable()

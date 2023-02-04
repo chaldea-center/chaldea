@@ -93,15 +93,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "active_skill": MessageLookupByLibrary.simpleMessage("主動技能"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("主動"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
-        "add_condition": MessageLookupByLibrary.simpleMessage("添加条件"),
+        "add_condition": MessageLookupByLibrary.simpleMessage("添加條件"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("請填寫回饋內容"),
-        "add_mission": MessageLookupByLibrary.simpleMessage("添加任务"),
+        "add_mission": MessageLookupByLibrary.simpleMessage("添加任務"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名單"),
         "anniversary": MessageLookupByLibrary.simpleMessage("周年"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_campaign_time_mismatch_hint":
-            MessageLookupByLibrary.simpleMessage("关卡AP等相关活动显示的时间(日服除外)可能不准确"),
+            MessageLookupByLibrary.simpleMessage("關卡AP等相關活動顯示的時間(日服除外)可能不準確"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("數據目錄"),
         "app_data_use_external_storage":
@@ -117,12 +117,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help":
             MessageLookupByLibrary.simpleMessage("如果圖片模式存在問題，請使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
-        "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻击NP率"),
+        "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻擊NP率"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自動重設"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
-        "autoplay": MessageLookupByLibrary.simpleMessage("自动播放"),
+        "autoplay": MessageLookupByLibrary.simpleMessage("自動播放"),
         "background": MessageLookupByLibrary.simpleMessage("背景"),
         "backup": MessageLookupByLibrary.simpleMessage("備份"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("備份失敗"),
@@ -136,7 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),
         "branch_quest": MessageLookupByLibrary.simpleMessage("分支關卡"),
         "bronze": MessageLookupByLibrary.simpleMessage("銅"),
-        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("对方"),
+        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("對方"),
         "buff_check_self": MessageLookupByLibrary.simpleMessage("自身"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("暫存圖標"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("權重"),
@@ -185,7 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
             "当存在多组(Group)时，仅需满足其中一组(Group)条件即可"),
-        "condition": MessageLookupByLibrary.simpleMessage("条件"),
+        "condition": MessageLookupByLibrary.simpleMessage("條件"),
         "confirm": MessageLookupByLibrary.simpleMessage("確定"),
         "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
         "contact_information_not_filled":
@@ -198,7 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("消耗"),
         "costume": MessageLookupByLibrary.simpleMessage("靈衣"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("靈衣開放"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("计算稀有敌人"),
+        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("計算稀有敵人"),
         "counts": MessageLookupByLibrary.simpleMessage("計數"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念禮裝"),
         "create_account_textfield_helper":
@@ -349,6 +349,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請先下載或導入FGO資源包↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同一從者"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("效率劇場"),
+        "field_ai": MessageLookupByLibrary.simpleMessage("场地AI"),
         "file_not_found_or_mismatched_hash": m15,
         "filename": MessageLookupByLibrary.simpleMessage("文件名"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
@@ -600,6 +601,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("方案"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任務列表"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("每週任務"),
+        "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("敌方最多行动次数"),
+        "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("场上最大敌人数"),
         "media_assets": MessageLookupByLibrary.simpleMessage("资源"),
         "migrate_external_storage_btn_no":
             MessageLookupByLibrary.simpleMessage("不轉移"),
@@ -826,6 +829,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),
         "sq_short": MessageLookupByLibrary.simpleMessage("石"),
+        "stage_opening_movie": MessageLookupByLibrary.simpleMessage("开场视频"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
         "still_send": MessageLookupByLibrary.simpleMessage("仍然發送"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -844,6 +848,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_servant": MessageLookupByLibrary.simpleMessage("助戰"),
         "support_servant_forced": MessageLookupByLibrary.simpleMessage("限定"),
         "support_servant_short": MessageLookupByLibrary.simpleMessage("助战"),
+        "svt_ai": MessageLookupByLibrary.simpleMessage("从者AI"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("從者頭像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("資料"),
         "svt_card_deck_incorrect":
@@ -895,6 +900,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("單次最多抽數"),
         "trial_quest": MessageLookupByLibrary.simpleMessage("體驗關卡"),
+        "turn_remain_limit": MessageLookupByLibrary.simpleMessage("剩余回合限制"),
+        "turn_remain_limit_lose":
+            MessageLookupByLibrary.simpleMessage("回合倒数结束后视为败北"),
+        "turn_remain_limit_win":
+            MessageLookupByLibrary.simpleMessage("回合倒数结束后视为通关"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("解锁关卡"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":

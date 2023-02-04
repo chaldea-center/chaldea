@@ -89,11 +89,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "active_skill": MessageLookupByLibrary.simpleMessage("보유 스킬"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("보유"),
         "add": MessageLookupByLibrary.simpleMessage("추가"),
+        "add_condition": MessageLookupByLibrary.simpleMessage("추가 조건"),
         "add_feedback_details_warning":
             MessageLookupByLibrary.simpleMessage("피드백 내용을 작성해주세요"),
+        "add_mission": MessageLookupByLibrary.simpleMessage("추가 미션"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("블랙리스트 추가"),
         "anniversary": MessageLookupByLibrary.simpleMessage("주년"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
+        "ap_campaign_time_mismatch_hint": MessageLookupByLibrary.simpleMessage(
+            "퀴스트 AP 등 관련 이벤트 표시 시간(일본 서버) 정확하지 않을 수 있음"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP 효율"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("데이터 폴더"),
         "app_data_use_external_storage":
@@ -109,8 +113,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage(
             "앨범에서 이미지를 가져올 때 문제가 있는 경우 파일로 가져오세요"),
         "attachment": MessageLookupByLibrary.simpleMessage("애정"),
+        "attack_np_rate": MessageLookupByLibrary.simpleMessage("공격시 NP 수급률"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("자동 리셋"),
         "auto_update": MessageLookupByLibrary.simpleMessage("자동 업데이트"),
+        "autoplay": MessageLookupByLibrary.simpleMessage("자동 재생"),
         "background": MessageLookupByLibrary.simpleMessage("배경"),
         "backup": MessageLookupByLibrary.simpleMessage("백업"),
         "backup_failed":
@@ -125,6 +131,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("가이드 페이지"),
         "branch_quest": MessageLookupByLibrary.simpleMessage("브랜치 퀘스트"),
         "bronze": MessageLookupByLibrary.simpleMessage("동색"),
+        "buff_check_opponent": MessageLookupByLibrary.simpleMessage("적"),
+        "buff_check_self": MessageLookupByLibrary.simpleMessage("자신"),
         "cache_icons": MessageLookupByLibrary.simpleMessage("캐시 아이콘"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("몸무게"),
         "cancel": MessageLookupByLibrary.simpleMessage("취소"),
@@ -172,6 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("데이터 클리어"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("소환 소득"),
         "command_code": MessageLookupByLibrary.simpleMessage("커맨드 코드"),
+        "condition": MessageLookupByLibrary.simpleMessage("조건"),
         "confirm": MessageLookupByLibrary.simpleMessage("확인"),
         "consumed": MessageLookupByLibrary.simpleMessage("소비량"),
         "contact_information_not_filled":
@@ -181,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copied": MessageLookupByLibrary.simpleMessage("복사됨"),
         "copy": MessageLookupByLibrary.simpleMessage("복사하기"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("다른 플랜에서 복사"),
+        "cost": MessageLookupByLibrary.simpleMessage("소비"),
         "costume": MessageLookupByLibrary.simpleMessage("영의"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("영의개방"),
         "counts": MessageLookupByLibrary.simpleMessage("카운트"),
@@ -193,7 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("계정"),
         "current_": MessageLookupByLibrary.simpleMessage("현재"),
         "current_version": MessageLookupByLibrary.simpleMessage("현재 버전"),
-        "custom_mission": MessageLookupByLibrary.simpleMessage("맞춤 임무"),
+        "custom_mission": MessageLookupByLibrary.simpleMessage("맞춤 미션"),
         "custom_mission_nothing_hint":
             MessageLookupByLibrary.simpleMessage("미션이 없습니다 +를 클릭하여 추가합시다"),
         "custom_mission_source_mission":

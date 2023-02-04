@@ -2660,6 +2660,17 @@ class S {
     );
   }
 
+  /// `Field AI`
+  String get field_ai {
+    return Intl.message(
+      'Field AI',
+      name: 'field_ai',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `File {filename} not found or mismatched hash: {hash} - {localHash}`
   String file_not_found_or_mismatched_hash(
       Object filename, Object hash, Object localHash) {
@@ -5021,6 +5032,28 @@ class S {
     );
   }
 
+  /// `Max enemy act count`
+  String get max_enemy_act_count {
+    return Intl.message(
+      'Max enemy act count',
+      name: 'max_enemy_act_count',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Max enemies on stage`
+  String get max_enemy_on_stage {
+    return Intl.message(
+      'Max enemies on stage',
+      name: 'max_enemy_on_stage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Assets`
   String get media_assets {
     return Intl.message(
@@ -7101,6 +7134,17 @@ class S {
     );
   }
 
+  /// `Opening Movie`
+  String get stage_opening_movie {
+    return Intl.message(
+      'Opening Movie',
+      name: 'stage_opening_movie',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Statistics`
   String get statistics_title {
     return Intl.message(
@@ -7282,6 +7326,17 @@ class S {
     return Intl.message(
       'Support',
       name: 'support_servant_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Svt AI`
+  String get svt_ai {
+    return Intl.message(
+      'Svt AI',
+      name: 'svt_ai',
       desc: '',
       locale: localeName,
       args: [],
@@ -7722,6 +7777,39 @@ class S {
     return Intl.message(
       'Trial Quest',
       name: 'trial_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Turn Remaining Limit`
+  String get turn_remain_limit {
+    return Intl.message(
+      'Turn Remaining Limit',
+      name: 'turn_remain_limit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Considered Lose after turn countdown is over`
+  String get turn_remain_limit_lose {
+    return Intl.message(
+      'Considered Lose after turn countdown is over',
+      name: 'turn_remain_limit_lose',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Considered Win after turn countdown is over`
+  String get turn_remain_limit_win {
+    return Intl.message(
+      'Considered Win after turn countdown is over',
+      name: 'turn_remain_limit_win',
       desc: '',
       locale: localeName,
       args: [],

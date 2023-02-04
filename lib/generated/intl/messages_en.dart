@@ -406,6 +406,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please download or import FFO data first↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Same Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
+        "field_ai": MessageLookupByLibrary.simpleMessage("Field AI"),
         "file_not_found_or_mismatched_hash": m15,
         "filename": MessageLookupByLibrary.simpleMessage("filename"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
@@ -715,6 +716,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Missions"),
         "master_mission_weekly":
             MessageLookupByLibrary.simpleMessage("Weekly Mission"),
+        "max_enemy_act_count":
+            MessageLookupByLibrary.simpleMessage("Max enemy act count"),
+        "max_enemy_on_stage":
+            MessageLookupByLibrary.simpleMessage("Max enemies on stage"),
         "media_assets": MessageLookupByLibrary.simpleMessage("Assets"),
         "migrate_external_storage_btn_no":
             MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),
@@ -990,6 +995,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21 Fragments = 3 Quartzs"),
         "sq_short": MessageLookupByLibrary.simpleMessage("SQ"),
+        "stage_opening_movie":
+            MessageLookupByLibrary.simpleMessage("Opening Movie"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
         "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
@@ -1015,6 +1022,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Forced"),
         "support_servant_short":
             MessageLookupByLibrary.simpleMessage("Support"),
+        "svt_ai": MessageLookupByLibrary.simpleMessage("Svt AI"),
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
@@ -1074,6 +1082,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("Max Draws at once:"),
         "trial_quest": MessageLookupByLibrary.simpleMessage("Trial Quest"),
+        "turn_remain_limit":
+            MessageLookupByLibrary.simpleMessage("Turn Remaining Limit"),
+        "turn_remain_limit_lose": MessageLookupByLibrary.simpleMessage(
+            "Considered Lose after turn countdown is over"),
+        "turn_remain_limit_win": MessageLookupByLibrary.simpleMessage(
+            "Considered Win after turn countdown is over"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "update_already_latest":

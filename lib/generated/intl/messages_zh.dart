@@ -347,6 +347,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请先下载或导入FFO资源包↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同一从者"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("效率剧场"),
+        "field_ai": MessageLookupByLibrary.simpleMessage("场地AI"),
         "file_not_found_or_mismatched_hash": m15,
         "filename": MessageLookupByLibrary.simpleMessage("文件名"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
@@ -597,6 +598,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("方案"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任务列表"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("周常任务"),
+        "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("敌方最多行动次数"),
+        "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("场上最大敌人数"),
         "media_assets": MessageLookupByLibrary.simpleMessage("资源"),
         "migrate_external_storage_btn_no":
             MessageLookupByLibrary.simpleMessage("不迁移"),
@@ -824,6 +827,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sq_fragment_convert":
             MessageLookupByLibrary.simpleMessage("21圣晶片=3圣晶石"),
         "sq_short": MessageLookupByLibrary.simpleMessage("石"),
+        "stage_opening_movie": MessageLookupByLibrary.simpleMessage("开场视频"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
         "still_send": MessageLookupByLibrary.simpleMessage("仍然发送"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -842,6 +846,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "support_servant": MessageLookupByLibrary.simpleMessage("助战"),
         "support_servant_forced": MessageLookupByLibrary.simpleMessage("限定"),
         "support_servant_short": MessageLookupByLibrary.simpleMessage("助战"),
+        "svt_ai": MessageLookupByLibrary.simpleMessage("从者AI"),
         "svt_ascension_icon": MessageLookupByLibrary.simpleMessage("从者头像"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("资料"),
         "svt_card_deck_incorrect":
@@ -893,6 +898,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "treasure_box_max_draw_once":
             MessageLookupByLibrary.simpleMessage("单次最多抽数"),
         "trial_quest": MessageLookupByLibrary.simpleMessage("体验关卡"),
+        "turn_remain_limit": MessageLookupByLibrary.simpleMessage("剩余回合限制"),
+        "turn_remain_limit_lose":
+            MessageLookupByLibrary.simpleMessage("回合倒数结束后视为败北"),
+        "turn_remain_limit_win":
+            MessageLookupByLibrary.simpleMessage("回合倒数结束后视为通关"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("解锁关卡"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "update_already_latest":

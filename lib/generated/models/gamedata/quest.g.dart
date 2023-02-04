@@ -265,7 +265,10 @@ Stage _$StageFromJson(Map json) => Stage(
           const [],
       call: (json['call'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
+      turn: json['turn'] as int?,
+      limitAct: json['limitAct'] as int?,
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
+      enemyActCount: json['enemyActCount'] as int?,
       waveStartMovies: (json['waveStartMovies'] as List<dynamic>?)
               ?.map((e) =>
                   StageStartMovie.fromJson(Map<String, dynamic>.from(e as Map)))

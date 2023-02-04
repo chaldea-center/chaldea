@@ -368,6 +368,13 @@ class SpotAdd {
 
   factory SpotAdd.fromJson(Map<String, dynamic> json) =>
       _$SpotAddFromJson(json);
+
+  String? get overwriteSpotName {
+    if (overrideType == SpotOverwriteType.name && targetText.isNotEmpty) {
+      return targetText;
+    }
+    return null;
+  }
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
