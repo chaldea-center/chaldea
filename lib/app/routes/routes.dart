@@ -186,25 +186,50 @@ class Routes {
 }
 
 class RouteConfiguration {
-  final String? url;
-  final Uri? uri;
+  late final String? url;
+  late final Uri? uri;
   final bool? detail;
   final dynamic arguments;
   final Widget? child;
 
-  RouteConfiguration({this.url, this.child, this.detail, this.arguments})
-      : uri = url == null ? null : Uri.tryParse(url);
+  late final Region? region;
+
+  RouteConfiguration({String? url, this.child, this.detail, this.arguments}) {
+    _init(url, null);
+  }
 
   RouteConfiguration.fromUri(
-      {this.uri, this.child, this.detail, this.arguments})
-      : url = uri.toString();
+      {Uri? uri, this.child, this.detail, this.arguments}) {
+    _init(null, uri);
+  }
 
-  RouteConfiguration.slash({required String nextPageUrl})
-      : url = null,
-        uri = null,
-        detail = null,
-        arguments = null,
-        child = SplashPage(nextPageUrl: nextPageUrl);
+  factory RouteConfiguration.slash({required String nextPageUrl}) =>
+      RouteConfiguration(child: SplashPage(nextPageUrl: nextPageUrl));
+
+  void _init(String? url, Uri? uri) {
+    if (url != null) uri ??= Uri.tryParse(url);
+    if (uri != null) {
+      uri = Uri(path: uri.path, query: uri.hasQuery ? uri.query : null);
+    }
+    List<String> segments = uri?.pathSegments.toList() ?? [];
+    if (segments.length >= 2) {
+      if (['db', 'nice', 'basic'].contains(segments[0]) &&
+          Region.values.any((r) => r.upper == segments[1])) {
+        segments.removeAt(0);
+      }
+    }
+    String? first = segments.getOrNull(0);
+    region = Region.values.firstWhereOrNull((r) => r.upper == first);
+    if (region != null) {
+      uri = uri?.replace(pathSegments: segments.skip(1));
+    }
+    if (uri != null) {
+      url = uri.toString();
+      if (!url.startsWith('/')) url = '/$url';
+    }
+    this.url = url;
+    this.uri = uri;
+  }
 
   String? get path => uri?.path ?? url;
 
@@ -278,6 +303,7 @@ class RouteConfiguration {
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
+      case 'svt':
         return ServantDetailPage(id: _secondInt);
       case Routes.enemies:
         return EnemyListPage();
@@ -289,27 +315,30 @@ class RouteConfiguration {
       case Routes.craftEssences:
         return CraftListPage();
       case Routes.craftEssence:
+      case 'equip':
         return CraftDetailPage(id: _secondInt);
       case Routes.commandCodes:
         return CmdCodeListPage();
       case Routes.commandCode:
+      case 'CC':
         return CmdCodeDetailPage(id: _secondInt);
       case Routes.mysticCodes:
         return MysticCodeListPage();
       case Routes.mysticCode:
+      case 'MC':
         return MysticCodePage(id: _secondInt);
       case Routes.events:
         return EventListPage();
+      case Routes.event:
+        return EventDetailPage(eventId: _secondInt, region: region);
       case Routes.war:
         return WarDetailPage(warId: _secondInt);
-      case Routes.event:
-        return EventDetailPage(eventId: _secondInt);
       case Routes.items:
         return ItemListPage();
       case Routes.item:
         return ItemDetailPage(itemId: _secondInt ?? 0);
       case Routes.quest:
-        return QuestDetailPage(id: _secondInt);
+        return QuestDetailPage(id: _secondInt, region: region);
       case Routes.summons:
         return SummonListPage();
       case Routes.summon:
@@ -325,14 +354,16 @@ class RouteConfiguration {
       case Routes.scriptHome:
         return const ScriptReaderEntryPage();
       case Routes.script:
-        return ScriptIdLoadingPage(scriptId: second ?? '0');
+        return ScriptIdLoadingPage(scriptId: second ?? '0', region: region);
       case Routes.shop:
-        return ShopDetailPage(id: _secondInt);
+        return ShopDetailPage(id: _secondInt, region: region);
       case Routes.shopHome:
         final type = ShopType.values.firstWhereOrNull((e) => e.name == second);
-        return type == null ? const ShopListHome() : ShopListPage(type: type);
+        return type == null
+            ? const ShopListHome()
+            : ShopListPage(type: type, region: region);
       case Routes.commonReleasePrefix:
-        return CommonReleasesPage.id(id: _secondInt ?? 0);
+        return CommonReleasesPage.id(id: _secondInt ?? 0, region: region);
       case Routes.svtClasses:
         return const SvtClassListPage();
       case Routes.svtClass:
@@ -357,15 +388,18 @@ class RouteConfiguration {
       case Routes.funcs:
         return const FuncListPage();
       case Routes.func:
-        return FuncDetailPage(id: _secondInt);
+      case 'function':
+        return FuncDetailPage(id: _secondInt, region: region);
       case Routes.buffs:
         return const BuffListPage();
       case Routes.buff:
-        return BuffDetailPage(id: _secondInt);
+        return BuffDetailPage(id: _secondInt, region: region);
       case Routes.buffActions:
       case Routes.buffAction:
         return BuffActionPage(
             action: const BuffActionConverter().fromJson(second ?? "unknown"));
+      // case Routes.masterMission:
+      // case 'MM':
       case Routes.masterMissions:
         return MasterMissionListPage();
       case Routes.effectSearch:
@@ -373,11 +407,12 @@ class RouteConfiguration {
       case Routes.skills:
         return const SkillListPage();
       case Routes.skill:
-        return SkillDetailPage(id: _secondInt);
+        return SkillDetailPage(id: _secondInt, region: region);
       case Routes.tds:
         return const TdListPage();
       case Routes.td:
-        return TdDetailPage(id: _secondInt);
+      case 'NP':
+        return TdDetailPage(id: _secondInt, region: region);
       case Routes.apk:
         return const ApkListPage();
       case Routes.routes:

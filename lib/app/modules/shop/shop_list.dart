@@ -71,9 +71,9 @@ class _ShopListHomeState extends State<ShopListHome> {
 
 class ShopListPage extends StatefulWidget {
   final ShopType type;
-  final Region region;
+  final Region? region;
 
-  const ShopListPage({super.key, required this.type, this.region = Region.jp});
+  const ShopListPage({super.key, required this.type, this.region});
 
   @override
   State<ShopListPage> createState() => _ShopListPageState();
@@ -91,7 +91,8 @@ class _ShopListPageState extends State<ShopListPage>
   @override
   void initState() {
     super.initState();
-    AtlasApi.searchShop(type: widget.type, eventId: 0, region: widget.region)
+    AtlasApi.searchShop(
+            type: widget.type, eventId: 0, region: widget.region ?? Region.jp)
         .then((value) {
       if (value != null) shops = value;
       _loading = false;

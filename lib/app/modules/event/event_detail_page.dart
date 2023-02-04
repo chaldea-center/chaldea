@@ -37,8 +37,9 @@ import 'detail/voice.dart';
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
   final Event? event;
+  final Region? region;
 
-  EventDetailPage({super.key, this.eventId, this.event});
+  EventDetailPage({super.key, this.eventId, this.event, this.region});
 
   @override
   _EventDetailPageState createState() => _EventDetailPageState();
@@ -49,11 +50,37 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Region _region = Region.jp;
 
   Event get event => _event!;
+  int? get eventId => _event?.id ?? widget.event?.id ?? widget.eventId;
 
+  bool _loading = false;
   @override
   void initState() {
     super.initState();
-    _event = widget.event ?? db.gameData.events[widget.eventId];
+    _region = widget.region ?? Region.jp;
+    if (widget.event == null) {
+      fetchData(_region);
+    } else {
+      _event = widget.event;
+    }
+  }
+
+  Future<void> fetchData(Region region) async {
+    if (eventId == null) return;
+    Event? newEvent;
+    if (region == Region.jp) {
+      newEvent = db.gameData.events[eventId];
+    } else {
+      _loading = true;
+      if (mounted) setState(() {});
+      newEvent = await AtlasApi.event(eventId!, region: region);
+      newEvent?.calcItems(db.gameData);
+      _loading = false;
+    }
+    _region = region;
+    _event = newEvent;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -62,6 +89,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       return NotFoundPage(
         title: 'Event ${widget.eventId}',
         url: Routes.eventI(widget.eventId ?? 0),
+        loading: _loading,
       );
     }
     List<Tab> tabs = [];
@@ -87,7 +115,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
       );
     }
     for (final tower in event.towers) {
-      _addTab(tower.name, EventTowersPage(event: event, tower: tower));
+      _addTab(Transl.misc2('TowerName', tower.name),
+          EventTowersPage(event: event, tower: tower));
     }
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
@@ -231,7 +260,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
 
   void _showSwitchRegion() {
-    final eventId = widget.event?.id ?? widget.eventId;
     if (eventId == null || !mounted) return;
     final jpEvent = db.gameData.events[eventId];
     final startTime = jpEvent?.extra.startTime.copyWith(jp: jpEvent.startedAt);
@@ -248,18 +276,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 Navigator.pop(context);
                 EasyLoading.show(
                     status: 'Loading', maskType: EasyLoadingMaskType.clear);
-                Event? newEvent;
-                if (region == Region.jp) {
-                  newEvent = db.gameData.events[eventId];
-                } else {
-                  newEvent = await AtlasApi.event(eventId, region: region);
-                  newEvent?.calcItems(db.gameData);
-                }
-                _region = region;
-                _event = newEvent;
-                if (mounted) {
-                  setState(() {});
-                }
+                await fetchData(region);
                 EasyLoading.dismiss();
               },
             ),

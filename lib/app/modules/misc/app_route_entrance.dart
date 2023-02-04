@@ -24,21 +24,21 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
         children: [
           _custom(),
           _int(S.current.servant, Routes.servant),
-          _int(S.current.enemy, Routes.enemy),
           _int(S.current.craft_essence, Routes.craftEssence),
-          _int(S.current.command_code, Routes.commandCode),
-          _int(S.current.mystic_code, Routes.mysticCode),
-          _int(S.current.event_title, Routes.event),
-          _int(S.current.war_title, Routes.war),
           _int(S.current.quest, Routes.quest),
-          _int(S.current.item, Routes.item),
-          _int(S.current.summon, Routes.summon),
-          _int(S.current.costume, Routes.costume),
-          _int(S.current.bgm, Routes.bgm),
           _int(S.current.skill, Routes.skill),
           _int(S.current.noble_phantasm, Routes.td),
           _int('Function', Routes.func),
           _int('Buff', Routes.buff),
+          _int(S.current.command_code, Routes.commandCode),
+          _int(S.current.mystic_code, Routes.mysticCode),
+          _int(S.current.event_title, Routes.event),
+          _int(S.current.war_title, Routes.war),
+          _int(S.current.enemy, Routes.enemy),
+          _int(S.current.item, Routes.item),
+          _int(S.current.summon, Routes.summon),
+          _int(S.current.costume, Routes.costume),
+          _int(S.current.bgm, Routes.bgm),
           _int(S.current.info_trait, Routes.trait),
           // _int(S.current.master_mission, Routes.masterMission),
           _int(S.current.shop, Routes.shop),
@@ -55,11 +55,9 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
     String v = c.text.trim().trimCharLeft('/').trim();
     return ListTile(
       dense: true,
-      leading: Text(S.current.general_custom),
       title: TextFormField(
-        decoration: const InputDecoration(
-          isDense: true,
-          hintText: 'e.g. /servant/xxx',
+        decoration: InputDecoration(
+          hintText: '${S.current.general_custom} e.g. /servant/xxx',
           helperText: 'OR https://chaldea.center/free-calc',
         ),
         controller: c,
@@ -115,19 +113,9 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
   }
 
   void goTo(String route) {
-    if (route.startsWith('/')) {
-      router.push(url: route);
-    } else {
-      String v = route.trim().trimCharLeft('/').trim();
-      if (v.isEmpty) return;
-      final uri = Uri.tryParse(v);
-      if (uri != null && uri.host.toLowerCase().contains('chaldea.center')) {
-        v = uri.path;
-        router.push(url: v);
-      } else {
-        router.push(url: '/$v');
-      }
-    }
+    route = route.trim();
+    if (route.isEmpty || route.trimChar('/').isEmpty) return;
+    router.push(url: route);
   }
 
   @override
