@@ -589,4 +589,5 @@ const kBuffActionPercentTypes = {
 
 const kBuffTypePercentType = <BuffType, int>{
   BuffType.masterSkillValueUp: 10,
+  BuffType.shiftGutsRatio: 10,
 };

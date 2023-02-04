@@ -30,7 +30,7 @@ class EventRecipePage extends HookWidget {
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(child: Text(recipe.name)),
+              Expanded(child: Text(Transl.misc2('RecipeName', recipe.name))),
               for (final consume in recipe.consumes) ...[
                 Item.iconBuilder(
                   context: context,

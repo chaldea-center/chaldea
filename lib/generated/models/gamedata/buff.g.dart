@@ -93,6 +93,19 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       HP_LOWER: json['HP_LOWER'] as int?,
+      HP_HIGHER: json['HP_HIGHER'] as int?,
+      CounterMessage: json['CounterMessage'] as String?,
+      avoidanceText: json['avoidanceText'] as String?,
+      gutsText: json['gutsText'] as String?,
+      missText: json['missText'] as String?,
+      AppId: json['AppId'] as String?,
+      IncludeIgnoreIndividuality: json['IncludeIgnoreIndividuality'] as int?,
+      ProgressSelfTurn: json['ProgressSelfTurn'] as int?,
+      TargetIndiv: json['TargetIndiv'] == null
+          ? null
+          : NiceTrait.fromJson(
+              Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
+      extendLowerLimit: json['extendLowerLimit'] as int?,
       convert: json['convert'] == null
           ? null
           : BuffConvert.fromJson(

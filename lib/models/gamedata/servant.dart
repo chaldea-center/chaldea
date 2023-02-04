@@ -1325,7 +1325,7 @@ class NiceLore {
 }
 
 @JsonSerializable()
-class ServantScript {
+class ServantScript with DataScriptBase {
   @JsonKey(name: 'SkillRankUp')
   Map<int, List<int>>? skillRankUp;
   bool? svtBuffTurnExtend;
@@ -1336,7 +1336,7 @@ class ServantScript {
   });
 
   factory ServantScript.fromJson(Map<String, dynamic> json) =>
-      _$ServantScriptFromJson(json);
+      _$ServantScriptFromJson(json)..setSource(json);
 }
 
 enum SvtType {

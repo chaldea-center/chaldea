@@ -186,6 +186,7 @@ class SkillScriptDescriptor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+
     if (actIndividuality.isNotEmpty) {
       final isSvt = actIndividuality
           .any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
@@ -193,10 +194,8 @@ class SkillScriptDescriptor extends StatelessWidget {
         title: Text.rich(
           TextSpan(children: [
             ...SharedBuilder.replaceSpan(
-              Transl.misc(isSvt
-                      ? 'Skill.actIndividuality'
-                      : 'Skill.actIndividuality2')
-                  .l,
+              Transl.misc2('SkillScript',
+                  isSvt ? 'actIndividuality' : 'actIndividuality2'),
               '{0}',
               actIndividuality.map((indiv) {
                 final svt = db.gameData.servantsById[indiv.id];
@@ -253,7 +252,7 @@ class SkillScriptDescriptor extends StatelessWidget {
       final ids = script!.additionalSkillId!;
       final lvs = script?.additionalSkillLv ?? <int>[];
       List<InlineSpan> titleSpans = [
-        TextSpan(text: Transl.misc('SkillScript.additionalSkillId').l)
+        TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId'))
       ];
       Widget? trailing;
       List<Widget> cells = [];
@@ -303,7 +302,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     if (script?.tdTypeChangeIDs?.isNotEmpty == true) {
       children.add(_pad(Text.rich(
         TextSpan(children: [
-          TextSpan(text: Transl.misc('SkillScript.tdTypeChangeIDs').l),
+          TextSpan(text: Transl.misc2('SkillScript', 'tdTypeChangeIDs')),
           ...divideList(
             List.generate(script!.tdTypeChangeIDs!.length, (index) {
               final tdId = script!.tdTypeChangeIDs![index];
@@ -319,6 +318,20 @@ class SkillScriptDescriptor extends StatelessWidget {
           ),
         ]),
         style: Theme.of(context).textTheme.bodySmall,
+      )));
+    }
+    if (script?.SelectAddInfo?.isNotEmpty == true) {
+      final infos = script!.SelectAddInfo!;
+      final info = infos.first;
+      final transl = Transl.miscScope('SelectAddInfo');
+      children.add(_pad(Text(
+        [
+          '* ${transl('Optional')}: ${transl(info.title)}',
+          for (int index = 0; index < info.btn.length; index++)
+            '${transl('Option')} ${index + 1}: ${transl(info.btn[index].name)}'
+        ].join('\n'),
+        style: Theme.of(context).textTheme.bodySmall,
+        textScaleFactor: 0.9,
       )));
     }
     if (children.isEmpty) return const SizedBox();
@@ -341,7 +354,7 @@ class SkillScriptDescriptor extends StatelessWidget {
 
   Widget _keyLv(BuildContext context, String key, List<int> vals,
       String Function(int v) builder) {
-    String title = Transl.misc('SkillScript.$key').l;
+    String title = Transl.misc2('SkillScript', key);
     if (vals.toSet().length == 1) {
       title = title.replaceAll('{0}', builder(vals.first));
     }
@@ -410,11 +423,12 @@ class FuncDescriptor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StringBuffer funcText = StringBuffer();
+    Buff? buff = func.buff;
+
     if ((func.funcType == FuncType.addState ||
             func.funcType == FuncType.addStateShort ||
             func.funcType == FuncType.addFieldChangeToField) &&
-        func.buffs.isNotEmpty) {
-      final buff = func.buffs.first;
+        buff != null) {
       if (showBuffDetail) {
         funcText.write(Transl.buffDetail(buff.detail).l);
       } else {
@@ -516,10 +530,10 @@ class FuncDescriptor extends StatelessWidget {
 
     List<InlineSpan> spans = [];
     Widget? icon;
-    String? _iconUrl = func.funcPopupIcon ?? func.buffs.getOrNull(0)?.icon;
+    String? _iconUrl = func.funcPopupIcon ?? buff?.icon;
     if (_iconUrl != null) {
       icon = db.getIconImage(_iconUrl, width: 18);
-      if (vals?.SetPassiveFrame == 1) {
+      if (vals?.SetPassiveFrame == 1 || vals?.ProcPassive == 1) {
         icon = DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(color: Theme.of(context).hintColor),
@@ -589,12 +603,12 @@ class FuncDescriptor extends StatelessWidget {
     if ((vals?.Rate != null && vals!.Rate! < 0) ||
         (vals?.UseRate != null && vals!.UseRate! < 0)) {
       // print(vals.Rate);
-      final hint = Transl.misc('Func.ifPrevFuncSucceed');
-      spans.insert(0, TextSpan(text: '(${hint.l})'));
+      final hint = Transl.misc2('Function', 'ifPrevFuncSucceed');
+      spans.insert(0, TextSpan(text: '($hint)'));
     }
 
     if (vals?.ActSelectIndex != null) {
-      String hint = Transl.misc('Func.ActSelectIndex').l;
+      String hint = Transl.misc2('Function', 'ActSelectIndex');
       hint = hint.replaceAll('{0}', (vals!.ActSelectIndex! + 1).toString());
       spans.insert(0, TextSpan(text: '($hint)'));
     }
@@ -690,8 +704,7 @@ class FuncDescriptor extends StatelessWidget {
         default:
           break;
       }
-      if (func.buffs.isNotEmpty) {
-        final buff = func.buffs.first;
+      if (buff != null) {
         switch (buff.type) {
           case BuffType.addIndividuality:
           case BuffType.subIndividuality:
@@ -781,11 +794,11 @@ class FuncDescriptor extends StatelessWidget {
       spans.add(const TextSpan(text: ')'));
     }
 
-    List<List<InlineSpan>> _traitSpans = [];
+    List<List<InlineSpan>> _condSpans = [];
     void _addTraits(String? prefix, List<NiceTrait> traits,
         [bool useAnd = false]) {
       if ([BuffType.upCommandall, BuffType.downCommandall]
-          .contains(func.buffs.getOrNull(0)?.type)) {
+          .contains(buff?.type)) {
         traits = traits
             .where((e) => ![
                   Trait.cardQuick,
@@ -796,7 +809,7 @@ class FuncDescriptor extends StatelessWidget {
             .toList();
       }
       if (traits.isEmpty) return;
-      _traitSpans.add([
+      _condSpans.add([
         if (prefix != null) TextSpan(text: prefix),
         ...SharedBuilder.traitSpans(
           context: context,
@@ -807,19 +820,22 @@ class FuncDescriptor extends StatelessWidget {
       ]);
     }
 
-    switch (func.funcType) {
-      case FuncType.addState:
-      case FuncType.addStateShort:
-      case FuncType.addFieldChangeToField:
-        final buff = func.buffs.first;
-        _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
-            buff.script?.checkIndvType == 1);
-        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
-            buff.script?.checkIndvType == 1);
-        break;
-      default:
-        break;
+    if (buff != null) {
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
+          buff.script?.checkIndvType == 1);
+      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
+          buff.script?.checkIndvType == 1);
+      final script = buff.script;
+      if (script?.HP_HIGHER != null) {
+        final v = script!.HP_HIGHER!.format(percent: true, base: 10);
+        _condSpans.add([TextSpan(text: 'HP≥$v')]);
+      }
+      if (script?.HP_LOWER != null) {
+        final v = script!.HP_LOWER!.format(percent: true, base: 10);
+        _condSpans.add([TextSpan(text: 'HP≤$v')]);
+      }
     }
+
     if (func.traitVals.isNotEmpty) {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
@@ -839,8 +855,36 @@ class FuncDescriptor extends StatelessWidget {
       _addTraits(Transl.special.funcTargetVals, func.functvals);
     }
 
+    if (func.funcType == FuncType.lastUsePlayerSkillCopy) {
+      final buffTypes = vals?.CopyTargetBuffType ?? [];
+      final funcTypes = vals?.CopyTargetFunctionType ?? [];
+      final ptOnly = vals?.CopyFunctionTargetPTOnly == 1;
+      if (buffTypes.isNotEmpty) {
+        _condSpans.add([
+          TextSpan(text: Transl.misc2('Function', 'CopyTargetBuffType')),
+          const TextSpan(text: ': '),
+          TextSpan(text: buffTypes.toString()),
+          const TextSpan(text: ' '),
+        ]);
+      }
+      if (funcTypes.isNotEmpty) {
+        _condSpans.add([
+          TextSpan(text: Transl.misc2('Function', 'CopyTargetFunctionType')),
+          const TextSpan(text: ': '),
+          TextSpan(text: funcTypes.toString()),
+          const TextSpan(text: ' '),
+        ]);
+      }
+      if (ptOnly) {
+        _condSpans.add([
+          TextSpan(text: Transl.misc2('Function', 'CopyFunctionTargetPTOnly')),
+          const TextSpan(text: ' '),
+        ]);
+      }
+    }
+
     if (func.funcquestTvals.isNotEmpty) {
-      _traitSpans.add(SharedBuilder.replaceSpan(
+      _condSpans.add(SharedBuilder.replaceSpan(
         Transl.special.funcTraitOnField,
         '{0}',
         SharedBuilder.traitSpans(
@@ -853,7 +897,7 @@ class FuncDescriptor extends StatelessWidget {
       final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
               .replaceAll('\n', ' ') ??
           'Event ${vals?.EventId}';
-      _traitSpans
+      _condSpans
           .add(SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
         TextSpan(
           text: eventName,
@@ -866,15 +910,15 @@ class FuncDescriptor extends StatelessWidget {
       ]));
     }
 
-    final ownerIndiv = func.buffs.getOrNull(0)?.script?.INDIVIDUALITIE;
+    final ownerIndiv = buff?.script?.INDIVIDUALITIE;
     if (ownerIndiv != null) {
       _addTraits(Transl.special.buffCheckSelf, [ownerIndiv]);
     }
 
-    for (int index = 0; index < _traitSpans.length; index++) {
+    for (int index = 0; index < _condSpans.length; index++) {
       spans.add(
-          TextSpan(text: index == _traitSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
-      spans.addAll(_traitSpans[index]);
+          TextSpan(text: index == _condSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
+      spans.addAll(_condSpans[index]);
     }
 
     Widget title = Text.rich(
@@ -911,7 +955,7 @@ class FuncDescriptor extends StatelessWidget {
   }
 
   Widget? _buildTrigger(BuildContext context) {
-    final trigger = kBuffValueTriggerTypes[func.buffs.getOrNull(0)?.type];
+    final trigger = kBuffValueTriggerTypes[func.buff?.type];
     if (trigger == null) return null;
 
     DataVals? vals;
@@ -933,7 +977,7 @@ class FuncDescriptor extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 2),
       child: _LazyTrigger(
         trigger: detail,
-        buff: func.buffs.first,
+        buff: func.buff!,
         isNp: isNp,
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
@@ -971,7 +1015,7 @@ class FuncDescriptor extends StatelessWidget {
       return traits.map((e) => e.shownName()).toList();
     }
 
-    final buff = func.buffs.getOrNull(0);
+    final buff = func.buff;
     final script = buff?.script;
     return {
       "type": '${Transl.funcType(func.funcType).l}/${func.funcType.name}',

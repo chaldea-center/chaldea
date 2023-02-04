@@ -254,11 +254,15 @@ class BuffInfoTable extends StatelessWidget {
             flex: 3,
           )
         ]),
-      if (buff.script?.HP_LOWER != null)
+      if (buff.script?.HP_LOWER != null || buff.script?.HP_HIGHER != null)
         CustomTableRow(children: [
-          TableCellData(text: "HP ≤", isHeader: true),
+          TableCellData(text: "HP", isHeader: true),
           TableCellData(
-            text: buff.script!.HP_LOWER!.format(percent: true, base: 10),
+            text: [
+              buff.script?.HP_HIGHER?.format(percent: true, base: 10),
+              'HP',
+              buff.script?.HP_LOWER?.format(percent: true, base: 10),
+            ].where((e) => e != null).join(" ≤ "),
             flex: 3,
           )
         ]),
@@ -296,8 +300,12 @@ class BuffInfoTable extends StatelessWidget {
         if (buff.script!.relationId!.defSide.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Defending']),
           relationId(context, buff.script!.relationId!.defSide),
-        ]
-      ]
+        ],
+      ],
+      if (buff.script?.convert != null)
+        ...buildBuffConvert(context, buff.script!.convert!),
+      if (buff.script?.source.isNotEmpty == true)
+        ..._sourceScript(context, buff.script!),
     ]);
   }
 
@@ -349,6 +357,96 @@ class BuffInfoTable extends StatelessWidget {
           color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
     );
+  }
+
+  Iterable<Widget> buildBuffConvert(
+      BuildContext context, BuffConvert convert) sync* {
+    for (int index = 0; index < convert.convertBuffs.length; index++) {
+      final cvtBuff = convert.convertBuffs[index];
+      final text = convert.script?.OverwritePopupText?.getOrNull(index);
+      final header = StringBuffer('Buff Convert');
+      if (convert.convertBuffs.length > 1) {
+        header.write(' ${index + 1}');
+      }
+      if (text != null && text.isNotEmpty) {
+        header.write(': $text');
+      }
+      yield CustomTableRow.fromTexts(
+          texts: [header.toString()], isHeader: true);
+
+      List<Widget> children = [];
+      switch (convert.convertType) {
+        case BuffConvertType.none:
+          children.add(const Text('NONE ?_?'));
+          break;
+        case BuffConvertType.buff:
+          final target = convert.targetBuffs.getOrNull(index);
+          children.add(_describeBuff(context, target));
+          break;
+        case BuffConvertType.individuality:
+          final trait = convert.targetTraits.getOrNull(index);
+          children.add(_describeTrait(context, trait));
+          break;
+      }
+      children.addAll([
+        const Text(' → '),
+        _describeBuff(context, cvtBuff),
+      ]);
+      yield Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: children,
+      );
+    }
+  }
+
+  Widget _describeBuff(BuildContext context, Buff? buff) {
+    List<InlineSpan> spans = [];
+    if (buff == null) {
+      spans.add(const TextSpan(text: 'Buff ???'));
+    } else {
+      spans.addAll([
+        if (buff.icon != null)
+          CenterWidgetSpan(
+              child: db.getIconImage(buff.icon, width: 18, aspectRatio: 1)),
+        TextSpan(text: '[${buff.id}] ${buff.lName.l}')
+      ]);
+    }
+    return InkWell(
+      onTap: buff?.routeTo,
+      child: Text.rich(
+        TextSpan(children: spans),
+        style:
+            TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+      ),
+    );
+  }
+
+  Widget _describeTrait(BuildContext context, NiceTrait? trait) {
+    return InkWell(
+      onTap: trait?.routeTo,
+      child: Text.rich(
+        TextSpan(text: 'Buff with ', children: [
+          trait == null
+              ? const TextSpan(text: 'Trait ???')
+              : SharedBuilder.traitSpan(context: context, trait: trait)
+        ]),
+      ),
+    );
+  }
+
+  Iterable<Widget> _sourceScript(
+      BuildContext context, BuffScript script) sync* {
+    yield CustomTableRow.fromTexts(
+      texts: const ['Source Script'],
+      isHeader: true,
+    );
+    for (final key in script.source.keys) {
+      yield CustomTableRow(children: [
+        TableCellData(text: key, isHeader: true)..maxLines = null,
+        TableCellData(text: script.source[key].toString(), flex: 3),
+      ]);
+    }
   }
 }
 

@@ -96,6 +96,13 @@ class NiceTrait with RouteInfo {
   String get route => Routes.traitI(id);
 }
 
+mixin DataScriptBase {
+  Map<String, dynamic> _source = {};
+  Map<String, dynamic> get source => _source;
+  void setSource(Map<String, dynamic>? json) => _source = Map.from(json ?? {});
+  List<T>? list<T>(String key) => (_source[key] as List<dynamic>?)?.cast();
+}
+
 @JsonSerializable()
 class BgmRelease {
   int id;

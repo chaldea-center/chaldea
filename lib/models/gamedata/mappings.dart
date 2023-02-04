@@ -50,6 +50,10 @@ class Transl<K, V> {
     return null;
   }
 
+  V of(Region? region) {
+    return mappings[key]?.ofRegion(region) ?? _default;
+  }
+
   List<V?> get all => [_m?.jp, _m?.cn, _m?.tw, _m?.na, _m?.kr];
 
   @override
@@ -219,7 +223,14 @@ class Transl<K, V> {
   static Transl<String, String> funcType(FuncType key) =>
       Transl(md.enums.funcType, key.name, key.name);
 
-  static Transl<String, String> misc(String key) => Transl(md.misc, key, key);
+  static Transl<String, String> misc(String key) =>
+      Transl<String, String>(md.misc[r'$default'] ?? {}, key, key);
+
+  static String Function(String key) miscScope(String scope) =>
+      (key) => Transl<String, String>(md.misc[scope] ?? {}, key, key).l;
+
+  static String misc2(String scope, String key) =>
+      Transl<String, String>(md.misc[scope] ?? {}, key, key).l;
 
   static final _SpecialTransl special = _SpecialTransl();
 }
@@ -267,7 +278,7 @@ class MappingData {
   final MappingList<int> warRelease;
   final Map<int, MappingBase<int>> questRelease; // only svt related quests
   final EnumMapping enums;
-  final Map<String, MappingBase<String>> misc;
+  final Map<String, Map<String, MappingBase<String>>> misc;
   final Map<String, String> cnReplace;
 
   MappingData({
@@ -358,8 +369,10 @@ class MappingData {
     });
   }
 
-  factory MappingData.fromJson(Map<String, dynamic> json) =>
-      _$MappingDataFromJson(json);
+  factory MappingData.fromJson(Map<String, dynamic> json) {
+    json['misc'] = json['misc2'] ?? json['misc'];
+    return _$MappingDataFromJson(json);
+  }
 }
 
 /// Shortcut for [MappingBase]

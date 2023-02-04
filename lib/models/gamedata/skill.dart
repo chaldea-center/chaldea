@@ -539,7 +539,7 @@ class ExtraPassive {
 }
 
 @JsonSerializable()
-class SkillScript {
+class SkillScript with DataScriptBase {
   final List<int>? NP_HIGHER; // lv, 50->50%
   final List<int>? NP_LOWER;
   final List<int>? STAR_HIGHER;
@@ -571,7 +571,7 @@ class SkillScript {
       SelectAddInfo?.isNotEmpty == true ||
       excludeTdChangeTypes?.isNotEmpty == true;
 
-  const SkillScript({
+  SkillScript({
     this.NP_HIGHER,
     this.NP_LOWER,
     this.STAR_HIGHER,
@@ -589,7 +589,7 @@ class SkillScript {
   });
 
   factory SkillScript.fromJson(Map<String, dynamic> json) =>
-      _$SkillScriptFromJson(json);
+      _$SkillScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable()
@@ -709,4 +709,7 @@ enum SkillScriptCond {
   hpValLower,
   hpPerHigher,
   hpPerLower,
+  ;
+
+  String get rawName => _$SkillScriptCondEnumMap[this] ?? name;
 }

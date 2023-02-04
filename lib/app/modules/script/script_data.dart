@@ -455,8 +455,7 @@ class ScriptCommand extends ScriptComponent {
       case '%1':
         return [
           state.textSpan(
-            text: Transl.misc('Fujimaru').m?.ofRegion(state.region) ??
-                Transl.misc('Fujimaru').l,
+            text: Transl.misc('Fujimaru').of(state.region),
             style: TextStyle(color: Colors.amber[800]),
           )
         ];
