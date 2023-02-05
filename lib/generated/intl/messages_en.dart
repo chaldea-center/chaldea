@@ -171,10 +171,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_status_met": MessageLookupByLibrary.simpleMessage("Met"),
         "ce_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
-        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
-        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
-        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
@@ -330,6 +326,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_required_app_version": m2,
         "error_widget_hint":
             MessageLookupByLibrary.simpleMessage("Error! Click to go back >_<"),
+        "event": MessageLookupByLibrary.simpleMessage("Event"),
         "event_ap_cost_half":
             MessageLookupByLibrary.simpleMessage("AP Cost 1/2"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
@@ -370,7 +367,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("Event Shop"),
         "event_skill": MessageLookupByLibrary.simpleMessage("Event Skill"),
-        "event_title": MessageLookupByLibrary.simpleMessage("Event"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Tower"),
         "event_treasure_box":
             MessageLookupByLibrary.simpleMessage("Treasure Box"),
@@ -416,7 +412,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_attribute": MessageLookupByLibrary.simpleMessage("Attribute"),
         "filter_category": MessageLookupByLibrary.simpleMessage("Category"),
         "filter_effects": MessageLookupByLibrary.simpleMessage("Effects"),
-        "filter_gender": MessageLookupByLibrary.simpleMessage("Gender"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("Match All"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("Obtains"),
         "filter_plan_not_reached":
@@ -427,7 +422,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("Display"),
         "filter_skill_lv": MessageLookupByLibrary.simpleMessage("Skills"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("Sort"),
-        "filter_sort_class": MessageLookupByLibrary.simpleMessage("Class"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
@@ -459,6 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("Rewards"),
         "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
+        "gender": MessageLookupByLibrary.simpleMessage("Gender"),
         "general_all": MessageLookupByLibrary.simpleMessage("All"),
         "general_close": MessageLookupByLibrary.simpleMessage("Close"),
         "general_custom": MessageLookupByLibrary.simpleMessage("Custom"),
@@ -560,14 +555,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_cv": MessageLookupByLibrary.simpleMessage("Voice Actor"),
         "info_death_rate": MessageLookupByLibrary.simpleMessage("Death Rate"),
         "info_endurance": MessageLookupByLibrary.simpleMessage("Endurance"),
-        "info_gender": MessageLookupByLibrary.simpleMessage("Gender"),
         "info_luck": MessageLookupByLibrary.simpleMessage("Luck"),
         "info_mana": MessageLookupByLibrary.simpleMessage("Mana"),
         "info_np": MessageLookupByLibrary.simpleMessage("NP"),
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Strength"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "info_value": MessageLookupByLibrary.simpleMessage("Value"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Invalid inputs"),
@@ -631,7 +624,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Subtract Event"),
         "item_stat_sub_owned":
             MessageLookupByLibrary.simpleMessage("Subtract Owned"),
-        "item_title": MessageLookupByLibrary.simpleMessage("Item"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Join Beta Program"),
         "jump_to": m7,
@@ -926,7 +918,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Servant Detail Page"),
         "servant_list_page":
             MessageLookupByLibrary.simpleMessage("Servant List Page"),
-        "servant_title": MessageLookupByLibrary.simpleMessage("Servant"),
         "set_plan_name": MessageLookupByLibrary.simpleMessage("Set Plan Name"),
         "setting_always_on_top":
             MessageLookupByLibrary.simpleMessage("Always On Top"),
@@ -1011,7 +1002,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_show_banner":
             MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
-        "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
         "super_effective_damage":
             MessageLookupByLibrary.simpleMessage("SP.DMG"),
         "support_chaldea":
@@ -1028,6 +1018,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
         "svt_card_deck_incorrect": MessageLookupByLibrary.simpleMessage(
             "Enemy\'s card deck may be incorrect, the hits distribution shall prevail."),
+        "svt_class": MessageLookupByLibrary.simpleMessage("Class"),
         "svt_class_dist": MessageLookupByLibrary.simpleMessage("Svt Class"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Hidden"),
@@ -1075,6 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
+        "trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "treasure_box_draw_cost":
             MessageLookupByLibrary.simpleMessage("Draw Cost"),
         "treasure_box_extra_gift":
@@ -1104,7 +1096,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Update failed"),
         "update_msg_no_update":
             MessageLookupByLibrary.simpleMessage("No update available"),
-        "update_msg_succuss": MessageLookupByLibrary.simpleMessage("Updated"),
+        "updated": MessageLookupByLibrary.simpleMessage("Updated"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
         "upload_and_close_app":
             MessageLookupByLibrary.simpleMessage("Upload & Close"),
@@ -1137,11 +1129,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
+        "war": MessageLookupByLibrary.simpleMessage("War"),
         "war_age": MessageLookupByLibrary.simpleMessage("Age"),
         "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
         "war_board": MessageLookupByLibrary.simpleMessage("War Board"),
         "war_map": MessageLookupByLibrary.simpleMessage("Map"),
-        "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
         "words_separate": m14

@@ -201,7 +201,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
       if (cond.eventId != 0) {
         final event = db.gameData.events[cond.eventId];
         condDetails.add(Text(
-            ' ꔷ ${S.current.event_title} ${event?.lName.l ?? cond.eventId}',
+            ' ꔷ ${S.current.event} ${event?.lName.l ?? cond.eventId}',
             style: style));
       }
       children.add(Column(

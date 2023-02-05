@@ -62,8 +62,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
             hideOutline: true,
             children: [
               CustomTableRow(children: [
-                TableCellData(
-                    text: S.current.filter_sort_class, isHeader: true),
+                TableCellData(text: S.current.svt_class, isHeader: true),
                 TableCellData(
                   flex: 3,
                   textAlign: TextAlign.center,
@@ -166,7 +165,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         ],
       ),
       CustomTableRow.fromTexts(
-        texts: [S.current.info_trait],
+        texts: [S.current.trait],
         isHeader: true,
       ),
       CustomTableRow.fromChildren(children: [

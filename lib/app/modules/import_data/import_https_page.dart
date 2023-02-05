@@ -181,7 +181,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 trailing: Text(user.name),
               ),
               ListTile(
-                title: Text(S.current.info_gender),
+                title: Text(S.current.gender),
                 trailing: Text(user.genderType == 1
                     ? '♂ ${S.current.guda_male}'
                     : '♀ ${S.current.guda_female}'),

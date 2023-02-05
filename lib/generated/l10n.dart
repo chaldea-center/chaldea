@@ -834,50 +834,6 @@ class S {
     );
   }
 
-  /// `MIX`
-  String get ce_type_mix_hp_atk {
-    return Intl.message(
-      'MIX',
-      name: 'ce_type_mix_hp_atk',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `NONE`
-  String get ce_type_none_hp_atk {
-    return Intl.message(
-      'NONE',
-      name: 'ce_type_none_hp_atk',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `ATK`
-  String get ce_type_pure_atk {
-    return Intl.message(
-      'ATK',
-      name: 'ce_type_pure_atk',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `HP`
-  String get ce_type_pure_hp {
-    return Intl.message(
-      'HP',
-      name: 'ce_type_pure_hp',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Chaldea Account`
   String get chaldea_account {
     return Intl.message(
@@ -2066,6 +2022,17 @@ class S {
     );
   }
 
+  /// `Event`
+  String get event {
+    return Intl.message(
+      'Event',
+      name: 'event',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `AP Cost 1/2`
   String get event_ap_cost_half {
     return Intl.message(
@@ -2368,17 +2335,6 @@ class S {
     return Intl.message(
       'Event Skill',
       name: 'event_skill',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Event`
-  String get event_title {
-    return Intl.message(
-      'Event',
-      name: 'event_title',
       desc: '',
       locale: localeName,
       args: [],
@@ -2760,17 +2716,6 @@ class S {
     );
   }
 
-  /// `Gender`
-  String get filter_gender {
-    return Intl.message(
-      'Gender',
-      name: 'filter_gender',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Match All`
   String get filter_match_all {
     return Intl.message(
@@ -2853,17 +2798,6 @@ class S {
     return Intl.message(
       'Sort',
       name: 'filter_sort',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Class`
-  String get filter_sort_class {
-    return Intl.message(
-      'Class',
-      name: 'filter_sort_class',
       desc: '',
       locale: localeName,
       args: [],
@@ -3117,6 +3051,17 @@ class S {
     return Intl.message(
       'Gamedata',
       name: 'gamedata',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Gender`
+  String get gender {
+    return Intl.message(
+      'Gender',
+      name: 'gender',
       desc: '',
       locale: localeName,
       args: [],
@@ -3882,17 +3827,6 @@ class S {
     );
   }
 
-  /// `Gender`
-  String get info_gender {
-    return Intl.message(
-      'Gender',
-      name: 'info_gender',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Luck`
   String get info_luck {
     return Intl.message(
@@ -3953,17 +3887,6 @@ class S {
     return Intl.message(
       'Strength',
       name: 'info_strength',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Trait`
-  String get info_trait {
-    return Intl.message(
-      'Trait',
-      name: 'info_trait',
       desc: '',
       locale: localeName,
       args: [],
@@ -4393,17 +4316,6 @@ class S {
     return Intl.message(
       'Subtract Owned',
       name: 'item_stat_sub_owned',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Item`
-  String get item_title {
-    return Intl.message(
-      'Item',
-      name: 'item_title',
       desc: '',
       locale: localeName,
       args: [],
@@ -6639,17 +6551,6 @@ class S {
     );
   }
 
-  /// `Servant`
-  String get servant_title {
-    return Intl.message(
-      'Servant',
-      name: 'servant_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Set Plan Name`
   String get set_plan_name {
     return Intl.message(
@@ -7266,17 +7167,6 @@ class S {
     );
   }
 
-  /// `Summons`
-  String get summon_title {
-    return Intl.message(
-      'Summons',
-      name: 'summon_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `SP.DMG`
   String get super_effective_damage {
     return Intl.message(
@@ -7370,6 +7260,17 @@ class S {
     return Intl.message(
       'Enemy\'s card deck may be incorrect, the hits distribution shall prevail.',
       name: 'svt_card_deck_incorrect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Class`
+  String get svt_class {
+    return Intl.message(
+      'Class',
+      name: 'svt_class',
       desc: '',
       locale: localeName,
       args: [],
@@ -7739,6 +7640,17 @@ class S {
     );
   }
 
+  /// `Trait`
+  String get trait {
+    return Intl.message(
+      'Trait',
+      name: 'trait',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Draw Cost`
   String get treasure_box_draw_cost {
     return Intl.message(
@@ -7916,10 +7828,10 @@ class S {
   }
 
   /// `Updated`
-  String get update_msg_succuss {
+  String get updated {
     return Intl.message(
       'Updated',
-      name: 'update_msg_succuss',
+      name: 'updated',
       desc: '',
       locale: localeName,
       args: [],
@@ -8135,6 +8047,17 @@ class S {
     );
   }
 
+  /// `War`
+  String get war {
+    return Intl.message(
+      'War',
+      name: 'war',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Age`
   String get war_age {
     return Intl.message(
@@ -8173,17 +8096,6 @@ class S {
     return Intl.message(
       'Map',
       name: 'war_map',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Wars`
-  String get war_title {
-    return Intl.message(
-      'Wars',
-      name: 'war_title',
       desc: '',
       locale: localeName,
       args: [],

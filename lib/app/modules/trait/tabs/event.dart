@@ -31,7 +31,7 @@ class TraitEventTab extends StatelessWidget {
     return ListView(
       children: [
         const SizedBox(height: 8),
-        Text('${S.current.info_trait} $id', textAlign: TextAlign.center),
+        Text('${S.current.trait} $id', textAlign: TextAlign.center),
         Text(Transl.trait(id).l, textAlign: TextAlign.center),
         Card(
           child: Padding(
@@ -41,7 +41,7 @@ class TraitEventTab extends StatelessWidget {
         ),
         if (events.isNotEmpty)
           TileGroup(
-            header: S.current.event_title,
+            header: S.current.event,
             children: [
               for (final event in events)
                 ListTile(

@@ -211,7 +211,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             final data = await GameDataLoader.instance.reload(force: true);
             if (data != null) db.gameData = data;
             EasyLoading.dismiss();
-            EasyLoading.showSuccess(S.current.update_msg_succuss);
+            EasyLoading.showSuccess(S.current.updated);
           },
         ),
         ListTile(

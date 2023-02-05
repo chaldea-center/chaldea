@@ -81,7 +81,7 @@ class EventListPageState extends State<EventListPage>
         title: db.onUserData((context, snapshot) {
           return AutoSizeText.rich(
             TextSpan(
-              text: S.current.event_title,
+              text: S.current.event,
               children: [
                 if (!db.curUser.sameEventPlan)
                   TextSpan(

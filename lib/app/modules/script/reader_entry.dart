@@ -32,11 +32,8 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
       body: ListView(
         children: [
           TileGroup(
-            header: [
-              S.current.event_title,
-              S.current.war_title,
-              S.current.script_story
-            ].join('→'),
+            header: [S.current.event, S.current.war, S.current.script_story]
+                .join('→'),
             children: [
               ListTile(
                 title: Text(

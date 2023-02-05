@@ -146,7 +146,7 @@ class GalleryItem {
 
   static GalleryItem servants = GalleryItem(
     name: 'servants',
-    titleBuilder: () => S.current.servant_title,
+    titleBuilder: () => S.current.servant,
     icon: FontAwesomeIcons.users,
     url: Routes.servants,
     page: ServantListPage(),
@@ -170,7 +170,7 @@ class GalleryItem {
   );
   static GalleryItem items = GalleryItem(
     name: 'items',
-    titleBuilder: () => S.current.item_title,
+    titleBuilder: () => S.current.item,
     icon: Icons.category,
     url: Routes.items,
     page: ItemListPage(),
@@ -178,7 +178,7 @@ class GalleryItem {
   );
   static GalleryItem events = GalleryItem(
     name: 'events',
-    titleBuilder: () => S.current.event_title,
+    titleBuilder: () => S.current.event,
     icon: Icons.flag,
     url: Routes.events,
     page: EventListPage(),
@@ -242,7 +242,7 @@ class GalleryItem {
   );
   static GalleryItem summons = GalleryItem(
     name: 'summons',
-    titleBuilder: () => S.current.summon_title,
+    titleBuilder: () => S.current.summon,
     icon: FontAwesomeIcons.dice,
     url: Routes.summons,
     page: SummonListPage(),
@@ -385,7 +385,7 @@ class GalleryItem {
   );
   static GalleryItem svtClass = GalleryItem(
     name: 'svt_class',
-    titleBuilder: () => S.current.filter_sort_class,
+    titleBuilder: () => S.current.svt_class,
     icon: FontAwesomeIcons.chessKing,
     url: Routes.svtClasses,
     page: const SvtClassListPage(),
@@ -394,7 +394,7 @@ class GalleryItem {
   );
   static GalleryItem traits = GalleryItem(
     name: 'traits',
-    titleBuilder: () => S.current.info_trait,
+    titleBuilder: () => S.current.trait,
     icon: FontAwesomeIcons.diceD20,
     url: Routes.traits,
     page: const TraitListPage(),

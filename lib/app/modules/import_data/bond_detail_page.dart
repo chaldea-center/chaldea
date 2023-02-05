@@ -246,7 +246,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                   ),
                   DropdownMenuItem(
                     value: _SortType.cls,
-                    child: Text(S.current.filter_sort_class),
+                    child: Text(S.current.svt_class),
                   ),
                   DropdownMenuItem(
                     value: _SortType.rarity,

@@ -178,7 +178,7 @@ enum SvtCompare {
       case SvtCompare.no:
         return S.current.filter_sort_number;
       case SvtCompare.className:
-        return S.current.filter_sort_class;
+        return S.current.svt_class;
       case SvtCompare.rarity:
         return S.current.filter_sort_rarity;
       case SvtCompare.atk:
@@ -442,21 +442,9 @@ enum CraftATKType {
   none,
   hp,
   atk,
-  mix,
-  ;
+  mix;
 
-  String get shownName {
-    switch (this) {
-      case CraftATKType.none:
-        return S.current.ce_type_none_hp_atk;
-      case CraftATKType.hp:
-        return S.current.ce_type_pure_hp;
-      case CraftATKType.atk:
-        return S.current.ce_type_pure_atk;
-      case CraftATKType.mix:
-        return S.current.ce_type_mix_hp_atk;
-    }
-  }
+  String get shownName => name.toUpperCase();
 }
 
 @JsonSerializable(ignoreUnannotated: true)

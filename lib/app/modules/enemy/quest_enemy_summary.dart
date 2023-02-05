@@ -123,7 +123,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
               ),
               CustomTableRow.fromTexts(
                 texts: [
-                  S.current.filter_sort_class,
+                  S.current.svt_class,
                   S.current.np_gain_mod,
                   S.current.def_np_gain_mod,
                   S.current.crit_star_mod,
@@ -163,7 +163,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                         .join('/')),
               ]),
               CustomTableRow.fromTexts(
-                texts: [S.current.info_trait],
+                texts: [S.current.trait],
                 isHeader: true,
               ),
               CustomTableRow.fromChildren(children: [

@@ -258,7 +258,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(S.current.filter_sort_class, style: textStyle),
+          Text(S.current.svt_class, style: textStyle),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Row(

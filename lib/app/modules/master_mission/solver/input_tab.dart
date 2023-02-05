@@ -307,7 +307,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   Widget get eventSelector {
     final war = db.gameData.wars[warId];
     String title;
-    String leading = S.current.event_title;
+    String leading = S.current.event;
     if (war == null) {
       title = 'Invalid Choice';
     } else if (war.isMainStory) {
@@ -767,7 +767,7 @@ class EventChooser extends StatelessWidget {
           title: const Text('Select Free Progress or an Event War'),
           bottom: FixedHeight.tabBar(TabBar(tabs: [
             Tab(text: S.current.main_story),
-            Tab(text: S.current.event_title),
+            Tab(text: S.current.event),
           ])),
         ),
         body: TabBarView(

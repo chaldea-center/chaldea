@@ -54,7 +54,7 @@ class GameDataLoader {
     if (data != null) {
       db.gameData = data;
       db.notifyAppUpdate();
-      EasyLoading.showSuccess(S.current.update_msg_succuss);
+      EasyLoading.showSuccess(S.current.updated);
     }
     return data;
   }

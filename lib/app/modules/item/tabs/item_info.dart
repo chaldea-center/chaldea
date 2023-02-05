@@ -88,7 +88,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               ),
             if (item.individuality.isNotEmpty) ...[
               CustomTableRow.fromTexts(
-                  texts: [S.current.info_trait], isHeader: true),
+                  texts: [S.current.trait], isHeader: true),
               CustomTableRow.fromChildren(children: [
                 SharedBuilder.traitList(
                     context: context, traits: item.individuality)

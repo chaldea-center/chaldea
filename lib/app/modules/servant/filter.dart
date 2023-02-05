@@ -252,7 +252,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<Gender>(
-          title: Text(S.current.filter_gender, style: textStyle),
+          title: Text(S.current.gender, style: textStyle),
           options: Gender.values.toList(),
           values: filterData.gender,
           optionBuilder: (v) => Text(Transl.gender(v).l),
@@ -261,7 +261,7 @@ class _ServantFilterPageState
           },
         ),
         FilterGroup<Trait>(
-          title: Text(S.current.info_trait, style: textStyle),
+          title: Text(S.current.trait, style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
           optionBuilder: (v) => Text(Transl.trait(v.id).l),

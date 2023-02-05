@@ -92,7 +92,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromTexts(texts: [
               S.current.illustrator,
               S.current.info_cv,
-              S.current.info_gender,
+              S.current.gender,
             ], defaults: headerData),
             CustomTableRow(children: [
               TableCellData(
@@ -268,7 +268,7 @@ class SvtInfoTab extends StatelessWidget {
               defaults: contentData,
             ),
             CustomTableRow.fromTexts(
-                texts: [S.current.info_trait], defaults: headerData),
+                texts: [S.current.trait], defaults: headerData),
             ..._addTraits(context, null, baseTraits, []),
             for (final entry
                 in svt.ascensionAdd.individuality.ascension.entries)
@@ -394,7 +394,7 @@ class SvtInfoTab extends StatelessWidget {
               builder: (context) {
                 return SimpleCancelOkDialog(
                   title: Text.rich(TextSpan(
-                    text: S.current.info_trait,
+                    text: S.current.trait,
                     children: prefix == null
                         ? null
                         : [const TextSpan(text: ' '), prefix],

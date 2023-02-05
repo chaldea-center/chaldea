@@ -146,7 +146,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         ),
       if (_shownTabs.contains(_TabType.event))
         _TabInfo(
-          header: Tab(text: S.current.event_title),
+          header: Tab(text: S.current.event),
           view: ItemObtainEventTab(
               itemId: widget.itemId, showOutdated: showOutdated),
           actions: [filterOutdatedButton, popupMenu],
@@ -257,7 +257,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   String _getSortTypeText(ItemDetailSvtSort type) {
     return '${S.current.filter_sort}-${[
       S.current.filter_sort_number,
-      S.current.filter_sort_class,
+      S.current.svt_class,
       S.current.rarity
     ][type.index]}';
   }

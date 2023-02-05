@@ -43,7 +43,7 @@ class _TraitListPageState extends State<TraitListPage>
       useGrid: false,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: Text(S.current.info_trait),
+        title: Text(S.current.trait),
         bottom: searchBar,
         actions: const [],
       ),

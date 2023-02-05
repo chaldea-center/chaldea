@@ -182,7 +182,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
       if (relatedEvents.isNotEmpty)
         TileGroup(
-          header: S.current.event_title,
+          header: S.current.event,
           children: [for (Event event in relatedEvents) associateEvent(event)],
         )
     ];

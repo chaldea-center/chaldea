@@ -16,7 +16,7 @@ class SvtClassListPage extends StatelessWidget {
     clsIds.sort();
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.filter_sort_class),
+        title: Text(S.current.svt_class),
         actions: [
           IconButton(
             onPressed: () {

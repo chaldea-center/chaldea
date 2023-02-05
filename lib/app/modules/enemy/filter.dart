@@ -93,7 +93,7 @@ class _EnemyFilterPageState
           },
         ),
         FilterGroup<Trait>(
-          title: Text('${S.current.info_trait}*', style: textStyle),
+          title: Text('${S.current.trait}*', style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
           optionBuilder: (v) => Text(Transl.trait(v.id).l),

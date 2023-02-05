@@ -871,7 +871,7 @@ class ServantListPageState extends State<ServantListPage>
                       },
                       color: Theme.of(context).colorScheme.secondary,
                       icon: const Icon(Icons.category),
-                      tooltip: S.current.item_title,
+                      tooltip: S.current.item,
                     ),
                   ],
                 ),

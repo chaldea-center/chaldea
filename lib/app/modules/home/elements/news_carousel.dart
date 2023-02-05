@@ -318,7 +318,7 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
-          EasyLoading.showSuccess(S.current.update_msg_succuss);
+          EasyLoading.showSuccess(S.current.updated);
         }
       } else {
         if (showToast) {

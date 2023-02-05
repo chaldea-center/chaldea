@@ -93,7 +93,7 @@ class ItemListPageState extends State<ItemListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.item_title),
+        title: Text(S.current.item),
         leading: const MasterBackButton(),
         titleSpacing: 0,
         actions: <Widget>[
@@ -538,7 +538,7 @@ class _ItemListTabState extends State<ItemListTab> {
           ),
           CheckboxWithLabel(
             value: db.itemCenter.includingEvents,
-            label: Text(S.current.event_title),
+            label: Text(S.current.event),
             onChanged: (v) {
               setState(() {
                 // reset to true in initState or not?
@@ -728,7 +728,7 @@ class _ItemListTabState extends State<ItemListTab> {
             ),
           ),
           if (coinOwner == null) ...[
-            Text(S.current.event_title, style: const TextStyle(fontSize: 14)),
+            Text(S.current.event, style: const TextStyle(fontSize: 14)),
             ConstrainedBox(
               constraints: const BoxConstraints(minWidth: 36),
               child: Align(

@@ -225,7 +225,7 @@ class EventCampaignDetailPage extends StatelessWidget {
       case QuestType.friendship:
         return S.current.interlude;
       case QuestType.event:
-        return S.current.event_title;
+        return S.current.event;
       case QuestType.heroballad:
       case QuestType.warBoard:
         return S.current.war_board;

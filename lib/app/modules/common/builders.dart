@@ -242,7 +242,7 @@ class SharedBuilder {
                 ListTile(
                   title: Text(db.curUser.getFriendlyPlanName(index)),
                   subtitle: db.curUser.sameEventPlan && index == 0
-                      ? Text(S.current.event_title)
+                      ? Text(S.current.event)
                       : null,
                   selected: index == db.curUser.curSvtPlanNo,
                   onTap: () {

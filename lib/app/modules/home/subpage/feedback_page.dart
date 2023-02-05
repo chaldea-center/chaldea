@@ -169,12 +169,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 child: TextFormField(
                   controller: contactController,
                   decoration: InputDecoration(
-                    labelText: S.current.email,
+                    labelText: '${S.current.email}*',
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.mail_outline),
                     hintText: S.current.email,
                     helperText: S.current.fill_email_warning,
                     helperMaxLines: 3,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   maxLines: 1,
                 ),

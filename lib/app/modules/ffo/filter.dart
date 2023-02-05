@@ -60,7 +60,7 @@ class _FfoPartFilterPageState
         ]),
         // buildClassFilter(filterData.classType),
         FilterGroup<SvtClass>(
-          title: Text(S.current.filter_sort_class),
+          title: Text(S.current.svt_class),
           options: const [
             ...SvtClassX.regular,
             SvtClass.shielder,

@@ -143,7 +143,7 @@ class EventFortificationPage extends HookWidget {
                           ListTile(
                             dense: true,
                             contentPadding: EdgeInsets.zero,
-                            title: Text(S.current.filter_sort_class),
+                            title: Text(S.current.svt_class),
                             trailing: Text(detail.className.name.toTitle()),
                           ),
                           if (detail.releaseConditions.isNotEmpty)

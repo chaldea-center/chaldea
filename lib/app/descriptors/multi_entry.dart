@@ -213,7 +213,7 @@ class MultiDescriptor {
       collapsed(
         context,
         targetIds,
-        S.current.info_trait,
+        S.current.trait,
         (context, id) {
           return ListTile(
             title: Text('Trait $id - ${Transl.trait(id).l}'),
@@ -304,7 +304,7 @@ class MultiDescriptor {
         MultiDescriptor.collapsed(
           context,
           targetIds,
-          S.current.war_title,
+          S.current.war,
           (context, id) {
             final war = db.gameData.wars[id];
             return ListTile(
@@ -340,7 +340,7 @@ class MultiDescriptor {
         MultiDescriptor.collapsed(
           context,
           targetIds,
-          S.current.event_title,
+          S.current.event,
           (context, id) {
             final event = db.gameData.events[id];
             return ListTile(

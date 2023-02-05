@@ -135,10 +135,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
-        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("خلط"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
-        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
-        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("حساب كاليديا"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "غير متوافق مع بيانات الاصدار V1.\n نظام الحساب البسيط للنسخ الاحتياطي لبيانات المستخدم إلى الخادم والتزامن متعدد الأجهزة\n لا يوجد ضمان أمني ، يرجى عدم تعيين كلمات المرور التي تستخدمها بشكل متكرر !!!\n لا حاجة للتسجيل إذا كنت لا تحتاج إلى هاتين الميزتين."),
@@ -240,6 +236,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("لا انترنت"),
         "error_required_app_version": m2,
+        "event": MessageLookupByLibrary.simpleMessage("حدث"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("إضافي"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "ستتم إضافة جميع العناصر إلى الحقيبة وإزالة الحدث خارج الخطة"),
@@ -260,7 +257,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_progress": MessageLookupByLibrary.simpleMessage("التقدم"),
         "event_quest": MessageLookupByLibrary.simpleMessage("مهام الايفنت"),
         "event_rerun_replace_grail": m4,
-        "event_title": MessageLookupByLibrary.simpleMessage("حدث"),
         "event_tower": MessageLookupByLibrary.simpleMessage("برج"),
         "event_treasure_box":
             MessageLookupByLibrary.simpleMessage("بطاقة استبدال"),
@@ -299,7 +295,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_attribute": MessageLookupByLibrary.simpleMessage("ميزة"),
         "filter_category": MessageLookupByLibrary.simpleMessage("فئة"),
         "filter_effects": MessageLookupByLibrary.simpleMessage("التأثير"),
-        "filter_gender": MessageLookupByLibrary.simpleMessage("الجنس"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("طابق الكل"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("يمتلك"),
         "filter_plan_not_reached":
@@ -310,7 +305,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("عرض"),
         "filter_skill_lv": MessageLookupByLibrary.simpleMessage("سكلز"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("فرز"),
-        "filter_sort_class": MessageLookupByLibrary.simpleMessage("الكلاس"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("رقم"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("الندرة"),
         "free_progress": MessageLookupByLibrary.simpleMessage("مهمة محدودة"),
@@ -329,6 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("مكافئات"),
         "game_server": MessageLookupByLibrary.simpleMessage("خادم اللعبة"),
         "gamedata": MessageLookupByLibrary.simpleMessage("بيانات اللعبة"),
+        "gender": MessageLookupByLibrary.simpleMessage("الجنس"),
         "general_all": MessageLookupByLibrary.simpleMessage("الكل"),
         "general_default": MessageLookupByLibrary.simpleMessage("الافتراضي"),
         "general_others": MessageLookupByLibrary.simpleMessage("الأخري"),
@@ -378,14 +373,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_cv": MessageLookupByLibrary.simpleMessage("مؤدي الأصوات"),
         "info_death_rate": MessageLookupByLibrary.simpleMessage("نسبة الموت"),
         "info_endurance": MessageLookupByLibrary.simpleMessage("قدرة التحمل"),
-        "info_gender": MessageLookupByLibrary.simpleMessage("الجنس"),
         "info_luck": MessageLookupByLibrary.simpleMessage("الحظ"),
         "info_mana": MessageLookupByLibrary.simpleMessage("المانا"),
         "info_np": MessageLookupByLibrary.simpleMessage("الوهم النبيل"),
         "info_np_rate": MessageLookupByLibrary.simpleMessage("نسبة الشحن"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("نسبة النجوم"),
         "info_strength": MessageLookupByLibrary.simpleMessage("القوة"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("علامة"),
         "info_value": MessageLookupByLibrary.simpleMessage("قيمة"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("مدخلات غير صالحة"),
@@ -395,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ios_app_path": MessageLookupByLibrary.simpleMessage(
             "\"Files\" app/On My iPhone/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("مشاكل"),
-        "item": MessageLookupByLibrary.simpleMessage("مواد التطوير"),
+        "item": MessageLookupByLibrary.simpleMessage("المواد"),
         "item_already_exist_hint": m6,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("مواد الاسينشن"),
@@ -430,7 +423,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("أظهر المطلوبة فقط"),
         "item_own": MessageLookupByLibrary.simpleMessage("مملوك"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("المواد"),
-        "item_title": MessageLookupByLibrary.simpleMessage("المواد"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("الإجمالي"),
         "join_beta": MessageLookupByLibrary.simpleMessage("انضم للبيتا"),
         "jump_to": m7,
@@ -591,7 +583,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("صفحة تفاصيل الخادم"),
         "servant_list_page":
             MessageLookupByLibrary.simpleMessage("صفحة قائمة الخدم"),
-        "servant_title": MessageLookupByLibrary.simpleMessage("الخدم"),
         "set_plan_name":
             MessageLookupByLibrary.simpleMessage("اعداد اسم الخطة"),
         "setting_always_on_top":
@@ -638,12 +629,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_show_banner":
             MessageLookupByLibrary.simpleMessage("عرض البانر"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("تكت"),
-        "summon_title": MessageLookupByLibrary.simpleMessage("الاستدعاءات"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("الدعم والتبرعات"),
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("ايقونه الاسينشن"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("عن"),
+        "svt_class": MessageLookupByLibrary.simpleMessage("الكلاس"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("تلقائي"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("مخفي"),
         "svt_fav_btn_remember": MessageLookupByLibrary.simpleMessage("تذكير"),
@@ -678,6 +669,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تحديث الشرائح"),
         "total_ap": MessageLookupByLibrary.simpleMessage("الاي بي الكلي"),
         "total_counts": MessageLookupByLibrary.simpleMessage("الحساب النهائي"),
+        "trait": MessageLookupByLibrary.simpleMessage("علامة"),
         "update": MessageLookupByLibrary.simpleMessage("تحديث"),
         "update_already_latest":
             MessageLookupByLibrary.simpleMessage("النسخة الاعلي مسبقا"),
@@ -699,9 +691,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("عرض الرسومية"),
         "voice": MessageLookupByLibrary.simpleMessage("صوت"),
+        "war": MessageLookupByLibrary.simpleMessage("الحروب"),
         "war_age": MessageLookupByLibrary.simpleMessage("العصر"),
         "war_banner": MessageLookupByLibrary.simpleMessage("البانر"),
-        "war_title": MessageLookupByLibrary.simpleMessage("الحروب"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
         "words_separate": m14
       };

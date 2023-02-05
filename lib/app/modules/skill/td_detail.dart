@@ -84,7 +84,7 @@ class _TdDetailPageState extends State<TdDetailPage>
             isBaseTd: true,
           ),
           CustomTableRow(children: [
-            TableCellData(text: S.current.info_trait, isHeader: true),
+            TableCellData(text: S.current.trait, isHeader: true),
             TableCellData(
               flex: 3,
               child: SharedBuilder.traitList(

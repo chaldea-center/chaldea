@@ -64,7 +64,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     if (_war == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('${S.current.war_title} $id'),
+          title: Text('${S.current.war} $id'),
         ),
         body: Center(
           child: _loading
@@ -176,7 +176,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
           ]),
         if (war.eventId > 0)
           CustomTableRow(children: [
-            TableCellData(isHeader: true, text: S.current.event_title),
+            TableCellData(isHeader: true, text: S.current.event),
             TableCellData(
               flex: 3,
               child: TextButton(

@@ -39,7 +39,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.filter_sort_class}: ${cls?.lName ?? clsId}'),
+        title: Text('${S.current.svt_class}: ${cls?.lName ?? clsId}'),
       ),
       body: ListView(
         children: [

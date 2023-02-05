@@ -48,7 +48,7 @@ class _SummonListPageState extends State<SummonListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        title: Text(S.current.summon_title),
+        title: Text(S.current.summon),
         leading: const MasterBackButton(),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,

@@ -83,7 +83,7 @@ class _SQTableTabState extends State<SQTableTab> {
           S.current.sq_short,
           S.current.summon_ticket_short,
           S.current.item_apple,
-          S.current.event_title
+          S.current.event
         ][col],
         textAlign: col != 3 ? TextAlign.center : null,
         style: const TextStyle(fontWeight: FontWeight.bold),

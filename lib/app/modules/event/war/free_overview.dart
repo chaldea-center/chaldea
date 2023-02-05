@@ -67,8 +67,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                         '${S.current.quest} (${phases.length}/${widget.quests.length})'),
                     size: ColumnSize.S,
                   ),
-                  DataColumn2(
-                      label: Text(S.current.filter_sort_class), fixedWidth: 48),
+                  DataColumn2(label: Text(S.current.svt_class), fixedWidth: 48),
                   const DataColumn2(
                       label: Text('Event Item'), size: ColumnSize.L),
                   const DataColumn2(

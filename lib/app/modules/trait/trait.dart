@@ -25,7 +25,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
   @override
   Widget build(BuildContext context) {
     String name = Transl.trait(id).l;
-    String title = '${S.current.info_trait} $id';
+    String title = '${S.current.trait} $id';
     if (name != id.toString()) {
       title += ' - $name';
     }
@@ -41,7 +41,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
             minFontSize: 14,
           ),
           bottom: FixedHeight.tabBar(TabBar(isScrollable: true, tabs: [
-            if (isEventTrait) Tab(text: S.current.event_title),
+            if (isEventTrait) Tab(text: S.current.event),
             Tab(text: S.current.servant),
             Tab(text: S.current.enemy),
             Tab(text: S.current.super_effective_damage),

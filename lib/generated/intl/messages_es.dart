@@ -143,10 +143,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "ce_status_not_met":
             MessageLookupByLibrary.simpleMessage("No Cumplido"),
         "ce_status_owned": MessageLookupByLibrary.simpleMessage("Poseído"),
-        "ce_type_mix_hp_atk": MessageLookupByLibrary.simpleMessage("MIX"),
-        "ce_type_none_hp_atk": MessageLookupByLibrary.simpleMessage("NONE"),
-        "ce_type_pure_atk": MessageLookupByLibrary.simpleMessage("ATK"),
-        "ce_type_pure_hp": MessageLookupByLibrary.simpleMessage("HP"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Usuario de Chaldea"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
@@ -254,6 +250,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_no_internet":
             MessageLookupByLibrary.simpleMessage("Sin internet"),
         "error_required_app_version": m2,
+        "event": MessageLookupByLibrary.simpleMessage("Eventos"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "Todos los objetos se añadirán al inventario y se eliminará el evento fuera del plan"),
@@ -277,7 +274,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_quest":
             MessageLookupByLibrary.simpleMessage("Misiones de Evento"),
         "event_rerun_replace_grail": m4,
-        "event_title": MessageLookupByLibrary.simpleMessage("Eventos"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Torre"),
         "event_treasure_box":
             MessageLookupByLibrary.simpleMessage("Cofre del tesoro"),
@@ -319,7 +315,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_attribute": MessageLookupByLibrary.simpleMessage("Atributo"),
         "filter_category": MessageLookupByLibrary.simpleMessage("Categoría"),
         "filter_effects": MessageLookupByLibrary.simpleMessage("Efectos"),
-        "filter_gender": MessageLookupByLibrary.simpleMessage("Género"),
         "filter_match_all":
             MessageLookupByLibrary.simpleMessage("Coincidir todo"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("Obtiene"),
@@ -331,7 +326,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("Mostrar"),
         "filter_skill_lv": MessageLookupByLibrary.simpleMessage("Skills"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("Ordenar"),
-        "filter_sort_class": MessageLookupByLibrary.simpleMessage("Clase"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("Nº"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rareza"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
@@ -353,6 +347,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_server":
             MessageLookupByLibrary.simpleMessage("Servidor de juego"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Datos del juego"),
+        "gender": MessageLookupByLibrary.simpleMessage("Género"),
         "general_default": MessageLookupByLibrary.simpleMessage("Por defecto"),
         "general_others": MessageLookupByLibrary.simpleMessage("Otros"),
         "general_special": MessageLookupByLibrary.simpleMessage("Especial"),
@@ -440,14 +435,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_cv": MessageLookupByLibrary.simpleMessage("Actor de voz"),
         "info_death_rate": MessageLookupByLibrary.simpleMessage("Death Rate"),
         "info_endurance": MessageLookupByLibrary.simpleMessage("Resistencia"),
-        "info_gender": MessageLookupByLibrary.simpleMessage("Género"),
         "info_luck": MessageLookupByLibrary.simpleMessage("Suerte"),
         "info_mana": MessageLookupByLibrary.simpleMessage("Maná"),
         "info_np": MessageLookupByLibrary.simpleMessage("NP"),
         "info_np_rate": MessageLookupByLibrary.simpleMessage("NP Rate"),
         "info_star_rate": MessageLookupByLibrary.simpleMessage("Star Rate"),
         "info_strength": MessageLookupByLibrary.simpleMessage("Fuerza"),
-        "info_trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "info_value": MessageLookupByLibrary.simpleMessage("Valor"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("Entradas inválidas"),
@@ -511,7 +504,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Restar Eventos"),
         "item_stat_sub_owned":
             MessageLookupByLibrary.simpleMessage("Restar poseídos"),
-        "item_title": MessageLookupByLibrary.simpleMessage("Objeto"),
         "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta":
             MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
@@ -715,7 +707,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Página de detalles del Servant"),
         "servant_list_page":
             MessageLookupByLibrary.simpleMessage("Pagína de lista de Servants"),
-        "servant_title": MessageLookupByLibrary.simpleMessage("Servants"),
         "set_plan_name":
             MessageLookupByLibrary.simpleMessage("Establecer nombre del plan"),
         "setting_always_on_top":
@@ -794,12 +785,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_show_banner":
             MessageLookupByLibrary.simpleMessage("Mostar Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
-        "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Apoyo y Donación"),
         "svt_ascension_icon":
             MessageLookupByLibrary.simpleMessage("Icono de Ascension"),
         "svt_basic_info": MessageLookupByLibrary.simpleMessage("Info"),
+        "svt_class": MessageLookupByLibrary.simpleMessage("Clase"),
         "svt_class_filter_auto": MessageLookupByLibrary.simpleMessage("Auto"),
         "svt_class_filter_hide": MessageLookupByLibrary.simpleMessage("Oculto"),
         "svt_class_filter_single_row": MessageLookupByLibrary.simpleMessage(
@@ -845,6 +836,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualizar diapositivas"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP total"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Cantidad total"),
+        "trait": MessageLookupByLibrary.simpleMessage("Trait"),
         "treasure_box_draw_cost":
             MessageLookupByLibrary.simpleMessage("Costo de sorteo"),
         "treasure_box_extra_gift": MessageLookupByLibrary.simpleMessage(
@@ -860,8 +852,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Actualización fallida"),
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage(
             "No hay actualización disponible"),
-        "update_msg_succuss":
-            MessageLookupByLibrary.simpleMessage("Actualizado"),
+        "updated": MessageLookupByLibrary.simpleMessage("Actualizado"),
         "upload": MessageLookupByLibrary.simpleMessage("Subido"),
         "usage": MessageLookupByLibrary.simpleMessage("Usado"),
         "userdata": MessageLookupByLibrary.simpleMessage("Datos del usuario"),
@@ -885,9 +876,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("Ver Ilustración"),
         "voice": MessageLookupByLibrary.simpleMessage("Voz"),
+        "war": MessageLookupByLibrary.simpleMessage("Wars"),
         "war_age": MessageLookupByLibrary.simpleMessage("Era"),
         "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
-        "war_title": MessageLookupByLibrary.simpleMessage("Wars"),
         "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
         "web_renderer":
             MessageLookupByLibrary.simpleMessage("Renderizador Web"),

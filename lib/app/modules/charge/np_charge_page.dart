@@ -380,7 +380,7 @@ class _NpChargePageState extends State<NpChargePage> {
           ),
         if (filterData.isSvt && filterData.svtClass.options.isNotEmpty)
           optionBuilder(
-              text: '${S.current.filter_sort_class}:'
+              text: '${S.current.svt_class}:'
                   '${filterData.svtClass.options.map((e) => e.lName).join("/")}'),
         if (filterData.region.radioValue != null)
           optionBuilder(text: (filterData.region.radioValue!).localName),

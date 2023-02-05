@@ -153,7 +153,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               .any((cond) => cond.type.isTraitType) ==
           true)) {
         _addTab(
-          S.current.info_trait,
+          S.current.trait,
           KeepAliveBuilder(
               builder: (context) => EventMissionTablePage(event: event)),
         );
@@ -396,7 +396,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (warTiles.isNotEmpty) {
-      children.add(TileGroup(header: S.current.war_title, children: warTiles));
+      children.add(TileGroup(header: S.current.war, children: warTiles));
     }
 
     int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;
