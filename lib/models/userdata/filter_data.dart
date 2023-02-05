@@ -57,9 +57,12 @@ class FilterGroupData<T> {
   bool contain(T v) =>
       options.isEmpty || (invert ? !options.contains(v) : options.contains(v));
 
-  bool isEmpty(Iterable<T> values) {
+  bool isEmptyOrContain(Iterable<T> values) {
     return options.isEmpty || values.every((e) => !options.contains(e));
   }
+
+  bool get isEmpty => options.isEmpty;
+  bool get isNotEmpty => options.isNotEmpty;
 
   bool isAll(Iterable<T> values) {
     return values.every((e) => options.contains(e));
@@ -304,6 +307,7 @@ class SvtFilterData with _FilterData {
   final effectScope = FilterGroupData<SvtEffectScope>(
       options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<EffectTarget>();
+  final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
 
   SvtFilterData({
@@ -338,6 +342,7 @@ class SvtFilterData with _FilterData {
         trait,
         effectScope,
         effectTarget,
+        targetTrait,
         effectType,
       ];
 
@@ -471,6 +476,7 @@ class CraftFilterData with _FilterData {
   final limitCount = FilterGroupData<int>();
   final status = FilterGroupData<int>();
   final effectTarget = FilterGroupData<EffectTarget>();
+  final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
 
   CraftFilterData({
@@ -493,6 +499,7 @@ class CraftFilterData with _FilterData {
         limitCount,
         status,
         effectTarget,
+        targetTrait,
         effectType,
       ];
 
@@ -574,6 +581,7 @@ class CmdCodeFilterData with _FilterData {
   final rarity = FilterGroupData<int>();
   final region = FilterRadioData<Region>();
   final effectTarget = FilterGroupData<EffectTarget>();
+  final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
 
   CmdCodeFilterData({
@@ -591,8 +599,13 @@ class CmdCodeFilterData with _FilterData {
             growable: false);
 
   @override
-  List<FilterGroupData> get groups =>
-      [rarity, region, effectTarget, effectType];
+  List<FilterGroupData> get groups => [
+        rarity,
+        region,
+        effectTarget,
+        targetTrait,
+        effectType,
+      ];
 
   @override
   void reset() {

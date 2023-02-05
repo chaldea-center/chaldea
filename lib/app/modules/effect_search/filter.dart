@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -8,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../../models/models.dart';
+import 'util.dart';
 
 enum SearchCardType {
   svt,
@@ -195,50 +194,9 @@ class _BuffFuncFilterState
                 update();
               },
             ),
-            FilterGroup<int>(
-              title: Text.rich(
-                TextSpan(text: S.current.related_traits, children: const [
-                  TextSpan(
-                    text: '1*',
-                    style:
-                        TextStyle(fontFeatures: [FontFeature.enable('sups')]),
-                  )
-                ]),
-              ),
-              options: [
-                Trait.cardQuick,
-                Trait.cardArts,
-                Trait.cardBuster,
-                Trait.cardExtra,
-                Trait.faceCard,
-                Trait.cardNP,
-                // Trait.criticalHit,
-                Trait.buffPositiveEffect,
-                Trait.buffNegativeEffect,
-                Trait.buffPoison,
-                Trait.buffCurse,
-                Trait.buffBurn,
-              ].map((e) => e.id).toList(),
-              values: filterData.targetTrait,
-              showMatchAll: false,
-              showInvert: false,
-              optionBuilder: (v) {
-                String text = {
-                      Trait.cardQuick: 'Quick',
-                      Trait.cardArts: 'Arts',
-                      Trait.cardBuster: 'Buster',
-                      Trait.cardExtra: 'Extra',
-                    }[kTraitIdMapping[v]] ??
-                    Transl.trait(v).l;
-                if (text.startsWith('buff') && text.length > 4) {
-                  text = text.substring(4).trim();
-                }
-                return Text(text);
-              },
-              onFilterChanged: (value, _) {
-                update();
-              },
-            ),
+            EffectFilterUtil.buildTraitFilter(
+                context, filterData.targetTrait, update,
+                addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
             const Divider(height: 16),
             FilterGroup<dynamic>(
               options: const [],

@@ -6,6 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 
 class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
   const CmdCodeFilterPage({
@@ -83,6 +84,8 @@ class _CmdCodeFilterPageState
             update();
           },
         ),
+        EffectFilterUtil.buildTraitFilter(
+            context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

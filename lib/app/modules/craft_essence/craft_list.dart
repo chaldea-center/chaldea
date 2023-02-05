@@ -9,6 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../tools/gamedata_loader.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 import 'craft.dart';
 import 'filter.dart';
 
@@ -167,8 +168,9 @@ class CraftListPageState extends State<CraftListPage>
       return false;
     }
 
-    if (filterData.effectType.options.isNotEmpty ||
-        filterData.effectTarget.options.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty ||
+        filterData.targetTrait.isNotEmpty ||
+        filterData.effectTarget.isNotEmpty) {
       List<BaseFunction> funcs = [
         for (final skill in ce.skills)
           ...skill.filteredFunction(includeTrigger: true),
@@ -178,6 +180,10 @@ class CraftListPageState extends State<CraftListPage>
           return filterData.effectTarget
               .matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
+      }
+      if (filterData.targetTrait.isNotEmpty) {
+        funcs.retainWhere((func) =>
+            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
       }
       if (funcs.isEmpty) return false;
       if (filterData.effectType.options.isEmpty) return true;

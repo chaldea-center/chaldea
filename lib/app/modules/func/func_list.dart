@@ -5,6 +5,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 import 'filter.dart';
 
 class FuncListPage extends StatefulWidget {
@@ -92,11 +93,7 @@ class _FuncListPageState extends State<FuncListPage>
     if (!filterData.buffType.matchAny(func.buffs.map((e) => e.type))) {
       return false;
     }
-    if (!filterData.trait.matchAny([
-      ...func.functvals,
-      ...func.funcquestTvals,
-      ...func.traitVals
-    ].map((e) => e.id))) {
+    if (!EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait)) {
       return false;
     }
     return true;

@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   final bool planMode;
@@ -289,6 +290,8 @@ class _ServantFilterPageState
             update();
           },
         ),
+        EffectFilterUtil.buildTraitFilter(
+            context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

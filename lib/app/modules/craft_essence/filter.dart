@@ -6,6 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
   const CraftFilterPage({
@@ -120,6 +121,8 @@ class _CraftFilterPageState
             update();
           },
         ),
+        EffectFilterUtil.buildTraitFilter(
+            context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

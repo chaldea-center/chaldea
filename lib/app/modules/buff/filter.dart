@@ -5,6 +5,7 @@ import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
+import '../effect_search/util.dart';
 
 class BuffFilterData {
   final stackable = FilterGroupData<bool>();
@@ -65,6 +66,8 @@ class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
             update();
           },
         ),
+        EffectFilterUtil.buildTraitFilter(context, filterData.trait, update,
+            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
         FilterGroup<BuffType>(
           title: const Text('Buff Type'),
           options: buffTypes.keys.toList(),
@@ -74,17 +77,6 @@ class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
             update();
           },
         ),
-        // FilterGroup<int>(
-        //   title: const Text('Condition Traits'),
-        //   options: [],
-        //   values: filterData.trait,
-        //   showMatchAll: false,
-        //   showInvert: false,
-        //   optionBuilder: (v) => Text(Transl.trait(v).l),
-        //   onFilterChanged: (value, _) {
-        //     update();
-        //   },
-        // ),
       ]),
     );
   }

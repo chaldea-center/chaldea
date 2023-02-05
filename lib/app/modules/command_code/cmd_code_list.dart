@@ -9,6 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../tools/gamedata_loader.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 import 'cmd_code.dart';
 import 'filter.dart';
 
@@ -134,20 +135,25 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         return false;
       }
     }
-    if (filterData.effectType.options.isNotEmpty ||
-        filterData.effectTarget.options.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty ||
+        filterData.effectTarget.isNotEmpty ||
+        filterData.targetTrait.isNotEmpty) {
       List<BaseFunction> funcs = [
         for (final skill in cc.skills)
           ...skill.filteredFunction(includeTrigger: true),
       ];
-      if (filterData.effectTarget.options.isNotEmpty) {
+      if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget
               .matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
+      if (filterData.targetTrait.isNotEmpty) {
+        funcs.retainWhere((func) =>
+            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+      }
       if (funcs.isEmpty) return false;
-      if (filterData.effectType.options.isEmpty) return true;
+      if (filterData.effectType.isEmpty) return true;
       if (filterData.effectType.matchAll) {
         if (!filterData.effectType.options
             .every((effect) => funcs.any((func) => effect.match(func)))) {

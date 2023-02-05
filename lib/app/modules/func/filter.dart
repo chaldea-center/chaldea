@@ -5,18 +5,19 @@ import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
+import '../effect_search/util.dart';
 
 class FuncFilterData {
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcTargetTeam = FilterGroupData<FuncApplyTarget>();
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
-  final trait = FilterGroupData<int>();
+  final targetTrait = FilterGroupData<int>();
 
   FuncFilterData();
 
   List<FilterGroupData> get groups =>
-      [funcTargetType, funcTargetTeam, funcType, buffType, trait];
+      [funcTargetType, funcTargetTeam, funcType, buffType, targetTrait];
 
   void reset() {
     for (final group in groups) {
@@ -65,17 +66,9 @@ class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter>
             update();
           },
         ),
-        // FilterGroup<int>(
-        //   title: const Text('Condition Traits'),
-        //   options: [],
-        //   values: filterData.trait,
-        //   showMatchAll: false,
-        //   showInvert: false,
-        //   optionBuilder: (v) => Text(Transl.trait(v).l),
-        //   onFilterChanged: (value, _) {
-        //     update();
-        //   },
-        // ),
+        EffectFilterUtil.buildTraitFilter(
+            context, filterData.targetTrait, update,
+            addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
         const Divider(height: 16),
         FilterGroup<FuncType>(
           title: const Text('Func Type'),

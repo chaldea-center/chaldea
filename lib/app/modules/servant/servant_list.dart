@@ -14,6 +14,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 import 'filter.dart';
 import 'servant.dart';
 
@@ -490,8 +491,9 @@ class ServantListPageState extends State<ServantListPage>
         svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown))) {
       return false;
     }
-    if (filterData.effectType.options.isNotEmpty ||
-        filterData.effectTarget.options.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty ||
+        filterData.targetTrait.isNotEmpty ||
+        filterData.effectTarget.isNotEmpty) {
       List<BaseFunction> funcs = [
         if (filterData.effectScope.contain(SvtEffectScope.active))
           for (final skill in svt.skills)
@@ -499,6 +501,10 @@ class ServantListPageState extends State<ServantListPage>
         if (filterData.effectScope.contain(SvtEffectScope.passive))
           for (final skill in svt.classPassive)
             ...skill.filteredFunction(includeTrigger: true),
+        if (filterData.effectScope.contain(SvtEffectScope.passive))
+          for (final skill in svt.extraPassive)
+            if (skill.extraPassive.any((e) => e.eventId == 0))
+              ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.append))
           for (final skill in svt.appendPassive)
             ...skill.skill.filteredFunction(includeTrigger: true),
@@ -506,11 +512,15 @@ class ServantListPageState extends State<ServantListPage>
           for (final td in svt.noblePhantasms)
             ...td.filteredFunction(includeTrigger: true),
       ];
-      if (filterData.effectTarget.options.isNotEmpty) {
+      if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
           return filterData.effectTarget
               .matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
+      }
+      if (filterData.targetTrait.isNotEmpty) {
+        funcs.retainWhere((func) =>
+            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
       }
       if (funcs.isEmpty) return false;
       if (filterData.effectType.options.isEmpty) return true;
@@ -615,8 +625,13 @@ class ServantListPageState extends State<ServantListPage>
           ),
           TextSpan(text: status.cur.npLv.toString()),
           TextSpan(
-              text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}')
+              text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}'),
+          if (status.cur.appendSkills.any((lv) => lv > 0))
+            TextSpan(
+                text:
+                    "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
         ]),
+        textScaleFactor: 0.9,
       );
     }
 

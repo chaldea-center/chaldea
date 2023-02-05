@@ -104,6 +104,7 @@ class SkillEffect {
     addMaxhp,
   ];
   static List<SkillEffect> kDebuffRelated = [
+    reduceHp,
     upTolerance,
     avoidStateNegative,
     upGrantstate,
@@ -280,6 +281,8 @@ class SkillEffect {
 
   /// 状态异常系
   // 弱体耐性提升
+  static SkillEffect reduceHp =
+      SkillEffect._buff('reduceHp', BuffType.reduceHp);
   static SkillEffect upTolerance = SkillEffect(
     'upTolerance',
     buffTypes: [BuffType.upTolerance],

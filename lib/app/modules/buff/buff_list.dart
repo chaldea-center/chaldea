@@ -5,6 +5,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_page_base.dart';
+import '../effect_search/util.dart';
 import 'filter.dart';
 
 class BuffListPage extends StatefulWidget {
@@ -92,6 +93,17 @@ class _BuffListPageState extends State<BuffListPage>
         ...buff.script!.UpBuffRateBuffIndiv!,
     ].map((e) => e.id))) {
       return false;
+    }
+    if (filterData.trait.isNotEmpty) {
+      final traits = filterData.trait.options;
+      if ([
+        ...buff.ckSelfIndv,
+        ...buff.ckOpIndv,
+        ...buff.vals
+            .where((e) => EffectFilterUtil.reduceHpTraits.contains(e.name)),
+      ].map((e) => e.id).toSet().intersection(traits).isEmpty) {
+        return false;
+      }
     }
 
     return true;

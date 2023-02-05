@@ -291,7 +291,8 @@ class SharedBuilder {
       (context, _) => IconButton(
         icon: Icon(
           Icons.low_priority,
-          color: db.settings.svtFilterData.priority.isEmpty([1, 2, 3, 4, 5])
+          color: db.settings.svtFilterData.priority
+                  .isEmptyOrContain([1, 2, 3, 4, 5])
               ? null
               : Colors.yellowAccent,
         ),
@@ -457,14 +458,14 @@ class SharedBuilder {
       final extraClasses = [...SvtClassX.extra, SvtClassX.beast];
       int rarity = 1;
       if (clsName == SvtClass.ALL) {
-        rarity = data.isEmpty(SvtClassX.regularAllWithOlga) ||
+        rarity = data.isEmptyOrContain(SvtClassX.regularAllWithOlga) ||
                 data.isAll(SvtClassX.regularAllWithOlga)
             ? 5
             : 1;
       } else if (clsName == SvtClass.EXTRA) {
         if (data.isAll(extraClasses)) {
           rarity = 5;
-        } else if (data.isEmpty(extraClasses)) {
+        } else if (data.isEmptyOrContain(extraClasses)) {
           rarity = 1;
         } else {
           rarity = 3;

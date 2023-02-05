@@ -8,6 +8,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'filter.dart';
+import 'util.dart';
 
 class EffectSearchPage extends StatefulWidget {
   EffectSearchPage({super.key});
@@ -176,25 +177,8 @@ class _EffectSearchPageState extends State<EffectSearchPage>
           null: (value, option) =>
               BuffFuncFilterData.specialFuncTarget.contains(value)
         }));
-    const reduceHpTraits = {Trait.buffPoison, Trait.buffCurse, Trait.buffBurn};
-    if (filterData.targetTrait.options.isNotEmpty) {
-      final traits = filterData.targetTrait.options;
-      functions.retainWhere((func) {
-        if (func.functvals.any((e) => traits.contains(e.id)) ||
-            func.traitVals.any((e) => traits.contains(e.id))) return true;
-        for (final buff in func.buffs) {
-          if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) ||
-              buff.ckOpIndv.any((e) => traits.contains(e.id))) {
-            return true;
-          }
-          if (buff.vals.any((e) =>
-              reduceHpTraits.contains(e.name) && traits.contains(e.id))) {
-            return true;
-          }
-        }
-        return false;
-      });
-    }
+    functions.retainWhere((func) =>
+        EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
     if (functions.isEmpty) return false;
 
     Set<FuncType> funcTypes = {
