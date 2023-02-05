@@ -923,7 +923,7 @@ class ServantListPageState extends State<ServantListPage>
         children: <Widget>[
           if (!Language.isJP) Text(svt.lName.jp, maxLines: 1),
           Text(
-            'No.${svt.collectionNo} ${Transl.svtClass(svt.className).l}  $additionalText',
+            'No.${svt.collectionNo} ${Transl.svtClassId(svt.classId).l}  $additionalText',
             maxLines: 1,
           )
         ],

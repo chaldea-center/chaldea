@@ -123,7 +123,7 @@ class EnemyListPageState extends State<EnemyListPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(svt.name, maxLines: 1),
-          Text('No.${svt.id} ${Transl.svtClass(svt.className).l}'),
+          Text('No.${svt.id} ${Transl.svtClassId(svt.classId).l}'),
         ],
       ),
       trailing: IconButton(

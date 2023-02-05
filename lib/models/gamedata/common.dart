@@ -291,7 +291,7 @@ extension SvtClassX on SvtClass {
     router.push(url: Routes.svtClassI(id));
   }
 
-  String get lName => Transl.svtClass(this).l;
+  String get lName => Transl.svtClassId(id).l;
 
   static List<SvtClass> regularAll = [
     ...regular,

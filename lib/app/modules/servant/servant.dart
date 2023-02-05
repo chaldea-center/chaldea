@@ -205,7 +205,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         children: [
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
-            '  ${Transl.svtClass(svt.className).l}',
+            '  ${Transl.svtClassId(svt.classId).l}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           if (svt.isUserSvt)

@@ -79,7 +79,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
                             width: 24,
                           ),
                         ),
-                        TextSpan(text: Transl.svtClass(svt.svt.className).l)
+                        TextSpan(text: Transl.svtClassId(svt.svt.classId).l)
                       ]),
                       textAlign: TextAlign.center,
                     ),

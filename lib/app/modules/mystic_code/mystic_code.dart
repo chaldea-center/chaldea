@@ -146,7 +146,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     setState(() {
       _selected = keys[_curIndex];
     });
-    if (codes.length > 1) {
+    if (codes.length > 1 && _scrollController.hasClients) {
       final length = _scrollController.position.maxScrollExtent -
           _scrollController.position.minScrollExtent;
       final offset = length / (codes.length - 1) * _curIndex +

@@ -43,26 +43,28 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
       ),
       body: ListView(
         children: [
-          CustomTable(children: [
-            CustomTableRow(
-              children: [
-                TableCellData(
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    children: rarities
-                        .map((e) => SvtClassX.clsIcon(e, info?.iconImageId))
-                        .toSet()
-                        .map((e) => db.getIconImage(e, height: 24))
-                        .toList(),
-                  ),
-                )
-              ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: rarities
+                  .map((e) => SvtClassX.clsIcon(e, info?.iconImageId))
+                  .toSet()
+                  .map((e) => CachedImage(
+                        imageUrl: e,
+                        height: 48,
+                        showSaveOnLongPress: true,
+                        placeholder: (context, url) => const SizedBox.shrink(),
+                      ))
+                  .toList(),
             ),
+          ),
+          CustomTable(children: [
             CustomTableRow.fromTexts(
                 texts: const ['ID', 'Class'], isHeader: true),
             CustomTableRow(children: [
               TableCellData(text: clsId.toString()),
-              TableCellData(text: cls?.lName ?? clsId.toString()),
+              TableCellData(text: cls?.lName ?? Transl.svtClassId(clsId).l),
             ]),
             CustomTableRow.fromTexts(
                 texts: const ['Attack Rate', 'Trait'], isHeader: true),

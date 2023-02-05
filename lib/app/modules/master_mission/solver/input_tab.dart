@@ -701,7 +701,7 @@ class __SearchViewState extends State<_SearchView> {
 
   Iterable<String> _getClassStrings(SvtClass cls) sync* {
     yield cls.name.toLowerCase();
-    yield* SearchUtil.getAllKeys(Transl.svtClass(cls)).whereType();
+    yield* SearchUtil.getAllKeys(Transl.svtClassId(cls.id)).whereType();
   }
 
   Widget _buildTile(int id, String title, String? subtitle) {

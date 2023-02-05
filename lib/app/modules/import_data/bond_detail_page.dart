@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:csv/csv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/sharex.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -121,7 +123,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
         title: Text(S.current.bond),
         actions: [
           IconButton(
-            onPressed: exportCSV,
+            onPressed: () {
+              exportCSV().catchError((e, s) {
+                logger.e('export bond csv failed', e, s);
+                EasyLoading.showError(e.toString());
+              });
+            },
             icon: const Icon(Icons.save_alt),
             tooltip: '${S.current.save_as} CSV',
           )
@@ -297,7 +304,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
     });
   }
 
-  void exportCSV() async {
+  Future<void> exportCSV() async {
     List<List> table = [];
     table.add([
       'svtId',

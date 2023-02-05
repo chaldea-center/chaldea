@@ -81,7 +81,7 @@ class SvtInfoTab extends StatelessWidget {
                               width: 20, aspectRatio: 1)),
                       SharedBuilder.textButtonSpan(
                         context: context,
-                        text: ' ${Transl.svtClass(svt.className).l}',
+                        text: ' ${Transl.svtClassId(svt.classId).l}',
                       )
                     ]),
                     textAlign: TextAlign.center,

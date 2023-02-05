@@ -71,7 +71,7 @@ class _FfoPartFilterPageState
             SvtClass.foreigner
           ],
           values: filterData.classType,
-          optionBuilder: (v) => Text(Transl.svtClass(v).l),
+          optionBuilder: (v) => Text(Transl.svtClassId(v.id).l),
           onFilterChanged: (value, _) {
             update();
           },

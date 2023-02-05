@@ -364,7 +364,7 @@ EventTraitMapping _$EventTraitMappingFromJson(Map json) => EventTraitMapping(
 EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
       svtClass: (json['svt_class'] as Map?)?.map(
             (k, e) => MapEntry(
-                k as String,
+                int.parse(k as String),
                 MappingBase<String>.fromJson(
                     Map<String, dynamic>.from(e as Map))),
           ) ??

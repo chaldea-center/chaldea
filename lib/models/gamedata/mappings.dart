@@ -190,12 +190,8 @@ class Transl<K, V> {
   static Transl<String, String> tdDetail(String jp) =>
       Transl(md.tdDetail, jp, jp);
 
-  static Transl<String, String> svtClass(SvtClass key) =>
-      Transl(md.enums.svtClass, key.name, key.name);
-  static Transl<String, String> svtClassId(int id) {
-    final key = kSvtClassIds[id]?.name ?? id.toString();
-    return Transl(md.enums.svtClass, key, key);
-  }
+  static Transl<int, String> svtClassId(int id) =>
+      Transl(md.enums.svtClass, id, kSvtClassIds[id]?.name ?? id.toString());
 
   // enums
   static Transl<String, String> enums(Enum value,
@@ -370,7 +366,7 @@ class MappingData {
   }
 
   factory MappingData.fromJson(Map<String, dynamic> json) {
-    json['misc'] = json['misc2'] ?? json['misc'];
+    jsonMigrated(json, 'misc', 'misc2');
     return _$MappingDataFromJson(json);
   }
 }
@@ -558,7 +554,7 @@ class EventTraitMapping extends MappingBase<String> {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class EnumMapping {
-  final Map<String, MappingBase<String>> svtClass;
+  final Map<int, MappingBase<String>> svtClass;
   final Map<String, MappingBase<String>> attribute;
   final Map<String, MappingBase<String>> servantPolicy;
   final Map<String, MappingBase<String>> servantPersonality;
@@ -612,8 +608,10 @@ class EnumMapping {
     this.restrictionType = const {},
   });
 
-  factory EnumMapping.fromJson(Map<String, dynamic> json) =>
-      _$EnumMappingFromJson(json);
+  factory EnumMapping.fromJson(Map<String, dynamic> json) {
+    jsonMigrated(json, 'svt_class', 'svt_class2');
+    return _$EnumMappingFromJson(json);
+  }
 }
 
 class _SpecialTransl {

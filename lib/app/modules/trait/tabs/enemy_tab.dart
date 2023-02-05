@@ -35,7 +35,7 @@ class TraitEnemyTab extends StatelessWidget {
           title: Text(enemy.svt.lName.l),
           subtitle: Text([
             if (!Transl.isJP) enemy.svt.name,
-            'No.${enemy.svt.id} ${Transl.svtClass(enemy.svt.className).l}'
+            'No.${enemy.svt.id} ${Transl.svtClassId(enemy.svt.classId).l}'
           ].join('\n')),
           dense: true,
           onTap: () {

@@ -11,9 +11,7 @@ class ConstGameData {
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
-  @JsonKey(name: 'classInfo2')
   final Map<int, SvtClassInfo> classInfo;
-  @JsonKey(name: 'classRelation2')
   final Map<int, Map<int, int>> classRelation;
   final GameConstants constants;
   final Map<int, Map<int, GrailCostDetail>>
@@ -51,8 +49,11 @@ class ConstGameData {
               type: entry.key
         };
 
-  factory ConstGameData.fromJson(Map<String, dynamic> json) =>
-      _$ConstGameDataFromJson(json);
+  factory ConstGameData.fromJson(Map<String, dynamic> json) {
+    jsonMigrated(json, 'classInfo', 'classInfo2');
+    jsonMigrated(json, 'classRelation', 'classRelation2');
+    return _$ConstGameDataFromJson(json);
+  }
 }
 
 @JsonSerializable(converters: [BuffTypeConverter()])

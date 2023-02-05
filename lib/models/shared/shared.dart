@@ -60,3 +60,7 @@ K decodeEnum<K, V>(Map<K, V> map, V value, K unknown) {
   }
   return unknown;
 }
+
+void jsonMigrated(Map<String, dynamic> json, String key, String keyTemp) {
+  json[key] = json[keyTemp] ?? json[key];
+}

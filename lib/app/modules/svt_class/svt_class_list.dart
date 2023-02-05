@@ -8,10 +8,11 @@ class SvtClassListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 98-NPC test, 99-enemy test, 100-test?
     final clsIds = {
       ...db.gameData.constData.classInfo.keys,
       ...SvtClass.values.map((e) => e.id)
-    }.where((e) => e != 0).toList();
+    }.where((e) => ![0, 98, 99, 100].contains(e)).toList();
     clsIds.sort();
     return Scaffold(
       appBar: AppBar(

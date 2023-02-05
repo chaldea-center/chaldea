@@ -77,7 +77,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                             width: 24,
                           ),
                         ),
-                        TextSpan(text: Transl.svtClass(enemy.svt.className).l)
+                        TextSpan(text: Transl.svtClassId(enemy.svt.classId).l)
                       ]),
                       textAlign: TextAlign.center,
                     ),

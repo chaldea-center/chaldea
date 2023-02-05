@@ -220,7 +220,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         return WidgetSpan(
           child: InkWell(
             child: Text(
-              'Array<${getTypeName(entry.value[0])}>[${entry.value.length}]',
+              '<${getTypeName(entry.value[0])}>[${entry.value.length}]',
               style: const TextStyle(color: Colors.grey),
             ),
             onTap: () {

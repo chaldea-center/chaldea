@@ -31,12 +31,12 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
                 )),
           ) ??
           const {},
-      classInfo: (json['classInfo2'] as Map?)?.map(
+      classInfo: (json['classInfo'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String),
                 SvtClassInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      classRelation: (json['classRelation2'] as Map?)?.map(
+      classRelation: (json['classRelation'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
                 (e as Map).map(

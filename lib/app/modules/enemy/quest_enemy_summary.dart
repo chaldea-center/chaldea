@@ -143,7 +143,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                             width: 24,
                           ),
                         ),
-                        TextSpan(text: Transl.svtClass(svt.className).l)
+                        TextSpan(text: Transl.svtClassId(svt.classId).l)
                       ]),
                       textAlign: TextAlign.center,
                     ),

@@ -65,9 +65,10 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption,
     this.photoViewOption,
-    this.viewFullOnTap = false,
+    bool? viewFullOnTap,
     this.onTap,
-  }) : imageProvider = null;
+  })  : imageProvider = null,
+        viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
 
   const CachedImage.fromProvider({
     super.key,
@@ -79,11 +80,12 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
-    this.viewFullOnTap = false,
+    bool? viewFullOnTap,
     this.onTap,
   })  : imageUrl = null,
         cacheDir = null,
-        cacheName = null;
+        cacheName = null,
+        viewFullOnTap = viewFullOnTap ?? showSaveOnLongPress;
 
   @override
   _CachedImageState createState() => _CachedImageState();
@@ -96,13 +98,17 @@ class CachedImage extends StatefulWidget {
         double width =
             0.3 * min(constraints.biggest.width, constraints.biggest.height);
         if (width.isFinite) width = min(width, 50);
-        return Center(
-          child: SizedBox(
-            width: width,
-            height: width,
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-        );
+        if (width.isFinite) {
+          return Center(
+            child: SizedBox(
+              width: width,
+              height: width,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
