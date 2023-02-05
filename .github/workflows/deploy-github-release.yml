@@ -84,7 +84,9 @@ jobs:
           flutter config --enable-linux-desktop
           flutter config --enable-macos-desktop
           flutter config --enable-windows-desktop
-      - run: flutter doctor -v
+      - name: flutter doctor
+        if: matrix.target != 'windows'
+        run: flutter doctor -v
       - name: Checkout chaldea code
         uses: actions/checkout@v3
 
