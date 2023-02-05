@@ -266,7 +266,8 @@ Stage _$StageFromJson(Map json) => Stage(
       call: (json['call'] as List<dynamic>?)?.map((e) => e as int).toList() ??
           const [],
       turn: json['turn'] as int?,
-      limitAct: json['limitAct'] as int?,
+      limitAct:
+          $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
       enemyActCount: json['enemyActCount'] as int?,
       waveStartMovies: (json['waveStartMovies'] as List<dynamic>?)
@@ -280,6 +281,11 @@ Stage _$StageFromJson(Map json) => Stage(
               .toList() ??
           const [],
     );
+
+const _$StageLimitActTypeEnumMap = {
+  StageLimitActType.win: 'win',
+  StageLimitActType.lose: 'lose',
+};
 
 StageStartMovie _$StageStartMovieFromJson(Map json) => StageStartMovie(
       waveStartMovie: json['waveStartMovie'] as String,

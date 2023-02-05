@@ -162,8 +162,8 @@ class WaveInfoPage extends StatelessWidget {
             ListTile(
               title: Text(S.current.turn_remain_limit),
               subtitle: Text({
-                    1: S.current.turn_remain_limit_win,
-                    2: S.current.turn_remain_limit_lose,
+                    StageLimitActType.win: S.current.turn_remain_limit_win,
+                    StageLimitActType.lose: S.current.turn_remain_limit_lose,
                   }[stage.limitAct] ??
                   stage.limitAct?.toString() ??
                   "?"),

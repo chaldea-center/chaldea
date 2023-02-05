@@ -515,7 +515,7 @@ class Stage {
   List<FieldAi> fieldAis;
   List<int> call;
   int? turn;
-  int? limitAct; // 1-win, 2-lose
+  StageLimitActType? limitAct;
   int? enemyFieldPosCount;
   int? enemyActCount;
   List<StageStartMovie> waveStartMovies;
@@ -1268,7 +1268,7 @@ enum QuestType {
       case QuestType.friendship:
         return S.current.interlude;
       case QuestType.event:
-        return S.current.event_title;
+        return S.current.event;
       case QuestType.heroballad:
       case QuestType.warBoard:
         return S.current.war_board;
@@ -1436,4 +1436,9 @@ enum FrequencyType {
   valentine,
   everyTimeAfter,
   none,
+}
+
+enum StageLimitActType {
+  win,
+  lose,
 }

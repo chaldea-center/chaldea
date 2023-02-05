@@ -402,6 +402,9 @@ class MasterMission {
 
   factory MasterMission.fromJson(Map<String, dynamic> json) =>
       _$MasterMissionFromJson(json);
+
+  bool get isWeekly => id >= 1e5 && id < 2e5;
+  bool get isLimited => id >= 2e5 && id < 3e5;
 }
 
 @JsonSerializable()

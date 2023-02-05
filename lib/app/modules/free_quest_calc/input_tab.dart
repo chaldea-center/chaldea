@@ -262,7 +262,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   useRootNavigator: false,
                   builder: (context) => FreeCalcFilterDialog(params: params),
                 );
-                setState(() {});
+                if (mounted) setState(() {});
               },
             ),
             IconButton(

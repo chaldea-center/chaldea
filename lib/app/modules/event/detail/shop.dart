@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:flutter/services.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -49,7 +50,9 @@ class _EventShopsPageState extends State<EventShopsPage> {
         headers.add(Tab(child: Text(S.current.general_all, style: style)));
         views.add(shopList(context, shops, plan));
         // valentine shop
-        if (payItems.length > 2 || payItems.values.every((e) => e.length > 1)) {
+        if (payItems.length > 1 &&
+            (payItems.length > 2 ||
+                payItems.values.every((e) => e.length > 1))) {
           final itemIds = payItems.keys.toList();
           itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 999999);
           for (final itemId in itemIds) {
@@ -268,9 +271,32 @@ class _EventShopsPageState extends State<EventShopsPage> {
         ),
         IconButton(
           onPressed: () {
-            plan.shopBuyCount.clear();
-            event?.updateStat();
-            setState(() {});
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) {
+                return SimpleCancelOkDialog(
+                  title: Text(S.current.cost),
+                  scrollable: true,
+                  hideCancel: true,
+                  content: SharedBuilder.itemGrid(
+                      context: context, items: items.entries),
+                );
+              },
+            );
+          },
+          icon: const Icon(Icons.open_in_full_rounded),
+        ),
+        IconButton(
+          onPressed: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.reset),
+              onTapOk: () {
+                plan.shopBuyCount.clear();
+                event?.updateStat();
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
           },
           icon: const Icon(Icons.replay),
           tooltip: S.current.reset,

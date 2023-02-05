@@ -59,10 +59,20 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   @override
   Widget build(BuildContext context) {
     final missions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
+    final now = DateTime.now().timestamp;
+    final curWeekly = missions.firstWhereOrNull(
+        (mm) => mm.isWeekly && mm.startedAt <= now && mm.endedAt > now);
     missions.retainWhere((mission) {
       if (selected.contains(mission.id)) return true;
       if (!showOutdated) {
-        if (mission.endedAt < DateTime.now().timestamp) return false;
+        if (mission.endedAt < now) return false;
+        if (curWeekly != null &&
+            mission.isWeekly &&
+            mission.startedAt > kNeverClosedTimestamp &&
+            mission.id < curWeekly.id) {
+          // skipped, won't use
+          return false;
+        }
       }
       return typeOptions.matchAny(mission.missions
           .map((e) => _allMissionTypes.contains(e.type) ? e.type : null));
@@ -227,9 +237,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           });
         },
       ),
-      selected: showOutdated &&
-          masterMission.startedAt <= now &&
-          masterMission.endedAt > now,
+      selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
         router.push(
           child:
