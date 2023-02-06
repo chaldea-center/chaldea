@@ -26,6 +26,7 @@ class LocalSettings {
   bool showDebugFab;
   bool alwaysOnTop;
   List<int>? windowPosition;
+  bool showSystemTray;
   int launchTimes;
   int lastBackup;
   ThemeMode themeMode;
@@ -73,6 +74,7 @@ class LocalSettings {
     this.showDebugFab = false,
     this.alwaysOnTop = false,
     this.windowPosition,
+    this.showSystemTray = false,
     this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,

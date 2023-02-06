@@ -409,6 +409,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_female": MessageLookupByLibrary.simpleMessage("咕噠子"),
         "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
         "help": MessageLookupByLibrary.simpleMessage("幫助"),
+        "hide": MessageLookupByLibrary.simpleMessage("隐藏"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("隱藏已過期"),
         "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("隱藏規劃項目"),
         "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
@@ -696,6 +697,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("AP消耗活动开放时间"),
         "quest_timeline_sort_quest_open":
             MessageLookupByLibrary.simpleMessage("关卡开放时间"),
+        "quit": MessageLookupByLibrary.simpleMessage("退出"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
         "random_mission": MessageLookupByLibrary.simpleMessage("随机任务"),
@@ -797,11 +799,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "更新資料/版本/bug較多時，建議提前備份資料，移除應用將導致內部備份丟失，即時轉移到可靠的儲存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "shop": MessageLookupByLibrary.simpleMessage("商店"),
+        "show": MessageLookupByLibrary.simpleMessage("显示"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("顯示輪播圖"),
         "show_empty_event": MessageLookupByLibrary.simpleMessage("显示无内容活动"),
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("顯示刷新率"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("全螢幕顯示"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("顯示已過期"),
+        "show_system_tray": MessageLookupByLibrary.simpleMessage("在系统托盘显示"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "simulator": MessageLookupByLibrary.simpleMessage("模擬器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
@@ -870,6 +874,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切換滾動條/下拉框"),
         "switch_region": MessageLookupByLibrary.simpleMessage("切換區服"),
+        "system_tray_close_hint":
+            MessageLookupByLibrary.simpleMessage("关闭窗口时最小化"),
         "td_base_hits_hint":
             MessageLookupByLibrary.simpleMessage("同一宝具不同持有者可能拥有不同的色卡和Hit分布"),
         "td_cardcolor_hint": m23,

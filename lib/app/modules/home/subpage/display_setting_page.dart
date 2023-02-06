@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/system_tray.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -40,104 +41,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
       body: ListView(
         children: [
           TileGroup(
-            header: 'App',
+            header: S.current.gallery_tab_name,
             children: [
-              if (PlatformU.isMacOS || PlatformU.isWindows)
-                SwitchListTile.adaptive(
-                  value: db.settings.alwaysOnTop,
-                  title: Text(S.current.setting_always_on_top),
-                  onChanged: (v) async {
-                    db.settings.alwaysOnTop = v;
-                    db.saveSettings();
-                    MethodChannelChaldea.setAlwaysOnTop(v);
-                    setState(() {});
-                  },
-                ),
-              SwitchListTile.adaptive(
-                value: db.settings.display.showWindowFab,
-                title: Text(S.current.display_show_window_fab),
-                onChanged: (v) async {
-                  db.settings.display.showWindowFab = v;
-                  db.saveSettings();
-                  if (v) {
-                    WindowManagerFab.createOverlay(context);
-                  } else {
-                    WindowManagerFab.removeOverlay();
-                  }
-                  setState(() {});
-                },
-              ),
-              SwitchListTile.adaptive(
-                value: db.settings.showDebugFab,
-                title: Text(S.current.debug_fab),
-                subtitle: Text('${S.current.screenshots} etc.'),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.showDebugFab = v;
-                    db.saveSettings();
-                  });
-                  if (v) {
-                    DebugFab.createOverlay(context);
-                  } else {
-                    DebugFab.removeOverlay();
-                  }
-                },
-              ),
-              // only show on mobile phone, not desktop and tablet
-              // on Android, cannot detect phone or mobile
-              if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)
-                SwitchListTile.adaptive(
-                  value: db.settings.autoRotate,
-                  title: Text(S.current.setting_auto_rotate),
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.autoRotate = v;
-                      if (v) {
-                        SystemChrome.setPreferredOrientations([]);
-                      } else {
-                        SystemChrome.setPreferredOrientations(
-                            [DeviceOrientation.portraitUp]);
-                      }
-                    });
-                    db.notifyAppUpdate();
-                  },
-                ),
-              if (PlatformU.isTargetDesktop)
-                SwitchListTile.adaptive(
-                  value: db.settings.enableMouseDrag,
-                  title: Text(S.current.setting_drag_by_mouse),
-                  subtitle: Text(S.current.desktop_only),
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.enableMouseDrag = v;
-                    });
-                    db.notifyAppUpdate();
-                  },
-                ),
-              SwitchListTile.adaptive(
-                value: db.settings.globalSelection,
-                title: Text(S.current.global_text_selection),
-                // subtitle: Text(S.current.desktop_only),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.globalSelection = v;
-                  });
-                  db.notifyAppUpdate();
-                },
-              ),
               ListTile(
                 title: Text(S.current.carousel_setting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   router.pushPage(const CarouselSettingPage());
-                },
-              ),
-              ListTile(
-                title: Text(S.current.setting_split_ratio),
-                subtitle: Text(S.current.setting_split_ratio_hint),
-                trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  router.pushPage(MasterRatioSetting());
                 },
               ),
               SwitchListTile.adaptive(
@@ -149,6 +59,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.saveSettings();
                   });
                   db.notifyUserdata();
+                },
+              ),
+              ListTile(
+                title: Text(S.current.setting_split_ratio),
+                subtitle: Text(S.current.setting_split_ratio_hint),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  router.pushPage(MasterRatioSetting());
                 },
               ),
             ],
@@ -356,7 +274,107 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ),
               ),
             ],
-          )
+          ),
+          TileGroup(
+            header: 'App',
+            children: [
+              if (PlatformU.isMacOS || PlatformU.isWindows)
+                SwitchListTile.adaptive(
+                  value: db.settings.alwaysOnTop,
+                  title: Text(S.current.setting_always_on_top),
+                  onChanged: (v) async {
+                    db.settings.alwaysOnTop = v;
+                    db.saveSettings();
+                    MethodChannelChaldea.setAlwaysOnTop(v);
+                    setState(() {});
+                  },
+                ),
+              SwitchListTile.adaptive(
+                value: db.settings.display.showWindowFab,
+                title: Text(S.current.display_show_window_fab),
+                onChanged: (v) async {
+                  db.settings.display.showWindowFab = v;
+                  db.saveSettings();
+                  if (v) {
+                    WindowManagerFab.createOverlay(context);
+                  } else {
+                    WindowManagerFab.removeOverlay();
+                  }
+                  setState(() {});
+                },
+              ),
+              SwitchListTile.adaptive(
+                value: db.settings.showDebugFab,
+                title: Text(S.current.debug_fab),
+                subtitle: Text('${S.current.screenshots} etc.'),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.showDebugFab = v;
+                    db.saveSettings();
+                  });
+                  if (v) {
+                    DebugFab.createOverlay(context);
+                  } else {
+                    DebugFab.removeOverlay();
+                  }
+                },
+              ),
+              // only show on mobile phone, not desktop and tablet
+              // on Android, cannot detect phone or mobile
+              if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)
+                SwitchListTile.adaptive(
+                  value: db.settings.autoRotate,
+                  title: Text(S.current.setting_auto_rotate),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.autoRotate = v;
+                      if (v) {
+                        SystemChrome.setPreferredOrientations([]);
+                      } else {
+                        SystemChrome.setPreferredOrientations(
+                            [DeviceOrientation.portraitUp]);
+                      }
+                    });
+                    db.notifyAppUpdate();
+                  },
+                ),
+              if (PlatformU.isTargetDesktop)
+                SwitchListTile.adaptive(
+                  value: db.settings.enableMouseDrag,
+                  title: Text(S.current.setting_drag_by_mouse),
+                  subtitle: Text(S.current.desktop_only),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.enableMouseDrag = v;
+                    });
+                    db.notifyAppUpdate();
+                  },
+                ),
+              if (PlatformU.isDesktop)
+                SwitchListTile.adaptive(
+                  value: db.settings.showSystemTray,
+                  title: Text(S.current.show_system_tray),
+                  subtitle: Text(S.current.system_tray_close_hint),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.showSystemTray = v;
+                    });
+                    SystemTrayUtil.toggle(v);
+                  },
+                ),
+              SwitchListTile.adaptive(
+                value: db.settings.globalSelection,
+                title: Text(S.current.global_text_selection),
+                // subtitle: Text(S.current.desktop_only),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.globalSelection = v;
+                  });
+                  db.notifyAppUpdate();
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );

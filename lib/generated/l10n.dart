@@ -3244,6 +3244,17 @@ class S {
     );
   }
 
+  /// `Hide`
+  String get hide {
+    return Intl.message(
+      'Hide',
+      name: 'hide',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Hide Outdated`
   String get hide_outdated {
     return Intl.message(
@@ -5868,6 +5879,17 @@ class S {
     );
   }
 
+  /// `Quit`
+  String get quit {
+    return Intl.message(
+      'Quit',
+      name: 'quit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Raid Quest`
   String get raid_quest {
     return Intl.message(
@@ -6793,6 +6815,17 @@ class S {
     );
   }
 
+  /// `Show`
+  String get show {
+    return Intl.message(
+      'Show',
+      name: 'show',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show Carousel`
   String get show_carousel {
     return Intl.message(
@@ -6842,6 +6875,17 @@ class S {
     return Intl.message(
       'Show Outdated',
       name: 'show_outdated',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show in System Tray`
+  String get show_system_tray {
+    return Intl.message(
+      'Show in System Tray',
+      name: 'show_system_tray',
       desc: '',
       locale: localeName,
       args: [],
@@ -7491,6 +7535,17 @@ class S {
     return Intl.message(
       'Switch Region',
       name: 'switch_region',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Minimize window for close button`
+  String get system_tray_close_hint {
+    return Intl.message(
+      'Minimize window for close button',
+      name: 'system_tray_close_hint',
       desc: '',
       locale: localeName,
       args: [],

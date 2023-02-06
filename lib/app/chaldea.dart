@@ -25,6 +25,7 @@ import '../packages/platform/platform.dart';
 import 'app.dart';
 import 'routes/parser.dart';
 import 'tools/backup_backend/chaldea_backend.dart';
+import 'tools/system_tray.dart';
 
 class Chaldea extends StatefulWidget {
   Chaldea({super.key});
@@ -159,6 +160,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       }
     }
+    SystemTrayUtil.init();
 
     if (db.settings.autoUpdateApp && !kIsWeb) {
       await Future.delayed(const Duration(seconds: 5));
@@ -179,8 +181,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void setOnWindowClose() {
     if (!PlatformU.isDesktop) return;
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
-      logger.i('closing desktop app...');
       await db.saveAll();
+      if (db.settings.showSystemTray) {
+        SystemTrayUtil.appWindow.hide();
+        return false;
+      }
+      logger.i('closing desktop app...');
       if (!db.settings.alertUploadUserData) {
         await Future.delayed(const Duration(milliseconds: 200));
         return true;

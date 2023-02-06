@@ -472,6 +472,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_female": MessageLookupByLibrary.simpleMessage("Gudako"),
         "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "hide": MessageLookupByLibrary.simpleMessage("Hide"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
         "hide_svt_plan_details":
             MessageLookupByLibrary.simpleMessage("Hide Plan Detail"),
@@ -833,6 +834,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
         "quest_timeline_sort_quest_open":
             MessageLookupByLibrary.simpleMessage("Quest Open Time"),
+        "quit": MessageLookupByLibrary.simpleMessage("Quit"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
         "random_mission":
@@ -955,6 +957,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "shop": MessageLookupByLibrary.simpleMessage("Shops"),
+        "show": MessageLookupByLibrary.simpleMessage("Show"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("Show Carousel"),
         "show_empty_event":
             MessageLookupByLibrary.simpleMessage("Show Empty Event"),
@@ -963,6 +966,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_fullscreen":
             MessageLookupByLibrary.simpleMessage("Show Fullscreen"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
+        "show_system_tray":
+            MessageLookupByLibrary.simpleMessage("Show in System Tray"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
@@ -1050,6 +1055,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),
+        "system_tray_close_hint": MessageLookupByLibrary.simpleMessage(
+            "Minimize window for close button"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
         "td_cardcolor_hint": m23,

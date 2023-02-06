@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   just_audio_windows
   permission_handler_windows
   share_plus
+  system_tray
   url_launcher_windows
   video_player_win
   window_size

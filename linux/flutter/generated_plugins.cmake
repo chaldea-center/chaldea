@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_js
   flutter_window_close
+  system_tray
   url_launcher_linux
   window_size
 )

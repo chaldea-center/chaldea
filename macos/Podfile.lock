@@ -30,6 +30,8 @@ PODS:
   - sqflite (0.0.2):
     - FlutterMacOS
     - FMDB (>= 2.7.5)
+  - system_tray (0.0.1):
+    - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - video_player_macos (0.0.1):
@@ -50,6 +52,7 @@ DEPENDENCIES:
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
+  - system_tray (from `Flutter/ephemeral/.symlinks/plugins/system_tray/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - video_player_macos (from `Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
@@ -84,6 +87,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/macos
+  system_tray:
+    :path: Flutter/ephemeral/.symlinks/plugins/system_tray/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   video_player_macos:
@@ -106,6 +111,7 @@ SPEC CHECKSUMS:
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
+  system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   url_launcher_macos: c04e4fa86382d4f94f6b38f14625708be3ae52e2
   video_player_macos: 7a50b407d775a45392851b1218a9cf4be395cf7f
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195

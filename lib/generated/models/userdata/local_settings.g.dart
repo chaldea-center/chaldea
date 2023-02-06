@@ -18,6 +18,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
           windowPosition: $checkedConvert('windowPosition',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          showSystemTray:
+              $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 0),
           lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
           themeMode: $checkedConvert(
@@ -152,6 +154,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'showDebugFab': instance.showDebugFab,
       'alwaysOnTop': instance.alwaysOnTop,
       'windowPosition': instance.windowPosition,
+      'showSystemTray': instance.showSystemTray,
       'launchTimes': instance.launchTimes,
       'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,

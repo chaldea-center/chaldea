@@ -100,6 +100,7 @@ dependencies:
   sliver_tools: ^0.2.6
   smooth_page_indicator: ^1.0.0+2
   string_validator: ^0.3.0
+  system_tray: ^2.0.2
   table_sticky_headers: ^2.0.1
   tuple: ^2.0.1
   url_launcher: ^6.1.5
