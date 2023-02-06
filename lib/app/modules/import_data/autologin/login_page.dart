@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -302,8 +304,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final buffer = StringBuffer();
     buffer.writeln('status: ${resp.statusCode}');
     buffer.writeln('statusText: ${resp.statusMessage}');
-    final data = resp.data;
-    buffer.writeln('data type: ${data.runtimeType}');
+    // buffer.writeln('data type: ${data.runtimeType}');
     buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
     buffer.writeln();
     final userGame = response?.userGame;
@@ -312,8 +313,10 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     buffer.writeln('friendCode: ${userGame?.friendCode}');
     buffer.writeln('player name: ${userGame?.name}');
     buffer.writeln();
-    final str = data.toString();
-    buffer.writeln(str.substring2(0, 2000));
+
+    dynamic data = response?.json?['response'];
+    if (data != null) data = jsonEncode(data);
+    buffer.writeln((data ?? resp.data).toString().substring2(0, 2000));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -371,7 +374,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       EasyLoading.show(status: 'Login...');
       response = ServerResponse(await agent.topLogin());
       if (response?.success == true) {
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 1));
         EasyLoading.show(status: 'Login to home...');
         await agent.topHome();
         EasyLoading.showSuccess(S.current.success);

@@ -44,6 +44,7 @@ dependencies:
   crypto: ^3.0.2
   csv: ^5.0.1
   cupertino_icons: ^1.0.4
+  dart_des: ^1.0.2
   data_table_2: ^2.3.10
   device_info_plus: ^8.0.0
   dio: 4.0.4

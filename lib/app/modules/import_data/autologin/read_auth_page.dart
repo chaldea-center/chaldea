@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:dio/dio.dart';
+import 'package:dart_des/dart_des.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -305,27 +305,16 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       logger.e('invalid base64 string', e, s);
       throw ArgumentError('Invalid base64 string');
     }
-    final resp = await Dio().post(
-      'https://dotnetfiddle.net/api/fiddles/',
-      data: <String, String>{
-        "Compiler": "Net45",
-        "Language": "CSharp",
-        "ProjectType": "Console",
-        "CodeBlock": _csharpCode(code),
-      },
+    const key = 'b5nHjsMrqaeNliSs3jyOzgpD'; // 24-byte
+    const iv = 'wuD6keVr';
+    DES3 des3CBC = DES3(
+      key: utf8.encode(key),
+      mode: DESMode.CBC,
+      iv: utf8.encode(iv),
     );
-
-    final output = resp.data['ConsoleOutput'];
-    print(output);
-    if (resp.data['HasErrors'] == true) {
-      throw Exception(output);
-    }
-    Map data;
-    if (output is String) {
-      data = jsonDecode(output);
-    } else {
-      data = Map.from(output);
-    }
+    final decrypted =
+        utf8.decode(des3CBC.decrypt(base64.decode(code))).trimChar('\b');
+    final data = jsonDecode(decrypted);
     return auth = UserAuth(
       code: code,
       authKey: data['authKey'] as String,
@@ -334,37 +323,5 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       saveDataVer: data['SaveDataVer'] as String,
       userCreateServer: data['userCreateServer'] as String,
     );
-  }
-
-  String _csharpCode(String authSave) {
-    // JP and NA has same [bytes]/[bytes2]
-    return """
-using System;
-using System.Text;
-using System.IO;
-using System.Security.Cryptography;
-
-public class CertificateExtractor {
-  public static void Main() {
-    string yourAuth = "$authSave";
-		byte[] array = Convert.FromBase64String(yourAuth);
-		byte[] bytes = Encoding.UTF8.GetBytes("b5nHjsMrqaeNliSs3jyOzgpD");
-		byte[] bytes2 = Encoding.UTF8.GetBytes("wuD6keVr");
-		TripleDESCryptoServiceProvider tripleDESCryptoServiceProvider = new TripleDESCryptoServiceProvider();
-		byte[] array2;
-		using (MemoryStream memoryStream = new MemoryStream())
-		{
-			using (CryptoStream cryptoStream = new CryptoStream(memoryStream, tripleDESCryptoServiceProvider.CreateDecryptor(bytes, bytes2), CryptoStreamMode.Write))
-			{
-				cryptoStream.Write(array, 0, array.Length);
-				cryptoStream.Close();
-			}
-			array2 = memoryStream.ToArray();
-			memoryStream.Close();
-		}
-    Console.WriteLine(Encoding.UTF8.GetString(array2));
-	}
-}
-""";
   }
 }

@@ -190,9 +190,9 @@ class LoginAgent {
     if (_lastPostTime != null &&
         DateTime.now().difference(_lastPostTime!).inSeconds < 3) {
       // 3-5 s
-      await Future.delayed(
-          Duration(seconds: 3, milliseconds: Random().nextInt(2000)));
+      await Future.delayed(const Duration(seconds: 3));
     }
+    await Future.delayed(Duration(milliseconds: Random().nextInt(1000)));
     _lastPostTime = DateTime.now();
     final data = _buildForm();
     final resp = await dio.post(
