@@ -205,20 +205,20 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
-                        child: Text.rich(SharedBuilder.textButtonSpan(
-                          context: context,
-                          text: Transl.illustratorNames(cc.illustrator).l,
-                          onTap: () {
-                            router.pushPage(
-                                CreatorDetail.illust(name: cc.illustrator));
-                          },
-                        )),
-                        flex: 3,
-                        maxLines: 1)
+                      child: Text.rich(SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: Transl.illustratorNames(cc.illustrator).l,
+                        onTap: () {
+                          router.pushPage(
+                              CreatorDetail.illust(name: cc.illustrator));
+                        },
+                      )),
+                      flex: 3,
+                    )
                   ]),
                   CustomTableRow(children: [
                     TableCellData(text: S.current.rarity, isHeader: true),
-                    TableCellData(text: cc.rarity.toString()),
+                    TableCellData(text: cc.rarity.toString(), flex: 3),
                   ]),
                 ],
               ),
