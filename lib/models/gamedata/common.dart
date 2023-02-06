@@ -187,15 +187,21 @@ class Bgm with RouteInfo {
 }
 
 enum CardType {
-  none,
-  arts,
-  buster,
-  quick,
-  extra,
-  blank,
-  weak,
-  strength,
+  none(0),
+  arts(1),
+  buster(2),
+  quick(3),
+  extra(4),
+  blank(5),
+  weak(10),
+  strength(11),
+  ;
+
+  final int id;
+  const CardType(this.id);
 }
+
+final kCardTypeMapping = {for (final card in CardType.values) card.id: card};
 
 @JsonEnum(alwaysCreate: true)
 enum SvtClass {

@@ -442,6 +442,7 @@ class Servant with GameCardMixin {
     }
 
     _icon = extraAssets.faces.ascension?[ascension] ?? icon;
+    if (db.gameData.isJustAddedCard(id)) return _icon;
     return bordered(_icon);
   }
 
@@ -720,10 +721,10 @@ class CraftEssence with GameCardMixin {
   String? get icon => extraAssets.faces.equip?[id];
 
   @override
-  String? get borderedIcon {
-    if (collectionNo > 0) return super.borderedIcon;
-    return icon;
-  }
+  String? get borderedIcon =>
+      collectionNo > 0 && !db.gameData.isJustAddedCard(id)
+          ? super.borderedIcon
+          : icon;
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
 

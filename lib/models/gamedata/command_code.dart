@@ -50,7 +50,10 @@ class CommandCode with GameCardMixin {
       extraAssets.faces.cc?.values.toList().getOrNull(0);
 
   @override
-  String? get borderedIcon => collectionNo > 0 ? super.borderedIcon : icon;
+  String? get borderedIcon =>
+      collectionNo > 0 && !db.gameData.isJustAddedCard(id)
+          ? super.borderedIcon
+          : icon;
 
   String? get charaGraph => extraAssets.charaGraph.cc?[id];
 

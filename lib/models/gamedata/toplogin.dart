@@ -83,8 +83,6 @@ class BiliUpdated {
 @JsonSerializable(createToJson: false)
 class BiliReplaced {
   List<UserItem> userItem;
-
-  /// svt: including servant and craft essence
   List<UserSvt> userSvt;
   List<UserSvt> userSvtStorage;
   List<UserSvtCollection> userSvtCollection;
@@ -92,6 +90,10 @@ class BiliReplaced {
   List<UserSvtAppendPassiveSkill> userSvtAppendPassiveSkill;
   List<UserSvtCoin> userSvtCoin;
   List<UserSvtAppendPassiveSkillLv> userSvtAppendPassiveSkillLv;
+  // userEquip
+  // userCommandCodeCollection
+  // userSvtCommandCode
+  // userCommandCode
 
   // transformed
   @JsonKey(ignore: true)

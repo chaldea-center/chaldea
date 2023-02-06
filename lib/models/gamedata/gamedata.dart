@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:crclib/catalog.dart';
 
 import 'package:chaldea/utils/extension.dart';
+import '../../utils/basic.dart';
 import '../userdata/version.dart';
 import '_helper.dart';
 import 'command_code.dart';
@@ -67,7 +68,6 @@ class GameData with _GameDataExtra {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
-  @protected
   _GameDataAdd? addData;
 
   Map<int, Servant> get servantsNoDup => servants;
@@ -124,13 +124,13 @@ class GameData with _GameDataExtra {
       }
     }
     if (addData != null) {
-      for (final svt in addData!.svt) {
+      for (final svt in addData!.svt.values) {
         if (svt.collectionNo > 0) this.servants[svt.collectionNo] ??= svt;
       }
-      for (final ce in addData!.ce) {
+      for (final ce in addData!.ce.values) {
         if (ce.collectionNo > 0) this.craftEssences[ce.collectionNo] ??= ce;
       }
-      for (final cc in addData!.cc) {
+      for (final cc in addData!.cc.values) {
         if (cc.collectionNo > 0) this.commandCodes[cc.collectionNo] ??= cc;
       }
     }
@@ -211,6 +211,21 @@ class GameData with _GameDataExtra {
   QuestPhase? getQuestPhase(int id, [int? phase]) {
     if (phase != null) return questPhases[id * 100 + phase];
     return questPhases[id * 100 + 1] ?? questPhases[id * 100 + 3];
+  }
+
+  // for new added card, bordered icon has not been generated
+  bool isJustAddedCard(int id) {
+    // return true;
+    final addData = this.addData;
+    if (addData == null ||
+        DateTime.now().timestamp - version.timestamp > 1800) {
+      return false;
+    }
+    final svt = addData.svt[id];
+    if (svt != null && Maths.max(servants.keys, 0) - svt.collectionNo < 5) {
+      return true;
+    }
+    return (addData.ce[id] ?? addData.cc[id]) != null;
   }
 
   factory GameData.fromJson(Map<String, dynamic> json) =>
@@ -308,15 +323,17 @@ class GameData with _GameDataExtra {
 
 @JsonSerializable()
 class _GameDataAdd {
-  List<Servant> svt;
-  List<CraftEssence> ce;
-  List<CommandCode> cc;
+  Map<int, Servant> svt;
+  Map<int, CraftEssence> ce;
+  Map<int, CommandCode> cc;
 
   _GameDataAdd({
-    this.svt = const [],
-    this.ce = const [],
-    this.cc = const [],
-  });
+    List<Servant> svt = const [],
+    List<CraftEssence> ce = const [],
+    List<CommandCode> cc = const [],
+  })  : svt = {for (var x in svt) x.id: x},
+        ce = {for (var x in ce) x.id: x},
+        cc = {for (var x in cc) x.id: x};
 
   factory _GameDataAdd.fromJson(Map<String, dynamic> json) =>
       _$GameDataAddFromJson(json);

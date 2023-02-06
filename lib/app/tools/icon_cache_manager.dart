@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -170,10 +171,13 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     }
   }
 
+  final _rnd = Random();
+
   Future<String?> _ioDownload(
       String url, String path, RateLimiter limiter) async {
     final file = File(path).absolute;
     if (await _fsLimiter.limited(() async {
+      await Future.delayed(Duration(milliseconds: _rnd.nextInt(100)));
       if (!await file.exists()) {
         return false;
       }
