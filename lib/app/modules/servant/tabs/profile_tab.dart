@@ -94,6 +94,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         Expanded(
           child: InheritSelectionArea(
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               itemCount: children.length,
               itemBuilder: (context, index) => children[index],
             ),
@@ -230,7 +231,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         conds.add(Text('(${lore.condMessage})', textScaleFactor: 0.85));
       }
 
-      children.add(_profileCard(
+      children.add(ProfileCommentCard(
         title: Text(title),
         subtitle: conds.any((e) => e != null)
             ? Column(
@@ -277,7 +278,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
               ? S.current.svt_profile_info
               : S.current.svt_profile_n(index);
         }
-        children.add(_profileCard(title: Text(title), comment: profile));
+        children.add(ProfileCommentCard(title: Text(title), comment: profile));
       }
     }
     return children;
@@ -288,7 +289,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     for (final region in Region.values) {
       final text = widget.svt.extra.aprilFoolProfile.ofRegion(region);
       if (text == null) continue;
-      children.add(_profileCard(
+      children.add(ProfileCommentCard(
         title: Text(S.current.april_fool),
         subtitle: Text(region.upper),
         comment: text,
@@ -296,11 +297,26 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     }
     return children;
   }
+}
 
-  Widget _profileCard(
-      {required Widget title, Widget? subtitle, required String comment}) {
+class ProfileCommentCard extends StatelessWidget {
+  final Widget title;
+  final Widget? subtitle;
+  final String comment;
+  final EdgeInsetsGeometry? margin;
+
+  const ProfileCommentCard({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.comment,
+    this.margin,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       color: Theme.of(context).cardColor.withOpacity(0.975),
       child: Column(
         mainAxisSize: MainAxisSize.min,

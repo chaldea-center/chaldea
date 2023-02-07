@@ -76,7 +76,9 @@ class Transl<K, V> {
     if (!md.trait.containsKey(id)) {
       final svt = db.gameData.servantsById[id];
       if (svt != null) {
-        var nameMapping = md.svtNames[svt.name] ?? MappingBase(jp: svt.name);
+        var nameMapping = md.svtNames[svt.name] ??
+            md.entityNames[svt.name] ??
+            MappingBase(jp: svt.name);
         if (addSvtId) {
           nameMapping =
               nameMapping.convert((v, _) => v == null ? null : '$v($id)');

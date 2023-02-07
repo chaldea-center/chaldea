@@ -18,6 +18,7 @@ import 'package:chaldea/widgets/tile_items.dart';
 import '../common/not_found.dart';
 import '../creator/chara_detail.dart';
 import '../creator/creator_detail.dart';
+import '../servant/tabs/profile_tab.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final int? id;
@@ -255,25 +256,12 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: S.current.card_description, isHeader: true)
         ]),
-        if (!Transl.isJP && cc.extra.profile.ofRegion(Transl.current) != null)
-          CustomTableRow(
-            children: [
-              TableCellData(
-                child: Text(cc.extra.profile.ofRegion(Transl.current) ?? '???'),
-                alignment: Alignment.centerLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              )
-            ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: getProfiles().toList(),
           ),
-        CustomTableRow(
-          children: [
-            TableCellData(
-              child: Text(cc.comment),
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            )
-          ],
         ),
         if (showExtra) ...[
           CustomTableRow.fromTexts(
@@ -303,6 +291,20 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     });
     if (svts.isEmpty) svts.add(const Text('-'));
     return svts;
+  }
+
+  Iterable<Widget> getProfiles() sync* {
+    final profiles = <String?>{
+      cc.comment,
+      if (!Transl.isJP) cc.extra.profile.l,
+      cc.extra.profile.ofRegion(Region.jp),
+    };
+    for (final profile in profiles.whereType<String>()) {
+      yield ProfileCommentCard(
+        title: Text(S.current.card_description),
+        comment: profile,
+      );
+    }
   }
 
   Widget localizeCharacters(BuildContext context) {

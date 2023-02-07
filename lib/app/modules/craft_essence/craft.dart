@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
+import '../servant/tabs/profile_tab.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final int? id;
@@ -413,28 +414,13 @@ class CraftDetailBasePage extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: S.current.card_description, isHeader: true)
         ]),
-        if (!Transl.isJP && ce.extra.profile.ofRegion(Transl.current) != null)
-          CustomTableRow(
-            children: [
-              TableCellData(
-                child: Text(ce.extra.profile.ofRegion(Transl.current) ?? '???'),
-                alignment: Alignment.centerLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              )
-            ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: getProfiles().toList(),
           ),
-        if (ce.extra.profile.ofRegion(Region.jp) != null)
-          CustomTableRow(
-            children: [
-              TableCellData(
-                child: Text(ce.extra.profile.ofRegion(Region.jp) ?? '???'),
-                alignment: Alignment.centerLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              )
-            ],
-          ),
+        ),
         CustomTableRow.fromTexts(
           texts: [S.current.illustration],
           isHeader: true,
@@ -468,6 +454,20 @@ class CraftDetailBasePage extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  Iterable<Widget> getProfiles() sync* {
+    final profiles = <String?>{
+      for (final comment in ce.profile.comments) comment.comment,
+      if (!Transl.isJP) ce.extra.profile.l,
+      ce.extra.profile.ofRegion(Region.jp),
+    };
+    for (final profile in profiles.whereType<String>()) {
+      yield ProfileCommentCard(
+        title: Text(S.current.card_description),
+        comment: profile,
+      );
+    }
   }
 
   Widget localizeCharacters(BuildContext context) {
