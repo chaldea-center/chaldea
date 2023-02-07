@@ -91,3 +91,65 @@ class DividerWithTitle extends StatelessWidget {
     return child;
   }
 }
+
+typedef WidgetDataBuilder<T> = Widget Function(BuildContext context, T data);
+
+class FutureBuilder2<K, V> extends StatefulWidget {
+  final K id;
+  final Future<V> Function() loader;
+  final WidgetDataBuilder<V> builder;
+  final WidgetBuilder? onFailed;
+  final WidgetBuilder? onLoading;
+
+  const FutureBuilder2({
+    super.key,
+    required this.id,
+    required this.loader,
+    required this.builder,
+    this.onFailed,
+    this.onLoading,
+  });
+
+  @override
+  State<FutureBuilder2<K, V>> createState() => _FutureBuilder2State<K, V>();
+}
+
+class _FutureBuilder2State<K, V> extends State<FutureBuilder2<K, V>> {
+  V? _data;
+  K? _loading;
+
+  Future<void> load(K id) async {
+    _data = null;
+    _loading = id;
+    if (mounted) setState(() {});
+    final data = await widget.loader();
+    if (_loading == id) _loading = null;
+    if (id == widget.id) {
+      _data = data;
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    load(widget.id);
+  }
+
+  @override
+  void didUpdateWidget(covariant FutureBuilder2<K, V> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.id != oldWidget.id) {
+      load(widget.id);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _loading == widget.id
+        ? widget.onLoading?.call(context) ?? const SizedBox()
+        : _data is V
+            ? widget.builder(context, _data as V)
+            : widget.onFailed?.call(context) ?? const SizedBox();
+  }
+}

@@ -57,6 +57,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
           for (final enemy in enemies) ...[
             ...enemy.classPassive.classPassive.map((e) => e.id),
             ...enemy.classPassive.addPassive.map((e) => e.id),
+            ...?enemy.classPassive.appendPassiveSkillIds,
           ],
         }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
         tdIds = {

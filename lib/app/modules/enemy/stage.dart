@@ -13,21 +13,24 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'quest_enemy.dart';
 
 class QuestWave extends StatelessWidget {
-  final Stage stage;
+  final Stage? stage;
+  final List<QuestPhaseAiNpc> aiNpcs;
   final bool showTrueName;
   final Region? region;
 
   const QuestWave({
     super.key,
     required this.stage,
+    this.aiNpcs = const [],
     this.showTrueName = false,
     required this.region,
   });
 
   @override
   Widget build(BuildContext context) {
+    final stageEnemies = stage?.enemies ?? [];
     final npcs = {
-      for (final enemy in stage.enemies) enemy.npcId: enemy,
+      for (final enemy in stageEnemies) enemy.npcId: enemy,
     };
     Set<int> _usedNpcIds = {};
 
@@ -113,7 +116,7 @@ class QuestWave extends StatelessWidget {
     List<Widget> children = [];
     // enemy deck
     final _enemyDeck =
-        stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
+        stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
     children.addAll(_buildDeck(_enemyDeck, needSort: true));
     for (final e in _enemyDeck) {
       _usedNpcIds.add(e.npcId);
@@ -121,7 +124,7 @@ class QuestWave extends StatelessWidget {
     }
     // call deck
     final _callDeck =
-        stage.enemies.where((e) => e.deck == DeckType.call).toList();
+        stageEnemies.where((e) => e.deck == DeckType.call).toList();
     if (_callDeck.isNotEmpty) {
       children.add(const Text('- Call Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_callDeck, needSort: true));
@@ -129,16 +132,43 @@ class QuestWave extends StatelessWidget {
     _usedNpcIds.addAll(_callDeck.map((e) => e.npcId));
     // others
     final _unknownDeck =
-        stage.enemies.where((e) => !_usedNpcIds.contains(e.npcId));
+        stageEnemies.where((e) => !_usedNpcIds.contains(e.npcId));
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_unknownDeck, showDeck: true));
+    }
+
+    if (aiNpcs.isNotEmpty) {
+      children.addAll(_buildAiNpc());
     }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
+  }
+
+  Iterable<Widget> _buildAiNpc() sync* {
+    for (int i = 0; i < aiNpcs.length / 3; i++) {
+      List<Widget> children = [];
+      for (int j = 0; j < 3; j++) {
+        final aiNpc = aiNpcs.getOrNull(i * 3 + j);
+        if (aiNpc == null) {
+          children.add(const SizedBox());
+        } else {
+          children.add(QuestPhaseAiNpcWidget(
+            aiNpc: aiNpc,
+            showTrueName: showTrueName,
+            showDeck: false,
+            region: region,
+          ));
+        }
+      }
+      yield Row(
+        textDirection: TextDirection.rtl,
+        children: [for (final c in children) Expanded(child: c)],
+      );
+    }
   }
 }
 
@@ -232,15 +262,99 @@ class QuestEnemyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String displayName = showTrueName ? enemy.svt.lName.l : enemy.lShownName;
-
-    Widget face = db.getIconImage(
-      enemy.svt.icon,
-      width: 42,
-      placeholder: (_) => const SizedBox(),
+    return EnemyThumbBase(
+      icon: enemy.svt.icon,
+      hidden: enemy.misc?.displayType == 2 && !showTrueName,
+      name: showTrueName ? enemy.svt.lName.l : enemy.lShownName,
+      className: enemy.svt.className,
+      rarity: enemy.svt.rarity,
+      hp: enemy.hp,
+      deck: [
+        if (showDeck) '[${enemy.deck.name}]',
+        if (enemy.deck != DeckType.enemy) '*'
+      ].join(),
+      onTap: () {
+        router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
+      },
     );
+  }
+}
 
-    if (enemy.misc?.displayType == 2 && !showTrueName) {
+class QuestPhaseAiNpcWidget extends StatelessWidget {
+  final QuestPhaseAiNpc aiNpc;
+  final bool showTrueName;
+  final bool showDeck;
+  final Region? region;
+  final bool showIcon;
+
+  const QuestPhaseAiNpcWidget({
+    super.key,
+    required this.aiNpc,
+    this.showTrueName = false,
+    this.showDeck = false,
+    this.showIcon = true,
+    required this.region,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final enemy = aiNpc.detail;
+    return EnemyThumbBase(
+      icon: enemy?.icon ?? aiNpc.npc.svt.icon,
+      hidden: enemy?.misc?.displayType == 2 && !showTrueName,
+      name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ??
+          aiNpc.npc.svt.lName.l,
+      className: enemy?.svt.className ?? aiNpc.npc.svt.className,
+      rarity: enemy?.svt.rarity ?? aiNpc.npc.svt.rarity,
+      hp: enemy?.atk ?? aiNpc.npc.hp,
+      deck: [if (showDeck) '[${DeckType.aiNpc.name}]', '*'].join(),
+      onTap: () {
+        if (enemy != null) {
+          router.push(
+            child: QuestEnemyDetail(
+              enemy: enemy,
+              npcAis: aiNpc.aiIds,
+              region: region,
+              overrideTitle: 'NPC',
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+class EnemyThumbBase extends StatelessWidget {
+  final String? icon;
+  final bool hidden;
+  final String name;
+  final SvtClass? className;
+  final int? rarity;
+  final int hp;
+  final String? deck;
+  final VoidCallback? onTap;
+
+  const EnemyThumbBase({
+    super.key,
+    this.icon,
+    required this.hidden,
+    required this.name,
+    this.className,
+    this.rarity,
+    required this.hp,
+    this.deck,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget? face;
+    if (icon != null) {
+      face = db.getIconImage(icon,
+          width: 42, placeholder: (_) => const SizedBox());
+    }
+
+    if (hidden && face != null) {
       face = Stack(
         alignment: Alignment.center,
         children: [
@@ -265,10 +379,11 @@ class QuestEnemyWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        db.getIconImage(enemy.svt.className.icon(enemy.svt.rarity), width: 20),
+        if (className != null)
+          db.getIconImage(className?.icon(rarity ?? 5), width: 20),
         Flexible(
           child: AutoSizeText(
-            '${enemy.svt.className.shortName} ${enemy.hp}',
+            '${className?.shortName ?? ""} $hp',
             maxFontSize: 12,
             // ensure HP is shown completely
             minFontSize: 1,
@@ -279,21 +394,15 @@ class QuestEnemyWidget extends StatelessWidget {
       ],
     );
     return InkWell(
-      onTap: () {
-        router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
-      },
+      onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (showIcon) face,
+          if (face != null) face,
           LayoutTryBuilder(builder: (context, constraints) {
             return AutoSizeText(
-              [
-                displayName,
-                if (showDeck) '[${enemy.deck.name}]',
-                if (enemy.deck != DeckType.enemy) '*'
-              ].join(),
+              [name, if (deck != null && deck!.isNotEmpty) deck].join(),
               textAlign: TextAlign.center,
               textScaleFactor: 0.8,
               maxFontSize: constraints.maxWidth < 120 ? 14 : 24,

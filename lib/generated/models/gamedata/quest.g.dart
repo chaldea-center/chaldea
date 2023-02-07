@@ -314,6 +314,7 @@ QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
     );
 
 NpcServant _$NpcServantFromJson(Map json) => NpcServant(
+      npcId: json['npcId'] as int?,
       name: json['name'] as String,
       svt: BasicServant.fromJson(Map<String, dynamic>.from(json['svt'] as Map)),
       lv: json['lv'] as int,
@@ -584,6 +585,8 @@ EnemyTd _$EnemyTdFromJson(Map json) => EnemyTd(
               Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       noblePhantasmLv: json['noblePhantasmLv'] as int? ?? 0,
       noblePhantasmLv1: json['noblePhantasmLv1'] as int? ?? 0,
+      noblePhantasmLv2: json['noblePhantasmLv2'] as int?,
+      noblePhantasmLv3: json['noblePhantasmLv3'] as int?,
     );
 
 EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
@@ -597,12 +600,21 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
                   NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-    );
+      appendPassiveSkillIds: (json['appendPassiveSkillIds'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+    )..addPassiveLvs = (json['addPassiveLvs'] as List<dynamic>?)
+        ?.map((e) => e as int)
+        .toList();
 
 EnemyAi _$EnemyAiFromJson(Map json) => EnemyAi(
       aiId: json['aiId'] as int,
       actPriority: json['actPriority'] as int,
       maxActNum: json['maxActNum'] as int,
+      minActNum: json['minActNum'] as int?,
     );
 
 FieldAi _$FieldAiFromJson(Map json) => FieldAi(
@@ -633,6 +645,10 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) =>
           ? null
           : QuestPhaseAiNpc.fromJson(
               Map<String, dynamic>.from(json['aiNpc'] as Map)),
+      aiMultiNpc: (json['aiMultiNpc'] as List<dynamic>?)
+          ?.map((e) =>
+              QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 Restriction _$RestrictionFromJson(Map json) => Restriction(

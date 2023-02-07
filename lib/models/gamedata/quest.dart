@@ -614,6 +614,7 @@ class QuestMessage {
 
 @JsonSerializable()
 class NpcServant {
+  int? npcId; // non-null
   String name;
   BasicServant svt;
   int lv;
@@ -625,6 +626,7 @@ class NpcServant {
   SupportServantLimit limit;
 
   NpcServant({
+    this.npcId,
     required this.name,
     required this.svt,
     required this.lv,
@@ -823,6 +825,9 @@ class EnemyMisc {
   // List<int> userCommandCodeIds;
   List<int>? commandCardParam;
   int status;
+  // int? hpGaugeType;
+  // int? imageSvtId;
+  // int? condVal;
 
   EnemyMisc({
     this.displayType = 1,
@@ -920,6 +925,9 @@ class QuestEnemy with GameCardMixin {
       _$QuestEnemyFromJson(json);
 
   String get lShownName {
+    if (name.isEmpty || name == 'NONE') {
+      return svt.lName.l;
+    }
     String? _name =
         Transl.md.svtNames[name]?.l ?? Transl.md.entityNames[name]?.l;
     if (_name != null) return _name;
@@ -1098,12 +1106,16 @@ class EnemyTd {
   NiceTd? noblePhantasm;
   int noblePhantasmLv;
   int noblePhantasmLv1;
+  int? noblePhantasmLv2;
+  int? noblePhantasmLv3;
 
   EnemyTd({
     this.noblePhantasmId = 0,
     this.noblePhantasm,
     this.noblePhantasmLv = 0,
     this.noblePhantasmLv1 = 0,
+    this.noblePhantasmLv2,
+    this.noblePhantasmLv3,
   });
 
   factory EnemyTd.fromJson(Map<String, dynamic> json) =>
@@ -1114,10 +1126,15 @@ class EnemyTd {
 class EnemyPassive {
   List<NiceSkill> classPassive;
   List<NiceSkill> addPassive;
+  List<int>? addPassiveLvs;
+  List<int>? appendPassiveSkillIds;
+  List<int>? appendPassiveSkillLvs;
 
   EnemyPassive({
     this.classPassive = const [],
     this.addPassive = const [],
+    this.appendPassiveSkillIds,
+    this.appendPassiveSkillLvs,
   });
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) =>
@@ -1125,18 +1142,19 @@ class EnemyPassive {
 }
 
 // class EnemyLimit{}
-// class EnemyMisc{}
 
 @JsonSerializable()
 class EnemyAi {
   int aiId;
   int actPriority;
   int maxActNum;
+  int? minActNum;
 
   EnemyAi({
     required this.aiId,
     required this.actPriority,
     required this.maxActNum,
+    this.minActNum,
   });
 
   factory EnemyAi.fromJson(Map<String, dynamic> json) =>
@@ -1182,6 +1200,7 @@ class QuestPhaseExtraDetail {
   String? hintTitle;
   String? hintMessage;
   QuestPhaseAiNpc? aiNpc;
+  List<QuestPhaseAiNpc>? aiMultiNpc;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1189,6 +1208,7 @@ class QuestPhaseExtraDetail {
     this.hintTitle,
     this.hintMessage,
     this.aiNpc,
+    this.aiMultiNpc,
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>

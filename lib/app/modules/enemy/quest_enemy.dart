@@ -8,11 +8,19 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class QuestEnemyDetail extends StatefulWidget {
   final QuestEnemy enemy;
+  final List<int>? npcAis;
   final Quest? quest;
   final Region? region;
+  final String? overrideTitle;
 
-  const QuestEnemyDetail(
-      {super.key, required this.enemy, this.quest, this.region});
+  const QuestEnemyDetail({
+    super.key,
+    required this.enemy,
+    this.npcAis,
+    this.quest,
+    this.region,
+    this.overrideTitle,
+  });
 
   @override
   State<QuestEnemyDetail> createState() => _QuestEnemyDetailState();
@@ -24,7 +32,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('[${S.current.enemy}] ${enemy.lShownName}'),
+        title: Text(
+            '[${widget.overrideTitle ?? S.current.enemy}] ${enemy.lShownName}'),
       ),
       body: ListView(
         children: [
@@ -173,23 +182,41 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
             context: context, traits: enemy.traits.toList()..sort2((e) => e.id))
       ]),
       if (enemy.ai != null) ...[
-        CustomTableRow.fromTexts(
-            texts: const ['AI ID', 'Max Act', 'Act Priority'], isHeader: true),
+        CustomTableRow.fromTexts(texts: [
+          'AI ID',
+          if (enemy.ai!.minActNum != null) 'Min Act',
+          'Max Act',
+          'Act Priority',
+        ], isHeader: true),
         CustomTableRow(
           children: [
             TableCellData(
-              child: TextButton(
-                onPressed: () {
-                  launch(Atlas.ai(enemy.ai!.aiId, true,
-                      region: widget.region ?? Region.jp,
-                      skillId1: enemy.skills.skillId1,
-                      skillId2: enemy.skills.skillId2,
-                      skillId3: enemy.skills.skillId3));
-                },
-                style: kTextButtonDenseStyle,
-                child: Text(enemy.ai!.aiId.toString()),
+              child: Text.rich(
+                TextSpan(
+                  children: divideList(
+                    [
+                      for (final aiId in [enemy.ai!.aiId, ...?widget.npcAis])
+                        if (aiId != 0)
+                          SharedBuilder.textButtonSpan(
+                            context: context,
+                            text: aiId.toString(),
+                            onTap: () {
+                              launch(Atlas.ai(enemy.ai!.aiId, true,
+                                  region: widget.region ?? Region.jp,
+                                  skillId1: enemy.skills.skillId1,
+                                  skillId2: enemy.skills.skillId2,
+                                  skillId3: enemy.skills.skillId3));
+                            },
+                          ),
+                    ],
+                    const TextSpan(text: ' / '),
+                  ),
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
+            if (enemy.ai!.minActNum != null)
+              TableCellData(text: enemy.ai!.minActNum.toString()),
             TableCellData(text: enemy.ai!.maxActNum.toString()),
             TableCellData(text: enemy.ai!.actPriority.toString()),
           ],
@@ -240,13 +267,33 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
-      for (final skill in enemy.classPassive.addPassive)
+      for (int index = 0; index < enemy.classPassive.addPassive.length; index++)
         SkillDescriptor(
-          skill: skill,
+          skill: enemy.classPassive.addPassive[index],
+          level: enemy.classPassive.addPassiveLvs?.getOrNull(index),
           showEnemy: true,
           showPlayer: true,
           region: widget.region,
         ),
+      if (enemy.classPassive.appendPassiveSkillIds?.isNotEmpty == true) ...[
+        CustomTableRow.fromTexts(
+          texts: [S.current.append_skill],
+          isHeader: true,
+        ),
+        for (int index = 0;
+            index < enemy.classPassive.appendPassiveSkillIds!.length;
+            index++)
+          SkillDescriptor.fromId(
+            id: enemy.classPassive.appendPassiveSkillIds![index],
+            builder: (context, skill) => SkillDescriptor(
+              skill: skill,
+              level: enemy.classPassive.appendPassiveSkillLvs?.getOrNull(index),
+              showEnemy: true,
+              showPlayer: true,
+              region: widget.region,
+            ),
+          ),
+      ],
       CustomTableRow.fromTexts(
         texts: [S.current.noble_phantasm],
         isHeader: true,

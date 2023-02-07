@@ -1,3 +1,4 @@
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
@@ -48,6 +49,26 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     this.region,
   })  : showPlayer = isPlayer,
         showEnemy = !isPlayer;
+
+  static Widget fromId({
+    required int id,
+    required WidgetDataBuilder<BaseSkill> builder,
+    Region? region,
+  }) {
+    return FutureBuilder2(
+      id: '$id$region',
+      loader: () async {
+        region ??= Region.jp;
+        BaseSkill? skill;
+        if (region == Region.jp) skill = db.gameData.baseSkills[id];
+        return skill ?? await AtlasApi.skill(id, region: region!);
+      },
+      builder: (context, skill) {
+        if (skill == null) return Text('${S.current.skill} $id');
+        return builder(context, skill);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

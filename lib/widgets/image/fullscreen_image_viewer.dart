@@ -17,8 +17,7 @@ class FullscreenImageViewer extends StatefulWidget {
     this.fullscreen = true,
     PhotoViewOption? photoViewOption,
     this.galleryOption = const PhotoViewGalleryOption(),
-  }) : photoViewOption = photoViewOption ??
-            PhotoViewOption.limited();
+  }) : photoViewOption = photoViewOption ?? PhotoViewOption.limited();
 
   FullscreenImageViewer.fromUrls({
     super.key,

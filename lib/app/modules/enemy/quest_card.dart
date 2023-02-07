@@ -418,6 +418,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
+
     for (int j = 0; j < curPhase.stages.length; j++) {
       final stage = curPhase.stages[j];
       children.add(Row(
@@ -454,6 +455,30 @@ class _QuestCardState extends State<QuestCard> {
           Expanded(
             child: QuestWave(
               stage: stage,
+              showTrueName: showTrueName,
+              region: widget.region,
+            ),
+          )
+        ],
+      ));
+    }
+
+    final aiNpcs = [
+      curPhase.extraDetail?.aiNpc,
+      ...?curPhase.extraDetail?.aiMultiNpc
+    ].whereType<QuestPhaseAiNpc>().toList();
+    if (aiNpcs.isNotEmpty) {
+      children.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          const SizedBox(
+            width: 32,
+            child: Text('NPC', textAlign: TextAlign.center),
+          ),
+          Expanded(
+            child: QuestWave(
+              stage: null,
+              aiNpcs: aiNpcs,
               showTrueName: showTrueName,
               region: widget.region,
             ),
