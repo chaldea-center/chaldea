@@ -21,7 +21,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     db.saveSettings();
   }
 
-  bool use6th = db.curUser.freeLPParams.use6th;
+  final bool use6th = true; // db.curUser.freeLPParams.use6th;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +38,11 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 FilterOption(
                   selected: use6th,
                   value: '6th',
-                  onChanged: (v) => setState(() {
-                    use6th = v;
-                  }),
+                  // onChanged: (v) => setState(() {
+                  //   use6th = v;
+                  // }),
                   shrinkWrap: true,
+                  enabled: false,
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text('6th'),

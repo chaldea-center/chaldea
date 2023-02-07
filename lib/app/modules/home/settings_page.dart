@@ -150,13 +150,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.new_drop_data_6th),
                   subtitle: Text(
                       '~2.5.5, 6th(${S.current.region_jp})/5th(${S.current.region_na}) ${S.current.anniversary}'),
-                  value: db.curUser.freeLPParams.use6th,
+                  value: true, // db.curUser.freeLPParams.use6th,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: (v) {
-                    setState(() {
-                      db.curUser.freeLPParams.use6th = v;
-                    });
-                  },
+                  onChanged: null,
+                  // onChanged: (v) {
+                  //   setState(() {
+                  //     db.curUser.freeLPParams.use6th = v;
+                  //   });
+                  // },
                 ),
               )
             ],

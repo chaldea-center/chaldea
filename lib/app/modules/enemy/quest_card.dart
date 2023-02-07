@@ -43,10 +43,11 @@ class _QuestCardState extends State<QuestCard> {
 
   Quest get quest => _quest!;
   bool showTrueName = false;
+  // ignore: unused_field
   bool? _use6th;
   bool preferApRate = false;
 
-  bool get use6th => _use6th ?? db.curUser.freeLPParams.use6th;
+  bool get use6th => true; //  _use6th ?? db.curUser.freeLPParams.use6th;
 
   bool get show6th {
     return db.gameData.dropRate
@@ -557,11 +558,12 @@ class _QuestCardState extends State<QuestCard> {
               values: FilterRadioData(use6th ? true : null),
               optionBuilder: (v) => const Text('6th'),
               combined: true,
-              onFilterChanged: (v, _) {
-                setState(() {
-                  _use6th = !use6th;
-                });
-              },
+              enabled: false,
+              // onFilterChanged: (v, _) {
+              //   setState(() {
+              //     _use6th = !use6th;
+              //   });
+              // },
             ),
         ],
       ));

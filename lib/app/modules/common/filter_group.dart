@@ -213,6 +213,7 @@ class FilterOption<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool darkMode = Theme.of(context).brightness == Brightness.dark;
+    final selectedColor = this.selectedColor ?? Colors.blue;
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
@@ -225,8 +226,11 @@ class FilterOption<T> extends StatelessWidget {
             : null,
         style: OutlinedButton.styleFrom(
           foregroundColor: selected || darkMode ? Colors.white : Colors.black,
-          backgroundColor:
-              selected ? selectedColor ?? Colors.blue : unselectedColor,
+          backgroundColor: selected
+              ? (enabled
+                  ? selectedColor
+                  : selectedColor.withOpacity(selectedColor.opacity * 0.5))
+              : unselectedColor,
           minimumSize: shrinkWrap ? const Size(2, 2) : const Size(48, 36),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
