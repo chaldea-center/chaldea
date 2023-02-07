@@ -18,8 +18,7 @@ class FullscreenImageViewer extends StatefulWidget {
     PhotoViewOption? photoViewOption,
     this.galleryOption = const PhotoViewGalleryOption(),
   }) : photoViewOption = photoViewOption ??
-            PhotoViewOption.limited()
-                .copyWith(onTapUp: (ctx, _, __) => Navigator.pop(ctx));
+            PhotoViewOption.limited();
 
   FullscreenImageViewer.fromUrls({
     super.key,
@@ -35,6 +34,8 @@ class FullscreenImageViewer extends StatefulWidget {
                   cachedOption: cachedImageOption,
                   photoViewOption: photoViewOption,
                   showSaveOnLongPress: showSaveOnLongPress,
+                  viewFullOnTap: false,
+                  onTap: null,
                 ))
             .toList();
 
@@ -64,11 +65,9 @@ class FullscreenImageViewer extends StatefulWidget {
               imageUrl: urls[index],
               placeholder: placeholder,
               showSaveOnLongPress: true,
-              photoViewOption: PhotoViewOption.limited().copyWith(
-                onTapUp: (ctx, _, __) {
-                  Navigator.pop(ctx, index);
-                },
-              ),
+              viewFullOnTap: false,
+              onTap: null,
+              photoViewOption: PhotoViewOption.limited(),
               cachedOption: const CachedImageOption(
                 fadeOutDuration: Duration(milliseconds: 1200),
                 fadeInDuration: Duration(milliseconds: 800),
@@ -85,7 +84,7 @@ class FullscreenImageViewer extends StatefulWidget {
 }
 
 class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
-  int? _curIndex = 0;
+  // int? _curIndex = 0;
 
   @override
   void initState() {
@@ -109,7 +108,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
     return GestureDetector(
       onTap: () {
         // why?
-        Navigator.maybeOf(context)?.pop(_curIndex);
+        Navigator.maybeOf(context)?.pop();
       },
       child: Scaffold(
         body: Padding(
@@ -131,7 +130,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
       reverse: widget.galleryOption.reverse,
       pageController: widget.galleryOption.pageController,
       onPageChanged: (index) {
-        _curIndex = index;
+        // _curIndex = index;
         return widget.galleryOption.onPageChanged?.call(index);
       },
       scaleStateChangedCallback: widget.galleryOption.scaleStateChangedCallback,
