@@ -89,6 +89,10 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   @override
   Widget listItemBuilder(CommandCode cc) {
+    String? status;
+    if (cc.status.status == CraftStatus.owned && cc.status.count > 0) {
+      status = cc.status.count.toString();
+    }
     return CustomTile(
       leading: db.getIconImage(
         cc.borderedIcon,
@@ -100,7 +104,12 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(cc.name, maxLines: 1),
-          Text('No.${cc.collectionNo}'),
+          Row(
+            children: [
+              Expanded(child: Text('No.${cc.collectionNo}')),
+              if (status != null) Text(status)
+            ],
+          ),
         ],
       ),
       trailing: IconButton(
@@ -116,9 +125,14 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   @override
   Widget gridItemBuilder(CommandCode cc) {
+    String? status;
+    if (cc.status.status == CraftStatus.owned && cc.status.count > 0) {
+      // status = cc.status.count.toString();
+    }
     return cc.iconBuilder(
       context: context,
       width: 72,
+      text: status,
       onTap: () => _onTapCard(cc),
     );
   }
@@ -135,6 +149,10 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         return false;
       }
     }
+    if (!filterData.status.matchOne(cc.status.status)) {
+      return false;
+    }
+
     if (filterData.effectType.isNotEmpty ||
         filterData.effectTarget.isNotEmpty ||
         filterData.targetTrait.isNotEmpty) {

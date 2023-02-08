@@ -93,7 +93,7 @@ class _CraftFilterPageState
             update();
           },
         ),
-        buildGroupDivider(text: S.current.ce_status),
+        buildGroupDivider(text: S.current.card_collection_status),
         FilterGroup<int>(
           title: Text(S.current.ascension),
           options: const [0, 1, 2, 3, 4],
@@ -103,7 +103,7 @@ class _CraftFilterPageState
           },
         ),
         FilterGroup<int>(
-          title: Text(S.current.ce_status),
+          title: Text(S.current.card_collection_status),
           options: CraftStatus.values,
           values: filterData.status,
           optionBuilder: (v) => Text(CraftStatus.shownText(v)),

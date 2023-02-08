@@ -123,15 +123,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_asset_narrow_figure":
             MessageLookupByLibrary.simpleMessage("編成画面"),
         "card_asset_status": MessageLookupByLibrary.simpleMessage("ステータスアイコン"),
+        "card_collection_status": MessageLookupByLibrary.simpleMessage("所持状態"),
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "card_name": MessageLookupByLibrary.simpleMessage("カード名"),
+        "card_status_met": MessageLookupByLibrary.simpleMessage("未所持"),
+        "card_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),
+        "card_status_owned": MessageLookupByLibrary.simpleMessage("所持"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("装備されたサーヴァント"),
-        "ce_status": MessageLookupByLibrary.simpleMessage("所持状態"),
-        "ce_status_met": MessageLookupByLibrary.simpleMessage("未所持"),
-        "ce_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),
-        "ce_status_owned": MessageLookupByLibrary.simpleMessage("所持"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea アカウント"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(

@@ -571,6 +571,7 @@ class CmdCodeFilterData with _FilterData {
   final effectTarget = FilterGroupData<EffectTarget>();
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
+  final status = FilterGroupData<int>();
 
   CmdCodeFilterData({
     this.useGrid = false,
@@ -593,6 +594,7 @@ class CmdCodeFilterData with _FilterData {
         effectTarget,
         targetTrait,
         effectType,
+        status,
       ];
 
   @override

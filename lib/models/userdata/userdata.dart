@@ -231,6 +231,7 @@ class User {
   Map<int, int> items;
 
   Map<int, CraftStatus> craftEssences;
+  Map<int, CmdCodeStatus> cmdCodes;
   Map<int, int> mysticCodes;
   Set<String> summons;
   Set<int> myRoomMusic;
@@ -251,6 +252,7 @@ class User {
     int curSvtPlanNo = 0,
     Map<int, int>? items,
     Map<int, dynamic>? craftEssences,
+    Map<int, CmdCodeStatus>? cmdCodes,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     Set<int>? myRoomMusic,
@@ -268,6 +270,7 @@ class User {
             for (final e in craftEssences.entries)
               if (e.value != null) e.key: CraftStatus.fromJson(e.value!)
         },
+        cmdCodes = cmdCodes ?? {},
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
         myRoomMusic = myRoomMusic ?? {},
@@ -299,6 +302,8 @@ class User {
 
   CraftStatus ceStatusOf(int no) =>
       craftEssences.putIfAbsent(no, () => CraftStatus());
+  CmdCodeStatus ccStatusOf(int no) =>
+      cmdCodes.putIfAbsent(no, () => CmdCodeStatus());
 
   LimitEventPlan limitEventPlanOf(int eventId) =>
       _curEventPlan.limitEvents.putIfAbsent(eventId, () => LimitEventPlan());
@@ -327,6 +332,9 @@ class User {
     craftEssences.forEach((key, value) {
       value.validate(db.gameData.craftEssences[key]?.lvMax);
     });
+    cmdCodes.forEach((key, value) {
+      value.validate();
+    });
   }
 
   String getFriendlyPlanName([int? planNo]) {
@@ -345,6 +353,7 @@ class User {
     items = sortDict(items);
     craftEssences = sortDict(craftEssences);
     mysticCodes = sortDict(mysticCodes);
+    cmdCodes = sortDict(cmdCodes);
     summons = (summons.toList()..sort()).toSet();
     myRoomMusic = (myRoomMusic.toList()..sort()).toSet();
     luckyBagSvtScores = sortDict(luckyBagSvtScores);
@@ -404,6 +413,17 @@ class SvtStatus {
   bool get favorite => cur.favorite;
 
   set favorite(bool v) => cur.favorite = v;
+
+  int? getCmdCode(int index) {
+    return equipCmdCodes.getOrNull(index);
+  }
+
+  void setCmdCode(int index, int? collectionNo) {
+    if (equipCmdCodes.length < 5) equipCmdCodes.length = 5;
+    if (index >= 0 && index < 5) {
+      equipCmdCodes[index] = collectionNo;
+    }
+  }
 }
 
 @JsonSerializable()
@@ -749,9 +769,9 @@ class CraftStatus {
   static String shownText(int status) {
     assert(values.contains(status), status);
     return [
-          S.current.ce_status_not_met,
-          S.current.ce_status_met,
-          S.current.ce_status_owned
+          S.current.card_status_not_met,
+          S.current.card_status_met,
+          S.current.card_status_owned
         ].getOrNull(status) ??
         status.toString();
   }
@@ -787,4 +807,35 @@ class CraftStatus {
   }
 
   Map<String, dynamic> toJson() => _$CraftStatusToJson(this);
+}
+
+@JsonSerializable()
+class CmdCodeStatus {
+  static const notMet = 0;
+  static const met = 1;
+  static const owned = 2;
+
+  static const List<int> values = [notMet, met, owned];
+
+  static String shownText(int status) => CraftStatus.shownText(status);
+
+  String get statusText => shownText(status);
+
+  int status;
+  int count;
+
+  CmdCodeStatus({
+    this.status = CmdCodeStatus.notMet,
+    this.count = 0,
+  });
+
+  void validate() {
+    status = status.clamp(0, 2);
+    count = count.clamp2(0);
+  }
+
+  factory CmdCodeStatus.fromJson(dynamic json) =>
+      _$CmdCodeStatusFromJson(Map<String, dynamic>.from(json));
+
+  Map<String, dynamic> toJson() => _$CmdCodeStatusToJson(this);
 }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ruby_text/ruby_text.dart';
@@ -11,10 +9,8 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/custom_table.dart';
-import 'package:chaldea/widgets/custom_tile.dart';
-import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
 import '../creator/chara_detail.dart';
 import '../creator/creator_detail.dart';
@@ -61,11 +57,27 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
         url: Routes.commandCodeI(widget.id ?? 0),
       );
     }
+    final status = cc.status;
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(cc.lName.l, maxLines: 1),
         titleSpacing: 0,
         actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                status.status = (status.status + 1) % 3;
+              });
+              db.notifyUserdata();
+              EasyLoading.showToast(status.statusText);
+            },
+            icon: status.status == CmdCodeStatus.owned
+                ? const Icon(Icons.favorite, color: Colors.redAccent)
+                : status.status == CmdCodeStatus.met
+                    ? const Icon(Icons.favorite)
+                    : const Icon(Icons.favorite_outline),
+            tooltip: status.statusText,
+          ),
           _popupButton,
         ],
       ),
@@ -76,6 +88,36 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               child: CmdCodeDetailBasePage(cc: cc, lang: lang, showExtra: true),
             ),
           ),
+          if (status.status == CmdCodeStatus.owned)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('${status.statusText}: '),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return InputCancelOkDialog(
+                          title: S.current.total_counts,
+                          text: status.count.toString(),
+                          validate: (s) {
+                            final v = int.tryParse(s);
+                            return v != null && v >= 0;
+                          },
+                          onSubmit: (v) {
+                            status.count = int.tryParse(v) ?? status.count;
+                            if (mounted) setState(() {});
+                          },
+                        );
+                      },
+                    );
+                  },
+                  child: Text(' ${status.count} '),
+                ),
+              ],
+            ),
           SafeArea(
             child: ButtonBar(alignment: MainAxisAlignment.center, children: [
               // ProfileLangSwitch(
@@ -262,6 +304,14 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: getProfiles().toList(),
           ),
+        ),
+        CustomTableRow.fromTexts(
+          texts: [S.current.illustration],
+          isHeader: true,
+        ),
+        ExtraAssetsPage(
+          assets: cc.extraAssets,
+          scrollable: false,
         ),
         if (showExtra) ...[
           CustomTableRow.fromTexts(

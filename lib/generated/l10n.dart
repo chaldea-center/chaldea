@@ -724,6 +724,17 @@ class S {
     );
   }
 
+  /// `Status`
+  String get card_collection_status {
+    return Intl.message(
+      'Status',
+      name: 'card_collection_status',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Description`
   String get card_description {
     return Intl.message(
@@ -757,6 +768,39 @@ class S {
     );
   }
 
+  /// `Met`
+  String get card_status_met {
+    return Intl.message(
+      'Met',
+      name: 'card_status_met',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Met`
+  String get card_status_not_met {
+    return Intl.message(
+      'Not Met',
+      name: 'card_status_not_met',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Owned`
+  String get card_status_owned {
+    return Intl.message(
+      'Owned',
+      name: 'card_status_owned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Carousel Setting`
   String get carousel_setting {
     return Intl.message(
@@ -784,50 +828,6 @@ class S {
     return Intl.message(
       'MLB',
       name: 'ce_max_limit_break',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Status`
-  String get ce_status {
-    return Intl.message(
-      'Status',
-      name: 'ce_status',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Met`
-  String get ce_status_met {
-    return Intl.message(
-      'Met',
-      name: 'ce_status_met',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Not Met`
-  String get ce_status_not_met {
-    return Intl.message(
-      'Not Met',
-      name: 'ce_status_not_met',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Owned`
-  String get ce_status_owned {
-    return Intl.message(
-      'Owned',
-      name: 'ce_status_owned',
       desc: '',
       locale: localeName,
       args: [],

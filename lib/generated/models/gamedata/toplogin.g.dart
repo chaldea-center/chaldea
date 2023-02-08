@@ -190,15 +190,15 @@ UserCommandCodeCollection _$UserCommandCodeCollectionFromJson(Map json) =>
       getNum: json['getNum'],
     );
 
-UserSvtCommandCode _$UserSvtCommandCodeFromJson(Map json) => UserSvtCommandCode(
-      userCommandCodeIds: json['userCommandCodeIds'],
-      svtId: json['svtId'],
-    );
-
 UserCommandCode _$UserCommandCodeFromJson(Map json) => UserCommandCode(
       id: json['id'],
       commandCodeId: json['commandCodeId'],
       status: json['status'],
+    );
+
+UserSvtCommandCode _$UserSvtCommandCodeFromJson(Map json) => UserSvtCommandCode(
+      userCommandCodeIds: json['userCommandCodeIds'],
+      svtId: json['svtId'],
     );
 
 UserSupportDeck _$UserSupportDeckFromJson(Map json) => UserSupportDeck(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
+import 'command_code.dart';
 import 'servant.dart';
 
 part '../../generated/models/gamedata/toplogin.g.dart';
@@ -286,8 +287,17 @@ class UserSvt {
   int id; // unique id for every card
   int svtId;
 
-  // 0-unlock, 1-locked, 2-?
+  // 0-unlock, 1-locked
   // 17-party member, -127-Mash
+  // public enum UserServantEntity.StatusFlag
+  //   LOCK = 1;
+  //   EVENT_JOIN = 2;
+  //   WITHDRAWAL = 4;
+  //   APRIL_FOOL_CANCEL = 8;
+  //   CHOICE = 16;
+  //   NO_PERIOD = 32;
+  //   COND_JOIN = 64;
+  //   ADD_FRIENDSHIP_HEROINE = 128;
   int? status;
   int limitCount; // ascension
   // int dispLimitCount;
@@ -324,7 +334,7 @@ class UserSvt {
     if (isLock != null) {
       return isLock == 1;
     } else {
-      return status != 0;
+      return status != null && status! & 1 != 0;
     }
   }
 
@@ -635,7 +645,7 @@ class UserEquip {
 class UserCommandCodeCollection {
   // int userId;
   int commandCodeId;
-  int status;
+  int status; // 0-find, 2-got
   int getNum;
   // updatedAt, createdAt
   UserCommandCodeCollection({
@@ -647,6 +657,29 @@ class UserCommandCodeCollection {
         getNum = _toInt(getNum);
   factory UserCommandCodeCollection.fromJson(Map<String, dynamic> data) =>
       _$UserCommandCodeCollectionFromJson(data);
+
+  CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
+}
+
+@JsonSerializable(createToJson: false)
+class UserCommandCode {
+  int id;
+  // int userId;
+  int commandCodeId;
+  int status; // StatusFlag.LOCK=1,CHOICE=16
+  // createdAt, updatedAt
+  UserCommandCode({
+    dynamic id,
+    dynamic commandCodeId,
+    dynamic status,
+    dynamic svtId,
+  })  : id = _toInt(id),
+        commandCodeId = _toInt(commandCodeId),
+        status = _toInt(status);
+  factory UserCommandCode.fromJson(Map<String, dynamic> data) =>
+      _$UserCommandCodeFromJson(data);
+
+  CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
 }
 
 @JsonSerializable(createToJson: false)
@@ -662,25 +695,6 @@ class UserSvtCommandCode {
         svtId = _toInt(svtId);
   factory UserSvtCommandCode.fromJson(Map<String, dynamic> data) =>
       _$UserSvtCommandCodeFromJson(data);
-}
-
-@JsonSerializable(createToJson: false)
-class UserCommandCode {
-  int id;
-  // int userId;
-  int commandCodeId;
-  int status;
-  // createdAt, updatedAt
-  UserCommandCode({
-    dynamic id,
-    dynamic commandCodeId,
-    dynamic status,
-    dynamic svtId,
-  })  : id = _toInt(id),
-        commandCodeId = _toInt(commandCodeId),
-        status = _toInt(status);
-  factory UserCommandCode.fromJson(Map<String, dynamic> data) =>
-      _$UserCommandCodeFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

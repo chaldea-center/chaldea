@@ -132,9 +132,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("الوصف"),
         "card_info": MessageLookupByLibrary.simpleMessage("عن"),
         "card_name": MessageLookupByLibrary.simpleMessage("اسم البطاقة"),
+        "card_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
-        "ce_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("حساب كاليديا"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "غير متوافق مع بيانات الاصدار V1.\n نظام الحساب البسيط للنسخ الاحتياطي لبيانات المستخدم إلى الخادم والتزامن متعدد الأجهزة\n لا يوجد ضمان أمني ، يرجى عدم تعيين كلمات المرور التي تستخدمها بشكل متكرر !!!\n لا حاجة للتسجيل إذا كنت لا تحتاج إلى هاتين الميزتين."),

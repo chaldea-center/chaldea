@@ -151,8 +151,15 @@ class ExtraAssetsPage extends StatelessWidget {
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
   }) =>
-      oneGroup(title, urls, height,
-          expanded: expanded, showMerge: showMerge, onTapImage: onTapImage);
+      oneGroup(
+        title,
+        urls,
+        height,
+        expanded: expanded,
+        showMerge: showMerge,
+        placeholder: placeholder,
+        onTapImage: onTapImage,
+      );
 
   static Widget? oneGroup(
     String title,

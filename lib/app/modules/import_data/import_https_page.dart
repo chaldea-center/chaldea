@@ -34,6 +34,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _includeSvt = true;
   bool _includeSvtStorage = true;
   bool _includeCraft = true;
+  bool _includeCmdCode = true;
 
   bool _onlyLocked = true;
   bool _allowDuplicated = false;
@@ -43,6 +44,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _showSvt = false;
   bool _showStorage = false;
   bool _showCraft = false;
+  bool _showCmdCode = false;
   final Set<UserSvt> _validSvts = {};
 
   // from response,key=game id
@@ -53,8 +55,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   List<List<UserSvt>> servants = [];
   List<UserItem> items = [];
   Map<int, CraftStatus> crafts = {}; // craft.no: status
+  Map<int, CmdCodeStatus> cmdCodes = {}; // code.no: status
 
-  UserMstData? get replacedResponse => topLogin?.mstData;
+  UserMstData? get mstData => topLogin?.mstData;
 
   String tmpPath =
       joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
@@ -129,6 +132,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                         svtSliver(false),
                         svtSliver(true),
                         craftSliver,
+                        cmdCodeSliver,
                       ],
                     ),
                   ),
@@ -140,11 +144,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     );
   }
 
-  final double _with = 56;
-  final double _height = 56 / (132 / 144);
+  final double _with = 42;
+  final double _height = 42 / (132 / 144);
 
   Widget get userInfoSliver {
-    final user = replacedResponse?.firstUser;
+    final user = mstData?.firstUser;
     if (user == null) {
       return MultiSliver(children: const [
         ListTile(
@@ -239,6 +243,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             child: SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: _with,
+                  childAspectRatio: 132 / 144,
+                  mainAxisSpacing: 2,
+                  crossAxisSpacing: 2,
+                ),
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final item = items[index];
                   return Item.iconBuilder(
@@ -249,16 +259,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     text: item.num.toString(),
                   );
                 }, childCount: items.length),
-                gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
-                  crossAxisCount: constraints.maxWidth ~/ _with,
-                  height: _height,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
               ),
             ),
-          )
+          ),
       ],
     );
   }
@@ -273,7 +276,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           continue;
         }
 
-        int? coin = replacedResponse?.coinMap[svt.svtId]?.num;
+        int? coin = mstData?.coinMap[svt.svtId]?.num;
         Widget _wrapCellStyle(List<String> texts) {
           return CustomTableRow.fromTexts(
             texts: texts,
@@ -487,6 +490,65 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     );
   }
 
+  Widget get cmdCodeSliver {
+    int owned = cmdCodes.values
+            .where((e) => e.status == CmdCodeStatus.owned)
+            .length,
+        met =
+            cmdCodes.values.where((e) => e.status == CmdCodeStatus.met).length,
+        notMet = cmdCodes.values
+            .where((e) => e.status == CmdCodeStatus.notMet)
+            .length;
+    int svtCount = 0, ccCount = 0;
+    if (mstData != null) {
+      for (final svtcc in mstData!.userSvtCommandCode) {
+        final count = svtcc.userCommandCodeIds.where((e) => e != 0).length;
+        ccCount += count;
+        if (count > 0) svtCount += 1;
+      }
+    }
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            tileColor: Theme.of(context).cardColor,
+            leading: Checkbox(
+              value: _includeCmdCode,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (v) => setState(() {
+                _includeCmdCode = v ?? _includeCmdCode;
+              }),
+            ),
+            title: Text(S.current.command_code),
+            trailing: ExpandIcon(onPressed: null, isExpanded: _showCmdCode),
+            onTap: () {
+              setState(() {
+                _showCmdCode = !_showCmdCode;
+              });
+            },
+          ),
+        ),
+        if (_showCmdCode)
+          SliverClip(
+            child: MultiSliver(
+              children: [
+                ListTile(
+                  leading: const Text(''),
+                  title: Text(
+                      '${CmdCodeStatus.shownText(CmdCodeStatus.owned)}: $owned\n'
+                      '${CmdCodeStatus.shownText(CmdCodeStatus.met)}: $met\n'
+                      '${CmdCodeStatus.shownText(CmdCodeStatus.notMet)}: $notMet\n'
+                      'ALL:   ${cmdCodes.length}\n'
+                      '${S.current.cc_equipped_svt}: $svtCount ${S.current.servant}, $ccCount ${S.current.command_code}.'),
+                )
+              ],
+            ),
+          )
+      ],
+    );
+  }
+
   Widget get buttonBar {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -519,12 +581,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               label: Text(S.current.import_http_body_duplicated),
             ),
             ElevatedButton(
-              onPressed: replacedResponse == null
+              onPressed: mstData == null
                   ? null
                   : () {
                       router.push(
                         child: SvtBondDetailPage(
-                          friendCode: replacedResponse?.firstUser?.friendCode,
+                          friendCode: mstData?.firstUser?.friendCode,
                           cardCollections: cardCollections,
                         ),
                       );
@@ -532,8 +594,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               child: Text(S.current.bond),
             ),
             ElevatedButton(
-              onPressed:
-                  replacedResponse?.firstUser == null ? null : didImportData,
+              onPressed: mstData?.firstUser == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
           ],
@@ -560,7 +621,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     ).showDialog(context);
     if (confirmed != true) return;
     final user = db.curUser;
-    final userGame = replacedResponse?.firstUser;
+    final userGame = mstData?.firstUser;
     user.isGirl = userGame?.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
@@ -569,7 +630,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         user.items[Items.manaPrismId] = userGame.mana;
         user.items[Items.rarePrismId] = userGame.rarePri;
       }
-      for (final svtCoin in replacedResponse!.userSvtCoin) {
+      for (final svtCoin in mstData!.userSvtCoin) {
         final coinId = db.gameData.servantsById[svtCoin.svtId]?.coin?.item.id;
         if (coinId == null) continue;
         user.items[coinId] = svtCoin.num;
@@ -580,6 +641,27 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
     if (_includeCraft) {
       user.craftEssences.addAll(Map.of(crafts));
+    }
+    if (_includeCmdCode) {
+      user.cmdCodes.addAll(Map.of(cmdCodes));
+
+      if (mstData != null) {
+        final userCCMap = <int, int>{
+          for (final cc in mstData!.userCommandCode) cc.id: cc.commandCodeId
+        };
+        for (final svtcc in mstData!.userSvtCommandCode) {
+          final svtNo = db.gameData.servantsById[svtcc.svtId]?.collectionNo;
+          if (svtNo == null || svtNo == 0) continue;
+          final status = user.svtStatusOf(svtNo);
+          for (int index = 0;
+              index < svtcc.userCommandCodeIds.length;
+              index++) {
+            final cc = db.gameData
+                .commandCodesById[userCCMap[svtcc.userCommandCodeIds[index]]];
+            status.setCmdCode(index, cc?.collectionNo);
+          }
+        }
+      }
     }
     // 不删除原本信息
     // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
@@ -694,6 +776,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   void parseResponseBody(String contents) {
     FateTopLogin _topLogin = FateTopLogin.tryBase64(contents);
+    if (!_topLogin.response.any((res) => res.nid == 'login')) {
+      throw Exception('This is not login data');
+    }
     final body = _topLogin.mstData;
 
     // clear before import
@@ -706,6 +791,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             db.gameData.items[e.itemId]?.category != ItemCategory.other)
         .toList();
     crafts.clear();
+    cmdCodes.clear();
 
     items.sort2((e) => db.gameData.items[e.itemId]?.priority ?? e.itemId);
 
@@ -786,6 +872,20 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         status.lv = ce.lv;
         status.limitCount = ce.limitCount;
       }
+    }
+    for (final code in body.userCommandCodeCollection) {
+      final cc = code.dbCC;
+      if (cc == null) continue;
+      final status =
+          cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
+      status.status = code.status;
+    }
+    for (final code in body.userCommandCode) {
+      final cc = code.dbCC;
+      if (cc == null) continue;
+      final status =
+          cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
+      status.count += 1;
     }
 
     _refreshValidSvts();

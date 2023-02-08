@@ -75,6 +75,17 @@ class _CmdCodeFilterPageState
             update();
           },
         ),
+        buildGroupDivider(text: S.current.card_collection_status),
+        FilterGroup<int>(
+          title: Text(S.current.card_collection_status),
+          options: CmdCodeStatus.values,
+          values: filterData.status,
+          optionBuilder: (v) => Text(CmdCodeStatus.shownText(v)),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        buildGroupDivider(text: S.current.effect_search),
         FilterGroup<EffectTarget>(
           title: Text(S.current.effect_target),
           options: EffectTarget.values,

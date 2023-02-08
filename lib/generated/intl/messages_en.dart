@@ -159,18 +159,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Formation"),
         "card_asset_status":
             MessageLookupByLibrary.simpleMessage("Status Icon"),
+        "card_collection_status":
+            MessageLookupByLibrary.simpleMessage("Status"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),
         "card_name": MessageLookupByLibrary.simpleMessage("Card Name"),
+        "card_status_met": MessageLookupByLibrary.simpleMessage("Met"),
+        "card_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
+        "card_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Carousel Setting"),
         "cc_equipped_svt":
             MessageLookupByLibrary.simpleMessage("Equipped Servants"),
         "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
-        "ce_status": MessageLookupByLibrary.simpleMessage("Status"),
-        "ce_status_met": MessageLookupByLibrary.simpleMessage("Met"),
-        "ce_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
-        "ce_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(

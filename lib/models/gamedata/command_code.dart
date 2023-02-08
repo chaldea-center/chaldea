@@ -1,6 +1,7 @@
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../db.dart';
+import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'game_card.dart';
 import 'mappings.dart';
@@ -62,6 +63,8 @@ class CommandCode with GameCardMixin {
 
   @override
   String get route => Routes.commandCodeI(id);
+
+  CmdCodeStatus get status => db.curUser.ccStatusOf(collectionNo);
 }
 
 @JsonSerializable()

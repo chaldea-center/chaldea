@@ -620,8 +620,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: List.generate(svt.cards.length, (index) {
-              final code =
-                  db.gameData.commandCodes[status.equipCmdCodes[index]];
+              final code = db.gameData.commandCodes[status.getCmdCode(index)];
               return TableRow(children: [
                 Center(
                   child: CommandCardWidget(card: svt.cards[index], width: 48),
@@ -631,8 +630,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     router.pushBuilder(
                       builder: (context) => CmdCodeListPage(
                         onSelected: (selectedCode) {
-                          status.equipCmdCodes[index] =
-                              selectedCode.collectionNo;
+                          status.setCmdCode(index, selectedCode.collectionNo);
                           if (mounted) setState(() {});
                         },
                       ),
@@ -658,7 +656,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 IconButton(
                   onPressed: () {
                     setState(() {
-                      status.equipCmdCodes[index] = null;
+                      status.setCmdCode(index, null);
                     });
                   },
                   icon: const Icon(Icons.remove_circle_outline, size: 18),

@@ -132,17 +132,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Formación"),
         "card_asset_status":
             MessageLookupByLibrary.simpleMessage("Icono de Status"),
+        "card_collection_status":
+            MessageLookupByLibrary.simpleMessage("Status"),
         "card_description": MessageLookupByLibrary.simpleMessage("Descripción"),
         "card_info": MessageLookupByLibrary.simpleMessage("Información"),
         "card_name":
             MessageLookupByLibrary.simpleMessage("Nombre de la tarjeta"),
+        "card_status_met": MessageLookupByLibrary.simpleMessage("Cumplido"),
+        "card_status_not_met":
+            MessageLookupByLibrary.simpleMessage("No Cumplido"),
+        "card_status_owned": MessageLookupByLibrary.simpleMessage("Poseído"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Configuración del carrusel"),
-        "ce_status": MessageLookupByLibrary.simpleMessage("Status"),
-        "ce_status_met": MessageLookupByLibrary.simpleMessage("Cumplido"),
-        "ce_status_not_met":
-            MessageLookupByLibrary.simpleMessage("No Cumplido"),
-        "ce_status_owned": MessageLookupByLibrary.simpleMessage("Poseído"),
         "chaldea_account":
             MessageLookupByLibrary.simpleMessage("Usuario de Chaldea"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(

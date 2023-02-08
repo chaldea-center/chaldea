@@ -136,9 +136,14 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   Widget gridItemBuilder(CraftEssence ce) {
+    String? status;
+    if (ce.status.status == CraftStatus.owned) {
+      // status = '${ce.status.limitCount}-${ce.status.lv}';
+    }
     return ce.iconBuilder(
       context: context,
       width: 72,
+      text: status,
       onTap: () => _onTapCard(ce),
     );
   }
