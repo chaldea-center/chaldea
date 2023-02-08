@@ -47,6 +47,15 @@ class NiceWar with RouteInfo {
   List<SpotRoad> spotRoads;
   List<WarQuestSelection> questSelections;
 
+  // if default banner is null, find overwriteBanner
+  String? get shownBanner {
+    if (banner != null) return banner;
+    for (final warAdd in warAdds) {
+      if (warAdd.overwriteBanner != null) return warAdd.overwriteBanner;
+    }
+    return null;
+  }
+
   int get eventId {
     if (_eventId == 0) return kExtraWarEventMapping[id] ?? _eventId;
     return _eventId;

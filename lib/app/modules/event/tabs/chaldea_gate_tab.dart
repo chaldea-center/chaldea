@@ -31,8 +31,9 @@ class _ChaldeaGateTabState extends State<ChaldeaGateTab> {
 
   Widget buildWar(BuildContext context, NiceWar war) {
     return ListTile(
-      leading:
-          war.banner == null ? null : db.getIconImage(war.banner, width: 150),
+      leading: war.shownBanner == null
+          ? null
+          : db.getIconImage(war.shownBanner, width: 150),
       title: Text(
         war.lLongName.l,
         maxLines: 2,

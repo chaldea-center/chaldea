@@ -456,9 +456,9 @@ class _WarDetailPageState extends State<WarDetailPage> {
           String title = _w.lLongName.l;
           final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
           return ListTile(
-            leading: _w.banner == null
+            leading: _w.shownBanner == null
                 ? null
-                : db.getIconImage(_w.banner, height: height),
+                : db.getIconImage(_w.shownBanner, height: height),
             horizontalTitleGap: 8,
             title: Text(
               title,

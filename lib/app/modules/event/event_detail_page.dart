@@ -361,9 +361,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         String title = war == null ? 'War $warId' : war.lLongName.l;
         final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
         return ListTile(
-          leading: war?.banner == null
+          leading: war?.shownBanner == null
               ? null
-              : db.getIconImage(war!.banner, height: height),
+              : db.getIconImage(war?.shownBanner, height: height),
           horizontalTitleGap: 8,
           title: Text(
             title,
