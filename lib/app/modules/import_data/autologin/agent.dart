@@ -61,7 +61,7 @@ class ServerResponse {
   String text = '';
   Map? json;
 
-  BiliTopLogin? toplogin;
+  FateTopLogin? toplogin;
 
   ServerResponse(this.src) {
     try {
@@ -77,7 +77,7 @@ class ServerResponse {
       if (success && json != null) {
         final r0 = json!['response'][0];
         if (r0['nid'] == 'login') {
-          toplogin = BiliTopLogin.fromJson(Map.from(json!));
+          toplogin = FateTopLogin.fromJson(Map.from(json!));
         }
       }
     } catch (e) {

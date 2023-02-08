@@ -9,6 +9,13 @@ part '../../generated/models/gamedata/toplogin.g.dart';
 
 // ignore: unused_element
 int _toInt(dynamic v, [int? k]) {
+  if (v == null) {
+    if (k != null) return k;
+    assert(() {
+      throw ArgumentError.notNull('_toInt.v');
+    }());
+    return 0;
+  }
   if (v is int) {
     return v;
   } else if (v is String) {
@@ -16,7 +23,7 @@ int _toInt(dynamic v, [int? k]) {
   } else if (v is double) {
     return v.toInt();
   } else {
-    throw TypeError();
+    throw ArgumentError('_toInt.v: ${v.runtimeType} $v');
   }
 }
 
@@ -25,102 +32,164 @@ int? _toIntNull(dynamic v, [int? k]) {
   return _toInt(v, k);
 }
 
+List<int> _toIntList(dynamic v) {
+  if (v == null) return [];
+  if (v is String) {
+    if (v.trim().isEmpty) return [];
+    v = jsonDecode(v);
+  }
+  if (v is List) {
+    return v.map((e) => _toInt(e)).toList();
+  }
+  throw ArgumentError('${v.runtimeType}: $v cannot be converted to List<int>');
+}
+
 @JsonSerializable(createToJson: false)
-class BiliTopLogin {
-  dynamic response;
-  BiliCache cache;
+class FateTopLogin {
+  List<_ResponseDetail> response;
+  UserMstCache cache;
   String sign;
 
-  BiliReplaced get body => cache.replaced;
+  UserMstData get mstData => cache.replaced;
 
-  BiliTopLogin({this.response, BiliCache? cache, String? sign})
-      : cache = cache ?? BiliCache(),
+  FateTopLogin({this.response = const [], UserMstCache? cache, String? sign})
+      : cache = cache ?? UserMstCache(),
         sign = sign ?? '';
 
-  factory BiliTopLogin.fromJson(Map<String, dynamic> data) =>
-      _$BiliTopLoginFromJson(data);
+  factory FateTopLogin.fromJson(Map<String, dynamic> data) =>
+      _$FateTopLoginFromJson(data);
 
   /// base64 maybe url-encoded
-  static BiliTopLogin tryBase64(String encoded) {
+  static FateTopLogin tryBase64(String encoded) {
     encoded = encoded.trim();
     // eyJy
     if (encoded.startsWith('ey')) {
       encoded = utf8.decode(base64Decode(Uri.decodeFull(encoded).trim()));
     }
-    return BiliTopLogin.fromJson(jsonDecode(encoded));
+    return FateTopLogin.fromJson(jsonDecode(encoded));
   }
 }
 
 @JsonSerializable(createToJson: false)
-class BiliCache {
+class _ResponseDetail {
+  String? resCode;
+  Map? success;
+  Map? fail;
+  String? nid;
+
+  int? get code => resCode == null ? null : int.tryParse(resCode!);
+
+  _ResponseDetail({
+    this.resCode,
+    this.success,
+    this.fail,
+    this.nid,
+  });
+
+  factory _ResponseDetail.fromJson(Map<String, dynamic> data) =>
+      _$ResponseDetailFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserMstCache {
   // deleted: {} // mostly empty
-  BiliReplaced replaced;
-  BiliUpdated updated;
+  UserMstData replaced;
+  @protected
+  UserMstData updated; // all data copied to replaced
   DateTime? serverTime;
 
-  BiliCache({BiliReplaced? replaced, BiliUpdated? updated, int? serverTime})
-      : replaced = replaced ?? BiliReplaced(),
-        updated = updated ?? BiliUpdated(),
+  UserMstCache({UserMstData? replaced, UserMstData? updated, int? serverTime})
+      : replaced = replaced ?? UserMstData(),
+        updated = updated ?? UserMstData(),
         serverTime = serverTime == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(serverTime * 1000);
 
-  factory BiliCache.fromJson(Map<String, dynamic> data) {
-    (data['replaced'] as Map)
-        .addAll(Map<String, dynamic>.from(data['updated'] ?? {}));
-    return _$BiliCacheFromJson(data);
+  factory UserMstCache.fromJson(Map<String, dynamic> data) {
+    // some regions' data are in replaced, some are in updated
+    final Map replaced = data.putIfAbsent('replaced', () => {});
+    final Map updated = data.putIfAbsent('updated', () => {});
+    final dupKeys = replaced.keys.toSet().intersection(updated.keys.toSet());
+    if (dupKeys.isNotEmpty) {
+      print('keys in replaced: [${replaced.keys.join(",")}]');
+      print('keys in updated : [${updated.keys.join(",")}]');
+      print('keys in both    : [${dupKeys.join(",")}]');
+    }
+    updated.addAll(replaced);
+    replaced.addAll(updated);
+    updated.clear();
+    return _$UserMstCacheFromJson(data);
   }
 }
 
 @JsonSerializable(createToJson: false)
-class BiliUpdated {
-  BiliUpdated();
-
-  factory BiliUpdated.fromJson(Map<String, dynamic> data) =>
-      _$BiliUpdatedFromJson(data);
-}
-
-@JsonSerializable(createToJson: false)
-class BiliReplaced {
-  List<UserItem> userItem;
+class UserMstData {
+  List<UserGame> userGame;
+  // svt and ce
+  List<UserSvtCollection> userSvtCollection;
   List<UserSvt> userSvt;
   List<UserSvt> userSvtStorage;
-  List<UserSvtCollection> userSvtCollection;
-  List<UserGame> userGame;
   List<UserSvtAppendPassiveSkill> userSvtAppendPassiveSkill;
-  List<UserSvtCoin> userSvtCoin;
   List<UserSvtAppendPassiveSkillLv> userSvtAppendPassiveSkillLv;
-  // userEquip
-  // userCommandCodeCollection
-  // userSvtCommandCode
-  // userCommandCode
+  // cc
+  List<UserCommandCodeCollection> userCommandCodeCollection;
+  List<UserCommandCode> userCommandCode;
+  List<UserSvtCommandCode> userSvtCommandCode;
+  // items
+  List<UserItem> userItem;
+  List<UserSvtCoin> userSvtCoin;
+  List<UserEquip> userEquip;
+  // support deck
+  List<UserSupportDeck> userSupportDeck;
+  List<UserSvtLeader> userSvtLeader;
+
+  // userEventPoint, userGachaExtraCount,
+  // userEventSuperBoss, userSvtVoicePlayed, userQuest
+  // userEventMissionFix,userEventMission,
+  // userPrivilege
+  // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userPresentBox,userNpcSvtRecord,userCoinRoom
+  // userEventRaid
+  // userDeck; // 10个打本队伍
+  // userQuestInfo,,userGacha,userEvent,userSvtCommandCard,
+  // beforeBirthDay
 
   // transformed
   @JsonKey(ignore: true)
   Map<int, UserSvtCoin> coinMap = {};
-
   @JsonKey(ignore: true)
   Map<int, UserSvtAppendPassiveSkill> appendSkillMap = {};
   @JsonKey(ignore: true)
   Map<int, UserSvtAppendPassiveSkillLv> appendSkillLvMap = {};
 
-  BiliReplaced({
-    List<UserItem>? userItem,
+  UserMstData({
+    List<UserGame>? userGame,
+    List<UserSvtCollection>? userSvtCollection,
     List<UserSvt>? userSvt,
     List<UserSvt>? userSvtStorage,
-    List<UserSvtCollection>? userSvtCollection,
-    List<UserGame>? userGame,
     List<UserSvtAppendPassiveSkill>? userSvtAppendPassiveSkill,
-    List<UserSvtCoin>? userSvtCoin,
     List<UserSvtAppendPassiveSkillLv>? userSvtAppendPassiveSkillLv,
-  })  : userItem = userItem ?? [],
+    List<UserCommandCodeCollection>? userCommandCodeCollection,
+    List<UserCommandCode>? userCommandCode,
+    List<UserSvtCommandCode>? userSvtCommandCode,
+    List<UserItem>? userItem,
+    List<UserSvtCoin>? userSvtCoin,
+    List<UserEquip>? userEquip,
+    List<UserSupportDeck>? userSupportDeck,
+    List<UserSvtLeader>? userSvtLeader,
+  })  : userGame = userGame ?? [],
+        userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
         userSvtStorage = userSvtStorage ?? [],
-        userSvtCollection = userSvtCollection ?? [],
-        userGame = userGame ?? [],
         userSvtAppendPassiveSkill = userSvtAppendPassiveSkill ?? [],
+        userSvtAppendPassiveSkillLv = userSvtAppendPassiveSkillLv ?? [],
+        userCommandCodeCollection = userCommandCodeCollection ?? [],
+        userCommandCode = userCommandCode ?? [],
+        userSvtCommandCode = userSvtCommandCode ?? [],
+        userItem = userItem ?? [],
         userSvtCoin = userSvtCoin ?? [],
-        userSvtAppendPassiveSkillLv = userSvtAppendPassiveSkillLv ?? [] {
+        userEquip = userEquip ?? [],
+        userSupportDeck = userSupportDeck ?? [],
+        userSvtLeader = userSvtLeader ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -146,8 +215,8 @@ class BiliReplaced {
     return List.generate(3, (index) => lvs[100 + index] ?? 0);
   }
 
-  factory BiliReplaced.fromJson(Map<String, dynamic> data) =>
-      _$BiliReplacedFromJson(data);
+  factory UserMstData.fromJson(Map<String, dynamic> data) =>
+      _$UserMstDataFromJson(data);
 }
 
 // Example:
@@ -538,4 +607,295 @@ class UserSvtAppendPassiveSkillLv {
 
   factory UserSvtAppendPassiveSkillLv.fromJson(Map<String, dynamic> data) =>
       _$UserSvtAppendPassiveSkillLvFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEquip {
+  int id;
+  // int userId;
+  int equipId;
+  int lv;
+  int exp;
+  // updatedAt, createdAt
+  UserEquip({
+    dynamic id,
+    dynamic equipId,
+    dynamic lv,
+    dynamic exp,
+  })  : id = _toInt(id),
+        equipId = _toInt(equipId),
+        lv = _toInt(lv),
+        exp = _toInt(exp);
+
+  factory UserEquip.fromJson(Map<String, dynamic> data) =>
+      _$UserEquipFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserCommandCodeCollection {
+  // int userId;
+  int commandCodeId;
+  int status;
+  int getNum;
+  // updatedAt, createdAt
+  UserCommandCodeCollection({
+    dynamic commandCodeId,
+    dynamic status,
+    dynamic getNum,
+  })  : commandCodeId = _toInt(commandCodeId),
+        status = _toInt(status),
+        getNum = _toInt(getNum);
+  factory UserCommandCodeCollection.fromJson(Map<String, dynamic> data) =>
+      _$UserCommandCodeCollectionFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserSvtCommandCode {
+  // int userId;
+  List<int> userCommandCodeIds;
+  int svtId;
+  // createdAt
+  UserSvtCommandCode({
+    dynamic userCommandCodeIds,
+    dynamic svtId,
+  })  : userCommandCodeIds = _toIntList(userCommandCodeIds),
+        svtId = _toInt(svtId);
+  factory UserSvtCommandCode.fromJson(Map<String, dynamic> data) =>
+      _$UserSvtCommandCodeFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserCommandCode {
+  int id;
+  // int userId;
+  int commandCodeId;
+  int status;
+  // createdAt, updatedAt
+  UserCommandCode({
+    dynamic id,
+    dynamic commandCodeId,
+    dynamic status,
+    dynamic svtId,
+  })  : id = _toInt(id),
+        commandCodeId = _toInt(commandCodeId),
+        status = _toInt(status);
+  factory UserCommandCode.fromJson(Map<String, dynamic> data) =>
+      _$UserCommandCodeFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserSupportDeck {
+  // int userId;
+  int supportDeckId;
+  String name;
+  // createdAt, updatedAt
+  UserSupportDeck({
+    dynamic supportDeckId,
+    dynamic name,
+  })  : supportDeckId = _toInt(supportDeckId),
+        name = name.toString();
+  factory UserSupportDeck.fromJson(Map<String, dynamic> data) =>
+      _$UserSupportDeckFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserSvtLeader {
+  // int userId;
+  int supportDeckId;
+  int classId;
+  int userSvtId;
+  int svtId;
+  int limitCount;
+  int dispLimitCount;
+  int lv;
+  int exp;
+  int hp;
+  int atk;
+  int adjustHp;
+  int adjustAtk;
+  int skillId1;
+  int skillId2;
+  int skillId3;
+  int skillLv1;
+  int skillLv2;
+  int skillLv3;
+  List<dynamic> classPassive;
+  int treasureDeviceId;
+  int treasureDeviceLv;
+  int exceedCount;
+  SvtLeaderEquipTargetInfo? equipTarget1;
+  // Map displayInfo; cn json string
+  List<SvtLeaderCommandCodeStatus> commandCode;
+  List<int> commandCardParam;
+  // int updatedAt;
+  // int createdAt; // not in jp
+  int imageLimitCount;
+  int commandCardLimitCount;
+  int iconLimitCount;
+  int portraitLimitCount;
+  int battleVoice;
+  // int randomLimitCountSupport;  //cn
+  // List<int?> randomLimitCountTargets; // jp
+  List<SvtLeaderAppendSkillStatus> appendPassiveSkill;
+  // int eventSvtPoint;
+  // Map script;
+  // int limitCountSupport;
+
+  UserSvtLeader({
+    dynamic supportDeckId,
+    dynamic classId,
+    dynamic userSvtId,
+    dynamic svtId,
+    dynamic limitCount,
+    dynamic dispLimitCount,
+    dynamic lv,
+    dynamic exp,
+    dynamic hp,
+    dynamic atk,
+    dynamic adjustHp,
+    dynamic adjustAtk,
+    dynamic skillId1,
+    dynamic skillId2,
+    dynamic skillId3,
+    dynamic skillLv1,
+    dynamic skillLv2,
+    dynamic skillLv3,
+    dynamic classPassive,
+    dynamic treasureDeviceId,
+    dynamic treasureDeviceLv,
+    dynamic exceedCount,
+    this.equipTarget1,
+    // dynamic displayInfo,
+    List<SvtLeaderCommandCodeStatus>? commandCode,
+    dynamic commandCardParam,
+    // dynamic updatedAt,
+    // dynamic createdAt,
+    dynamic imageLimitCount,
+    dynamic commandCardLimitCount,
+    dynamic iconLimitCount,
+    dynamic portraitLimitCount,
+    dynamic battleVoice,
+    dynamic randomLimitCountSupport,
+    // dynamic limitCountSupport,
+    List<SvtLeaderAppendSkillStatus>? appendPassiveSkill,
+  })  : supportDeckId = _toInt(supportDeckId),
+        classId = _toInt(classId),
+        userSvtId = _toInt(userSvtId),
+        svtId = _toInt(svtId),
+        limitCount = _toInt(limitCount),
+        dispLimitCount = _toInt(dispLimitCount),
+        lv = _toInt(lv),
+        exp = _toInt(exp),
+        hp = _toInt(hp),
+        atk = _toInt(atk),
+        adjustHp = _toInt(adjustHp),
+        adjustAtk = _toInt(adjustAtk),
+        skillId1 = _toInt(skillId1),
+        skillId2 = _toInt(skillId2),
+        skillId3 = _toInt(skillId3),
+        skillLv1 = _toInt(skillLv1),
+        skillLv2 = _toInt(skillLv2),
+        skillLv3 = _toInt(skillLv3),
+        classPassive = _toIntList(classPassive),
+        treasureDeviceId = _toInt(treasureDeviceId),
+        treasureDeviceLv = _toInt(treasureDeviceLv),
+        exceedCount = _toInt(exceedCount),
+        // displayInfo=jsonDecode(displayInfo??"{}"),
+        commandCode = commandCode ?? [],
+        commandCardParam = _toIntList(commandCardParam),
+        // updatedAt = _toInt(updatedAt),
+        // createdAt = _toInt(createdAt),
+        imageLimitCount = _toInt(imageLimitCount),
+        commandCardLimitCount = _toInt(commandCardLimitCount),
+        iconLimitCount = _toInt(iconLimitCount),
+        portraitLimitCount = _toInt(portraitLimitCount),
+        battleVoice = _toInt(battleVoice),
+        // randomLimitCountSupport=_toInt(randomLimitCountSupport),
+        // limitCountSupport=_toInt(limitCountSupport);
+        appendPassiveSkill = appendPassiveSkill ?? [];
+
+  factory UserSvtLeader.fromJson(Map<String, dynamic> data) =>
+      _$UserSvtLeaderFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class SvtLeaderEquipTargetInfo {
+  // int userId;
+  int userSvtId;
+  int svtId;
+  int limitCount;
+  int lv;
+  int exp;
+  int hp;
+  int atk;
+  int skillId1;
+  int skillLv1;
+  int skillId2;
+  int skillLv2;
+  int skillId3;
+  int skillLv3;
+  // int updatedAt;
+  SvtLeaderEquipTargetInfo({
+    dynamic userSvtId,
+    dynamic svtId,
+    dynamic limitCount,
+    dynamic lv,
+    dynamic exp,
+    dynamic hp,
+    dynamic atk,
+    dynamic skillId1,
+    dynamic skillLv1,
+    dynamic skillId2,
+    dynamic skillLv2,
+    dynamic skillId3,
+    dynamic skillLv3,
+    // dynamic updatedAt,
+  })  : userSvtId = _toInt(userSvtId),
+        svtId = _toInt(svtId),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        exp = _toInt(exp),
+        hp = _toInt(hp),
+        atk = _toInt(atk),
+        skillId1 = _toInt(skillId1),
+        skillLv1 = _toInt(skillLv1),
+        skillId2 = _toInt(skillId2, 0),
+        skillLv2 = _toInt(skillLv2, 0),
+        skillId3 = _toInt(skillId3, 0),
+        skillLv3 = _toInt(skillLv3, 0);
+
+  factory SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic> data) =>
+      _$SvtLeaderEquipTargetInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class SvtLeaderAppendSkillStatus {
+  int skillId;
+  int skillLv;
+  SvtLeaderAppendSkillStatus({
+    dynamic skillId,
+    dynamic skillLv,
+  })  : skillId = _toInt(skillId),
+        skillLv = _toInt(skillLv);
+
+  factory SvtLeaderAppendSkillStatus.fromJson(Map<String, dynamic> data) =>
+      _$SvtLeaderAppendSkillStatusFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class SvtLeaderCommandCodeStatus {
+  int idx;
+  int commandCodeId;
+  int userCommandCodeId;
+
+  SvtLeaderCommandCodeStatus({
+    dynamic idx,
+    dynamic commandCodeId,
+    dynamic userCommandCodeId,
+  })  : idx = _toInt(idx),
+        commandCodeId = _toInt(commandCodeId),
+        userCommandCodeId = _toInt(userCommandCodeId);
+
+  factory SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic> data) =>
+      _$SvtLeaderCommandCodeStatusFromJson(data);
 }

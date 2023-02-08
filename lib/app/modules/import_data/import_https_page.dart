@@ -49,15 +49,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Map<int, UserSvtCollection> cardCollections = {};
 
   // data
-  BiliTopLogin? topLogin;
+  FateTopLogin? topLogin;
   List<List<UserSvt>> servants = [];
   List<UserItem> items = [];
   Map<int, CraftStatus> crafts = {}; // craft.no: status
 
-  BiliReplaced? get replacedResponse => topLogin?.body;
+  UserMstData? get replacedResponse => topLogin?.mstData;
 
   String tmpPath =
-      joinPaths(db.paths.tempDir, 'http_packages', calcMd5(db.curUser.name));
+      joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
 
   @override
   void initState() {
@@ -693,8 +693,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   void parseResponseBody(String contents) {
-    BiliTopLogin _topLogin = BiliTopLogin.tryBase64(contents);
-    final body = _topLogin.body;
+    FateTopLogin _topLogin = FateTopLogin.tryBase64(contents);
+    final body = _topLogin.mstData;
 
     // clear before import
     _validSvts.clear();
