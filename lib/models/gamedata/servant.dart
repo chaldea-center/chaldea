@@ -830,11 +830,7 @@ class ExtraCCAssets {
 }
 
 @JsonSerializable()
-class ExtraAssets implements ExtraCCAssets {
-  @override
-  ExtraAssetsUrl charaGraph;
-  @override
-  ExtraAssetsUrl faces;
+class ExtraAssets extends ExtraCCAssets {
   ExtraAssetsUrl charaGraphEx;
   ExtraAssetsUrl charaGraphName;
   ExtraAssetsUrl narrowFigure;
@@ -851,8 +847,8 @@ class ExtraAssets implements ExtraCCAssets {
   ExtraAssetsUrl facesChange;
 
   ExtraAssets({
-    this.charaGraph = const ExtraAssetsUrl(),
-    this.faces = const ExtraAssetsUrl(),
+    super.charaGraph = const ExtraAssetsUrl(),
+    super.faces = const ExtraAssetsUrl(),
     this.charaGraphEx = const ExtraAssetsUrl(),
     this.charaGraphName = const ExtraAssetsUrl(),
     this.narrowFigure = const ExtraAssetsUrl(),

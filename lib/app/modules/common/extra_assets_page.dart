@@ -18,13 +18,14 @@ import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ExtraAssetsPage extends StatelessWidget {
-  final ExtraAssets assets;
+  final ExtraCCAssets assets; // ExtraAssets
   final List<String> aprilFoolAssets;
   final List<String> mcSprites;
   final List<String> fandomSprites;
   final bool scrollable;
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
   final PlaceholderWidgetBuilder? charaGraphPlaceholder;
+  final Function(String url)? onTapImage;
 
   const ExtraAssetsPage({
     super.key,
@@ -35,11 +36,13 @@ class ExtraAssetsPage extends StatelessWidget {
     this.scrollable = true,
     this.getUrls,
     this.charaGraphPlaceholder,
+    this.onTapImage,
   });
 
-  Iterable<String> _getUrls(ExtraAssetsUrl urls) {
-    if (getUrls != null) return getUrls!(urls);
-    return urls.allUrls;
+  Iterable<String> _getUrls(ExtraAssetsUrl? urls) sync* {
+    if (urls == null) return;
+    if (getUrls != null) yield* getUrls!(urls);
+    yield* urls.allUrls;
   }
 
   Iterable<String> bordered(Iterable<String> urls) sync* {
@@ -53,67 +56,75 @@ class ExtraAssetsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ExtraAssets? extraAssets =
+        assets is ExtraAssets ? assets as ExtraAssets : null;
     final children = <Widget?>[
-      oneGroup(
+      _oneGroup(
         S.current.illustration,
         [
           ..._getUrls(assets.charaGraph),
-          ..._getUrls(assets.charaGraphEx),
-          ..._getUrls(assets.charaGraphChange),
+          ..._getUrls(extraAssets?.charaGraphEx),
+          ..._getUrls(extraAssets?.charaGraphChange),
           ...aprilFoolAssets
         ],
         300,
         showMerge: true,
         placeholder: charaGraphPlaceholder,
       ),
-      oneGroup(
+      _oneGroup(
           S.current.card_asset_face,
           bordered([
             ..._getUrls(assets.faces),
-            ..._getUrls(assets.facesChange),
+            ..._getUrls(extraAssets?.facesChange),
           ]),
           80),
-      oneGroup(S.current.card_asset_status, _getUrls(assets.status), 120),
-      oneGroup(S.current.card_asset_command, _getUrls(assets.commands), 120),
-      oneGroup(
+      _oneGroup(
+          S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
+      _oneGroup(
+          S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
+      _oneGroup(
         S.current.card_asset_narrow_figure,
         [
-          ..._getUrls(assets.narrowFigure),
-          ..._getUrls(assets.narrowFigureChange),
+          ..._getUrls(extraAssets?.narrowFigure),
+          ..._getUrls(extraAssets?.narrowFigureChange),
         ],
         300,
       ),
-      oneGroup(
+      _oneGroup(
         S.current.card_asset_chara_figure,
-        _getUrls(assets.charaFigure),
+        _getUrls(extraAssets?.charaFigure),
         300,
         expanded: false,
       ),
-      oneGroup(
+      _oneGroup(
         'Forms',
         [
-          for (final form in assets.charaFigureForm.values) ..._getUrls(form),
+          if (extraAssets != null)
+            for (final form in extraAssets.charaFigureForm.values)
+              ..._getUrls(form),
         ],
         300,
         expanded: false,
       ),
-      oneGroup(
+      _oneGroup(
         'Characters',
         [
-          for (final form in assets.charaFigureMulti.values) ..._getUrls(form),
+          if (extraAssets != null)
+            for (final form in extraAssets.charaFigureMulti.values)
+              ..._getUrls(form),
         ],
         300,
         expanded: false,
       ),
-      oneGroup('equipFace', _getUrls(assets.equipFace), 50),
-      oneGroup('${S.current.sprites} (Mooncell)',
+      _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50),
+      _oneGroup('${S.current.sprites} (Mooncell)',
           mcSprites.map(WikiTool.mcFileUrl), 300,
           expanded: false),
-      oneGroup('${S.current.sprites} (Fandom)',
+      _oneGroup('${S.current.sprites} (Fandom)',
           fandomSprites.map(WikiTool.fandomFileUrl), 300,
           expanded: false),
-      spriteViewer(),
-      oneGroup('Texture', _getUrls(assets.spriteModel), 300,
+      spriteViewer(extraAssets),
+      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300,
           expanded: false, showMerge: false),
     ].whereType<Widget>().toList();
     if (scrollable) {
@@ -132,6 +143,17 @@ class ExtraAssetsPage extends StatelessWidget {
     }
   }
 
+  Widget? _oneGroup(
+    String title,
+    Iterable<String> urls,
+    double height, {
+    bool expanded = true,
+    bool showMerge = true,
+    PlaceholderWidgetBuilder? placeholder,
+  }) =>
+      oneGroup(title, urls, height,
+          expanded: expanded, showMerge: showMerge, onTapImage: onTapImage);
+
   static Widget? oneGroup(
     String title,
     Iterable<String> urls,
@@ -139,6 +161,7 @@ class ExtraAssetsPage extends StatelessWidget {
     bool expanded = true,
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
+    Function(String url)? onTapImage,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -194,6 +217,10 @@ class ExtraAssetsPage extends StatelessWidget {
                         return CachedImage(
                           imageUrl: texture,
                           onTap: () {
+                            if (onTapImage != null) {
+                              onTapImage(texture);
+                              return;
+                            }
                             FullscreenImageViewer.show(
                               context: context,
                               urls: [texture],
@@ -217,6 +244,10 @@ class ExtraAssetsPage extends StatelessWidget {
               return CachedImage(
                 imageUrl: url,
                 onTap: () {
+                  if (onTapImage != null) {
+                    onTapImage(url);
+                    return;
+                  }
                   FullscreenImageViewer.show(
                     context: context,
                     urls: _urls,
@@ -239,17 +270,18 @@ class ExtraAssetsPage extends StatelessWidget {
     );
   }
 
-  Widget? spriteViewer() {
-    if (assets.spriteModel.allUrls.isEmpty) return null;
+  Widget? spriteViewer(ExtraAssets? extraAssets) {
+    if (extraAssets == null) return null;
+    if (extraAssets.spriteModel.allUrls.isEmpty) return null;
     Map<String, List<int>> ascensionModels = {};
     Map<String, List<int>> costumeModels = {};
     final reg = RegExp(r'(?:/Servants/)(\d+)(?:/)');
-    assets.spriteModel.ascension?.forEach((key, value) {
+    extraAssets.spriteModel.ascension?.forEach((key, value) {
       final id = reg.firstMatch(value)?.group(1);
       if (id == null) return;
       ascensionModels.putIfAbsent(id, () => []).add(key);
     });
-    assets.spriteModel.costume?.forEach((key, value) {
+    extraAssets.spriteModel.costume?.forEach((key, value) {
       final id = reg.firstMatch(value)?.group(1);
       if (id == null) return;
       costumeModels.putIfAbsent(id, () => []).add(key);

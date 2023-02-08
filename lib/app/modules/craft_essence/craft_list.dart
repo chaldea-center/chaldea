@@ -204,6 +204,7 @@ class CraftListPageState extends State<CraftListPage>
 
   void _onTapCard(CraftEssence ce, [bool forcePush = false]) {
     if (widget.onSelected != null && !forcePush) {
+      Navigator.pop(context);
       widget.onSelected!(ce);
     } else {
       router.popDetailAndPush(

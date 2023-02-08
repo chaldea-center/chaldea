@@ -8,6 +8,7 @@ import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
+import 'package:chaldea/app/modules/tools/tool_list_page.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -142,6 +143,7 @@ class GalleryItem {
         funcs,
         buffs,
         appRoutes,
+        toolbox,
       ];
 
   static GalleryItem servants = GalleryItem(
@@ -443,6 +445,15 @@ class GalleryItem {
     icon: FontAwesomeIcons.route,
     url: Routes.routes,
     page: const AppRouteEntrancePage(),
+    isDetail: false,
+    shownDefault: false,
+  );
+  static GalleryItem toolbox = GalleryItem(
+    name: 'toolbox',
+    titleBuilder: () => 'Tools',
+    url: null,
+    icon: FontAwesomeIcons.toolbox,
+    page: const ToolListPage(),
     isDetail: false,
     shownDefault: false,
   );

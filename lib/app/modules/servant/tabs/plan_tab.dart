@@ -633,7 +633,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                         onSelected: (selectedCode) {
                           status.equipCmdCodes[index] =
                               selectedCode.collectionNo;
-                          Navigator.of(context).pop();
                           if (mounted) setState(() {});
                         },
                       ),

@@ -171,6 +171,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   void _onTapCard(CommandCode cc, [bool forcePush = false]) {
     if (widget.onSelected != null && !forcePush) {
+      Navigator.pop(context);
       widget.onSelected!(cc);
     } else {
       router.popDetailAndPush(

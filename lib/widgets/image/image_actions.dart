@@ -24,7 +24,7 @@ import '../custom_dialogs.dart';
 
 class ImageActions {
   static Future showSaveShare({
-    required BuildContext context,
+    required BuildContext? context,
     Uint8List? data,
     String? srcFp,
     String? url,
@@ -36,6 +36,7 @@ class ImageActions {
     Future<void> Function()? onClearCache,
   }) {
     assert(srcFp != null || data != null);
+    if (context == null) return Future.value();
     if (srcFp == null && data == null) return Future.value();
     return showMaterialModalBottomSheet(
       context: context,
