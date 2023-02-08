@@ -5,19 +5,19 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/modules/event/war/script_list.dart';
+import 'package:chaldea/app/modules/war/war/script_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../common/not_found.dart';
-import '../../quest/quest_list.dart';
-import 'asset_list.dart';
-import 'free_overview.dart';
-import 'map_list.dart';
-import 'war_bgm_list.dart';
-import 'war_map.dart';
+import '../common/not_found.dart';
+import '../quest/quest_list.dart';
+import 'war/asset_list.dart';
+import 'war/free_overview.dart';
+import 'war/map_list.dart';
+import 'war/war_bgm_list.dart';
+import 'war/war_map.dart';
 
 class WarDetailPage extends StatefulWidget {
   final int? warId;

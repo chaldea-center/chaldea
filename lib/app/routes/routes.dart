@@ -36,7 +36,6 @@ import '../modules/common/splash.dart';
 import '../modules/costume/costume_detail.dart';
 import '../modules/costume/costume_list.dart';
 import '../modules/event/event_detail_page.dart';
-import '../modules/event/war/war_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
@@ -57,6 +56,7 @@ import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
 import '../modules/svt_class/svt_class_info_page.dart';
 import '../modules/svt_class/svt_class_list.dart';
+import '../modules/war/war_detail_page.dart';
 
 class Routes {
   static const String home = '/';
