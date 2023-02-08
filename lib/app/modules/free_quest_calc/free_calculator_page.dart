@@ -5,7 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../event/tabs/main_story_tab.dart';
+import '../war/wars_page.dart';
 import 'input_tab.dart';
 import 'quest_efficiency_tab.dart';
 import 'quest_plan_tab.dart';
@@ -76,11 +76,11 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
               KeepAliveBuilder(
                   builder: (context) => QuestEfficiencyTab(solution: solution)),
               KeepAliveBuilder(
-                builder: (context) => const MainStoryTab(
-                  showOutdated: true,
-                  showSpecialRewards: false,
-                  reversed: true,
-                  titleOnly: true,
+                builder: (context) => WarListPage(
+                  wars: db.gameData.wars.values.where((war) {
+                    return war.isMainStory && war.spots.isNotEmpty ||
+                        war.id == 9999;
+                  }).toList(),
                 ),
               )
             ],

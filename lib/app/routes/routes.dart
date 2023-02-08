@@ -20,6 +20,7 @@ import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
+import 'package:chaldea/app/modules/war/wars_page.dart';
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/event.dart';
 import '../../models/gamedata/const_data.dart';
@@ -87,6 +88,7 @@ class Routes {
 
   static String warI(int id) => '/war/$id';
   static const String war = '/war';
+  static const String wars = '/wars';
 
   static String questI(int id) => '/quest/$id';
   static const String quest = '/quest';
@@ -331,6 +333,8 @@ class RouteConfiguration {
         return EventListPage();
       case Routes.event:
         return EventDetailPage(eventId: _secondInt, region: region);
+      case Routes.wars:
+        return const WarsPage();
       case Routes.war:
         return WarDetailPage(warId: _secondInt);
       case Routes.items:

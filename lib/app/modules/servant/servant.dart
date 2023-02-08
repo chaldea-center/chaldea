@@ -487,10 +487,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             PopupMenuItem<String>(
               value: 'reset_plan',
               onTap: () {
-                setState(() {
-                  plan.reset();
-                  svt.updateStat();
-                });
+                plan.reset();
+                svt.updateStat();
+                if (mounted) setState(() {});
               },
               child: Text(S.current.svt_reset_plan),
             ),

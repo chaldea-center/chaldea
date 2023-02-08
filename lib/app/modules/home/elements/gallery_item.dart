@@ -10,6 +10,7 @@ import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
 import 'package:chaldea/app/modules/tools/tool_list_page.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
+import 'package:chaldea/app/modules/war/wars_page.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -113,6 +114,7 @@ class GalleryItem {
         commandCodes,
         items,
         events,
+        wars,
         plans,
         freeCalculator,
         masterMissions,
@@ -184,6 +186,14 @@ class GalleryItem {
     icon: Icons.flag,
     url: Routes.events,
     page: EventListPage(),
+    isDetail: false,
+  );
+  static GalleryItem wars = GalleryItem(
+    name: 'wars',
+    titleBuilder: () => S.current.war,
+    icon: FontAwesomeIcons.flagCheckered,
+    url: Routes.wars,
+    page: const WarsPage(),
     isDetail: false,
   );
   static GalleryItem plans = GalleryItem(
