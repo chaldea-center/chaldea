@@ -3354,6 +3354,17 @@ class S {
     );
   }
 
+  /// `History`
+  String get history {
+    return Intl.message(
+      'History',
+      name: 'history',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `(NA/JP/CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(

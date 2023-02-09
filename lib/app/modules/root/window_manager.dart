@@ -13,6 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/material.dart';
 import '../../routes/root_delegate.dart';
 
 class WindowManager extends StatefulWidget {
@@ -196,10 +197,7 @@ class OneWindow extends StatelessWidget {
 }
 
 class MultipleWindow extends StatelessWidget {
-  const MultipleWindow({
-    super.key,
-    required this.root,
-  });
+  const MultipleWindow({super.key, required this.root});
 
   final RootAppRouterDelegate root;
 
@@ -207,59 +205,88 @@ class MultipleWindow extends StatelessWidget {
   Widget build(BuildContext context) {
     final windowSize = MediaQuery.of(context).size;
     int crossCount = windowSize.width ~/ 300;
-    return Scaffold(
-      backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
-      appBar: AppBar(
-        title: const Text('Tabs'),
-        actions: [
-          DropdownButton<Language>(
-            value: Language.getLanguage(S.current.localeName),
-            items: [
-              for (final lang in Language.supportLanguages)
-                DropdownMenuItem(value: lang, child: Text(lang.name))
-            ],
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: SharedBuilder.appBarForeground(context),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
+        appBar: AppBar(
+          title: const Text(kAppName),
+          actions: [
+            DropdownButton<Language>(
+              value: Language.getLanguage(S.current.localeName),
+              items: [
+                for (final lang in Language.supportLanguages)
+                  DropdownMenuItem(value: lang, child: Text(lang.name))
+              ],
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: SharedBuilder.appBarForeground(context),
+              ),
+              selectedItemBuilder: (context) => [
+                for (final lang in Language.supportLanguages)
+                  DropdownMenuItem(
+                    value: lang,
+                    child: Text(
+                      lang.name,
+                      style: TextStyle(
+                          color: SharedBuilder.appBarForeground(context)),
+                    ),
+                  )
+              ],
+              onChanged: (lang) {
+                if (lang == null) return;
+                db.settings.setLanguage(lang);
+                db.notifyAppUpdate();
+              },
+              underline: const SizedBox(),
             ),
-            selectedItemBuilder: (context) => [
-              for (final lang in Language.supportLanguages)
-                DropdownMenuItem(
-                  value: lang,
-                  child: Text(
-                    lang.name,
-                    style: TextStyle(
-                        color: SharedBuilder.appBarForeground(context)),
-                  ),
-                )
-            ],
-            onChanged: (lang) {
-              if (lang == null) return;
-              db.settings.setLanguage(lang);
-              db.notifyAppUpdate();
-            },
-            underline: const SizedBox(),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: GridView.count(
-          crossAxisCount: max(crossCount, 2),
-          childAspectRatio: windowSize.aspectRatio,
-          padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
-          children: List.generate(
-            root.appState.children.length,
-            (index) => WindowThumb(root: root, index: index),
-          ),
+          ],
+          bottom: FixedHeight.tabBar(TabBar(
+              tabs: [const Tab(text: 'Tabs'), Tab(text: S.current.history)])),
         ),
+        body: TabBarView(children: [
+          SafeArea(
+            child: GridView.count(
+              crossAxisCount: max(crossCount, 2),
+              childAspectRatio: windowSize.aspectRatio,
+              padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
+              children: List.generate(
+                root.appState.children.length,
+                (index) => WindowThumb(root: root, index: index),
+              ),
+            ),
+          ),
+          buildHistory(context),
+        ]),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            root.appState.addWindow();
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          root.appState.addWindow();
+    );
+  }
+
+  Widget buildHistory(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemBuilder: (context, index) {
+          final url = AppRouterDelegate
+              .history[AppRouterDelegate.history.length - 1 - index];
+          return ListTile(
+            dense: true,
+            title: Text(url),
+            onTap: () {
+              root.appState.activeRouter.push(url: url);
+              root.appState.showWindowManager = false;
+            },
+          );
         },
+        itemCount: AppRouterDelegate.history.length,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

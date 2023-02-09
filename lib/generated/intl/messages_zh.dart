@@ -419,6 +419,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "仅仅是在从者详情规划页不显示，实际仍计入素材规划与统计。"),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隐藏未实装卡牌"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高难度关卡"),
+        "history": MessageLookupByLibrary.simpleMessage("历史记录"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(国/台/日/美)账号登陆时的数据"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),

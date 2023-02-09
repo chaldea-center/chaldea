@@ -421,6 +421,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "僅僅是在從者詳情規劃頁不顯示，實際仍計入素材規劃與統計。"),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隱藏未實裝卡牌"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難度關卡"),
+        "history": MessageLookupByLibrary.simpleMessage("历史记录"),
         "http_sniff_hint":
             MessageLookupByLibrary.simpleMessage("(簡中/繁中/日/美)帳號登入時的數據"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),

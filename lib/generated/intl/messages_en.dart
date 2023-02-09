@@ -491,6 +491,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Hide Unreleased Cards"),
         "high_difficulty_quest":
             MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
+        "history": MessageLookupByLibrary.simpleMessage("History"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
             "(NA/JP/CN/TW)Capture the data when logging in"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),

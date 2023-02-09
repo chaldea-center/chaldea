@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/utils/extension.dart';
 import 'root_delegate.dart';
 import 'routes.dart';
 
@@ -36,6 +37,8 @@ class _AppShellState extends State<AppShell> {
 
 class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
+  static List<String> history = [];
+
   // final RootAppRouterDelegate _parent;
   final RootAppRouterDelegate _parent;
 
@@ -162,6 +165,9 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       detail: detail,
       arguments: arguments,
     ).createPage());
+    if (url != null && url.trim().trimChar('/').isNotEmpty) {
+      history.add(url);
+    }
     notifyListeners();
   }
 

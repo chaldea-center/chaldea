@@ -299,6 +299,7 @@
   "hide_svt_plan_details_hint": null,
   "hide_unreleased_card": null,
   "high_difficulty_quest": "高難易度クエスト",
+  "history": null,
   "http_sniff_hint": "(JP/NA/CN/TW)アカウントがログインしているときにデータ",
   "https_sniff": "Httpsスニッフィング",
   "hunting_quest": "ハンティングクエスト",
