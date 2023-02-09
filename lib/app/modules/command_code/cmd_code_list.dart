@@ -145,7 +145,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     final region = filterData.region.radioValue;
     if (region != null && region != Region.jp) {
       final released = db.gameData.mappingData.ccRelease.ofRegion(region);
-      if (released?.contains(cc.collectionNo) != true) {
+      if (released?.contains(cc.collectionNo) == false) {
         return false;
       }
     }

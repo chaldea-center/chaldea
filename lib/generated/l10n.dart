@@ -988,10 +988,10 @@ class S {
     );
   }
 
-  /// `Clear cache`
+  /// `Clear Cache`
   String get clear_cache {
     return Intl.message(
-      'Clear cache',
+      'Clear Cache',
       name: 'clear_cache',
       desc: '',
       locale: localeName,
@@ -1521,6 +1521,17 @@ class S {
     return Intl.message(
       'Delete',
       name: 'delete',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Delete Unreleased Cards`
+  String get delete_unreleased_card {
+    return Intl.message(
+      'Delete Unreleased Cards',
+      name: 'delete_unreleased_card',
       desc: '',
       locale: localeName,
       args: [],
@@ -3321,10 +3332,10 @@ class S {
     );
   }
 
-  /// `Hide Unreleased Card`
+  /// `Hide Unreleased Cards`
   String get hide_unreleased_card {
     return Intl.message(
-      'Hide Unreleased Card',
+      'Hide Unreleased Cards',
       name: 'hide_unreleased_card',
       desc: '',
       locale: localeName,
@@ -7062,6 +7073,17 @@ class S {
     return Intl.message(
       'Show Special Rewards',
       name: 'special_reward_show',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Spoiler Setting`
+  String get spoiler_setting {
+    return Intl.message(
+      'Spoiler Setting',
+      name: 'spoiler_setting',
       desc: '',
       locale: localeName,
       args: [],

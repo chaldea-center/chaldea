@@ -99,6 +99,11 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => v == null
                   ? null
                   : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+          spoilerRegion: $checkedConvert(
+              'spoilerRegion',
+              (v) => v == null
+                  ? Region.jp
+                  : const RegionConverter().fromJson(v as String)),
           svtFilterData: $checkedConvert(
               'svtFilterData',
               (v) => v == null
@@ -186,6 +191,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'github': instance.github.toJson(),
       'tips': instance.tips.toJson(),
       'useAndroidExternal': instance.useAndroidExternal,
+      'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),

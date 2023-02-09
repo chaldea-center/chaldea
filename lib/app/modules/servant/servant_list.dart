@@ -464,7 +464,7 @@ class ServantListPageState extends State<ServantListPage>
     final region = filterData.region.radioValue;
     if (region != null && region != Region.jp) {
       final released = db.gameData.mappingData.svtRelease.ofRegion(region);
-      if (released?.contains(svt.collectionNo) != true) {
+      if (released?.contains(svt.collectionNo) == false) {
         return false;
       }
     }

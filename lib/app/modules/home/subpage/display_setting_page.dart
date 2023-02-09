@@ -85,15 +85,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   setState(() {});
                 },
               ),
-              SwitchListTile.adaptive(
-                value: db.settings.hideUnreleasedCard,
-                title: Text(S.current.hide_unreleased_card),
-                onChanged: (v) async {
-                  db.settings.hideUnreleasedCard = v;
-                  db.saveSettings();
-                  setState(() {});
-                },
-              ),
             ],
           ),
           TileGroup(

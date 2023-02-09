@@ -193,7 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify file integrity"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
-        "clear_cache": MessageLookupByLibrary.simpleMessage("Clear cache"),
+        "clear_cache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
         "clear_cache_finish":
             MessageLookupByLibrary.simpleMessage("Cache cleared"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage(
@@ -265,6 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "defense_np_rate":
             MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "delete_unreleased_card":
+            MessageLookupByLibrary.simpleMessage("Delete Unreleased Cards"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
@@ -486,7 +488,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage(
             "It is only not displayed on plan tab, but it is actually still included in the material planning and statistics."),
         "hide_unreleased_card":
-            MessageLookupByLibrary.simpleMessage("Hide Unreleased Card"),
+            MessageLookupByLibrary.simpleMessage("Hide Unreleased Cards"),
         "high_difficulty_quest":
             MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage(
@@ -993,6 +995,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
         "special_reward_show":
             MessageLookupByLibrary.simpleMessage("Show Special Rewards"),
+        "spoiler_setting":
+            MessageLookupByLibrary.simpleMessage("Spoiler Setting"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("Pack(s)"),
         "sq_fragment_convert":

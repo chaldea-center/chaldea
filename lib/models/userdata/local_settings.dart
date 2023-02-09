@@ -60,6 +60,7 @@ class LocalSettings {
   bool useAndroidExternal = false;
 
   // filters
+  Region spoilerRegion;
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
   CmdCodeFilterData cmdCodeFilterData;
@@ -102,6 +103,7 @@ class LocalSettings {
     CarouselSetting? carousel,
     GithubSetting? github,
     TipsSetting? tips,
+    this.spoilerRegion = Region.jp,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     CmdCodeFilterData? cmdCodeFilterData,

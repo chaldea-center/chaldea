@@ -6,9 +6,11 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -139,16 +141,16 @@ class _GameDataPageState extends State<GameDataPage> {
                       }
                     : null,
               ),
-              SwitchListTile.adaptive(
-                value: db.settings.checkDataHash,
-                title: Text(S.current.check_file_hash),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.checkDataHash = v;
-                    db.saveSettings();
-                  });
-                },
-              ),
+              // SwitchListTile.adaptive(
+              //   value: db.settings.checkDataHash,
+              //   title: Text(S.current.check_file_hash),
+              //   onChanged: (v) {
+              //     setState(() {
+              //       db.settings.checkDataHash = v;
+              //       db.saveSettings();
+              //     });
+              //   },
+              // ),
               // if (!PlatformU.isWeb)
               //   ListTile(
               //     title: Text(S.current.import_data),
@@ -174,6 +176,57 @@ class _GameDataPageState extends State<GameDataPage> {
                   context: context,
                   useRootNavigator: false,
                   builder: (context) => const _ClearCacheDialog(),
+                ),
+              ),
+            ],
+          ),
+          TileGroup(
+            header: S.current.spoiler_setting,
+            footerWidget: SFooter.rich(TextSpan(text: 'Read ', children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: 'document',
+                onTap: () {
+                  if (Language.isZH) {
+                    launch(
+                        HttpUrlHelper.projectDocUrl('app_setting#防剧透设置', true));
+                  } else {
+                    launch(HttpUrlHelper.projectDocUrl(
+                        'app_setting#spoiler-settings'));
+                  }
+                },
+              )
+            ])),
+            children: [
+              SwitchListTile.adaptive(
+                value: db.settings.hideUnreleasedCard,
+                title: Text(S.current.hide_unreleased_card),
+                subtitle: Text(S.current.filter),
+                onChanged: (v) async {
+                  db.settings.hideUnreleasedCard = v;
+                  db.saveSettings();
+                  setState(() {});
+                },
+              ),
+              ListTile(
+                title: Text(S.current.delete_unreleased_card),
+                trailing: DropdownButton<Region>(
+                  value: db.settings.spoilerRegion,
+                  items: [
+                    for (final region in Region.values)
+                      DropdownMenuItem(
+                        value: region,
+                        child: Text(region.localName),
+                      )
+                  ],
+                  onChanged: (v) {
+                    setState(() {
+                      if (v != null) {
+                        db.settings.spoilerRegion = v;
+                        db.saveSettings();
+                      }
+                    });
+                  },
                 ),
               ),
             ],

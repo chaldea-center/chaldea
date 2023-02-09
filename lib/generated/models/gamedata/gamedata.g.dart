@@ -94,7 +94,15 @@ GameData _$GameDataFromJson(Map json) => GameData(
           ? null
           : _GameDataAdd.fromJson(
               Map<String, dynamic>.from(json['addData'] as Map)),
+      spoilerRegion: _$JsonConverterFromJson<String, Region>(
+          json['spoilerRegion'], const RegionConverter().fromJson),
     );
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
 
 _GameDataAdd _$GameDataAddFromJson(Map json) => _GameDataAdd(
       svt: (json['svt'] as List<dynamic>?)

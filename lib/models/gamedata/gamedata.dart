@@ -43,7 +43,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 // part 'helpers/adapters.dart';
 
-@JsonSerializable()
+@JsonSerializable(converters: [RegionConverter()])
 class GameData with _GameDataExtra {
   DataVersion version;
   @protected
@@ -69,6 +69,7 @@ class GameData with _GameDataExtra {
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
   _GameDataAdd? addData;
+  Region? spoilerRegion;
 
   Map<int, Servant> get servantsNoDup => servants;
   bool get isValid =>
@@ -97,6 +98,7 @@ class GameData with _GameDataExtra {
     Map<int, BaseSkill>? baseSkills,
     Map<int, BaseFunction>? baseFunctions,
     this.addData,
+    this.spoilerRegion,
   })  : version = version ?? DataVersion(),
         servants = servants ?? {},
         craftEssences = craftEssences ?? {},
@@ -118,6 +120,23 @@ class GameData with _GameDataExtra {
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
+    // remove spoiler
+    if (this.version.timestamp > 0 &&
+        spoilerRegion != null &&
+        spoilerRegion != Region.jp) {
+      void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
+        final released = releases.ofRegion(spoilerRegion);
+        if (released == null || released.isEmpty) return;
+        dict.removeWhere((key, _) => !released.contains(key));
+      }
+
+      _remove(this.servants, this.mappingData.svtRelease);
+      _remove(this.craftEssences, this.mappingData.ceRelease);
+      _remove(this.commandCodes, this.mappingData.ccRelease);
+      _remove(this.entities, this.mappingData.entityRelease);
+    }
+
+    // process
     for (final func in this.baseFunctions.values) {
       for (final buff in func.buffs) {
         baseBuffs[buff.id] = buff;

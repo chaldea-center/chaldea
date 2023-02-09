@@ -231,6 +231,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ? null
           : MappingList<int>.fromJson(
               Map<String, dynamic>.from(json['svt_release'] as Map)),
+      entityRelease: json['entity_release'] == null
+          ? null
+          : MappingList<int>.fromJson(
+              Map<String, dynamic>.from(json['entity_release'] as Map)),
       ceRelease: json['ce_release'] == null
           ? null
           : MappingList<int>.fromJson(

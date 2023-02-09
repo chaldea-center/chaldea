@@ -230,6 +230,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敵攻擊補正"),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("受击NP率"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
+        "delete_unreleased_card":
+            MessageLookupByLibrary.simpleMessage("删除未实装卡牌"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("僅限桌面版"),
         "details": MessageLookupByLibrary.simpleMessage("详情"),
@@ -822,6 +824,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
         "special_reward_show": MessageLookupByLibrary.simpleMessage("顯示特殊報酬"),
+        "spoiler_setting": MessageLookupByLibrary.simpleMessage("剧透设置"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("单"),
         "sq_fragment_convert":

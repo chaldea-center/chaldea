@@ -29,7 +29,7 @@ class EnemyListPageState extends State<EnemyListPage>
       });
   Map<int, List<QuestEnemy>> _allEnemies = {};
 
-  final filterData = EnemyFilterData();
+  final filterData = EnemyFilterData()..reset();
 
   @override
   final bool prototypeExtent = true;
@@ -113,17 +113,20 @@ class EnemyListPageState extends State<EnemyListPage>
   @override
   Widget listItemBuilder(BasicServant svt) {
     return CustomTile(
-      leading: db.getIconImage(
-        svt.icon,
-        width: 56,
-        aspectRatio: 132 / 144,
+      leading: svt.iconBuilder(
+        context: context,
+        width: 52,
       ),
       title: AutoSizeText(svt.lName.l, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(svt.name, maxLines: 1),
-          Text('No.${svt.id} ${Transl.svtClassId(svt.classId).l}'),
+          AutoSizeText(
+            'No.${svt.id} ${Transl.svtClassId(svt.classId).l}',
+            minFontSize: 10,
+            maxLines: 1,
+          ),
         ],
       ),
       trailing: IconButton(
@@ -148,6 +151,14 @@ class EnemyListPageState extends State<EnemyListPage>
 
   @override
   bool filter(BasicServant svt) {
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      final released = db.gameData.mappingData.entityRelease.ofRegion(region);
+      if (released?.contains(svt.id) == false) {
+        return false;
+      }
+    }
+
     final enemies = _allEnemies[svt.id] ?? <QuestEnemy>[];
     if (filterData.onlyShowQuestEnemy && enemies.isEmpty) {
       return false;

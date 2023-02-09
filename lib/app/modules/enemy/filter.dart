@@ -76,6 +76,15 @@ class _EnemyFilterPageState
             update();
           },
         ),
+        FilterGroup<Region>(
+          title: Text(S.current.game_server, style: textStyle),
+          options: Region.values,
+          values: filterData.region,
+          optionBuilder: (v) => Text(v.localName),
+          onFilterChanged: (v, _) {
+            update();
+          },
+        ),
         FilterGroup<SvtType>(
           title: Text(S.current.general_type, style: textStyle),
           options: List.of(SvtType.values)

@@ -270,6 +270,7 @@ class MappingData {
       skillPriority; // <svtId, <skillId, priority>>
   final Map<int, MappingDict<int>> tdPriority; // <svtId, <tdId, priority>>
   final MappingList<int> svtRelease;
+  final MappingList<int> entityRelease;
   final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
   final MappingList<int> mcRelease;
@@ -313,6 +314,7 @@ class MappingData {
     this.skillPriority = const {},
     this.tdPriority = const {},
     MappingList<int>? svtRelease,
+    MappingList<int>? entityRelease,
     MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
     MappingList<int>? mcRelease,
@@ -322,6 +324,7 @@ class MappingData {
     this.misc = const {},
     this.cnReplace = const {},
   })  : svtRelease = svtRelease ?? MappingList(),
+        entityRelease = entityRelease ?? MappingList(),
         ceRelease = ceRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),
         mcRelease = mcRelease ?? MappingList(),

@@ -259,6 +259,10 @@ class GameDataLoader {
     }
     tmp.reset();
     _gameJson["version"] = newVersion.toJson();
+    if (db.settings.spoilerRegion != Region.jp) {
+      _gameJson['spoilerRegion'] =
+          const RegionConverter().toJson(db.settings.spoilerRegion);
+    }
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     if (!offline) {

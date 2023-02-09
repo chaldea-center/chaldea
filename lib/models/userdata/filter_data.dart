@@ -157,6 +157,10 @@ class FilterRadioData<T> extends FilterGroupData<T> {
     }
   }
 
+  void set(T value) {
+    _selected = value;
+  }
+
   @override
   void reset() {
     _selected = _nonnull ? _initValue : null;
@@ -351,10 +355,8 @@ class SvtFilterData with _FilterData {
     super.reset();
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
     if (db.settings.hideUnreleasedCard) {
-      if (db.curUser.region == Region.jp) {
-        region.reset();
-      } else {
-        region.toggle(db.curUser.region);
+      if (db.curUser.region != Region.jp) {
+        region.set(db.curUser.region);
       }
     }
   }
@@ -495,10 +497,8 @@ class CraftFilterData with _FilterData {
   void reset() {
     super.reset();
     if (db.settings.hideUnreleasedCard) {
-      if (db.curUser.region == Region.jp) {
-        region.options.clear();
-      } else {
-        region.toggle(db.curUser.region);
+      if (db.curUser.region != Region.jp) {
+        region.set(db.curUser.region);
       }
     }
   }
@@ -602,10 +602,8 @@ class CmdCodeFilterData with _FilterData {
     super.reset();
     favorite = false;
     if (db.settings.hideUnreleasedCard) {
-      if (db.curUser.region == Region.jp) {
-        region.options.clear();
-      } else {
-        region.toggle(db.curUser.region);
+      if (db.curUser.region != Region.jp) {
+        region.set(db.curUser.region);
       }
     }
   }
@@ -816,6 +814,7 @@ class EnemyFilterData with _FilterData {
 
   bool onlyShowQuestEnemy;
   // filter
+  final region = FilterRadioData<Region>();
   final svtClass = FilterGroupData<SvtClass>();
   final attribute = FilterGroupData<Attribute>();
   final svtType = FilterGroupData<SvtType>();
@@ -834,7 +833,20 @@ class EnemyFilterData with _FilterData {
             growable: false);
 
   @override
-  List<FilterGroupData> get groups => [svtClass, attribute, svtType, trait];
+  List<FilterGroupData> get groups =>
+      [region, svtClass, attribute, svtType, trait];
+
+  @override
+  void reset() {
+    super.reset();
+    if (db.settings.hideUnreleasedCard) {
+      if (db.curUser.region != Region.jp) {
+        region.set(db.curUser.region);
+      }
+    } else if (db.settings.spoilerRegion != Region.jp) {
+      region.set(db.settings.spoilerRegion);
+    }
+  }
 
   // factory EnemyFilterData.fromJson(Map<String, dynamic> data) =>
   //     _$EnemyFilterDataFromJson(data);
