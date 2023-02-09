@@ -314,7 +314,7 @@ DropRateSheet _preProcess(
   if (objective.isEmpty) logger.d('no valid objRows');
   if (params.dailyCostHalf) {
     for (int index = 0; index < data.questIds.length; index++) {
-      if (db.gameData.quests[data.questIds[index]]?.warId == 1002) {
+      if (db.gameData.quests[data.questIds[index]]?.warId == WarId.daily) {
         data.apCosts[index] ~/= 2;
       }
     }

@@ -240,6 +240,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "No mission, click + to add mission"),
         "custom_mission_source_mission":
             MessageLookupByLibrary.simpleMessage("Original Mission"),
+        "daily_ember_quest":
+            MessageLookupByLibrary.simpleMessage("Ember Gathering"),
+        "daily_qp_quest":
+            MessageLookupByLibrary.simpleMessage("Enter the Treasure Vault"),
+        "daily_training_quest":
+            MessageLookupByLibrary.simpleMessage("Training Ground"),
         "damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),

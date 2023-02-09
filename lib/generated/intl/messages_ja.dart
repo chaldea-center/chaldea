@@ -180,6 +180,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_mission": MessageLookupByLibrary.simpleMessage("カスタム任務"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage(
             "ミッションがありません。＋をクリックして追加しましょう。"),
+        "daily_ember_quest": MessageLookupByLibrary.simpleMessage("種火集め"),
+        "daily_qp_quest": MessageLookupByLibrary.simpleMessage("宝物庫の扉を開け"),
+        "daily_training_quest": MessageLookupByLibrary.simpleMessage("修練場"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("ダックモード"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("ダック"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("ライト"),

@@ -230,148 +230,9 @@ class _WarDetailPageState extends State<WarDetailPage> {
           ]),
       ],
     ));
-    List<Quest> mainQuests = [],
-        freeQuests = [],
-        raidQuests = [],
-        difficultQuests = [],
-        oneOffQuests = [],
-        bondQuests = [],
-        eventQuests = [],
-        selectionQuests = [];
-    for (final quest in war.quests) {
-      if (quest.type == QuestType.main) {
-        mainQuests.add(quest);
-      } else if (quest.type == QuestType.friendship) {
-        bondQuests.add(quest);
-      } else if (quest.type == QuestType.free ||
-          (quest.type == QuestType.event &&
-              quest.afterClear == QuestAfterClearType.repeatLast)) {
-        if (quest.afterClear != QuestAfterClearType.repeatLast) {
-          oneOffQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.raid)) {
-          raidQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
-          difficultQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.noBattle)) {
-          eventQuests.add(quest);
-        } else {
-          freeQuests.add(quest);
-        }
-      } else {
-        eventQuests.add(quest);
-      }
-    }
 
-    final selections = List.of(war.questSelections);
-    selections.sort2((e) => -e.priority);
-    selectionQuests = selections.map((e) => e.quest).toList();
-
-    if (war.spots.isNotEmpty || selectionQuests.isNotEmpty) {
-      children.add(TileGroup(
-        header: S.current.quest,
-        children: [
-          if (mainQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.main_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.main_quest, quests: mainQuests),
-                );
-              },
-            ),
-          if (freeQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.free_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.free_quest, quests: freeQuests),
-                );
-              },
-            ),
-          if (freeQuests.isNotEmpty && war.id != 1002 && war.id != 9999)
-            ListTile(
-              title: Text("${S.current.item} (${S.current.free_quest})"),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.pushPage(FreeQuestOverview(quests: freeQuests));
-              },
-            ),
-          if (raidQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.raid_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.raid_quest, quests: raidQuests),
-                );
-              },
-            ),
-          if (difficultQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.high_difficulty_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.high_difficulty_quest,
-                      quests: difficultQuests),
-                );
-              },
-            ),
-          if (oneOffQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.one_off_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.one_off_quest, quests: oneOffQuests),
-                );
-              },
-            ),
-          if (bondQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.interlude),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.interlude, quests: bondQuests),
-                );
-              },
-            ),
-          if (eventQuests.isNotEmpty)
-            ListTile(
-              title: Text(S.current.event_quest),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                      title: S.current.event_quest, quests: eventQuests),
-                );
-              },
-            ),
-          if (selectionQuests.isNotEmpty)
-            ListTile(
-              title: const Text('Selections'),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(
-                  child: QuestListPage(
-                    title: 'Selections',
-                    quests: selectionQuests,
-                    needSort: false,
-                  ),
-                );
-              },
-            ),
-        ],
-      ));
+    if (war.spots.isNotEmpty || war.questSelections.isNotEmpty) {
+      children.add(addQuests());
     }
 
     List<Widget> extraTiles = [];
@@ -559,6 +420,103 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ],
       ),
       body: ListView(children: children),
+    );
+  }
+
+  Widget addQuests() {
+    List<Quest> mainQuests = [],
+        freeQuests = [],
+        dailyEmber = [],
+        dailyTraining = [],
+        dailyQp = [],
+        raidQuests = [],
+        difficultQuests = [],
+        oneOffQuests = [],
+        interludeQuests = [],
+        eventQuests = [],
+        selectionQuests = [];
+    for (final quest in war.quests) {
+      if (quest.type == QuestType.main) {
+        mainQuests.add(quest);
+      } else if (quest.type == QuestType.friendship) {
+        interludeQuests.add(quest);
+      } else if (quest.type == QuestType.free ||
+          (quest.type == QuestType.event &&
+              quest.afterClear == QuestAfterClearType.repeatLast)) {
+        if (quest.afterClear != QuestAfterClearType.repeatLast) {
+          oneOffQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.raid)) {
+          raidQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
+          difficultQuests.add(quest);
+        } else if (quest.flags.contains(QuestFlag.noBattle)) {
+          eventQuests.add(quest);
+        } else {
+          if (quest.warId == WarId.daily) {
+            if (quest.name.contains('種火集め')) {
+              dailyEmber.add(quest);
+            } else if (quest.name.contains('修練場')) {
+              dailyTraining.add(quest);
+            } else if (quest.name.contains('宝物庫の扉を開け')) {
+              dailyQp.add(quest);
+            } else {
+              freeQuests.add(quest);
+            }
+          } else {
+            freeQuests.add(quest);
+          }
+        }
+      } else {
+        eventQuests.add(quest);
+      }
+    }
+
+    final selections = List.of(war.questSelections);
+    selections.sort2((e) => -e.priority);
+    selectionQuests = selections.map((e) => e.quest).toList();
+
+    List<Widget> children = [];
+
+    void _addTile(String name, List<Quest> quests, {bool needSort = true}) {
+      if (quests.isEmpty) return;
+      children.add(ListTile(
+        title: Text(name),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.push(
+            child:
+                QuestListPage(title: name, quests: quests, needSort: needSort),
+          );
+        },
+      ));
+    }
+
+    _addTile(S.current.main_quest, mainQuests);
+    _addTile(S.current.free_quest, freeQuests);
+    if (freeQuests.isNotEmpty &&
+        war.id != WarId.daily &&
+        war.id != WarId.chaldeaGate) {
+      children.add(ListTile(
+        title: Text("${S.current.item} (${S.current.free_quest})"),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.pushPage(FreeQuestOverview(quests: freeQuests));
+        },
+      ));
+    }
+    _addTile(S.current.daily_ember_quest, dailyEmber);
+    _addTile(S.current.daily_training_quest, dailyTraining);
+    _addTile(S.current.daily_qp_quest, dailyQp);
+    _addTile(S.current.raid_quest, raidQuests);
+    _addTile(S.current.high_difficulty_quest, difficultQuests);
+    _addTile(S.current.one_off_quest, oneOffQuests);
+    _addTile(S.current.interlude, interludeQuests);
+    _addTile(S.current.event_quest, eventQuests);
+    _addTile('Selections', selectionQuests, needSort: false);
+
+    return TileGroup(
+      header: S.current.quest,
+      children: children,
     );
   }
 }

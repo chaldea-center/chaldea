@@ -64,7 +64,8 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     if (relatedQuests.isNotEmpty) {
       final war = relatedQuests.first.item1;
       final quest1 = relatedQuests.first.item2;
-      if ([9999, 1001, 1002, 1003].contains(war.id) ||
+      if ([WarId.chaldeaGate, WarId.rankup, WarId.daily, WarId.interlude]
+              .contains(war.id) ||
           quest1?.type == QuestType.friendship) {
         if (quest1 != null) {
           for (final phase in quest1.phaseScripts) {

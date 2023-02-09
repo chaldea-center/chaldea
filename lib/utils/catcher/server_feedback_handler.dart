@@ -112,7 +112,7 @@ class ServerFeedbackHandler extends ReportHandler {
     }
 
     // wait a moment to let other handlers finish, e.g. FileHandler
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     Map<String, Uint8List> resolvedAttachments = {};
 
     Archive archive = Archive();
@@ -195,16 +195,19 @@ class ServerFeedbackHandler extends ReportHandler {
     if (kIsWeb && !kPlatformMethods.rendererCanvasKit) return null;
     try {
       Uint8List? shotBinary = await screenshotController?.capture(
-        pixelRatio:
-            MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,
-        delay: const Duration(milliseconds: 500),
+        pixelRatio: 1,
+        delay: const Duration(milliseconds: 200),
       );
       if (shotBinary == null) return null;
       final img = decodePng(shotBinary);
       if (img == null) return null;
       final bytes = Uint8List.fromList(encodeJpg(img, quality: 60));
       if (!kIsWeb && screenshotPath != null) {
-        FilePlus(screenshotPath!).writeAsBytes(bytes);
+        try {
+          await FilePlus(screenshotPath!).writeAsBytes(bytes);
+        } catch (e, s) {
+          logger_.logger.e('save crash screenshot failed', e, s);
+        }
       }
       return bytes;
     } catch (e, s) {
@@ -223,6 +226,11 @@ class ServerFeedbackHandler extends ReportHandler {
 
   Future<String> _setupHtmlMessageText(Report report) async {
     final escape = const HtmlEscape().convert;
+
+    String escapeCode(String s) {
+      return '<pre>${escape(s)}</pre>';
+    }
+
     StringBuffer buffer = StringBuffer("");
 
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
@@ -262,10 +270,10 @@ class ServerFeedbackHandler extends ReportHandler {
 
     if (report is! FeedbackReport) {
       buffer.write("<h3>Error:</h3>");
-      buffer.write(escape(report.error.toString()));
+      buffer.write(escapeCode(report.error.toString()));
       if (report.error.toString().trim().isEmpty &&
           report.errorDetails != null) {
-        buffer.write(escape(report.errorDetails!.exceptionAsString()));
+        buffer.write(escapeCode(report.errorDetails!.exceptionAsString()));
       }
       final error = (report.error ?? report.errorDetails?.exception).toString();
       if (kIsWeb && error.contains('Unsupported operation: NaN.floor()')) {
@@ -304,12 +312,11 @@ class ServerFeedbackHandler extends ReportHandler {
 
       if (enableStackTrace) {
         buffer.write("<h3>Stack trace:</h3>");
-        buffer.write(
-            escape(report.stackTrace.toString()).replaceAll("\n", "<br>"));
+        buffer.write(escapeCode(report.stackTrace.toString()));
+
         if (report.stackTrace?.toString().trim().isNotEmpty != true &&
             report.errorDetails != null) {
-          buffer.write(escape(report.errorDetails!.stack.toString())
-              .replaceAll('\n', '<br>'));
+          buffer.write(escapeCode(report.errorDetails!.stack.toString()));
         }
         buffer.write("<hr>");
       }

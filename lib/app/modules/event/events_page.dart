@@ -277,7 +277,8 @@ class EventListPageState extends State<EventListPage>
         if (event.recipes.isNotEmpty) EventCustomType.recipe,
         if (event.bulletinBoards.isNotEmpty) EventCustomType.bulletinBoard,
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
-        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == 1004)
+        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId ==
+            WarId.mainInterlude)
           EventCustomType.mainInterlude,
         if (event.extra.huntingQuestIds.isNotEmpty) EventCustomType.hunting,
       ];

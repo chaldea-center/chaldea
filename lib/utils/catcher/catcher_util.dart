@@ -22,7 +22,7 @@ class CatcherUtil {
       ],
       handleSilentError: false,
       filterFunction: CatcherUtil.reportFilter,
-      handlerTimeout: 10000,
+      handlerTimeout: 12000, // feedbackHandler is a little slow
     );
   }
 

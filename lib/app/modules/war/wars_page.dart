@@ -38,14 +38,6 @@ class _WarsPageState extends State<WarsPage>
         continue;
       }
       chaldeaGates.add(war);
-      // if (war.id >= 11000 && war.id < 20000) {
-      //   if (!db.gameData.wars.values.any((e) => e.warAdds.any((add) =>
-      //       add.type == WarOverwriteType.parentWar &&
-      //       add.overwriteId == war.id))) {
-      //     // unreleased
-      //     continue;
-      //   }
-      // }
     }
     return Scaffold(
       appBar: AppBar(
@@ -68,6 +60,7 @@ class _WarsPageState extends State<WarsPage>
           ),
         ],
         bottom: FixedHeight.tabBar(TabBar(
+          isScrollable: true,
           controller: _tabController,
           tabs: [
             Tab(text: S.current.main_story),

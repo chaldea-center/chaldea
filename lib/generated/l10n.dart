@@ -1329,6 +1329,39 @@ class S {
     );
   }
 
+  /// `Ember Gathering`
+  String get daily_ember_quest {
+    return Intl.message(
+      'Ember Gathering',
+      name: 'daily_ember_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enter the Treasure Vault`
+  String get daily_qp_quest {
+    return Intl.message(
+      'Enter the Treasure Vault',
+      name: 'daily_qp_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Training Ground`
+  String get daily_training_quest {
+    return Intl.message(
+      'Training Ground',
+      name: 'daily_training_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Damage Rate`
   String get damage_rate {
     return Intl.message(

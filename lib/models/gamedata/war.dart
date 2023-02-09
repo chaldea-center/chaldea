@@ -549,3 +549,12 @@ enum SpotOverwriteType {
   namePanelOffsetY,
   name,
 }
+
+abstract class WarId {
+  static const chaldeaGate = 9999;
+  static const rankup = 1001;
+  static const daily = 1002;
+  static const interlude = 1003;
+  static const mainInterlude = 1004;
+  static const advanced = 1006;
+}
