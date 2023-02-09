@@ -98,7 +98,7 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       avoidanceText: json['avoidanceText'] as String?,
       gutsText: json['gutsText'] as String?,
       missText: json['missText'] as String?,
-      AppId: json['AppId'] as String?,
+      AppId: json['AppId'] as int?,
       IncludeIgnoreIndividuality: json['IncludeIgnoreIndividuality'] as int?,
       ProgressSelfTurn: json['ProgressSelfTurn'] as int?,
       TargetIndiv: json['TargetIndiv'] == null

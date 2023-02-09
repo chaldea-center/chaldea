@@ -160,7 +160,7 @@ class BuffScript with DataScriptBase {
   String? avoidanceText;
   String? gutsText;
   String? missText;
-  String? AppId;
+  int? AppId;
   int? IncludeIgnoreIndividuality;
   int? ProgressSelfTurn;
   int? extendLowerLimit;

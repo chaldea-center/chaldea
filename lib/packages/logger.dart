@@ -28,7 +28,12 @@ void initiateLoggerPath([String? fp]) {
   _logger = Logger(
     filter: ProductionFilter(),
     printer: _CustomPrettyPrinter(
-        methodCount: 2, colors: false, printEmojis: false, printTime: true),
+      methodCount: 2,
+      colors: false,
+      printEmojis: false,
+      printTime: true,
+      lineLength: kDebugMode ? 120 : 10,
+    ),
     output: MultiOutput([
       ConsoleOutput(),
       if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
@@ -61,7 +66,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     super.stackTraceBeginIndex = 0,
     super.methodCount = 2,
     super.errorMethodCount = 8,
-    super.lineLength = 120,
+    super.lineLength = 10,
     super.colors = true,
     super.printEmojis = true,
     super.printTime = false,
