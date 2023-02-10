@@ -44,6 +44,22 @@ class WindowManagerFab extends StatefulWidget {
 
 class _WindowManagerFabState extends State<WindowManagerFab> {
   @override
+  void initState() {
+    super.initState();
+    rootRouter.appState.addListener(update);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    rootRouter.appState.removeListener(update);
+  }
+
+  void update() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MovableFab(
       icon: Icon(

@@ -49,11 +49,25 @@ class NiceWar with RouteInfo {
 
   // if default banner is null, find overwriteBanner
   String? get shownBanner {
-    if (banner != null) return banner;
-    for (final warAdd in warAdds) {
-      if (warAdd.overwriteBanner != null) return warAdd.overwriteBanner;
+    String? banner;
+    if (this.banner != null) {
+      banner = this.banner;
+    } else {
+      for (final warAdd in warAdds) {
+        if (warAdd.overwriteBanner != null) {
+          banner = warAdd.overwriteBanner;
+          break;
+        }
+      }
     }
-    return null;
+    if (banner == null) return null;
+    final event = this.event;
+    if (_eventId == 0 || event == null || id == 8348) return banner;
+    // Revival SABER WARS ~ Valentine 2020(JP)
+    if (event.startedAt >= 1521104400 && event.startedAt <= 1581498000) {
+      return banner.replaceFirst('/JP/', '/NA/');
+    }
+    return banner;
   }
 
   int get eventId {

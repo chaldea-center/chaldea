@@ -74,7 +74,7 @@ class _WarsPageState extends State<WarsPage>
         children: [
           WarListPage(wars: mainStories, reversed: reversed),
           WarListPage(wars: chaldeaGates, reversed: reversed),
-          WarListPage(wars: eventWars, reversed: reversed),
+          WarListPage(wars: eventWars, reversed: reversed, sortByEvent: true),
         ],
       ),
     );
@@ -84,12 +84,23 @@ class _WarsPageState extends State<WarsPage>
 class WarListPage extends StatelessWidget {
   final List<NiceWar> wars;
   final bool reversed;
-  const WarListPage({super.key, required this.wars, this.reversed = true});
+  final bool sortByEvent;
+  const WarListPage({
+    super.key,
+    required this.wars,
+    this.reversed = true,
+    this.sortByEvent = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final wars = this.wars.toList();
-    wars.sort2((e) => e.priority, reversed: reversed);
+    if (sortByEvent) {
+      wars.sort2((war) => war.event?.startedAt ?? war.priority,
+          reversed: reversed);
+    } else {
+      wars.sort2((e) => e.priority, reversed: reversed);
+    }
     return ListView.builder(
       itemBuilder: (context, index) {
         final war = wars[index];

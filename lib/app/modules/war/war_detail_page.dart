@@ -80,9 +80,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
       for (final warAdd in warAdds) warAdd.overwriteBanner,
     }.whereType<String>().toList();
     warBanners = {
-      if (war.banner != null) war.banner!,
+      war.shownBanner,
+      war.banner,
       ...warBanners.reversed.take(6).toList().reversed
-    }.toList();
+    }.whereType<String>().toList();
 
     List<Widget> children = [
       if (banners.isNotEmpty)
