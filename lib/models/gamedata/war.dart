@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/utils/wiki.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'gamedata.dart';
@@ -62,11 +63,16 @@ class NiceWar with RouteInfo {
     }
     if (banner == null) return null;
     final event = this.event;
-    if (_eventId == 0 || event == null || id == 8348) return banner;
-    // Revival SABER WARS ~ Valentine 2020(JP)
-    if (event.startedAt >= 1521104400 && event.startedAt <= 1581498000) {
-      return banner.replaceFirst('/JP/', '/NA/');
+    if (_eventId == 0 || event == null || id == 8348 || id < 1000) {
+      return banner;
     }
+    if (_warMCBanner.containsKey(id)) {
+      return WikiTool.mcFileUrl(_warMCBanner[id]!);
+    }
+    // Revival SABER WARS ~ Valentine 2020(JP)
+    // if (event.startedAt >= 1521104400 && event.startedAt <= 1581498000) {
+    //   return banner.replaceFirst('/JP/', '/NA/');
+    // }
     return banner;
   }
 
@@ -143,7 +149,6 @@ class NiceWar with RouteInfo {
   }
 
   String get _defaultName {
-    if (id == 312) return '奏章 プロローグ';
     return 'War $id';
   }
 
@@ -572,3 +577,67 @@ abstract class WarId {
   static const mainInterlude = 1004;
   static const advanced = 1006;
 }
+
+const Map<int, String> _warMCBanner = {
+  // in NA and wiki
+  8353: '情人节2020_关卡标题_jp.png',
+  8352: '救援！_Amazones.com_关卡标题_jp.png',
+  9074: '阎魔亭复刻_关卡标题_jp.png',
+  8351: '圣诞节2019_南丁格尔的圣诞颂歌_关卡标题_jp.png',
+  9073: 'Saber_Wars_2_关卡标题_jp.png',
+  9072: '神秘之国的ONILAND!!复刻_关卡标题_jp.png',
+  8350:
+      'BATTLE_IN_NEWYORK_2019_v2_关卡标题_jp.png', // 'BATTLE_IN_NEWYORK_2019_关卡标题_jp.png'
+  9071: '拜见！_拉斯维加斯御前比试_关卡标题_jp.png',
+  9069: '从者·夏日·庆典！复刻_关卡标题_jp.png',
+  9068: '唠唠叨叨最终本能寺2019_关卡标题_jp.png',
+  8347: '迷惑鸣凤庄考察_关卡标题_jp.png',
+  9058: '淑女·莱妮丝事件簿_关卡标题_jp.png',
+  9057: '唠唠叨叨帝都圣杯奇谭复刻_关卡标题_jp.png',
+  9056: '德川回天迷宫_大奥_关卡标题_jp.png',
+  8346: '旧时蜘蛛余残怀古共纺丝_关卡标题_jp.png',
+  9053: '深海电脑乐土_SE.RA.PH复刻_关卡标题_jp.png',
+  8335: '情人节2019_关卡标题_jp.png',
+  9052: '魔法少女纪行复刻_关卡标题_jp.png',
+  9051: '阎魔亭_关卡标题_jp.png',
+  8313: '圣诞节2018_关卡标题_jp.png',
+  8308: '圣诞节2017复刻_关卡标题_jp.png',
+  9050: '神秘之国的ONILAND!!_关卡标题_jp.png',
+  9049: '万圣节2018复刻_关卡标题.png',
+  8290: 'BATTLE_IN_NEWYORK_2018_关卡标题_jp.png',
+  9048: 'Fate_Accel_Zero_Order复刻_关卡标题.png',
+  9046: '从者·夏日·庆典！_关卡标题.png',
+  8273:
+      'https://fgo.wiki/images/4/46/复刻：All_The_States%27Men%21_～从漫画了解合众国开拓史～_关卡标题.png',
+  9040: '夏日2018第二部复刻_关卡标题.png',
+  9035: '夏日2018第一部复刻_关卡标题.png',
+  9033: '唠唠叨叨帝都圣杯奇谭_关卡标题.png',
+  8240: '唠唠叨叨明治维新复刻_关卡标题.png',
+  8238: '虚月馆杀人事件_关卡标题.png',
+  9032: 'Apocrypha_Inheritance_of_Glory_关卡标题.png',
+  8230: '星之三藏复刻_关卡标题.png',
+  8225: 'Saber_Wars复刻_关卡标题.png',
+
+  // only in wiki
+  8349: '迦勒底之门_4周年庆_jp.png',
+  9031: '空之境界_the_Garden_of_Order复刻_关卡标题_jp.png',
+  8208: '情人节2018_关卡标题_jp.png',
+  8200: '鬼乐百重塔_关卡标题_jp.png',
+  8196: '赝作复刻_关卡标题.png',
+  8188: '圣诞节2018_关卡标题.png',
+  8183: '圣诞节2017复刻_关卡标题.png',
+  9029: '姬路城大决战_关卡标题.png',
+  9022: '超极☆大南瓜村复刻_关卡标题.png',
+  8161: '尼禄祭再临2018_关卡标题.png',
+  9021: '死亡监狱·夏日大逃脱_关卡标题.png',
+  9018: '难解难分·夏日锦标赛！_关卡标题.png',
+  8156: '从漫画了解合众国开拓史_关卡标题.png',
+  9015: '迦勒底灼热之旅复刻_关卡标题.png',
+  9014: '迦勒底夏日回忆复刻_关卡标题.png',
+  9013: '鬼岛复刻_关卡标题.png',
+  8123: '罗生门复刻_关卡标题.png',
+  9010: '深海电脑乐土_SE.RA.PH_关卡标题.png',
+  8113: '唠唠叨叨明治维新_关卡标题.png',
+  8109: '唠唠叨叨本能寺复刻_关卡标题.png',
+  8098: '巧克力小姐的大惊小怪复刻_关卡标题.png',
+};

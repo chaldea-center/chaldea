@@ -843,6 +843,7 @@ enum CondType {
   eventTutorialFlagOff,
   eventSuperBossValueEqual,
   notEventSuperBossValueEqual,
+  allSvtTargetSkillLvNum,
   superBossDamageAbove,
   superBossDamageBelow,
 }

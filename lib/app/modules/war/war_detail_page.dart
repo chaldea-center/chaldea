@@ -310,6 +310,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
             warAdd.overwriteId == war.id) {
           return true;
         }
+        if (warAdd.type == WarOverwriteType.materialParentWar &&
+            warAdd.overwriteId == war.id) {
+          return true;
+        }
       }
       return false;
     }).toList();
@@ -319,11 +323,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
       for (final _w in subWars) {
         warTiles.add(LayoutBuilder(builder: (context, constraints) {
           String title = _w.lLongName.l;
-          final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
           return ListTile(
             leading: _w.shownBanner == null
                 ? null
-                : db.getIconImage(_w.shownBanner, height: height),
+                : db.getIconImage(_w.shownBanner,
+                    height: min(constraints.maxWidth / 2, 164.0),
+                    aspectRatio: 450 / 134),
             horizontalTitleGap: 8,
             title: Text(
               title,

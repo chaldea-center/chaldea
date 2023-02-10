@@ -104,18 +104,39 @@ class WarListPage extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final war = wars[index];
+        String title;
+        String? subtitle;
+        if (war.id < 1000) {
+          final segs = war.lLongName.l.split('\n');
+          title = segs.first.trim();
+          if (segs.length > 1) {
+            subtitle = segs.skip(1).join(' ');
+          }
+        } else {
+          title = war.lLongName.l.setMaxLines(2);
+        }
         return ListTile(
           leading: war.shownBanner == null
               ? null
               : db.getIconImage(war.shownBanner, width: 150),
           title: AutoSizeText(
-            war.lLongName.l.setMaxLines(2),
-            maxLines: 2,
+            title,
+            maxLines: subtitle == null ? 2 : 1,
             minFontSize: 12,
             maxFontSize: 16,
             overflow: TextOverflow.ellipsis,
             textScaleFactor: 0.9,
           ),
+          subtitle: subtitle == null
+              ? null
+              : AutoSizeText(
+                  subtitle,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  overflow: TextOverflow.ellipsis,
+                  // textScaleFactor: 0.9,
+                ),
           horizontalTitleGap: 8,
           onTap: () {
             war.routeTo(popDetails: true);

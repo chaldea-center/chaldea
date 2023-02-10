@@ -270,6 +270,7 @@ const _$CondTypeEnumMap = {
   CondType.eventTutorialFlagOff: 'eventTutorialFlagOff',
   CondType.eventSuperBossValueEqual: 'eventSuperBossValueEqual',
   CondType.notEventSuperBossValueEqual: 'notEventSuperBossValueEqual',
+  CondType.allSvtTargetSkillLvNum: 'allSvtTargetSkillLvNum',
   CondType.superBossDamageAbove: 'superBossDamageAbove',
   CondType.superBossDamageBelow: 'superBossDamageBelow',
 };

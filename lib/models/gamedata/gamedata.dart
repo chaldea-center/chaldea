@@ -120,22 +120,6 @@ class GameData with _GameDataExtra {
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
-    // remove spoiler
-    if (this.version.timestamp > 0 &&
-        spoilerRegion != null &&
-        spoilerRegion != Region.jp) {
-      void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
-        final released = releases.ofRegion(spoilerRegion);
-        if (released == null || released.isEmpty) return;
-        dict.removeWhere((key, _) => !released.contains(key));
-      }
-
-      _remove(this.servants, this.mappingData.svtRelease);
-      _remove(this.craftEssences, this.mappingData.ceRelease);
-      _remove(this.commandCodes, this.mappingData.ccRelease);
-      _remove(this.entities, this.mappingData.entityRelease);
-    }
-
     // process
     for (final func in this.baseFunctions.values) {
       for (final buff in func.buffs) {
@@ -153,7 +137,23 @@ class GameData with _GameDataExtra {
         if (cc.collectionNo > 0) this.commandCodes[cc.collectionNo] ??= cc;
       }
     }
+    // remove spoiler
+    if (this.version.timestamp > 0 &&
+        spoilerRegion != null &&
+        spoilerRegion != Region.jp) {
+      void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
+        final released = releases.ofRegion(spoilerRegion);
+        if (released == null || released.isEmpty) return;
+        dict.removeWhere((key, _) => !released.contains(key));
+      }
 
+      _remove(this.servants, this.mappingData.svtRelease);
+      _remove(this.craftEssences, this.mappingData.ceRelease);
+      _remove(this.commandCodes, this.mappingData.ccRelease);
+      _remove(this.entities, this.mappingData.entityRelease);
+    }
+    this.items.remove(9305420); // 完璧なお正月 is CE
+    // other generated maps
     preprocess();
   }
 
