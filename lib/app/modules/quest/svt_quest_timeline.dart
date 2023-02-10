@@ -34,6 +34,11 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   @override
   void initState() {
     super.initState();
+    // also defined in parser to add quest release time
+    final storyQuestMap = {
+      1: [1000624, 3000124, 3000607, 3001301, 1000631],
+      38: [3000915],
+    };
     for (final svt in db.gameData.servantsNoDup.values) {
       for (final questId in svt.relateQuestIds) {
         final quest = db.gameData.quests[questId];
@@ -43,6 +48,17 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         }
       }
     }
+    for (final svtNo in storyQuestMap.keys) {
+      final svt = db.gameData.servantsNoDup[svtNo];
+      for (final questId in storyQuestMap[svtNo]!) {
+        final quest = db.gameData.quests[questId];
+        if (svt != null && quest != null) {
+          relatedQuests.add(quest);
+          relatedServants[questId] = svt;
+        }
+      }
+    }
+
     questMap = {for (final q in relatedQuests) q.id: q};
     filterData.region = db.curUser.region;
     filterData.reversed = filterData.region == Region.jp;
@@ -50,8 +66,10 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
   int getOpenAt(Quest quest, Region r) {
     if (r == Region.jp) return quest.openedAt;
-    return db.gameData.mappingData.questRelease[quest.id]?.ofRegion(r) ??
-        quest.openedAt * -1;
+    final releaseTime =
+        db.gameData.mappingData.questRelease[quest.id]?.ofRegion(r);
+    if (releaseTime != null) return releaseTime;
+    return quest.openedAt * -1;
   }
 
   @override
@@ -63,6 +81,10 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
       }
       if (filterData.questType.options.isNotEmpty &&
           !filterData.questType.matchAny(getQuestTypes(quest))) {
+        return false;
+      }
+      if (filterData.upgradeType.isNotEmpty &&
+          !filterData.upgradeType.matchAny(getUpgradeTypes(quest))) {
         return false;
       }
       return true;
@@ -222,13 +244,18 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
   Iterable<TimelineQuestType> getQuestTypes(Quest quest) sync* {
     if (quest.type == QuestType.friendship) yield TimelineQuestType.interlude;
+    if (quest.warId == WarId.rankup) yield TimelineQuestType.rankup;
+    if (quest.type == QuestType.main) yield TimelineQuestType.main;
+  }
+
+  Iterable<TimelineUpgradeType> getUpgradeTypes(Quest quest) sync* {
     final svt = relatedServants[quest.id];
     if (svt != null) {
       if (svt.skills.any((e) => e.condQuestId == quest.id)) {
-        yield TimelineQuestType.skillRankUp;
+        yield TimelineUpgradeType.skill;
       }
       if (svt.noblePhantasms.any((e) => e.condQuestId == quest.id)) {
-        yield TimelineQuestType.tdRankUp;
+        yield TimelineUpgradeType.np;
       }
     }
   }
@@ -265,22 +292,31 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         )
     ];
     if (data.quests.length > maxShown) {
-      Map<TimelineQuestType, int> types = {};
+      Map<dynamic, int> types = {};
       for (final quest in data.quests) {
         for (final type in getQuestTypes(quest)) {
           types.addNum(type, 1);
         }
+        for (final type in getUpgradeTypes(quest)) {
+          types.addNum(type, 1);
+        }
       }
       String countText = '${data.quests.length} ${S.current.quest}: ';
-      countText += TimelineQuestType.values
+      countText += [...TimelineQuestType.values, ...TimelineUpgradeType.values]
           .where((e) => types.containsKey(e))
-          .map((e) => '${types[e]} ${e.shownName}')
-          .join(', ');
+          .map((e) {
+        final name = e is TimelineQuestType
+            ? e.shownName
+            : e is TimelineUpgradeType
+                ? e.shownName
+                : e.name;
+        return '${types[e]} $name';
+      }).join(', ');
       children.add(ListTile(
         title: Text(
           countText,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          textScaleFactor: 0.9,
+          textScaleFactor: 0.8,
         ),
         onTap: () {
           router.pushPage(Builder(
@@ -321,42 +357,22 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   Widget _buildIcon(BuildContext context, Quest quest) {
     final svt = relatedServants[quest.id]!;
     Set<int> iconIds = {};
-    NiceSkill? targetSkill;
+    Map<int, NiceSkill> targetSkills = {};
     NiceTd? targetTd;
+    if (quest.type == QuestType.friendship) {
+      iconIds.add(ItemIconId.interlude);
+    }
     for (final skill in svt.skills) {
       if (skill.condQuestId == quest.id) {
-        targetSkill = skill;
-        break;
+        iconIds.add(ItemIconId.skillUpgrade);
+        targetSkills[skill.id] = skill; // Mash has multiple skills with same id
       }
     }
     for (final td in svt.noblePhantasms) {
       if (td.condQuestId == quest.id) {
+        iconIds.add(ItemIconId.tdUpgrade);
         targetTd = td;
         break;
-      }
-    }
-    // 8-NP, 9-skill, 40-bond
-    if (quest.type == QuestType.friendship) {
-      iconIds.add(40);
-      if (quest.gifts.isEmpty) {
-        for (final skill in svt.skills) {
-          if (skill.condQuestId == quest.id) {
-            iconIds.add(9);
-            break;
-          }
-        }
-        for (final td in svt.noblePhantasms) {
-          if (td.condQuestId == quest.id) {
-            iconIds.add(8);
-            break;
-          }
-        }
-      }
-    }
-    for (final gift in quest.gifts) {
-      if (gift.type == GiftType.questRewardIcon &&
-          (gift.objectId == 8 || gift.objectId == 9)) {
-        iconIds.add(gift.objectId);
       }
     }
 
@@ -388,9 +404,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     quest.routeTo(popDetails: true);
                   },
                 ),
-                if (targetSkill != null)
-                  DisableLayoutBuilder(
-                      child: SkillDescriptor(skill: targetSkill)),
+                for (final skill in targetSkills.values)
+                  DisableLayoutBuilder(child: SkillDescriptor(skill: skill)),
                 if (targetTd != null)
                   DisableLayoutBuilder(child: TdDescriptor(td: targetTd)),
               ],
@@ -412,7 +427,14 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     context: context,
                     icon: Atlas.assetItem(iconId),
                     width: 20,
-                    text: iconId == 9 ? targetSkill?.num.toString() : null,
+                    text: iconId == ItemIconId.skillUpgrade
+                        ? targetSkills.values
+                            .map((e) => e.num)
+                            .toSet()
+                            .toList()
+                            .sortReturn()
+                            .join()
+                        : null,
                     option: ImageWithTextOption(fontSize: 12),
                   ),
               ],

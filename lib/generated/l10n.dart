@@ -6980,10 +6980,10 @@ class S {
     );
   }
 
-  /// `Skill Rank Up`
+  /// `Skill Upgrade`
   String get skill_rankup {
     return Intl.message(
-      'Skill Rank Up',
+      'Skill Upgrade',
       name: 'skill_rankup',
       desc: '',
       locale: localeName,
@@ -7651,10 +7651,10 @@ class S {
     );
   }
 
-  /// `NP Rank Up`
+  /// `NP Upgrade`
   String get td_rankup {
     return Intl.message(
-      'NP Rank Up',
+      'NP Upgrade',
       name: 'td_rankup',
       desc: '',
       locale: localeName,

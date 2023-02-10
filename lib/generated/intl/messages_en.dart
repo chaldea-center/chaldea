@@ -981,7 +981,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
-        "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Rank Up"),
+        "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Upgrade"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
@@ -1073,7 +1073,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "For the same NP id, different owners may have different card type and hit distributions."),
         "td_cardcolor_hint": m23,
         "td_cardnp_hint": m24,
-        "td_rankup": MessageLookupByLibrary.simpleMessage("NP Rank Up"),
+        "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),

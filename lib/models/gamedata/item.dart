@@ -451,3 +451,33 @@ enum ItemBGType {
   gold,
   questClearQPReward,
 }
+
+abstract class ItemIconId {
+  static const stoneGrey = 0;
+  static const boxCopper = 1;
+  static const boxSilver = 2;
+  static const boxGold = 3;
+  static const qp = 5;
+  static const stone = 6;
+  static const mana = 7;
+  static const tdUpgrade = 8;
+  static const skillUpgrade = 9;
+  static const friendPoint = 12;
+  static const anonymous = 17;
+  static const rareMana = 18;
+  static const grailToCrystal = 19;
+  static const costume = 23;
+  static const pureMana = 46;
+  static const ap = 47;
+  static const interlude = 40; // 灵基解放关卡
+  static const unknown = 99;
+  static const appleGold = 100;
+  static const appleSilver = 101;
+  static const appleCopper = 102;
+  static const blueSapling = 103;
+  static const appleBlue = 104;
+  static const lanternOfChaldea = 1000;
+  static const beastFootprint = 2000;
+  static const summonTicket = 4000;
+  static const exchangeTicket = 10000;
+}

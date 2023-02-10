@@ -9,20 +9,33 @@ enum TimelineSortType {
   apCampaignTime,
 }
 
-enum TimelineQuestType {
-  skillRankUp,
-  tdRankUp,
-  interlude,
-  ;
+enum TimelineUpgradeType {
+  skill,
+  np;
 
   String get shownName {
     switch (this) {
-      case TimelineQuestType.skillRankUp:
+      case TimelineUpgradeType.skill:
         return S.current.skill_rankup;
-      case TimelineQuestType.tdRankUp:
+      case TimelineUpgradeType.np:
         return S.current.td_rankup;
+    }
+  }
+}
+
+enum TimelineQuestType {
+  interlude,
+  rankup,
+  main;
+
+  String get shownName {
+    switch (this) {
       case TimelineQuestType.interlude:
         return S.current.interlude;
+      case TimelineQuestType.rankup:
+        return S.current.rankup_quest;
+      case TimelineQuestType.main:
+        return S.current.main_story;
     }
   }
 }
@@ -35,9 +48,10 @@ class SvtQuestTimelineFilterData {
   final sortType =
       FilterRadioData<TimelineSortType>.nonnull(TimelineSortType.questOpenTime);
   final questType = FilterGroupData<TimelineQuestType>();
+  final upgradeType = FilterGroupData<TimelineUpgradeType>();
 
   void reset() {
-    for (final v in <FilterGroupData>[sortType, questType]) {
+    for (final v in <FilterGroupData>[sortType, questType, upgradeType]) {
       v.reset();
     }
   }
@@ -96,6 +110,14 @@ class _SvtQuestTimelineFilterState extends FilterPageState<
           title: Text(S.current.general_type, style: textStyle),
           options: TimelineQuestType.values,
           values: filterData.questType,
+          optionBuilder: (v) => Text(v.shownName),
+          onFilterChanged: (v, _) {
+            update();
+          },
+        ),
+        FilterGroup<TimelineUpgradeType>(
+          options: TimelineUpgradeType.values,
+          values: filterData.upgradeType,
           optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (v, _) {
             update();

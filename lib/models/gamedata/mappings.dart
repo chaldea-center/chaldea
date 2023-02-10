@@ -51,7 +51,11 @@ class Transl<K, V> {
   }
 
   V of(Region? region) {
-    return mappings[key]?.ofRegion(region) ?? _default;
+    return maybeOf(region) ?? _default;
+  }
+
+  V? maybeOf(Region? region) {
+    return mappings[key]?.ofRegion(region);
   }
 
   List<V?> get all => [_m?.jp, _m?.cn, _m?.tw, _m?.na, _m?.kr];
