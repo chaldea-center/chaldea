@@ -82,7 +82,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
     warBanners = {
       war.shownBanner,
       war.banner,
-      ...warBanners.reversed.take(6).toList().reversed
+      ...warBanners.reversed
+          .take(war.id == WarId.chaldeaGate ? 2 : 6)
+          .toList()
+          .reversed
     }.whereType<String>().toList();
 
     List<Widget> children = [

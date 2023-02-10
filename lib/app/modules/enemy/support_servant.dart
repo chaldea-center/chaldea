@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../craft_essence/craft.dart';
 
 class SupportServantPage extends StatefulWidget {
   final SupportServant svt;
@@ -207,6 +208,10 @@ class _SupportServantPageState extends State<SupportServantPage> {
         title: Text(ce.equip.lName.l),
         subtitle: Text(
             'Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.ce_max_limit_break : ""}'),
+        onTap: () {
+          router.push(
+              url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
+        },
       ));
       final skills = ce.equip.skills
           .where((skill) => skill.condLimitCount == ce.limitCount);

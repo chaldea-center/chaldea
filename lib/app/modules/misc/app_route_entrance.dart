@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -19,7 +20,18 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Routes')),
+      appBar: AppBar(
+        title: const Text('Routes'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              router.pushPage(const RouteHistoryList());
+            },
+            icon: const Icon(Icons.history),
+            tooltip: S.current.history,
+          )
+        ],
+      ),
       body: ListView(
         children: [
           _custom(),
@@ -122,5 +134,32 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
   void dispose() {
     super.dispose();
     _controllers.values.forEach((e) => e.dispose());
+  }
+}
+
+class RouteHistoryList extends StatelessWidget {
+  const RouteHistoryList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.history)),
+      body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemBuilder: (context, index) {
+          final url = AppRouterDelegate
+              .history[AppRouterDelegate.history.length - 1 - index];
+          return ListTile(
+            dense: true,
+            title: Text(url),
+            onTap: () {
+              rootRouter.appState.activeRouter.push(url: url);
+              rootRouter.appState.showWindowManager = false;
+            },
+          );
+        },
+        itemCount: AppRouterDelegate.history.length,
+      ),
+    );
   }
 }

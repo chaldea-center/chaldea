@@ -122,7 +122,7 @@ class Quest with RouteInfo {
 
   Transl<String, String> get lName {
     final names = Transl.questNames(name);
-    if (names.maybeL == null && name.startsWith('強化クエスト')) {
+    if (names.maybeOf(null) == null && name.startsWith('強化クエスト')) {
       final match = RegExp(r'^強化クエスト (.*?)(\s+\d+)?$').firstMatch(name);
       if (match != null) {
         final name2 = <String?>[
