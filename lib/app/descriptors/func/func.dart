@@ -25,6 +25,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    LoopTargets? loops,
     Region? region,
   }) =>
       describe(
@@ -38,6 +39,7 @@ mixin FuncsDescriptor {
         showBuffDetail: showBuffDetail,
         owner: owner,
         showEvent: showEvent,
+        loops: loops,
         region: region,
       );
 
@@ -52,6 +54,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    LoopTargets? loops,
     Region? region,
   }) {
     funcs = funcs.where((func) {
@@ -80,6 +83,7 @@ mixin FuncsDescriptor {
         showBuffDetail: showBuffDetail,
         owner: owner,
         showEvent: showEvent,
+        loops: loops,
         region: region,
       ));
     }
@@ -126,7 +130,8 @@ class _DescriptorWrapper extends StatelessWidget {
           children: [
             Expanded(flex: perLine - 1, child: title),
             ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth, minWidth: 20),
+              constraints: BoxConstraints(
+                  maxWidth: maxWidth, minWidth: min(20, maxWidth)),
               child: trailing,
             ),
           ],
@@ -404,6 +409,7 @@ class FuncDescriptor extends StatelessWidget {
   final bool showBuffDetail;
   final SkillOrTd? owner;
   final bool showEvent;
+  final LoopTargets? loops;
   final Region? region;
 
   const FuncDescriptor({
@@ -417,6 +423,7 @@ class FuncDescriptor extends StatelessWidget {
     this.showBuffDetail = false,
     this.owner,
     this.showEvent = true,
+    this.loops,
     this.region,
   });
 
@@ -445,6 +452,11 @@ class FuncDescriptor extends StatelessWidget {
           funcText.write(Transl.buffType(buff.type).l);
         } else {
           funcText.write(Transl.buffNames(buff.name).l);
+          if (region == Region.jp &&
+              !Transl.md.buffNames.containsKey(buff.name) &&
+              !kBuffValueTriggerTypes.containsKey(buff.type)) {
+            funcText.write(' (${Transl.buffType(buff.type).l})');
+          }
         }
       }
     } else if ([
@@ -454,6 +466,12 @@ class FuncDescriptor extends StatelessWidget {
       funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
     } else {
       funcText.write(Transl.funcPopuptext(func).l);
+      String text = NiceFunction.normFuncPopupText(func.funcPopupText);
+      if (region == Region.jp &&
+          !Transl.md.funcPopuptext.containsKey(text) &&
+          text.isNotEmpty) {
+        funcText.write(' (${Transl.funcType(func.funcType).l})');
+      }
     }
 
     if ([
@@ -544,6 +562,9 @@ class FuncDescriptor extends StatelessWidget {
             child: icon,
           ),
         );
+      }
+      if (vals?.ShowState == -1) {
+        icon = Opacity(opacity: 0.5, child: icon);
       }
     } else if (func.funcType == FuncType.eventFortificationPointUp) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;
@@ -979,10 +1000,10 @@ class FuncDescriptor extends StatelessWidget {
         trigger: detail,
         buff: func.buff!,
         isNp: isNp,
+        useRate: vals?.UseRate,
         showPlayer: func.funcTargetType.isEnemy ? showEnemy : showPlayer,
         showEnemy: func.funcTargetType.isEnemy ? showPlayer : showEnemy,
-        endlessLoop: owner?.id == detail.skill &&
-            (isNp ? owner is BaseTd : owner is BaseSkill),
+        loops: LoopTargets.from(loops)..addFunc(func.funcId),
         region: region,
       ),
     );
@@ -1003,7 +1024,7 @@ class FuncDescriptor extends StatelessWidget {
         dependFuncId: dependFuncId,
         trigger: func,
         level: level,
-        endlessLoop: func.funcId == dependFuncId,
+        loops: LoopTargets.from(loops)..addFunc(func.funcId),
         region: region,
       ),
     );
@@ -1068,18 +1089,20 @@ class _LazyTrigger extends StatefulWidget {
   final BuffValueTriggerType trigger;
   final Buff buff;
   final bool isNp;
+  final int? useRate;
   final bool showPlayer;
   final bool showEnemy;
-  final bool endlessLoop;
+  final LoopTargets loops;
   final Region? region;
 
   const _LazyTrigger({
     required this.trigger,
     required this.buff,
     required this.isNp,
+    required this.useRate,
     required this.showPlayer,
     required this.showEnemy,
-    required this.endlessLoop,
+    required this.loops,
     required this.region,
   });
 
@@ -1134,6 +1157,15 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     if (skill != null) {
       title += ': ${skill!.lName.l}';
     }
+    List<String> hints = [
+      Transl.funcPopuptextBase(widget.buff.type.name).l,
+      if (widget.useRate != null)
+        Transl.special
+            .funcValActChance(widget.useRate!.format(percent: true, base: 10)),
+    ];
+    final loops = LoopTargets.from(widget.loops)
+      ..addSkill(widget.trigger.skill);
+    bool loop = widget.loops.skills.contains(skill?.id);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1146,28 +1178,41 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
                 text: '  $title ',
                 style: const TextStyle(decoration: TextDecoration.underline),
               ),
-              TextSpan(
-                  text:
-                      ' [${Transl.funcPopuptextBase(widget.buff.type.name).l}]')
+              TextSpan(text: ' [${hints.join(", ")}]')
             ],
             // recognizer: TapGestureRecognizer()..onTap = () => skill?.routeTo(),
           )),
         ),
-        if (!widget.endlessLoop)
+        if (!loop)
           ...describeFunctions(
             funcs: skill?.functions ?? [],
             script: skill?.script,
             showPlayer: widget.showPlayer,
             showEnemy: widget.showEnemy,
             level: widget.trigger.level,
-            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 2, 4),
             owner: skill,
+            loops: loops,
             region: widget.region,
           ),
-        if (widget.endlessLoop)
+        if (loop)
           Center(
-            child: Text(
-              '∞',
+            child: Text.rich(
+              TextSpan(
+                  text:
+                      '∞ ${widget.isNp ? S.current.noble_phantasm : S.current.skill} ',
+                  children: [
+                    SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: widget.trigger.skill.toString(),
+                      onTap: () {
+                        if (widget.trigger.skill != null) {
+                          router.push(
+                              url: Routes.skillI(widget.trigger.skill!));
+                        }
+                      },
+                    )
+                  ]),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           )
@@ -1180,14 +1225,14 @@ class _LazyFunc extends StatefulWidget {
   final int dependFuncId;
   final NiceFunction trigger;
   final int? level;
-  final bool endlessLoop;
+  final LoopTargets loops;
   final Region? region;
 
   const _LazyFunc({
     required this.dependFuncId,
     required this.trigger,
     required this.level,
-    required this.endlessLoop,
+    required this.loops,
     required this.region,
   });
 
@@ -1225,10 +1270,11 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
   @override
   Widget build(BuildContext context) {
     final _func = func;
+    final bool loop = widget.loops.funcs.contains(func?.funcId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!widget.endlessLoop)
+        if (!loop)
           ...describeFunctions(
             funcs: [
               if (_func != null)
@@ -1255,16 +1301,25 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
             level: widget.level,
             showPlayer: true,
             showEnemy: true,
-            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+            padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 2, 4),
+            loops: widget.loops.copy()..addFunc(widget.dependFuncId),
             region: widget.region,
           ),
-        if (widget.endlessLoop)
+        if (loop)
           Center(
-            child: Text(
-              '∞',
+            child: Text.rich(
+              TextSpan(text: '∞ Function ', children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: widget.dependFuncId.toString(),
+                  onTap: () {
+                    router.push(url: Routes.funcI(widget.dependFuncId));
+                  },
+                )
+              ]),
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          )
+          ),
       ],
     );
   }
@@ -1280,5 +1335,33 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
           .toList();
     }
     return List.from(dependsvals);
+  }
+}
+
+class LoopTargets {
+  Set<int> skills = {}; //include tds
+  Set<int> funcs = {};
+
+  LoopTargets copy() {
+    return LoopTargets()
+      ..skills = skills.toSet()
+      ..funcs = funcs.toSet();
+  }
+
+  static LoopTargets from(LoopTargets? other) {
+    if (other == null) return LoopTargets();
+    return other.copy();
+  }
+
+  void addSkill(int? id) {
+    if (id != null) {
+      skills.add(id);
+    }
+  }
+
+  void addFunc(int? id) {
+    if (id != null) {
+      funcs.add(id);
+    }
   }
 }

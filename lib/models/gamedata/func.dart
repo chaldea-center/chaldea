@@ -92,6 +92,14 @@ class NiceFunction with RouteInfo implements BaseFunction {
         ),
         svals = svals ?? [];
 
+  static String normFuncPopupText(String text) {
+    if (const <String>{'', '-', 'なし', 'None', 'none', '无', '無', '없음'}
+        .contains(text)) {
+      return '';
+    }
+    return text;
+  }
+
   @override
   String get route => _baseFunc.route;
   @override

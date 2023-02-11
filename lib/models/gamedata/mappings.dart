@@ -164,9 +164,13 @@ class Transl<K, V> {
       funcPopuptextBase(func.funcPopupText, func.funcType);
 
   static Transl<String, String> funcPopuptextBase(String jp, [FuncType? type]) {
-    if ({'', '-', 'なし', 'None', 'none', '无', '無', '없음'}.contains(jp) &&
-        type != null) {
-      return Transl(md.funcPopuptext, type.name, type.name);
+    jp = NiceFunction.normFuncPopupText(jp);
+    if (jp.isEmpty && type != null) {
+      if (md.funcPopuptext.containsKey(type.name)) {
+        return Transl(md.funcPopuptext, type.name, type.name);
+      } else {
+        return Transl.enums(type, (enums) => enums.funcType);
+      }
     }
     if (!md.funcPopuptext.containsKey(jp) && md.buffNames.containsKey(jp)) {
       return Transl(md.buffNames, jp, jp);
@@ -630,6 +634,13 @@ class _SpecialTransl {
         tw: '$v概率',
         na: '$v Chance',
         kr: '$v 확률',
+      );
+  String funcValActChance(String v) => M.of(
+        jp: '$v確率発動',
+        cn: '$v概率发动',
+        tw: '$v概率發動',
+        na: '$v Act Chance',
+        kr: null,
       );
   String funcValWeight(String v) => M.of(
         jp: null,

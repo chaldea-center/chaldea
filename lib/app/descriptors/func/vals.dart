@@ -110,8 +110,9 @@ class ValDsc extends StatelessWidget {
         color: Theme.of(context).textTheme.bodySmall?.color,
       );
     }
-    final text =
-        parts.isEmpty ? vals.Value?.toString() ?? empty : parts.join(', ');
+    final text = parts.isEmpty
+        ? vals.Value?.toString() ?? empty
+        : parts.where((e) => e.isNotEmpty).join(', ');
     return InkWell(
       child: Text(
         supportOnly ? '${Transl.special.funcSupportOnly} $text' : text,
@@ -183,7 +184,8 @@ class ValDsc extends StatelessWidget {
         func.funcType == FuncType.addFieldChangeToField) {
       describeBuff(func.buffs.first);
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
+        _addPercent(
+            vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
     } else if (func.funcType == FuncType.gainHpFromTargets) {
       _addInt(vals.DependFuncVals?.Value);
@@ -294,7 +296,8 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValChance(v));
+        _addPercent(
+            vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
@@ -331,14 +334,24 @@ class ValDsc extends StatelessWidget {
     final base = kBuffActionPercentTypes[buff.buffAction] ??
         kBuffTypePercentType[buff.type];
     final trigger = kBuffValueTriggerTypes[buff.type];
+    String _val(int? v) {
+      if (v == null) return '';
+      if (base == null) return '$v';
+      return '${_toPercent(v, base)!}%';
+    }
+
+    bool _valueUsed = false;
+
+    if (vals.ParamAddValue != null) {
+      parts.add('${_val(vals.Value)}+${_val(vals.ParamAddValue)}×N');
+      _valueUsed = true;
+    }
+    if (vals.ParamAdd != null) {
+      parts.add('${_val(vals.Value)}+${_val(vals.ParamAdd)}×N');
+      _valueUsed = true;
+    }
     if (base != null) {
-      _addPercent(vals.Value, base);
-      if (vals.ParamAddValue != null) {
-        _addPercent(vals.ParamAddValue, base);
-      }
-      if (vals.ParamAdd != null) {
-        _addPercent(vals.ParamAdd, base);
-      }
+      if (!_valueUsed) _addPercent(vals.Value, base);
       // return;
     } else if (trigger != null) {
       final triggerVal = trigger(vals);
@@ -364,23 +377,19 @@ class ValDsc extends StatelessWidget {
           // BuffType.subFieldIndividuality, // in TargetList
         ].contains(buff.type) &&
         vals.Value != null) {
-      parts.add(Transl.trait(vals.Value!).l);
+      // parts.add(Transl.trait(vals.Value!).l);
+      parts.add('');
       return;
     } else if ([
           BuffType.toFieldChangeField,
           // BuffType.toFieldSubIndividualityField,  // may be in TargetList
         ].contains(buff.type) &&
         vals.FieldIndividuality != null) {
-      parts.add(Transl.trait(vals.FieldIndividuality!).l);
+      // parts.add(Transl.trait(vals.FieldIndividuality!).l);
+      parts.add('');
       return;
     } else {
-      _addInt(vals.Value);
-      if (vals.ParamAddValue != null) {
-        _addInt(vals.ParamAddValue);
-      }
-      if (vals.ParamAdd != null) {
-        _addInt(vals.ParamAdd);
-      }
+      if (!_valueUsed) _addInt(vals.Value);
     }
     if (vals.RatioHPHigh != null || vals.RatioHPLow != null) {
       final ratios = [vals.RatioHPHigh ?? 0, vals.RatioHPLow ?? 0].toList();
@@ -418,7 +427,13 @@ class ValDsc extends StatelessWidget {
     }
 
     if (vals.ActSetWeight != null) {
-      _addPercent(vals.ActSetWeight, 1, (v) => Transl.special.funcValWeight(v));
+      _addPercent(vals.ActSetWeight, 1, (v) {
+        String s = Transl.special.funcValWeight(v);
+        if (vals.ActSet != null) {
+          s = '[${vals.ActSet}]$s';
+        }
+        return s;
+      });
     }
   }
 }

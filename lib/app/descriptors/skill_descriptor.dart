@@ -149,6 +149,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           showNone: showNone,
           showBuffDetail: showBuffDetail,
           showEvent: showEvent,
+          loops: LoopTargets()..addSkill(skill.id),
           region: region,
         )
       ],
@@ -404,6 +405,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           showPlayer: showPlayer,
           showEnemy: showEnemy,
           showNone: showNone,
+          loops: LoopTargets()..addSkill(td.id),
           region: region,
         ),
         CustomTable(children: [
