@@ -108,6 +108,14 @@ class GalleryItem {
     persist: true,
   );
 
+  static GalleryItem chaldeas = GalleryItem(
+    name: 'chaldeas',
+    titleBuilder: () => 'Chaldeas',
+    icon: Icons.blur_on_sharp,
+    isDetail: false,
+    persist: true,
+  );
+
   static List<GalleryItem> get allItems => [
         servants,
         craftEssences,

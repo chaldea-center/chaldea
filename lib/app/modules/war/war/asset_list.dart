@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -336,7 +338,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
             alignment: charaFigure ? Alignment.topCenter : Alignment.center,
             fit: charaFigure ? BoxFit.fitWidth : null,
             errorWidget: (context, url, error) => Center(
-              child: Text(url.breakWord),
+              child: Text((kReleaseMode ? url.split('/').last : url).breakWord),
             ),
           ),
           onTap: () {

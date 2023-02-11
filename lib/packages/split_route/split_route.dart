@@ -429,4 +429,12 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     if (route is SplitRoute<T2>) return route;
     return null;
   }
+
+  static bool isDetail(BuildContext context) {
+    return of(context)?.detail == true;
+  }
+
+  static bool isMaster(BuildContext context) {
+    return of(context)?.detail == false;
+  }
 }

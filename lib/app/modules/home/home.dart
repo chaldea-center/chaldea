@@ -41,8 +41,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
               label: S.current.gallery_tab_name),
           if (showBattle)
             const BottomNavigationBarItem(
-                icon: SafeArea(child: Icon(Icons.catching_pokemon)),
-                label: 'Simulator'),
+                icon: SafeArea(child: Icon(Icons.blur_on_sharp)),
+                label: 'Chaldeas'),
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.settings)),
               label: S.current.settings_tab_name),

@@ -171,6 +171,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     notifyListeners();
   }
 
+  // better to check current route is [master] before pop details
+  // use `SplitRoute.isMaster`
   void popDetails() {
     while (canPop()) {
       final lastRoute = _pages.last;

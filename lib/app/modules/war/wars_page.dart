@@ -139,7 +139,7 @@ class WarListPage extends StatelessWidget {
                 ),
           horizontalTitleGap: 8,
           onTap: () {
-            war.routeTo(popDetails: SplitRoute.of(context)?.detail == false);
+            war.routeTo(popDetails: SplitRoute.isMaster(context));
           },
         );
       },
