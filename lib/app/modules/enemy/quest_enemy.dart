@@ -306,6 +306,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
+      ...enemyDrops(),
       if (enemy.originalEnemyScript?.isNotEmpty == true) ...[
         CustomTableRow.fromTexts(
           texts: const ['Enemy Script'],
@@ -323,6 +324,40 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           ])
       ]
     ]);
+  }
+
+  Iterable<Widget> enemyDrops() sync* {
+    if (enemy.drops.isEmpty) return;
+    yield CustomTableRow.fromTexts(
+        texts: ['${S.current.game_drop}(${enemy.drops.first.runs} runs)'],
+        isHeader: true);
+    final drops = enemy.drops.toList();
+    drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
+    List<Widget> children = [];
+    for (final drop in drops.reversed) {
+      String? text;
+      if (drop.runs != 0) {
+        double dropRate = drop.dropCount / drop.runs;
+        text = dropRate.format(percent: true, maxDigits: 3);
+      }
+      if (text != null) {
+        if (drop.num == 1) {
+          text = ' \n$text';
+        } else {
+          text = '×${drop.num.format(minVal: 999)}\n$text';
+        }
+      }
+      children.add(GameCardMixin.anyCardItemBuilder(
+        context: context,
+        id: drop.objectId,
+        width: 42,
+        text: text ?? '-',
+        option:
+            ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+      ));
+    }
+    yield CustomTableRow.fromChildren(
+        children: [Wrap(spacing: 3, runSpacing: 2, children: children)]);
   }
 
   List<Widget> enemyScriptInfo() {

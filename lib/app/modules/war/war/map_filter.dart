@@ -8,7 +8,7 @@ import 'package:chaldea/models/models.dart';
 class WarMapFilterData {
   bool showSpots = true;
   bool freeSpotsOnly = true;
-  bool showRoads = true;
+  bool showRoads = false;
   bool showHeader = true;
 
   final gimmick = FilterGroupData<int?>();

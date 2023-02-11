@@ -210,6 +210,7 @@ class MultipleWindow extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
         appBar: AppBar(
+          toolbarHeight: 42,
           title: const Text(kAppName),
           actions: [
             DropdownButton<Language>(

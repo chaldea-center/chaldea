@@ -125,8 +125,9 @@ extension ListX<T> on List<T> {
   }
 
   static int compareByList<T, V extends Comparable>(
-      T a, T b, List<V> Function(T v) test) {
-    final la = test(a), lb = test(b);
+      T a, T b, List<V> Function(T v) test,
+      [bool reversed = false]) {
+    final la = test(reversed ? b : a), lb = test(reversed ? a : b);
     for (int index = 0; index < la.length; index++) {
       if (lb.length <= index) return 1;
       int r = la[index].compareTo(lb[index]);

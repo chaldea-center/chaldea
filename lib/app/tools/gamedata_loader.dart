@@ -267,8 +267,10 @@ class GameDataLoader {
     GameData _gamedata = GameData.fromJson(_gameJson);
     if (!offline) {
       logger.i(
-          'Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
-      _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
+          '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
+      if (newVersion != oldVersion) {
+        _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
+      }
       for (final entry in _dataToWrite.entries) {
         if (kDebugMode) print('writing ${basename(entry.key.path)}');
         await entry.key.writeAsBytes(entry.value);

@@ -375,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 SwitchListTile.adaptive(
                   value: db.runtimeData.showSkillOriginText,
-                  title: const Text('Show Origin Skill/NP Description'),
+                  title: const Text('Show original skill/NP detail'),
                   onChanged: (v) {
                     setState(() {
                       db.runtimeData.showSkillOriginText = v;

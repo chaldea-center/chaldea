@@ -263,7 +263,7 @@ class QuestEnemyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnemyThumbBase(
-      icon: enemy.svt.icon,
+      icon: showIcon ? enemy.svt.icon : null,
       hidden: enemy.misc?.displayType == 2 && !showTrueName,
       name: showTrueName ? enemy.svt.lName.l : enemy.lShownName,
       className: enemy.svt.className,
@@ -285,14 +285,12 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
   final bool showTrueName;
   final bool showDeck;
   final Region? region;
-  final bool showIcon;
 
   const QuestPhaseAiNpcWidget({
     super.key,
     required this.aiNpc,
     this.showTrueName = false,
     this.showDeck = false,
-    this.showIcon = true,
     required this.region,
   });
 

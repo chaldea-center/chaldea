@@ -11,7 +11,9 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
-  const FreeQuestOverview({super.key, required this.quests});
+  final bool showEventItem;
+  const FreeQuestOverview(
+      {super.key, required this.quests, required this.showEventItem});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -60,27 +62,31 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                 overscroll: false,
                 physics: const ClampingScrollPhysics(),
               ),
-              child: DataTable2(
-                columns: [
-                  DataColumn2(
-                    label: Text(
-                        '${S.current.quest} (${phases.length}/${widget.quests.length})'),
-                    size: ColumnSize.S,
-                  ),
-                  DataColumn2(label: Text(S.current.svt_class), fixedWidth: 48),
-                  const DataColumn2(
-                      label: Text('Event Item'), size: ColumnSize.L),
-                  const DataColumn2(
-                      label: Text('Normal Items'), size: ColumnSize.L),
-                ],
-                rows: widget.quests.map((e) => buildRow(e)).toList(),
-                fixedLeftColumns: 1,
-                fixedTopRows: 1,
-                minWidth: 800,
-                columnSpacing: 8,
-                headingRowHeight: 36,
-                horizontalMargin: 8,
-                smRatio: 0.5,
+              child: SafeArea(
+                child: DataTable2(
+                  columns: [
+                    DataColumn2(
+                      label: Text(
+                          '${S.current.quest} (${phases.length}/${widget.quests.length})'),
+                      size: ColumnSize.S,
+                    ),
+                    DataColumn2(
+                        label: Text(S.current.svt_class), fixedWidth: 48),
+                    if (widget.showEventItem)
+                      const DataColumn2(
+                          label: Text('Event Item'), size: ColumnSize.L),
+                    const DataColumn2(
+                        label: Text('Normal Items'), size: ColumnSize.L),
+                  ],
+                  rows: widget.quests.map((e) => buildRow(e)).toList(),
+                  fixedLeftColumns: 1,
+                  fixedTopRows: 1,
+                  minWidth: widget.showEventItem ? 800 : 500,
+                  columnSpacing: 8,
+                  headingRowHeight: 36,
+                  horizontalMargin: 8,
+                  smRatio: 0.5,
+                ),
               ),
             ),
           ),
@@ -109,7 +115,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       return DataRow2(cells: [
         header,
         const DataCell(Text(''), placeholder: true),
-        for (final _ in [0, 2])
+        for (int i = 0; i < (widget.showEventItem ? 2 : 1); i++)
           DataCell(
             _loading
                 ? const CupertinoActivityIndicator(radius: 8)
@@ -183,7 +189,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           .take(2)
           .map((e) => db.getIconImage(e.icon(5), width: 26))
           .toList())),
-      DataCell(wrap(eventItems)),
+      if (widget.showEventItem) DataCell(wrap(eventItems)),
       DataCell(wrap(normalItems)),
     ]);
   }

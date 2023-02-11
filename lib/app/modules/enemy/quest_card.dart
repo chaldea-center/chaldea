@@ -800,30 +800,13 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  List<int> _compareItem(int e) {
-    final item = db.gameData.items[e];
-    final ce = db.gameData.craftEssencesById[e];
-    return <int>[
-      ce != null
-          ? -2
-          : item != null
-              ? -1
-              : 0,
-      ce != null
-          ? ce.collectionNo
-          : item != null
-              ? -item.priority
-              : e,
-    ];
-  }
-
   /// only drops of free quest useApRate
   Widget _getDomusAureaWidget() {
     final dropRates = db.gameData.dropRate.getSheet(use6th);
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.questId).entries.toList();
-      drops.sortByList((e) => _compareItem(e.key));
+      drops.sort((a, b) => Item.compare2(a.key, b.key, true));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value > 1000
             ? entry.value.toInt().toString()
@@ -831,7 +814,7 @@ class _QuestCardState extends State<QuestCard> {
       }
     } else {
       final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
-      drops.sortByList((e) => _compareItem(e.key));
+      drops.sort((a, b) => Item.compare2(a.key, b.key, true));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 3);
       }
@@ -856,7 +839,7 @@ class _QuestCardState extends State<QuestCard> {
 
   Widget _getRayshiftDrops(List<EnemyDrop> drops) {
     drops = List.of(drops);
-    drops.sortByList((e) => _compareItem(e.objectId));
+    drops.sort((a, b) => Item.compare2(a.objectId, b.objectId, true));
     List<Widget> children = [];
     for (final drop in drops) {
       String? text;

@@ -8,6 +8,7 @@ import 'common.dart';
 import 'game_card.dart';
 import 'mappings.dart';
 import 'quest.dart';
+import 'servant.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
@@ -203,6 +204,29 @@ class Item {
     if (a != null && b != null) return a - b;
     if (a == null && b == null) return 0;
     return a == null ? -1 : 1;
+  }
+
+  static int _getType(int a) {
+    if (db.gameData.craftEssencesById.containsKey(a)) return 3;
+    if (db.gameData.items.containsKey(a)) return 2;
+    if (db.gameData.servantsById[a]?.type == SvtType.combineMaterial) {
+      return 1;
+    }
+    return 4; // unknown
+  }
+
+  static int _getPriority(int a) {
+    return db.gameData.items[a]?.priority ??
+        db.gameData.craftEssencesById[a]?.collectionNo ??
+        a;
+  }
+
+  // item/ce/svt
+  static int compare2(int id1, int id2, [bool reversed = false]) {
+    // priority越大越金
+    // ce3->item2->ember1
+    return ListX.compareByList(
+        id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
   }
 
   static Map<int, int> sortMapByPriority(

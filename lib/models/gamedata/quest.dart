@@ -856,8 +856,7 @@ class QuestEnemy with GameCardMixin {
   @override
   String name;
   BasicServant svt;
-
-  // List<EnemyDrop> drops;
+  List<EnemyDrop> drops;
   int lv;
   int exp;
   int atk;
@@ -894,7 +893,7 @@ class QuestEnemy with GameCardMixin {
     required this.roleType,
     required this.name,
     required this.svt,
-    // this.drops = const [],
+    this.drops = const [],
     required this.lv,
     this.exp = 0,
     required this.atk,

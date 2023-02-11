@@ -454,6 +454,11 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       roleType: $enumDecode(_$EnemyRoleTypeEnumMap, json['roleType']),
       name: json['name'] as String,
       svt: BasicServant.fromJson(Map<String, dynamic>.from(json['svt'] as Map)),
+      drops: (json['drops'] as List<dynamic>?)
+              ?.map((e) =>
+                  EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       lv: json['lv'] as int,
       exp: json['exp'] as int? ?? 0,
       atk: json['atk'] as int,
