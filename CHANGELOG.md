@@ -1,3 +1,13 @@
+# 2.2.5
+
+- Add wars to home page
+- Import command code from http sniffing
+- Improve skill and enemy descriptor
+- Add trait in filters
+- Add route history
+- Support system tray for desktop
+- Tool - combine images
+
 # 2.2.4
 
 - Add free quest drop item table
