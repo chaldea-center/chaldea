@@ -80,7 +80,7 @@ class MissionSolver extends BaseLPSolver {
     } else {
       for (final enemy in quest.allEnemies) {
         if (enemy.deck != DeckType.enemy) continue;
-        if (!includeRare && enemy.isRare) {
+        if (!includeRare && enemy.enemyScript.isRare) {
           continue;
         }
         final results = mission.conds.map((cond) {

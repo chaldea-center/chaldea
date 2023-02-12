@@ -21,6 +21,7 @@ class FreeQuestOverview extends StatefulWidget {
 
 class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Map<int, QuestPhase> phases = {};
+  Map<int, List<Quest>> spots = {};
   bool _loading = false;
 
   @override
@@ -33,6 +34,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     _loading = true;
     phases.clear();
     if (mounted) setState(() {});
+    for (final quest in widget.quests) {
+      spots.putIfAbsent(quest.spotId, () => []).add(quest);
+    }
     await Future.wait(widget.quests.map((quest) async {
       if (quest.phases.isEmpty) return null;
       await Future.delayed(const Duration(milliseconds: 800));
@@ -71,7 +75,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       size: ColumnSize.S,
                     ),
                     DataColumn2(
-                        label: Text(S.current.svt_class), fixedWidth: 48),
+                        label: Text(S.current.svt_class), fixedWidth: 56),
                     if (widget.showEventItem)
                       const DataColumn2(
                           label: Text('Event Item'), size: ColumnSize.L),
@@ -96,15 +100,16 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       ),
     );
   }
-  // Widget settings(){
-  //   return null;
-  // }
 
   DataRow buildRow(Quest quest) {
     final phase = phases[quest.id];
+    String name = quest.lSpot.l;
+    if ((spots[quest.spotId]?.length ?? 0) > 1) {
+      name += ' (${quest.lName.l})';
+    }
     final header = DataCell(
       AutoSizeText(
-        quest.lName.l,
+        name,
         textScaleFactor: 0.9,
         maxLines: 2,
         minFontSize: 10,
@@ -114,7 +119,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     if (phase == null) {
       return DataRow2(cells: [
         header,
-        const DataCell(Text(''), placeholder: true),
+        const DataCell(Text('  '), placeholder: true),
         for (int i = 0; i < (widget.showEventItem ? 2 : 1); i++)
           DataCell(
             _loading
@@ -187,7 +192,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       header,
       DataCell(wrap(phase.className
           .take(2)
-          .map((e) => db.getIconImage(e.icon(5), width: 26))
+          .map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))
           .toList())),
       if (widget.showEventItem) DataCell(wrap(eventItems)),
       DataCell(wrap(normalItems)),

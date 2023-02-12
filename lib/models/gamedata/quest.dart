@@ -159,14 +159,11 @@ class Quest with RouteInfo {
     }
     final extraNames = allNames.where((e) => e != shownName).toList();
     if (extraNames.isEmpty) return Transl.spotNames(shownName);
-    final m = MappingBase<String>(jp: '$shownName (${extraNames.join(" / ")})')
-        .convert((v, region) => region == Region.jp
-            ? v
-            : extraNames.any(
-                    (e) => Transl.md.spotNames[e]?.ofRegion(region) != null)
-                ? '$shownName (${extraNames.join(" / ")})'
-                : '${Transl.spotNames(shownName).of(region)}'
-                    ' (${extraNames.map((e) => Transl.spotNames(e).of(region)).join(" / ")})');
+    final m = MappingBase<String>().convert<String>((v, region) {
+      String _cvt(String s) => Transl.spotNames(s).of(region);
+      if (region == Region.jp) return '$shownName (${extraNames.join(" / ")})';
+      return '${_cvt(shownName)} (${extraNames.map((e) => _cvt(e)).join(" / ")})';
+    });
     return Transl({m.jp!: m}, m.jp!, m.jp!);
   }
 
@@ -876,7 +873,7 @@ class QuestEnemy with GameCardMixin {
   EnemyServerMod serverMod;
 
   EnemyAi? ai;
-  EnemyScript? enemyScript;
+  EnemyScript enemyScript;
   Map<String, dynamic>? originalEnemyScript;
   EnemyInfoScript? infoScript;
   Map<String, dynamic>? originalInfoScript;
@@ -910,7 +907,7 @@ class QuestEnemy with GameCardMixin {
     EnemyTd? noblePhantasm,
     required this.serverMod,
     this.ai,
-    this.enemyScript,
+    EnemyScript? enemyScript,
     this.originalEnemyScript,
     this.infoScript,
     this.originalInfoScript,
@@ -918,10 +915,15 @@ class QuestEnemy with GameCardMixin {
     this.misc,
   })  : skills = skills ?? EnemySkill(),
         classPassive = classPassive ?? EnemyPassive(),
-        noblePhantasm = noblePhantasm ?? EnemyTd();
+        noblePhantasm = noblePhantasm ?? EnemyTd(),
+        enemyScript = enemyScript ?? EnemyScript();
 
-  factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
-      _$QuestEnemyFromJson(json);
+  factory QuestEnemy.fromJson(Map<String, dynamic> json) {
+    final enemy = _$QuestEnemyFromJson(json);
+    enemy.enemyScript.setSource(enemy.originalEnemyScript);
+    enemy.infoScript?.setSource(enemy.originalInfoScript);
+    return enemy;
+  }
 
   String get lShownName {
     if (name.isEmpty || name == 'NONE') {
@@ -968,9 +970,6 @@ class QuestEnemy with GameCardMixin {
       popDetails: popDetails,
     );
   }
-
-  bool get isRare =>
-      originalEnemyScript?.containsKey('probability_type') == true;
 }
 
 @JsonSerializable()
@@ -1054,6 +1053,10 @@ class EnemyScript with DataScriptBase {
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) =>
       _$EnemyScriptFromJson(json)..setSource(json);
+
+  bool get isRare => source.containsKey('probability_type') == true;
+
+  int? get dispBreakShift => source['dispBreakShift'] as int?;
 }
 
 @JsonSerializable()

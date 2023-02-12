@@ -110,28 +110,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
     String lShortName = shortNames.map((e) => Transl.warNames(e).l).join('\n');
     String shortNameJp = shortNames.join('\n');
 
-    Quest? firstMainQuest;
-    NiceWar? condWar;
-    if (war.startType == WarStartType.quest) {
-      firstMainQuest = war.quests.firstWhereOrNull((q) => q.id == war.targetId);
-    }
-    if (firstMainQuest == null) {
-      final mainQuests =
-          war.quests.where((e) => e.type == QuestType.main).toList();
-      mainQuests.sort2((e) => -e.priority);
-      firstMainQuest = mainQuests.getOrNull(0);
-    }
-    if (firstMainQuest != null) {
-      final targetId = firstMainQuest.releaseConditions
-          .firstWhereOrNull((cond) => cond.type == CondType.questClear)
-          ?.targetId;
-      final condQuest = db.gameData.quests[targetId];
-      if (targetId == condQuest?.war?.lastQuestId) {
-        // usually only main story use the lastQuestId
-        condWar = condQuest?.war;
-      }
-    }
-
     children.add(CustomTable(
       selectable: true,
       children: [
@@ -190,42 +168,6 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 style: kTextButtonDenseStyle,
                 child: Text(
                   war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
-                  textAlign: TextAlign.center,
-                  textScaleFactor: 0.9,
-                ),
-              ),
-            )
-          ]),
-        if (condWar != null)
-          CustomTableRow(children: [
-            TableCellData(isHeader: true, text: S.current.open_condition),
-            TableCellData(
-              flex: 3,
-              child: TextButton(
-                onPressed: () {
-                  condWar?.routeTo();
-                },
-                style: kTextButtonDenseStyle,
-                child: Text(
-                  condWar.lShortName,
-                  textAlign: TextAlign.center,
-                  textScaleFactor: 0.9,
-                ),
-              ),
-            )
-          ]),
-        if (war.bgm.id != 0)
-          CustomTableRow(children: [
-            TableCellData(isHeader: true, text: S.current.bgm),
-            TableCellData(
-              flex: 3,
-              child: TextButton(
-                onPressed: () {
-                  war.bgm.routeTo();
-                },
-                style: kTextButtonDenseStyle,
-                child: Text(
-                  war.bgm.tooltip.setMaxLines(1),
                   textAlign: TextAlign.center,
                   textScaleFactor: 0.9,
                 ),
@@ -430,6 +372,48 @@ class _WarDetailPageState extends State<WarDetailPage> {
       ),
       body: ListView(children: children),
     );
+  }
+
+  Widget? getCondWar() {
+    Quest? firstMainQuest;
+    NiceWar? condWar;
+    if (war.startType == WarStartType.quest) {
+      firstMainQuest = war.quests.firstWhereOrNull((q) => q.id == war.targetId);
+    }
+    if (firstMainQuest == null) {
+      final mainQuests =
+          war.quests.where((e) => e.type == QuestType.main).toList();
+      mainQuests.sort2((e) => -e.priority);
+      firstMainQuest = mainQuests.getOrNull(0);
+    }
+    if (firstMainQuest != null) {
+      final targetId = firstMainQuest.releaseConditions
+          .firstWhereOrNull((cond) => cond.type == CondType.questClear)
+          ?.targetId;
+      final condQuest = db.gameData.quests[targetId];
+      if (targetId == condQuest?.war?.lastQuestId) {
+        // usually only main story use the lastQuestId
+        condWar = condQuest?.war;
+      }
+    }
+    if (condWar == null) return null;
+    return CustomTableRow(children: [
+      TableCellData(isHeader: true, text: S.current.open_condition),
+      TableCellData(
+        flex: 3,
+        child: TextButton(
+          onPressed: () {
+            condWar?.routeTo();
+          },
+          style: kTextButtonDenseStyle,
+          child: Text(
+            condWar.lShortName,
+            textAlign: TextAlign.center,
+            textScaleFactor: 0.9,
+          ),
+        ),
+      )
+    ]);
   }
 
   Widget addQuests() {

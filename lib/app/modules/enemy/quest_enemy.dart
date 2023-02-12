@@ -223,6 +223,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         )
       ],
       ...enemyScriptInfo(),
+      ...enemyDrops(),
       if (enemy.skills.skill1 != null ||
           enemy.skills.skill2 != null ||
           enemy.skills.skill3 != null)
@@ -306,7 +307,6 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
-      ...enemyDrops(),
       if (enemy.originalEnemyScript?.isNotEmpty == true) ...[
         CustomTableRow.fromTexts(
           texts: const ['Enemy Script'],
@@ -362,9 +362,9 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   List<Widget> enemyScriptInfo() {
     List<Widget> children = [
-      if (enemy.isRare)
+      if (enemy.enemyScript.isRare)
         CustomTableRow.fromTexts(texts: [S.current.rare_enemy_hint]),
-      if (enemy.enemyScript?.leader == true)
+      if (enemy.enemyScript.leader == true)
         CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
     ];
     if (children.isNotEmpty) {

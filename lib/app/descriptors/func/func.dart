@@ -564,7 +564,7 @@ class FuncDescriptor extends StatelessWidget {
         );
       }
       if (vals?.ShowState == -1) {
-        icon = Opacity(opacity: 0.5, child: icon);
+        icon = Opacity(opacity: 0.6, child: icon);
       }
     } else if (func.funcType == FuncType.eventFortificationPointUp) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;

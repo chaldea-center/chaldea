@@ -37,22 +37,26 @@ class QuestWave extends StatelessWidget {
     Widget _buildEnemyWithShift(QuestEnemy? enemy, {bool showDeck = false}) {
       if (enemy == null) return const SizedBox();
       List<Widget> parts = [];
+      final dispBreakShift = enemy.enemyScript.dispBreakShift ?? -1;
+      const lineThrough = TextStyle(decoration: TextDecoration.lineThrough);
       parts.add(QuestEnemyWidget(
         enemy: enemy,
         showTrueName: showTrueName,
         showDeck: showDeck,
         region: region,
+        textStyle: dispBreakShift > 1 ? lineThrough : null,
       ));
-      if (enemy.enemyScript?.shift != null) {
+      if (enemy.enemyScript.shift != null) {
         QuestEnemy prev = enemy;
-        for (final shift in enemy.enemyScript!.shift!) {
-          final shiftEnemy = npcs[shift];
+        for (int index = 0; index < enemy.enemyScript.shift!.length; index++) {
+          final shiftEnemy = npcs[enemy.enemyScript.shift![index]];
           if (shiftEnemy == null || shiftEnemy.deck != DeckType.shift) continue;
           parts.add(QuestEnemyWidget(
             enemy: shiftEnemy,
             showTrueName: showTrueName,
             showDeck: showDeck,
             showIcon: shiftEnemy.svt.icon != prev.svt.icon,
+            textStyle: index + 2 < dispBreakShift ? lineThrough : null,
             region: region,
           ));
           prev = shiftEnemy;
@@ -120,7 +124,7 @@ class QuestWave extends StatelessWidget {
     children.addAll(_buildDeck(_enemyDeck, needSort: true));
     for (final e in _enemyDeck) {
       _usedNpcIds.add(e.npcId);
-      _usedNpcIds.addAll(e.enemyScript?.shift ?? []);
+      _usedNpcIds.addAll(e.enemyScript.shift ?? []);
     }
     // call deck
     final _callDeck =
@@ -216,18 +220,17 @@ class WaveInfoPage extends StatelessWidget {
                 TextSpan(
                   children: List.generate(stage.fieldAis.length, (index) {
                     final ai = stage.fieldAis[index];
-                    final linebreak =
-                        index % 3 == 2 && index < stage.fieldAis.length - 1;
+                    int perLine = max(3, (stage.fieldAis.length / 2).ceil());
                     return TextSpan(children: [
                       SharedBuilder.textButtonSpan(
                         context: context,
-                        text: ai.id.toString() + (linebreak ? '\n' : ''),
+                        text: ai.id.toString(),
                         onTap: () {
                           launch(Atlas.ai(ai.id, false));
                         },
                       ),
                       if (index < stage.fieldAis.length - 1)
-                        TextSpan(text: index % 3 == 2 ? '\n' : ', '),
+                        TextSpan(text: index == perLine - 1 ? '\n' : ', '),
                     ]);
                   }),
                 ),
@@ -248,6 +251,7 @@ class QuestEnemyWidget extends StatelessWidget {
   final QuestEnemy enemy;
   final bool showTrueName;
   final bool showDeck;
+  final TextStyle? textStyle;
   final Region? region;
   final bool showIcon;
 
@@ -257,6 +261,7 @@ class QuestEnemyWidget extends StatelessWidget {
     this.showTrueName = false,
     this.showDeck = false,
     this.showIcon = true,
+    this.textStyle,
     required this.region,
   });
 
@@ -273,6 +278,7 @@ class QuestEnemyWidget extends StatelessWidget {
         if (showDeck) '[${enemy.deck.name}]',
         if (enemy.deck != DeckType.enemy) '*'
       ].join(),
+      textStyle: textStyle,
       onTap: () {
         router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
       },
@@ -330,6 +336,7 @@ class EnemyThumbBase extends StatelessWidget {
   final int? rarity;
   final int hp;
   final String? deck;
+  final TextStyle? textStyle;
   final VoidCallback? onTap;
 
   const EnemyThumbBase({
@@ -341,6 +348,7 @@ class EnemyThumbBase extends StatelessWidget {
     this.rarity,
     required this.hp,
     this.deck,
+    this.textStyle,
     this.onTap,
   });
 
@@ -387,6 +395,7 @@ class EnemyThumbBase extends StatelessWidget {
             minFontSize: 1,
             maxLines: 1,
             textAlign: TextAlign.center,
+            style: textStyle,
           ),
         )
       ],

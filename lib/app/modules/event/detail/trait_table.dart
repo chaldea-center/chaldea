@@ -69,7 +69,8 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
       final q = await AtlasApi.questPhase(e.id, e.phases.last, region: region);
       if (q != null) {
         questPhases.add(q);
-        if (!filterData.hasRare && q.allEnemies.any((e) => e.isRare)) {
+        if (!filterData.hasRare &&
+            q.allEnemies.any((e) => e.enemyScript.isRare)) {
           filterData.hasRare = true;
         }
       }
