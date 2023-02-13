@@ -157,14 +157,15 @@ class Quest with RouteInfo {
         shownName = add.targetText;
       }
     }
-    final extraNames = allNames.where((e) => e != shownName).toList();
-    if (extraNames.isEmpty) return Transl.spotNames(shownName);
-    final m = MappingBase<String>().convert<String>((v, region) {
-      String _cvt(String s) => Transl.spotNames(s).of(region);
-      if (region == Region.jp) return '$shownName (${extraNames.join(" / ")})';
-      return '${_cvt(shownName)} (${extraNames.map((e) => _cvt(e)).join(" / ")})';
-    });
-    return Transl({m.jp!: m}, m.jp!, m.jp!);
+    return Transl.spotNames(shownName);
+    // final extraNames = allNames.where((e) => e != shownName).toList();
+    // if (extraNames.isEmpty) return Transl.spotNames(shownName);
+    // final m = MappingBase<String>().convert<String>((v, region) {
+    //   String _cvt(String s) => Transl.spotNames(s).of(region);
+    //   if (region == Region.jp) return '$shownName (${extraNames.join(" / ")})';
+    //   return '${_cvt(shownName)} (${extraNames.map((e) => _cvt(e)).join(" / ")})';
+    // });
+    // return Transl({m.jp!: m}, m.jp!, m.jp!);
   }
 
   String get lDispName {

@@ -494,7 +494,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
           router.pushPage(FreeQuestOverview(
-              quests: freeQuests, showEventItem: !war.isMainStory));
+              quests: freeQuests, isMainStory: war.isMainStory));
         },
       ));
     }

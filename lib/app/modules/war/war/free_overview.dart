@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -11,9 +13,9 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
-  final bool showEventItem;
+  final bool isMainStory;
   const FreeQuestOverview(
-      {super.key, required this.quests, required this.showEventItem});
+      {super.key, required this.quests, required this.isMainStory});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -39,7 +41,6 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
     await Future.wait(widget.quests.map((quest) async {
       if (quest.phases.isEmpty) return null;
-      await Future.delayed(const Duration(milliseconds: 800));
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
       if (phase != null) phases[quest.id] = phase;
       if (mounted) setState(() {});
@@ -50,6 +51,13 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
   @override
   Widget build(BuildContext context) {
+    final data = getInfo();
+    int maxCount = Maths.max(data.map((info) => Maths.max([
+          info.domusItems.length,
+          info.eventItems.length,
+          info.normalItems.length
+        ])));
+    maxCount = maxCount.clamp(3, 8);
     return Scaffold(
       appBar: AppBar(title: Text(S.current.free_quest)),
       body: Column(
@@ -72,20 +80,24 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     DataColumn2(
                       label: Text(
                           '${S.current.quest} (${phases.length}/${widget.quests.length})'),
-                      size: ColumnSize.S,
+                      fixedWidth: 150,
                     ),
                     DataColumn2(
-                        label: Text(S.current.svt_class), fixedWidth: 56),
-                    if (widget.showEventItem)
-                      const DataColumn2(
-                          label: Text('Event Item'), size: ColumnSize.L),
-                    const DataColumn2(
-                        label: Text('Normal Items'), size: ColumnSize.L),
+                        label: Text(S.current.svt_class), fixedWidth: 64),
+                    DataColumn2(
+                        label: Text(widget.isMainStory
+                            ? S.current.fgo_domus_aurea
+                            : S.current.item),
+                        size: ColumnSize.L),
+                    DataColumn2(
+                        label: Text(
+                            widget.isMainStory ? 'Rayshift' : S.current.item),
+                        size: ColumnSize.L),
                   ],
-                  rows: widget.quests.map((e) => buildRow(e)).toList(),
+                  rows: data.map((info) => buildRow(info, maxCount)).toList(),
                   fixedLeftColumns: 1,
                   fixedTopRows: 1,
-                  minWidth: widget.showEventItem ? 800 : 500,
+                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64,
                   columnSpacing: 8,
                   headingRowHeight: 36,
                   horizontalMargin: 8,
@@ -101,13 +113,20 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     );
   }
 
-  DataRow buildRow(Quest quest) {
-    final phase = phases[quest.id];
-    String name = quest.lSpot.l;
-    if ((spots[quest.spotId]?.length ?? 0) > 1) {
-      name += ' (${quest.lName.l})';
+  DataRow buildRow(_DropInfo info, int countPerLine) {
+    List<DataCell> cells = [];
+    final quest = info.quest, phase = info.phase;
+    String name;
+    if (spots.length > 1) {
+      name = quest.lSpot.l;
+      if ((spots[quest.spotId]?.length ?? 0) > 1) {
+        name += ' (${quest.lName.l})';
+      }
+    } else {
+      name = quest.lName.l;
     }
-    final header = DataCell(
+
+    cells.add(DataCell(
       AutoSizeText(
         name,
         textScaleFactor: 0.9,
@@ -115,61 +134,115 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         minFontSize: 10,
       ),
       onTap: quest.routeTo,
-    );
+    ));
+    Widget wrap(Iterable<Widget> children) {
+      if (children.isEmpty) return const SizedBox.shrink();
+      return Wrap(children: children.toList());
+    }
+
+    DataCell clsIcons;
     if (phase == null) {
-      return DataRow2(cells: [
-        header,
-        const DataCell(Text('  '), placeholder: true),
-        for (int i = 0; i < (widget.showEventItem ? 2 : 1); i++)
-          DataCell(
-            _loading
-                ? const CupertinoActivityIndicator(radius: 8)
-                : const Text('NO DATA'),
-            placeholder: true,
-          ),
-      ]);
+      clsIcons = DataCell(
+        _loading
+            ? const CupertinoActivityIndicator(radius: 8)
+            : const Text(' - '),
+        placeholder: true,
+      );
+    } else {
+      clsIcons = DataCell(wrap(phase.className
+          .take(2)
+          .map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))));
     }
-    Map<int, List<EnemyDrop>> allDrops = {};
-    for (final drop in phase.drops) {
-      allDrops.putIfAbsent(drop.objectId, () => []).add(drop);
+    cells.add(clsIcons);
+
+    void _addItems(Map<int, Widget> items) {
+      final ids = items.keys.toList();
+      ids.sort((a, b) => Item.compare2(a, b, true));
+      cells.add(DataCell(wrap(ids.map((e) => items[e]!))));
     }
-    final ids = allDrops.keys.toList();
-    ids.sort2((e) => db.gameData.items[e]?.dropPriority ?? e, reversed: true);
-    List<Widget> eventItems = [], normalItems = [];
-    for (final objectId in ids) {
-      final drops = allDrops[objectId]!;
-      final ce = db.gameData.craftEssencesById[objectId];
-      if (ce != null) {
-        if (ce.flag != SvtFlag.svtEquipExp) {
-          eventItems.add(ce.iconBuilder(context: context, width: 36));
-        }
-        continue;
+
+    final items1 = widget.isMainStory ? info.domusItems : info.eventItems;
+    final items2 = info.normalItems;
+    _addItems(items1);
+    _addItems(items2);
+    int lines = (max(items1.length, items2.length) / countPerLine).ceil();
+    if (lines < 1) lines = 1;
+    return DataRow2(
+      cells: cells,
+      specificRowHeight: 48.0 * lines,
+    );
+  }
+
+  final iconWidth = 36.0;
+
+  List<_DropInfo> getInfo() {
+    List<_DropInfo> data = [];
+    final quests = widget.quests.toList();
+    quests.sort2((e) => e.priority);
+    for (final quest in quests) {
+      final info = _DropInfo(quest);
+      data.add(info);
+      // domus
+      final drops =
+          db.gameData.dropRate.getSheet(true).getQuestDropRate(quest.id);
+      drops.removeWhere((id, value) =>
+          db.gameData.items[id]?.category != ItemCategory.normal);
+      for (final id in drops.keys) {
+        if (db.gameData.items[id]?.category != ItemCategory.normal) continue;
+        info.domusItems[id] = Item.iconBuilder(
+          context: context,
+          item: null,
+          itemId: id,
+          width: iconWidth,
+          text: drops[id]!.format(percent: true, maxDigits: 3),
+        );
       }
-      final item = db.gameData.items[objectId];
-      if (item != null) {
+
+      // rayshift
+      final phase = info.phase = phases[quest.id];
+      if (phase == null) continue;
+      Map<int, List<EnemyDrop>> allDrops = {};
+      for (final drop in phase.drops) {
+        allDrops.putIfAbsent(drop.objectId, () => []).add(drop);
+      }
+
+      for (final id in allDrops.keys) {
+        final drops = allDrops[id]!;
+        double base = Maths.sum(drops.map((e) => e.num * e.dropCount / e.runs));
+        double bonus = Maths.sum(drops.map((e) => e.dropCount / e.runs));
+        final ce = db.gameData.craftEssencesById[id];
+        if (ce != null) {
+          if (ce.flag != SvtFlag.svtEquipExp) {
+            info.eventItems[id] = ce.iconBuilder(
+              context: context,
+              width: iconWidth,
+              text: base.format(percent: true, maxDigits: 3),
+            );
+          }
+          continue;
+        }
+
+        final item = db.gameData.items[id];
+        if (item == null) continue;
         switch (item.category) {
           case ItemCategory.normal:
-            normalItems.add(Item.iconBuilder(
+            info.normalItems[id] = Item.iconBuilder(
               context: context,
               item: item,
-              width: 36,
-              text: Maths.sum(drops.map((e) => e.num * e.dropCount / e.runs))
-                  .format(percent: true, maxDigits: 3),
-            ));
+              width: iconWidth,
+              text: base.format(percent: true, maxDigits: 3),
+            );
             break;
           case ItemCategory.event:
           case ItemCategory.other:
-            double base =
-                Maths.sum(drops.map((e) => e.num * e.dropCount / e.runs));
-            double bonus = Maths.sum(drops.map((e) => e.dropCount / e.runs));
-            eventItems.add(Item.iconBuilder(
+            info.eventItems[id] = Item.iconBuilder(
               context: context,
               item: item,
-              width: 36,
+              width: iconWidth,
               text:
                   '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}B',
               option: ImageWithTextOption(textAlign: TextAlign.end),
-            ));
+            );
             break;
           case ItemCategory.special:
           case ItemCategory.ascension:
@@ -180,22 +253,15 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         }
       }
     }
-    Widget wrap(List<Widget> children) {
-      if (children.isEmpty) return const SizedBox();
-      return FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Wrap(children: children),
-      );
-    }
-
-    return DataRow2(cells: [
-      header,
-      DataCell(wrap(phase.className
-          .take(2)
-          .map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))
-          .toList())),
-      if (widget.showEventItem) DataCell(wrap(eventItems)),
-      DataCell(wrap(normalItems)),
-    ]);
+    return data;
   }
+}
+
+class _DropInfo {
+  final Quest quest;
+  QuestPhase? phase;
+  Map<int, Widget> domusItems = {};
+  Map<int, Widget> eventItems = {};
+  Map<int, Widget> normalItems = {};
+  _DropInfo(this.quest);
 }

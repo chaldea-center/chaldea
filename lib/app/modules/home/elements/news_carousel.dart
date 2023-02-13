@@ -93,7 +93,7 @@ class AppNewsCarousel extends StatefulWidget {
 
       // app news
       taskChaldea =
-          _dio.get('${Hosts.dataHost}/news.json').then((response) async {
+          _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
         List<CarouselItem> items = [];
         final data =
             (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
