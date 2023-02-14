@@ -521,6 +521,15 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             kr: null,
           );
         }
+      case CondType.allSvtTargetSkillLvNum:
+        return localized(
+          jp: () => text('スキル$targetNumつをLv.${targetIds.join("/")}以上にせよ'),
+          cn: () => text('升级$targetNum个技能至Lv.${targetIds.join("/")}以上'),
+          tw: null,
+          na: () => text(
+              'Upgrade $targetNum skills to Lv.${targetIds.join("/")} or higher'),
+          kr: null,
+        );
       case CondType.notShopPurchase:
         final countText = targetNum == 1
             ? ""

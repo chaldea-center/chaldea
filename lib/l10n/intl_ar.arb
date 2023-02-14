@@ -639,6 +639,7 @@
   "special_reward_hide": null,
   "special_reward_show": null,
   "spoiler_setting": null,
+  "map_layer_n": null,
   "sprites": "الأرواح",
   "sq_buy_pack_unit": null,
   "sq_fragment_convert": null,

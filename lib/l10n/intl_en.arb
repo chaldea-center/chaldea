@@ -639,6 +639,7 @@
   "special_reward_hide": "Hide Special Rewards",
   "special_reward_show": "Show Special Rewards",
   "spoiler_setting": "Spoiler Setting",
+  "map_layer_n": "Layer {layer}",
   "sprites": "Sprites",
   "sq_buy_pack_unit": "Pack(s)",
   "sq_fragment_convert": "21 Fragments = 3 Quartzs",

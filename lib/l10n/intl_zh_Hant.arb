@@ -639,6 +639,7 @@
   "special_reward_hide": "隱藏特殊報酬",
   "special_reward_show": "顯示特殊報酬",
   "spoiler_setting": null,
+  "map_layer_n": null,
   "sprites": "模型",
   "sq_buy_pack_unit": null,
   "sq_fragment_convert": "21聖晶片=3聖晶石",

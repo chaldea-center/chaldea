@@ -24,6 +24,7 @@ class MainStoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<NiceWar> mainStories = db.gameData.mainStories.values.toList();
+    mainStories.removeWhere((war) => war.spots.isEmpty);
     if (!showOutdated) {
       mainStories.removeWhere((e) {
         final plan = db.curUser.mainStoryOf(e.id);

@@ -119,6 +119,7 @@ class _FfoCardState extends State<FfoCard> {
         backgroundDecoration: const BoxDecoration(color: Colors.transparent),
         minScale: PhotoViewComputedScale.contained * 0.25,
         initialScale: PhotoViewComputedScale.contained,
+        disableGestures: true,
         child: child,
         // heroAttributes: PhotoViewHeroAttributes(tag: widget.params),
       );

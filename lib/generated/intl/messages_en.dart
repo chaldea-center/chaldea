@@ -56,12 +56,14 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': 'No more',
           })}";
 
+  static String m20(layer) => "Layer ${layer}";
+
   static String m9(n) => "Section ${n}";
 
-  static String m20(region) =>
+  static String m21(region) =>
       "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m21(unknown, dup, valid, total, selected) =>
+  static String m22(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
   static String m10(region) => "${region} Notice";
@@ -70,14 +72,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Reset Plan ${n}(Shown)";
 
-  static String m22(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m23(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m13(n) => "Profile ${n}";
 
-  static String m23(color, trait) =>
+  static String m24(color, trait) =>
       "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m24(trait) =>
+  static String m25(trait) =>
       "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
 
   static String m14(a, b) => "${a} ${b}";
@@ -701,6 +703,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
+        "map_layer_n": m20,
         "map_show_fq_spots_only":
             MessageLookupByLibrary.simpleMessage("FQ spots only"),
         "map_show_header_image":
@@ -829,7 +832,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-        "quest_not_found_error": m20,
+        "quest_not_found_error": m21,
         "quest_prefer_region":
             MessageLookupByLibrary.simpleMessage("Preferred Region"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
@@ -859,7 +862,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
-        "recognizer_result_count": m21,
+        "recognizer_result_count": m22,
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refresh_data_no_update":
             MessageLookupByLibrary.simpleMessage("No new card found"),
@@ -989,7 +992,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count":
             MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m22,
+        "solution_total_battles_ap": m23,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide":
@@ -1071,8 +1074,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Minimize window for close button"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
-        "td_cardcolor_hint": m23,
-        "td_cardnp_hint": m24,
+        "td_cardcolor_hint": m24,
+        "td_cardnp_hint": m25,
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),

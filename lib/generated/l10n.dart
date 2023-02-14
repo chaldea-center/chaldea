@@ -7101,6 +7101,17 @@ class S {
     );
   }
 
+  /// `Layer {layer}`
+  String map_layer_n(Object layer) {
+    return Intl.message(
+      'Layer $layer',
+      name: 'map_layer_n',
+      desc: '',
+      locale: localeName,
+      args: [layer],
+    );
+  }
+
   /// `Sprites`
   String get sprites {
     return Intl.message(

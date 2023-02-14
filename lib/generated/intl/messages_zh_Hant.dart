@@ -56,11 +56,13 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '已經到頭了',
           })}";
 
+  static String m20(layer) => "第${layer}层";
+
   static String m9(n) => "第${n}節";
 
-  static String m20(region) => "出現錯誤或${region}無此關卡資料";
+  static String m21(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m21(unknown, dup, valid, total, selected) =>
+  static String m22(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m10(region) => "${region}公告";
@@ -69,13 +71,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "重置規劃${n}(已顯示)";
 
-  static String m22(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m23(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m13(n) => "個人資料${n}";
 
-  static String m23(color, trait) => "此宝具显示为${color}卡，但不持有[${trait}]特性";
+  static String m24(color, trait) => "此宝具显示为${color}卡，但不持有[${trait}]特性";
 
-  static String m24(trait) => "这是一个宝具，但不持有[${trait}]特性";
+  static String m25(trait) => "这是一个宝具，但不持有[${trait}]特性";
 
   static String m14(a, b) => "${a}${b}";
 
@@ -587,6 +589,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("主線記錄"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("章節"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("小部件"),
+        "map_layer_n": m20,
         "map_show_fq_spots_only":
             MessageLookupByLibrary.simpleMessage("仅Free关卡地点"),
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("显示标题图"),
@@ -690,7 +693,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
-        "quest_not_found_error": m20,
+        "quest_not_found_error": m21,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首選區服"),
         "quest_prefer_region_hint":
             MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
@@ -715,7 +718,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Google Play評分"),
-        "recognizer_result_count": m21,
+        "recognizer_result_count": m22,
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("無新增數據"),
         "region_cn": MessageLookupByLibrary.simpleMessage("簡中服"),
@@ -820,7 +823,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m22,
+        "solution_total_battles_ap": m23,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
@@ -885,8 +888,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("关闭窗口时最小化"),
         "td_base_hits_hint":
             MessageLookupByLibrary.simpleMessage("同一宝具不同持有者可能拥有不同的色卡和Hit分布"),
-        "td_cardcolor_hint": m23,
-        "td_cardnp_hint": m24,
+        "td_cardcolor_hint": m24,
+        "td_cardnp_hint": m25,
         "td_rankup": MessageLookupByLibrary.simpleMessage("宝具强化"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
         "testing": MessageLookupByLibrary.simpleMessage("測試中"),

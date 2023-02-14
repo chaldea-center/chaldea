@@ -147,7 +147,16 @@ class _QuestListPageState extends State<QuestListPage> {
                   (svt) => svt.relateQuestIds.contains(quest.id))
               : null;
 
-          final subtitle = isMainFree ? quest.lName.l : quest.lSpot.l;
+          String subtitle;
+          if (isMainFree) {
+            subtitle = quest.lName.l;
+            final layer = kLB7SpotLayers[quest.spotId];
+            if (layer != null) {
+              subtitle = '${S.current.map_layer_n(layer)} $subtitle';
+            }
+          } else {
+            subtitle = quest.lSpot.l;
+          }
 
           return ListTile(
             leading: leading,

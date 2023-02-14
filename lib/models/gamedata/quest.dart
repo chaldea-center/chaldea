@@ -207,10 +207,15 @@ class Quest with RouteInfo {
       isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
 
   // exclude challenge quest, raid
-  bool get isAnyFree =>
-      afterClear == QuestAfterClearType.repeatLast &&
-      !(consumeType == ConsumeType.ap && consume <= 5) &&
-      !flags.any((flag) => flag.name.toLowerCase().contains('raid'));
+  bool get isAnyFree {
+    if (afterClear != QuestAfterClearType.repeatLast) return false;
+    if (type == QuestType.free) return true;
+    if (flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
+      return false;
+    }
+    if (flags.contains(QuestFlag.noBattle)) return false;
+    return !(consumeType == ConsumeType.ap && consume <= 5);
+  }
 
   List<String> get allScriptIds {
     return [

@@ -58,9 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(n) => "제${n}절";
 
-  static String m20(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
+  static String m21(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
 
-  static String m21(unknown, dup, valid, total, selected) =>
+  static String m22(unknown, dup, valid, total, selected) =>
       "${unknown}불명, ${dup}중복, ${valid}/${total}유효, ${selected}선택된";
 
   static String m10(region) => "${region} 공고";
@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m22(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m23(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
   static String m13(n) => "프로필${n}";
 
@@ -657,7 +657,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("필드"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("드롭"),
-        "quest_not_found_error": m20,
+        "quest_not_found_error": m21,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("선호하는 지역"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
             "퀘스트의 관련 이벤트가 선택된 지역에서 시작되지 않은 경우 JP로 돌아갑니다."),
@@ -671,7 +671,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("App Store에서 평가"),
         "rate_play_store":
             MessageLookupByLibrary.simpleMessage("Google Play에서 평가"),
-        "recognizer_result_count": m21,
+        "recognizer_result_count": m22,
         "region_cn": MessageLookupByLibrary.simpleMessage("간체 중국 서버"),
         "region_jp": MessageLookupByLibrary.simpleMessage("일본 서버"),
         "region_kr": MessageLookupByLibrary.simpleMessage("한국 서버"),
@@ -763,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m22,
+        "solution_total_battles_ap": m23,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "special_reward_hide":
             MessageLookupByLibrary.simpleMessage("특별 보상 숨기기"),

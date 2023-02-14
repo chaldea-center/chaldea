@@ -352,11 +352,33 @@ class SvtInfoTab extends StatelessWidget {
                   defaults: TableCellData(maxLines: 1),
                 ),
               ],
-            ]
+            ],
+            ...relateEvents(),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> relateEvents() {
+    List<Widget> children = [];
+    if (svt.extra.obtains.contains(SvtObtain.eventReward) ||
+        svt.type == SvtType.svtMaterialTd) {
+      for (final event in db.gameData.events.values) {
+        if (event.statItemFixed.containsKey(svt.id)) {
+          children.add(ListTile(
+            dense: true,
+            title: Text(event.lName.l),
+            onTap: event.routeTo,
+          ));
+        }
+      }
+    }
+    if (children.isEmpty) return [];
+    return [
+      CustomTableRow.fromTexts(texts: [S.current.event], isHeader: true),
+      ...children,
+    ];
   }
 
   List<Widget> _addTraits(

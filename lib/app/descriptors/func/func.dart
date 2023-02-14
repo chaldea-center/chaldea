@@ -563,7 +563,7 @@ class FuncDescriptor extends StatelessWidget {
           ),
         );
       }
-      if (vals?.ShowState == -1) {
+      if (vals?.ShowState == -1 || vals?.ShowState == -2) {
         icon = Opacity(opacity: 0.6, child: icon);
       }
     } else if (func.funcType == FuncType.eventFortificationPointUp) {

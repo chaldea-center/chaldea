@@ -322,8 +322,13 @@ class _QuestCardState extends State<QuestCard> {
     }
     String spotJp = curPhase.lSpot.jp;
     String spot = curPhase.lSpot.l;
+    String shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+    final layer = kLB7SpotLayers[quest.spotId];
+    if (layer != null && quest.type == QuestType.free) {
+      shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
+    }
     final spotImage = curPhase.spot?.shownImage;
-    final shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+
     bool noConsume =
         curPhase.consumeType == ConsumeType.ap && curPhase.consume == 0;
     final questSelects = curPhase.extraDetail?.questSelect;

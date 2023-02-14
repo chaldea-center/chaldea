@@ -52,6 +52,8 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '最後のもの',
           })}";
 
+  static String m20(layer) => "第${layer}層";
+
   static String m9(n) => "第${n}節";
 
   static String m10(region) => "${region}お知らせ";
@@ -60,7 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m22(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m23(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m13(n) => "プロフィール${n}";
 
@@ -517,6 +519,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("メインクエスト"),
         "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
+        "map_layer_n": m20,
         "master_detail_width":
             MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
@@ -687,7 +690,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m22,
+        "solution_total_battles_ap": m23,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert":
