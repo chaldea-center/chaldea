@@ -97,6 +97,7 @@ class _SkillDetailPageState extends State<SkillDetailPage>
             showEnemy: true,
             showNone: true,
             jumpToDetail: false,
+            region: region,
           ),
           CustomTableRow(children: [
             TableCellData(text: S.current.general_type, isHeader: true),

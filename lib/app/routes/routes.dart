@@ -196,19 +196,20 @@ class RouteConfiguration {
 
   late final Region? region;
 
-  RouteConfiguration({String? url, this.child, this.detail, this.arguments}) {
-    _init(url, null);
+  RouteConfiguration(
+      {String? url, this.child, this.detail, this.arguments, Region? region}) {
+    _init(url, null, region);
   }
 
   RouteConfiguration.fromUri(
-      {Uri? uri, this.child, this.detail, this.arguments}) {
-    _init(null, uri);
+      {Uri? uri, this.child, this.detail, this.arguments, Region? region}) {
+    _init(null, uri, region);
   }
 
   factory RouteConfiguration.slash({required String nextPageUrl}) =>
       RouteConfiguration(child: SplashPage(nextPageUrl: nextPageUrl));
 
-  void _init(String? url, Uri? uri) {
+  void _init(String? url, Uri? uri, Region? region) {
     if (url != null) uri ??= Uri.tryParse(url);
     if (uri != null) {
       uri = Uri(path: uri.path, query: uri.hasQuery ? uri.query : null);
@@ -221,10 +222,12 @@ class RouteConfiguration {
       }
     }
     String? first = segments.getOrNull(0);
-    region = Region.values.firstWhereOrNull((r) => r.upper == first);
-    if (region != null) {
+    Region? regionInUrl =
+        Region.values.firstWhereOrNull((r) => r.upper == first);
+    if (regionInUrl != null) {
       uri = uri?.replace(pathSegments: segments.skip(1));
     }
+    this.region = region ?? regionInUrl;
     if (uri != null) {
       url = uri.toString();
       if (!url.startsWith('/')) url = '/$url';

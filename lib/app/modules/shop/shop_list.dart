@@ -33,6 +33,14 @@ class _ShopListHomeState extends State<ShopListHome> {
         ShopType.svtEquipStorage,
       ];
 
+  late final textEditController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    textEditController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +59,9 @@ class _ShopListHomeState extends State<ShopListHome> {
         ],
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 16),
         children: [
+          _custom(),
           for (final type in _kShownShopTypes)
             ListTile(
               title: Text(Transl.enums(type, (enums) => enums.shopType).l),
@@ -66,6 +76,36 @@ class _ShopListHomeState extends State<ShopListHome> {
         ],
       ),
     );
+  }
+
+  Widget _custom() {
+    int? id = int.tryParse(textEditController.text.trim());
+    return ListTile(
+      dense: true,
+      title: TextFormField(
+        decoration: InputDecoration(
+          isDense: true,
+          labelText: '${S.current.shop} ID',
+          border: const OutlineInputBorder(),
+        ),
+        keyboardType: TextInputType.number,
+        controller: textEditController,
+        onChanged: (value) {
+          setState(() {});
+        },
+        onFieldSubmitted: (s) => goTo(int.tryParse(s)),
+      ),
+      trailing: IconButton(
+        onPressed: id == null ? null : () => goTo(id),
+        icon: const Icon(Icons.keyboard_double_arrow_right),
+        tooltip: 'GO!',
+      ),
+    );
+  }
+
+  void goTo(int? id) {
+    if (id == null) return;
+    router.push(url: Routes.shopI(id), region: region);
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'root_delegate.dart';
 import 'routes.dart';
@@ -156,6 +157,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     dynamic arguments,
     bool? detail,
     // bool popDetail = false,
+    Region? region,
   }) {
     assert(url != null || child != null);
     // if (popDetail) popDetails();
@@ -164,6 +166,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       child: child,
       detail: detail,
       arguments: arguments,
+      region: region,
     ).createPage());
     if (url != null && url.trim().trimChar('/').isNotEmpty) {
       history.add(url);
