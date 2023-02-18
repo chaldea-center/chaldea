@@ -485,7 +485,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
 
     _addTile(S.current.main_quest, mainQuests);
-    _addTile(S.current.free_quest, freeQuests);
+    if (war.id == 311) {
+      freeQuests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
+      _addTile(S.current.free_quest, freeQuests, needSort: false);
+    } else {
+      _addTile(S.current.free_quest, freeQuests);
+    }
     if (freeQuests.isNotEmpty &&
         war.id != WarId.daily &&
         war.id != WarId.chaldeaGate) {

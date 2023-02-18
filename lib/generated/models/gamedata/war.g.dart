@@ -240,4 +240,5 @@ const _$WarFlagEnumMap = {
   WarFlag.dispEarthPointWithoutMap: 'dispEarthPointWithoutMap',
   WarFlag.isWarIconFree: 'isWarIconFree',
   WarFlag.isWarIconCenter: 'isWarIconCenter',
+  WarFlag.noticeBoard: 'noticeBoard',
 };

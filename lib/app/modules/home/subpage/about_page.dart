@@ -146,7 +146,7 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: Text(S.current.change_log),
                 onTap: () async {
-                  launch('$kProjectHomepage/releases');
+                  launch(HttpUrlHelper.projectDocUrl('releases'));
                 },
               ),
               ListTile(

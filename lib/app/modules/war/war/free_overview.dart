@@ -82,6 +82,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                           '${S.current.quest} (${phases.length}/${widget.quests.length})'),
                       fixedWidth: 150,
                     ),
+                    const DataColumn2(
+                        label: Text('Lv/AP', textScaleFactor: 0.9),
+                        fixedWidth: 48),
                     DataColumn2(
                         label: Text(S.current.svt_class), fixedWidth: 64),
                     DataColumn2(
@@ -97,7 +100,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                   rows: data.map((info) => buildRow(info, maxCount)).toList(),
                   fixedLeftColumns: 1,
                   fixedTopRows: 1,
-                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64,
+                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48,
                   columnSpacing: 8,
                   headingRowHeight: 36,
                   horizontalMargin: 8,
@@ -135,6 +138,18 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       ),
       onTap: quest.routeTo,
     ));
+
+    cells.add(DataCell(AutoSizeText(
+      [
+        'Lv.${(phase ?? quest).recommendLv}',
+        if ((phase ?? quest).consumeType == ConsumeType.ap)
+          '${(phase ?? quest).consume}AP'
+      ].join('\n'),
+      maxLines: 2,
+      minFontSize: 10,
+      style: Theme.of(context).textTheme.bodySmall,
+    )));
+
     Widget wrap(Iterable<Widget> children) {
       if (children.isEmpty) return const SizedBox.shrink();
       return Wrap(children: children.toList());
@@ -178,7 +193,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   List<_DropInfo> getInfo() {
     List<_DropInfo> data = [];
     final quests = widget.quests.toList();
-    quests.sort2((e) => e.priority);
+    quests.sort2((e) => -e.priority);
+    quests.sortByList((e) => [kLB7SpotLayers[e.spotId] ?? 0, -e.priority]);
     for (final quest in quests) {
       final info = _DropInfo(quest);
       data.add(info);

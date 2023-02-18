@@ -12,17 +12,21 @@ class QuestListPage extends StatefulWidget {
   final List<int> ids;
   final String? title;
   final bool needSort;
+  final bool groupWar; // not implemented yet
+
   const QuestListPage({
     super.key,
     this.quests = const [],
     this.title,
     this.needSort = true,
+    this.groupWar = false,
   }) : ids = const [];
   const QuestListPage.ids({
     super.key,
     this.ids = const [],
     this.title,
     this.needSort = true,
+    this.groupWar = false,
   }) : quests = const [];
 
   @override
@@ -41,22 +45,12 @@ class _QuestListPageState extends State<QuestListPage> {
         ? widget.ids.toList()
         : widget.quests.map((e) => e.id).toList();
     if (widget.needSort) {
-      questIds.sort((a, b) {
-        final qa = allQuestsMap[a], qb = allQuestsMap[b];
-        final wa = qa?.war, wb = qb?.war;
-        if ((wa != null || wb != null) && wa?.id != wb?.id) {
-          return (wb?.id ?? 99999) - (wa?.id ?? 99999);
-        }
-        if (qa == null && qb == null) return a - b;
-        if (qa == null) return -1;
-        if (qb == null) return 1;
-        if (qa.priority == qb.priority) return a - b;
-        return qb.priority - qa.priority;
-      });
+      questIds.sort(Quest.compareId);
     }
 
     final hasSpot =
         questIds.any((q) => allQuestsMap[q]?.spot?.shownImage != null);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),

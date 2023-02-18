@@ -526,6 +526,7 @@ enum WarFlag {
   dispEarthPointWithoutMap,
   isWarIconFree,
   isWarIconCenter,
+  noticeBoard,
 }
 
 enum WarOverwriteType {

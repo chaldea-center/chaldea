@@ -103,7 +103,7 @@ class Quest with RouteInfo {
     this.chapterId = 0,
     this.chapterSubId = 0,
     this.chapterSubStr = "",
-    this.giftIcon,
+    String? giftIcon,
     this.gifts = const [],
     this.releaseConditions = const [],
     required this.phases,
@@ -114,7 +114,36 @@ class Quest with RouteInfo {
     required this.noticeAt,
     required this.openedAt,
     required this.closedAt,
-  }) : spotName = spotName == '0' ? '' : spotName;
+  })  : spotName = spotName == '0' ? '' : spotName,
+        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon;
+
+  static bool _isSQGiftIcon(String? giftIcon, List<Gift> gifts) {
+    return giftIcon != null &&
+        giftIcon.endsWith('/Items/6.png') &&
+        gifts.any((gift) =>
+            gift.type == GiftType.item && gift.objectId == Items.stoneId);
+  }
+
+  static int compare(Quest a, Quest b, {bool spotLayer = false}) {
+    if (spotLayer && a.type == QuestType.free && b.type == QuestType.free) {
+      final la = kLB7SpotLayers[a.spotId], lb = kLB7SpotLayers[b.spotId];
+      if (la != null && lb != null && la != lb) return la - lb;
+    }
+    if (a.priority == b.priority) return a.id - b.id;
+    return b.priority - a.priority;
+  }
+
+  static int compareId(int a, int b, {bool spotLayer = false}) {
+    final qa = db.gameData.quests[a], qb = db.gameData.quests[b];
+    final wa = qa?.war, wb = qb?.war;
+    if ((wa != null || wb != null) && wa?.id != wb?.id) {
+      return (wb?.id ?? 99999) - (wa?.id ?? 99999);
+    }
+    if (qa == null && qb == null) return a - b;
+    if (qa == null) return -1;
+    if (qb == null) return 1;
+    return compare(qa, qb, spotLayer: spotLayer);
+  }
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
