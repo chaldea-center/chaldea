@@ -22,9 +22,9 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   DateTime startTime = DateTime.now();
 
   bool onlineUpdate = network.available &&
+      !kDebugMode &&
       db.settings.autoUpdateData &&
-      (db.settings.updateDataBeforeStart || kIsWeb) &&
-      !kDebugMode;
+      (db.settings.updateDataBeforeStart || kIsWeb);
   bool needBackgroundUpdate = !kIsWeb && db.settings.autoUpdateData;
 
   @override
@@ -38,7 +38,11 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
     Future.delayed(const Duration(seconds: 32), () {
       if (mounted) setState(() {});
     });
-    GameData? data = await _loader.reload(offline: !onlineUpdate, silent: true);
+    GameData? data = await _loader.reload(
+      offline: !onlineUpdate,
+      silent: true,
+      connectTimeout: onlineUpdate ? const Duration(seconds: 5) : null,
+    );
     if (onlineUpdate && data == null) {
       hint = 'Loading local cache...';
       needBackgroundUpdate = false;

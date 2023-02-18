@@ -63,6 +63,7 @@ class GameDataLoader {
     bool offline = false,
     bool silent = false,
     bool force = false,
+    Duration? connectTimeout,
   }) async {
     void _showError(Object? e) {
       error = escapeDioError(e);
@@ -85,7 +86,7 @@ class GameDataLoader {
     error = null;
     cancelToken = CancelToken();
     try {
-      final result = await _loadJson(offline, force);
+      final result = await _loadJson(offline, force, connectTimeout);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
       } else {
@@ -102,7 +103,8 @@ class GameDataLoader {
     return completer.future;
   }
 
-  Future<GameData> _loadJson(bool offline, bool force) async {
+  Future<GameData> _loadJson(
+      bool offline, bool force, Duration? connectTimeout) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
@@ -122,8 +124,8 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion =
-          DataVersion.fromJson((await _downFile('version.json')).json());
+      newVersion = DataVersion.fromJson(
+          (await _downFile('version.json', timeout: connectTimeout)).json());
     }
     if (!force) {
       if (newVersion.appVersion > AppInfo.version) {
@@ -316,6 +318,7 @@ class GameDataLoader {
     String filename, {
     Options? options,
     bool t = false,
+    Duration? timeout,
   }) async {
     String url = '${Hosts.dataHost}/$filename';
     if (t) {
@@ -329,7 +332,11 @@ class GameDataLoader {
         .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = 'https://$filename';
     }
-    return await DioE().get<T>(url, options: options);
+    final future = DioE().get<T>(url, options: options);
+    if (timeout != null) {
+      return future.timeout(timeout);
+    }
+    return future;
     // try {
     //   Completer<Response<T>> _completer = Completer();
     //   Timer(const Duration(seconds: 4), () {
