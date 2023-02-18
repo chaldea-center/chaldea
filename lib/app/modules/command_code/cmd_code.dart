@@ -2,12 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ruby_text/ruby_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/extra_assets_page.dart';
@@ -28,25 +28,27 @@ class CmdCodeDetailPage extends StatefulWidget {
 }
 
 class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
-  Language? lang;
+  bool _loading = false;
   CommandCode? _cc;
-
   CommandCode get cc => _cc!;
 
   @override
   void initState() {
     super.initState();
-    _cc = widget.cc ??
-        db.gameData.commandCodes[widget.id] ??
-        db.gameData.commandCodesById[widget.id];
+    fetchData();
   }
 
-  @override
-  void didUpdateWidget(covariant CmdCodeDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  Future<void> fetchData() async {
+    _loading = true;
+    if (mounted) setState(() {});
     _cc = widget.cc ??
         db.gameData.commandCodes[widget.id] ??
         db.gameData.commandCodesById[widget.id];
+    final id = widget.cc?.id ?? widget.id;
+    if (id == null || _cc != null) return;
+    _cc = await AtlasApi.cc(id);
+    _loading = false;
+    if (mounted) setState(() {});
   }
 
   @override
@@ -55,6 +57,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       return NotFoundPage(
         title: S.current.command_code,
         url: Routes.commandCodeI(widget.id ?? 0),
+        loading: _loading,
       );
     }
     final status = cc.status;
@@ -85,7 +88,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: CmdCodeDetailBasePage(cc: cc, lang: lang, showExtra: true),
+              child: CmdCodeDetailBasePage(cc: cc, showExtra: true),
             ),
           ),
           if (status.status == CmdCodeStatus.owned)
@@ -175,14 +178,12 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
 
 class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode cc;
-  final Language? lang;
   final bool showExtra;
   final bool enableLink;
 
   const CmdCodeDetailBasePage({
     super.key,
     required this.cc,
-    this.lang,
     this.showExtra = false,
     this.enableLink = false,
   });

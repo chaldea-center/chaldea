@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ruby_text/ruby_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -29,32 +30,40 @@ class CraftDetailPage extends StatefulWidget {
 }
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
+  bool _loading = false;
   CraftEssence? _ce;
-
   CraftEssence get ce => _ce!;
 
   @override
   void initState() {
     super.initState();
+    fetchData();
     _ce = widget.ce ??
         db.gameData.craftEssences[widget.id] ??
         db.gameData.craftEssencesById[widget.id];
   }
 
-  @override
-  void didUpdateWidget(covariant CraftDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  Future<void> fetchData() async {
+    _loading = true;
+    if (mounted) setState(() {});
     _ce = widget.ce ??
         db.gameData.craftEssences[widget.id] ??
         db.gameData.craftEssencesById[widget.id];
+    final id = widget.ce?.id ?? widget.id;
+    if (id == null || _ce != null) return;
+    _ce = await AtlasApi.ce(id);
+    _loading = false;
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     if (_ce == null) {
       return NotFoundPage(
-          title: S.current.craft_essence,
-          url: Routes.craftEssenceI(widget.id ?? 0));
+        title: S.current.craft_essence,
+        url: Routes.craftEssenceI(widget.id ?? 0),
+        loading: _loading,
+      );
     }
     final status = ce.status;
     return Scaffold(
