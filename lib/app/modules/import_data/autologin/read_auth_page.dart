@@ -271,17 +271,21 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       }
       // xx 01 5A 53 76 2F
       // ?  ?  Z  S  v  /
-      print(bytes.length);
+      // print(bytes.length);
       // print(bytes);
       if (!(bytes[2] == 0x5A && bytes[3] == 0x53 && bytes[4] == 0x76)) {
-        EasyLoading.showError('Not a transfer code file');
+        EasyLoading.showError('Not Auth file');
         return null;
       }
       EasyLoading.show(status: 'Decoding...');
       String encrypted = utf8.decode(bytes.skip(2).toList());
-      print(encrypted);
+      // print(encrypted);
       final res = await decodeAuth(encrypted);
       widget.onChanged(res);
+      if (res.code != null) _codeCtrl.text = res.code!;
+      _userIdCtrl.text = res.userId;
+      _authKeyCtrl.text = res.authKey;
+      _secretKeyCtrl.text = res.secretKey;
       EasyLoading.showSuccess(S.current.success);
       return res;
     } catch (e, s) {
@@ -307,13 +311,19 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     }
     const key = 'b5nHjsMrqaeNliSs3jyOzgpD'; // 24-byte
     const iv = 'wuD6keVr';
+
     DES3 des3CBC = DES3(
       key: utf8.encode(key),
       mode: DESMode.CBC,
       iv: utf8.encode(iv),
+      paddingType: DESPaddingType.PKCS7,
     );
-    final decrypted =
-        utf8.decode(des3CBC.decrypt(base64.decode(code))).trimChar('\b');
+    var bytes = des3CBC.decrypt(base64.decode(code));
+    assert(bytes.first == 0x7b && bytes.last == 0x7d,
+        bytes.map((e) => e.toRadixString(16).padLeft(2, '0')).join());
+    // '{'=0x7b, '}'=0x7d
+    bytes = bytes.sublist(bytes.indexOf(0x7b), bytes.indexOf(0x7d) + 1);
+    final decrypted = utf8.decode(bytes);
     final data = jsonDecode(decrypted);
     return auth = UserAuth(
       code: code,

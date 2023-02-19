@@ -56,6 +56,15 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Auto Login'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              launch(HttpUrlHelper.projectDocUrl('import_https/auto_login'));
+            },
+            icon: const Icon(Icons.help_outline),
+            tooltip: S.current.help,
+          )
+        ],
       ),
       body: ListView(
         children: [
@@ -172,6 +181,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               icon: const Icon(Icons.edit_note_rounded),
               tooltip: S.current.edit,
             ),
+            selected: args.auth?.userId == null,
           ),
           if (args.auth?.userCreateServer != null &&
               !UserAuth.checkGameServer(
@@ -181,7 +191,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  '${args.region.upper} != ${args.auth?.userCreateServer}',
+                  '${args.region.upper} ≠ ${args.auth?.userCreateServer}',
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                   textAlign: TextAlign.center,
                 ),
