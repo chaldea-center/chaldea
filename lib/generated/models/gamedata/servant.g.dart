@@ -118,12 +118,17 @@ Servant _$ServantFromJson(Map json) => Servant(
               .toList() ??
           const [],
       growthCurve: json['growthCurve'] as int,
-      atkGrowth:
-          (json['atkGrowth'] as List<dynamic>).map((e) => e as int).toList(),
+      atkGrowth: (json['atkGrowth'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
       hpGrowth:
-          (json['hpGrowth'] as List<dynamic>).map((e) => e as int).toList(),
-      bondGrowth:
-          (json['bondGrowth'] as List<dynamic>).map((e) => e as int).toList(),
+          (json['hpGrowth'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      bondGrowth: (json['bondGrowth'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
       expGrowth: (json['expGrowth'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
@@ -162,44 +167,58 @@ Servant _$ServantFromJson(Map json) => Servant(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      ascensionMaterials: (json['ascensionMaterials'] as Map).map(
-        (k, e) => MapEntry(int.parse(k as String),
-            LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      skillMaterials: (json['skillMaterials'] as Map).map(
-        (k, e) => MapEntry(int.parse(k as String),
-            LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      appendSkillMaterials: (json['appendSkillMaterials'] as Map).map(
-        (k, e) => MapEntry(int.parse(k as String),
-            LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      costumeMaterials: (json['costumeMaterials'] as Map).map(
-        (k, e) => MapEntry(int.parse(k as String),
-            LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
+      ascensionMaterials: (json['ascensionMaterials'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      skillMaterials: (json['skillMaterials'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      appendSkillMaterials: (json['appendSkillMaterials'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      costumeMaterials: (json['costumeMaterials'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       coin: json['coin'] == null
           ? null
           : ServantCoin.fromJson(
               Map<String, dynamic>.from(json['coin'] as Map)),
-      script: ServantScript.fromJson(
-          Map<String, dynamic>.from(json['script'] as Map)),
-      skills: (json['skills'] as List<dynamic>)
-          .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      classPassive: (json['classPassive'] as List<dynamic>)
-          .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      extraPassive: (json['extraPassive'] as List<dynamic>)
-          .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      appendPassive: (json['appendPassive'] as List<dynamic>)
-          .map((e) => ServantAppendPassiveSkill.fromJson(
-              Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      noblePhantasms: (json['noblePhantasms'] as List<dynamic>)
-          .map((e) => NiceTd.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      script: json['script'] == null
+          ? null
+          : ServantScript.fromJson(
+              Map<String, dynamic>.from(json['script'] as Map)),
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      classPassive: (json['classPassive'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      extraPassive: (json['extraPassive'] as List<dynamic>?)
+              ?.map((e) =>
+                  NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      appendPassive: (json['appendPassive'] as List<dynamic>?)
+              ?.map((e) => ServantAppendPassiveSkill.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      noblePhantasms: (json['noblePhantasms'] as List<dynamic>?)
+              ?.map((e) => NiceTd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       profile: json['profile'] == null
           ? null
           : NiceLore.fromJson(
@@ -560,7 +579,9 @@ LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
       priority: json['priority'] as int? ?? 0,
       condMessage: json['condMessage'] as String? ?? "",
       comment: json['comment'] as String? ?? '',
-      condType: const CondTypeConverter().fromJson(json['condType'] as String),
+      condType: json['condType'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['condType'] as String),
       condValues:
           (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int? ?? 0,

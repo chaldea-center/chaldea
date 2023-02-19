@@ -24,7 +24,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
   @override
   void initState() {
     super.initState();
-    svt.script.skillRankUp?.forEach((key, skillIds) async {
+    svt.script?.skillRankUp?.forEach((key, skillIds) async {
       final skills = skillRankUps.putIfAbsent(key, () => []);
       for (final skillId in skillIds.toSet()) {
         if (skillId == key) continue;

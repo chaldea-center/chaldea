@@ -32,7 +32,7 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       targetId: json['targetId'] as int,
       eventId: json['eventId'] as int? ?? 0,
       eventName: json['eventName'] as String? ?? "",
-      lastQuestId: json['lastQuestId'] as int,
+      lastQuestId: json['lastQuestId'] as int? ?? 0,
       warAdds: (json['warAdds'] as List<dynamic>?)
               ?.map((e) => WarAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -67,8 +67,8 @@ const _$WarStartTypeEnumMap = {
 WarMap _$WarMapFromJson(Map json) => WarMap(
       id: json['id'] as int,
       mapImage: json['mapImage'] as String?,
-      mapImageW: json['mapImageW'] as int,
-      mapImageH: json['mapImageH'] as int,
+      mapImageW: json['mapImageW'] as int? ?? 0,
+      mapImageH: json['mapImageH'] as int? ?? 0,
       mapGimmicks: (json['mapGimmicks'] as List<dynamic>?)
               ?.map((e) =>
                   MapGimmick.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -85,14 +85,16 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
       y: json['y'] as int,
       depthOffset: json['depthOffset'] as int,
       scale: json['scale'] as int,
-      dispCondType:
-          const CondTypeConverter().fromJson(json['dispCondType'] as String),
-      dispTargetId: json['dispTargetId'] as int,
-      dispTargetValue: json['dispTargetValue'] as int,
-      dispCondType2:
-          const CondTypeConverter().fromJson(json['dispCondType2'] as String),
-      dispTargetId2: json['dispTargetId2'] as int,
-      dispTargetValue2: json['dispTargetValue2'] as int,
+      dispCondType: json['dispCondType'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['dispCondType'] as String),
+      dispTargetId: json['dispTargetId'] as int? ?? 0,
+      dispTargetValue: json['dispTargetValue'] as int? ?? 0,
+      dispCondType2: json['dispCondType2'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
+      dispTargetId2: json['dispTargetId2'] as int? ?? 0,
+      dispTargetValue2: json['dispTargetValue2'] as int? ?? 0,
     );
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
@@ -157,18 +159,22 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       image: json['image'] as String,
       srcSpotId: json['srcSpotId'] as int,
       dstSpotId: json['dstSpotId'] as int,
-      dispCondType:
-          const CondTypeConverter().fromJson(json['dispCondType'] as String),
-      dispTargetId: json['dispTargetId'] as int,
-      dispTargetValue: json['dispTargetValue'] as int,
-      dispCondType2:
-          const CondTypeConverter().fromJson(json['dispCondType2'] as String),
-      dispTargetId2: json['dispTargetId2'] as int,
-      dispTargetValue2: json['dispTargetValue2'] as int,
-      activeCondType:
-          const CondTypeConverter().fromJson(json['activeCondType'] as String),
-      activeTargetId: json['activeTargetId'] as int,
-      activeTargetValue: json['activeTargetValue'] as int,
+      dispCondType: json['dispCondType'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['dispCondType'] as String),
+      dispTargetId: json['dispTargetId'] as int? ?? 0,
+      dispTargetValue: json['dispTargetValue'] as int? ?? 0,
+      dispCondType2: json['dispCondType2'] == null
+          ? CondType.none
+          : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
+      dispTargetId2: json['dispTargetId2'] as int? ?? 0,
+      dispTargetValue2: json['dispTargetValue2'] as int? ?? 0,
+      activeCondType: json['activeCondType'] == null
+          ? CondType.none
+          : const CondTypeConverter()
+              .fromJson(json['activeCondType'] as String),
+      activeTargetId: json['activeTargetId'] as int? ?? 0,
+      activeTargetValue: json['activeTargetValue'] as int? ?? 0,
     );
 
 WarAdd _$WarAddFromJson(Map json) => WarAdd(

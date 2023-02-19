@@ -505,8 +505,8 @@ class _NpChargePageState extends State<NpChargePage> {
               if (cd > filterData.skillCD) continue;
             }
             skills.add(skill);
-            if (svt.script.skillRankUp != null) {
-              final rankupIds = svt.script.skillRankUp?[skill.id];
+            if (svt.script?.skillRankUp != null) {
+              final rankupIds = svt.script?.skillRankUp?[skill.id];
               for (final id in rankupIds ?? <int>[]) {
                 final rskill = db.gameData.baseSkills[id];
                 if (rskill != null && skills.every((e) => e.id != rskill.id)) {
@@ -637,7 +637,7 @@ class _NpChargePageState extends State<NpChargePage> {
                     : " " // passive
             : null;
     if (pos == null && svt is Servant) {
-      final rankups = svt.script.skillRankUp ?? {};
+      final rankups = svt.script?.skillRankUp ?? {};
       for (final srcSkillId in rankups.keys) {
         if (rankups[srcSkillId]!.contains(skill.id)) {
           final srcSkill =

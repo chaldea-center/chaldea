@@ -226,7 +226,7 @@ class Servant with GameCardMixin {
   Map<int, LvlUpMaterial> appendSkillMaterials;
   Map<int, LvlUpMaterial> costumeMaterials;
   ServantCoin? coin;
-  ServantScript script;
+  ServantScript? script;
   List<NiceSkill> skills;
   List<NiceSkill> classPassive;
   List<NiceSkill> extraPassive;
@@ -267,9 +267,9 @@ class Servant with GameCardMixin {
     this.relateQuestIds = const [],
     this.trialQuestIds = const [],
     required this.growthCurve,
-    required this.atkGrowth,
-    required this.hpGrowth,
-    required this.bondGrowth,
+    this.atkGrowth = const [],
+    this.hpGrowth = const [],
+    this.bondGrowth = const [],
     this.expGrowth = const [],
     this.expFeed = const [],
     this.bondEquip = 0,
@@ -281,17 +281,17 @@ class Servant with GameCardMixin {
     this.traitAdd = const [],
     this.svtChange = const [],
     this.ascensionImage = const [],
-    required this.ascensionMaterials,
-    required this.skillMaterials,
-    required this.appendSkillMaterials,
-    required this.costumeMaterials,
+    this.ascensionMaterials = const {},
+    this.skillMaterials = const {},
+    this.appendSkillMaterials = const {},
+    this.costumeMaterials = const {},
     this.coin,
-    required this.script,
-    required this.skills,
-    required this.classPassive,
-    required this.extraPassive,
-    required this.appendPassive,
-    required this.noblePhantasms,
+    this.script,
+    this.skills = const [],
+    this.classPassive = const [],
+    this.extraPassive = const [],
+    this.appendPassive = const [],
+    this.noblePhantasms = const [],
     NiceLore? profile,
   })  : originalCollectionNo = originalCollectionNo ?? collectionNo,
         extraAssets = extraAssets ?? ExtraAssets(),
@@ -1119,7 +1119,7 @@ class LoreComment {
     this.priority = 0,
     this.condMessage = "",
     this.comment = '',
-    required this.condType,
+    this.condType = CondType.none,
     this.condValues,
     this.condValue2 = 0,
     this.additionalConds = const [],
