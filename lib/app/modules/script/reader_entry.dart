@@ -115,22 +115,30 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
 
 class ScriptIdLoadingPage extends StatefulWidget {
   final String scriptId;
+  final ScriptLink? script;
   final Region? region;
-  const ScriptIdLoadingPage({super.key, required this.scriptId, this.region});
+  const ScriptIdLoadingPage(
+      {super.key, required this.scriptId, this.script, this.region});
 
   @override
   State<ScriptIdLoadingPage> createState() => _ScriptIdLoadingPageState();
 }
 
 class _ScriptIdLoadingPageState extends State<ScriptIdLoadingPage> {
-  NiceScript? script;
+  ScriptLink? script;
   late Region region = widget.region ?? Region.jp;
   bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    fetch();
+    if (widget.script != null && widget.scriptId == widget.script?.scriptId) {
+      if (widget.region == null ||
+          widget.script!.script.contains('/${widget.region!.upper}/')) {
+        script = widget.script;
+      }
+    }
+    if (script == null) fetch();
   }
 
   Future<void> fetch({bool force = false}) async {

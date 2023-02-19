@@ -239,10 +239,45 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             child: Text.rich(TextSpan(children: questSpans)),
           )
         ]),
-      CustomTableRow.fromChildren(children: [
-        CustomTableRow.fromChildren(children: [prevButton, nextButton])
-      ])
+      CustomTableRow.fromChildren(children: [navButtons])
     ]);
+  }
+
+  Widget get navButtons {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(child: Center(child: prevButton)),
+        homeButton,
+        Expanded(child: Center(child: nextButton)),
+      ],
+    );
+  }
+
+  Widget get homeButton {
+    return IconButton(
+      onPressed: () {
+        bool found = false;
+        Navigator.of(context).popUntil((route) {
+          final page = route.settings;
+          if (page is! SplitPage) return true;
+          final args = page.arguments;
+          if (args is! RouteConfiguration) return true;
+          if (args.url?.startsWith('${Routes.script}/') == true) {
+            found = true;
+            return false;
+          }
+          return true;
+        });
+        if (!found) {
+          Navigator.pop(context);
+        }
+      },
+      icon: const Icon(Icons.home),
+      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+      padding: const EdgeInsets.all(2),
+    );
   }
 
   Widget get prevButton {
@@ -329,13 +364,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             child: child,
           ),
         const Divider(height: 16),
-        if (!_loading)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [prevButton, nextButton]
-                .map((e) => Expanded(child: Center(child: e)))
-                .toList(),
-          ),
+        if (!_loading) navButtons,
         const SafeArea(child: SizedBox(height: 8)),
       ],
     );

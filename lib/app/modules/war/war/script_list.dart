@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
-import 'package:chaldea/app/modules/script/script_reader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -127,6 +126,6 @@ class _ScriptListPageState extends State<ScriptListPage> {
       released = region == Region.jp || released == true;
       if (!released) region = Region.jp;
     }
-    router.pushPage(ScriptReaderPage(script: script, region: region));
+    script.routeTo(region: region);
   }
 }

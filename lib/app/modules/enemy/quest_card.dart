@@ -10,7 +10,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/filter_group.dart';
-import '../script/script_reader.dart';
 import 'stage.dart';
 import 'support_servant.dart';
 
@@ -635,8 +634,7 @@ class _QuestCardState extends State<QuestCard> {
                           color:
                               Theme.of(context).colorScheme.primaryContainer),
                       onTap: () {
-                        router.pushPage(
-                            ScriptReaderPage(script: s, region: widget.region));
+                        s.routeTo(region: widget.region);
                       },
                     ))
                 ],

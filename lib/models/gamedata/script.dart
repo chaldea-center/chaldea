@@ -73,7 +73,8 @@ class ScriptLink with RouteInfo {
   @override
   void routeTo({Region? region, Widget? child, bool popDetails = false}) {
     if (region != null) {
-      child ??= ScriptIdLoadingPage(scriptId: scriptId, region: region);
+      child ??=
+          ScriptIdLoadingPage(scriptId: scriptId, script: this, region: region);
     }
     super.routeTo(child: child, popDetails: popDetails);
   }

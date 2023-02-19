@@ -9,7 +9,6 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/extra_assets_page.dart';
 import 'package:chaldea/app/modules/creator/chara_detail.dart';
 import 'package:chaldea/app/modules/creator/creator_detail.dart';
-import 'package:chaldea/app/modules/script/script_reader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -384,10 +383,7 @@ class CraftDetailBasePage extends StatelessWidget {
                         onPressed: released
                             ? () {
                                 Navigator.pop(context);
-                                router.pushPage(ScriptReaderPage(
-                                  script: script,
-                                  region: region,
-                                ));
+                                script.routeTo(region: region);
                               }
                             : null,
                         child: Text(
