@@ -60,8 +60,8 @@ More about [Supported Platforms](https://docs.flutter.dev/development/tools/sdk/
 
 ### Installer
 
-You can download binary assets in [Releases](https://github.com/chaldea-center/chaldea/releases)
-page for Android, Windows and Linux.
+For Android, Windows and Linux, you can download binary assets in releases page on [Github](https://github.com/chaldea-center/chaldea/releases) 
+or our [document](https://docs.chaldea.center/releases) site.
 
 ### Web
 
