@@ -104,7 +104,7 @@ class AppNewsCarousel extends StatefulWidget {
             title: S.current.update,
             content: '${S.current.dataset_version}: ${data["utc"]}\n'
                 '${S.current.error_required_app_version(minVer.versionString)}',
-            link: HttpUrlHelper.projectDocUrl('installation'),
+            link: HttpUrlHelper.projectDocUrl('releases'),
           ));
         }
         if (!carouselSetting.enableChaldea) {
