@@ -208,12 +208,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             '  ${Transl.svtClassId(svt.classId).l}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
-          if (svt.isUserSvt)
+          if (db.gameData.constData.svtExp.containsKey(svt.growthCurve))
             TextButton(
               onPressed: () {
-                if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
-                  return;
-                }
                 router.pushPage(
                   GrowthCurvePage.fromCard(
                     title: '${S.current.growth_curve} - ${svt.lName.l}',

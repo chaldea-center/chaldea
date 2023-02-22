@@ -66,6 +66,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
                     Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      svtExp: (json['svtExp'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                SvtExpCurve.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 const _$AttributeEnumMap = {
@@ -165,6 +170,13 @@ MasterUserLvDetail _$MasterUserLvDetailFromJson(Map json) => MasterUserLvDetail(
       gift: json['gift'] == null
           ? null
           : Gift.fromJson(Map<String, dynamic>.from(json['gift'] as Map)),
+    );
+
+SvtExpCurve _$SvtExpCurveFromJson(Map json) => SvtExpCurve(
+      type: json['type'] as int,
+      lv: (json['lv'] as List<dynamic>).map((e) => e as int).toList(),
+      exp: (json['exp'] as List<dynamic>).map((e) => e as int).toList(),
+      curve: (json['curve'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
 GameConstants _$GameConstantsFromJson(Map json) => GameConstants(

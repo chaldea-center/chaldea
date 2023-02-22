@@ -207,8 +207,6 @@ class Servant with GameCardMixin {
   List<int> relateQuestIds;
   List<int> trialQuestIds;
   int growthCurve;
-  List<int> atkGrowth;
-  List<int> hpGrowth;
   List<int> bondGrowth;
   List<int> expGrowth;
   List<int> expFeed;
@@ -236,6 +234,12 @@ class Servant with GameCardMixin {
 
   @JsonKey(ignore: true)
   final int originalCollectionNo;
+  @JsonKey(ignore: true)
+  late List<int> atkGrowth =
+      db.gameData.constData.getSvtCurve(growthCurve, atkBase, atkMax, null);
+  @JsonKey(ignore: true)
+  late List<int> hpGrowth =
+      db.gameData.constData.getSvtCurve(growthCurve, hpBase, hpMax, null);
 
   Servant({
     required this.id,
@@ -267,8 +271,6 @@ class Servant with GameCardMixin {
     this.relateQuestIds = const [],
     this.trialQuestIds = const [],
     required this.growthCurve,
-    this.atkGrowth = const [],
-    this.hpGrowth = const [],
     this.bondGrowth = const [],
     this.expGrowth = const [],
     this.expFeed = const [],
@@ -330,8 +332,6 @@ class Servant with GameCardMixin {
       relateQuestIds: relateQuestIds,
       trialQuestIds: trialQuestIds,
       growthCurve: growthCurve,
-      atkGrowth: atkGrowth,
-      hpGrowth: hpGrowth,
       bondGrowth: bondGrowth,
       expGrowth: expGrowth,
       expFeed: expFeed,
@@ -672,8 +672,6 @@ class CraftEssence with GameCardMixin {
   int hpBase;
   int hpMax;
   int growthCurve;
-  List<int> atkGrowth;
-  List<int> hpGrowth;
   List<int> expGrowth;
   List<int> expFeed;
   int? bondEquipOwner;
@@ -682,6 +680,13 @@ class CraftEssence with GameCardMixin {
   AscensionAdd ascensionAdd;
   List<NiceSkill> skills;
   NiceLore profile;
+
+  @JsonKey(ignore: true)
+  late List<int> atkGrowth =
+      db.gameData.constData.getSvtCurve(growthCurve, atkBase, atkMax, null);
+  @JsonKey(ignore: true)
+  late List<int> hpGrowth =
+      db.gameData.constData.getSvtCurve(growthCurve, hpBase, hpMax, null);
 
   CraftEssence({
     required this.id,
@@ -700,8 +705,6 @@ class CraftEssence with GameCardMixin {
     required this.hpBase,
     required this.hpMax,
     required this.growthCurve,
-    this.atkGrowth = const [],
-    this.hpGrowth = const [],
     this.expGrowth = const [],
     this.expFeed = const [],
     this.bondEquipOwner,

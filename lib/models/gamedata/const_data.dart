@@ -17,6 +17,7 @@ class ConstGameData {
   final Map<int, Map<int, GrailCostDetail>>
       svtGrailCost; // <rarity, <grail_count, detail>>
   final Map<int, MasterUserLvDetail> userLevel;
+  final Map<int, SvtExpCurve> svtExp;
   final Map<int, int> bondLimitQp = {
     10: 10000000,
     11: 12000000,
@@ -40,6 +41,7 @@ class ConstGameData {
     this.constants = const GameConstants(),
     this.svtGrailCost = const {},
     this.userLevel = const {},
+    this.svtExp = const {},
   }) : buffTypeActionMap = {
           for (final entry in buffActions.entries)
             for (final type in [
@@ -53,6 +55,24 @@ class ConstGameData {
     jsonMigrated(json, 'classInfo', 'classInfo2');
     jsonMigrated(json, 'classRelation', 'classRelation2');
     return _$ConstGameDataFromJson(json);
+  }
+
+  List<int> getSvtCurve(
+      int growthCurve, int baseValue, int maxValue, int? maxLv) {
+    final expData = svtExp[growthCurve];
+    if (expData == null) return [];
+    // atkBase + (atkMax - atkBase) * exp.curve // 1000
+    if (maxLv == null) {
+      return expData.curve
+          .skip(1)
+          .map((e) => baseValue + (maxValue - baseValue) * e ~/ 1000)
+          .toList();
+    }
+    return [
+      for (int index = 1; index < expData.lv.length; index++)
+        if (expData.lv[index] <= maxLv)
+          baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000
+    ];
   }
 }
 
@@ -177,6 +197,24 @@ class MasterUserLvDetail {
 
   factory MasterUserLvDetail.fromJson(Map<String, dynamic> json) =>
       _$MasterUserLvDetailFromJson(json);
+}
+
+@JsonSerializable()
+class SvtExpCurve {
+  int type;
+  List<int> lv;
+  List<int> exp;
+  List<int> curve;
+
+  SvtExpCurve({
+    required this.type,
+    required this.lv,
+    required this.exp,
+    required this.curve,
+  });
+
+  factory SvtExpCurve.fromJson(Map<String, dynamic> json) =>
+      _$SvtExpCurveFromJson(json);
 }
 
 @JsonSerializable()

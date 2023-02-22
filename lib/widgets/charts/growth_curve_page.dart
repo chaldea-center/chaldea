@@ -48,9 +48,13 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
   double _resolveIntervalY() {
     int maxValue =
         widget.data.map((e) => e.yy.last).fold<int>(0, (p, c) => max(p, c));
-    int interval = maxValue ~/ 6;
+    int minValue = widget.data
+        .map((e) => max(e.xx.first, e.yy.first))
+        .fold<int>(0, (p, c) => max(p, c));
+    minValue = min(0, minValue);
+    int interval = (maxValue - minValue) ~/ 6;
     interval = _preferredIntervals.firstWhereOrNull((e) => e > interval) ??
-        _preferredIntervals.last;
+        interval ~/ 1000 * 1000;
     return interval.toDouble();
   }
 
