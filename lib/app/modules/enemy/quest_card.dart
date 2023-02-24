@@ -277,152 +277,10 @@ class _QuestCardState extends State<QuestCard> {
         curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }
     }
-    if (curPhase == null) {
-      List<Widget> rowChildren = [];
-      rowChildren.add(Text('  $phase/${quest.phases.length}  '));
-      if (quest.phasesNoBattle.contains(phase)) {
-        rowChildren.add(const Expanded(
-            child: Text('No Battle', textAlign: TextAlign.center)));
-      } else if (!widget.offline) {
-        final failed = AtlasApi.cacheManager
-            .isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
-        if (failed) {
-          rowChildren.add(
-            const Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Center(child: Icon(Icons.error_outline)),
-              ),
-            ),
-          );
-        } else {
-          rowChildren.add(
-            const Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            ),
-          );
-        }
-      } else {
-        rowChildren.add(const Text('-', textAlign: TextAlign.center));
-      }
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: rowChildren,
-          ),
-          ...getPhaseScript(phase, scriptPrefix)
-        ],
-      );
-    }
-    String spotJp = curPhase.lSpot.jp;
-    String spot = curPhase.lSpot.l;
-    String shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
-    final layer = kLB7SpotLayers[quest.spotId];
-    if (layer != null && quest.type == QuestType.free) {
-      shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
-    }
-    final spotImage = curPhase.spot?.shownImage;
 
-    bool noConsume =
-        curPhase.consumeType == ConsumeType.ap && curPhase.consume == 0;
-    final questSelects = curPhase.extraDetail?.questSelect;
-    List<Widget> headerRows = [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 48,
-            child: Text(
-              '${curPhase.phase}/${Maths.max(curPhase.phases, 0)}',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Text(
-              shownSpotName,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-              textScaleFactor: 0.9,
-            ),
-          ),
-        ],
-      ),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 48),
-            child: Text.rich(
-              TextSpan(children: [
-                if (curPhase.consumeType != ConsumeType.item)
-                  TextSpan(text: 'AP ${curPhase.consume}'),
-                for (final itemAmount in curPhase.consumeItem)
-                  WidgetSpan(
-                    child: Item.iconBuilder(
-                      context: context,
-                      item: itemAmount.item,
-                      text: itemAmount.amount.format(),
-                      width: 28,
-                    ),
-                  )
-              ]),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              'Lv.${curPhase.recommendLv}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              '${S.current.bond} ${noConsume ? "-" : curPhase.bond}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              'EXP ${noConsume ? "-" : curPhase.exp}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
-      if (questSelects != null && questSelects.isNotEmpty)
-        Text.rich(
-          TextSpan(text: '${S.current.branch_quest}: ', children: [
-            for (final selectId in questSelects)
-              if (selectId != curPhase.id)
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: ' $selectId ',
-                  onTap: () => router.push(url: Routes.questI(selectId)),
-                )
-          ]),
-          textAlign: TextAlign.center,
-        )
-    ];
-    if (spotImage == null) {
-      children.addAll(headerRows);
-    } else {
-      children.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(child: Column(children: headerRows)),
-          db.getIconImage(spotImage, height: 42, aspectRatio: 1),
-        ],
-      ));
-    }
+    final header = getPhaseHeader(phase, curPhase);
+    if (curPhase == null) return header;
+    children.add(header);
 
     for (int j = 0; j < curPhase.stages.length; j++) {
       final stage = curPhase.stages[j];
@@ -598,7 +456,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
-    children.addAll(getPhaseScript(phase, scriptPrefix));
+    children.addAll(getPhaseScript(phase));
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -609,7 +467,172 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  List<Widget> getPhaseScript(int phase, String scriptPrefix) {
+  Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
+    final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
+    final failed = AtlasApi.cacheManager
+        .isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
+    if (effPhase == null) {
+      List<Widget> rowChildren = [];
+      rowChildren.add(Text('  $phase/${quest.phases.length}  '));
+      if (quest.phasesNoBattle.contains(phase)) {
+        rowChildren.add(const Expanded(
+            child: Text('No Battle', textAlign: TextAlign.center)));
+      } else if (!widget.offline) {
+        if (failed) {
+          rowChildren.add(
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Center(child: Icon(Icons.error_outline)),
+              ),
+            ),
+          );
+        } else {
+          rowChildren.add(
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          );
+        }
+      } else {
+        rowChildren.add(const Text('-', textAlign: TextAlign.center));
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: rowChildren,
+          ),
+          ...getPhaseScript(phase)
+        ],
+      );
+    }
+    String spotJp = effPhase.lSpot.jp;
+    String spot = effPhase.lSpot.l;
+    String shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+    final layer = kLB7SpotLayers[quest.spotId];
+    if (layer != null && quest.type == QuestType.free) {
+      shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
+    }
+
+    bool noConsume =
+        effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0;
+    final questSelects = curPhase?.extraDetail?.questSelect;
+    List<Widget> headerRows = [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              '$phase/${Maths.max(effPhase.phases, 0)}',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Text(
+              shownSpotName,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+              textScaleFactor: 0.9,
+            ),
+          ),
+        ],
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48),
+            child: Text.rich(
+              TextSpan(children: [
+                if (effPhase.consumeType != ConsumeType.item)
+                  TextSpan(text: 'AP ${effPhase.consume}'),
+                for (final itemAmount in effPhase.consumeItem)
+                  WidgetSpan(
+                    child: Item.iconBuilder(
+                      context: context,
+                      item: itemAmount.item,
+                      text: itemAmount.amount.format(),
+                      width: 28,
+                    ),
+                  )
+              ]),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'Lv.${effPhase.recommendLv}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              '${S.current.bond} ${noConsume ? "-" : curPhase?.bond ?? "?"}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'EXP ${noConsume ? "-" : curPhase?.exp ?? "?"}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+      if (questSelects != null && questSelects.isNotEmpty)
+        Text.rich(
+          TextSpan(text: '${S.current.branch_quest}: ', children: [
+            for (final selectId in questSelects)
+              if (selectId != effPhase.id)
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: ' $selectId ',
+                  onTap: () => router.push(url: Routes.questI(selectId)),
+                )
+          ]),
+          textAlign: TextAlign.center,
+        )
+    ];
+    Widget header = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: headerRows,
+    );
+    final spotImage = effPhase.spot?.shownImage;
+    if (spotImage != null) {
+      header = Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: header),
+          db.getIconImage(spotImage, height: 42, aspectRatio: 1),
+        ],
+      );
+    }
+    if (curPhase == null && !failed) {
+      header = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          header,
+          const Padding(
+            padding: EdgeInsets.all(4),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ],
+      );
+    }
+    return header;
+  }
+
+  List<Widget> getPhaseScript(int phase) {
     final scripts =
         quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
     if (scripts == null || scripts.isEmpty) return [];
@@ -629,7 +652,7 @@ class _QuestCardState extends State<QuestCard> {
                   for (final s in scripts)
                     Text.rich(SharedBuilder.textButtonSpan(
                       context: context,
-                      text: '{${s.removePrefix(scriptPrefix)}}',
+                      text: '{${s.shortId()}}',
                       style: TextStyle(
                           color:
                               Theme.of(context).colorScheme.primaryContainer),
