@@ -1,45 +1,77 @@
 import 'dart:math';
 
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
-const double npDamageMultiplier = 0.23;
+/// Referencing:
+/// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
+/// DamageMod caps are applied when gathering the parameters.
+int calculateDamage(final DamageParameters param) {
+  var constData = db.gameData.constData;
 
-int calculateNpDamage(NpDamageParameters param) {
-  var classAttackCorrection = classAttackCorrections[param.attackerClass] ?? 1;
-  var attributeAdvantage = attributeAdvantages[param.attackerAttribute]
-          ?[param.defenderAttribute] ??
-      1;
-  var cardCorrection = getCardCorrection(param.cardType, 0);
-  var classAdvantage = getModifierWithCap(param.classAdvantage);
+  if (!constData.classInfo.containsKey(param.attackerClass.id)) {
+    throw "Invalid class: ${param.attackerClass}";
+  }
 
-  var damageRate = getModifierWithCap(param.damageRate);
-  var npSpecificAttackRate = getModifierWithCap(param.npSpecificAttackRate);
-  var cardBuff = getModifierWithCap(param.cardBuff, 4000, -1000);
-  var cardResist = getModifierWithCap(param.cardResist);
-  var attackBuff = getModifierWithCap(param.attackBuff, 4000, -1000);
-  var defenseBuff = getModifierWithCap(param.defenseBuff, null, -1000);
-  var specificAttackBuff =
-      getModifierWithCap(param.specificAttackBuff, 10000, -1000);
-  var specificDefenseBuff = getModifierWithCap(param.specificDefenseBuff);
-  var npDamageBuff = getModifierWithCap(param.cardBuff, 5000, -1000);
-  var percentAttackBuff = getModifierWithCap(param.cardBuff, 10000, -1000);
-  var percentDefenseBuff = getModifierWithCap(param.cardBuff, 1000, -1000);
+  var classAttackCorrection = toModifier(constData.classInfo[param.attackerClass.id]!.attackRate);
+
+  if (!constData.attributeRelation.containsKey(param.attackerAttribute) ||
+      !constData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
+    throw "Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}";
+  }
+  var attributeAdvantage = toModifier(constData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
+
+  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+    throw "Invalid current card type: ${param.currentCardType}";
+  }
+
+  var chainPos = param.isNp ? 1 : param.chainPos;
+  var cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
+  var classAdvantage = toModifier(param.classAdvantage);
+
+  if (!constData.cardInfo.containsKey(param.firstCardType)) {
+    throw "Invalid first card type: ${param.firstCardType}";
+  }
+  var firstCardBonus = param.isNp ? 0 : toModifier(constData.cardInfo[param.firstCardType]![1]!.addAtk);
+
+  var criticalModifier = param.isCritical ? toModifier(constData.constants.criticalAttackRate) : 1;
+
+  var extraRate = param.currentCardType == CardType.extra
+      ? param.isTypeChain && param.firstCardType == CardType.buster
+          ? constData.constants.extraAttackRateGrand
+          : constData.constants.extraAttackRateSingle
+      : 1000;
+  var extraModifier = toModifier(extraRate);
+
+  var damageRate = toModifier(param.damageRate);
+  var npSpecificAttackRate = toModifier(param.npSpecificAttackRate);
+  var cardBuff = toModifier(param.cardBuff);
+  var cardResist = toModifier(param.cardResist);
+  var attackBuff = toModifier(param.attackBuff);
+  var defenseBuff = toModifier(param.defenseBuff);
+  var specificAttackBuff = toModifier(param.specificAttackBuff);
+  var specificDefenseBuff = toModifier(param.specificDefenseBuff);
+  var criticalDamageBuff = param.isCritical ? toModifier(param.criticalDamageBuff) : 0;
+  var npDamageBuff = param.isNp ? toModifier(param.npDamageBuff) : 0;
+  var percentAttackBuff = toModifier(param.percentAttackBuff);
+  var percentDefenseBuff = toModifier(param.percentDefenseBuff);
 
   final int totalDamage = (param.attack *
-              npDamageMultiplier *
               damageRate *
-              cardCorrection *
-              (1 + cardBuff - cardResist) *
+              (firstCardBonus + cardCorrection * max(1 + cardBuff - cardResist, 0)) *
               classAttackCorrection *
               classAdvantage *
               attributeAdvantage *
-              (1 + attackBuff - defenseBuff - specificDefenseBuff) *
-              (1 + specificAttackBuff + npDamageBuff) *
+              param.fixedRandom *
+              toModifier(constData.constants.attackRate) *
+              max(1 + attackBuff - defenseBuff, 0) *
+              criticalModifier *
+              extraModifier *
+              max(1 - percentDefenseBuff, 0) *
+              max(1 + specificAttackBuff - specificDefenseBuff + criticalDamageBuff + npDamageBuff, 0.001) *
+              max(1 + percentAttackBuff, 0.001) *
               npSpecificAttackRate *
-              (1 - percentDefenseBuff) *
-              (1 + percentAttackBuff) *
-              (param.totalHits / 100.0) *
-              param.fixedRandom +
+              (param.totalHits / 100.0) +
           param.damageAdditionBuff -
           param.damageReductionBuff)
       .toInt();
@@ -47,78 +79,33 @@ int calculateNpDamage(NpDamageParameters param) {
   return max(0, totalDamage);
 }
 
-const Map<SvtClass, double> classAttackCorrections = {
-  SvtClass.archer: 0.95,
-  SvtClass.lancer: 1.05,
-  SvtClass.caster: 0.9,
-  SvtClass.assassin: 0.9,
-  SvtClass.berserker: 1.1,
-  SvtClass.ruler: 1.1,
-  SvtClass.avenger: 1.1,
-};
-
-const Map<Attribute, Map<Attribute, double>> attributeAdvantages = {
-  Attribute.sky: {
-    Attribute.earth: 1.1,
-    Attribute.human: 0.9,
-  },
-  Attribute.earth: {
-    Attribute.sky: 0.9,
-    Attribute.human: 1.1,
-  },
-  Attribute.human: {
-    Attribute.sky: 1.1,
-    Attribute.earth: 0.9,
-  },
-  Attribute.star: {Attribute.beast: 1.1},
-  Attribute.beast: {
-    Attribute.star: 1.1,
-  },
-};
-
-const Map<CardType, List<double>> cardCorrections = {
-  CardType.quick: [0.8, 0.96, 1.12],
-  CardType.arts: [1, 1.2, 1.4],
-  CardType.buster: [1.5, 1.8, 2.1],
-  CardType.extra: [1],
-};
-
-double getCardCorrection(CardType cardType, int chainIndex) {
-  var correctionList = cardCorrections[cardType];
-  if (cardType == CardType.extra) {
-    return correctionList![0];
-  } else {
-    return correctionList![chainIndex];
-  }
-}
-
-double getModifierWithCap(int value, [int? upperBound, int? lowerBound]) {
-  if (upperBound != null && value > upperBound) {
-    value = upperBound;
-  } else if (lowerBound != null && value < lowerBound) {
-    value = lowerBound;
-  }
-
+double toModifier(final int value) {
   return 0.001 * value;
 }
 
-class NpDamageParameters {
+class DamageParameters {
   int attack = 0;
-  int damageRate = 0;
-  int totalHits = 0;
-  int npSpecificAttackRate = 0;
+  int damageRate = 1000;
+  int totalHits = 100;
+  int npSpecificAttackRate = 1000;
   SvtClass attackerClass = SvtClass.none;
   SvtClass defenderClass = SvtClass.none;
   int classAdvantage = 0;
   Attribute attackerAttribute = Attribute.void_;
   Attribute defenderAttribute = Attribute.void_;
-  CardType cardType = CardType.none;
-  int cardBuff = 0;
-  int cardResist = 0;
-  int attackBuff = 0;
-  int defenseBuff = 0;
+  bool isNp = false;
+  int chainPos = 1;
+  CardType currentCardType = CardType.none;
+  CardType firstCardType = CardType.none;
+  bool isTypeChain = false;
+  bool isCritical = false;
+  int cardBuff = 1000;
+  int cardResist = 1000;
+  int attackBuff = 1000;
+  int defenseBuff = 1000;
   int specificAttackBuff = 0;
-  int specificDefenseBuff = 0;
+  int specificDefenseBuff = 0; // this maps to selfDamageMod, can rename after I see an instance of this buff
+  int criticalDamageBuff = 0;
   int npDamageBuff = 0;
   int percentAttackBuff = 0;
   int percentDefenseBuff = 0;
@@ -128,15 +115,33 @@ class NpDamageParameters {
 
   @override
   String toString() {
-    return "attack: $attack, damageRate: $damageRate, totalHits: $totalHits, "
-        "npSpecificAttackRate: $npSpecificAttackRate, attackerClass: $attackerClass, "
-        "defenderClass: $defenderClass, classAdvantage: $classAdvantage, "
-        "attackerAttribute: $attackerAttribute, defenderAttribute: $defenderAttribute, "
-        "cardType: $cardType, cardBuff: $cardBuff, cardResist: $cardResist, "
-        "attackBuff: $attackBuff, defenseBuff: $defenseBuff, specificAttackBuff: "
-        "$specificAttackBuff, specificDefenseBuff: $specificDefenseBuff, "
-        "npDamageBuff: $npDamageBuff, percentAttackBuff: $percentAttackBuff, "
-        "percentDefenseBuff, $percentDefenseBuff, damageAdditionBuff, $damageAdditionBuff, "
-        "damageReductionBuff: $damageReductionBuff, fixedRandom: $fixedRandom";
+    return "attack: $attack, "
+        "damageRate: $damageRate, "
+        "totalHits: $totalHits, "
+        "npSpecificAttackRate: $npSpecificAttackRate, "
+        "attackerClass: $attackerClass, "
+        "defenderClass: $defenderClass, "
+        "classAdvantage: $classAdvantage, "
+        "attackerAttribute: $attackerAttribute, "
+        "defenderAttribute: $defenderAttribute, "
+        "isNp: $isNp, "
+        "chainPos: $chainPos, "
+        "currentCardType: $currentCardType, "
+        "firstCardType: $firstCardType, "
+        "isTypeChain: $isTypeChain, "
+        "isCritical: $isCritical, "
+        "cardBuff: $cardBuff, "
+        "cardResist: $cardResist, "
+        "attackBuff: $attackBuff, "
+        "defenseBuff: $defenseBuff, "
+        "specificAttackBuff: $specificAttackBuff, "
+        "specificDefenseBuff: $specificDefenseBuff, "
+        "criticalDamageBuff: $criticalDamageBuff, "
+        "npDamageBuff: $npDamageBuff, "
+        "percentAttackBuff: $percentAttackBuff, "
+        "percentDefenseBuff, $percentDefenseBuff, "
+        "damageAdditionBuff, $damageAdditionBuff, "
+        "damageReductionBuff: $damageReductionBuff, "
+        "fixedRandom: $fixedRandom";
   }
 }

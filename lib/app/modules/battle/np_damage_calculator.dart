@@ -16,7 +16,7 @@ class NpDamageCalculator extends StatelessWidget {
     var niceTd = servant!.noblePhantasms.last;
     var dataVal = niceTd.functions.first.svals.first;
 
-    NpDamageParameters parameters = NpDamageParameters()
+    DamageParameters parameters = DamageParameters()
       ..attack = servant.atkGrowth[89]
       ..damageRate = dataVal.Value!
       ..totalHits = Maths.sum(niceTd.npDistribution)
@@ -26,7 +26,9 @@ class NpDamageCalculator extends StatelessWidget {
       ..classAdvantage = 1000
       ..attackerAttribute = servant.attribute
       ..defenderAttribute = baseEnemy.attribute
-      ..cardType = niceTd.card
+      ..isNp = true
+      ..currentCardType = niceTd.card
+      ..firstCardType = niceTd.card
       ..fixedRandom = 0.9;
 
     return Scaffold(
@@ -36,7 +38,7 @@ class NpDamageCalculator extends StatelessWidget {
             Text("Attacker: ${servant.battleName}, Class: ${servant.className}"),
             Text("Defender: ${baseEnemy.name}, Class: ${baseEnemy.className}"),
             Text("Parameters: $parameters"),
-            Text("Damage: ${calculateNpDamage(parameters)}"),
+            Text("Damage: ${calculateDamage(parameters)}"),
           ],
         ),
       ),
