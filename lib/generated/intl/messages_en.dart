@@ -1072,6 +1072,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),
         "system_tray_close_hint": MessageLookupByLibrary.simpleMessage(
             "Minimize window for close button"),
+        "td_animation": MessageLookupByLibrary.simpleMessage("NP Animation"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
         "td_cardcolor_hint": m24,

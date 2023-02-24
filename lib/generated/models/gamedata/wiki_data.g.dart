@@ -75,6 +75,11 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
                 (e as List<dynamic>).map((e) => e as String).toList()),
           ) ??
           const {},
+      tdAnimations: (json['tdAnimations'] as List<dynamic>?)
+              ?.map((e) =>
+                  BiliVideo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 const _$SvtObtainEnumMap = {
@@ -88,6 +93,12 @@ const _$SvtObtainEnumMap = {
   SvtObtain.unavailable: 'unavailable',
   SvtObtain.unknown: 'unknown',
 };
+
+BiliVideo _$BiliVideoFromJson(Map json) => BiliVideo(
+      av: json['av'] as int?,
+      p: json['p'] as int?,
+      bv: json['bv'] as String?,
+    );
 
 CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
       collectionNo: json['collectionNo'] as int,

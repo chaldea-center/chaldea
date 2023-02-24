@@ -736,6 +736,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "switch_region": MessageLookupByLibrary.simpleMessage("サーバーを切り替え"),
+        "td_animation": MessageLookupByLibrary.simpleMessage("宝具演出"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("テスト用情報"),
         "testing": MessageLookupByLibrary.simpleMessage("テスト中"),
         "time_close": MessageLookupByLibrary.simpleMessage("閉じる"),
