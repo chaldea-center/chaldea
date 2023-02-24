@@ -2,9 +2,6 @@ name: Deploy web
 
 on:
   push:
-    branches:
-      - main
-      - dev
   workflow_dispatch:
 
 jobs:
