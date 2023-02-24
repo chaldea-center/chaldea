@@ -99,9 +99,9 @@ class _CustomPrettyPrinter extends PrettyPrinter {
           formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
     dynamic error = event.error;
-    if (error is DioError && error.response?.data != null) {
-      String detail = error.response!.data.toString();
-      if (detail.length > 1000) detail = detail.substring(0, 1000);
+    if (error is DioError) {
+      String detail = error.response?.data.toString() ?? "";
+      if (detail.length > 1000) detail = "\n${detail.substring(0, 1000)}";
 
       List<String> lines = error.stackTrace.toString().split('\n');
       while (lines.isNotEmpty && lines.last.contains('package:flutter/src') ||
@@ -117,8 +117,8 @@ class _CustomPrettyPrinter extends PrettyPrinter {
         requestOptions: error.requestOptions,
         response: error.response,
         type: error.type,
-        error: '${error.error}\n$detail',
-      )..stackTrace = StackTrace.fromString(lines.join('\n'));
+        error: '${error.error}$detail',
+      )..stackTrace = StackTrace.fromString(lines.take(10).join('\n'));
     }
     String? errorStr = error?.toString();
 

@@ -181,7 +181,10 @@ class Event {
         ? [endedAt, ...extra.endTime.values]
         : [endTimeOf(region)];
     for (int index = 0; index < starts.length; index++) {
-      final start = starts[index], end = ends[index];
+      int? start = starts[index], end = ends[index];
+      if (start != null && end != null && end > kNeverClosedTimestamp) {
+        end = start + 31 * 24 * 3600;
+      }
       if (start != null && end != null && now > start && end > now) {
         return true;
       }
