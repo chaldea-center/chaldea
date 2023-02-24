@@ -12,21 +12,25 @@ class GrowthCurvePage extends StatefulWidget {
   final String title;
   final List<SimpleLineChartData<int>> data;
   final Widget? avatar;
+  final int? maxX;
 
   const GrowthCurvePage({
     super.key,
     required this.title,
     required this.data,
     this.avatar,
+    this.maxX,
   });
 
   GrowthCurvePage.fromCard({
     super.key,
     required this.title,
+    required List<int> lvs,
     required List<int> hps,
     required List<int> atks,
     this.avatar,
-  })  : assert(atks.length == hps.length),
+    this.maxX,
+  })  : assert(lvs.length == atks.length && atks.length == hps.length),
         data = [
           SimpleLineChartData(
               xx: List.generate(hps.length, (index) => index + 1),
@@ -48,9 +52,8 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
   double _resolveIntervalY() {
     int maxValue =
         widget.data.map((e) => e.yy.last).fold<int>(0, (p, c) => max(p, c));
-    int minValue = widget.data
-        .map((e) => max(e.xx.first, e.yy.first))
-        .fold<int>(0, (p, c) => max(p, c));
+    int minValue =
+        widget.data.map((e) => e.yy.first).fold<int>(0, (p, c) => max(p, c));
     minValue = min(0, minValue);
     int interval = (maxValue - minValue) ~/ 6;
     interval = _preferredIntervals.firstWhereOrNull((e) => e > interval) ??
@@ -89,6 +92,7 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
                 child: SimpleLineChart(
                   data: widget.data,
                   minX: 0,
+                  maxX: widget.maxX?.toDouble(),
                   minY: 0,
                   intervalX: constraints.maxWidth > 450 ? 10 : 20,
                   intervalY: _resolveIntervalY(),

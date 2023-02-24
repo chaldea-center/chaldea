@@ -1,3 +1,5 @@
+import 'package:chaldea/utils/extension.dart';
+import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'quest.dart' show Gift;
@@ -215,6 +217,48 @@ class SvtExpCurve {
 
   factory SvtExpCurve.fromJson(Map<String, dynamic> json) =>
       _$SvtExpCurveFromJson(json);
+}
+
+class SvtExpData {
+  int type;
+  List<int> lv;
+  List<int> exp;
+  List<int> atk;
+  List<int> hp;
+  SvtExpData._({
+    required this.type,
+    required this.lv,
+    required this.exp,
+    required this.atk,
+    required this.hp,
+  });
+
+  static SvtExpData from({
+    required int type,
+    SvtExpCurve? curve,
+    required int atkBase,
+    required int atkMax,
+    required int hpBase,
+    required int hpMax,
+  }) {
+    curve ??= db.gameData.constData.svtExp[type];
+    int skip = curve?.lv.getOrNull(0) == 0 ? 1 : 0;
+    return SvtExpData._(
+      type: type,
+      lv: curve?.lv.skip(skip).toList() ?? [],
+      exp: curve?.exp.skip(skip).toList() ?? [],
+      hp: curve?.curve
+              .skip(skip)
+              .map((e) => hpBase + (hpMax - hpBase) * e ~/ 1000)
+              .toList() ??
+          [],
+      atk: curve?.curve
+              .skip(skip)
+              .map((e) => atkBase + (atkMax - atkBase) * e ~/ 1000)
+              .toList() ??
+          [],
+    );
+  }
 }
 
 @JsonSerializable()
@@ -614,6 +658,7 @@ const kBuffActionPercentTypes = {
   BuffAction.giveGainHp: 10,
   BuffAction.grantInstantdeath: 10,
   BuffAction.grantState: 10,
+  BuffAction.grantStateUpOnly: 10,
   BuffAction.hate: 10,
   BuffAction.nonresistInstantdeath: 10,
   BuffAction.npdamage: 10,

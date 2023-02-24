@@ -122,10 +122,6 @@ Servant _$ServantFromJson(Map json) => Servant(
               ?.map((e) => e as int)
               .toList() ??
           const [],
-      expGrowth: (json['expGrowth'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
       expFeed:
           (json['expFeed'] as List<dynamic>?)?.map((e) => e as int).toList() ??
               const [],
@@ -267,10 +263,6 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       hpBase: json['hpBase'] as int,
       hpMax: json['hpMax'] as int,
       growthCurve: json['growthCurve'] as int,
-      expGrowth: (json['expGrowth'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
       expFeed:
           (json['expFeed'] as List<dynamic>?)?.map((e) => e as int).toList() ??
               const [],
