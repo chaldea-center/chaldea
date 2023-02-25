@@ -167,6 +167,16 @@ class AppInfo {
     logger.i('Unique ID: $_uuid');
   }
 
+  static void initiateForTest() {
+    _uuid = '00000000-0000-0000-0000-000000000000';
+    _packageInfo = PackageInfo(
+      appName: kAppName,
+      packageName: kPackageName,
+      version: '9.9.9',
+      buildNumber: '9999',
+    );
+  }
+
   static Future<void> resolve(String appPath) async {
     await _loadUniqueId(appPath);
     await _loadDeviceInfo();

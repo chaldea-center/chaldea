@@ -67,7 +67,12 @@ class GameDataLoader {
   }) async {
     void _showError(Object? e) {
       error = escapeDioError(e);
-      if (!silent) EasyLoading.showInfo(error);
+      if (!silent) {
+        EasyLoading.showInfo(error);
+      } else {
+        debugPrint('load data failed: $e');
+        debugPrintStack(stackTrace: StackTrace.current, maxFrames: 3);
+      }
     }
 
     if (!offline && network.unavailable) {

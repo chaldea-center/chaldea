@@ -42,7 +42,7 @@ class PathManager {
     return result;
   }
 
-  Future<void> initRootPath() async {
+  Future<void> initRootPath({String? testAppPath}) async {
     // await _debugPath(
     //     '1-ApplicationDocuments', () => getApplicationDocumentsDirectory());
     // await _debugPath(
@@ -56,6 +56,10 @@ class PathManager {
     //     '8-ExternalStorages', () => getExternalStorageDirectories());
 
     if (_appPath != null) return;
+    if (testAppPath != null) {
+      _appPath = testAppPath;
+      return;
+    }
     if (PlatformU.isWeb) {
       _persistentPath = _appPath = 'web';
       initiateLoggerPath('');

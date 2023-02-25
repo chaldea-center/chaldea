@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -60,7 +59,6 @@ class _Database {
   }
 
   RuntimeData runtimeData = RuntimeData();
-  CacheManager cacheManager = CacheManager(Config('chaldea'));
   ItemCenter itemCenter = ItemCenter();
 
   // shortcut
@@ -118,6 +116,16 @@ class _Database {
       stream: _settingNotifier.stream,
       builder: builder,
     );
+  }
+
+  Future<void> initiateForTest({
+    required String testAppPath,
+  }) async {
+    await paths.initRootPath(testAppPath: testAppPath);
+    Hive.init(paths.hiveDir);
+    await loadSettings();
+    settings.forceOnline = true;
+    AppInfo.initiateForTest();
   }
 
   // methods
@@ -300,7 +308,6 @@ class _Database {
                     height: height,
                     child: placeholder?.call(context),
                   ),
-          cacheManager: cacheManager,
         ),
         placeholder: (context, __) => SizedBox(
           width: width,
