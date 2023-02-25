@@ -8,16 +8,16 @@ import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../generated/git_info.dart';
 import '../models/userdata/version.dart';
-import '../utils/constants.dart';
 
 class AppInfo {
   AppInfo._();
 
   static PackageInfo? _packageInfo;
   static String? _uuid;
+  static bool _debugOn = false;
   static MacAppType _macAppType = MacAppType.unknown;
   static bool _isIPad = false;
   static int? _androidSdk;
@@ -163,7 +163,7 @@ class AppInfo {
       }
     }
     _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
-
+    _debugOn = FilePlus(joinPaths(appPath, '.debug')).existsSync();
     logger.i('Unique ID: $_uuid');
   }
 
@@ -261,7 +261,7 @@ class AppInfo {
       '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
       '6986A299-F7CB-5BBF-9680-14ED34013C07', // windows
     ];
-    return excludeIds.contains(AppInfo.uuid);
+    return excludeIds.contains(AppInfo.uuid) || _debugOn;
   }
 
   static bool get isIPad => _isIPad;
