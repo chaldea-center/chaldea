@@ -11,8 +11,10 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class WarAssetListPage extends StatefulWidget {
-  final NiceWar war;
-  const WarAssetListPage({super.key, required this.war});
+  final NiceWar? war;
+  final List<String>? scripts;
+  final String? title;
+  const WarAssetListPage({super.key, this.war, this.scripts, this.title});
 
   @override
   State<WarAssetListPage> createState() => _WarAssetListPageState();
@@ -29,8 +31,6 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
   bool _loading = true;
   int progress = 0;
   int total = 0;
-
-  NiceWar get war => widget.war;
 
   @override
   void initState() {
@@ -52,31 +52,40 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     _loading = true;
     progress = 0;
     if (mounted) setState(() {});
+    final war = widget.war;
 
     List<String> scripts = [];
-    if (war.startScript != null) {
-      scripts.add(war.startScript!.script);
+    if (widget.scripts != null) {
+      scripts.addAll(widget.scripts!);
     }
-    final quests = war.quests;
-    quests.sort2((e) => -e.priority);
-    for (final quest in quests) {
-      for (final phase in quest.phaseScripts) {
-        scripts.addAll(phase.scripts.map((e) => e.script));
+    if (war != null) {
+      if (war.startScript != null) {
+        scripts.add(war.startScript!.script);
+      }
+      final quests = war.quests.toList();
+      quests.sort2((e) => -e.priority);
+      for (final quest in quests) {
+        for (final phase in quest.phaseScripts) {
+          scripts.addAll(phase.scripts.map((e) => e.script));
+        }
       }
     }
+
     total = scripts.length;
 
     await Future.delayed(const Duration(milliseconds: 500));
     // war assets
-    for (final bgm in [
-      war.bgm,
-      ...war.maps.map((e) => e.bgm),
-      for (final warAdd in war.warAdds)
-        if (warAdd.type == WarOverwriteType.bgm)
-          db.gameData.bgms[warAdd.overwriteId]
-    ]) {
-      if (bgm != null && bgm.id != 0 && bgm.audioAsset != null) {
-        audios[bgm.audioAsset!] ??= bgm.fileName;
+    if (war != null) {
+      for (final bgm in [
+        war.bgm,
+        ...war.maps.map((e) => e.bgm),
+        for (final warAdd in war.warAdds)
+          if (warAdd.type == WarOverwriteType.bgm)
+            db.gameData.bgms[warAdd.overwriteId]
+      ]) {
+        if (bgm != null && bgm.id != 0 && bgm.audioAsset != null) {
+          audios[bgm.audioAsset!] ??= bgm.fileName;
+        }
       }
     }
 
@@ -119,26 +128,28 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     }
 
     // post war assets
-    bgImages = {
-      ...<String?>[
-        war.banner,
-        war.headerImage,
-        for (final map in war.maps) ...[map.mapImage, map.headerImage],
-        ...war.warAdds.map((warAdd) {
-          switch (warAdd.type) {
-            case WarOverwriteType.banner:
-              return warAdd.overwriteBanner;
-            case WarOverwriteType.bgImage:
-              return warAdd.overwriteId != 0
-                  ? assetUrl.back(warAdd.overwriteId, anyFullscreen)
-                  : null;
-            default:
-              return null;
-          }
-        })
-      ].whereType(),
-      ...bgImages,
-    };
+    if (war != null) {
+      bgImages = {
+        ...<String?>[
+          war.banner,
+          war.headerImage,
+          for (final map in war.maps) ...[map.mapImage, map.headerImage],
+          ...war.warAdds.map((warAdd) {
+            switch (warAdd.type) {
+              case WarOverwriteType.banner:
+                return warAdd.overwriteBanner;
+              case WarOverwriteType.bgImage:
+                return warAdd.overwriteId != 0
+                    ? assetUrl.back(warAdd.overwriteId, anyFullscreen)
+                    : null;
+              default:
+                return null;
+            }
+          })
+        ].whereType(),
+        ...bgImages,
+      };
+    }
 
     bgImages.removeWhere((url) => [
           '/Back/back10000.png',
@@ -256,7 +267,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.war.lName.l),
+          title: Text(
+              widget.war?.lName.l ?? widget.title ?? S.current.media_assets),
           actions: [
             PopupMenuButton(
               itemBuilder: (context) => [
