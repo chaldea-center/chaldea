@@ -189,6 +189,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         maxX: maxX,
         minY: minY,
         maxY: maxY,
+        clipData: FlClipData.horizontal(),
       ),
       swapAnimationDuration: const Duration(milliseconds: 250),
     );

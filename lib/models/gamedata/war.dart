@@ -166,9 +166,9 @@ class NiceWar with RouteInfo {
   WarExtra get extra =>
       db.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemReward = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemDrop = {};
 
   void calcItems(GameData gameData) {

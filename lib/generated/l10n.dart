@@ -4900,6 +4900,17 @@ class S {
     );
   }
 
+  /// `Layer {layer}`
+  String map_layer_n(Object layer) {
+    return Intl.message(
+      'Layer $layer',
+      name: 'map_layer_n',
+      desc: '',
+      locale: localeName,
+      args: [layer],
+    );
+  }
+
   /// `FQ spots only`
   String get map_show_fq_spots_only {
     return Intl.message(
@@ -7101,17 +7112,6 @@ class S {
     );
   }
 
-  /// `Layer {layer}`
-  String map_layer_n(Object layer) {
-    return Intl.message(
-      'Layer $layer',
-      name: 'map_layer_n',
-      desc: '',
-      locale: localeName,
-      args: [layer],
-    );
-  }
-
   /// `Sprites`
   String get sprites {
     return Intl.message(
@@ -7623,6 +7623,17 @@ class S {
     return Intl.message(
       'Minimize window for close button',
       name: 'system_tray_close_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NP Animation`
+  String get td_animation {
+    return Intl.message(
+      'NP Animation',
+      name: 'td_animation',
       desc: '',
       locale: localeName,
       args: [],

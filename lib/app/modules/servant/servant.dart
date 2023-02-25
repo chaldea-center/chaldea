@@ -214,6 +214,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 router.pushPage(
                   GrowthCurvePage.fromCard(
                     title: '${S.current.growth_curve} - ${svt.lName.l}',
+                    lvs: svt.curveData.lv,
                     atks: svt.atkGrowth,
                     hps: svt.hpGrowth,
                     avatar: CachedImage(

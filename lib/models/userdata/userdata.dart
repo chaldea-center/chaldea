@@ -23,7 +23,7 @@ class UserData {
 
   final int version;
   String get appVer => AppInfo.versionString;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   int previousVersion;
 
   int get curUserKey {
@@ -409,7 +409,7 @@ class SvtStatus {
     // equipCmdCodes
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get favorite => cur.favorite;
 
   set favorite(bool v) => cur.favorite = v;

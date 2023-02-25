@@ -163,8 +163,11 @@ class ServerFeedbackHandler extends ReportHandler {
     if (report is FeedbackReport) return false;
     if (report.error is DioError) return true;
     if (kIsWeb) {
-      if (['TypeError: Failed to fetch', 'Bad state: Future already completed']
-          .contains(report.shownError)) {
+      if ([
+        'TypeError: Failed to fetch',
+        'Bad state: Future already completed',
+        'Bad state: A RenderObject does not have any constraints before it has been laid out.',
+      ].contains(report.shownError)) {
         return true;
       }
     }

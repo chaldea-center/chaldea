@@ -142,7 +142,7 @@ class LPSolution {
   //double
   List<LPVariable> weightVars;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   FreeLPParams? params;
 
   LPSolution({

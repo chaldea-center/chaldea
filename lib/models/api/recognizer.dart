@@ -38,11 +38,11 @@ class ItemDetail {
   final int imageId;
   final double score;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool checked = true;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? imgThumb;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? imgNum;
 
   bool get valid => itemId > 0 && count > 0;
@@ -102,9 +102,9 @@ class SkillDetail {
   final int imageId;
   final double score;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool checked = true;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? imgThumb;
   List<int> get skills => [skill1, skill2, skill3];
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 abstract class PlatformMethodsInterface {
+  String get href;
   String? getLocalStorage(String key);
 
   void setLocalStorage(String key, String value);

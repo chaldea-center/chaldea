@@ -30,3 +30,5 @@ const kULLeading = ' ꔷ ';
 final kOnePixel = base64.decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');
 const kDWCharReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
+// 2027-01-15
+const int kNeverClosedTimestamp = 1800000000;

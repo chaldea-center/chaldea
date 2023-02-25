@@ -2,6 +2,9 @@ import 'platform_interface.dart';
 
 class PlatformMethods extends PlatformMethodsInterface {
   @override
+  String get href => '';
+
+  @override
   String? getLocalStorage(String key) => throw UnimplementedError();
 
   @override

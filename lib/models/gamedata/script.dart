@@ -50,6 +50,13 @@ class ScriptLink with RouteInfo {
         : scriptId;
   }
 
+  String shortId() {
+    if (int.tryParse(scriptId) != null && scriptId.length > 2) {
+      return scriptId.substring(scriptId.length - 2);
+    }
+    return scriptId;
+  }
+
   static List<Tuple2<NiceWar, Quest?>> findQuests(String scriptId) {
     List<Tuple2<NiceWar, Quest?>> results = [];
     for (final war in db.gameData.wars.values) {

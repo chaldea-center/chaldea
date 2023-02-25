@@ -888,6 +888,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "switch_region": MessageLookupByLibrary.simpleMessage("切換區服"),
         "system_tray_close_hint":
             MessageLookupByLibrary.simpleMessage("關閉視窗時最小化"),
+        "td_animation": MessageLookupByLibrary.simpleMessage("宝具动画"),
         "td_base_hits_hint":
             MessageLookupByLibrary.simpleMessage("同一寶具不同持有者可能擁有不同的色卡和Hit分布"),
         "td_cardcolor_hint": m24,

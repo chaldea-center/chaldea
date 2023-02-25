@@ -237,21 +237,24 @@ class _GameDataPageState extends State<GameDataPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.cloud_circle, size: 28),
-                title: const Text('Lanzou/woozooo'),
-                subtitle: Text.rich(
-                  TextSpan(
-                    text: 'https://www.lanzouw.com/b01tuahmf\n',
-                    children: [
-                      TextSpan(
-                        text: 'password: chaldea',
-                        style: TextStyle(color: Colors.redAccent[100]),
-                      )
-                    ],
-                  ),
+                title: Text.rich(
+                  TextSpan(children: [
+                    const TextSpan(
+                      text: 'Lanzou',
+                      style: TextStyle(decoration: TextDecoration.lineThrough),
+                    ),
+                    TextSpan(
+                      text: '  ${S.current.about_app}-${S.current.change_log}',
+                    ),
+                  ]),
                 ),
+                subtitle: Text.rich(TextSpan(
+                  text: HttpUrlHelper.projectDocUrl('releases'),
+                  style: TextStyle(color: Colors.redAccent[100]),
+                )),
                 horizontalTitleGap: 0,
                 onTap: () {
-                  launch('https://www.lanzouw.com/b01tuahmf');
+                  launch(HttpUrlHelper.projectDocUrl('releases'));
                 },
               ),
             ],

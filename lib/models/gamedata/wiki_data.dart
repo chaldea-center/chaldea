@@ -51,6 +51,7 @@ class ServantExtra {
   String? fandomLink;
   Map<int, List<String>> mcProfiles;
   Map<int, List<String>> fandomProfiles;
+  List<BiliVideo> tdAnimations;
 
   ServantExtra({
     required this.collectionNo,
@@ -64,11 +65,44 @@ class ServantExtra {
     this.fandomLink,
     this.mcProfiles = const {},
     this.fandomProfiles = const {},
+    this.tdAnimations = const [],
   })  : nicknames = nicknames ?? MappingList(),
         aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
   factory ServantExtra.fromJson(Map<String, dynamic> json) =>
       _$ServantExtraFromJson(json);
+}
+
+@JsonSerializable()
+class BiliVideo {
+  int? av;
+  int? p;
+  String? bv;
+
+  BiliVideo({
+    this.av,
+    this.p,
+    this.bv,
+  });
+
+  factory BiliVideo.fromJson(Map<String, dynamic> json) =>
+      _$BiliVideoFromJson(json);
+
+  bool get valid => av != null || bv != null;
+
+  String get weburl {
+    // https://www.bilibili.com/video/av74352743/?p=271
+    String url = 'https://www.bilibili.com/video/';
+    if (av != null) {
+      url += 'av$av/';
+    } else if (bv != null) {
+      url += '$bv/';
+    }
+    if (p != null) {
+      url += '?p=$p';
+    }
+    return url;
+  }
 }
 
 @JsonSerializable()

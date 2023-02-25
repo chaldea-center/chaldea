@@ -7,6 +7,7 @@ import '../userdata/filter_data.dart';
 import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
+import 'const_data.dart';
 import 'event.dart';
 import 'game_card.dart';
 import 'item.dart';
@@ -208,7 +209,6 @@ class Servant with GameCardMixin {
   List<int> trialQuestIds;
   int growthCurve;
   List<int> bondGrowth;
-  List<int> expGrowth;
   List<int> expFeed;
   int bondEquip;
   List<int> valentineEquip;
@@ -232,14 +232,18 @@ class Servant with GameCardMixin {
   List<NiceTd> noblePhantasms;
   NiceLore profile;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final int originalCollectionNo;
-  @JsonKey(ignore: true)
-  late List<int> atkGrowth =
-      db.gameData.constData.getSvtCurve(growthCurve, atkBase, atkMax, null);
-  @JsonKey(ignore: true)
-  late List<int> hpGrowth =
-      db.gameData.constData.getSvtCurve(growthCurve, hpBase, hpMax, null);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late SvtExpData curveData = SvtExpData.from(
+      type: growthCurve,
+      atkBase: atkBase,
+      atkMax: atkMax,
+      hpBase: hpBase,
+      hpMax: hpMax);
+  List<int> get atkGrowth => curveData.atk;
+  List<int> get hpGrowth => curveData.hp;
+  List<int> get expGrowth => curveData.exp;
 
   Servant({
     required this.id,
@@ -272,7 +276,6 @@ class Servant with GameCardMixin {
     this.trialQuestIds = const [],
     required this.growthCurve,
     this.bondGrowth = const [],
-    this.expGrowth = const [],
     this.expFeed = const [],
     this.bondEquip = 0,
     this.valentineEquip = const [],
@@ -333,7 +336,6 @@ class Servant with GameCardMixin {
       trialQuestIds: trialQuestIds,
       growthCurve: growthCurve,
       bondGrowth: bondGrowth,
-      expGrowth: expGrowth,
       expFeed: expFeed,
       bondEquip: bondEquip,
       valentineEquip: valentineEquip,
@@ -361,9 +363,9 @@ class Servant with GameCardMixin {
 
   factory Servant.fromJson(Map<String, dynamic> json) =>
       _$ServantFromJson(json);
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late List<List<NiceSkill>> groupedActiveSkills;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late List<List<NiceTd>> groupedNoblePhantasms;
 
   void preprocess() {
@@ -672,7 +674,6 @@ class CraftEssence with GameCardMixin {
   int hpBase;
   int hpMax;
   int growthCurve;
-  List<int> expGrowth;
   List<int> expFeed;
   int? bondEquipOwner;
   int? valentineEquipOwner;
@@ -681,12 +682,16 @@ class CraftEssence with GameCardMixin {
   List<NiceSkill> skills;
   NiceLore profile;
 
-  @JsonKey(ignore: true)
-  late List<int> atkGrowth =
-      db.gameData.constData.getSvtCurve(growthCurve, atkBase, atkMax, null);
-  @JsonKey(ignore: true)
-  late List<int> hpGrowth =
-      db.gameData.constData.getSvtCurve(growthCurve, hpBase, hpMax, null);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late SvtExpData curveData = SvtExpData.from(
+      type: growthCurve,
+      atkBase: atkBase,
+      atkMax: atkMax,
+      hpBase: hpBase,
+      hpMax: hpMax);
+  List<int> get atkGrowth => curveData.atk;
+  List<int> get hpGrowth => curveData.hp;
+  List<int> get expGrowth => curveData.exp;
 
   CraftEssence({
     required this.id,
@@ -705,7 +710,6 @@ class CraftEssence with GameCardMixin {
     required this.hpBase,
     required this.hpMax,
     required this.growthCurve,
-    this.expGrowth = const [],
     this.expFeed = const [],
     this.bondEquipOwner,
     this.valentineEquipOwner,

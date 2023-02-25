@@ -555,16 +555,10 @@ class CraftDetailBasePage extends StatelessWidget {
     router.push(
       child: GrowthCurvePage.fromCard(
         title: '${S.current.growth_curve} - ${ce.lName.l}',
-        atks: List.generate(
-            ce.lvMax,
-            (index) =>
-                (ce.atkBase + (ce.atkMax - ce.atkBase) / (ce.lvMax - 1) * index)
-                    .round()),
-        hps: List.generate(
-            ce.lvMax,
-            (index) =>
-                (ce.hpBase + (ce.hpMax - ce.hpBase) / (ce.lvMax - 1) * index)
-                    .round()),
+        lvs: ce.curveData.lv,
+        atks: ce.atkGrowth,
+        hps: ce.hpGrowth,
+        maxX: ce.lvMax,
         avatar: ce.iconBuilder(
           context: context,
           height: 56,

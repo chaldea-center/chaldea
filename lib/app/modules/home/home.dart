@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/db.dart';
@@ -20,7 +21,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
-  final bool showBattle = kDebugMode || AppInfo.isDebugDevice;
+  final bool showBattle = kDebugMode ||
+      AppInfo.isDebugDevice ||
+      (kIsWeb && kPlatformMethods.href.contains('battle.'));
 
   @override
   Widget build(BuildContext context) {

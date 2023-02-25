@@ -1,3 +1,8 @@
+# 2.2.6
+
+- Fix auth file auto login
+- Add bili video player
+
 # 2.2.5
 
 - Add wars to home page

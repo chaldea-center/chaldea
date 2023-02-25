@@ -6,19 +6,19 @@
       "request": "launch",
       "type": "dart",
       "args": [
-        "--web-port=50091"
-        //  "--web-renderer=html"
+        "--web-port=50091",
+        // "--web-renderer=html"
       ]
     },
     {
-      "name": "Flutter (profile mode)",
+      "name": "Flutter (profile)",
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "Flutter (release mode)",
+      "name": "Flutter (release)",
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",

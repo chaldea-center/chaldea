@@ -129,6 +129,12 @@ class _ApkListPageState extends State<ApkListPage> {
         title: Text(_hidden ? 'App' : 'FGO APK'),
         actions: [
           IconButton(
+            onPressed: () {
+              launch(HttpUrlHelper.projectDocUrl('fgo_apk'), external: true);
+            },
+            icon: const Icon(Icons.open_in_browser),
+          ),
+          IconButton(
             onPressed: load,
             icon: const Icon(Icons.refresh),
             tooltip: S.current.refresh,

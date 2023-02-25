@@ -7,6 +7,9 @@ import 'platform_interface.dart';
 
 class PlatformMethods extends PlatformMethodsInterface {
   @override
+  String get href => html.window.location.href;
+
+  @override
   String? getLocalStorage(String key) => html.window.localStorage[key];
 
   @override

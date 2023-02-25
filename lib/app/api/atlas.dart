@@ -23,7 +23,7 @@ class _CachedInfo {
   int statusCode;
   String crc;
   int timestamp; // in seconds
-  String fp;
+  String? fp;
 
   String get key => _url2uuid(url);
 
@@ -74,7 +74,7 @@ class _DownloadingTask {
 
 class _CacheManager {
   bool _initiated = false;
-  final String cacheKey;
+  final String? cacheKey;
   final List<int> statusCodes = const [200];
   final Map<String, _CachedInfo> _data = {}; // key=uuid
   final Map<String, List<int>> _memoryCache = {}; // key=uuid
@@ -82,9 +82,11 @@ class _CacheManager {
   final Map<String, DateTime> _failed = {}; // key=url
 
   LazyBox<Uint8List>? _webBox;
-  late final FilePlus _infoFile = FilePlus(kIsWeb
-      ? 'api_cache/$cacheKey.json'
-      : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
+  late final FilePlus? _infoFile = cacheKey == null
+      ? null
+      : FilePlus(kIsWeb
+          ? 'api_cache/$cacheKey.json'
+          : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
   _CacheManager(this.cacheKey);
 
@@ -106,8 +108,8 @@ class _CacheManager {
       if (kIsWeb) {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
       }
-      if (_infoFile.existsSync()) {
-        Map.from(jsonDecode(await _infoFile.readAsString()))
+      if (_infoFile != null && _infoFile!.existsSync()) {
+        Map.from(jsonDecode(await _infoFile!.readAsString()))
             .forEach((key, value) {
           _data[key] = _CachedInfo.fromJson(value);
         });
@@ -125,9 +127,10 @@ class _CacheManager {
   }
 
   Future<void> _saveCacheInfo() async {
+    if (_infoFile == null) return;
     try {
-      await _infoFile.create(recursive: true);
-      await _infoFile.writeAsString(jsonEncode(_data));
+      await _infoFile!.create(recursive: true);
+      await _infoFile!.writeAsString(jsonEncode(_data));
     } catch (e, s) {
       logger.e('Save Api Cache info failed', e, s);
     }
@@ -138,7 +141,7 @@ class _CacheManager {
     try {
       final fp = _data[key]?.fp;
       if (fp != null) {
-        await _getCacheFile(key).delete();
+        await _getCacheFile(key)?.delete();
         _data.remove(key);
         saveCacheInfo();
       }
@@ -179,7 +182,8 @@ class _CacheManager {
     return null;
   }
 
-  FilePlus _getCacheFile(String key) {
+  FilePlus? _getCacheFile(String key) {
+    if (cacheKey == null) return null;
     return FilePlus(
       kIsWeb ? '$cacheKey/$key' : joinPaths(db.paths.tempDir, '$cacheKey/$key'),
       box: _webBox,
@@ -194,9 +198,9 @@ class _CacheManager {
     final crc = Crc32Xz().convert(bytes).toString();
     _memoryCache[key] = bytes;
 
-    await file.create(recursive: true);
-    await file.writeAsBytes(bytes);
-    final fp = _getCacheFile(key).path;
+    await file?.create(recursive: true);
+    await file?.writeAsBytes(bytes);
+    final fp = _getCacheFile(key)?.path;
     if (!kReleaseMode) print('caching api $url to $fp');
     _data[key] = _CachedInfo(
       url: url,
@@ -232,19 +236,23 @@ class _CacheManager {
       }
       final entry = _data[key];
       if (entry != null) {
-        final file = FilePlus(entry.fp, box: _webBox);
+        FilePlus? file =
+            entry.fp == null ? null : FilePlus(entry.fp!, box: _webBox);
         if (!_isExpired(key, entry.timestamp, expireAfter)) {
           List<int>? bytes = _memoryCache[key];
-          if (bytes == null && file.existsSync()) {
-            bytes = await file.readAsBytes();
+          if (bytes == null) {
+            if (file != null && file.existsSync()) {
+              bytes = await file.readAsBytes();
+            }
           }
           if (bytes != null &&
               Crc32Xz().convert(bytes).toString() == entry.crc) {
             return SynchronousFuture(bytes);
           }
         }
+
         _data.remove(key);
-        await file.delete().catchError((e, s) => null);
+        await file?.delete().catchError((e, s) => null);
       }
       var prevTask = _downloading[url];
       if (prevTask != null) {
@@ -636,5 +644,36 @@ class AtlasApi {
       (data) => RemoteConfig.fromJson(data),
       expireAfter: expireAfter,
     );
+  }
+}
+
+class CachedApi {
+  const CachedApi._();
+  static final _CacheManager cacheManager = _CacheManager(null);
+
+  static Future<Map?> biliVideoInfo(
+      {int? aid, String? bvid, Duration? expireAfter}) async {
+    if (aid == null && bvid == null) return null;
+    String url = 'https://api.bilibili.com/x/web-interface/view?';
+    if (aid != null) {
+      url += 'aid=$aid';
+    } else if (bvid != null) {
+      url += 'bvid=$bvid';
+    }
+    return cacheManager.getModel(
+      corsWebOnly(url),
+      (data) => Map.from(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static String corsWebOnly(String url) {
+    if (kIsWeb) return corsProxy(url);
+    return url;
+  }
+
+  static String corsProxy(String url) {
+    return Uri.parse(Hosts.workerHost)
+        .replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
   }
 }

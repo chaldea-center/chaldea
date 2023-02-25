@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/bili_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../descriptors/cond_target_value.dart';
@@ -35,6 +39,25 @@ class SvtTdTab extends StatelessWidget {
       }
       children.add(_buildTds(context, shownTds,
           status.favorite ? status.npLv : null, overrideTds));
+    }
+
+    if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: ElevatedButton(
+          onPressed: () {
+            if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
+              launch(svt.extra.tdAnimations.first.weburl);
+              return;
+            }
+            router.pushPage(BiliTdAnimations(
+              videos: svt.extra.tdAnimations,
+              title: '${S.current.td_animation} - ${svt.lName.l}',
+            ));
+          },
+          child: Text(S.current.td_animation),
+        ),
+      ));
     }
 
     return ListView.builder(
@@ -181,6 +204,54 @@ class SvtTdTab extends StatelessWidget {
             Text(
                 '${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
         ],
+      ),
+    );
+  }
+}
+
+class BiliTdAnimations extends StatelessWidget {
+  final String? title;
+  final List<BiliVideo> videos;
+  const BiliTdAnimations({super.key, this.title, required this.videos});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int index = 0; index < videos.length; index++) {
+      final video = videos[index];
+      if (!video.valid) continue;
+      if (BiliPlayer.isSupport) {
+        children.add(AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Container(
+            constraints: const BoxConstraints(maxHeight: 400),
+            decoration: BoxDecoration(
+                border:
+                    Border.fromBorderSide(Divider.createBorderSide(context))),
+            child: Center(
+              child: BiliPlayer(video: video),
+            ),
+          ),
+        ));
+      }
+      children.add(Center(
+        child: TextButton(
+          onPressed: () {
+            launch(video.weburl);
+          },
+          child: Text(videos.length == 1
+              ? 'Mooncell@bilibili'
+              : '${index + 1} - Mooncell@bilibili'),
+        ),
+      ));
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title ?? S.current.td_animation),
+      ),
+      body: ListView(
+        shrinkWrap: true,
+        children: children,
       ),
     );
   }
