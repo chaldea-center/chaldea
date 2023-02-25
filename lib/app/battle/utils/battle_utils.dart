@@ -167,14 +167,14 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
 
 /// Referencing:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/critstars.html
-double calculateStar(final StarParameters param) {
+int calculateStar(final StarParameters param) {
   var constData = db.gameData.constData;
   if (!constData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
 
   var chainPos = param.isNp ? 1 : param.chainPos;
-  var cardCorrection = constData.cardInfo[param.currentCardType]![chainPos]!.addCritical;
+  var cardCorrection = constData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
 
   if (!constData.cardInfo.containsKey(param.firstCardType)) {
     throw 'Invalid first card type: ${param.firstCardType}';
@@ -210,7 +210,7 @@ double calculateStar(final StarParameters param) {
     dropRate = constData.constants.starRateMax;
   }
 
-  return dropRate / 1000;
+  return dropRate;
 }
 
 double toModifier(final int value) {
@@ -348,6 +348,22 @@ class AttackNpGainParameters {
         'isOverkill: $isOverkill'
         '}';
   }
+
+  AttackNpGainParameters copy() {
+    return AttackNpGainParameters()
+      ..attackerNpCharge = attackerNpCharge
+      ..defenderNpRate = defenderNpRate
+      ..isNp = isNp
+      ..chainPos = chainPos
+      ..currentCardType = currentCardType
+      ..firstCardType = firstCardType
+      ..isMightyChain = isMightyChain
+      ..isCritical = isCritical
+      ..cardBuff = cardBuff
+      ..cardResist = cardResist
+      ..npGainBuff = npGainBuff
+      ..isOverkill = isOverkill;
+  }
 }
 
 class DefendNpGainParameters {
@@ -366,6 +382,15 @@ class DefendNpGainParameters {
         'defenseNpGainBuff: $defenseNpGainBuff, '
         'isOverkill: $isOverkill'
         '}';
+  }
+
+  DefendNpGainParameters copy() {
+    return DefendNpGainParameters()
+      ..defenderNpCharge = defenderNpCharge
+      ..attackerNpRate = attackerNpRate
+      ..npGainBuff = npGainBuff
+      ..defenseNpGainBuff = defenseNpGainBuff
+      ..isOverkill = isOverkill;
   }
 }
 
@@ -401,5 +426,21 @@ class StarParameters {
         'enemyStarGenResist: $enemyStarGenResist, '
         'isOverkill: $isOverkill'
         '}';
+  }
+
+  StarParameters copy() {
+    return StarParameters()
+      ..attackerStarGen = attackerStarGen
+      ..defenderStarRate = defenderStarRate
+      ..isNp = isNp
+      ..chainPos = chainPos
+      ..currentCardType = currentCardType
+      ..firstCardType = firstCardType
+      ..isMightyChain = isMightyChain
+      ..isCritical = isCritical
+      ..cardBuff = cardBuff
+      ..cardResist = cardResist
+      ..starGenBuff = starGenBuff
+      ..isOverkill = isOverkill;
   }
 }

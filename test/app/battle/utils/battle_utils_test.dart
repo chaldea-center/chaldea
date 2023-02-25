@@ -16,7 +16,7 @@ void main() async {
 
   db.gameData = data!;
 
-  group('calculateDamage()', () {
+  group('calculateDamage', () {
     group('Altria (100100) vs Sky caster', () {
       var defenderClass = SvtClass.caster;
       var defenderAttribute = Attribute.sky;
@@ -215,7 +215,7 @@ void main() async {
           ..cardBuff = 80 // passive
           ..chainPos = 1
           ..currentCardType = CardType.quick
-          ..firstCardType = CardType.arts;
+          ..firstCardType = CardType.quick;
 
         expect(calculateDamage(damageParameters), equals(1806));
 
@@ -433,6 +433,460 @@ void main() async {
           ..npSpecificAttackRate = oc5Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(91314));
       });
+    });
+  });
+
+  group('calculateAttackNpGain', () {
+    test('float32 test in Atlas', () {
+      var param = AttackNpGainParameters()
+        ..firstCardType = CardType.quick
+        ..isMightyChain = true
+        ..currentCardType = CardType.arts
+        ..chainPos = 3
+        ..attackerNpCharge = 25
+        ..defenderNpRate = 1000
+        ..cardBuff = 1600
+        ..cardResist = 800
+        ..npGainBuff = 300
+        ..isCritical = true;
+
+      expect(calculateAttackNpGain(param), equals(766));
+    });
+
+    group('Yang Guifei (2500400) vs Caster', () {
+      var defenderNpRate = 1200;
+
+      var yuyu = db.gameData.servantsById[2500400]!;
+      var np = yuyu.noblePhantasms.last;
+
+      var baseParam = AttackNpGainParameters()..defenderNpRate = defenderNpRate;
+
+      var npBaseParam = baseParam.copy()
+        ..isNp = true
+        ..attackerNpCharge = np.npGain.np.last
+        ..currentCardType = np.card
+        ..firstCardType = np.card;
+
+      var baseHitNpGain = 183;
+      test('NP 5 as base', () {
+        expect(calculateAttackNpGain(npBaseParam), equals(baseHitNpGain));
+      });
+
+      test('chainPos does not affect NP', () {
+        var param = npBaseParam.copy()..chainPos = 5;
+
+        expect(calculateAttackNpGain(param), equals(baseHitNpGain));
+      });
+
+      test('NP does not benefit from firstCardBonus', () {
+        var param = npBaseParam.copy()..firstCardType = CardType.quick;
+
+        expect(calculateAttackNpGain(param), equals(baseHitNpGain));
+      });
+
+      test('cardBuff & cardResist', () {
+        var param = npBaseParam.copy()..cardBuff = 500;
+
+        var hitNpGain = calculateAttackNpGain(param);
+        expect(hitNpGain, equals(275));
+
+        param
+          ..cardBuff = 800
+          ..cardResist = 300;
+        expect(calculateAttackNpGain(param), equals(hitNpGain));
+      });
+
+      test('npGainBuff', () {
+        var param = npBaseParam.copy()..npGainBuff = 300;
+
+        expect(calculateAttackNpGain(param), equals(238));
+      });
+
+      test('overkill', () {
+        var param = npBaseParam.copy()..isOverkill = true;
+
+        expect(calculateAttackNpGain(param), equals(274));
+      });
+
+      test('with double Altria Caster & overkill', () {
+        var param = npBaseParam.copy()
+          ..cardBuff = 1000
+          ..npGainBuff = 600
+          ..isOverkill = true;
+        expect(calculateAttackNpGain(param), equals(880));
+      });
+
+      test('firstCardBonus', () {
+        var params = baseParam.copy()
+          ..attackerNpCharge = np.npGain.arts.last
+          ..chainPos = 2
+          ..currentCardType = CardType.arts
+          ..firstCardType = CardType.quick;
+
+        var hitNpGainWithoutBonus = calculateAttackNpGain(params);
+        expect(hitNpGainWithoutBonus, equals(275));
+
+        params.firstCardType = CardType.buster;
+
+        expect(calculateAttackNpGain(params), equals(hitNpGainWithoutBonus));
+
+        params.firstCardType = CardType.arts;
+
+        var hitNpGainWithBonus = calculateAttackNpGain(params);
+        expect(hitNpGainWithBonus, equals(336));
+
+        params
+          ..firstCardType = CardType.quick
+          ..isMightyChain = true;
+
+        expect(calculateAttackNpGain(params), equals(hitNpGainWithBonus));
+      });
+
+      test('cardCorrection', () {
+        var params = baseParam.copy()
+          ..attackerNpCharge = np.npGain.quick.last
+          ..chainPos = 1
+          ..currentCardType = CardType.quick
+          ..firstCardType = CardType.quick;
+
+        expect(calculateAttackNpGain(params), equals(61));
+
+        params.chainPos = 2;
+
+        expect(calculateAttackNpGain(params), equals(91));
+
+        params.chainPos = 3;
+
+        expect(calculateAttackNpGain(params), equals(122));
+
+        params
+          ..attackerNpCharge = np.npGain.buster.last
+          ..chainPos = 2
+          ..currentCardType = CardType.buster
+          ..firstCardType = CardType.quick;
+
+        expect(calculateAttackNpGain(params), equals(0));
+
+        params.firstCardType = CardType.arts;
+
+        expect(calculateAttackNpGain(params), equals(61));
+      });
+
+      test('criticalModifier', () {
+        var params = baseParam.copy()
+          ..attackerNpCharge = np.npGain.arts.last
+          ..chainPos = 2
+          ..isCritical = true
+          ..currentCardType = CardType.arts
+          ..firstCardType = CardType.arts;
+
+        expect(calculateAttackNpGain(params), equals(673));
+      });
+    });
+
+    test('Gilgamesh (Caster) (501800) vs Berserker', () {
+      var defenderNpRate = 800;
+
+      var gilgamesh = db.gameData.servantsById[501800]!;
+      var np = gilgamesh.noblePhantasms.last;
+
+      var param = AttackNpGainParameters()
+        ..defenderNpRate = defenderNpRate
+        ..isNp = true
+        ..attackerNpCharge = np.npGain.np.last
+        ..currentCardType = np.card
+        ..firstCardType = np.card
+        ..cardBuff = 100; // passive
+
+      expect(calculateAttackNpGain(param), equals(42));
+    });
+
+    test('Minamoto-no-Raikou (Berserker) (702300) vs Lancer', () {
+      var defenderNpRate = 1000;
+
+      var raikou = db.gameData.servantsById[702300]!;
+      var np = raikou.noblePhantasms.last;
+
+      var param = AttackNpGainParameters()
+        ..defenderNpRate = defenderNpRate
+        ..attackerNpCharge = np.npGain.arts.last
+        ..currentCardType = CardType.arts
+        ..firstCardType = np.card
+        ..isCritical = true
+        ..npGainBuff = 450
+        ..isOverkill = true;
+
+      param.chainPos = 2;
+      expect(calculateAttackNpGain(param), equals(900));
+
+      param.chainPos = 3;
+      expect(calculateAttackNpGain(param), equals(1200));
+
+      param
+        ..chainPos = 4
+        ..currentCardType = CardType.extra
+        ..isCritical = false;
+      expect(calculateAttackNpGain(param), equals(99));
+    });
+
+    test('Abigail Williams (2500100) vs Beast III/R', () {
+      var defenderNpRate = 1000;
+
+      var abby = db.gameData.servantsById[2500100]!;
+      var np = abby.noblePhantasms.last;
+
+      var param = AttackNpGainParameters()
+        ..defenderNpRate = defenderNpRate
+        ..attackerNpCharge = np.npGain.arts.last
+        ..currentCardType = CardType.arts
+        ..firstCardType = CardType.arts
+        ..isCritical = true
+        ..cardBuff = 800
+        ..npGainBuff = 300
+        ..chainPos = 3
+        ..isOverkill = true;
+
+      expect(calculateAttackNpGain(param), equals(1149));
+    });
+
+    test('Vlad III (Berserker) (700700) vs Beast III/R', () {
+      var defenderNpRate = 1000;
+
+      var vlad = db.gameData.servantsById[700700]!;
+      var np = vlad.noblePhantasms.last;
+
+      var param = AttackNpGainParameters()
+        ..defenderNpRate = defenderNpRate
+        ..attackerNpCharge = np.npGain.arts.last
+        ..currentCardType = CardType.arts
+        ..firstCardType = CardType.arts
+        ..isCritical = true
+        ..cardBuff = 800
+        ..npGainBuff = 300
+        ..chainPos = 3
+        ..isOverkill = true;
+
+      expect(calculateAttackNpGain(param), equals(2299));
+    });
+  });
+
+  group('calculateDefendNpGain', () {
+    group('Yang Guifei (2500400) vs Caster', () {
+      var attackerNpRate = 1200;
+
+      var yuyu = db.gameData.servantsById[2500400]!;
+      var np = yuyu.noblePhantasms.last;
+
+      var baseParam = DefendNpGainParameters()
+        ..defenderNpCharge = np.npGain.defence.last
+        ..attackerNpRate = attackerNpRate;
+
+      var baseHitNpGain = 360;
+      test('NP 5 as base', () {
+        expect(calculateDefendNpGain(baseParam), equals(baseHitNpGain));
+      });
+
+      test('npGainBuff', () {
+        var param = baseParam.copy()..npGainBuff = 300;
+
+        expect(calculateDefendNpGain(param), equals(467));
+      });
+
+      test('defNpGainBuff', () {
+        var param = baseParam.copy()..defenseNpGainBuff = 200;
+
+        expect(calculateDefendNpGain(param), equals(432));
+      });
+
+      test('overkill', () {
+        var param = baseParam.copy()..isOverkill = true;
+
+        expect(calculateDefendNpGain(param), equals(540));
+      });
+    });
+
+    test('Gilgamesh (Caster) (501800) vs Berserker', () {
+      var attackerNpRate = 800;
+
+      var gilgamesh = db.gameData.servantsById[501800]!;
+      var np = gilgamesh.noblePhantasms.last;
+
+      var baseParam = DefendNpGainParameters()
+        ..defenderNpCharge = np.npGain.defence.last
+        ..attackerNpRate = attackerNpRate;
+
+      expect(calculateDefendNpGain(baseParam), equals(240));
+    });
+
+    test('Ashiya Douman (1001000) vs Caster', () {
+      var attackerNpRate = 1200;
+
+      var douman = db.gameData.servantsById[1001000]!;
+      var np = douman.noblePhantasms.last;
+
+      var baseParam = DefendNpGainParameters()
+        ..defenderNpCharge = np.npGain.defence.last
+        ..attackerNpRate = attackerNpRate
+        ..defenseNpGainBuff = 200;
+
+      expect(calculateDefendNpGain(baseParam), equals(576));
+
+      baseParam.npGainBuff = 300;
+
+      expect(calculateDefendNpGain(baseParam), equals(748));
+    });
+  });
+
+  group('calculateStar', () {
+    group('Izumo no Okuni (504900) vs Rider', () {
+      var defenderStarRate = 100;
+
+      var okumi = db.gameData.servantsById[504900]!;
+      var np = okumi.noblePhantasms.last;
+
+      var baseParam = StarParameters()
+        ..attackerStarGen = okumi.starGen
+        ..defenderStarRate = defenderStarRate;
+
+      var npBaseParam = baseParam.copy()
+        ..isNp = true
+        ..currentCardType = np.card
+        ..firstCardType = np.card
+        ..cardResist = -200; // np first function
+
+      var baseHitStarGen = 1169;
+      test('NP 5 as base', () {
+        expect(calculateStar(npBaseParam), equals(baseHitStarGen));
+      });
+
+      test('chainPos does not affect NP', () {
+        var param = npBaseParam.copy()..chainPos = 5;
+
+        expect(calculateStar(param), equals(baseHitStarGen));
+      });
+
+      test('NP does not benefit from firstCardBonus', () {
+        var param = npBaseParam.copy()..firstCardType = CardType.arts;
+
+        expect(calculateStar(param), equals(baseHitStarGen));
+      });
+
+      test('cardBuff & cardResist', () {
+        var param = npBaseParam.copy()..cardBuff = 500;
+
+        var starGen = calculateStar(param);
+        expect(starGen, equals(1569));
+
+        param
+          ..cardBuff = 800
+          ..cardResist = 300 - 200;
+        expect(calculateStar(param), equals(starGen));
+      });
+
+      test('starGenBuff & enemyStarGenResist', () {
+        var param = npBaseParam.copy()..starGenBuff = 300;
+
+        var starGen = calculateStar(param);
+        expect(starGen, equals(1469));
+
+        param
+          ..starGenBuff = 800
+          ..enemyStarGenResist = 500;
+        expect(calculateStar(param), equals(starGen));
+      });
+
+      test('overkill', () {
+        var param = npBaseParam.copy()..isOverkill = true;
+
+        expect(calculateStar(param), equals(1469));
+      });
+
+      test('with double Scathach-Skadi (Rider) & overkill', () {
+        var param = npBaseParam.copy()
+          ..cardBuff = 1000
+          ..isOverkill = true;
+        expect(calculateStar(param), equals(2269));
+      });
+
+      test('firstCardBonus', () {
+        var params = baseParam.copy()
+          ..chainPos = 2
+          ..currentCardType = CardType.buster
+          ..firstCardType = CardType.buster;
+
+        var hitStarGenWithoutBonus = calculateStar(params);
+        expect(hitStarGenWithoutBonus, equals(359));
+
+        params.firstCardType = CardType.arts;
+
+        expect(calculateStar(params), equals(hitStarGenWithoutBonus));
+
+        params.firstCardType = CardType.quick;
+
+        var hitStarGenWithBonus = calculateStar(params);
+        expect(hitStarGenWithBonus, equals(559));
+
+        params
+          ..firstCardType = CardType.arts
+          ..isMightyChain = true;
+
+        expect(calculateStar(params), equals(hitStarGenWithBonus));
+      });
+
+      test('cardCorrection', () {
+        var params = baseParam.copy()
+          ..chainPos = 1
+          ..currentCardType = CardType.buster
+          ..firstCardType = CardType.buster;
+
+        expect(calculateStar(params), equals(309));
+
+        params.chainPos = 2;
+
+        expect(calculateStar(params), equals(359));
+
+        params.chainPos = 3;
+
+        expect(calculateStar(params), equals(409));
+
+        params
+          ..chainPos = 2
+          ..currentCardType = CardType.arts
+          ..firstCardType = CardType.buster;
+
+        expect(calculateStar(params), equals(209));
+
+        params.firstCardType = CardType.quick;
+
+        expect(calculateStar(params), equals(409));
+      });
+
+      test('criticalModifier', () {
+        var params = baseParam.copy()
+          ..chainPos = 2
+          ..isCritical = true
+          ..currentCardType = CardType.quick
+          ..firstCardType = CardType.quick;
+
+        expect(calculateStar(params), equals(1909));
+      });
+    });
+
+    test('Kama (Caster) (603700) vs Avenger', () {
+      var defenderStarRate = -100;
+
+      var kama = db.gameData.servantsById[603700]!;
+      var np = kama.noblePhantasms.last;
+
+      var param = StarParameters()
+        ..attackerStarGen = kama.starGen
+        ..defenderStarRate = defenderStarRate
+        ..isNp = true
+        ..currentCardType = np.card
+        ..firstCardType = np.card
+        ..cardBuff = 300; // passive + np first function
+
+      expect(calculateStar(param), equals(1190));
     });
   });
 }
