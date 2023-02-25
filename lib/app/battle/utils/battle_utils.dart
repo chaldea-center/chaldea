@@ -15,7 +15,7 @@ int calculateDamage(final DamageParameters param) {
   }
 
   var classAttackCorrection = toModifier(constData.classInfo[param.attackerClass.id]!.attackRate);
-  var classAdvantage = toModifier(param.classAdvantage);
+  var classAdvantage = toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
   if (!constData.attributeRelation.containsKey(param.attackerAttribute) ||
       !constData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
@@ -48,7 +48,7 @@ int calculateDamage(final DamageParameters param) {
       : 1000;
   var extraModifier = toModifier(extraRate);
 
-  var busterChainMod = param.isTypeChain && param.firstCardType == CardType.buster
+  var busterChainMod = !param.isNp && param.currentCardType == CardType.buster && param.isTypeChain
       ? toModifier(constData.constants.chainbonusBusterRate) * param.attack
       : 0;
 
@@ -159,7 +159,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
   float.setFloat32(0, npBonusGain * float.getFloat32(0));
   float.setFloat32(0, defNpBonusGain * float.getFloat32(0));
   var beforeOverkill = float.getFloat32(0);
-  
+
   var overkillModifier = param.isOverkill ? toModifier(db.gameData.constData.constants.overKillNpRate) : 1.0;
   float.setFloat32(0, beforeOverkill * overkillModifier);
   return float.getFloat32(0).floor();
@@ -167,7 +167,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
 
 /// Referencing:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/critstars.html
-int calculateStar(final StarParameters param) {
+double calculateStar(final StarParameters param) {
   var constData = db.gameData.constData;
   if (!constData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
@@ -182,8 +182,8 @@ int calculateStar(final StarParameters param) {
   var firstCardBonus = param.isNp
       ? 0
       : param.isMightyChain
-        ? constData.cardInfo[CardType.quick]![1]!.addCritical
-        : constData.cardInfo[param.firstCardType]![1]!.addCritical;
+          ? constData.cardInfo[CardType.quick]![1]!.addCritical
+          : constData.cardInfo[param.firstCardType]![1]!.addCritical;
   var criticalModifier = param.isCritical ? constData.constants.criticalStarRate : 0;
 
   var defenderStarRate = param.defenderStarRate;
@@ -194,22 +194,23 @@ int calculateStar(final StarParameters param) {
   var overkillModifier = param.isOverkill ? toModifier(constData.constants.overKillStarRate) : 1;
   var overkillAdd = param.isOverkill ? constData.constants.overKillStarAdd : 0;
 
-  var dropRate = (
-  param.attackerStarGen +
-      firstCardBonus +
-      (cardCorrection * max(1 + cardBuff - cardResist, 0)) +
-      defenderStarRate +
-      param.starGenBuff -
-      param.enemyStarGenResist +
-      criticalModifier
-  ) * overkillModifier + overkillAdd;
+  // not converted to modifier since mostly just additions.
+  var dropRate = ((param.attackerStarGen +
+                  firstCardBonus +
+                  (cardCorrection * max(1 + cardBuff - cardResist, 0)) +
+                  defenderStarRate +
+                  param.starGenBuff -
+                  param.enemyStarGenResist +
+                  criticalModifier) *
+              overkillModifier +
+          overkillAdd)
+      .toInt();
 
   if (dropRate > constData.constants.starRateMax) {
     dropRate = constData.constants.starRateMax;
   }
-  var drops = dropRate / constData.constants.maxDropFactor;
 
-  return drops.floor();
+  return dropRate / 1000;
 }
 
 double toModifier(final int value) {
@@ -280,6 +281,39 @@ class DamageParameters {
         'damageReductionBuff: $damageReductionBuff, '
         'fixedRandom: $fixedRandom'
         '}';
+  }
+
+  DamageParameters copy() {
+    return DamageParameters()
+      ..attack = attack
+      ..damageRate = damageRate
+      ..totalHits = totalHits
+      ..npSpecificAttackRate = npSpecificAttackRate
+      ..attackerClass = attackerClass
+      ..defenderClass = defenderClass
+      ..classAdvantage = classAdvantage
+      ..attackerAttribute = attackerAttribute
+      ..defenderAttribute = defenderAttribute
+      ..isNp = isNp
+      ..chainPos = chainPos
+      ..currentCardType = currentCardType
+      ..firstCardType = firstCardType
+      ..isTypeChain = isTypeChain
+      ..isMightyChain = isMightyChain
+      ..isCritical = isCritical
+      ..cardBuff = cardBuff
+      ..cardResist = cardResist
+      ..attackBuff = attackBuff
+      ..defenseBuff = defenseBuff
+      ..specificAttackBuff = specificAttackBuff
+      ..specificDefenseBuff = specificDefenseBuff
+      ..criticalDamageBuff = criticalDamageBuff
+      ..npDamageBuff = npDamageBuff
+      ..percentAttackBuff = percentAttackBuff
+      ..percentDefenseBuff = percentDefenseBuff
+      ..damageAdditionBuff = damageAdditionBuff
+      ..damageReductionBuff = damageReductionBuff
+      ..fixedRandom = fixedRandom;
   }
 }
 
