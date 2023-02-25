@@ -20,7 +20,7 @@ class SaintQuartzPlan {
   Map<int, bool> extraMissions;
   bool minusPlannedBanner;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   VoidCallback? onSolved;
 
   MasterMission? get extraMission => db.gameData.extraMasterMission[10001];
@@ -71,7 +71,7 @@ class SaintQuartzPlan {
 
   Map<String, dynamic> toJson() => _$SaintQuartzPlanToJson(this);
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<SQDayDetail> solution = [];
 
   List<SQDayDetail> solve() {

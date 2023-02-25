@@ -112,13 +112,10 @@ class _CustomPrettyPrinter extends PrettyPrinter {
         error.requestOptions.uri.toString(),
         if (error.response != null) error.response!.realUri.toString(),
       });
-
-      error = DioError(
-        requestOptions: error.requestOptions,
-        response: error.response,
-        type: error.type,
+      error = error.copyWith(
         error: '${error.error}$detail',
-      )..stackTrace = StackTrace.fromString(lines.take(10).join('\n'));
+        stackTrace: StackTrace.fromString(lines.take(10).join('\n')),
+      );
     }
     String? errorStr = error?.toString();
 

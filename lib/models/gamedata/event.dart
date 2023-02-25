@@ -205,31 +205,31 @@ class Event {
   void routeTo() => router.push(url: Routes.eventI(id));
 
   // statistics
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> itemShop = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemPointReward = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemMission = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemTower = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemDigging = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemWarReward = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemWarDrop = {};
 
   //
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> statItemFixed = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> statItemLottery = {}; //unlimited
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Set<int> statItemExtra = {}; // treasureBox, extraItems
 
   void updateStat() {
@@ -616,7 +616,7 @@ class EventMissionConditionDetail {
   DetailMissionCondLinkType conditionLinkType;
   List<int>? targetEventIds;
   // used for custom mission
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool? useAnd;
 
   EventMissionConditionDetail({

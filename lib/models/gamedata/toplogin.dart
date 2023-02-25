@@ -155,11 +155,11 @@ class UserMstData {
   // beforeBirthDay
 
   // transformed
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, UserSvtCoin> coinMap = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, UserSvtAppendPassiveSkill> appendSkillMap = {};
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, UserSvtAppendPassiveSkillLv> appendSkillLvMap = {};
 
   UserMstData({
@@ -234,7 +234,7 @@ class UserItem {
   /// custom defined
 
   /// name in dataset, not in api response
-  // @JsonKey(ignore: true)
+  // @JsonKey(includeFromJson: false, includeToJson: false)
   // String? indexKey;
 
   UserItem({
@@ -323,11 +323,11 @@ class UserSvt {
   /// custom defined
 
   /// index key=collection id, in dataset
-  // @JsonKey(ignore: true)
+  // @JsonKey(includeFromJson: false, includeToJson: false)
   // int? indexKey;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool inStorage = false;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<int>? appendLvs;
 
   bool get locked {

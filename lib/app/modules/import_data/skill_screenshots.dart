@@ -59,8 +59,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     });
 
     _dio = DioE(ChaldeaApi.dio.options.copyWith(
-      sendTimeout: 600 * 1000,
-      receiveTimeout: 600 * 1000,
+      sendTimeout: const Duration(minutes: 10),
+      receiveTimeout: const Duration(minutes: 10),
     ));
   }
 

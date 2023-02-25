@@ -204,9 +204,9 @@ class BuffConvert {
   int effectId;
 
   // parsed targets
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<NiceTrait> targetTraits = [];
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Buff> targetBuffs = [];
 
   BuffConvert({

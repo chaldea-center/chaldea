@@ -163,7 +163,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
         if (error is Response) {
           text = error.data.toString();
         } else if (error is DioError) {
-          text = error.message;
+          text = error.toString();
           if (error.response != null) {
             text += '\n${error.response!.data}';
           }

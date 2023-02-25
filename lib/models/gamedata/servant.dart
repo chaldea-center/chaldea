@@ -232,9 +232,9 @@ class Servant with GameCardMixin {
   List<NiceTd> noblePhantasms;
   NiceLore profile;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final int originalCollectionNo;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late SvtExpData curveData = SvtExpData.from(
       type: growthCurve,
       atkBase: atkBase,
@@ -363,9 +363,9 @@ class Servant with GameCardMixin {
 
   factory Servant.fromJson(Map<String, dynamic> json) =>
       _$ServantFromJson(json);
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late List<List<NiceSkill>> groupedActiveSkills;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late List<List<NiceTd>> groupedNoblePhantasms;
 
   void preprocess() {
@@ -682,7 +682,7 @@ class CraftEssence with GameCardMixin {
   List<NiceSkill> skills;
   NiceLore profile;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late SvtExpData curveData = SvtExpData.from(
       type: growthCurve,
       atkBase: atkBase,

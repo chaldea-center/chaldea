@@ -241,7 +241,7 @@ class CarouselSetting {
   bool enableNA;
   bool enableTW;
   bool enableKR;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool needUpdate = false;
 
   CarouselSetting({
@@ -306,7 +306,7 @@ class CarouselItem {
   String? link;
   AppVersion? verMin;
   AppVersion? verMax;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   BoxFit? fit;
 
   CarouselItem({

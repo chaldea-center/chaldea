@@ -37,7 +37,7 @@ class DropRateSheet {
   /// drop rate, not ap rate
   @protected
   final Map<int, Map<int, double>> sparseMatrix;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<List<double>> matrix; // m*n
 
   DropRateSheet({

@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: d976d24314f193899a3079b14fe336215a63a3b1e1c3743eabba8f83e049e9a9
+      sha256: "0c80aeab9bc807ab10022cd3b2f4cf2ecdf231949dc1ddd9442406a003f19201"
       url: "https://pub.dev"
     source: hosted
-    version: "49.0.0"
+    version: "52.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "40ba2c6d2ab41a66476f8f1f099da6be0795c1b47221f5e2c5f8ad6048cdffae"
+      sha256: cd8ee83568a77f3ae6b913a36093a1c9b1264e7cb7f834d9ddd2311dade9c1f4
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.4.0"
   analyzer_plugin:
     dependency: transitive
     description:
@@ -117,10 +117,10 @@ packages:
     dependency: transitive
     description:
       name: build_resolvers
-      sha256: "687cf90a3951affac1bd5f9ecb5e3e90b60487f3d9cdc359bb310f8876bb02a6"
+      sha256: db49b8609ef8c81cca2b310618c3017c00f03a92af44c04d310b907b2d692d95
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.10"
+    version: "2.2.0"
   build_runner:
     dependency: "direct dev"
     description:
@@ -190,7 +190,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: be3f245cc9e9ad603d27ab5713afb5ab4b5c8e7b
+      resolved-ref: "9569034c3b81a5d3ffb50668943b2664864e2f1e"
       url: "https://github.com/narumi147/catcher.git"
     source: git
     version: "0.7.1"
@@ -318,10 +318,18 @@ packages:
     dependency: "direct dev"
     description:
       name: dart_code_metrics
-      sha256: "219607f5abbf4c0d254ca39ee009f9ff28df91c40aef26718fde15af6b7a6c24"
+      sha256: "026e28da197a03caeccccc0b174ec98ef03da3c81c4543314d7add121aab4375"
       url: "https://pub.dev"
     source: hosted
-    version: "4.21.3"
+    version: "5.6.0"
+  dart_code_metrics_presets:
+    dependency: transitive
+    description:
+      name: dart_code_metrics_presets
+      sha256: "9c51724f836aebc4465228954cb5757e5a99737af26a452b5dec0a2d5d0b4d66"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   dart_des:
     dependency: "direct main"
     description:
@@ -374,18 +382,18 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "5fd6e152bdbc876bc6e81910e16a2bd36e0c68e23d87316e8da67a1ec8fd7b1c"
+      sha256: "3709d74615bba5e443eb141f6a7f4bcc4788f8fae6f743edadfb79c2a8e6287e"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.4"
+    version: "5.0.1"
   dio_cookie_manager:
     dependency: "direct main"
     description:
       name: dio_cookie_manager
-      sha256: ed7ee3ba6cdb54599c8984d5a4ce09675c553ead6c28608eb54e38eec5b4f954
+      sha256: b9552ab77e361acd56e00671a3fd424abe8447aa0a14b68bec55833351d139b4
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.1"
   dots_indicator:
     dependency: "direct main"
     description:
@@ -446,10 +454,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: "749b3342ea3e95cbf61a0fec31a62606e837377b8b6d0caa7367a7ef80f38b7d"
+      sha256: e97c5b850ad056e9b3a85d3afeb44c239a83aa994a90723940dac82234f2efaf
       url: "https://pub.dev"
     source: hosted
-    version: "0.55.2"
+    version: "0.61.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -602,10 +610,10 @@ packages:
     dependency: "direct main"
     description:
       name: github
-      sha256: "2f78b5cdb21fdc54740a2476344718ab4d1eb59971fbac7962714b1a87fa9862"
+      sha256: "5658b01529dc9078f7d2b8b48abd01fee75ff87626c98b5596b9bf5517b8f431"
       url: "https://pub.dev"
     source: hosted
-    version: "9.9.0"
+    version: "9.10.1"
   glob:
     dependency: transitive
     description:
@@ -666,10 +674,10 @@ packages:
     dependency: "direct main"
     description:
       name: image
-      sha256: "8e9d133755c3e84c73288363e6343157c383a0c6c56fc51afcc5d4d7180306d6"
+      sha256: "483a389d6ccb292b570c31b3a193779b1b0178e7eb571986d9a49904b6861227"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "4.0.15"
   image_gallery_saver:
     dependency: "direct main"
     description:
@@ -700,10 +708,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4bb545d434e6deb0347efbaa26b1b3a11409a5f2"
+      resolved-ref: "192c8b1d8f1a1e2b7ba774de3f1a68fc9aa38246"
       url: "https://github.com/chaldea-center/intl_utils"
     source: git
-    version: "2.8.1"
+    version: "2.8.2"
   io:
     dependency: transitive
     description:
@@ -724,18 +732,18 @@ packages:
     dependency: "direct main"
     description:
       name: json_annotation
-      sha256: "3520fa844009431b5d4491a5a778603520cdc399ab3406332dcc50f93547258c"
+      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
       url: "https://pub.dev"
     source: hosted
-    version: "4.7.0"
+    version: "4.8.0"
   json_serializable:
     dependency: "direct dev"
     description:
       name: json_serializable
-      sha256: f3c2c18a7889580f71926f30c1937727c8c7d4f3a435f8f5e8b0ddd25253ef5d
+      sha256: dadc08bd61f72559f938dd08ec20dbfec6c709bba83515085ea943d2078d187a
       url: "https://pub.dev"
     source: hosted
-    version: "6.5.4"
+    version: "6.6.1"
   just_audio:
     dependency: "direct main"
     description:
@@ -1250,10 +1258,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "2d79738b6bbf38a43920e2b8d189e9a3ce6cc201f4b8fc76be5e4fe377b1c38d"
+      sha256: c2bea18c95cfa0276a366270afaa2850b09b4a76db95d546f3d003dcc7011298
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.6"
+    version: "1.2.7"
   source_helper:
     dependency: transitive
     description:
@@ -1322,10 +1330,10 @@ packages:
     dependency: "direct main"
     description:
       name: string_validator
-      sha256: "50dd8ecf91db6a732f4a851eeae81ee12406eedc62d0da72f2d91a04a2d10dd8"
+      sha256: b419cf5d21d608522e6e7cafed4deb34b6f268c43df866e63c320bab98a08cf6
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "1.0.0"
   sync_http:
     dependency: transitive
     description:
@@ -1521,19 +1529,20 @@ packages:
   video_player_macos:
     dependency: "direct main"
     description:
-      name: video_player_macos
-      sha256: "9155542ea434f777767dafa3f73ba0ca88950baa194750a569582ee37893fed7"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/video_player/video_player_macos"
+      ref: bae932d006e9171fcb57becc7000513cea78076e
+      resolved-ref: bae932d006e9171fcb57becc7000513cea78076e
+      url: "https://github.com/ollydixon/flutter_macos_video_player"
+    source: git
     version: "1.0.6"
   video_player_platform_interface:
     dependency: transitive
     description:
       name: video_player_platform_interface
-      sha256: "318a6d20577e1c78cf0bf40670883cc571ea860c72a4f7426d7dacce4bdd4343"
+      sha256: "72ba04ad0eff76123c6d782ac46621cb8be476a89c33c89173fce982b6ec049b"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.4"
+    version: "6.0.2"
   video_player_web:
     dependency: transitive
     description:
@@ -1546,10 +1555,10 @@ packages:
     dependency: "direct main"
     description:
       name: video_player_win
-      sha256: f148d5af0aa4272ec382c565f390d641f28cd2023376bd77500d46f63ebf6ca5
+      sha256: "8afea8a36469c87dca3c4108eac4ffed309ae6122ff73042cbf677f958415af7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.5"
+    version: "2.0.0"
   watcher:
     dependency: transitive
     description:
@@ -1627,10 +1636,10 @@ packages:
     dependency: "direct main"
     description:
       name: worker_manager
-      sha256: "4d385b0f741745e6b4f5492d39423963c462ce45ea6f0107668bb08a1ffc8a21"
+      sha256: "42501e49ee0acad9eeda562984e3dcfe6fe3d26f2d8dc410bd76308a86447eb5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.1"
+    version: "5.0.3"
   xdg_directories:
     dependency: transitive
     description:

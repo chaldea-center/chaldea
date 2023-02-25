@@ -685,13 +685,13 @@ class EventFilterData with _FilterData {
   bool showEmpty;
 
   // filter
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final ongoing = FilterGroupData<Region?>();
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final contentType = FilterGroupData<EventCustomType>();
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final eventType = FilterGroupData<EventType>();
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final campaignType = FilterGroupData<CombineAdjustTarget>();
 
   EventFilterData({
@@ -743,7 +743,7 @@ class SummonFilterData with _FilterData {
   bool reversed;
   bool showBanner;
   bool showOutdated;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   final category = FilterGroupData<SummonType>();
 
   SummonFilterData({
