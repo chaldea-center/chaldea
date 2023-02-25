@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:system_tray/system_tray.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -75,6 +76,8 @@ class SystemTrayUtil {
       _installed = true;
     } catch (e, s) {
       logger.e('init system tray failed', e, s);
+      EasyLoading.showError(
+          '${S.current.failed}: ${S.current.show_system_tray}');
     }
   }
 }
