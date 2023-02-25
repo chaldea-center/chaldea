@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -10,29 +11,33 @@ int calculateDamage(final DamageParameters param) {
   var constData = db.gameData.constData;
 
   if (!constData.classInfo.containsKey(param.attackerClass.id)) {
-    throw "Invalid class: ${param.attackerClass}";
+    throw 'Invalid class: ${param.attackerClass}';
   }
 
   var classAttackCorrection = toModifier(constData.classInfo[param.attackerClass.id]!.attackRate);
+  var classAdvantage = toModifier(param.classAdvantage);
 
   if (!constData.attributeRelation.containsKey(param.attackerAttribute) ||
       !constData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
-    throw "Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}";
+    throw 'Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}';
   }
   var attributeAdvantage = toModifier(constData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
 
   if (!constData.cardInfo.containsKey(param.currentCardType)) {
-    throw "Invalid current card type: ${param.currentCardType}";
+    throw 'Invalid current card type: ${param.currentCardType}';
   }
 
   var chainPos = param.isNp ? 1 : param.chainPos;
   var cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
-  var classAdvantage = toModifier(param.classAdvantage);
 
   if (!constData.cardInfo.containsKey(param.firstCardType)) {
-    throw "Invalid first card type: ${param.firstCardType}";
+    throw 'Invalid first card type: ${param.firstCardType}';
   }
-  var firstCardBonus = param.isNp ? 0 : toModifier(constData.cardInfo[param.firstCardType]![1]!.addAtk);
+  var firstCardBonus = param.isNp
+      ? 0
+      : param.isMightyChain
+          ? toModifier(constData.cardInfo[CardType.buster]![1]!.addAtk)
+          : toModifier(constData.cardInfo[param.firstCardType]![1]!.addAtk);
 
   var criticalModifier = param.isCritical ? toModifier(constData.constants.criticalAttackRate) : 1;
 
@@ -42,6 +47,10 @@ int calculateDamage(final DamageParameters param) {
           : constData.constants.extraAttackRateSingle
       : 1000;
   var extraModifier = toModifier(extraRate);
+
+  var busterChainMod = param.isTypeChain && param.firstCardType == CardType.buster
+      ? toModifier(constData.constants.chainbonusBusterRate) * param.attack
+      : 0;
 
   var damageRate = toModifier(param.damageRate);
   var npSpecificAttackRate = toModifier(param.npSpecificAttackRate);
@@ -73,10 +82,134 @@ int calculateDamage(final DamageParameters param) {
               npSpecificAttackRate *
               (param.totalHits / 100.0) +
           param.damageAdditionBuff -
-          param.damageReductionBuff)
+          param.damageReductionBuff +
+          busterChainMod)
       .toInt();
 
   return max(0, totalDamage);
+}
+
+/// Referencing:
+/// https://atlasacademy.github.io/fgo-docs/deeper/battle/np.html
+/// Float arithmetic used due to:
+/// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
+int calculateAttackNpGain(final AttackNpGainParameters param) {
+  var constData = db.gameData.constData;
+  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+    throw 'Invalid current card type: ${param.currentCardType}';
+  }
+
+  var chainPos = param.isNp ? 1 : param.chainPos;
+  var cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
+
+  if (!constData.cardInfo.containsKey(param.firstCardType)) {
+    throw 'Invalid first card type: ${param.firstCardType}';
+  }
+  var firstCardBonus = param.isNp
+      ? 0
+      : param.isMightyChain
+          ? toModifier(constData.cardInfo[CardType.arts]![1]!.addTdGauge)
+          : toModifier(constData.cardInfo[param.firstCardType]![1]!.addTdGauge);
+  var criticalModifier = param.isCritical ? toModifier(constData.constants.criticalTdPointRate) : 1.0;
+
+  var cardBuff = toModifier(param.cardBuff);
+  var cardResist = toModifier(param.cardResist);
+  var npGainBuff = toModifier(param.npGainBuff);
+
+  ByteData float = ByteData(4);
+  float.setFloat32(0, cardBuff - cardResist);
+  float.setFloat32(0, max(1 + float.getFloat32(0), 0));
+  float.setFloat32(0, cardCorrection * float.getFloat32(0));
+  float.setFloat32(0, firstCardBonus + float.getFloat32(0));
+  var cardGain = float.getFloat32(0);
+
+  float.setFloat32(0, 1 + npGainBuff);
+  var npBonusGain = float.getFloat32(0);
+
+  var defenderNpRate = toModifier(param.defenderNpRate);
+
+  float.setFloat32(0, param.attackerNpCharge * criticalModifier);
+  float.setFloat32(0, defenderNpRate * float.getFloat32(0));
+  float.setFloat32(0, cardGain * float.getFloat32(0));
+  float.setFloat32(0, npBonusGain * float.getFloat32(0));
+  var beforeOverkill = float.getFloat32(0).floor();
+
+  var overkillModifier = param.isOverkill ? toModifier(constData.constants.overKillNpRate) : 1.0;
+  float.setFloat32(0, beforeOverkill * overkillModifier);
+  return float.getFloat32(0).floor();
+}
+
+/// Referencing:
+/// https://atlasacademy.github.io/fgo-docs/deeper/battle/np.html
+/// Float arithmetic used due to:
+/// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
+int calculateDefendNpGain(final DefendNpGainParameters param) {
+  var attackerNpRate = toModifier(param.attackerNpRate);
+  var npGainBuff = toModifier(param.npGainBuff);
+  var defenseNpGainBuff = toModifier(param.defenseNpGainBuff);
+
+  ByteData float = ByteData(4);
+  float.setFloat32(0, 1 + npGainBuff);
+  var npBonusGain = float.getFloat32(0);
+
+  float.setFloat32(0, 1 + defenseNpGainBuff);
+  var defNpBonusGain = float.getFloat32(0);
+
+  float.setFloat32(0, param.defenderNpCharge * attackerNpRate);
+  float.setFloat32(0, npBonusGain * float.getFloat32(0));
+  float.setFloat32(0, defNpBonusGain * float.getFloat32(0));
+  var beforeOverkill = float.getFloat32(0);
+  
+  var overkillModifier = param.isOverkill ? toModifier(db.gameData.constData.constants.overKillNpRate) : 1.0;
+  float.setFloat32(0, beforeOverkill * overkillModifier);
+  return float.getFloat32(0).floor();
+}
+
+/// Referencing:
+/// https://atlasacademy.github.io/fgo-docs/deeper/battle/critstars.html
+int calculateStar(final StarParameters param) {
+  var constData = db.gameData.constData;
+  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+    throw 'Invalid current card type: ${param.currentCardType}';
+  }
+
+  var chainPos = param.isNp ? 1 : param.chainPos;
+  var cardCorrection = constData.cardInfo[param.currentCardType]![chainPos]!.addCritical;
+
+  if (!constData.cardInfo.containsKey(param.firstCardType)) {
+    throw 'Invalid first card type: ${param.firstCardType}';
+  }
+  var firstCardBonus = param.isNp
+      ? 0
+      : param.isMightyChain
+        ? constData.cardInfo[CardType.quick]![1]!.addCritical
+        : constData.cardInfo[param.firstCardType]![1]!.addCritical;
+  var criticalModifier = param.isCritical ? constData.constants.criticalStarRate : 0;
+
+  var defenderStarRate = param.defenderStarRate;
+
+  var cardBuff = toModifier(param.cardBuff);
+  var cardResist = toModifier(param.cardResist);
+
+  var overkillModifier = param.isOverkill ? toModifier(constData.constants.overKillStarRate) : 1;
+  var overkillAdd = param.isOverkill ? constData.constants.overKillStarAdd : 0;
+
+  var dropRate = (
+  param.attackerStarGen +
+      firstCardBonus +
+      (cardCorrection * max(1 + cardBuff - cardResist, 0)) +
+      defenderStarRate +
+      param.starGenBuff -
+      param.enemyStarGenResist +
+      criticalModifier
+  ) * overkillModifier + overkillAdd;
+
+  if (dropRate > constData.constants.starRateMax) {
+    dropRate = constData.constants.starRateMax;
+  }
+  var drops = dropRate / constData.constants.maxDropFactor;
+
+  return drops.floor();
 }
 
 double toModifier(final int value) {
@@ -98,11 +231,12 @@ class DamageParameters {
   CardType currentCardType = CardType.none;
   CardType firstCardType = CardType.none;
   bool isTypeChain = false;
+  bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 1000;
-  int cardResist = 1000;
-  int attackBuff = 1000;
-  int defenseBuff = 1000;
+  int cardBuff = 0;
+  int cardResist = 0;
+  int attackBuff = 0;
+  int defenseBuff = 0;
   int specificAttackBuff = 0;
   int specificDefenseBuff = 0; // this maps to selfDamageMod, can rename after I see an instance of this buff
   int criticalDamageBuff = 0;
@@ -115,33 +249,123 @@ class DamageParameters {
 
   @override
   String toString() {
-    return "attack: $attack, "
-        "damageRate: $damageRate, "
-        "totalHits: $totalHits, "
-        "npSpecificAttackRate: $npSpecificAttackRate, "
-        "attackerClass: $attackerClass, "
-        "defenderClass: $defenderClass, "
-        "classAdvantage: $classAdvantage, "
-        "attackerAttribute: $attackerAttribute, "
-        "defenderAttribute: $defenderAttribute, "
-        "isNp: $isNp, "
-        "chainPos: $chainPos, "
-        "currentCardType: $currentCardType, "
-        "firstCardType: $firstCardType, "
-        "isTypeChain: $isTypeChain, "
-        "isCritical: $isCritical, "
-        "cardBuff: $cardBuff, "
-        "cardResist: $cardResist, "
-        "attackBuff: $attackBuff, "
-        "defenseBuff: $defenseBuff, "
-        "specificAttackBuff: $specificAttackBuff, "
-        "specificDefenseBuff: $specificDefenseBuff, "
-        "criticalDamageBuff: $criticalDamageBuff, "
-        "npDamageBuff: $npDamageBuff, "
-        "percentAttackBuff: $percentAttackBuff, "
-        "percentDefenseBuff, $percentDefenseBuff, "
-        "damageAdditionBuff, $damageAdditionBuff, "
-        "damageReductionBuff: $damageReductionBuff, "
-        "fixedRandom: $fixedRandom";
+    return 'DamageParameters: {'
+        'attack: $attack, '
+        'damageRate: $damageRate, '
+        'totalHits: $totalHits, '
+        'npSpecificAttackRate: $npSpecificAttackRate, '
+        'attackerClass: $attackerClass, '
+        'defenderClass: $defenderClass, '
+        'classAdvantage: $classAdvantage, '
+        'attackerAttribute: $attackerAttribute, '
+        'defenderAttribute: $defenderAttribute, '
+        'isNp: $isNp, '
+        'chainPos: $chainPos, '
+        'currentCardType: $currentCardType, '
+        'firstCardType: $firstCardType, '
+        'isTypeChain: $isTypeChain, '
+        'isMightyChain: $isMightyChain, '
+        'isCritical: $isCritical, '
+        'cardBuff: $cardBuff, '
+        'cardResist: $cardResist, '
+        'attackBuff: $attackBuff, '
+        'defenseBuff: $defenseBuff, '
+        'specificAttackBuff: $specificAttackBuff, '
+        'specificDefenseBuff: $specificDefenseBuff, '
+        'criticalDamageBuff: $criticalDamageBuff, '
+        'npDamageBuff: $npDamageBuff, '
+        'percentAttackBuff: $percentAttackBuff, '
+        'percentDefenseBuff: $percentDefenseBuff, '
+        'damageAdditionBuff: $damageAdditionBuff, '
+        'damageReductionBuff: $damageReductionBuff, '
+        'fixedRandom: $fixedRandom'
+        '}';
+  }
+}
+
+class AttackNpGainParameters {
+  int attackerNpCharge = 0;
+  int defenderNpRate = 0;
+  bool isNp = false;
+  int chainPos = 1;
+  CardType currentCardType = CardType.none;
+  CardType firstCardType = CardType.none;
+  bool isMightyChain = false;
+  bool isCritical = false;
+  int cardBuff = 0;
+  int cardResist = 0;
+  int npGainBuff = 0;
+  bool isOverkill = false;
+
+  @override
+  String toString() {
+    return 'AttackNpGainParameters: {'
+        'attackerNpCharge: $attackerNpCharge, '
+        'defenderNpRate: $defenderNpRate, '
+        'isNp: $isNp, '
+        'chainPos: $chainPos, '
+        'currentCardType: $currentCardType, '
+        'firstCardType: $firstCardType, '
+        'isMightyChain: $isMightyChain, '
+        'isCritical: $isCritical, '
+        'cardBuff: $cardBuff, '
+        'cardResist: $cardResist, '
+        'npGainBuff: $npGainBuff, '
+        'isOverkill: $isOverkill'
+        '}';
+  }
+}
+
+class DefendNpGainParameters {
+  int defenderNpCharge = 0;
+  int attackerNpRate = 0;
+  int npGainBuff = 0;
+  int defenseNpGainBuff = 0;
+  bool isOverkill = false;
+
+  @override
+  String toString() {
+    return 'DefendNpGainParameters: {'
+        'defenderNpCharge: $defenderNpCharge, '
+        'attackerNpRate: $attackerNpRate, '
+        'npGainBuff: $npGainBuff, '
+        'defenseNpGainBuff: $defenseNpGainBuff, '
+        'isOverkill: $isOverkill'
+        '}';
+  }
+}
+
+class StarParameters {
+  int attackerStarGen = 0;
+  int defenderStarRate = 0;
+  bool isNp = false;
+  int chainPos = 1;
+  CardType currentCardType = CardType.none;
+  CardType firstCardType = CardType.none;
+  bool isMightyChain = false;
+  bool isCritical = false;
+  int cardBuff = 0;
+  int cardResist = 0;
+  int starGenBuff = 0;
+  int enemyStarGenResist = 0;
+  bool isOverkill = false;
+
+  @override
+  String toString() {
+    return 'StarParameters: {'
+        'attackerStarGen: $attackerStarGen, '
+        'defenderStarRate: $defenderStarRate, '
+        'isNp: $isNp, '
+        'chainPos: $chainPos, '
+        'currentCardType: $currentCardType, '
+        'firstCardType: $firstCardType, '
+        'isMightyChain: $isMightyChain, '
+        'isCritical: $isCritical, '
+        'cardBuff: $cardBuff, '
+        'cardResist: $cardResist, '
+        'starGenBuff: $starGenBuff, '
+        'enemyStarGenResist: $enemyStarGenResist, '
+        'isOverkill: $isOverkill'
+        '}';
   }
 }
