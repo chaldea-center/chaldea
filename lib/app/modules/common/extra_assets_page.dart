@@ -41,8 +41,11 @@ class ExtraAssetsPage extends StatelessWidget {
 
   Iterable<String> _getUrls(ExtraAssetsUrl? urls) sync* {
     if (urls == null) return;
-    if (getUrls != null) yield* getUrls!(urls);
-    yield* urls.allUrls;
+    if (getUrls != null) {
+      yield* getUrls!(urls);
+    } else {
+      yield* urls.allUrls;
+    }
   }
 
   Iterable<String> bordered(Iterable<String> urls) sync* {
