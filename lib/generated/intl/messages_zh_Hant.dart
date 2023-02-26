@@ -181,6 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("清除資料"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召喚所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
+        "command_spell": MessageLookupByLibrary.simpleMessage("令咒"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
             "當存在多組(Group)時，僅需滿足其中一組(Group)條件即可"),
         "condition": MessageLookupByLibrary.simpleMessage("條件"),
@@ -283,6 +284,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_leader_hint":
             MessageLookupByLibrary.simpleMessage("首領:被擊敗時戰鬥結束"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
+        "enemy_master": MessageLookupByLibrary.simpleMessage("敌方御主"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("敵人彙總"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("強化將扣除以下素材"),

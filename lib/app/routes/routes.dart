@@ -9,6 +9,7 @@ import 'package:chaldea/app/modules/creator/illustrator_list.dart';
 import 'package:chaldea/app/modules/effect_search/effect_search_page.dart';
 import 'package:chaldea/app/modules/enemy/enemy_detail.dart';
 import 'package:chaldea/app/modules/enemy/enemy_list.dart';
+import 'package:chaldea/app/modules/enemy_master/enemy_master_list.dart';
 import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
@@ -157,6 +158,7 @@ class Routes {
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
+  static const String enemyMasters = '/enemy-masters';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String expCard = '/expCard';
@@ -386,6 +388,8 @@ class RouteConfiguration {
         return IllustratorListPage();
       case Routes.characters:
         return CharaListPage();
+      case Routes.enemyMasters:
+        return const EnemyMasterListPage();
       case Routes.stats:
         return GameStatisticsPage();
       case Routes.traits:

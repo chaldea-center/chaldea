@@ -158,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("データの消去"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召喚所得"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
+        "command_spell": MessageLookupByLibrary.simpleMessage("令呪"),
         "confirm": MessageLookupByLibrary.simpleMessage("確認"),
         "consumed": MessageLookupByLibrary.simpleMessage("消費済み"),
         "contact_information_not_filled":

@@ -1054,6 +1054,17 @@ class S {
     );
   }
 
+  /// `Command Spell`
+  String get command_spell {
+    return Intl.message(
+      'Command Spell',
+      name: 'command_spell',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only need to meet one *Group* of conditions`
   String get common_release_group_hint {
     return Intl.message(
@@ -1972,6 +1983,17 @@ class S {
     return Intl.message(
       'Enemies',
       name: 'enemy_list',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enemy Master`
+  String get enemy_master {
+    return Intl.message(
+      'Enemy Master',
+      name: 'enemy_master',
       desc: '',
       locale: localeName,
       args: [],

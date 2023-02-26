@@ -68,7 +68,7 @@ class FfoDB {
 
   Future<String> _readFile(String fn, bool force) async {
     String url = FFOUtil.imgUrl(fn)!;
-    final file = FilePlus(joinPaths(db.paths.tempDir, 'ffo', fn));
+    final file = FilePlus(joinPaths(db.paths.atlasAssetsDir, 'JP/FFO/$fn'));
     if (file.existsSync() && !force) {
       try {
         print('reading ${file.path}');

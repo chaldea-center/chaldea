@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';
 import 'package:chaldea/app/modules/creator/cv_list.dart';
 import 'package:chaldea/app/modules/creator/illustrator_list.dart';
+import 'package:chaldea/app/modules/enemy_master/enemy_master_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
@@ -145,6 +146,7 @@ class GalleryItem {
         cvList,
         illustratorList,
         charaList,
+        enemyMasters,
         svtQuestTimeline,
         svtClass,
         traits,
@@ -393,6 +395,15 @@ class GalleryItem {
     url: Routes.characters,
     page: CharaListPage(),
     isDetail: true,
+    shownDefault: false,
+  );
+  static GalleryItem enemyMasters = GalleryItem(
+    name: 'enemy_masters',
+    titleBuilder: () => S.current.enemy_master,
+    icon: FontAwesomeIcons.userSecret,
+    url: Routes.enemyMasters,
+    page: const EnemyMasterListPage(),
+    isDetail: false,
     shownDefault: false,
   );
   static GalleryItem svtQuestTimeline = GalleryItem(

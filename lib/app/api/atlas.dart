@@ -227,7 +227,8 @@ class _CacheManager {
         (expireAfter?.inSeconds ?? 0);
   }
 
-  Future<List<int>?> get(String url, {Duration? expireAfter}) async {
+  Future<List<int>?> get(String url,
+      {Duration? expireAfter, bool cacheOnly = false}) async {
     final key = _url2uuid(url);
     try {
       if (!_initiated) {
@@ -266,6 +267,7 @@ class _CacheManager {
       }
 
       print('api get: $url');
+      if (cacheOnly) return null;
 
       final task = _downloading[url] =
           _DownloadingTask(url: url, completer: Completer());
@@ -291,9 +293,11 @@ class _CacheManager {
     return null;
   }
 
-  Future<String?> getText(String url, {Duration? expireAfter}) async {
+  Future<String?> getText(String url,
+      {Duration? expireAfter, bool cacheOnly = false}) async {
     try {
-      final data = await get(url, expireAfter: expireAfter);
+      final data =
+          await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
       if (data == null) return null;
       return utf8.decode(data);
     } catch (e, s) {
@@ -302,10 +306,11 @@ class _CacheManager {
     }
   }
 
-  Future<dynamic> getJson(String url, {Duration? expireAfter}) async {
+  Future<dynamic> getJson(String url,
+      {Duration? expireAfter, bool cacheOnly = false}) async {
     dynamic result;
     try {
-      result = await get(url, expireAfter: expireAfter);
+      result = await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
       if (result != null) {
         String text = utf8.decode(result);
         kDWCharReplace.forEach((key, value) {
@@ -331,9 +336,19 @@ class _CacheManager {
   }
 
   Future<T?> getModel<T>(String url, T Function(dynamic) fromJson,
-      {Duration? expireAfter}) async {
+      {Duration? expireAfter, bool cacheOnly = false}) async {
     try {
-      final obj = await getJson(url, expireAfter: expireAfter);
+      final obj = await getJson(url, expireAfter: expireAfter, cacheOnly: true);
+      if (obj != null) return fromJson(obj);
+    } catch (e, s) {
+      removeUrl(url);
+      logger.e('load model($T) failed', e, s);
+      cacheOnly = false;
+    }
+    if (cacheOnly) return null;
+    try {
+      final obj =
+          await getJson(url, expireAfter: Duration.zero, cacheOnly: cacheOnly);
       if (obj != null) return fromJson(obj);
     } catch (e, s) {
       removeUrl(url);
@@ -603,6 +618,15 @@ class AtlasApi {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/shop/$shopId',
       (data) => NiceShop.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<EnemyMaster>?> enemyMasters(
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.upper}/nice_enemy_master.json',
+      (data) => (data as List).map((e) => EnemyMaster.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }

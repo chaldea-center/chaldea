@@ -233,30 +233,40 @@ class _CachedImageState extends State<CachedImage> {
     String? url = widget.imageUrl;
     if (url == null) return _withPlaceholder(context, '');
     if (_loader.shouldCacheImage(url)) {
-      final fp = AtlasIconLoader.i.getCached(url);
-      if (fp != null) {
-        final provider = FileImage(File(fp));
-        return _withProvider(
-          provider,
-          onClearCache: () async {
-            for (final _url in [url, widget.imageUrl]) {
-              if (_url == null) continue;
-              await _loader.deleteFromDisk(_url);
-              _loader.evict(_url);
-              imageCache.evict(provider);
-            }
-            if (mounted) setState(() {});
-            _resolve(widget.imageUrl);
-          },
-        );
-      } else if (AtlasIconLoader.i.isFailed(url)) {
-        return _withError(context, url);
-      } else {
-        _resolve(url);
-      }
-      return _withPlaceholder(context, url);
+      return _localCache(context, url);
     }
     return _withCached(url);
+  }
+
+  Widget _localCache(BuildContext context, String url) {
+    final fp = AtlasIconLoader.i.getCached(url);
+    if (fp != null) {
+      final provider = FileImage(File(fp));
+      return _withProvider(
+        provider,
+        onClearCache: () async {
+          for (final _url in [url, widget.imageUrl]) {
+            if (_url == null) continue;
+            await _loader.deleteFromDisk(_url);
+            _loader.evict(_url);
+            imageCache.evict(provider);
+          }
+          if (mounted) setState(() {});
+          _resolve(widget.imageUrl);
+        },
+      );
+    } else if (AtlasIconLoader.i.isFailed(url)) {
+      final reason = AtlasIconLoader.i.failReason(url);
+      if (reason?.statusCode == 404 &&
+          url.endsWith('_bordered.png') &&
+          !url.contains('FFO')) {
+        return _localCache(context, url.replaceFirst('_bordered.png', '.png'));
+      }
+      return _withError(context, url);
+    } else {
+      _resolve(url);
+    }
+    return _withPlaceholder(context, url);
   }
 
   Widget _withError(BuildContext context, String url, [dynamic error]) {

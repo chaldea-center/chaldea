@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../war/war/asset_list.dart';
 import 'filter.dart';
 import 'reader_entry.dart';
 import 'script_data.dart';
@@ -92,20 +93,22 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     }
   }
 
+  String get scriptName {
+    if (widget.script is ValentineScript) {
+      return Transl.ceNames((widget.script as ValentineScript).scriptName).l;
+    } else {
+      return widget.script.scriptId;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     findSurroundingScripts();
-    String title;
-    if (widget.script is ValentineScript) {
-      title = Transl.ceNames((widget.script as ValentineScript).scriptName).l;
-    } else {
-      title = widget.script.scriptId;
-    }
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Script $title',
+            'Script $scriptName',
             overflow: TextOverflow.fade,
           ),
           actions: [
@@ -135,6 +138,16 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             child: Text(S.current.refresh),
             onTap: () {
               fetch(force: true);
+            },
+          ),
+          PopupMenuItem(
+            enabled: data.uri != null,
+            child: Text(S.current.media_assets),
+            onTap: () {
+              router.pushPage(WarAssetListPage(
+                title: scriptName,
+                scripts: [data.uri!.toString()],
+              ));
             },
           ),
           PopupMenuItem(

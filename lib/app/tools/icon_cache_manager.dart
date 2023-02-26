@@ -241,9 +241,10 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
 class _FailureDetail {
   DateTime time;
+  int? statusCode;
   Duration? retryAfter;
 
-  _FailureDetail({required this.time, this.retryAfter});
+  _FailureDetail({required this.time, this.retryAfter, this.statusCode});
 
   bool get neverRetry => retryAfter == null || retryAfter!.inSeconds <= 0;
 }
@@ -262,6 +263,10 @@ abstract class _CachedLoader<K, V> {
     _completers.remove(key);
     _success.remove(key);
     _failed.remove(key);
+  }
+
+  _FailureDetail? failReason(K key) {
+    return _failed[key];
   }
 
   bool isFailed(K key) {
@@ -307,7 +312,8 @@ abstract class _CachedLoader<K, V> {
       if (e is DioError) {
         final code = e.response?.statusCode;
         if (code == 403 || code == 404) {
-          _failed[key] ??= _FailureDetail(time: DateTime.now());
+          _failed[key] ??=
+              _FailureDetail(time: DateTime.now(), statusCode: code);
           return;
         }
       }

@@ -41,8 +41,11 @@ class ExtraAssetsPage extends StatelessWidget {
 
   Iterable<String> _getUrls(ExtraAssetsUrl? urls) sync* {
     if (urls == null) return;
-    if (getUrls != null) yield* getUrls!(urls);
-    yield* urls.allUrls;
+    if (getUrls != null) {
+      yield* getUrls!(urls);
+    } else {
+      yield* urls.allUrls;
+    }
   }
 
   Iterable<String> bordered(Iterable<String> urls) sync* {
@@ -169,6 +172,7 @@ class ExtraAssetsPage extends StatelessWidget {
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
     Function(String url)? onTapImage,
+    Widget Function(Widget child)? transform,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -200,8 +204,9 @@ class ExtraAssetsPage extends StatelessWidget {
             itemCount: _urls.length,
             itemBuilder: (context, index) {
               String url = _urls[index];
+              Widget child;
               if (url.endsWith('manifest.json')) {
-                return FutureBuilder(
+                child = FutureBuilder(
                   future: AtlasApi.cacheManager
                       .getJson(url, expireAfter: const Duration(days: 7)),
                   builder: (context, snapshot) {
@@ -247,28 +252,31 @@ class ExtraAssetsPage extends StatelessWidget {
                     return placeholder?.call(context, url) ?? const SizedBox();
                   },
                 );
+              } else {
+                child = CachedImage(
+                  imageUrl: url,
+                  onTap: () {
+                    if (onTapImage != null) {
+                      onTapImage(url);
+                      return;
+                    }
+                    FullscreenImageViewer.show(
+                      context: context,
+                      urls: _urls,
+                      initialPage: index,
+                      placeholder: placeholder,
+                    );
+                  },
+                  showSaveOnLongPress: true,
+                  placeholder: placeholder,
+                  cachedOption: const CachedImageOption(
+                    fadeOutDuration: Duration(milliseconds: 1200),
+                    fadeInDuration: Duration(milliseconds: 800),
+                  ),
+                );
               }
-              return CachedImage(
-                imageUrl: url,
-                onTap: () {
-                  if (onTapImage != null) {
-                    onTapImage(url);
-                    return;
-                  }
-                  FullscreenImageViewer.show(
-                    context: context,
-                    urls: _urls,
-                    initialPage: index,
-                    placeholder: placeholder,
-                  );
-                },
-                showSaveOnLongPress: true,
-                placeholder: placeholder,
-                cachedOption: const CachedImageOption(
-                  fadeOutDuration: Duration(milliseconds: 1200),
-                  fadeInDuration: Duration(milliseconds: 800),
-                ),
-              );
+              if (transform != null) child = transform(child);
+              return child;
             },
             separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),

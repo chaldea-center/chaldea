@@ -174,11 +174,36 @@ class _SettingsPageState extends State<SettingsPage> {
                     underline:
                         const Divider(thickness: 0, color: Colors.transparent),
                     // need to check again
+                    alignment: AlignmentDirectional.centerEnd,
                     value: Language.getLanguage(S.current.localeName),
                     items: Language.supportLanguages
                         .map((lang) => DropdownMenuItem(
-                            value: lang, child: Text(lang.name)))
+                            value: lang,
+                            child: Text.rich(
+                              TextSpan(text: lang.name, children: [
+                                TextSpan(
+                                  text: '\n${lang.nameEn}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )
+                              ]),
+                              textScaleFactor: 0.9,
+                            )))
                         .toList(),
+                    selectedItemBuilder: (context) {
+                      return Language.supportLanguages
+                          .map((lang) => Text.rich(
+                                TextSpan(text: lang.name, children: [
+                                  TextSpan(
+                                    text: '\n${lang.nameEn}',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  )
+                                ]),
+                                textScaleFactor: 0.9,
+                                textAlign: TextAlign.end,
+                              ))
+                          .toList();
+                    },
                     onChanged: (lang) {
                       if (lang == null) return;
                       db.settings.setLanguage(lang);
@@ -195,6 +220,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   (context, snapshot) => DropdownButton<ThemeMode>(
                     value: db.settings.themeMode,
                     underline: Container(),
+                    alignment: AlignmentDirectional.centerEnd,
                     items: [
                       DropdownMenuItem(
                           value: ThemeMode.system,

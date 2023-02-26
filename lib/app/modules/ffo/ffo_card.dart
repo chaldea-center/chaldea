@@ -175,10 +175,9 @@ abstract class FFOUtil {
 
   static String? borderedSprite(String? path) {
     if (path == null) return null;
-    path = path.replaceFirstMapped(
-        RegExp(r'/Sprite/icon_servant_(\d+)\.png'),
-        (match) =>
-            '/Sprite_bordered/icon_servant_${match.group(1)!}_bordered.png');
+    if (!path.contains('bordered')) {
+      path = path.replaceFirst(RegExp(r'\.png$'), '_bordered.png');
+    }
     return imgUrl(path);
   }
 
