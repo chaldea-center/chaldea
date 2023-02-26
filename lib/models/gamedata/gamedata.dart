@@ -26,6 +26,7 @@ export 'command_code.dart';
 export 'common.dart';
 export 'const_data.dart';
 export 'drop_rate.dart';
+export 'enemy_master.dart';
 export 'event.dart';
 export 'game_card.dart';
 export 'item.dart';

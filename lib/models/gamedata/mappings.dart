@@ -236,8 +236,8 @@ class Transl<K, V> {
   static Transl<String, String> misc(String key) =>
       Transl<String, String>(md.misc[r'$default'] ?? {}, key, key);
 
-  static String Function(String key) miscScope(String scope) =>
-      (key) => Transl<String, String>(md.misc[scope] ?? {}, key, key).l;
+  static Transl<String, String> Function(String key) miscScope(String scope) =>
+      (key) => Transl<String, String>(md.misc[scope] ?? {}, key, key);
 
   static String misc2(String scope, String key) =>
       Transl<String, String>(md.misc[scope] ?? {}, key, key).l;

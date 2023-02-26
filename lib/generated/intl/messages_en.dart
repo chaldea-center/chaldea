@@ -203,6 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("Summon Coins"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
+        "command_spell": MessageLookupByLibrary.simpleMessage("Command Spell"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage(
             "Only need to meet one *Group* of conditions"),
         "condition": MessageLookupByLibrary.simpleMessage("Condition"),
@@ -325,6 +326,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_leader_hint": MessageLookupByLibrary.simpleMessage(
             "Leader: battle ends if defeated"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
+        "enemy_master": MessageLookupByLibrary.simpleMessage("Enemy Master"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("Summary"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(

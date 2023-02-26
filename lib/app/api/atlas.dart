@@ -622,6 +622,15 @@ class AtlasApi {
     );
   }
 
+  static Future<List<EnemyMaster>?> enemyMasters(
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.upper}/nice_enemy_master.json',
+      (data) => (data as List).map((e) => EnemyMaster.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   /// search
   static Future<List<NiceShop>?> searchShop({
     ShopType? type,
