@@ -18,18 +18,18 @@ void main() async {
 
   group('calculateDamage', () {
     group('Altria (100100) vs Sky caster', () {
-      var defenderClass = SvtClass.caster;
-      var defenderAttribute = Attribute.sky;
+      const defenderClass = SvtClass.caster;
+      const defenderAttribute = Attribute.sky;
 
-      var altria = db.gameData.servantsById[100100]!;
-      var level = 90;
-      var classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id];
+      final altria = db.gameData.servantsById[100100]!;
+      const level = 90;
+      final classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id];
 
-      var upgradedNp = altria.noblePhantasms.last;
-      var oc1Np1DataSpec = upgradedNp.functions.first.svals.first;
-      var oc1Np1NpSpecificAtkRate = oc1Np1DataSpec.Correction ?? 1000;
+      final upgradedNp = altria.noblePhantasms.last;
+      final oc1Np1DataSpec = upgradedNp.functions.first.svals.first;
+      final oc1Np1NpSpecificAtkRate = oc1Np1DataSpec.Correction ?? 1000;
 
-      var baseParam = DamageParameters()
+      final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1]
         ..attackerClass = altria.className
         ..defenderClass = defenderClass
@@ -38,7 +38,7 @@ void main() async {
         ..defenderAttribute = defenderAttribute
         ..fixedRandom = 0.9;
 
-      var oc1Np1BaseParam = baseParam.copy()
+      final oc1Np1BaseParam = baseParam.copy()
         ..damageRate = oc1Np1DataSpec.Value!
         ..totalHits = Maths.sum(upgradedNp.npDistribution)
         ..npSpecificAttackRate = oc1Np1NpSpecificAtkRate
@@ -46,19 +46,19 @@ void main() async {
         ..currentCardType = upgradedNp.card
         ..firstCardType = upgradedNp.card;
 
-      var baseDamage = 12542;
+      const baseDamage = 12542;
       test('NP 1 OC 1 no fou as base', () {
         expect(calculateDamage(oc1Np1BaseParam), equals(baseDamage));
       });
 
       test('chainPos does not affect NP', () {
-        var damageParameters = oc1Np1BaseParam.copy()..chainPos = 5;
+        final damageParameters = oc1Np1BaseParam.copy()..chainPos = 5;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        var damageParameters = oc1Np1BaseParam.copy()..firstCardType = CardType.buster;
+        final damageParameters = oc1Np1BaseParam.copy()..firstCardType = CardType.buster;
 
         expect(calculateDamage(damageParameters), equals(baseDamage));
       });
@@ -66,7 +66,7 @@ void main() async {
       test('NP does not benefit from busterChainMod', () {
         expect(upgradedNp.card, equals(CardType.buster));
 
-        var damageParameters = oc1Np1BaseParam.copy()
+        final damageParameters = oc1Np1BaseParam.copy()
           ..firstCardType = CardType.buster
           ..isTypeChain = true;
 
@@ -74,17 +74,17 @@ void main() async {
       });
 
       test('servant attack change', () {
-        var damageParameters = oc1Np1BaseParam.copy()
+        final damageParameters = oc1Np1BaseParam.copy()
           ..attack = altria.atkGrowth[120 - 1] + 2000 + 1000; // 2000 Atk CE & 1000 Atk Fou
 
         expect(calculateDamage(damageParameters), equals(19469));
       });
 
       test('damageRate change NP 5 OC 1 no fou', () {
-        var oc1Np5DataSpec = upgradedNp.functions.first.svals.last;
-        var oc1Np5NpSpecificAtkRate = oc1Np5DataSpec.Correction ?? 1000;
+        final oc1Np5DataSpec = upgradedNp.functions.first.svals.last;
+        final oc1Np5NpSpecificAtkRate = oc1Np5DataSpec.Correction ?? 1000;
 
-        var damageParameters = oc1Np1BaseParam.copy()
+        final damageParameters = oc1Np1BaseParam.copy()
           ..damageRate = oc1Np5DataSpec.Value!
           ..npSpecificAttackRate = oc1Np5NpSpecificAtkRate;
 
@@ -92,9 +92,9 @@ void main() async {
       });
 
       test('cardBuff & cardResist', () {
-        var damageParameters = oc1Np1BaseParam.copy()..cardBuff = 500; // 50% buster up
+        final damageParameters = oc1Np1BaseParam.copy()..cardBuff = 500; // 50% buster up
 
-        var damage = calculateDamage(damageParameters);
+        final damage = calculateDamage(damageParameters);
         expect(damage, equals(18814));
 
         damageParameters
@@ -104,15 +104,15 @@ void main() async {
       });
 
       test('fixed random change', () {
-        var damageParameters = oc1Np1BaseParam.copy()..fixedRandom = 1.1;
+        final damageParameters = oc1Np1BaseParam.copy()..fixedRandom = 1.1;
 
         expect(calculateDamage(damageParameters), equals(15330));
       });
 
       test('attackBuff & defenseBuff', () {
-        var damageParameters = oc1Np1BaseParam.copy()..attackBuff = 180; // 18% attack up
+        final damageParameters = oc1Np1BaseParam.copy()..attackBuff = 180; // 18% attack up
 
-        var damage = calculateDamage(damageParameters);
+        final damage = calculateDamage(damageParameters);
         expect(damage, equals(14800));
 
         damageParameters
@@ -122,7 +122,7 @@ void main() async {
       });
 
       test('percentDefenseBuff', () {
-        var damageParameters = oc1Np1BaseParam.copy()..percentDefenseBuff = 400;
+        final damageParameters = oc1Np1BaseParam.copy()..percentDefenseBuff = 400;
 
         expect(calculateDamage(damageParameters), equals(7525));
 
@@ -131,9 +131,9 @@ void main() async {
       });
 
       test('specificAttackBuff & specificDefenseBuff & npDamageBuff', () {
-        var damageParameters = oc1Np1BaseParam.copy()..specificAttackBuff = 400;
+        final damageParameters = oc1Np1BaseParam.copy()..specificAttackBuff = 400;
 
-        var damage = calculateDamage(damageParameters);
+        final damage = calculateDamage(damageParameters);
         expect(damage, equals(17559));
 
         damageParameters
@@ -149,15 +149,15 @@ void main() async {
       });
 
       test('percentAttackBuff', () {
-        var damageParameters = oc1Np1BaseParam.copy()..percentAttackBuff = 400;
+        final damageParameters = oc1Np1BaseParam.copy()..percentAttackBuff = 400;
 
         expect(calculateDamage(damageParameters), equals(17559));
       });
 
       test('damageAdditionBuff & damageReductionBuff', () {
-        var damageParameters = oc1Np1BaseParam.copy()..damageAdditionBuff = 400;
+        final damageParameters = oc1Np1BaseParam.copy()..damageAdditionBuff = 400;
 
-        var damage = calculateDamage(damageParameters);
+        final damage = calculateDamage(damageParameters);
         expect(damage, equals(baseDamage + 400));
 
         damageParameters
@@ -170,7 +170,7 @@ void main() async {
       });
 
       test('with 1000 Fou & double Koyanskaya of Light', () {
-        var damageParameters = oc1Np1BaseParam.copy()
+        final damageParameters = oc1Np1BaseParam.copy()
           ..attack = baseParam.attack + 1000
           ..attackBuff = 180
           ..cardBuff = 500 + 500 + 500
@@ -178,19 +178,19 @@ void main() async {
         expect(calculateDamage(damageParameters), equals(52388));
       });
 
-      var quickCard = altria.cardDetails[CardType.quick]!;
-      var artsCard = altria.cardDetails[CardType.arts]!;
-      var busterCard = altria.cardDetails[CardType.buster]!;
-      var extraCard = altria.cardDetails[CardType.extra]!;
+      final quickCard = altria.cardDetails[CardType.quick]!;
+      final artsCard = altria.cardDetails[CardType.arts]!;
+      final busterCard = altria.cardDetails[CardType.buster]!;
+      final extraCard = altria.cardDetails[CardType.extra]!;
 
       test('firstCardBonus', () {
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(artsCard.hitsDistribution)
           ..chainPos = 2
           ..currentCardType = CardType.arts
           ..firstCardType = CardType.arts;
 
-        var damageWithoutBonus = calculateDamage(damageParameters);
+        final damageWithoutBonus = calculateDamage(damageParameters);
         expect(damageWithoutBonus, equals(2508));
 
         damageParameters.firstCardType = CardType.quick;
@@ -199,7 +199,7 @@ void main() async {
 
         damageParameters.firstCardType = CardType.buster;
 
-        var damageWithBonus = calculateDamage(damageParameters);
+        final damageWithBonus = calculateDamage(damageParameters);
         expect(damageWithBonus, equals(3553));
 
         damageParameters
@@ -210,7 +210,7 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(quickCard.hitsDistribution)
           ..cardBuff = 80 // passive
           ..chainPos = 1
@@ -229,7 +229,7 @@ void main() async {
       });
 
       test('criticalDamageBuff', () {
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(busterCard.hitsDistribution)
           ..chainPos = 2
           ..isCritical = true
@@ -240,7 +240,7 @@ void main() async {
 
         damageParameters.criticalDamageBuff = 800;
 
-        var damage = calculateDamage(damageParameters);
+        final damage = calculateDamage(damageParameters);
         expect(damage, equals(13546));
 
         damageParameters.criticalDamageBuff = 500;
@@ -250,7 +250,7 @@ void main() async {
       });
 
       test('buster chain', () {
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(busterCard.hitsDistribution)
           ..chainPos = 1
           ..currentCardType = CardType.buster
@@ -268,7 +268,7 @@ void main() async {
       });
 
       test('extraModifier', () {
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(extraCard.hitsDistribution)
           ..chainPos = 4
           ..currentCardType = CardType.extra
@@ -283,11 +283,11 @@ void main() async {
     });
 
     group('Altria (Alter) (Lancer) (301900)', () {
-      var altria = db.gameData.servantsById[301900]!;
-      var level = 80;
-      var busterCard = altria.cardDetails[CardType.buster]!;
+      final altria = db.gameData.servantsById[301900]!;
+      const level = 80;
+      final busterCard = altria.cardDetails[CardType.buster]!;
 
-      var baseParam = DamageParameters()
+      final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1] + 1000
         ..attackerClass = altria.className
         ..attackerAttribute = altria.attribute
@@ -298,11 +298,11 @@ void main() async {
         ..fixedRandom = 0.9;
 
       test('vs Sky Lancer', () {
-        var defenderClass = SvtClass.lancer;
-        var defenderAttribute = Attribute.sky;
-        var classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
+        const defenderClass = SvtClass.lancer;
+        const defenderAttribute = Attribute.sky;
+        final classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
@@ -311,11 +311,11 @@ void main() async {
       });
 
       test('vs Earth Ruler', () {
-        var defenderClass = SvtClass.ruler;
-        var defenderAttribute = Attribute.earth;
-        var classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
+        const defenderClass = SvtClass.ruler;
+        const defenderAttribute = Attribute.earth;
+        final classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
@@ -324,11 +324,11 @@ void main() async {
       });
 
       test('vs Human Archer', () {
-        var defenderClass = SvtClass.archer;
-        var defenderAttribute = Attribute.human;
-        var classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
+        const defenderClass = SvtClass.archer;
+        const defenderAttribute = Attribute.human;
+        final classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
@@ -336,13 +336,13 @@ void main() async {
         expect(calculateDamage(damageParameters), equals(8582));
       });
 
-      var extra = altria.cardDetails[CardType.extra]!;
+      final extra = altria.cardDetails[CardType.extra]!;
       test('totalHits', () {
-        var defenderClass = SvtClass.lancer;
-        var defenderAttribute = Attribute.sky;
-        var classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
+        const defenderClass = SvtClass.lancer;
+        const defenderAttribute = Attribute.sky;
+        final classAdvantage = db.gameData.constData.classRelation[altria.className.id]![defenderClass.id]!;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(extra.hitsDistribution)
           ..chainPos = 4
           ..currentCardType = CardType.extra
@@ -356,17 +356,17 @@ void main() async {
     });
 
     group('Yang Guifei (2500400)', () {
-      var defenderClass = SvtClass.caster;
-      var defenderAttribute = Attribute.sky;
+      const defenderClass = SvtClass.caster;
+      const defenderAttribute = Attribute.sky;
 
-      var yuyu = db.gameData.servantsById[2500400]!;
-      var level = 90;
-      var classAdvantage = db.gameData.constData.classRelation[yuyu.className.id]![defenderClass.id];
+      final yuyu = db.gameData.servantsById[2500400]!;
+      const level = 90;
+      final classAdvantage = db.gameData.constData.classRelation[yuyu.className.id]![defenderClass.id];
 
-      var np = yuyu.noblePhantasms.last;
-      var npDamageSpecs = np.functions.first;
+      final np = yuyu.noblePhantasms.last;
+      final npDamageSpecs = np.functions.first;
 
-      var baseParam = DamageParameters()
+      final baseParam = DamageParameters()
         ..attack = yuyu.atkGrowth[level - 1] + 1000
         ..attackerClass = yuyu.className
         ..defenderClass = defenderClass
@@ -381,54 +381,54 @@ void main() async {
         ..fixedRandom = 0.9;
 
       test('NP 5 OC 1 with no npSpecificDamage', () {
-        var oc1Np5DataSpec = npDamageSpecs.svals.last;
+        final oc1Np5DataSpec = npDamageSpecs.svals.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc1Np5DataSpec.Value!
           ..npSpecificAttackRate = 1000;
         expect(calculateDamage(damageParameters), equals(45744));
       });
 
       test('NP 5 OC 3 with no npSpecificDamage', () {
-        var oc3Np5DataSpec = npDamageSpecs.svals3!.last;
+        final oc3Np5DataSpec = npDamageSpecs.svals3!.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc3Np5DataSpec.Value!
           ..npSpecificAttackRate = 1000;
         expect(calculateDamage(damageParameters), equals(45744));
       });
 
       test('NP 5 OC 1 with npSpecificDamage', () {
-        var oc1Np5DataSpec = npDamageSpecs.svals.last;
+        final oc1Np5DataSpec = npDamageSpecs.svals.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc1Np5DataSpec.Value!
           ..npSpecificAttackRate = oc1Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(68529));
       });
 
       test('NP 5 OC 3 with npSpecificDamage', () {
-        var oc3Np5DataSpec = npDamageSpecs.svals3!.last;
+        final oc3Np5DataSpec = npDamageSpecs.svals3!.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc3Np5DataSpec.Value!
           ..npSpecificAttackRate = oc3Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(79921));
       });
 
       test('NP 5 OC 4 with npSpecificDamage', () {
-        var oc4Np5DataSpec = npDamageSpecs.svals4!.last;
+        final oc4Np5DataSpec = npDamageSpecs.svals4!.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc4Np5DataSpec.Value!
           ..npSpecificAttackRate = oc4Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(85618));
       });
 
       test('NP 5 OC 5 with npSpecificDamage', () {
-        var oc5Np5DataSpec = npDamageSpecs.svals5!.last;
+        final oc5Np5DataSpec = npDamageSpecs.svals5!.last;
 
-        var damageParameters = baseParam.copy()
+        final damageParameters = baseParam.copy()
           ..damageRate = oc5Np5DataSpec.Value!
           ..npSpecificAttackRate = oc5Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(91314));
@@ -438,7 +438,7 @@ void main() async {
 
   group('calculateAttackNpGain', () {
     test('float32 test in Atlas', () {
-      var param = AttackNpGainParameters()
+      final param = AttackNpGainParameters()
         ..firstCardType = CardType.quick
         ..isMightyChain = true
         ..currentCardType = CardType.arts
@@ -454,62 +454,67 @@ void main() async {
     });
 
     group('Yang Guifei (2500400) vs Caster', () {
-      var defenderNpRate = 1200;
+      const defenderNpRate = 1200;
 
-      var yuyu = db.gameData.servantsById[2500400]!;
-      var np = yuyu.noblePhantasms.last;
+      final yuyu = db.gameData.servantsById[2500400]!;
+      final np = yuyu.noblePhantasms.last;
 
-      var baseParam = AttackNpGainParameters()..defenderNpRate = defenderNpRate;
+      final baseParam = AttackNpGainParameters()..defenderNpRate = defenderNpRate;
 
-      var npBaseParam = baseParam.copy()
+      final npBaseParam = baseParam.copy()
         ..isNp = true
         ..attackerNpCharge = np.npGain.np.last
         ..currentCardType = np.card
         ..firstCardType = np.card;
 
-      var baseHitNpGain = 183;
+      const baseHitNpGain = 183;
       test('NP 5 as base', () {
         expect(calculateAttackNpGain(npBaseParam), equals(baseHitNpGain));
       });
 
       test('chainPos does not affect NP', () {
-        var param = npBaseParam.copy()..chainPos = 5;
+        final param = npBaseParam.copy()..chainPos = 5;
 
         expect(calculateAttackNpGain(param), equals(baseHitNpGain));
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        var param = npBaseParam.copy()..firstCardType = CardType.quick;
+        final param = npBaseParam.copy()..firstCardType = CardType.quick;
 
         expect(calculateAttackNpGain(param), equals(baseHitNpGain));
       });
 
       test('cardBuff & cardResist', () {
-        var param = npBaseParam.copy()..cardBuff = 500;
+        final param = npBaseParam.copy()..cardBuff = 500;
 
-        var hitNpGain = calculateAttackNpGain(param);
+        final hitNpGain = calculateAttackNpGain(param);
         expect(hitNpGain, equals(275));
 
         param
           ..cardBuff = 800
           ..cardResist = 300;
         expect(calculateAttackNpGain(param), equals(hitNpGain));
+
+        param
+          ..cardBuff = 0
+          ..cardResist = 50000;
+        expect(calculateAttackNpGain(param), equals(0));
       });
 
       test('npGainBuff', () {
-        var param = npBaseParam.copy()..npGainBuff = 300;
+        final param = npBaseParam.copy()..npGainBuff = 300;
 
         expect(calculateAttackNpGain(param), equals(238));
       });
 
       test('overkill', () {
-        var param = npBaseParam.copy()..isOverkill = true;
+        final param = npBaseParam.copy()..isOverkill = true;
 
         expect(calculateAttackNpGain(param), equals(274));
       });
 
       test('with double Altria Caster & overkill', () {
-        var param = npBaseParam.copy()
+        final param = npBaseParam.copy()
           ..cardBuff = 1000
           ..npGainBuff = 600
           ..isOverkill = true;
@@ -517,13 +522,13 @@ void main() async {
       });
 
       test('firstCardBonus', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.arts.last
           ..chainPos = 2
           ..currentCardType = CardType.arts
           ..firstCardType = CardType.quick;
 
-        var hitNpGainWithoutBonus = calculateAttackNpGain(params);
+        final hitNpGainWithoutBonus = calculateAttackNpGain(params);
         expect(hitNpGainWithoutBonus, equals(275));
 
         params.firstCardType = CardType.buster;
@@ -532,7 +537,7 @@ void main() async {
 
         params.firstCardType = CardType.arts;
 
-        var hitNpGainWithBonus = calculateAttackNpGain(params);
+        final hitNpGainWithBonus = calculateAttackNpGain(params);
         expect(hitNpGainWithBonus, equals(336));
 
         params
@@ -543,7 +548,7 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.quick.last
           ..chainPos = 1
           ..currentCardType = CardType.quick
@@ -573,7 +578,7 @@ void main() async {
       });
 
       test('criticalModifier', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.arts.last
           ..chainPos = 2
           ..isCritical = true
@@ -585,12 +590,12 @@ void main() async {
     });
 
     test('Gilgamesh (Caster) (501800) vs Berserker', () {
-      var defenderNpRate = 800;
+      const defenderNpRate = 800;
 
-      var gilgamesh = db.gameData.servantsById[501800]!;
-      var np = gilgamesh.noblePhantasms.last;
+      final gilgamesh = db.gameData.servantsById[501800]!;
+      final np = gilgamesh.noblePhantasms.last;
 
-      var param = AttackNpGainParameters()
+      final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..isNp = true
         ..attackerNpCharge = np.npGain.np.last
@@ -602,12 +607,12 @@ void main() async {
     });
 
     test('Minamoto-no-Raikou (Berserker) (702300) vs Lancer', () {
-      var defenderNpRate = 1000;
+      const defenderNpRate = 1000;
 
-      var raikou = db.gameData.servantsById[702300]!;
-      var np = raikou.noblePhantasms.last;
+      final raikou = db.gameData.servantsById[702300]!;
+      final np = raikou.noblePhantasms.last;
 
-      var param = AttackNpGainParameters()
+      final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
@@ -630,12 +635,12 @@ void main() async {
     });
 
     test('Abigail Williams (2500100) vs Beast III/R', () {
-      var defenderNpRate = 1000;
+      const defenderNpRate = 1000;
 
-      var abby = db.gameData.servantsById[2500100]!;
-      var np = abby.noblePhantasms.last;
+      final abby = db.gameData.servantsById[2500100]!;
+      final np = abby.noblePhantasms.last;
 
-      var param = AttackNpGainParameters()
+      final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
@@ -650,12 +655,12 @@ void main() async {
     });
 
     test('Vlad III (Berserker) (700700) vs Beast III/R', () {
-      var defenderNpRate = 1000;
+      const defenderNpRate = 1000;
 
-      var vlad = db.gameData.servantsById[700700]!;
-      var np = vlad.noblePhantasms.last;
+      final vlad = db.gameData.servantsById[700700]!;
+      final np = vlad.noblePhantasms.last;
 
-      var param = AttackNpGainParameters()
+      final param = AttackNpGainParameters()
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
@@ -672,46 +677,46 @@ void main() async {
 
   group('calculateDefendNpGain', () {
     group('Yang Guifei (2500400) vs Caster', () {
-      var attackerNpRate = 1200;
+      const attackerNpRate = 1200;
 
-      var yuyu = db.gameData.servantsById[2500400]!;
-      var np = yuyu.noblePhantasms.last;
+      final yuyu = db.gameData.servantsById[2500400]!;
+      final np = yuyu.noblePhantasms.last;
 
-      var baseParam = DefendNpGainParameters()
+      final baseParam = DefendNpGainParameters()
         ..defenderNpCharge = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate;
 
-      var baseHitNpGain = 360;
+      const baseHitNpGain = 360;
       test('NP 5 as base', () {
         expect(calculateDefendNpGain(baseParam), equals(baseHitNpGain));
       });
 
       test('npGainBuff', () {
-        var param = baseParam.copy()..npGainBuff = 300;
+        final param = baseParam.copy()..npGainBuff = 300;
 
         expect(calculateDefendNpGain(param), equals(467));
       });
 
       test('defNpGainBuff', () {
-        var param = baseParam.copy()..defenseNpGainBuff = 200;
+        final param = baseParam.copy()..defenseNpGainBuff = 200;
 
         expect(calculateDefendNpGain(param), equals(432));
       });
 
       test('overkill', () {
-        var param = baseParam.copy()..isOverkill = true;
+        final param = baseParam.copy()..isOverkill = true;
 
         expect(calculateDefendNpGain(param), equals(540));
       });
     });
 
     test('Gilgamesh (Caster) (501800) vs Berserker', () {
-      var attackerNpRate = 800;
+      const attackerNpRate = 800;
 
-      var gilgamesh = db.gameData.servantsById[501800]!;
-      var np = gilgamesh.noblePhantasms.last;
+      final gilgamesh = db.gameData.servantsById[501800]!;
+      final np = gilgamesh.noblePhantasms.last;
 
-      var baseParam = DefendNpGainParameters()
+      final baseParam = DefendNpGainParameters()
         ..defenderNpCharge = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate;
 
@@ -719,12 +724,12 @@ void main() async {
     });
 
     test('Ashiya Douman (1001000) vs Caster', () {
-      var attackerNpRate = 1200;
+      const attackerNpRate = 1200;
 
-      var douman = db.gameData.servantsById[1001000]!;
-      var np = douman.noblePhantasms.last;
+      final douman = db.gameData.servantsById[1001000]!;
+      final np = douman.noblePhantasms.last;
 
-      var baseParam = DefendNpGainParameters()
+      final baseParam = DefendNpGainParameters()
         ..defenderNpCharge = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate
         ..defenseNpGainBuff = 200;
@@ -739,42 +744,42 @@ void main() async {
 
   group('calculateStar', () {
     group('Izumo no Okuni (504900) vs Rider', () {
-      var defenderStarRate = 100;
+      const defenderStarRate = 100;
 
-      var okumi = db.gameData.servantsById[504900]!;
-      var np = okumi.noblePhantasms.last;
+      final okumi = db.gameData.servantsById[504900]!;
+      final np = okumi.noblePhantasms.last;
 
-      var baseParam = StarParameters()
+      final baseParam = StarParameters()
         ..attackerStarGen = okumi.starGen
         ..defenderStarRate = defenderStarRate;
 
-      var npBaseParam = baseParam.copy()
+      final npBaseParam = baseParam.copy()
         ..isNp = true
         ..currentCardType = np.card
         ..firstCardType = np.card
         ..cardResist = -200; // np first function
 
-      var baseHitStarGen = 1169;
+      const baseHitStarGen = 1169;
       test('NP 5 as base', () {
         expect(calculateStar(npBaseParam), equals(baseHitStarGen));
       });
 
       test('chainPos does not affect NP', () {
-        var param = npBaseParam.copy()..chainPos = 5;
+        final param = npBaseParam.copy()..chainPos = 5;
 
         expect(calculateStar(param), equals(baseHitStarGen));
       });
 
       test('NP does not benefit from firstCardBonus', () {
-        var param = npBaseParam.copy()..firstCardType = CardType.arts;
+        final param = npBaseParam.copy()..firstCardType = CardType.arts;
 
         expect(calculateStar(param), equals(baseHitStarGen));
       });
 
       test('cardBuff & cardResist', () {
-        var param = npBaseParam.copy()..cardBuff = 500;
+        final param = npBaseParam.copy()..cardBuff = 500;
 
-        var starGen = calculateStar(param);
+        final starGen = calculateStar(param);
         expect(starGen, equals(1569));
 
         param
@@ -784,37 +789,47 @@ void main() async {
       });
 
       test('starGenBuff & enemyStarGenResist', () {
-        var param = npBaseParam.copy()..starGenBuff = 300;
+        final param = npBaseParam.copy()..starGenBuff = 300;
 
-        var starGen = calculateStar(param);
+        final starGen = calculateStar(param);
         expect(starGen, equals(1469));
 
         param
           ..starGenBuff = 800
           ..enemyStarGenResist = 500;
         expect(calculateStar(param), equals(starGen));
+
+        param
+          ..starGenBuff = 0
+          ..enemyStarGenResist = 50000;
+        expect(calculateStar(param), equals(0));
+
+        param
+          ..starGenBuff = 50000
+          ..enemyStarGenResist = 0;
+        expect(calculateStar(param), equals(db.gameData.constData.constants.starRateMax));
       });
 
       test('overkill', () {
-        var param = npBaseParam.copy()..isOverkill = true;
+        final param = npBaseParam.copy()..isOverkill = true;
 
         expect(calculateStar(param), equals(1469));
       });
 
       test('with double Scathach-Skadi (Rider) & overkill', () {
-        var param = npBaseParam.copy()
+        final param = npBaseParam.copy()
           ..cardBuff = 1000
           ..isOverkill = true;
         expect(calculateStar(param), equals(2269));
       });
 
       test('firstCardBonus', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..chainPos = 2
           ..currentCardType = CardType.buster
           ..firstCardType = CardType.buster;
 
-        var hitStarGenWithoutBonus = calculateStar(params);
+        final hitStarGenWithoutBonus = calculateStar(params);
         expect(hitStarGenWithoutBonus, equals(359));
 
         params.firstCardType = CardType.arts;
@@ -823,7 +838,7 @@ void main() async {
 
         params.firstCardType = CardType.quick;
 
-        var hitStarGenWithBonus = calculateStar(params);
+        final hitStarGenWithBonus = calculateStar(params);
         expect(hitStarGenWithBonus, equals(559));
 
         params
@@ -834,7 +849,7 @@ void main() async {
       });
 
       test('cardCorrection', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..chainPos = 1
           ..currentCardType = CardType.buster
           ..firstCardType = CardType.buster;
@@ -862,7 +877,7 @@ void main() async {
       });
 
       test('criticalModifier', () {
-        var params = baseParam.copy()
+        final params = baseParam.copy()
           ..chainPos = 2
           ..isCritical = true
           ..currentCardType = CardType.quick
@@ -873,12 +888,12 @@ void main() async {
     });
 
     test('Kama (Caster) (603700) vs Avenger', () {
-      var defenderStarRate = -100;
+      const defenderStarRate = -100;
 
-      var kama = db.gameData.servantsById[603700]!;
-      var np = kama.noblePhantasms.last;
+      final kama = db.gameData.servantsById[603700]!;
+      final np = kama.noblePhantasms.last;
 
-      var param = StarParameters()
+      final param = StarParameters()
         ..attackerStarGen = kama.starGen
         ..defenderStarRate = defenderStarRate
         ..isNp = true
