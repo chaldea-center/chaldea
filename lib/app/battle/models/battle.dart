@@ -1,5 +1,7 @@
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
@@ -21,6 +23,18 @@ class BattleData {
   int enemyOnFieldCount = 3;
   List<BattleServantData?> enemyDataList = [];
   List<BattleServantData?> playerDataList = [];
+  List<BattleServantData?> onFieldEnemies = [];
+  List<BattleServantData?> onFieldAllyServants = [];
+  Map<DeckType, List<BattleServantData>> enemyDecks = {};
+
+  int enemyTargetIndex = 0;
+  int allyTargetIndex = 0;
+  BattleServantData get targetedEnemy => onFieldEnemies[enemyTargetIndex]!;
+  BattleServantData get targetedAlly => onFieldAllyServants[allyTargetIndex]!;
+  List<BattleServantData> get aliveEnemies => _getNonnull(onFieldEnemies);
+  List<BattleServantData> get aliveAllies => _getNonnull(onFieldAllyServants);
+  List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
+  List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
 
   // BattleData? data;
   // BattleInfoData battleInfo;
@@ -53,51 +67,124 @@ class BattleData {
   // List<DataVals>performedValsList=[];
   int lastActId = 0;
   int prevTargetId = 0;
+  bool previousFunctionResult = true;
 
-  void init(QuestPhase quest, List<BattleServantData?> playerParty) {
+  int fixedRandom = db.gameData.constData.constants.attackRateRandomMin;
+  int probabilityThreshold = 1000;
+
+  BuffData? currentBuff;
+  BattleServantData? activator;
+  BattleServantData? target;
+  CommandCardData? currentCard;
+
+  void init(QuestPhase quest, List<BattleServantData?> playerParty, MysticCode? selectedMC) {
     niceQuest = quest;
     waveCount = 1;
-    turnCount = 1;
+    turnCount = 0;
     totalTurnCount = 0;
     criticalStars = 0;
     lastActId = 0;
     prevTargetId = 0;
-    final stage =
-        curStage = quest.stages.firstWhereOrNull((s) => s.wave == waveCount);
-    enemyOnFieldCount = curStage?.enemyFieldPosCount ?? 3;
-    enemyDataList = List.filled(enemyOnFieldCount, null, growable: true);
+
     playerDataList = playerParty.map((e) => e?.copy()).toList();
-    if (stage != null) {
-      for (final enemy in stage.enemies) {
-        if (enemy.deck != DeckType.enemy) continue;
-        if (enemy.deckId > enemyDataList.length) {
-          enemyDataList.length = enemy.deckId;
-          enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy);
-        }
-      }
-    }
+    _fetchWaveEnemies();
+
+    playerDataList.forEach((svt) { svt?.init(this); });
+    enemyDataList.forEach((enemy) { enemy?.init(this); });
+
+    mysticCode = selectedMC;
+    mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
+
+    _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
+    _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
+
+    nextTurn();
   }
 
   void nextTurn() {
     turnCount += 1;
     totalTurnCount += 1;
+
+    if (enemyDataList.isEmpty && onFieldEnemies.every((enemy) => enemy == null)) {
+      nextWave();
+    }
   }
 
   void nextWave() {
     waveCount += 1;
     turnCount = 0;
+
+    _fetchWaveEnemies();
+    enemyDataList.forEach((enemy) { enemy?.init(this); });
+  }
+
+  void _fetchWaveEnemies() {
     curStage = niceQuest?.stages.firstWhereOrNull((s) => s.wave == waveCount);
     enemyOnFieldCount = curStage?.enemyFieldPosCount ?? 3;
     enemyDataList = List.filled(enemyOnFieldCount, null, growable: true);
+    enemyDecks.clear();
+
     if (curStage != null) {
       for (final enemy in curStage!.enemies) {
-        if (enemy.deck != DeckType.enemy) continue;
-        if (enemy.deckId > enemyDataList.length) {
-          enemyDataList.length = enemy.deckId;
+        if (enemy.deck == DeckType.enemy) {
+          if (enemy.deckId > enemyDataList.length) {
+            enemyDataList.length = enemy.deckId;
+          }
+
           enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy);
+        } else {
+          if (!enemyDecks.containsKey(enemy.deck)) {
+            enemyDecks[enemy.deck] = [];
+          }
+          enemyDecks[enemy.deck]!.add(BattleServantData.fromEnemy(enemy));
         }
       }
     }
+  }
+
+  void _initOnField(List<BattleServantData?> dataList, List<BattleServantData?> onFieldList, int maxCount) {
+    while (dataList.isNotEmpty && onFieldList.length < maxCount) {
+      final svt = dataList.removeAt(0);
+      svt?.deckIndex = onFieldList.length + 1;
+      onFieldList.add(svt);
+    }
+  }
+
+  List<BattleServantData> _getNonnull(List<BattleServantData?> list) {
+    List<BattleServantData> results = [];
+    for (BattleServantData? nullableSvt in list) {
+      if (nullableSvt != null) {
+        results.add(nullableSvt);
+      }
+    }
+    return results;
+  }
+
+  List<NiceTrait> getFieldTraits() {
+    // TODO (battle): account for add & remove field traits
+    return niceQuest?.individuality ?? [];
+  }
+
+  List<NiceTrait> getTargetTraits() {
+    List<NiceTrait> targetTraits = [];
+    if (target != null) {
+      targetTraits.addAll(target!.getTraits());
+    }
+    return targetTraits;
+  }
+
+  List<NiceTrait> getActivatorTraits() {
+    List<NiceTrait> activatorTraits = [];
+    if (activator != null) {
+      activatorTraits.addAll(activator!.getTraits());
+    }
+    if (currentBuff != null) {
+      activatorTraits.addAll(currentBuff!.traits);
+    }
+    if (currentCard != null) {
+      activatorTraits.addAll(currentCard!.traits);
+    }
+    return activatorTraits;
   }
 }
 

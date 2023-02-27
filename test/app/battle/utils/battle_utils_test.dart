@@ -36,7 +36,7 @@ void main() async {
         ..classAdvantage = classAdvantage!
         ..attackerAttribute = altria.attribute
         ..defenderAttribute = defenderAttribute
-        ..fixedRandom = 0.9;
+        ..fixedRandom = 900;
 
       final oc1Np1BaseParam = baseParam.copy()
         ..damageRate = oc1Np1DataSpec.Value!
@@ -104,7 +104,7 @@ void main() async {
       });
 
       test('fixed random change', () {
-        final damageParameters = oc1Np1BaseParam.copy()..fixedRandom = 1.1;
+        final damageParameters = oc1Np1BaseParam.copy()..fixedRandom = 1100;
 
         expect(calculateDamage(damageParameters), equals(15330));
       });
@@ -295,7 +295,7 @@ void main() async {
         ..chainPos = 1
         ..currentCardType = CardType.buster
         ..firstCardType = CardType.buster
-        ..fixedRandom = 0.9;
+        ..fixedRandom = 900;
 
       test('vs Sky Lancer', () {
         const defenderClass = SvtClass.lancer;
@@ -378,7 +378,7 @@ void main() async {
         ..currentCardType = np.card
         ..firstCardType = np.card
         ..damageAdditionBuff = 175 // passive
-        ..fixedRandom = 0.9;
+        ..fixedRandom = 900;
 
       test('NP 5 OC 1 with no npSpecificDamage', () {
         final oc1Np5DataSpec = npDamageSpecs.svals.last;

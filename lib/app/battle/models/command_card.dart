@@ -1,3 +1,5 @@
+import 'package:chaldea/models/gamedata/gamedata.dart';
+
 class BattleCommandData {
   int type = 0; // player enemy
   int svtId = 0;
@@ -26,4 +28,8 @@ class BattleCommandData {
   int addCritical = 0;
   int addTdGauge = 0;
   int chainCount = 0;
+}
+
+class CommandCardData {
+  List<NiceTrait> traits = [];
 }

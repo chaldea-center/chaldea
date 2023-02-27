@@ -15,13 +15,15 @@ int calculateDamage(final DamageParameters param) {
   }
 
   final classAttackCorrection = toModifier(constData.classInfo[param.attackerClass.id]!.attackRate);
-  final classAdvantage = toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
+  final classAdvantage =
+      toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
   if (!constData.attributeRelation.containsKey(param.attackerAttribute) ||
       !constData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
     throw 'Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}';
   }
-  final attributeAdvantage = toModifier(constData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
+  final attributeAdvantage =
+      toModifier(constData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
 
   if (!constData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
@@ -65,13 +67,15 @@ int calculateDamage(final DamageParameters param) {
   final percentAttackBuff = toModifier(param.percentAttackBuff);
   final percentDefenseBuff = toModifier(param.percentDefenseBuff);
 
+  final fixedRandom = toModifier(param.fixedRandom);
+
   final int totalDamage = (param.attack *
               damageRate *
               (firstCardBonus + cardCorrection * max(1 + cardBuff - cardResist, 0)) *
               classAttackCorrection *
               classAdvantage *
               attributeAdvantage *
-              param.fixedRandom *
+              fixedRandom *
               toModifier(constData.constants.attackRate) *
               max(1 + attackBuff - defenseBuff, 0) *
               criticalModifier *
@@ -206,7 +210,7 @@ int calculateStar(final StarParameters param) {
           overkillAdd)
       .toInt();
 
-  return min(max(dropRate, 0), constData.constants.starRateMax);
+  return dropRate.clamp(0, constData.constants.starRateMax);
 }
 
 double toModifier(final int value) {
@@ -242,7 +246,7 @@ class DamageParameters {
   int percentDefenseBuff = 0;
   int damageAdditionBuff = 0;
   int damageReductionBuff = 0;
-  double fixedRandom = 0;
+  int fixedRandom = 0;
 
   @override
   String toString() {
