@@ -1,3 +1,5 @@
+import 'package:chaldea/app/battle/functions/gain_np.dart';
+import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -14,10 +16,17 @@ class BattleData {
   static const kMaxCommand = 3;
   static const playerOnFieldCount = 3;
 
+  static final DataVals artsChain = DataVals({'Rate': 5000, 'Value': 2000});
+  static final DataVals quickChainBefore7thAnni = DataVals({'Rate': 5000, 'Value': 10});
+  static final DataVals quickChainAfter7thAnni = DataVals({'Rate': 5000, 'Value': 20});
+
+
+
   QuestPhase? niceQuest;
   Stage? curStage;
 
   int countEnemyAttack = 0;
+
   // List<int> playerEntryIds = [-1, -1, -1]; // unique id
   // List<int> enemyEntryIds = [-1, -1, -1]; // unique id
   int enemyOnFieldCount = 3;
@@ -29,11 +38,19 @@ class BattleData {
 
   int enemyTargetIndex = 0;
   int allyTargetIndex = 0;
+
   BattleServantData get targetedEnemy => onFieldEnemies[enemyTargetIndex]!;
+
   BattleServantData get targetedAlly => onFieldAllyServants[allyTargetIndex]!;
+
   List<BattleServantData> get aliveEnemies => _getNonnull(onFieldEnemies);
+
   List<BattleServantData> get aliveAllies => _getNonnull(onFieldAllyServants);
+
+  List<BattleServantData> get aliveActors => [...aliveAllies, ...aliveEnemies];
+
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
+
   List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
 
   // BattleData? data;
@@ -51,6 +68,7 @@ class BattleData {
   int waveCount = 0;
   int turnCount = 1;
   int totalTurnCount = 0;
+
   // int limitTurnCount = 0;
   // int limitAct = 0;
   // List<int> turnEffect = [];
@@ -60,6 +78,7 @@ class BattleData {
   // ComboData comboData;
   // List commandCodeInfos = []; //CommandCodeInfo
   int criticalStars = 0;
+
   // int addCriticalStars = 0;
   // int subCriticalCount = 0;
   // int prevCriticalStars = 0;
@@ -71,6 +90,7 @@ class BattleData {
 
   int fixedRandom = db.gameData.constData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
+  bool isAfter7thAnni = true;
 
   BuffData? currentBuff;
   BattleServantData? activator;
@@ -89,8 +109,12 @@ class BattleData {
     playerDataList = playerParty.map((e) => e?.copy()).toList();
     _fetchWaveEnemies();
 
-    playerDataList.forEach((svt) { svt?.init(this); });
-    enemyDataList.forEach((enemy) { enemy?.init(this); });
+    playerDataList.forEach((svt) {
+      svt?.init(this);
+    });
+    enemyDataList.forEach((enemy) {
+      enemy?.init(this);
+    });
 
     mysticCode = selectedMC;
     mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
@@ -108,6 +132,7 @@ class BattleData {
     if (enemyDataList.isEmpty && onFieldEnemies.every((enemy) => enemy == null)) {
       nextWave();
     }
+    // start of ally turn
   }
 
   void nextWave() {
@@ -115,7 +140,9 @@ class BattleData {
     turnCount = 0;
 
     _fetchWaveEnemies();
-    enemyDataList.forEach((enemy) { enemy?.init(this); });
+    enemyDataList.forEach((enemy) {
+      enemy?.init(this);
+    });
   }
 
   void _fetchWaveEnemies() {
@@ -160,6 +187,11 @@ class BattleData {
     return results;
   }
 
+  void changeStar(int change) {
+    criticalStars += change;
+    criticalStars.clamp(0, kValidTotalStarMax);
+  }
+
   List<NiceTrait> getFieldTraits() {
     // TODO (battle): account for add & remove field traits
     return niceQuest?.individuality ?? [];
@@ -185,6 +217,62 @@ class BattleData {
       activatorTraits.addAll(currentCard!.traits);
     }
     return activatorTraits;
+  }
+
+  bool isActorOnField(int actorUniqueId) {
+    return aliveAllies.any((svt) => svt.uniqueId == actorUniqueId) ||
+        aliveEnemies.any((svt) => svt.uniqueId == actorUniqueId);
+  }
+
+  void checkBuffStatus() {
+    aliveActors.forEach((svt) {
+      svt.checkBuffStatus();
+    });
+  }
+
+  void executeCombatActions(List<CombatAction> actions) {
+    criticalStars = 0;
+
+    if (actions.isEmpty) {
+      return;
+    }
+
+    // assumption: only Quick, Arts, and Buster are ever listed as viable actions
+    final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
+    bool isTypeChain = cardTypesSet.length == 1;
+    bool isMightyChain = cardTypesSet.length == 3;
+    CardType firstCardType = actions[0].cardData.cardType;
+    if (isTypeChain) {
+      applyTypeChain(firstCardType, actions);
+    }
+
+    int extraOvercharge = 0;
+    for (int i = 0; i < actions.length; i += 1) {
+      if (aliveEnemies.isNotEmpty) {
+        final action = actions[i];
+        currentCard = action.cardData;
+        activator = action.actor;
+        if (currentCard!.isNP && activator!.canNP(this)) {
+          activator!.activateNP(this, extraOvercharge);
+          extraOvercharge += 1;
+        } else if (!currentCard!.isNP && activator!.canCommandCard(this)) {
+          // TODO (battle): write proxy function to call damage OR call damage directly
+          extraOvercharge = 0;
+        }
+        activator = null;
+        currentCard = null;
+      }
+    }
+  }
+
+  void applyTypeChain(CardType cardType, List<CombatAction> actions) {
+    if (cardType == CardType.quick) {
+      final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
+      gainStar(this, dataValToUse);
+    } else if (cardType == CardType.arts) {
+      final targets = actions.map((action) => action.actor).toSet();
+      gainNP(this, artsChain, targets);
+    }
   }
 }
 

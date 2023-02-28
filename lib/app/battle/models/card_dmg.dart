@@ -25,6 +25,8 @@ class PlayerSvtData {
   int ocLv = 1;
   int lv = -1; // -1=mlb, 90, 100, 120
   int fou = 1000;
+
+  int npStrengthenLvl = 0;
 }
 
 class BuffPreset {

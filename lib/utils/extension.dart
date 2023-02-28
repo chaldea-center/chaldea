@@ -151,6 +151,14 @@ extension IterableX<E> on Iterable<E> {
       return null;
     }
   }
+
+  E? lastWhereOrNull(bool Function(E element) test) {
+    try {
+      return lastWhere(test);
+    } on StateError {
+      return null;
+    }
+  }
 }
 
 extension SetX<E> on Set<E> {

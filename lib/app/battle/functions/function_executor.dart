@@ -1,15 +1,19 @@
 import 'package:chaldea/app/battle/functions/add_state.dart';
+import 'package:chaldea/app/battle/functions/gain_np.dart';
+import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/extension.dart';
 
 void executeFunction(
   BattleData battleData,
   NiceFunction function,
   int skillLevel, {
-  int overchargeLevel = 1,
+  int overchargeLvl = 1,
   bool isPassive = false,
-  bool isCE = false,
+  bool notActorFunction = false,
 }) {
   BattleServantData? activator = battleData.activator;
   if (!validateFunctionTargetTeam(function, activator)) {
@@ -25,30 +29,30 @@ void executeFunction(
   targets.retainWhere((svt) => checkTrait(svt.getTraits(), function.functvals));
 
   bool functionSuccess = true;
+  final dataVals = getDataVals(function, skillLevel, overchargeLvl);
   switch (function.funcType) {
     case FuncType.addState:
-      addState(battleData, function, skillLevel, targets,
-          overchargeLevel: overchargeLevel, isPassive: isPassive, isCE: isCE);
+      functionSuccess = addState(battleData, function.buff!, dataVals, targets,
+          isPassive: isPassive, notActorPassive: notActorFunction);
       break;
     case FuncType.addStateShort:
-      addState(battleData, function, skillLevel, targets,
-          overchargeLevel: overchargeLevel, isPassive: isPassive, isCE: isCE, isShortBuff: true);
+      functionSuccess = addState(battleData, function.buff!, dataVals, targets,
+          isPassive: isPassive, notActorPassive: notActorFunction, isShortBuff: true);
       break;
+    case FuncType.gainNp:
+      functionSuccess = gainNP(battleData, dataVals, targets);
+      break;
+    case FuncType.gainStar:
+      functionSuccess = gainStar(battleData, dataVals);
+      break;
+
+    case FuncType.damage:
     default:
       print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
           'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
-}
-
-bool checkTrait(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> requiredTraits) {
-  Iterable<int> traitIds = myTraits.map((e) => e.id);
-  for (NiceTrait trait in requiredTraits) {
-    if (!traitIds.contains(trait.id)) {
-      return false;
-    }
-  }
-  return true;
+  battleData.checkBuffStatus();
 }
 
 bool validateFunctionTargetTeam(
@@ -62,6 +66,27 @@ bool validateFunctionTargetTeam(
       return activator?.isEnemy ?? true;
     default:
       return true;
+  }
+}
+
+DataVals getDataVals(
+    NiceFunction function,
+    int skillLevel,
+    int overchargeLevel,
+    ) {
+  switch (overchargeLevel) {
+    case 1:
+      return function.svals[skillLevel - 1];
+    case 2:
+      return function.svals2![skillLevel - 1];
+    case 3:
+      return function.svals3![skillLevel - 1];
+    case 4:
+      return function.svals4![skillLevel - 1];
+    case 5:
+      return function.svals5![skillLevel - 1];
+    default:
+      throw 'Illegal overcharge level: $overchargeLevel}';
   }
 }
 
@@ -129,10 +154,16 @@ List<BattleServantData> acquireFunctionTarget(
       targets.addAll(backupEnemies);
       break;
     case FuncTargetType.ptSelfAnotherFirst:
-      targets.add(aliveAllies.firstWhere((svt) => svt != activator && svt.selectable));
+      final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
+      if (firstOtherSelectable != null) {
+        targets.add(firstOtherSelectable);
+      }
       break;
     case FuncTargetType.ptSelfAnotherLast:
-      targets.add(aliveAllies.lastWhere((svt) => svt != activator && svt.selectable));
+      final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator && svt.selectable);
+      if (lastOtherSelectable != null) {
+        targets.add(lastOtherSelectable);
+      }
       break;
     case FuncTargetType.ptOneHpLowestValue:
       BattleServantData hpLowestValue = aliveAllies.first;

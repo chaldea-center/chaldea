@@ -1,3 +1,5 @@
+import 'package:chaldea/app/battle/models/buff.dart';
+import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
 class BattleCommandData {
@@ -31,5 +33,21 @@ class BattleCommandData {
 }
 
 class CommandCardData {
+  CardType cardType;
+  CardDetail cardDetail;
+  int cardStrengthen = 0;
+  int npGain = 0;
   List<NiceTrait> traits = [];
+  bool isNP = false;
+  bool isCritical = false;
+  List<BuffData> commandCodeBuffs = [];
+
+  CommandCardData(this.cardType, this.cardDetail);
+}
+
+class CombatAction {
+  BattleServantData actor;
+  CommandCardData cardData;
+
+  CombatAction(this.actor, this.cardData);
 }

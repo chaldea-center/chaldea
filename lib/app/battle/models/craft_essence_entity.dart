@@ -10,10 +10,14 @@ class BattleCEData {
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
 
   void activateCE(BattleData battleData) {
+    if (craftEssence.skills.length == 1) {
+      activateSkill(battleData, craftEssence.skills[0], 1, notActorSkill: true);
+    }
+
     for (int i = 0; i < craftEssence.skills.length; i += 1) {
       bool shouldActivate = (i % 2 == 0 && !isLimitBreak || i % 2 == 1 && isLimitBreak);
       if (shouldActivate) {
-        activateSkill(battleData, craftEssence.skills[i], 1, isCE: true);
+        activateSkill(battleData, craftEssence.skills[i], 1, notActorSkill: true);
       }
     }
   }

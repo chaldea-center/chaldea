@@ -19,3 +19,15 @@ int capBuffValue(BuffActionDetail buffAction, int totalVal, int maxRate) {
 
   return adjustValue;
 }
+
+bool checkTrait(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> requiredTraits) {
+  Iterable<int> traitIds = myTraits.map((e) => e.id);
+
+  for (NiceTrait trait in requiredTraits) {
+    final containsTrait = traitIds.contains(trait.id);
+    if ((trait.negative && containsTrait) || (!trait.negative && !containsTrait)) {
+      return false;
+    }
+  }
+  return true;
+}

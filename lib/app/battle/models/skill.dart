@@ -30,10 +30,10 @@ void activateSkill(
   BaseSkill skill,
   int skillLevel, {
   bool isPassive = false,
-  bool isCE = false,
+  bool notActorSkill = false,
 }) {
   // TODO (battle): account for random skills (check func.svals.ActSet)
   for (final func in skill.functions) {
-    executeFunction(battleData, func, skillLevel, isPassive: isPassive, isCE: isCE);
+    executeFunction(battleData, func, skillLevel, isPassive: isPassive, notActorFunction: notActorSkill);
   }
 }

@@ -1,5 +1,5 @@
-import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 
 class BattleBuff {
@@ -7,8 +7,10 @@ class BattleBuff {
   List<BuffData> activeList = [];
   List<BuffData> auraBuffList = [];
 
-  List<BuffData> get allBuffs =>
-      [passiveList, activeList, auraBuffList].fold([], (results, buffList) => results..addAll(buffList));
+  List<BuffData> get allBuffs => [...passiveList, ...activeList];
+
+  bool get isSelectable =>
+      allBuffs.any((buff) => buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
   List<BuffData> collectBuffPerAction(BuffAction buffAction) {
     final actionDetails = db.gameData.constData.buffActions[buffAction];
@@ -44,9 +46,11 @@ class BuffData {
   int count = -1;
   int turn = -1;
   int param = 0;
-  bool isUse = false;
+  int additionalParam = 0;
+  bool isUsed = false;
   bool passive = false;
-  bool isAct = false;
+
+  bool get isActive => count != 0 && turn != 0;
   bool isDecide = false;
   List<int> vals = [];
   int buffRate = 1000;
@@ -66,13 +70,19 @@ class BuffData {
   bool irremovable = false;
   bool isShortBuff = false;
 
+  // may not need this field.
+  // Intent is to check should remove passive when transforming servants to only remove actor's passive
+  // Default to Hyde's passive not ever added, which means we don't do any passive cleaning logic in transform script
+  bool notActorPassive = false;
+
   bool get isOnField => onField == 1;
 
   BuffData(Buff this.buff, DataVals dataVals) {
     count = dataVals.Count ?? -1;
     turn = dataVals.Turn ?? -1;
     param = dataVals.Value ?? 0;
-    buffRate = dataVals.Rate ?? 1000;
+    additionalParam = dataVals.Value2 ?? 0;
+    buffRate = dataVals.UseRate ?? 1000;
     ratioHpHigh = dataVals.RatioHPHigh ?? 0;
     ratioHpLow = dataVals.RatioHPLow ?? 0;
     ratioRangeHigh = dataVals.RatioHPRangeHigh ?? 0;
@@ -93,7 +103,40 @@ class BuffData {
         checkTrait(battleData.getActivatorTraits(), buff!.ckSelfIndv);
   }
 
+  bool shouldApplyBuff(BattleData battleData, bool isTarget) {
+    final targetCheck =
+        (isTarget && shouldApplyAsTarget(battleData)) || (!isTarget && shouldApplyAsActivator(battleData));
+
+    final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
+
+    final probabilityCheck = buffRate >= battleData.probabilityThreshold;
+
+    final scriptCheck = checkScript(battleData, targetCheck);
+
+    return targetCheck && onFieldCheck && probabilityCheck && scriptCheck;
+  }
+
+  bool checkScript(BattleData battleData, bool isTarget) {
+    if (buff!.script == null) {
+      return true;
+    }
+
+    // TODO (battle): conditional buffs check scripts here
+    return true;
+  }
+
   bool canStack(int buffGroup) {
     return buffGroup == 0 || buffGroup != buff!.buffGroup;
+  }
+
+  void setUsed() {
+    isUsed = true;
+  }
+
+  void useOnce() {
+    isUsed = false;
+    if (count > 0) {
+      count -= 1;
+    }
   }
 }
