@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/functions/add_state.dart';
+import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -12,6 +13,11 @@ void executeFunction(
   NiceFunction function,
   int skillLevel, {
   int overchargeLvl = 1,
+  int chainPos = 1,
+  bool isTypeChain = false,
+  bool isMightyChain = false,
+  CardType firstCardType = CardType.none,
+  bool isDefensePierce = false,
   bool isPassive = false,
   bool notActorFunction = false,
 }) {
@@ -20,16 +26,17 @@ void executeFunction(
     return;
   }
 
-  if (!checkTrait(battleData.getFieldTraits(), function.funcquestTvals)) {
+  if (!containsAllTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
     return;
   }
 
+  final dataVals = getDataVals(function, skillLevel, overchargeLvl);
   List<BattleServantData> targets = acquireFunctionTarget(battleData, function, activator);
 
-  targets.retainWhere((svt) => checkTrait(svt.getTraits(), function.functvals));
+  final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
+  targets.retainWhere((svt) => (svt.isAlive() || checkDead) && svt.checkTraits(function.functvals));
 
   bool functionSuccess = true;
-  final dataVals = getDataVals(function, skillLevel, overchargeLvl);
   switch (function.funcType) {
     case FuncType.addState:
       functionSuccess = addState(battleData, function.buff!, dataVals, targets,
@@ -45,14 +52,20 @@ void executeFunction(
     case FuncType.gainStar:
       functionSuccess = gainStar(battleData, dataVals);
       break;
-
     case FuncType.damage:
+    case FuncType.damageNp:
+    case FuncType.damageNpIndividual:
+    case FuncType.damageNpStateIndividualFix:
+      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+      break;
+    case FuncType.damageNpPierce:
+      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType, isPierceDefense: true);
+      break;
     default:
       print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
           'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
-  battleData.checkBuffStatus();
 }
 
 bool validateFunctionTargetTeam(
@@ -70,10 +83,10 @@ bool validateFunctionTargetTeam(
 }
 
 DataVals getDataVals(
-    NiceFunction function,
-    int skillLevel,
-    int overchargeLevel,
-    ) {
+  NiceFunction function,
+  int skillLevel,
+  int overchargeLevel,
+) {
   switch (overchargeLevel) {
     case 1:
       return function.svals[skillLevel - 1];
@@ -100,11 +113,11 @@ List<BattleServantData> acquireFunctionTarget(
   bool isAlly = activator?.isPlayer ?? true;
   List<BattleServantData> backupAllies = isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
   List<BattleServantData> aliveAllies = isAlly ? battleData.aliveAllies : battleData.aliveEnemies;
-  BattleServantData targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
+  BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
 
   List<BattleServantData> backupEnemies = isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
   List<BattleServantData> aliveEnemies = isAlly ? battleData.aliveEnemies : battleData.aliveAllies;
-  BattleServantData targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
+  BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
 
   switch (function.funcTargetType) {
     case FuncTargetType.self:
@@ -112,13 +125,17 @@ List<BattleServantData> acquireFunctionTarget(
       break;
     case FuncTargetType.ptOne:
     case FuncTargetType.ptselectOneSub:
-      targets.add(targetedAlly);
+      if (targetedAlly != null) {
+        targets.add(targetedAlly);
+      }
       break;
     case FuncTargetType.ptAll:
       targets.addAll(aliveAllies);
       break;
     case FuncTargetType.enemy:
-      targets.add(targetedEnemy);
+      if (targetedEnemy != null) {
+        targets.add(targetedEnemy);
+      }
       break;
     case FuncTargetType.enemyAll:
       targets.addAll(aliveEnemies);

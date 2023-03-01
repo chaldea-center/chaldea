@@ -9,11 +9,11 @@ bool gainNP(BattleData battleData, DataVals dataVals, Iterable<BattleServantData
   }
 
   targets.forEach((target) {
-    battleData.target = target;
+    battleData.setTarget(target);
 
     target.changeNP(dataVals.Value!);
 
-    battleData.target = null;
+    battleData.unsetTarget();
   });
 
   return true;

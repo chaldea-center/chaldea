@@ -218,10 +218,10 @@ double toModifier(final int value) {
 }
 
 class DamageParameters {
-  int attack = 0;
-  int damageRate = 1000;
+  int attack = 0; // servantAtk
+  int damageRate = 1000; // npDamageMultiplier
   int totalHits = 100;
-  int npSpecificAttackRate = 1000;
+  int npSpecificAttackRate = 1000; // superEffectiveModifier = function Correction value
   SvtClass attackerClass = SvtClass.none;
   SvtClass defenderClass = SvtClass.none;
   int classAdvantage = 0;
@@ -234,18 +234,18 @@ class DamageParameters {
   bool isTypeChain = false;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0;
-  int cardResist = 0;
-  int attackBuff = 0;
-  int defenseBuff = 0;
-  int specificAttackBuff = 0;
-  int specificDefenseBuff = 0; // this maps to selfDamageMod, can rename after I see an instance of this buff
-  int criticalDamageBuff = 0;
-  int npDamageBuff = 0;
-  int percentAttackBuff = 0;
-  int percentDefenseBuff = 0;
-  int damageAdditionBuff = 0;
-  int damageReductionBuff = 0;
+  int cardBuff = 0; // cardMod = actor.commandAtk
+  int cardResist = 0; // cardMod = target.commandDef
+  int attackBuff = 0; // atkMod = actor.atk
+  int defenseBuff = 0; // defMod = target.defence or target.defencePierce
+  int specificAttackBuff = 0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
+  int specificDefenseBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
+  int criticalDamageBuff = 0; // critDamageMod = actor.criticalDamage
+  int npDamageBuff = 0; // npDamageMod = actor.npdamage
+  int percentAttackBuff = 0; // damageSpecialMod = actor.damageSpecial
+  int percentDefenseBuff = 0; // specialDefMod = target.specialdefence
+  int damageAdditionBuff = 0; // dmgPlusAdd = actor.givenDamage
+  int damageReductionBuff = 0; // selfDmgCutAdd = target.receiveDamage
   int fixedRandom = 0;
 
   @override
@@ -326,9 +326,9 @@ class AttackNpGainParameters {
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0;
-  int cardResist = 0;
-  int npGainBuff = 0;
+  int cardBuff = 0; // cardMod = atkSvt.commandNpAtk
+  int cardResist = 0; // cardMod = target.commandNpDef
+  int npGainBuff = 0; // npChargeRateMod = atkSvt.dropNp
   bool isOverkill = false;
 
   @override
@@ -369,8 +369,8 @@ class AttackNpGainParameters {
 class DefendNpGainParameters {
   int defenderNpCharge = 0;
   int attackerNpRate = 0;
-  int npGainBuff = 0;
-  int defenseNpGainBuff = 0;
+  int npGainBuff = 0; // npChargeRateMod = defSvt.dropNp
+  int defenseNpGainBuff = 0; // defensiveChargeRateMod = defSvt.dropNpDamage
   bool isOverkill = false;
 
   @override
@@ -403,10 +403,10 @@ class StarParameters {
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0;
-  int cardResist = 0;
-  int starGenBuff = 0;
-  int enemyStarGenResist = 0;
+  int cardBuff = 0; // cardMod = atkSvt.commandStarAtk
+  int cardResist = 0; // cardMod = defSvt.commandStarDef
+  int starGenBuff = 0; // starDropMod = atkSvt.criticalPoint
+  int enemyStarGenResist = 0; // enemyStarDropMod = defSvt.criticalStarDamageTaken
   bool isOverkill = false;
 
   @override

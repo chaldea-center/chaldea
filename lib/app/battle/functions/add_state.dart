@@ -23,16 +23,15 @@ bool addState(
       ..notActorPassive = notActorPassive
       ..isShortBuff = isShortBuff;
 
-    battleData.currentBuff = buffData;
-    battleData.target = target;
-    if (target.isAlive() && shouldAddState(battleData, dataVals, activator, target, buffData)) {
-      if (target.isBuffStackable(buffData.buff!.buffGroup)) {
-        target.addBuff(buffData, isPassive: isPassive || notActorPassive);
-        buffAdded = true;
-      }
+    battleData.setCurrentBuff(buffData);
+    battleData.setTarget(target);
+    if (shouldAddState(battleData, dataVals, activator, target, buffData) &&
+        target.isBuffStackable(buffData.buff.buffGroup)) {
+      target.addBuff(buffData, isPassive: isPassive || notActorPassive);
+      buffAdded = true;
     }
-    battleData.target = null;
-    battleData.currentBuff = null;
+    battleData.unsetTarget();
+    battleData.unsetCurrentBuff();
   }
 
   return buffAdded;

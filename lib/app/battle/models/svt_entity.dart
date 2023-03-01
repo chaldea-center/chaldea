@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/craft_essence_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -12,6 +14,7 @@ import 'skill.dart';
 
 class BattleServantData {
   static const npPityThreshold = 9900;
+  static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
 
   QuestEnemy? niceEnemy;
   Servant? niceSvt;
@@ -65,13 +68,36 @@ class BattleServantData {
   List<BattleSkillInfoData> skillInfoList = []; //BattleSkillInfoData
   int tdId = 0;
   int tdLv = 0;
-  List<BattleCEData> equipList = [];
+  BattleCEData? equip;
   BattleBuff battleBuff = BattleBuff();
   int shiftIndex = 0;
+  BattleServantData? killedBy;
+  CommandCardData? killedByCard;
+  List<List<BuffData>> commandCodeBuffs = [[], [], [], [], []];
 
   PlayerSvtData? playerSvtData;
 
   bool get selectable => battleBuff.isSelectable;
+
+  int get attack =>
+      isPlayer ? atk + playerSvtData!.fou + (equip?.craftEssence.atkGrowth[playerSvtData!.ceLv] ?? 0) : atk;
+
+  SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
+
+  Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+
+  int get starGen => isPlayer ? niceSvt!.starGen : 0;
+
+  int get defenceNpGain =>
+      isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl].npGain.defence[playerSvtData!.npLv] : 0;
+
+  int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
+
+  int get enemyTdAttackRate => isEnemy ? niceEnemy!.serverMod.tdAttackRate : 0;
+
+  int get enemyStarRate => isEnemy ? niceEnemy!.serverMod.starRate : 0;
+
+  bool get isBuggedOverkill => accumulationDamage > hp;
 
   static BattleServantData fromEnemy(QuestEnemy enemy) {
     final svt = BattleServantData();
@@ -94,20 +120,98 @@ class BattleServantData {
         ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive, ...niceSvt!.appendPassive.map((e) => e.skill)]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
-    battleData.activator = this;
+    battleData.setActivator(this);
     for (final skill in passives) {
       activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
     }
 
-    for (final craftEssence in equipList) {
-      craftEssence.activateCE(battleData);
+    equip?.activateCE(battleData);
+
+    battleData.unsetActivator();
+  }
+
+  List<CommandCardData> getCards() {
+    if (isEnemy) {
+      return [];
     }
-    battleData.activator = null;
+
+    final List<CommandCardData> builtCards = [];
+    for (int i = 0; i < niceSvt!.cards.length; i += 1) {
+      final cardType = niceSvt!.cards[i];
+      final card = CommandCardData(cardType, niceSvt!.cardDetails[cardType]!)
+        ..isNP = false
+        ..cardStrengthen = playerSvtData!.cardStrengthens[i]
+        ..npGain = getNPGain(cardType)
+        ..traits = [mapCardTypeToTrait(cardType), NiceTrait(id: Trait.faceCard.id)]
+        ..commandCodeBuffs = commandCodeBuffs[i];
+      builtCards.add(card);
+    }
+    return builtCards;
+  }
+
+  CommandCardData? getExtraCard() {
+    if (isEnemy) {
+      return null;
+    }
+
+    return CommandCardData(CardType.extra, niceSvt!.cardDetails[CardType.extra]!)
+      ..isNP = false
+      ..npGain = getNPGain(CardType.extra)
+      ..traits = [mapCardTypeToTrait(CardType.extra), NiceTrait(id: Trait.faceCard.id)];
+  }
+
+  static NiceTrait mapCardTypeToTrait(CardType cardType) {
+    switch (cardType) {
+      case CardType.buster:
+        return NiceTrait(id: Trait.cardBuster.id);
+      case CardType.arts:
+        return NiceTrait(id: Trait.cardArts.id);
+      case CardType.quick:
+        return NiceTrait(id: Trait.cardQuick.id);
+      case CardType.extra:
+        return NiceTrait(id: Trait.cardExtra.id);
+      case CardType.weak:
+        return NiceTrait(id: Trait.cardWeak.id);
+      case CardType.strength:
+        return NiceTrait(id: Trait.cardStrong.id);
+      case CardType.none:
+      case CardType.blank:
+        throw 'Invalid Card Type: $cardType';
+    }
+  }
+
+  int getNPGain(CardType cardType) {
+    if (!isPlayer) {
+      return 0;
+    }
+    switch (cardType) {
+      case CardType.buster:
+        return getCurrentNP().npGain.buster[playerSvtData!.npLv];
+      case CardType.arts:
+        return getCurrentNP().npGain.arts[playerSvtData!.npLv];
+      case CardType.quick:
+        return getCurrentNP().npGain.quick[playerSvtData!.npLv];
+      case CardType.extra:
+        return getCurrentNP().npGain.extra[playerSvtData!.npLv];
+      default:
+        return 0;
+    }
   }
 
   List<NiceTrait> getTraits() {
     // TODO (battle): account for add & remove traits
-    return isPlayer ? niceSvt!.traits : niceEnemy!.traits;
+    final List<NiceTrait> results = [];
+    final svtTraits = isPlayer ? niceSvt!.traits : niceEnemy!.traits;
+    results.addAll(svtTraits);
+    return results;
+  }
+
+  bool checkTrait(NiceTrait requiredTrait) {
+    return checkTraits([requiredTrait]);
+  }
+
+  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+    return containsAllTraits(getTraits(), requiredTraits) || battleBuff.checkTraits(requiredTraits);
   }
 
   void changeNP(int change) {
@@ -132,36 +236,57 @@ class BattleServantData {
     return db.gameData.constData.constants.fullTdPoint * capRate;
   }
 
+  bool isKilledBy(BattleServantData? activator, CommandCardData? currentCard) {
+    return activator != null && currentCard != null && killedBy == activator && killedByCard == currentCard;
+  }
+
+  void receiveDamage(int hitDamage) {
+    hp -= hitDamage;
+  }
+
+  void addAccumulationDamage(int damage) {
+    accumulationDamage += damage;
+  }
+
+  void clearAccumulationDamage() {
+    accumulationDamage = 0;
+  }
+
+  bool hasNextShift() {
+    if (isPlayer) {
+      return false;
+    }
+
+    return niceEnemy!.enemyScript.shift != null && niceEnemy!.enemyScript.shift!.length > shiftIndex;
+  }
+
   bool isAlive() {
     if (hp > 0) {
       return true;
     }
 
-    if (isEnemy && niceEnemy!.enemyScript.shift != null) {
-      List<int> shifts = niceEnemy!.enemyScript.shift!;
-      if (shifts.length > shiftIndex) {
-        return true;
-      }
-    }
-
-    // TODO (battle): check for conditional guts?
-    return battleBuff.collectBuffPerType({BuffType.guts, BuffType.gutsRatio}).isNotEmpty;
-  }
-
-  bool canAttack(BattleData battleData) {
-    if (hp > 0) {
+    if (hasNextShift()) {
       return true;
     }
 
-    final doNotActs = battleBuff.collectBuffPerAction(BuffAction.donotAct);
-    return doNotActs.any((buff) => buff.shouldApplyBuff(battleData, this == battleData.target));
+    // TODO (battle): check for conditional guts?
+    return collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes).isNotEmpty;
+  }
+
+  bool canAttack(BattleData battleData) {
+    if (hp <= 0) {
+      return false;
+    }
+
+    final doNotActs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotAct);
+    return doNotActs.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target));
   }
 
   bool canCommandCard(BattleData battleData) {
-    final doNotCommandCards = battleBuff.collectBuffPerAction(BuffAction.donotActCommandtype);
+    final doNotCommandCards = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotActCommandtype);
 
     return canAttack(battleData) &&
-        doNotCommandCards.any((buff) => buff.shouldApplyBuff(battleData, this == battleData.target));
+        doNotCommandCards.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target));
   }
 
   bool canNP(BattleData battleData) {
@@ -171,12 +296,12 @@ class BattleServantData {
     }
 
     final doNotActNps = [
-      ...battleBuff.collectBuffPerAction(BuffAction.donotNoble),
-      ...battleBuff.collectBuffPerAction(BuffAction.donotNobleCondMismatch)
+      ...collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotNoble),
+      ...collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotNobleCondMismatch)
     ];
 
     return canAttack(battleData) &&
-        doNotActNps.any((buff) => buff.shouldApplyBuff(battleData, this == battleData.target)) &&
+        doNotActNps.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target)) &&
         checkNPScript(battleData);
   }
 
@@ -190,10 +315,12 @@ class BattleServantData {
     return true;
   }
 
+  NiceTd getCurrentNP() {
+    return isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl] : niceEnemy!.noblePhantasm.noblePhantasm!;
+  }
+
   void activateNP(BattleData battleData, int extraOverchargeLvl) {
-    final currentNPFunctions = isPlayer
-        ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl].functions
-        : niceEnemy!.noblePhantasm.noblePhantasm!.functions;
+    battleData.setActivator(this);
 
     // TODO (battle): account for OC buff
     final overchargeLvl =
@@ -204,41 +331,81 @@ class BattleServantData {
     np = 0;
     npLineCount = 0;
 
-    for (final function in currentNPFunctions) {
+    for (final function in getCurrentNP().functions) {
       executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
+    battleData.unsetActivator();
   }
 
-  int getBuffValueOnAction(BattleData battleData, BuffAction buffAction) {
+  int getBuffValueOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
     final isTarget = battleData.target == this;
     var totalVal = 0;
     var maxRate = 0;
 
     final actionDetails = db.gameData.constData.buffActions[buffAction];
 
-    for (BuffData buff in battleBuff.collectBuffPerAction(buffAction)) {
+    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+
+    for (BuffData buff in collectBuffsPerAction(allBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
-        if (actionDetails!.plusTypes.contains(buff.buff!.type)) {
-          totalVal += buff.param;
+        battleData.setCurrentBuff(buff);
+        final totalEffectiveness =
+            buffAction != BuffAction.buffRate ? getBuffValueOnAction(battleData, BuffAction.buffRate) : 0;
+        battleData.unsetCurrentBuff();
+
+        final value = (toModifier(totalEffectiveness) * buff.param).toInt();
+        if (actionDetails!.plusTypes.contains(buff.buff.type)) {
+          totalVal += value;
         } else {
-          totalVal -= buff.param;
+          totalVal -= value;
         }
-        maxRate = max(maxRate, buff.buff!.maxRate);
+        maxRate = max(maxRate, buff.buff.maxRate);
       }
     }
     return capBuffValue(actionDetails!, totalVal, maxRate);
   }
 
-  bool hasBuffOnAction(BattleData battleData, BuffAction buffAction) {
+  bool hasBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
     final isTarget = battleData.target == this;
-    for (BuffData buff in battleBuff.collectBuffPerAction(buffAction)) {
+
+    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    for (BuffData buff in collectBuffsPerAction(allBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         return true;
       }
     }
     return false;
+  }
+
+  void activateBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
+    activateBuffOnActions(battleData, [buffAction], commandCodeBuffs);
+  }
+
+  void activateBuffOnActions(BattleData battleData, Iterable<BuffAction> buffActions,
+      [List<BuffData>? commandCodeBuffs]) {
+    battleData.setActivator(this);
+
+    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    for (BuffData buff in collectBuffsPerActions(allBuffs, buffActions)) {
+      if (buff.shouldApplyBuff(battleData, false)) {
+        final skill = db.gameData.baseSkills[buff.param];
+        if (skill == null) {
+          print('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff?.id}].');
+          continue;
+        }
+
+        activateSkill(battleData, skill, buff.additionalParam);
+        buff.setUsed();
+      }
+    }
+
+    battleData.unsetActivator();
+  }
+
+  void removeBuffWithTrait(NiceTrait trait) {
+    battleBuff.activeList.removeWhere((buff) => buff.checkTraits([trait]));
   }
 
   bool isBuffStackable(int buffGroup) {
@@ -265,6 +432,45 @@ class BattleServantData {
     });
 
     battleBuff.allBuffs.removeWhere((buff) => !buff.isActive);
+  }
+
+  void enterField(BattleData battleData) {
+    activateBuffOnAction(battleData, BuffAction.functionEntry);
+  }
+
+  void death(BattleData battleData) {
+    activateBuffOnAction(battleData, BuffAction.functionDead);
+  }
+
+  void startOfMyTurn(BattleData battleData) {
+    activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
+  }
+
+  bool activateGuts(BattleData battleData) {
+    BuffData? gutsToApply;
+    for (final buff in collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)) {
+      if (buff.shouldApplyBuff(battleData, false)) {
+        if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
+          gutsToApply = buff;
+        }
+      }
+    }
+
+    if (gutsToApply != null) {
+      gutsToApply.setUsed();
+      final value = gutsToApply.param;
+      if (gutsToApply.buff.type == BuffType.gutsRatio) {
+        hp = (value * maxHp).floor();
+      } else {
+        hp = value;
+      }
+      killedByCard = null;
+      killedBy = null;
+      activateBuffOnAction(battleData, BuffAction.functionGuts);
+      return true;
+    }
+
+    return false;
   }
 
   BattleServantData copy() {
@@ -311,7 +517,7 @@ class BattleServantData {
       ..skillInfoList = skillInfoList.toList() // copy
       ..tdId = tdId
       ..tdLv = tdLv
-      ..equipList = equipList.toList()
+      ..equip = equip
       ..battleBuff = battleBuff // TODO (battle): add copy()
       ..shiftIndex = shiftIndex; //copy
   }

@@ -12,32 +12,13 @@ class BattleBuff {
   bool get isSelectable =>
       allBuffs.any((buff) => buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
-  List<BuffData> collectBuffPerAction(BuffAction buffAction) {
-    final actionDetails = db.gameData.constData.buffActions[buffAction];
-    if (actionDetails == null) {
-      return [];
-    }
-    List<BuffType> buffTypes = [];
-    buffTypes.addAll(actionDetails.plusTypes);
-    buffTypes.addAll(actionDetails.minusTypes);
-
-    return collectBuffPerType(buffTypes);
-  }
-
-  List<BuffData> collectBuffPerType(Iterable<BuffType> buffTypes) {
-    List<BuffData> collectedBuffs = [];
-    for (BuffData buffData in allBuffs) {
-      if (buffTypes.contains(buffData.buff!.type)) {
-        collectedBuffs.add(buffData);
-      }
-    }
-
-    return collectedBuffs;
+  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+    return allBuffs.any((buff) => buff.checkTraits(requiredTraits));
   }
 }
 
 class BuffData {
-  Buff? buff;
+  Buff buff;
 
   // ignore: unused_field
   DataVals? _vals;
@@ -91,16 +72,18 @@ class BuffData {
     onField = dataVals.OnField ?? 0;
   }
 
-  List<NiceTrait> get traits => buff?.vals ?? [];
+  List<NiceTrait> get traits => buff.vals;
+
+  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+    return containsAllTraits(traits, requiredTraits);
+  }
 
   bool shouldApplyAsTarget(BattleData battleData) {
-    return checkTrait(battleData.getActivatorTraits(), buff!.ckOpIndv) &&
-        checkTrait(battleData.getTargetTraits(), buff!.ckSelfIndv);
+    return battleData.checkActivatorTraits(buff.ckOpIndv) && battleData.checkTargetTraits(buff.ckSelfIndv);
   }
 
   bool shouldApplyAsActivator(BattleData battleData) {
-    return checkTrait(battleData.getTargetTraits(), buff!.ckOpIndv) &&
-        checkTrait(battleData.getActivatorTraits(), buff!.ckSelfIndv);
+    return battleData.checkTargetTraits(buff.ckOpIndv) && battleData.checkActivatorTraits(buff.ckSelfIndv);
   }
 
   bool shouldApplyBuff(BattleData battleData, bool isTarget) {
@@ -117,16 +100,22 @@ class BuffData {
   }
 
   bool checkScript(BattleData battleData, bool isTarget) {
-    if (buff!.script == null) {
+    if (buff.script == null) {
       return true;
     }
 
-    // TODO (battle): conditional buffs check scripts here
+    final script = buff.script!;
+
+    if (script.UpBuffRateBuffIndiv != null &&
+        battleData.currentBuff != null &&
+        battleData.currentBuff!.checkTraits(script.UpBuffRateBuffIndiv!)) {
+      return true;
+    }
     return true;
   }
 
   bool canStack(int buffGroup) {
-    return buffGroup == 0 || buffGroup != buff!.buffGroup;
+    return buffGroup == 0 || buffGroup != buff.buffGroup;
   }
 
   void setUsed() {

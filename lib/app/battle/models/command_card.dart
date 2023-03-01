@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
 class BattleCommandData {
@@ -43,6 +44,10 @@ class CommandCardData {
   List<BuffData> commandCodeBuffs = [];
 
   CommandCardData(this.cardType, this.cardDetail);
+
+  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+    return containsAllTraits(traits, requiredTraits);
+  }
 }
 
 class CombatAction {

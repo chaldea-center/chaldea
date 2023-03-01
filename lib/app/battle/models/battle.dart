@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
@@ -19,8 +20,7 @@ class BattleData {
   static final DataVals artsChain = DataVals({'Rate': 5000, 'Value': 2000});
   static final DataVals quickChainBefore7thAnni = DataVals({'Rate': 5000, 'Value': 10});
   static final DataVals quickChainAfter7thAnni = DataVals({'Rate': 5000, 'Value': 20});
-
-
+  static final DataVals cardDamage = DataVals({'Rate': 1000, 'Value': 1000});
 
   QuestPhase? niceQuest;
   Stage? curStage;
@@ -39,9 +39,9 @@ class BattleData {
   int enemyTargetIndex = 0;
   int allyTargetIndex = 0;
 
-  BattleServantData get targetedEnemy => onFieldEnemies[enemyTargetIndex]!;
+  BattleServantData? get targetedEnemy => onFieldEnemies[enemyTargetIndex];
 
-  BattleServantData get targetedAlly => onFieldAllyServants[allyTargetIndex]!;
+  BattleServantData? get targetedAlly => onFieldAllyServants[allyTargetIndex];
 
   List<BattleServantData> get aliveEnemies => _getNonnull(onFieldEnemies);
 
@@ -92,10 +92,40 @@ class BattleData {
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
 
-  BuffData? currentBuff;
-  BattleServantData? activator;
-  BattleServantData? target;
   CommandCardData? currentCard;
+  final List<BuffData?> _currentBuff = [];
+  final List<BattleServantData> _activator = [];
+  final List<BattleServantData> _target = [];
+
+  void setCurrentBuff(BuffData buff) {
+    _currentBuff.add(buff);
+  }
+
+  BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
+
+  void unsetCurrentBuff() {
+    _currentBuff.removeLast();
+  }
+
+  void setActivator(BattleServantData svt) {
+    _activator.add(svt);
+  }
+
+  BattleServantData? get activator => _activator.isNotEmpty ? _activator.last : null;
+
+  void unsetActivator() {
+    _activator.removeLast();
+  }
+
+  void setTarget(BattleServantData svt) {
+    _target.add(svt);
+  }
+
+  BattleServantData get target => _target.last;
+
+  void unsetTarget() {
+    _target.removeLast();
+  }
 
   void init(QuestPhase quest, List<BattleServantData?> playerParty, MysticCode? selectedMC) {
     niceQuest = quest;
@@ -122,6 +152,10 @@ class BattleData {
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
 
+    aliveActors.forEach((element) {
+      element.enterField(this);
+    });
+
     nextTurn();
   }
 
@@ -133,6 +167,7 @@ class BattleData {
       nextWave();
     }
     // start of ally turn
+    aliveActors.forEach((svt) {svt.startOfMyTurn(this);});
   }
 
   void nextWave() {
@@ -197,26 +232,16 @@ class BattleData {
     return niceQuest?.individuality ?? [];
   }
 
-  List<NiceTrait> getTargetTraits() {
-    List<NiceTrait> targetTraits = [];
-    if (target != null) {
-      targetTraits.addAll(target!.getTraits());
-    }
-    return targetTraits;
+  bool checkTargetTraits(Iterable<NiceTrait> requiredTraits) {
+    return target.checkTraits(requiredTraits) ||
+        (currentBuff?.checkTraits(requiredTraits) ?? false) ||
+        (currentCard?.checkTraits(requiredTraits) ?? false);
   }
 
-  List<NiceTrait> getActivatorTraits() {
-    List<NiceTrait> activatorTraits = [];
-    if (activator != null) {
-      activatorTraits.addAll(activator!.getTraits());
-    }
-    if (currentBuff != null) {
-      activatorTraits.addAll(currentBuff!.traits);
-    }
-    if (currentCard != null) {
-      activatorTraits.addAll(currentCard!.traits);
-    }
-    return activatorTraits;
+  bool checkActivatorTraits(Iterable<NiceTrait> requiredTraits) {
+    return (activator?.checkTraits(requiredTraits) ?? false) ||
+        (currentBuff?.checkTraits(requiredTraits) ?? false) ||
+        (currentCard?.checkTraits(requiredTraits) ?? false);
   }
 
   bool isActorOnField(int actorUniqueId) {
@@ -251,18 +276,57 @@ class BattleData {
       if (aliveEnemies.isNotEmpty) {
         final action = actions[i];
         currentCard = action.cardData;
-        activator = action.actor;
-        if (currentCard!.isNP && activator!.canNP(this)) {
-          activator!.activateNP(this, extraOvercharge);
+        allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
+        if (currentCard!.isNP && action.actor.canNP(this)) {
+          action.actor.activateNP(this, extraOvercharge);
           extraOvercharge += 1;
-        } else if (!currentCard!.isNP && activator!.canCommandCard(this)) {
-          // TODO (battle): write proxy function to call damage OR call damage directly
+        } else if (!currentCard!.isNP && action.actor.canCommandCard(this)) {
           extraOvercharge = 0;
+          setActivator(action.actor);
+
+          final List<BattleServantData> targets = [];
+          if (currentCard!.cardDetail.attackType == CommandCardAttackType.all) {
+            targets.addAll(aliveEnemies);
+          } else {
+            targets.add(targetedEnemy!);
+          }
+          damage(this, cardDamage, targets, i + 1, isTypeChain, isMightyChain, firstCardType);
+
+          unsetActivator();
         }
-        activator = null;
+
+        if (shouldRemoveDeadActors(actions, i)) {
+          removeDeadActors();
+        }
+
         currentCard = null;
       }
+
+      checkBuffStatus();
     }
+
+    if (isBraveChain(actions) && targetedEnemy != null) {
+      final actor = actions[0].actor;
+      currentCard = actor.getExtraCard();
+      setActivator(actor);
+
+      final List<BattleServantData> targets = [];
+      if (currentCard!.cardDetail.attackType == CommandCardAttackType.all) {
+        targets.addAll(aliveEnemies);
+      } else {
+        targets.add(targetedEnemy!);
+      }
+      damage(this, cardDamage, targets, 4, isTypeChain, isMightyChain, firstCardType);
+
+      removeDeadActors();
+
+      unsetActivator();
+      currentCard = null;
+    }
+
+    aliveEnemies.forEach((actor) {
+      actor.clearAccumulationDamage();
+    });
   }
 
   void applyTypeChain(CardType cardType, List<CombatAction> actions) {
@@ -273,6 +337,58 @@ class BattleData {
       final targets = actions.map((action) => action.actor).toSet();
       gainNP(this, artsChain, targets);
     }
+  }
+
+  void removeDeadActors() {
+    removeDeadActorsFromList(onFieldAllyServants);
+    removeDeadActorsFromList(onFieldEnemies);
+    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+  }
+
+  void removeDeadActorsFromList(List<BattleServantData?> actorList) {
+    for (int i = 0; i < actorList.length; i += 1) {
+      if (actorList[i] == null) {
+        continue;
+      }
+
+      final actor = actorList[i]!;
+      if (actor.hp <= 0 && !actor.hasNextShift()) {
+        if (!actor.activateGuts(this)) {
+          actor.death(this);
+          actorList[i] = null;
+        }
+      }
+    }
+  }
+
+  int getNonNullTargetIndex(List<BattleServantData?> actorList, int targetIndex) {
+    if (targetIndex >= actorList.length || actorList[targetIndex] == null) {
+      for (int i = 0; i < actorList.length; i += 1) {
+        if (actorList[i] != null) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  }
+
+  static bool shouldRemoveDeadActors(List<CombatAction> actions, int index) {
+    final action = actions[index];
+    if (action.cardData.isNP) {
+      return true;
+    }
+
+    if (index < actions.length - 1) {
+      final nextAction = actions[index + 1];
+      return nextAction.cardData.isNP || nextAction.actor != action.actor;
+    } else {
+      return isBraveChain(actions);
+    }
+  }
+
+  static bool isBraveChain(List<CombatAction> actions) {
+    return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
   }
 }
 

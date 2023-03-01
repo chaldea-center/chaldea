@@ -1,3 +1,7 @@
+import 'dart:collection';
+
+import 'package:chaldea/app/battle/models/buff.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
 int capBuffValue(BuffActionDetail buffAction, int totalVal, int maxRate) {
@@ -20,14 +24,34 @@ int capBuffValue(BuffActionDetail buffAction, int totalVal, int maxRate) {
   return adjustValue;
 }
 
-bool checkTrait(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> requiredTraits) {
-  Iterable<int> traitIds = myTraits.map((e) => e.id);
+bool containsAllTraits(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> requiredTraits) {
+  Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
+  return requiredTraits.every((trait) => myTraitIds.contains(trait.signedId) || (trait.negative && !myTraitIds.contains(trait.id)));
+}
 
-  for (NiceTrait trait in requiredTraits) {
-    final containsTrait = traitIds.contains(trait.id);
-    if ((trait.negative && containsTrait) || (!trait.negative && !containsTrait)) {
-      return false;
+List<BuffData> collectBuffsPerAction(Iterable<BuffData> buffs, BuffAction buffAction) {
+  return collectBuffsPerActions(buffs, [buffAction]);
+}
+
+List<BuffData> collectBuffsPerType(Iterable<BuffData> buffs, BuffType buffType) {
+  return collectBuffsPerTypes(buffs, [buffType]);
+}
+
+List<BuffData> collectBuffsPerActions(Iterable<BuffData> buffs, Iterable<BuffAction> buffActions) {
+  final allBuffTypes = HashSet<BuffType>();
+  for (final buffAction in buffActions) {
+    final actionDetails = db.gameData.constData.buffActions[buffAction];
+    if (actionDetails == null) {
+      continue;
     }
+
+    allBuffTypes.addAll(actionDetails.plusTypes);
+    allBuffTypes.addAll(actionDetails.minusTypes);
   }
-  return true;
+
+  return collectBuffsPerTypes(buffs, allBuffTypes);
+}
+
+List<BuffData> collectBuffsPerTypes(Iterable<BuffData> buffs, Iterable<BuffType> buffTypes) {
+  return buffs.where((buff) => buffTypes.contains(buff.buff!.type)).toList();
 }

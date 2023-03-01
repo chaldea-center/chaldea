@@ -27,6 +27,9 @@ class PlayerSvtData {
   int fou = 1000;
 
   int npStrengthenLvl = 0;
+  int ceLv = 0;
+  List<int> cardStrengthens = [0, 0, 0, 0, 0];
+  List<int> commandCodeIds = [-1, -1, -1, -1, -1];
 }
 
 class BuffPreset {
