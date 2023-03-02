@@ -15,6 +15,8 @@ import 'skill.dart';
 class BattleServantData {
   static const npPityThreshold = 9900;
   static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
+  static List<BuffAction> doNotNPTypes = [BuffAction.donotNoble, BuffAction.donotNobleCondMismatch];
+  static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   QuestEnemy? niceEnemy;
   Servant? niceSvt;
@@ -71,6 +73,7 @@ class BattleServantData {
   BattleCEData? equip;
   BattleBuff battleBuff = BattleBuff();
   int shiftIndex = 0;
+  bool attacked = false;
   BattleServantData? killedBy;
   CommandCardData? killedByCard;
   List<List<BuffData>> commandCodeBuffs = [[], [], [], [], []];
@@ -240,15 +243,22 @@ class BattleServantData {
     return activator != null && currentCard != null && killedBy == activator && killedByCard == currentCard;
   }
 
+  void heal(int heal) {
+    hp += heal;
+    hp.clamp(0, maxHp);
+  }
+
   void receiveDamage(int hitDamage) {
     hp -= hitDamage;
   }
 
   void addAccumulationDamage(int damage) {
+    attacked = true;
     accumulationDamage += damage;
   }
 
   void clearAccumulationDamage() {
+    attacked = false;
     accumulationDamage = 0;
   }
 
@@ -258,6 +268,10 @@ class BattleServantData {
     }
 
     return niceEnemy!.enemyScript.shift != null && niceEnemy!.enemyScript.shift!.length > shiftIndex;
+  }
+
+  void shift(BattleData battleData) {
+    // TODO (battle): enemy shift
   }
 
   bool isAlive() {
@@ -278,15 +292,11 @@ class BattleServantData {
       return false;
     }
 
-    final doNotActs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotAct);
-    return doNotActs.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target));
+    return !hasBuffOnAction(battleData, BuffAction.donotAct);
   }
 
   bool canCommandCard(BattleData battleData) {
-    final doNotCommandCards = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotActCommandtype);
-
-    return canAttack(battleData) &&
-        doNotCommandCards.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target));
+    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
   }
 
   bool canNP(BattleData battleData) {
@@ -295,14 +305,7 @@ class BattleServantData {
       return false;
     }
 
-    final doNotActNps = [
-      ...collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotNoble),
-      ...collectBuffsPerAction(battleBuff.allBuffs, BuffAction.donotNobleCondMismatch)
-    ];
-
-    return canAttack(battleData) &&
-        doNotActNps.every((buff) => !buff.shouldApplyBuff(battleData, this == battleData.target)) &&
-        checkNPScript(battleData);
+    return canAttack(battleData) && hasBuffOnActions(battleData, doNotNPTypes) && checkNPScript(battleData);
   }
 
   bool checkNPScript(BattleData battleData) {
@@ -350,8 +353,11 @@ class BattleServantData {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         battleData.setCurrentBuff(buff);
-        final totalEffectiveness =
-            buffAction != BuffAction.buffRate ? getBuffValueOnAction(battleData, BuffAction.buffRate) : 0;
+        final totalEffectiveness = buffAction == BuffAction.turnendHpReduce
+            ? getBuffValueOnAction(battleData, BuffAction.funcHpReduce)
+            : buffAction != BuffAction.buffRate
+                ? getBuffValueOnAction(battleData, BuffAction.buffRate)
+                : 0;
         battleData.unsetCurrentBuff();
 
         final value = (toModifier(totalEffectiveness) * buff.param).toInt();
@@ -367,10 +373,14 @@ class BattleServantData {
   }
 
   bool hasBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
+    return hasBuffOnActions(battleData, [buffAction], commandCodeBuffs);
+  }
+
+  bool hasBuffOnActions(BattleData battleData, List<BuffAction> buffActions, [List<BuffData>? commandCodeBuffs]) {
     final isTarget = battleData.target == this;
 
     final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
-    for (BuffData buff in collectBuffsPerAction(allBuffs, buffAction)) {
+    for (BuffData buff in collectBuffsPerActions(allBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         return true;
@@ -385,14 +395,18 @@ class BattleServantData {
 
   void activateBuffOnActions(BattleData battleData, Iterable<BuffAction> buffActions,
       [List<BuffData>? commandCodeBuffs]) {
+    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    return activateBuffs(battleData, collectBuffsPerActions(allBuffs, buffActions));
+  }
+
+  void activateBuffs(BattleData battleData, Iterable<BuffData> buffs) {
     battleData.setActivator(this);
 
-    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
-    for (BuffData buff in collectBuffsPerActions(allBuffs, buffActions)) {
+    for (BuffData buff in buffs) {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skill = db.gameData.baseSkills[buff.param];
         if (skill == null) {
-          print('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff?.id}].');
+          print('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
           continue;
         }
 
@@ -402,6 +416,8 @@ class BattleServantData {
     }
 
     battleData.unsetActivator();
+
+    battleData.checkBuffStatus();
   }
 
   void removeBuffWithTrait(NiceTrait trait) {
@@ -444,6 +460,69 @@ class BattleServantData {
 
   void startOfMyTurn(BattleData battleData) {
     activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
+  }
+
+  void endOfMyTurn(BattleData battleData) {
+    if (isEnemy) {
+      final npSealed = hasBuffOnActions(battleData, doNotNPTypes);
+      if (!npSealed) {
+        npLineCount += 1;
+        npLineCount.clamp(0, niceEnemy!.chargeTurn);
+      }
+    } else {
+      final skillSealed = hasBuffOnAction(battleData, BuffAction.donotSkill);
+      if (!skillSealed) {
+        skillInfoList.forEach((skill) {
+          skill.turnEnd();
+        });
+      }
+    }
+
+    battleData.setActivator(this);
+    battleData.setTarget(this);
+    final turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
+    receiveDamage(turnEndDamage);
+    if (hp <= 0 && hasNextShift()) {
+      hp = 1;
+    }
+    final turnEndHeal = getBuffValueOnAction(battleData, BuffAction.turnendHpRegain);
+    final healGrantEff = toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
+    final healReceiveEff = toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
+    heal((turnEndHeal * healReceiveEff * healGrantEff).toInt());
+
+    final turnEndStar = getBuffValueOnAction(battleData, BuffAction.turnendStar);
+    battleData.changeStar(turnEndStar);
+
+    final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
+    changeNP(turnEndNP);
+
+    battleBuff.turnEndShort();
+
+    battleData.unsetTarget();
+    battleData.unsetActivator();
+
+    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+    activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
+
+    battleData.checkBuffStatus();
+  }
+
+  void endOfYourTurn(BattleData battleData) {
+    clearAccumulationDamage();
+
+    battleData.setActivator(this);
+    battleData.setTarget(this);
+
+    battleBuff.turnEndLong();
+
+    battleData.unsetTarget();
+    battleData.unsetActivator();
+
+    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+
+    battleData.checkBuffStatus();
   }
 
   bool activateGuts(BattleData battleData) {

@@ -15,6 +15,18 @@ class BattleBuff {
   bool checkTraits(Iterable<NiceTrait> requiredTraits) {
     return allBuffs.any((buff) => buff.checkTraits(requiredTraits));
   }
+
+  void turnEndShort() {
+    allBuffs.forEach((buff) {
+      if (buff.isShortBuff) buff.turnPass();
+    });
+  }
+
+  void turnEndLong() {
+    allBuffs.forEach((buff) {
+      if (!buff.isShortBuff) buff.turnPass();
+    });
+  }
 }
 
 class BuffData {
@@ -58,7 +70,7 @@ class BuffData {
 
   bool get isOnField => onField == 1;
 
-  BuffData(Buff this.buff, DataVals dataVals) {
+  BuffData(this.buff, DataVals dataVals) {
     count = dataVals.Count ?? -1;
     turn = dataVals.Turn ?? -1;
     param = dataVals.Value ?? 0;
@@ -70,6 +82,11 @@ class BuffData {
     ratioRangeLow = dataVals.RatioHPRangeLow ?? 0;
     irremovable = dataVals.UnSubState == 1; // need more sample
     onField = dataVals.OnField ?? 0;
+
+    if (dataVals.SkillID != null) {
+      param = dataVals.SkillID!;
+      additionalParam = dataVals.SkillLV!;
+    }
   }
 
   List<NiceTrait> get traits => buff.vals;
@@ -126,6 +143,12 @@ class BuffData {
     isUsed = false;
     if (count > 0) {
       count -= 1;
+    }
+  }
+
+  void turnPass() {
+    if (turn > 0) {
+      turn -= 1;
     }
   }
 }

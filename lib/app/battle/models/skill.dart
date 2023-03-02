@@ -23,6 +23,12 @@ class BattleSkillInfoData {
   int userCommandCodeId = -1;
 
   BattleSkillInfoData(this.rawSkill);
+
+  void turnEnd() {
+    if (chargeTurn > 0) {
+      chargeTurn -= 1;
+    }
+  }
 }
 
 void activateSkill(

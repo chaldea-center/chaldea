@@ -6,19 +6,6 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 
-final List<BuffAction> preAttackActions = [
-  BuffAction.functionAttackBefore,
-  BuffAction.functionCommandattackBefore,
-  BuffAction.functionCommandcodeattack,
-  BuffAction.functionNpattack,
-];
-
-final List<BuffAction> postAttackActions = [
-  BuffAction.functionAttack,
-  BuffAction.functionCommandattack,
-  BuffAction.functionCommandcodeattackAfter,
-];
-
 final List<BuffAction> powerMods = [
   BuffAction.damage,
   BuffAction.damageIndividuality,
@@ -46,10 +33,6 @@ bool damage(
 
   for (final target in targets) {
     battleData.setTarget(target);
-
-    // if U-OlgaMarie ever get released check what happens when she has a debuff grant CC
-    // the context of funcTarget.enemy might need to change accordingly
-    activator.activateBuffOnActions(battleData, preAttackActions, currentCard.commandCodeBuffs);
 
     final classAdvantage = db.gameData.constData.classRelation[activator.svtClass]![target.svtClass]!;
 
@@ -193,8 +176,6 @@ bool damage(
 
     battleData.changeStar(totalStars);
 
-    activator.activateBuffOnActions(battleData, postAttackActions, currentCard.commandCodeBuffs);
-    target.activateBuffOnAction(battleData, BuffAction.functionDamage);
     target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
 
     target.addAccumulationDamage(totalDamage - remainingDamage);

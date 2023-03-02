@@ -167,7 +167,9 @@ class BattleData {
       nextWave();
     }
     // start of ally turn
-    aliveActors.forEach((svt) {svt.startOfMyTurn(this);});
+    aliveActors.forEach((svt) {
+      svt.startOfMyTurn(this);
+    });
   }
 
   void nextWave() {
@@ -255,7 +257,7 @@ class BattleData {
     });
   }
 
-  void executeCombatActions(List<CombatAction> actions) {
+  void playerTurn(List<CombatAction> actions) {
     criticalStars = 0;
 
     if (actions.isEmpty) {
@@ -277,22 +279,18 @@ class BattleData {
         final action = actions[i];
         currentCard = action.cardData;
         allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
+
         if (currentCard!.isNP && action.actor.canNP(this)) {
+          action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
           action.actor.activateNP(this, extraOvercharge);
           extraOvercharge += 1;
+
+          aliveEnemies.forEach((svt) {
+            if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
+          });
         } else if (!currentCard!.isNP && action.actor.canCommandCard(this)) {
           extraOvercharge = 0;
-          setActivator(action.actor);
-
-          final List<BattleServantData> targets = [];
-          if (currentCard!.cardDetail.attackType == CommandCardAttackType.all) {
-            targets.addAll(aliveEnemies);
-          } else {
-            targets.add(targetedEnemy!);
-          }
-          damage(this, cardDamage, targets, i + 1, isTypeChain, isMightyChain, firstCardType);
-
-          unsetActivator();
+          executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
         }
 
         if (shouldRemoveDeadActors(actions, i)) {
@@ -308,24 +306,104 @@ class BattleData {
     if (isBraveChain(actions) && targetedEnemy != null) {
       final actor = actions[0].actor;
       currentCard = actor.getExtraCard();
-      setActivator(actor);
 
-      final List<BattleServantData> targets = [];
-      if (currentCard!.cardDetail.attackType == CommandCardAttackType.all) {
-        targets.addAll(aliveEnemies);
-      } else {
-        targets.add(targetedEnemy!);
-      }
-      damage(this, cardDamage, targets, 4, isTypeChain, isMightyChain, firstCardType);
+      executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+
+      currentCard = null;
 
       removeDeadActors();
-
-      unsetActivator();
-      currentCard = null;
+      checkBuffStatus();
     }
 
-    aliveEnemies.forEach((actor) {
-      actor.clearAccumulationDamage();
+    // end player turn
+    endPlayerTurn();
+
+    startEnemyTurn();
+    endEnemyTurn();
+  }
+
+  void endPlayerTurn() {
+    aliveAllies.forEach((svt) {
+      svt.endOfMyTurn(this);
+    });
+
+    aliveEnemies.forEach((svt) {
+      svt.endOfYourTurn(this);
+    });
+
+    masterSkillInfo.forEach((skill) {
+      skill.turnEnd();
+    });
+
+    removeDeadActors();
+  }
+
+  void startEnemyTurn() {
+    aliveEnemies.forEach((svt) {
+      if (svt.hp <= 0) {
+        svt.shift(this);
+      }
+      svt.startOfMyTurn(this)
+    });
+  }
+
+  void endEnemyTurn() {
+    aliveEnemies.forEach((svt) {
+      svt.endOfMyTurn(this);
+    });
+
+    aliveAllies.forEach((svt) {
+      svt.endOfYourTurn(this);
+    });
+
+    removeDeadActors();
+  }
+
+  void executePlayerCard(BattleServantData actor,
+      CommandCardData card,
+      int chainPos,
+      bool isTypeChain,
+      bool isMightyChain,
+      CardType firstCardType,) {
+    actor.activateBuffOnActions(
+        this,
+        [
+          BuffAction.functionAttackBefore,
+          BuffAction.functionCommandattackBefore,
+          BuffAction.functionCommandcodeattack,
+        ],
+        card.commandCodeBuffs);
+
+    setActivator(actor);
+
+    final List<BattleServantData> targets = [];
+    if (card.cardDetail.attackType == CommandCardAttackType.all) {
+      targets.addAll(aliveEnemies);
+    } else {
+      targets.add(targetedEnemy!);
+    }
+    damage(
+        this,
+        cardDamage,
+        targets,
+        chainPos,
+        isTypeChain,
+        isMightyChain,
+        firstCardType);
+
+    unsetActivator();
+
+    actor.activateBuffOnActions(
+        this,
+        [
+          BuffAction.functionAttack,
+          BuffAction.functionCommandattack,
+          BuffAction.functionCommandcodeattackAfter,
+        ],
+        card.commandCodeBuffs);
+
+    targets.forEach((svt) {
+      svt.activateBuffOnAction(this, BuffAction.functionDamage);
     });
   }
 
@@ -388,7 +466,10 @@ class BattleData {
   }
 
   static bool isBraveChain(List<CombatAction> actions) {
-    return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
+    return actions.length == kMaxCommand && actions
+        .map((action) => action.actor)
+        .toSet()
+        .length == 1;
   }
 }
 
