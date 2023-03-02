@@ -18,18 +18,24 @@ class EnemyData {
 }
 
 class PlayerSvtData {
-  int skillLv1 = 10;
-  int skillLv2 = 10;
-  int skillLv3 = 10;
+  int svtId;
+  List<int> skillLvs = [10, 10, 10];
+  List<int> skillStrengthenLvs = [0, 0, 0];
+  List<int> appendLvs = [0, 0, 0];
   int npLv = 5;
-  int ocLv = 1;
+  int npStrengthenLv = 0;
   int lv = -1; // -1=mlb, 90, 100, 120
-  int fou = 1000;
+  int atkFou = 1000;
+  int hpFou = 1000;
 
-  int npStrengthenLvl = 0;
+  int? ceId;
+  bool ceLimitBreak = false;
   int ceLv = 0;
+
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<int> commandCodeIds = [-1, -1, -1, -1, -1];
+
+  PlayerSvtData(this.svtId);
 }
 
 class BuffPreset {

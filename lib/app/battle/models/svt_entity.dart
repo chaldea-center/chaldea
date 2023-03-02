@@ -67,7 +67,7 @@ class BattleServantData {
   // BattleServantData.Status status
   List<int> userCommandCodeIds = [];
   List<int> svtIndividuality = [];
-  List<BattleSkillInfoData> skillInfoList = []; //BattleSkillInfoData
+  List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
   int tdId = 0;
   int tdLv = 0;
   BattleCEData? equip;
@@ -82,8 +82,7 @@ class BattleServantData {
 
   bool get selectable => battleBuff.isSelectable;
 
-  int get attack =>
-      isPlayer ? atk + playerSvtData!.fou + (equip?.craftEssence.atkGrowth[playerSvtData!.ceLv] ?? 0) : atk;
+  int get attack => isPlayer ? atk + (equip?.craftEssence.atkGrowth[playerSvtData!.ceLv - 1] ?? 0) : atk;
 
   SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
 
@@ -92,7 +91,7 @@ class BattleServantData {
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
   int get defenceNpGain =>
-      isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl].npGain.defence[playerSvtData!.npLv] : 0;
+      isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1].npGain.defence[playerSvtData!.npLv - 1] : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -107,6 +106,7 @@ class BattleServantData {
     svt
       ..niceEnemy = enemy
       ..hp = enemy.hp
+      ..maxHp = enemy.hp
       ..uniqueId = enemy.uniqueId
       ..svtId = enemy.svt.id
       ..limitCount = enemy.limit?.limitCount ?? 0
@@ -118,14 +118,51 @@ class BattleServantData {
     return svt;
   }
 
+  static BattleServantData fromPlayerSvtData(PlayerSvtData settings) {
+    final svtData = db.gameData.servantsById[settings.svtId]!;
+
+    final svt = BattleServantData();
+    svt
+      ..playerSvtData = settings
+      ..niceSvt = svtData
+      ..hp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..maxHp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..atk = svtData.atkGrowth[settings.lv - 1] + settings.atkFou;
+
+    final ceData = db.gameData.craftEssencesById[settings.ceId];
+    if (ceData != null) {
+      svt.equip = BattleCEData(ceData, settings.ceLimitBreak, settings.ceLv);
+    }
+
+    for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
+      if (svtData.groupedActiveSkills.length > i) {
+        svt.skillInfoList.add(BattleSkillInfoData(svtData.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
+          ..skillLv = settings.skillLvs[i]
+          ..strengthStatus = settings.skillStrengthenLvs[i]);
+      }
+    }
+
+    // TODO (battle): initialize commandCodes
+    return svt;
+  }
+
   void init(BattleData battleData) {
     List<NiceSkill> passives = isPlayer
-        ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive, ...niceSvt!.appendPassive.map((e) => e.skill)]
+        ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
     battleData.setActivator(this);
     for (final skill in passives) {
-      activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
+      BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
+    }
+
+    if (isPlayer) {
+      for (int i = 0; i < niceSvt!.appendPassive.length; i += 1) {
+        final appendLv = playerSvtData!.appendLvs.length > i ? playerSvtData!.appendLvs[i] : 0;
+        if (appendLv > 0) {
+          BattleSkillInfoData.activateSkill(battleData, niceSvt!.appendPassive[i].skill, appendLv);
+        }
+      }
     }
 
     equip?.activateCE(battleData);
@@ -150,6 +187,25 @@ class BattleServantData {
       builtCards.add(card);
     }
     return builtCards;
+  }
+
+  CommandCardData? getNPCard() {
+    if (isEnemy) {
+      return null;
+    }
+
+    final currentNP = getCurrentNP();
+    final cardDetail = CardDetail(
+      attackIndividuality: currentNP.individuality,
+      hitsDistribution: currentNP.npDistribution,
+      attackType: currentNP.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+      attackNpRate: currentNP.npGain.np[playerSvtData!.npLv - 1],
+    );
+
+    return CommandCardData(currentNP.card, cardDetail)
+      ..isNP = true
+      ..npGain = currentNP.npGain.np[playerSvtData!.npLv - 1]
+      ..traits = currentNP.individuality;
   }
 
   CommandCardData? getExtraCard() {
@@ -189,13 +245,13 @@ class BattleServantData {
     }
     switch (cardType) {
       case CardType.buster:
-        return getCurrentNP().npGain.buster[playerSvtData!.npLv];
+        return getCurrentNP().npGain.buster[playerSvtData!.npLv - 1];
       case CardType.arts:
-        return getCurrentNP().npGain.arts[playerSvtData!.npLv];
+        return getCurrentNP().npGain.arts[playerSvtData!.npLv - 1];
       case CardType.quick:
-        return getCurrentNP().npGain.quick[playerSvtData!.npLv];
+        return getCurrentNP().npGain.quick[playerSvtData!.npLv - 1];
       case CardType.extra:
-        return getCurrentNP().npGain.extra[playerSvtData!.npLv];
+        return getCurrentNP().npGain.extra[playerSvtData!.npLv - 1];
       default:
         return 0;
     }
@@ -287,6 +343,17 @@ class BattleServantData {
     return collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes).isNotEmpty;
   }
 
+  bool canActivateSkill(BattleData battleData, int skillIndex) {
+    // TODO (battle): skill specific check
+    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotSkill) && skillInfoList[skillIndex].chargeTurn == 0;
+  }
+
+  void activateSkill(BattleData battleData, int skillIndex) {
+    battleData.setActivator(this);
+    skillInfoList[skillIndex].activate(battleData);
+    battleData.unsetActivator();
+  }
+
   bool canAttack(BattleData battleData) {
     if (hp <= 0) {
       return false;
@@ -310,7 +377,7 @@ class BattleServantData {
 
   bool checkNPScript(BattleData battleData) {
     if (isPlayer) {
-      final currentNP = niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl];
+      final currentNP = niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1];
       // TODO (battle): check script
     } else {
       final currentNP = niceEnemy!.noblePhantasm;
@@ -319,7 +386,9 @@ class BattleServantData {
   }
 
   NiceTd getCurrentNP() {
-    return isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLvl] : niceEnemy!.noblePhantasm.noblePhantasm!;
+    return isPlayer
+        ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1]
+        : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 
   void activateNP(BattleData battleData, int extraOverchargeLvl) {
@@ -410,7 +479,7 @@ class BattleServantData {
           continue;
         }
 
-        activateSkill(battleData, skill, buff.additionalParam);
+        BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }
     }
