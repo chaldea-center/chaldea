@@ -112,11 +112,11 @@ List<BattleServantData> acquireFunctionTarget(
 
   bool isAlly = activator?.isPlayer ?? true;
   List<BattleServantData> backupAllies = isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
-  List<BattleServantData> aliveAllies = isAlly ? battleData.aliveAllies : battleData.aliveEnemies;
+  List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
   BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
 
   List<BattleServantData> backupEnemies = isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
-  List<BattleServantData> aliveEnemies = isAlly ? battleData.aliveEnemies : battleData.aliveAllies;
+  List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
   BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
 
   switch (function.funcTargetType) {

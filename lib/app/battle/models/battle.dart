@@ -43,11 +43,11 @@ class BattleData {
 
   BattleServantData? get targetedAlly => onFieldAllyServants[allyTargetIndex];
 
-  List<BattleServantData> get aliveEnemies => _getNonnull(onFieldEnemies);
+  List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
-  List<BattleServantData> get aliveAllies => _getNonnull(onFieldAllyServants);
+  List<BattleServantData> get nonnullAllies => _getNonnull(onFieldAllyServants);
 
-  List<BattleServantData> get aliveActors => [...aliveAllies, ...aliveEnemies];
+  List<BattleServantData> get nonnullActors => [...nonnullAllies, ...nonnullEnemies];
 
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
 
@@ -152,7 +152,7 @@ class BattleData {
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
 
-    aliveActors.forEach((element) {
+    nonnullActors.forEach((element) {
       element.enterField(this);
     });
 
@@ -163,11 +163,13 @@ class BattleData {
     turnCount += 1;
     totalTurnCount += 1;
 
-    if (enemyDataList.isEmpty && onFieldEnemies.every((enemy) => enemy == null)) {
+    replenishActors();
+
+    if (enemyDataList.isEmpty && nonnullEnemies.isEmpty) {
       nextWave();
     }
     // start of ally turn
-    aliveActors.forEach((svt) {
+    nonnullAllies.forEach((svt) {
       svt.startOfMyTurn(this);
     });
   }
@@ -180,6 +182,37 @@ class BattleData {
     enemyDataList.forEach((enemy) {
       enemy?.init(this);
     });
+  }
+
+  void replenishActors() {
+    final List<BattleServantData> newActors = [
+      ..._populateListAndReturnNewActors(onFieldEnemies, enemyDataList),
+      ..._populateListAndReturnNewActors(onFieldAllyServants, playerDataList)
+    ];
+
+    newActors.forEach((actor) {
+      actor.enterField(this);
+    });
+  }
+
+  static List<BattleServantData> _populateListAndReturnNewActors(
+    List<BattleServantData?> toList,
+    List<BattleServantData?> fromList,
+  ) {
+    final List<BattleServantData> newActors = [];
+    for (int i = 0; i < toList.length; i += 1) {
+      if (toList[i] == null && fromList.isNotEmpty) {
+        BattleServantData? nextEnemy;
+        while (fromList.isNotEmpty && nextEnemy == null) {
+          nextEnemy = fromList.removeAt(0);
+        }
+        if (nextEnemy != null) {
+          toList[i] = nextEnemy;
+          newActors.add(nextEnemy);
+        }
+      }
+    }
+    return newActors;
   }
 
   void _fetchWaveEnemies() {
@@ -247,12 +280,12 @@ class BattleData {
   }
 
   bool isActorOnField(int actorUniqueId) {
-    return aliveAllies.any((svt) => svt.uniqueId == actorUniqueId) ||
-        aliveEnemies.any((svt) => svt.uniqueId == actorUniqueId);
+    return nonnullAllies.any((svt) => svt.uniqueId == actorUniqueId) ||
+        nonnullEnemies.any((svt) => svt.uniqueId == actorUniqueId);
   }
 
   void checkBuffStatus() {
-    aliveActors.forEach((svt) {
+    nonnullActors.forEach((svt) {
       svt.checkBuffStatus();
     });
   }
@@ -275,7 +308,7 @@ class BattleData {
 
     int extraOvercharge = 0;
     for (int i = 0; i < actions.length; i += 1) {
-      if (aliveEnemies.isNotEmpty) {
+      if (nonnullEnemies.isNotEmpty) {
         final action = actions[i];
         currentCard = action.cardData;
         allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
@@ -285,7 +318,7 @@ class BattleData {
           action.actor.activateNP(this, extraOvercharge);
           extraOvercharge += 1;
 
-          aliveEnemies.forEach((svt) {
+          nonnullEnemies.forEach((svt) {
             if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
           });
         } else if (!currentCard!.isNP && action.actor.canCommandCard(this)) {
@@ -320,14 +353,16 @@ class BattleData {
 
     startEnemyTurn();
     endEnemyTurn();
+
+    nextTurn();
   }
 
   void endPlayerTurn() {
-    aliveAllies.forEach((svt) {
+    nonnullAllies.forEach((svt) {
       svt.endOfMyTurn(this);
     });
 
-    aliveEnemies.forEach((svt) {
+    nonnullEnemies.forEach((svt) {
       svt.endOfYourTurn(this);
     });
 
@@ -339,32 +374,34 @@ class BattleData {
   }
 
   void startEnemyTurn() {
-    aliveEnemies.forEach((svt) {
+    nonnullEnemies.forEach((svt) {
       if (svt.hp <= 0) {
         svt.shift(this);
       }
-      svt.startOfMyTurn(this)
+      svt.startOfMyTurn(this);
     });
   }
 
   void endEnemyTurn() {
-    aliveEnemies.forEach((svt) {
+    nonnullEnemies.forEach((svt) {
       svt.endOfMyTurn(this);
     });
 
-    aliveAllies.forEach((svt) {
+    nonnullAllies.forEach((svt) {
       svt.endOfYourTurn(this);
     });
 
     removeDeadActors();
   }
 
-  void executePlayerCard(BattleServantData actor,
-      CommandCardData card,
-      int chainPos,
-      bool isTypeChain,
-      bool isMightyChain,
-      CardType firstCardType,) {
+  void executePlayerCard(
+    BattleServantData actor,
+    CommandCardData card,
+    int chainPos,
+    bool isTypeChain,
+    bool isMightyChain,
+    CardType firstCardType,
+  ) {
     actor.activateBuffOnActions(
         this,
         [
@@ -378,18 +415,11 @@ class BattleData {
 
     final List<BattleServantData> targets = [];
     if (card.cardDetail.attackType == CommandCardAttackType.all) {
-      targets.addAll(aliveEnemies);
+      targets.addAll(nonnullEnemies);
     } else {
       targets.add(targetedEnemy!);
     }
-    damage(
-        this,
-        cardDamage,
-        targets,
-        chainPos,
-        isTypeChain,
-        isMightyChain,
-        firstCardType);
+    damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
     unsetActivator();
 
@@ -466,10 +496,7 @@ class BattleData {
   }
 
   static bool isBraveChain(List<CombatAction> actions) {
-    return actions.length == kMaxCommand && actions
-        .map((action) => action.actor)
-        .toSet()
-        .length == 1;
+    return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
   }
 }
 
