@@ -7,6 +7,9 @@ class BattleCEData {
   bool isLimitBreak;
   int level;
 
+  int get atk => craftEssence.atkGrowth[level - 1];
+  int get hp => craftEssence.hpGrowth[level - 1];
+
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
 
   void activateCE(BattleData battleData) {

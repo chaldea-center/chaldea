@@ -82,7 +82,7 @@ class BattleServantData {
 
   bool get selectable => battleBuff.isSelectable;
 
-  int get attack => isPlayer ? atk + (equip?.craftEssence.atkGrowth[playerSvtData!.ceLv - 1] ?? 0) : atk;
+  int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
 
   SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
 
@@ -132,6 +132,8 @@ class BattleServantData {
     final ceData = db.gameData.craftEssencesById[settings.ceId];
     if (ceData != null) {
       svt.equip = BattleCEData(ceData, settings.ceLimitBreak, settings.ceLv);
+      svt.hp += svt.equip!.hp;
+      svt.maxHp += svt.equip!.hp;
     }
 
     for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
@@ -416,7 +418,7 @@ class BattleServantData {
 
     final actionDetails = db.gameData.constData.buffActions[buffAction];
 
-    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
 
     for (BuffData buff in collectBuffsPerAction(allBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
@@ -448,7 +450,7 @@ class BattleServantData {
   bool hasBuffOnActions(BattleData battleData, List<BuffAction> buffActions, [List<BuffData>? commandCodeBuffs]) {
     final isTarget = battleData.target == this;
 
-    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
     for (BuffData buff in collectBuffsPerActions(allBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
@@ -464,7 +466,7 @@ class BattleServantData {
 
   void activateBuffOnActions(BattleData battleData, Iterable<BuffAction> buffActions,
       [List<BuffData>? commandCodeBuffs]) {
-    final allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
     return activateBuffs(battleData, collectBuffsPerActions(allBuffs, buffActions));
   }
 

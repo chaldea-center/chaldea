@@ -20,10 +20,10 @@ class EnemyData {
 class PlayerSvtData {
   int svtId;
   List<int> skillLvs = [10, 10, 10];
-  List<int> skillStrengthenLvs = [0, 0, 0];
+  List<int> skillStrengthenLvs = [1, 1, 1];
   List<int> appendLvs = [0, 0, 0];
   int npLv = 5;
-  int npStrengthenLv = 0;
+  int npStrengthenLv = 1;
   int lv = -1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;

@@ -1,6 +1,7 @@
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
+import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -39,9 +40,9 @@ class BattleData {
   int enemyTargetIndex = 0;
   int allyTargetIndex = 0;
 
-  BattleServantData? get targetedEnemy => onFieldEnemies[enemyTargetIndex];
+  BattleServantData? get targetedEnemy => onFieldEnemies.length > enemyTargetIndex ? onFieldEnemies[enemyTargetIndex] : null;
 
-  BattleServantData? get targetedAlly => onFieldAllyServants[allyTargetIndex];
+  BattleServantData? get targetedAlly => onFieldAllyServants.length > allyTargetIndex ? onFieldAllyServants[allyTargetIndex] : null;
 
   List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
@@ -87,6 +88,7 @@ class BattleData {
   int lastActId = 0;
   int prevTargetId = 0;
   bool previousFunctionResult = true;
+  int uniqueIndex = 1;
 
   int fixedRandom = db.gameData.constData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
@@ -127,7 +129,7 @@ class BattleData {
     _target.removeLast();
   }
 
-  void init(QuestPhase quest, List<BattleServantData?> playerParty, MysticCode? selectedMC) {
+  void init(QuestPhase quest, List<PlayerSvtData?> playerSettings, MysticCode? selectedMC) {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -136,18 +138,27 @@ class BattleData {
     lastActId = 0;
     prevTargetId = 0;
 
-    playerDataList = playerParty.map((e) => e?.copy()).toList();
+    playerDataList = playerSettings
+        .map((svtSetting) => svtSetting == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
+        .toList();
     _fetchWaveEnemies();
 
     playerDataList.forEach((svt) {
       svt?.init(this);
+      svt?.uniqueId = uniqueIndex;
+      uniqueIndex += 1;
     });
     enemyDataList.forEach((enemy) {
       enemy?.init(this);
+      enemy?.uniqueId = uniqueIndex;
+      uniqueIndex += 1;
     });
 
     mysticCode = selectedMC;
     mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
+    if (mysticCode != null) {
+      masterSkillInfo = mysticCode!.skills.map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv).toList();
+    }
 
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
@@ -288,6 +299,23 @@ class BattleData {
     nonnullActors.forEach((svt) {
       svt.checkBuffStatus();
     });
+  }
+
+  bool canUseMysticCodeSkill(int skillIndex) {
+    if (masterSkillInfo.length <= skillIndex) {
+      return false;
+    }
+
+    // TODO (battle): condition checking
+    return masterSkillInfo[skillIndex].chargeTurn == 0;
+  }
+
+  void activateMysticCodeSKill(int skillIndex) {
+    if (masterSkillInfo.length <= skillIndex) {
+      return;
+    }
+
+    masterSkillInfo[skillIndex].activate(this);
   }
 
   void playerTurn(List<CombatAction> actions) {
