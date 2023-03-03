@@ -7,6 +7,7 @@ import 'package:chaldea/app/battle/models/craft_essence_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/basic.dart';
 
 import 'buff.dart';
 import 'card_dmg.dart';
@@ -46,7 +47,7 @@ class BattleServantData {
   int maxHp = 0;
   int maxActNum = 0;
   int np = 0;
-  int npLineCount = 3;
+  int npLineCount = 0;
   int lineMaxNp = 100;
   int tmpNp = 0;
   int equipAtk = 0;
@@ -374,7 +375,7 @@ class BattleServantData {
       return false;
     }
 
-    return canAttack(battleData) && hasBuffOnActions(battleData, doNotNPTypes) && checkNPScript(battleData);
+    return canAttack(battleData) && !hasBuffOnActions(battleData, doNotNPTypes) && checkNPScript(battleData);
   }
 
   bool checkNPScript(BattleData battleData) {
@@ -412,11 +413,10 @@ class BattleServantData {
   }
 
   int getBuffValueOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
+    final actionDetails = db.gameData.constData.buffActions[buffAction];
     final isTarget = battleData.target == this;
     var totalVal = 0;
-    var maxRate = 0;
-
-    final actionDetails = db.gameData.constData.buffActions[buffAction];
+    var maxRate = Maths.min(actionDetails!.maxRate);
 
     final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
 
@@ -432,7 +432,7 @@ class BattleServantData {
         battleData.unsetCurrentBuff();
 
         final value = (toModifier(totalEffectiveness) * buff.param).toInt();
-        if (actionDetails!.plusTypes.contains(buff.buff.type)) {
+        if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
         } else {
           totalVal -= value;
@@ -440,7 +440,7 @@ class BattleServantData {
         maxRate = max(maxRate, buff.buff.maxRate);
       }
     }
-    return capBuffValue(actionDetails!, totalVal, maxRate);
+    return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
   bool hasBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
@@ -552,20 +552,24 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.setTarget(this);
     final turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
-    receiveDamage(turnEndDamage);
+    if (turnEndDamage != 0) receiveDamage(turnEndDamage);
+
     if (hp <= 0 && hasNextShift()) {
       hp = 1;
     }
+
     final turnEndHeal = getBuffValueOnAction(battleData, BuffAction.turnendHpRegain);
-    final healGrantEff = toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
-    final healReceiveEff = toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
-    heal((turnEndHeal * healReceiveEff * healGrantEff).toInt());
+    if (turnEndHeal != 0) {
+      final healGrantEff = toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
+      final healReceiveEff = toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
+      heal((turnEndHeal * healReceiveEff * healGrantEff).toInt());
+    }
 
     final turnEndStar = getBuffValueOnAction(battleData, BuffAction.turnendStar);
-    battleData.changeStar(turnEndStar);
+    if (turnEndStar != 0) battleData.changeStar(turnEndStar);
 
     final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
-    changeNP(turnEndNP);
+    if (turnEndNP != 0) changeNP(turnEndNP);
 
     battleBuff.turnEndShort();
 

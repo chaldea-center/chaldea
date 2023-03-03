@@ -32,10 +32,7 @@ int calculateDamage(final DamageParameters param) {
   final chainPos = param.isNp ? 1 : param.chainPos;
   final cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
 
-  if (!constData.cardInfo.containsKey(param.firstCardType)) {
-    throw 'Invalid first card type: ${param.firstCardType}';
-  }
-  final firstCardBonus = param.isNp
+  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
           ? toModifier(constData.cardInfo[CardType.buster]![1]!.addAtk)
@@ -106,10 +103,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final chainPos = param.isNp ? 1 : param.chainPos;
   final cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
 
-  if (!constData.cardInfo.containsKey(param.firstCardType)) {
-    throw 'Invalid first card type: ${param.firstCardType}';
-  }
-  final firstCardBonus = param.isNp
+  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
           ? toModifier(constData.cardInfo[CardType.arts]![1]!.addTdGauge)
@@ -127,7 +121,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   float.setFloat32(0, firstCardBonus + float.getFloat32(0));
   final cardGain = float.getFloat32(0);
 
-  float.setFloat32(0, 1 + npGainBuff);
+  float.setFloat32(0, npGainBuff);
   final npBonusGain = float.getFloat32(0);
 
   final defenderNpRate = toModifier(param.defenderNpRate);
@@ -153,10 +147,10 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
   final defenseNpGainBuff = toModifier(param.defenseNpGainBuff);
 
   ByteData float = ByteData(4);
-  float.setFloat32(0, 1 + npGainBuff);
+  float.setFloat32(0, npGainBuff);
   final npBonusGain = float.getFloat32(0);
 
-  float.setFloat32(0, 1 + defenseNpGainBuff);
+  float.setFloat32(0, defenseNpGainBuff);
   final defNpBonusGain = float.getFloat32(0);
 
   float.setFloat32(0, param.defenderNpCharge * attackerNpRate);
@@ -180,10 +174,7 @@ int calculateStar(final StarParameters param) {
   final chainPos = param.isNp ? 1 : param.chainPos;
   final cardCorrection = constData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
 
-  if (!constData.cardInfo.containsKey(param.firstCardType)) {
-    throw 'Invalid first card type: ${param.firstCardType}';
-  }
-  final firstCardBonus = param.isNp
+  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
           ? constData.cardInfo[CardType.quick]![1]!.addCritical
@@ -234,10 +225,10 @@ class DamageParameters {
   bool isTypeChain = false;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0; // cardMod = actor.commandAtk
-  int cardResist = 0; // cardMod = target.commandDef
-  int attackBuff = 0; // atkMod = actor.atk
-  int defenseBuff = 0; // defMod = target.defence or target.defencePierce
+  int cardBuff = 1000; // cardMod = actor.commandAtk
+  int cardResist = 1000; // cardMod = target.commandDef
+  int attackBuff = 1000; // atkMod = actor.atk
+  int defenseBuff = 1000; // defMod = target.defence or target.defencePierce
   int specificAttackBuff = 0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
   int specificDefenseBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
   int criticalDamageBuff = 0; // critDamageMod = actor.criticalDamage
@@ -326,9 +317,9 @@ class AttackNpGainParameters {
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0; // cardMod = atkSvt.commandNpAtk
-  int cardResist = 0; // cardMod = target.commandNpDef
-  int npGainBuff = 0; // npChargeRateMod = atkSvt.dropNp
+  int cardBuff = 1000; // cardMod = atkSvt.commandNpAtk
+  int cardResist = 1000; // cardMod = target.commandNpDef
+  int npGainBuff = 1000; // npChargeRateMod = atkSvt.dropNp
   bool isOverkill = false;
 
   @override
@@ -369,8 +360,8 @@ class AttackNpGainParameters {
 class DefendNpGainParameters {
   int defenderNpCharge = 0;
   int attackerNpRate = 0;
-  int npGainBuff = 0; // npChargeRateMod = defSvt.dropNp
-  int defenseNpGainBuff = 0; // defensiveChargeRateMod = defSvt.dropNpDamage
+  int npGainBuff = 1000; // npChargeRateMod = defSvt.dropNp
+  int defenseNpGainBuff = 1000; // defensiveChargeRateMod = defSvt.dropNpDamage
   bool isOverkill = false;
 
   @override
@@ -403,8 +394,8 @@ class StarParameters {
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
   bool isCritical = false;
-  int cardBuff = 0; // cardMod = atkSvt.commandStarAtk
-  int cardResist = 0; // cardMod = defSvt.commandStarDef
+  int cardBuff = 1000; // cardMod = atkSvt.commandStarAtk
+  int cardResist = 1000; // cardMod = defSvt.commandStarDef
   int starGenBuff = 0; // starDropMod = atkSvt.criticalPoint
   int enemyStarGenResist = 0; // enemyStarDropMod = defSvt.criticalStarDamageTaken
   bool isOverkill = false;

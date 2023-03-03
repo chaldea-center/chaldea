@@ -78,7 +78,7 @@ class BattleData {
   // int lockTargetId = -1;
   // ComboData comboData;
   // List commandCodeInfos = []; //CommandCodeInfo
-  int criticalStars = 0;
+  double criticalStars = 0;
 
   // int addCriticalStars = 0;
   // int subCriticalCount = 0;
@@ -123,7 +123,7 @@ class BattleData {
     _target.add(svt);
   }
 
-  BattleServantData get target => _target.last;
+  BattleServantData? get target => _target.isNotEmpty ? _target.last : null;
 
   void unsetTarget() {
     _target.removeLast();
@@ -162,6 +162,8 @@ class BattleData {
 
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
+    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
     nonnullActors.forEach((element) {
       element.enterField(this);
@@ -268,7 +270,7 @@ class BattleData {
     return results;
   }
 
-  void changeStar(int change) {
+  void changeStar(num change) {
     criticalStars += change;
     criticalStars.clamp(0, kValidTotalStarMax);
   }
@@ -279,12 +281,20 @@ class BattleData {
   }
 
   bool checkTargetTraits(Iterable<NiceTrait> requiredTraits) {
-    return target.checkTraits(requiredTraits) ||
+    if (requiredTraits.isEmpty) {
+      return true;
+    }
+
+    return (target?.checkTraits(requiredTraits) ?? false) ||
         (currentBuff?.checkTraits(requiredTraits) ?? false) ||
         (currentCard?.checkTraits(requiredTraits) ?? false);
   }
 
   bool checkActivatorTraits(Iterable<NiceTrait> requiredTraits) {
+    if (requiredTraits.isEmpty) {
+      return true;
+    }
+
     return (activator?.checkTraits(requiredTraits) ?? false) ||
         (currentBuff?.checkTraits(requiredTraits) ?? false) ||
         (currentCard?.checkTraits(requiredTraits) ?? false);
@@ -299,6 +309,30 @@ class BattleData {
     nonnullActors.forEach((svt) {
       svt.checkBuffStatus();
     });
+  }
+
+  bool canUseNp(int servantIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return false;
+    }
+
+    return onFieldAllyServants[servantIndex]!.canNP(this);
+  }
+
+  bool canUseSkill(int servantIndex, int skillIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return false;
+    }
+
+    return onFieldAllyServants[servantIndex]!.canActivateSkill(this, skillIndex);
+  }
+
+  void activateSvtSkill(int servantIndex, int skillIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return;
+    }
+
+    onFieldAllyServants[servantIndex]!.activateSkill(this, skillIndex);
   }
 
   bool canUseMysticCodeSkill(int skillIndex) {
@@ -327,7 +361,7 @@ class BattleData {
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
     final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
-    bool isTypeChain = cardTypesSet.length == 1;
+    bool isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
     bool isMightyChain = cardTypesSet.length == 3;
     CardType firstCardType = actions[0].cardData.cardType;
     if (isTypeChain) {
@@ -519,7 +553,7 @@ class BattleData {
       final nextAction = actions[index + 1];
       return nextAction.cardData.isNP || nextAction.actor != action.actor;
     } else {
-      return isBraveChain(actions);
+      return !isBraveChain(actions);
     }
   }
 

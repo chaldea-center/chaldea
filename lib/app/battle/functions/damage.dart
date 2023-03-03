@@ -34,7 +34,7 @@ bool damage(
   for (final target in targets) {
     battleData.setTarget(target);
 
-    final classAdvantage = db.gameData.constData.classRelation[activator.svtClass]![target.svtClass]!;
+    final classAdvantage = db.gameData.constData.classRelation[activator.svtClass.id]![target.svtClass.id]!;
 
     final damageParameters = DamageParameters()
       ..attack = activator.attack + currentCard.cardStrengthen
@@ -118,6 +118,12 @@ bool damage(
         ..specificDefenseBuff = target.getBuffValueOnAction(battleData, BuffAction.selfdamage)
         ..percentDefenseBuff = target.getBuffValueOnAction(battleData, BuffAction.specialdefence)
         ..damageReductionBuff = target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
+
+      atkNpParameters.cardResist = target.getBuffValueOnAction(battleData, BuffAction.commandNpDef);
+
+      starParameters
+          ..cardResist = target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
+          ..enemyStarGenResist = target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
     }
 
     final totalDamage = calculateDamage(damageParameters);
@@ -174,7 +180,7 @@ bool damage(
       }
     }
 
-    battleData.changeStar(totalStars);
+    battleData.changeStar(toModifier(totalStars));
 
     target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
 

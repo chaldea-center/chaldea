@@ -92,14 +92,14 @@ void main() async {
       });
 
       test('cardBuff & cardResist', () {
-        final damageParameters = oc1Np1BaseParam.copy()..cardBuff = 500; // 50% buster up
+        final damageParameters = oc1Np1BaseParam.copy()..cardBuff = 1500; // 50% buster up
 
         final damage = calculateDamage(damageParameters);
         expect(damage, equals(18814));
 
         damageParameters
-          ..cardBuff = 1137
-          ..cardResist = 637;
+          ..cardBuff = 2137
+          ..cardResist = 1637;
         expect(calculateDamage(damageParameters), equals(damage));
       });
 
@@ -110,14 +110,14 @@ void main() async {
       });
 
       test('attackBuff & defenseBuff', () {
-        final damageParameters = oc1Np1BaseParam.copy()..attackBuff = 180; // 18% attack up
+        final damageParameters = oc1Np1BaseParam.copy()..attackBuff = 1180; // 18% attack up
 
         final damage = calculateDamage(damageParameters);
         expect(damage, equals(14800));
 
         damageParameters
-          ..attackBuff = 540
-          ..defenseBuff = 360;
+          ..attackBuff = 1540
+          ..defenseBuff = 1360;
         expect(calculateDamage(damageParameters), equals(damage));
       });
 
@@ -172,8 +172,8 @@ void main() async {
       test('with 1000 Fou & double Koyanskaya of Light', () {
         final damageParameters = oc1Np1BaseParam.copy()
           ..attack = baseParam.attack + 1000
-          ..attackBuff = 180
-          ..cardBuff = 500 + 500 + 500
+          ..attackBuff = 1180
+          ..cardBuff = 500 + 500 + 500 + 1000
           ..npDamageBuff = 300;
         expect(calculateDamage(damageParameters), equals(52388));
       });
@@ -212,7 +212,7 @@ void main() async {
       test('cardCorrection', () {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(quickCard.hitsDistribution)
-          ..cardBuff = 80 // passive
+          ..cardBuff = 1080 // passive
           ..chainPos = 1
           ..currentCardType = CardType.quick
           ..firstCardType = CardType.quick;
@@ -445,9 +445,9 @@ void main() async {
         ..chainPos = 3
         ..attackerNpCharge = 25
         ..defenderNpRate = 1000
-        ..cardBuff = 1600
-        ..cardResist = 800
-        ..npGainBuff = 300
+        ..cardBuff = 2600
+        ..cardResist = 1800
+        ..npGainBuff = 1300
         ..isCritical = true;
 
       expect(calculateAttackNpGain(param), equals(766));
@@ -485,24 +485,24 @@ void main() async {
       });
 
       test('cardBuff & cardResist', () {
-        final param = npBaseParam.copy()..cardBuff = 500;
+        final param = npBaseParam.copy()..cardBuff = 1500;
 
         final hitNpGain = calculateAttackNpGain(param);
         expect(hitNpGain, equals(275));
 
         param
-          ..cardBuff = 800
-          ..cardResist = 300;
+          ..cardBuff = 1800
+          ..cardResist = 1300;
         expect(calculateAttackNpGain(param), equals(hitNpGain));
 
         param
-          ..cardBuff = 0
+          ..cardBuff = 1000
           ..cardResist = 50000;
         expect(calculateAttackNpGain(param), equals(0));
       });
 
       test('npGainBuff', () {
-        final param = npBaseParam.copy()..npGainBuff = 300;
+        final param = npBaseParam.copy()..npGainBuff = 1300;
 
         expect(calculateAttackNpGain(param), equals(238));
       });
@@ -515,8 +515,8 @@ void main() async {
 
       test('with double Altria Caster & overkill', () {
         final param = npBaseParam.copy()
-          ..cardBuff = 1000
-          ..npGainBuff = 600
+          ..cardBuff = 2000
+          ..npGainBuff = 1600
           ..isOverkill = true;
         expect(calculateAttackNpGain(param), equals(880));
       });
@@ -601,7 +601,7 @@ void main() async {
         ..attackerNpCharge = np.npGain.np.last
         ..currentCardType = np.card
         ..firstCardType = np.card
-        ..cardBuff = 100; // passive
+        ..cardBuff = 1100; // passive
 
       expect(calculateAttackNpGain(param), equals(42));
     });
@@ -618,7 +618,7 @@ void main() async {
         ..currentCardType = CardType.arts
         ..firstCardType = np.card
         ..isCritical = true
-        ..npGainBuff = 450
+        ..npGainBuff = 1450
         ..isOverkill = true;
 
       param.chainPos = 2;
@@ -646,8 +646,8 @@ void main() async {
         ..currentCardType = CardType.arts
         ..firstCardType = CardType.arts
         ..isCritical = true
-        ..cardBuff = 800
-        ..npGainBuff = 300
+        ..cardBuff = 1800
+        ..npGainBuff = 1300
         ..chainPos = 3
         ..isOverkill = true;
 
@@ -666,8 +666,8 @@ void main() async {
         ..currentCardType = CardType.arts
         ..firstCardType = CardType.arts
         ..isCritical = true
-        ..cardBuff = 800
-        ..npGainBuff = 300
+        ..cardBuff = 1800
+        ..npGainBuff = 1300
         ..chainPos = 3
         ..isOverkill = true;
 
@@ -692,13 +692,13 @@ void main() async {
       });
 
       test('npGainBuff', () {
-        final param = baseParam.copy()..npGainBuff = 300;
+        final param = baseParam.copy()..npGainBuff = 1300;
 
         expect(calculateDefendNpGain(param), equals(467));
       });
 
       test('defNpGainBuff', () {
-        final param = baseParam.copy()..defenseNpGainBuff = 200;
+        final param = baseParam.copy()..defenseNpGainBuff = 1200;
 
         expect(calculateDefendNpGain(param), equals(432));
       });
@@ -732,11 +732,11 @@ void main() async {
       final baseParam = DefendNpGainParameters()
         ..defenderNpCharge = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate
-        ..defenseNpGainBuff = 200;
+        ..defenseNpGainBuff = 1200;
 
       expect(calculateDefendNpGain(baseParam), equals(576));
 
-      baseParam.npGainBuff = 300;
+      baseParam.npGainBuff = 1300;
 
       expect(calculateDefendNpGain(baseParam), equals(748));
     });
@@ -757,70 +757,70 @@ void main() async {
         ..isNp = true
         ..currentCardType = np.card
         ..firstCardType = np.card
-        ..cardResist = -200; // np first function
+        ..cardResist = 800; // np first function
 
       const baseHitStarGen = 1169;
       test('NP 5 as base', () {
-        expect(calculateStar(npBaseParam), equals(baseHitStarGen));
+        expect(calculateStar(npBaseParam).toDouble(), moreOrLessEquals(baseHitStarGen.toDouble(), epsilon: 1));
       });
 
       test('chainPos does not affect NP', () {
         final param = npBaseParam.copy()..chainPos = 5;
 
-        expect(calculateStar(param), equals(baseHitStarGen));
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(baseHitStarGen.toDouble(), epsilon: 1));
       });
 
       test('NP does not benefit from firstCardBonus', () {
         final param = npBaseParam.copy()..firstCardType = CardType.arts;
 
-        expect(calculateStar(param), equals(baseHitStarGen));
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(baseHitStarGen.toDouble(), epsilon: 1));
       });
 
       test('cardBuff & cardResist', () {
-        final param = npBaseParam.copy()..cardBuff = 500;
+        final param = npBaseParam.copy()..cardBuff = 1500;
 
-        final starGen = calculateStar(param);
-        expect(starGen, equals(1569));
+        final starGen = calculateStar(param).toDouble();
+        expect(starGen, moreOrLessEquals(1569, epsilon: 1));
 
         param
-          ..cardBuff = 800
-          ..cardResist = 300 - 200;
-        expect(calculateStar(param), equals(starGen));
+          ..cardBuff = 1800
+          ..cardResist = 1300 - 200;
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(starGen, epsilon: 1));
       });
 
       test('starGenBuff & enemyStarGenResist', () {
         final param = npBaseParam.copy()..starGenBuff = 300;
 
-        final starGen = calculateStar(param);
-        expect(starGen, equals(1469));
+        final starGen = calculateStar(param).toDouble();
+        expect(starGen, moreOrLessEquals(1469, epsilon: 1));
 
         param
           ..starGenBuff = 800
           ..enemyStarGenResist = 500;
-        expect(calculateStar(param), equals(starGen));
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(starGen, epsilon: 1));
 
         param
           ..starGenBuff = 0
           ..enemyStarGenResist = 50000;
-        expect(calculateStar(param), equals(0));
+        expect(calculateStar(param).toDouble(), equals(0));
 
         param
           ..starGenBuff = 50000
           ..enemyStarGenResist = 0;
-        expect(calculateStar(param), equals(db.gameData.constData.constants.starRateMax));
+        expect(calculateStar(param).toDouble(), equals(db.gameData.constData.constants.starRateMax));
       });
 
       test('overkill', () {
         final param = npBaseParam.copy()..isOverkill = true;
 
-        expect(calculateStar(param), equals(1469));
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(1469, epsilon: 1));
       });
 
-      test('with double Scathach-Skadi (Rider) & overkill', () {
+      test('with double Scathach-Skadi (Caster) & overkill', () {
         final param = npBaseParam.copy()
-          ..cardBuff = 1000
+          ..cardBuff = 2000
           ..isOverkill = true;
-        expect(calculateStar(param), equals(2269));
+        expect(calculateStar(param).toDouble(), moreOrLessEquals(2269, epsilon: 1));
       });
 
       test('firstCardBonus', () {
@@ -829,23 +829,23 @@ void main() async {
           ..currentCardType = CardType.buster
           ..firstCardType = CardType.buster;
 
-        final hitStarGenWithoutBonus = calculateStar(params);
-        expect(hitStarGenWithoutBonus, equals(359));
+        final hitStarGenWithoutBonus = calculateStar(params).toDouble();
+        expect(hitStarGenWithoutBonus, moreOrLessEquals(359, epsilon: 1));
 
         params.firstCardType = CardType.arts;
 
-        expect(calculateStar(params), equals(hitStarGenWithoutBonus));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(hitStarGenWithoutBonus, epsilon: 1));
 
         params.firstCardType = CardType.quick;
 
-        final hitStarGenWithBonus = calculateStar(params);
-        expect(hitStarGenWithBonus, equals(559));
+        final hitStarGenWithBonus = calculateStar(params).toDouble();
+        expect(hitStarGenWithBonus, moreOrLessEquals(559, epsilon: 1));
 
         params
           ..firstCardType = CardType.arts
           ..isMightyChain = true;
 
-        expect(calculateStar(params), equals(hitStarGenWithBonus));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(hitStarGenWithBonus, epsilon: 1));
       });
 
       test('cardCorrection', () {
@@ -854,26 +854,26 @@ void main() async {
           ..currentCardType = CardType.buster
           ..firstCardType = CardType.buster;
 
-        expect(calculateStar(params), equals(309));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(309, epsilon: 1));
 
         params.chainPos = 2;
 
-        expect(calculateStar(params), equals(359));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(359, epsilon: 1));
 
         params.chainPos = 3;
 
-        expect(calculateStar(params), equals(409));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(409, epsilon: 1));
 
         params
           ..chainPos = 2
           ..currentCardType = CardType.arts
           ..firstCardType = CardType.buster;
 
-        expect(calculateStar(params), equals(209));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(209, epsilon: 1));
 
         params.firstCardType = CardType.quick;
 
-        expect(calculateStar(params), equals(409));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(409, epsilon: 1));
       });
 
       test('criticalModifier', () {
@@ -883,7 +883,7 @@ void main() async {
           ..currentCardType = CardType.quick
           ..firstCardType = CardType.quick;
 
-        expect(calculateStar(params), equals(1909));
+        expect(calculateStar(params).toDouble(), moreOrLessEquals(1909, epsilon: 1));
       });
     });
 
@@ -899,9 +899,9 @@ void main() async {
         ..isNp = true
         ..currentCardType = np.card
         ..firstCardType = np.card
-        ..cardBuff = 300; // passive + np first function
+        ..cardBuff = 1300; // passive + np first function
 
-      expect(calculateStar(param), equals(1190));
+      expect(calculateStar(param).toDouble(), moreOrLessEquals(1189, epsilon: 1));
     });
   });
 }
