@@ -18,7 +18,7 @@ Chaldea是一款用于Fate/Grand Order/命运-冠位指定的规划软件，支�
 <li><strong>攒石规划：</strong> 初版仅支持登陆奖励等可预测部分</li>
 <li><strong>数据导入</strong><ul><li>借助抓包工具一键导入素材从者所有数据，无需手动输入，支持<strong>国服、台服、日服和美服</strong></li>
 <li>素材数量、主动/附加技能等级的截图识别 (性能大幅度优化 by doorholez)</li>
-<li><a href="http://fgosimulator.webcrow.jp/Material">FGO Simulator-Material</a>数据</li>
+<li>FGO Simulator-Material数据</li>
 </ul></li>
 <li><strong>杂七杂八</strong><ul><li><strong>狗粮需求计算</strong></li>
 <li><strong>从者统计、已消耗素材统计</strong></li>

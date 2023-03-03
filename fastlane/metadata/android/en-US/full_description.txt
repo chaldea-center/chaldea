@@ -19,7 +19,7 @@ Chaldea is a cross-platform material planning tool for Fate/Grand Order, support
 <li><strong>SQ Planning</strong>: Currently support predictable parts of SQs/tickets/fruits</li>
 <li><strong>Import Data</strong><ul><li>Recognition for item/active skill/append skill screenshots(Improved performance by doorholez)</li>
 <li>Parsing all game data by sniffing the client's login https traffic, don't need manual input. Support <strong>NA/JP/CN/TW</strong>.</li>
-<li>From <a href="http://fgosimulator.webcrow.jp/Material">FGO Simulator-Material</a></li>
+<li>From FGO Simulator-Material</li>
 </ul></li>
 <li><strong>Others</strong><ul><li><strong>EXP card cost calculator</strong></li>
 <li><strong>Statistics on item demands, consumed items and servant collection</strong></li>

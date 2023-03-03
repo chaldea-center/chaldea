@@ -1,7 +1,7 @@
 import 'package:flutter/scheduler.dart';
 
-import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'input_tab.dart';
 import 'scheme.dart';
@@ -47,7 +47,7 @@ class _CustomMissionPageState extends State<CustomMissionPage>
           ],
         )),
         actions: [
-          SharedBuilder.docsHelpBtn('master_mission.html'),
+          ChaldeaUrl.docsHelpBtn('master_mission'),
         ],
       ),
       body: InheritSelectionArea(

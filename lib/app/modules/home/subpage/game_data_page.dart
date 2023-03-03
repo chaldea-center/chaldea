@@ -188,11 +188,9 @@ class _GameDataPageState extends State<GameDataPage> {
                 text: 'document',
                 onTap: () {
                   if (Language.isZH) {
-                    launch(
-                        HttpUrlHelper.projectDocUrl('app_setting#防剧透设置', true));
+                    launch(ChaldeaUrl.doc('app_setting#防剧透设置'));
                   } else {
-                    launch(HttpUrlHelper.projectDocUrl(
-                        'app_setting#spoiler-settings'));
+                    launch(ChaldeaUrl.doc('app_setting#spoiler-settings'));
                   }
                 },
               )
@@ -249,12 +247,12 @@ class _GameDataPageState extends State<GameDataPage> {
                   ]),
                 ),
                 subtitle: Text.rich(TextSpan(
-                  text: HttpUrlHelper.projectDocUrl('releases'),
+                  text: ChaldeaUrl.doc('releases'),
                   style: TextStyle(color: Colors.redAccent[100]),
                 )),
                 horizontalTitleGap: 0,
                 onTap: () {
-                  launch(HttpUrlHelper.projectDocUrl('releases'));
+                  launch(ChaldeaUrl.doc('releases'));
                 },
               ),
             ],

@@ -85,7 +85,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               ),
               PopupMenuItem(
                 onTap: () {
-                  launch(HttpUrlHelper.projectDocUrl('freedom_order.html'));
+                  launch(ChaldeaUrl.doc('freedom_order'));
                 },
                 child: Text(S.current.help),
               ),

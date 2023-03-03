@@ -259,8 +259,7 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuItem(
                   child: Text(S.current.help),
                   onTap: () async {
-                    launch(HttpUrlHelper.projectDocUrl(
-                        'servant_plan.html', Language.isZH));
+                    launch(ChaldeaUrl.doc('servant_plan'));
                   },
                 ),
               ]

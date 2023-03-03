@@ -220,7 +220,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             horizontalTitleGap: 0,
             trailing: const Icon(Icons.open_in_new),
             onTap: () {
-              launch(HttpUrlHelper.projectDocUrl('installation.html'));
+              launch(ChaldeaUrl.doc('installation'));
             },
           ),
           Padding(

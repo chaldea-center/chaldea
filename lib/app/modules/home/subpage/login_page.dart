@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    launch(HttpUrlHelper.projectDocUrl('faq'));
+                    launch(ChaldeaUrl.doc('faq'));
                   },
                   child: Text(S.current.faq),
                 )

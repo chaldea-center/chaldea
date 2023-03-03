@@ -258,7 +258,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
             onPressed: () {
               launch(widget.url, external: true);
             },
-            icon: const Icon(Icons.open_in_browser),
+            icon: const Icon(Icons.open_in_new),
           ),
         ],
       ),

@@ -130,9 +130,9 @@ class _ApkListPageState extends State<ApkListPage> {
         actions: [
           IconButton(
             onPressed: () {
-              launch(HttpUrlHelper.projectDocUrl('fgo_apk'), external: true);
+              launch(ChaldeaUrl.doc('fgo_apk'), external: true);
             },
-            icon: const Icon(Icons.open_in_browser),
+            icon: const Icon(Icons.open_in_new),
           ),
           IconButton(
             onPressed: load,
@@ -164,12 +164,36 @@ class _ApkListPageState extends State<ApkListPage> {
                   ],
                 ),
                 for (final data in _dataList) buildOne(data),
+                const SizedBox(height: 16),
+                const DividerWithTitle(title: 'Links', indent: 16, height: 16),
+                TileGroup(
+                  header: 'Web',
+                  children: [
+                    ListTile(
+                      dense: true,
+                      title: const Text('FGO Apk'),
+                      subtitle: Text(ChaldeaUrl.doc('fgo_apk')),
+                      onTap: () {
+                        launch(ChaldeaUrl.doc('fgo_apk'));
+                      },
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: const Text('Chaldea App'),
+                      subtitle: Text(ChaldeaUrl.doc('releases')),
+                      onTap: () {
+                        launch(ChaldeaUrl.doc('releases'));
+                      },
+                    ),
+                  ],
+                ),
                 TileGroup(
                   header: 'Credits',
                   children: [
                     ListTile(
                       dense: true,
                       title: const Text('@Cereal'),
+                      trailing: const Icon(Icons.open_in_new, size: 18),
                       onTap: () {
                         launch('https://fgo.square.ovh/', external: true);
                       },
@@ -178,6 +202,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       dense: true,
                       title: const Text('All APKs'),
                       // subtitle: Text('$apkHost/apk/'),
+                      trailing: const Icon(Icons.open_in_new, size: 18),
                       onTap: () {
                         launch('$apkHost/apk/?sort=time&order=desc',
                             external: true);
@@ -195,7 +220,7 @@ class _ApkListPageState extends State<ApkListPage> {
     children.add(ListTile(
       dense: true,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 0),
-      title: Text(data.packageId),
+      title: Text(data.packageId, style: Theme.of(context).textTheme.bodySmall),
       trailing: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [

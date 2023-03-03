@@ -86,7 +86,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
         DividerWithTitle(title: text, endIndent: 8, height: 16);
 
     children.add(_divider('1'));
-    final _docLink = HttpUrlHelper.projectDocUrl('import_https/auto_login');
+    final _docLink = ChaldeaUrl.doc('import_https/auto_login');
     children.add(TileGroup(
       header: 'Method 1',
       footerWidget: SFooter.rich(TextSpan(text: 'more: ', children: [

@@ -13,7 +13,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/builders.dart';
 import 'screenshot/screenshots.dart';
 import 'screenshot/skill_result.dart';
 import 'screenshot/viewer.dart';
@@ -79,9 +78,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             ? S.current.import_append_skill_screenshots
             : S.current.import_active_skill_screenshots),
         actions: [
-          SharedBuilder.docsHelpBtn(
-              'import_data.html#active-append-skill-recognition',
-              zhPath: 'import_data.html#主动-被动技能截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#active-append-skill-recognition',
+              zhPath: 'import_data#主动-被动技能截图解析'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,

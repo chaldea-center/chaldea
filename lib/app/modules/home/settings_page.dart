@@ -326,7 +326,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: const Text(kProjectDocRoot),
                 trailing: const Icon(Icons.menu_book),
                 onTap: () {
-                  launch(HttpUrlHelper.projectDocUrl(''));
+                  launch(ChaldeaUrl.docHome);
                 },
               ),
               if (!db.settings.hideApple)
@@ -334,7 +334,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(S.current.support_chaldea),
                   trailing: const Icon(Icons.favorite),
                   onTap: () {
-                    launch(HttpUrlHelper.projectDocUrl('donation.html'));
+                    launch(ChaldeaUrl.doc('donation'));
                   },
                 ),
               if (PlatformU.isApple)

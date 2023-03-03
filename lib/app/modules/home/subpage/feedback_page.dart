@@ -97,7 +97,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 title: Text(S.current.faq),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () {
-                  launch(HttpUrlHelper.projectDocUrl('faq.html'));
+                  launch(ChaldeaUrl.doc('faq'));
                 },
               ),
             ],

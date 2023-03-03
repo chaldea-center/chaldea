@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
@@ -63,8 +62,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         titleSpacing: 0,
         title: Text(S.current.item_screenshot),
         actions: [
-          SharedBuilder.docsHelpBtn('import_data.html#item-screenshots',
-              zhPath: 'import_data.html#素材截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots',
+              zhPath: 'import_data#素材截图解析'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,

@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
-import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -72,7 +71,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         titleSpacing: 0,
         title: Text(S.current.effect_search),
         actions: [
-          SharedBuilder.docsHelpBtn('buff_filter.html'),
+          ChaldeaUrl.docsHelpBtn('buff_filter'),
           IconButton(
             icon: const Icon(Icons.filter_alt),
             tooltip: S.current.filter,
