@@ -350,7 +350,7 @@ class BattleServantData {
     // TODO (battle): skill specific check
     return canAttack(battleData) &&
         !hasBuffOnAction(battleData, BuffAction.donotSkill) &&
-        skillInfoList[skillIndex].chargeTurn == 0;
+        skillInfoList[skillIndex].canActivate;
   }
 
   void activateSkill(final BattleData battleData, final int skillIndex) {

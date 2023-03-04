@@ -361,7 +361,7 @@ class BattleData {
     }
 
     // TODO (battle): condition checking
-    return masterSkillInfo[skillIndex].chargeTurn == 0;
+    return masterSkillInfo[skillIndex].canActivate;
   }
 
   void activateMysticCodeSKill(final int skillIndex) {

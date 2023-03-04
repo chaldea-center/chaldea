@@ -12,7 +12,8 @@ class BattleSkillInfoData {
   int svtUniqueId = 0;
 
   bool get isPassive => skill.type == SkillType.passive;
-  bool isCharge = false;
+
+  bool get canActivate => chargeTurn == 0;
   int skillId = 0;
   int skillLv = 0;
   int chargeTurn = 0;
