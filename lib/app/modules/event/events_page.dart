@@ -27,9 +27,7 @@ class EventListPage extends StatefulWidget {
 }
 
 class EventListPageState extends State<EventListPage>
-    with
-        SearchableListState<Event, EventListPage>,
-        SingleTickerProviderStateMixin {
+    with SearchableListState<Event, EventListPage>, SingleTickerProviderStateMixin {
   late TabController _tabController;
   @override
   Iterable<Event> get wholeData => db.gameData.events.values;
@@ -68,8 +66,7 @@ class EventListPageState extends State<EventListPage>
     filterShownList();
     List<Event> limitEvents = [], campaignEvents = [];
     for (final event in shownList) {
-      if (const [EventType.eventQuest, EventType.warBoard]
-          .contains(event.type)) {
+      if (const [EventType.eventQuest, EventType.warBoard].contains(event.type)) {
         limitEvents.add(event);
       } else {
         campaignEvents.add(event);
@@ -163,9 +160,7 @@ class EventListPageState extends State<EventListPage>
         ),
       IconButton(
         icon: FaIcon(
-          filterData.reversed
-              ? FontAwesomeIcons.arrowDownWideShort
-              : FontAwesomeIcons.arrowUpWideShort,
+          filterData.reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
           size: 20,
         ),
         tooltip: S.current.sort_order,
@@ -200,9 +195,7 @@ class EventListPageState extends State<EventListPage>
           ),
           PopupMenuItem(
             child: Text(
-              filterData.showSpecialRewards
-                  ? S.current.special_reward_hide
-                  : S.current.special_reward_show,
+              filterData.showSpecialRewards ? S.current.special_reward_hide : S.current.special_reward_show,
             ),
             onTap: () {
               setState(() {
@@ -220,8 +213,7 @@ class EventListPageState extends State<EventListPage>
     return RefreshIndicator(
       child: super.buildScrollable(useGrid: useGrid),
       onRefresh: () async {
-        final cards =
-            await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
+        final cards = await AtlasApi.basicCraftEssences(expireAfter: Duration.zero) ?? [];
         int _added = 0;
         for (final basicCard in cards) {
           if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
@@ -251,16 +243,14 @@ class EventListPageState extends State<EventListPage>
   @override
   bool filter(Event event) {
     if (filterData.ongoing.options.isNotEmpty) {
-      if (filterData.ongoing.options
-          .every((region) => !event.isOnGoing(region))) {
+      if (filterData.ongoing.options.every((region) => !event.isOnGoing(region))) {
         return false;
       }
     }
     if (!filterData.eventType.matchOne(event.type)) {
       return false;
     }
-    if (!filterData.campaignType
-        .matchAny(event.campaigns.map((e) => e.target))) {
+    if (!filterData.campaignType.matchAny(event.campaigns.map((e) => e.target))) {
       return false;
     }
     if (filterData.contentType.options.isNotEmpty) {
@@ -277,8 +267,7 @@ class EventListPageState extends State<EventListPage>
         if (event.recipes.isNotEmpty) EventCustomType.recipe,
         if (event.bulletinBoards.isNotEmpty) EventCustomType.bulletinBoard,
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
-        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId ==
-            WarId.mainInterlude)
+        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == WarId.mainInterlude)
           EventCustomType.mainInterlude,
         if (event.extra.huntingQuestIds.isNotEmpty) EventCustomType.hunting,
       ];
@@ -315,8 +304,7 @@ class EventListPageState extends State<EventListPage>
             onTap: isCur
                 ? null
                 : () {
-                    final src = UserPlan.fromJson(
-                        jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
                     db.curPlan_
                       ..limitEvents = src.limitEvents
                       ..mainStories = src.mainStories

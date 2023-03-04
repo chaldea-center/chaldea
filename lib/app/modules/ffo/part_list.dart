@@ -21,11 +21,9 @@ class FfoPartListPage extends StatefulWidget {
   State<StatefulWidget> createState() => FfoPartListPageState();
 }
 
-class FfoPartListPageState extends State<FfoPartListPage>
-    with SearchableListState<FfoSvtPart, FfoPartListPage> {
+class FfoPartListPageState extends State<FfoPartListPage> with SearchableListState<FfoSvtPart, FfoPartListPage> {
   @override
-  Iterable<FfoSvtPart> get wholeData =>
-      FfoDB.i.parts.values.where((e) => e.collectionNo > 400 || e.svt != null);
+  Iterable<FfoSvtPart> get wholeData => FfoDB.i.parts.values.where((e) => e.collectionNo > 400 || e.svt != null);
 
   static FfoPartFilterData filterData = FfoPartFilterData();
 
@@ -49,8 +47,8 @@ class FfoPartListPageState extends State<FfoPartListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => FfoPartFilterData.compare(a.svt, b.svt,
-          keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare: (a, b) =>
+          FfoPartFilterData.compare(a.svt, b.svt, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -96,8 +94,7 @@ class FfoPartListPageState extends State<FfoPartListPage>
       name = db.gameData.servantsNoDup[part.collectionNo]?.lName.l;
     }
     name ??= part.svt?.name ?? 'Svt ${part.collectionNo}';
-    final svtClass =
-        part.svt?.svtClass?.lName ?? part.svt?.classType.toString();
+    final svtClass = part.svt?.svtClass?.lName ?? part.svt?.classType.toString();
     return CustomTile(
       leading: SizedBox(
         width: 51.2,
@@ -116,12 +113,10 @@ class FfoPartListPageState extends State<FfoPartListPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!Language.isJP) AutoSizeText(name, maxLines: 1),
-          Text(
-              'No.${part.collectionNo} - $kStarChar${part.svt?.rarity} $svtClass'),
+          Text('No.${part.collectionNo} - $kStarChar${part.svt?.rarity} $svtClass'),
         ],
       ),
-      trailing:
-          db.getIconImage(FFOUtil.borderedSprite(part.svt?.icon), width: 42),
+      trailing: db.getIconImage(FFOUtil.borderedSprite(part.svt?.icon), width: 42),
       selected: SplitRoute.isSplit(context) && selected == part,
       onTap: _getOnTap(part),
       enabled: part.svt != null,
@@ -165,9 +160,7 @@ class FfoPartListPageState extends State<FfoPartListPage>
     if (part.svt != null) {
       yield* SearchUtil.getAllKeys(Transl.svtNames(part.svt!.name));
     }
-    final originSvt = part.collectionNo < 400
-        ? db.gameData.servantsNoDup[part.collectionNo]
-        : null;
+    final originSvt = part.collectionNo < 400 ? db.gameData.servantsNoDup[part.collectionNo] : null;
     if (originSvt != null) {
       for (final name in originSvt.allNames) {
         yield* SearchUtil.getAllKeys(Transl.svtNames(name));

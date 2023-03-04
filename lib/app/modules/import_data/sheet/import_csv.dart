@@ -58,9 +58,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
             final bytes = result?.files.getOrNull(0)?.bytes;
             if (bytes == null) return;
             try {
-              final rawData = const CsvToListConverter().convert<String>(
-                  utf8.decode(bytes),
-                  shouldParseNumbers: false);
+              final rawData = const CsvToListConverter().convert<String>(utf8.decode(bytes), shouldParseNumbers: false);
               statuses.clear();
               plans.clear();
               PlanDataSheetConverter().parseFromCSV(statuses, plans, rawData);
@@ -133,8 +131,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                             ..clear()
                             ..addAll(plans);
                           db.itemCenter.init();
-                          EasyLoading.showSuccess(
-                              S.current.import_data_success);
+                          EasyLoading.showSuccess(S.current.import_data_success);
                         },
                       );
                     },
@@ -147,8 +144,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
   }
 
   void generateTemplate(bool includeAll, bool includeFavorite) async {
-    final data =
-        PlanDataSheetConverter().generateCSV(includeAll, includeFavorite);
+    final data = PlanDataSheetConverter().generateCSV(includeAll, includeFavorite);
     final contents = const ListToCsvConverter().convert(data);
     final t = DateTime.now().toDateString();
     final fn = 'chaldea_data_$t.csv';

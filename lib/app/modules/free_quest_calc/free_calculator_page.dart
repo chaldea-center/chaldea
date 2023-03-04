@@ -19,8 +19,7 @@ class FreeQuestCalcPage extends StatefulWidget {
   _FreeQuestCalcPageState createState() => _FreeQuestCalcPageState();
 }
 
-class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
-    with SingleTickerProviderStateMixin {
+class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTickerProviderStateMixin {
   LPSolution? solution;
   late TabController _tabController;
 
@@ -41,9 +40,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest_calculator),
-        actions: [
-          MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')
-        ],
+        actions: [MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
@@ -68,18 +65,13 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage>
             controller: _tabController,
             children: [
               KeepAliveBuilder(
-                  builder: (context) => DropCalcInputTab(
-                      objectiveCounts: widget.objectiveCounts,
-                      onSolved: onSolved)),
-              KeepAliveBuilder(
-                  builder: (context) => QuestPlanTab(solution: solution)),
-              KeepAliveBuilder(
-                  builder: (context) => QuestEfficiencyTab(solution: solution)),
+                  builder: (context) => DropCalcInputTab(objectiveCounts: widget.objectiveCounts, onSolved: onSolved)),
+              KeepAliveBuilder(builder: (context) => QuestPlanTab(solution: solution)),
+              KeepAliveBuilder(builder: (context) => QuestEfficiencyTab(solution: solution)),
               KeepAliveBuilder(
                 builder: (context) => WarListPage(
                   wars: db.gameData.wars.values.where((war) {
-                    return war.isMainStory && war.spots.isNotEmpty ||
-                        war.id == 9999;
+                    return war.isMainStory && war.spots.isNotEmpty || war.id == 9999;
                   }).toList(),
                 ),
               )

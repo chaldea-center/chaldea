@@ -44,8 +44,7 @@ class _BuffFilterState extends FilterPageState<BuffFilterData, BuffFilter> {
       for (final buff in db.gameData.baseBuffs.values)
         buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
     };
-    buffTypes =
-        Map.fromEntries(buffTypes.entries.toList()..sort2((e) => e.value));
+    buffTypes = Map.fromEntries(buffTypes.entries.toList()..sort2((e) => e.value));
   }
 
   @override

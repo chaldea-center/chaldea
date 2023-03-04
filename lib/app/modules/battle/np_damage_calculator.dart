@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/widgets/widgets.dart';
 
 class NpDamageCalculator extends StatelessWidget {
@@ -14,7 +15,7 @@ class NpDamageCalculator extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          children: [],
+          children: const [],
         ),
       ),
     );

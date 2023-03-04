@@ -24,8 +24,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
   bool _favorite = true;
 
   SvtMatCostDetailType get matType =>
-      widget.matType ??
-      (_favorite ? SvtMatCostDetailType.demands : SvtMatCostDetailType.full);
+      widget.matType ?? (_favorite ? SvtMatCostDetailType.demands : SvtMatCostDetailType.full);
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +42,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
         '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
         '${S.current.event} ${num2str(stat.statObtain[itemId])}',
-        style: matType != SvtMatCostDetailType.demands
-            ? TextStyle(color: Theme.of(context).disabledColor)
-            : null,
+        style: matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
       ),
       trailing: Text(
         '${S.current.item_total_demand} ${num2str(svtDemands.all)}\n'
@@ -78,8 +75,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         ),
       header
     ];
-    if (db.settings.display.itemDetailViewType ==
-        ItemDetailViewType.separated) {
+    if (db.settings.display.itemDetailViewType == ItemDetailViewType.separated) {
       // 0 ascension 1 skill 2 dress 3 append 4 extra
       final headers = [
         S.current.ascension_up,
@@ -104,45 +100,38 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                 title: Text(headers[i]),
                 trailing: Text(num2str(svtDemands.parts[i])),
               ),
-              _buildSvtIconGrid(context, partDetail,
-                  highlight: matType == SvtMatCostDetailType.full),
+              _buildSvtIconGrid(context, partDetail, highlight: matType == SvtMatCostDetailType.full),
             ],
           ));
         }
       }
-    } else if (db.settings.display.itemDetailViewType ==
-        ItemDetailViewType.grid) {
-      children.add(_buildSvtIconGrid(
-          context, details.map((key, value) => MapEntry(key, value.all)),
+    } else if (db.settings.display.itemDetailViewType == ItemDetailViewType.grid) {
+      children.add(_buildSvtIconGrid(context, details.map((key, value) => MapEntry(key, value.all)),
           highlight: matType == SvtMatCostDetailType.full));
     } else {
       children.addAll(buildSvtList(context, details));
     }
     return ListView.separated(
       itemBuilder: (context, index) => children[index],
-      separatorBuilder: (context, index) =>
-          index == 0 ? const SizedBox() : kDefaultDivider,
+      separatorBuilder: (context, index) => index == 0 ? const SizedBox() : kDefaultDivider,
       itemCount: children.length,
     );
   }
 
-  Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,
-      {bool highlight = false}) {
+  Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src, {bool highlight = false}) {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
       final svt = db.gameData.servantsWithDup[svtNo];
       if (svt == null) return;
       final count = src[svtNo]!;
-      bool shouldHighlight =
-          highlight && db.curUser.svtStatusOf(svtNo).cur.favorite;
+      bool shouldHighlight = highlight && db.curUser.svtStatusOf(svtNo).cur.favorite;
       if (count > 0) {
         Widget avatar = svt.iconBuilder(
           context: context,
           text: count.format(),
           overrideIcon: svt.customIcon,
-          option: ImageWithTextOption(
-              padding: const EdgeInsets.only(right: 2, bottom: 14)),
+          option: ImageWithTextOption(padding: const EdgeInsets.only(right: 2, bottom: 14)),
         );
         if (shouldHighlight) {
           avatar = Stack(
@@ -152,9 +141,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
                 top: 2,
                 right: 2,
                 child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(3)),
+                  decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(3)),
                   child: const Padding(
                     padding: EdgeInsets.all(1.6),
                     child: Icon(
@@ -176,14 +163,12 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       childAspectRatio: 132 / 144,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      padding: const EdgeInsetsDirectional.only(
-          start: 16, top: 3, bottom: 3, end: 10),
+      padding: const EdgeInsetsDirectional.only(start: 16, top: 3, bottom: 3, end: 10),
       children: children,
     );
   }
 
-  List<Widget> buildSvtList(
-      BuildContext context, Map<int, SvtMatCostDetail<int>> details) {
+  List<Widget> buildSvtList(BuildContext context, Map<int, SvtMatCostDetail<int>> details) {
     List<Widget> children = [];
 
     for (final svtNo in sortSvts(details.keys.toList())) {
@@ -232,8 +217,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         sortReversed = [true, false, true];
         break;
     }
-    svts.sort((a, b) => SvtFilterData.compare(
-        db.gameData.servantsWithDup[a], db.gameData.servantsWithDup[b],
+    svts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsWithDup[a], db.gameData.servantsWithDup[b],
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }

@@ -68,9 +68,7 @@ class WrapSideBar extends StatelessWidget {
           elevation: 1,
           shape: const CircleBorder(),
           padding: EdgeInsets.zero,
-          color: isActive
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).canvasColor,
+          color: isActive ? Theme.of(context).primaryColor : Theme.of(context).canvasColor,
           onPressed: () {
             root.appState.activeIndex = index;
           },
@@ -81,9 +79,7 @@ class WrapSideBar extends StatelessWidget {
                 '${index + 1}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isActive
-                      ? Theme.of(context).colorScheme.onPrimary
-                      : Theme.of(context).hintColor,
+                  color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).hintColor,
                 ),
               ),
             ),
@@ -119,8 +115,7 @@ class WrapSideBar extends StatelessWidget {
                 headerIcon,
                 Flexible(
                   child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context)
-                        .copyWith(scrollbars: false),
+                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                     child: listView,
                   ),
                 ),
@@ -148,8 +143,7 @@ class WrapSideBar extends StatelessWidget {
         ),
         Expanded(
           child: MediaQuery(
-            data: mqData.copyWith(
-                size: Size(mqData.size.width - 48, mqData.size.height)),
+            data: mqData.copyWith(size: Size(mqData.size.width - 48, mqData.size.height)),
             child: child,
           ),
         ),
@@ -178,8 +172,7 @@ class OneWindow extends StatelessWidget {
             final child = AppShell(
               appState: root.appState,
               routerDelegate: _delegate,
-              active: index == root.appState.activeIndex &&
-                  !root.appState.showWindowManager,
+              active: index == root.appState.activeIndex && !root.appState.showWindowManager,
             );
             if (index == root.appState.activeIndex) {
               return child;
@@ -216,8 +209,7 @@ class MultipleWindow extends StatelessWidget {
             DropdownButton<Language>(
               value: Language.getLanguage(S.current.localeName),
               items: [
-                for (final lang in Language.supportLanguages)
-                  DropdownMenuItem(value: lang, child: Text(lang.name))
+                for (final lang in Language.supportLanguages) DropdownMenuItem(value: lang, child: Text(lang.name))
               ],
               icon: Icon(
                 Icons.arrow_drop_down,
@@ -229,8 +221,7 @@ class MultipleWindow extends StatelessWidget {
                     value: lang,
                     child: Text(
                       lang.name,
-                      style: TextStyle(
-                          color: SharedBuilder.appBarForeground(context)),
+                      style: TextStyle(color: SharedBuilder.appBarForeground(context)),
                     ),
                   )
               ],
@@ -242,8 +233,7 @@ class MultipleWindow extends StatelessWidget {
               underline: const SizedBox(),
             ),
           ],
-          bottom: FixedHeight.tabBar(TabBar(
-              tabs: [const Tab(text: 'Tabs'), Tab(text: S.current.history)])),
+          bottom: FixedHeight.tabBar(TabBar(tabs: [const Tab(text: 'Tabs'), Tab(text: S.current.history)])),
         ),
         body: TabBarView(children: [
           SafeArea(
@@ -275,8 +265,7 @@ class MultipleWindow extends StatelessWidget {
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemBuilder: (context, index) {
-          final url = AppRouterDelegate
-              .history[AppRouterDelegate.history.length - 1 - index];
+          final url = AppRouterDelegate.history[AppRouterDelegate.history.length - 1 - index];
           return ListTile(
             dense: true,
             title: Text(url),

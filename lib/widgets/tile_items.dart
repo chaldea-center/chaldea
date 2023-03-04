@@ -14,15 +14,13 @@ class SHeader extends StatelessWidget {
     String this.label, {
     super.key,
     this.style,
-    this.padding =
-        const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
   }) : richSpan = null;
   const SHeader.rich(
     InlineSpan this.richSpan, {
     super.key,
     this.style,
-    this.padding =
-        const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
   }) : label = null;
 
   @override
@@ -82,12 +80,7 @@ class SWidget extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? callback;
 
-  const SWidget(
-      {super.key,
-      required this.label,
-      this.icon,
-      this.trailing,
-      this.callback});
+  const SWidget({super.key, required this.label, this.icon, this.trailing, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +102,7 @@ class SModal extends StatelessWidget {
   final String? value;
   final VoidCallback? callback;
 
-  const SModal(
-      {super.key, required this.label, this.icon, this.value, this.callback});
+  const SModal({super.key, required this.label, this.icon, this.value, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -143,11 +135,7 @@ class SSwitch extends StatelessWidget {
   final ValueChanged<bool>? callback;
 
   const SSwitch(
-      {super.key,
-      required this.label,
-      this.icon,
-      this.value,
-      this.callback}); //handle switch/tile value change
+      {super.key, required this.label, this.icon, this.value, this.callback}); //handle switch/tile value change
 
   @override
   Widget build(BuildContext context) {
@@ -168,8 +156,7 @@ class SSelect extends StatelessWidget {
   final int selected;
   final ValueChanged<int>? callback;
 
-  const SSelect(
-      {super.key, this.labels = const [], this.selected = 0, this.callback});
+  const SSelect({super.key, this.labels = const [], this.selected = 0, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -177,9 +164,7 @@ class SSelect extends StatelessWidget {
     for (int index = 0; index < labels.length; index++) {
       children.add(ListTile(
         title: Text(labels[index]),
-        trailing: index == selected
-            ? Icon(Icons.check, color: Theme.of(context).primaryColor)
-            : null,
+        trailing: index == selected ? Icon(Icons.check, color: Theme.of(context).primaryColor) : null,
         onTap: () {
           if (callback != null) {
             callback!(index);
@@ -380,18 +365,14 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
           items: widget.startItems
               .map((v) => DropdownMenuItem<T>(
                     value: v,
-                    child: widget.itemBuilder == null
-                        ? Text(v.toString())
-                        : widget.itemBuilder!(context, v),
+                    child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
                   ))
               .toList(),
           onChanged: widget.startEnabled
               ? (value) {
                   if (value == null) return;
                   final start = value;
-                  final end = widget.increasing
-                      ? max(start, widget.end)
-                      : min(start, widget.end);
+                  final end = widget.increasing ? max(start, widget.end) : min(start, widget.end);
                   if (widget.onChanged != null) {
                     widget.onChanged!(start, end);
                   }
@@ -404,18 +385,14 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
           items: widget.endItems
               .map((v) => DropdownMenuItem<T>(
                     value: v,
-                    child: widget.itemBuilder == null
-                        ? Text(v.toString())
-                        : widget.itemBuilder!(context, v),
+                    child: widget.itemBuilder == null ? Text(v.toString()) : widget.itemBuilder!(context, v),
                   ))
               .toList(),
           onChanged: widget.endEnabled
               ? (value) {
                   if (value == null) return;
                   final end = value;
-                  final start = widget.increasing
-                      ? min(widget.start, end)
-                      : max(widget.start, end);
+                  final start = widget.increasing ? min(widget.start, end) : max(widget.start, end);
                   if (widget.onChanged != null) {
                     widget.onChanged!(start, end);
                   }
@@ -427,8 +404,7 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
   }
 }
 
-List<T> divideList<T>(Iterable<T> tiles, T divider,
-    {bool top = false, bool bottom = false}) {
+List<T> divideList<T>(Iterable<T> tiles, T divider, {bool top = false, bool bottom = false}) {
   Iterator iterator = tiles.iterator;
   if (!iterator.moveNext()) {
     return [];

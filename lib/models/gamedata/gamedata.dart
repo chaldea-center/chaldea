@@ -73,8 +73,7 @@ class GameData with _GameDataExtra {
   Region? spoilerRegion;
 
   Map<int, Servant> get servantsNoDup => servants;
-  bool get isValid =>
-      version.timestamp > 0 && servantsById.isNotEmpty && items.length > 1;
+  bool get isValid => version.timestamp > 0 && servantsById.isNotEmpty && items.length > 1;
 
   GameData({
     DataVersion? version,
@@ -139,9 +138,7 @@ class GameData with _GameDataExtra {
       }
     }
     // remove spoiler
-    if (this.version.timestamp > 0 &&
-        spoilerRegion != null &&
-        spoilerRegion != Region.jp) {
+    if (this.version.timestamp > 0 && spoilerRegion != null && spoilerRegion != Region.jp) {
       void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
         final released = releases.ofRegion(spoilerRegion);
         if (released == null || released.isEmpty) return;
@@ -172,12 +169,9 @@ class GameData with _GameDataExtra {
     );
     costumes = {
       for (final svt in servants.values)
-        for (final costume in svt.profile.costume.values)
-          costume.costumeCollectionNo: costume
+        for (final costume in svt.profile.costume.values) costume.costumeCollectionNo: costume
     };
-    costumesById = {
-      for (final costume in costumes.values) costume.battleCharaId: costume
-    };
+    costumesById = {for (final costume in costumes.values) costume.battleCharaId: costume};
     mainStories = {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war
@@ -199,10 +193,8 @@ class GameData with _GameDataExtra {
         for (final quest in spot.quests) quest.id: quest
     };
     servantsById = servants.map((key, value) => MapEntry(value.id, value));
-    craftEssencesById =
-        craftEssences.map((key, value) => MapEntry(value.id, value));
-    commandCodesById =
-        commandCodes.map((key, value) => MapEntry(value.id, value));
+    craftEssencesById = craftEssences.map((key, value) => MapEntry(value.id, value));
+    commandCodesById = commandCodes.map((key, value) => MapEntry(value.id, value));
     // calculation at last
     for (final war in wars.values) {
       war.calcItems(this);
@@ -237,8 +229,7 @@ class GameData with _GameDataExtra {
   bool isJustAddedCard(int id) {
     // return true;
     final addData = this.addData;
-    if (addData == null ||
-        DateTime.now().timestamp - version.timestamp > 1800) {
+    if (addData == null || DateTime.now().timestamp - version.timestamp > 1800) {
       return false;
     }
     final svt = addData.svt[id];
@@ -248,94 +239,68 @@ class GameData with _GameDataExtra {
     return (addData.ce[id] ?? addData.cc[id]) != null;
   }
 
-  factory GameData.fromJson(Map<String, dynamic> json) =>
-      _$GameDataFromJson(json);
+  factory GameData.fromJson(Map<String, dynamic> json) => _$GameDataFromJson(json);
 
   @protected
   static Future<GameData> fromJsonAsync(Map<String, dynamic> json) async {
     return GameData(
-      version: json['version'] == null
-          ? null
-          : DataVersion.fromJson(
-              Map<String, dynamic>.from(json['version'] as Map)),
+      version: json['version'] == null ? null : DataVersion.fromJson(Map<String, dynamic>.from(json['version'] as Map)),
       servants: await (json['servants'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            Servant.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), Servant.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       craftEssences: await (json['craftEssences'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            CraftEssence.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), CraftEssence.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       commandCodes: await (json['commandCodes'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            CommandCode.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), CommandCode.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       mysticCodes: await (json['mysticCodes'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            MysticCode.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), MysticCode.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       events: await (json['events'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            Event.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), Event.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       wars: await (json['wars'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            NiceWar.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), NiceWar.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       items: await (json['items'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            Item.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), Item.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       questPhases: await (json['questPhases'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            QuestPhase.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), QuestPhase.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       exchangeTickets: await (json['exchangeTickets'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            ExchangeTicket.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), ExchangeTicket.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       entities: await (json['entities'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            BasicServant.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), BasicServant.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       bgms: await (json['bgms'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       extraMasterMission: await (json['extraMasterMission'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       fixedDrops: await (json['fixedDrops'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            FixedDrop.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), FixedDrop.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      wiki: json['wiki'] == null
-          ? null
-          : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
+      wiki: json['wiki'] == null ? null : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
       mappingData: json['mappingData'] == null
           ? null
-          : MappingData.fromJson(
-              Map<String, dynamic>.from(json['mappingData'] as Map)),
+          : MappingData.fromJson(Map<String, dynamic>.from(json['mappingData'] as Map)),
       constData: json['constData'] == null
           ? null
-          : ConstGameData.fromJson(
-              Map<String, dynamic>.from(json['constData'] as Map)),
-      dropRate: json['dropRate'] == null
-          ? null
-          : DropRateData.fromJson(
-              Map<String, dynamic>.from(json['dropRate'] as Map)),
+          : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
+      dropRate:
+          json['dropRate'] == null ? null : DropRateData.fromJson(Map<String, dynamic>.from(json['dropRate'] as Map)),
       baseTds: await (json['baseTds'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       baseSkills: await (json['baseSkills'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       baseFunctions: await (json['baseFunctions'] as Map?)?.mapAsync(
-        (k, e) async => MapEntry(int.parse(k as String),
-            BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) async => MapEntry(int.parse(k as String), BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
     );
   }
@@ -355,8 +320,7 @@ class _GameDataAdd {
         ce = {for (var x in ce) x.id: x},
         cc = {for (var x in cc) x.id: x};
 
-  factory _GameDataAdd.fromJson(Map<String, dynamic> json) =>
-      _$GameDataAddFromJson(json);
+  factory _GameDataAdd.fromJson(Map<String, dynamic> json) => _$GameDataAddFromJson(json);
 }
 
 mixin _GameDataExtra {
@@ -391,8 +355,7 @@ mixin _GameDataExtra {
 }
 
 extension _AsyncIterMap<K, V> on Map<K, V> {
-  Future<Map<K2, V2>> mapAsync<K2, V2>(
-      Future<MapEntry<K2, V2>> Function(K key, V value) convert) async {
+  Future<Map<K2, V2>> mapAsync<K2, V2>(Future<MapEntry<K2, V2>> Function(K key, V value) convert) async {
     return Map.fromEntries([
       for (final entry in entries) await convert(entry.key, entry.value),
     ]);
@@ -414,18 +377,15 @@ class DataVersion {
     this.files = const {},
   });
 
-  AppVersion get appVersion =>
-      AppVersion.tryParse(minimalApp) ?? const AppVersion(1, 0, 0);
+  AppVersion get appVersion => AppVersion.tryParse(minimalApp) ?? const AppVersion(1, 0, 0);
 
-  factory DataVersion.fromJson(Map<String, dynamic> json) =>
-      _$DataVersionFromJson(json);
+  factory DataVersion.fromJson(Map<String, dynamic> json) => _$DataVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataVersionToJson(this);
 
   String text([bool twoLine = true]) {
     if (timestamp <= 0) return '0';
-    String s = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
-        .toStringShort(omitSec: true);
+    String s = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toStringShort(omitSec: true);
     if (twoLine) return s.replaceFirst(' ', '\n');
     return s;
   }
@@ -435,8 +395,7 @@ class DataVersion {
     return '$runtimeType($utc, ${files.length} files)';
   }
 
-  DateTime get dateTime =>
-      DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
 }
 
 @JsonSerializable(createToJson: true)
@@ -459,8 +418,7 @@ class FileVersion {
     required this.minHash,
   });
 
-  factory FileVersion.fromJson(Map<String, dynamic> json) =>
-      _$FileVersionFromJson(json);
+  factory FileVersion.fromJson(Map<String, dynamic> json) => _$FileVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileVersionToJson(this);
 }
@@ -475,8 +433,7 @@ class GameTops {
     required this.na,
   });
 
-  factory GameTops.fromJson(Map<String, dynamic> json) =>
-      _$GameTopsFromJson(json);
+  factory GameTops.fromJson(Map<String, dynamic> json) => _$GameTopsFromJson(json);
 
   GameTop? of(Region region) {
     switch (region) {
@@ -514,20 +471,16 @@ class GameTop {
   });
 
   String get host {
-    String _host = gameServer.endsWith('/')
-        ? gameServer.substring(0, gameServer.length - 1)
-        : gameServer;
+    String _host = gameServer.endsWith('/') ? gameServer.substring(0, gameServer.length - 1) : gameServer;
     if (!_host.toLowerCase().startsWith(RegExp(r'http(s)?://'))) {
       return 'https://$_host';
     }
     return _host;
   }
 
-  int get folderCrc =>
-      Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
+  int get folderCrc => Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
 
-  factory GameTop.fromJson(Map<String, dynamic> json) =>
-      _$GameTopFromJson(json);
+  factory GameTop.fromJson(Map<String, dynamic> json) => _$GameTopFromJson(json);
 }
 
 class _ProcessedData {
@@ -553,10 +506,8 @@ class _ProcessedData {
 
   Set<FuncTargetType> funcTargets = {};
 
-  Set<FuncType> get allFuncs =>
-      {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
-  Set<BuffType> get allBuffs =>
-      {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
+  Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
+  Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
 
   void _initFuncBuff() {
     for (final svt in gameData.servants.values) {

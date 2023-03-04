@@ -46,8 +46,7 @@ class ItemListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ItemListPageState();
 }
 
-class ItemListPageState extends State<ItemListPage>
-    with SingleTickerProviderStateMixin {
+class ItemListPageState extends State<ItemListPage> with SingleTickerProviderStateMixin {
   bool filtered = false;
   _ItemSortType sortType = _ItemSortType.default_;
 
@@ -70,17 +69,13 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: shownCategories.length, vsync: this);
-    _itemRedundantControllers = List.generate(
-        3,
-        (index) => TextEditingController(
-            text: db.userData.itemAbundantValue[index].toString()));
+    _itemRedundantControllers =
+        List.generate(3, (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()));
     for (final item in db.gameData.items.values) {
       categorized.putIfAbsent(item.category, () => []).add(item.id);
     }
-    categorized[ItemCategory.special] = <int>{
-      ...categorized[ItemCategory.special] ?? [],
-      ...Items.specialSvtMat
-    }.toList();
+    categorized[ItemCategory.special] =
+        <int>{...categorized[ItemCategory.special] ?? [], ...Items.specialSvtMat}.toList();
   }
 
   @override
@@ -109,18 +104,15 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
             onPressed: () {
               setState(() {
-                sortType = _ItemSortType
-                    .values[(sortType.index + 1) % _ItemSortType.values.length];
+                sortType = _ItemSortType.values[(sortType.index + 1) % _ItemSortType.values.length];
               });
-              EasyLoading.showToast(
-                  '${S.current.sort_order} - ${sortType.shownName}');
+              EasyLoading.showToast('${S.current.sort_order} - ${sortType.shownName}');
             },
             icon: const Icon(Icons.sort),
             tooltip: '${S.current.sort_order} - ${sortType.shownName}',
           ),
           IconButton(
-            icon: Icon(
-                filtered ? Icons.check_circle : Icons.check_circle_outline),
+            icon: Icon(filtered ? Icons.check_circle : Icons.check_circle_outline),
             tooltip: S.current.item_only_show_lack,
             onPressed: () {
               FocusScope.of(context).unfocus();
@@ -158,12 +150,9 @@ class ItemListPageState extends State<ItemListPage>
                       onNavToCalculator: navToDropCalculator,
                       filtered: filtered,
                       showSet999: true,
-                      editable: ![ItemCategory.event, ItemCategory.other]
-                          .contains(category),
-                      sortType: [ItemCategory.event, ItemCategory.other]
-                              .contains(category)
-                          ? _ItemSortType.id
-                          : sortType,
+                      editable: ![ItemCategory.event, ItemCategory.other].contains(category),
+                      sortType:
+                          [ItemCategory.event, ItemCategory.other].contains(category) ? _ItemSortType.id : sortType,
                     ),
                   )
               ],
@@ -204,26 +193,19 @@ class ItemListPageState extends State<ItemListPage>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text([
-                  S.current.bronze,
-                  S.current.silver,
-                  S.current.gold
-                ][index]),
+                Text([S.current.bronze, S.current.silver, S.current.gold][index]),
                 SizedBox(
                   width: 40,
                   child: TextFormField(
                     controller: _itemRedundantControllers[index],
-                    keyboardType:
-                        const TextInputType.numberWithOptions(signed: true),
+                    keyboardType: const TextInputType.numberWithOptions(signed: true),
                     textAlign: TextAlign.center,
                     decoration: const InputDecoration(isDense: true),
                     onChanged: (s) {
                       if (s == '-') {
                         db.userData.itemAbundantValue[index] = 0;
                       } else {
-                        db.userData.itemAbundantValue[index] =
-                            int.tryParse(s) ??
-                                db.userData.itemAbundantValue[index];
+                        db.userData.itemAbundantValue[index] = int.tryParse(s) ?? db.userData.itemAbundantValue[index];
                       }
                     },
                   ),
@@ -244,8 +226,7 @@ class ItemListPageState extends State<ItemListPage>
         TextButton(
           onPressed: () {
             _itemRedundantControllers.forEach((e) => e.text = '0');
-            db.userData.itemAbundantValue
-                .fillRange(0, db.userData.itemAbundantValue.length, 0);
+            db.userData.itemAbundantValue.fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
           child: Text(S.current.clear),
         )
@@ -315,8 +296,7 @@ class InputComponents {
   FocusNode focusNode;
   TextEditingController? controller;
 
-  InputComponents(
-      {required this.data, required this.focusNode, required this.controller});
+  InputComponents({required this.data, required this.focusNode, required this.controller});
 
   void dispose() {
     focusNode.dispose();
@@ -392,23 +372,17 @@ class _ItemListTabState extends State<ItemListTab> {
         } else if (widget.category == ItemCategory.other) {
           sortedEntries.sort2((e) => e.key);
         } else {
-          sortedEntries.sort2((e) => e.key == Items.qpId
-              ? -1
-              : db.gameData.items[e.key]?.priority ?? e.key);
+          sortedEntries.sort2((e) => e.key == Items.qpId ? -1 : db.gameData.items[e.key]?.priority ?? e.key);
         }
         break;
       case _ItemSortType.id:
         sortedEntries.sort2((e) => e.key);
         break;
       case _ItemSortType.owned:
-        sortedEntries.sort2((e) => e.key == Items.qpId
-            ? double.negativeInfinity
-            : db.curUser.items[e.key] ?? 0);
+        sortedEntries.sort2((e) => e.key == Items.qpId ? double.negativeInfinity : db.curUser.items[e.key] ?? 0);
         break;
       case _ItemSortType.left:
-        sortedEntries.sort2((e) => e.key == Items.qpId
-            ? double.negativeInfinity
-            : db.itemCenter.itemLeft[e.key] ?? 0);
+        sortedEntries.sort2((e) => e.key == Items.qpId ? double.negativeInfinity : db.itemCenter.itemLeft[e.key] ?? 0);
         break;
     }
     _allGroups = Map.fromEntries(sortedEntries);
@@ -495,13 +469,11 @@ class _ItemListTabState extends State<ItemListTab> {
             IconButton(
               onPressed: () {
                 if (_shownGroups.isEmpty) return;
-                int focused =
-                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                int focused = _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
                 if (focused >= 0) {
                   moveToNext(_shownGroups[focused].focusNode, true);
                 } else {
-                  FocusScope.of(context)
-                      .requestFocus(_shownGroups.last.focusNode);
+                  FocusScope.of(context).requestFocus(_shownGroups.last.focusNode);
                 }
               },
               icon: const Icon(Icons.keyboard_arrow_up),
@@ -511,13 +483,11 @@ class _ItemListTabState extends State<ItemListTab> {
             IconButton(
               onPressed: () {
                 if (_shownGroups.isEmpty) return;
-                int focused =
-                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                int focused = _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
                 if (focused >= 0) {
                   moveToNext(_shownGroups[focused].focusNode);
                 } else {
-                  FocusScope.of(context)
-                      .requestFocus(_shownGroups.first.focusNode);
+                  FocusScope.of(context).requestFocus(_shownGroups.first.focusNode);
                 }
               },
               icon: const Icon(Icons.keyboard_arrow_down),
@@ -542,8 +512,7 @@ class _ItemListTabState extends State<ItemListTab> {
             onChanged: (v) {
               setState(() {
                 // reset to true in initState or not?
-                db.itemCenter.includingEvents =
-                    v ?? db.itemCenter.includingEvents;
+                db.itemCenter.includingEvents = v ?? db.itemCenter.includingEvents;
                 db.itemCenter.updateLeftItems();
                 setState(() {});
               });
@@ -563,8 +532,7 @@ class _ItemListTabState extends State<ItemListTab> {
           return;
         }
         final isQp = itemId == Items.qpId;
-        final text = (db.curUser.items[itemId] ?? 0)
-            .format(groupSeparator: isQp ? ',' : null, compact: false);
+        final text = (db.curUser.items[itemId] ?? 0).format(groupSeparator: isQp ? ',' : null, compact: false);
         final selection = group.controller!.value.selection;
         TextSelection? newSelection;
         if (selection.isValid) {
@@ -573,8 +541,7 @@ class _ItemListTabState extends State<ItemListTab> {
             extentOffset: min(selection.extentOffset, text.length),
           );
         }
-        group.controller!.value = group.controller!.value
-            .copyWith(text: text, selection: newSelection);
+        group.controller!.value = group.controller!.value.copyWith(text: text, selection: newSelection);
       }
     });
   }
@@ -593,8 +560,7 @@ class _ItemListTabState extends State<ItemListTab> {
     final coinOwner = _coinSvtMap[itemId];
     // update when text input
     bool enough = (db.itemCenter.itemLeft[itemId] ?? 0) >= 0;
-    final highlightStyle =
-        TextStyle(color: enough ? null : Theme.of(context).colorScheme.error);
+    final highlightStyle = TextStyle(color: enough ? null : Theme.of(context).colorScheme.error);
     Widget textField = TextFormField(
       maxLength: isQp ? 20 : 5,
       controller: group.controller,
@@ -612,9 +578,7 @@ class _ItemListTabState extends State<ItemListTab> {
           /// don't change '-' to '0' in [setTextController]
           db.curUser.items[itemId] = 0;
         } else {
-          db.curUser.items[itemId] = int.tryParse(v.replaceAll(',', '')) ??
-              db.curUser.items[itemId] ??
-              0;
+          db.curUser.items[itemId] = int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemId] ?? 0;
         }
         EasyDebounce.debounce(
           'item_list_edit',
@@ -628,8 +592,7 @@ class _ItemListTabState extends State<ItemListTab> {
       onTap: () {
         // select all text at first tap
         if (!group.focusNode.hasFocus && group.controller != null) {
-          group.controller!.selection = TextSelection(
-              baseOffset: 0, extentOffset: group.controller!.text.length);
+          group.controller!.selection = TextSelection(baseOffset: 0, extentOffset: group.controller!.text.length);
         }
       },
       onFieldSubmitted: (s) {
@@ -638,13 +601,10 @@ class _ItemListTabState extends State<ItemListTab> {
         if (PlatformU.isIOS) {
           final index = _shownGroups.indexOf(group);
           if (index < 0) return;
-          final start = _scrollController.position.minScrollExtent,
-              end = _scrollController.position.maxScrollExtent;
-          final newOffset =
-              _scrollController.offset + (end - start) / _shownGroups.length;
+          final start = _scrollController.position.minScrollExtent, end = _scrollController.position.maxScrollExtent;
+          final newOffset = _scrollController.offset + (end - start) / _shownGroups.length;
           _scrollController.animateTo(min(end, newOffset),
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOut);
+              duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
         }
       },
       onEditingComplete: () {
@@ -657,10 +617,8 @@ class _ItemListTabState extends State<ItemListTab> {
       title = Row(
         children: <Widget>[const Text('QP  '), Expanded(child: textField)],
       );
-      final demand = (db.itemCenter.statSvtDemands[itemId] ?? 0)
-              .format(compact: false, groupSeparator: ','),
-          left = (db.itemCenter.itemLeft[itemId] ?? 0)
-              .format(compact: false, groupSeparator: ',');
+      final demand = (db.itemCenter.statSvtDemands[itemId] ?? 0).format(compact: false, groupSeparator: ','),
+          left = (db.itemCenter.itemLeft[itemId] ?? 0).format(compact: false, groupSeparator: ',');
       subtitle = Row(
         children: <Widget>[
           Expanded(
@@ -689,9 +647,7 @@ class _ItemListTabState extends State<ItemListTab> {
       int demandCount = db.itemCenter.statSvtDemands[itemId] ?? 0;
       int leftCount = db.itemCenter.itemLeft[itemId] ?? 0;
       if (coinOwner != null) {
-        final mats = db.itemCenter
-            .calcOneSvt(coinOwner, coinOwner.status.cur, coinOwner.curPlan)
-            .all;
+        final mats = db.itemCenter.calcOneSvt(coinOwner, coinOwner.status.cur, coinOwner.curPlan).all;
         demandCount = mats[itemId] ?? 0;
         leftCount = (db.curUser.items[itemId] ?? 0) - demandCount;
       }
@@ -704,8 +660,7 @@ class _ItemListTabState extends State<ItemListTab> {
               maxLines: 1,
             ),
           ),
-          Text('  ${S.current.item_left}',
-              style: const TextStyle(fontSize: 14)),
+          Text('  ${S.current.item_left}', style: const TextStyle(fontSize: 14)),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 36),
             child: Align(
@@ -758,8 +713,7 @@ class _ItemListTabState extends State<ItemListTab> {
     return ListTile(
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
-      leading: Item.iconBuilder(
-          context: context, item: null, icon: Item.getIcon(itemId), width: 48),
+      leading: Item.iconBuilder(context: context, item: null, icon: Item.getIcon(itemId), width: 48),
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       subtitle: subtitle,
@@ -776,8 +730,7 @@ class _ItemListTabState extends State<ItemListTab> {
     return ListTile(
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
-      leading: Item.iconBuilder(
-          context: context, item: null, icon: Item.getIcon(itemId), width: 48),
+      leading: Item.iconBuilder(context: context, item: null, icon: Item.getIcon(itemId), width: 48),
       title: Text(Item.getName(itemId)),
       subtitle: Text('No. $itemId'),
       onTap: () {
@@ -800,8 +753,7 @@ class _ItemListTabState extends State<ItemListTab> {
     // set selection at next frame, so that auto scroll to make focus visible
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // next frame, the next node is primary focus
-      nextGroup.controller!.selection = TextSelection(
-          baseOffset: 0, extentOffset: nextGroup.controller!.text.length);
+      nextGroup.controller!.selection = TextSelection(baseOffset: 0, extentOffset: nextGroup.controller!.text.length);
     });
   }
 }

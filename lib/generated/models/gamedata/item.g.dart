@@ -10,14 +10,10 @@ Item _$ItemFromJson(Map json) => Item(
       id: json['id'] as int,
       name: json['name'] as String,
       type: $enumDecode(_$ItemTypeEnumMap, json['type']),
-      uses: (json['uses'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$ItemUseEnumMap, e))
-              .toList() ??
-          const [],
+      uses: (json['uses'] as List<dynamic>?)?.map((e) => $enumDecode(_$ItemUseEnumMap, e)).toList() ?? const [],
       detail: json['detail'] as String,
       individuality: (json['individuality'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       icon: json['icon'] as String,
@@ -25,8 +21,7 @@ Item _$ItemFromJson(Map json) => Item(
       priority: json['priority'] as int,
       dropPriority: json['dropPriority'] as int,
       itemSelects: (json['itemSelects'] as List<dynamic>?)
-              ?.map((e) =>
-                  ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -84,17 +79,14 @@ const _$ItemBGTypeEnumMap = {
 
 ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(
       idx: json['idx'] as int,
-      gifts: (json['gifts'] as List<dynamic>?)
-              ?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
       requireNum: json['requireNum'] as int? ?? 1,
     );
 
 ItemAmount _$ItemAmountFromJson(Map json) => ItemAmount(
-      item: json['item'] == null
-          ? null
-          : Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
+      item: json['item'] == null ? null : Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
       itemId: json['itemId'] as int?,
       amount: json['amount'] as int,
     );

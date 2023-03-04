@@ -55,8 +55,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
               CustomTile(
                 color: Theme.of(context).cardColor,
                 leading: db.getIconImage(Items.qp?.borderedIcon, height: 56),
-                title: Text((shownItems[Items.qpId] ?? 0)
-                    .format(compact: false, groupSeparator: ',')),
+                title: Text((shownItems[Items.qpId] ?? 0).format(compact: false, groupSeparator: ',')),
                 onTap: () => Items.qp?.routeTo(),
               ),
               SharedBuilder.groupItems(
@@ -65,8 +64,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
                 onTap: (itemId) {
                   router.push(
                     url: Routes.itemI(itemId),
-                    child: ItemDetailPage(
-                        itemId: itemId, initialTabIndex: demandMode ? 0 : 1),
+                    child: ItemDetailPage(itemId: itemId, initialTabIndex: demandMode ? 0 : 1),
                   );
                 },
               )
@@ -167,16 +165,13 @@ class _ItemStatTabState extends State<ItemStatTab> {
           if (svtParts.options.isNotEmpty)
             ...List.generate(
               detail.parts.length,
-              (index) => svtParts.options.contains(index)
-                  ? detail.parts[index]
-                  : <int, int>{},
+              (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
             ),
         ],
         inPlace: true,
       );
     });
-    Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items],
-        inPlace: true);
+    Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items], inPlace: true);
     shownItems.removeWhere((key, value) {
       return value <= 0;
     });
@@ -194,16 +189,13 @@ class _ItemStatTabState extends State<ItemStatTab> {
           print('No $no: ${db.gameData.servantsWithDup.length}');
           return;
         }
-        final detail = db.itemCenter
-            .calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(no));
+        final detail = db.itemCenter.calcOneSvt(svt, svtStat.cur, db.curUser.svtPlanOf(no));
         Maths.sumDict(
           [
             shownItems,
             ...List.generate(
               detail.parts.length,
-              (index) => svtParts.options.contains(index)
-                  ? detail.parts[index]
-                  : <int, int>{},
+              (index) => svtParts.options.contains(index) ? detail.parts[index] : <int, int>{},
             ),
           ],
           inPlace: true,

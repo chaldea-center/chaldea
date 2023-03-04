@@ -54,8 +54,7 @@ class FilterGroupData<T> {
 
   T? get radioValue => throw UnimplementedError();
 
-  bool contain(T v) =>
-      options.isEmpty || (invert ? !options.contains(v) : options.contains(v));
+  bool contain(T v) => options.isEmpty || (invert ? !options.contains(v) : options.contains(v));
 
   bool isEmptyOrContain(Iterable<T> values) {
     return options.isEmpty || values.every((e) => !options.contains(e));
@@ -96,8 +95,7 @@ class FilterGroupData<T> {
   }) {
     if (options.isEmpty) return true;
     assert(!matchAll, 'When `matchAll` enabled, use `matchList` instead');
-    bool result =
-        options.any((option) => _match(value, option, compare, compares));
+    bool result = options.any((option) => _match(value, option, compare, compares));
     return invert ? !result : result;
   }
 
@@ -109,11 +107,9 @@ class FilterGroupData<T> {
     if (options.isEmpty) return true;
     bool result;
     if (matchAll) {
-      result = options.every(
-          (option) => values.any((v) => _match(v, option, compare, compares)));
+      result = options.every((option) => values.any((v) => _match(v, option, compare, compares)));
     } else {
-      result = options.any(
-          (option) => values.any((v) => _match(v, option, compare, compares)));
+      result = options.any((option) => values.any((v) => _match(v, option, compare, compares)));
     }
     return invert ? !result : result;
   }
@@ -137,8 +133,7 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   bool get invert => false;
 
   @override
-  Set<T> get options =>
-      {if (_selected != null || _selected is T) _selected as T};
+  Set<T> get options => {if (_selected != null || _selected is T) _selected as T};
 
   FilterRadioData([this._selected])
       : _nonnull = false,
@@ -308,8 +303,7 @@ class SvtFilterData with _FilterData {
   final gender = FilterGroupData<Gender>();
   final trait = FilterGroupData<Trait>();
 
-  final effectScope = FilterGroupData<SvtEffectScope>(
-      options: {SvtEffectScope.active, SvtEffectScope.td});
+  final effectScope = FilterGroupData<SvtEffectScope>(options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<EffectTarget>();
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
@@ -320,12 +314,11 @@ class SvtFilterData with _FilterData {
     this.planFavorite = FavoriteState.all,
     List<SvtCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(SvtCompare.values.length,
-            (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
+  })  : sortKeys = List.generate(
+            SvtCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
             growable: false),
-        sortReversed = List.generate(SvtCompare.values.length,
-            (index) => sortReversed?.getOrNull(index) ?? true,
-            growable: false);
+        sortReversed =
+            List.generate(SvtCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true, growable: false);
 
   @override
   List<FilterGroupData> get groups => [
@@ -361,13 +354,11 @@ class SvtFilterData with _FilterData {
     }
   }
 
-  factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
-      _$SvtFilterDataFromJson(data);
+  factory SvtFilterData.fromJson(Map<String, dynamic> data) => _$SvtFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 
-  static int compare(Servant? a, Servant? b,
-      {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
+  static int compare(Servant? a, Servant? b, {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
@@ -404,8 +395,7 @@ class SvtFilterData with _FilterData {
           r = (a.hpMax) - (b.hpMax);
           break;
         case SvtCompare.priority:
-          final aa = user?.svtStatusOf(a.collectionNo),
-              bb = user?.svtStatusOf(b.collectionNo);
+          final aa = user?.svtStatusOf(a.collectionNo), bb = user?.svtStatusOf(b.collectionNo);
           r = (aa?.priority ?? 1) - (bb?.priority ?? 1);
           break;
       }
@@ -473,11 +463,10 @@ class CraftFilterData with _FilterData {
     this.useGrid = false,
     List<CraftCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(CraftCompare.values.length,
-            (index) => sortKeys?.getOrNull(index) ?? CraftCompare.values[index],
+  })  : sortKeys = List.generate(
+            CraftCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? CraftCompare.values[index],
             growable: false),
-        sortReversed = List.generate(CraftCompare.values.length,
-            (index) => sortReversed?.getOrNull(index) ?? true,
+        sortReversed = List.generate(CraftCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
   @override
@@ -503,13 +492,11 @@ class CraftFilterData with _FilterData {
     }
   }
 
-  factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
-      _$CraftFilterDataFromJson(data);
+  factory CraftFilterData.fromJson(Map<String, dynamic> data) => _$CraftFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 
-  static int compare(CraftEssence a, CraftEssence b,
-      {List<CraftCompare>? keys, List<bool>? reversed}) {
+  static int compare(CraftEssence a, CraftEssence b, {List<CraftCompare>? keys, List<bool>? reversed}) {
     if (keys == null || keys.isEmpty) {
       keys = [CraftCompare.no];
     }
@@ -517,8 +504,7 @@ class CraftFilterData with _FilterData {
       int r;
       switch (keys[i]) {
         case CraftCompare.no:
-          r = (a.sortId ?? a.collectionNo)
-              .compareTo((b.sortId ?? b.collectionNo));
+          r = (a.sortId ?? a.collectionNo).compareTo((b.sortId ?? b.collectionNo));
           break;
         case CraftCompare.rarity:
           r = a.rarity - b.rarity;
@@ -579,12 +565,9 @@ class CmdCodeFilterData with _FilterData {
     List<CmdCodeCompare?>? sortKeys,
     List<bool>? sortReversed,
   })  : sortKeys = List.generate(
-            CmdCodeCompare.values.length,
-            (index) =>
-                sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
+            CmdCodeCompare.values.length, (index) => sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
             growable: false),
-        sortReversed = List.generate(CmdCodeCompare.values.length,
-            (index) => sortReversed?.getOrNull(index) ?? true,
+        sortReversed = List.generate(CmdCodeCompare.values.length, (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
   @override
@@ -608,13 +591,11 @@ class CmdCodeFilterData with _FilterData {
     }
   }
 
-  factory CmdCodeFilterData.fromJson(Map<String, dynamic> data) =>
-      _$CmdCodeFilterDataFromJson(data);
+  factory CmdCodeFilterData.fromJson(Map<String, dynamic> data) => _$CmdCodeFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CmdCodeFilterDataToJson(this);
 
-  static int compare(CommandCode a, CommandCode b,
-      {List<CmdCodeCompare>? keys, List<bool>? reversed}) {
+  static int compare(CommandCode a, CommandCode b, {List<CmdCodeCompare>? keys, List<bool>? reversed}) {
     if (keys == null || keys.isEmpty) {
       keys = [CmdCodeCompare.no];
     }
@@ -709,11 +690,9 @@ class EventFilterData with _FilterData {
   }
 
   @override
-  List<FilterGroupData> get groups =>
-      [ongoing, contentType, eventType, campaignType];
+  List<FilterGroupData> get groups => [ongoing, contentType, eventType, campaignType];
 
-  factory EventFilterData.fromJson(Map<String, dynamic> data) =>
-      _$EventFilterDataFromJson(data);
+  factory EventFilterData.fromJson(Map<String, dynamic> data) => _$EventFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$EventFilterDataToJson(this);
 }
@@ -766,8 +745,7 @@ class SummonFilterData with _FilterData {
     showOutdated = false;
   }
 
-  factory SummonFilterData.fromJson(Map<String, dynamic> data) =>
-      _$SummonFilterDataFromJson(data);
+  factory SummonFilterData.fromJson(Map<String, dynamic> data) => _$SummonFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
@@ -795,8 +773,7 @@ class ScriptReaderFilterData {
     soundEffect = bgm = scene = voice = video = autoPlayVideo = true;
   }
 
-  factory ScriptReaderFilterData.fromJson(Map<String, dynamic> data) =>
-      _$ScriptReaderFilterDataFromJson(data);
+  factory ScriptReaderFilterData.fromJson(Map<String, dynamic> data) => _$ScriptReaderFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$ScriptReaderFilterDataToJson(this);
 }
@@ -806,11 +783,7 @@ class EnemyFilterData with _FilterData {
   List<SvtCompare> sortKeys;
   List<bool> sortReversed;
 
-  static const enemyCompares = [
-    SvtCompare.no,
-    SvtCompare.className,
-    SvtCompare.rarity
-  ];
+  static const enemyCompares = [SvtCompare.no, SvtCompare.className, SvtCompare.rarity];
 
   bool onlyShowQuestEnemy;
   // filter
@@ -825,16 +798,13 @@ class EnemyFilterData with _FilterData {
     this.onlyShowQuestEnemy = false,
     List<SvtCompare?>? sortKeys,
     List<bool>? sortReversed,
-  })  : sortKeys = List.generate(enemyCompares.length,
-            (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],
+  })  : sortKeys = List.generate(enemyCompares.length, (index) => sortKeys?.getOrNull(index) ?? enemyCompares[index],
             growable: false),
-        sortReversed = List.generate(enemyCompares.length,
-            (index) => sortReversed?.getOrNull(index) ?? true,
-            growable: false);
+        sortReversed =
+            List.generate(enemyCompares.length, (index) => sortReversed?.getOrNull(index) ?? true, growable: false);
 
   @override
-  List<FilterGroupData> get groups =>
-      [region, svtClass, attribute, svtType, trait];
+  List<FilterGroupData> get groups => [region, svtClass, attribute, svtType, trait];
 
   @override
   void reset() {
@@ -853,8 +823,7 @@ class EnemyFilterData with _FilterData {
 
   // Map<String, dynamic> toJson() => _$EnemyFilterDataToJson(this);
 
-  static int compare(BasicServant? a, BasicServant? b,
-      {List<SvtCompare>? keys, List<bool>? reversed}) {
+  static int compare(BasicServant? a, BasicServant? b, {List<SvtCompare>? keys, List<bool>? reversed}) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
@@ -891,11 +860,7 @@ class EnemyFilterData with _FilterData {
 }
 
 class FfoPartFilterData with _FilterData {
-  static const kSortKeys = [
-    SvtCompare.no,
-    SvtCompare.className,
-    SvtCompare.rarity
-  ];
+  static const kSortKeys = [SvtCompare.no, SvtCompare.className, SvtCompare.rarity];
 
   bool useGrid = false;
   final rarity = FilterGroupData<int>();
@@ -906,8 +871,7 @@ class FfoPartFilterData with _FilterData {
   @override
   List<FilterGroupData> get groups => [rarity, classType];
 
-  static int compare(FfoSvt? a, FfoSvt? b,
-      {List<SvtCompare>? keys, List<bool>? reversed}) {
+  static int compare(FfoSvt? a, FfoSvt? b, {List<SvtCompare>? keys, List<bool>? reversed}) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;

@@ -12,8 +12,7 @@ class EventRandomMissionsPage extends StatefulWidget {
   const EventRandomMissionsPage({super.key, required this.event});
 
   @override
-  State<EventRandomMissionsPage> createState() =>
-      _EventRandomMissionsPageState();
+  State<EventRandomMissionsPage> createState() => _EventRandomMissionsPageState();
 }
 
 class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
@@ -61,9 +60,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
             ],
           )),
           Expanded(
-            child: TabBarView(children: [
-              for (final rank in ranks) oneRankGroup(rank, groups[rank]!)
-            ]),
+            child: TabBarView(children: [for (final rank in ranks) oneRankGroup(rank, groups[rank]!)]),
           )
         ],
       ),
@@ -74,30 +71,26 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
     return Scaffold(
       floatingActionButton: getFAB(rank),
       body: ListView.separated(
-        itemBuilder: (context, index) =>
-            missionBuilder(context, missions[index]),
+        itemBuilder: (context, index) => missionBuilder(context, missions[index]),
         separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
         itemCount: missions.length,
       ),
     );
   }
 
-  Widget missionBuilder(
-      BuildContext context, EventRandomMission randomMission) {
+  Widget missionBuilder(BuildContext context, EventRandomMission randomMission) {
     final mission = allMissions[randomMission.missionId];
     final customMission = CustomMission.fromEventMission(mission);
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
         leading: Text.rich(
           TextSpan(children: [
-            CenterWidgetSpan(
-                child: rankIcon(randomMission.missionRank, width: 24)),
+            CenterWidgetSpan(child: rankIcon(randomMission.missionRank, width: 24)),
             TextSpan(text: ' ${mission?.dispNo}')
           ]),
           textAlign: TextAlign.center,
         ),
-        title: Text(mission?.name ?? randomMission.missionId.toString(),
-            textScaleFactor: 0.75),
+        title: Text(mission?.name ?? randomMission.missionId.toString(), textScaleFactor: 0.75),
         horizontalTitleGap: 8,
         minLeadingWidth: 24,
         contentPadding: const EdgeInsetsDirectional.only(start: 8),
@@ -116,8 +109,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
         padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
         child: mission == null
             ? Text('Mission ${randomMission.missionId} Not Found')
-            : MissionCondsDescriptor(
-                mission: mission, missions: widget.event.missions),
+            : MissionCondsDescriptor(mission: mission, missions: widget.event.missions),
       ),
     );
   }
@@ -125,14 +117,11 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
   Widget getFAB(int rank) {
     return FloatingActionButton(
       onPressed: () {
-        final randomMissions =
-            selected.where((e) => e.condNum == rank).toList();
-        randomMissions
-            .sort2((e) => allMissions[e.missionId]?.dispNo ?? e.missionId);
+        final randomMissions = selected.where((e) => e.condNum == rank).toList();
+        randomMissions.sort2((e) => allMissions[e.missionId]?.dispNo ?? e.missionId);
 
         final customMissions = [
-          for (final m in randomMissions)
-            CustomMission.fromEventMission(allMissions[m.missionId])
+          for (final m in randomMissions) CustomMission.fromEventMission(allMissions[m.missionId])
         ];
 
         int? warId;
@@ -157,8 +146,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
 
   Widget rankIcon(int rank, {double? width}) {
     final rankStr = (rank + 1).toString().padLeft(2, '0');
-    final url =
-        'https://static.atlasacademy.io/JP/EventReward/mission_board_rank_${widget.event.id}$rankStr.png';
+    final url = 'https://static.atlasacademy.io/JP/EventReward/mission_board_rank_${widget.event.id}$rankStr.png';
     return ColorFiltered(
       colorFilter: const ColorFilter.matrix([
         //R G  B  A  Const

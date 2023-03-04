@@ -11,11 +11,9 @@ import 'package:chaldea/widgets/widgets.dart';
 class QuestEnemySummaryPage extends StatelessWidget {
   final BasicServant svt;
   final List<QuestEnemy> enemies;
-  const QuestEnemySummaryPage(
-      {super.key, required this.svt, required this.enemies});
+  const QuestEnemySummaryPage({super.key, required this.svt, required this.enemies});
 
-  List<T> _getValues<T>(T Function(QuestEnemy e) prop,
-      [int Function(T a)? compare]) {
+  List<T> _getValues<T>(T Function(QuestEnemy e) prop, [int Function(T a)? compare]) {
     final values = enemies.map((e) => prop(e)).toSet().toList();
     if (compare != null) {
       values.sort((a, b) => compare(a).compareTo(compare(b)));
@@ -27,24 +25,17 @@ class QuestEnemySummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attributes = _getValues<Attribute>(
-            (e) => e.svt.attribute, (v) => Attribute.values.indexOf(v)),
+    final attributes = _getValues<Attribute>((e) => e.svt.attribute, (v) => Attribute.values.indexOf(v)),
         charges = _getValues((e) => e.chargeTurn),
         deathRates = _getValues((e) => e.deathRate),
         critRates = _getValues((e) => e.criticalRate),
         npGainMods = _getValues((e) => e.serverMod.tdRate),
         defNpGainMods = _getValues((e) => e.serverMod.tdAttackRate),
         critStarMods = _getValues((e) => e.serverMod.starRate);
-    List<int> allTraits = {
-          for (final enemy in enemies) ...enemy.traits.map((e) => e.signedId)
-        }.toList()
-          ..sort(),
-        staticTraits = allTraits
-            .where((e) => enemies.every(
-                (enemy) => enemy.traits.any((trait) => trait.signedId == e)))
-            .toList(),
-        mutatingTraits =
-            allTraits.where((e) => !staticTraits.contains(e)).toList();
+    List<int> allTraits = {for (final enemy in enemies) ...enemy.traits.map((e) => e.signedId)}.toList()..sort(),
+        staticTraits =
+            allTraits.where((e) => enemies.every((enemy) => enemy.traits.any((trait) => trait.signedId == e))).toList(),
+        mutatingTraits = allTraits.where((e) => !staticTraits.contains(e)).toList();
 
     List<int> skillIds = {
           for (final enemy in enemies) ...[
@@ -65,23 +56,19 @@ class QuestEnemySummaryPage extends StatelessWidget {
         }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
 
     return Scaffold(
-      appBar:
-          AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),
+      appBar: AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),
       body: ListView(
         children: [
           CustomTable(
             children: <Widget>[
               CustomTableRow(children: [
                 TableCellData(
-                  child: Text(svt.lName.l,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(svt.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
                   isHeader: true,
                 )
               ]),
               if (!Transl.isJP)
-                CustomTableRow(children: [
-                  TableCellData(text: svt.lName.jp, textAlign: TextAlign.center)
-                ]),
+                CustomTableRow(children: [TableCellData(text: svt.lName.jp, textAlign: TextAlign.center)]),
               TextButton(
                 onPressed: () {
                   svt.routeTo();
@@ -95,8 +82,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   spacing: 2,
                   runSpacing: 2,
                   children: [
-                    for (final icon in _getValues((e) => e.svt.icon))
-                      db.getIconImage(icon, width: 48, height: 48)
+                    for (final icon in _getValues((e) => e.svt.icon)) db.getIconImage(icon, width: 48, height: 48)
                   ],
                 )
               ]),
@@ -113,12 +99,8 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 texts: [
                   attributes.map((e) => Transl.svtAttribute(e).l).join('/'),
                   charges.join('/'),
-                  deathRates
-                      .map((e) => e.format(base: 10, percent: true))
-                      .join('/'),
-                  critRates
-                      .map((e) => e.format(base: 10, percent: true))
-                      .join('/'),
+                  deathRates.map((e) => e.format(base: 10, percent: true)).join('/'),
+                  critRates.map((e) => e.format(base: 10, percent: true)).join('/'),
                 ],
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
@@ -150,18 +132,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                TableCellData(
-                    text: npGainMods
-                        .map((e) => e.format(base: 10, percent: true))
-                        .join('/')),
-                TableCellData(
-                    text: defNpGainMods
-                        .map((e) => e.format(base: 10, percent: true))
-                        .join('/')),
-                TableCellData(
-                    text: critStarMods
-                        .map((e) => e.format(base: 10, percent: true))
-                        .join('/')),
+                TableCellData(text: npGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
+                TableCellData(text: defNpGainMods.map((e) => e.format(base: 10, percent: true)).join('/')),
+                TableCellData(text: critStarMods.map((e) => e.format(base: 10, percent: true)).join('/')),
               ]),
               CustomTableRow.fromTexts(
                 texts: [S.current.trait],
@@ -171,16 +144,13 @@ class QuestEnemySummaryPage extends StatelessWidget {
                 Text.rich(TextSpan(children: [
                   ...SharedBuilder.traitSpans(
                     context: context,
-                    traits:
-                        staticTraits.map((e) => NiceTrait.signed(e)).toList(),
+                    traits: staticTraits.map((e) => NiceTrait.signed(e)).toList(),
                   ),
                   if (mutatingTraits.isNotEmpty) ...[
                     TextSpan(text: '\n${S.current.general_special}*: '),
                     ...SharedBuilder.traitSpans(
                       context: context,
-                      traits: mutatingTraits
-                          .map((e) => NiceTrait.signed(e))
-                          .toList(),
+                      traits: mutatingTraits.map((e) => NiceTrait.signed(e)).toList(),
                     )
                   ]
                 ])),
@@ -233,9 +203,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
   }
 
   Widget questTile(BuildContext context) {
-    final quests = db.gameData.questPhases.values
-        .where((q) => q.allEnemies.any((e) => e.svt.id == svt.id))
-        .toList();
+    final quests = db.gameData.questPhases.values.where((q) => q.allEnemies.any((e) => e.svt.id == svt.id)).toList();
     return TextButton(
       onPressed: () {
         router.pushPage(QuestListPage(quests: quests));

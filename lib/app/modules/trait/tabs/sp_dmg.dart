@@ -31,8 +31,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (final svt in db.gameData.servantsNoDup.values.toList()
-      ..sort2((e) => e.collectionNo)) {
+    for (final svt in db.gameData.servantsNoDup.values.toList()..sort2((e) => e.collectionNo)) {
       if (filter.matchOne(_SEScope.active)) {
         children.addAll(checkSkills(svt, svt.skills));
       }
@@ -51,14 +50,12 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
       }
     }
     if (filter.matchOne(_SEScope.ce)) {
-      for (final ce in db.gameData.craftEssences.values.toList()
-        ..sort2((e) => e.collectionNo)) {
+      for (final ce in db.gameData.craftEssences.values.toList()..sort2((e) => e.collectionNo)) {
         children.addAll(checkSkills(ce, ce.skills));
       }
     }
     if (filter.matchOne(_SEScope.cc)) {
-      for (final cc in db.gameData.commandCodes.values.toList()
-        ..sort2((e) => e.collectionNo)) {
+      for (final cc in db.gameData.commandCodes.values.toList()..sort2((e) => e.collectionNo)) {
         children.addAll(checkSkills(cc, cc.skills));
       }
     }

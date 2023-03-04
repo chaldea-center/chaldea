@@ -34,14 +34,11 @@ class _EventVoicePageState extends State<EventVoicePage> {
   }
 
   Widget itemBuilder(BuildContext context, VoiceGroup group) {
-    return VoiceGroupAccordion(
-        group: group, player: player, event: widget.event);
+    return VoiceGroupAccordion(group: group, player: player, event: widget.event);
   }
 
   Widget getGuide(EventRewardSceneGuide guide) {
-    String name = guide.displayName ??
-        db.gameData.servantsById[guide.imageId]?.lName.jp ??
-        guide.imageId.toString();
+    String name = guide.displayName ?? db.gameData.servantsById[guide.imageId]?.lName.jp ?? guide.imageId.toString();
     return ListTile(
       title: Text(Transl.svtNames(name).l),
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -55,8 +52,7 @@ class _EventVoicePageState extends State<EventVoicePage> {
           ),
         ),
       ),
-      onTap: () =>
-          FullscreenImageViewer.show(context: context, urls: [guide.image]),
+      onTap: () => FullscreenImageViewer.show(context: context, urls: [guide.image]),
     );
   }
 }

@@ -15,15 +15,13 @@ class TdDetailPage extends StatefulWidget {
   final int? id;
   final BaseTd? td;
   final Region? region;
-  const TdDetailPage({super.key, this.id, this.td, this.region})
-      : assert(id != null || td != null);
+  const TdDetailPage({super.key, this.id, this.td, this.region}) : assert(id != null || td != null);
 
   @override
   State<TdDetailPage> createState() => _TdDetailPageState();
 }
 
-class _TdDetailPageState extends State<TdDetailPage>
-    with RegionBasedState<BaseTd, TdDetailPage> {
+class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseTd, TdDetailPage> {
   int get id => widget.td?.id ?? widget.id ?? data?.id ?? -1;
   BaseTd get td => data!;
 
@@ -66,10 +64,8 @@ class _TdDetailPageState extends State<TdDetailPage>
 
   @override
   Widget buildContent(BuildContext context, BaseTd td) {
-    final svts = ReverseGameData.td2Svt(id).toList()
-      ..sort2((e) => e.collectionNo);
-    final enemies = ReverseGameData.questEnemies(
-        (e) => e.noblePhantasm.noblePhantasmId == id);
+    final svts = ReverseGameData.td2Svt(id).toList()..sort2((e) => e.collectionNo);
+    final enemies = ReverseGameData.questEnemies((e) => e.noblePhantasm.noblePhantasmId == id);
 
     return ListView(
       children: [
@@ -87,8 +83,7 @@ class _TdDetailPageState extends State<TdDetailPage>
             TableCellData(text: S.current.trait, isHeader: true),
             TableCellData(
               flex: 3,
-              child: SharedBuilder.traitList(
-                  context: context, traits: td.individuality),
+              child: SharedBuilder.traitList(context: context, traits: td.individuality),
             )
           ]),
         ]),
@@ -123,8 +118,7 @@ class _TdDetailPageState extends State<TdDetailPage>
         leading: enemy.iconBuilder(context: context),
         title: Text(enemy.lName.l),
         onTap: () {
-          router.pushPage(
-              QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+          router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
         },
       ));
     }
@@ -136,8 +130,7 @@ class _TdDetailPageState extends State<TdDetailPage>
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbTd(id, region ?? Region.jp)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbTd(id, region ?? Region.jp)),
     );
   }
 }

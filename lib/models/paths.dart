@@ -20,8 +20,7 @@ class PathManager {
   String? _persistentPath;
 
   // ignore: unused_element
-  Future<String?> _debugPath(
-      String key, Future<dynamic> Function() getter) async {
+  Future<String?> _debugPath(String key, Future<dynamic> Function() getter) async {
     dynamic _path;
     try {
       _path = await getter();
@@ -71,8 +70,7 @@ class PathManager {
       _persistentPath = (await getApplicationDocumentsDirectory()).path;
       final sp = await SharedPreferences.getInstance();
       bool useExternal = sp.get('android_use_external') == true;
-      List<String> externalPaths = (await getExternalStorageDirectories(
-              type: StorageDirectory.documents))!
+      List<String> externalPaths = (await getExternalStorageDirectories(type: StorageDirectory.documents))!
           .map((e) => dirname(e.path))
           .whereType<String>()
           .toList();
@@ -85,13 +83,11 @@ class PathManager {
       }
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isIOS) {
-      _persistentPath =
-          _appPath = (await getApplicationDocumentsDirectory()).path;
+      _persistentPath = _appPath = (await getApplicationDocumentsDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
-      _persistentPath =
-          _appPath = (await getApplicationDocumentsDirectory()).path;
+      _persistentPath = _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isWindows) {
@@ -114,8 +110,7 @@ class PathManager {
         _appPath = (await getApplicationSupportDirectory()).path;
       }
     } else {
-      throw UnimplementedError(
-          'Not supported for ${PlatformU.operatingSystem}');
+      throw UnimplementedError('Not supported for ${PlatformU.operatingSystem}');
     }
     if (_appPath == null) {
       throw const OSError('Cannot resolve document folder');
@@ -149,9 +144,7 @@ class PathManager {
   }
 
   String convertIosPath(String p) {
-    return PlatformU.isIOS
-        ? p.replaceFirst(appPath, S.current.ios_app_path)
-        : p;
+    return PlatformU.isIOS ? p.replaceFirst(appPath, S.current.ios_app_path) : p;
   }
 
   static String hiveAsciiKey(String s) {

@@ -20,24 +20,18 @@ class CreatorDetail extends StatelessWidget {
         _name = name;
 
   List<String> _split(String name) {
-    return name
-        .split(RegExp(r'[&＆]'))
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
+    return name.split(RegExp(r'[&＆]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 
-  Transl<String, String> lName([String? name]) => _isCV
-      ? Transl.cvNames(name ?? _name)
-      : Transl.illustratorNames(name ?? _name);
+  Transl<String, String> lName([String? name]) =>
+      _isCV ? Transl.cvNames(name ?? _name) : Transl.illustratorNames(name ?? _name);
   bool ckSvt(Servant svt) {
     // No.83 Solomon
     // if (_name.isEmpty) return false;
     if (_isCV) {
       return svt.profile.cv == _name || _split(svt.profile.cv).contains(_name);
     } else {
-      return svt.profile.illustrator == _name ||
-          _split(svt.profile.illustrator).contains(_name);
+      return svt.profile.illustrator == _name || _split(svt.profile.illustrator).contains(_name);
     }
   }
 
@@ -47,8 +41,7 @@ class CreatorDetail extends StatelessWidget {
       if (_name.isEmpty) return false;
       return ce.profile.cv == _name || _split(ce.profile.cv).contains(_name);
     } else {
-      return ce.profile.illustrator == _name ||
-          _split(ce.profile.illustrator).contains(_name);
+      return ce.profile.illustrator == _name || _split(ce.profile.illustrator).contains(_name);
     }
   }
 
@@ -75,14 +68,8 @@ class CreatorDetail extends StatelessWidget {
             isHeader: true,
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: _name, textAlign: TextAlign.center)
-          ]),
-        if (!Transl.isEN)
-          CustomTableRow(children: [
-            TableCellData(text: lName().na, textAlign: TextAlign.center)
-          ]),
+        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: _name, textAlign: TextAlign.center)]),
+        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName().na, textAlign: TextAlign.center)]),
         if (subCreators.length > 1) ...[
           CustomTableRow.fromTexts(texts: const ['Related'], isHeader: true),
           CustomTableRow.fromChildren(children: [
@@ -99,9 +86,7 @@ class CreatorDetail extends StatelessWidget {
                         router.pushPage(CreatorDetail.illust(name: creator));
                       }
                     },
-                    text: _isCV
-                        ? Transl.cvNames(creator).l
-                        : Transl.illustratorNames(creator).l,
+                    text: _isCV ? Transl.cvNames(creator).l : Transl.illustratorNames(creator).l,
                   ))
               ], const Text(' / ')),
             )
@@ -111,12 +96,9 @@ class CreatorDetail extends StatelessWidget {
     );
     children.add(table);
 
-    final servants =
-        db.gameData.servantsNoDup.values.where((svt) => ckSvt(svt)).toList();
-    final ces =
-        db.gameData.craftEssences.values.where((ce) => ckCE(ce)).toList();
-    final ccs =
-        db.gameData.commandCodes.values.where((cc) => ckCC(cc)).toList();
+    final servants = db.gameData.servantsNoDup.values.where((svt) => ckSvt(svt)).toList();
+    final ces = db.gameData.craftEssences.values.where((ce) => ckCE(ce)).toList();
+    final ccs = db.gameData.commandCodes.values.where((cc) => ckCC(cc)).toList();
     servants.sort2((e) => e.collectionNo);
     ces.sort2((e) => e.collectionNo);
     ccs.sort2((e) => e.collectionNo);
@@ -126,8 +108,7 @@ class CreatorDetail extends StatelessWidget {
         SharedBuilder.grid<Servant>(
           context: context,
           items: servants,
-          builder: (context, svt) =>
-              svt.iconBuilder(context: context, width: 48),
+          builder: (context, svt) => svt.iconBuilder(context: context, width: 48),
           padding: const EdgeInsets.symmetric(horizontal: 16),
         ),
       ]);

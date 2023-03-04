@@ -81,22 +81,14 @@ class AppNewsCarousel extends StatefulWidget {
     bool updated = false;
     try {
       // CORS issue
-      Future<List<CarouselItem>>? taskChaldea,
-          taskMC,
-          taskJP,
-          taskCN,
-          taskTW,
-          taskNA,
-          taskKR;
+      Future<List<CarouselItem>>? taskChaldea, taskMC, taskJP, taskCN, taskTW, taskNA, taskKR;
 
       final _dio = DioE();
 
       // app news
-      taskChaldea =
-          _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
+      taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
         List<CarouselItem> items = [];
-        final data =
-            (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
+        final data = (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
         final minVer = AppVersion.parse(data['minimalApp']);
         if (minVer > AppInfo.version || kDebugMode) {
           items.add(CarouselItem(
@@ -110,16 +102,14 @@ class AppNewsCarousel extends StatefulWidget {
         if (!carouselSetting.enableChaldea) {
           items.removeWhere((item) => item.type != 1);
         }
-        items.addAll(
-            (response.data as List).map((e) => CarouselItem.fromJson(e)));
+        items.addAll((response.data as List).map((e) => CarouselItem.fromJson(e)));
         return items;
       }).catchError((e, s) async {
         logger.d('parse chaldea news failed', e, s);
         return <CarouselItem>[];
       });
 
-      Future<Response> _getUrl(String url,
-          {Map<String, String>? headers}) async {
+      Future<Response> _getUrl(String url, {Map<String, String>? headers}) async {
         Map<String, String>? queryParameters;
         if (kIsWeb) {
           queryParameters = {'url': url};
@@ -146,8 +136,7 @@ class AppNewsCarousel extends StatefulWidget {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementById('transImageBox');
           updated = true;
-          return _getImageLinks(
-              element: ele, uri: Uri.parse('https://fgo.wiki/'));
+          return _getImageLinks(element: ele, uri: Uri.parse('https://fgo.wiki/'));
         }).catchError((e, s) async {
           logger.d('parse mc slides failed', e, s);
           return <CarouselItem>[];
@@ -178,17 +167,11 @@ class AppNewsCarousel extends StatefulWidget {
             final id = notice["id"] as int;
             final title = notice["title"] as String;
             if (id == 1509 || title.contains('维护')) continue;
-            final data =
-                (await _getUrl('https://api.biligame.com/news/$id.action'))
-                    .data["data"];
+            final data = (await _getUrl('https://api.biligame.com/news/$id.action')).data["data"];
             final content = data["content"] as String;
-            String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"')
-                .firstMatch(content)
-                ?.group(2);
+            String? img = RegExp(r'^([\s\S]{0,16})<img src="([^"]*)"').firstMatch(content)?.group(2);
             if (img == null) continue;
-            img = Uri.https('game.bilibili.com', '/fgo/news.html')
-                .resolve(img)
-                .toString();
+            img = Uri.https('game.bilibili.com', '/fgo/news.html').resolve(img).toString();
             items.add(CarouselItem(
               image: img,
               title: data['title'],
@@ -208,8 +191,7 @@ class AppNewsCarousel extends StatefulWidget {
       if (carouselSetting.enableTW) {
         // https://www.fate-go.com.tw/newsmng/2026.json
         // https://www.fate-go.com.tw/newsmng/index.json
-        taskTW = _getUrl('https://www.fate-go.com.tw/newsmng/index.json')
-            .then((response) async {
+        taskTW = _getUrl('https://www.fate-go.com.tw/newsmng/index.json').then((response) async {
           final notices = List<Map>.from(response.data as List);
           notices.retainWhere((e) => e["category"] == 1);
           notices.sort2((e) => e["publish_time"] as int, reversed: true);
@@ -218,16 +200,11 @@ class AppNewsCarousel extends StatefulWidget {
             final id = notice["id"] as int;
             final title = notice["title"] as String;
             if (title.contains('維護')) continue;
-            final data =
-                (await _getUrl('https://www.fate-go.com.tw/newsmng/$id.json'))
-                    .data as Map;
+            final data = (await _getUrl('https://www.fate-go.com.tw/newsmng/$id.json')).data as Map;
             final content = data["content"] as String;
-            String? img =
-                RegExp(r'<img src="([^"]*)"').firstMatch(content)?.group(1);
+            String? img = RegExp(r'<img src="([^"]*)"').firstMatch(content)?.group(1);
             if (img == null) continue;
-            img = Uri.https('www.fate-go.com.tw', '/news.html')
-                .resolve(img)
-                .toString();
+            img = Uri.https('www.fate-go.com.tw', '/news.html').resolve(img).toString();
             items.add(CarouselItem(
               image: img,
               title: data['title'],
@@ -276,9 +253,8 @@ class AppNewsCarousel extends StatefulWidget {
 
       if (carouselSetting.enableKR) {
         const krUrl = 'https://cafe.naver.com/MyCafeIntro.nhn?clubid=29199987';
-        taskKR = _getUrl(krUrl, headers: {
-          HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'
-        }).then((response) {
+        taskKR =
+            _getUrl(krUrl, headers: {HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'}).then((response) {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementsByTagName('table').getOrNull(0);
           updated = true;
@@ -286,11 +262,8 @@ class AppNewsCarousel extends StatefulWidget {
           items.retainWhere((e) =>
               e.image != null &&
               e.image!.contains('https://cafeskthumb-phinf.pstatic.net') &&
-              ![
-                'http://fgo.netmarble.com/',
-                'https://www.facebook.com/FateGO.KR',
-                'https://twitter.com/FateGO_KR'
-              ].contains(e.link));
+              !['http://fgo.netmarble.com/', 'https://www.facebook.com/FateGO.KR', 'https://twitter.com/FateGO_KR']
+                  .contains(e.link));
           return items;
         }).catchError((e, s) async {
           logger.d('parse KR slides failed', e, s);
@@ -309,11 +282,9 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items.clear();
       }
       if ((result.isNotEmpty || updated)) {
-        List<String> blocked =
-            (await AtlasApi.remoteConfig())?.blockedCarousels ?? [];
+        List<String> blocked = (await AtlasApi.remoteConfig())?.blockedCarousels ?? [];
         blocked.removeWhere((e) => e.isEmpty);
-        result.removeWhere((item) =>
-            blocked.any((word) => item.image?.contains(word) == true));
+        result.removeWhere((item) => blocked.any((word) => item.image?.contains(word) == true));
 
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
@@ -348,14 +319,10 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final limitOption =
-        CarouselUtil.limitHeight(width: widget.maxWidth, maxHeight: 150);
+    final limitOption = CarouselUtil.limitHeight(width: widget.maxWidth, maxHeight: 150);
 
     final pages = getPages(
-        limitOption.height ??
-            (widget.maxWidth == null
-                ? null
-                : widget.maxWidth! / limitOption.aspectRatio),
+        limitOption.height ?? (widget.maxWidth == null ? null : widget.maxWidth! / limitOption.aspectRatio),
         limitOption.aspectRatio);
 
     if (pages.isEmpty) {
@@ -372,8 +339,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         ),
       ));
     }
-    _curCarouselIndex =
-        pages.isEmpty ? 0 : _curCarouselIndex.clamp(0, pages.length - 1);
+    _curCarouselIndex = pages.isEmpty ? 0 : _curCarouselIndex.clamp(0, pages.length - 1);
 
     CarouselOptions options = CarouselOptions(
         height: limitOption.height,
@@ -475,9 +441,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           aspectRatio: aspectRatio,
           cachedOption: CachedImageOption(
             errorWidget: (context, url, error) => Container(
-              child: kDebugMode
-                  ? Text(url)
-                  : const SizedBox(width: 80, height: 30),
+              child: kDebugMode ? Text(url) : const SizedBox(width: 80, height: 30),
             ),
             fit: item.fit,
           ),
@@ -518,8 +482,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           onTap: () async {
             final link = item.link!;
             const routePrefix = '/chaldea/route';
-            if (link.toLowerCase().startsWith(routePrefix) &&
-                link.length > routePrefix.length + 1) {
+            if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
               router.push(url: link.substring(routePrefix.length));
             } else {
               jumpToExternalLinkAlert(url: link, content: item.title);

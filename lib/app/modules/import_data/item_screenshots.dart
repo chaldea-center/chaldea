@@ -21,12 +21,10 @@ class ImportItemScreenshotPage extends StatefulWidget {
   ImportItemScreenshotPage({super.key});
 
   @override
-  ImportItemScreenshotPageState createState() =>
-      ImportItemScreenshotPageState();
+  ImportItemScreenshotPageState createState() => ImportItemScreenshotPageState();
 }
 
-class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
-    with SingleTickerProviderStateMixin {
+class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late Dio _dio;
 
@@ -37,8 +35,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _tabController = TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) setState(() {});
     });
@@ -62,8 +59,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         titleSpacing: 0,
         title: Text(S.current.item_screenshot),
         actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots',
-              zhPath: 'import_data#素材截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots', zhPath: 'import_data#素材截图解析'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
@@ -107,8 +103,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         var bytes = imageFiles.elementAt(index);
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {
-          bytes = await compressToJpgAsync(
-              src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
+          bytes = await compressToJpgAsync(src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
         } else {
           bytes = await compressToJpgAsync(src: bytes, quality: 90);
         }

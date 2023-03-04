@@ -19,8 +19,7 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
   _CraftFilterPageState createState() => _CraftFilterPageState();
 }
 
-class _CraftFilterPageState
-    extends FilterPageState<CraftFilterData, CraftFilterPage> {
+class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -121,8 +120,7 @@ class _CraftFilterPageState
             update();
           },
         ),
-        EffectFilterUtil.buildTraitFilter(
-            context, filterData.targetTrait, update),
+        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

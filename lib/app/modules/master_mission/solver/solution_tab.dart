@@ -38,8 +38,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
     int apCount = 0;
     if (widget.showResult) {
       battleCount = Maths.sum(solution.result.values);
-      apCount = Maths.sum(solution.result.keys
-          .map((e) => solution.quests[e]!.consume * solution.result[e]!));
+      apCount = Maths.sum(solution.result.keys.map((e) => solution.quests[e]!.consume * solution.result[e]!));
     }
     List<int> questIds = [];
     Map<int, int> targetCounts = {};
@@ -63,8 +62,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       padding: const EdgeInsetsDirectional.only(end: 16),
       child: widget.showResult
           ? ListTile(
-              title: Text(
-                  S.current.solution_total_battles_ap(battleCount, apCount)),
+              title: Text(S.current.solution_total_battles_ap(battleCount, apCount)),
               trailing: Text(S.current.solution_battle_count),
             )
           : ListTile(
@@ -76,16 +74,13 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
     for (final questId in questIds) {
       children.add(_oneQuest(
         questId,
-        widget.showResult
-            ? solution.result[questId]!
-            : targetCounts[questId] ?? 0,
+        widget.showResult ? solution.result[questId]! : targetCounts[questId] ?? 0,
       ));
     }
     if (widget.showResult) {
       final invalidMissions = solution.missions
-          .where((m) => solution.result.keys.every((q) =>
-              solution.quests[q] == null ||
-              MissionSolver.countMissionTarget(m, solution.quests[q]!) <= 0))
+          .where((m) => solution.result.keys.every(
+              (q) => solution.quests[q] == null || MissionSolver.countMissionTarget(m, solution.quests[q]!) <= 0))
           .toList();
       if (invalidMissions.isNotEmpty) {
         children.add(TileGroup(
@@ -93,8 +88,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
           children: [
             for (final mission in invalidMissions)
               ListTile(
-                leading:
-                    Text((solution.missions.indexOf(mission) + 1).toString()),
+                leading: Text((solution.missions.indexOf(mission) + 1).toString()),
                 title: mission.buildDescriptor(context),
                 horizontalTitleGap: 0,
                 dense: true,
@@ -130,9 +124,8 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         if (name != nameJp) subtitle += ' $nameJp';
         return ListTile(
-          leading: quest.spot?.shownImage == null
-              ? const SizedBox()
-              : db.getIconImage(quest.spot?.shownImage, width: 48),
+          leading:
+              quest.spot?.shownImage == null ? const SizedBox() : db.getIconImage(quest.spot?.shownImage, width: 48),
           contentPadding: const EdgeInsetsDirectional.only(start: 2),
           horizontalTitleGap: 2,
           title: Text(quest.lDispName, textScaleFactor: 0.9),
@@ -147,17 +140,14 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
           if (count <= 0) continue;
           children.add(ListTile(
             title: mission.buildDescriptor(context),
-            subtitle: mission.originDetail?.isNotEmpty == true
-                ? Text(mission.originDetail!)
-                : null,
+            subtitle: mission.originDetail?.isNotEmpty == true ? Text(mission.originDetail!) : null,
             trailing: Text('+ $count'),
             minVerticalPadding: 0,
             visualDensity: VisualDensity.compact,
             dense: true,
           ));
         }
-        children = divideTiles(children,
-            divider: const Divider(indent: 16, endIndent: 16));
+        children = divideTiles(children, divider: const Divider(indent: 16, endIndent: 16));
         children.add(QuestCard(quest: quest, region: solution.region));
         return Column(
           mainAxisSize: MainAxisSize.min,

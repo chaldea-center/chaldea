@@ -54,9 +54,7 @@ class FullscreenImageViewer extends StatefulWidget {
         // add transition
         pageBuilder: (context, _, __) => FullscreenImageViewer(
           galleryOption: PhotoViewGalleryOption(
-            pageController: initialPage == null
-                ? null
-                : PageController(initialPage: initialPage),
+            pageController: initialPage == null ? null : PageController(initialPage: initialPage),
           ),
           children: List.generate(
             urls.length,
@@ -121,9 +119,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   Widget get gallery {
     return PhotoViewGallery(
       pageOptions: widget.children
-          .map((child) => widget.photoViewOption
-              .copyWith(disableGestures: true)
-              .toOriginalWithChild(child))
+          .map((child) => widget.photoViewOption.copyWith(disableGestures: true).toOriginalWithChild(child))
           .toList(),
       loadingBuilder: widget.galleryOption.loadingBuilder,
       backgroundDecoration: widget.galleryOption.backgroundDecoration,

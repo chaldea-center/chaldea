@@ -37,8 +37,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
                 onChanged: (v) {
                   setState(() {
                     SplitRoute.defaultMasterRatio = v.toInt();
-                    db.settings.splitMasterRatio =
-                        SplitRoute.defaultMasterRatio;
+                    db.settings.splitMasterRatio = SplitRoute.defaultMasterRatio;
                   });
                 },
                 onChangeEnd: (v) {
@@ -58,8 +57,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
             child: ElevatedButton(
               onPressed: () {
                 setState(() {
-                  db.settings.splitMasterRatio =
-                      SplitRoute.defaultMasterRatio = null;
+                  db.settings.splitMasterRatio = SplitRoute.defaultMasterRatio = null;
                 });
                 db.notifyAppUpdate();
               },

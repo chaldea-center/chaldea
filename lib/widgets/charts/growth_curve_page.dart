@@ -50,14 +50,11 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
   static const _preferredIntervals = [10, 20, 50, 100, 200, 500, 1000, 2000];
 
   double _resolveIntervalY() {
-    int maxValue =
-        widget.data.map((e) => e.yy.last).fold<int>(0, (p, c) => max(p, c));
-    int minValue =
-        widget.data.map((e) => e.yy.first).fold<int>(0, (p, c) => max(p, c));
+    int maxValue = widget.data.map((e) => e.yy.last).fold<int>(0, (p, c) => max(p, c));
+    int minValue = widget.data.map((e) => e.yy.first).fold<int>(0, (p, c) => max(p, c));
     minValue = min(0, minValue);
     int interval = (maxValue - minValue) ~/ 6;
-    interval = _preferredIntervals.firstWhereOrNull((e) => e > interval) ??
-        interval ~/ 1000 * 1000;
+    interval = _preferredIntervals.firstWhereOrNull((e) => e > interval) ?? interval ~/ 1000 * 1000;
     return interval.toDouble();
   }
 

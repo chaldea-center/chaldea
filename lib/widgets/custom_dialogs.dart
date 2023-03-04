@@ -14,13 +14,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final ValueChanged<String>? onSubmit;
 
   const InputCancelOkDialog(
-      {super.key,
-      this.title,
-      this.text,
-      this.hintText,
-      this.errorText,
-      this.validate,
-      this.onSubmit});
+      {super.key, this.title, this.text, this.hintText, this.errorText, this.validate, this.onSubmit});
 
   @override
   State<StatefulWidget> createState() => _InputCancelOkDialogState();
@@ -64,9 +58,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         controller: _controller,
         autofocus: true,
         autocorrect: false,
-        decoration: InputDecoration(
-            hintText: widget.hintText,
-            errorText: validation ? null : S.current.invalid_input),
+        decoration: InputDecoration(hintText: widget.hintText, errorText: validation ? null : S.current.invalid_input),
         onChanged: (v) {
           if (widget.validate != null) {
             setState(() {
@@ -131,8 +123,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     super.key,
     this.title,
     this.content,
-    this.contentPadding =
-        const EdgeInsetsDirectional.fromSTEB(24.0, 20.0, 24.0, 24.0),
+    this.contentPadding = const EdgeInsetsDirectional.fromSTEB(24.0, 20.0, 24.0, 24.0),
     this.confirmText,
     this.onTapOk,
     this.onTapCancel,
@@ -189,8 +180,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   }
 }
 
-Future<void> jumpToExternalLinkAlert(
-    {required String url, String? name, String? content}) async {
+Future<void> jumpToExternalLinkAlert({required String url, String? name, String? content}) async {
   String shownLink = url;
   String? safeLink = Uri.tryParse(url)?.toString();
   if (safeLink != null) {

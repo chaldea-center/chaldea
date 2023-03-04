@@ -60,16 +60,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: db.settings.themeMode,
-        scrollBehavior:
-            DraggableScrollBehavior(enableMouse: db.settings.enableMouseDrag),
+        scrollBehavior: DraggableScrollBehavior(enableMouse: db.settings.enableMouseDrag),
         locale: Language.getLanguage(db.settings.language)?.locale,
-        localizationsDelegates: const [
-          S.delegate,
-          ...GlobalMaterialLocalizations.delegates
-        ],
-        supportedLocales:
-            Language.getSortedSupportedLanguage(db.settings.language)
-                .map((e) => e.locale),
+        localizationsDelegates: const [S.delegate, ...GlobalMaterialLocalizations.delegates],
+        supportedLocales: Language.getSortedSupportedLanguage(db.settings.language).map((e) => e.locale),
         builder: (context, widget) {
           ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
           return FlutterEasyLoading(child: widget);
@@ -243,8 +237,7 @@ class _ErrorWidget extends StatelessWidget {
   final FlutterErrorDetails details;
   const _ErrorWidget(this.details);
 
-  static Widget errorWidgetBuilder(FlutterErrorDetails details) =>
-      _ErrorWidget(details);
+  static Widget errorWidgetBuilder(FlutterErrorDetails details) => _ErrorWidget(details);
 
   @override
   Widget build(BuildContext context) {
@@ -262,8 +255,7 @@ class _ErrorWidget extends StatelessWidget {
             return Scaffold(
               appBar: AppBar(title: Text(S.current.error)),
               body: ListView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 children: [
                   const DividerWithTitle(title: 'URL'),
                   Text(router.currentConfiguration?.url ?? 'Unknown'),

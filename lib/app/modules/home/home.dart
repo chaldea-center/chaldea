@@ -21,9 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
-  final bool showBattle = kDebugMode ||
-      AppInfo.isDebugDevice ||
-      (kIsWeb && kPlatformMethods.href.contains('battle.'));
+  final bool showBattle = kDebugMode || AppInfo.isDebugDevice || (kIsWeb && kPlatformMethods.href.contains('battle.'));
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +37,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _curIndex,
         items: [
-          BottomNavigationBarItem(
-              icon: const SafeArea(child: Icon(Icons.layers)),
-              label: S.current.gallery_tab_name),
+          BottomNavigationBarItem(icon: const SafeArea(child: Icon(Icons.layers)), label: S.current.gallery_tab_name),
           if (showBattle)
-            const BottomNavigationBarItem(
-                icon: SafeArea(child: Icon(Icons.blur_on_sharp)),
-                label: 'Chaldeas'),
+            const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Chaldeas'),
           BottomNavigationBarItem(
-              icon: const SafeArea(child: Icon(Icons.settings)),
-              label: S.current.settings_tab_name),
+              icon: const SafeArea(child: Icon(Icons.settings)), label: S.current.settings_tab_name),
         ],
         onTap: (index) {
           // if (_curIndex != index) db2.saveData();
@@ -61,8 +54,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
     if (mounted) {
-      if (db.settings.display.showWindowFab &&
-          !(rootRouter.appState.showSidebar && SplitRoute.isSplit(null))) {
+      if (db.settings.display.showWindowFab && !(rootRouter.appState.showSidebar && SplitRoute.isSplit(null))) {
         WindowManagerFab.createOverlay(context);
       }
       if (db.settings.showDebugFab) {

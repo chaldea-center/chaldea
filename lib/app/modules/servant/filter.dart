@@ -22,8 +22,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
   _ServantFilterPageState createState() => _ServantFilterPageState();
 }
 
-class _ServantFilterPageState
-    extends FilterPageState<SvtFilterData, ServantFilterPage> {
+class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -46,9 +45,7 @@ class _ServantFilterPageState
             FilterGroup<FavoriteState>(
               options: FavoriteState.values,
               combined: true,
-              values: FilterRadioData.nonnull(widget.planMode
-                  ? filterData.planFavorite
-                  : filterData.favorite),
+              values: FilterRadioData.nonnull(widget.planMode ? filterData.planFavorite : filterData.favorite),
               padding: EdgeInsets.zero,
               optionBuilder: (v) {
                 return Text.rich(TextSpan(children: [
@@ -106,16 +103,14 @@ class _ServantFilterPageState
         FilterGroup<TdEffectFlag>(
           values: filterData.npType,
           options: TdEffectFlag.values,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
           onFilterChanged: (value, _) {
             update();
           },
         ),
         buildGroupDivider(text: S.current.plan),
         FilterGroup<int>(
-          title: Text(
-              '${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
+          title: Text('${S.current.priority} (${S.current.display_setting} - ${S.current.setting_priority_tagging})',
               style: textStyle),
           options: const [1, 2, 3, 4, 5],
           values: filterData.priority,
@@ -195,9 +190,8 @@ class _ServantFilterPageState
           title: Text(S.current.duplicated_servant),
           options: const [false, true],
           values: filterData.svtDuplicated,
-          optionBuilder: (v) => Text(v
-              ? S.current.duplicated_servant_duplicated
-              : S.current.duplicated_servant_primary),
+          optionBuilder: (v) =>
+              Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
           onFilterChanged: (v, _) {
             setState(() {
               update();
@@ -234,8 +228,7 @@ class _ServantFilterPageState
         ),
         FilterGroup<ServantPolicy>(
           title: Text(S.current.info_alignment, style: textStyle),
-          options:
-              ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
+          options: ServantPolicy.values.sublist(1, ServantPolicy.values.length - 1),
           values: filterData.policy,
           optionBuilder: (v) => Text(Transl.servantPolicy(v).l),
           onFilterChanged: (value, _) {
@@ -244,8 +237,7 @@ class _ServantFilterPageState
         ),
         FilterGroup<ServantPersonality>(
           values: filterData.personality,
-          options: ServantPersonality.values
-              .sublist(1, ServantPersonality.values.length - 1),
+          options: ServantPersonality.values.sublist(1, ServantPersonality.values.length - 1),
           optionBuilder: (v) => Text(Transl.servantPersonality(v).l),
           onFilterChanged: (value, _) {
             update();
@@ -290,8 +282,7 @@ class _ServantFilterPageState
             update();
           },
         ),
-        EffectFilterUtil.buildTraitFilter(
-            context, filterData.targetTrait, update),
+        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

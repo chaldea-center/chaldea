@@ -9,10 +9,9 @@ class SvtClassListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 98-NPC test, 99-enemy test, 100-test?
-    final clsIds = {
-      ...db.gameData.constData.classInfo.keys,
-      ...SvtClass.values.map((e) => e.id)
-    }.where((e) => ![0, 98, 99, 100].contains(e)).toList();
+    final clsIds = {...db.gameData.constData.classInfo.keys, ...SvtClass.values.map((e) => e.id)}
+        .where((e) => ![0, 98, 99, 100].contains(e))
+        .toList();
     clsIds.sort();
     return Scaffold(
       appBar: AppBar(
@@ -21,8 +20,7 @@ class SvtClassListPage extends StatelessWidget {
           IconButton(
             onPressed: () {
               FullscreenImageViewer.show(context: context, urls: [
-                for (final region in Region.values)
-                  Atlas.asset('ClassIcons/img_classchart.png', region),
+                for (final region in Region.values) Atlas.asset('ClassIcons/img_classchart.png', region),
               ]);
             },
             icon: const Icon(Icons.sync_alt_rounded),
@@ -34,8 +32,7 @@ class SvtClassListPage extends StatelessWidget {
           final clsId = clsIds[index];
           final clsInfo = db.gameData.constData.classInfo[clsId];
           return ListTile(
-            leading: db.getIconImage(SvtClassX.clsIcon(5, clsInfo?.iconImageId),
-                width: 36),
+            leading: db.getIconImage(SvtClassX.clsIcon(5, clsInfo?.iconImageId), width: 36),
             title: Text(Transl.svtClassId(clsId).l),
             subtitle: Text('No.$clsId'),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

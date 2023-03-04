@@ -8,14 +8,10 @@ part of '../../../models/gamedata/toplogin.dart';
 
 FateTopLogin _$FateTopLoginFromJson(Map json) => FateTopLogin(
       response: (json['response'] as List<dynamic>?)
-              ?.map((e) =>
-                  _ResponseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => _ResponseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      cache: json['cache'] == null
-          ? null
-          : UserMstCache.fromJson(
-              Map<String, dynamic>.from(json['cache'] as Map)),
+      cache: json['cache'] == null ? null : UserMstCache.fromJson(Map<String, dynamic>.from(json['cache'] as Map)),
       sign: json['sign'] as String?,
     );
 
@@ -27,14 +23,9 @@ _ResponseDetail _$ResponseDetailFromJson(Map json) => _ResponseDetail(
     );
 
 UserMstCache _$UserMstCacheFromJson(Map json) => UserMstCache(
-      replaced: json['replaced'] == null
-          ? null
-          : UserMstData.fromJson(
-              Map<String, dynamic>.from(json['replaced'] as Map)),
-      updated: json['updated'] == null
-          ? null
-          : UserMstData.fromJson(
-              Map<String, dynamic>.from(json['updated'] as Map)),
+      replaced:
+          json['replaced'] == null ? null : UserMstData.fromJson(Map<String, dynamic>.from(json['replaced'] as Map)),
+      updated: json['updated'] == null ? null : UserMstData.fromJson(Map<String, dynamic>.from(json['updated'] as Map)),
       serverTime: json['serverTime'] as int?,
     );
 
@@ -43,8 +34,7 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
           ?.map((e) => UserGame.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSvtCollection: (json['userSvtCollection'] as List<dynamic>?)
-          ?.map((e) =>
-              UserSvtCollection.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserSvtCollection.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSvt: (json['userSvt'] as List<dynamic>?)
           ?.map((e) => UserSvt.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -52,46 +42,35 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userSvtStorage: (json['userSvtStorage'] as List<dynamic>?)
           ?.map((e) => UserSvt.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      userSvtAppendPassiveSkill:
-          (json['userSvtAppendPassiveSkill'] as List<dynamic>?)
-              ?.map((e) => UserSvtAppendPassiveSkill.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList(),
-      userSvtAppendPassiveSkillLv:
-          (json['userSvtAppendPassiveSkillLv'] as List<dynamic>?)
-              ?.map((e) => UserSvtAppendPassiveSkillLv.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList(),
-      userCommandCodeCollection:
-          (json['userCommandCodeCollection'] as List<dynamic>?)
-              ?.map((e) => UserCommandCodeCollection.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList(),
+      userSvtAppendPassiveSkill: (json['userSvtAppendPassiveSkill'] as List<dynamic>?)
+          ?.map((e) => UserSvtAppendPassiveSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      userSvtAppendPassiveSkillLv: (json['userSvtAppendPassiveSkillLv'] as List<dynamic>?)
+          ?.map((e) => UserSvtAppendPassiveSkillLv.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      userCommandCodeCollection: (json['userCommandCodeCollection'] as List<dynamic>?)
+          ?.map((e) => UserCommandCodeCollection.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       userCommandCode: (json['userCommandCode'] as List<dynamic>?)
-          ?.map((e) =>
-              UserCommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserCommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSvtCommandCode: (json['userSvtCommandCode'] as List<dynamic>?)
-          ?.map((e) =>
-              UserSvtCommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserSvtCommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userItem: (json['userItem'] as List<dynamic>?)
           ?.map((e) => UserItem.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSvtCoin: (json['userSvtCoin'] as List<dynamic>?)
-          ?.map(
-              (e) => UserSvtCoin.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserSvtCoin.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userEquip: (json['userEquip'] as List<dynamic>?)
           ?.map((e) => UserEquip.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSupportDeck: (json['userSupportDeck'] as List<dynamic>?)
-          ?.map((e) =>
-              UserSupportDeck.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserSupportDeck.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       userSvtLeader: (json['userSvtLeader'] as List<dynamic>?)
-          ?.map((e) =>
-              UserSvtLeader.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => UserSvtLeader.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -127,8 +106,7 @@ UserSvtCollection _$UserSvtCollectionFromJson(Map json) => UserSvtCollection(
       friendship: json['friendship'],
       friendshipRank: json['friendshipRank'],
       friendshipExceedCount: json['friendshipExceedCount'],
-      costumeIds:
-          (json['costumeIds'] as List<dynamic>).map((e) => e as int).toList(),
+      costumeIds: (json['costumeIds'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
 UserGame _$UserGameFromJson(Map json) => UserGame(
@@ -153,10 +131,8 @@ UserGame _$UserGameFromJson(Map json) => UserGame(
       stone: json['stone'] as int,
     );
 
-UserSvtAppendPassiveSkill _$UserSvtAppendPassiveSkillFromJson(Map json) =>
-    UserSvtAppendPassiveSkill(
-      unlockNums:
-          (json['unlockNums'] as List<dynamic>?)?.map((e) => e as int).toList(),
+UserSvtAppendPassiveSkill _$UserSvtAppendPassiveSkillFromJson(Map json) => UserSvtAppendPassiveSkill(
+      unlockNums: (json['unlockNums'] as List<dynamic>?)?.map((e) => e as int).toList(),
       svtId: json['svtId'],
     );
 
@@ -165,15 +141,10 @@ UserSvtCoin _$UserSvtCoinFromJson(Map json) => UserSvtCoin(
       num: json['num'],
     );
 
-UserSvtAppendPassiveSkillLv _$UserSvtAppendPassiveSkillLvFromJson(Map json) =>
-    UserSvtAppendPassiveSkillLv(
+UserSvtAppendPassiveSkillLv _$UserSvtAppendPassiveSkillLvFromJson(Map json) => UserSvtAppendPassiveSkillLv(
       userSvtId: json['userSvtId'],
-      appendPassiveSkillNums: (json['appendPassiveSkillNums'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
-      appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
+      appendPassiveSkillNums: (json['appendPassiveSkillNums'] as List<dynamic>).map((e) => e as int).toList(),
+      appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
 UserEquip _$UserEquipFromJson(Map json) => UserEquip(
@@ -183,8 +154,7 @@ UserEquip _$UserEquipFromJson(Map json) => UserEquip(
       exp: json['exp'],
     );
 
-UserCommandCodeCollection _$UserCommandCodeCollectionFromJson(Map json) =>
-    UserCommandCodeCollection(
+UserCommandCodeCollection _$UserCommandCodeCollectionFromJson(Map json) => UserCommandCodeCollection(
       commandCodeId: json['commandCodeId'],
       status: json['status'],
       getNum: json['getNum'],
@@ -231,11 +201,9 @@ UserSvtLeader _$UserSvtLeaderFromJson(Map json) => UserSvtLeader(
       exceedCount: json['exceedCount'],
       equipTarget1: json['equipTarget1'] == null
           ? null
-          : SvtLeaderEquipTargetInfo.fromJson(
-              Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
       commandCode: (json['commandCode'] as List<dynamic>?)
-          ?.map((e) => SvtLeaderCommandCodeStatus.fromJson(
-              Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       commandCardParam: json['commandCardParam'],
       imageLimitCount: json['imageLimitCount'],
@@ -244,13 +212,11 @@ UserSvtLeader _$UserSvtLeaderFromJson(Map json) => UserSvtLeader(
       portraitLimitCount: json['portraitLimitCount'],
       battleVoice: json['battleVoice'],
       appendPassiveSkill: (json['appendPassiveSkill'] as List<dynamic>?)
-          ?.map((e) => SvtLeaderAppendSkillStatus.fromJson(
-              Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => SvtLeaderAppendSkillStatus.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
-SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) =>
-    SvtLeaderEquipTargetInfo(
+SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) => SvtLeaderEquipTargetInfo(
       userSvtId: json['userSvtId'],
       svtId: json['svtId'],
       limitCount: json['limitCount'],
@@ -266,14 +232,12 @@ SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) =>
       skillLv3: json['skillLv3'],
     );
 
-SvtLeaderAppendSkillStatus _$SvtLeaderAppendSkillStatusFromJson(Map json) =>
-    SvtLeaderAppendSkillStatus(
+SvtLeaderAppendSkillStatus _$SvtLeaderAppendSkillStatusFromJson(Map json) => SvtLeaderAppendSkillStatus(
       skillId: json['skillId'],
       skillLv: json['skillLv'],
     );
 
-SvtLeaderCommandCodeStatus _$SvtLeaderCommandCodeStatusFromJson(Map json) =>
-    SvtLeaderCommandCodeStatus(
+SvtLeaderCommandCodeStatus _$SvtLeaderCommandCodeStatusFromJson(Map json) => SvtLeaderCommandCodeStatus(
       idx: json['idx'],
       commandCodeId: json['commandCodeId'],
       userCommandCodeId: json['userCommandCodeId'],

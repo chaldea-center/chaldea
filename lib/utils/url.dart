@@ -16,10 +16,7 @@ class ChaldeaUrl {
 
   static String doc(String path, {bool? isZh, String dir = 'guide/'}) {
     isZh ??= Language.isZH;
-    return kProjectDocRoot +
-        (isZh ? '/zh/' : '/') +
-        dir +
-        (path.startsWith('/') ? path.substring(1) : path);
+    return kProjectDocRoot + (isZh ? '/zh/' : '/') + dir + (path.startsWith('/') ? path.substring(1) : path);
   }
 
   static String chaldeas(String path, {bool? isZh}) {
@@ -32,8 +29,7 @@ class ChaldeaUrl {
     return (useCN ? Hosts.kAppHostCN : Hosts.kAppHostGlobal) + path;
   }
 
-  static IconButton docsHelpBtn(String path,
-      {String? zhPath, String? tooltip}) {
+  static IconButton docsHelpBtn(String path, {String? zhPath, String? tooltip}) {
     return IconButton(
       onPressed: () {
         launch(ChaldeaUrl.doc(zhPath != null && Language.isZH ? zhPath : path));
@@ -45,9 +41,8 @@ class ChaldeaUrl {
 }
 
 Future<bool> launch(String url, {bool? external}) {
-  final mode = external ?? PlatformU.isAndroid
-      ? launcher.LaunchMode.externalApplication
-      : launcher.LaunchMode.platformDefault;
+  final mode =
+      external ?? PlatformU.isAndroid ? launcher.LaunchMode.externalApplication : launcher.LaunchMode.platformDefault;
   return launcher.launchUrl(
     Uri.parse(url),
     mode: mode,

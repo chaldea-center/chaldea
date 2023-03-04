@@ -28,8 +28,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
     ceMap.clear();
     codeMap.clear();
     void _update<T>(Map<String, List<T>> map, String illust, T card) {
-      final creators =
-          illust.split(RegExp(r'[&＆]+')).map((e) => e.trim()).toSet();
+      final creators = illust.split(RegExp(r'[&＆]+')).map((e) => e.trim()).toSet();
       creators.add(illust);
       for (final creator in creators) {
         map.putIfAbsent(creator.trim(), () => []).add(card);
@@ -48,10 +47,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
 
     illustrators = {...svtMap.keys, ...ceMap.keys, ...codeMap.keys}.toList();
 
-    final sortKeys = {
-      for (final c in illustrators)
-        c: SearchUtil.getLocalizedSort(Transl.illustratorNames(c))
-    };
+    final sortKeys = {for (final c in illustrators) c: SearchUtil.getLocalizedSort(Transl.illustratorNames(c))};
     illustrators.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
 
     if (mounted) {
@@ -98,9 +94,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
 
   @override
   Widget listItemBuilder(String creator) {
-    int count = (svtMap[creator]?.length ?? 0) +
-        (ceMap[creator]?.length ?? 0) +
-        (codeMap[creator]?.length ?? 0);
+    int count = (svtMap[creator]?.length ?? 0) + (ceMap[creator]?.length ?? 0) + (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
         title: InkWell(
@@ -137,8 +131,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
   }
 
   @override
-  Widget gridItemBuilder(String creator) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(String creator) => throw UnimplementedError('GridView not designed');
 }
 
 class _IllustratorOptions with SearchOptionsMixin<String> {

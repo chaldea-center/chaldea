@@ -80,8 +80,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
         war.bgm,
         ...war.maps.map((e) => e.bgm),
         for (final warAdd in war.warAdds)
-          if (warAdd.type == WarOverwriteType.bgm)
-            db.gameData.bgms[warAdd.overwriteId]
+          if (warAdd.type == WarOverwriteType.bgm) db.gameData.bgms[warAdd.overwriteId]
       ]) {
         if (bgm != null && bgm.id != 0 && bgm.audioAsset != null) {
           audios[bgm.audioAsset!] ??= bgm.fileName;
@@ -115,8 +114,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
       final fullscreen = content.contains('[enableFullScreen]');
       if (fullscreen) anyFullscreen = true;
       for (final match in reg.allMatches(content)) {
-        final args =
-            match.group(1)!.split(RegExp(r'\s+')).map((e) => e.trim()).toList();
+        final args = match.group(1)!.split(RegExp(r'\s+')).map((e) => e.trim()).toList();
         final cmd = args.removeAt(0);
         if (args.isEmpty) continue;
         try {
@@ -139,9 +137,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               case WarOverwriteType.banner:
                 return warAdd.overwriteBanner;
               case WarOverwriteType.bgImage:
-                return warAdd.overwriteId != 0
-                    ? assetUrl.back(warAdd.overwriteId, anyFullscreen)
-                    : null;
+                return warAdd.overwriteId != 0 ? assetUrl.back(warAdd.overwriteId, anyFullscreen) : null;
               default:
                 return null;
             }
@@ -182,15 +178,12 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
       case "tVoice":
       case "tVoiceUser":
         for (int i = 0; i < args.length ~/ 2; i++) {
-          audios[assetUrl.audio(args[i * 2], args[i * 2 + 1])] ??=
-              '${args[i * 2]}_${args[i * 2 + 1]}';
+          audios[assetUrl.audio(args[i * 2], args[i * 2 + 1])] ??= '${args[i * 2]}_${args[i * 2 + 1]}';
         }
         break;
       case "voice":
         final segs = args[0].split('_');
-        audios[assetUrl.audio(
-                'ChrVoice_${segs[0]}', segs.skip(1).join('_'))] ??=
-            'ChrVoice_${args[0]}';
+        audios[assetUrl.audio('ChrVoice_${segs[0]}', segs.skip(1).join('_'))] ??= 'ChrVoice_${args[0]}';
         break;
       case "criMovie":
       case "movie":
@@ -254,8 +247,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
       tabs.add(Tuple2(Tab(text: S.current.background), bgImageView));
     }
     if (figures.isNotEmpty) {
-      tabs.add(
-          Tuple2(Tab(text: S.current.card_asset_chara_figure), figureView));
+      tabs.add(Tuple2(Tab(text: S.current.card_asset_chara_figure), figureView));
     }
     if (audios.isNotEmpty) {
       tabs.add(Tuple2(const Tab(text: 'BGM/SE'), audioView));
@@ -267,8 +259,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-              widget.war?.lName.l ?? widget.title ?? S.current.media_assets),
+          title: Text(widget.war?.lName.l ?? widget.title ?? S.current.media_assets),
           actions: [
             PopupMenuButton(
               itemBuilder: (context) => [
@@ -279,10 +270,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               ],
             )
           ],
-          bottom: _loading
-              ? null
-              : FixedHeight.tabBar(
-                  TabBar(tabs: tabs.map((e) => e.item1).toList())),
+          bottom: _loading ? null : FixedHeight.tabBar(TabBar(tabs: tabs.map((e) => e.item1).toList())),
         ),
         body: _loading
             ? Column(
@@ -290,8 +278,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Center(
-                    child: CircularProgressIndicator(
-                        value: total > 0 ? progress / total : null),
+                    child: CircularProgressIndicator(value: total > 0 ? progress / total : null),
                   ),
                   const SizedBox(height: 16),
                   Text('${S.current.downloading}  $progress/$total'),
@@ -312,8 +299,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
           child: CachedImage(
             imageUrl: bgImages[index],
             placeholder: (_, __) => AspectRatio(
-              aspectRatio:
-                  url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626,
+              aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626,
             ),
             showSaveOnLongPress: true,
             viewFullOnTap: true,
@@ -323,8 +309,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               ),
             ),
             onTap: () {
-              FullscreenImageViewer.show(
-                  context: context, urls: bgImages, initialPage: index);
+              FullscreenImageViewer.show(context: context, urls: bgImages, initialPage: index);
             },
           ),
         );
@@ -354,8 +339,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
             ),
           ),
           onTap: () {
-            FullscreenImageViewer.show(
-                context: context, urls: figures, initialPage: index);
+            FullscreenImageViewer.show(context: context, urls: figures, initialPage: index);
           },
         );
       }),
@@ -371,8 +355,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
         final player = SoundPlayButton(url: url, player: audioPlayer);
         String? bgmName;
         if (filename.startsWith('BGM_')) {
-          final bgm = db.gameData.bgms.values
-              .firstWhereOrNull((e) => e.fileName == filename);
+          final bgm = db.gameData.bgms.values.firstWhereOrNull((e) => e.fileName == filename);
           if (bgm != null && bgm.name.isNotEmpty) {
             bgmName = bgm.lName.l.setMaxLines(1);
           }

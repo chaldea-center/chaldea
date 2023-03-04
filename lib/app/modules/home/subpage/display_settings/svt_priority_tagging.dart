@@ -14,8 +14,8 @@ class SvtPriorityTagging extends StatefulWidget {
 class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
   final Map<int, TextEditingController> _controllers = {};
 
-  TextEditingController controllerOf(int key) => _controllers[key] ??=
-      TextEditingController(text: db.settings.priorityTags[key]);
+  TextEditingController controllerOf(int key) =>
+      _controllers[key] ??= TextEditingController(text: db.settings.priorityTags[key]);
 
   @override
   void dispose() {
@@ -33,8 +33,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
         children: [
           for (final priority in [1, 2, 3, 4, 5])
             DecoratedBox(
-              decoration: BoxDecoration(
-                  border: Border(bottom: Divider.createBorderSide(context))),
+              decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
               child: Row(
                 children: [
                   Expanded(

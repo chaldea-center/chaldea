@@ -50,10 +50,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _subscription = Connectivity()
-        .onConnectivityChanged
-        .asBroadcastStream()
-        .listen((result) {
+    _subscription = Connectivity().onConnectivityChanged.asBroadcastStream().listen((result) {
       if (mounted) setState(() {});
     });
   }
@@ -80,9 +77,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                 dense: true,
                 title: Text(S.current.network_cur_connection),
                 trailing: _textWithIndicator(
-                    _connectivity?.name ?? '?',
-                    _connectivity != null &&
-                        _connectivity != ConnectivityResult.none),
+                    _connectivity?.name ?? '?', _connectivity != null && _connectivity != ConnectivityResult.none),
               ),
               SwitchListTile.adaptive(
                 value: db.settings.forceOnline,
@@ -96,11 +91,9 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
               ),
             ],
           ),
-          for (final entry in testUrls.entries)
-            _buildGroup(entry.key, entry.value),
+          for (final entry in testUrls.entries) _buildGroup(entry.key, entry.value),
           SafeArea(
-            child: SFooter(
-                '1 - ${S.current.chaldea_server}: ${S.current.chaldea_server_global}\n'
+            child: SFooter('1 - ${S.current.chaldea_server}: ${S.current.chaldea_server_global}\n'
                 '2 - ${S.current.chaldea_server}: ${S.current.chaldea_server_cn}'),
           )
         ],
@@ -130,11 +123,9 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
     }
     if (resp is Response) {
       final statusCode = resp.statusCode;
-      return _textWithIndicator(statusCode.toString(),
-          statusCode != null && statusCode >= 200 && statusCode < 300);
+      return _textWithIndicator(statusCode.toString(), statusCode != null && statusCode >= 200 && statusCode < 300);
     } else if (resp is DioError) {
-      return _textWithIndicator(
-          resp.response?.statusCode?.toString() ?? 'Error', false, resp);
+      return _textWithIndicator(resp.response?.statusCode?.toString() ?? 'Error', false, resp);
     } else {
       return _textWithIndicator('Unknown', false, resp);
     }

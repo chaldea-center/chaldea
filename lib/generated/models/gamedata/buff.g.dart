@@ -11,58 +11,44 @@ Buff _$BuffFromJson(Map json) => Buff(
       name: json['name'] as String,
       detail: json['detail'] as String,
       icon: json['icon'] as String?,
-      type: json['type'] == null
-          ? BuffType.unknown
-          : const BuffTypeConverter().fromJson(json['type'] as String),
+      type: json['type'] == null ? BuffType.unknown : const BuffTypeConverter().fromJson(json['type'] as String),
       buffGroup: json['buffGroup'] as int? ?? 0,
-      script: json['script'] == null
-          ? null
-          : BuffScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null ? null : BuffScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       vals: (json['vals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       ckSelfIndv: (json['ckSelfIndv'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       ckOpIndv: (json['ckOpIndv'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       maxRate: json['maxRate'] as int? ?? 0,
     );
 
-BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
-    BuffRelationOverwrite(
+BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) => BuffRelationOverwrite(
       atkSide: (json['atkSide'] as Map).map(
         (k, e) => MapEntry(
             const SvtClassConverter().fromJson(k as String),
             (e as Map).map(
-              (k, e) => MapEntry(
-                  const SvtClassConverter().fromJson(k as String),
-                  RelationOverwriteDetail.fromJson(
-                      Map<String, dynamic>.from(e as Map))),
+              (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
+                  RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
             )),
       ),
       defSide: (json['defSide'] as Map).map(
         (k, e) => MapEntry(
             const SvtClassConverter().fromJson(k as String),
             (e as Map).map(
-              (k, e) => MapEntry(
-                  const SvtClassConverter().fromJson(k as String),
-                  RelationOverwriteDetail.fromJson(
-                      Map<String, dynamic>.from(e as Map))),
+              (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
+                  RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
             )),
       ),
     );
 
-RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) =>
-    RelationOverwriteDetail(
+RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) => RelationOverwriteDetail(
       damageRate: json['damageRate'] as int,
       type: $enumDecode(_$ClassRelationOverwriteTypeEnumMap, json['type']),
     );
@@ -80,14 +66,12 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           .toList(),
       relationId: json['relationId'] == null
           ? null
-          : BuffRelationOverwrite.fromJson(
-              Map<String, dynamic>.from(json['relationId'] as Map)),
+          : BuffRelationOverwrite.fromJson(Map<String, dynamic>.from(json['relationId'] as Map)),
       ReleaseText: json['ReleaseText'] as String?,
       DamageRelease: json['DamageRelease'] as int?,
       INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
           ? null
-          : NiceTrait.fromJson(
-              Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
+          : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
       INDIVIDUALITIE_COUNT_ABOVE: json['INDIVIDUALITIE_COUNT_ABOVE'] as int?,
       UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -103,31 +87,21 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       ProgressSelfTurn: json['ProgressSelfTurn'] as int?,
       TargetIndiv: json['TargetIndiv'] == null
           ? null
-          : NiceTrait.fromJson(
-              Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
+          : NiceTrait.fromJson(Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
       extendLowerLimit: json['extendLowerLimit'] as int?,
-      convert: json['convert'] == null
-          ? null
-          : BuffConvert.fromJson(
-              Map<String, dynamic>.from(json['convert'] as Map)),
+      convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
     );
 
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
-      targetLimit: $enumDecodeNullable(
-              _$BuffConvertLimitTypeEnumMap, json['targetLimit']) ??
-          BuffConvertLimitType.all,
-      convertType:
-          $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ??
-              BuffConvertType.none,
+      targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
+      convertType: $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ?? BuffConvertType.none,
       targets: json['targets'] as List<dynamic>? ?? const [],
       convertBuffs: (json['convertBuffs'] as List<dynamic>?)
               ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      script: json['script'] == null
-          ? null
-          : BuffConvertScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script:
+          json['script'] == null ? null : BuffConvertScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       effectId: json['effectId'] as int? ?? 0,
     );
 
@@ -143,9 +117,7 @@ const _$BuffConvertTypeEnumMap = {
 };
 
 BuffConvertScript _$BuffConvertScriptFromJson(Map json) => BuffConvertScript(
-      OverwritePopupText: (json['OverwritePopupText'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      OverwritePopupText: (json['OverwritePopupText'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 const _$BuffTypeEnumMap = {
@@ -248,8 +220,7 @@ const _$BuffTypeEnumMap = {
   BuffType.upDamageIndividuality: 'upDamageIndividuality',
   BuffType.downDamageIndividuality: 'downDamageIndividuality',
   BuffType.upDamageIndividualityActiveonly: 'upDamageIndividualityActiveonly',
-  BuffType.downDamageIndividualityActiveonly:
-      'downDamageIndividualityActiveonly',
+  BuffType.downDamageIndividualityActiveonly: 'downDamageIndividualityActiveonly',
   BuffType.upNpturnval: 'upNpturnval',
   BuffType.downNpturnval: 'downNpturnval',
   BuffType.multiattack: 'multiattack',

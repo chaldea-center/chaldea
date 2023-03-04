@@ -68,10 +68,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.chaldea_server),
                 // subtitle: Text(S.current.chaldea_server_hint),
                 horizontalTitleGap: 0,
-                trailing: _wrapArrowTrailing(db.onSettings(
-                    (context, snapshot) => Text(db.settings.proxyServer
-                        ? S.current.chaldea_server_cn
-                        : S.current.chaldea_server_global))),
+                trailing: _wrapArrowTrailing(db.onSettings((context, snapshot) =>
+                    Text(db.settings.proxyServer ? S.current.chaldea_server_cn : S.current.chaldea_server_global))),
                 onTap: () {
                   router.popDetailAndPush(child: const ChaldeaServerPage());
                 },
@@ -83,16 +81,14 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               ListTile(
                 title: Text(S.current.cur_account),
-                trailing: _wrapArrowTrailing(db
-                    .onUserData((context, snapshot) => Text(db.curUser.name))),
+                trailing: _wrapArrowTrailing(db.onUserData((context, snapshot) => Text(db.curUser.name))),
                 onTap: () {
                   router.popDetailAndPush(child: AccountPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.game_server),
-                trailing: _wrapArrowTrailing(db.onUserData(
-                    (context, snapshot) => Text(db.curUser.region.localName))),
+                trailing: _wrapArrowTrailing(db.onUserData((context, snapshot) => Text(db.curUser.region.localName))),
                 onTap: () {
                   router.popDetailAndPush(child: GameServerPage());
                 },
@@ -117,19 +113,17 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.current.userdata),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: UserDataPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.gamedata),
-                trailing: db
-                    .onUserData((context, snapshot) => _wrapArrowTrailing(Text(
-                          db.gameData.version.text(true),
-                          textAlign: TextAlign.end,
-                        ))),
+                trailing: db.onUserData((context, snapshot) => _wrapArrowTrailing(Text(
+                      db.gameData.version.text(true),
+                      textAlign: TextAlign.end,
+                    ))),
                 onTap: () {
                   router.popDetailAndPush(child: GameDataPage());
                 },
@@ -138,8 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.preferred_translation),
                 trailing: db.onSettings((context, _) {
                   final region = db.settings.resolvedPreferredRegions.first;
-                  return _wrapArrowTrailing(
-                      Text('${region.language.name}(${region.localName})'));
+                  return _wrapArrowTrailing(Text('${region.language.name}(${region.localName})'));
                 }),
                 onTap: () {
                   router.popDetailAndPush(child: TranslationSetting());
@@ -148,8 +141,8 @@ class _SettingsPageState extends State<SettingsPage> {
               db.onUserData(
                 (context, snapshot) => SwitchListTile.adaptive(
                   title: Text(S.current.new_drop_data_6th),
-                  subtitle: Text(
-                      '~2.5.5, 6th(${S.current.region_jp})/5th(${S.current.region_na}) ${S.current.anniversary}'),
+                  subtitle:
+                      Text('~2.5.5, 6th(${S.current.region_jp})/5th(${S.current.region_na}) ${S.current.anniversary}'),
                   value: true, // db.curUser.freeLPParams.use6th,
                   controlAffinity: ListTileControlAffinity.trailing,
                   onChanged: null,
@@ -167,12 +160,10 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.current.settings_language),
-                subtitle:
-                    Language.isEN ? const Text('语言') : const Text('Language'),
+                subtitle: Language.isEN ? const Text('语言') : const Text('Language'),
                 trailing: db.onSettings(
                   (context, snapshot) => DropdownButton<Language>(
-                    underline:
-                        const Divider(thickness: 0, color: Colors.transparent),
+                    underline: const Divider(thickness: 0, color: Colors.transparent),
                     // need to check again
                     alignment: AlignmentDirectional.centerEnd,
                     value: Language.getLanguage(S.current.localeName),
@@ -195,8 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 TextSpan(text: lang.name, children: [
                                   TextSpan(
                                     text: '\n${lang.nameEn}',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                   )
                                 ]),
                                 textScaleFactor: 0.9,
@@ -222,15 +212,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     underline: Container(),
                     alignment: AlignmentDirectional.centerEnd,
                     items: [
-                      DropdownMenuItem(
-                          value: ThemeMode.system,
-                          child: Text(S.current.dark_mode_system)),
-                      DropdownMenuItem(
-                          value: ThemeMode.light,
-                          child: Text(S.current.dark_mode_light)),
-                      DropdownMenuItem(
-                          value: ThemeMode.dark,
-                          child: Text(S.current.dark_mode_dark)),
+                      DropdownMenuItem(value: ThemeMode.system, child: Text(S.current.dark_mode_system)),
+                      DropdownMenuItem(value: ThemeMode.light, child: Text(S.current.dark_mode_light)),
+                      DropdownMenuItem(value: ThemeMode.dark, child: Text(S.current.dark_mode_dark)),
                     ],
                     onChanged: (v) {
                       if (v != null) {
@@ -245,16 +229,14 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: Text(S.current.display_setting),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: DisplaySettingPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.network_settings),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: const NetworkSettingsPage());
                 },
@@ -265,9 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: Text(S.current.restart_to_apply_changes),
                   trailing: DropdownButton<WebRenderMode>(
                     value: db.runtimeData.webRendererCanvasKit ??
-                        (kPlatformMethods.rendererCanvasKit
-                            ? WebRenderMode.canvaskit
-                            : WebRenderMode.html),
+                        (kPlatformMethods.rendererCanvasKit ? WebRenderMode.canvaskit : WebRenderMode.html),
                     underline: const SizedBox(),
                     items: [
                       for (final value in WebRenderMode.values)
@@ -278,8 +258,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                     onChanged: (v) {
                       if (v != null) {
-                        kPlatformMethods.setLocalStorage(
-                            'flutterWebRenderer', v.name);
+                        kPlatformMethods.setLocalStorage('flutterWebRenderer', v.name);
                         db.runtimeData.webRendererCanvasKit = v;
                         setState(() {});
                       }
@@ -292,24 +271,18 @@ class _SettingsPageState extends State<SettingsPage> {
             header: S.current.about_app,
             children: <Widget>[
               ListTile(
-                title: Text(MaterialLocalizations.of(context)
-                    .aboutListTileTitle(AppInfo.appName)),
+                title: Text(MaterialLocalizations.of(context).aboutListTileTitle(AppInfo.appName)),
                 trailing: db.runtimeData.upgradableVersion == null
                     ? Icon(DirectionalIcons.keyboard_arrow_forward(context))
                     : Text(
                         '${db.runtimeData.upgradableVersion!.versionString} ↑',
-                        style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .error
-                                .withAlpha(200)),
+                        style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
                       ),
                 onTap: () => router.popDetailAndPush(child: AboutPage()),
               ),
               ListTile(
                 title: Text(S.current.about_feedback),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: FeedbackPage());
                 },
@@ -377,8 +350,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       FrameRateLayer.showFps = v;
                     });
                     if (v) {
-                      FrameRateLayer.createOverlay(
-                          kAppKey.currentContext ?? context);
+                      FrameRateLayer.createOverlay(kAppKey.currentContext ?? context);
                     } else {
                       FrameRateLayer.removeOverlay();
                     }
@@ -434,10 +406,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _wrapArrowTrailing(Widget trailing) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        trailing,
-        Icon(DirectionalIcons.keyboard_arrow_forward(context))
-      ],
+      children: <Widget>[trailing, Icon(DirectionalIcons.keyboard_arrow_forward(context))],
     );
   }
 
@@ -446,8 +415,7 @@ class _SettingsPageState extends State<SettingsPage> {
       leading: const Icon(Icons.person),
       horizontalTitleGap: 0,
       title: Text(S.current.login_username),
-      trailing: db.onSettings(
-          (context, snapshot) => Text(db.security.get('chaldea_user') ?? '')),
+      trailing: db.onSettings((context, snapshot) => Text(db.security.get('chaldea_user') ?? '')),
       onTap: () {
         router.popDetailAndPush(child: LoginPage());
       },

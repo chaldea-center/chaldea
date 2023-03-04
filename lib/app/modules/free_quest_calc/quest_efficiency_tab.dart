@@ -41,15 +41,13 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final List<LPVariable> quests = List.of(widget.solution!.weightVars);
     switch (sortType) {
       case _EfficiencySort.item:
-        quests.sort((a, b) =>
-            Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values)));
+        quests.sort((a, b) => Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values)));
         break;
       case _EfficiencySort.bond:
         quests.sort((a, b) {
           final aa = getBondEff(a), bb = getBondEff(b);
           if (aa != bb) return bb.compareTo(aa);
-          return Maths.sum(b.detail.values)
-              .compareTo(Maths.sum(a.detail.values));
+          return Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values));
         });
         break;
     }
@@ -61,8 +59,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final index = data.questIds.indexOf(variable.name);
     int? bond = data.bonds.getOrNull(index), ap = data.apCosts.getOrNull(index);
     if (bond != null && ap != null) {
-      final bondPercent = params.bondBonusPercent,
-          bondCount = params.bondBonusCount;
+      final bondPercent = params.bondBonusPercent, bondCount = params.bondBonusCount;
       bond = (bond * (1 + bondPercent * 0.05) + bondCount * 50).toInt();
       return bond / ap;
     }
@@ -87,16 +84,12 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     solutionVars.forEach((variable) {
       final int questId = variable.name;
       final Map<int, double> drops = variable.detail;
-      final Quest? quest =
-          db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
+      final Quest? quest = db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
       if (filterItems.isEmpty ||
-          (matchAll &&
-              filterItems.every((e) => variable.detail.containsKey(e))) ||
-          (!matchAll &&
-              filterItems.any((e) => variable.detail.containsKey(e)))) {
+          (matchAll && filterItems.every((e) => variable.detail.containsKey(e))) ||
+          (!matchAll && filterItems.any((e) => variable.detail.containsKey(e)))) {
         children.add(Container(
-          decoration: BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context))),
+          decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
           child: ValueStatefulBuilder<bool>(
             key: Key('eff_quest_$questId'),
             initValue: false,
@@ -115,9 +108,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                       children: [
                         Text(Maths.sum(drops.values).toStringAsFixed(3)),
                         Text(
-                          bondEff == double.negativeInfinity
-                              ? '???'
-                              : bondEff.toStringAsFixed(2),
+                          bondEff == double.negativeInfinity ? '???' : bondEff.toStringAsFixed(2),
                           style: Theme.of(context).textTheme.bodySmall,
                         )
                       ],
@@ -158,8 +149,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           ),
         ),
         kDefaultDivider,
-        Expanded(
-            child: ListView(controller: _scrollController, children: children)),
+        Expanded(child: ListView(controller: _scrollController, children: children)),
         kDefaultDivider,
         SafeArea(child: _buildButtonBar()),
       ],
@@ -181,8 +171,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         children.add(CenterWidgetSpan(
           child: Opacity(
             opacity: 0.75,
-            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon,
-                height: 18),
+            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon, height: 18),
           ),
         ));
       }
@@ -195,8 +184,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
 
   Widget _buildButtonBar() {
     double height = 36;
-    List<int> items = allItems.toList()
-      ..sort2((e) => db.gameData.items[e]?.priority ?? e);
+    List<int> items = allItems.toList()..sort2((e) => db.gameData.items[e]?.priority ?? e);
     List<Widget> children = [];
     items.forEach((itemId) {
       children.add(GestureDetector(
@@ -214,14 +202,10 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
-              db.getIconImage(db.gameData.items[itemId]?.borderedIcon,
-                  height: height),
+              db.getIconImage(db.gameData.items[itemId]?.borderedIcon, height: height),
+              if (filterItems.contains(itemId)) Icon(Icons.circle, size: height * 0.53, color: Colors.white),
               if (filterItems.contains(itemId))
-                Icon(Icons.circle, size: height * 0.53, color: Colors.white),
-              if (filterItems.contains(itemId))
-                Icon(Icons.check_circle,
-                    size: height * 0.5,
-                    color: Theme.of(context).colorScheme.primary)
+                Icon(Icons.check_circle, size: height * 0.5, color: Theme.of(context).colorScheme.primary)
             ],
           ),
         ),
@@ -314,8 +298,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 setState(() {
                   matchAll = !matchAll;
                 });
-                EasyLoading.showToast(
-                    matchAll ? 'Contains All' : 'Contains Any');
+                EasyLoading.showToast(matchAll ? 'Contains All' : 'Contains Any');
               },
             ),
             Expanded(

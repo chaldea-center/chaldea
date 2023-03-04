@@ -14,18 +14,12 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
           version: $checkedConvert('version', (v) => v as int?),
           appVer: $checkedConvert('appVer', (v) => v as String?),
           curUserKey: $checkedConvert('curUserKey', (v) => v as int? ?? 0),
-          users: $checkedConvert(
-              'users',
-              (v) => (v as List<dynamic>?)
-                  ?.map(
-                      (e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList()),
-          itemAbundantValue: $checkedConvert('itemAbundantValue',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          svtAscensionIcon:
-              $checkedConvert('svtAscensionIcon', (v) => v as int? ?? 1),
-          preferAprilFoolIcon: $checkedConvert(
-              'preferAprilFoolIcon', (v) => v as bool? ?? false),
+          users: $checkedConvert('users',
+              (v) => (v as List<dynamic>?)?.map((e) => User.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
+          itemAbundantValue:
+              $checkedConvert('itemAbundantValue', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+          svtAscensionIcon: $checkedConvert('svtAscensionIcon', (v) => v as int? ?? 1),
+          preferAprilFoolIcon: $checkedConvert('preferAprilFoolIcon', (v) => v as bool? ?? false),
           customSvtIcon: $checkedConvert(
               'customSvtIcon',
               (v) => (v as Map?)?.map(
@@ -44,8 +38,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'itemAbundantValue': instance.itemAbundantValue,
       'svtAscensionIcon': instance.svtAscensionIcon,
       'preferAprilFoolIcon': instance.preferAprilFoolIcon,
-      'customSvtIcon':
-          instance.customSvtIcon.map((k, e) => MapEntry(k.toString(), e)),
+      'customSvtIcon': instance.customSvtIcon.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 User _$UserFromJson(Map json) => $checkedCreate(
@@ -55,18 +48,12 @@ User _$UserFromJson(Map json) => $checkedCreate(
         final val = User(
           name: $checkedConvert('name', (v) => v as String? ?? 'Gudako'),
           isGirl: $checkedConvert('isGirl', (v) => v as bool? ?? true),
-          region: $checkedConvert(
-              'region',
-              (v) => v == null
-                  ? Region.jp
-                  : const RegionConverter().fromJson(v as String)),
+          region:
+              $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
           servants: $checkedConvert(
               'servants',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(
-                        int.parse(k as String),
-                        SvtStatus.fromJson(
-                            Map<String, dynamic>.from(e as Map))),
+                    (k, e) => MapEntry(int.parse(k as String), SvtStatus.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           dupServantMapping: $checkedConvert(
               'dupServantMapping',
@@ -75,12 +62,9 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           plans: $checkedConvert(
               'plans',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) =>
-                      UserPlan.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList()),
-          sameEventPlan:
-              $checkedConvert('sameEventPlan', (v) => v as bool? ?? true),
+              (v) =>
+                  (v as List<dynamic>?)?.map((e) => UserPlan.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
+          sameEventPlan: $checkedConvert('sameEventPlan', (v) => v as bool? ?? true),
           curSvtPlanNo: $checkedConvert('curSvtPlanNo', (v) => v as int? ?? 0),
           items: $checkedConvert(
               'items',
@@ -95,23 +79,17 @@ User _$UserFromJson(Map json) => $checkedCreate(
           cmdCodes: $checkedConvert(
               'cmdCodes',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(
-                        int.parse(k as String), CmdCodeStatus.fromJson(e)),
+                    (k, e) => MapEntry(int.parse(k as String), CmdCodeStatus.fromJson(e)),
                   )),
           mysticCodes: $checkedConvert(
               'mysticCodes',
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
-          summons: $checkedConvert('summons',
-              (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
-          myRoomMusic: $checkedConvert('myRoomMusic',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          summons: $checkedConvert('summons', (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+          myRoomMusic: $checkedConvert('myRoomMusic', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           freeLPParams: $checkedConvert(
-              'freeLPParams',
-              (v) => v == null
-                  ? null
-                  : FreeLPParams.fromJson(Map<String, dynamic>.from(v as Map))),
+              'freeLPParams', (v) => v == null ? null : FreeLPParams.fromJson(Map<String, dynamic>.from(v as Map))),
           luckyBagSvtScores: $checkedConvert(
               'luckyBagSvtScores',
               (v) => (v as Map?)?.map(
@@ -121,12 +99,8 @@ User _$UserFromJson(Map json) => $checkedCreate(
                           (k, e) => MapEntry(int.parse(k as String), e as int),
                         )),
                   )),
-          saintQuartzPlan: $checkedConvert(
-              'saintQuartzPlan',
-              (v) => v == null
-                  ? null
-                  : SaintQuartzPlan.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
+          saintQuartzPlan: $checkedConvert('saintQuartzPlan',
+              (v) => v == null ? null : SaintQuartzPlan.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -136,25 +110,20 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'isGirl': instance.isGirl,
       'region': const RegionConverter().toJson(instance.region),
-      'dupServantMapping':
-          instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
-      'servants':
-          instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'dupServantMapping': instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
+      'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'plans': instance.plans.map((e) => e.toJson()).toList(),
       'sameEventPlan': instance.sameEventPlan,
       'curSvtPlanNo': instance.curSvtPlanNo,
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
-      'craftEssences': instance.craftEssences
-          .map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'cmdCodes':
-          instance.cmdCodes.map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'mysticCodes':
-          instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
+      'craftEssences': instance.craftEssences.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'cmdCodes': instance.cmdCodes.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'mysticCodes': instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
       'myRoomMusic': instance.myRoomMusic.toList(),
       'freeLPParams': instance.freeLPParams.toJson(),
-      'luckyBagSvtScores': instance.luckyBagSvtScores.map(
-          (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
+      'luckyBagSvtScores':
+          instance.luckyBagSvtScores.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
       'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
     };
 
@@ -163,15 +132,10 @@ SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SvtStatus(
-          cur: $checkedConvert(
-              'cur',
-              (v) => v == null
-                  ? null
-                  : SvtPlan.fromJson(Map<String, dynamic>.from(v as Map))),
+          cur: $checkedConvert('cur', (v) => v == null ? null : SvtPlan.fromJson(Map<String, dynamic>.from(v as Map))),
           priority: $checkedConvert('priority', (v) => v as int? ?? 1),
           bond: $checkedConvert('bond', (v) => v as int? ?? 0),
-          equipCmdCodes: $checkedConvert('equipCmdCodes',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+          equipCmdCodes: $checkedConvert('equipCmdCodes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
         );
         return val;
       },
@@ -193,32 +157,25 @@ UserPlan _$UserPlanFromJson(Map json) => $checkedCreate(
           servants: $checkedConvert(
               'servants',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String),
-                        SvtPlan.fromJson(Map<String, dynamic>.from(e as Map))),
+                    (k, e) => MapEntry(int.parse(k as String), SvtPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           limitEvents: $checkedConvert(
               'limitEvents',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(
-                        int.parse(k as String),
-                        LimitEventPlan.fromJson(
-                            Map<String, dynamic>.from(e as Map))),
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), LimitEventPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           mainStories: $checkedConvert(
               'mainStories',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(
-                        int.parse(k as String),
-                        MainStoryPlan.fromJson(
-                            Map<String, dynamic>.from(e as Map))),
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), MainStoryPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           tickets: $checkedConvert(
               'tickets',
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(
-                        int.parse(k as String),
-                        ExchangeTicketPlan.fromJson(
-                            Map<String, dynamic>.from(e as Map))),
+                        int.parse(k as String), ExchangeTicketPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
         );
         return val;
@@ -227,14 +184,10 @@ UserPlan _$UserPlanFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$UserPlanToJson(UserPlan instance) => <String, dynamic>{
       'title': instance.title,
-      'servants':
-          instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'limitEvents': instance.limitEvents
-          .map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'mainStories': instance.mainStories
-          .map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'tickets':
-          instance.tickets.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'limitEvents': instance.limitEvents.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'mainStories': instance.mainStories.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'tickets': instance.tickets.map((k, e) => MapEntry(k.toString(), e.toJson())),
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
@@ -244,10 +197,8 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
         final val = SvtPlan(
           favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
           ascension: $checkedConvert('ascension', (v) => v as int? ?? 0),
-          skills: $checkedConvert('skills',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          appendSkills: $checkedConvert('appendSkills',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          skills: $checkedConvert('skills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          appendSkills: $checkedConvert('appendSkills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           costumes: $checkedConvert(
               'costumes',
               (v) => (v as Map?)?.map(
@@ -316,8 +267,7 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
-          questReward:
-              $checkedConvert('questReward', (v) => v as bool? ?? true),
+          questReward: $checkedConvert('questReward', (v) => v as bool? ?? true),
           extraFixedItems: $checkedConvert(
               'extraFixedItems',
               (v) => (v as Map?)?.map(
@@ -342,28 +292,24 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) => <String, dynamic>{
       'enabled': instance.enabled,
       'rerunGrails': instance.rerunGrails,
       'shop': instance.shop,
-      'shopBuyCount':
-          instance.shopBuyCount.map((k, e) => MapEntry(k.toString(), e)),
+      'shopBuyCount': instance.shopBuyCount.map((k, e) => MapEntry(k.toString(), e)),
       'point': instance.point,
       'mission': instance.mission,
       'tower': instance.tower,
       'lotteries': instance.lotteries.map((k, e) => MapEntry(k.toString(), e)),
-      'treasureBoxItems': instance.treasureBoxItems.map((k, e) =>
-          MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'treasureBoxItems':
+          instance.treasureBoxItems.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
       'digging': instance.digging.map((k, e) => MapEntry(k.toString(), e)),
       'fixedDrop': instance.fixedDrop,
       'questReward': instance.questReward,
-      'extraFixedItems':
-          instance.extraFixedItems.map((k, e) => MapEntry(k.toString(), e)),
-      'extraItems': instance.extraItems.map((k, e) =>
-          MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
-      'customItems':
-          instance.customItems.map((k, e) => MapEntry(k.toString(), e)),
+      'extraFixedItems': instance.extraFixedItems.map((k, e) => MapEntry(k.toString(), e)),
+      'extraItems':
+          instance.extraItems.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'customItems': instance.customItems.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 MainStoryPlan _$MainStoryPlanFromJson(Map json) => $checkedCreate(
@@ -372,15 +318,13 @@ MainStoryPlan _$MainStoryPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = MainStoryPlan(
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? false),
-          questReward:
-              $checkedConvert('questReward', (v) => v as bool? ?? false),
+          questReward: $checkedConvert('questReward', (v) => v as bool? ?? false),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$MainStoryPlanToJson(MainStoryPlan instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MainStoryPlanToJson(MainStoryPlan instance) => <String, dynamic>{
       'fixedDrop': instance.fixedDrop,
       'questReward': instance.questReward,
     };
@@ -390,15 +334,13 @@ ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ExchangeTicketPlan(
-          counts: $checkedConvert('counts',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          counts: $checkedConvert('counts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) => <String, dynamic>{
       'counts': instance.counts,
     };
 
@@ -407,8 +349,7 @@ CraftStatus _$CraftStatusFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CraftStatus(
-          status:
-              $checkedConvert('status', (v) => v as int? ?? CraftStatus.notMet),
+          status: $checkedConvert('status', (v) => v as int? ?? CraftStatus.notMet),
           lv: $checkedConvert('lv', (v) => v as int? ?? 1),
           limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 0),
         );
@@ -416,8 +357,7 @@ CraftStatus _$CraftStatusFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$CraftStatusToJson(CraftStatus instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CraftStatusToJson(CraftStatus instance) => <String, dynamic>{
       'status': instance.status,
       'lv': instance.lv,
       'limitCount': instance.limitCount,
@@ -428,16 +368,14 @@ CmdCodeStatus _$CmdCodeStatusFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CmdCodeStatus(
-          status: $checkedConvert(
-              'status', (v) => v as int? ?? CmdCodeStatus.notMet),
+          status: $checkedConvert('status', (v) => v as int? ?? CmdCodeStatus.notMet),
           count: $checkedConvert('count', (v) => v as int? ?? 0),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$CmdCodeStatusToJson(CmdCodeStatus instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CmdCodeStatusToJson(CmdCodeStatus instance) => <String, dynamic>{
       'status': instance.status,
       'count': instance.count,
     };
@@ -450,16 +388,13 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
           curSQ: $checkedConvert('curSQ', (v) => v as int?),
           curTicket: $checkedConvert('curTicket', (v) => v as int?),
           curApple: $checkedConvert('curApple', (v) => v as int?),
-          startDate: $checkedConvert('startDate',
-              (v) => v == null ? null : DateTime.parse(v as String)),
-          endDate: $checkedConvert(
-              'endDate', (v) => v == null ? null : DateTime.parse(v as String)),
+          startDate: $checkedConvert('startDate', (v) => v == null ? null : DateTime.parse(v as String)),
+          endDate: $checkedConvert('endDate', (v) => v == null ? null : DateTime.parse(v as String)),
           accLogin: $checkedConvert('accLogin', (v) => v as int?),
           continuousLogin: $checkedConvert('continuousLogin', (v) => v as int?),
           eventDateDelta: $checkedConvert('eventDateDelta', (v) => v as int?),
           weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool?),
-          minusPlannedBanner:
-              $checkedConvert('minusPlannedBanner', (v) => v as bool?),
+          minusPlannedBanner: $checkedConvert('minusPlannedBanner', (v) => v as bool?),
         );
         $checkedConvert(
             'extraMissions',
@@ -470,8 +405,7 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) => <String, dynamic>{
       'curSQ': instance.curSQ,
       'curTicket': instance.curTicket,
       'curApple': instance.curApple,
@@ -481,7 +415,6 @@ Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
       'continuousLogin': instance.continuousLogin,
       'eventDateDelta': instance.eventDateDelta,
       'weeklyMission': instance.weeklyMission,
-      'extraMissions':
-          instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
+      'extraMissions': instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
       'minusPlannedBanner': instance.minusPlannedBanner,
     };

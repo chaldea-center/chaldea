@@ -27,8 +27,7 @@ class IconCacheManagePage extends StatefulWidget {
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
   final _loader = AtlasIconLoader.i;
-  final _limiter = RateLimiter(
-      maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
+  final _limiter = RateLimiter(maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
   bool canceled = false;
 
@@ -43,8 +42,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ratio =
-        tasks.isEmpty ? '0' : (success / tasks.length * 100).toStringAsFixed(1);
+    final ratio = tasks.isEmpty ? '0' : (success / tasks.length * 100).toStringAsFixed(1);
     final finished = tasks.isNotEmpty && success + failed >= tasks.length;
     return AlertDialog(
       title: Text(S.current.icons),
@@ -86,12 +84,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
       return;
     }
     Set<String?> urls = {
-      for (final svtClass in [
-        ...SvtClassX.regularAllWithOlga,
-        SvtClass.ALL,
-        SvtClass.EXTRA,
-        SvtClass.MIX
-      ])
+      for (final svtClass in [...SvtClassX.regularAllWithOlga, SvtClass.ALL, SvtClass.EXTRA, SvtClass.MIX])
         for (final rarity in [1, 3, 5]) svtClass.icon(rarity),
       for (final item in db.gameData.items.values) item.borderedIcon,
       for (final svt in db.gameData.servantsNoDup.values) svt.customIcon,
@@ -134,10 +127,8 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 class AtlasIconLoader extends _CachedLoader<String, String> {
   AtlasIconLoader._();
   static final AtlasIconLoader i = AtlasIconLoader._();
-  final _rateLimiter =
-      RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
-  final _fsLimiter =
-      RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 100));
+  final _rateLimiter = RateLimiter(maxCalls: 20, period: const Duration(seconds: 1));
+  final _fsLimiter = RateLimiter(maxCalls: 10, period: const Duration(milliseconds: 100));
 
   bool shouldCacheImage(String url) {
     if (kIsWeb) return false;
@@ -155,8 +146,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 
   @override
-  Future<String?> download(String url,
-      {RateLimiter? limiter, bool allowWeb = false}) async {
+  Future<String?> download(String url, {RateLimiter? limiter, bool allowWeb = false}) async {
     final localPath = atlasUrlToFp(url, allowWeb: allowWeb);
     if (Hosts.cn) {
       url = proxyAssetUrl(url);
@@ -173,8 +163,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   final _rnd = Random();
 
-  Future<String?> _ioDownload(
-      String url, String path, RateLimiter limiter) async {
+  Future<String?> _ioDownload(String url, String path, RateLimiter limiter) async {
     final file = File(path).absolute;
     if (await _fsLimiter.limited(() async {
       await Future.delayed(Duration(milliseconds: _rnd.nextInt(100)));
@@ -185,16 +174,14 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() =>
-        DioE().get(url, options: Options(responseType: ResponseType.bytes)));
+    final resp = await limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes)));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
   }
 
-  Future<String?> _webDownload(
-      String url, String path, RateLimiter limiter) async {
+  Future<String?> _webDownload(String url, String path, RateLimiter limiter) async {
     final file = FilePlus(path);
     if (await _fsLimiter.limited(() async {
       if (!await file.exists()) {
@@ -204,8 +191,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() =>
-        DioE().get(url, options: Options(responseType: ResponseType.bytes)));
+    final resp = await limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes)));
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
@@ -232,10 +218,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     } else {
       return null;
     }
-    return pathlib.joinAll([
-      db.paths.atlasAssetsDir,
-      ...urlPath.split('/').where((e) => e.isNotEmpty)
-    ]);
+    return pathlib.joinAll([db.paths.atlasAssetsDir, ...urlPath.split('/').where((e) => e.isNotEmpty)]);
   }
 }
 
@@ -312,8 +295,7 @@ abstract class _CachedLoader<K, V> {
       if (e is DioError) {
         final code = e.response?.statusCode;
         if (code == 403 || code == 404) {
-          _failed[key] ??=
-              _FailureDetail(time: DateTime.now(), statusCode: code);
+          _failed[key] ??= _FailureDetail(time: DateTime.now(), statusCode: code);
           return;
         }
       }
@@ -321,8 +303,7 @@ abstract class _CachedLoader<K, V> {
 
       final detail = _failed[key];
       if (detail == null) {
-        _failed[key] = _FailureDetail(
-            time: DateTime.now(), retryAfter: const Duration(seconds: 30));
+        _failed[key] = _FailureDetail(time: DateTime.now(), retryAfter: const Duration(seconds: 30));
       } else if (detail.neverRetry) {
         return;
       } else {
@@ -347,8 +328,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
   }
 
   @override
-  ImageStreamCompleter loadBuffer(
-      MyCacheImage key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadBuffer(MyCacheImage key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -359,8 +339,7 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(
-      MyCacheImage key, DecoderBufferCallback decode) async {
+  Future<ui.Codec> _loadAsync(MyCacheImage key, DecoderBufferCallback decode) async {
     assert(key == this);
 
     final localPath = await AtlasIconLoader.i.get(key.url);
@@ -390,6 +369,5 @@ class MyCacheImage extends ImageProvider<MyCacheImage> {
   int get hashCode => Object.hash(url, scale);
 
   @override
-  String toString() =>
-      '${objectRuntimeType(this, 'MyCacheImage')}("$url", scale: $scale)';
+  String toString() => '${objectRuntimeType(this, 'MyCacheImage')}("$url", scale: $scale)';
 }

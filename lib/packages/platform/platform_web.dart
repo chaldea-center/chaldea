@@ -13,8 +13,7 @@ class PlatformMethods extends PlatformMethodsInterface {
   String? getLocalStorage(String key) => html.window.localStorage[key];
 
   @override
-  void setLocalStorage(String key, String value) =>
-      html.window.localStorage[key] = value;
+  void setLocalStorage(String key, String value) => html.window.localStorage[key] = value;
 
   @override
   bool get rendererCanvasKit {

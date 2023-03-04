@@ -14,18 +14,15 @@ class Language {
   const Language(this.code, this.name, this.nameEn, this.locale);
 
   static const jp = Language('ja', '日本語', 'Japanese', Locale('ja', ''));
-  static const chs = Language('zh', '简体中文', 'Simplified Chinese',
-      Locale.fromSubtags(languageCode: 'zh'));
-  static const cht = Language('zh_Hant', '繁體中文', 'Traditional Chinese',
-      Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
+  static const chs = Language('zh', '简体中文', 'Simplified Chinese', Locale.fromSubtags(languageCode: 'zh'));
+  static const cht =
+      Language('zh_Hant', '繁體中文', 'Traditional Chinese', Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const ko = Language('ko', '한국어', 'Korean', Locale('ko', ''));
-  static const ar =
-      Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
+  static const ar = Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
   static const es = Language('es', 'Español', 'Spanish', Locale('es', ''));
 
-  static List<Language> get supportLanguages =>
-      const [jp, chs, cht, en, ko, es, ar];
+  static List<Language> get supportLanguages => const [jp, chs, cht, en, ko, es, ar];
 
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
@@ -56,12 +53,10 @@ class Language {
     if (code.startsWith(cht.code)) {
       return cht;
     }
-    return supportLanguages
-        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
+    return supportLanguages.firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
   }
 
-  static Locale get systemLocale =>
-      WidgetsBinding.instance.platformDispatcher.locale;
+  static Locale get systemLocale => WidgetsBinding.instance.platformDispatcher.locale;
 
   /// used for 5 region game data
   static bool get isZH => isCHS || isCHT;

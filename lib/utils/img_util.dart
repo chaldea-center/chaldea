@@ -19,12 +19,7 @@ Future<Uint8List> compressToJpgAsync({
   int? maxWidth,
   int? maxHeight,
 }) async {
-  return Executor().execute(
-      fun4: _compressToJpg,
-      arg1: src,
-      arg2: quality,
-      arg3: maxWidth,
-      arg4: maxHeight);
+  return Executor().execute(fun4: _compressToJpg, arg1: src, arg2: quality, arg3: maxWidth, arg4: maxHeight);
 }
 
 Uint8List compressToJpg({
@@ -35,8 +30,7 @@ Uint8List compressToJpg({
 }) =>
     _compressToJpg(src, quality, maxWidth, maxHeight, null);
 
-Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth,
-    int? maxHeight, TypeSendPort? port) {
+Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth, int? maxHeight, TypeSendPort? port) {
   assert(maxWidth == null || maxWidth > 0);
   assert(maxHeight == null || maxHeight > 0);
   lib_image.Image? srcImage = lib_image.decodeImage(src);
@@ -54,12 +48,10 @@ Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth,
   }
   lib_image.Image destImage = srcImage;
   if (r != null) {
-    destImage = lib_image.copyResize(srcImage,
-        width: (srcImage.width / r).round(),
-        height: (srcImage.height / r).round());
+    destImage =
+        lib_image.copyResize(srcImage, width: (srcImage.width / r).round(), height: (srcImage.height / r).round());
   }
-  final dest =
-      Uint8List.fromList(lib_image.encodeJpg(destImage, quality: quality));
+  final dest = Uint8List.fromList(lib_image.encodeJpg(destImage, quality: quality));
   logger.i('compress image(q=$quality): ${src.length ~/ 1024}KB'
       ' ${srcImage.width}x${srcImage.height} ->'
       ' ${dest.length ~/ 1024}KB ${destImage.width}x${destImage.height}');
@@ -77,8 +69,7 @@ class ImageUtil {
     0, 0, 0, 1, 0,
   ]);
 
-  static Widget getChaldeaBackground(BuildContext context,
-      {double height = 240}) {
+  static Widget getChaldeaBackground(BuildContext context, {double height = 240}) {
     Widget img = Image(
       image: const AssetImage("res/img/chaldea.png"),
       filterQuality: FilterQuality.high,
@@ -122,8 +113,7 @@ class ImageUtil {
     num? imgWidth,
     num? imgHeight,
     ui.ImageByteFormat format = ui.ImageByteFormat.png,
-    FutureOr<Uint8List?> Function(dynamic e, dynamic s) onError =
-        _defaultOnError,
+    FutureOr<Uint8List?> Function(dynamic e, dynamic s) onError = _defaultOnError,
   }) async {
     if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
       await EasyLoading.showError('not supported using html renderer');
@@ -132,15 +122,12 @@ class ImageUtil {
     try {
       final recorder = ui.PictureRecorder();
       final size = Size(width.toDouble(), height.toDouble());
-      final canvas =
-          Canvas(recorder, Rect.fromLTWH(0, 0, size.width, size.height));
+      final canvas = Canvas(recorder, Rect.fromLTWH(0, 0, size.width, size.height));
       await paint(canvas, size);
       final picture = recorder.endRecording();
       await Future.delayed(const Duration(milliseconds: 50));
-      final img = await picture.toImage(
-          (imgWidth ?? width).toInt(), (imgHeight ?? height).toInt());
-      final imgBytes =
-          (await img.toByteData(format: format))?.buffer.asUint8List();
+      final img = await picture.toImage((imgWidth ?? width).toInt(), (imgHeight ?? height).toInt());
+      final imgBytes = (await img.toByteData(format: format))?.buffer.asUint8List();
       return imgBytes;
     } catch (e, s) {
       return onError(e, s);

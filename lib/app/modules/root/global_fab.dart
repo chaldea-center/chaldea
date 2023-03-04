@@ -27,8 +27,7 @@ class WindowManagerFab extends StatefulWidget {
   static void createOverlay(BuildContext context) {
     context = router.navigatorKey.currentContext ?? context;
     _instance?.remove();
-    _instance =
-        OverlayEntry(builder: (context) => WindowManagerFab(key: globalKey));
+    _instance = OverlayEntry(builder: (context) => WindowManagerFab(key: globalKey));
     Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
   }
 
@@ -68,8 +67,7 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
       ),
       onPressed: () {
         setState(() {
-          rootRouter.appState.showWindowManager =
-              !rootRouter.appState.showWindowManager;
+          rootRouter.appState.showWindowManager = !rootRouter.appState.showWindowManager;
         });
       },
     );
@@ -162,9 +160,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           horizontalTitleGap: 0,
           onTap: () {
             Navigator.pop(context);
-            db.settings.themeMode = db.settings.isResolvedDarkMode
-                ? ThemeMode.light
-                : ThemeMode.dark;
+            db.settings.themeMode = db.settings.isResolvedDarkMode ? ThemeMode.light : ThemeMode.dark;
             db.notifyAppUpdate();
           },
         ),
@@ -175,10 +171,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(db.settings.language),
-            items: Language.supportLanguages
-                .map((lang) =>
-                    DropdownMenuItem(value: lang, child: Text(lang.name)))
-                .toList(),
+            items:
+                Language.supportLanguages.map((lang) => DropdownMenuItem(value: lang, child: Text(lang.name))).toList(),
             onChanged: (lang) {
               if (lang == null) return;
               db.settings.setLanguage(lang);
@@ -198,9 +192,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           leading: const Icon(Icons.screenshot_monitor),
           title: Text(S.current.screenshots),
-          subtitle: enableScreenshot
-              ? null
-              : const Text('Only available in canvaskit renderer'),
+          subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
           horizontalTitleGap: 0,
           enabled: enableScreenshot,
           onTap: () {
@@ -274,8 +266,7 @@ class __ScreenshotDialogState extends State<_ScreenshotDialog> {
   @override
   Widget build(BuildContext context) {
     final dftRatio = MediaQuery.of(context).devicePixelRatio;
-    final minRatio = (dftRatio * 2.5).toInt() / 10,
-        maxRatio = (dftRatio * 50).toInt() / 10;
+    final minRatio = (dftRatio * 2.5).toInt() / 10, maxRatio = (dftRatio * 50).toInt() / 10;
     ratio = ratio.clamp(minRatio, maxRatio);
     return SimpleCancelOkDialog(
       title: Text(S.current.screenshots),
@@ -307,12 +298,10 @@ class __ScreenshotDialogState extends State<_ScreenshotDialog> {
       scrollable: true,
       confirmText: S.current.screenshots,
       onTapOk: () async {
-        await EasyLoading.showInfo('Ready',
-            duration: const Duration(seconds: 1));
+        await EasyLoading.showInfo('Ready', duration: const Duration(seconds: 1));
         await Future.delayed(const Duration(seconds: 3));
         try {
-          final data = await db.runtimeData.screenshotController
-              .capture(pixelRatio: ratio);
+          final data = await db.runtimeData.screenshotController.capture(pixelRatio: ratio);
           if (data == null) {
             EasyLoading.showError(S.current.failed);
             return;
@@ -320,8 +309,7 @@ class __ScreenshotDialogState extends State<_ScreenshotDialog> {
           await ImageActions.showSaveShare(
             context: kAppKey.currentContext!,
             data: data,
-            destFp: joinPaths(db.paths.downloadDir,
-                'screenshot-${DateTime.now().toSafeFileName()}.png'),
+            destFp: joinPaths(db.paths.downloadDir, 'screenshot-${DateTime.now().toSafeFileName()}.png'),
           );
         } catch (e, s) {
           logger.e('take screenshot failed', e, s);

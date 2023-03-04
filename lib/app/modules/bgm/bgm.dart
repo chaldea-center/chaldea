@@ -34,14 +34,12 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
     if (bgm == null) {
       return NotFoundPage(url: Routes.costumeI(widget.id ?? 0), title: 'BGM');
     }
-    final BgmEntity? bgmEntity =
-        bgm is BgmEntity ? bgm : db.gameData.bgms[bgm.id];
+    final BgmEntity? bgmEntity = bgm is BgmEntity ? bgm : db.gameData.bgms[bgm.id];
     final table = CustomTable(
       selectable: true,
       children: <Widget>[
         if (bgmEntity?.logo != null)
-          CustomTableRow.fromChildren(
-              children: [db.getIconImage(bgmEntity?.logo, height: 72)]),
+          CustomTableRow.fromChildren(children: [db.getIconImage(bgmEntity?.logo, height: 72)]),
         CustomTableRow(children: [
           TableCellData(
             child: Text(
@@ -52,10 +50,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
             isHeader: true,
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: bgm.name, textAlign: TextAlign.center)
-          ]),
+        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: bgm.name, textAlign: TextAlign.center)]),
         // if (!Transl.isEN)
         //   CustomTableRow(children: [
         //     TableCellData(text: bgm.lName.na, textAlign: TextAlign.center)
@@ -69,8 +64,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
           ),
         ]),
         if (bgmEntity != null) ...[
-          CustomTableRow(
-              children: [TableCellData(text: S.current.item, isHeader: true)]),
+          CustomTableRow(children: [TableCellData(text: S.current.item, isHeader: true)]),
           CustomTableRow(children: [
             TableCellData(
               child: bgmEntity.shop?.cost == null
@@ -84,8 +78,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
           ]),
         ],
         if (bgmEntity?.releaseConditions.isNotEmpty == true) ...[
-          CustomTableRow.fromTexts(
-              texts: [S.current.open_condition], isHeader: true),
+          CustomTableRow.fromTexts(texts: [S.current.open_condition], isHeader: true),
           CustomTableRow(children: [
             TableCellData(
               alignment: AlignmentDirectional.centerStart,
@@ -94,9 +87,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   for (final release in bgmEntity!.releaseConditions) ...[
-                    for (int index = 0;
-                        index < release.targetIds.length;
-                        index++)
+                    for (int index = 0; index < release.targetIds.length; index++)
                       CondTargetValueDescriptor(
                         condType: release.type,
                         target: release.targetIds[index],
@@ -107,10 +98,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
                     if (release.closedMessage.isNotEmpty)
                       Text(
                         release.closedMessage,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontStyle: FontStyle.italic),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
                       )
                   ]
                 ],
@@ -122,8 +110,7 @@ class _BgmDetailPageState extends State<BgmDetailPage> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(bgm.tooltip.setMaxLines(1),
-            minFontSize: 10, maxLines: 1),
+        title: AutoSizeText(bgm.tooltip.setMaxLines(1), minFontSize: 10, maxLines: 1),
         actions: [
           if (bgm.audioAsset != null)
             IconButton(

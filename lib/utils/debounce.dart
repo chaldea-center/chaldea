@@ -14,8 +14,7 @@ class _EasyDebounceOperation {
 class EasyDebounce {
   static final Map<String, _EasyDebounceOperation> _operations = {};
 
-  static void debounce(
-      String tag, Duration duration, EasyDebounceCallback onExecute) {
+  static void debounce(String tag, Duration duration, EasyDebounceCallback onExecute) {
     if (duration == Duration.zero) {
       _operations[tag]?.timer.cancel();
       _operations.remove(tag);

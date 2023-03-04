@@ -2,11 +2,8 @@ import 'dart:io';
 
 Future<void> main([List<String> args = const []]) async {
   try {
-    final gitInfo = (await Process.run(
-            'git', ['show', '-s', '--pretty=format:%h-%ct', "HEAD"]))
-        .stdout
-        .toString()
-        .split('-');
+    final gitInfo =
+        (await Process.run('git', ['show', '-s', '--pretty=format:%h-%ct', "HEAD"])).stdout.toString().split('-');
     final hash = gitInfo[0].substring(0, 6);
     final date = int.parse(gitInfo[1]);
 

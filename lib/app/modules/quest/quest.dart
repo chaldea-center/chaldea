@@ -30,8 +30,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   void initState() {
     super.initState();
     region = _resolveDefaultRegion();
-    _quest = widget.quest ??
-        (region == Region.jp ? db.gameData.quests[widget.id] : null);
+    _quest = widget.quest ?? (region == Region.jp ? db.gameData.quests[widget.id] : null);
     questId = _quest?.id ?? widget.id;
     _resolveQuest();
   }
@@ -44,9 +43,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     }
     // TODO: deal with chaldea gate wars
     final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
-    final released = db.gameData.mappingData.warRelease
-        .ofRegion(fixedRegion)
-        ?.contains(jpQuest?.warId);
+    final released = db.gameData.mappingData.warRelease.ofRegion(fixedRegion)?.contains(jpQuest?.warId);
     if (released == true) {
       return fixedRegion;
     }
@@ -67,8 +64,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(_quest?.lName.l ?? 'Quest $questId',
-            maxLines: 1, minFontSize: 12),
+        title: AutoSizeText(_quest?.lName.l ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
         actions: [
           DropdownButton<Region>(
             value: region,
@@ -88,8 +84,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                 DropdownMenuItem(
                   child: Text(
                     region.localName,
-                    style: TextStyle(
-                        color: SharedBuilder.appBarForeground(context)),
+                    style: TextStyle(color: SharedBuilder.appBarForeground(context)),
                   ),
                 )
             ],
@@ -116,20 +111,15 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               PopupMenuItem(
                 onTap: () {
                   final key = '/quest/$questId/';
-                  AtlasApi.cachedQuestPhases
-                      .removeWhere((key, value) => key.contains(key));
-                  AtlasApi.cacheManager
-                      .removeWhere((info) => info.url.contains(key));
+                  AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
+                  AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
                   uniqueKey = UniqueKey();
                   if (mounted) setState(() {});
                 },
                 child: Text(S.current.refresh),
               ),
               ...SharedBuilder.websitesPopupMenuItems(
-                atlas: _quest == null
-                    ? null
-                    : Atlas.dbQuest(
-                        _quest!.id, _quest!.phases.getOrNull(0), region),
+                atlas: _quest == null ? null : Atlas.dbQuest(_quest!.id, _quest!.phases.getOrNull(0), region),
               ),
               PopupMenuItem(
                 onTap: _showFixRegionDialog,
@@ -153,8 +143,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   offline: false,
                   key: uniqueKey,
                 ),
-                if (db.gameData.dropRate.newData.questIds.contains(quest.id))
-                  blacklistButton,
+                if (db.gameData.dropRate.newData.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
                 ...getCampaigns(),
                 const SafeArea(child: SizedBox())
@@ -244,9 +233,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       if (_showAllCampaign || !event.isOutdated()) {
         List<String> times = [];
         for (final r in <Region>{Region.jp, db.curUser.region, region}) {
-          final start = r == Region.jp
-              ? event.startedAt
-              : event.extra.startTime.ofRegion(r);
+          final start = r == Region.jp ? event.startedAt : event.extra.startTime.ofRegion(r);
           if (start == null) continue;
           times.add('${r.upper}: ${start.sec2date().toDateString()}');
         }
@@ -266,9 +253,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             _showAllCampaign = !_showAllCampaign;
           });
         },
-        icon: Icon(_showAllCampaign
-            ? Icons.keyboard_arrow_up
-            : Icons.keyboard_arrow_down),
+        icon: Icon(_showAllCampaign ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
       ),
     ));
     if (children.isEmpty) {

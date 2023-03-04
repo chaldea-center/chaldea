@@ -39,8 +39,7 @@ class WarMapFilter extends FilterPage<WarMapFilterData> {
   _WarMapFilterPageState createState() => _WarMapFilterPageState();
 }
 
-class _WarMapFilterPageState
-    extends FilterPageState<WarMapFilterData, WarMapFilter> {
+class _WarMapFilterPageState extends FilterPageState<WarMapFilterData, WarMapFilter> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,10 +62,8 @@ class _WarMapFilterPageState
             },
             onFilterChanged: (value, last) {
               if (last == null) {
-                if (filterData.validGimmickIds
-                    .any((e) => !filterData.gimmick.options.contains(e))) {
-                  filterData.gimmick.options =
-                      filterData.validGimmickIds.toSet();
+                if (filterData.validGimmickIds.any((e) => !filterData.gimmick.options.contains(e))) {
+                  filterData.gimmick.options = filterData.validGimmickIds.toSet();
                 } else {
                   filterData.gimmick.options = {};
                 }

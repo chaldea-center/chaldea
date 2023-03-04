@@ -29,8 +29,7 @@ class AppInfo {
     try {
       if (PlatformU.isAndroid) {
         final androidInfo = await DeviceInfoPlugin().androidInfo;
-        deviceParams
-            .addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
+        deviceParams.addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
         _androidSdk = androidInfo.version.sdkInt;
         deviceParams['androidId'] = await const AndroidId().getId();
       } else if (PlatformU.isIOS) {
@@ -45,15 +44,13 @@ class AppInfo {
         deviceParams.addAll(Map.from(linuxInfo.data));
       } else if (PlatformU.isWindows) {
         final windowsInfo = await DeviceInfoPlugin().windowsInfo;
-        deviceParams
-            .addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
+        deviceParams.addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
       } else if (PlatformU.isWeb) {
         final webInfo = await DeviceInfoPlugin().webBrowserInfo;
         deviceParams.addAll(Map.from(webInfo.data));
       } else {
         deviceParams['operatingSystem'] = PlatformU.operatingSystem;
-        deviceParams['operatingSystemVersion'] =
-            PlatformU.operatingSystemVersion;
+        deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
       }
     } catch (e, s) {
       logger.e('failed to load device info', e, s);
@@ -69,14 +66,13 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo =
-        await PackageInfo.fromPlatform().catchError((e) => PackageInfo(
-              appName: kAppName,
-              packageName: kPackageName,
-              version: '0.0.0',
-              buildNumber: '0',
-              buildSignature: '',
-            ));
+    _packageInfo = await PackageInfo.fromPlatform().catchError((e) => PackageInfo(
+          appName: kAppName,
+          packageName: kPackageName,
+          version: '0.0.0',
+          buildNumber: '0',
+          buildSignature: '',
+        ));
     _packageInfo = PackageInfo(
       appName: _packageInfo!.appName.toTitle(),
       packageName: _packageInfo!.packageName,
@@ -126,8 +122,7 @@ class AppInfo {
       );
       String resultString = result.stdout.toString().trim();
       // print('Windows MachineGuid query:\n$resultString');
-      if (resultString.contains('MachineGuid') &&
-          resultString.contains('REG_SZ')) {
+      if (resultString.contains('MachineGuid') && resultString.contains('REG_SZ')) {
         originId = resultString.trim().split(RegExp(r'\s+')).last;
       }
     } else if (PlatformU.isMacOS) {
@@ -189,10 +184,8 @@ class AppInfo {
       _macAppType = MacAppType.notMacApp;
     } else {
       final String executable = PlatformU.resolvedExecutable;
-      final String fpStore = pathlib.absolute(
-          pathlib.dirname(executable), '../_MASReceipt/receipt');
-      final String fpNotarized =
-          pathlib.absolute(pathlib.dirname(executable), '../CodeResources');
+      final String fpStore = pathlib.absolute(pathlib.dirname(executable), '../_MASReceipt/receipt');
+      final String fpNotarized = pathlib.absolute(pathlib.dirname(executable), '../CodeResources');
       if (FilePlus(fpStore).existsSync()) {
         _macAppType = MacAppType.store;
       } else if (FilePlus(fpNotarized).existsSync()) {
@@ -219,16 +212,14 @@ class AppInfo {
 
   static const int commitTimestamp = kCommitTimestamp;
 
-  static String get commitDate => DateFormat.yMd()
-      .format(DateTime.fromMillisecondsSinceEpoch(commitTimestamp * 1000));
+  static String get commitDate => DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(commitTimestamp * 1000));
 
   static String get commitUrl => "$kProjectHomepage/commit/$commitHash";
 
   /// e.g. "1.2.3"
   static String get versionString => _packageInfo?.version ?? '';
 
-  static int get buildNumber =>
-      int.tryParse(_packageInfo?.buildNumber ?? '0') ?? 0;
+  static int get buildNumber => int.tryParse(_packageInfo?.buildNumber ?? '0') ?? 0;
 
   static int get originBuild {
     if (PlatformU.isAndroid) {
@@ -280,8 +271,7 @@ class AppInfo {
 
   static bool get isMacStoreApp => _macAppType == MacAppType.store;
 
-  static bool get isFDroid =>
-      PlatformU.isAndroid && packageName == kPackageNameFDroid;
+  static bool get isFDroid => PlatformU.isAndroid && packageName == kPackageNameFDroid;
 }
 
 enum MacAppType {

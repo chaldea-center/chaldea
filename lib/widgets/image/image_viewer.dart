@@ -95,8 +95,7 @@ class CachedImage extends StatefulWidget {
   static Widget defaultProgressPlaceholder(BuildContext context, String? url) {
     return LayoutTryBuilder(
       builder: (context, constraints) {
-        double width =
-            0.3 * min(constraints.biggest.width, constraints.biggest.height);
+        double width = 0.3 * min(constraints.biggest.width, constraints.biggest.height);
         if (width.isFinite) width = min(width, 50);
         if (width.isFinite) {
           return Center(
@@ -113,19 +112,14 @@ class CachedImage extends StatefulWidget {
     );
   }
 
-  static Widget defaultErrorWidget(
-      BuildContext context, String? url, dynamic error) {
+  static Widget defaultErrorWidget(BuildContext context, String? url, dynamic error) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Image(image: db.errorImage),
     );
   }
 
-  static Widget sizeChild(
-      {required Widget child,
-      double? width,
-      double? height,
-      double? aspectRatio}) {
+  static Widget sizeChild({required Widget child, double? width, double? height, double? aspectRatio}) {
     if (aspectRatio != null) {
       child = AspectRatio(aspectRatio: aspectRatio, child: child);
     }
@@ -166,8 +160,7 @@ class CachedImage extends StatefulWidget {
       ].any((e) => uri.host.endsWith(e));
     }
     if (cors) {
-      return Uri.parse(Hosts.workerHost).replace(
-          path: '/corsproxy/', queryParameters: {'url': url}).toString();
+      return Uri.parse(Hosts.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
     }
     return url;
   }
@@ -176,8 +169,7 @@ class CachedImage extends StatefulWidget {
 class _CachedImageState extends State<CachedImage> {
   static final _loader = AtlasIconLoader.i;
 
-  CachedImageOption get cachedOption =>
-      widget.cachedOption ?? const CachedImageOption();
+  CachedImageOption get cachedOption => widget.cachedOption ?? const CachedImageOption();
 
   Future<void> _resolve(String? url) async {
     if (url != null && _loader.shouldCacheImage(url)) {
@@ -257,9 +249,7 @@ class _CachedImageState extends State<CachedImage> {
       );
     } else if (AtlasIconLoader.i.isFailed(url)) {
       final reason = AtlasIconLoader.i.failReason(url);
-      if (reason?.statusCode == 404 &&
-          url.endsWith('_bordered.png') &&
-          !url.contains('FFO')) {
+      if (reason?.statusCode == 404 && url.endsWith('_bordered.png') && !url.contains('FFO')) {
         return _localCache(context, url.replaceFirst('_bordered.png', '.png'));
       }
       return _withError(context, url);
@@ -270,12 +260,10 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   Widget _withError(BuildContext context, String url, [dynamic error]) {
-    return cachedOption.errorWidget?.call(context, url, error) ??
-        const SizedBox();
+    return cachedOption.errorWidget?.call(context, url, error) ?? const SizedBox();
   }
 
-  Widget _withProvider(ImageProvider provider,
-      {Future<void> Function()? onClearCache}) {
+  Widget _withProvider(ImageProvider provider, {Future<void> Function()? onClearCache}) {
     Widget child = _withOcto(context, provider);
     if (widget.showSaveOnLongPress) {
       child = GestureDetector(
@@ -284,9 +272,7 @@ class _CachedImageState extends State<CachedImage> {
           Uint8List? bytes;
           try {
             final img = await ImageActions.resolveImage(provider);
-            bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))
-                ?.buffer
-                .asUint8List();
+            bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))?.buffer.asUint8List();
           } catch (e, s) {
             logger.e('resolve image provider failed', e, s);
           }
@@ -303,8 +289,7 @@ class _CachedImageState extends State<CachedImage> {
           if (uri != null && uri.pathSegments.isNotEmpty) {
             fn = Uri.decodeComponent(uri.pathSegments.last);
           }
-          fn ??=
-              '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
+          fn ??= '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
@@ -321,8 +306,7 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   Widget _withCached(String fullUrl) {
-    final _cacheManager =
-        cachedOption.cacheManager ?? ImageViewerCacheManager();
+    final _cacheManager = cachedOption.cacheManager ?? ImageViewerCacheManager();
     String url = CachedImage.corsProxyImage(fullUrl);
 
     final provider = CachedNetworkImageProvider(
@@ -382,32 +366,25 @@ class _CachedImageState extends State<CachedImage> {
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child: network.available
-          ? CachedImage.defaultProgressPlaceholder(context, url)
-          : const SizedBox(),
+      child: network.available ? CachedImage.defaultProgressPlaceholder(context, url) : const SizedBox(),
     );
   }
 
   Widget _withOcto(BuildContext context, ImageProvider image) {
     return OctoImage(
       image: image,
-      imageBuilder: cachedOption.imageBuilder == null
-          ? null
-          : (context, _) => cachedOption.imageBuilder!(context, image),
-      placeholderBuilder: (context) =>
-          _withPlaceholder(context, widget.imageUrl ?? ''),
+      imageBuilder:
+          cachedOption.imageBuilder == null ? null : (context, _) => cachedOption.imageBuilder!(context, image),
+      placeholderBuilder: (context) => _withPlaceholder(context, widget.imageUrl ?? ''),
       progressIndicatorBuilder: cachedOption.progressIndicatorBuilder == null
           ? null
           : (context, progress) => cachedOption.progressIndicatorBuilder!(
                 context,
                 widget.imageUrl ?? "",
                 DownloadProgress(
-                    widget.imageUrl ?? "",
-                    progress?.expectedTotalBytes,
-                    progress?.cumulativeBytesLoaded ?? 0),
+                    widget.imageUrl ?? "", progress?.expectedTotalBytes, progress?.cumulativeBytesLoaded ?? 0),
               ),
-      errorBuilder: (context, e, s) =>
-          _withError(context, widget.imageUrl ?? ""),
+      errorBuilder: (context, e, s) => _withError(context, widget.imageUrl ?? ""),
       fadeOutDuration: cachedOption.fadeOutDuration,
       fadeOutCurve: cachedOption.fadeOutCurve,
       fadeInDuration: cachedOption.fadeInDuration,
@@ -438,20 +415,16 @@ class ImageViewerCacheManager extends CacheManager with ImageCacheManager {
   }
 
   ImageViewerCacheManager._()
-      : super(Config(key,
-            stalePeriod: const Duration(days: 30),
-            fileService: _MyHttpFileService()));
+      : super(Config(key, stalePeriod: const Duration(days: 30), fileService: _MyHttpFileService()));
 }
 
 class _MyHttpFileService extends FileService {
   final http.Client _httpClient;
 
-  _MyHttpFileService({http.Client? httpClient})
-      : _httpClient = httpClient ?? http.Client();
+  _MyHttpFileService({http.Client? httpClient}) : _httpClient = httpClient ?? http.Client();
 
   @override
-  Future<FileServiceResponse> get(String url,
-      {Map<String, String>? headers}) async {
+  Future<FileServiceResponse> get(String url, {Map<String, String>? headers}) async {
     final uri = Uri.parse(url);
     final req = http.Request('GET', uri);
     if (headers != null) {
@@ -468,14 +441,11 @@ class _MyHttpFileService extends FileService {
         'pstatic.net',
       ].any((e) => uri.host.contains(e))) {
         // 30days=2,592,000
-        String? controlHeader =
-            httpResponse.headers[HttpHeaders.cacheControlHeader];
+        String? controlHeader = httpResponse.headers[HttpHeaders.cacheControlHeader];
         if (controlHeader == null) {
-          httpResponse.headers[HttpHeaders.cacheControlHeader] =
-              'max-age=2592000';
+          httpResponse.headers[HttpHeaders.cacheControlHeader] = 'max-age=2592000';
         } else {
-          controlHeader = controlHeader
-              .replaceFirstMapped(RegExp(r'max-age=(\d+)'), (match) {
+          controlHeader = controlHeader.replaceFirstMapped(RegExp(r'max-age=(\d+)'), (match) {
             final maxAge = int.tryParse(match.group(1) ?? '');
             if (maxAge != null && maxAge < 2592000) {
               return 'max-age=2592000';
@@ -488,8 +458,7 @@ class _MyHttpFileService extends FileService {
       }
       return HttpGetResponse(httpResponse);
     } catch (e) {
-      return HttpGetResponse(
-          http.StreamedResponse(Stream.fromIterable([]), 400));
+      return HttpGetResponse(http.StreamedResponse(Stream.fromIterable([]), 400));
     }
   }
 }

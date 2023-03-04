@@ -40,20 +40,17 @@ enum ParamType {
 abstract class UA {
   static const fallback = android;
 
-  static const android =
-      'Dalvik/2.1.0 (Linux; U; Android 6.0.1; SM-G9500 Build/V417IR)';
+  static const android = 'Dalvik/2.1.0 (Linux; U; Android 6.0.1; SM-G9500 Build/V417IR)';
 
   static bool validate(String ua) {
     if (ua.trim().isEmpty) return false;
     if (!RegExp(r'^[0-9a-zA-Z\./, ;:\-\(\)]+$').hasMatch(ua)) return false;
     if (ua.split('(').length != ua.split(')').length) return false;
-    if (RegExp(r'\([^\)]+\(').hasMatch(ua) ||
-        RegExp(r'\)[^\()]+\)').hasMatch(ua)) return false;
+    if (RegExp(r'\([^\)]+\(').hasMatch(ua) || RegExp(r'\)[^\()]+\)').hasMatch(ua)) return false;
     return true;
   }
 
-  static const deviceinfo =
-      'samsung SM-G9500 / Android OS 6.0.1 / API-23 (V417IR/eng.duanlusheng.20221214.192029)';
+  static const deviceinfo = 'samsung SM-G9500 / Android OS 6.0.1 / API-23 (V417IR/eng.duanlusheng.20221214.192029)';
 }
 
 class ServerResponse {
@@ -88,8 +85,7 @@ class ServerResponse {
   bool get success {
     if (json == null) return false;
     try {
-      return int.parse(json!['response'][0]['resCode']) == 0 &&
-          Map.from(json!['response'][0]['success']).isNotEmpty;
+      return int.parse(json!['response'][0]['resCode']) == 0 && Map.from(json!['response'][0]['success']).isNotEmpty;
     } catch (e) {
       return false;
     }
@@ -98,8 +94,7 @@ class ServerResponse {
   DateTime? get serverTime {
     if (json == null) return null;
     try {
-      return DateTime.fromMillisecondsSinceEpoch(
-          (json!['cache']['serverTime'] as int) * 1000);
+      return DateTime.fromMillisecondsSinceEpoch((json!['cache']['serverTime'] as int) * 1000);
     } catch (e) {
       return null;
     }
@@ -170,11 +165,9 @@ class LoginAgent {
     params.sort2((e) => e.key.str);
     String temp = params.map((e) => '${e.key.str}=${e.value}').join('&');
     temp += ':${auth.secretKey}';
-    params.add(MapEntry(ParamType.authCode,
-        base64.encode(sha1.convert(utf8.encode(temp)).bytes)));
+    params.add(MapEntry(ParamType.authCode, base64.encode(sha1.convert(utf8.encode(temp)).bytes)));
     params.sort2((e) => e.key.index);
-    final content =
-        params.map((e) => '${escape(e.key.str)}=${escape(e.value)}').join('&');
+    final content = params.map((e) => '${escape(e.key.str)}=${escape(e.value)}').join('&');
     // print('form content: $content');
     // print(content.replaceAll('&', '\n'));
     return content;
@@ -187,8 +180,7 @@ class LoginAgent {
       throw ArgumentError.value(ua, 'User-Agent', ' is invalid');
     }
 
-    if (_lastPostTime != null &&
-        DateTime.now().difference(_lastPostTime!).inSeconds < 3) {
+    if (_lastPostTime != null && DateTime.now().difference(_lastPostTime!).inSeconds < 3) {
       // 3-5 s
       await Future.delayed(const Duration(seconds: 3));
     }
@@ -215,8 +207,7 @@ class LoginAgent {
   Future<Response> topLogin() async {
     reset();
     int lastAccessTime = int.parse(_params[ParamType.lastAccessTime]!);
-    int userState =
-        (-lastAccessTime >> 2) ^ int.parse(auth.userId) & gameTop.folderCrc;
+    int userState = (-lastAccessTime >> 2) ^ int.parse(auth.userId) & gameTop.folderCrc;
     print('crc: ${gameTop.folderCrc}');
     addParam(ParamType.deviceinfo, args.deviceInfo ?? UA.deviceinfo);
     addParam(ParamType.assetbundleFolder, gameTop.assetbundleFolder);

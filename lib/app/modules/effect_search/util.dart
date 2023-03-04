@@ -8,20 +8,17 @@ import 'package:chaldea/utils/utils.dart';
 import '../common/filter_group.dart';
 
 class EffectFilterUtil {
-  static bool checkFuncTraits(BaseFunction func, FilterGroupData<int> data,
-      {bool checkReduceHpVals = true}) {
+  static bool checkFuncTraits(BaseFunction func, FilterGroupData<int> data, {bool checkReduceHpVals = true}) {
     final traits = data.options;
     if (traits.isEmpty) return true;
-    if (func.functvals.any((e) => traits.contains(e.id)) ||
-        func.traitVals.any((e) => traits.contains(e.id))) return true;
+    if (func.functvals.any((e) => traits.contains(e.id)) || func.traitVals.any((e) => traits.contains(e.id))) {
+      return true;
+    }
     for (final buff in func.buffs) {
-      if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) ||
-          buff.ckOpIndv.any((e) => traits.contains(e.id))) {
+      if (buff.ckSelfIndv.any((e) => traits.contains(e.id)) || buff.ckOpIndv.any((e) => traits.contains(e.id))) {
         return true;
       }
-      if (checkReduceHpVals &&
-          buff.vals.any((e) =>
-              reduceHpTraits.contains(e.name) && traits.contains(e.id))) {
+      if (checkReduceHpVals && buff.vals.any((e) => reduceHpTraits.contains(e.name) && traits.contains(e.id))) {
         return true;
       }
     }

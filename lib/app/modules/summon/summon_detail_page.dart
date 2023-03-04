@@ -77,8 +77,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                 mooncell: summon.mcLink,
                 fandom: summon.fandomLink,
               ),
-              ...SharedBuilder.noticeLinkPopupMenuItems(
-                  noticeLink: summon.noticeLink),
+              ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
             ],
           )
         ],
@@ -94,9 +93,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get listView {
-    final relatedEvents = db.gameData.events.values
-        .where((event) => event.extra.relatedSummons.contains(summon.id))
-        .toList();
+    final relatedEvents =
+        db.gameData.events.values.where((event) => event.extra.relatedSummons.contains(summon.id)).toList();
     List<Widget> children = [
       CarouselUtil.limitHeightWidget(
         context: context,
@@ -143,9 +141,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             )
           ]),
         if (summon.isLuckyBag)
-          CustomTableRow.fromTexts(texts: [
-            '${S.current.lucky_bag}(${summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR'})'
-          ])
+          CustomTableRow.fromTexts(
+              texts: ['${S.current.lucky_bag}(${summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR'})'])
       ]),
       if (summon.subSummons.length > 1) dropdownButton,
       if (summon.subSummons.isNotEmpty) gachaDetails,
@@ -156,10 +153,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             children: [
               Text(
                 '$kStarChar ',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.yellow),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.yellow),
               ),
               Text(
                 'PickUp',
@@ -235,8 +229,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           Text('${S.current.summon_daily}: '),
           Flexible(
             child: Container(
-              decoration: BoxDecoration(
-                  border: Border(bottom: Divider.createBorderSide(context))),
+              decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
               child: DropdownButton<int>(
                 value: curIndex,
                 items: items,
@@ -319,8 +312,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ),
         ));
       }
-      children.add(
-          const Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
+      children.add(const Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
     }
 
     for (final data in summon.subSummons) {
@@ -331,9 +323,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           _addTo(svtIds, block.ids);
         });
       } else {
-        data.probs
-            .where((block) => block.display && block.isSvt)
-            .forEach((block) {
+        data.probs.where((block) => block.display && block.isSvt).forEach((block) {
           _addTo(svtIds, block.ids);
         });
       }
@@ -363,8 +353,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     Widget centerBtn = ElevatedButton(
       onPressed: summon.subSummons.isEmpty
           ? null
-          : () => router.push(
-              child: SummonSimulatorPage(summon: summon, initIndex: curIndex)),
+          : () => router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex)),
       child: Text(S.current.simulator),
     );
     if (summon.isLuckyBag && summon.subSummons.isNotEmpty) {
@@ -376,8 +365,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           children: [
             centerBtn,
             ElevatedButton(
-              onPressed: () =>
-                  router.push(child: LuckyBagExpectation(summon: summon)),
+              onPressed: () => router.push(child: LuckyBagExpectation(summon: summon)),
               child: Text(S.current.summon_expectation_btn),
             ),
           ],

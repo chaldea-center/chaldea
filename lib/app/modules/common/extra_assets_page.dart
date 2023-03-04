@@ -59,8 +59,7 @@ class ExtraAssetsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ExtraAssets? extraAssets =
-        assets is ExtraAssets ? assets as ExtraAssets : null;
+    ExtraAssets? extraAssets = assets is ExtraAssets ? assets as ExtraAssets : null;
     final children = <Widget?>[
       _oneGroup(
         S.current.illustration,
@@ -81,10 +80,8 @@ class ExtraAssetsPage extends StatelessWidget {
             ..._getUrls(extraAssets?.facesChange),
           ]),
           80),
-      _oneGroup(
-          S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
-      _oneGroup(
-          S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
+      _oneGroup(S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
+      _oneGroup(S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
       _oneGroup(
         S.current.card_asset_narrow_figure,
         [
@@ -103,8 +100,7 @@ class ExtraAssetsPage extends StatelessWidget {
         'Forms',
         [
           if (extraAssets != null)
-            for (final form in extraAssets.charaFigureForm.values)
-              ..._getUrls(form),
+            for (final form in extraAssets.charaFigureForm.values) ..._getUrls(form),
         ],
         300,
         expanded: false,
@@ -113,22 +109,16 @@ class ExtraAssetsPage extends StatelessWidget {
         'Characters',
         [
           if (extraAssets != null)
-            for (final form in extraAssets.charaFigureMulti.values)
-              ..._getUrls(form),
+            for (final form in extraAssets.charaFigureMulti.values) ..._getUrls(form),
         ],
         300,
         expanded: false,
       ),
       _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50),
-      _oneGroup('${S.current.sprites} (Mooncell)',
-          mcSprites.map(WikiTool.mcFileUrl), 300,
-          expanded: false),
-      _oneGroup('${S.current.sprites} (Fandom)',
-          fandomSprites.map(WikiTool.fandomFileUrl), 300,
-          expanded: false),
+      _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300, expanded: false),
+      _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300, expanded: false),
       spriteViewer(extraAssets),
-      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300,
-          expanded: false, showMerge: false),
+      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, expanded: false, showMerge: false),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(
@@ -207,15 +197,11 @@ class ExtraAssetsPage extends StatelessWidget {
               Widget child;
               if (url.endsWith('manifest.json')) {
                 child = FutureBuilder(
-                  future: AtlasApi.cacheManager
-                      .getJson(url, expireAfter: const Duration(days: 7)),
+                  future: AtlasApi.cacheManager.getJson(url, expireAfter: const Duration(days: 7)),
                   builder: (context, snapshot) {
                     final data = snapshot.data;
                     if (data is List) {
-                      List<Map>? parts = data
-                          .whereType<Map>()
-                          .where((m) => m['type'] == 'Texture2D')
-                          .toList();
+                      List<Map>? parts = data.whereType<Map>().where((m) => m['type'] == 'Texture2D').toList();
                       Map? part = parts.firstWhereOrNull((m) {
                         final p = m['path'].toString();
                         return p.contains('textures/') && !p.contains('aura_');
@@ -307,30 +293,22 @@ class ExtraAssetsPage extends StatelessWidget {
         dense: true,
         title: Text('ꔷ $title'),
         trailing: const Icon(Icons.open_in_new, size: 18),
-        onTap: () => launch('https://katboi01.github.io/FateViewer/?id=$key',
-            external: true),
+        onTap: () => launch('https://katboi01.github.io/FateViewer/?id=$key', external: true),
       );
     }
 
     List<Widget> children = [];
     ascensionModels.forEach((key, ascensions) {
-      children.add(
-          _tile('${S.current.ascension_short} ${ascensions.join("&")}', key));
+      children.add(_tile('${S.current.ascension_short} ${ascensions.join("&")}', key));
     });
     costumeModels.forEach((key, costumeIds) {
-      children.add(_tile(
-          costumeIds
-              .map((e) => db.gameData.costumesById[e]?.lName.l ?? 'Costume $e')
-              .join('& '),
-          key));
+      children.add(_tile(costumeIds.map((e) => db.gameData.costumesById[e]?.lName.l ?? 'Costume $e').join('& '), key));
     });
 
     return SimpleAccordion(
-      headerBuilder: (context, _) =>
-          Text('${S.current.sprites} (katboi01\'s Fate Viewer)'),
+      headerBuilder: (context, _) => Text('${S.current.sprites} (katboi01\'s Fate Viewer)'),
       expandElevation: 0,
-      contentBuilder: (context) =>
-          Column(mainAxisSize: MainAxisSize.min, children: children),
+      contentBuilder: (context) => Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }
@@ -384,8 +362,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
         }
       } else {
         url = CachedImage.corsProxyImage(url);
-        provider = CachedNetworkImageProvider(url,
-            cacheManager: ImageViewerCacheManager());
+        provider = CachedNetworkImageProvider(url, cacheManager: ImageViewerCacheManager());
       }
       if (provider == null) continue;
       final uiImg = await ImageActions.resolveImage(provider);
@@ -396,8 +373,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
       return;
     }
 
-    double w = Maths.max(images.map((e) => e.width)).toDouble(),
-        h = Maths.max(images.map((e) => e.height)).toDouble();
+    double w = Maths.max(images.map((e) => e.width)).toDouble(), h = Maths.max(images.map((e) => e.height)).toDouble();
     int colCount = sqrt(images.length).ceil();
     int rowCount = (images.length / colCount).ceil();
 
@@ -415,8 +391,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
             canvas.drawImageRect(
               img,
               Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-              Rect.fromLTWH(col * w, row * h, img.width.toDouble(),
-                  img.height.toDouble()),
+              Rect.fromLTWH(col * w, row * h, img.width.toDouble(), img.height.toDouble()),
               Paint()
                 ..filterQuality = FilterQuality.high
                 ..isAntiAlias = true,
@@ -440,8 +415,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
           Expanded(
             child: imgBytes != null
                 ? PhotoView(
-                    backgroundDecoration:
-                        const BoxDecoration(color: Colors.transparent),
+                    backgroundDecoration: const BoxDecoration(color: Colors.transparent),
                     imageProvider: MemoryImage(imgBytes!),
                     filterQuality: FilterQuality.high,
                     minScale: PhotoViewComputedScale.contained * 0.4,
@@ -476,8 +450,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
                   ImageActions.showSaveShare(
                     context: context,
                     data: imgBytes,
-                    destFp: joinPaths(db.paths.downloadDir,
-                        'merged-${DateTime.now().toSafeFileName()}.png'),
+                    destFp: joinPaths(db.paths.downloadDir, 'merged-${DateTime.now().toSafeFileName()}.png'),
                   );
                 },
           child: Text('${S.current.save}/${S.current.share}'),

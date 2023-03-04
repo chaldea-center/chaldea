@@ -9,8 +9,8 @@ class BattleBuff {
 
   List<BuffData> get allBuffs => [...passiveList, ...activeList];
 
-  bool get isSelectable => allBuffs.any((buff) =>
-      buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
+  bool get isSelectable =>
+      allBuffs.any((buff) => buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
   bool checkTraits(Iterable<NiceTrait> requiredTraits) {
     return allBuffs.any((buff) => buff.checkTraits(requiredTraits));
@@ -96,18 +96,16 @@ class BuffData {
   }
 
   bool shouldApplyAsTarget(BattleData battleData) {
-    return battleData.checkActivatorTraits(buff.ckOpIndv) &&
-        battleData.checkTargetTraits(buff.ckSelfIndv);
+    return battleData.checkActivatorTraits(buff.ckOpIndv) && battleData.checkTargetTraits(buff.ckSelfIndv);
   }
 
   bool shouldApplyAsActivator(BattleData battleData) {
-    return battleData.checkTargetTraits(buff.ckOpIndv) &&
-        battleData.checkActivatorTraits(buff.ckSelfIndv);
+    return battleData.checkTargetTraits(buff.ckOpIndv) && battleData.checkActivatorTraits(buff.ckSelfIndv);
   }
 
   bool shouldApplyBuff(BattleData battleData, bool isTarget) {
-    final targetCheck = (isTarget && shouldApplyAsTarget(battleData)) ||
-        (!isTarget && shouldApplyAsActivator(battleData));
+    final targetCheck =
+        (isTarget && shouldApplyAsTarget(battleData)) || (!isTarget && shouldApplyAsActivator(battleData));
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 

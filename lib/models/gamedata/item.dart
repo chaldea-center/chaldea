@@ -53,8 +53,7 @@ class Item {
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
-  int get rarity =>
-      background == ItemBGType.questClearQPReward ? 0 : background.index;
+  int get rarity => background == ItemBGType.questClearQPReward ? 0 : background.index;
 
   String get borderedIcon {
     if (type == ItemType.svtCoin || id == Items.grailToCrystalId) return icon;
@@ -69,9 +68,7 @@ class Item {
     if (id >= 6500 && id < 7000) return ItemCategory.normal;
     if (id >= 7000 && id < 7200) return ItemCategory.ascension;
     if (type == ItemType.eventItem) {
-      return uses.contains(ItemUse.ascension)
-          ? ItemCategory.eventAscension
-          : ItemCategory.event;
+      return uses.contains(ItemUse.ascension) ? ItemCategory.eventAscension : ItemCategory.event;
     }
     if (type == ItemType.svtCoin) return ItemCategory.coin;
     return ItemCategory.other;
@@ -184,23 +181,19 @@ class Item {
 
   // include special items(entity)
   static String getName(int id) {
-    return db.gameData.items[id]?.lName.l ??
-        db.gameData.entities[id]?.lName.l ??
-        'Item $id';
+    return db.gameData.items[id]?.lName.l ?? db.gameData.entities[id]?.lName.l ?? 'Item $id';
   }
 
   static String? getIcon(int id, {bool bordered = true}) {
     if (bordered) {
-      return db.gameData.items[id]?.borderedIcon ??
-          db.gameData.entities[id]?.borderedIcon;
+      return db.gameData.items[id]?.borderedIcon ?? db.gameData.entities[id]?.borderedIcon;
     } else {
       return db.gameData.items[id]?.icon ?? db.gameData.entities[id]?.icon;
     }
   }
 
   static int compare(int itemA, int itemB) {
-    final a = db.gameData.items[itemA]?.priority,
-        b = db.gameData.items[itemB]?.priority;
+    final a = db.gameData.items[itemA]?.priority, b = db.gameData.items[itemB]?.priority;
     if (a != null && b != null) return a - b;
     if (a == null && b == null) return 0;
     return a == null ? -1 : 1;
@@ -216,17 +209,14 @@ class Item {
   }
 
   static int _getPriority(int a) {
-    return db.gameData.items[a]?.priority ??
-        db.gameData.craftEssencesById[a]?.collectionNo ??
-        a;
+    return db.gameData.items[a]?.priority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a;
   }
 
   // item/ce/svt
   static int compare2(int id1, int id2, [bool reversed = false]) {
     // priority越大越金
     // ce3->item2->ember1
-    return ListX.compareByList(
-        id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
+    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
   }
 
   static Map<int, int> sortMapByPriority(
@@ -245,8 +235,7 @@ class Item {
     }
 
     return {
-      for (final k
-          in items.keys.toList()..sort2(_getPriority, reversed: reversed))
+      for (final k in items.keys.toList()..sort2(_getPriority, reversed: reversed))
         if (items[k]! > 0 || !removeZero) k: items[k]!
     };
   }
@@ -265,8 +254,7 @@ class Item {
     }
 
     return {
-      for (final type in ItemCategory.values)
-        type: sortMapByPriority(result[type]!),
+      for (final type in ItemCategory.values) type: sortMapByPriority(result[type]!),
     };
   }
 }
@@ -380,8 +368,7 @@ class ItemSelect {
     this.requireNum = 1,
     // required this.detail,
   });
-  factory ItemSelect.fromJson(Map<String, dynamic> json) =>
-      _$ItemSelectFromJson(json);
+  factory ItemSelect.fromJson(Map<String, dynamic> json) => _$ItemSelectFromJson(json);
 }
 
 @JsonSerializable()
@@ -400,8 +387,7 @@ class ItemAmount {
 
   Item? get item => _item ?? db.gameData.items[itemId];
 
-  factory ItemAmount.fromJson(Map<String, dynamic> json) =>
-      _$ItemAmountFromJson(json);
+  factory ItemAmount.fromJson(Map<String, dynamic> json) => _$ItemAmountFromJson(json);
 }
 
 @JsonSerializable()
@@ -414,8 +400,7 @@ class LvlUpMaterial {
     required this.qp,
   });
 
-  factory LvlUpMaterial.fromJson(Map<String, dynamic> json) =>
-      _$LvlUpMaterialFromJson(json);
+  factory LvlUpMaterial.fromJson(Map<String, dynamic> json) => _$LvlUpMaterialFromJson(json);
 
   Map<int, int> toItemDict() {
     return {

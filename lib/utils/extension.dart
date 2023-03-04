@@ -33,9 +33,7 @@ extension NumX on num {
       return NumberFormat.compact(locale: 'en').format(number);
     }
     final pattern = [
-      if (groupSeparator != null &&
-          groupSeparator.isNotEmpty &&
-          (minVal == null || abs() >= minVal))
+      if (groupSeparator != null && groupSeparator.isNotEmpty && (minVal == null || abs() >= minVal))
         '###$groupSeparator',
       '###',
       if (precision > 0) '.${(omit ? '#' : '0') * precision}',
@@ -72,8 +70,7 @@ extension IntX on int {
   }
 
   /// timestamp in seconds
-  String toDateTimeString() =>
-      DateTime.fromMillisecondsSinceEpoch(this * 1000).toStringShort();
+  String toDateTimeString() => DateTime.fromMillisecondsSinceEpoch(this * 1000).toStringShort();
 }
 
 extension ListX<T> on List<T> {
@@ -95,8 +92,7 @@ extension ListX<T> on List<T> {
     }
   }
 
-  void sort2<V extends Comparable>(V Function(T e) compare,
-      {bool reversed = false}) {
+  void sort2<V extends Comparable>(V Function(T e) compare, {bool reversed = false}) {
     if (reversed) {
       sort((a, b) => compare(b).compareTo(compare(a)));
     } else {
@@ -104,8 +100,7 @@ extension ListX<T> on List<T> {
     }
   }
 
-  void sortByList<V extends Comparable>(List<V> Function(T e) compare,
-      {bool reversed = false}) {
+  void sortByList<V extends Comparable>(List<V> Function(T e) compare, {bool reversed = false}) {
     if (reversed) {
       sort((a, b) => compareByList(b, a, compare));
     } else {
@@ -124,9 +119,7 @@ extension ListX<T> on List<T> {
     return list2;
   }
 
-  static int compareByList<T, V extends Comparable>(
-      T a, T b, List<V> Function(T v) test,
-      [bool reversed = false]) {
+  static int compareByList<T, V extends Comparable>(T a, T b, List<V> Function(T v) test, [bool reversed = false]) {
     final la = test(reversed ? b : a), lb = test(reversed ? a : b);
     for (int index = 0; index < la.length; index++) {
       if (lb.length <= index) return 1;
@@ -317,15 +310,13 @@ extension DateTimeX on DateTime {
     var date = DateTime.tryParse(formattedString);
     if (date != null) return date;
     // replace 2020-2-2 0:0 to 2020-02-02 00:00
-    formattedString = formattedString.replaceFirstMapped(
-        RegExp(r'^([+-]?\d{4})-?(\d{1,2})-?(\d{1,2})'), (match) {
+    formattedString = formattedString.replaceFirstMapped(RegExp(r'^([+-]?\d{4})-?(\d{1,2})-?(\d{1,2})'), (match) {
       String year = match.group(1)!;
       String month = match.group(2)!.padLeft(2, '0');
       String day = match.group(3)!.padLeft(2, '0');
       return '$year-$month-$day';
     });
-    formattedString = formattedString
-        .replaceFirstMapped(RegExp(r'(\d{1,2}):(\d{1,2})$'), (match) {
+    formattedString = formattedString.replaceFirstMapped(RegExp(r'(\d{1,2}):(\d{1,2})$'), (match) {
       String hour = match.group(1)!.padLeft(2, '0');
       String minute = match.group(2)!.padLeft(2, '0');
       return '$hour:$minute';
@@ -343,18 +334,12 @@ extension DateTimeX on DateTime {
 
   String toStringShort({bool omitSec = false}) {
     return toString().replaceFirstMapped(RegExp(r'(:\d+)(\.\d+)(Z?)'), (match) {
-      return omitSec || match.group(1) == ":00"
-          ? match.group(3)!
-          : match.group(1)! + match.group(3)!;
+      return omitSec || match.group(1) == ":00" ? match.group(3)! : match.group(1)! + match.group(3)!;
     });
   }
 
   String toDateString([String sep = '-']) {
-    return [
-      year,
-      month.toString().padLeft(2, '0'),
-      day.toString().padLeft(2, '0')
-    ].join(sep);
+    return [year, month.toString().padLeft(2, '0'), day.toString().padLeft(2, '0')].join(sep);
   }
 
   String toSafeFileName([Pattern? pattern]) {

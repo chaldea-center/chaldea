@@ -8,7 +8,6 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
-
 import 'buff.dart';
 import 'card_dmg.dart';
 import 'skill.dart';
@@ -16,14 +15,8 @@ import 'skill.dart';
 class BattleServantData {
   static const npPityThreshold = 9900;
   static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
-  static List<BuffAction> doNotNPTypes = [
-    BuffAction.donotNoble,
-    BuffAction.donotNobleCondMismatch
-  ];
-  static List<BuffAction> buffEffectivenessTypes = [
-    BuffAction.buffRate,
-    BuffAction.funcHpReduce
-  ];
+  static List<BuffAction> doNotNPTypes = [BuffAction.donotNoble, BuffAction.donotNobleCondMismatch];
+  static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   QuestEnemy? niceEnemy;
   Servant? niceSvt;
@@ -74,8 +67,7 @@ class BattleServantData {
   // BattleServantData.Status status
   List<int> userCommandCodeIds = [];
   List<int> svtIndividuality = [];
-  List<BattleSkillInfoData> skillInfoList =
-      []; // BattleSkillInfoData, only active skills for now
+  List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
   int tdId = 0;
   int tdLv = 0;
   BattleCEData? equip;
@@ -92,18 +84,14 @@ class BattleServantData {
 
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
 
-  SvtClass get svtClass =>
-      isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
+  SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
 
-  Attribute get attribute =>
-      isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+  Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
-  int get defenceNpGain => isPlayer
-      ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1].npGain
-          .defence[playerSvtData!.npLv - 1]
-      : 0;
+  int get defenceNpGain =>
+      isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1].npGain.defence[playerSvtData!.npLv - 1] : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -150,8 +138,7 @@ class BattleServantData {
 
     for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
       if (svtData.groupedActiveSkills.length > i) {
-        svt.skillInfoList.add(BattleSkillInfoData(
-            svtData.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
+        svt.skillInfoList.add(BattleSkillInfoData(svtData.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
           ..skillLv = settings.skillLvs[i]
           ..strengthStatus = settings.skillStrengthenLvs[i]);
       }
@@ -164,25 +151,18 @@ class BattleServantData {
   void init(BattleData battleData) {
     List<NiceSkill> passives = isPlayer
         ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive]
-        : [
-            ...niceEnemy!.classPassive.classPassive,
-            ...niceEnemy!.classPassive.addPassive
-          ];
+        : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
     battleData.setActivator(this);
     for (final skill in passives) {
-      BattleSkillInfoData.activateSkill(battleData, skill, 1,
-          isPassive: true); // passives default to level 1
+      BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
     }
 
     if (isPlayer) {
       for (int i = 0; i < niceSvt!.appendPassive.length; i += 1) {
-        final appendLv = playerSvtData!.appendLvs.length > i
-            ? playerSvtData!.appendLvs[i]
-            : 0;
+        final appendLv = playerSvtData!.appendLvs.length > i ? playerSvtData!.appendLvs[i] : 0;
         if (appendLv > 0) {
-          BattleSkillInfoData.activateSkill(
-              battleData, niceSvt!.appendPassive[i].skill, appendLv);
+          BattleSkillInfoData.activateSkill(battleData, niceSvt!.appendPassive[i].skill, appendLv);
         }
       }
     }
@@ -204,10 +184,7 @@ class BattleServantData {
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(cardType)
-        ..traits = [
-          mapCardTypeToTrait(cardType),
-          NiceTrait(id: Trait.faceCard.id)
-        ]
+        ..traits = [mapCardTypeToTrait(cardType), NiceTrait(id: Trait.faceCard.id)]
         ..commandCodeBuffs = commandCodeBuffs[i];
       builtCards.add(card);
     }
@@ -223,9 +200,8 @@ class BattleServantData {
     final cardDetail = CardDetail(
       attackIndividuality: currentNP.individuality,
       hitsDistribution: currentNP.npDistribution,
-      attackType: currentNP.damageType == TdEffectFlag.attackEnemyAll
-          ? CommandCardAttackType.all
-          : CommandCardAttackType.one,
+      attackType:
+          currentNP.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
       attackNpRate: currentNP.npGain.np[playerSvtData!.npLv - 1],
     );
 
@@ -240,14 +216,10 @@ class BattleServantData {
       return null;
     }
 
-    return CommandCardData(
-        CardType.extra, niceSvt!.cardDetails[CardType.extra]!)
+    return CommandCardData(CardType.extra, niceSvt!.cardDetails[CardType.extra]!)
       ..isNP = false
       ..npGain = getNPGain(CardType.extra)
-      ..traits = [
-        mapCardTypeToTrait(CardType.extra),
-        NiceTrait(id: Trait.faceCard.id)
-      ];
+      ..traits = [mapCardTypeToTrait(CardType.extra), NiceTrait(id: Trait.faceCard.id)];
   }
 
   static NiceTrait mapCardTypeToTrait(CardType cardType) {
@@ -301,8 +273,7 @@ class BattleServantData {
   }
 
   bool checkTraits(Iterable<NiceTrait> requiredTraits) {
-    return containsAllTraits(getTraits(), requiredTraits) ||
-        battleBuff.checkTraits(requiredTraits);
+    return containsAllTraits(getTraits(), requiredTraits) || battleBuff.checkTraits(requiredTraits);
   }
 
   void changeNP(int change) {
@@ -328,10 +299,7 @@ class BattleServantData {
   }
 
   bool isKilledBy(BattleServantData? activator, CommandCardData? currentCard) {
-    return activator != null &&
-        currentCard != null &&
-        killedBy == activator &&
-        killedByCard == currentCard;
+    return activator != null && currentCard != null && killedBy == activator && killedByCard == currentCard;
   }
 
   void heal(int heal) {
@@ -358,8 +326,7 @@ class BattleServantData {
       return false;
     }
 
-    return niceEnemy!.enemyScript.shift != null &&
-        niceEnemy!.enemyScript.shift!.length > shiftIndex;
+    return niceEnemy!.enemyScript.shift != null && niceEnemy!.enemyScript.shift!.length > shiftIndex;
   }
 
   void shift(BattleData battleData) {
@@ -401,27 +368,21 @@ class BattleServantData {
   }
 
   bool canCommandCard(BattleData battleData) {
-    return canAttack(battleData) &&
-        !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
+    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
   }
 
   bool canNP(BattleData battleData) {
     if ((isPlayer && np < db.gameData.constData.constants.fullTdPoint) ||
-        (isEnemy &&
-            (npLineCount < niceEnemy!.chargeTurn ||
-                niceEnemy!.chargeTurn == 0))) {
+        (isEnemy && (npLineCount < niceEnemy!.chargeTurn || niceEnemy!.chargeTurn == 0))) {
       return false;
     }
 
-    return canAttack(battleData) &&
-        !hasBuffOnActions(battleData, doNotNPTypes) &&
-        checkNPScript(battleData);
+    return canAttack(battleData) && !hasBuffOnActions(battleData, doNotNPTypes) && checkNPScript(battleData);
   }
 
   bool checkNPScript(BattleData battleData) {
     if (isPlayer) {
-      final currentNP =
-          niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1];
+      final currentNP = niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1];
       // TODO (battle): check script
     } else {
       final currentNP = niceEnemy!.noblePhantasm;
@@ -439,36 +400,27 @@ class BattleServantData {
     battleData.setActivator(this);
 
     // TODO (battle): account for OC buff
-    final overchargeLvl = isPlayer
-        ? (np / db.gameData.constData.constants.fullTdPoint).floor() +
-            extraOverchargeLvl
-        : 1;
+    final overchargeLvl =
+        isPlayer ? (np / db.gameData.constData.constants.fullTdPoint).floor() + extraOverchargeLvl : 1;
 
-    final npLvl = isPlayer
-        ? playerSvtData!.npLv
-        : niceEnemy!.noblePhantasm.noblePhantasmLv;
+    final npLvl = isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
 
     np = 0;
     npLineCount = 0;
 
     for (final function in getCurrentNP().functions) {
-      executeFunction(battleData, function, npLvl,
-          overchargeLvl: overchargeLvl);
+      executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
     battleData.unsetActivator();
   }
 
-  int getBuffValueOnAction(BattleData battleData, BuffAction buffAction,
-      [List<BuffData>? commandCodeBuffs]) {
+  int getBuffValueOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
     final actionDetails = db.gameData.constData.buffActions[buffAction];
     final isTarget = battleData.target == this;
     var totalVal = 0;
     var maxRate = Maths.min(actionDetails!.maxRate);
 
-    final Iterable<BuffData> allBuffs = [
-      ...battleBuff.allBuffs,
-      ...commandCodeBuffs ?? []
-    ];
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
 
     for (BuffData buff in collectBuffsPerAction(allBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
@@ -493,19 +445,14 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
-  bool hasBuffOnAction(BattleData battleData, BuffAction buffAction,
-      [List<BuffData>? commandCodeBuffs]) {
+  bool hasBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
     return hasBuffOnActions(battleData, [buffAction], commandCodeBuffs);
   }
 
-  bool hasBuffOnActions(BattleData battleData, List<BuffAction> buffActions,
-      [List<BuffData>? commandCodeBuffs]) {
+  bool hasBuffOnActions(BattleData battleData, List<BuffAction> buffActions, [List<BuffData>? commandCodeBuffs]) {
     final isTarget = battleData.target == this;
 
-    final Iterable<BuffData> allBuffs = [
-      ...battleBuff.allBuffs,
-      ...commandCodeBuffs ?? []
-    ];
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
     for (BuffData buff in collectBuffsPerActions(allBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
@@ -515,20 +462,14 @@ class BattleServantData {
     return false;
   }
 
-  void activateBuffOnAction(BattleData battleData, BuffAction buffAction,
-      [List<BuffData>? commandCodeBuffs]) {
+  void activateBuffOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
     activateBuffOnActions(battleData, [buffAction], commandCodeBuffs);
   }
 
-  void activateBuffOnActions(
-      BattleData battleData, Iterable<BuffAction> buffActions,
+  void activateBuffOnActions(BattleData battleData, Iterable<BuffAction> buffActions,
       [List<BuffData>? commandCodeBuffs]) {
-    final Iterable<BuffData> allBuffs = [
-      ...battleBuff.allBuffs,
-      ...commandCodeBuffs ?? []
-    ];
-    return activateBuffs(
-        battleData, collectBuffsPerActions(allBuffs, buffActions));
+    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
+    return activateBuffs(battleData, collectBuffsPerActions(allBuffs, buffActions));
   }
 
   void activateBuffs(BattleData battleData, Iterable<BuffData> buffs) {
@@ -538,13 +479,11 @@ class BattleServantData {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skill = db.gameData.baseSkills[buff.param];
         if (skill == null) {
-          print(
-              'Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
+          print('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
           continue;
         }
 
-        BattleSkillInfoData.activateSkill(
-            battleData, skill, buff.additionalParam);
+        BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }
     }
@@ -614,26 +553,21 @@ class BattleServantData {
 
     battleData.setActivator(this);
     battleData.setTarget(this);
-    final turnEndDamage =
-        getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
+    final turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
     if (turnEndDamage != 0) receiveDamage(turnEndDamage);
 
     if (hp <= 0 && hasNextShift()) {
       hp = 1;
     }
 
-    final turnEndHeal =
-        getBuffValueOnAction(battleData, BuffAction.turnendHpRegain);
+    final turnEndHeal = getBuffValueOnAction(battleData, BuffAction.turnendHpRegain);
     if (turnEndHeal != 0) {
-      final healGrantEff =
-          toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
-      final healReceiveEff =
-          toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
+      final healGrantEff = toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
+      final healReceiveEff = toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
       heal((turnEndHeal * healReceiveEff * healGrantEff).toInt());
     }
 
-    final turnEndStar =
-        getBuffValueOnAction(battleData, BuffAction.turnendStar);
+    final turnEndStar = getBuffValueOnAction(battleData, BuffAction.turnendStar);
     if (turnEndStar != 0) battleData.changeStar(turnEndStar);
 
     final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
@@ -644,8 +578,7 @@ class BattleServantData {
     battleData.unsetTarget();
     battleData.unsetActivator();
 
-    final delayedFunctions =
-        collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
     activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
     activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
 
@@ -663,8 +596,7 @@ class BattleServantData {
     battleData.unsetTarget();
     battleData.unsetActivator();
 
-    final delayedFunctions =
-        collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
     activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
 
     battleData.checkBuffStatus();
@@ -674,8 +606,7 @@ class BattleServantData {
     BuffData? gutsToApply;
     for (final buff in collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)) {
       if (buff.shouldApplyBuff(battleData, false)) {
-        if (gutsToApply == null ||
-            (gutsToApply.irremovable && !buff.irremovable)) {
+        if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
           gutsToApply = buff;
         }
       }

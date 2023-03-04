@@ -11,8 +11,7 @@ class EventRecipePage extends HookWidget {
   Widget build(BuildContext context) {
     return db.onUserData(
       (context, snapshot) => ListView.separated(
-        itemBuilder: (context, index) =>
-            itemBuilder(context, event.recipes[index]),
+        itemBuilder: (context, index) => itemBuilder(context, event.recipes[index]),
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemCount: event.recipes.length,
       ),
@@ -52,9 +51,7 @@ class EventRecipePage extends HookWidget {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: recipeGift.topIconId == 1
-                            ? Colors.red
-                            : Colors.transparent,
+                        color: recipeGift.topIconId == 1 ? Colors.red : Colors.transparent,
                       ),
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -86,8 +83,7 @@ class EventRecipePage extends HookWidget {
                       if (recipeGift.topIconId == 1)
                         for (final gift in recipeGift.gifts)
                           CenterWidgetSpan(
-                            child: gift.iconBuilder(
-                                context: context, width: 28, showOne: false),
+                            child: gift.iconBuilder(context: context, width: 28, showOne: false),
                           ),
                     const TextSpan(text: '\nCost: '),
                     for (final consume in recipe.consumes) ...[
@@ -111,9 +107,7 @@ class EventRecipePage extends HookWidget {
                       ),
                     ),
                     TextSpan(text: '×${recipe.eventPointNum}'),
-                    TextSpan(
-                        text:
-                            '\n${S.current.treasure_box_max_draw_once}: ${recipe.maxNum}'),
+                    TextSpan(text: '\n${S.current.treasure_box_max_draw_once}: ${recipe.maxNum}'),
                   ],
                 ),
               ),

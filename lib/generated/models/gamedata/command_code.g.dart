@@ -12,8 +12,7 @@ CommandCode _$CommandCodeFromJson(Map json) => CommandCode(
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       rarity: json['rarity'] as int,
-      extraAssets: ExtraCCAssets.fromJson(
-          Map<String, dynamic>.from(json['extraAssets'] as Map)),
+      extraAssets: ExtraCCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
       skills: (json['skills'] as List<dynamic>)
           .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),

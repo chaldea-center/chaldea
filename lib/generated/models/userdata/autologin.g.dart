@@ -16,8 +16,7 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
           authKey: $checkedConvert('authKey', (v) => v as String),
           secretKey: $checkedConvert('secretKey', (v) => v as String),
           saveDataVer: $checkedConvert('saveDataVer', (v) => v as String?),
-          userCreateServer:
-              $checkedConvert('userCreateServer', (v) => v as String?),
+          userCreateServer: $checkedConvert('userCreateServer', (v) => v as String?),
           friendCode: $checkedConvert('friendCode', (v) => v as String?),
           name: $checkedConvert('name', (v) => v as String?),
         );
@@ -41,30 +40,20 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = AutoLoginData(
-          region: $checkedConvert(
-              'region',
-              (v) => v == null
-                  ? Region.jp
-                  : const RegionConverter().fromJson(v as String)),
-          auth: $checkedConvert(
-              'auth',
-              (v) => v == null
-                  ? null
-                  : UserAuth.fromJson(Map<String, dynamic>.from(v as Map))),
+          region:
+              $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
+          auth:
+              $checkedConvert('auth', (v) => v == null ? null : UserAuth.fromJson(Map<String, dynamic>.from(v as Map))),
           userAgent: $checkedConvert('userAgent', (v) => v as String?),
           deviceInfo: $checkedConvert('deviceInfo', (v) => v as String?),
-          country: $checkedConvert(
-              'country',
-              (v) =>
-                  $enumDecodeNullable(_$NACountryEnumMap, v) ??
-                  NACountry.unitedStates),
+          country:
+              $checkedConvert('country', (v) => $enumDecodeNullable(_$NACountryEnumMap, v) ?? NACountry.unitedStates),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, dynamic>{
       'region': const RegionConverter().toJson(instance.region),
       'auth': instance.auth?.toJson(),
       'userAgent': instance.userAgent,

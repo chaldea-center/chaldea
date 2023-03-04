@@ -77,8 +77,7 @@ class QuestWave extends StatelessWidget {
       );
     }
 
-    List<Widget> _buildDeck(Iterable<QuestEnemy?> enemies,
-        {bool showDeck = false, bool needSort = false}) {
+    List<Widget> _buildDeck(Iterable<QuestEnemy?> enemies, {bool showDeck = false, bool needSort = false}) {
       List<QuestEnemy?> _enemies;
       if (needSort) {
         _enemies = List.filled(
@@ -108,8 +107,7 @@ class QuestWave extends StatelessWidget {
             children: <Widget>[
               for (int j in [0, 1, 2])
                 Expanded(
-                  child: _buildEnemyWithShift(_enemies.getOrNull(i * 3 + j),
-                      showDeck: showDeck),
+                  child: _buildEnemyWithShift(_enemies.getOrNull(i * 3 + j), showDeck: showDeck),
                 ),
             ],
           ),
@@ -119,24 +117,21 @@ class QuestWave extends StatelessWidget {
     // building
     List<Widget> children = [];
     // enemy deck
-    final _enemyDeck =
-        stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
+    final _enemyDeck = stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
     children.addAll(_buildDeck(_enemyDeck, needSort: true));
     for (final e in _enemyDeck) {
       _usedNpcIds.add(e.npcId);
       _usedNpcIds.addAll(e.enemyScript.shift ?? []);
     }
     // call deck
-    final _callDeck =
-        stageEnemies.where((e) => e.deck == DeckType.call).toList();
+    final _callDeck = stageEnemies.where((e) => e.deck == DeckType.call).toList();
     if (_callDeck.isNotEmpty) {
       children.add(const Text('- Call Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_callDeck, needSort: true));
     }
     _usedNpcIds.addAll(_callDeck.map((e) => e.npcId));
     // others
-    final _unknownDeck =
-        stageEnemies.where((e) => !_usedNpcIds.contains(e.npcId));
+    final _unknownDeck = stageEnemies.where((e) => !_usedNpcIds.contains(e.npcId));
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_unknownDeck, showDeck: true));
@@ -229,18 +224,15 @@ class WaveInfoPage extends StatelessWidget {
                           launch(Atlas.ai(ai.id, false));
                         },
                       ),
-                      if (index < stage.fieldAis.length - 1)
-                        TextSpan(text: index == perLine - 1 ? '\n' : ', '),
+                      if (index < stage.fieldAis.length - 1) TextSpan(text: index == perLine - 1 ? '\n' : ', '),
                     ]);
                   }),
                 ),
                 textAlign: TextAlign.end,
               ),
             ),
-          if (stage.waveStartMovies.isNotEmpty)
-            ListTile(title: Text(S.current.stage_opening_movie)),
-          for (final movie in stage.waveStartMovies)
-            MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false)
+          if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
+          for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false)
         ],
       ),
     );
@@ -274,10 +266,7 @@ class QuestEnemyWidget extends StatelessWidget {
       className: enemy.svt.className,
       rarity: enemy.svt.rarity,
       hp: enemy.hp,
-      deck: [
-        if (showDeck) '[${enemy.deck.name}]',
-        if (enemy.deck != DeckType.enemy) '*'
-      ].join(),
+      deck: [if (showDeck) '[${enemy.deck.name}]', if (enemy.deck != DeckType.enemy) '*'].join(),
       textStyle: textStyle,
       onTap: () {
         router.push(child: QuestEnemyDetail(enemy: enemy, region: region));
@@ -306,8 +295,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
     return EnemyThumbBase(
       icon: enemy?.icon ?? aiNpc.npc.svt.icon,
       hidden: enemy?.misc?.displayType == 2 && !showTrueName,
-      name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ??
-          aiNpc.npc.svt.lName.l,
+      name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ?? aiNpc.npc.svt.lName.l,
       className: enemy?.svt.className ?? aiNpc.npc.svt.className,
       rarity: enemy?.svt.rarity ?? aiNpc.npc.svt.rarity,
       hp: enemy?.atk ?? aiNpc.npc.hp,
@@ -356,8 +344,7 @@ class EnemyThumbBase extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? face;
     if (icon != null) {
-      face = db.getIconImage(icon,
-          width: 42, placeholder: (_) => const SizedBox());
+      face = db.getIconImage(icon, width: 42, placeholder: (_) => const SizedBox());
     }
 
     if (hidden && face != null) {
@@ -385,8 +372,7 @@ class EnemyThumbBase extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (className != null)
-          db.getIconImage(className?.icon(rarity ?? 5), width: 20),
+        if (className != null) db.getIconImage(className?.icon(rarity ?? 5), width: 20),
         Flexible(
           child: AutoSizeText(
             '${className?.shortName ?? ""} $hp',

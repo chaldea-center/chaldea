@@ -24,10 +24,8 @@ class CustomTile extends StatelessWidget {
   final GestureLongPressCallback? onLongPress;
 
   ///default values
-  static EdgeInsets defaultContentPadding =
-      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-  static EdgeInsets defaultTitlePadding =
-      const EdgeInsets.symmetric(horizontal: 6.0);
+  static EdgeInsets defaultContentPadding = const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+  static EdgeInsets defaultTitlePadding = const EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
       {super.key,
@@ -99,13 +97,10 @@ class CustomTile extends StatelessWidget {
       ));
     }
 
-    final EdgeInsetsGeometry resolvedContentPadding = contentPadding ??
-        tileTheme.contentPadding ??
-        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-    final EdgeInsetsGeometry resolvedTitlePadding = titlePadding ??
-        (leading == null
-            ? EdgeInsets.zero
-            : const EdgeInsets.symmetric(horizontal: 6.0));
+    final EdgeInsetsGeometry resolvedContentPadding =
+        contentPadding ?? tileTheme.contentPadding ?? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+    final EdgeInsetsGeometry resolvedTitlePadding =
+        titlePadding ?? (leading == null ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
       if (leadingIcon != null) leadingIcon,
       Expanded(
@@ -158,14 +153,11 @@ class CustomTile extends StatelessWidget {
       case Brightness.light:
         return selected ? theme.primaryColor : Colors.black45;
       case Brightness.dark:
-        return selected
-            ? theme.colorScheme.secondary
-            : null; // null - use current icon theme color
+        return selected ? theme.colorScheme.secondary : null; // null - use current icon theme color
     }
   }
 
-  Color? _textColor(
-      ThemeData theme, ListTileThemeData? tileTheme, Color? defaultColor) {
+  Color? _textColor(ThemeData theme, ListTileThemeData? tileTheme, Color? defaultColor) {
     if (!enabled) return theme.disabledColor;
 
     if (selected && tileTheme?.selectedColor != null) {
@@ -207,8 +199,7 @@ class CustomTile extends StatelessWidget {
 
   TextStyle? _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
     final TextStyle? style = theme.textTheme.bodyMedium; //body1->bodyText2
-    final Color? color =
-        _textColor(theme, tileTheme, theme.textTheme.bodySmall?.color);
+    final Color? color = _textColor(theme, tileTheme, theme.textTheme.bodySmall?.color);
     return style?.copyWith(color: color);
   }
 }

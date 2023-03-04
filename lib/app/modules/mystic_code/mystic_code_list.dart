@@ -42,12 +42,9 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
-            onPressed: () =>
-                setState(() => db.curUser.isGirl = !db.curUser.isGirl),
+            onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
             icon: FaIcon(
-              db.curUser.isGirl
-                  ? FontAwesomeIcons.venus
-                  : FontAwesomeIcons.mars,
+              db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
             ),
           )
         ],

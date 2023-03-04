@@ -77,8 +77,7 @@ class SvtInfoTab extends StatelessWidget {
                   child: Text.rich(
                     TextSpan(children: [
                       CenterWidgetSpan(
-                          child: db.getIconImage(svt.className.icon(svt.rarity),
-                              width: 20, aspectRatio: 1)),
+                          child: db.getIconImage(svt.className.icon(svt.rarity), width: 20, aspectRatio: 1)),
                       SharedBuilder.textButtonSpan(
                         context: context,
                         text: ' ${Transl.svtClassId(svt.classId).l}',
@@ -101,8 +100,7 @@ class SvtInfoTab extends StatelessWidget {
                     context: context,
                     text: Transl.illustratorNames(svt.profile.illustrator).l,
                     onTap: () {
-                      router.pushPage(
-                          CreatorDetail.illust(name: svt.profile.illustrator));
+                      router.pushPage(CreatorDetail.illust(name: svt.profile.illustrator));
                     },
                   ),
                   textAlign: TextAlign.center,
@@ -142,36 +140,24 @@ class SvtInfoTab extends StatelessWidget {
               svt.profile.stats?.np ?? '-',
             ], defaults: contentData),
             CustomTableRow(children: [
-              TableCellData(
-                  text: S.current.filter_attribute, isHeader: true, flex: 2),
-              TableCellData(
-                  text: S.current.info_alignment, isHeader: true, flex: 2),
-              TableCellData(
-                  text: S.current.general_type, isHeader: true, flex: 2),
+              TableCellData(text: S.current.filter_attribute, isHeader: true, flex: 2),
+              TableCellData(text: S.current.info_alignment, isHeader: true, flex: 2),
+              TableCellData(text: S.current.general_type, isHeader: true, flex: 2),
             ]),
             CustomTableRow(children: [
               TableCellData(text: Transl.svtAttribute(svt.attribute).l),
               TableCellData(
                 text: [
-                  if (svt.profile.stats?.policy != null)
-                    Transl.servantPolicy(svt.profile.stats!.policy!).l,
+                  if (svt.profile.stats?.policy != null) Transl.servantPolicy(svt.profile.stats!.policy!).l,
                   if (svt.profile.stats?.personality != null)
-                    Transl.servantPersonality(svt.profile.stats!.personality!)
-                        .l,
+                    Transl.servantPersonality(svt.profile.stats!.personality!).l,
                 ].join('·'),
                 textAlign: TextAlign.center,
               ),
-              TableCellData(
-                  text: Transl.enums(svt.type, (enums) => enums.svtType).l),
+              TableCellData(text: Transl.enums(svt.type, (enums) => enums.svtType).l),
             ]),
-            CustomTableRow.fromTexts(texts: [
-              S.current.info_value,
-              'Lv.1',
-              'Lv.Max',
-              'Lv.90',
-              'Lv.100',
-              'Lv.120'
-            ], defaults: headerData),
+            CustomTableRow.fromTexts(
+                texts: [S.current.info_value, 'Lv.1', 'Lv.Max', 'Lv.90', 'Lv.100', 'Lv.120'], defaults: headerData),
             _addAtkHpRow(context, 'ATK', [
               svt.atkBase,
               svt.atkMax,
@@ -198,8 +184,7 @@ class SvtInfoTab extends StatelessWidget {
               svt.hpGrowth.getOrNull(99),
               svt.hpGrowth.getOrNull(119),
             ]),
-            CustomTableRow.fromTexts(
-                texts: [S.current.info_cards], defaults: headerData),
+            CustomTableRow.fromTexts(texts: [S.current.info_cards], defaults: headerData),
             CustomTableRow(children: [
               if (svt.noblePhantasms.isNotEmpty)
                 TableCellData(
@@ -221,9 +206,7 @@ class SvtInfoTab extends StatelessWidget {
                     : FittedBox(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: svt.cards
-                              .map((e) => CommandCardWidget(card: e, width: 44))
-                              .toList(),
+                          children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
                         ),
                       ),
                 flex: 4,
@@ -236,29 +219,18 @@ class SvtInfoTab extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               ]),
-            if (svt.cardDetails.isNotEmpty)
-              CustomTableRow.fromTexts(
-                  texts: const ['Hits'], defaults: headerData),
-            for (final entry in svt.cardDetails.entries)
-              _addCardDetail(context, entry.key, entry.value),
+            if (svt.cardDetails.isNotEmpty) CustomTableRow.fromTexts(texts: const ['Hits'], defaults: headerData),
+            for (final entry in svt.cardDetails.entries) _addCardDetail(context, entry.key, entry.value),
             if (svt.noblePhantasms.isNotEmpty) ...[
+              CustomTableRow.fromTexts(texts: [S.current.info_np_rate], defaults: headerData),
               CustomTableRow.fromTexts(
-                  texts: [S.current.info_np_rate], defaults: headerData),
-              CustomTableRow.fromTexts(texts: const [
-                'Buster',
-                'Arts',
-                'Quick',
-                'Extra',
-                'NP',
-                'Def'
-              ], defaults: TableCellData(isHeader: true, maxLines: 1)),
+                  texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
+                  defaults: TableCellData(isHeader: true, maxLines: 1)),
             ],
             ..._npRates(),
-            CustomTableRow.fromTexts(texts: [
-              S.current.info_star_rate,
-              S.current.info_death_rate,
-              S.current.info_critical_rate
-            ], defaults: headerData),
+            CustomTableRow.fromTexts(
+                texts: [S.current.info_star_rate, S.current.info_death_rate, S.current.info_critical_rate],
+                defaults: headerData),
             CustomTableRow.fromTexts(
               texts: [
                 '${svt.starGen / 10}%',
@@ -267,22 +239,15 @@ class SvtInfoTab extends StatelessWidget {
               ],
               defaults: contentData,
             ),
-            CustomTableRow.fromTexts(
-                texts: [S.current.trait], defaults: headerData),
+            CustomTableRow.fromTexts(texts: [S.current.trait], defaults: headerData),
             ..._addTraits(context, null, baseTraits, []),
-            for (final entry
-                in svt.ascensionAdd.individuality.ascension.entries)
+            for (final entry in svt.ascensionAdd.individuality.ascension.entries)
               ..._addTraits(
-                  context,
-                  TextSpan(text: '${S.current.ascension_short} ${entry.key}: '),
-                  entry.value,
-                  baseTraits),
+                  context, TextSpan(text: '${S.current.ascension_short} ${entry.key}: '), entry.value, baseTraits),
             for (final entry in svt.ascensionAdd.individuality.costume.entries)
               ..._addTraits(
                 context,
-                TextSpan(
-                    text:
-                        '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
+                TextSpan(text: '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
                 entry.value,
                 baseTraits,
               ),
@@ -300,13 +265,9 @@ class SvtInfoTab extends StatelessWidget {
                             text: event.id.toString(),
                             onTap: event.routeTo,
                           ),
-                          TextSpan(
-                              text: (traitAdd.idx % 100)
-                                  .toString()
-                                  .padLeft(2, '0'))
+                          TextSpan(text: (traitAdd.idx % 100).toString().padLeft(2, '0'))
                         ],
-                        if (event == null)
-                          TextSpan(text: traitAdd.idx.toString()),
+                        if (event == null) TextSpan(text: traitAdd.idx.toString()),
                         const TextSpan(text: ': ')
                       ],
                     );
@@ -316,18 +277,11 @@ class SvtInfoTab extends StatelessWidget {
                   0.9,
                 ),
             if (svt.bondGrowth.isNotEmpty) ...[
-              CustomTableRow.fromTexts(
-                  texts: [S.current.info_bond_points], defaults: headerData),
+              CustomTableRow.fromTexts(texts: [S.current.info_bond_points], defaults: headerData),
               for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
                 CustomTableRow.fromTexts(
-                  texts: [
-                    'Lv.',
-                    for (int i = row * 5; i < row * 5 + 5; i++)
-                      (i + 1).toString()
-                  ],
-                  defaults: TableCellData(
-                      color: TableCellData.resolveHeaderColor(context)
-                          .withOpacity(0.5)),
+                  texts: ['Lv.', for (int i = row * 5; i < row * 5 + 5; i++) (i + 1).toString()],
+                  defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
                 ),
                 CustomTableRow.fromTexts(
                   texts: [
@@ -335,9 +289,7 @@ class SvtInfoTab extends StatelessWidget {
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondGrowth.length
                           ? '-'
-                          : ((svt.bondGrowth.getOrNull(i) ?? 0) -
-                                  (svt.bondGrowth.getOrNull(i - 1) ?? 0))
-                              .toString(),
+                          : ((svt.bondGrowth.getOrNull(i) ?? 0) - (svt.bondGrowth.getOrNull(i - 1) ?? 0)).toString(),
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),
@@ -345,9 +297,7 @@ class SvtInfoTab extends StatelessWidget {
                   texts: [
                     S.current.info_bond_points_sum,
                     for (int i = row * 5; i < row * 5 + 5; i++)
-                      i >= svt.bondGrowth.length
-                          ? '-'
-                          : svt.bondGrowth[i].toString(),
+                      i >= svt.bondGrowth.length ? '-' : svt.bondGrowth[i].toString(),
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),
@@ -362,8 +312,7 @@ class SvtInfoTab extends StatelessWidget {
 
   List<Widget> relateEvents() {
     List<Widget> children = [];
-    if (svt.extra.obtains.contains(SvtObtain.eventReward) ||
-        svt.type == SvtType.svtMaterialTd) {
+    if (svt.extra.obtains.contains(SvtObtain.eventReward) || svt.type == SvtType.svtMaterialTd) {
       for (final event in db.gameData.events.values) {
         if (event.statItemFixed.containsKey(svt.id)) {
           children.add(ListTile(
@@ -403,8 +352,7 @@ class SvtInfoTab extends StatelessWidget {
     }
     List<InlineSpan> children = [];
     if (prefix != null) children.add(prefix);
-    children.addAll(
-        SharedBuilder.traitSpans(context: context, traits: shownTraits));
+    children.addAll(SharedBuilder.traitSpans(context: context, traits: shownTraits));
     if (showMore) {
       children.add(CenterWidgetSpan(
         child: InkWell(
@@ -417,9 +365,7 @@ class SvtInfoTab extends StatelessWidget {
                 return SimpleCancelOkDialog(
                   title: Text.rich(TextSpan(
                     text: S.current.trait,
-                    children: prefix == null
-                        ? null
-                        : [const TextSpan(text: ' '), prefix],
+                    children: prefix == null ? null : [const TextSpan(text: ' '), prefix],
                   )),
                   hideCancel: true,
                   content: SharedBuilder.traitList(
@@ -437,15 +383,13 @@ class SvtInfoTab extends StatelessWidget {
       CustomTableRow(children: [
         TableCellData(
           alignment: null,
-          child: Text.rich(TextSpan(children: children),
-              textScaleFactor: textScaleFactor),
+          child: Text.rich(TextSpan(children: children), textScaleFactor: textScaleFactor),
         )
       ]),
     ];
   }
 
-  Widget _addCardDetail(
-      BuildContext context, CardType card, CardDetail detail) {
+  Widget _addCardDetail(BuildContext context, CardType card, CardDetail detail) {
     List<InlineSpan> spans = [];
     final buffer = StringBuffer('  ');
     if (detail.hitsDistribution.isEmpty) {
@@ -456,25 +400,20 @@ class SvtInfoTab extends StatelessWidget {
     }
     if (detail.attackType == CommandCardAttackType.all) {
       buffer.write(' ');
-      buffer.write(Transl.enums(
-          TdEffectFlag.attackEnemyAll, (enums) => enums.tdEffectFlag).l);
+      buffer.write(Transl.enums(TdEffectFlag.attackEnemyAll, (enums) => enums.tdEffectFlag).l);
     }
     spans.add(TextSpan(text: buffer.toString()));
     final scripts = {
       S.current.damage_rate: detail.damageRate?.format(percent: true, base: 10),
-      S.current.attack_np_rate:
-          detail.attackNpRate?.format(percent: true, base: 10),
-      S.current.defense_np_rate:
-          detail.defenseNpRate?.format(percent: true, base: 10),
-      S.current.info_star_rate:
-          detail.dropStarRate?.format(percent: true, base: 10),
+      S.current.attack_np_rate: detail.attackNpRate?.format(percent: true, base: 10),
+      S.current.defense_np_rate: detail.defenseNpRate?.format(percent: true, base: 10),
+      S.current.info_star_rate: detail.dropStarRate?.format(percent: true, base: 10),
     };
     scripts.removeWhere(((key, value) => value == null));
     if (scripts.isNotEmpty) {
       spans.add(const TextSpan(text: '\n'));
       spans.add(TextSpan(
-          text:
-              '   (${scripts.entries.map((e) => '${e.key} ${e.value}').join(', ')})',
+          text: '   (${scripts.entries.map((e) => '${e.key} ${e.value}').join(', ')})',
           style: const TextStyle(fontSize: 12)));
     }
     return CustomTableRow(children: [
@@ -487,8 +426,7 @@ class SvtInfoTab extends StatelessWidget {
     ]);
   }
 
-  Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals,
-      [int? multiplier]) {
+  Widget _addAtkHpRow(BuildContext context, String header, List<int?> vals, [int? multiplier]) {
     final texts = vals.map((e) => e == null
         ? '-'
         : multiplier == null

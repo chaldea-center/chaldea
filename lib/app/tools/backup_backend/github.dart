@@ -37,8 +37,7 @@ class GithubBackup<T> extends BackupBackend<T> {
     print('message: $message');
     final sha = config.sha ??= (await _getFile())?.sha;
     print('using sha: $sha');
-    final creation =
-        await _updateFile(content: content, message: message, sha: sha);
+    final creation = await _updateFile(content: content, message: message, sha: sha);
     if (creation.content?.sha == null) {
       throw GitHubError(github, 'Failed to create file, no sha found');
     }
@@ -53,8 +52,7 @@ class GithubBackup<T> extends BackupBackend<T> {
     final file = await _getFile();
     if (file == null) throw NotFound(github, 'NotFound');
     if (file.encoding == 'base64') {
-      final result =
-          decode(base64Decode(LineSplitter.split(file.content!).join()));
+      final result = decode(base64Decode(LineSplitter.split(file.content!).join()));
       config.sha = file.sha;
       return result;
     }

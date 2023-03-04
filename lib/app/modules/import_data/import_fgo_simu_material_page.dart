@@ -15,12 +15,10 @@ class ImportFgoSimuMaterialPage extends StatefulWidget {
   ImportFgoSimuMaterialPage({super.key});
 
   @override
-  _ImportFgoSimuMaterialPageState createState() =>
-      _ImportFgoSimuMaterialPageState();
+  _ImportFgoSimuMaterialPageState createState() => _ImportFgoSimuMaterialPageState();
 }
 
-class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
-    with SingleTickerProviderStateMixin {
+class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> with SingleTickerProviderStateMixin {
   late TextEditingController _textEditingController;
   late TabController _tabController;
 
@@ -54,11 +52,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         title: const AutoSizeText('FGO Simulator - Material', maxLines: 1),
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
-          tabs: [
-            const Tab(text: 'Input'),
-            Tab(text: S.current.servant),
-            Tab(text: S.current.item)
-          ],
+          tabs: [const Tab(text: 'Input'), Tab(text: S.current.servant), Tab(text: S.current.item)],
         )),
         actions: [
           IconButton(
@@ -66,8 +60,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               SimpleCancelOkDialog(
                 title: Text(S.current.help),
                 scrollable: true,
-                content: const Text(
-                    'Import servant and item data from fgosimulator'
+                content: const Text('Import servant and item data from fgosimulator'
                     '\n\n"https://fgosim.github.io/Material/" -> My Chaldea -> 引継ぎコード'),
               ).showDialog(context);
             },
@@ -95,12 +88,10 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               maxLines: null,
               textAlignVertical: TextAlignVertical.top,
               contextMenuBuilder: (context, editableTextState) =>
-                  AdaptiveTextSelectionToolbar.editableText(
-                      editableTextState: editableTextState),
+                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                helperText:
-                    'Copy servant or item data from fgosimulator(webcrow)',
+                helperText: 'Copy servant or item data from fgosimulator(webcrow)',
                 helperMaxLines: 5,
               ),
             ),
@@ -133,8 +124,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       ));
     }
 
-    svtResult.sort((a, b) => SvtFilterData.compare(a.svt, b.svt,
-        keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
+    svtResult.sort((a, b) =>
+        SvtFilterData.compare(a.svt, b.svt, keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
     Widget _getSummary(SvtPlan plan) {
       String text = '${plan.ascension}-';
       text += plan.skills.map((e) => e.toString().padLeft(2)).join('/');
@@ -154,8 +145,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _showId(
-                realId: record.svt.collectionNo, webcrowId: record.webcrowId),
+            _showId(realId: record.svt.collectionNo, webcrowId: record.webcrowId),
             Expanded(child: _getSummary(record.cur)),
             const Text(' → '),
             Expanded(child: _getSummary(record.target)),
@@ -185,14 +175,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               ElevatedButton(
                 onPressed: () {
                   for (final record in svtResult) {
-                    db.curUser.servants[record.svt.collectionNo] =
-                        SvtStatus(cur: record.cur);
+                    db.curUser.servants[record.svt.collectionNo] = SvtStatus(cur: record.cur);
                     db.curSvtPlan[record.svt.collectionNo] = record.target;
                   }
                   db.itemCenter.init();
                   db.saveUserData();
-                  EasyLoading.showSuccess(
-                      'Import ${svtResult.length} servants');
+                  EasyLoading.showSuccess('Import ${svtResult.length} servants');
                 },
                 child: Text(S.current.import_data),
               ),
@@ -213,8 +201,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         title: Text('${S.current.ignore}: $_ignoredItemIds'),
       ));
     }
-    final _itemMappingReverse =
-        itemMapping.map((key, value) => MapEntry(value, key));
+    final _itemMappingReverse = itemMapping.map((key, value) => MapEntry(value, key));
     itemResult.forEach((itemId, value) {
       children.add(ListTile(
         leading: Item.iconBuilder(context: context, item: null, itemId: itemId),
@@ -262,8 +249,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     );
   }
 
-  Widget _showId(
-      {required int realId, required dynamic webcrowId, double width = 36}) {
+  Widget _showId({required int realId, required dynamic webcrowId, double width = 36}) {
     return ConstrainedBox(
       constraints: BoxConstraints(minWidth: width),
       child: Text.rich(
@@ -399,9 +385,5 @@ class _OneServantData {
   SvtPlan cur;
   SvtPlan target;
 
-  _OneServantData(
-      {required this.webcrowId,
-      required this.svt,
-      required this.cur,
-      required this.target});
+  _OneServantData({required this.webcrowId, required this.svt, required this.cur, required this.target});
 }

@@ -98,10 +98,7 @@ class PlanDataSheetConverter {
     _write(_append1, plan.appendSkills[0]);
     _write(_append2, plan.appendSkills[1]);
     _write(_append3, plan.appendSkills[2]);
-    _write(
-        _costumes,
-        jsonEncode(plan.costumes
-            .map((key, value) => MapEntry(key.toString(), value))));
+    _write(_costumes, jsonEncode(plan.costumes.map((key, value) => MapEntry(key.toString(), value))));
     _write(_grail, plan.grail);
     _write(_fouHp, plan.fouHp);
     _write(_fouAtk, plan.fouAtk);
@@ -120,8 +117,8 @@ class PlanDataSheetConverter {
       return int.tryParse(v);
     }
 
-    Map<int, int> costumes = (jsonDecode(row[_costumes + suff] ?? '{}') as Map)
-        .map((key, value) => MapEntry(int.parse(key), value));
+    Map<int, int> costumes =
+        (jsonDecode(row[_costumes + suff] ?? '{}') as Map).map((key, value) => MapEntry(int.parse(key), value));
 
     return SvtPlan(
       favorite: row[_favorite] == "1",
@@ -163,8 +160,7 @@ class PlanDataSheetConverter {
 
   MapEntry<SvtStatus, SvtPlan> csvToSvt(List<String> row, List<String> header) {
     Map<String, String> rowData = {
-      for (int index = 0; index < min(row.length, header.length); index++)
-        header[index]: row[index]
+      for (int index = 0; index < min(row.length, header.length); index++) header[index]: row[index]
     };
 
     int? _toInt(String? key) {
@@ -174,8 +170,7 @@ class PlanDataSheetConverter {
     }
 
     String? _cmd = rowData[_cmdCode];
-    final List equipCmdCodes =
-        _cmd == null || _cmd.trim().isEmpty ? [] : jsonDecode(_cmd);
+    final List equipCmdCodes = _cmd == null || _cmd.trim().isEmpty ? [] : jsonDecode(_cmd);
 
     final plan = _svtPlanFromCsv(rowData, true);
     final status = SvtStatus(
@@ -205,20 +200,17 @@ class PlanDataSheetConverter {
     if (includeAll) {
       collections = db.gameData.servantsWithDup.keys.toList();
     } else if (includeFavorite) {
-      collections = db.gameData.servantsWithDup.keys
-          .where((key) => db.curUser.svtStatusOf(key).favorite)
-          .toList();
+      collections = db.gameData.servantsWithDup.keys.where((key) => db.curUser.svtStatusOf(key).favorite).toList();
     }
     collections.sort();
     for (final key in collections) {
-      data.add(svtToCsv(key, db.gameData.servantsWithDup[key]?.lName.l ?? "",
-          db.curUser.svtStatusOf(key), db.curUser.svtPlanOf(key)));
+      data.add(svtToCsv(key, db.gameData.servantsWithDup[key]?.lName.l ?? "", db.curUser.svtStatusOf(key),
+          db.curUser.svtPlanOf(key)));
     }
     return data;
   }
 
-  void parseFromCSV(Map<int, SvtStatus> statuses, Map<int, SvtPlan> plans,
-      List<List<String>> rawData) {
+  void parseFromCSV(Map<int, SvtStatus> statuses, Map<int, SvtPlan> plans, List<List<String>> rawData) {
     if (rawData.isEmpty) throw ArgumentError('empty CSV');
     final header = rawData[0];
     for (final row in rawData.skip(1)) {

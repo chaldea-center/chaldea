@@ -61,13 +61,11 @@ class SaintQuartzPlan {
 
   bool isInRange(int? jp) {
     if (jp == null) return false;
-    final _date = DateUtils.dateOnly(
-        DateUtils.addDaysToDate(jp.sec2date(), eventDateDelta));
+    final _date = DateUtils.dateOnly(DateUtils.addDaysToDate(jp.sec2date(), eventDateDelta));
     return !_date.isBefore(startDate) && !_date.isAfter(endDate);
   }
 
-  factory SaintQuartzPlan.fromJson(Map<String, dynamic> data) =>
-      _$SaintQuartzPlanFromJson(data);
+  factory SaintQuartzPlan.fromJson(Map<String, dynamic> data) => _$SaintQuartzPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$SaintQuartzPlanToJson(this);
 
@@ -135,8 +133,7 @@ class SaintQuartzPlan {
       items ??= {};
       if (startDate == null) return;
 
-      startDate = DateUtils.dateOnly(
-          DateUtils.addDaysToDate(startDate, eventDateDelta));
+      startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
       final detail = dataMap[startDate.toDateString()];
       if (detail == null) return;
 
@@ -173,8 +170,7 @@ class SaintQuartzPlan {
     db.gameData.wiki.summons.values.forEach((summon) {
       DateTime? startDate = summon.startTime.jp?.sec2date();
       if (startDate == null) return;
-      startDate = DateUtils.dateOnly(
-          DateUtils.addDaysToDate(startDate, eventDateDelta));
+      startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
       final detail = dataMap[startDate.toDateString()];
       if (detail == null) return;
       detail.summons.add(summon);

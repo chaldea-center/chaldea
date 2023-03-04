@@ -71,20 +71,14 @@ class _DevInfoPageState extends State<DevInfoPage> {
               header: 'App',
               children: [
                 _info('UUID', AppInfo.uuid),
-                if (!kIsWeb)
-                  _info('Dart', Platform.version.split(' ').take(2).join(' ')),
-                _info('OS',
-                    '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}'),
-                for (final key in AppInfo.appParams.keys)
-                  _info(key, AppInfo.appParams[key].toString())
+                if (!kIsWeb) _info('Dart', Platform.version.split(' ').take(2).join(' ')),
+                _info('OS', '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}'),
+                for (final key in AppInfo.appParams.keys) _info(key, AppInfo.appParams[key].toString())
               ],
             ),
             TileGroup(
               header: 'Device',
-              children: [
-                for (final key in AppInfo.deviceParams.keys)
-                  _info(key, AppInfo.deviceParams[key].toString())
-              ],
+              children: [for (final key in AppInfo.deviceParams.keys) _info(key, AppInfo.deviceParams[key].toString())],
             ),
             if (logNames.isNotEmpty)
               TileGroup(
@@ -133,9 +127,7 @@ class __LogViewerState extends State<_LogViewer> {
     try {
       if (file.existsSync()) {
         final content = await file.readAsString();
-        lines = LineSplitter.split(content)
-            .map((e) => RegExp(r'^[└├┌└][-┄─]+$').hasMatch(e) ? ' ' : e)
-            .toList();
+        lines = LineSplitter.split(content).map((e) => RegExp(r'^[└├┌└][-┄─]+$').hasMatch(e) ? ' ' : e).toList();
       }
     } catch (e, s) {
       logger.e('read log file failed', e, s);
@@ -163,8 +155,7 @@ class __LogViewerState extends State<_LogViewer> {
       appBar: AppBar(
         title: Text(pathlib.basename(widget.fp)),
         actions: [
-          if (kDebugMode)
-            IconButton(onPressed: readLogs, icon: const Icon(Icons.refresh)),
+          if (kDebugMode) IconButton(onPressed: readLogs, icon: const Icon(Icons.refresh)),
           IconButton(
             onPressed: () {
               if (PlatformU.isDesktop) {
@@ -183,10 +174,7 @@ class __LogViewerState extends State<_LogViewer> {
             child: SingleChildScrollView(
               child: Text(
                 shownText,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(fontFamily: kMonoFont),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontFamily: kMonoFont),
               ),
             ),
           ),
@@ -226,9 +214,7 @@ class __LogViewerState extends State<_LogViewer> {
       elevation: 1,
       shape: const CircleBorder(),
       padding: EdgeInsets.zero,
-      color: isActive
-          ? Theme.of(context).primaryColor
-          : Theme.of(context).canvasColor,
+      color: isActive ? Theme.of(context).primaryColor : Theme.of(context).canvasColor,
       onPressed: () {
         setState(() {
           page = index;
@@ -238,9 +224,7 @@ class __LogViewerState extends State<_LogViewer> {
         '${index + 1}',
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: isActive
-              ? Theme.of(context).colorScheme.onPrimary
-              : Theme.of(context).hintColor,
+          color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).hintColor,
         ),
       ),
     );

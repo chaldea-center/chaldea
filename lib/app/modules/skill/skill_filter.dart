@@ -20,8 +20,7 @@ class SkillFilterData {
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
 
-  List<FilterGroupData> get groups =>
-      [type, scope, funcTargetType, funcType, buffType];
+  List<FilterGroupData> get groups => [type, scope, funcTargetType, funcType, buffType];
 
   void reset() {
     for (final group in groups) {
@@ -41,8 +40,7 @@ class SkillFilter extends FilterPage<SkillFilterData> {
   _SkillFilterState createState() => _SkillFilterState();
 }
 
-class _SkillFilterState extends FilterPageState<SkillFilterData, SkillFilter>
-    with FuncFilterMixin {
+class _SkillFilterState extends FilterPageState<SkillFilterData, SkillFilter> with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

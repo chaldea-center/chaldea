@@ -198,13 +198,11 @@ class RouteConfiguration {
 
   late final Region? region;
 
-  RouteConfiguration(
-      {String? url, this.child, this.detail, this.arguments, Region? region}) {
+  RouteConfiguration({String? url, this.child, this.detail, this.arguments, Region? region}) {
     _init(url, null, region);
   }
 
-  RouteConfiguration.fromUri(
-      {Uri? uri, this.child, this.detail, this.arguments, Region? region}) {
+  RouteConfiguration.fromUri({Uri? uri, this.child, this.detail, this.arguments, Region? region}) {
     _init(null, uri, region);
   }
 
@@ -218,14 +216,12 @@ class RouteConfiguration {
     }
     List<String> segments = uri?.pathSegments.toList() ?? [];
     if (segments.length >= 2) {
-      if (['db', 'nice', 'basic'].contains(segments[0]) &&
-          Region.values.any((r) => r.upper == segments[1])) {
+      if (['db', 'nice', 'basic'].contains(segments[0]) && Region.values.any((r) => r.upper == segments[1])) {
         segments.removeAt(0);
       }
     }
     String? first = segments.getOrNull(0);
-    Region? regionInUrl =
-        Region.values.firstWhereOrNull((r) => r.upper == first);
+    Region? regionInUrl = Region.values.firstWhereOrNull((r) => r.upper == first);
     if (regionInUrl != null) {
       uri = uri?.replace(pathSegments: segments.skip(1));
     }
@@ -368,16 +364,13 @@ class RouteConfiguration {
         return ShopDetailPage(id: _secondInt, region: region);
       case Routes.shopHome:
         final type = ShopType.values.firstWhereOrNull((e) => e.name == second);
-        return type == null
-            ? const ShopListHome()
-            : ShopListPage(type: type, region: region);
+        return type == null ? const ShopListHome() : ShopListPage(type: type, region: region);
       case Routes.commonReleasePrefix:
         return CommonReleasesPage.id(id: _secondInt ?? 0, region: region);
       case Routes.svtClasses:
         return const SvtClassListPage();
       case Routes.svtClass:
-        int? clsId = _secondInt ??
-            SvtClass.values.firstWhereOrNull((e) => e.name == second)?.id;
+        int? clsId = _secondInt ?? SvtClass.values.firstWhereOrNull((e) => e.name == second)?.id;
         if (clsId == null) break;
         return SvtClassInfoPage(clsId: clsId);
       case Routes.freeCalc:
@@ -407,8 +400,7 @@ class RouteConfiguration {
         return BuffDetailPage(id: _secondInt, region: region);
       case Routes.buffActions:
       case Routes.buffAction:
-        return BuffActionPage(
-            action: const BuffActionConverter().fromJson(second ?? "unknown"));
+        return BuffActionPage(action: const BuffActionConverter().fromJson(second ?? "unknown"));
       // case Routes.masterMission:
       // case 'MM':
       case Routes.masterMissions:

@@ -124,8 +124,7 @@ class ImageActions {
             title: Text(S.current.save),
             onTap: () {
               Navigator.pop(context);
-              kPlatformMethods.downloadFile(
-                  data, pathlib.basename(destFp ?? 'downloadimage.png'));
+              kPlatformMethods.downloadFile(data, pathlib.basename(destFp ?? 'downloadimage.png'));
             },
           ));
         }
@@ -136,18 +135,15 @@ class ImageActions {
             onTap: () async {
               Navigator.pop(context);
               if (srcFp != null) {
-                await ShareX.shareFile(srcFp,
-                    text: shareText, context: context);
+                await ShareX.shareFile(srcFp, text: shareText, context: context);
               } else if (data != null) {
                 // Although, it may not be PNG
-                String fn =
-                    '${const Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString())}.png';
+                String fn = '${const Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString())}.png';
                 String tmpFp = join(db.paths.tempDir, fn);
                 File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);
-                await ShareX.shareFile(tmpFp,
-                    text: shareText, context: context);
+                await ShareX.shareFile(tmpFp, text: shareText, context: context);
               }
             },
           ));
@@ -179,16 +175,14 @@ class ImageActions {
           shrinkWrap: true,
           controller: ModalScrollController.of(context),
           itemBuilder: (context, index) => children[index],
-          separatorBuilder: (_, __) =>
-              const Divider(height: 0.5, thickness: 0.5),
+          separatorBuilder: (_, __) => const Divider(height: 0.5, thickness: 0.5),
           itemCount: children.length,
         );
       },
     );
   }
 
-  static Future<ui.Image?> resolveImageUrl(String url,
-      {BuildContext? context}) async {
+  static Future<ui.Image?> resolveImageUrl(String url, {BuildContext? context}) async {
     ImageProvider provider;
     if (AtlasIconLoader.i.shouldCacheImage(url)) {
       final fp = await AtlasIconLoader.i.get(url);
@@ -206,13 +200,11 @@ class ImageActions {
   }
 
   // resolve one frame
-  static Future<ui.Image?> resolveImage(ImageProvider provider,
-      {BuildContext? context}) async {
+  static Future<ui.Image?> resolveImage(ImageProvider provider, {BuildContext? context}) async {
     final completer = Completer<ui.Image?>();
     // context ??= kAppKey.currentContext;
-    final stream = provider.resolve(context != null && context.mounted
-        ? createLocalImageConfiguration(context)
-        : ImageConfiguration.empty);
+    final stream = provider.resolve(
+        context != null && context.mounted ? createLocalImageConfiguration(context) : ImageConfiguration.empty);
     ImageStreamListener? listener;
     listener = ImageStreamListener(
       (image, synchronousCall) {

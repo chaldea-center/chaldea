@@ -42,23 +42,17 @@ abstract class FilePlus {
   @protected
   List<String> readAsLinesSync({Encoding encoding = utf8});
 
-  Future<FilePlus> writeAsBytes(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false});
+  Future<FilePlus> writeAsBytes(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false});
 
   @protected
-  void writeAsBytesSync(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false});
+  void writeAsBytesSync(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false});
 
   Future<FilePlus> writeAsString(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false});
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false});
 
   @protected
   void writeAsStringSync(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false});
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false});
 
   Future<void> create({bool recursive = false});
 

@@ -66,8 +66,7 @@ class MainStoryTab extends StatelessWidget {
           child: db.onUserData(
             (context, _) => ListView.builder(
               itemCount: mainStories.length,
-              itemBuilder: (context, index) =>
-                  buildOne(context, mainStories[index]),
+              itemBuilder: (context, index) => buildOne(context, mainStories[index]),
             ),
           ),
         )
@@ -89,9 +88,7 @@ class MainStoryTab extends StatelessWidget {
       titleText,
       maxLines: 2,
       // maxFontSize: 16,
-      style: outdated
-          ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
-          : null,
+      style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,
       textScaleFactor: 0.9,
     );
     if (subtitleText.isNotEmpty) {

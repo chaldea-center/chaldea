@@ -114,8 +114,7 @@ class _UserDataPageState extends State<UserDataPage> {
             children: [
               ListTile(
                 title: const Text('Github Backup'),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.pushPage(const GithubBackupPage());
                 },
@@ -164,8 +163,8 @@ class _UserDataPageState extends State<UserDataPage> {
 
   void importUserData() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-          type: FileType.custom, allowedExtensions: ['json'], withData: true);
+      final result =
+          await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['json'], withData: true);
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));
@@ -181,8 +180,7 @@ class _UserDataPageState extends State<UserDataPage> {
   }
 
   Future saveAsUserData() async {
-    final fn =
-        'chaldea-userdata-${DateFormat('yyyyMMddTHHmmss').format(DateTime.now())}.json';
+    final fn = 'chaldea-userdata-${DateFormat('yyyyMMddTHHmmss').format(DateTime.now())}.json';
     final content = jsonEncode(db.userData);
     if (kIsWeb) {
       kPlatformMethods.downloadString(content, fn);
@@ -266,8 +264,7 @@ class _UserDataPageState extends State<UserDataPage> {
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
                 title: Text('⚠️ ${S.current.warning}'),
-                content:
-                    Text(S.current.migrate_external_storage_manual_warning),
+                content: Text(S.current.migrate_external_storage_manual_warning),
                 hideCancel: true,
               ).showDialog(context);
             },
@@ -275,8 +272,7 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TextButton(
             onPressed: () async {
-              EasyLoading.show(
-                  status: 'Moving...', maskType: EasyLoadingMaskType.clear);
+              EasyLoading.show(status: 'Moving...', maskType: EasyLoadingMaskType.clear);
               try {
                 Navigator.of(context).pop();
                 await _copyDirectory(from, to);
@@ -314,8 +310,7 @@ class _UserDataPageState extends State<UserDataPage> {
     await destination.create(recursive: true);
     await for (var entity in source.list(recursive: false)) {
       if (entity is Directory) {
-        var newDirectory = Directory(
-            p.join(destination.absolute.path, p.basename(entity.path)));
+        var newDirectory = Directory(p.join(destination.absolute.path, p.basename(entity.path)));
         await newDirectory.create(recursive: true);
         await _copyDirectory(entity.absolute, newDirectory);
       } else if (entity is File) {
@@ -345,8 +340,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
   Future<void> listBackups() async {
     if (PlatformU.isWeb) {
       for (final fp in FilePlusWeb.list()) {
-        if (fp.startsWith(db.paths.backupDir) &&
-            fp.toLowerCase().contains('.json')) {
+        if (fp.startsWith(db.paths.backupDir) && fp.toLowerCase().contains('.json')) {
           validFiles.add(MapEntry(fp, null));
         }
       }
@@ -355,8 +349,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
       final dir = Directory(db.paths.backupDir);
       if (await dir.exists()) {
         await for (var entry in dir.list()) {
-          if (await FileSystemEntity.isFile(entry.path) &&
-              entry.path.toLowerCase().contains('.json')) {
+          if (await FileSystemEntity.isFile(entry.path) && entry.path.toLowerCase().contains('.json')) {
             validFiles.add(MapEntry(entry.path, (await entry.stat()).modified));
           }
         }
@@ -377,9 +370,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           if (index == 0) {
             return Card(
               child: InkWell(
-                onTap: PlatformU.isDesktop
-                    ? () => openFile(db.paths.backupDir)
-                    : null,
+                onTap: PlatformU.isDesktop ? () => openFile(db.paths.backupDir) : null,
                 child: Padding(
                   padding: const EdgeInsets.all(6),
                   child: Text(db.paths.convertIosPath(db.paths.backupDir)),
@@ -402,8 +393,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                       content: Text(db.paths.convertIosPath(entry.key)),
                       onTapOk: () async {
                         try {
-                          final jsonData = jsonDecode(
-                              await FilePlus(entry.key).readAsString());
+                          final jsonData = jsonDecode(await FilePlus(entry.key).readAsString());
                           if (jsonData['users'] == null) {
                             EasyLoading.showError('Empty Data!');
                             return;
@@ -425,9 +415,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                   IconButton(
                     onPressed: () async {
                       try {
-                        kPlatformMethods.downloadFile(
-                            await FilePlus(entry.key).readAsBytes(),
-                            p.basename(entry.key));
+                        kPlatformMethods.downloadFile(await FilePlus(entry.key).readAsBytes(), p.basename(entry.key));
                       } catch (e) {
                         EasyLoading.showError(e.toString());
                       }

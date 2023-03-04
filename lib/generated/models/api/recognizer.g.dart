@@ -16,17 +16,14 @@ ItemResult _$ItemResultFromJson(Map json) => $checkedCreate(
           endedAt: $checkedConvert('endedAt', (v) => v as int),
           details: $checkedConvert(
               'details',
-              (v) => (v as List<dynamic>)
-                  .map((e) =>
-                      ItemDetail.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList()),
+              (v) =>
+                  (v as List<dynamic>).map((e) => ItemDetail.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$ItemResultToJson(ItemResult instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemResultToJson(ItemResult instance) => <String, dynamic>{
       'key': instance.key,
       'startAt': instance.startAt,
       'endedAt': instance.endedAt,
@@ -49,8 +46,7 @@ ItemDetail _$ItemDetailFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$ItemDetailToJson(ItemDetail instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemDetailToJson(ItemDetail instance) => <String, dynamic>{
       'itemId': instance.itemId,
       'count': instance.count,
       'thumb': instance.thumb,
@@ -69,17 +65,14 @@ SkillResult _$SkillResultFromJson(Map json) => $checkedCreate(
           endedAt: $checkedConvert('endedAt', (v) => v as int),
           details: $checkedConvert(
               'details',
-              (v) => (v as List<dynamic>)
-                  .map((e) =>
-                      SkillDetail.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList()),
+              (v) =>
+                  (v as List<dynamic>).map((e) => SkillDetail.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$SkillResultToJson(SkillResult instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SkillResultToJson(SkillResult instance) => <String, dynamic>{
       'key': instance.key,
       'startAt': instance.startAt,
       'endedAt': instance.endedAt,
@@ -104,8 +97,7 @@ SkillDetail _$SkillDetailFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$SkillDetailToJson(SkillDetail instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SkillDetailToJson(SkillDetail instance) => <String, dynamic>{
       'svtId': instance.svtId,
       'ascension': instance.ascension,
       'skill1': instance.skill1,
@@ -128,8 +120,7 @@ UserDataBackup _$UserDataBackupFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$UserDataBackupToJson(UserDataBackup instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataBackupToJson(UserDataBackup instance) => <String, dynamic>{
       'timestamp': instance.timestamp.toIso8601String(),
       'content': instance.content?.toJson(),
     };

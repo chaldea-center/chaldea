@@ -40,8 +40,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
     _tokenController = TextEditingController(text: config.token);
     _branchController = TextEditingController(text: config.branch);
     _messageController = TextEditingController();
-    backend = GithubBackup<UserData>(
-        config: config, encode: encodeUserdata, decode: decodeUserdata);
+    backend = GithubBackup<UserData>(config: config, encode: encodeUserdata, decode: decodeUserdata);
     _enableEdit = validate() != null;
   }
 
@@ -73,8 +72,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
         builder: (context) {
           return SimpleCancelOkDialog(
             title: const Text('Conflict'),
-            content: Text(
-                '$e\n\nYou can clear local sha then upload again to overwrite remote content.'),
+            content: Text('$e\n\nYou can clear local sha then upload again to overwrite remote content.'),
           );
         },
       );
@@ -92,8 +90,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   Future<void> restore() async {
-    EasyLoading.show(
-        status: 'downloading...', maskType: EasyLoadingMaskType.clear);
+    EasyLoading.show(status: 'downloading...', maskType: EasyLoadingMaskType.clear);
     try {
       await backend.restore();
       EasyLoading.showSuccess(S.current.success);
@@ -266,15 +263,13 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
             dense: true,
             title: const Text('Local SHA'),
             subtitle: Text(
-              config.sha?.substring(0, min(8, config.sha?.length ?? 0)) ??
-                  'null',
+              config.sha?.substring(0, min(8, config.sha?.length ?? 0)) ?? 'null',
             ),
             trailing: IconButton(
               onPressed: () {
                 SimpleCancelOkDialog(
                   title: const Text('Clear local sha'),
-                  content: const Text(
-                      "Will use the latest sha and make it possible to overwrite remote content"),
+                  content: const Text("Will use the latest sha and make it possible to overwrite remote content"),
                   onTapOk: () {
                     config.sha = null;
                     if (mounted) setState(() {});
@@ -316,8 +311,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
           Center(
             child: TextButton(
               onPressed: () {
-                launch(
-                    'https://github.com/settings/tokens/new?description=chaldea&scopes=repo');
+                launch('https://github.com/settings/tokens/new?description=chaldea&scopes=repo');
               },
               style: kTextButtonDenseStyle,
               child: const Text(
@@ -347,8 +341,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
           Center(
             child: TextButton(
               onPressed: () {
-                launch(
-                    'https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents');
+                launch('https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents');
               },
               style: kTextButtonDenseStyle,
               child: const Text(

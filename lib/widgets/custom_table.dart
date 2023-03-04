@@ -6,10 +6,9 @@ import 'package:flutter/scheduler.dart';
 import '../utils/utils.dart';
 import 'inherit_selection_area.dart';
 
-const Divider kHorizontalDivider = Divider(
-    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
-const VerticalDivider kVerticalDivider = VerticalDivider(
-    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, width: 0.2);
+const Divider kHorizontalDivider = Divider(color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
+const VerticalDivider kVerticalDivider =
+    VerticalDivider(color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, width: 0.2);
 
 class CustomTable extends StatelessWidget {
   final List<Widget> children;
@@ -44,12 +43,10 @@ class CustomTable extends StatelessWidget {
             border: Border.symmetric(
               horizontal: BorderSide(
                   color: horizontalDivider.color ?? kHorizontalDivider.color!,
-                  width: horizontalDivider.thickness ??
-                      kHorizontalDivider.thickness!),
+                  width: horizontalDivider.thickness ?? kHorizontalDivider.thickness!),
               vertical: BorderSide(
                   color: verticalDivider.color ?? kVerticalDivider.color!,
-                  width:
-                      verticalDivider.thickness ?? kVerticalDivider.thickness!),
+                  width: verticalDivider.thickness ?? kVerticalDivider.thickness!),
             ),
           );
     Widget child = Column(
@@ -98,8 +95,7 @@ class CustomTableRow extends StatefulWidget {
   }) : this(
           key: key,
           children: texts
-              .map((text) => (defaults ?? TableCellData(text: text))
-                  .copyWith(text: text, isHeader: isHeader))
+              .map((text) => (defaults ?? TableCellData(text: text)).copyWith(text: text, isHeader: isHeader))
               .toList(),
           color: color,
           divider: divider,
@@ -117,9 +113,7 @@ class CustomTableRow extends StatefulWidget {
           children: List.generate(
               texts.length,
               (index) => (defaults ?? TableCellData(text: texts[index]))
-                  .copyWith(
-                      text: texts[index],
-                      isHeader: isHeaders?.getOrNull(index))),
+                  .copyWith(text: texts[index], isHeader: isHeaders?.getOrNull(index))),
           color: color,
           divider: divider,
         );
@@ -133,9 +127,7 @@ class CustomTableRow extends StatefulWidget {
   }) : this(
           key: key,
           children: children
-              .map((child) => defaults == null
-                  ? TableCellData(child: child)
-                  : defaults.copyWith(child: child))
+              .map((child) => defaults == null ? TableCellData(child: child) : defaults.copyWith(child: child))
               .toList(),
           color: color,
           divider: divider,
@@ -192,8 +184,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
               ),
             );
           } else {
-            assert(false,
-                'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
+            assert(false, 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
             _child = FittedBox(
               child: Text(
                 text,
@@ -265,8 +256,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
       double _maxHeight = -1;
       widget.children.forEach((cell) {
         if (cell.fitHeight != true) {
-          RenderBox? box =
-              cell.key?.currentContext?.findRenderObject() as RenderBox?;
+          RenderBox? box = cell.key?.currentContext?.findRenderObject() as RenderBox?;
           _maxHeight = max(_maxHeight, box?.size.height ?? _maxHeight);
         }
       });
@@ -384,18 +374,14 @@ class TableCellData {
       data.flex = flex ?? flexList?.elementAt(index) ?? data.flex;
       data.style = style ?? styleList?.elementAt(index);
       data.color = color ?? colorList?.elementAt(index);
-      data.maxLines =
-          maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
+      data.maxLines = maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
       if (isHeader ?? isHeaderList?.elementAt(index) == true) {
         data.maxLines ??= 1;
       }
-      data.alignment =
-          alignment ?? alignmentList?.elementAt(index) ?? data.alignment;
-      data.textAlign =
-          textAlign ?? textAlignList?.elementAt(index) ?? data.textAlign;
+      data.alignment = alignment ?? alignmentList?.elementAt(index) ?? data.alignment;
+      data.textAlign = textAlign ?? textAlignList?.elementAt(index) ?? data.textAlign;
       data.padding = padding ?? paddingList?.elementAt(index) ?? data.padding;
-      data.fitHeight =
-          fitHeight ?? fitHeightList?.elementAt(index) ?? data.fitHeight;
+      data.fitHeight = fitHeight ?? fitHeightList?.elementAt(index) ?? data.fitHeight;
       rowDataList[index] = data;
     }
     return rowDataList;

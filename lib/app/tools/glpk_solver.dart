@@ -23,11 +23,9 @@ abstract class BaseLPSolver {
     print('=========loading js libs=========');
     await engine.init(() async {
       print('loading glpk.min.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
-          name: '<glpk.min.js>');
+      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
       print('loading solver.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
-          name: '<glpk_solver.js>');
+      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
     }).catchError((e, s) async {
       logger.e('initiate js libs error', e, s);
@@ -42,12 +40,9 @@ abstract class BaseLPSolver {
     if (params.bVec.isEmpty || params.cVec.isEmpty) {
       throw ArgumentError(S.current.glpk_error_no_valid_target);
     }
-    final resultString = await engine.eval(
-        '''glpk_solver(`${jsonEncode(params)}`)''',
-        name: 'solver_caller');
+    final resultString = await engine.eval('''glpk_solver(`${jsonEncode(params)}`)''', name: 'solver_caller');
     logger.i('result: $resultString');
-    return Map<String, num>.from(jsonDecode(resultString!))
-        .map((key, value) => MapEntry(int.parse(key), value));
+    return Map<String, num>.from(jsonDecode(resultString!)).map((key, value) => MapEntry(int.parse(key), value));
   }
 }
 
@@ -63,11 +58,9 @@ class FreeLPSolver {
     print('=========loading js libs=========');
     await engine.init(() async {
       print('loading glpk.min.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
-          name: '<glpk.min.js>');
+      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'), name: '<glpk.min.js>');
       print('loading solver.js ...');
-      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
-          name: '<glpk_solver.js>');
+      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
     }).catchError((e, s) async {
       logger.e('initiate js libs error', e, s);
@@ -107,20 +100,15 @@ class FreeLPSolver {
       glpkParams.colNames = data.questIds;
       glpkParams.rowNames = data.itemIds;
       glpkParams.matA = data.matrix;
-      glpkParams.bVec =
-          data.itemIds.map((e) => params.getPlanItemCount(e, 0)).toList();
-      glpkParams.cVec = params.costMinimize
-          ? data.apCosts
-          : List.filled(data.apCosts.length, 1, growable: true);
+      glpkParams.bVec = data.itemIds.map((e) => params.getPlanItemCount(e, 0)).toList();
+      glpkParams.cVec = params.costMinimize ? data.apCosts : List.filled(data.apCosts.length, 1, growable: true);
       glpkParams.integer = false;
       final _debugParams = FreeLPParams.from(params)
         ..planItemCounts.clear()
         ..planItemWeights.clear();
       logger.i('glpk params: ${jsonEncode(_debugParams)}');
       await ensureEngine();
-      final resultString = await engine.eval(
-          '''glpk_solver(`${jsonEncode(glpkParams)}`)''',
-          name: 'solver_caller');
+      final resultString = await engine.eval('''glpk_solver(`${jsonEncode(glpkParams)}`)''', name: 'solver_caller');
       logger.i('result: $resultString');
 
       Map<String, num> result = Map.from(jsonDecode(resultString ?? '{}'));
@@ -165,8 +153,7 @@ class FreeLPSolver {
     return solution;
   }
 
-  void _solveEfficiency(
-      LPSolution solution, FreeLPParams params, DropRateSheet data) {
+  void _solveEfficiency(LPSolution solution, FreeLPParams params, DropRateSheet data) {
     Map<int, double> objectiveWeights = params.objectiveWeights;
     objectiveWeights.removeWhere((key, value) => value <= 0);
 
@@ -176,11 +163,9 @@ class FreeLPSolver {
       Map<int, double> dropWeights = {};
       for (int row = 0; row < data.itemIds.length; row++) {
         int itemId = data.itemIds[row];
-        if (objectiveWeights.keys.contains(itemId) &&
-            data.matrix[row][col] > 0) {
-          dropWeights[itemId] = (params.useAP20 ? 20 / data.apCosts[col] : 1) *
-              data.matrix[row][col] *
-              objectiveWeights[itemId]!;
+        if (objectiveWeights.keys.contains(itemId) && data.matrix[row][col] > 0) {
+          dropWeights[itemId] =
+              (params.useAP20 ? 20 / data.apCosts[col] : 1) * data.matrix[row][col] * objectiveWeights[itemId]!;
           sortDict<int, double>(
             dropWeights,
             compare: (a, b) => a.value.compareTo(b.value),
@@ -190,8 +175,7 @@ class FreeLPSolver {
         }
       }
       if (dropWeights.isNotEmpty) {
-        solution.weightVars.add(LPVariable<double>(
-            name: questId, detail: dropWeights, value: 0, cost: 0));
+        solution.weightVars.add(LPVariable<double>(name: questId, detail: dropWeights, value: 0, cost: 0));
       }
     }
     solution.sortWeightVars();
@@ -204,8 +188,7 @@ class FreeLPSolver {
 }
 
 /// [data] and [params] must be copied instances. Modify them **in-place** here
-DropRateSheet _preProcess(
-    {required DropRateSheet data, required FreeLPParams params}) {
+DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams params}) {
   print('pre processing GLPK data and params...');
   // inside pre processing, use [params.objective] not [items] and [counts]
   final objective = params.objectiveCounts;
@@ -303,8 +286,7 @@ DropRateSheet _preProcess(
   }
 
   // remove rows/cols above
-  params.rows.removeWhere((rowName) =>
-      removeRows.contains(rowName) || !objective.containsKey(rowName));
+  params.rows.removeWhere((rowName) => removeRows.contains(rowName) || !objective.containsKey(rowName));
   removeRows.forEach((element) => data.removeRow(element));
   removeCols.forEach((element) {
     if (!retainCols.contains(element)) data.removeCol(element);

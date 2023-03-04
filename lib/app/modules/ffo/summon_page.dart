@@ -45,8 +45,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         children: [
           banner,
           summonBtns,
-          if (FfoDB.i.isEmpty)
-            Center(child: Text(S.current.ffo_missing_data_hint)),
+          if (FfoDB.i.isEmpty) Center(child: Text(S.current.ffo_missing_data_hint)),
           results,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -91,8 +90,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 150),
       child: CachedNetworkImage(
-        imageUrl:
-            'https://news.fate-go.jp/wp-content/uploads/2021/ffo_cp_xikad/top_banner.png',
+        imageUrl: 'https://news.fate-go.jp/wp-content/uploads/2021/ffo_cp_xikad/top_banner.png',
         errorWidget: (context, e, s) => const SizedBox(),
       ),
     );
@@ -104,8 +102,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       child: InkWell(
         onTap: () => drawSummon(ten ? 10 : 1),
         child: db.getIconImage(
-          FFOUtil.imgUrl(
-              'UI/${ten ? 'btn_summon_10.png' : 'btn_summon_01.png'}'),
+          FFOUtil.imgUrl('UI/${ten ? 'btn_summon_10.png' : 'btn_summon_01.png'}'),
           height: 50,
           placeholder: (context) => ElevatedButton(
             onPressed: () => drawSummon(ten ? 10 : 1),
@@ -136,9 +133,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
     // final svts = FfoDB.i.parts.values.where((e) => e.svt != null).toList();
     final categorized = {
       for (final where in FfoPartWhere.values)
-        where: FfoDB.i.parts.values
-            .where((e) => e.svt?.has(where) == true)
-            .toList(),
+        where: FfoDB.i.parts.values.where((e) => e.svt?.has(where) == true).toList(),
     };
     FfoSvtPart? _getRandom(FfoPartWhere where) {
       final fixedSvt = fixedParams.of(where);

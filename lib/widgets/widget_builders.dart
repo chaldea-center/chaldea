@@ -5,19 +5,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 
-typedef ValueStatefulWidgetBuilder<T> = Widget Function(
-    BuildContext context, _ValueStatefulBuilderState<T> state);
+typedef ValueStatefulWidgetBuilder<T> = Widget Function(BuildContext context, _ValueStatefulBuilderState<T> state);
 
 class ValueStatefulBuilder<T> extends StatefulWidget {
   final T initValue;
   final ValueStatefulWidgetBuilder<T> builder;
 
-  const ValueStatefulBuilder(
-      {super.key, required this.initValue, required this.builder});
+  const ValueStatefulBuilder({super.key, required this.initValue, required this.builder});
 
   @override
-  _ValueStatefulBuilderState<T> createState() =>
-      _ValueStatefulBuilderState<T>();
+  _ValueStatefulBuilderState<T> createState() => _ValueStatefulBuilderState<T>();
 }
 
 class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
@@ -44,16 +41,14 @@ class KeepAliveBuilder extends StatefulWidget {
   final WidgetBuilder builder;
   final bool wantKeepAlive;
 
-  const KeepAliveBuilder(
-      {super.key, required this.builder, this.wantKeepAlive = true});
+  const KeepAliveBuilder({super.key, required this.builder, this.wantKeepAlive = true});
 
   @override
   // ignore: no_logic_in_create_state
   _KeepAliveBuilderState createState() => _KeepAliveBuilderState(wantKeepAlive);
 }
 
-class _KeepAliveBuilderState extends State<KeepAliveBuilder>
-    with AutomaticKeepAliveClientMixin {
+class _KeepAliveBuilderState extends State<KeepAliveBuilder> with AutomaticKeepAliveClientMixin {
   final bool _wantKeepAlive;
 
   _KeepAliveBuilderState(this._wantKeepAlive);
@@ -126,14 +121,12 @@ class _PrimaryScrollBuilderState extends State<PrimaryScrollBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return PrimaryScrollController(
-        controller: controller, child: widget.builder(context));
+    return PrimaryScrollController(controller: controller, child: widget.builder(context));
   }
 }
 
 class ScrollControlWidget extends StatefulWidget {
-  final Widget Function(BuildContext context, ScrollController controller)
-      builder;
+  final Widget Function(BuildContext context, ScrollController controller) builder;
   const ScrollControlWidget({super.key, required this.builder});
 
   @override
@@ -163,8 +156,7 @@ class RefreshButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final btn = TextButton(
       onPressed: onPressed,
-      child:
-          Text(MaterialLocalizations.of(context).refreshIndicatorSemanticLabel),
+      child: Text(MaterialLocalizations.of(context).refreshIndicatorSemanticLabel),
     );
     if (text == null) return btn;
     return Column(
@@ -180,8 +172,7 @@ class RefreshButton extends StatelessWidget {
 
 class ScrollRestoration extends StatefulWidget {
   final String? restorationId;
-  final Widget Function(BuildContext context, ScrollController controller)
-      builder;
+  final Widget Function(BuildContext context, ScrollController controller) builder;
   final bool keepScrollOffset;
   final String? debugLabel;
 
@@ -199,8 +190,7 @@ class ScrollRestoration extends StatefulWidget {
   static final Map<String, double> _offsets = {};
 
   static double? get(String restorationId) => _offsets[restorationId];
-  static void set(String restorationId, double offset) =>
-      _offsets[restorationId] = offset;
+  static void set(String restorationId, double offset) => _offsets[restorationId] = offset;
 
   static void reset(String restorationId) {
     _offsets.remove(restorationId);
@@ -214,8 +204,7 @@ class _ScrollRestorationState extends State<ScrollRestoration> {
   void initState() {
     super.initState();
     _scrollController = ScrollController(
-      initialScrollOffset:
-          ScrollRestoration._offsets[widget.restorationId] ?? 0,
+      initialScrollOffset: ScrollRestoration._offsets[widget.restorationId] ?? 0,
       keepScrollOffset: widget.keepScrollOffset,
       debugLabel: widget.debugLabel,
     );
@@ -226,8 +215,7 @@ class _ScrollRestorationState extends State<ScrollRestoration> {
 
   void _onScrollChanged() {
     if (_scrollController.hasClients && widget.restorationId != null) {
-      ScrollRestoration._offsets[widget.restorationId!] =
-          _scrollController.offset;
+      ScrollRestoration._offsets[widget.restorationId!] = _scrollController.offset;
     }
   }
 
@@ -254,8 +242,7 @@ class CopyLongPress extends StatelessWidget {
     return GestureDetector(
       onLongPress: () async {
         await Clipboard.setData(ClipboardData(text: text));
-        final shownText =
-            text.length > 100 ? '${text.substring(0, 100)}...' : text;
+        final shownText = text.length > 100 ? '${text.substring(0, 100)}...' : text;
         EasyLoading.showToast('${S.current.copied}\n$shownText');
       },
       child: child,

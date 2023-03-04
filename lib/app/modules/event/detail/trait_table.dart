@@ -69,8 +69,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
       final q = await AtlasApi.questPhase(e.id, e.phases.last, region: region);
       if (q != null) {
         questPhases.add(q);
-        if (!filterData.hasRare &&
-            q.allEnemies.any((e) => e.enemyScript.isRare)) {
+        if (!filterData.hasRare && q.allEnemies.any((e) => e.enemyScript.isRare)) {
           filterData.hasRare = true;
         }
       }
@@ -88,13 +87,10 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         ListTile(
           dense: true,
           title: Text(S.current.switch_region),
-          subtitle: Text.rich(TextSpan(
-              text:
-                  '${S.current.quest}: ${questPhases.length}/${freeQuests.length}',
-              children: [
-                if (_loading)
-                  const CenterWidgetSpan(child: CupertinoActivityIndicator()),
-              ])),
+          subtitle:
+              Text.rich(TextSpan(text: '${S.current.quest}: ${questPhases.length}/${freeQuests.length}', children: [
+            if (_loading) const CenterWidgetSpan(child: CupertinoActivityIndicator()),
+          ])),
           trailing: FilterGroup<Region>(
             options: [
               Region.jp,
@@ -104,8 +100,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
             combined: true,
             optionBuilder: (v) => Text(v.localName),
             onFilterChanged: (optionData, lastChanged) {
-              if (lastChanged == Region.na &&
-                  widget.event.extra.startTime.na == null) {
+              if (lastChanged == Region.na && widget.event.extra.startTime.na == null) {
                 EasyLoading.showError('Event not released in NA');
                 return;
               }
@@ -184,11 +179,8 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         name = quest.lSpot.l;
       }
       Map<CustomMissionCond, int> counts = {};
-      for (final cond in filterData.cond.options.isEmpty
-          ? conds
-          : filterData.cond.options) {
-        int count = MissionSolver.countMissionTarget(
-            CustomMission(count: 1, conds: [cond]), quest,
+      for (final cond in filterData.cond.options.isEmpty ? conds : filterData.cond.options) {
+        int count = MissionSolver.countMissionTarget(CustomMission(count: 1, conds: [cond]), quest,
             includeRare: filterData.rareEnemy);
         if (count > 0) counts[cond] = count;
       }
@@ -198,8 +190,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
           onTap: quest.routeTo,
           child: Text.rich(
             TextSpan(children: [
-              if (spotImg != null)
-                CenterWidgetSpan(child: db.getIconImage(spotImg, width: 28)),
+              if (spotImg != null) CenterWidgetSpan(child: db.getIconImage(spotImg, width: 28)),
               TextSpan(text: name),
             ]),
             textScaleFactor: 0.9,
@@ -218,9 +209,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
                 TextSpan(children: [
                   TextSpan(
                     text: describeCond(entry.key),
-                    style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.w300),
+                    style: const TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w300),
                   ),
                   TextSpan(text: '×${entry.value}'),
                 ]),
@@ -230,15 +219,11 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         )
       ];
 
-      children.add(TableRow(children: [
-        for (final cell in rowCells)
-          Padding(padding: const EdgeInsets.all(6), child: cell)
-      ]));
+      children.add(
+          TableRow(children: [for (final cell in rowCells) Padding(padding: const EdgeInsets.all(6), child: cell)]));
     }
     return Table(
-      columnWidths: const {
-        0: MinColumnWidth(FractionColumnWidth(0.35), FixedColumnWidth(150))
-      },
+      columnWidths: const {0: MinColumnWidth(FractionColumnWidth(0.35), FixedColumnWidth(150))},
       border: TableBorder.all(color: Divider.createBorderSide(context).color),
       children: children,
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,

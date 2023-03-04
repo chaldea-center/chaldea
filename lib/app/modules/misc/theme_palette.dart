@@ -79,11 +79,9 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
           ),
           const Divider(thickness: 2),
           oneColor('colorScheme.primary', colorScheme.primary),
-          oneColor(
-              'colorScheme.primaryContainer', colorScheme.primaryContainer),
+          oneColor('colorScheme.primaryContainer', colorScheme.primaryContainer),
           oneColor('colorScheme.secondary', colorScheme.secondary),
-          oneColor(
-              'colorScheme.secondaryContainer', colorScheme.secondaryContainer),
+          oneColor('colorScheme.secondaryContainer', colorScheme.secondaryContainer),
           oneColor('colorScheme.surface', colorScheme.surface),
           oneColor('colorScheme.background', colorScheme.background),
           oneColor('colorScheme.error', colorScheme.error),
@@ -98,8 +96,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
           oneColor('primaryColorDark', themeData.primaryColorDark),
           oneColor('canvasColor', themeData.canvasColor),
           oneColor('shadowColor', themeData.shadowColor),
-          oneColor(
-              'scaffoldBackgroundColor', themeData.scaffoldBackgroundColor),
+          oneColor('scaffoldBackgroundColor', themeData.scaffoldBackgroundColor),
           oneColor('cardColor', themeData.cardColor),
           oneColor('dividerColor', themeData.dividerColor),
           oneColor('focusColor', themeData.focusColor),
@@ -140,17 +137,12 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
                 text,
                 textAlign: TextAlign.center,
                 maxLines: 2,
-                style: const TextStyle(shadows: [
-                  Shadow(
-                      offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)
-                ]),
+                style: const TextStyle(shadows: [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)]),
               ),
             ),
             subtitle: Center(
               child: AutoSizeText(
-                color == null
-                    ? 'null'
-                    : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
+                color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
                 maxLines: 1,
                 minFontSize: 2,
                 style: kMonoStyle,

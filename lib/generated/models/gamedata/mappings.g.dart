@@ -8,266 +8,164 @@ part of '../../../models/gamedata/mappings.dart';
 
 MappingData _$MappingDataFromJson(Map json) => MappingData(
       itemNames: (json['item_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       mcNames: (json['mc_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       costumeNames: (json['costume_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       cvNames: (json['cv_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       illustratorNames: (json['illustrator_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       ccNames: (json['cc_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtNames: (json['svt_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       ceNames: (json['ce_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       eventNames: (json['event_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       warNames: (json['war_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       questNames: (json['quest_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       spotNames: (json['spot_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       entityNames: (json['entity_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdTypes: (json['td_types'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       bgmNames: (json['bgm_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       summonNames: (json['summon_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       charaNames: (json['chara_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       buffNames: (json['buff_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       buffDetail: (json['buff_detail'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       funcPopuptext: (json['func_popuptext'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       skillNames: (json['skill_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       skillDetail: (json['skill_detail'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdNames: (json['td_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdRuby: (json['td_ruby'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdDetail: (json['td_detail'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       voiceLineNames: (json['voice_line_names'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       trait: (json['trait'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       eventTrait: (json['event_trait'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                EventTraitMapping.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), EventTraitMapping.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       costumeDetail: (json['costume_detail'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       skillPriority: (json['skill_priority'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdPriority: (json['td_priority'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtRelease: json['svt_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['svt_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['svt_release'] as Map)),
       entityRelease: json['entity_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['entity_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['entity_release'] as Map)),
       ceRelease: json['ce_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['ce_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['ce_release'] as Map)),
       ccRelease: json['cc_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['cc_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['cc_release'] as Map)),
       mcRelease: json['mc_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['mc_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['mc_release'] as Map)),
       warRelease: json['war_release'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['war_release'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['war_release'] as Map)),
       questRelease: (json['quest_release'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                MappingBase<int>.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), MappingBase<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      enums: json['enums'] == null
-          ? null
-          : EnumMapping.fromJson(
-              Map<String, dynamic>.from(json['enums'] as Map)),
+      enums: json['enums'] == null ? null : EnumMapping.fromJson(Map<String, dynamic>.from(json['enums'] as Map)),
       misc: (json['misc'] as Map?)?.map(
             (k, e) => MapEntry(
                 k as String,
                 (e as Map).map(
-                  (k, e) => MapEntry(
-                      k as String,
-                      MappingBase<String>.fromJson(
-                          Map<String, dynamic>.from(e as Map))),
+                  (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
                 )),
           ) ??
           const {},
@@ -367,178 +265,104 @@ EventTraitMapping _$EventTraitMappingFromJson(Map json) => EventTraitMapping(
 
 EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
       svtClass: (json['svt_class'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       attribute: (json['attribute'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       servantPolicy: (json['servant_policy'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       servantPersonality: (json['servant_personality'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       gender: (json['gender'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       funcTargetType: (json['func_target_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtObtain: (json['svt_obtain'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       ceObtain: (json['ce_obtain'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       missionProgressType: (json['mission_progress_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       missionType: (json['mission_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       tdEffectFlag: (json['td_effect_flag'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       eventType: (json['event_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       combineAdjustTarget: (json['combine_adjust_target'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       itemCategory: (json['item_category'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       customMissionType: (json['custom_mission_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       effectType: (json['effect_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       funcType: (json['func_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       buffType: (json['buff_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtVoiceType: (json['svt_voice_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtType: (json['svt_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       summonType: (json['summon_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       eventWorkType: (json['event_work_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       shopType: (json['shop_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       purchaseType: (json['purchase_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       restrictionType: (json['restriction_type'] as Map?)?.map(
-            (k, e) => MapEntry(
-                k as String,
-                MappingBase<String>.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
     );

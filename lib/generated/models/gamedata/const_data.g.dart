@@ -11,14 +11,12 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             (k, e) => MapEntry(
                 $enumDecode(_$AttributeEnumMap, k),
                 (e as Map).map(
-                  (k, e) =>
-                      MapEntry($enumDecode(_$AttributeEnumMap, k), e as int),
+                  (k, e) => MapEntry($enumDecode(_$AttributeEnumMap, k), e as int),
                 )),
           ) ??
           const {},
       buffActions: (json['buffActions'] as Map?)?.map(
-            (k, e) => MapEntry(
-                const BuffActionConverter().fromJson(k as String),
+            (k, e) => MapEntry(const BuffActionConverter().fromJson(k as String),
                 BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
@@ -26,14 +24,12 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             (k, e) => MapEntry(
                 $enumDecode(_$CardTypeEnumMap, k),
                 (e as Map).map(
-                  (k, e) => MapEntry(int.parse(k as String),
-                      CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
+                  (k, e) => MapEntry(int.parse(k as String), CardInfo.fromJson(Map<String, dynamic>.from(e as Map))),
                 )),
           ) ??
           const {},
       classInfo: (json['classInfo'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                SvtClassInfo.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), SvtClassInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       classRelation: (json['classRelation'] as Map?)?.map(
@@ -46,29 +42,23 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
       constants: json['constants'] == null
           ? const GameConstants()
-          : GameConstants.fromJson(
-              Map<String, dynamic>.from(json['constants'] as Map)),
+          : GameConstants.fromJson(Map<String, dynamic>.from(json['constants'] as Map)),
       svtGrailCost: (json['svtGrailCost'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
                 (e as Map).map(
-                  (k, e) => MapEntry(
-                      int.parse(k as String),
-                      GrailCostDetail.fromJson(
-                          Map<String, dynamic>.from(e as Map))),
+                  (k, e) =>
+                      MapEntry(int.parse(k as String), GrailCostDetail.fromJson(Map<String, dynamic>.from(e as Map))),
                 )),
           ) ??
           const {},
       userLevel: (json['userLevel'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                MasterUserLvDetail.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
+            (k, e) =>
+                MapEntry(int.parse(k as String), MasterUserLvDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       svtExp: (json['svtExp'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                SvtExpCurve.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), SvtExpCurve.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
     );
@@ -95,12 +85,10 @@ const _$CardTypeEnumMap = {
 
 BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
-      plusTypes: (json['plusTypes'] as List<dynamic>)
-          .map((e) => const BuffTypeConverter().fromJson(e as String))
-          .toList(),
-      minusTypes: (json['minusTypes'] as List<dynamic>)
-          .map((e) => const BuffTypeConverter().fromJson(e as String))
-          .toList(),
+      plusTypes:
+          (json['plusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
+      minusTypes:
+          (json['minusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
       baseParam: json['baseParam'] as int,
       baseValue: json['baseValue'] as int,
       isRec: json['isRec'] as bool,
@@ -146,9 +134,7 @@ CardInfo _$CardInfoFromJson(Map json) => CardInfo(
 GrailCostDetail _$GrailCostDetailFromJson(Map json) => GrailCostDetail(
       qp: json['qp'] as int,
       addLvMax: json['addLvMax'] as int,
-      frameType:
-          $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ??
-              SvtFrameType.gold,
+      frameType: $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ?? SvtFrameType.gold,
     );
 
 const _$SvtFrameTypeEnumMap = {
@@ -167,9 +153,7 @@ MasterUserLvDetail _$MasterUserLvDetailFromJson(Map json) => MasterUserLvDetail(
       maxAp: json['maxAp'] as int,
       maxCost: json['maxCost'] as int,
       maxFriend: json['maxFriend'] as int,
-      gift: json['gift'] == null
-          ? null
-          : Gift.fromJson(Map<String, dynamic>.from(json['gift'] as Map)),
+      gift: json['gift'] == null ? null : Gift.fromJson(Map<String, dynamic>.from(json['gift'] as Map)),
     );
 
 SvtExpCurve _$SvtExpCurveFromJson(Map json) => SvtExpCurve(
@@ -187,12 +171,9 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       backsideSvtEquipImageId: json['backsideSvtEquipImageId'] as int? ?? 103,
       backsideSvtImageId: json['backsideSvtImageId'] as int? ?? 101,
       battleEffectIdAvoidance: json['battleEffectIdAvoidance'] as int? ?? 6216,
-      battleEffectIdAvoidancePierce:
-          json['battleEffectIdAvoidancePierce'] as int? ?? 6217,
-      battleEffectIdInvincible:
-          json['battleEffectIdInvincible'] as int? ?? 6214,
-      battleEffectIdInvinciblePierce:
-          json['battleEffectIdInvinciblePierce'] as int? ?? 6215,
+      battleEffectIdAvoidancePierce: json['battleEffectIdAvoidancePierce'] as int? ?? 6217,
+      battleEffectIdInvincible: json['battleEffectIdInvincible'] as int? ?? 6214,
+      battleEffectIdInvinciblePierce: json['battleEffectIdInvinciblePierce'] as int? ?? 6215,
       battleItemDispColumn: json['battleItemDispColumn'] as int? ?? 7,
       bpExpression: json['bpExpression'] as int? ?? 1,
       chainbonusArtsRate: json['chainbonusArtsRate'] as int? ?? 200,
@@ -201,8 +182,7 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       commandArts: json['commandArts'] as int? ?? 4001,
       commandBuster: json['commandBuster'] as int? ?? 4002,
       commandCardPrmUpMax: json['commandCardPrmUpMax'] as int? ?? 500,
-      commandCodeDetachingItemId:
-          json['commandCodeDetachingItemId'] as int? ?? 5003,
+      commandCodeDetachingItemId: json['commandCodeDetachingItemId'] as int? ?? 5003,
       commandQuick: json['commandQuick'] as int? ?? 4003,
       criticalAttackRate: json['criticalAttackRate'] as int? ?? 2000,
       criticalIndividuality: json['criticalIndividuality'] as int? ?? 4100,
@@ -237,10 +217,8 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       maxEventPoint: json['maxEventPoint'] as int? ?? 999999999,
       maxExpFactor: json['maxExpFactor'] as int? ?? 3000,
       maxFriendpoint: json['maxFriendpoint'] as int? ?? 999999999,
-      maxFriendpointBoostItemDailyReceive:
-          json['maxFriendpointBoostItemDailyReceive'] as int? ?? 100,
-      maxFriendpointBoostItemUse:
-          json['maxFriendpointBoostItemUse'] as int? ?? 3,
+      maxFriendpointBoostItemDailyReceive: json['maxFriendpointBoostItemDailyReceive'] as int? ?? 100,
+      maxFriendpointBoostItemUse: json['maxFriendpointBoostItemUse'] as int? ?? 3,
       maxFriendshipRank: json['maxFriendshipRank'] as int? ?? 5,
       maxFriendCode: json['maxFriendCode'] as int? ?? 999999999,
       maxFriendHistoryNum: json['maxFriendHistoryNum'] as int? ?? 100,
@@ -277,16 +255,12 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       supportDeckMax: json['supportDeckMax'] as int? ?? 10,
       swimsuitMeltSvtId: json['swimsuitMeltSvtId'] as int? ?? 304000,
       tamamocatStunBuffId: json['tamamocatStunBuffId'] as int? ?? 178,
-      tamamocatTreasureDeviceId1:
-          json['tamamocatTreasureDeviceId1'] as int? ?? 701601,
-      tamamocatTreasureDeviceId2:
-          json['tamamocatTreasureDeviceId2'] as int? ?? 701602,
+      tamamocatTreasureDeviceId1: json['tamamocatTreasureDeviceId1'] as int? ?? 701601,
+      tamamocatTreasureDeviceId2: json['tamamocatTreasureDeviceId2'] as int? ?? 701602,
       temporaryIgnoreSleepModeForTreasureDeviceSvtId1:
-          json['temporaryIgnoreSleepModeForTreasureDeviceSvtId1'] as int? ??
-              500100,
+          json['temporaryIgnoreSleepModeForTreasureDeviceSvtId1'] as int? ?? 500100,
       temporaryIgnoreSleepModeForTreasureDeviceSvtId2:
-          json['temporaryIgnoreSleepModeForTreasureDeviceSvtId2'] as int? ??
-              600900,
+          json['temporaryIgnoreSleepModeForTreasureDeviceSvtId2'] as int? ?? 600900,
       treasuredeviceIdMashu3: json['treasuredeviceIdMashu3'] as int? ?? 800104,
       userAct: json['userAct'] as int? ?? 20,
       userCost: json['userCost'] as int? ?? 56,

@@ -50,8 +50,7 @@ class BasicQuest {
     required this.closedAt,
   });
 
-  factory BasicQuest.fromJson(Map<String, dynamic> json) =>
-      _$BasicQuestFromJson(json);
+  factory BasicQuest.fromJson(Map<String, dynamic> json) => _$BasicQuestFromJson(json);
 }
 
 @JsonSerializable()
@@ -120,8 +119,7 @@ class Quest with RouteInfo {
   static bool _isSQGiftIcon(String? giftIcon, List<Gift> gifts) {
     return giftIcon != null &&
         giftIcon.endsWith('/Items/6.png') &&
-        gifts.any((gift) =>
-            gift.type == GiftType.item && gift.objectId == Items.stoneId);
+        gifts.any((gift) => gift.type == GiftType.item && gift.objectId == Items.stoneId);
   }
 
   static int compare(Quest a, Quest b, {bool spotLayer = false}) {
@@ -181,8 +179,7 @@ class Quest with RouteInfo {
       if (name2 == null) continue;
       allNames.add(name2);
       if ((add.condType == CondType.questClear && id > add.condTargetId) ||
-          (add.condType == CondType.questClearPhase &&
-              id >= add.condTargetId)) {
+          (add.condType == CondType.questClearPhase && id >= add.condTargetId)) {
         shownName = add.targetText;
       }
     }
@@ -200,9 +197,7 @@ class Quest with RouteInfo {
   String get lDispName {
     // 群島-10308, 裏山-20314
     if (isMainStoryFree) {
-      return const [10308, 20314].contains(spotId)
-          ? '${lSpot.l}(${lName.l})'
-          : lSpot.l;
+      return const [10308, 20314].contains(spotId) ? '${lSpot.l}(${lName.l})' : lSpot.l;
     }
     return lName.l;
   }
@@ -220,20 +215,14 @@ class Quest with RouteInfo {
 
   String get dispName {
     if (isMainStoryFree) {
-      return const [10308, 20314].contains(spotId)
-          ? '$spotName($name)'
-          : spotName;
+      return const [10308, 20314].contains(spotId) ? '$spotName($name)' : spotName;
     }
     return name;
   }
 
-  bool get isMainStoryFree =>
-      type == QuestType.free &&
-      afterClear == QuestAfterClearType.repeatLast &&
-      warId < 1000;
+  bool get isMainStoryFree => type == QuestType.free && afterClear == QuestAfterClearType.repeatLast && warId < 1000;
 
-  bool get isDomusQuest =>
-      isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
+  bool get isDomusQuest => isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
 
   // exclude challenge quest, raid
   bool get isAnyFree {
@@ -247,9 +236,7 @@ class Quest with RouteInfo {
   }
 
   List<String> get allScriptIds {
-    return [
-      for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)
-    ];
+    return [for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)];
   }
 }
 
@@ -318,8 +305,7 @@ class QuestPhase extends Quest {
 
   int get key => getPhaseKey(phase);
 
-  List<QuestEnemy> get allEnemies =>
-      [for (final stage in stages) ...stage.enemies];
+  List<QuestEnemy> get allEnemies => [for (final stage in stages) ...stage.enemies];
 
   @override
   Transl<String, String> get lSpot {
@@ -327,15 +313,13 @@ class QuestPhase extends Quest {
     if (spot == null) return Transl.spotNames(spotName);
     String shownName = spotName;
     for (final add in spot.spotAdds) {
-      if (add.overrideType != SpotOverwriteType.name ||
-          add.targetText.isEmpty) {
+      if (add.overrideType != SpotOverwriteType.name || add.targetText.isEmpty) {
         continue;
       }
       if (add.condType == CondType.questClear && id > add.condTargetId) {
         shownName = add.targetText;
       } else if (add.condType == CondType.questClearPhase) {
-        if (id > add.condTargetId ||
-            (id == add.condTargetId && phase > add.condNum)) {
+        if (id > add.condTargetId || (id == add.condTargetId && phase > add.condNum)) {
           shownName = add.targetText;
         }
       }
@@ -343,8 +327,7 @@ class QuestPhase extends Quest {
     return Transl.spotNames(shownName);
   }
 
-  factory QuestPhase.fromJson(Map<String, dynamic> json) =>
-      _$QuestPhaseFromJson(json);
+  factory QuestPhase.fromJson(Map<String, dynamic> json) => _$QuestPhaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -364,12 +347,10 @@ class BaseGift {
     required this.num,
   });
 
-  factory BaseGift.fromJson(Map<String, dynamic> json) =>
-      _$BaseGiftFromJson(json);
+  factory BaseGift.fromJson(Map<String, dynamic> json) => _$BaseGiftFromJson(json);
 
   bool get isStatItem {
-    if ([GiftType.equip, GiftType.eventSvtJoin, GiftType.eventPointBuff]
-        .contains(type)) return false;
+    if ([GiftType.equip, GiftType.eventSvtJoin, GiftType.eventPointBuff].contains(type)) return false;
     return true;
   }
 
@@ -497,8 +478,7 @@ class GiftAdd {
     required this.replacementGifts,
   });
 
-  factory GiftAdd.fromJson(Map<String, dynamic> json) =>
-      _$GiftAddFromJson(json);
+  factory GiftAdd.fromJson(Map<String, dynamic> json) => _$GiftAddFromJson(json);
 }
 
 @JsonSerializable()
@@ -516,16 +496,13 @@ class Gift extends BaseGift {
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
-  static void checkAddGifts(Map<int, int> stat, List<Gift> gifts,
-      [int setNum = 1]) {
+  static void checkAddGifts(Map<int, int> stat, List<Gift> gifts, [int setNum = 1]) {
     Map<int, int> repls = {};
     if (gifts.any((gift) => gift.giftAdds.isNotEmpty)) {
-      final giftAdd =
-          gifts.firstWhere((e) => e.giftAdds.isNotEmpty).giftAdds.first;
+      final giftAdd = gifts.firstWhere((e) => e.giftAdds.isNotEmpty).giftAdds.first;
       final replGifts = giftAdd.replacementGifts;
       for (final gift in replGifts) {
-        if (giftAdd.replacementGiftIcon.endsWith('Items/19.png') &&
-            gift.objectId == Items.crystalId) {
+        if (giftAdd.replacementGiftIcon.endsWith('Items/19.png') && gift.objectId == Items.crystalId) {
           repls.addNum(Items.grailToCrystalId, gift.num * setNum);
           repls.addNum(Items.grailId, -gift.num * setNum);
         } else if (gift.objectId == Items.rarePrismId) {
@@ -589,8 +566,7 @@ class StageStartMovie {
 
   StageStartMovie({required this.waveStartMovie});
 
-  factory StageStartMovie.fromJson(Map<String, dynamic> json) =>
-      _$StageStartMovieFromJson(json);
+  factory StageStartMovie.fromJson(Map<String, dynamic> json) => _$StageStartMovieFromJson(json);
 }
 
 @JsonSerializable()
@@ -608,8 +584,7 @@ class QuestRelease {
     this.closedMessage = "",
   });
 
-  factory QuestRelease.fromJson(Map<String, dynamic> json) =>
-      _$QuestReleaseFromJson(json);
+  factory QuestRelease.fromJson(Map<String, dynamic> json) => _$QuestReleaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -622,8 +597,7 @@ class QuestPhaseScript {
     required this.scripts,
   });
 
-  factory QuestPhaseScript.fromJson(Map<String, dynamic> json) =>
-      _$QuestPhaseScriptFromJson(json);
+  factory QuestPhaseScript.fromJson(Map<String, dynamic> json) => _$QuestPhaseScriptFromJson(json);
 }
 
 @JsonSerializable()
@@ -643,8 +617,7 @@ class QuestMessage {
     required this.targetNum,
   });
 
-  factory QuestMessage.fromJson(Map<String, dynamic> json) =>
-      _$QuestMessageFromJson(json);
+  factory QuestMessage.fromJson(Map<String, dynamic> json) => _$QuestMessageFromJson(json);
 }
 
 @JsonSerializable()
@@ -673,8 +646,7 @@ class NpcServant {
     required this.limit,
   });
 
-  factory NpcServant.fromJson(Map<String, dynamic> json) =>
-      _$NpcServantFromJson(json);
+  factory NpcServant.fromJson(Map<String, dynamic> json) => _$NpcServantFromJson(json);
 }
 
 @JsonSerializable()
@@ -712,8 +684,7 @@ class SupportServant {
     required this.limit,
   });
 
-  factory SupportServant.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantFromJson(json);
+  factory SupportServant.fromJson(Map<String, dynamic> json) => _$SupportServantFromJson(json);
 
   String get shownName {
     if (name.isEmpty || name == "NONE") {
@@ -736,8 +707,7 @@ class SupportServantRelease {
     required this.value,
   });
 
-  factory SupportServantRelease.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantReleaseFromJson(json);
+  factory SupportServantRelease.fromJson(Map<String, dynamic> json) => _$SupportServantReleaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -752,8 +722,7 @@ class SupportServantTd {
     required this.noblePhantasmLv,
   });
 
-  factory SupportServantTd.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantTdFromJson(json);
+  factory SupportServantTd.fromJson(Map<String, dynamic> json) => _$SupportServantTdFromJson(json);
 }
 
 @JsonSerializable()
@@ -768,8 +737,7 @@ class SupportServantEquip {
     required this.limitCount,
   });
 
-  factory SupportServantEquip.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantEquipFromJson(json);
+  factory SupportServantEquip.fromJson(Map<String, dynamic> json) => _$SupportServantEquipFromJson(json);
 }
 
 @JsonSerializable()
@@ -782,8 +750,7 @@ class SupportServantScript {
     this.eventDeckIndex,
   });
 
-  factory SupportServantScript.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantScriptFromJson(json);
+  factory SupportServantScript.fromJson(Map<String, dynamic> json) => _$SupportServantScriptFromJson(json);
 }
 
 @JsonSerializable()
@@ -794,8 +761,7 @@ class SupportServantLimit {
     required this.limitCount,
   });
 
-  factory SupportServantLimit.fromJson(Map<String, dynamic> json) =>
-      _$SupportServantLimitFromJson(json);
+  factory SupportServantLimit.fromJson(Map<String, dynamic> json) => _$SupportServantLimitFromJson(json);
 }
 
 @JsonSerializable()
@@ -817,8 +783,7 @@ class EnemyDrop extends BaseGift {
     // required this.dropVariance,
   });
 
-  factory EnemyDrop.fromJson(Map<String, dynamic> json) =>
-      _$EnemyDropFromJson(json);
+  factory EnemyDrop.fromJson(Map<String, dynamic> json) => _$EnemyDropFromJson(json);
 }
 
 @JsonSerializable()
@@ -843,8 +808,7 @@ class EnemyLimit {
     this.exceedCount = 0,
   });
 
-  factory EnemyLimit.fromJson(Map<String, dynamic> json) =>
-      _$EnemyLimitFromJson(json);
+  factory EnemyLimit.fromJson(Map<String, dynamic> json) => _$EnemyLimitFromJson(json);
 }
 
 @JsonSerializable()
@@ -876,8 +840,7 @@ class EnemyMisc {
     this.status = 0,
   });
 
-  factory EnemyMisc.fromJson(Map<String, dynamic> json) =>
-      _$EnemyMiscFromJson(json);
+  factory EnemyMisc.fromJson(Map<String, dynamic> json) => _$EnemyMiscFromJson(json);
 }
 
 @JsonSerializable()
@@ -956,8 +919,7 @@ class QuestEnemy with GameCardMixin {
         classPassive = classPassive ?? EnemyPassive(),
         noblePhantasm = noblePhantasm ?? EnemyTd(),
         serverMod = serverMod ?? EnemyServerMod(),
-        enemyScript = (enemyScript ?? EnemyScript())
-          ..setSource(originalEnemyScript);
+        enemyScript = (enemyScript ?? EnemyScript())..setSource(originalEnemyScript);
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) {
     final enemy = _$QuestEnemyFromJson(json);
@@ -970,14 +932,10 @@ class QuestEnemy with GameCardMixin {
     if (name.isEmpty || name == 'NONE') {
       return svt.lName.l;
     }
-    String? _name =
-        Transl.md.svtNames[name]?.l ?? Transl.md.entityNames[name]?.l;
+    String? _name = Transl.md.svtNames[name]?.l ?? Transl.md.entityNames[name]?.l;
     if (_name != null) return _name;
-    return name.replaceFirstMapped(RegExp(r'^(.+?)(\s*)([A-Z\uff21-\uff3a])$'),
-        (match) {
-      String a = Transl.svtNames(match.group(1)!).l,
-          b = match.group(2)!,
-          c = match.group(3)!;
+    return name.replaceFirstMapped(RegExp(r'^(.+?)(\s*)([A-Z\uff21-\uff3a])$'), (match) {
+      String a = Transl.svtNames(match.group(1)!).l, b = match.group(2)!, c = match.group(3)!;
       if (Transl.isEN && b.isEmpty && c.isNotEmpty) b = ' ';
       return '$a$b$c';
     });
@@ -1027,8 +985,7 @@ class EnemyServerMod {
     this.starRate = 0,
   });
 
-  factory EnemyServerMod.fromJson(Map<String, dynamic> json) =>
-      _$EnemyServerModFromJson(json);
+  factory EnemyServerMod.fromJson(Map<String, dynamic> json) => _$EnemyServerModFromJson(json);
 }
 
 // appear
@@ -1092,8 +1049,7 @@ class EnemyScript with DataScriptBase {
     this.shiftClear,
   });
 
-  factory EnemyScript.fromJson(Map<String, dynamic> json) =>
-      _$EnemyScriptFromJson(json)..setSource(json);
+  factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 
   bool get isRare => source.containsKey('probability_type') == true;
 
@@ -1108,8 +1064,7 @@ class EnemyInfoScript with DataScriptBase {
     this.isAddition,
   });
 
-  factory EnemyInfoScript.fromJson(Map<String, dynamic> json) =>
-      _$EnemyInfoScriptFromJson(json)..setSource(json);
+  factory EnemyInfoScript.fromJson(Map<String, dynamic> json) => _$EnemyInfoScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable()
@@ -1136,11 +1091,9 @@ class EnemySkill {
     this.skillLv3 = 0,
   });
 
-  List<int> get skillIds =>
-      [skillId1, skillId2, skillId3].where((e) => e != 0).toList();
+  List<int> get skillIds => [skillId1, skillId2, skillId3].where((e) => e != 0).toList();
 
-  factory EnemySkill.fromJson(Map<String, dynamic> json) =>
-      _$EnemySkillFromJson(json);
+  factory EnemySkill.fromJson(Map<String, dynamic> json) => _$EnemySkillFromJson(json);
 }
 
 @JsonSerializable()
@@ -1161,8 +1114,7 @@ class EnemyTd {
     this.noblePhantasmLv3,
   });
 
-  factory EnemyTd.fromJson(Map<String, dynamic> json) =>
-      _$EnemyTdFromJson(json);
+  factory EnemyTd.fromJson(Map<String, dynamic> json) => _$EnemyTdFromJson(json);
 }
 
 @JsonSerializable()
@@ -1181,8 +1133,7 @@ class EnemyPassive {
   })  : classPassive = classPassive ?? [],
         addPassive = addPassive ?? [];
 
-  factory EnemyPassive.fromJson(Map<String, dynamic> json) =>
-      _$EnemyPassiveFromJson(json);
+  factory EnemyPassive.fromJson(Map<String, dynamic> json) => _$EnemyPassiveFromJson(json);
 }
 
 // class EnemyLimit{}
@@ -1201,8 +1152,7 @@ class EnemyAi {
     this.minActNum,
   });
 
-  factory EnemyAi.fromJson(Map<String, dynamic> json) =>
-      _$EnemyAiFromJson(json);
+  factory EnemyAi.fromJson(Map<String, dynamic> json) => _$EnemyAiFromJson(json);
 }
 
 @JsonSerializable()
@@ -1217,8 +1167,7 @@ class FieldAi {
     required this.id,
   });
 
-  factory FieldAi.fromJson(Map<String, dynamic> json) =>
-      _$FieldAiFromJson(json);
+  factory FieldAi.fromJson(Map<String, dynamic> json) => _$FieldAiFromJson(json);
 }
 
 @JsonSerializable()
@@ -1233,8 +1182,7 @@ class QuestPhaseAiNpc {
     this.aiIds = const [],
   });
 
-  factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) =>
-      _$QuestPhaseAiNpcFromJson(json);
+  factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) => _$QuestPhaseAiNpcFromJson(json);
 }
 
 @JsonSerializable()
@@ -1255,8 +1203,7 @@ class QuestPhaseExtraDetail {
     this.aiMultiNpc,
   });
 
-  factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>
-      _$QuestPhaseExtraDetailFromJson(json);
+  factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -1277,8 +1224,7 @@ class Restriction {
     this.targetVals2 = const [],
   });
 
-  factory Restriction.fromJson(Map<String, dynamic> json) =>
-      _$RestrictionFromJson(json);
+  factory Restriction.fromJson(Map<String, dynamic> json) => _$RestrictionFromJson(json);
 }
 
 @JsonSerializable()
@@ -1297,8 +1243,7 @@ class QuestPhaseRestriction {
     this.title = '',
   });
 
-  factory QuestPhaseRestriction.fromJson(Map<String, dynamic> json) =>
-      _$QuestPhaseRestrictionFromJson(json);
+  factory QuestPhaseRestriction.fromJson(Map<String, dynamic> json) => _$QuestPhaseRestrictionFromJson(json);
 }
 
 ///
@@ -1306,8 +1251,7 @@ class QuestPhaseRestriction {
 class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
   const QuestFlagConverter();
   @override
-  QuestFlag fromJson(String value) =>
-      decodeEnum(_$QuestFlagEnumMap, value, QuestFlag.none);
+  QuestFlag fromJson(String value) => decodeEnum(_$QuestFlagEnumMap, value, QuestFlag.none);
   @override
   String toJson(QuestFlag obj) => _$QuestFlagEnumMap[obj] ?? obj.name;
 }

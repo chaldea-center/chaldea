@@ -16,8 +16,7 @@ class BuffListPage extends StatefulWidget {
   _BuffListPageState createState() => _BuffListPageState();
 }
 
-class _BuffListPageState extends State<BuffListPage>
-    with SearchableListState<Buff?, BuffListPage> {
+class _BuffListPageState extends State<BuffListPage> with SearchableListState<Buff?, BuffListPage> {
   final filterData = BuffFilterData();
   int? get _searchBuffId {
     final _id = int.tryParse(searchEditingController.text);
@@ -89,8 +88,7 @@ class _BuffListPageState extends State<BuffListPage>
       ...buff.ckSelfIndv,
       ...buff.ckOpIndv,
       if (buff.script?.INDIVIDUALITIE != null) buff.script!.INDIVIDUALITIE!,
-      if (buff.script?.UpBuffRateBuffIndiv != null)
-        ...buff.script!.UpBuffRateBuffIndiv!,
+      if (buff.script?.UpBuffRateBuffIndiv != null) ...buff.script!.UpBuffRateBuffIndiv!,
     ].map((e) => e.id))) {
       return false;
     }
@@ -99,8 +97,7 @@ class _BuffListPageState extends State<BuffListPage>
       if ([
         ...buff.ckSelfIndv,
         ...buff.ckOpIndv,
-        ...buff.vals
-            .where((e) => EffectFilterUtil.reduceHpTraits.contains(e.name)),
+        ...buff.vals.where((e) => EffectFilterUtil.reduceHpTraits.contains(e.name)),
       ].map((e) => e.id).toSet().intersection(traits).isEmpty) {
         return false;
       }
@@ -126,15 +123,10 @@ class _BuffListPageState extends State<BuffListPage>
   Widget listItemBuilder(Buff? buff) {
     return ListTile(
       dense: true,
-      leading: buff?.icon == null
-          ? const SizedBox(height: 24, width: 24)
-          : db.getIconImage(buff?.icon, height: 24),
+      leading: buff?.icon == null ? const SizedBox(height: 24, width: 24) : db.getIconImage(buff?.icon, height: 24),
       horizontalTitleGap: 8,
       title: Text(buff?.lName.l ?? "Buff $_searchBuffId"),
-      subtitle: buff == null
-          ? null
-          : Text(
-              '${buff.id} ${buff.type.name} ${Transl.buffType(buff.type).l}'),
+      subtitle: buff == null ? null : Text('${buff.id} ${buff.type.name} ${Transl.buffType(buff.type).l}'),
       onTap: () {
         final id = buff?.id ?? _searchBuffId;
         if (id != null) {
@@ -148,6 +140,5 @@ class _BuffListPageState extends State<BuffListPage>
   }
 
   @override
-  Widget gridItemBuilder(Buff? buff) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(Buff? buff) => throw UnimplementedError('GridView not designed');
 }

@@ -63,8 +63,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     children.add(SHeader(S.current.passive_skill));
     for (final skill in [
       ...svt.classPassive,
-      ...svt.extraPassive
-          .where((e) => e.extraPassive.any((cond) => cond.eventId == 0))
+      ...svt.extraPassive.where((e) => e.extraPassive.any((cond) => cond.eventId == 0))
     ]) {
       children.add(SkillDescriptor(
         skill: skill,
@@ -77,14 +76,10 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
       children.add(SkillDescriptor(
         skill: appendSkill.skill,
         showEnemy: !svt.isUserSvt,
-        level: status.favorite
-            ? status.appendSkills.getOrNull(appendSkill.num - 100)
-            : -1,
+        level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
       ));
     }
-    final extraPassives = svt.extraPassive
-        .where((e) => e.extraPassive.any((cond) => cond.eventId != 0))
-        .toList();
+    final extraPassives = svt.extraPassive.where((e) => e.extraPassive.any((cond) => cond.eventId != 0)).toList();
     if (extraPassives.isNotEmpty) {
       children.add(SimpleAccordion(
         headerBuilder: (context, expanded) {
@@ -119,8 +114,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         showEnemy: !svt.isUserSvt,
       );
     }
-    NiceSkill initSkill =
-        svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
+    NiceSkill initSkill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
     return ValueStatefulBuilder<NiceSkill>(
       initValue: initSkill,
       builder: (context, state) {
@@ -137,8 +131,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                   String name = Transl.skillNames(v.name).l;
                   if (name.trim().isEmpty) name = '???';
                   return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                     child: Text(name),
                   );
                 },
@@ -171,8 +164,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            SkillDescriptor(
-                skill: skill, showEnemy: !svt.isUserSvt, level: level),
+            SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level),
           ],
         );
       },
@@ -186,12 +178,10 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
   }
 
   Widget releaseCondition(BuildContext context, NiceSkill skill) {
-    bool notMain = ['91', '94']
-        .contains(skill.condQuestId.toString().padRight(2).substring(0, 2));
+    bool notMain = ['91', '94'].contains(skill.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[skill.condQuestId];
     final jpTime = quest?.openedAt,
-        localTime = db.gameData.mappingData.questRelease[skill.condQuestId]
-            ?.ofRegion(db.curUser.region);
+        localTime = db.gameData.mappingData.questRelease[skill.condQuestId]?.ofRegion(db.curUser.region);
     return SimpleCancelOkDialog(
       title: Text(skill.lName.l),
       hideCancel: true,
@@ -201,16 +191,14 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         children: [
           if (skill.condQuestId > 0)
             CondTargetValueDescriptor(
-              condType:
-                  notMain ? CondType.questClear : CondType.questClearPhase,
+              condType: notMain ? CondType.questClear : CondType.questClearPhase,
               target: skill.condQuestId,
               value: skill.condQuestPhase,
             ),
           Text('${S.current.ascension_short} ${skill.condLimitCount}'),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)
-            Text(
-                '${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
+            Text('${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
         ],
       ),
     );

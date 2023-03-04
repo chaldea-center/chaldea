@@ -17,8 +17,7 @@ class BgmListPage extends StatefulWidget {
   _BgmListPageState createState() => _BgmListPageState();
 }
 
-class _BgmListPageState extends State<BgmListPage>
-    with SearchableListState<BgmEntity, BgmListPage> {
+class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmEntity, BgmListPage> {
   final filterData = BgmFilterData();
   final player = MyAudioPlayer<String>();
 
@@ -32,11 +31,7 @@ class _BgmListPageState extends State<BgmListPage>
   Widget build(BuildContext context) {
     filterShownList(compare: (a, b) {
       int r = ListX.compareByList<BgmEntity, int>(
-          a,
-          b,
-          (v) => filterData.sortByPriority.radioValue!
-              ? [v.priority, v.id]
-              : [v.id, v.priority]);
+          a, b, (v) => filterData.sortByPriority.radioValue! ? [v.priority, v.id] : [v.id, v.priority]);
       return r * (filterData.reversed ? -1 : 1);
     });
     return scrollListener(
@@ -84,14 +79,11 @@ class _BgmListPageState extends State<BgmListPage>
           ),
           IconButton(
             icon: FaIcon(
-              filterData.reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
+              filterData.reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: S.current.sort_order,
-            onPressed: () =>
-                setState(() => filterData.reversed = !filterData.reversed),
+            onPressed: () => setState(() => filterData.reversed = !filterData.reversed),
           ),
           IconButton(
             icon: const Icon(Icons.filter_alt),
@@ -123,8 +115,7 @@ class _BgmListPageState extends State<BgmListPage>
   bool filter(BgmEntity bgm) {
     if (!filterData.released.matchOne(!bgm.notReleased)) return false;
     if (!filterData.needItem.matchOne(bgm.shop != null)) return false;
-    if (!filterData.favorite
-        .matchOne(db.curUser.myRoomMusic.contains(bgm.id))) {
+    if (!filterData.favorite.matchOne(db.curUser.myRoomMusic.contains(bgm.id))) {
       return false;
     }
     return true;

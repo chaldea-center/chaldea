@@ -26,11 +26,8 @@ class ScriptParsedData {
 
   void init(String scritUrl, [Region? overrideRegion]) {
     _uri = Uri.parse(scritUrl);
-    state.region = overrideRegion ??
-        RegionX.tryParse(_uri!.pathSegments.first) ??
-        Region.jp;
-    _uri = _uri!.replace(
-        pathSegments: [state.region.upper, ..._uri!.pathSegments.skip(1)]);
+    state.region = overrideRegion ?? RegionX.tryParse(_uri!.pathSegments.first) ?? Region.jp;
+    _uri = _uri!.replace(pathSegments: [state.region.upper, ..._uri!.pathSegments.skip(1)]);
     state.fullscreen = false;
   }
 
@@ -82,9 +79,7 @@ class ScriptParsedData {
       // ？1,1000：狩りに行く（ロビンフッド同行）
       final selectMatch = RegExp(r'^[？?]([\d,]+)[：:](.*)$').firstMatch(line);
       if (selectMatch != null) {
-        children.add(ScriptSelect(
-            selectMatch.group(0)!,
-            int.parse(selectMatch.group(1)!.split(',').first),
+        children.add(ScriptSelect(selectMatch.group(0)!, int.parse(selectMatch.group(1)!.split(',').first),
             _parseDialog(selectMatch.group(2)!)));
         continue;
       }
@@ -98,8 +93,7 @@ class ScriptParsedData {
       }
       if (line.startsWith('＠')) {
         String speaker = line.substring(1);
-        speaker =
-            RegExp(r'^[A-Z]+：(.+)$').firstMatch(speaker)?.group(1) ?? speaker;
+        speaker = RegExp(r'^[A-Z]+：(.+)$').firstMatch(speaker)?.group(1) ?? speaker;
         lastDialog = ScriptDialog(speaker, _parseDialog(speaker), '', []);
         children.add(lastDialog);
         continue;
@@ -167,8 +161,7 @@ class ScriptState {
   List<_TextStyleState> dialogStyleStack = [];
 
   void push(TextStyle style, ScriptComponent component, _CompType type) {
-    dialogStyleStack
-        .add(_TextStyleState(style: style, component: component, type: type));
+    dialogStyleStack.add(_TextStyleState(style: style, component: component, type: type));
   }
 
   void pop(bool Function(_TextStyleState c) test) {
@@ -178,8 +171,7 @@ class ScriptState {
       return;
     }
     if (index != dialogStyleStack.length - 1) {
-      print(
-          'Warning: popping non-last style: No.${index + 1}/${dialogStyleStack.length} styles');
+      print('Warning: popping non-last style: No.${index + 1}/${dialogStyleStack.length} styles');
     }
     dialogStyleStack.removeAt(index);
   }
@@ -240,14 +232,12 @@ class ScriptDialog extends ScriptTexts {
   }
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state,
-      {bool hideSpeaker = false}) {
+  List<InlineSpan> build(BuildContext context, ScriptState state, {bool hideSpeaker = false}) {
     state.clear();
     List<InlineSpan> spans = [];
     if (!hideSpeaker) {
       state.push(
-        headerStyle.copyWith(
-            color: Theme.of(context).colorScheme.secondaryContainer),
+        headerStyle.copyWith(color: Theme.of(context).colorScheme.secondaryContainer),
         this,
         _CompType.none,
       );
@@ -313,8 +303,7 @@ class ScriptSelect extends ScriptTexts {
     }
     return [
       if (!kIsWeb && index == 1) const WidgetSpan(child: Divider(thickness: 2)),
-      state.textSpan(
-          text: '${S.current.script_choice} $index: ', style: _choiceStyle),
+      state.textSpan(text: '${S.current.script_choice} $index: ', style: _choiceStyle),
       for (final p in contents) ...p.build(context, state),
       // const TextSpan(text: '\n'),
     ];
@@ -330,11 +319,7 @@ class UnknownScript extends ScriptComponent {
 
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state) {
-    return [
-      state.textSpan(
-          text: '${kHeaderLeading}Unknown Script\n', style: headerStyle),
-      state.textSpan(text: src)
-    ];
+    return [state.textSpan(text: '${kHeaderLeading}Unknown Script\n', style: headerStyle), state.textSpan(text: src)];
   }
 }
 
@@ -342,15 +327,13 @@ class ScriptCommand extends ScriptComponent {
   String command;
   List<String> args;
   ScriptCommand(super.src, this.command, [this.args = const []]);
-  static const _csv =
-      CsvToListConverter(fieldDelimiter: " ", shouldParseNumbers: false);
+  static const _csv = CsvToListConverter(fieldDelimiter: " ", shouldParseNumbers: false);
 
   factory ScriptCommand.parse(String code) {
     if (code.startsWith('[') && code.endsWith(']')) {
       code = code.substring(1, code.length - 1);
     }
-    final cells =
-        _csv.convert(code).first.map((e) => e.toString().trim()).toList();
+    final cells = _csv.convert(code).first.map((e) => e.toString().trim()).toList();
     return ScriptCommand(code, cells.first, cells.sublist(1));
   }
 
@@ -365,8 +348,7 @@ class ScriptCommand extends ScriptComponent {
   String? get arg2n => args.getOrNull(1);
   ScriptReaderFilterData get filterData => db.settings.scriptReaderFilterData;
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state,
-      {bool showMore = false}) {
+  List<InlineSpan> build(BuildContext context, ScriptState state, {bool showMore = false}) {
     // [#text:ruby], :ruby may not exist
     if (src.startsWith('#')) {
       final aa = src.substring(1).split(':');
@@ -423,8 +405,7 @@ class ScriptCommand extends ScriptComponent {
           state.pop((c) => c.type == _CompType.fontSize);
           return [];
         } else {
-          final bodySize =
-              state.dialogStyleStack.getOrNull(0)?.style.fontSize ?? 16.0;
+          final bodySize = state.dialogStyleStack.getOrNull(0)?.style.fontSize ?? 16.0;
           final sizes = <String, double>{
             // "-", //30
             'x-small': 18, //18?
@@ -435,8 +416,7 @@ class ScriptCommand extends ScriptComponent {
           };
           final size = sizes[tag];
           if (size == null) break;
-          state.push(TextStyle(fontSize: size / 30 * bodySize), this,
-              _CompType.fontSize);
+          state.push(TextStyle(fontSize: size / 30 * bodySize), this, _CompType.fontSize);
           return [];
         }
       case "r":
@@ -471,8 +451,7 @@ class ScriptCommand extends ScriptComponent {
               child: CachedImage(
                 imageUrl: url,
                 showSaveOnLongPress: true,
-                placeholder: (context, url) =>
-                    Text.rich(state.textSpan(text: src)),
+                placeholder: (context, url) => Text.rich(state.textSpan(text: src)),
               ),
             ),
             if (ruby != null && ruby.isNotEmpty) TextSpan(text: '($ruby) '),
@@ -487,10 +466,7 @@ class ScriptCommand extends ScriptComponent {
       //   return _buildImages([assetUrl.back(arg2n,state.fullscreen)]);
       case 'masterScene':
         if (!filterData.scene) return [];
-        return _buildImages(args
-            .skip(1)
-            .take(2)
-            .map((e) => state.assetUrl.back(e, state.fullscreen)));
+        return _buildImages(args.skip(1).take(2).map((e) => state.assetUrl.back(e, state.fullscreen)));
       // case 'masterSet':
       // case 'masterImageSet':
       //   if (!filterData.scene) return [];
@@ -577,9 +553,7 @@ class ScriptCommand extends ScriptComponent {
             WidgetSpan(
               child: SoundPlayButton(
                 name: null,
-                url: Atlas.asset(
-                    'Audio/${args[index * 2]}/${args[index * 2 + 1]}.mp3',
-                    state.region),
+                url: Atlas.asset('Audio/${args[index * 2]}/${args[index * 2 + 1]}.mp3', state.region),
                 player: state.voicePlayer,
               ),
             )
@@ -590,9 +564,7 @@ class ScriptCommand extends ScriptComponent {
           WidgetSpan(
             child: SoundPlayButton(
               name: null,
-              url: Atlas.asset(
-                  'Audio/ChrVoice_${arg1.replaceFirst('_', '/')}.mp3',
-                  state.region),
+              url: Atlas.asset('Audio/ChrVoice_${arg1.replaceFirst('_', '/')}.mp3', state.region),
               player: state.voicePlayer,
             ),
           )
@@ -608,8 +580,7 @@ class ScriptCommand extends ScriptComponent {
                     onLongPress: () {
                       router.pushPage(VideoPlayPage(url: url, title: arg1));
                     },
-                    child: MyVideoPlayer.url(
-                        url: url, autoPlay: filterData.autoPlayVideo),
+                    child: MyVideoPlayer.url(url: url, autoPlay: filterData.autoPlayVideo),
                   )
                 : MyVideoPlayer.defaultFailedBuilder(context, url, null),
           ),
@@ -617,8 +588,7 @@ class ScriptCommand extends ScriptComponent {
       case 'selectionUse':
         return [
           state.textSpan(text: 'Selection Use: ', style: boldStyle),
-          for (final arg in args)
-            state.textSpan(text: '$arg ', style: codeStyle),
+          for (final arg in args) state.textSpan(text: '$arg ', style: codeStyle),
         ];
       case 'flag':
         return [
@@ -633,27 +603,23 @@ class ScriptCommand extends ScriptComponent {
       case 'label':
         return [
           state.textSpan(text: 'Label  ', style: boldStyle),
-          for (final arg in args)
-            state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'branch':
         return [
           state.textSpan(text: 'Branch: ', style: boldStyle),
           state.textSpan(text: 'Go to label '),
-          for (final arg in args)
-            state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'masterBranch':
         return [
           state.textSpan(text: 'Master Branch: ', style: boldStyle),
-          for (final arg in args)
-            state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'revivalBranch':
         return [
           state.textSpan(text: 'Revival Branch: ', style: boldStyle),
-          for (final arg in args)
-            state.textSpan(text: '$arg  ', style: codeStyle)
+          for (final arg in args) state.textSpan(text: '$arg  ', style: codeStyle)
         ];
       case 'branchQuestClear':
       case 'branchQuestNotClear':
@@ -671,9 +637,7 @@ class ScriptCommand extends ScriptComponent {
           state.textSpan(text: ' cleared quest '),
           SharedBuilder.textButtonSpan(
             context: context,
-            text: quest == null || quest.lDispName.isEmpty
-                ? 'Quest $questId'
-                : quest.lDispName,
+            text: quest == null || quest.lDispName.isEmpty ? 'Quest $questId' : quest.lDispName,
             onTap: questId == null
                 ? null
                 : () {
@@ -850,8 +814,7 @@ class ScriptCommand extends ScriptComponent {
 
 abstract class ScriptComponent {
   final kHeaderLeading = ' ꔷ ';
-  final headerStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  final headerStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
   final bodyStyle = const TextStyle(fontSize: 15);
   String src;
   ScriptComponent(this.src);

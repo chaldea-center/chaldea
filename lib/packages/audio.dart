@@ -12,8 +12,7 @@ class MyAudioPlayer<T> {
   final AudioPlayer player;
   final void Function(dynamic e)? onError;
   final bool showError;
-  MyAudioPlayer({AudioPlayer? player, this.onError, this.showError = true})
-      : player = player ?? AudioPlayer();
+  MyAudioPlayer({AudioPlayer? player, this.onError, this.showError = true}) : player = player ?? AudioPlayer();
 
   dynamic _tag;
   bool get playing => _tag != null;
@@ -46,8 +45,7 @@ class MyAudioPlayer<T> {
           }
         }
         // may not be `completed`
-        while (
-            player.playerState.processingState != ProcessingState.completed) {
+        while (player.playerState.processingState != ProcessingState.completed) {
           if (invalid()) return;
           await Future.delayed(const Duration(milliseconds: 20));
         }
@@ -79,8 +77,7 @@ class SoundPlayButton extends StatelessWidget {
   final String? url;
   final MyAudioPlayer<String> player;
 
-  const SoundPlayButton(
-      {super.key, this.name, required this.url, required this.player});
+  const SoundPlayButton({super.key, this.name, required this.url, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +111,7 @@ class SoundPlayButton extends StatelessWidget {
     if (!kIsWeb) {
       fp = await AtlasIconLoader.i.get(_url);
     }
-    source = fp != null
-        ? AudioSource.uri(Uri.file(fp), tag: _url)
-        : AudioSource.uri(Uri.parse(_url), tag: _url);
+    source = fp != null ? AudioSource.uri(Uri.file(fp), tag: _url) : AudioSource.uri(Uri.parse(_url), tag: _url);
     player.playOrPause([source], _url);
   }
 }

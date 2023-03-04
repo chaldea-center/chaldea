@@ -39,27 +39,21 @@ class CommandCode with GameCardMixin {
     required this.comment,
   });
 
-  factory CommandCode.fromJson(Map<String, dynamic> json) =>
-      _$CommandCodeFromJson(json);
+  factory CommandCode.fromJson(Map<String, dynamic> json) => _$CommandCodeFromJson(json);
 
   @override
   Transl<String, String> get lName => Transl.ccNames(name);
 
   @override
-  String? get icon =>
-      extraAssets.faces.cc?[id] ??
-      extraAssets.faces.cc?.values.toList().getOrNull(0);
+  String? get icon => extraAssets.faces.cc?[id] ?? extraAssets.faces.cc?.values.toList().getOrNull(0);
 
   @override
-  String? get borderedIcon =>
-      collectionNo > 0 && !db.gameData.isJustAddedCard(id)
-          ? super.borderedIcon
-          : icon;
+  String? get borderedIcon => collectionNo > 0 && !db.gameData.isJustAddedCard(id) ? super.borderedIcon : icon;
 
   String? get charaGraph => extraAssets.charaGraph.cc?[id];
 
-  CommandCodeExtra get extra => db.gameData.wiki.commandCodes[collectionNo] ??=
-      CommandCodeExtra(collectionNo: collectionNo);
+  CommandCodeExtra get extra =>
+      db.gameData.wiki.commandCodes[collectionNo] ??= CommandCodeExtra(collectionNo: collectionNo);
 
   @override
   String get route => Routes.commandCodeI(id);
@@ -87,8 +81,7 @@ class BasicCommandCode with GameCardMixin {
     required this.face,
   });
 
-  factory BasicCommandCode.fromJson(Map<String, dynamic> json) =>
-      _$BasicCommandCodeFromJson(json);
+  factory BasicCommandCode.fromJson(Map<String, dynamic> json) => _$BasicCommandCodeFromJson(json);
 
   @override
   String get icon => face;

@@ -28,8 +28,7 @@ class ServantListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
-class ServantListPageState extends State<ServantListPage>
-    with SearchableListState<Servant, ServantListPage> {
+class ServantListPageState extends State<ServantListPage> with SearchableListState<Servant, ServantListPage> {
   @override
   Iterable<Servant> get wholeData => db.gameData.servantsWithDup.values;
 
@@ -37,8 +36,7 @@ class ServantListPageState extends State<ServantListPage>
 
   SvtFilterData get filterData => db.settings.svtFilterData;
 
-  FavoriteState get favoriteState =>
-      widget.planMode ? filterData.planFavorite : filterData.favorite;
+  FavoriteState get favoriteState => widget.planMode ? filterData.planFavorite : filterData.favorite;
 
   set favoriteState(FavoriteState v) {
     if (widget.planMode) {
@@ -80,10 +78,8 @@ class ServantListPageState extends State<ServantListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => SvtFilterData.compare(a, b,
-          keys: filterData.sortKeys,
-          reversed: filterData.sortReversed,
-          user: db.curUser),
+      compare: (a, b) =>
+          SvtFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed, user: db.curUser),
     );
     return scrollListener(
       useGrid: widget.planMode ? false : filterData.useGrid,
@@ -138,8 +134,7 @@ class ServantListPageState extends State<ServantListPage>
           tooltip: favoriteState.shownName,
           onPressed: () {
             setState(() {
-              favoriteState =
-                  EnumUtil.next(FavoriteState.values, favoriteState);
+              favoriteState = EnumUtil.next(FavoriteState.values, favoriteState);
             });
           },
         ),
@@ -192,15 +187,13 @@ class ServantListPageState extends State<ServantListPage>
                   },
                 ),
                 PopupMenuItem(
-                  child: Text(
-                      S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
+                  child: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
                     if (!mounted) return;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
-                      content: Text(S.current
-                          .reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
+                      content: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
                         for (final svt in shownList) {
                           db.curSvtPlan.remove(svt.collectionNo);
@@ -212,15 +205,13 @@ class ServantListPageState extends State<ServantListPage>
                   },
                 ),
                 PopupMenuItem(
-                  child: Text(
-                      S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
+                  child: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                   onTap: () async {
                     await null;
                     if (!mounted) return;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
-                      content: Text(S.current
-                          .reset_plan_all(db.curUser.curSvtPlanNo + 1)),
+                      content: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
                         db.curSvtPlan.clear();
                         db.itemCenter.updateSvts(all: true);
@@ -234,13 +225,11 @@ class ServantListPageState extends State<ServantListPage>
                     S.current.setting_only_change_second_append_skill,
                     style: db.settings.display.onlyAppendSkillTwo
                         ? null
-                        : const TextStyle(
-                            decoration: TextDecoration.lineThrough),
+                        : const TextStyle(decoration: TextDecoration.lineThrough),
                   ),
                   onTap: () {
                     setState(() {
-                      db.settings.display.onlyAppendSkillTwo =
-                          !db.settings.display.onlyAppendSkillTwo;
+                      db.settings.display.onlyAppendSkillTwo = !db.settings.display.onlyAppendSkillTwo;
                       db.saveSettings();
                     });
                   },
@@ -248,11 +237,9 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuItem(
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
-                    db.settings.display.planPageFullScreen =
-                        !db.settings.display.planPageFullScreen;
+                    db.settings.display.planPageFullScreen = !db.settings.display.planPageFullScreen;
                     db.saveSettings();
-                    SplitRoute.of(context)!.detail =
-                        db.settings.display.planPageFullScreen ? null : false;
+                    SplitRoute.of(context)!.detail = db.settings.display.planPageFullScreen ? null : false;
                   },
                   child: Text(S.current.show_fullscreen),
                 ),
@@ -330,13 +317,11 @@ class ServantListPageState extends State<ServantListPage>
           ]),
           TableRow(children: [
             _getHeader('${S.current.skill}:'),
-            for (int i = 0; i < 3; i++)
-              _getRange(cur.skills[i], target.skills[i])
+            for (int i = 0; i < 3; i++) _getRange(cur.skills[i], target.skills[i])
           ]),
           TableRow(children: [
             _getHeader('${S.current.append_skill_short}:'),
-            for (int i = 0; i < 3; i++)
-              _getRange(cur.appendSkills[i], target.appendSkills[i])
+            for (int i = 0; i < 3; i++) _getRange(cur.appendSkills[i], target.appendSkills[i])
           ]),
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
@@ -344,13 +329,11 @@ class ServantListPageState extends State<ServantListPage>
                 _getHeader('${S.current.costume}:'),
                 ...List.generate(3, (col) {
                   final dressIndex = row * 3 + col;
-                  final costumeId =
-                      costumes.getOrNull(dressIndex)?.battleCharaId;
+                  final costumeId = costumes.getOrNull(dressIndex)?.battleCharaId;
                   if (costumeId == null) {
                     return Container();
                   }
-                  return _getRange(cur.costumes[costumeId] ?? 0,
-                      target.costumes[costumeId] ?? 0);
+                  return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0);
                 })
               ],
             ),
@@ -381,19 +364,12 @@ class ServantListPageState extends State<ServantListPage>
       if (!svtStat.favorite) return false;
       final planCompletion = <SvtPlanScope>[
         if (svtPlan.ascension > svtStat.cur.ascension) SvtPlanScope.ascension,
-        if ([
-          for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i]
-        ].any((e) => e))
-          SvtPlanScope.active,
-        if ([
-          for (var i = 0; i < 3; i++)
-            svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]
-        ].any((e) => e))
+        if ([for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i]].any((e) => e)) SvtPlanScope.active,
+        if ([for (var i = 0; i < 3; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]].any((e) => e))
           SvtPlanScope.append,
         if ([
           for (var costume in svt.profile.costume.values)
-            (svtPlan.costumes[costume.battleCharaId] ?? 0) >
-                (svtStat.cur.costumes[costume.battleCharaId] ?? 0)
+            (svtPlan.costumes[costume.battleCharaId] ?? 0) > (svtStat.cur.costumes[costume.battleCharaId] ?? 0)
         ].any((e) => e))
           SvtPlanScope.costume,
         if ([
@@ -422,34 +398,28 @@ class ServantListPageState extends State<ServantListPage>
         return false;
       }
     }
-    if (!filterData.svtDuplicated
-        .matchOne(svt.collectionNo != svt.originalCollectionNo)) {
+    if (!filterData.svtDuplicated.matchOne(svt.collectionNo != svt.originalCollectionNo)) {
       return false;
     }
 
     // class name
-    if (!filterData.svtClass
-        .matchOne(svt.className, compare: SvtClassX.match)) {
+    if (!filterData.svtClass.matchOne(svt.className, compare: SvtClassX.match)) {
       return false;
     }
     if (!filterData.rarity.matchOne(svt.rarity)) {
       return false;
     }
 
-    if (filterData.npColor.options.isNotEmpty &&
-        filterData.npType.options.isNotEmpty) {
-      if (!svt.noblePhantasms.any((np) =>
-          filterData.npColor.contain(np.card) &&
-          filterData.npType.contain(np.damageType))) {
+    if (filterData.npColor.options.isNotEmpty && filterData.npType.options.isNotEmpty) {
+      if (!svt.noblePhantasms
+          .any((np) => filterData.npColor.contain(np.card) && filterData.npType.contain(np.damageType))) {
         return false;
       }
     } else {
-      if (!filterData.npColor
-          .matchAny(svt.noblePhantasms.map((e) => e.card).toList())) {
+      if (!filterData.npColor.matchAny(svt.noblePhantasms.map((e) => e.card).toList())) {
         return false;
       }
-      if (!filterData.npType
-          .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
+      if (!filterData.npType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
         return false;
       }
     }
@@ -475,62 +445,48 @@ class ServantListPageState extends State<ServantListPage>
     if (!filterData.attribute.matchOne(svt.attribute)) {
       return false;
     }
-    if (!filterData.policy
-        .matchOne(svt.profile.stats?.policy ?? ServantPolicy.none)) {
+    if (!filterData.policy.matchOne(svt.profile.stats?.policy ?? ServantPolicy.none)) {
       return false;
     }
-    if (!filterData.personality
-        .matchOne(svt.profile.stats?.personality ?? ServantPersonality.none)) {
+    if (!filterData.personality.matchOne(svt.profile.stats?.personality ?? ServantPersonality.none)) {
       return false;
     }
     if (!filterData.gender.matchOne(svt.gender)) {
       return false;
     }
-    if (!filterData.trait.matchAny(
-        svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown))) {
+    if (!filterData.trait.matchAny(svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown))) {
       return false;
     }
-    if (filterData.effectType.isNotEmpty ||
-        filterData.targetTrait.isNotEmpty ||
-        filterData.effectTarget.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty || filterData.targetTrait.isNotEmpty || filterData.effectTarget.isNotEmpty) {
       List<BaseFunction> funcs = [
         if (filterData.effectScope.contain(SvtEffectScope.active))
-          for (final skill in svt.skills)
-            ...skill.filteredFunction(includeTrigger: true),
+          for (final skill in svt.skills) ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.passive))
-          for (final skill in svt.classPassive)
-            ...skill.filteredFunction(includeTrigger: true),
+          for (final skill in svt.classPassive) ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.passive))
           for (final skill in svt.extraPassive)
-            if (skill.extraPassive.any((e) => e.eventId == 0))
-              ...skill.filteredFunction(includeTrigger: true),
+            if (skill.extraPassive.any((e) => e.eventId == 0)) ...skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.append))
-          for (final skill in svt.appendPassive)
-            ...skill.skill.filteredFunction(includeTrigger: true),
+          for (final skill in svt.appendPassive) ...skill.skill.filteredFunction(includeTrigger: true),
         if (filterData.effectScope.contain(SvtEffectScope.td))
-          for (final td in svt.noblePhantasms)
-            ...td.filteredFunction(includeTrigger: true),
+          for (final td in svt.noblePhantasms) ...td.filteredFunction(includeTrigger: true),
       ];
       if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
-          return filterData.effectTarget
-              .matchOne(EffectTarget.fromFunc(func.funcTargetType));
+          return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
       if (filterData.targetTrait.isNotEmpty) {
-        funcs.retainWhere((func) =>
-            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+        funcs.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
       }
       if (funcs.isEmpty) return false;
       if (filterData.effectType.options.isEmpty) return true;
       if (filterData.effectType.matchAll) {
-        if (!filterData.effectType.options
-            .every((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.every((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       } else {
-        if (!filterData.effectType.options
-            .any((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.any((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       }
@@ -542,13 +498,11 @@ class ServantListPageState extends State<ServantListPage>
   Widget buildScrollable({bool useGrid = false}) {
     int _hiddenNum = 0;
     if (widget.planMode) {
-      _hiddenNum =
-          shownList.where((e) => hiddenPlanServants.contains(e)).length;
+      _hiddenNum = shownList.where((e) => hiddenPlanServants.contains(e)).length;
     }
     final hintText = SearchableListState.defaultHintBuilder(
       context,
-      defaultHintText(shownList.length, wholeData.length,
-          widget.planMode ? _hiddenNum : null),
+      defaultHintText(shownList.length, wholeData.length, widget.planMode ? _hiddenNum : null),
     );
     Widget scrollable = Scrollbar(
       controller: scrollController,
@@ -560,10 +514,7 @@ class ServantListPageState extends State<ServantListPage>
           : buildListView(
               topHint: hintText,
               bottomHint: hintText,
-              separator: widget.planMode
-                  ? const Divider(
-                      height: 1, thickness: 0.5, indent: 72, endIndent: 16)
-                  : null,
+              separator: widget.planMode ? const Divider(height: 1, thickness: 0.5, indent: 72, endIndent: 16) : null,
             ),
     );
     scrollable = RefreshIndicator(
@@ -573,8 +524,7 @@ class ServantListPageState extends State<ServantListPage>
       },
       child: scrollable,
     );
-    if (db.settings.display.classFilterStyle ==
-        SvtListClassFilterStyle.doNotShow) {
+    if (db.settings.display.classFilterStyle == SvtListClassFilterStyle.doNotShow) {
       return scrollable;
     }
     return Column(
@@ -616,19 +566,13 @@ class ServantListPageState extends State<ServantListPage>
                   )
                 ],
               ),
-              child: db.getIconImage(
-                  Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'),
-                  width: 13,
-                  height: 13),
+              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 13, height: 13),
             ),
           ),
           TextSpan(text: status.cur.npLv.toString()),
-          TextSpan(
-              text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}'),
+          TextSpan(text: '\n${status.cur.ascension}-${status.cur.skills.join('/')}'),
           if (status.cur.appendSkills.any((lv) => lv > 0))
-            TextSpan(
-                text:
-                    "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
+            TextSpan(text: "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
         ]),
         textScaleFactor: 0.9,
       );
@@ -638,8 +582,7 @@ class ServantListPageState extends State<ServantListPage>
       (context, snapshot) => InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image:
-              svt.iconBuilder(context: context, jumpToDetail: false, width: 72),
+          image: svt.iconBuilder(context: context, jumpToDetail: false, width: 72),
           textBuilder: status.cur.favorite ? textBuilder : null,
           option: ImageWithTextOption(
             shadowSize: 4,
@@ -656,12 +599,8 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget listItemBuilder(Servant svt) {
-    db.curUser
-        .svtPlanOf(svt.collectionNo)
-        .validate(db.curUser.svtStatusOf(svt.collectionNo).cur);
-    return widget.planMode
-        ? _planListItemBuilder(svt)
-        : _usualListItemBuilder(svt);
+    db.curUser.svtPlanOf(svt.collectionNo).validate(db.curUser.svtStatusOf(svt.collectionNo).cur);
+    return widget.planMode ? _planListItemBuilder(svt) : _usualListItemBuilder(svt);
   }
 
   @override
@@ -706,8 +645,7 @@ class ServantListPageState extends State<ServantListPage>
           } else {
             return DropdownMenuItem(
               value: i,
-              child:
-                  Text(S.current.words_separate(S.current.skill, i.toString())),
+              child: Text(S.current.words_separate(S.current.skill, i.toString())),
             );
           }
         }),
@@ -738,8 +676,7 @@ class ServantListPageState extends State<ServantListPage>
       DropdownButton<int>(
         value: _changedAppend,
         icon: Container(),
-        hint: Text(S.current.append_skill_short +
-            (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
+        hint: Text(S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
         items: List.generate(12, (i) {
           if (i == 0) {
             return const DropdownMenuItem(value: -1, child: Text('x + 1'));
@@ -747,8 +684,7 @@ class ServantListPageState extends State<ServantListPage>
             return DropdownMenuItem(
               value: i - 1,
               child: Text(S.current.words_separate(
-                  S.current.append_skill_short +
-                      (db.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
+                  S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
                   (i - 1).toString())),
             );
           }
@@ -758,19 +694,15 @@ class ServantListPageState extends State<ServantListPage>
             _changedAppend = v;
             if (_changedAppend == null) return;
             _batchChange((svt, cur, target) {
-              for (int i in (db.settings.display.onlyAppendSkillTwo
-                  ? [1]
-                  : [0, 1, 2])) {
-                if (db.settings.display.onlyAppendUnlocked &&
-                    cur.appendSkills[i] == 0) {
+              for (int i in (db.settings.display.onlyAppendSkillTwo ? [1] : [0, 1, 2])) {
+                if (db.settings.display.onlyAppendUnlocked && cur.appendSkills[i] == 0) {
                   continue;
                 }
                 if (changeTarget) {
                   if (v == -1) {
                     target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
                   } else {
-                    target.appendSkills[i] =
-                        max(cur.appendSkills[i], _changedAppend!);
+                    target.appendSkills[i] = max(cur.appendSkills[i], _changedAppend!);
                   }
                 } else {
                   if (v == -1) {
@@ -799,8 +731,7 @@ class ServantListPageState extends State<ServantListPage>
             _batchChange((svt, cur, target) {
               final costumes = changeTarget ? target.costumes : cur.costumes;
               costumes.clear();
-              costumes.addAll(Map.fromIterable(svt.profile.costume.keys,
-                  value: (k) => _changedDress == true ? 1 : 0));
+              costumes.addAll(Map.fromIterable(svt.profile.costume.keys, value: (k) => _changedDress == true ? 1 : 0));
             });
           });
         },
@@ -809,8 +740,7 @@ class ServantListPageState extends State<ServantListPage>
     return PreferredSize(
       preferredSize: const Size.fromHeight(64),
       child: Container(
-        decoration: BoxDecoration(
-            border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+        decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
         child: Align(
           alignment: Alignment.center,
           child: FittedBox(
@@ -845,24 +775,20 @@ class ServantListPageState extends State<ServantListPage>
                           _changedDress = null;
                         });
                       },
-                      optionBuilder: (s) => Text(s
-                          ? S.current.plan_list_set_all_target
-                          : S.current.plan_list_set_all_current),
+                      optionBuilder: (s) =>
+                          Text(s ? S.current.plan_list_set_all_target : S.current.plan_list_set_all_current),
                     ),
                     FilterGroup<bool>(
                       combined: true,
                       options: const [true],
                       padding: EdgeInsets.zero,
-                      values: FilterGroupData(
-                          options: {db.settings.display.onlyAppendUnlocked}),
+                      values: FilterGroupData(options: {db.settings.display.onlyAppendUnlocked}),
                       onFilterChanged: (v, _) {
                         setState(() {
-                          db.settings.display.onlyAppendUnlocked =
-                              !db.settings.display.onlyAppendUnlocked;
+                          db.settings.display.onlyAppendUnlocked = !db.settings.display.onlyAppendUnlocked;
                         });
                       },
-                      optionBuilder: (s) =>
-                          Text(S.current.plan_list_only_unlock_append),
+                      optionBuilder: (s) => Text(S.current.plan_list_only_unlock_append),
                     ),
                     IconButton(
                       onPressed: () {
@@ -893,17 +819,13 @@ class ServantListPageState extends State<ServantListPage>
         children: [
           Text('${status.cur.ascension}-${status.cur.skills.join('/')}'),
           if (status.cur.appendSkills.any((e) => e > 0))
-            Text(
-                status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),
+            Text(status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),
           if (svt.profile.costume.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                db.getIconImage(Atlas.assetItem(Items.costumeIconId),
-                    width: 16, height: 16),
-                Text(svt.profile.costume.values
-                    .map((e) => status.cur.costumes[e.battleCharaId] ?? 0)
-                    .join('/')),
+                db.getIconImage(Atlas.assetItem(Items.costumeIconId), width: 16, height: 16),
+                Text(svt.profile.costume.values.map((e) => status.cur.costumes[e.battleCharaId] ?? 0).join('/')),
               ],
             ),
         ],
@@ -942,8 +864,7 @@ class ServantListPageState extends State<ServantListPage>
           )
         ],
       ),
-      trailing: db.onUserData(
-          (context, snapshot) => getStatusText(context) ?? const SizedBox()),
+      trailing: db.onUserData((context, snapshot) => getStatusText(context) ?? const SizedBox()),
       selected: SplitRoute.isSplit(context) && selected == svt,
       onTap: () => _onTapSvt(svt),
     );
@@ -954,9 +875,8 @@ class ServantListPageState extends State<ServantListPage>
     final eyeWidget = IconButton(
       icon: Icon(
         Icons.remove_red_eye,
-        color: isSvtFavorite(svt) && !_hidden
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).highlightColor,
+        color:
+            isSvtFavorite(svt) && !_hidden ? Theme.of(context).colorScheme.primary : Theme.of(context).highlightColor,
       ),
       onPressed: () {
         if (!isSvtFavorite(svt)) return;
@@ -975,18 +895,15 @@ class ServantListPageState extends State<ServantListPage>
           subtitle: _getDetailTable(svt),
           trailing: eyeWidget,
           selected: SplitRoute.isSplit(context) && selected == svt,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
           onTap: () => _onTapSvt(svt),
         ));
   }
 
-  void _batchChange(
-      void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
+  void _batchChange(void Function(Servant svt, SvtPlan cur, SvtPlan target) onChanged) {
     for (final svt in shownList) {
       if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-        final cur = db.curUser.svtStatusOf(svt.collectionNo).cur,
-            target = db.curUser.svtPlanOf(svt.collectionNo);
+        final cur = db.curUser.svtStatusOf(svt.collectionNo).cur, target = db.curUser.svtPlanOf(svt.collectionNo);
         onChanged(svt, cur, target);
       }
     }
@@ -1008,8 +925,7 @@ class ServantListPageState extends State<ServantListPage>
             onTap: isCur
                 ? null
                 : () {
-                    final src = UserPlan.fromJson(
-                        jsonDecode(jsonEncode(db.curUser.plans[index])));
+                    final src = UserPlan.fromJson(jsonDecode(jsonEncode(db.curUser.plans[index])));
                     db.curPlan_.servants = src.servants;
                     db.curUser.ensurePlanLarger();
                     db.itemCenter.calculate();

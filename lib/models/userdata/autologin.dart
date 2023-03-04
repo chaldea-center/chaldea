@@ -65,8 +65,7 @@ class UserAuth {
     return false;
   }
 
-  factory UserAuth.fromJson(Map<String, dynamic> json) =>
-      _$UserAuthFromJson(json);
+  factory UserAuth.fromJson(Map<String, dynamic> json) => _$UserAuthFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserAuthToJson(this);
 }
@@ -87,8 +86,7 @@ class AutoLoginData {
     this.deviceInfo,
     this.country = NACountry.unitedStates,
   });
-  factory AutoLoginData.fromJson(Map<String, dynamic> json) =>
-      _$AutoLoginDataFromJson(json);
+  factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$AutoLoginDataToJson(this);
 }

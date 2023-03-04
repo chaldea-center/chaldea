@@ -84,9 +84,7 @@ class _CacheManager {
   LazyBox<Uint8List>? _webBox;
   late final FilePlus? _infoFile = cacheKey == null
       ? null
-      : FilePlus(kIsWeb
-          ? 'api_cache/$cacheKey.json'
-          : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
+      : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
   _CacheManager(this.cacheKey);
 
@@ -109,8 +107,7 @@ class _CacheManager {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
       }
       if (_infoFile != null && _infoFile!.existsSync()) {
-        Map.from(jsonDecode(await _infoFile!.readAsString()))
-            .forEach((key, value) {
+        Map.from(jsonDecode(await _infoFile!.readAsString())).forEach((key, value) {
           _data[key] = _CachedInfo.fromJson(value);
         });
       }
@@ -122,8 +119,7 @@ class _CacheManager {
   }
 
   void saveCacheInfo() {
-    EasyDebounce.debounce('_CacheManager_saveCacheInfo',
-        const Duration(seconds: 10), _saveCacheInfo);
+    EasyDebounce.debounce('_CacheManager_saveCacheInfo', const Duration(seconds: 10), _saveCacheInfo);
   }
 
   Future<void> _saveCacheInfo() async {
@@ -166,8 +162,7 @@ class _CacheManager {
   Future<List<int>?> _download(String url) async {
     if (!kReleaseMode) print('fetching Atlas API: $url');
     final _t = StopwatchX(url);
-    final response = await DioE().get<List<int>>(url,
-        options: Options(responseType: ResponseType.bytes));
+    final response = await DioE().get<List<int>>(url, options: Options(responseType: ResponseType.bytes));
     _t.log();
     if (statusCodes.contains(response.statusCode) && response.data != null) {
       try {
@@ -223,12 +218,10 @@ class _CacheManager {
     if (expireAfter == null && _memoryCache[key] != null) {
       return false;
     }
-    return (DateTime.now().timestamp - timestamp) >=
-        (expireAfter?.inSeconds ?? 0);
+    return (DateTime.now().timestamp - timestamp) >= (expireAfter?.inSeconds ?? 0);
   }
 
-  Future<List<int>?> get(String url,
-      {Duration? expireAfter, bool cacheOnly = false}) async {
+  Future<List<int>?> get(String url, {Duration? expireAfter, bool cacheOnly = false}) async {
     final key = _url2uuid(url);
     try {
       if (!_initiated) {
@@ -237,8 +230,7 @@ class _CacheManager {
       }
       final entry = _data[key];
       if (entry != null) {
-        FilePlus? file =
-            entry.fp == null ? null : FilePlus(entry.fp!, box: _webBox);
+        FilePlus? file = entry.fp == null ? null : FilePlus(entry.fp!, box: _webBox);
         if (!_isExpired(key, entry.timestamp, expireAfter)) {
           List<int>? bytes = _memoryCache[key];
           if (bytes == null) {
@@ -246,8 +238,7 @@ class _CacheManager {
               bytes = await file.readAsBytes();
             }
           }
-          if (bytes != null &&
-              Crc32Xz().convert(bytes).toString() == entry.crc) {
+          if (bytes != null && Crc32Xz().convert(bytes).toString() == entry.crc) {
             return SynchronousFuture(bytes);
           }
         }
@@ -257,8 +248,7 @@ class _CacheManager {
       }
       var prevTask = _downloading[url];
       if (prevTask != null) {
-        if (DateTime.now().difference(prevTask.startedAt) <
-            const Duration(seconds: 30)) {
+        if (DateTime.now().difference(prevTask.startedAt) < const Duration(seconds: 30)) {
           return prevTask.completer.future;
         }
         print('api cancel timeout: $url');
@@ -269,8 +259,7 @@ class _CacheManager {
       print('api get: $url');
       if (cacheOnly) return null;
 
-      final task = _downloading[url] =
-          _DownloadingTask(url: url, completer: Completer());
+      final task = _downloading[url] = _DownloadingTask(url: url, completer: Completer());
       _failed.remove(url);
       _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {
         _downloading.remove(url);
@@ -293,11 +282,9 @@ class _CacheManager {
     return null;
   }
 
-  Future<String?> getText(String url,
-      {Duration? expireAfter, bool cacheOnly = false}) async {
+  Future<String?> getText(String url, {Duration? expireAfter, bool cacheOnly = false}) async {
     try {
-      final data =
-          await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
+      final data = await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
       if (data == null) return null;
       return utf8.decode(data);
     } catch (e, s) {
@@ -306,8 +293,7 @@ class _CacheManager {
     }
   }
 
-  Future<dynamic> getJson(String url,
-      {Duration? expireAfter, bool cacheOnly = false}) async {
+  Future<dynamic> getJson(String url, {Duration? expireAfter, bool cacheOnly = false}) async {
     dynamic result;
     try {
       result = await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
@@ -347,8 +333,7 @@ class _CacheManager {
     }
     if (cacheOnly) return null;
     try {
-      final obj =
-          await getJson(url, expireAfter: Duration.zero, cacheOnly: cacheOnly);
+      final obj = await getJson(url, expireAfter: Duration.zero, cacheOnly: cacheOnly);
       if (obj != null) return fromJson(obj);
     } catch (e, s) {
       removeUrl(url);
@@ -358,8 +343,7 @@ class _CacheManager {
   }
 
   static String removeHost(String url) {
-    final match = RegExp(r"^https?://([^/]+)(/.+)$", caseSensitive: false)
-        .firstMatch(url);
+    final match = RegExp(r"^https?://([^/]+)(/.+)$", caseSensitive: false).firstMatch(url);
     return match?.group(2) ?? url;
   }
 
@@ -393,8 +377,7 @@ class AtlasApi {
     await cacheManager.clearCache();
   }
 
-  static Future<Map<String, dynamic>?> regionInfo(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
+  static Future<Map<String, dynamic>?> regionInfo({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/info',
       (data) => data[region.upper],
@@ -402,8 +385,7 @@ class AtlasApi {
     );
   }
 
-  static Future<Quest?> quest(int questId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<Quest?> quest(int questId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/quest/$questId',
       (data) => Quest.fromJson(data),
@@ -427,12 +409,10 @@ class AtlasApi {
         final now = DateTime.now().timestamp;
         // main story's main quest:
         //  if just released in 1 month
-        if (questJP.type == QuestType.main &&
-            questJP.closedAt > kNeverClosedTimestamp) {
-          expireAfter =
-              now - questJP.openedAt < const Duration(days: 30).inSeconds
-                  ? const Duration(days: 3)
-                  : const Duration(days: 15);
+        if (questJP.type == QuestType.main && questJP.closedAt > kNeverClosedTimestamp) {
+          expireAfter = now - questJP.openedAt < const Duration(days: 30).inSeconds
+              ? const Duration(days: 3)
+              : const Duration(days: 15);
         } else if (now > questJP.closedAt) {
           expireAfter = const Duration(days: 15);
         }
@@ -446,24 +426,19 @@ class AtlasApi {
     );
   }
 
-  static QuestPhase? questPhaseCache(int questId, int phase,
-      [Region region = Region.jp]) {
-    return cachedQuestPhases[
-        '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase'];
+  static QuestPhase? questPhaseCache(int questId, int phase, [Region region = Region.jp]) {
+    return cachedQuestPhases['$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase'];
   }
 
-  static Future<List<MasterMission>?> masterMissions(
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/nice_master_mission.json',
-      (data) => List.generate((data as List).length,
-          (index) => MasterMission.fromJson(data[index])),
+      (data) => List.generate((data as List).length, (index) => MasterMission.fromJson(data[index])),
       expireAfter: expireAfter,
     );
   }
 
-  static Future<MasterMission?> masterMission(int id,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<MasterMission?> masterMission(int id, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/mm/$id',
       (data) => MasterMission.fromJson(data),
@@ -471,8 +446,7 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceWar?> war(int warId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceWar?> war(int warId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/war/$warId',
       (data) => NiceWar.fromJson(data),
@@ -480,8 +454,7 @@ class AtlasApi {
     );
   }
 
-  static Future<Event?> event(int eventId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<Event?> event(int eventId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/event/$eventId',
       (data) => Event.fromJson(data),
@@ -489,8 +462,7 @@ class AtlasApi {
     );
   }
 
-  static Future<Servant?> svt(int svtId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<Servant?> svt(int svtId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/servant/$svtId?lore=true',
       (data) => Servant.fromJson(data),
@@ -498,8 +470,7 @@ class AtlasApi {
     );
   }
 
-  static Future<CraftEssence?> ce(int ceId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<CraftEssence?> ce(int ceId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/equip/$ceId?lore=true',
       (data) => CraftEssence.fromJson(data),
@@ -507,8 +478,7 @@ class AtlasApi {
     );
   }
 
-  static Future<CommandCode?> cc(int ccId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<CommandCode?> cc(int ccId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/CC/$ccId',
       (data) => CommandCode.fromJson(data),
@@ -516,8 +486,7 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceSkill?> skill(int skillId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceSkill?> skill(int skillId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/skill/$skillId',
       (data) => NiceSkill.fromJson(data),
@@ -525,8 +494,7 @@ class AtlasApi {
     );
   }
 
-  static Future<BaseFunction?> func(int funcId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<BaseFunction?> func(int funcId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/function/$funcId',
       (data) => BaseFunction.fromJson(data),
@@ -534,8 +502,7 @@ class AtlasApi {
     );
   }
 
-  static Future<Buff?> buff(int buffId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<Buff?> buff(int buffId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/buff/$buffId',
       (data) => Buff.fromJson(data),
@@ -543,8 +510,7 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceTd?> td(int tdId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceTd?> td(int tdId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/NP/$tdId',
       (data) => NiceTd.fromJson(data),
@@ -552,8 +518,7 @@ class AtlasApi {
     );
   }
 
-  static Future<List<CommonRelease>?> commonRelease(int releaseId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<List<CommonRelease>?> commonRelease(int releaseId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/common-release/$releaseId',
       (data) => (data as List).map((e) => CommonRelease.fromJson(e)).toList(),
@@ -563,8 +528,7 @@ class AtlasApi {
 
   // export
   static Future<List<BasicServant>?> basicServants(
-      {Region region = Region.jp,
-      Duration? expireAfter = Duration.zero}) async {
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_servant.json',
       (data) => (data as List).map((e) => BasicServant.fromJson(e)).toList(),
@@ -573,30 +537,24 @@ class AtlasApi {
   }
 
   static Future<List<BasicCraftEssence>?> basicCraftEssences(
-      {Region region = Region.jp,
-      Duration? expireAfter = Duration.zero}) async {
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_equip.json',
-      (data) =>
-          (data as List).map((e) => BasicCraftEssence.fromJson(e)).toList(),
+      (data) => (data as List).map((e) => BasicCraftEssence.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }
 
   static Future<List<BasicCommandCode>?> basicCommandCodes(
-      {Region region = Region.jp,
-      Duration? expireAfter = Duration.zero}) async {
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_command_code.json',
-      (data) =>
-          (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
+      (data) => (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }
 
-  static Future<List<Item>?> niceItems(
-      {Region region = Region.jp,
-      Duration? expireAfter = Duration.zero}) async {
+  static Future<List<Item>?> niceItems({Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/nice_items.json',
       (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
@@ -604,8 +562,7 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceScript?> script(String scriptId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceScript?> script(String scriptId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/script/$scriptId',
       (data) => NiceScript.fromJson(data),
@@ -613,8 +570,7 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceShop?> shop(int shopId,
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceShop?> shop(int shopId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/shop/$shopId',
       (data) => NiceShop.fromJson(data),
@@ -622,8 +578,7 @@ class AtlasApi {
     );
   }
 
-  static Future<List<EnemyMaster>?> enemyMasters(
-      {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<List<EnemyMaster>?> enemyMasters({Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/nice_enemy_master.json',
       (data) => (data as List).map((e) => EnemyMaster.fromJson(e)).toList(),
@@ -641,8 +596,7 @@ class AtlasApi {
   }) async {
     if (type == null && eventId == null && payType == null) return [];
     return cacheManager.getModel(
-      Uri.parse('$_atlasApiHost/nice/${region.upper}/shop/search')
-          .replace(queryParameters: {
+      Uri.parse('$_atlasApiHost/nice/${region.upper}/shop/search').replace(queryParameters: {
         if (type != null) 'type': type.name,
         if (eventId != null) 'eventId': eventId.toString(),
         if (payType != null) 'payType': payType.name,
@@ -675,8 +629,7 @@ class CachedApi {
   const CachedApi._();
   static final _CacheManager cacheManager = _CacheManager(null);
 
-  static Future<Map?> biliVideoInfo(
-      {int? aid, String? bvid, Duration? expireAfter}) async {
+  static Future<Map?> biliVideoInfo({int? aid, String? bvid, Duration? expireAfter}) async {
     if (aid == null && bvid == null) return null;
     String url = 'https://api.bilibili.com/x/web-interface/view?';
     if (aid != null) {
@@ -697,7 +650,6 @@ class CachedApi {
   }
 
   static String corsProxy(String url) {
-    return Uri.parse(Hosts.workerHost)
-        .replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
+    return Uri.parse(Hosts.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
   }
 }

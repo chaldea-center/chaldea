@@ -10,8 +10,7 @@ import '../../master_mission/solver/scheme.dart';
 class EventMissionsPage extends StatefulWidget {
   final Event event;
   final List<EventMission> missions;
-  const EventMissionsPage(
-      {super.key, required this.event, required this.missions});
+  const EventMissionsPage({super.key, required this.event, required this.missions});
 
   @override
   State<EventMissionsPage> createState() => _EventMissionsPageState();
@@ -26,8 +25,8 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final customMissions = (selected.toList()..sort2((e) => e.dispNo))
-              .map((e) => CustomMission.fromEventMission(e));
+          final customMissions =
+              (selected.toList()..sort2((e) => e.dispNo)).map((e) => CustomMission.fromEventMission(e));
           int? warId;
           for (final int id in widget.event.warIds) {
             final war = db.gameData.wars[id];
@@ -68,8 +67,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
     );
   }
 
-  Widget missionBuilder(
-      BuildContext context, int index, List<EventMission> missions) {
+  Widget missionBuilder(BuildContext context, int index, List<EventMission> missions) {
     EventMission mission = missions[index];
     final customMission = CustomMission.fromEventMission(mission);
     return SimpleAccordion(

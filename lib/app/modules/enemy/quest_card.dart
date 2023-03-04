@@ -49,10 +49,7 @@ class _QuestCardState extends State<QuestCard> {
   bool get use6th => true; //  _use6th ?? db.curUser.freeLPParams.use6th;
 
   bool get show6th {
-    return db.gameData.dropRate
-        .getSheet(true)
-        .questIds
-        .contains(widget.questId);
+    return db.gameData.dropRate.getSheet(true).questIds.contains(widget.questId);
   }
 
   void _init() {
@@ -82,17 +79,12 @@ class _QuestCardState extends State<QuestCard> {
     final questId = quest.id;
     final region = widget.region;
     Duration? expireAfter;
-    if (quest.warId >= 1000 &&
-        quest.openedAt <
-            DateTime.now().subtract(const Duration(days: 30)).timestamp) {
+    if (quest.warId >= 1000 && quest.openedAt < DateTime.now().subtract(const Duration(days: 30)).timestamp) {
       expireAfter = const Duration(days: 7);
     }
 
-    for (final phase
-        in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
-      AtlasApi.questPhase(questId, phase,
-              region: region, expireAfter: expireAfter)
-          .then((_) {
+    for (final phase in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
+      AtlasApi.questPhase(questId, phase, region: region, expireAfter: expireAfter).then((_) {
         if (mounted) setState(() {});
       });
     }
@@ -157,10 +149,9 @@ class _QuestCardState extends State<QuestCard> {
     if (chapter.isNotEmpty) {
       questName = '$chapter $questName';
     }
-    List<String> names = [
-      questName,
-      if (!Transl.isJP && quest.name != quest.lName.l) quest.name
-    ].map((e) => e.replaceAll('\n', ' ')).toList();
+    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l) quest.name]
+        .map((e) => e.replaceAll('\n', ' '))
+        .toList();
     String shownQuestName;
     if (names.any((s) => s.charWidth > 16)) {
       shownQuestName = names.join('\n');
@@ -171,8 +162,7 @@ class _QuestCardState extends State<QuestCard> {
     String scriptPrefix = '';
     final allScriptIds = quest.allScriptIds;
     if (allScriptIds.isNotEmpty && allScriptIds.last.length > 2) {
-      scriptPrefix =
-          allScriptIds.last.substring(0, allScriptIds.last.length - 2);
+      scriptPrefix = allScriptIds.last.substring(0, allScriptIds.last.length - 2);
     }
 
     List<Widget> children = [
@@ -222,8 +212,7 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ),
       if (quest.phases.isNotEmpty)
-        for (final phase
-            in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
+        for (final phase in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
           _buildPhases(phase, scriptPrefix),
       if (quest.gifts.isNotEmpty || quest.giftIcon != null) _questRewards(),
       if (!widget.offline) releaseConditions(),
@@ -251,8 +240,7 @@ class _QuestCardState extends State<QuestCard> {
             ...divideTiles(
               children.map(
                 (e) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   child: e,
                 ),
               ),
@@ -269,8 +257,7 @@ class _QuestCardState extends State<QuestCard> {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
-      curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
-          AtlasApi.questPhaseCache(quest.id, phase, widget.region);
+      curPhase = db.gameData.getQuestPhase(quest.id, phase) ?? AtlasApi.questPhaseCache(quest.id, phase, widget.region);
     } else {
       curPhase = AtlasApi.questPhaseCache(quest.id, phase, widget.region);
       if (widget.region == Region.jp) {
@@ -294,8 +281,7 @@ class _QuestCardState extends State<QuestCard> {
                 children: divideList(
                   [
                     TextSpan(text: '${j + 1}'),
-                    if (stage.enemyFieldPosCount != null)
-                      TextSpan(text: '(${stage.enemyFieldPosCount})'),
+                    if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
                     if (stage.hasExtraInfo())
                       WidgetSpan(
                         child: IconButton(
@@ -326,10 +312,8 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
 
-    final aiNpcs = [
-      curPhase.extraDetail?.aiNpc,
-      ...?curPhase.extraDetail?.aiMultiNpc
-    ].whereType<QuestPhaseAiNpc>().toList();
+    final aiNpcs =
+        [curPhase.extraDetail?.aiNpc, ...?curPhase.extraDetail?.aiMultiNpc].whereType<QuestPhaseAiNpc>().toList();
     if (aiNpcs.isNotEmpty) {
       children.add(Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -351,8 +335,7 @@ class _QuestCardState extends State<QuestCard> {
     }
 
     if (curPhase.individuality.isNotEmpty &&
-        (curPhase.stages.isNotEmpty ||
-            (curPhase.consume != 0 && curPhase.consumeItem.isNotEmpty))) {
+        (curPhase.stages.isNotEmpty || (curPhase.consume != 0 && curPhase.consumeItem.isNotEmpty))) {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(
@@ -375,15 +358,13 @@ class _QuestCardState extends State<QuestCard> {
     }
     if (!widget.offline && curPhase.restrictions.isNotEmpty) {
       final shortMsg = curPhase.restrictions
-          .map((e) => _QuestRestriction.getText(
-              restriction: e, all: false, leading: false))
+          .map((e) => _QuestRestriction.getText(restriction: e, all: false, leading: false))
           .firstWhereOrNull((e) => e.isNotEmpty);
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: InkWell(
           onTap: () {
-            router.pushPage(
-                _QuestRestriction(restrictions: curPhase?.restrictions ?? []));
+            router.pushPage(_QuestRestriction(restrictions: curPhase?.restrictions ?? []));
           },
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -432,8 +413,7 @@ class _QuestCardState extends State<QuestCard> {
     }
     if (show6th) {
       final sheetData = db.gameData.dropRate.getSheet(use6th);
-      int runs =
-          sheetData.runs.getOrNull(sheetData.questIds.indexOf(quest.id)) ?? 0;
+      int runs = sheetData.runs.getOrNull(sheetData.questIds.indexOf(quest.id)) ?? 0;
       children.add(Column(
         children: [
           const SizedBox(height: 3),
@@ -469,14 +449,12 @@ class _QuestCardState extends State<QuestCard> {
 
   Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
-    final failed = AtlasApi.cacheManager
-        .isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
+    final failed = AtlasApi.cacheManager.isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
     if (effPhase == null) {
       List<Widget> rowChildren = [];
       rowChildren.add(Text('  $phase/${quest.phases.length}  '));
       if (quest.phasesNoBattle.contains(phase)) {
-        rowChildren.add(const Expanded(
-            child: Text('No Battle', textAlign: TextAlign.center)));
+        rowChildren.add(const Expanded(child: Text('No Battle', textAlign: TextAlign.center)));
       } else if (!widget.offline) {
         if (failed) {
           rowChildren.add(
@@ -519,8 +497,7 @@ class _QuestCardState extends State<QuestCard> {
       shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
     }
 
-    bool noConsume =
-        effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0;
+    bool noConsume = effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0;
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -551,8 +528,7 @@ class _QuestCardState extends State<QuestCard> {
             constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
               TextSpan(children: [
-                if (effPhase.consumeType != ConsumeType.item)
-                  TextSpan(text: 'AP ${effPhase.consume}'),
+                if (effPhase.consumeType != ConsumeType.item) TextSpan(text: 'AP ${effPhase.consume}'),
                 for (final itemAmount in effPhase.consumeItem)
                   WidgetSpan(
                     child: Item.iconBuilder(
@@ -633,8 +609,7 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   List<Widget> getPhaseScript(int phase) {
-    final scripts =
-        quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
+    final scripts = quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
     if (scripts == null || scripts.isEmpty) return [];
     return [
       Padding(
@@ -653,9 +628,7 @@ class _QuestCardState extends State<QuestCard> {
                     Text.rich(SharedBuilder.textButtonSpan(
                       context: context,
                       text: '{${s.shortId()}}',
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.primaryContainer),
+                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
                       onTap: () {
                         s.routeTo(region: widget.region);
                       },
@@ -670,8 +643,7 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Widget getSupportServants(QuestPhase curPhase) {
-    TextSpan _mono(dynamic v, int width) =>
-        TextSpan(text: v.toString().padRight(width), style: kMonoStyle);
+    TextSpan _mono(dynamic v, int width) => TextSpan(text: v.toString().padRight(width), style: kMonoStyle);
     String _nullLevel(int lv, dynamic skill) {
       return skill == null ? '-' : lv.toString();
     }
@@ -692,13 +664,9 @@ class _QuestCardState extends State<QuestCard> {
           TextSpan(
             children: [
               const TextSpan(text: ' Lv.'),
-              _mono(svt.lv,
-                  curPhase.supportServants.any((e) => e.lv >= 100) ? 3 : 2),
+              _mono(svt.lv, curPhase.supportServants.any((e) => e.lv >= 100) ? 3 : 2),
               TextSpan(text: ' ${S.current.np_short} Lv.'),
-              _mono(
-                  _nullLevel(svt.noblePhantasm.noblePhantasmLv,
-                      svt.noblePhantasm.noblePhantasm),
-                  1),
+              _mono(_nullLevel(svt.noblePhantasm.noblePhantasmLv, svt.noblePhantasm.noblePhantasm), 1),
               TextSpan(text: ' ${S.current.skill} Lv.'),
               _mono(
                   '${_nullLevel(svt.skills.skillLv1, svt.skills.skill1)}'
@@ -707,21 +675,16 @@ class _QuestCardState extends State<QuestCard> {
                   8),
               const TextSpan(text: '  ')
             ],
-            style: svt.script?.eventDeckIndex == null
-                ? null
-                : TextStyle(color: Theme.of(context).colorScheme.error),
+            style: svt.script?.eventDeckIndex == null ? null : TextStyle(color: Theme.of(context).colorScheme.error),
           ),
           for (final ce in svt.equips) ...[
-            CenterWidgetSpan(
-                child: ce.equip.iconBuilder(context: context, width: 32)),
+            CenterWidgetSpan(child: ce.equip.iconBuilder(context: context, width: 32)),
             TextSpan(
               children: [
                 const TextSpan(text: ' Lv.'),
                 _mono(ce.lv, 2),
               ],
-              style: ce.limitCount == 4
-                  ? TextStyle(color: Theme.of(context).colorScheme.error)
-                  : null,
+              style: ce.limitCount == 4 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
             ),
           ]
         ]),
@@ -751,11 +714,7 @@ class _QuestCardState extends State<QuestCard> {
   Widget getRestriction(QuestPhase curPhase) {
     List<Widget> children = [_header(S.current.quest_restriction)];
     for (final restriction in curPhase.restrictions) {
-      for (final msg in [
-        restriction.noticeMessage,
-        restriction.dialogMessage,
-        restriction.restriction.name
-      ]) {
+      for (final msg in [restriction.noticeMessage, restriction.dialogMessage, restriction.restriction.name]) {
         if (msg.isNotEmpty && msg != '0') {
           children.add(Text(msg.replaceAll('\n', ' ')));
           break;
@@ -771,13 +730,10 @@ class _QuestCardState extends State<QuestCard> {
             useRootNavigator: false,
             builder: (context) {
               List<Widget> rows = [];
-              for (int index = 0;
-                  index < curPhase.restrictions.length;
-                  index++) {
+              for (int index = 0; index < curPhase.restrictions.length; index++) {
                 final restriction = curPhase.restrictions[index];
                 if (curPhase.restrictions.length > 1) {
-                  rows.add(
-                      SHeader('${S.current.quest_restriction} ${index + 1}'));
+                  rows.add(SHeader('${S.current.quest_restriction} ${index + 1}'));
                 }
                 final messages = <String>{};
                 for (final msg in [
@@ -790,16 +746,13 @@ class _QuestCardState extends State<QuestCard> {
                   messages.add(msg.replaceAll('\n', ' '));
                 }
                 if (messages.isNotEmpty) {
-                  rows.add(
-                      CustomTableRow.fromTexts(texts: [messages.join('\n')]));
+                  rows.add(CustomTableRow.fromTexts(texts: [messages.join('\n')]));
                 }
                 rows.add(CustomTableRow.fromTexts(texts: [
                   restriction.restriction.type.name,
                   restriction.restriction.rangeType.name,
-                  if (restriction.restriction.targetVals.isNotEmpty)
-                    restriction.restriction.targetVals.join(', '),
-                  if (restriction.restriction.targetVals2.isNotEmpty)
-                    restriction.restriction.targetVals2.join(', '),
+                  if (restriction.restriction.targetVals.isNotEmpty) restriction.restriction.targetVals.join(', '),
+                  if (restriction.restriction.targetVals2.isNotEmpty) restriction.restriction.targetVals2.join(', '),
                 ]));
               }
               return SimpleCancelOkDialog(
@@ -834,9 +787,7 @@ class _QuestCardState extends State<QuestCard> {
       final drops = dropRates.getQuestApRate(widget.questId).entries.toList();
       drops.sort((a, b) => Item.compare2(a.key, b.key, true));
       for (final entry in drops) {
-        dropTexts[entry.key] = entry.value > 1000
-            ? entry.value.toInt().toString()
-            : entry.value.format(maxDigits: 4);
+        dropTexts[entry.key] = entry.value > 1000 ? entry.value.toInt().toString() : entry.value.format(maxDigits: 4);
       }
     } else {
       final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
@@ -856,8 +807,7 @@ class _QuestCardState extends State<QuestCard> {
             id: entry.key,
             text: entry.value,
             width: 42,
-            option: ImageWithTextOption(
-                fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+            option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
           )
       ],
     );
@@ -872,13 +822,9 @@ class _QuestCardState extends State<QuestCard> {
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
         if (preferApRate) {
-          if (quest.consumeType == ConsumeType.ap &&
-              quest.consume > 0 &&
-              dropRate != 0.0) {
+          if (quest.consumeType == ConsumeType.ap && quest.consume > 0 && dropRate != 0.0) {
             double apRate = quest.consume / dropRate;
-            text = apRate >= 1000
-                ? apRate.toInt().toString()
-                : apRate.format(precision: 3, maxDigits: 4);
+            text = apRate >= 1000 ? apRate.toInt().toString() : apRate.format(precision: 3, maxDigits: 4);
           }
         } else {
           text = dropRate.format(percent: true, maxDigits: 3);
@@ -896,8 +842,7 @@ class _QuestCardState extends State<QuestCard> {
         id: drop.objectId,
         width: 42,
         text: text ?? '-',
-        option:
-            ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+        option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
       ));
     }
     return Wrap(
@@ -920,8 +865,7 @@ class _QuestCardState extends State<QuestCard> {
                 spacing: 1,
                 runSpacing: 1,
                 children: [
-                  if (quest.giftIcon != null)
-                    db.getIconImage(quest.giftIcon, width: 36),
+                  if (quest.giftIcon != null) db.getIconImage(quest.giftIcon, width: 36),
                   for (final gift in quest.gifts)
                     gift.iconBuilder(
                       context: context,
@@ -937,9 +881,7 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Widget releaseConditions() {
-    final conds = quest.releaseConditions
-        .where((cond) => !(cond.type == CondType.date && cond.value == 0))
-        .toList();
+    final conds = quest.releaseConditions.where((cond) => !(cond.type == CondType.date && cond.value == 0)).toList();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -952,10 +894,8 @@ class _QuestCardState extends State<QuestCard> {
             value: cond.value,
             missions: db.gameData.wars[quest.warId]?.event?.missions ?? [],
           ),
-        Text(
-            '${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
-        Text(
-            '${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
+        Text('${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
+        Text('${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
       ],
     );
   }
@@ -1011,13 +951,10 @@ class _QuestRestriction extends StatelessWidget {
             TableCellData(text: 'Value', isHeader: true),
             TableCellData(
               child: Text.rich(TextSpan(text: rangeText, children: [
-                if (re.targetVals.isNotEmpty && rangeText.isNotEmpty)
-                  const TextSpan(text: ': '),
-                ...guessVal(
-                    context, re.targetVals, restriction.restriction.type),
+                if (re.targetVals.isNotEmpty && rangeText.isNotEmpty) const TextSpan(text: ': '),
+                ...guessVal(context, re.targetVals, restriction.restriction.type),
                 if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
-                ...guessVal(
-                    context, re.targetVals2, restriction.restriction.type),
+                ...guessVal(context, re.targetVals2, restriction.restriction.type),
               ])),
               flex: 3,
             )
@@ -1031,8 +968,7 @@ class _QuestRestriction extends StatelessWidget {
     );
   }
 
-  List<InlineSpan> guessVal(
-      BuildContext context, List<int> vals, RestrictionType type) {
+  List<InlineSpan> guessVal(BuildContext context, List<int> vals, RestrictionType type) {
     return divideList([
       for (final val in vals)
         val > 99
@@ -1057,11 +993,7 @@ class _QuestRestriction extends StatelessWidget {
     required bool leading,
   }) {
     final messages = <String>{};
-    for (final msg in [
-      restriction.noticeMessage,
-      restriction.dialogMessage,
-      restriction.restriction.name
-    ]) {
+    for (final msg in [restriction.noticeMessage, restriction.dialogMessage, restriction.restriction.name]) {
       if (msg.isNotEmpty && msg != '0') {
         messages.add(msg.replaceAll('\n', ' '));
       }

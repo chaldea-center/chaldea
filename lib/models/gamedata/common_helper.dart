@@ -4,9 +4,7 @@ extension RegionX on Region {
   String get upper => name.toUpperCase();
 
   static Region? tryParse(String s) {
-    return _$RegionEnumMap.entries
-        .firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())
-        ?.key;
+    return _$RegionEnumMap.entries.firstWhereOrNull((e) => e.value.toLowerCase() == s.toLowerCase())?.key;
   }
 
   String get localName {
@@ -45,8 +43,7 @@ class RegionConverter extends JsonConverter<Region, String> {
 class CondTypeConverter extends JsonConverter<CondType, String> {
   const CondTypeConverter();
   @override
-  CondType fromJson(String value) =>
-      decodeEnum(_$CondTypeEnumMap, value, CondType.none);
+  CondType fromJson(String value) => decodeEnum(_$CondTypeEnumMap, value, CondType.none);
   @override
   String toJson(CondType obj) => _$CondTypeEnumMap[obj] ?? obj.name;
 }

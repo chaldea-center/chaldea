@@ -37,8 +37,7 @@ class SvtTdTab extends StatelessWidget {
           overrideTds.add(oTd);
         }
       }
-      children.add(_buildTds(context, shownTds,
-          status.favorite ? status.npLv : null, overrideTds));
+      children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideTds));
     }
 
     if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
@@ -66,8 +65,7 @@ class SvtTdTab extends StatelessWidget {
     );
   }
 
-  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level,
-      List<OverrideTDData?> overrideTds) {
+  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level, List<OverrideTDData?> overrideTds) {
     assert(tds.length == overrideTds.length);
     if (tds.length == 1 && tds.first.condQuestId <= 0) {
       return TdDescriptor(
@@ -102,8 +100,7 @@ class SvtTdTab extends StatelessWidget {
                   }
                   if (name.trim().isEmpty) name = '???';
                   return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                     child: Text(name),
                   );
                 },
@@ -151,8 +148,7 @@ class SvtTdTab extends StatelessWidget {
 
   NiceTd? _getDefaultTd(List<NiceTd> tds) {
     tds = tds.where((e) => e.num > 0).toList();
-    final priorities =
-        db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(db.curUser.region);
+    final priorities = db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(db.curUser.region);
     if (svt.collectionNo == 1) {
       tds = tds.where((e) => priorities?[e.id] != null).toList();
     }
@@ -164,14 +160,11 @@ class SvtTdTab extends StatelessWidget {
     }
   }
 
-  Widget releaseCondition(
-      BuildContext context, NiceTd td, OverrideTDData? overrideTDData) {
-    bool notMain = ['91', '94']
-        .contains(td.condQuestId.toString().padRight(2).substring(0, 2));
+  Widget releaseCondition(BuildContext context, NiceTd td, OverrideTDData? overrideTDData) {
+    bool notMain = ['91', '94'].contains(td.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[td.condQuestId];
     final jpTime = quest?.openedAt,
-        localTime = db.gameData.mappingData.questRelease[td.condQuestId]
-            ?.ofRegion(db.curUser.region);
+        localTime = db.gameData.mappingData.questRelease[td.condQuestId]?.ofRegion(db.curUser.region);
     final keys = overrideTDData?.keys ?? [];
     List<int> ascensions = [], costumes = [];
     for (final key in keys) {
@@ -186,23 +179,17 @@ class SvtTdTab extends StatelessWidget {
         children: [
           if (td.condQuestId > 0)
             CondTargetValueDescriptor(
-              condType:
-                  notMain ? CondType.questClear : CondType.questClearPhase,
+              condType: notMain ? CondType.questClear : CondType.questClearPhase,
               target: td.condQuestId,
               value: td.condQuestPhase,
             ),
-          if (ascensions.isNotEmpty)
-            Text('${S.current.ascension_short} ${ascensions.join('&')}'),
+          if (ascensions.isNotEmpty) Text('${S.current.ascension_short} ${ascensions.join('&')}'),
           if (costumes.isNotEmpty)
-            Text([
-              '${S.current.costume}:',
-              for (final c in costumes)
-                svt.profile.costume[c]?.lName.l ?? c.toString()
-            ].join(' ')),
+            Text(['${S.current.costume}:', for (final c in costumes) svt.profile.costume[c]?.lName.l ?? c.toString()]
+                .join(' ')),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)
-            Text(
-                '${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
+            Text('${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
         ],
       ),
     );
@@ -225,9 +212,7 @@ class BiliTdAnimations extends StatelessWidget {
           aspectRatio: 16 / 9,
           child: Container(
             constraints: const BoxConstraints(maxHeight: 400),
-            decoration: BoxDecoration(
-                border:
-                    Border.fromBorderSide(Divider.createBorderSide(context))),
+            decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
             child: Center(
               child: BiliPlayer(video: video),
             ),
@@ -239,9 +224,7 @@ class BiliTdAnimations extends StatelessWidget {
           onPressed: () {
             launch(video.weburl);
           },
-          child: Text(videos.length == 1
-              ? 'Mooncell@bilibili'
-              : '${index + 1} - Mooncell@bilibili'),
+          child: Text(videos.length == 1 ? 'Mooncell@bilibili' : '${index + 1} - Mooncell@bilibili'),
         ),
       ));
     }

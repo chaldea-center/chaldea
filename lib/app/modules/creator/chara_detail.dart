@@ -28,24 +28,14 @@ class CharaDetail extends StatelessWidget {
             isHeader: true,
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: lName.jp, textAlign: TextAlign.center)
-          ]),
-        if (!Transl.isEN)
-          CustomTableRow(children: [
-            TableCellData(text: lName.na, textAlign: TextAlign.center)
-          ]),
+        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: lName.jp, textAlign: TextAlign.center)]),
+        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: lName.na, textAlign: TextAlign.center)]),
       ],
     );
     children.add(table);
 
-    final ces = db.gameData.craftEssences.values
-        .where((ce) => ce.extra.unknownCharacters.contains(name))
-        .toList();
-    final ccs = db.gameData.commandCodes.values
-        .where((cc) => cc.extra.unknownCharacters.contains(name))
-        .toList();
+    final ces = db.gameData.craftEssences.values.where((ce) => ce.extra.unknownCharacters.contains(name)).toList();
+    final ccs = db.gameData.commandCodes.values.where((cc) => cc.extra.unknownCharacters.contains(name)).toList();
     if (ces.isNotEmpty) {
       children.addAll([
         ListTile(title: Text(S.current.craft_essence)),

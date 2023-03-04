@@ -48,9 +48,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
           child: ExtraAssetsPage(
             assets: svt.extraAssets,
             aprilFoolAssets:
-                filter.options.isEmpty || filter.options.contains(_aprilKey)
-                    ? svt.extra.aprilFoolAssets
-                    : [],
+                filter.options.isEmpty || filter.options.contains(_aprilKey) ? svt.extra.aprilFoolAssets : [],
             mcSprites: svt.extra.mcSprites,
             fandomSprites: svt.extra.fandomSprites,
             getUrls: filter.options.isEmpty ? null : getUrls,
@@ -63,9 +61,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
 
   Iterable<String> getUrls(ExtraAssetsUrl urls) sync* {
     if (urls.ascension != null) {
-      yield* urls.ascension!.entries
-          .where((e) => filter.options.contains(e.key))
-          .map((e) => e.value);
+      yield* urls.ascension!.entries.where((e) => filter.options.contains(e.key)).map((e) => e.value);
     }
     if (urls.costume != null && filter.options.contains(_costumeKey)) {
       yield* urls.costume!.values;

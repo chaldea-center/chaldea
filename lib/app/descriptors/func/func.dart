@@ -65,11 +65,9 @@ mixin FuncsDescriptor {
       return func.isPlayerOnlyFunc ? showPlayer : showEnemy;
     }).toList();
     List<Widget> children = [];
-    final actIndiv =
-        owner is BaseSkill ? owner.actIndividuality : <NiceTrait>[];
+    final actIndiv = owner is BaseSkill ? owner.actIndividuality : <NiceTrait>[];
     if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
-      children.add(
-          SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
+      children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
     }
 
     for (int index = 0; index < funcs.length; index++) {
@@ -116,8 +114,7 @@ class _DescriptorWrapper extends StatelessWidget {
       if (constraints.maxWidth.isFinite) {
         maxWidth = max(maxWidth, constraints.maxWidth / 3);
         maxWidth = min(maxWidth, constraints.maxWidth / 2.5);
-        if (constraints.maxWidth > 600 &&
-            [lvCells, ocCells, supportCells].any((e) => e.length > 5)) {
+        if (constraints.maxWidth > 600 && [lvCells, ocCells, supportCells].any((e) => e.length > 5)) {
           perLine = 10;
         }
       }
@@ -130,8 +127,7 @@ class _DescriptorWrapper extends StatelessWidget {
           children: [
             Expanded(flex: perLine - 1, child: title),
             ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxWidth: maxWidth, minWidth: min(20, maxWidth)),
+              constraints: BoxConstraints(maxWidth: maxWidth, minWidth: min(20, maxWidth)),
               child: trailing,
             ),
           ],
@@ -156,11 +152,7 @@ class _DescriptorWrapper extends StatelessWidget {
             if (cellIndex == 0 && selected != null && selected! - 1 == j) {
               cell = DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondaryContainer
-                          .withAlpha(180)),
+                  border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(180)),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: cell,
@@ -185,22 +177,19 @@ class _DescriptorWrapper extends StatelessWidget {
 class SkillScriptDescriptor extends StatelessWidget {
   final SkillScript? script;
   final List<NiceTrait> actIndividuality;
-  const SkillScriptDescriptor(
-      {super.key, required this.script, this.actIndividuality = const []});
+  const SkillScriptDescriptor({super.key, required this.script, this.actIndividuality = const []});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
 
     if (actIndividuality.isNotEmpty) {
-      final isSvt = actIndividuality
-          .any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
+      final isSvt = actIndividuality.any((indiv) => db.gameData.servantsById.containsKey(indiv.id));
       children.add(_pad(_DescriptorWrapper(
         title: Text.rich(
           TextSpan(children: [
             ...SharedBuilder.replaceSpan(
-              Transl.misc2('SkillScript',
-                  isSvt ? 'actIndividuality' : 'actIndividuality2'),
+              Transl.misc2('SkillScript', isSvt ? 'actIndividuality' : 'actIndividuality2'),
               '{0}',
               actIndividuality.map((indiv) {
                 final svt = db.gameData.servantsById[indiv.id];
@@ -222,49 +211,40 @@ class SkillScriptDescriptor extends StatelessWidget {
       )));
     }
     if (script?.NP_HIGHER?.isNotEmpty == true) {
-      children
-          .add(_keyLv(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
+      children.add(_keyLv(context, 'NP_HIGHER', script!.NP_HIGHER!, (v) => '$v%'));
     }
     if (script?.NP_LOWER?.isNotEmpty == true) {
-      children
-          .add(_keyLv(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
+      children.add(_keyLv(context, 'NP_LOWER', script!.NP_LOWER!, (v) => '$v%'));
     }
     if (script?.STAR_HIGHER?.isNotEmpty == true) {
-      children.add(
-          _keyLv(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
+      children.add(_keyLv(context, 'STAR_HIGHER', script!.STAR_HIGHER!, (v) => '$v'));
     }
     if (script?.STAR_LOWER?.isNotEmpty == true) {
-      children
-          .add(_keyLv(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
+      children.add(_keyLv(context, 'STAR_LOWER', script!.STAR_LOWER!, (v) => '$v'));
     }
     if (script?.HP_VAL_HIGHER?.isNotEmpty == true) {
-      children.add(_keyLv(
-          context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
+      children.add(_keyLv(context, 'HP_VAL_HIGHER', script!.HP_VAL_HIGHER!, (v) => '$v'));
     }
     if (script?.HP_VAL_LOWER?.isNotEmpty == true) {
-      children.add(
-          _keyLv(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
+      children.add(_keyLv(context, 'HP_VAL_LOWER', script!.HP_VAL_LOWER!, (v) => '$v'));
     }
     if (script?.HP_PER_HIGHER?.isNotEmpty == true) {
-      children.add(_keyLv(context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!,
-          (v) => v.format(compact: false, percent: true, base: 10)));
+      children.add(_keyLv(
+          context, 'HP_PER_HIGHER', script!.HP_PER_HIGHER!, (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (script?.HP_PER_LOWER?.isNotEmpty == true) {
-      children.add(_keyLv(context, 'HP_PER_LOWER', script!.HP_PER_LOWER!,
-          (v) => v.format(compact: false, percent: true, base: 10)));
+      children.add(_keyLv(
+          context, 'HP_PER_LOWER', script!.HP_PER_LOWER!, (v) => v.format(compact: false, percent: true, base: 10)));
     }
     if (script?.additionalSkillId?.isNotEmpty == true) {
       final ids = script!.additionalSkillId!;
       final lvs = script?.additionalSkillLv ?? <int>[];
-      List<InlineSpan> titleSpans = [
-        TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId'))
-      ];
+      List<InlineSpan> titleSpans = [TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId'))];
       Widget? trailing;
       List<Widget> cells = [];
 
       if (lvs.toSet().length == 1) {
-        trailing =
-            Text('Lv.${lvs.first}', style: const TextStyle(fontSize: 13));
+        trailing = Text('Lv.${lvs.first}', style: const TextStyle(fontSize: 13));
       }
       if (ids.toSet().length == 1) {
         titleSpans.add(SharedBuilder.textButtonSpan(
@@ -275,9 +255,7 @@ class SkillScriptDescriptor extends StatelessWidget {
           },
         ));
         if (lvs.toSet().length > 1) {
-          cells = lvs
-              .map((e) => Text('Lv.$e', style: const TextStyle(fontSize: 13)))
-              .toList();
+          cells = lvs.map((e) => Text('Lv.$e', style: const TextStyle(fontSize: 13))).toList();
         }
       } else {
         cells = List.generate(ids.length, (index) {
@@ -298,8 +276,7 @@ class SkillScriptDescriptor extends StatelessWidget {
         });
       }
       children.add(_pad(_DescriptorWrapper(
-        title: Text.rich(TextSpan(children: titleSpans),
-            style: Theme.of(context).textTheme.bodySmall),
+        title: Text.rich(TextSpan(children: titleSpans), style: Theme.of(context).textTheme.bodySmall),
         trailing: trailing,
         lvCells: cells,
       )));
@@ -357,8 +334,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     );
   }
 
-  Widget _keyLv(BuildContext context, String key, List<int> vals,
-      String Function(int v) builder) {
+  Widget _keyLv(BuildContext context, String key, List<int> vals, String Function(int v) builder) {
     String title = Transl.misc2('SkillScript', key);
     if (vals.toSet().length == 1) {
       title = title.replaceAll('{0}', builder(vals.first));
@@ -366,8 +342,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     return _richLv(context, TextSpan(text: title), vals, builder);
   }
 
-  Widget _richLv(BuildContext context, TextSpan title, List<int> vals,
-      String Function(int v) builder) {
+  Widget _richLv(BuildContext context, TextSpan title, List<int> vals, String Function(int v) builder) {
     Widget? trailing;
     List<Widget> cells = [];
     if (vals.toSet().length == 1) {
@@ -467,9 +442,7 @@ class FuncDescriptor extends StatelessWidget {
     } else {
       funcText.write(Transl.funcPopuptext(func).l);
       String text = NiceFunction.normFuncPopupText(func.funcPopupText);
-      if (region == Region.jp &&
-          !Transl.md.funcPopuptext.containsKey(text) &&
-          text.isNotEmpty) {
+      if (region == Region.jp && !Transl.md.funcPopuptext.containsKey(text) && text.isNotEmpty) {
         funcText.write(' (${Transl.funcType(func.funcType).l})');
       }
     }
@@ -507,15 +480,12 @@ class FuncDescriptor extends StatelessWidget {
       ignoreCount: true,
     );
 
-    Widget _listVal(DataVals mVals, DataVals? oVals, int? index,
-        {bool support = false}) {
+    Widget _listVal(DataVals mVals, DataVals? oVals, int? index, {bool support = false}) {
       Widget cell = ValDsc(
         func: func,
         vals: mVals,
         originVals: oVals,
-        color: index == 5 || index == 9
-            ? Theme.of(context).colorScheme.secondary
-            : null,
+        color: index == 5 || index == 9 ? Theme.of(context).colorScheme.secondary : null,
         inList: true,
         supportOnly: support,
       );
@@ -525,23 +495,17 @@ class FuncDescriptor extends StatelessWidget {
     if (mutatingLvVals.isNotEmpty) {
       funcText.write('<Lv>');
       lvCells.addAll(List.generate(
-          mutatingLvVals.length,
-          (index) => _listVal(
-              mutatingLvVals[index], func.svals.getOrNull(index), index)));
+          mutatingLvVals.length, (index) => _listVal(mutatingLvVals[index], func.svals.getOrNull(index), index)));
     }
     if (mutatingOCVals.isNotEmpty) {
       funcText.write('<OC>');
       ocCells.addAll(List.generate(
-          mutatingOCVals.length,
-          (index) => _listVal(
-              mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
+          mutatingOCVals.length, (index) => _listVal(mutatingOCVals[index], func.ocVals(0).getOrNull(index), index)));
     }
     if (func.followerVals?.isNotEmpty == true) {
       // doesn't split static or mutating vals, it is rarely used.
       supportCells.addAll(List.generate(
-          func.followerVals!.length,
-          (index) =>
-              _listVal(func.followerVals![index], null, index, support: true)));
+          func.followerVals!.length, (index) => _listVal(func.followerVals![index], null, index, support: true)));
     }
 
     DataVals? vals = func.svals.getOrNull(0);
@@ -571,9 +535,7 @@ class FuncDescriptor extends StatelessWidget {
       EventWorkType? workType;
       if (indiv != null) workType = EventWorkType.values.getOrNull(indiv - 1);
       String indivName;
-      indivName = workType != null
-          ? Transl.enums(workType, (enums) => enums.eventWorkType).l
-          : '$indiv';
+      indivName = workType != null ? Transl.enums(workType, (enums) => enums.eventWorkType).l : '$indiv';
       if (indiv != null) {
         spans.add(CenterWidgetSpan(
           child: db.getIconImage(
@@ -591,18 +553,15 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.eventPointRateUp,
     ].contains(func.funcType)) {
       int? indiv = func.svals.getOrNull(0)?.Individuality;
-      final items = db.gameData.items.values
-          .where((item) => item.individuality.any((trait) => trait.id == indiv))
-          .toList();
+      final items =
+          db.gameData.items.values.where((item) => item.individuality.any((trait) => trait.id == indiv)).toList();
       if (items.isEmpty) {
         spans.add(TextSpan(text: '$indiv  '));
       }
       for (final item in items) {
         spans.add(TextSpan(
           children: [
-            CenterWidgetSpan(
-                child:
-                    Item.iconBuilder(context: context, item: item, width: 20)),
+            CenterWidgetSpan(child: Item.iconBuilder(context: context, item: item, width: 20)),
             TextSpan(text: ' ${item.lName.l}  ')
           ],
           recognizer: TapGestureRecognizer()..onTap = item.routeTo,
@@ -621,8 +580,7 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
 
-    if ((vals?.Rate != null && vals!.Rate! < 0) ||
-        (vals?.UseRate != null && vals!.UseRate! < 0)) {
+    if ((vals?.Rate != null && vals!.Rate! < 0) || (vals?.UseRate != null && vals!.UseRate! < 0)) {
       // print(vals.Rate);
       final hint = Transl.misc2('Function', 'ifPrevFuncSucceed');
       spans.insert(0, TextSpan(text: '($hint)'));
@@ -648,17 +606,14 @@ class FuncDescriptor extends StatelessWidget {
       }
       // if (showPlayer && showEnemy) return;
       if (lastFuncTarget == func.funcTargetType) return;
-      spans.add(
-          TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
+      spans.add(TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
     }
 
     _addFuncTarget();
 
     void _addFuncText() {
       final text = funcText.toString();
-      final style = func.isEnemyOnlyFunc
-          ? const TextStyle(fontStyle: FontStyle.italic)
-          : null;
+      final style = func.isEnemyOnlyFunc ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
       InlineSpan _replaceTrait(int trait) {
         return TextSpan(
@@ -683,8 +638,7 @@ class FuncDescriptor extends StatelessWidget {
           break;
         case FuncType.damageNpIndividualSum:
           if ((vals?.TargetList?.length ?? 0) > 0) {
-            spans.addAll(SharedBuilder.replaceSpanMap(
-                text, RegExp(r'\{[0-1]\}'), (match) {
+            spans.addAll(SharedBuilder.replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
               final s = match[0]!;
               if (s == "{0}") {
                 return [
@@ -692,8 +646,7 @@ class FuncDescriptor extends StatelessWidget {
                     children: SharedBuilder.traitSpans(
                       context: context,
                       traits: [
-                        for (int indiv in vals?.TargetList ?? [])
-                          NiceTrait(id: indiv),
+                        for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv),
                       ],
                     ),
                     style: style,
@@ -702,8 +655,7 @@ class FuncDescriptor extends StatelessWidget {
               } else if (s == "{1}") {
                 final target = vals?.Target == 0
                     ? M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신')
-                    : M.of(
-                        jp: '対象', cn: '对象', tw: '對象', na: 'target', kr: '대상');
+                    : M.of(jp: '対象', cn: '对象', tw: '對象', na: 'target', kr: '대상');
                 return [
                   TextSpan(text: target),
                 ];
@@ -781,9 +733,8 @@ class FuncDescriptor extends StatelessWidget {
       if (transformId != null) {
         spans.add(SharedBuilder.textButtonSpan(
           context: context,
-          text: transformLimit == null
-              ? ' $transformId '
-              : ' $transformId[${S.current.ascension_short}$transformLimit] ',
+          text:
+              transformLimit == null ? ' $transformId ' : ' $transformId[${S.current.ascension_short}$transformLimit] ',
           onTap: () {
             router.push(url: Routes.servantI(transformId));
           },
@@ -791,8 +742,7 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
 
-    if (vals?.AddLinkageTargetIndividualty != null &&
-        vals?.BehaveAsFamilyBuff == 1) {
+    if (vals?.AddLinkageTargetIndividualty != null && vals?.BehaveAsFamilyBuff == 1) {
       final color = Theme.of(context).textTheme.bodySmall?.color;
       spans.add(const TextSpan(text: '('));
       spans.add(CenterWidgetSpan(
@@ -816,17 +766,10 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     List<List<InlineSpan>> _condSpans = [];
-    void _addTraits(String? prefix, List<NiceTrait> traits,
-        [bool useAnd = false]) {
-      if ([BuffType.upCommandall, BuffType.downCommandall]
-          .contains(buff?.type)) {
+    void _addTraits(String? prefix, List<NiceTrait> traits, [bool useAnd = false]) {
+      if ([BuffType.upCommandall, BuffType.downCommandall].contains(buff?.type)) {
         traits = traits
-            .where((e) => ![
-                  Trait.cardQuick,
-                  Trait.cardArts,
-                  Trait.cardBuster,
-                  Trait.cardExtra
-                ].contains(e.name))
+            .where((e) => ![Trait.cardQuick, Trait.cardArts, Trait.cardBuster, Trait.cardExtra].contains(e.name))
             .toList();
       }
       if (traits.isEmpty) return;
@@ -842,10 +785,8 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv,
-          buff.script?.checkIndvType == 1);
-      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv,
-          buff.script?.checkIndvType == 1);
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);
+      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
       final script = buff.script;
       if (script?.HP_HIGHER != null) {
         final v = script!.HP_HIGHER!.format(percent: true, base: 10);
@@ -861,18 +802,14 @@ class FuncDescriptor extends StatelessWidget {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
       } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
-        spans.addAll(SharedBuilder.replaceSpan(
-            Transl.special.funcTraitPerBuff,
-            '{0}',
-            SharedBuilder.traitSpans(
-                context: context, traits: func.traitVals)));
+        spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff, '{0}',
+            SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
       } else if (func.funcType == FuncType.eventDropUp) {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);
       }
     }
     if (func.funcType != FuncType.subState ||
-        func.traitVals.map((e) => e.id).join(',') !=
-            func.functvals.map((e) => e.id).join(',')) {
+        func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
       _addTraits(Transl.special.funcTargetVals, func.functvals);
     }
 
@@ -915,11 +852,9 @@ class FuncDescriptor extends StatelessWidget {
       ));
     }
     if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
-      final eventName = db.gameData.events[vals?.EventId]?.lShortName.l
-              .replaceAll('\n', ' ') ??
-          'Event ${vals?.EventId}';
-      _condSpans
-          .add(SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
+      final eventName =
+          db.gameData.events[vals?.EventId]?.lShortName.l.replaceAll('\n', ' ') ?? 'Event ${vals?.EventId}';
+      _condSpans.add(SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
         TextSpan(
           text: eventName,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
@@ -937,8 +872,7 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     for (int index = 0; index < _condSpans.length; index++) {
-      spans.add(
-          TextSpan(text: index == _condSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
+      spans.add(TextSpan(text: index == _condSpans.length - 1 ? '\n ┗ ' : '\n ┣ '));
       spans.addAll(_condSpans[index]);
     }
 
@@ -968,8 +902,7 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
     last = Padding(
-      padding:
-          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: last,
     );
     return last;
@@ -1040,44 +973,34 @@ class FuncDescriptor extends StatelessWidget {
     final script = buff?.script;
     return {
       "type": '${Transl.funcType(func.funcType).l}/${func.funcType.name}',
-      "target":
-          '${Transl.funcTargetType(func.funcTargetType).l}/${func.funcTargetType.name}',
+      "target": '${Transl.funcTargetType(func.funcTargetType).l}/${func.funcTargetType.name}',
       "team": func.funcTargetTeam.name,
       "popupText": func.lPopupText.l,
       if (func.functvals.isNotEmpty) "targetTraits": _traitList(func.functvals),
-      if (func.funcquestTvals.isNotEmpty)
-        "fieldTraits": _traitList(func.funcquestTvals),
-      if (func.traitVals.isNotEmpty)
-        "funcTargetTraits": _traitList(func.traitVals),
+      if (func.funcquestTvals.isNotEmpty) "fieldTraits": _traitList(func.funcquestTvals),
+      if (func.traitVals.isNotEmpty) "funcTargetTraits": _traitList(func.traitVals),
       if (buff != null) ...{
         "----buff----": "↓",
         "id": buff.id,
         "name": Transl.buffNames(buff.name).l,
         "buffType": '${Transl.buffType(buff.type).l}/${buff.type.name}',
         "detail": Transl.buffDetail(buff.detail).l,
-        if (buff.ckSelfIndv.isNotEmpty)
-          "ckSelfIndv": _traitList(buff.ckSelfIndv),
+        if (buff.ckSelfIndv.isNotEmpty) "ckSelfIndv": _traitList(buff.ckSelfIndv),
         if (buff.ckOpIndv.isNotEmpty) "ckOpIndv": _traitList(buff.ckOpIndv),
         "buffGroup": buff.buffGroup,
         if (buff.vals.isNotEmpty) "buffTraits": _traitList(buff.vals),
         "maxRate": buff.maxRate,
         if (script != null) ...{
           "----script----": "↓",
-          if (script.checkIndvType != null)
-            "checkIndvType": script.checkIndvType,
+          if (script.checkIndvType != null) "checkIndvType": script.checkIndvType,
           if (script.CheckOpponentBuffTypes != null)
-            "CheckOpponentBuffTypes": script.CheckOpponentBuffTypes!
-                .map((e) => '${e.name}(${Transl.buffType(e).l})')
-                .toList(),
-          if (script.relationId != null)
-            "relationId": "!BuffRelationOverwrite!",
+            "CheckOpponentBuffTypes":
+                script.CheckOpponentBuffTypes!.map((e) => '${e.name}(${Transl.buffType(e).l})').toList(),
+          if (script.relationId != null) "relationId": "!BuffRelationOverwrite!",
           if (script.ReleaseText != null) "ReleaseText": script.ReleaseText,
-          if (script.DamageRelease != null)
-            "DamageRelease": script.DamageRelease,
-          if (script.INDIVIDUALITIE != null)
-            "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName(),
-          if (script.UpBuffRateBuffIndiv != null)
-            "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
+          if (script.DamageRelease != null) "DamageRelease": script.DamageRelease,
+          if (script.INDIVIDUALITIE != null) "INDIVIDUALITIE": script.INDIVIDUALITIE?.shownName(),
+          if (script.UpBuffRateBuffIndiv != null) "UpBuffRateBuffIndiv": _traitList(script.UpBuffRateBuffIndiv!),
           if (script.HP_LOWER != null) "HP_LOWER": script.HP_LOWER,
         }
       }
@@ -1142,11 +1065,9 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     if (skillId == null) {
       skill = null;
     } else if (widget.isNp) {
-      skill = db.gameData.baseTds[skillId] ??
-          await AtlasApi.td(skillId, region: widget.region ?? Region.jp);
+      skill = db.gameData.baseTds[skillId] ?? await AtlasApi.td(skillId, region: widget.region ?? Region.jp);
     } else {
-      skill = db.gameData.baseSkills[skillId] ??
-          await AtlasApi.skill(skillId, region: widget.region ?? Region.jp);
+      skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId, region: widget.region ?? Region.jp);
     }
     if (mounted) setState(() {});
   }
@@ -1159,12 +1080,9 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
     }
     List<String> hints = [
       Transl.funcPopuptextBase(widget.buff.type.name).l,
-      if (widget.useRate != null)
-        Transl.special
-            .funcValActChance(widget.useRate!.format(percent: true, base: 10)),
+      if (widget.useRate != null) Transl.special.funcValActChance(widget.useRate!.format(percent: true, base: 10)),
     ];
-    final loops = LoopTargets.from(widget.loops)
-      ..addSkill(widget.trigger.skill);
+    final loops = LoopTargets.from(widget.loops)..addSkill(widget.trigger.skill);
     bool loop = widget.loops.skills.contains(skill?.id);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1198,21 +1116,17 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
         if (loop)
           Center(
             child: Text.rich(
-              TextSpan(
-                  text:
-                      '∞ ${widget.isNp ? S.current.noble_phantasm : S.current.skill} ',
-                  children: [
-                    SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: widget.trigger.skill.toString(),
-                      onTap: () {
-                        if (widget.trigger.skill != null) {
-                          router.push(
-                              url: Routes.skillI(widget.trigger.skill!));
-                        }
-                      },
-                    )
-                  ]),
+              TextSpan(text: '∞ ${widget.isNp ? S.current.noble_phantasm : S.current.skill} ', children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: widget.trigger.skill.toString(),
+                  onTap: () {
+                    if (widget.trigger.skill != null) {
+                      router.push(url: Routes.skillI(widget.trigger.skill!));
+                    }
+                  },
+                )
+              ]),
               style: Theme.of(context).textTheme.bodySmall,
             ),
           )
@@ -1262,8 +1176,7 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
     if (widget.region == null || widget.region == Region.jp) {
       func = db.gameData.baseFunctions[widget.dependFuncId];
     }
-    func ??= await AtlasApi.func(widget.dependFuncId,
-        region: widget.region ?? Region.jp);
+    func ??= await AtlasApi.func(widget.dependFuncId, region: widget.region ?? Region.jp);
     if (mounted) setState(() {});
   }
 
@@ -1328,11 +1241,8 @@ class ___LazyFuncState extends State<_LazyFunc> with FuncsDescriptor {
     if (svals == null) return null;
     final dependsvals = svals.map((e) => e.DependFuncVals).toList();
     if (dependsvals.any((e) => e == null)) return null;
-    if (widget.trigger.funcType == FuncType.gainNpFromTargets ||
-        widget.trigger.funcType == FuncType.absorbNpturn) {
-      return dependsvals
-          .map((e) => DataVals(e!.toJson()..remove('Value2')))
-          .toList();
+    if (widget.trigger.funcType == FuncType.gainNpFromTargets || widget.trigger.funcType == FuncType.absorbNpturn) {
+      return dependsvals.map((e) => DataVals(e!.toJson()..remove('Value2'))).toList();
     }
     return List.from(dependsvals);
   }

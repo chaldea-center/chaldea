@@ -14,13 +14,11 @@ class TraitListPage extends StatefulWidget {
   _TraitListPageState createState() => _TraitListPageState();
 }
 
-class _TraitListPageState extends State<TraitListPage>
-    with SearchableListState<int, TraitListPage> {
+class _TraitListPageState extends State<TraitListPage> with SearchableListState<int, TraitListPage> {
   @override
   void initState() {
     super.initState();
-    searchEditingController =
-        TextEditingController(text: widget.initSearchString);
+    searchEditingController = TextEditingController(text: widget.initSearchString);
   }
 
   @override
@@ -84,6 +82,5 @@ class _TraitListPageState extends State<TraitListPage>
   }
 
   @override
-  Widget gridItemBuilder(int id) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(int id) => throw UnimplementedError('GridView not designed');
 }

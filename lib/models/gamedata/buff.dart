@@ -18,8 +18,7 @@ part '../../generated/models/gamedata/buff.g.dart';
 class BuffTypeConverter extends JsonConverter<BuffType, String> {
   const BuffTypeConverter();
   @override
-  BuffType fromJson(String value) =>
-      decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
+  BuffType fromJson(String value) => decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
   @override
   String toJson(BuffType obj) => _$BuffTypeEnumMap[obj] ?? obj.name;
 }
@@ -98,15 +97,13 @@ class Buff with RouteInfo {
     );
   }
 
-  Transl<String, String> get lName =>
-      Transl.buffNames(name.isEmpty ? type.name : name);
+  Transl<String, String> get lName => Transl.buffNames(name.isEmpty ? type.name : name);
   Transl<String, String> get lDetail => Transl.buffDetail(detail);
 
   BuffAction get buffAction => type.buffAction;
 
   static String formatRate(BuffType type, int rate) {
-    final base =
-        kBuffActionPercentTypes[type.buffAction] ?? kBuffTypePercentType[type];
+    final base = kBuffActionPercentTypes[type.buffAction] ?? kBuffTypePercentType[type];
     if (base == null) return rate.toString();
     return rate.format(percent: true, base: base);
   }
@@ -122,8 +119,7 @@ class BuffRelationOverwrite {
     required this.defSide,
   });
 
-  factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) =>
-      _$BuffRelationOverwriteFromJson(json);
+  factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) => _$BuffRelationOverwriteFromJson(json);
 }
 
 @JsonSerializable()
@@ -136,8 +132,7 @@ class RelationOverwriteDetail {
     required this.type,
   });
 
-  factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) =>
-      _$RelationOverwriteDetailFromJson(json);
+  factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) => _$RelationOverwriteDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -188,8 +183,7 @@ class BuffScript with DataScriptBase {
     this.convert,
   });
 
-  factory BuffScript.fromJson(Map<String, dynamic> json) =>
-      _$BuffScriptFromJson(json)..setSource(json);
+  factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json)..setSource(json);
 }
 
 /// Convert [targets] to [convertBuffs]
@@ -222,16 +216,13 @@ class BuffConvert {
         if (target['detail'] != null) {
           // nice buff or basic buff
           targetBuffs.add(Buff.fromJson(Map.from(target)));
-        } else if (target['id'] != null &&
-            target.keys
-                .every((key) => ['id', 'negative', 'name'].contains(key))) {
+        } else if (target['id'] != null && target.keys.every((key) => ['id', 'negative', 'name'].contains(key))) {
           targetTraits.add(NiceTrait.fromJson(Map.from(target)));
         }
       }
     }
   }
-  factory BuffConvert.fromJson(Map<String, dynamic> json) =>
-      _$BuffConvertFromJson(json);
+  factory BuffConvert.fromJson(Map<String, dynamic> json) => _$BuffConvertFromJson(json);
 }
 
 @JsonSerializable()
@@ -240,8 +231,7 @@ class BuffConvertScript {
   BuffConvertScript({
     this.OverwritePopupText,
   });
-  factory BuffConvertScript.fromJson(Map<String, dynamic> json) =>
-      _$BuffConvertScriptFromJson(json);
+  factory BuffConvertScript.fromJson(Map<String, dynamic> json) => _$BuffConvertScriptFromJson(json);
 }
 
 enum BuffConvertType {
@@ -433,78 +423,41 @@ enum BuffType {
   final int id;
   const BuffType(this.id);
 
-  BuffAction get buffAction =>
-      db.gameData.constData.buffTypeActionMap[this] ?? BuffAction.unknown;
+  BuffAction get buffAction => db.gameData.constData.buffTypeActionMap[this] ?? BuffAction.unknown;
 }
 
-final Map<BuffType, BuffValueTriggerType Function(DataVals)>
-    kBuffValueTriggerTypes = {
-  BuffType.reflectionFunction: (v) => BuffValueTriggerType(
-      BuffType.reflectionFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.attackFunction: (v) => BuffValueTriggerType(BuffType.attackFunction,
-      skill: v.Value, level: v.Value2),
-  BuffType.commandattackFunction: (v) => BuffValueTriggerType(
-      BuffType.commandattackFunction,
-      skill: v.Value,
-      level: v.Value2,
-      rate: v.UseRate),
-  BuffType.commandattackBeforeFunction: (v) => BuffValueTriggerType(
-      BuffType.commandattackBeforeFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.damageFunction: (v) => BuffValueTriggerType(BuffType.damageFunction,
-      skill: v.Value, level: v.Value2),
-  BuffType.deadFunction: (v) => BuffValueTriggerType(BuffType.deadFunction,
-      skill: v.Value, level: v.Value2),
-  BuffType.deadattackFunction: (v) => BuffValueTriggerType(
-      BuffType.deadattackFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.delayFunction: (v) => BuffValueTriggerType(BuffType.delayFunction,
-      skill: v.Value, level: v.Value2),
-  BuffType.npattackPrevBuff: (v) => BuffValueTriggerType(
-      BuffType.npattackPrevBuff,
-      skill: v.SkillID,
-      level: v.SkillLV,
-      position: v.Value),
-  BuffType.selfturnendFunction: (v) => BuffValueTriggerType(
-      BuffType.selfturnendFunction,
-      skill: v.Value,
-      level: v.Value2,
-      rate: v.UseRate),
-  BuffType.selfturnstartFunction: (v) => BuffValueTriggerType(
-      BuffType.selfturnstartFunction,
-      skill: v.Value,
-      level: v.Value2,
-      rate: v.UseRate),
-  BuffType.wavestartFunction: (v) => BuffValueTriggerType(
-      BuffType.wavestartFunction,
-      skill: v.Value,
-      level: v.Value2,
-      rate: v.UseRate),
-  BuffType.counterFunction: (v) => BuffValueTriggerType(
-      BuffType.counterFunction,
-      skill: v.CounterId,
-      level: v.CounterLv),
+final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = {
+  BuffType.reflectionFunction: (v) =>
+      BuffValueTriggerType(BuffType.reflectionFunction, skill: v.Value, level: v.Value2),
+  BuffType.attackFunction: (v) => BuffValueTriggerType(BuffType.attackFunction, skill: v.Value, level: v.Value2),
+  BuffType.commandattackFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandattackFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.commandattackBeforeFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandattackBeforeFunction, skill: v.Value, level: v.Value2),
+  BuffType.damageFunction: (v) => BuffValueTriggerType(BuffType.damageFunction, skill: v.Value, level: v.Value2),
+  BuffType.deadFunction: (v) => BuffValueTriggerType(BuffType.deadFunction, skill: v.Value, level: v.Value2),
+  BuffType.deadattackFunction: (v) =>
+      BuffValueTriggerType(BuffType.deadattackFunction, skill: v.Value, level: v.Value2),
+  BuffType.delayFunction: (v) => BuffValueTriggerType(BuffType.delayFunction, skill: v.Value, level: v.Value2),
+  BuffType.npattackPrevBuff: (v) =>
+      BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
+  BuffType.selfturnendFunction: (v) =>
+      BuffValueTriggerType(BuffType.selfturnendFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.selfturnstartFunction: (v) =>
+      BuffValueTriggerType(BuffType.selfturnstartFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.wavestartFunction: (v) =>
+      BuffValueTriggerType(BuffType.wavestartFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.counterFunction: (v) =>
+      BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
   // ?
-  BuffType.commandcodeattackFunction: (v) => BuffValueTriggerType(
-      BuffType.commandcodeattackFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.commandcodeattackAfterFunction: (v) => BuffValueTriggerType(
-      BuffType.commandcodeattackAfterFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.gutsFunction: (v) => BuffValueTriggerType(BuffType.gutsFunction,
-      skill: v.Value, level: v.Value2),
-  BuffType.attackBeforeFunction: (v) => BuffValueTriggerType(
-      BuffType.attackBeforeFunction,
-      skill: v.Value,
-      level: v.Value2),
-  BuffType.entryFunction: (v) => BuffValueTriggerType(BuffType.entryFunction,
-      skill: v.Value, level: v.Value2),
+  BuffType.commandcodeattackFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandcodeattackFunction, skill: v.Value, level: v.Value2),
+  BuffType.commandcodeattackAfterFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandcodeattackAfterFunction, skill: v.Value, level: v.Value2),
+  BuffType.gutsFunction: (v) => BuffValueTriggerType(BuffType.gutsFunction, skill: v.Value, level: v.Value2),
+  BuffType.attackBeforeFunction: (v) =>
+      BuffValueTriggerType(BuffType.attackBeforeFunction, skill: v.Value, level: v.Value2),
+  BuffType.entryFunction: (v) => BuffValueTriggerType(BuffType.entryFunction, skill: v.Value, level: v.Value2),
 };
 
 class BuffValueTriggerType {

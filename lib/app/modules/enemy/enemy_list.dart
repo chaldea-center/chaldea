@@ -19,11 +19,9 @@ class EnemyListPage extends StatefulWidget {
   State<StatefulWidget> createState() => EnemyListPageState();
 }
 
-class EnemyListPageState extends State<EnemyListPage>
-    with SearchableListState<BasicServant, EnemyListPage> {
+class EnemyListPageState extends State<EnemyListPage> with SearchableListState<BasicServant, EnemyListPage> {
   @override
-  Iterable<BasicServant> get wholeData =>
-      db.gameData.entities.values.where((svt) {
+  Iterable<BasicServant> get wholeData => db.gameData.entities.values.where((svt) {
         if (svt.collectionNo == 0) return true;
         return svt.type != SvtType.normal && svt.type != SvtType.servantEquip;
       });
@@ -40,9 +38,8 @@ class EnemyListPageState extends State<EnemyListPage>
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
-    _allEnemies = ReverseGameData.questEnemies((enemy) =>
-        !(enemy.svt.collectionNo > 0 &&
-            [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)));
+    _allEnemies = ReverseGameData.questEnemies(
+        (enemy) => !(enemy.svt.collectionNo > 0 && [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)));
     for (final enemies in _allEnemies.values) {
       enemies.sort2((e) => e.svt.icon);
     }
@@ -51,8 +48,7 @@ class EnemyListPageState extends State<EnemyListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => EnemyFilterData.compare(a, b,
-          keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare: (a, b) => EnemyFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -83,8 +79,7 @@ class EnemyListPageState extends State<EnemyListPage>
 
   @override
   Widget buildScrollable({bool useGrid = false}) {
-    if (db.settings.display.classFilterStyle ==
-        SvtListClassFilterStyle.doNotShow) {
+    if (db.settings.display.classFilterStyle == SvtListClassFilterStyle.doNotShow) {
       return super.buildScrollable(useGrid: useGrid);
     } else {
       return Column(
@@ -92,8 +87,7 @@ class EnemyListPageState extends State<EnemyListPage>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: LayoutBuilder(
-              builder: (context, constraints) =>
-                  SharedBuilder.topSvtClassFilter(
+              builder: (context, constraints) => SharedBuilder.topSvtClassFilter(
                 context: context,
                 maxWidth: constraints.maxWidth,
                 data: filterData.svtClass,
@@ -163,8 +157,7 @@ class EnemyListPageState extends State<EnemyListPage>
     if (filterData.onlyShowQuestEnemy && enemies.isEmpty) {
       return false;
     }
-    if (!filterData.svtClass
-        .matchOne(svt.className, compare: SvtClassX.match)) {
+    if (!filterData.svtClass.matchOne(svt.className, compare: SvtClassX.match)) {
       return false;
     }
     if (!filterData.attribute.matchOne(svt.attribute)) {
@@ -174,8 +167,7 @@ class EnemyListPageState extends State<EnemyListPage>
       return false;
     }
     if (filterData.trait.options.isNotEmpty) {
-      if (enemies.every((enemy) =>
-          !filterData.trait.matchAny(enemy.traits.map((e) => e.name)))) {
+      if (enemies.every((enemy) => !filterData.trait.matchAny(enemy.traits.map((e) => e.name)))) {
         return false;
       }
     }

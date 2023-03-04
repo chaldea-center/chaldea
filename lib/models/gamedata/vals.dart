@@ -2,14 +2,11 @@
 
 class DataVals {
   Map<String, dynamic> _vals;
-  DataVals? get DependFuncVals => _vals['DependFuncVals'] == null
-      ? null
-      : DataVals(_vals['DependFuncVals']);
+  DataVals? get DependFuncVals => _vals['DependFuncVals'] == null ? null : DataVals(_vals['DependFuncVals']);
 
   DataVals([Map<String, dynamic>? sourceVals]) : _vals = sourceVals ?? {};
 
-  factory DataVals.fromJson(Map<String, dynamic> json) =>
-      DataVals(Map.from(json));
+  factory DataVals.fromJson(Map<String, dynamic> json) => DataVals(Map.from(json));
 
   Map<String, dynamic> toJson({bool sort = true}) {
     final entries = _vals.entries.toList();
@@ -81,10 +78,8 @@ class DataVals {
   int? get EndBattle => _vals['EndBattle'];
   int? get LoseBattle => _vals['LoseBattle'];
   int? get AddIndividualty => _vals['AddIndividualty'];
-  int? get AddLinkageTargetIndividualty =>
-      _vals['AddLinkageTargetIndividualty'];
-  int? get SameBuffLimitTargetIndividuality =>
-      _vals['SameBuffLimitTargetIndividuality'];
+  int? get AddLinkageTargetIndividualty => _vals['AddLinkageTargetIndividualty'];
+  int? get SameBuffLimitTargetIndividuality => _vals['SameBuffLimitTargetIndividuality'];
   int? get SameBuffLimitNum => _vals['SameBuffLimitNum'];
   int? get CheckDuplicate => _vals['CheckDuplicate'];
   int? get OnFieldCount => _vals['OnFieldCount'];
@@ -99,10 +94,8 @@ class DataVals {
   int? get ChangeTDCommandType => _vals['ChangeTDCommandType'];
   int? get ShiftNpcId => _vals['ShiftNpcId'];
   int? get DisplayLastFuncInvalidType => _vals['DisplayLastFuncInvalidType'];
-  List<int>? get AndCheckIndividualityList =>
-      _list('AndCheckIndividualityList');
-  int? get WinBattleNotRelatedSurvivalStatus =>
-      _vals['WinBattleNotRelatedSurvivalStatus'];
+  List<int>? get AndCheckIndividualityList => _list('AndCheckIndividualityList');
+  int? get WinBattleNotRelatedSurvivalStatus => _vals['WinBattleNotRelatedSurvivalStatus'];
   int? get ForceSelfInstantDeath => _vals['ForceSelfInstantDeath'];
   int? get ChangeMaxBreakGauge => _vals['ChangeMaxBreakGauge'];
   int? get ParamAddMaxValue => _vals['ParamAddMaxValue'];
@@ -115,15 +108,12 @@ class DataVals {
   int? get CardIndex => _vals['CardIndex'];
   int? get CardIndividuality => _vals['CardIndividuality'];
   int? get WarBoardTakeOverBuff => _vals['WarBoardTakeOverBuff'];
-  List<int>? get ParamAddSelfIndividuality =>
-      _list('ParamAddSelfIndividuality');
+  List<int>? get ParamAddSelfIndividuality => _list('ParamAddSelfIndividuality');
   List<int>? get ParamAddOpIndividuality => _list('ParamAddOpIndividuality');
-  List<int>? get ParamAddFieldIndividuality =>
-      _list('ParamAddFieldIndividuality');
+  List<int>? get ParamAddFieldIndividuality => _list('ParamAddFieldIndividuality');
   int? get ParamAddValue => _vals['ParamAddValue'];
   int? get MultipleGainStar => _vals['MultipleGainStar'];
-  int? get NoCheckIndividualityIfNotUnit =>
-      _vals['NoCheckIndividualityIfNotUnit'];
+  int? get NoCheckIndividualityIfNotUnit => _vals['NoCheckIndividualityIfNotUnit'];
   int? get ForcedEffectSpeedOne => _vals['ForcedEffectSpeedOne'];
   int? get SetLimitCount => _vals['SetLimitCount'];
   int? get CheckEnemyFieldSpace => _vals['CheckEnemyFieldSpace'];
@@ -147,11 +137,9 @@ class DataVals {
   int? get UseTreasureDevice => _vals['UseTreasureDevice'];
   int? get SkillReaction => _vals['SkillReaction'];
   int? get BehaveAsFamilyBuff => _vals['BehaveAsFamilyBuff'];
-  int? get UnSubStateWhileLinkedToOthers =>
-      _vals['UnSubStateWhileLinkedToOthers'];
+  int? get UnSubStateWhileLinkedToOthers => _vals['UnSubStateWhileLinkedToOthers'];
   int? get AllowSubBgmPlaying => _vals['AllowSubBgmPlaying'];
-  int? get NotAccompanyWhenLinkedTargetMoveState =>
-      _vals['NotAccompanyWhenLinkedTargetMoveState'];
+  int? get NotAccompanyWhenLinkedTargetMoveState => _vals['NotAccompanyWhenLinkedTargetMoveState'];
   List<int>? get NotTargetSkillIdArray => _list('NotTargetSkillIdArray');
 
   int? get ShortTurn => _vals['ShortTurn'];
@@ -166,8 +154,7 @@ class DataVals {
   int? get Priority => _vals['Priority'];
   int? get AddIndividualityEx => _vals['AddIndividualityEx'];
   int? get IgnoreResistance => _vals['IgnoreResistance'];
-  int? get GainNpTargetPassiveIndividuality =>
-      _vals['GainNpTargetPassiveIndividuality'];
+  int? get GainNpTargetPassiveIndividuality => _vals['GainNpTargetPassiveIndividuality'];
   int? get HpReduceToRegainIndiv => _vals['HpReduceToRegainIndiv'];
   int? get DisplayActualRecoveryHpFlag => _vals['DisplayActualRecoveryHpFlag'];
   int? get ShiftDeckIndex => _vals['ShiftDeckIndex'];

@@ -12,8 +12,7 @@ class CvListPage extends StatefulWidget {
   _CvListPageState createState() => _CvListPageState();
 }
 
-class _CvListPageState extends State<CvListPage>
-    with SearchableListState<String, CvListPage> {
+class _CvListPageState extends State<CvListPage> with SearchableListState<String, CvListPage> {
   @override
   Iterable<String> get wholeData => cvs;
 
@@ -46,9 +45,7 @@ class _CvListPageState extends State<CvListPage>
     }
 
     cvs = {...svtMap.keys, ...ceMap.keys}.toList();
-    final sortKeys = {
-      for (final c in cvs) c: SearchUtil.getLocalizedSort(Transl.cvNames(c))
-    };
+    final sortKeys = {for (final c in cvs) c: SearchUtil.getLocalizedSort(Transl.cvNames(c))};
     cvs.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
 
     if (mounted) {
@@ -132,8 +129,7 @@ class _CvListPageState extends State<CvListPage>
   }
 
   @override
-  Widget gridItemBuilder(String cv) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(String cv) => throw UnimplementedError('GridView not designed');
 }
 
 class _CVOptions with SearchOptionsMixin<String> {

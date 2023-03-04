@@ -23,16 +23,14 @@ class ScreenshotsTab extends StatefulWidget {
   State<ScreenshotsTab> createState() => _ScreenshotsTabState();
 }
 
-class _ScreenshotsTabState extends State<ScreenshotsTab>
-    with ScrollControllerMixin {
+class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMixin {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(child: getImageView()),
         kDefaultDivider,
-        if (widget.debugServerRoot != null)
-          Center(child: Text(widget.debugServerRoot!)),
+        if (widget.debugServerRoot != null) Center(child: Text(widget.debugServerRoot!)),
         SafeArea(child: buttonBar),
       ],
     );
@@ -101,8 +99,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab>
   }
 
   void importImages() async {
-    SharedBuilder.pickImageOrFiles(context: context, withData: true)
-        .then((result) {
+    SharedBuilder.pickImageOrFiles(context: context, withData: true).then((result) {
       final files = result?.files;
       if (files != null) {
         for (final file in files) {

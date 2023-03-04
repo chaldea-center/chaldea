@@ -25,11 +25,9 @@ class EventFortificationPage extends HookWidget {
 
     for (final type in EventWorkType.values) {
       if (type == EventWorkType.unknown) continue;
-      final fortifications =
-          event.fortifications.where((e) => e.workType == type);
+      final fortifications = event.fortifications.where((e) => e.workType == type);
       int spotCount = fortifications.length;
-      int positionCount =
-          Maths.sum(fortifications.map((e) => e.details.length));
+      int positionCount = Maths.sum(fortifications.map((e) => e.details.length));
       // int totalPoints =
       //     Maths.sum(fortifications.map((e) => e.maxFortificationPoint));
       _withColor(ListTile(
@@ -49,9 +47,9 @@ class EventFortificationPage extends HookWidget {
           title: Text('${S.current.background} $bgId'),
           trailing: const Icon(Icons.photo),
           onTap: () {
-            FullscreenImageViewer.show(context: context, urls: [
-              'https://static.atlasacademy.io/JP/EventUI/Prefabs/80400/event_bg_80400$bgStr.png'
-            ]);
+            FullscreenImageViewer.show(
+                context: context,
+                urls: ['https://static.atlasacademy.io/JP/EventUI/Prefabs/80400/event_bg_80400$bgStr.png']);
           },
         ));
       }
@@ -71,14 +69,12 @@ class EventFortificationPage extends HookWidget {
   Widget itemBuilder(BuildContext context, EventFortification fortification) {
     return SimpleAccordion(
       headerBuilder: (context, _) {
-        final point = fortification.maxFortificationPoint
-            .format(compact: false, groupSeparator: ",");
+        final point = fortification.maxFortificationPoint.format(compact: false, groupSeparator: ",");
         return ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           horizontalTitleGap: 8,
           leading: db.getIconImage(fortification.workType.icon, width: 32),
-          title: Text('${fortification.idx}. ${fortification.name}',
-              textScaleFactor: 0.9),
+          title: Text('${fortification.idx}. ${fortification.name}', textScaleFactor: 0.9),
           subtitle: Wrap(
             spacing: 2,
             runSpacing: 2,
@@ -109,11 +105,9 @@ class EventFortificationPage extends HookWidget {
         );
       },
       contentBuilder: (context) {
-        const headerPadding =
-            EdgeInsetsDirectional.only(start: 0.0, top: 8.0, bottom: 4.0);
+        const headerPadding = EdgeInsetsDirectional.only(start: 0.0, top: 8.0, bottom: 4.0);
         List<Widget> children = [
-          Text(
-              '${S.current.general_type}: ${fortification.workType.shownName}'),
+          Text('${S.current.general_type}: ${fortification.workType.shownName}'),
           const SHeader('Positions', padding: headerPadding),
         ];
         final details = fortification.details.toList();
@@ -134,8 +128,7 @@ class EventFortificationPage extends HookWidget {
                     return SimpleCancelOkDialog(
                       hideCancel: true,
                       scrollable: true,
-                      title: Text('${detail.position} - ${detail.name}',
-                          textScaleFactor: 0.9),
+                      title: Text('${detail.position} - ${detail.name}', textScaleFactor: 0.9),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,8 +159,7 @@ class EventFortificationPage extends HookWidget {
           ));
           for (final svt in fortification.servants) {
             if (svt.position != detail.position) continue;
-            final dbSvt = db.gameData.servantsById[svt.svtId] ??
-                db.gameData.entities[svt.svtId];
+            final dbSvt = db.gameData.servantsById[svt.svtId] ?? db.gameData.entities[svt.svtId];
             String? icon = dbSvt?.borderedIcon;
             spans.add(CenterWidgetSpan(
               child: GameCardMixin.cardIconBuilder(
@@ -175,9 +167,7 @@ class EventFortificationPage extends HookWidget {
                 icon: icon,
                 width: 32,
                 aspectRatio: 132 / 144,
-                text: svt.type == EventFortificationSvtType.npc
-                    ? 'Lv.${svt.lv}'
-                    : null,
+                text: svt.type == EventFortificationSvtType.npc ? 'Lv.${svt.lv}' : null,
                 onTap: () {
                   showDialog(
                     context: context,
@@ -186,8 +176,7 @@ class EventFortificationPage extends HookWidget {
                       return SimpleCancelOkDialog(
                         hideCancel: true,
                         scrollable: true,
-                        title: Text('${svt.position} - ${svt.type.name}',
-                            textScaleFactor: 0.9),
+                        title: Text('${svt.position} - ${svt.type.name}', textScaleFactor: 0.9),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,13 +188,9 @@ class EventFortificationPage extends HookWidget {
                               title: Text(dbSvt?.lName.l ?? 'SVT ${svt.svtId}'),
                               subtitle: Text([
                                 'No.${svt.svtId}',
-                                svt.type == EventFortificationSvtType.userSvt
-                                    ? 'Lv.-'
-                                    : 'Lv.${svt.lv}'
+                                svt.type == EventFortificationSvtType.userSvt ? 'Lv.-' : 'Lv.${svt.lv}'
                               ].join(' ')),
-                              trailing: Icon(
-                                  DirectionalIcons.keyboard_arrow_forward(
-                                      context)),
+                              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                               onTap: () {
                                 router.push(url: Routes.servantI(svt.svtId));
                               },
@@ -243,8 +228,7 @@ class EventFortificationPage extends HookWidget {
         ));
 
         if (fortification.releaseConditions.isNotEmpty) {
-          children
-              .add(SHeader(S.current.open_condition, padding: headerPadding));
+          children.add(SHeader(S.current.open_condition, padding: headerPadding));
           for (final release in fortification.releaseConditions) {
             children.add(CondTargetValueDescriptor.commonRelease(
               commonRelease: release,

@@ -10,9 +10,7 @@ class TraitServantTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Servant> servants = db.gameData.servantsNoDup.values
-        .where((svt) => svt.traitsAll.contains(id))
-        .toList();
+    List<Servant> servants = db.gameData.servantsNoDup.values.where((svt) => svt.traitsAll.contains(id)).toList();
     servants.sort2((e) => e.collectionNo);
     if (servants.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(
@@ -35,8 +33,7 @@ class TraitServantTab extends StatelessWidget {
             ));
           }
           for (final costumeId in svt.ascensionAdd.individuality.costume.keys) {
-            final costumeName =
-                svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
+            final costumeName = svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
             details.addAll(_addComment(
               svt.ascensionAdd.individuality.costume[costumeId]!,
               id,
@@ -58,9 +55,7 @@ class TraitServantTab extends StatelessWidget {
           dense: true,
           leading: svt.iconBuilder(context: context),
           title: Text('No.${svt.collectionNo}-${svt.lName.l}'),
-          subtitle: details.isEmpty
-              ? null
-              : Text(details.join(' / '), textScaleFactor: 0.9),
+          subtitle: details.isEmpty ? null : Text(details.join(' / '), textScaleFactor: 0.9),
           onTap: () => svt.routeTo(),
         );
       },

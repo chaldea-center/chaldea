@@ -31,9 +31,7 @@ class MultiDescriptor {
     Widget Function(BuildContext context, int id) builder,
     bool? useAnd,
   ) {
-    title = useAnd == false
-        ? 'Any of ${ids.length} $title'
-        : 'All ${ids.length} $title';
+    title = useAnd == false ? 'Any of ${ids.length} $title' : 'All ${ids.length} $title';
     return inkWell(
       context: context,
       onTap: () {
@@ -58,13 +56,11 @@ class MultiDescriptor {
     return TextSpan(
       text: ' $text ',
       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-      recognizer:
-          onTap == null ? null : (TapGestureRecognizer()..onTap = onTap),
+      recognizer: onTap == null ? null : (TapGestureRecognizer()..onTap = onTap),
     );
   }
 
-  static List<InlineSpan> items(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> items(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length <= 7) {
       return list(
         context,
@@ -98,16 +94,13 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> servants(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> servants(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length <= 7) {
       return list(
         context,
         targetIds,
         (context, id) {
-          final svt = db.gameData.servantsById[id] ??
-              db.gameData.craftEssencesById[id] ??
-              db.gameData.entities[id];
+          final svt = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id] ?? db.gameData.entities[id];
           return svt == null
               ? TextSpan(
                   text: 'SVT $id',
@@ -116,8 +109,7 @@ class MultiDescriptor {
                       router.push(url: svt?.route ?? Routes.servantI(id));
                     },
                 )
-              : CenterWidgetSpan(
-                  child: svt.iconBuilder(context: context, width: iconSize));
+              : CenterWidgetSpan(child: svt.iconBuilder(context: context, width: iconSize));
         },
         useAnd,
       );
@@ -128,9 +120,7 @@ class MultiDescriptor {
         targetIds,
         S.current.servant,
         (context, id) {
-          final svt = db.gameData.servantsById[id] ??
-              db.gameData.craftEssencesById[id] ??
-              db.gameData.entities[id];
+          final svt = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id] ?? db.gameData.entities[id];
           return ListTile(
             leading: svt?.iconBuilder(context: context, width: iconSize),
             title: Text(svt?.lName.l ?? 'Servant $id'),
@@ -144,8 +134,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> quests(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> quests(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length == 1) {
       return list(
         context,
@@ -176,15 +165,11 @@ class MultiDescriptor {
         (context, id) {
           final quest = db.gameData.quests[id];
           final phase = db.gameData.getQuestPhase(id);
-          final warName =
-              Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?")
-                  .l
-                  .replaceAll('\n', ' ');
+          final warName = Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?").l.replaceAll('\n', ' ');
           final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
           return ListTile(
             title: Text(quest?.lName.l ?? 'Quest $id'),
-            subtitle:
-                Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
+            subtitle: Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
             onTap: () => router.push(url: Routes.questI(id)),
           );
         },
@@ -193,8 +178,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> traits(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> traits(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length <= 10) {
       return list(
         context,
@@ -226,8 +210,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> svtClass(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> svtClass(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     return list(
       context,
       targetIds,
@@ -356,8 +339,7 @@ class MultiDescriptor {
     }
   }
 
-  static List<InlineSpan> shops(BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> shops(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length < 3) {
       return list(
         context,
@@ -389,9 +371,7 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> commonRelease(
-      BuildContext context, List<int> targetIds,
-      {bool? useAnd}) {
+  static List<InlineSpan> commonRelease(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     return list(
       context,
       targetIds,
@@ -412,8 +392,7 @@ class _MultiEntriesList extends StatelessWidget {
   final List<int> ids;
   final Widget Function(BuildContext context, int id) builder;
 
-  const _MultiEntriesList(
-      {this.title, required this.ids, required this.builder});
+  const _MultiEntriesList({this.title, required this.ids, required this.builder});
 
   @override
   Widget build(BuildContext context) {

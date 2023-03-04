@@ -37,8 +37,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
               ElevatedButton(
                 onPressed: db.gameData.isValid
                     ? () {
-                        final servants =
-                            db.gameData.servantsNoDup.values.toList();
+                        final servants = db.gameData.servantsNoDup.values.toList();
                         final index = Random().nextInt(servants.length);
                         servants[index].routeTo();
                       }
@@ -60,8 +59,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
         for (final tab in tabs)
           DecoratedBox(
             key: Key('$tab'),
-            decoration: BoxDecoration(
-                border: Border(bottom: Divider.createBorderSide(context))),
+            decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
             child: ListTile(
               leading: Text((tabs.indexOf(tab) + 1).toString()),
               horizontalTitleGap: 0,

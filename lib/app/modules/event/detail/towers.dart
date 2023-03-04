@@ -30,8 +30,7 @@ class EventTowersPage extends HookWidget {
           showName: true,
         ),
       ));
-      titles.add(TextSpan(
-          text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
+      titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
     }
 
     return ListTile(

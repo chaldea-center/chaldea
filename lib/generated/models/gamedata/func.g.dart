@@ -8,38 +8,30 @@ part of '../../../models/gamedata/func.dart';
 
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       funcId: json['funcId'] as int,
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.unknown,
-      funcTargetType:
-          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
+      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) =>
-                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      buffs: (json['buffs'] as List<dynamic>?)
-              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      buffs:
+          (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
       svals: (json['svals'] as List<dynamic>?)
           ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -202,38 +194,30 @@ const _$FuncApplyTargetEnumMap = {
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
       funcId: json['funcId'] as int,
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.unknown,
-      funcTargetType:
-          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
+      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) =>
-                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      buffs: (json['buffs'] as List<dynamic>?)
-              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      buffs:
+          (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
     );
 
 FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(

@@ -21,8 +21,7 @@ class SvtBondDetailPage extends StatefulWidget {
   // key=game id
   final Map<int, UserSvtCollection> cardCollections;
 
-  const SvtBondDetailPage(
-      {super.key, this.friendCode, required this.cardCollections});
+  const SvtBondDetailPage({super.key, this.friendCode, required this.cardCollections});
 
   @override
   _SvtBondDetailPageState createState() => _SvtBondDetailPageState();
@@ -65,15 +64,13 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
       case _SortType.cls:
         collections.sort((a, b) {
           return SvtFilterData.compare(a.key, b.key,
-              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-              reversed: [false, true, false]);
+              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, false]);
         });
         break;
       case _SortType.rarity:
         collections.sort((a, b) {
           return SvtFilterData.compare(a.key, b.key,
-              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-              reversed: [false, false, false]);
+              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [false, false, false]);
         });
         break;
       case _SortType.bondRank:
@@ -82,8 +79,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
             return b.value.friendshipRank - a.value.friendshipRank;
           }
           if (a.value.friendshipExceedCount != b.value.friendshipExceedCount) {
-            return b.value.friendshipExceedCount -
-                a.value.friendshipExceedCount;
+            return b.value.friendshipExceedCount - a.value.friendshipExceedCount;
           }
           return a.key.collectionNo - b.key.collectionNo;
         });
@@ -137,9 +133,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
       body: Column(
         children: [
           ListTile(
-            leading: db.getIconImage(null,
-                aspectRatio: 132 / 144,
-                padding: const EdgeInsets.symmetric(vertical: 4)),
+            leading: db.getIconImage(null, aspectRatio: 132 / 144, padding: const EdgeInsets.symmetric(vertical: 4)),
             tileColor: Theme.of(context).cardColor,
             title: Row(
               children: [
@@ -202,16 +196,13 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                               alignment: Alignment.centerRight,
                               child: Container(
                                 color: Theme.of(context).highlightColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
                                 child: AutoSizeText(
                                   collection.friendship.format(),
                                   maxLines: 1,
                                   maxFontSize: 14,
                                   minFontSize: 6,
-                                  style: const TextStyle(
-                                      fontFamily: kMonoFont,
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontFamily: kMonoFont, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             )),
@@ -282,9 +273,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                   });
                 },
                 tooltip: S.current.sort_order,
-                icon: FaIcon(reversed
-                    ? FontAwesomeIcons.arrowUpZA
-                    : FontAwesomeIcons.arrowDownZA),
+                icon: FaIcon(reversed ? FontAwesomeIcons.arrowUpZA : FontAwesomeIcons.arrowDownZA),
               )
             ],
           )
@@ -328,14 +317,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
         (svt.collectionNo == 1 ? 5 : 10) + status.friendshipExceedCount,
         status.friendship,
         _getBondNext(svt, status),
-        for (int bond = 4; bond < 15; bond++)
-          svt.bondGrowth.getOrNull(bond) ?? "",
+        for (int bond = 4; bond < 15; bond++) svt.bondGrowth.getOrNull(bond) ?? "",
       ]);
     }
     final content = const ListToCsvConverter().convert(table);
 
-    final fn =
-        'bond-detail-${widget.friendCode ?? ""}-${DateTime.now().toDateString()}.csv';
+    final fn = 'bond-detail-${widget.friendCode ?? ""}-${DateTime.now().toDateString()}.csv';
     if (kIsWeb) {
       kPlatformMethods.downloadString(content, fn);
     } else {

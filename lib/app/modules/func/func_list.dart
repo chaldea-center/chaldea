@@ -16,15 +16,12 @@ class FuncListPage extends StatefulWidget {
   _FuncListPageState createState() => _FuncListPageState();
 }
 
-class _FuncListPageState extends State<FuncListPage>
-    with SearchableListState<BaseFunction?, FuncListPage> {
+class _FuncListPageState extends State<FuncListPage> with SearchableListState<BaseFunction?, FuncListPage> {
   final filterData = FuncFilterData();
 
   int? get _searchFuncId {
     final _id = int.tryParse(searchEditingController.text);
-    if (_id != null &&
-        _id >= 0 &&
-        !db.gameData.baseFunctions.containsKey(_id)) {
+    if (_id != null && _id >= 0 && !db.gameData.baseFunctions.containsKey(_id)) {
       return _id;
     }
     return null;
@@ -140,6 +137,5 @@ class _FuncListPageState extends State<FuncListPage>
   }
 
   @override
-  Widget gridItemBuilder(BaseFunction? func) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(BaseFunction? func) => throw UnimplementedError('GridView not designed');
 }

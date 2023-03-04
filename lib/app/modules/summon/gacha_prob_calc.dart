@@ -51,8 +51,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
     final xleft = _tickets - x11 * 10;
     final sq = _tickets * 3;
     final pulls = x11 * 11 + xleft;
-    final expect =
-        _rate == null ? null : (pulls * _rate / 100).toStringAsPrecision(4);
+    final expect = _rate == null ? null : (pulls * _rate / 100).toStringAsPrecision(4);
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.gacha_prob_calc)),
@@ -73,8 +72,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
                 for (final rate in upTypes)
                   DropdownMenuItem(
                     value: rate,
-                    child: Text('${rate.title}(${rate.rate}%)',
-                        textScaleFactor: 0.9),
+                    child: Text('${rate.title}(${rate.rate}%)', textScaleFactor: 0.9),
                   ),
               ],
               onChanged: (v) {
@@ -86,10 +84,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
           if (upType == null)
             ListTile(
               title: Text(S.current.gacha_prob_custom_rate),
-              subtitle: Text(
-                  _customRate != null && _customRate > 0 && _customRate < 100
-                      ? '$_customRate%'
-                      : 'Invalid'),
+              subtitle: Text(_customRate != null && _customRate > 0 && _customRate < 100 ? '$_customRate%' : 'Invalid'),
               trailing: SizedBox(
                 width: 120,
                 child: TextFormField(
@@ -99,9 +94,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
                     isDense: true,
                     border: OutlineInputBorder(),
                   ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'\d*\.?\d*'))
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'\d*\.?\d*'))],
                   onChanged: (s) {
                     onChanged();
                   },
@@ -139,15 +132,9 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
               CenterWidgetSpan(
                 child: db.getIconImage(Items.stone?.icon, width: 32),
               ),
-              TextSpan(
-                  text:
-                      '\n= $pulls ${S.current.summon_pull_unit} = $x11×11+$xleft'),
-              TextSpan(
-                  text:
-                      '\n=  ${(sq / 168).toStringAsPrecision(4)} ${S.current.sq_buy_pack_unit}'),
-              TextSpan(
-                  text:
-                      '\n${S.current.probability_expectation} E = ${expect ?? "?"}')
+              TextSpan(text: '\n= $pulls ${S.current.summon_pull_unit} = $x11×11+$xleft'),
+              TextSpan(text: '\n=  ${(sq / 168).toStringAsPrecision(4)} ${S.current.sq_buy_pack_unit}'),
+              TextSpan(text: '\n${S.current.probability_expectation} E = ${expect ?? "?"}')
             ])),
           ),
           // ListTile(
@@ -172,10 +159,7 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
                 ],
                 isHeader: true,
               ),
-              if (_tickets > 0 &&
-                  _rate != null &&
-                  _rate > 0 &&
-                  _rate < 100) ...[
+              if (_tickets > 0 && _rate != null && _rate > 0 && _rate < 100) ...[
                 ...calculate(pulls, _rate),
                 TextButton(
                   onPressed: () {
@@ -210,15 +194,11 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
     for (int npx = 0; npx <= _npxRange * 10; npx++) {
       if (npx > pulls) break;
 
-      final v = CMN(pulls, npx) *
-          math.pow(rate / 100, npx) *
-          math.pow(1 - rate / 100, pulls - npx) *
-          100.0;
+      final v = CMN(pulls, npx) * math.pow(rate / 100, npx) * math.pow(1 - rate / 100, pulls - npx) * 100.0;
       data.add([npx, v, 0.0, 0.0]);
     }
     for (int index = 0; index < data.length; index++) {
-      data[index][3] = (data.getOrNull(index - 1)?[3] ?? 0) +
-          (data.getOrNull(index - 1)?[1] ?? 0);
+      data[index][3] = (data.getOrNull(index - 1)?[3] ?? 0) + (data.getOrNull(index - 1)?[1] ?? 0);
       data[index][2] = 100 - data[index][3];
     }
     return [

@@ -37,9 +37,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
         body: Column(
           children: [
             Expanded(
-              child: TabBarView(
-                  children: List.generate(
-                      users.length, (index) => _buildOneUser(users[index]))),
+              child: TabBarView(children: List.generate(users.length, (index) => _buildOneUser(users[index]))),
             ),
             ButtonBar(
               alignment: MainAxisAlignment.center,
@@ -91,23 +89,19 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
         ListTile(title: Text(S.current.item)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SharedBuilder.itemGrid(
-              context: context, items: user.items.entries, width: 42),
+          child: SharedBuilder.itemGrid(context: context, items: user.items.entries, width: 42),
         ),
         ListTile(
           title: Text(S.current.servant),
           trailing: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Text(
-                  '${user.servants.values.where((e) => e.favorite).length} favorite   '),
+              Text('${user.servants.values.where((e) => e.favorite).length} favorite   '),
               DropdownButton<int>(
                 value: _curPlanNo,
                 items: List.generate(
                   user.plans.length,
-                  (index) => DropdownMenuItem(
-                      value: index,
-                      child: Text('${S.current.plan} ${index + 1}')),
+                  (index) => DropdownMenuItem(value: index, child: Text('${S.current.plan} ${index + 1}')),
                 ),
                 onChanged: (v) {
                   _curPlanNo = v ?? _curPlanNo;
@@ -125,10 +119,8 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
               final cur = status.cur;
               final plan = user.plans.getOrNull(_curPlanNo)?.servants[id];
               return ListTile(
-                leading:
-                    svt?.iconBuilder(context: context) ?? db.getIconImage(null),
-                subtitle: Text(
-                    'ID $id ${S.current.ascension_short} ${cur.ascension} NP ${cur.npLv}\n'
+                leading: svt?.iconBuilder(context: context) ?? db.getIconImage(null),
+                subtitle: Text('ID $id ${S.current.ascension_short} ${cur.ascension} NP ${cur.npLv}\n'
                     '${S.current.active_skill} ${cur.skills.join("/")} -> ${plan?.skills.join("/")} \n'
                     '${S.current.passive_skill} ${cur.appendSkills.join("/")}  -> ${plan?.appendSkills.join("/")}'),
               );

@@ -24,8 +24,7 @@ class SkillEffect {
     if (mapping != null) {
       return Transl(Transl.md.enums.effectType, effectType, effectType);
     }
-    final fistType =
-        buffTypes.getOrNull(0)?.name ?? funcTypes.getOrNull(0)?.name;
+    final fistType = buffTypes.getOrNull(0)?.name ?? funcTypes.getOrNull(0)?.name;
     if (effectType != fistType) {
       return Transl.string({}, effectType);
     }
@@ -41,8 +40,7 @@ class SkillEffect {
   }
 
   bool match(BaseFunction func) {
-    if (funcTypes.contains(func.funcType) ||
-        func.buffs.any((buff) => buffTypes.contains(buff.type))) {
+    if (funcTypes.contains(func.funcType) || func.buffs.any((buff) => buffTypes.contains(buff.type))) {
       if (validate != null) return validate!(func);
       return true;
     }
@@ -62,12 +60,7 @@ class SkillEffect {
   })  : buffTypes = [],
         funcTypes = [funcType];
 
-  static List<SkillEffect> values = [
-    ...kAttack,
-    ...kDefence,
-    ...kDebuffRelated,
-    ...kOthers
-  ];
+  static List<SkillEffect> values = [...kAttack, ...kDefence, ...kDebuffRelated, ...kOthers];
   static List<SkillEffect> kAttack = [
     upAtk,
     upQuick,
@@ -190,20 +183,17 @@ class SkillEffect {
   static SkillEffect upQuick = SkillEffect(
     'upQuick',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs.any((buff) =>
-        buff.ckSelfIndv.any((trait) => trait.name == Trait.cardQuick)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardQuick)),
   );
   static SkillEffect upArts = SkillEffect(
     'upArts',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs.any(
-        (buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardArts)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardArts)),
   );
   static SkillEffect upBuster = SkillEffect(
     'upBuster',
     buffTypes: [BuffType.upCommandall],
-    validate: (func) => func.buffs.any((buff) =>
-        buff.ckSelfIndv.any((trait) => trait.name == Trait.cardBuster)),
+    validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.cardBuster)),
   );
   // static SkillEffect upExtraAttack=SkillEffect(
   //   'upExtraAttack',
@@ -212,41 +202,22 @@ class SkillEffect {
   // );
   static SkillEffect upDamage = SkillEffect(
     'upDamage',
-    buffTypes: [
-      BuffType.upDamage,
-      BuffType.upDamageIndividuality,
-      BuffType.upDamageIndividualityActiveonly
-    ],
+    buffTypes: [BuffType.upDamage, BuffType.upDamageIndividuality, BuffType.upDamageIndividualityActiveonly],
   );
-  static SkillEffect addDamage =
-      SkillEffect._buff('addDamage', BuffType.addDamage);
-  static SkillEffect upCriticaldamage =
-      SkillEffect._buff('upCriticaldamage', BuffType.upCriticaldamage);
-  static SkillEffect upCriticalpoint =
-      SkillEffect._buff('upCriticalpoint', BuffType.upCriticalpoint);
-  static SkillEffect upStarweight =
-      SkillEffect._buff('upStarweight', BuffType.upStarweight);
-  static SkillEffect gainStar =
-      SkillEffect._func('gainStar', FuncType.gainStar);
-  static SkillEffect regainStar =
-      SkillEffect._buff('regainStar', BuffType.regainStar);
-  static SkillEffect upNpdamage =
-      SkillEffect._buff('upNpdamage', BuffType.upNpdamage);
-  static SkillEffect gainNp = SkillEffect('gainNp', funcTypes: [
-    FuncType.gainNp,
-    FuncType.gainNpFromTargets,
-    FuncType.gainNpBuffIndividualSum
-  ]);
-  static SkillEffect regainNp =
-      SkillEffect._buff('regainNp', BuffType.regainNp);
-  static SkillEffect upDropnp =
-      SkillEffect._buff('upDropnp', BuffType.upDropnp);
-  static SkillEffect upChagetd =
-      SkillEffect._buff('upChagetd', BuffType.upChagetd);
-  static SkillEffect breakAvoidance =
-      SkillEffect._buff('breakAvoidance', BuffType.breakAvoidance);
-  static SkillEffect pierceInvincible =
-      SkillEffect._buff('pierceInvincible', BuffType.pierceInvincible);
+  static SkillEffect addDamage = SkillEffect._buff('addDamage', BuffType.addDamage);
+  static SkillEffect upCriticaldamage = SkillEffect._buff('upCriticaldamage', BuffType.upCriticaldamage);
+  static SkillEffect upCriticalpoint = SkillEffect._buff('upCriticalpoint', BuffType.upCriticalpoint);
+  static SkillEffect upStarweight = SkillEffect._buff('upStarweight', BuffType.upStarweight);
+  static SkillEffect gainStar = SkillEffect._func('gainStar', FuncType.gainStar);
+  static SkillEffect regainStar = SkillEffect._buff('regainStar', BuffType.regainStar);
+  static SkillEffect upNpdamage = SkillEffect._buff('upNpdamage', BuffType.upNpdamage);
+  static SkillEffect gainNp =
+      SkillEffect('gainNp', funcTypes: [FuncType.gainNp, FuncType.gainNpFromTargets, FuncType.gainNpBuffIndividualSum]);
+  static SkillEffect regainNp = SkillEffect._buff('regainNp', BuffType.regainNp);
+  static SkillEffect upDropnp = SkillEffect._buff('upDropnp', BuffType.upDropnp);
+  static SkillEffect upChagetd = SkillEffect._buff('upChagetd', BuffType.upChagetd);
+  static SkillEffect breakAvoidance = SkillEffect._buff('breakAvoidance', BuffType.breakAvoidance);
+  static SkillEffect pierceInvincible = SkillEffect._buff('pierceInvincible', BuffType.pierceInvincible);
   static SkillEffect pierceDefence = SkillEffect(
     'pierceDefence',
     buffTypes: [BuffType.pierceDefence],
@@ -254,96 +225,68 @@ class SkillEffect {
   );
 
   /// defense side
-  static SkillEffect upDefence =
-      SkillEffect._buff('upDefence', BuffType.upDefence);
-  static SkillEffect subSelfdamage =
-      SkillEffect._buff('subSelfdamage', BuffType.subSelfdamage);
-  static SkillEffect avoidance = SkillEffect('avoidance',
-      buffTypes: [BuffType.avoidance, BuffType.avoidanceIndividuality]);
-  static SkillEffect invincible =
-      SkillEffect._buff('invincible', BuffType.invincible);
-  static SkillEffect guts =
-      SkillEffect('guts', buffTypes: [BuffType.guts, BuffType.gutsRatio]);
+  static SkillEffect upDefence = SkillEffect._buff('upDefence', BuffType.upDefence);
+  static SkillEffect subSelfdamage = SkillEffect._buff('subSelfdamage', BuffType.subSelfdamage);
+  static SkillEffect avoidance =
+      SkillEffect('avoidance', buffTypes: [BuffType.avoidance, BuffType.avoidanceIndividuality]);
+  static SkillEffect invincible = SkillEffect._buff('invincible', BuffType.invincible);
+  static SkillEffect guts = SkillEffect('guts', buffTypes: [BuffType.guts, BuffType.gutsRatio]);
   static SkillEffect upHate = SkillEffect._buff('upHate', BuffType.upHate);
-  static SkillEffect downCriticalRateDamageTaken = SkillEffect._buff(
-      'downCriticalRateDamageTaken', BuffType.downCriticalRateDamageTaken);
-  static SkillEffect gainHp = SkillEffect('gainHp', funcTypes: [
-    FuncType.gainHp,
-    FuncType.gainHpFromTargets,
-    FuncType.gainHpPer
-  ]);
-  static SkillEffect upGainHp = SkillEffect('upGainHp',
-      buffTypes: [BuffType.upGainHp, BuffType.upGivegainHp]);
-  static SkillEffect regainHp =
-      SkillEffect._buff('regainHp', BuffType.regainHp);
-  static SkillEffect addMaxhp =
-      SkillEffect._buff('addMaxhp', BuffType.addMaxhp);
+  static SkillEffect downCriticalRateDamageTaken =
+      SkillEffect._buff('downCriticalRateDamageTaken', BuffType.downCriticalRateDamageTaken);
+  static SkillEffect gainHp =
+      SkillEffect('gainHp', funcTypes: [FuncType.gainHp, FuncType.gainHpFromTargets, FuncType.gainHpPer]);
+  static SkillEffect upGainHp = SkillEffect('upGainHp', buffTypes: [BuffType.upGainHp, BuffType.upGivegainHp]);
+  static SkillEffect regainHp = SkillEffect._buff('regainHp', BuffType.regainHp);
+  static SkillEffect addMaxhp = SkillEffect._buff('addMaxhp', BuffType.addMaxhp);
 
   /// 状态异常系
   // 弱体耐性提升
-  static SkillEffect reduceHp =
-      SkillEffect._buff('reduceHp', BuffType.reduceHp);
+  static SkillEffect reduceHp = SkillEffect._buff('reduceHp', BuffType.reduceHp);
   static SkillEffect upTolerance = SkillEffect(
     'upTolerance',
     buffTypes: [BuffType.upTolerance],
-    validate: (func) => func.buffs.first.ckOpIndv.every((trait) => ![
-          Trait.buffPositiveEffect,
-          Trait.buffIncreaseDamage
-        ].contains(trait.name)),
+    validate: (func) => func.buffs.first.ckOpIndv
+        .every((trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name)),
   );
   // 弱体无效
   static SkillEffect avoidStateNegative = SkillEffect(
     'avoidStateNegative',
     buffTypes: [BuffType.avoidState],
-    validate: (func) => func.buffs.first.ckOpIndv.every((trait) => ![
-          Trait.buffPositiveEffect,
-          Trait.buffIncreaseDamage
-        ].contains(trait.name)),
+    validate: (func) => func.buffs.first.ckOpIndv
+        .every((trait) => ![Trait.buffPositiveEffect, Trait.buffIncreaseDamage].contains(trait.name)),
   );
   // 状态付与成功率提升
-  static SkillEffect upGrantstate =
-      SkillEffect._buff('upGrantstate', BuffType.upGrantstate);
-  static SkillEffect upGrantstatePositive = SkillEffect._buff(
-      'upGrantstatePositive', BuffType.upGrantstate,
-      validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv
-          .any((trait) => trait.name == Trait.buffPositiveEffect)));
-  static SkillEffect upGrantstateNegative = SkillEffect._buff(
-      'upGrantstateNegative', BuffType.upGrantstate,
-      validate: (func) => func.buffs.any((buff) => buff.ckSelfIndv
-          .any((trait) => trait.name == Trait.buffNegativeEffect)));
+  static SkillEffect upGrantstate = SkillEffect._buff('upGrantstate', BuffType.upGrantstate);
+  static SkillEffect upGrantstatePositive = SkillEffect._buff('upGrantstatePositive', BuffType.upGrantstate,
+      validate: (func) =>
+          func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffPositiveEffect)));
+  static SkillEffect upGrantstateNegative = SkillEffect._buff('upGrantstateNegative', BuffType.upGrantstate,
+      validate: (func) =>
+          func.buffs.any((buff) => buff.ckSelfIndv.any((trait) => trait.name == Trait.buffNegativeEffect)));
   // 被强化成功率提升
   static SkillEffect upReceivePositiveEffect = SkillEffect(
     'upReceivePositiveEffect',
     buffTypes: [BuffType.downTolerance],
-    validate: (func) => func.buffs.first.ckOpIndv
-        .any((trait) => trait.name == Trait.buffPositiveEffect),
+    validate: (func) => func.buffs.first.ckOpIndv.any((trait) => trait.name == Trait.buffPositiveEffect),
   );
   // 解除Buff
-  static SkillEffect subState =
-      SkillEffect._func('subState', FuncType.subState);
-  static SkillEffect subStatePositive = SkillEffect._func(
-      'subStatePositive', FuncType.subState,
-      validate: (func) =>
-          func.traitVals.any((e) => e.name == Trait.buffPositiveEffect));
-  static SkillEffect subStateNegative = SkillEffect._func(
-      'subStateNegative', FuncType.subState,
-      validate: (func) =>
-          func.traitVals.any((e) => e.name == Trait.buffNegativeEffect));
+  static SkillEffect subState = SkillEffect._func('subState', FuncType.subState);
+  static SkillEffect subStatePositive = SkillEffect._func('subStatePositive', FuncType.subState,
+      validate: (func) => func.traitVals.any((e) => e.name == Trait.buffPositiveEffect));
+  static SkillEffect subStateNegative = SkillEffect._func('subStateNegative', FuncType.subState,
+      validate: (func) => func.traitVals.any((e) => e.name == Trait.buffNegativeEffect));
   // 强化解除耐性提升
-  static SkillEffect upToleranceSubstate =
-      SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);
+  static SkillEffect upToleranceSubstate = SkillEffect._buff('upToleranceSubstate', BuffType.upToleranceSubstate);
   // 即死
-  static SkillEffect instantDeath = SkillEffect('instantDeath',
-      funcTypes: [FuncType.instantDeath, FuncType.forceInstantDeath]);
+  static SkillEffect instantDeath =
+      SkillEffect('instantDeath', funcTypes: [FuncType.instantDeath, FuncType.forceInstantDeath]);
   // 即死耐性提升
-  static SkillEffect upResistInstantdeath =
-      SkillEffect._buff('upResistInstantdeath', BuffType.upResistInstantdeath);
+  static SkillEffect upResistInstantdeath = SkillEffect._buff('upResistInstantdeath', BuffType.upResistInstantdeath);
   // 即死成功率提升
-  static SkillEffect upGrantInstantdeath =
-      SkillEffect._buff('upGrantInstantdeath', BuffType.upGrantInstantdeath);
+  static SkillEffect upGrantInstantdeath = SkillEffect._buff('upGrantInstantdeath', BuffType.upGrantInstantdeath);
   // 即死无效
-  static SkillEffect avoidInstantdeath =
-      SkillEffect._buff('avoidInstantdeath', BuffType.avoidInstantdeath);
+  static SkillEffect avoidInstantdeath = SkillEffect._buff('avoidInstantdeath', BuffType.avoidInstantdeath);
 
   /// 辅助系
   static SkillEffect friendPointUp = SkillEffect(
@@ -351,10 +294,8 @@ class SkillEffect {
     funcTypes: [FuncType.friendPointUp, FuncType.friendPointUpDuplicate],
   );
   static SkillEffect expUp = SkillEffect._func('expUp', FuncType.expUp);
-  static SkillEffect userEquipExpUp =
-      SkillEffect._func('userEquipExpUp', FuncType.userEquipExpUp);
-  static SkillEffect servantFriendshipUp =
-      SkillEffect._func('servantFriendshipUp', FuncType.servantFriendshipUp);
+  static SkillEffect userEquipExpUp = SkillEffect._func('userEquipExpUp', FuncType.userEquipExpUp);
+  static SkillEffect servantFriendshipUp = SkillEffect._func('servantFriendshipUp', FuncType.servantFriendshipUp);
   static SkillEffect qpUp = SkillEffect(
     'qpUp',
     funcTypes: [FuncType.qpUp, FuncType.qpDropUp],
@@ -375,7 +316,6 @@ class SkillEffect {
   static SkillEffect triggerFunc = SkillEffect(
     'triggerFunc',
     funcTypes: [FuncType.addState, FuncType.addStateShort],
-    validate: (func) =>
-        kBuffValueTriggerTypes.containsKey(func.buffs.first.type),
+    validate: (func) => kBuffValueTriggerTypes.containsKey(func.buffs.first.type),
   );
 }

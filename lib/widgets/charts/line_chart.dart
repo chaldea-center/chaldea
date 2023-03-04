@@ -70,8 +70,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         lineTouchData: LineTouchData(
           handleBuiltInTouches: true,
           touchTooltipData: LineTouchTooltipData(
-              tooltipBgColor:
-                  Theme.of(context).scaffoldBackgroundColor.withOpacity(0.6),
+              tooltipBgColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.6),
               // tooltipBgColor: Theme.of(context).hintColor.withOpacity(0.5),
               fitInsideHorizontally: true,
               fitInsideVertically: true,
@@ -81,17 +80,15 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                   final spot = spots[index];
                   final formatter = data[spot.barIndex].tooltipFormatter;
                   if (index == 0 && xFormatter != null) {
-                    items.add(LineTooltipItem('${xFormatter!(spot.x)}\n',
-                        const TextStyle(fontSize: 14),
-                        children: [
-                          TextSpan(
-                            text: formatter(spot.x, spot.y),
-                            style: TextStyle(
-                              color: spot.bar.color,
-                              fontSize: 14,
-                            ),
-                          )
-                        ]));
+                    items.add(LineTooltipItem('${xFormatter!(spot.x)}\n', const TextStyle(fontSize: 14), children: [
+                      TextSpan(
+                        text: formatter(spot.x, spot.y),
+                        style: TextStyle(
+                          color: spot.bar.color,
+                          fontSize: 14,
+                        ),
+                      )
+                    ]));
                   } else {
                     items.add(LineTooltipItem(
                       formatter(spot.x, spot.y),
@@ -175,9 +172,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
             dotData: FlDotData(show: false),
             belowBarData: BarAreaData(show: false),
             spots: [
-              for (int index = 0;
-                  index < min(datum.xx.length, datum.yy.length);
-                  index++)
+              for (int index = 0; index < min(datum.xx.length, datum.yy.length); index++)
                 FlSpot(
                   datum.xx[index].toDouble(),
                   datum.yy[index].toDouble(),

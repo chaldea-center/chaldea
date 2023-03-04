@@ -109,14 +109,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
     // special event mechanisms
     for (int index = 0; index < event.lotteries.length; index++) {
       _addTab(
-        S.current.event_lottery +
-            (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
+        S.current.event_lottery + (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
         EventLotteryTab(event: event, lottery: event.lotteries[index]),
       );
     }
     for (final tower in event.towers) {
-      _addTab(Transl.misc2('TowerName', tower.name),
-          EventTowersPage(event: event, tower: tower));
+      _addTab(Transl.misc2('TowerName', tower.name), EventTowersPage(event: event, tower: tower));
     }
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));
@@ -128,56 +126,40 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.event_recipe, EventRecipePage(event: event));
     }
     if (event.digging != null) {
-      _addTab(S.current.event_digging,
-          EventDiggingTab(event: event, digging: event.digging!));
+      _addTab(S.current.event_digging, EventDiggingTab(event: event, digging: event.digging!));
     }
     if (event.fortifications.isNotEmpty) {
-      _addTab(
-          S.current.event_fortification, EventFortificationPage(event: event));
+      _addTab(S.current.event_fortification, EventFortificationPage(event: event));
     }
     // missions
     if (event.randomMissions.isNotEmpty) {
-      _addTab(
-          S.current.detective_mission, EventRandomMissionsPage(event: event));
+      _addTab(S.current.detective_mission, EventRandomMissionsPage(event: event));
     }
-    final normalMissions =
-        event.missions.where((e) => e.type != MissionType.random).toList();
+    final normalMissions = event.missions.where((e) => e.type != MissionType.random).toList();
     if (normalMissions.isNotEmpty) {
-      _addTab(S.current.mission,
-          EventMissionsPage(event: event, missions: normalMissions));
+      _addTab(S.current.mission, EventMissionsPage(event: event, missions: normalMissions));
     }
     if (event.missions.isNotEmpty && event.warIds.isNotEmpty) {
-      if (event.missions.any((em) =>
-          CustomMission.fromEventMission(em)
-              ?.conds
-              .any((cond) => cond.type.isTraitType) ==
-          true)) {
+      if (event.missions
+          .any((em) => CustomMission.fromEventMission(em)?.conds.any((cond) => cond.type.isTraitType) == true)) {
         _addTab(
           S.current.trait,
-          KeepAliveBuilder(
-              builder: (context) => EventMissionTablePage(event: event)),
+          KeepAliveBuilder(builder: (context) => EventMissionTablePage(event: event)),
         );
       }
     }
     // point rewards
-    List<int> rewardGroups =
-        event.pointRewards.map((e) => e.groupId).toSet().toList()..sort();
+    List<int> rewardGroups = event.pointRewards.map((e) => e.groupId).toSet().toList()..sort();
     for (final groupId in rewardGroups) {
-      EventPointGroup? pointGroup =
-          event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
+      EventPointGroup? pointGroup = event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
       String? pointName;
       if (pointGroup != null) {
-        pointName =
-            db.gameData.mappingData.itemNames[pointGroup.name]?.ofRegion() ??
-                pointGroup.name;
+        pointName = db.gameData.mappingData.itemNames[pointGroup.name]?.ofRegion() ?? pointGroup.name;
       }
-      pointName ??= S.current.event_point_reward +
-          (rewardGroups.length > 1 ? ' $groupId' : '');
+      pointName ??= S.current.event_point_reward + (rewardGroups.length > 1 ? ' $groupId' : '');
       tabs.add(Tab(
         child: Text.rich(TextSpan(children: [
-          if (pointGroup != null)
-            CenterWidgetSpan(
-                child: db.getIconImage(pointGroup.icon, width: 24)),
+          if (pointGroup != null) CenterWidgetSpan(child: db.getIconImage(pointGroup.icon, width: 24)),
           TextSpan(text: pointName),
         ])),
       ));
@@ -187,23 +169,19 @@ class _EventDetailPageState extends State<EventDetailPage> {
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList();
     shopSlots.sort();
     for (int index = 0; index < shopSlots.length; index++) {
-      final shops =
-          event.shop.where((s) => s.slot == shopSlots[index]).toList();
+      final shops = event.shop.where((s) => s.slot == shopSlots[index]).toList();
       shops.sort2((e) => e.priority);
       _addTab(
         S.current.shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
         EventShopsPage(event: event, shops: shops),
       );
     }
-    if (db.gameData.craftEssences.values
-            .any((ce) => ce.eventSkills(event).isNotEmpty) ||
-        db.gameData.servantsNoDup.values
-            .any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
+    if (db.gameData.craftEssences.values.any((ce) => ce.eventSkills(event).isNotEmpty) ||
+        db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
     if (event.bulletinBoards.isNotEmpty) {
-      _addTab(
-          S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
+      _addTab(S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
     }
     if (event.rewardScenes.isNotEmpty) {
       _addTab('Scenes', EventRewardScenePage(event: event));
@@ -221,9 +199,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           ),
           centerTitle: false,
           actions: [popupMenu],
-          bottom: tabs.length > 1
-              ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true))
-              : null,
+          bottom: tabs.length > 1 ? FixedHeight.tabBar(TabBar(tabs: tabs, isScrollable: true)) : null,
         ),
         body: TabBarView(children: views),
       ),
@@ -245,8 +221,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           mooncell: event.extra.mcLink,
           fandom: event.extra.fandomLink,
         ),
-        ...SharedBuilder.noticeLinkPopupMenuItems(
-            noticeLink: event.extra.noticeLink),
+        ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
         if (eventId != null && eventId > 0)
           PopupMenuItem(
             child: Text(S.current.switch_region),
@@ -274,8 +249,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               enabled: startTime?.ofRegion(region) != null,
               onTap: () async {
                 Navigator.pop(context);
-                EasyLoading.show(
-                    status: 'Loading', maskType: EasyLoadingMaskType.clear);
+                EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
                 await fetchData(region);
                 EasyLoading.dismiss();
               },
@@ -295,8 +269,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 class EventItemsOverview extends StatefulWidget {
   final Event event;
   final Region region;
-  const EventItemsOverview(
-      {super.key, required this.event, required this.region});
+  const EventItemsOverview({super.key, required this.event, required this.region});
 
   @override
   State<EventItemsOverview> createState() => _EventItemsOverviewState();
@@ -314,8 +287,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     final banners = event.extra.allBanners;
 
     List<Widget> children = [
-      if (banners.isNotEmpty)
-        CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
+      if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
     List<Widget> rows = [
       CustomTableRow(children: [
@@ -361,9 +333,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         String title = war == null ? 'War $warId' : war.lLongName.l;
         final height = min(constraints.maxWidth / 2, 164.0) / 142 * 354;
         return ListTile(
-          leading: war?.shownBanner == null
-              ? null
-              : db.getIconImage(war?.shownBanner, height: height),
+          leading: war?.shownBanner == null ? null : db.getIconImage(war?.shownBanner, height: height),
           horizontalTitleGap: 8,
           title: Text(
             title,
@@ -385,10 +355,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           router.push(
             child: QuestListPage(
               title: S.current.hunting_quest,
-              quests: event.extra.huntingQuestIds
-                  .map((e) => db.gameData.quests[e])
-                  .whereType<Quest>()
-                  .toList(),
+              quests: event.extra.huntingQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList(),
             ),
           );
         },
@@ -407,14 +374,11 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           var replacedGrails = grailToCrystalCount - plan.rerunGrails;
           return ListTile(
             title: Text(S.current.rerun_event),
-            subtitle: Text(S.current.event_rerun_replace_grail(
-                replacedGrails, grailToCrystalCount)),
+            subtitle: Text(S.current.event_rerun_replace_grail(replacedGrails, grailToCrystalCount)),
             trailing: DropdownButton<int>(
               value: plan.rerunGrails,
               items: List.generate(grailToCrystalCount + 1, (index) {
-                return DropdownMenuItem(
-                    value: index,
-                    child: Text((grailToCrystalCount - index).toString()));
+                return DropdownMenuItem(value: index, child: Text((grailToCrystalCount - index).toString()));
               }),
               onChanged: (v) {
                 if (v != null) plan.rerunGrails = v;
@@ -547,13 +511,8 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     for (final lottery in event.lotteries) {
       children.addAll([
         ListTile(
-          title: Text(lottery.limited
-              ? S.current.event_lottery_limited
-              : S.current.event_lottery_unlimited),
-          subtitle: lottery.limited
-              ? Text(
-                  S.current.event_lottery_limit_hint(lottery.maxBoxIndex + 1))
-              : null,
+          title: Text(lottery.limited ? S.current.event_lottery_limited : S.current.event_lottery_unlimited),
+          subtitle: lottery.limited ? Text(S.current.event_lottery_limit_hint(lottery.maxBoxIndex + 1)) : null,
           trailing: _inputGroup(
             value: () => plan.lotteries[lottery.id],
             onChanged: (value) {
@@ -599,14 +558,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       final box = event.treasureBoxes[boxIndex];
       final Map<int, int> boxItems = event.itemTreasureBox[box.id] ?? {};
       children.addAll([
-        ListTile(
-            title: Text('${S.current.event_treasure_box} ${boxIndex + 1}')),
+        ListTile(title: Text('${S.current.event_treasure_box} ${boxIndex + 1}')),
         TileGroup(
           children: [
             for (final itemId in boxItems.keys)
               ListTile(
-                leading: GameCardMixin.anyCardItemBuilder(
-                    context: context, id: itemId, width: 36),
+                leading: GameCardMixin.anyCardItemBuilder(context: context, id: itemId, width: 36),
                 title: Text([
                   GameCardMixin.anyCardItemName(itemId).l,
                   if (boxItems[itemId] != 1) ' × ${boxItems[itemId]}'
@@ -614,8 +571,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                 trailing: _inputGroup(
                   value: () => plan.treasureBoxItems[box.id]?[itemId],
                   onChanged: (value) {
-                    plan.treasureBoxItems
-                        .putIfAbsent(box.id, () => {})[itemId] = value;
+                    plan.treasureBoxItems.putIfAbsent(box.id, () => {})[itemId] = value;
                   },
                   tag: 'treasure_box_${box.id}_$itemId',
                 ),
@@ -626,17 +582,14 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.digging != null) {
-      final items = Item.sortMapByPriority(event.itemDigging,
-          reversed: false, category: true);
+      final items = Item.sortMapByPriority(event.itemDigging, reversed: false, category: true);
       children.add(ListTile(title: Text(S.current.event_digging)));
       children.add(TileGroup(
         children: [
           for (final itemId in items.keys)
             ListTile(
-              leading: GameCardMixin.anyCardItemBuilder(
-                  context: context, id: itemId, width: 36),
-              title: Text(GameCardMixin.anyCardItemName(itemId).l +
-                  (items[itemId] == 1 ? '' : ' x ${items[itemId]}')),
+              leading: GameCardMixin.anyCardItemBuilder(context: context, id: itemId, width: 36),
+              title: Text(GameCardMixin.anyCardItemName(itemId).l + (items[itemId] == 1 ? '' : ' x ${items[itemId]}')),
               trailing: _inputGroup(
                 value: () => plan.digging[itemId],
                 onChanged: (value) {
@@ -678,10 +631,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   item: null,
                   itemId: itemId,
                   width: 42,
-                  text: [
-                    db.curUser.items[itemId] ?? 0,
-                    db.itemCenter.itemLeft[itemId] ?? 0
-                  ].map((e) => e.format()).join('\n'),
+                  text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
+                      .map((e) => e.format())
+                      .join('\n'),
                 ),
               ),
               title: Text(Item.getName(itemId)),
@@ -690,8 +642,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               trailing: _inputGroup(
                 value: () => plan.extraItems[extraItems.id]?[itemId],
                 onChanged: (value) {
-                  plan.extraItems.putIfAbsent(extraItems.id, () => {})[itemId] =
-                      value;
+                  plan.extraItems.putIfAbsent(extraItems.id, () => {})[itemId] = value;
                 },
                 tag: 'extra_item_${extraItems.id}_$itemId',
               ),
@@ -720,10 +671,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           tooltip: S.current.add,
         ),
       ));
-      final itemIds = Item.sortMapByPriority(plan.customItems,
-              category: true, removeZero: false)
-          .keys
-          .toList();
+      final itemIds = Item.sortMapByPriority(plan.customItems, category: true, removeZero: false).keys.toList();
       children.add(TileGroup(
         children: [
           if (itemIds.isEmpty)
@@ -741,10 +689,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   item: null,
                   itemId: itemId,
                   width: 42,
-                  text: [
-                    db.curUser.items[itemId] ?? 0,
-                    db.itemCenter.itemLeft[itemId] ?? 0
-                  ].map((e) => e.format()).join('\n'),
+                  text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
+                      .map((e) => e.format())
+                      .join('\n'),
                 ),
               ),
               title: Text(Item.getName(itemId)),
@@ -766,8 +713,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                     },
                     icon: const Icon(Icons.clear),
                     color: Theme.of(context).colorScheme.error,
-                    constraints:
-                        const BoxConstraints(minWidth: 24, minHeight: 48),
+                    constraints: const BoxConstraints(minWidth: 24, minHeight: 48),
                   )
                 ],
               ),
@@ -806,8 +752,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               backgroundColor: plan.enabled ? null : Colors.grey,
               onPressed: plan.enabled
                   ? () async {
-                      await _ArchiveEventDialog(event: event, initPlan: plan)
-                          .showDialog(context);
+                      await _ArchiveEventDialog(event: event, initPlan: plan).showDialog(context);
                       if (mounted) setState(() {});
                     }
                   : null,
@@ -868,8 +813,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     // required bool readOnly,
   }) {
     final v = value() ?? 0;
-    final controller =
-        _controllers[tag] ??= TextEditingController(text: value()?.toString());
+    final controller = _controllers[tag] ??= TextEditingController(text: value()?.toString());
     if ((int.tryParse(controller.text) ?? 0) != v) {
       controller.text = v.toString();
     }
@@ -1026,10 +970,8 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     }
     for (final lottery in event.lotteries) {
       _addOption(
-        title:
-            '${lottery.limited ? S.current.event_lottery_limited : S.current.event_lottery_unlimited} ${lottery.id}',
-        subtitle:
-            '${plan.lotteries[lottery.id] ?? 0}/${lottery.limited ? lottery.maxBoxIndex : "∞"}',
+        title: '${lottery.limited ? S.current.event_lottery_limited : S.current.event_lottery_unlimited} ${lottery.id}',
+        subtitle: '${plan.lotteries[lottery.id] ?? 0}/${lottery.limited ? lottery.maxBoxIndex : "∞"}',
         value: lotteries[lottery.id] ?? false,
         onChanged: (v) => lotteries[lottery.id] = v,
       );
@@ -1064,16 +1006,14 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
       );
     }
     if (items.values.any((v) => v != 0)) {
-      children.add(
-          SharedBuilder.groupItems(context: context, items: items, width: 36));
+      children.add(SharedBuilder.groupItems(context: context, items: items, width: 36));
     } else {
       children.add(const ListTile(title: Text('No item')));
     }
     children.add(const SFooter('GrailToLore: not included'));
 
     return SimpleCancelOkDialog(
-      contentPadding:
-          const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 24.0),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 24.0),
       title: Text(S.current.event_collect_items),
       content: SingleChildScrollView(
         child: Column(children: children),
@@ -1087,12 +1027,10 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     final plan2 = plan.copy();
     plan2.enabled = true;
     plan2.lotteries.removeWhere((key, value) => lotteries[key] != true);
-    plan2.treasureBoxItems
-        .removeWhere((key, value) => treasureBoxes[key] != true);
+    plan2.treasureBoxItems.removeWhere((key, value) => treasureBoxes[key] != true);
     plan2.extraItems.removeWhere((key, value) => extraItems[key] != true);
     if (!customItem) plan2.customItems.clear();
-    items =
-        db.itemCenter.calcOneEvent(event, plan2, includingGrailToLore: false);
+    items = db.itemCenter.calcOneEvent(event, plan2, includingGrailToLore: false);
     final validItems = db.itemCenter.validItems;
     items.removeWhere((key, value) => !validItems.contains(key));
   }
@@ -1117,13 +1055,11 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
       if (value) widget.initPlan.extraItems[key]?.clear();
     });
     if (customItem) {
-      widget.initPlan.customItems =
-          widget.initPlan.customItems.map((key, value) => MapEntry(key, 0));
+      widget.initPlan.customItems = widget.initPlan.customItems.map((key, value) => MapEntry(key, 0));
     }
     db.curUser.items.addDict(items);
     event.updateStat();
-    EasyLoading.showSuccess(
-        '${S.current.success}: ${S.current.event_collect_items}');
+    EasyLoading.showSuccess('${S.current.success}: ${S.current.event_collect_items}');
   }
 }
 
@@ -1160,17 +1096,13 @@ class __EventTimeState extends State<_EventTime> {
       if (widget.endTime == null) {
         timeStr = '${region.upper}: ${widget.format(start)}';
       } else {
-        timeStr =
-            '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
+        timeStr = '${region.upper}: ${widget.format(start)} ~ ${widget.format(end)}';
       }
       bool ongoing = start != null && end != null && now >= start && now <= end;
       if (shownRegions.contains(region) || showAll) {
         children.add(Text.rich(
           TextSpan(children: [
-            TextSpan(
-                text: '● ',
-                style: TextStyle(
-                    color: ongoing ? Colors.green : Colors.transparent)),
+            TextSpan(text: '● ', style: TextStyle(color: ongoing ? Colors.green : Colors.transparent)),
             TextSpan(text: timeStr),
           ]),
           style: const TextStyle(fontSize: 14, fontFamily: kMonoFont),

@@ -32,14 +32,11 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
       body: ListView(
         children: [
           TileGroup(
-            header: [S.current.event, S.current.war, S.current.script_story]
-                .join('→'),
+            header: [S.current.event, S.current.war, S.current.script_story].join('→'),
             children: [
               ListTile(
-                title: Text(
-                    '${S.current.script_story}: ${S.current.main_story}/${S.current.limited_event}'),
-                trailing:
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                title: Text('${S.current.script_story}: ${S.current.main_story}/${S.current.limited_event}'),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.push(url: Routes.events);
                 },
@@ -81,8 +78,7 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
                         decoration: InputDecoration(
                           labelText: 'Script ID',
                           border: const OutlineInputBorder(),
-                          counterText:
-                              '${_textEditController.text.trim().length}/10',
+                          counterText: '${_textEditController.text.trim().length}/10',
                         ),
                       ),
                     )
@@ -102,9 +98,7 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
                 );
               },
               icon: const Icon(Icons.menu_book_rounded),
-              color: _textEditController.text.trim().isEmpty
-                  ? null
-                  : Theme.of(context).colorScheme.secondary,
+              color: _textEditController.text.trim().isEmpty ? null : Theme.of(context).colorScheme.secondary,
             ),
           )
         ],
@@ -117,8 +111,7 @@ class ScriptIdLoadingPage extends StatefulWidget {
   final String scriptId;
   final ScriptLink? script;
   final Region? region;
-  const ScriptIdLoadingPage(
-      {super.key, required this.scriptId, this.script, this.region});
+  const ScriptIdLoadingPage({super.key, required this.scriptId, this.script, this.region});
 
   @override
   State<ScriptIdLoadingPage> createState() => _ScriptIdLoadingPageState();
@@ -133,8 +126,7 @@ class _ScriptIdLoadingPageState extends State<ScriptIdLoadingPage> {
   void initState() {
     super.initState();
     if (widget.script != null && widget.scriptId == widget.script?.scriptId) {
-      if (widget.region == null ||
-          widget.script!.script.contains('/${widget.region!.upper}/')) {
+      if (widget.region == null || widget.script!.script.contains('/${widget.region!.upper}/')) {
         script = widget.script;
       }
     }
@@ -145,8 +137,7 @@ class _ScriptIdLoadingPageState extends State<ScriptIdLoadingPage> {
     script = null;
     _loading = true;
     if (mounted) setState(() {});
-    script = await AtlasApi.script(widget.scriptId,
-        region: region, expireAfter: force ? Duration.zero : null);
+    script = await AtlasApi.script(widget.scriptId, region: region, expireAfter: force ? Duration.zero : null);
     _loading = false;
     if (mounted) setState(() {});
   }

@@ -12,8 +12,7 @@ class EventTreasureBoxTab extends HookWidget {
     final boxes = List.of(event.treasureBoxes);
     return ListView.separated(
       controller: useScrollController(),
-      itemBuilder: (context, index) =>
-          rewardBuilder(context, boxes[index], index),
+      itemBuilder: (context, index) => rewardBuilder(context, boxes[index], index),
       separatorBuilder: (_, __) => const Divider(height: 16),
       itemCount: boxes.length,
     );
@@ -63,9 +62,7 @@ class EventTreasureBoxTab extends HookWidget {
             ),
             TextSpan(text: ' ×${gift.num}')
           ],
-          TextSpan(
-              text:
-                  '\n${S.current.treasure_box_max_draw_once}: ${box.maxDrawNumOnce}'),
+          TextSpan(text: '\n${S.current.treasure_box_max_draw_once}: ${box.maxDrawNumOnce}'),
         ],
       )),
     ));

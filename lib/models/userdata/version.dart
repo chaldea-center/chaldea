@@ -4,8 +4,7 @@ class AppVersion implements Comparable<AppVersion> {
   /// valid format:
   ///   - v1.2.3+4,'v' and +4 is optional
   ///   - 1.2.3.4, windows format
-  static final RegExp _fullVersionRegex =
-      RegExp(r'^v?(\d+)\.(\d+)\.(\d+)(?:[+.](\d+))?$', caseSensitive: false);
+  static final RegExp _fullVersionRegex = RegExp(r'^v?(\d+)\.(\d+)\.(\d+)(?:[+.](\d+))?$', caseSensitive: false);
   final int major;
   final int minor;
   final int patch;
@@ -21,9 +20,7 @@ class AppVersion implements Comparable<AppVersion> {
   bool equalTo(String other) {
     AppVersion? _other = AppVersion.tryParse(other);
     if (_other == null) return false;
-    if (major == _other.major &&
-        minor == _other.minor &&
-        patch == _other.patch) {
+    if (major == _other.major && minor == _other.minor && patch == _other.patch) {
       return build == null || _other.build == null || build == _other.build;
     } else {
       return false;

@@ -27,8 +27,7 @@ class EventBulletinBoardPage extends HookWidget {
   Widget itemBuilder(BuildContext context, EventBulletinBoard bulletin) {
     return ListTile(
       key: Key('event_bulletin_${bulletin.bulletinBoardId}'),
-      leading: Text(bulletin.bulletinBoardId.toString(),
-          textAlign: TextAlign.center),
+      leading: Text(bulletin.bulletinBoardId.toString(), textAlign: TextAlign.center),
       title: Text(bulletin.message, textScaleFactor: 0.8),
       horizontalTitleGap: 4,
       onLongPress: () async {

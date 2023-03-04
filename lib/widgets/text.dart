@@ -20,16 +20,14 @@ class SpecialTextSpan extends WidgetSpan {
     Offset offset = const Offset(0, -5),
     double? textScaleFactor = 0.7,
     TextStyle? style,
-  }) : this(data,
-            offset: offset, textScaleFactor: textScaleFactor, style: style);
+  }) : this(data, offset: offset, textScaleFactor: textScaleFactor, style: style);
 
   SpecialTextSpan.subscript(
     String data, {
     Offset offset = const Offset(0, 1),
     double? textScaleFactor = 0.7,
     TextStyle? style,
-  }) : this(data,
-            offset: offset, textScaleFactor: textScaleFactor, style: style);
+  }) : this(data, offset: offset, textScaleFactor: textScaleFactor, style: style);
 }
 
 class _TransformText extends StatelessWidget {

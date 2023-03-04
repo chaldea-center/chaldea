@@ -31,9 +31,7 @@ class _ChaldeaServerPageState extends State<ChaldeaServerPage> {
               RadioListTile<bool>(
                 value: useProxy,
                 groupValue: db.settings.proxyServer,
-                title: Text(useProxy
-                    ? S.current.chaldea_server_cn
-                    : S.current.chaldea_server_global),
+                title: Text(useProxy ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
                 // subtitle: Text(region.toLanguage().name),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
@@ -42,8 +40,7 @@ class _ChaldeaServerPageState extends State<ChaldeaServerPage> {
                       db.settings.proxyServer = v;
                     }
                     if (kIsWeb) {
-                      kPlatformMethods.setLocalStorage(
-                          'useProxy', v.toString());
+                      kPlatformMethods.setLocalStorage('useProxy', v.toString());
                     }
                     db.saveSettings();
                   });

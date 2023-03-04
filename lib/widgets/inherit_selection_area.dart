@@ -19,9 +19,7 @@ class InheritSelectionArea extends StatelessWidget {
   Widget build(BuildContext context) {
     TextSelectionControls? parentControls = of(context);
     if (selectionControls != null) {
-      return inherit && selectionControls == parentControls
-          ? child
-          : wrap(selectionControls!);
+      return inherit && selectionControls == parentControls ? child : wrap(selectionControls!);
     }
     if (parentControls != null) {
       return inherit ? child : wrap(parentControls);
@@ -58,9 +56,7 @@ class InheritSelectionArea extends StatelessWidget {
   }
 
   static TextSelectionControls? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<_InheritedSelectionControls>()
-        ?.selectionControls;
+    return context.dependOnInheritedWidgetOfExactType<_InheritedSelectionControls>()?.selectionControls;
   }
 }
 

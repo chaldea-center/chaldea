@@ -1,6 +1,5 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/widgets/widgets.dart';
-
 import 'np_damage_calculator.dart';
 
 class BattleHomePage extends StatelessWidget {

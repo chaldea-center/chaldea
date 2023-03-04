@@ -23,8 +23,7 @@ class ItemResult {
     required this.details,
   });
 
-  factory ItemResult.fromJson(Map<String, dynamic> json) =>
-      _$ItemResultFromJson(json);
+  factory ItemResult.fromJson(Map<String, dynamic> json) => _$ItemResultFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemResultToJson(this);
 }
@@ -63,8 +62,7 @@ class ItemDetail {
     }
   }
 
-  factory ItemDetail.fromJson(Map<String, dynamic> json) =>
-      _$ItemDetailFromJson(json);
+  factory ItemDetail.fromJson(Map<String, dynamic> json) => _$ItemDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemDetailToJson(this);
 }
@@ -85,8 +83,7 @@ class SkillResult {
     required this.details,
   });
 
-  factory SkillResult.fromJson(Map<String, dynamic> json) =>
-      _$SkillResultFromJson(json);
+  factory SkillResult.fromJson(Map<String, dynamic> json) => _$SkillResultFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillResultToJson(this);
 }
@@ -152,16 +149,14 @@ class SkillDetail {
     } catch (e, s) {
       logger.e('decode base64 failed: $svtId', e, s);
     }
-    int _valid(int v, int lower, int upper) =>
-        v >= lower && v <= upper ? v : -1;
+    int _valid(int v, int lower, int upper) => v >= lower && v <= upper ? v : -1;
     ascension = _valid(ascension, -1, 4);
     skill1 = _valid(skill1, -1, 10);
     skill2 = _valid(skill2, -1, 10);
     skill3 = _valid(skill3, -1, 10);
   }
 
-  factory SkillDetail.fromJson(Map<String, dynamic> json) =>
-      _$SkillDetailFromJson(json);
+  factory SkillDetail.fromJson(Map<String, dynamic> json) => _$SkillDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillDetailToJson(this);
 }
@@ -179,15 +174,13 @@ class UserDataBackup {
   })  : timestamp = DateTime.fromMillisecondsSinceEpoch(timestamp),
         content = null {
     try {
-      this.content = UserData.fromJson(jsonDecode(
-          utf8.decode(GZipDecoder().decodeBytes(base64Decode(content)))));
+      this.content = UserData.fromJson(jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(content)))));
     } catch (e, s) {
       logger.e('decode server backup failed', e, s);
     }
   }
 
-  factory UserDataBackup.fromJson(Map<String, dynamic> json) =>
-      _$UserDataBackupFromJson(json);
+  factory UserDataBackup.fromJson(Map<String, dynamic> json) => _$UserDataBackupFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserDataBackupToJson(this);
 }

@@ -215,10 +215,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   value: db.settings.display.svtPlanInputMode,
                   underline: const SizedBox(),
                   items: [
-                    for (final mode in [
-                      SvtPlanInputMode.dropdown,
-                      SvtPlanInputMode.slider
-                    ])
+                    for (final mode in [SvtPlanInputMode.dropdown, SvtPlanInputMode.slider])
                       DropdownMenuItem(
                         value: mode,
                         child: Text(mode.name),
@@ -322,8 +319,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                       if (v) {
                         SystemChrome.setPreferredOrientations([]);
                       } else {
-                        SystemChrome.setPreferredOrientations(
-                            [DeviceOrientation.portraitUp]);
+                        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                       }
                     });
                     db.notifyAppUpdate();

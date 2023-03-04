@@ -14,8 +14,7 @@ class FilterGroup<T> extends StatelessWidget {
   final bool showMatchAll;
   final bool showInvert;
   final bool shrinkWrap;
-  final void Function(FilterGroupData<T> optionData, T? lastChanged)?
-      onFilterChanged;
+  final void Function(FilterGroupData<T> optionData, T? lastChanged)? onFilterChanged;
 
   final bool combined;
   final EdgeInsetsGeometry padding;
@@ -37,15 +36,13 @@ class FilterGroup<T> extends StatelessWidget {
     this.showCollapse = false,
   });
 
-  static FilterGroup display(
-      {required bool useGrid, required ValueChanged<bool?> onChanged}) {
+  static FilterGroup display({required bool useGrid, required ValueChanged<bool?> onChanged}) {
     return FilterGroup<bool>(
       padding: const EdgeInsetsDirectional.only(end: 12),
       options: const [false, true],
       values: FilterRadioData.nonnull(useGrid),
       optionBuilder: (v) => Text.rich(TextSpan(children: [
-        CenterWidgetSpan(
-            child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
+        CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
         const TextSpan(text: ' '),
         TextSpan(text: v ? S.current.display_grid : S.current.display_list)
       ])),
@@ -56,8 +53,7 @@ class FilterGroup<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildCheckbox(
-      BuildContext context, bool checked, String text, VoidCallback onTap) {
+  Widget _buildCheckbox(BuildContext context, bool checked, String text, VoidCallback onTap) {
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Row(
@@ -94,8 +90,7 @@ class FilterGroup<T> extends StatelessWidget {
           }
         },
         enabled: enabled,
-        child:
-            optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
+        child: optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
       ));
     }
 
@@ -109,24 +104,21 @@ class FilterGroup<T> extends StatelessWidget {
       return CustomTile(
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
-          child: DefaultTextStyle.merge(
-              child: title!, style: const TextStyle(fontSize: 14)),
+          child: DefaultTextStyle.merge(child: title!, style: const TextStyle(fontSize: 14)),
         ),
         contentPadding: EdgeInsets.zero,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (showMatchAll)
-              _buildCheckbox(
-                  context, values.matchAll, S.current.filter_match_all, () {
+              _buildCheckbox(context, values.matchAll, S.current.filter_match_all, () {
                 values.matchAll = !values.matchAll;
                 if (onFilterChanged != null) {
                   onFilterChanged!(values, null);
                 }
               }),
             if (showInvert)
-              _buildCheckbox(context, values.invert, S.current.filter_revert,
-                  () {
+              _buildCheckbox(context, values.invert, S.current.filter_revert, () {
                 values.invert = !values.invert;
                 if (onFilterChanged != null) {
                   onFilterChanged!(values, null);
@@ -227,9 +219,7 @@ class FilterOption<T> extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: selected || darkMode ? Colors.white : Colors.black,
           backgroundColor: selected
-              ? (enabled
-                  ? selectedColor
-                  : selectedColor.withOpacity(selectedColor.opacity * 0.5))
+              ? (enabled ? selectedColor : selectedColor.withOpacity(selectedColor.opacity * 0.5))
               : unselectedColor,
           minimumSize: shrinkWrap ? const Size(2, 2) : const Size(48, 36),
           padding: shrinkWrap ? const EdgeInsets.all(0) : null,

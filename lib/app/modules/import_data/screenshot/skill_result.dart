@@ -15,18 +15,13 @@ class SkillResultTab extends StatefulWidget {
   final SkillResult? result;
   final bool viewMode;
 
-  const SkillResultTab(
-      {super.key,
-      required this.isAppend,
-      required this.result,
-      this.viewMode = false});
+  const SkillResultTab({super.key, required this.isAppend, required this.result, this.viewMode = false});
 
   @override
   State<SkillResultTab> createState() => _SkillResultTabState();
 }
 
-class _SkillResultTabState extends State<SkillResultTab>
-    with ScrollControllerMixin {
+class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMixin {
   SkillResult get result => widget.result!;
 
   @override
@@ -52,9 +47,7 @@ class _SkillResultTabState extends State<SkillResultTab>
     keys.sort();
     countUnknown = items[-1]?.length ?? 0;
     countValid = keys.where((e) => e > 0).length;
-    countSelected = items.values
-        .where((itemList) => itemList.any((e) => e.valid && e.checked))
-        .length;
+    countSelected = items.values.where((itemList) => itemList.any((e) => e.valid && e.checked)).length;
     countDup = result.details.length - countUnknown - countValid;
 
     for (final itemId in keys) {
@@ -71,8 +64,7 @@ class _SkillResultTabState extends State<SkillResultTab>
       children: [
         ListTile(
           title: Text(
-            S.current.recognizer_result_count(countUnknown, countDup,
-                countValid, result.details.length, countSelected),
+            S.current.recognizer_result_count(countUnknown, countDup, countValid, result.details.length, countSelected),
             textAlign: TextAlign.center,
           ),
         ),
@@ -105,8 +97,7 @@ class _SkillResultTabState extends State<SkillResultTab>
                 },
               ),
         const SizedBox(width: 8),
-        svt?.iconBuilder(context: context, width: 48) ??
-            db.getIconImage(null, width: 48),
+        svt?.iconBuilder(context: context, width: 48) ?? db.getIconImage(null, width: 48),
         Expanded(
           child: TextButton(
             onPressed: () {
@@ -114,8 +105,7 @@ class _SkillResultTabState extends State<SkillResultTab>
               router.pushPage(ServantListPage(
                 onSelected: (v) {
                   item.svtId = v.collectionNo;
-                  if (result.details
-                      .any((e) => e != item && e.svtId == item.svtId)) {
+                  if (result.details.any((e) => e != item && e.svtId == item.svtId)) {
                     item.checked = false;
                   }
                   if (mounted) setState(() {});
@@ -125,9 +115,7 @@ class _SkillResultTabState extends State<SkillResultTab>
             child: Text(
               '${item.svtId} - ${svt == null ? 'Unknown' : svt.lName.l}',
               style: TextStyle(
-                color: item.valid && item.checked
-                    ? null
-                    : Theme.of(context).colorScheme.error,
+                color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error,
               ),
               maxLines: 2,
               textAlign: TextAlign.center,
@@ -205,8 +193,7 @@ class _SkillResultTabState extends State<SkillResultTab>
             if (widget.isAppend) {
               status.cur.appendSkills = List.of(detail.skills, growable: false);
             } else {
-              status.cur.skills =
-                  List.of(detail.skills.map((e) => max(1, e)), growable: false);
+              status.cur.skills = List.of(detail.skills.map((e) => max(1, e)), growable: false);
             }
           }
         }

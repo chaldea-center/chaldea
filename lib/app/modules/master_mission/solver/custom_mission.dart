@@ -17,8 +17,7 @@ class CustomMissionPage extends StatefulWidget {
   State<CustomMissionPage> createState() => _CustomMissionPageState();
 }
 
-class _CustomMissionPageState extends State<CustomMissionPage>
-    with SingleTickerProviderStateMixin {
+class _CustomMissionPageState extends State<CustomMissionPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   MissionSolution? solution;
   @override
@@ -61,8 +60,7 @@ class _CustomMissionPageState extends State<CustomMissionPage>
                 onSolved: _onSolved,
               ),
             ),
-            KeepAliveBuilder(
-                builder: (context) => MissionSolutionTab(solution: solution)),
+            KeepAliveBuilder(builder: (context) => MissionSolutionTab(solution: solution)),
             KeepAliveBuilder(
               builder: (context) => MissionSolutionTab(
                 solution: solution,

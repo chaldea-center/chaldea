@@ -97,8 +97,7 @@ class CachedImageOption {
       httpHeaders: httpHeaders ?? this.httpHeaders,
       imageBuilder: imageBuilder ?? this.imageBuilder,
       placeholder: placeholder ?? this.placeholder,
-      progressIndicatorBuilder:
-          progressIndicatorBuilder ?? this.progressIndicatorBuilder,
+      progressIndicatorBuilder: progressIndicatorBuilder ?? this.progressIndicatorBuilder,
       errorWidget: errorWidget ?? this.errorWidget,
       fadeOutDuration: fadeOutDuration ?? this.fadeOutDuration,
       fadeOutCurve: fadeOutCurve ?? this.fadeOutCurve,
@@ -111,13 +110,11 @@ class CachedImageOption {
       repeat: repeat ?? this.repeat,
       matchTextDirection: matchTextDirection ?? this.matchTextDirection,
       cacheManager: cacheManager ?? this.cacheManager,
-      useOldImageOnUrlChange:
-          useOldImageOnUrlChange ?? this.useOldImageOnUrlChange,
+      useOldImageOnUrlChange: useOldImageOnUrlChange ?? this.useOldImageOnUrlChange,
       color: color ?? this.color,
       filterQuality: filterQuality ?? this.filterQuality,
       colorBlendMode: colorBlendMode ?? this.colorBlendMode,
-      placeholderFadeInDuration:
-          placeholderFadeInDuration ?? this.placeholderFadeInDuration,
+      placeholderFadeInDuration: placeholderFadeInDuration ?? this.placeholderFadeInDuration,
       memCacheWidth: memCacheWidth ?? this.memCacheWidth,
       memCacheHeight: memCacheHeight ?? this.memCacheHeight,
       cacheKey: cacheKey ?? this.cacheKey,

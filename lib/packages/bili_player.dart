@@ -21,8 +21,7 @@ class BiliPlayer extends StatefulWidget {
   @override
   State<BiliPlayer> createState() => _BiliPlayerState();
 
-  static bool get isSupport =>
-      PlatformU.isAndroid || PlatformU.isIOS || PlatformU.isWeb;
+  static bool get isSupport => PlatformU.isAndroid || PlatformU.isIOS || PlatformU.isWeb;
 }
 
 class _BiliPlayerState extends State<BiliPlayer> {
@@ -73,8 +72,7 @@ class _BiliPlayerState extends State<BiliPlayer> {
     controller.loadHtmlString(_playerHtml(null, true, null));
     this.controller = controller;
     if (mounted) setState(() {});
-    final resp = await CachedApi.biliVideoInfo(
-        aid: widget.video.av, bvid: widget.video.bv);
+    final resp = await CachedApi.biliVideoInfo(aid: widget.video.av, bvid: widget.video.bv);
     int p = widget.video.p ?? 1;
     if (p == 0) p = 1;
     int? cid;
@@ -84,17 +82,14 @@ class _BiliPlayerState extends State<BiliPlayer> {
       if (data != null) {
         bvid = data['bvid'];
         final pages = data['pages'] as List;
-        final pageData =
-            pages.firstWhereOrNull((page) => page['page'] == p) as Map?;
+        final pageData = pages.firstWhereOrNull((page) => page['page'] == p) as Map?;
         if (pageData != null) {
           cid = pageData['cid'];
-          ratio = pageData['dimension']!['width']! /
-              pageData['dimension']!['height']!;
+          ratio = pageData['dimension']!['width']! / pageData['dimension']!['height']!;
         }
       }
       if (bvid == null || cid == null) {
-        controller
-            .loadHtmlString(_playerHtml(null, false, 'Something went wrong.'));
+        controller.loadHtmlString(_playerHtml(null, false, 'Something went wrong.'));
       } else {
         controller.loadHtmlString(_playerHtml(
           'https://player.bilibili.com/player.html?bvid=$bvid&cid=$cid&page=$p&high_quality=1&danmaku=0&enable_ssl=1&as_wide=1',

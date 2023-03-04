@@ -31,8 +31,7 @@ class BgmFilterPage extends FilterPage<BgmFilterData> {
   _NpChargeFilterPageState createState() => _NpChargeFilterPageState();
 }
 
-class _NpChargeFilterPageState
-    extends FilterPageState<BgmFilterData, BgmFilterPage> {
+class _NpChargeFilterPageState extends FilterPageState<BgmFilterData, BgmFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -77,8 +76,7 @@ class _NpChargeFilterPageState
           options: const [true, false],
           values: filterData.favorite,
           combined: true,
-          optionBuilder: (v) =>
-              Text(v ? S.current.favorite : S.current.general_others),
+          optionBuilder: (v) => Text(v ? S.current.favorite : S.current.general_others),
           onFilterChanged: (value, _) {
             update();
           },

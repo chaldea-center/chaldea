@@ -52,8 +52,7 @@ class StartupFailedPage extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
-        if (stackTrace != null)
-          Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
+        if (stackTrace != null) Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
         const SafeArea(child: SizedBox())
       ],
     );

@@ -45,8 +45,7 @@ class SvtQuestTimelineFilterData {
   bool reversed = true;
   bool showOutdated = false;
   FavoriteState favorite = FavoriteState.all;
-  final sortType =
-      FilterRadioData<TimelineSortType>.nonnull(TimelineSortType.questOpenTime);
+  final sortType = FilterRadioData<TimelineSortType>.nonnull(TimelineSortType.questOpenTime);
   final questType = FilterGroupData<TimelineQuestType>();
   final upgradeType = FilterGroupData<TimelineUpgradeType>();
 
@@ -56,8 +55,7 @@ class SvtQuestTimelineFilterData {
     }
   }
 
-  bool get useApCampaign =>
-      sortType.radioValue == TimelineSortType.apCampaignTime;
+  bool get useApCampaign => sortType.radioValue == TimelineSortType.apCampaignTime;
 }
 
 class SvtQuestTimelineFilter extends FilterPage<SvtQuestTimelineFilterData> {
@@ -71,8 +69,7 @@ class SvtQuestTimelineFilter extends FilterPage<SvtQuestTimelineFilterData> {
   _SvtQuestTimelineFilterState createState() => _SvtQuestTimelineFilterState();
 }
 
-class _SvtQuestTimelineFilterState extends FilterPageState<
-    SvtQuestTimelineFilterData, SvtQuestTimelineFilter> {
+class _SvtQuestTimelineFilterState extends FilterPageState<SvtQuestTimelineFilterData, SvtQuestTimelineFilter> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

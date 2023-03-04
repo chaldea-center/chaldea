@@ -12,8 +12,7 @@ abstract class FilterPage<T> extends StatefulWidget {
 
   const FilterPage({super.key, required this.filterData, this.onChanged});
 
-  static void show(
-      {required BuildContext context, required WidgetBuilder builder}) {
+  static void show({required BuildContext context, required WidgetBuilder builder}) {
     if (SplitRoute.isSplit(context)) {
       showDialog(context: context, builder: builder, useRootNavigator: false);
     } else {
@@ -22,8 +21,7 @@ abstract class FilterPage<T> extends StatefulWidget {
         isScrollControlled: true,
         builder: (context) => LayoutBuilder(builder: (context, constraints) {
           return ConstrainedBox(
-            constraints:
-                constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
+            constraints: constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
             child: SafeArea(child: builder(context)),
           );
         }),
@@ -50,19 +48,13 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     setState(() {});
   }
 
-  Widget buildAdaptive(
-      {Widget? title,
-      required Widget content,
-      List<Widget> actions = const []}) {
+  Widget buildAdaptive({Widget? title, required Widget content, List<Widget> actions = const []}) {
     return useSplitView
         ? _buildDialog(title: title, content: content, actions: actions)
         : _buildSheet(title: title, content: content, actions: actions);
   }
 
-  Widget _buildSheet(
-      {Widget? title,
-      required Widget content,
-      List<Widget> actions = const []}) {
+  Widget _buildSheet({Widget? title, required Widget content, List<Widget> actions = const []}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -76,8 +68,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         ),
         Flexible(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-                minHeight: min(400, MediaQuery.of(context).size.height * 0.4)),
+            constraints: BoxConstraints(minHeight: min(400, MediaQuery.of(context).size.height * 0.4)),
             child: content,
           ),
         ),
@@ -86,10 +77,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     );
   }
 
-  Widget _buildDialog(
-      {Widget? title,
-      required Widget content,
-      List<Widget> actions = const []}) {
+  Widget _buildDialog({Widget? title, required Widget content, List<Widget> actions = const []}) {
     return AlertDialog(
       title: Center(child: title),
       titlePadding: const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
@@ -100,17 +88,13 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
         // for landscape, limit it's width
         width: min(420, MediaQuery.of(context).size.width * 0.8),
         // for portrait, limit it's height
-        constraints: BoxConstraints(
-            maxHeight: min(420, MediaQuery.of(context).size.width * 0.8)),
+        constraints: BoxConstraints(maxHeight: min(420, MediaQuery.of(context).size.width * 0.8)),
         child: content,
       ),
     );
   }
 
-  List<Widget> getDefaultActions(
-      {VoidCallback? onTapReset,
-      bool? showOk,
-      List<Widget> extraActions = const []}) {
+  List<Widget> getDefaultActions({VoidCallback? onTapReset, bool? showOk, List<Widget> extraActions = const []}) {
     showOk ??= useSplitView;
     if (useSplitView) {
       return [
@@ -141,8 +125,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     }
   }
 
-  Widget getListViewBody(
-      {List<Widget> children = const [], String? restorationId}) {
+  Widget getListViewBody({List<Widget> children = const [], String? restorationId}) {
     final size = MediaQuery.of(context).size;
     return LimitedBox(
       maxHeight: min(420, size.height * 0.65),
@@ -152,8 +135,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
           controller: controller,
           padding: const EdgeInsets.symmetric(vertical: 6),
           shrinkWrap: true,
-          children: divideTiles(children,
-              divider: const Divider(color: Colors.transparent, height: 5)),
+          children: divideTiles(children, divider: const Divider(color: Colors.transparent, height: 5)),
         ),
       ),
     );
@@ -293,9 +275,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: shownClasses.map((className) {
                       final selected = data.options.contains(className);
-                      Widget icon = db.getIconImage(
-                          className.icon(selected ? 5 : 1),
-                          aspectRatio: 1);
+                      Widget icon = db.getIconImage(className.icon(selected ? 5 : 1), aspectRatio: 1);
                       if (className == SvtClassX.beast && !selected) {
                         icon = ColorFiltered(
                           colorFilter: ImageUtil.greyscalBeast,

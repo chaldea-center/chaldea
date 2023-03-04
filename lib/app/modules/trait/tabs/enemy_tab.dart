@@ -11,8 +11,7 @@ class TraitEnemyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<int, List<QuestEnemy>> grouped =
-        ReverseGameData.questEnemies((e) => e.traits.any((t) => t.id == id));
+    Map<int, List<QuestEnemy>> grouped = ReverseGameData.questEnemies((e) => e.traits.any((t) => t.id == id));
     final svtIds = grouped.keys.toList()..sort();
     if (svtIds.isEmpty) return const Center(child: Text('No record'));
     return ListView.builder(
@@ -39,8 +38,7 @@ class TraitEnemyTab extends StatelessWidget {
           ].join('\n')),
           dense: true,
           onTap: () {
-            router.pushPage(
-                QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+            router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
           },
         );
       },

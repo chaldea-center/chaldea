@@ -10,9 +10,8 @@ NiceScript _$NiceScriptFromJson(Map json) => NiceScript(
       scriptId: json['scriptId'] as String,
       scriptSizeBytes: json['scriptSizeBytes'] as int,
       script: json['script'] as String,
-      quests: (json['quests'] as List<dynamic>)
-          .map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      quests:
+          (json['quests'] as List<dynamic>).map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     );
 
 ScriptLink _$ScriptLinkFromJson(Map json) => ScriptLink(

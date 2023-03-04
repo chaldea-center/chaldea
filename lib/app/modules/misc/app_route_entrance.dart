@@ -96,8 +96,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
       trailing: Wrap(
         children: [
           ConstrainedBox(
-            constraints:
-                BoxConstraints(maxWidth: (c.text.length * 12.0).clamp(80, 160)),
+            constraints: BoxConstraints(maxWidth: (c.text.length * 12.0).clamp(80, 160)),
             child: TextFormField(
               decoration: const InputDecoration(
                 isDense: true,
@@ -147,8 +146,7 @@ class RouteHistoryList extends StatelessWidget {
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemBuilder: (context, index) {
-          final url = AppRouterDelegate
-              .history[AppRouterDelegate.history.length - 1 - index];
+          final url = AppRouterDelegate.history[AppRouterDelegate.history.length - 1 - index];
           return ListTile(
             dense: true,
             title: Text(url),

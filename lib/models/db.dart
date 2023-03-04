@@ -238,8 +238,7 @@ class _Database {
     });
   }
 
-  Future<List<String>> backupUserdata(
-      {bool disk = false, bool memory = true}) async {
+  Future<List<String>> backupUserdata({bool disk = false, bool memory = true}) async {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
 
     List<String> _saved = [];
@@ -251,12 +250,10 @@ class _Database {
 
     final _lastSavedFile = FilePlus(paths.userDataPath);
     if (memory) {
-      await _saveBytes(utf8.encode(jsonEncode(userData)),
-          '${timeStamp}m-${userData.appVer}.json');
+      await _saveBytes(utf8.encode(jsonEncode(userData)), '${timeStamp}m-${userData.appVer}.json');
     }
     if (disk && _lastSavedFile.existsSync()) {
-      await _saveBytes(
-          await _lastSavedFile.readAsBytes(), '${timeStamp}d.json');
+      await _saveBytes(await _lastSavedFile.readAsBytes(), '${timeStamp}d.json');
     }
     if (_saved.isNotEmpty) {
       db.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;

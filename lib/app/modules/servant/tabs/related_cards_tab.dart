@@ -29,10 +29,8 @@ class SvtRelatedCardTab extends StatelessWidget {
       ));
     }
 
-    final valentineCEs = svt.valentineEquip
-        .map((e) => db.gameData.craftEssencesById[e])
-        .whereType<CraftEssence>()
-        .toList();
+    final valentineCEs =
+        svt.valentineEquip.map((e) => db.gameData.craftEssencesById[e]).whereType<CraftEssence>().toList();
     if (valentineCEs.isNotEmpty) {
       tabs.add(S.current.valentine_craft);
       pages.add(ListView.separated(
@@ -66,8 +64,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                 children: [
                   for (final ce in charaCEs)
                     ListTile(
-                      leading: db.getIconImage(ce.borderedIcon,
-                          height: 45, width: 45 / 144 * 132),
+                      leading: db.getIconImage(ce.borderedIcon, height: 45, width: 45 / 144 * 132),
                       title: Text(ce.lName.l),
                       onTap: () {
                         router.push(
@@ -75,8 +72,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                           child: CraftDetailPage(
                             ce: ce,
                             onSwitch: (cur, next) =>
-                                Utility.findNextOrPrevious<CraftEssence>(
-                                    list: charaCEs, cur: cur, reversed: next),
+                                Utility.findNextOrPrevious<CraftEssence>(list: charaCEs, cur: cur, reversed: next),
                           ),
                           detail: true,
                         );
@@ -90,8 +86,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                 children: [
                   for (final cc in charaCCs)
                     ListTile(
-                      leading: db.getIconImage(cc.icon,
-                          height: 45, width: 45 / 144 * 132),
+                      leading: db.getIconImage(cc.icon, height: 45, width: 45 / 144 * 132),
                       title: Text(cc.lName.l),
                       onTap: () {
                         router.push(
@@ -99,8 +94,7 @@ class SvtRelatedCardTab extends StatelessWidget {
                           child: CmdCodeDetailPage(
                             cc: cc,
                             onSwitch: (cur, next) =>
-                                Utility.findNextOrPrevious<CommandCode>(
-                                    list: charaCCs, cur: cur, reversed: next),
+                                Utility.findNextOrPrevious<CommandCode>(list: charaCCs, cur: cur, reversed: next),
                           ),
                           detail: true,
                         );
@@ -114,10 +108,7 @@ class SvtRelatedCardTab extends StatelessWidget {
     }
     final tabbar = TabBar(
       isScrollable: true,
-      tabs: tabs
-          .map((e) => Tab(
-              child: Text(e, style: Theme.of(context).textTheme.bodyMedium)))
-          .toList(),
+      tabs: tabs.map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium))).toList(),
     );
 
     return DefaultTabController(

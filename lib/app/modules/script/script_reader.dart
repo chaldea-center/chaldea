@@ -65,8 +65,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
     if (relatedQuests.isNotEmpty) {
       final war = relatedQuests.first.item1;
       final quest1 = relatedQuests.first.item2;
-      if ([WarId.chaldeaGate, WarId.rankup, WarId.daily, WarId.interlude]
-              .contains(war.id) ||
+      if ([WarId.chaldeaGate, WarId.rankup, WarId.daily, WarId.interlude].contains(war.id) ||
           quest1?.type == QuestType.friendship) {
         if (quest1 != null) {
           for (final phase in quest1.phaseScripts) {
@@ -228,8 +227,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
           questSpans.add(TextSpan(
             children: [
               const TextSpan(text: kULLeading),
-              SharedBuilder.textButtonSpan(
-                  context: context, text: quest.lName.l, onTap: quest.routeTo),
+              SharedBuilder.textButtonSpan(context: context, text: quest.lName.l, onTap: quest.routeTo),
             ],
             style: const TextStyle(fontSize: 12),
           ));
@@ -295,8 +293,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
 
   Widget get prevButton {
     return Text.rich(TextSpan(children: [
-      CenterWidgetSpan(
-          child: Icon(DirectionalIcons.keyboard_arrow_back(context), size: 20)),
+      CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_back(context), size: 20)),
       prevScript == null
           ? const TextSpan(text: '     -     ', style: kMonoStyle)
           : SharedBuilder.textButtonSpan(
@@ -305,8 +302,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               onTap: () {
                 router.push(
                   url: Routes.scriptI(prevScript!),
-                  child: ScriptIdLoadingPage(
-                      scriptId: prevScript!, region: data.state.region),
+                  child: ScriptIdLoadingPage(scriptId: prevScript!, region: data.state.region),
                 );
               },
             )
@@ -323,14 +319,11 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               onTap: () {
                 router.push(
                   url: Routes.scriptI(nextScript!),
-                  child: ScriptIdLoadingPage(
-                      scriptId: nextScript!, region: data.state.region),
+                  child: ScriptIdLoadingPage(scriptId: nextScript!, region: data.state.region),
                 );
               },
             ),
-      CenterWidgetSpan(
-          child:
-              Icon(DirectionalIcons.keyboard_arrow_forward(context), size: 20)),
+      CenterWidgetSpan(child: Icon(DirectionalIcons.keyboard_arrow_forward(context), size: 20)),
     ]));
   }
 
@@ -353,8 +346,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
         spans.addAll(part.build(
           context,
           data.state,
-          hideSpeaker: prevPart is ScriptDialog &&
-              prevPart.speakerSrc == part.speakerSrc,
+          hideSpeaker: prevPart is ScriptDialog && prevPart.speakerSrc == part.speakerSrc,
         ));
       } else {
         spans.addAll(part.build(context, data.state));
@@ -363,8 +355,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
       children.add(Text.rich(TextSpan(children: spans)));
       children.add(const SizedBox(height: 8));
     }
-    children.add(
-        const SafeArea(child: Text('- End -', textAlign: TextAlign.center)));
+    children.add(const SafeArea(child: Text('- End -', textAlign: TextAlign.center)));
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 12),

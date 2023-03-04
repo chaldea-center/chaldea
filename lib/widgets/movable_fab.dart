@@ -73,33 +73,26 @@ class _MovableFabState extends State<MovableFab> {
 
   Rect updateRect() {
     final screenSize = MediaQuery.of(context).size;
-    Size btnSize =
-        (context.findRenderObject() as RenderBox?)?.size ?? const Size(40, 40);
+    Size btnSize = (context.findRenderObject() as RenderBox?)?.size ?? const Size(40, 40);
     final padding = MediaQuery.of(context).padding;
     return rect = Rect.fromLTRB(
       -8.0 + padding.left,
       padding.top + kToolbarHeight,
       screenSize.width + 8 - padding.right - btnSize.width,
-      screenSize.height -
-          padding.bottom -
-          btnSize.height / 2 -
-          kBottomNavigationBarHeight,
+      screenSize.height - padding.bottom - btnSize.height / 2 - kBottomNavigationBarHeight,
     );
   }
 
   Offset ratio2Offset() {
-    return _offset = Offset(
-        rect.width * _ratio.dx + rect.left, rect.height * _ratio.dy + rect.top);
+    return _offset = Offset(rect.width * _ratio.dx + rect.left, rect.height * _ratio.dy + rect.top);
   }
 
   Offset offset2Ratio() {
-    return _ratio = Offset((_offset.dx - rect.left) / rect.width,
-        (_offset.dy - rect.top) / rect.height);
+    return _ratio = Offset((_offset.dx - rect.left) / rect.width, (_offset.dy - rect.top) / rect.height);
   }
 
   Offset limitOffset([Offset delta = Offset.zero]) {
     _offset = _offset + delta;
-    return _offset = Offset(_offset.dx.clamp(rect.left, rect.right),
-        _offset.dy.clamp(rect.top, rect.bottom));
+    return _offset = Offset(_offset.dx.clamp(rect.left, rect.right), _offset.dy.clamp(rect.top, rect.bottom));
   }
 }

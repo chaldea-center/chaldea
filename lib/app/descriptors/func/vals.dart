@@ -20,11 +20,7 @@ class ValListDsc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutTryBuilder(builder: (context, constraints) {
-      int perLine = (constraints.maxWidth.isFinite &&
-              constraints.maxWidth > 600 &&
-              originVals.length > 5)
-          ? 10
-          : 5;
+      int perLine = (constraints.maxWidth.isFinite && constraints.maxWidth > 600 && originVals.length > 5) ? 10 : 5;
       List<Widget> rows = [];
       int rowCount = (mutaingVals.length / perLine).ceil();
       for (int i = 0; i < rowCount; i++) {
@@ -39,9 +35,7 @@ class ValListDsc extends StatelessWidget {
               func: func,
               vals: vals,
               originVals: originVals.getOrNull(j),
-              color: j == 5 || j == 9
-                  ? Theme.of(context).colorScheme.secondary
-                  : null,
+              color: j == 5 || j == 9 ? Theme.of(context).colorScheme.secondary : null,
               inList: true,
             );
           }
@@ -52,11 +46,7 @@ class ValListDsc extends StatelessWidget {
           if (selected != null && selected! - 1 == j) {
             child = DecoratedBox(
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .secondaryContainer
-                        .withAlpha(180)),
+                border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(180)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: child,
@@ -110,9 +100,7 @@ class ValDsc extends StatelessWidget {
         color: Theme.of(context).textTheme.bodySmall?.color,
       );
     }
-    final text = parts.isEmpty
-        ? vals.Value?.toString() ?? empty
-        : parts.where((e) => e.isNotEmpty).join(', ');
+    final text = parts.isEmpty ? vals.Value?.toString() ?? empty : parts.where((e) => e.isNotEmpty).join(', ');
     return InkWell(
       child: Text(
         supportOnly ? '${Transl.special.funcSupportOnly} $text' : text,
@@ -128,12 +116,10 @@ class ValDsc extends StatelessWidget {
               data: ThemeData.light(),
               child: SimpleCancelOkDialog(
                 title: const Text('Data Vals'),
-                content: JsonViewer((originVals ?? vals).toJson(sort: false),
-                    defaultOpen: true),
+                content: JsonViewer((originVals ?? vals).toJson(sort: false), defaultOpen: true),
                 scrollable: true,
                 hideCancel: true,
-                contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                    10.0, 10.0, 12.0, 24.0),
+                contentPadding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 12.0, 24.0),
               ),
             );
           },
@@ -184,15 +170,13 @@ class ValDsc extends StatelessWidget {
         func.funcType == FuncType.addFieldChangeToField) {
       describeBuff(func.buffs.first);
       if (vals.UseRate != null) {
-        _addPercent(
-            vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
     } else if (func.funcType == FuncType.gainHpFromTargets) {
       _addInt(vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
-      _addPercent(
-          vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
+      _addPercent(vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
     } else if (func.funcType == FuncType.absorbNpturn) {
       final v2 = vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value;
       if (v2 != null) {
@@ -257,8 +241,7 @@ class ValDsc extends StatelessWidget {
             break;
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
-              parts.add(
-                  '${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
+              parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
             } else {
               _addPercent(vals.Correction, 10, (s) => '×$s');
             }
@@ -285,8 +268,7 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-        _addInt(
-            vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
+        _addInt(vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
       }
       if (vals.AddCount != null) {
         if (func.funcType == FuncType.eventDropRateUp) {
@@ -296,8 +278,7 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.UseRate != null) {
-        _addPercent(
-            vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
@@ -331,8 +312,7 @@ class ValDsc extends StatelessWidget {
 
   final empty = '';
   void describeBuff(Buff buff) {
-    final base = kBuffActionPercentTypes[buff.buffAction] ??
-        kBuffTypePercentType[buff.type];
+    final base = kBuffActionPercentTypes[buff.buffAction] ?? kBuffTypePercentType[buff.type];
     final trigger = kBuffValueTriggerTypes[buff.type];
     String _val(int? v) {
       if (v == null) return '';
@@ -364,10 +344,8 @@ class ValDsc extends StatelessWidget {
         parts.add('OC${vals.CounterOc}');
       }
       return;
-    } else if (buff.type == BuffType.changeCommandCardType &&
-        vals.Value != null) {
-      final cardName =
-          kCardTypeMapping[vals.Value]?.name.toTitle() ?? vals.Value.toString();
+    } else if (buff.type == BuffType.changeCommandCardType && vals.Value != null) {
+      final cardName = kCardTypeMapping[vals.Value]?.name.toTitle() ?? vals.Value.toString();
       parts.add(cardName);
       return;
     } else if ([
@@ -401,8 +379,7 @@ class ValDsc extends StatelessWidget {
             vals.RatioHPRangeLow != null ||
             vals.RatioHPHigh != null ||
             vals.RatioHPLow != null)) {
-      final hpRatios =
-          [vals.RatioHPRangeHigh ?? 1000, vals.RatioHPRangeLow ?? 0].toList();
+      final hpRatios = [vals.RatioHPRangeHigh ?? 1000, vals.RatioHPRangeLow ?? 0].toList();
       final hpRatiosStrings = hpRatios.map((e) => _toPercent(e, 10)).toList();
       parts.add('[HP ${hpRatiosStrings.join('-')}%]');
     }
@@ -416,12 +393,9 @@ class ValDsc extends StatelessWidget {
     if (vals.Rate != null) {
       final _jsonVals = vals.toJson().keys.toSet();
       // _jsonVals.removeAll(['Turn', 'Count']);
-      if ((_jsonVals.length == 1 &&
-              _jsonVals.first == 'Rate' &&
-              ignoreRate != true) ||
+      if ((_jsonVals.length == 1 && _jsonVals.first == 'Rate' && ignoreRate != true) ||
           vals.Rate != 1000 ||
-          [FuncType.instantDeath, FuncType.forceInstantDeath]
-              .contains(func.funcType)) {
+          [FuncType.instantDeath, FuncType.forceInstantDeath].contains(func.funcType)) {
         _addPercent(vals.Rate, 10, (v) => Transl.special.funcValChance(v));
       }
     }

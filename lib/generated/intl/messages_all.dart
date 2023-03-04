@@ -53,8 +53,7 @@ Future<void> reloadMessages() async {
   messages_zh.messages.messages.clear();
   messages_zh.messages.messages.addAll(messages_zh.MessageLookup().messages);
   messages_zh_hant.messages.messages.clear();
-  messages_zh_hant.messages.messages
-      .addAll(messages_zh_hant.MessageLookup().messages);
+  messages_zh_hant.messages.messages.addAll(messages_zh_hant.MessageLookup().messages);
 }
 
 MessageLookupByLibrary? _findExact(String localeName) {
@@ -80,9 +79,8 @@ MessageLookupByLibrary? _findExact(String localeName) {
 
 /// User programs should call this before using [localeName] for messages.
 Future<bool> initializeMessages(String localeName) {
-  var availableLocale = Intl.verifiedLocale(
-      localeName, (locale) => _deferredLibraries[locale] != null,
-      onFailure: (_) => null);
+  var availableLocale =
+      Intl.verifiedLocale(localeName, (locale) => _deferredLibraries[locale] != null, onFailure: (_) => null);
   if (availableLocale == null) {
     return new SynchronousFuture(false);
   }
@@ -102,8 +100,7 @@ bool _messagesExistFor(String locale) {
 }
 
 MessageLookupByLibrary? _findGeneratedMessagesFor(String locale) {
-  var actualLocale =
-      Intl.verifiedLocale(locale, _messagesExistFor, onFailure: (_) => null);
+  var actualLocale = Intl.verifiedLocale(locale, _messagesExistFor, onFailure: (_) => null);
   if (actualLocale == null) return null;
   return _findExact(actualLocale);
 }

@@ -45,11 +45,9 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     final curRegion = Transl.current;
     if (releasedRegions.contains(curRegion)) {
       _region = curRegion;
-    } else if ((curRegion == Region.cn || curRegion == Region.tw) &&
-        widget.svt.extra.mcProfiles.isNotEmpty) {
+    } else if ((curRegion == Region.cn || curRegion == Region.tw) && widget.svt.extra.mcProfiles.isNotEmpty) {
       _wikiSource = _WikiSource.mc;
-    } else if ((curRegion == Region.na || curRegion == Region.kr) &&
-        widget.svt.extra.fandomProfiles.isNotEmpty) {
+    } else if ((curRegion == Region.na || curRegion == Region.kr) && widget.svt.extra.fandomProfiles.isNotEmpty) {
       _wikiSource = _WikiSource.fandom;
     } else {
       _region = Region.jp;
@@ -108,8 +106,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   Widget get buttonBar {
     final hasMC = widget.svt.extra.mcProfiles.isNotEmpty,
         hasFandom = widget.svt.extra.fandomProfiles.isNotEmpty,
-        hasApril =
-            widget.svt.extra.aprilFoolProfile.values.any((e) => e != null);
+        hasApril = widget.svt.extra.aprilFoolProfile.values.any((e) => e != null);
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
@@ -160,8 +157,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
     );
   }
 
-  Widget? _condDescribe(CondType condType, List<int>? condValues,
-      int condValue2, bool showUnknown) {
+  Widget? _condDescribe(CondType condType, List<int>? condValues, int condValue2, bool showUnknown) {
     int? condValue = condValues?.getOrNull(0);
     if (condValue != null) {
       switch (condType) {
@@ -177,8 +173,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         case CondType.svtFriendship:
           return Text('${S.current.bond} Lv.$condValue', textScaleFactor: 0.9);
         case CondType.svtLimit:
-          return Text('${S.current.ascension_short} Lv.$condValue',
-              textScaleFactor: 0.9);
+          return Text('${S.current.ascension_short} Lv.$condValue', textScaleFactor: 0.9);
         case CondType.svtGet:
           return CondTargetValueDescriptor(
             condType: condType,
@@ -213,17 +208,13 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
       if ([168, 240].contains(svt?.collectionNo)) {
         title = S.current.svt_profile_n(lore.id);
       } else {
-        title = lore.id == 1
-            ? S.current.svt_profile_info
-            : S.current.svt_profile_n(lore.id - 1);
+        title = lore.id == 1 ? S.current.svt_profile_info : S.current.svt_profile_n(lore.id - 1);
       }
       List<Widget?> conds = [];
-      conds.add(_condDescribe(
-          lore.condType, lore.condValues, lore.condValue2, false));
+      conds.add(_condDescribe(lore.condType, lore.condValues, lore.condValue2, false));
       if (lore.additionalConds.isNotEmpty) {
         for (final condAdd in lore.additionalConds) {
-          final cond = _condDescribe(
-              condAdd.condType, condAdd.condValues, condAdd.condValue2, true);
+          final cond = _condDescribe(condAdd.condType, condAdd.condValues, condAdd.condValue2, true);
           conds.add(cond);
         }
       }
@@ -274,9 +265,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         if ([168, 240].contains(svt?.collectionNo)) {
           title = S.current.svt_profile_n(index + 1);
         } else {
-          title = index == 0
-              ? S.current.svt_profile_info
-              : S.current.svt_profile_n(index);
+          title = index == 0 ? S.current.svt_profile_info : S.current.svt_profile_n(index);
         }
         children.add(ProfileCommentCard(title: Text(title), comment: profile));
       }

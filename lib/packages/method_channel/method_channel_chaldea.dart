@@ -49,10 +49,7 @@ class MethodChannelChaldea {
     if (PlatformU.isWindows) {
       rect ??= db.settings.windowPosition;
       print('rect ${rect.runtimeType}: $rect');
-      if (rect != null &&
-          rect is List &&
-          rect.length == 4 &&
-          rect.any((e) => e is int && e > 0)) {
+      if (rect != null && rect is List && rect.length == 4 && rect.any((e) => e is int && e > 0)) {
         print('ready to set window rect: $rect');
         return kMethodChannel.invokeMethod('setWindowRect', <String, dynamic>{
           'pos': rect,

@@ -32,8 +32,7 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
     for (final func in funcs) {
       final positions = [
         if (func.functvals.any((e) => e.id == id)) _FuncCheckPos.tvals,
-        if (func.funcquestTvals.any((e) => e.id == id))
-          _FuncCheckPos.questtvals,
+        if (func.funcquestTvals.any((e) => e.id == id)) _FuncCheckPos.questtvals,
         if (func.traitVals.any((e) => e.id == id)) _FuncCheckPos.traitVals,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {
@@ -92,9 +91,7 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
 
     return ListTile(
       dense: true,
-      leading: func.funcPopupIcon == null
-          ? const SizedBox()
-          : db.getIconImage(func.funcPopupIcon, height: 32),
+      leading: func.funcPopupIcon == null ? const SizedBox() : db.getIconImage(func.funcPopupIcon, height: 32),
       title: Text('${func.funcId} ${func.lPopupText.l}'),
       onTap: func.routeTo,
       subtitle: Column(
@@ -102,12 +99,9 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('[${func.funcType.name}] ${Transl.funcType(func.funcType).l}'),
-          if (positions.contains(_FuncCheckPos.tvals))
-            _traits('functvals', func.functvals),
-          if (positions.contains(_FuncCheckPos.questtvals))
-            _traits('quest', func.funcquestTvals),
-          if (positions.contains(_FuncCheckPos.traitVals))
-            _traits('traitVals', func.traitVals),
+          if (positions.contains(_FuncCheckPos.tvals)) _traits('functvals', func.functvals),
+          if (positions.contains(_FuncCheckPos.questtvals)) _traits('quest', func.funcquestTvals),
+          if (positions.contains(_FuncCheckPos.traitVals)) _traits('traitVals', func.traitVals),
         ],
       ),
     );

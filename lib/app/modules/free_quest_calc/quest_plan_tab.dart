@@ -43,8 +43,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             children: [
               Text(S.current.ignore),
               const SizedBox(width: 4),
-              ...ignoredItems.map((e) => Item.iconBuilder(
-                  context: context, item: db.gameData.items[e], width: 32))
+              ...ignoredItems.map((e) => Item.iconBuilder(context: context, item: db.gameData.items[e], width: 32))
             ],
           ),
         ),
@@ -60,13 +59,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
     return Column(
       children: <Widget>[
         Container(
-          decoration: BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context))),
+          decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
-            title: Text(
-                '${S.current.total_counts}: ${widget.solution?.totalNum ?? "-"}'),
-            trailing: Text(
-                '${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
+            title: Text('${S.current.total_counts}: ${widget.solution?.totalNum ?? "-"}'),
+            trailing: Text('${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
           ),
         ),
         Expanded(
@@ -81,8 +77,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
 
   Widget buildQuest(LPVariable variable) {
     final questId = variable.name;
-    final Quest? quest =
-        db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
+    final Quest? quest = db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
     Widget child = ValueStatefulBuilder<bool>(
       key: Key('plan_quest_$questId'),
       initValue: false,
@@ -108,12 +103,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                           widget.solution!.params!.blacklist.remove(questId);
                         });
                       },
-                      icon: Icon(Icons.clear,
-                          color: Theme.of(context).colorScheme.secondary),
+                      icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
                       label: Text(
                         S.current.remove_from_blacklist,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                     )
                   : TextButton.icon(
@@ -139,8 +132,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
       },
     );
     return Container(
-      decoration: BoxDecoration(
-          border: Border(bottom: Divider.createBorderSide(context))),
+      decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
       child: child,
     );
   }
@@ -157,14 +149,11 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         children.add(CenterWidgetSpan(
           child: Opacity(
             opacity: 0.75,
-            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon,
-                height: 18),
+            child: db.getIconImage(db.gameData.items[entry.key]?.borderedIcon, height: 18),
           ),
         ));
       }
-      String s = entry.value.abs() < 1
-          ? entry.value.toStringAsPrecision(1)
-          : entry.value.floor().toString();
+      String s = entry.value.abs() < 1 ? entry.value.toStringAsPrecision(1) : entry.value.floor().toString();
       children.add(TextSpan(text: '×$s '));
     }
     return Text.rich(

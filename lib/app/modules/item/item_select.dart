@@ -22,12 +22,8 @@ class ItemSelectPage extends StatelessWidget {
       final key = item.category.index * 10 + item.background.index;
       groupedItems.putIfAbsent(key, () => []).add(item);
     }
-    int normal = ItemCategory.normal.index,
-        gem = ItemCategory.skill.index,
-        ascension = ItemCategory.ascension.index;
-    int bronze = ItemBGType.bronze.index,
-        silver = ItemBGType.silver.index,
-        gold = ItemBGType.gold.index;
+    int normal = ItemCategory.normal.index, gem = ItemCategory.skill.index, ascension = ItemCategory.ascension.index;
+    int bronze = ItemBGType.bronze.index, silver = ItemBGType.silver.index, gold = ItemBGType.gold.index;
     Map<int, String?> titles = {
       0: S.current.item_category_special,
       normal * 10 + bronze: S.current.item_category_bronze,
@@ -52,8 +48,7 @@ class ItemSelectPage extends StatelessWidget {
                 spacing: 2,
                 runSpacing: 2,
                 children: [
-                  _oneItem(context, Items.bondPointId, Items.lantern?.icon,
-                      S.current.bond),
+                  _oneItem(context, Items.bondPointId, Items.lantern?.icon, S.current.bond),
                   _oneItem(context, Items.expPointId, '', 'EXP'),
                 ],
               ),
@@ -74,10 +69,7 @@ class ItemSelectPage extends StatelessWidget {
                 childAspectRatio: 132 / 144,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                children: [
-                  for (final item in items)
-                    _oneItem(context, item.id, item.borderedIcon, item.lName.l)
-                ],
+                children: [for (final item in items) _oneItem(context, item.id, item.borderedIcon, item.lName.l)],
               ),
             )
           ],
@@ -88,8 +80,7 @@ class ItemSelectPage extends StatelessWidget {
       appBar: AppBar(title: Text(S.current.select_item_title)),
       body: ScrollRestoration(
         restorationId: 'item_select_page',
-        builder: (context, controller) =>
-            ListView(controller: controller, children: children),
+        builder: (context, controller) => ListView(controller: controller, children: children),
       ),
     );
   }

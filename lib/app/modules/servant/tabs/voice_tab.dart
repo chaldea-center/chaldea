@@ -45,16 +45,12 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
         releasedRegions.add(r);
       }
     }
-    _region =
-        releasedRegions.contains(Transl.current) ? Transl.current : Region.jp;
+    _region = releasedRegions.contains(Transl.current) ? Transl.current : Region.jp;
     fetchSvt(_region);
   }
 
   bool isReleased(Region r) {
-    return db.gameData.mappingData.svtRelease
-            .ofRegion(r)
-            ?.contains(widget.svt.collectionNo) ==
-        true;
+    return db.gameData.mappingData.svtRelease.ofRegion(r)?.contains(widget.svt.collectionNo) == true;
   }
 
   void fetchSvt(Region r) async {
@@ -92,8 +88,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           onTap: () {
-            launch(
-                'https://fategrandorder.fandom.com/wiki/Sub:${widget.svt.extra.fandomLink}/Dialogue');
+            launch('https://fategrandorder.fandom.com/wiki/Sub:${widget.svt.extra.fandomLink}/Dialogue');
           },
           dense: true,
         ),
@@ -183,10 +178,8 @@ class VoiceGroupAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final voiceLines = group.voiceLines.toList()
-      ..sort2((e) => e.priority ?? 0, reversed: true);
-    final svt =
-        _svt?.id == group.svtId ? _svt : db.gameData.servantsById[group.svtId];
+    final voiceLines = group.voiceLines.toList()..sort2((e) => e.priority ?? 0, reversed: true);
+    final svt = _svt?.id == group.svtId ? _svt : db.gameData.servantsById[group.svtId];
     return SimpleAccordion(
       headerBuilder: (context, _) {
         List<InlineSpan> suffixes = [];
@@ -202,17 +195,13 @@ class VoiceGroupAccordion extends StatelessWidget {
                   .toList() ??
               [];
           if (ascensions.isNotEmpty) {
-            suffixes.add(TextSpan(
-                text: '${S.current.ascension_short} ${ascensions.join("&")}'));
+            suffixes.add(TextSpan(text: '${S.current.ascension_short} ${ascensions.join("&")}'));
           }
           for (final costumeId in costumes) {
-            final costume = svt?.profile.costume.values
-                .firstWhereOrNull((e) => e.battleCharaId == costumeId);
+            final costume = svt?.profile.costume.values.firstWhereOrNull((e) => e.battleCharaId == costumeId);
             suffixes.add(SharedBuilder.textButtonSpan(
               context: context,
-              text: costume == null
-                  ? '${S.current.costume} $costumeId'
-                  : costume.lName.l,
+              text: costume == null ? '${S.current.costume} $costumeId' : costume.lName.l,
               onTap: costume == null ? null : () => costume.routeTo(),
             ));
           }
@@ -227,10 +216,8 @@ class VoiceGroupAccordion extends StatelessWidget {
         }
         InlineSpan? svtSpan;
         if (group.svtId != _svt?.id) {
-          final svtId =
-              db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
-          var curSvt =
-              db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
+          final svtId = db.gameData.storyCharaFigures[group.svtId] ?? group.svtId;
+          var curSvt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
           if (_svt?.id != curSvt?.id || curSvt == null) {
             svtSpan = curSvt == null
                 ? TextSpan(text: '${group.svtId} ')
@@ -244,9 +231,7 @@ class VoiceGroupAccordion extends StatelessWidget {
         return ListTile(
           title: Text.rich(TextSpan(children: [
             if (svtSpan != null) svtSpan,
-            TextSpan(
-                text:
-                    Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
+            TextSpan(text: Transl.enums(group.type, (enums) => enums.svtVoiceType).l),
           ])),
           subtitle: suffixes.isEmpty
               ? null
@@ -305,12 +290,10 @@ class VoiceGroupAccordion extends StatelessWidget {
     for (int index = 0; index < line.audioAssets.length; index++) {
       int delay = ((line.delay.getOrNull(index) ?? 0) * 1000).toInt();
       if (delay > 0) {
-        sources
-            .add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
+        sources.add(SilenceAudioSource(duration: Duration(milliseconds: delay)));
       }
       if (kIsWeb) {
-        sources.add(AudioSource.uri(Uri.parse(
-            AtlasIconLoader.i.proxyAssetUrl(line.audioAssets[index]))));
+        sources.add(AudioSource.uri(Uri.parse(AtlasIconLoader.i.proxyAssetUrl(line.audioAssets[index]))));
       } else {
         final fp = AtlasIconLoader.i.getCached(line.audioAssets[index]);
         if (fp == null) continue;
@@ -320,16 +303,14 @@ class VoiceGroupAccordion extends StatelessWidget {
     return sources;
   }
 
-  Widget _buildVoiceLine(
-      BuildContext context, VoiceLine line, Map<String, int> _nameCount) {
+  Widget _buildVoiceLine(BuildContext context, VoiceLine line, Map<String, int> _nameCount) {
     String _transl(String text) {
       for (final s in ['\u3000（ひとつの施策でふたつあるとき）', '（57は欠番）']) {
         text = text.replaceFirst(s, '');
       }
       text = text.trim();
       text = text.replaceFirstMapped(RegExp(r'^(.+?)(\d*)([(（)]|$)'), (match) {
-        final _name = Transl.string(
-            db.gameData.mappingData.voiceLineNames, match.group(1)!.trim());
+        final _name = Transl.string(db.gameData.mappingData.voiceLineNames, match.group(1)!.trim());
         final _num = match.group(2);
         if (_num != null && _num.isNotEmpty) {
           return '${_name.l} $_num';
@@ -340,8 +321,7 @@ class VoiceGroupAccordion extends StatelessWidget {
       final event = _getEvent([line]);
       if (event != null) {
         text = text.replaceAll('\n', '');
-        text = text.replaceFirst(event.name.replaceAll('\n', ''),
-            event.lName.l.replaceAll('\n', ' '));
+        text = text.replaceFirst(event.name.replaceAll('\n', ''), event.lName.l.replaceAll('\n', ' '));
       }
       return text;
     }
@@ -355,10 +335,8 @@ class VoiceGroupAccordion extends StatelessWidget {
     if (line.overwriteName.isNotEmpty) {
       overwriteName = line.overwriteName;
       if (overwriteName.contains('{0}')) {
-        int index =
-            _nameCount[overwriteName] = (_nameCount[overwriteName] ?? 0) + 1;
-        overwriteName =
-            overwriteName.replaceAllMapped('{0}', (match) => index.toString());
+        int index = _nameCount[overwriteName] = (_nameCount[overwriteName] ?? 0) + 1;
+        overwriteName = overwriteName.replaceAllMapped('{0}', (match) => index.toString());
       }
       overwriteName = _transl(overwriteName);
     }
@@ -390,26 +368,20 @@ class VoiceGroupAccordion extends StatelessWidget {
                     '· $name',
                     maxLines: 2,
                     maxFontSize: 12,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primaryContainer),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primaryContainer),
                   ),
                   for (final cond in line.conds)
-                    if (![
-                          VoiceCondType.levelUp,
-                          VoiceCondType.event,
-                          VoiceCondType.birthDay
-                        ].contains(cond.condType) &&
-                        !(cond.condType == VoiceCondType.eventEnd &&
-                            cond.value == 0))
+                    if (![VoiceCondType.levelUp, VoiceCondType.event, VoiceCondType.birthDay].contains(cond.condType) &&
+                        !(cond.condType == VoiceCondType.eventEnd && cond.value == 0))
                       VoiceCondDescriptor(
                         condType: cond.condType,
                         value: cond.value,
                         valueList: cond.valueList,
                         textScaleFactor: 0.85,
-                        style: TextStyle(
-                            color:
-                                Theme.of(context).textTheme.bodySmall?.color),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
                       ),
                 ],
               ),
@@ -466,8 +438,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                         localFiles.add(await AtlasIconLoader.i.get(url));
                       }
                       EasyLoading.dismiss();
-                      String? _dir =
-                          localFiles.firstWhereOrNull((e) => e != null);
+                      String? _dir = localFiles.firstWhereOrNull((e) => e != null);
                       if (_dir != null) _dir = pathlib.dirname(_dir);
                       String hint = '';
                       if (_dir == null) {
@@ -475,8 +446,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                       } else {
                         hint = '${db.paths.convertIosPath(_dir)}:';
                         for (final fp in localFiles) {
-                          hint +=
-                              '\n - ${pathlib.basename(fp ?? S.current.failed)}';
+                          hint += '\n - ${pathlib.basename(fp ?? S.current.failed)}';
                         }
                       }
                       SimpleCancelOkDialog(
@@ -488,8 +458,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                           if (PlatformU.isDesktop) {
                             openFile(_dir);
                           } else {
-                            EasyLoading.showInfo(
-                                S.current.open_in_file_manager);
+                            EasyLoading.showInfo(S.current.open_in_file_manager);
                           }
                         },
                       ).showDialog(null);
@@ -517,8 +486,7 @@ class _PlayButton<T> extends StatefulWidget {
   final MyAudioPlayer<T> player;
   final T? tag;
   final FutureOr<List<AudioSource>> Function() getSources;
-  const _PlayButton(
-      {super.key, required this.player, required this.getSources, this.tag});
+  const _PlayButton({super.key, required this.player, required this.getSources, this.tag});
 
   @override
   State<_PlayButton> createState() => __PlayButtonState();
@@ -605,20 +573,16 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
               return SimpleCancelOkDialog(
                 title: const Text('Linux MPV'),
                 hideCancel: true,
-                content: Text.rich(TextSpan(
-                    text: 'MPV is required to play audio, see\n',
-                    children: [
-                      TextSpan(
-                        text: 'https://github.com/bleonard252/just_audio_mpv',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            launch(
-                                'https://github.com/bleonard252/just_audio_mpv');
-                          },
-                      )
-                    ])),
+                content: Text.rich(TextSpan(text: 'MPV is required to play audio, see\n', children: [
+                  TextSpan(
+                    text: 'https://github.com/bleonard252/just_audio_mpv',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        launch('https://github.com/bleonard252/just_audio_mpv');
+                      },
+                  )
+                ])),
               );
             },
           );

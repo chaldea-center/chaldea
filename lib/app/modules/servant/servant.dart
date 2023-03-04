@@ -45,8 +45,7 @@ class ServantDetailPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantDetailPageState();
 }
 
-class ServantDetailPageState extends State<ServantDetailPage>
-    with SingleTickerProviderStateMixin {
+class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerProviderStateMixin {
   Servant? _svt;
 
   Servant get svt => _svt!;
@@ -67,9 +66,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   }
 
   void _fetchSvt() async {
-    _svt = widget.svt ??
-        db.gameData.servantsWithDup[widget.id] ??
-        db.gameData.servantsById[widget.id];
+    _svt = widget.svt ?? db.gameData.servantsWithDup[widget.id] ?? db.gameData.servantsById[widget.id];
     final id = widget.svt?.id ?? widget.id;
     if (id == null || _svt != null) return;
     _svt = await AtlasApi.svt(id);
@@ -89,10 +86,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       return NotFoundPage(url: Routes.servantI(widget.id ?? 0));
     }
 
-    builders = db.settings.display.sortedSvtTabs
-        .map((e) => _getBuilder(e))
-        .whereType<_SubTabInfo>()
-        .toList();
+    builders = db.settings.display.sortedSvtTabs.map((e) => _getBuilder(e)).whereType<_SubTabInfo>().toList();
     return DefaultTabController(
       length: builders.length,
       child: Scaffold(
@@ -110,11 +104,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   List<Widget> _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
     final ascensions = svt.extraAssets.charaGraph.ascension;
-    final asc = db.userData.svtAscensionIcon == -1 && svt.isUserSvt
-        ? svt.status.cur.ascension
-        : db.userData.svtAscensionIcon;
-    final ascension =
-        ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
+    final asc =
+        db.userData.svtAscensionIcon == -1 && svt.isUserSvt ? svt.status.cur.ascension : db.userData.svtAscensionIcon;
+    final ascension = ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
     return [
       SliverAppBar(
         title: AutoSizeText(svt.lName.l, maxLines: 1),
@@ -164,8 +156,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
                     child: Container(
-                      color: Colors.grey[800]?.withOpacity(
-                          Theme.of(context).isDarkMode ? 0.75 : 0.65),
+                      color: Colors.grey[800]?.withOpacity(Theme.of(context).isDarkMode ? 0.75 : 0.65),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -218,8 +209,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     atks: svt.atkGrowth,
                     hps: svt.hpGrowth,
                     avatar: CachedImage(
-                      imageUrl:
-                          svt.extraAssets.status.ascension?[1] ?? svt.icon,
+                      imageUrl: svt.extraAssets.status.ascension?[1] ?? svt.icon,
                       height: 90,
                       placeholder: (_, __) => Container(),
                     ),
@@ -333,8 +323,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         // unselectedLabelColor: Colors.grey,
         isScrollable: true,
         tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
-        indicatorColor:
-            Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
+        indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
       ),
     ));
   }
@@ -343,8 +332,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     return TabBarView(
       children: [
         for (final builder in builders)
-          builder.viewBuilder?.call(context) ??
-              Center(child: Text(S.current.not_implemented))
+          builder.viewBuilder?.call(context) ?? Center(child: Text(S.current.not_implemented))
       ],
     );
   }
@@ -356,8 +344,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.plan,
-          viewBuilder: (ctx) =>
-              db.onUserData((context, _) => SvtPlanTab(svt: svt)),
+          viewBuilder: (ctx) => db.onUserData((context, _) => SvtPlanTab(svt: svt)),
         );
       case SvtTab.skill:
         if (svt.skills.isEmpty) return null;
@@ -398,10 +385,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
         if (!svt.isNormalSvt) return null;
         if (svt.bondEquip == 0 &&
             svt.valentineEquip.isEmpty &&
-            db.gameData.craftEssences.values.every((e) =>
-                !e.extra.characters.contains(svt.originalCollectionNo)) &&
-            db.gameData.commandCodes.values.every((e) =>
-                !e.extra.characters.contains(svt.originalCollectionNo))) {
+            db.gameData.craftEssences.values.every((e) => !e.extra.characters.contains(svt.originalCollectionNo)) &&
+            db.gameData.commandCodes.values.every((e) => !e.extra.characters.contains(svt.originalCollectionNo))) {
           return null;
         }
         return _SubTabInfo(
@@ -528,8 +513,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     if (faces.costume != null) {
                       faces.costume!.forEach((key, value) {
                         _addOne(
-                          svt.profile.costume[key]?.lName.l ??
-                              '${S.current.costume} $key',
+                          svt.profile.costume[key]?.lName.l ?? '${S.current.costume} $key',
                           value,
                         );
                       });
@@ -598,9 +582,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
             PopupMenuItem<String>(
               value: 'switch_slider_dropdown',
               onTap: () {
-                db.settings.display.svtPlanInputMode = EnumUtil.next(
-                    SvtPlanInputMode.values,
-                    db.settings.display.svtPlanInputMode);
+                db.settings.display.svtPlanInputMode =
+                    EnumUtil.next(SvtPlanInputMode.values, db.settings.display.svtPlanInputMode);
                 db.saveSettings();
                 setState(() {});
               },
@@ -622,8 +605,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       SvtObtain.unavailable: Color(0xFFA6A6A6)
     };
     return svt.extra.obtains.map((obtain) {
-      final bgColor =
-          badgeColors[obtain] ?? badgeColors[SvtObtain.unavailable]!;
+      final bgColor = badgeColors[obtain] ?? badgeColors[SvtObtain.unavailable]!;
       final String shownText = Transl.svtObtain(obtain).l;
       return DecoratedBox(
         decoration: BoxDecoration(
@@ -633,8 +615,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
-          child: Text(shownText,
-              style: const TextStyle(color: Colors.white, fontSize: 13)),
+          child: Text(shownText, style: const TextStyle(color: Colors.white, fontSize: 13)),
         ),
       );
     }).toList();

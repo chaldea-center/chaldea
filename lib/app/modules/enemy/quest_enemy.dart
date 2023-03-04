@@ -32,8 +32,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '[${widget.overrideTitle ?? S.current.enemy}] ${enemy.lShownName}'),
+        title: Text('[${widget.overrideTitle ?? S.current.enemy}] ${enemy.lShownName}'),
       ),
       body: ListView(
         children: [
@@ -122,12 +121,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 isHeaders: const [true, false, true, false],
               ),
               CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'HP',
-                  enemy.hp.format(compact: false),
-                  'ATK',
-                  enemy.atk.format(compact: false)
-                ],
+                texts: ['HP', enemy.hp.format(compact: false), 'ATK', enemy.atk.format(compact: false)],
                 isHeaders: const [true, false, true, false],
               ),
               // CustomTableRow.fromTextsWithHeader(
@@ -177,10 +171,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         texts: [S.current.trait],
         isHeader: true,
       ),
-      CustomTableRow.fromChildren(children: [
-        SharedBuilder.traitList(
-            context: context, traits: enemy.traits.toList()..sort2((e) => e.id))
-      ]),
+      CustomTableRow.fromChildren(
+          children: [SharedBuilder.traitList(context: context, traits: enemy.traits.toList()..sort2((e) => e.id))]),
       if (enemy.ai != null) ...[
         CustomTableRow.fromTexts(texts: [
           'AI ID',
@@ -215,8 +207,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 textAlign: TextAlign.center,
               ),
             ),
-            if (enemy.ai!.minActNum != null)
-              TableCellData(text: enemy.ai!.minActNum.toString()),
+            if (enemy.ai!.minActNum != null) TableCellData(text: enemy.ai!.minActNum.toString()),
             TableCellData(text: enemy.ai!.maxActNum.toString()),
             TableCellData(text: enemy.ai!.actPriority.toString()),
           ],
@@ -224,9 +215,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       ],
       ...enemyScriptInfo(),
       ...enemyDrops(),
-      if (enemy.skills.skill1 != null ||
-          enemy.skills.skill2 != null ||
-          enemy.skills.skill3 != null)
+      if (enemy.skills.skill1 != null || enemy.skills.skill2 != null || enemy.skills.skill3 != null)
         CustomTableRow.fromTexts(
           texts: [S.current.skill],
           isHeader: true,
@@ -255,8 +244,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
-      if (enemy.classPassive.classPassive.isNotEmpty ||
-          enemy.classPassive.addPassive.isNotEmpty)
+      if (enemy.classPassive.classPassive.isNotEmpty || enemy.classPassive.addPassive.isNotEmpty)
         CustomTableRow.fromTexts(
           texts: [S.current.passive_skill],
           isHeader: true,
@@ -281,9 +269,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           texts: [S.current.append_skill],
           isHeader: true,
         ),
-        for (int index = 0;
-            index < enemy.classPassive.appendPassiveSkillIds!.length;
-            index++)
+        for (int index = 0; index < enemy.classPassive.appendPassiveSkillIds!.length; index++)
           SkillDescriptor.fromId(
             id: enemy.classPassive.appendPassiveSkillIds![index],
             builder: (context, skill) => SkillDescriptor(
@@ -314,13 +300,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         ),
         for (final entry in enemy.originalEnemyScript!.entries)
           CustomTableRow(children: [
-            TableCellData(
-                text: entry.key,
-                alignment: AlignmentDirectional.centerEnd,
-                textAlign: TextAlign.end),
-            TableCellData(
-                text: entry.value.toString(),
-                alignment: AlignmentDirectional.centerStart),
+            TableCellData(text: entry.key, alignment: AlignmentDirectional.centerEnd, textAlign: TextAlign.end),
+            TableCellData(text: entry.value.toString(), alignment: AlignmentDirectional.centerStart),
           ])
       ]
     ]);
@@ -328,9 +309,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   Iterable<Widget> enemyDrops() sync* {
     if (enemy.drops.isEmpty) return;
-    yield CustomTableRow.fromTexts(
-        texts: ['${S.current.game_drop}(${enemy.drops.first.runs} runs)'],
-        isHeader: true);
+    yield CustomTableRow.fromTexts(texts: ['${S.current.game_drop}(${enemy.drops.first.runs} runs)'], isHeader: true);
     final drops = enemy.drops.toList();
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
     List<Widget> children = [];
@@ -352,24 +331,19 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         id: drop.objectId,
         width: 42,
         text: text ?? '-',
-        option:
-            ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+        option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
       ));
     }
-    yield CustomTableRow.fromChildren(
-        children: [Wrap(spacing: 3, runSpacing: 2, children: children)]);
+    yield CustomTableRow.fromChildren(children: [Wrap(spacing: 3, runSpacing: 2, children: children)]);
   }
 
   List<Widget> enemyScriptInfo() {
     List<Widget> children = [
-      if (enemy.enemyScript.isRare)
-        CustomTableRow.fromTexts(texts: [S.current.rare_enemy_hint]),
-      if (enemy.enemyScript.leader == true)
-        CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
+      if (enemy.enemyScript.isRare) CustomTableRow.fromTexts(texts: [S.current.rare_enemy_hint]),
+      if (enemy.enemyScript.leader == true) CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
     ];
     if (children.isNotEmpty) {
-      children.insert(
-          0, CustomTableRow.fromTexts(texts: const ['Hint'], isHeader: true));
+      children.insert(0, CustomTableRow.fromTexts(texts: const ['Hint'], isHeader: true));
     }
     return children;
   }

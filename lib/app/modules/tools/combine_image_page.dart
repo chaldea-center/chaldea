@@ -50,8 +50,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height / 2;
-    option.imgHeight ??=
-        (MediaQuery.of(context).devicePixelRatio * height).toInt();
+    option.imgHeight ??= (MediaQuery.of(context).devicePixelRatio * height).toInt();
     return Scaffold(
       appBar: AppBar(title: const Text('Combine Images')),
       body: Column(
@@ -96,9 +95,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
           });
         },
         child: Container(
-          color: _selected == index
-              ? Theme.of(context).colorScheme.primaryContainer
-              : null,
+          color: _selected == index ? Theme.of(context).colorScheme.primaryContainer : null,
           child: Padding(
             padding: const EdgeInsets.all(4),
             child: image,
@@ -184,8 +181,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
-        Text(isSelected ? 'Insert Image' : 'Add image',
-            textAlign: TextAlign.center),
+        Text(isSelected ? 'Insert Image' : 'Add image', textAlign: TextAlign.center),
         const SizedBox(height: 4),
         Wrap(
           alignment: WrapAlignment.center,
@@ -228,8 +224,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                   title: 'http(s) URL',
                   validate: (s) {
                     final uri = Uri.tryParse(s);
-                    return uri != null &&
-                        uri.scheme.toLowerCase().startsWith('http');
+                    return uri != null && uri.scheme.toLowerCase().startsWith('http');
                   },
                   onSubmit: (s) {
                     _onChangeUrl(Uri.tryParse(s));
@@ -242,8 +237,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               onPressed: kIsWeb
                   ? null
                   : () async {
-                      final result = await FilePicker.platform
-                          .pickFiles(type: FileType.image);
+                      final result = await FilePicker.platform.pickFiles(type: FileType.image);
                       final fp = result?.files.getOrNull(0)?.path;
                       if (fp != null) {
                         _onChangeUrl(Uri.file(fp));
@@ -276,8 +270,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
                     }
                     if (isSelected) {
                       // _selected = -1;
-                      SchedulerBinding.instance
-                          .addPostFrameCallback((timeStamp) {
+                      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
                         exportImage(ratio);
                       });
                     } else {
@@ -305,10 +298,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               title: const Text('Exported Image Height'),
               trailing: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(option.imgHeight.toString()),
-                  const Icon(Icons.edit)
-                ],
+                children: [Text(option.imgHeight.toString()), const Icon(Icons.edit)],
               ),
               onTap: () {
                 InputCancelOkDialog(
@@ -373,11 +363,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               trailing: DropdownButton<CrossAxisAlignment>(
                 value: option.titleAlign,
                 items: [
-                  for (final align in [
-                    CrossAxisAlignment.start,
-                    CrossAxisAlignment.center,
-                    CrossAxisAlignment.end
-                  ])
+                  for (final align in [CrossAxisAlignment.start, CrossAxisAlignment.center, CrossAxisAlignment.end])
                     DropdownMenuItem(
                       value: align,
                       child: Text(align.name),
@@ -401,12 +387,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               trailing: DropdownButton<BoxFit>(
                 value: option.imgFit,
                 items: [
-                  for (final fit in [
-                    BoxFit.none,
-                    BoxFit.fitHeight,
-                    BoxFit.scaleDown,
-                    BoxFit.cover
-                  ])
+                  for (final fit in [BoxFit.none, BoxFit.fitHeight, BoxFit.scaleDown, BoxFit.cover])
                     DropdownMenuItem(
                       value: fit,
                       child: Text(fit.name),
@@ -425,11 +406,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               trailing: DropdownButton<CrossAxisAlignment>(
                 value: option.titleAlign,
                 items: [
-                  for (final align in [
-                    CrossAxisAlignment.start,
-                    CrossAxisAlignment.center,
-                    CrossAxisAlignment.end
-                  ])
+                  for (final align in [CrossAxisAlignment.start, CrossAxisAlignment.center, CrossAxisAlignment.end])
                     DropdownMenuItem(
                       value: align,
                       child: Text(align.name),
@@ -464,8 +441,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
       ImageActions.showSaveShare(
         context: kAppKey.currentContext,
         data: data,
-        destFp: joinPaths(db.paths.downloadDir,
-            'Combined-${DateTime.now().toSafeFileName()}.png'),
+        destFp: joinPaths(db.paths.downloadDir, 'Combined-${DateTime.now().toSafeFileName()}.png'),
       );
     } catch (e, s) {
       logger.e('Generate image failed', e, s);

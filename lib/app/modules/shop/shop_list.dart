@@ -119,8 +119,7 @@ class ShopListPage extends StatefulWidget {
   State<ShopListPage> createState() => _ShopListPageState();
 }
 
-class _ShopListPageState extends State<ShopListPage>
-    with SearchableListState<NiceShop, ShopListPage> {
+class _ShopListPageState extends State<ShopListPage> with SearchableListState<NiceShop, ShopListPage> {
   bool _loading = true;
   final filterData = ShopFilterData();
 
@@ -131,9 +130,7 @@ class _ShopListPageState extends State<ShopListPage>
   @override
   void initState() {
     super.initState();
-    AtlasApi.searchShop(
-            type: widget.type, eventId: 0, region: widget.region ?? Region.jp)
-        .then((value) {
+    AtlasApi.searchShop(type: widget.type, eventId: 0, region: widget.region ?? Region.jp).then((value) {
       if (value != null) shops = value;
       _loading = false;
       if (mounted) setState(() {});
@@ -165,10 +162,7 @@ class _ShopListPageState extends State<ShopListPage>
             tooltip: S.current.filter,
             onPressed: () {
               final purchaseTypes = <PurchaseType>{
-                for (final shop in shops) ...[
-                  shop.purchaseType,
-                  ...shop.itemSet.map((e) => e.purchaseType)
-                ]
+                for (final shop in shops) ...[shop.purchaseType, ...shop.itemSet.map((e) => e.purchaseType)]
               };
               FilterPage.show(
                 context: context,
@@ -204,8 +198,7 @@ class _ShopListPageState extends State<ShopListPage>
     if (!filterData.permanent.matchOne(shop.closedAt > kNeverClosedTimestamp)) {
       return false;
     }
-    if (!filterData.purchaseType.matchAny(
-        [shop.purchaseType, ...shop.itemSet.map((e) => e.purchaseType)])) {
+    if (!filterData.purchaseType.matchAny([shop.purchaseType, ...shop.itemSet.map((e) => e.purchaseType)])) {
       return false;
     }
     return true;

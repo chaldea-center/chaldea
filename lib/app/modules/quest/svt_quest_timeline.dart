@@ -66,8 +66,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
 
   int getOpenAt(Quest quest, Region r) {
     if (r == Region.jp) return quest.openedAt;
-    final releaseTime =
-        db.gameData.mappingData.questRelease[quest.id]?.ofRegion(r);
+    final releaseTime = db.gameData.mappingData.questRelease[quest.id]?.ofRegion(r);
     if (releaseTime != null) return releaseTime;
     return quest.openedAt * -1;
   }
@@ -79,12 +78,10 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
       if (!filterData.favorite.check(svt?.status.favorite ?? false)) {
         return false;
       }
-      if (filterData.questType.options.isNotEmpty &&
-          !filterData.questType.matchAny(getQuestTypes(quest))) {
+      if (filterData.questType.options.isNotEmpty && !filterData.questType.matchAny(getQuestTypes(quest))) {
         return false;
       }
-      if (filterData.upgradeType.isNotEmpty &&
-          !filterData.upgradeType.matchAny(getUpgradeTypes(quest))) {
+      if (filterData.upgradeType.isNotEmpty && !filterData.upgradeType.matchAny(getUpgradeTypes(quest))) {
         return false;
       }
       return true;
@@ -94,11 +91,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
     switch (filterData.sortType.radioValue!) {
       case TimelineSortType.questOpenTime:
         for (final quest in shownQuests) {
-          grouped
-              .putIfAbsent(
-                  getOpenAt(quest, filterData.region), () => _GroupData())
-              .quests
-              .add(quest);
+          grouped.putIfAbsent(getOpenAt(quest, filterData.region), () => _GroupData()).quests.add(quest);
         }
         break;
       case TimelineSortType.apCampaignTime:
@@ -106,10 +99,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         for (final event in db.gameData.events.values) {
           Set<int> qs = {};
           for (final campaign in event.campaigns) {
-            if ([
-              CombineAdjustTarget.questAp,
-              CombineAdjustTarget.questApFirstTime
-            ].contains(campaign.target)) {
+            if ([CombineAdjustTarget.questAp, CombineAdjustTarget.questApFirstTime].contains(campaign.target)) {
               qs.addAll(campaign.targetIds);
               qs.addAll(event.campaignQuests.map((e) => e.questId));
             }
@@ -147,17 +137,14 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
     for (final t in ts) {
       if (!filterData.showOutdated) {
         if (filterData.useApCampaign) {
-          if (t <
-              now - 3600 * 24 * 31 * (filterData.region.eventDelayMonth + 1)) {
+          if (t < now - 3600 * 24 * 31 * (filterData.region.eventDelayMonth + 1)) {
             continue;
           }
         } else {
           if (filterData.region == Region.jp && t < now - 3600 * 24 * 400) {
             continue;
           }
-          if (filterData.region != Region.jp &&
-              t > 0 &&
-              t < now - 3600 * 24 * 31) {
+          if (filterData.region != Region.jp && t > 0 && t < now - 3600 * 24 * 31) {
             continue;
           }
         }
@@ -222,9 +209,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
           ),
           IconButton(
             icon: FaIcon(
-              filterData.reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
+              filterData.reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: S.current.sort_order,
@@ -261,12 +246,9 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   }
 
   Widget timeAndSvtGrid(int timestamp, _GroupData data, [int maxShown = 50]) {
-    final timeStr = DateTime.fromMillisecondsSinceEpoch(timestamp.abs() * 1000)
-        .toDateString();
+    final timeStr = DateTime.fromMillisecondsSinceEpoch(timestamp.abs() * 1000).toDateString();
     List<Widget> children = [
-      SHeader(timestamp < 0 || filterData.useApCampaign
-          ? '$timeStr (JP)'
-          : '$timeStr (${filterData.region.upper})'),
+      SHeader(timestamp < 0 || filterData.useApCampaign ? '$timeStr (JP)' : '$timeStr (${filterData.region.upper})'),
       if (data.events.isNotEmpty)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -277,8 +259,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                 InkWell(
                   onTap: event.routeTo,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                     child: SizedBox(
                       child: Text(
                         event.lName.l.setMaxLines(1),
@@ -302,9 +283,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         }
       }
       String countText = '${data.quests.length} ${S.current.quest}: ';
-      countText += [...TimelineQuestType.values, ...TimelineUpgradeType.values]
-          .where((e) => types.containsKey(e))
-          .map((e) {
+      countText +=
+          [...TimelineQuestType.values, ...TimelineUpgradeType.values].where((e) => types.containsKey(e)).map((e) {
         final name = e is TimelineQuestType
             ? e.shownName
             : e is TimelineUpgradeType
@@ -321,16 +301,13 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         onTap: () {
           router.pushPage(Builder(
             builder: (context) => Scaffold(
-              appBar: AppBar(
-                  title: Text('${data.quests.length} ${S.current.quest}(s)')),
+              appBar: AppBar(title: Text('${data.quests.length} ${S.current.quest}(s)')),
               body: GridView.extent(
                 maxCrossAxisExtent: 64,
                 childAspectRatio: 132 / 144,
                 shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children:
-                    data.quests.map((q) => _buildIcon(context, q)).toList(),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                children: data.quests.map((q) => _buildIcon(context, q)).toList(),
               ),
             ),
           ));
@@ -394,9 +371,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                   },
                 ),
                 ListTile(
-                  leading: spotImage == null
-                      ? null
-                      : db.getIconImage(quest.spot?.shownImage),
+                  leading: spotImage == null ? null : db.getIconImage(quest.spot?.shownImage),
                   title: Text(quest.lName.l),
                   subtitle: Text(quest.lSpot.l),
                   onTap: () {
@@ -404,10 +379,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     quest.routeTo(popDetails: true);
                   },
                 ),
-                for (final skill in targetSkills.values)
-                  DisableLayoutBuilder(child: SkillDescriptor(skill: skill)),
-                if (targetTd != null)
-                  DisableLayoutBuilder(child: TdDescriptor(td: targetTd)),
+                for (final skill in targetSkills.values) DisableLayoutBuilder(child: SkillDescriptor(skill: skill)),
+                if (targetTd != null) DisableLayoutBuilder(child: TdDescriptor(td: targetTd)),
               ],
             );
           },
@@ -428,12 +401,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     icon: Atlas.assetItem(iconId),
                     width: 20,
                     text: iconId == ItemIconId.skillUpgrade
-                        ? targetSkills.values
-                            .map((e) => e.num)
-                            .toSet()
-                            .toList()
-                            .sortReturn()
-                            .join()
+                        ? targetSkills.values.map((e) => e.num).toSet().toList().sortReturn().join()
                         : null,
                     option: ImageWithTextOption(fontSize: 12),
                   ),

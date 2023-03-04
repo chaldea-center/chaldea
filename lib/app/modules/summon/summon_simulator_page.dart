@@ -14,8 +14,7 @@ class SummonSimulatorPage extends StatefulWidget {
   final LimitedSummon summon;
   final int initIndex;
 
-  const SummonSimulatorPage(
-      {super.key, required this.summon, this.initIndex = 0});
+  const SummonSimulatorPage({super.key, required this.summon, this.initIndex = 0});
 
   @override
   _SummonSimulatorPageState createState() => _SummonSimulatorPageState();
@@ -104,10 +103,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                 child: Center(
                   child: FittedBox(
                     fit: BoxFit.contain,
-                    child: Row(
-                        children: summon.isLuckyBag
-                            ? [gachaLucky]
-                            : [gacha1, gacha10]),
+                    child: Row(children: summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
                   ),
                 ),
               ),
@@ -189,8 +185,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       expanded: rarity > 3,
       headerBuilder: (context, _) => ListTile(
         dense: true,
-        title: Text(
-            '$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
+        title: Text('$kStarChar$rarity ${isSvt ? S.current.servant : S.current.craft_essence}'),
         trailing: Text(totalCount.toString()),
       ),
       contentBuilder: (context) => Padding(
@@ -217,12 +212,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text('${S.current.summon_daily}: ',
-              style: const TextStyle(color: Colors.redAccent)),
+          Text('${S.current.summon_daily}: ', style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(
-              decoration: BoxDecoration(
-                  border: Border(bottom: Divider.createBorderSide(context))),
+              decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
               child: DropdownButton<int>(
                 value: curIndex,
                 items: items,
@@ -281,11 +274,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (svtRow.isNotEmpty)
-            Wrap(spacing: 4, runSpacing: 4, children: svtRow),
+          if (svtRow.isNotEmpty) Wrap(spacing: 4, runSpacing: 4, children: svtRow),
           const SizedBox(height: 4),
-          if (craftRow.isNotEmpty)
-            Wrap(spacing: 4, runSpacing: 4, children: craftRow),
+          if (craftRow.isNotEmpty) Wrap(spacing: 4, runSpacing: 4, children: craftRow),
           Center(
             child: ExpandIcon(
               onPressed: (v) {
@@ -400,20 +391,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Widget get gacha10 {
     return _summonButton(
-        times: summon.rollCount,
-        quartz: 30,
-        fn: summon.rollCount == 11 ? 'gacha11.png' : 'gacha10_old.png');
+        times: summon.rollCount, quartz: 30, fn: summon.rollCount == 11 ? 'gacha11.png' : 'gacha10_old.png');
   }
 
   Widget get gachaLucky {
     return _summonButton(
-        times: summon.rollCount,
-        quartz: 15,
-        fn: summon.rollCount == 11 ? 'gacha11_gssr.png' : 'gacha10_gssr.png');
+        times: summon.rollCount, quartz: 15, fn: summon.rollCount == 11 ? 'gacha11_gssr.png' : 'gacha10_gssr.png');
   }
 
-  Widget _summonButton(
-      {required int times, required int quartz, required String fn}) {
+  Widget _summonButton({required int times, required int quartz, required String fn}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: InkWell(
@@ -436,8 +422,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       text: text,
       width: 48,
       padding: const EdgeInsets.all(1),
-      option: ImageWithTextOption(
-          padding: const EdgeInsets.only(right: 4, bottom: 4)),
+      option: ImageWithTextOption(padding: const EdgeInsets.only(right: 4, bottom: 4)),
     );
   }
 
@@ -539,8 +524,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       // New
       if (summon.isLuckyBag) {
         List<GameCardMixin> newResults = [];
-        final s5 =
-            results.firstWhereOrNull((e) => e is Servant && e.rarity == 5);
+        final s5 = results.firstWhereOrNull((e) => e is Servant && e.rarity == 5);
         if (s5 != null) {
           results.remove(s5);
           newResults.add(s5);
@@ -548,10 +532,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           newResults.addAll(randomSummon(svtProbs((r) => r == 5), 1));
         }
         if (summon.type == SummonType.gssrsr) {
-          final s4 = results.firstWhereOrNull((e) =>
-              e is Servant &&
-              e.rarity >= 4 &&
-              e.extra.obtains.contains(SvtObtain.limited));
+          final s4 = results
+              .firstWhereOrNull((e) => e is Servant && e.rarity >= 4 && e.extra.obtains.contains(SvtObtain.limited));
           if (s4 != null) {
             results.remove(s4);
             newResults.add(s4);
@@ -584,8 +566,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           }
         }
       }
-      assert(
-          results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
+      assert(results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
           results.map((e) => '${e.runtimeType}-${e.rarity}').toList());
     }
 
@@ -595,8 +576,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   final random = Random(DateTime.now().microsecondsSinceEpoch);
 
   /// 无任何保底，纯随机
-  List<GameCardMixin> randomSummon(
-      Map<GameCardMixin, double> probMap, int times) {
+  List<GameCardMixin> randomSummon(Map<GameCardMixin, double> probMap, int times) {
     if (probMap.isEmpty) return [];
     final probList = probMap.entries.toList();
     probList.shuffle();
@@ -625,14 +605,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   /// null-所有从者, 4/5-福袋4/5星从者
   Map<GameCardMixin, double> svtProbs([bool Function(int r)? rarityTest]) {
     Map<GameCardMixin, double> probs = {};
-    data.svts
-        .where((block) => rarityTest == null || rarityTest(block.rarity))
-        .forEach((block) {
-      _addProbMap(
-          result: probs,
-          ids: block.ids,
-          totalWeight: block.weight,
-          isSvt: block.isSvt);
+    data.svts.where((block) => rarityTest == null || rarityTest(block.rarity)).forEach((block) {
+      _addProbMap(result: probs, ids: block.ids, totalWeight: block.weight, isSvt: block.isSvt);
     });
     return probs;
   }
@@ -640,14 +614,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   /// 从者+礼装
   Map<GameCardMixin, double> cardProbs([bool Function(int r)? rarityTest]) {
     Map<GameCardMixin, double> probs = {};
-    data.probs
-        .where((block) => rarityTest == null || rarityTest(block.rarity))
-        .forEach((block) {
-      _addProbMap(
-          result: probs,
-          ids: block.ids,
-          totalWeight: block.weight,
-          isSvt: block.isSvt);
+    data.probs.where((block) => rarityTest == null || rarityTest(block.rarity)).forEach((block) {
+      _addProbMap(result: probs, ids: block.ids, totalWeight: block.weight, isSvt: block.isSvt);
     });
     _printMap(probs);
     return probs;
@@ -675,8 +643,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     result ??= {};
     double weight = totalWeight / ids.length;
     for (var id in ids) {
-      var key =
-          (isSvt ? db.gameData.servantsNoDup : db.gameData.craftEssences)[id];
+      var key = (isSvt ? db.gameData.servantsNoDup : db.gameData.craftEssences)[id];
       if (key == null) continue;
       if (skipExistKey) {
         result.putIfAbsent(key, () => weight);
@@ -695,8 +662,7 @@ class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   _SliverPersistentHeaderDelegate({required this.height, required this.child});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return child;
   }
 

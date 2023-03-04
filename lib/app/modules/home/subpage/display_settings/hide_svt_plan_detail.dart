@@ -7,12 +7,10 @@ class HideSvtPlanDetailSettingPage extends StatefulWidget {
   const HideSvtPlanDetailSettingPage({super.key});
 
   @override
-  State<HideSvtPlanDetailSettingPage> createState() =>
-      _HideSvtPlanDetailSettingPageState();
+  State<HideSvtPlanDetailSettingPage> createState() => _HideSvtPlanDetailSettingPageState();
 }
 
-class _HideSvtPlanDetailSettingPageState
-    extends State<HideSvtPlanDetailSettingPage> {
+class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingPage> {
   List<SvtPlanDetail> get settings => db.settings.display.hideSvtPlanDetails;
 
   // also check it in validate()

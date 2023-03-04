@@ -39,8 +39,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   @override
   void initState() {
     super.initState();
-    _coinEditController = TextEditingController(
-        text: db.curUser.items[svt.coin?.item.id]?.toString());
+    _coinEditController = TextEditingController(text: db.curUser.items[svt.coin?.item.id]?.toString());
   }
 
   @override
@@ -55,8 +54,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   @override
   Widget build(BuildContext context) {
-    final sliderMode =
-        db.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
+    final sliderMode = db.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
     if (svt.skills.isEmpty) {
       return Center(child: Text('${svt.lName.l} has no skills'));
     }
@@ -111,8 +109,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       for (int index = 0; index < 3; index++) {
         final skills = svt.groupedActiveSkills.getOrNull(index) ?? [];
         if (skills.isEmpty) continue;
-        final skill =
-            svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
+        final skill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
         skillWidgets.add(buildPlanRow(
           useSlider: sliderMode,
           leading: db.getIconImage(skill.icon, width: 33, onTap: skill.routeTo),
@@ -129,15 +126,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: (context) => LevelingCostPage(
             costList: svt.skillMaterials,
-            title:
-                '${S.current.skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+            title: '${S.current.skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
             curLv: curVal.skills[index],
             targetLv: targetVal.skills[index],
           ),
         ));
       }
-      children
-          .add(TileGroup(header: S.current.skill_up, children: skillWidgets));
+      children.add(TileGroup(header: S.current.skill_up, children: skillWidgets));
     }
 
     // append skill
@@ -170,8 +165,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
               ...svt.appendSkillMaterials,
             },
-            title:
-                '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+            title: '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
             curLv: curVal.appendSkills[index],
             targetLv: targetVal.appendSkills[index],
           ),
@@ -191,12 +185,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           useSlider: false,
           leading: InkWell(
             child: db.getIconImage(
-              svt.extraAssets.faces.costume?[costume.battleCharaId] ??
-                  Atlas.assetItem(Items.costumeIconId),
+              svt.extraAssets.faces.costume?[costume.battleCharaId] ?? Atlas.assetItem(Items.costumeIconId),
               aspectRatio: 132 / 144,
               width: 33,
-              placeholder: (ctx) =>
-                  db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
+              placeholder: (ctx) => db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
             ),
             onTap: () {
               router.push(url: Routes.costumeI(costume.costumeCollectionNo));
@@ -223,8 +215,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ));
       }
       if (dressWidgets.isNotEmpty) {
-        children.add(TileGroup(
-            header: S.current.costume_unlock, children: dressWidgets));
+        children.add(TileGroup(header: S.current.costume_unlock, children: dressWidgets));
       }
     }
     final extraParts1 = [
@@ -239,16 +230,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             ),
           ),
           title: Text(S.current.servant_coin),
-          subtitle:
-              Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
+          subtitle: Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
           trailing: SizedBox(
             width: 60,
             child: TextFormField(
               controller: _coinEditController,
-              buildCounter: (context,
-                      {required int currentLength,
-                      required int? maxLength,
-                      required bool isFocused}) =>
+              buildCounter: (context, {required int currentLength, required int? maxLength, required bool isFocused}) =>
                   null,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
@@ -268,14 +255,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.grail))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: null, itemId: Items.grailId, width: 33),
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.grailId, width: 33),
           title: S.current.grail_up,
           start: curVal.grail,
           end: targetVal.grail,
           minVal: 0,
-          maxVal: Maths.max(
-              db.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
+          maxVal: Maths.max(db.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
           labelFormatter: (v) => svt.grailedLv(v).toString(),
           trailingLabelFormatter: (a, b) => '${svt.grailedLv(a)}→'
                   '${svt.grailedLv(b!)}'
@@ -297,8 +282,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.noblePhantasm))
         buildPlanRow(
           useSlider: sliderMode,
-          leading:
-              db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
+          leading: db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
           title: S.current.noble_phantasm_level,
           start: status.cur.npLv,
           end: plan.npLv,
@@ -310,8 +294,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             plan.npLv = _end;
             updateState();
           },
-          detailPageBuilder: (context) =>
-              const SimpleCancelOkDialog(title: Text('Not Used yet')),
+          detailPageBuilder: (context) => const SimpleCancelOkDialog(title: Text('Not Used yet')),
         ),
     ];
     if (extraParts1.isNotEmpty) {
@@ -323,16 +306,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: null, itemId: Items.hpFou4, width: 33),
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou4, width: 33),
           title: '${kStarChar}4 HP ${S.current.foukun}',
           start: curVal.fouHp,
           end: targetVal.fouHp,
           minVal: 0,
           maxVal: 50,
           labelFormatter: (v) => (v * 20).toString(),
-          trailingLabelFormatter: (a, b) =>
-              '${curVal.fouHp * 20}→${targetVal.fouHp * 20}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouHp * 20}→${targetVal.fouHp * 20}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouHp = _start;
@@ -344,16 +325,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: null, itemId: Items.atkFou4, width: 33),
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou4, width: 33),
           title: '${kStarChar}4 ATK ${S.current.foukun}',
           start: curVal.fouAtk,
           end: targetVal.fouAtk,
           minVal: 0,
           maxVal: 50,
           labelFormatter: (v) => (v * 20).toString(),
-          trailingLabelFormatter: (a, b) =>
-              '${curVal.fouAtk * 20}→${targetVal.fouAtk * 20}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouAtk * 20}→${targetVal.fouAtk * 20}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouAtk = _start;
@@ -365,16 +344,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.fou3))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: null, itemId: Items.hpFou3, width: 33),
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou3, width: 33),
           title: '${kStarChar}3 HP ${S.current.foukun}',
           start: curVal.fouHp3,
           end: targetVal.fouHp3,
           minVal: 0,
           maxVal: 20,
           labelFormatter: (v) => (v * 50).toString(),
-          trailingLabelFormatter: (a, b) =>
-              '${curVal.fouHp3 * 50}→${targetVal.fouHp3 * 50}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouHp3 * 50}→${targetVal.fouHp3 * 50}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouHp3 = _start;
@@ -386,16 +363,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.fou3))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: null, itemId: Items.atkFou3, width: 33),
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou3, width: 33),
           title: '${kStarChar}3 ATK ${S.current.foukun}',
           start: curVal.fouAtk3,
           end: targetVal.fouAtk3,
           minVal: 0,
           maxVal: 20,
           labelFormatter: (v) => (v * 50).toString(),
-          trailingLabelFormatter: (a, b) =>
-              '${curVal.fouAtk3 * 50}→${targetVal.fouHp3 * 50}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouAtk3 * 50}→${targetVal.fouHp3 * 50}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouAtk3 = _start;
@@ -407,8 +382,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.bondLimit))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(
-              context: context, item: Items.lantern, width: 33),
+          leading: Item.iconBuilder(context: context, item: Items.lantern, width: 33),
           title: S.current.game_kizuna,
           start: curVal.bondLimit,
           end: targetVal.bondLimit,
@@ -488,8 +462,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     Widget trailingIcon;
     if (detailPageBuilder != null) {
       trailingIcon = IconButton(
-        icon: Icon(Icons.info_outline,
-            color: Theme.of(context).colorScheme.secondary),
+        icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.secondary),
         onPressed: () => showDialog(
           context: context,
           builder: detailPageBuilder,
@@ -524,8 +497,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           onChanged: (v) {
             // enhance mode: don't modify start
             if (v.start.round() != start || v.end.round() != end) {
-              onValueChanged(
-                  enhanceMode ? start : v.start.round(), v.end.round());
+              onValueChanged(enhanceMode ? start : v.start.round(), v.end.round());
             }
           },
         );
@@ -544,15 +516,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           data: SliderThemeData(
             trackHeight: 2,
             valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
-            rangeValueIndicatorShape:
-                const PaddleRangeSliderValueIndicatorShape(),
-            rangeTickMarkShape:
-                const RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
+            rangeValueIndicatorShape: const PaddleRangeSliderValueIndicatorShape(),
+            rangeTickMarkShape: const RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
             tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 1.2),
             activeTickMarkColor: Colors.grey[200],
             thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-            rangeThumbShape:
-                const RoundRangeSliderThumbShape(enabledThumbRadius: 6),
+            rangeThumbShape: const RoundRangeSliderThumbShape(enabledThumbRadius: 6),
           ),
           child: SizedBox(height: 23, child: slider),
         ),
@@ -580,8 +549,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         );
       } else {
         // TODO: add divisions
-        final items = List.generate((maxVal - minVal) ~/ (divisions ?? 1) + 1,
-            (index) => minVal + index * (divisions ?? 1));
+        final items =
+            List.generate((maxVal - minVal) ~/ (divisions ?? 1) + 1, (index) => minVal + index * (divisions ?? 1));
         selector = RangeSelector<int>(
           start: start,
           end: end,
@@ -598,9 +567,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
         leading: leading,
         title: title == null ? null : AutoSizeText(title, maxLines: 1),
-        subtitle: subtitle == null
-            ? null
-            : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
+        subtitle: subtitle == null ? null : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[selector, trailingIcon],
@@ -637,11 +604,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       detail: false,
                     );
                   },
-                  child: db.getIconImage(
-                      code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
-                      height: 48,
-                      aspectRatio: 132 / 144,
-                      padding: const EdgeInsets.all(4)),
+                  child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
+                      height: 48, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4),
@@ -670,8 +634,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               // 2:
               3: FixedColumnWidth(32)
             },
-            border: TableBorder.all(
-                color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
+            border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),
         ),
       ],
@@ -697,8 +660,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     } else {
       buttons.add(TextButton(
         onPressed: () {
-          final Map<int, int> items = Item.sortMapByPriority(
-              db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
+          final Map<int, int> items = Item.sortMapByPriority(db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
           _showItemsDialog(
             title: S.current.item_total_demand,
             items: items,
@@ -814,8 +776,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     ));
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-          border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+      decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
       child: SafeArea(
         child: Align(
           alignment: Alignment.centerRight,
@@ -844,8 +805,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   void _onEnhance() {
     status.cur.favorite = true;
-    final Map<int, int> enhanceItems = Item.sortMapByPriority(
-        db.itemCenter.calcOneSvt(svt, status.cur, enhancePlan).all);
+    final Map<int, int> enhanceItems =
+        Item.sortMapByPriority(db.itemCenter.calcOneSvt(svt, status.cur, enhancePlan).all);
 
     bool hasItem = Maths.sum(enhanceItems.values) > 0;
     _showItemsDialog(
@@ -855,9 +816,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       showSubOwned: true,
       onConfirm: () {
         if (hasItem) {
-          Maths.sumDict(
-              [db.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
-              inPlace: true);
+          Maths.sumDict([db.curUser.items, Maths.multiplyDict(enhanceItems, -1)], inPlace: true);
           status.cur = SvtPlan.fromJson(enhancePlan.toJson());
           enhanceMode = !enhanceMode;
           updateState();
@@ -919,8 +878,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                   child: Text(
                     S.current.item_stat_sub_owned,
                     style: TextStyle(
-                      color:
-                          state.value ? Theme.of(context).disabledColor : null,
+                      color: state.value ? Theme.of(context).disabledColor : null,
                     ),
                   ),
                 )

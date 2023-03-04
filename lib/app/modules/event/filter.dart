@@ -17,8 +17,7 @@ class EventFilterPage extends FilterPage<EventFilterData> {
   _EventFilterPageState createState() => _EventFilterPageState();
 }
 
-class _EventFilterPageState
-    extends FilterPageState<EventFilterData, EventFilterPage> {
+class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilterPage> {
   List<EventType> eventTypes = [];
   List<CombineAdjustTarget> campaignTypes = [];
   @override
@@ -80,8 +79,7 @@ class _EventFilterPageState
           },
           onFilterChanged: (value, last) {
             if (last == null) {
-              if (value.options.where((e) => e != null).length ==
-                  Region.values.length) {
+              if (value.options.where((e) => e != null).length == Region.values.length) {
                 value.options = {};
               } else {
                 value.options = {null, ...Region.values};
@@ -140,8 +138,7 @@ class _EventFilterPageState
           title: const Text('Origin Type'),
           options: eventTypes,
           values: filterData.eventType,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.eventType).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.eventType).l),
           onFilterChanged: (value, _) {
             update();
           },
@@ -150,8 +147,7 @@ class _EventFilterPageState
           title: Text(S.current.event_campaign),
           options: campaignTypes,
           values: filterData.campaignType,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.combineAdjustTarget).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.combineAdjustTarget).l),
           onFilterChanged: (value, _) {
             update();
           },

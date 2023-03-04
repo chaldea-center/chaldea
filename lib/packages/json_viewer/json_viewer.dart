@@ -30,8 +30,7 @@ class _JsonViewerState extends State<JsonViewer> {
     } else if (content is List) {
       return JsonArrayViewer(content, notRoot: false, defaultOpen: defaultOpen);
     } else {
-      return JsonObjectViewer(content,
-          notRoot: false, defaultOpen: defaultOpen);
+      return JsonObjectViewer(content, notRoot: false, defaultOpen: defaultOpen);
     }
   }
 }
@@ -41,8 +40,7 @@ class JsonObjectViewer extends StatefulWidget {
   final bool notRoot;
   final bool defaultOpen;
 
-  JsonObjectViewer(this.jsonObj,
-      {super.key, this.notRoot = false, this.defaultOpen = false});
+  JsonObjectViewer(this.jsonObj, {super.key, this.notRoot = false, this.defaultOpen = false});
 
   @override
   JsonObjectViewerState createState() => JsonObjectViewerState();
@@ -56,8 +54,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     if (widget.notRoot) {
       return Container(
         padding: const EdgeInsets.only(left: 14.0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, children: _getList()),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList()),
       );
     }
     return Column(
@@ -75,8 +72,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         WidgetSpan(
           child: ex
               ? ((openFlag[entry.key] ?? widget.defaultOpen)
-                  ? Icon(Icons.arrow_drop_down,
-                      size: 14, color: Colors.grey[700])
+                  ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
                   : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
               : const Icon(
                   Icons.arrow_right,
@@ -87,12 +83,10 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         (ex && ink)
             ? WidgetSpan(
                 child: InkWell(
-                child: Text(entry.key,
-                    style: TextStyle(color: Colors.purple[900])),
+                child: Text(entry.key, style: TextStyle(color: Colors.purple[900])),
                 onTap: () {
                   setState(() {
-                    openFlag[entry.key] =
-                        !(openFlag[entry.key] ?? widget.defaultOpen);
+                    openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
                   });
                 },
               ))
@@ -225,8 +219,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
             ),
             onTap: () {
               setState(() {
-                openFlag[entry.key] =
-                    !(openFlag[entry.key] ?? widget.defaultOpen);
+                openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
               });
             },
           ),
@@ -285,8 +278,7 @@ class JsonArrayViewer extends StatefulWidget {
   final bool notRoot;
   final bool defaultOpen;
 
-  JsonArrayViewer(this.jsonArray,
-      {super.key, this.notRoot = false, this.defaultOpen = false});
+  JsonArrayViewer(this.jsonArray, {super.key, this.notRoot = false, this.defaultOpen = false});
 
   @override
   _JsonArrayViewerState createState() => _JsonArrayViewerState();
@@ -329,8 +321,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
         children: <Widget>[
           ex
               ? ((openFlag[i])
-                  ? Icon(Icons.arrow_drop_down,
-                      size: 14, color: Colors.grey[700])
+                  ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
                   : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
               : const Icon(
                   Icons.arrow_right,
@@ -355,8 +346,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       ));
       list.add(const SizedBox(height: 4));
       if (ex && openFlag[i]) {
-        list.add(JsonObjectViewerState.getContentWidget(
-            content, widget.defaultOpen));
+        list.add(JsonObjectViewerState.getContentWidget(content, widget.defaultOpen));
       }
       i++;
     }

@@ -45,8 +45,7 @@ class SearchUtil {
     return _krNorm[words] ??= words.replaceAll(' ', '');
   }
 
-  static Iterable<String?> getAllKeys(Transl<dynamic, String> transl,
-      {Region? dft = Region.jp}) sync* {
+  static Iterable<String?> getAllKeys(Transl<dynamic, String> transl, {Region? dft = Region.jp}) sync* {
     String? keyJP, keyCN, keyTW, keyNA, keyKR;
     String key = transl.default_.toString();
     switch (dft) {
@@ -105,8 +104,7 @@ class SearchUtil {
     }
   }
 
-  static String getCache(
-      String words, Region? region, String Function() callback) {
+  static String getCache(String words, Region? region, String Function() callback) {
     return _cache.putIfAbsent(region, () => {})[words] ??= callback();
   }
 

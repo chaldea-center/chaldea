@@ -1,11 +1,11 @@
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import '../../../test_init.dart';
 
 void main() async {
@@ -26,12 +26,12 @@ void main() async {
     ..atkFou = 1000
     ..hpFou = 1000);
   final BattleServantData enemy =
-  BattleServantData.fromEnemy(db.gameData.questPhases[9300040603]!.stages.first.enemies.first);
+      BattleServantData.fromEnemy(db.gameData.questPhases[9300040603]!.stages.first.enemies.first);
 
   group('Test validateFunctionTargetTeam', () {
     test('FuncApplyTarget.enemy', () {
       final BaseFunction enemyFunction =
-      BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
+          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
       expect(validateFunctionTargetTeam(enemyFunction, ally), isFalse);
       expect(validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
       expect(validateFunctionTargetTeam(enemyFunction, null), isTrue);
@@ -39,7 +39,7 @@ void main() async {
 
     test('FuncApplyTarget.enemy', () {
       final BaseFunction allyFunciton =
-      BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
+          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
       expect(validateFunctionTargetTeam(allyFunciton, ally), isTrue);
       expect(validateFunctionTargetTeam(allyFunciton, enemy), isFalse);
       expect(validateFunctionTargetTeam(allyFunciton, null), isTrue);
@@ -47,7 +47,7 @@ void main() async {
 
     test('FuncApplyTarget.enemy', () {
       final BaseFunction enemyFunction =
-      BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
+          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
       expect(validateFunctionTargetTeam(enemyFunction, ally), isTrue);
       expect(validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
       expect(validateFunctionTargetTeam(enemyFunction, null), isTrue);

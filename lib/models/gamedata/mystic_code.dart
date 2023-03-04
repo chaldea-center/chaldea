@@ -29,8 +29,7 @@ class MysticCode with GameCardMixin {
     this.costumes = const [],
   });
 
-  factory MysticCode.fromJson(Map<String, dynamic> json) =>
-      _$MysticCodeFromJson(json);
+  factory MysticCode.fromJson(Map<String, dynamic> json) => _$MysticCodeFromJson(json);
 
   @override
   int get collectionNo => id;
@@ -64,8 +63,7 @@ class MCAssets {
 
   String get masterGender => db.curUser.isGirl ? female : male;
 
-  factory MCAssets.fromJson(Map<String, dynamic> json) =>
-      _$MCAssetsFromJson(json);
+  factory MCAssets.fromJson(Map<String, dynamic> json) => _$MCAssetsFromJson(json);
 }
 
 @JsonSerializable()
@@ -80,8 +78,7 @@ class ExtraMCAssets {
     required this.masterFigure,
   });
 
-  factory ExtraMCAssets.fromJson(Map<String, dynamic> json) =>
-      _$ExtraMCAssetsFromJson(json);
+  factory ExtraMCAssets.fromJson(Map<String, dynamic> json) => _$ExtraMCAssetsFromJson(json);
 }
 
 @JsonSerializable()
@@ -96,6 +93,5 @@ class MysticCodeCostume {
     required this.extraAssets,
   });
 
-  factory MysticCodeCostume.fromJson(Map<String, dynamic> json) =>
-      _$MysticCodeCostumeFromJson(json);
+  factory MysticCodeCostume.fromJson(Map<String, dynamic> json) => _$MysticCodeCostumeFromJson(json);
 }

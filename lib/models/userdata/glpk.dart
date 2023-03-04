@@ -54,17 +54,13 @@ class FreeLPParams {
   int bondBonusCount;
 
   /// convert two key-value list to map
-  Map<int, int> get objectiveCounts =>
-      Map.fromIterable(rows, value: (k) => getPlanItemCount(k));
+  Map<int, int> get objectiveCounts => Map.fromIterable(rows, value: (k) => getPlanItemCount(k));
 
-  Map<int, double> get objectiveWeights =>
-      Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
+  Map<int, double> get objectiveWeights => Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
 
-  int getPlanItemCount(int id, [int? _default]) =>
-      planItemCounts[id] ??= _default ?? 50;
+  int getPlanItemCount(int id, [int? _default]) => planItemCounts[id] ??= _default ?? 50;
 
-  double getPlanItemWeight(int id, [double? _default]) =>
-      planItemWeights[id] ??= _default ?? 1.0;
+  double getPlanItemWeight(int id, [double? _default]) => planItemWeights[id] ??= _default ?? 1.0;
 
   FreeLPParams({
     this.use6th = true,
@@ -122,8 +118,7 @@ class FreeLPParams {
     }
   }
 
-  factory FreeLPParams.fromJson(Map<String, dynamic> data) =>
-      _$FreeLPParamsFromJson(data);
+  factory FreeLPParams.fromJson(Map<String, dynamic> data) => _$FreeLPParamsFromJson(data);
 
   Map<String, dynamic> toJson() => _$FreeLPParamsToJson(this);
 }
@@ -168,8 +163,7 @@ class LPSolution {
   }
 
   void sortWeightVars() {
-    weightVars.sort((a, b) =>
-        Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values)));
+    weightVars.sort((a, b) => Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values)));
   }
 
   List<int> getIgnoredKeys() {
@@ -180,8 +174,7 @@ class LPSolution {
     return originalItems.where((e) => !items.contains(e)).toList();
   }
 
-  factory LPSolution.fromJson(Map<String, dynamic> data) =>
-      _$LPSolutionFromJson(data);
+  factory LPSolution.fromJson(Map<String, dynamic> data) => _$LPSolutionFromJson(data);
 
   Map<String, dynamic> toJson() => _$LPSolutionToJson(this);
 }
@@ -203,8 +196,7 @@ class LPVariable<T> {
     Map<int, double>? detail,
   }) : detail = detail ?? {};
 
-  factory LPVariable.fromJson(Map<String, dynamic> data) =>
-      _$LPVariableFromJson<T>(data, _fromJsonT);
+  factory LPVariable.fromJson(Map<String, dynamic> data) => _$LPVariableFromJson<T>(data, _fromJsonT);
 
   Map<String, dynamic> toJson() => _$LPVariableToJson<T>(this, _toJsonT);
 }
@@ -275,8 +267,7 @@ class BasicLPParams {
     }
   }
 
-  factory BasicLPParams.fromJson(Map<String, dynamic> data) =>
-      _$BasicLPParamsFromJson(data);
+  factory BasicLPParams.fromJson(Map<String, dynamic> data) => _$BasicLPParamsFromJson(data);
 
   Map<String, dynamic> toJson() => _$BasicLPParamsToJson(this);
 }

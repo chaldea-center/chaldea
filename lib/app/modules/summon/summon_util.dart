@@ -88,9 +88,7 @@ class SummonUtil {
                 Container(
                   padding: const EdgeInsets.all(1.5),
                   margin: const EdgeInsets.only(bottom: 1),
-                  decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(3)),
+                  decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.circular(3)),
                   child: const Icon(
                     Icons.favorite,
                     color: Colors.white,
@@ -100,9 +98,7 @@ class SummonUtil {
               if (star)
                 Container(
                   padding: const EdgeInsets.all(1.5),
-                  decoration: BoxDecoration(
-                      color: Colors.blueAccent[400],
-                      borderRadius: BorderRadius.circular(3)),
+                  decoration: BoxDecoration(color: Colors.blueAccent[400], borderRadius: BorderRadius.circular(3)),
                   child: Icon(
                     Icons.star,
                     color: Colors.yellowAccent[400],
@@ -150,8 +146,7 @@ class SummonUtil {
         card.routeTo();
       },
       child: ImageWithText(
-        image: db.getIconImage(card.borderedIcon,
-            width: width, aspectRatio: 132 / 144),
+        image: db.getIconImage(card.borderedIcon, width: width, aspectRatio: 132 / 144),
         text: texts.join('\n'),
         option: ImageWithTextOption(
           width: width,
@@ -176,19 +171,14 @@ class SummonUtil {
   }
 
   static String summonNameLocalize(String origin) {
-    List<String> names =
-        castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
+    List<String> names = castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
     return names.map((e) {
       String name2 = db.gameData.servantsNoDup.values
-              .firstWhereOrNull((svt) =>
-                  castBracket(svt.extra.mcLink) == e ||
-                  castBracket(svt.lName.cn) == e)
+              .firstWhereOrNull((svt) => castBracket(svt.extra.mcLink) == e || castBracket(svt.lName.cn) == e)
               ?.lName
               .l ??
           e;
-      if (name2 == e &&
-          SvtClass.values
-              .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
+      if (name2 == e && SvtClass.values.every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
         List<String> fragments = e.split('(');
         fragments[0] = fragments[0].trim();
         fragments[0] = db.gameData.servantsNoDup.values

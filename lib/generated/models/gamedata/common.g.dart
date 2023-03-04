@@ -15,8 +15,7 @@ BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       id: json['id'] as int,
       type: const CondTypeConverter().fromJson(json['type'] as String),
       condGroup: json['condGroup'] as int,
-      targetIds:
-          (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
+      targetIds: (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
       vals: (json['vals'] as List<dynamic>).map((e) => e as int).toList(),
       priority: json['priority'] as int,
       closedMessage: json['closedMessage'] as String,
@@ -30,13 +29,10 @@ BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
       audioAsset: json['audioAsset'] as String?,
       priority: json['priority'] as int? ?? 0,
       detail: json['detail'] as String? ?? "",
-      shop: json['shop'] == null
-          ? null
-          : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
+      shop: json['shop'] == null ? null : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
       logo: json['logo'] as String?,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
-              ?.map((e) =>
-                  BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => BgmRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -157,8 +153,7 @@ const _$CondTypeEnumMap = {
   CondType.questGroupClearRaw: 'questGroupClearRaw',
   CondType.eventGroupPointRatioInTerm: 'eventGroupPointRatioInTerm',
   CondType.eventGroupRankInTerm: 'eventGroupRankInTerm',
-  CondType.notEventRaceQuestOrNotAllGroupGoal:
-      'notEventRaceQuestOrNotAllGroupGoal',
+  CondType.notEventRaceQuestOrNotAllGroupGoal: 'notEventRaceQuestOrNotAllGroupGoal',
   CondType.eventGroupTotalWinEachPlayer: 'eventGroupTotalWinEachPlayer',
   CondType.eventScriptPlay: 'eventScriptPlay',
   CondType.svtCostumeReleased: 'svtCostumeReleased',
@@ -177,8 +172,7 @@ const _$CondTypeEnumMap = {
   CondType.notEventMissionAchieve: 'notEventMissionAchieve',
   CondType.notCostumeGet: 'notCostumeGet',
   CondType.notSvtCostumeReleased: 'notSvtCostumeReleased',
-  CondType.notEventRaceQuestOrNotTargetRankGoal:
-      'notEventRaceQuestOrNotTargetRankGoal',
+  CondType.notEventRaceQuestOrNotTargetRankGoal: 'notEventRaceQuestOrNotTargetRankGoal',
   CondType.playerGenderType: 'playerGenderType',
   CondType.shopGroupLimitNum: 'shopGroupLimitNum',
   CondType.eventGroupPoint: 'eventGroupPoint',
@@ -253,8 +247,7 @@ const _$CondTypeEnumMap = {
   CondType.limitCountImageBelow: 'limitCountImageBelow',
   CondType.eventTypeStartTimeToEndDate: 'eventTypeStartTimeToEndDate',
   CondType.existBoxGachaScriptReplaceGiftId: 'existBoxGachaScriptReplaceGiftId',
-  CondType.notExistBoxGachaScriptReplaceGiftId:
-      'notExistBoxGachaScriptReplaceGiftId',
+  CondType.notExistBoxGachaScriptReplaceGiftId: 'notExistBoxGachaScriptReplaceGiftId',
   CondType.limitedPeriodVoiceChangeTypeOn: 'limitedPeriodVoiceChangeTypeOn',
   CondType.startRandomMission: 'startRandomMission',
   CondType.randomMissionClearNum: 'randomMissionClearNum',

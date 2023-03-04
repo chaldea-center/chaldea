@@ -8,28 +8,22 @@ part of '../../../models/gamedata/wiki_data.dart';
 
 WikiData _$WikiDataFromJson(Map json) => WikiData(
       servants: (json['servants'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String),
-            ServantExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String), ServantExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       craftEssences: (json['craftEssences'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String),
-            CraftEssenceExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String), CraftEssenceExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       commandCodes: (json['commandCodes'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String),
-            CommandCodeExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String), CommandCodeExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       events: (json['events'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String),
-            EventExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String), EventExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       wars: (json['wars'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String),
-            WarExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String), WarExtra.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       summons: (json['summons'] as Map?)?.map(
-        (k, e) => MapEntry(k as String,
-            LimitedSummon.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(k as String, LimitedSummon.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       webcrowMapping: (json['webcrowMapping'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), e as int),
@@ -41,43 +35,26 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
       collectionNo: json['collectionNo'] as int,
       nicknames: json['nicknames'] == null
           ? null
-          : MappingList<String>.fromJson(
-              Map<String, dynamic>.from(json['nicknames'] as Map)),
-      obtains: (json['obtains'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$SvtObtainEnumMap, e))
-              .toList() ??
-          const [],
-      aprilFoolAssets: (json['aprilFoolAssets'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : MappingList<String>.fromJson(Map<String, dynamic>.from(json['nicknames'] as Map)),
+      obtains: (json['obtains'] as List<dynamic>?)?.map((e) => $enumDecode(_$SvtObtainEnumMap, e)).toList() ?? const [],
+      aprilFoolAssets: (json['aprilFoolAssets'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       aprilFoolProfile: json['aprilFoolProfile'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['aprilFoolProfile'] as Map)),
-      mcSprites: (json['mcSprites'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      fandomSprites: (json['fandomSprites'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['aprilFoolProfile'] as Map)),
+      mcSprites: (json['mcSprites'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      fandomSprites: (json['fandomSprites'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
       mcProfiles: (json['mcProfiles'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                (e as List<dynamic>).map((e) => e as String).toList()),
+            (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as String).toList()),
           ) ??
           const {},
       fandomProfiles: (json['fandomProfiles'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                (e as List<dynamic>).map((e) => e as String).toList()),
+            (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as String).toList()),
           ) ??
           const {},
       tdAnimations: (json['tdAnimations'] as List<dynamic>?)
-              ?.map((e) =>
-                  BiliVideo.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => BiliVideo.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -102,20 +79,12 @@ BiliVideo _$BiliVideoFromJson(Map json) => BiliVideo(
 
 CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
       collectionNo: json['collectionNo'] as int,
-      obtain: $enumDecodeNullable(_$CEObtainEnumMap, json['obtain']) ??
-          CEObtain.unknown,
+      obtain: $enumDecodeNullable(_$CEObtainEnumMap, json['obtain']) ?? CEObtain.unknown,
       profile: json['profile'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['profile'] as Map)),
-      characters: (json['characters'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
-      unknownCharacters: (json['unknownCharacters'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
+      characters: (json['characters'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      unknownCharacters: (json['unknownCharacters'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
     );
@@ -138,16 +107,9 @@ CommandCodeExtra _$CommandCodeExtraFromJson(Map json) => CommandCodeExtra(
       collectionNo: json['collectionNo'] as int,
       profile: json['profile'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['profile'] as Map)),
-      characters: (json['characters'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
-      unknownCharacters: (json['unknownCharacters'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
+      characters: (json['characters'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      unknownCharacters: (json['unknownCharacters'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
     );
@@ -156,26 +118,19 @@ EventExtraItems _$EventExtraItemsFromJson(Map json) => EventExtraItems(
       id: json['id'] as int,
       detail: json['detail'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['detail'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),
       items: (json['items'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                e == null
-                    ? null
-                    : MappingBase<String>.fromJson(
-                        Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String),
+                e == null ? null : MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
     );
 
-EventExtraFixedItems _$EventExtraFixedItemsFromJson(Map json) =>
-    EventExtraFixedItems(
+EventExtraFixedItems _$EventExtraFixedItemsFromJson(Map json) => EventExtraFixedItems(
       id: json['id'] as int,
       detail: json['detail'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['detail'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),
       items: (json['items'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), e as int),
       ),
@@ -189,47 +144,32 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       shown: json['shown'] as bool?,
       titleBanner: json['titleBanner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['titleBanner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['titleBanner'] as Map)),
       officialBanner: json['officialBanner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['officialBanner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['officialBanner'] as Map)),
       extraBanners: json['extraBanners'] == null
           ? null
-          : MappingList<String>.fromJson(
-              Map<String, dynamic>.from(json['extraBanners'] as Map)),
+          : MappingList<String>.fromJson(Map<String, dynamic>.from(json['extraBanners'] as Map)),
       noticeLink: json['noticeLink'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['noticeLink'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['noticeLink'] as Map)),
       huntingId: json['huntingId'] as int? ?? 0,
-      huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
+      huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       extraFixedItems: (json['extraFixedItems'] as List<dynamic>?)
-              ?.map((e) => EventExtraFixedItems.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => EventExtraFixedItems.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       extraItems: (json['extraItems'] as List<dynamic>?)
-              ?.map((e) =>
-                  EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       startTime: json['startTime'] == null
           ? null
-          : MappingBase<int>.fromJson(
-              Map<String, dynamic>.from(json['startTime'] as Map)),
-      endTime: json['endTime'] == null
-          ? null
-          : MappingBase<int>.fromJson(
-              Map<String, dynamic>.from(json['endTime'] as Map)),
-      relatedSummons: (json['relatedSummons'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['startTime'] as Map)),
+      endTime:
+          json['endTime'] == null ? null : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['endTime'] as Map)),
+      relatedSummons: (json['relatedSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
 
 WarExtra _$WarExtraFromJson(Map json) => WarExtra(
@@ -238,20 +178,16 @@ WarExtra _$WarExtraFromJson(Map json) => WarExtra(
       fandomLink: json['fandomLink'] as String?,
       noticeLink: json['noticeLink'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['noticeLink'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['noticeLink'] as Map)),
       titleBanner: json['titleBanner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['titleBanner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['titleBanner'] as Map)),
       officialBanner: json['officialBanner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['officialBanner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['officialBanner'] as Map)),
       extraBanners: json['extraBanners'] == null
           ? null
-          : MappingList<String>.fromJson(
-              Map<String, dynamic>.from(json['extraBanners'] as Map)),
+          : MappingList<String>.fromJson(Map<String, dynamic>.from(json['extraBanners'] as Map)),
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
@@ -261,8 +197,7 @@ ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),
       replaced: json['replaced'] == null
           ? null
-          : MappingList<int>.fromJson(
-              Map<String, dynamic>.from(json['replaced'] as Map)),
+          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['replaced'] as Map)),
       multiplier: json['multiplier'] as int? ?? 1,
     );
 
@@ -277,36 +212,25 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
       id: json['id'] as String,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
-      name: json['name'] == null
-          ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['name'] as Map)),
+      name: json['name'] == null ? null : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['name'] as Map)),
       banner: json['banner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['banner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['banner'] as Map)),
       officialBanner: json['officialBanner'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['officialBanner'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['officialBanner'] as Map)),
       noticeLink: json['noticeLink'] == null
           ? null
-          : MappingBase<String>.fromJson(
-              Map<String, dynamic>.from(json['noticeLink'] as Map)),
+          : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['noticeLink'] as Map)),
       startTime: json['startTime'] == null
           ? null
-          : MappingBase<int>.fromJson(
-              Map<String, dynamic>.from(json['startTime'] as Map)),
-      endTime: json['endTime'] == null
-          ? null
-          : MappingBase<int>.fromJson(
-              Map<String, dynamic>.from(json['endTime'] as Map)),
-      type: $enumDecodeNullable(_$SummonTypeEnumMap, json['type']) ??
-          SummonType.unknown,
+          : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['startTime'] as Map)),
+      endTime:
+          json['endTime'] == null ? null : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['endTime'] as Map)),
+      type: $enumDecodeNullable(_$SummonTypeEnumMap, json['type']) ?? SummonType.unknown,
       rollCount: json['rollCount'] as int? ?? 11,
       subSummons: (json['subSummons'] as List<dynamic>?)
-              ?.map((e) =>
-                  SubSummon.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SubSummon.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -322,8 +246,7 @@ const _$SummonTypeEnumMap = {
 SubSummon _$SubSummonFromJson(Map json) => SubSummon(
       title: json['title'] as String,
       probs: (json['probs'] as List<dynamic>?)
-              ?.map((e) =>
-                  ProbGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => ProbGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -333,6 +256,5 @@ ProbGroup _$ProbGroupFromJson(Map json) => ProbGroup(
       rarity: json['rarity'] as int,
       weight: (json['weight'] as num).toDouble(),
       display: json['display'] as bool,
-      ids: (json['ids'] as List<dynamic>?)?.map((e) => e as int).toList() ??
-          const [],
+      ids: (json['ids'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );

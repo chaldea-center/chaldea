@@ -53,9 +53,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   void initState() {
     super.initState();
     scrollController = ScrollController(
-        initialScrollOffset: scrollRestorationId == null
-            ? 0.0
-            : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
+        initialScrollOffset: scrollRestorationId == null ? 0.0 : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
     searchEditingController = TextEditingController();
   }
 
@@ -83,8 +81,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
           showSearchBar = !showSearchBar;
           if (!showSearchBar) searchEditingController.text = '';
           if (showSearchBar && !_allowSummary) {
-            EasyDebounce.debounce('query_string', const Duration(seconds: 1),
-                () {
+            EasyDebounce.debounce('query_string', const Duration(seconds: 1), () {
               if (mounted) {
                 setState(() {
                   _allowSummary = true;
@@ -103,8 +100,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return SearchBar(
       controller: searchEditingController,
       onChanged: (s) {
-        EasyDebounce.debounce(
-            'search_onchanged', const Duration(milliseconds: 300), () {
+        EasyDebounce.debounce('search_onchanged', const Duration(milliseconds: 300), () {
           if (mounted) setState(() {});
         });
       },
@@ -128,14 +124,11 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         floatingActionButton: ScaleTransition(
           scale: animationController,
           child: Padding(
-            padding:
-                EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
             child: FloatingActionButton(
               child: const Icon(Icons.arrow_upward),
               onPressed: () => scrollController.hasClients
-                  ? scrollController.animateTo(0,
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOut)
+                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
                   : null,
             ),
           ),
@@ -146,8 +139,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   }
 
   Widget buildScrollable({bool useGrid = false}) {
-    final hintText = defaultHintBuilder(
-        context, defaultHintText(shownList.length, wholeData.length));
+    final hintText = defaultHintBuilder(context, defaultHintText(shownList.length, wholeData.length));
     return Scrollbar(
       controller: scrollController,
       trackVisibility: PlatformU.isDesktopOrWeb,
@@ -220,8 +212,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     if (bottomHint != null && (shownList.length > 5 || bottomHint != topHint)) {
       slivers.add(SliverToBoxAdapter(child: bottomHint));
     }
-    slivers.add(
-        const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
+    slivers.add(const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
 
     return _wrapButtonBar(
       CustomScrollView(
@@ -256,12 +247,10 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         ),
       ));
     }
-    if (bottomHint != null &&
-        (shownList.length > 20 || bottomHint != topHint)) {
+    if (bottomHint != null && (shownList.length > 20 || bottomHint != topHint)) {
       slivers.add(SliverToBoxAdapter(child: bottomHint));
     }
-    slivers.add(
-        const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
+    slivers.add(const SliverSafeArea(sliver: SliverPadding(padding: EdgeInsets.zero)));
 
     return _wrapButtonBar(
       CustomScrollView(
@@ -290,8 +279,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   Widget gridItemBuilder(T datum);
 
   T? switchNext(T cur, bool reversed, List<T> shownList) {
-    T? nextCard = Utility.findNextOrPrevious<T>(
-        list: shownList, cur: cur, reversed: reversed, defaultFirst: true);
+    T? nextCard = Utility.findNextOrPrevious<T>(list: shownList, cur: cur, reversed: reversed, defaultFirst: true);
     if (nextCard != null) selected = nextCard;
     if (mounted) setState(() {});
     return nextCard;

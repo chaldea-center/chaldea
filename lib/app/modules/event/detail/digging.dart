@@ -7,8 +7,7 @@ class EventDiggingTab extends StatelessWidget {
   final Event event;
   final EventDigging digging;
 
-  const EventDiggingTab(
-      {super.key, required this.event, required this.digging});
+  const EventDiggingTab({super.key, required this.event, required this.digging});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +25,7 @@ class EventDiggingTab extends StatelessWidget {
       ListTile(
         dense: true,
         title: Text(S.current.event_point),
-        trailing: Item.iconBuilder(
-            context: context, item: digging.eventPointItem, width: 24),
+        trailing: Item.iconBuilder(context: context, item: digging.eventPointItem, width: 24),
       ),
       ListTile(
         dense: true,
@@ -80,9 +78,7 @@ class EventDiggingTab extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: reward.rewardSize == 2
-                  ? Theme.of(context).colorScheme.errorContainer
-                  : Colors.transparent,
+              color: reward.rewardSize == 2 ? Theme.of(context).colorScheme.errorContainer : Colors.transparent,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(8),

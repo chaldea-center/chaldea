@@ -42,10 +42,8 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       final dio = db.apiWorkerDio;
-      final content = base64Encode(
-          GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
-      final resp =
-          ChaldeaResponse(await dio.post('/account/backup/upload', data: {
+      final content = base64Encode(GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
+      final resp = ChaldeaResponse(await dio.post('/account/backup/upload', data: {
         'username': user,
         'auth': pwd,
         'content': content,
@@ -69,15 +67,10 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     if (!_check()) return null;
     EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
-      final resp = ChaldeaResponse(
-          await db.apiWorkerDio.post('/account/backup/download', data: {
-        'username': db.security.get('chaldea_user'),
-        'auth': db.security.get('chaldea_auth')
-      }));
+      final resp = ChaldeaResponse(await db.apiWorkerDio.post('/account/backup/download',
+          data: {'username': db.security.get('chaldea_user'), 'auth': db.security.get('chaldea_auth')}));
       List<UserDataBackup> backups = [];
-      backups = List.from(resp.body())
-          .map((e) => UserDataBackup.fromJson(e))
-          .toList();
+      backups = List.from(resp.body()).map((e) => UserDataBackup.fromJson(e)).toList();
       backups.sort2((e) => e.timestamp, reversed: true);
       if (backups.isEmpty) {
         EasyLoading.showError('No backup found');

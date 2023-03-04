@@ -24,8 +24,7 @@ class NiceScript extends ScriptLink {
     required this.quests,
   });
 
-  factory NiceScript.fromJson(Map<String, dynamic> json) =>
-      _$NiceScriptFromJson(json);
+  factory NiceScript.fromJson(Map<String, dynamic> json) => _$NiceScriptFromJson(json);
 }
 
 @JsonSerializable()
@@ -38,16 +37,13 @@ class ScriptLink with RouteInfo {
     required this.script,
   });
 
-  factory ScriptLink.fromJson(Map<String, dynamic> json) =>
-      _$ScriptLinkFromJson(json);
+  factory ScriptLink.fromJson(Map<String, dynamic> json) => _$ScriptLinkFromJson(json);
 
   String removePrefix(String? prefix) {
     if (prefix != null && scriptId.startsWith(prefix)) {
       return scriptId.substring(prefix.length);
     }
-    return scriptId.length > 2
-        ? scriptId.substring(scriptId.length - 2)
-        : scriptId;
+    return scriptId.length > 2 ? scriptId.substring(scriptId.length - 2) : scriptId;
   }
 
   String shortId() {
@@ -80,8 +76,7 @@ class ScriptLink with RouteInfo {
   @override
   void routeTo({Region? region, Widget? child, bool popDetails = false}) {
     if (region != null) {
-      child ??=
-          ScriptIdLoadingPage(scriptId: scriptId, script: this, region: region);
+      child ??= ScriptIdLoadingPage(scriptId: scriptId, script: this, region: region);
     }
     super.routeTo(child: child, popDetails: popDetails);
   }
@@ -97,8 +92,7 @@ class ValentineScript extends ScriptLink {
     required this.scriptName,
   });
 
-  factory ValentineScript.fromJson(Map<String, dynamic> json) =>
-      _$ValentineScriptFromJson(json);
+  factory ValentineScript.fromJson(Map<String, dynamic> json) => _$ValentineScriptFromJson(json);
 }
 
 @JsonSerializable()
@@ -113,6 +107,5 @@ class StageLink {
     required this.stage,
   });
 
-  factory StageLink.fromJson(Map<String, dynamic> json) =>
-      _$StageLinkFromJson(json);
+  factory StageLink.fromJson(Map<String, dynamic> json) => _$StageLinkFromJson(json);
 }

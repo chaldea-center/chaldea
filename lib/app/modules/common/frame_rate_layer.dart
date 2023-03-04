@@ -53,8 +53,7 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (_lastTime == null) {
-        SchedulerBinding.instance
-            .addPersistentFrameCallback(_registerFrameCallback);
+        SchedulerBinding.instance.addPersistentFrameCallback(_registerFrameCallback);
       }
     });
     Timer.periodic(const Duration(milliseconds: 100), (timer) {

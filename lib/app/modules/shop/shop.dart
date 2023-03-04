@@ -18,15 +18,13 @@ class ShopDetailPage extends StatefulWidget {
   final int? id;
   final NiceShop? shop;
   final Region? region;
-  const ShopDetailPage({super.key, this.id, this.shop, this.region})
-      : assert(id != null || shop != null);
+  const ShopDetailPage({super.key, this.id, this.shop, this.region}) : assert(id != null || shop != null);
 
   @override
   State<ShopDetailPage> createState() => _ShopDetailPageState();
 }
 
-class _ShopDetailPageState extends State<ShopDetailPage>
-    with RegionBasedState<NiceShop, ShopDetailPage> {
+class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<NiceShop, ShopDetailPage> {
   int get id => widget.shop?.id ?? widget.id ?? data?.id ?? -1;
   NiceShop get shop => data!;
 
@@ -75,30 +73,24 @@ class _ShopDetailPageState extends State<ShopDetailPage>
           CustomTableRow.fromTexts(texts: ['No.${shop.id}'], isHeader: true),
           CustomTableRow.fromChildren(children: [
             Text.rich(TextSpan(children: [
-              if (shop.image != null)
-                CenterWidgetSpan(child: db.getIconImage(shop.image, width: 32)),
+              if (shop.image != null) CenterWidgetSpan(child: db.getIconImage(shop.image, width: 32)),
               TextSpan(text: shop.name)
             ]))
           ]),
           CustomTableRow.fromTexts(texts: [shop.detail]),
-          CustomTableRow.fromTexts(
-              texts: [S.current.opening_time], isHeader: true),
+          CustomTableRow.fromTexts(texts: [S.current.opening_time], isHeader: true),
           CustomTableRow.fromTexts(texts: [
             [
               shop.openedAt.sec2date().toStringShort(omitSec: true),
               shop.closedAt.sec2date().toStringShort(omitSec: true),
             ].join(' ~ ')
           ]),
-          CustomTableRow.fromTexts(
-              texts: [S.current.exchange_count, S.current.cost],
-              isHeader: true),
+          CustomTableRow.fromTexts(texts: [S.current.exchange_count, S.current.cost], isHeader: true),
           CustomTableRow.fromChildren(children: [
             Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
-            Text.rich(TextSpan(
-                children: ShopHelper.cost(context, shop, iconSize: 36)))
+            Text.rich(TextSpan(children: ShopHelper.cost(context, shop, iconSize: 36)))
           ]),
-          CustomTableRow.fromTexts(
-              texts: [S.current.game_rewards], isHeader: true),
+          CustomTableRow.fromTexts(texts: [S.current.game_rewards], isHeader: true),
           CustomTableRow(children: [
             TableCellData(
               child: getRewards(context),
@@ -106,20 +98,17 @@ class _ShopDetailPageState extends State<ShopDetailPage>
             )
           ]),
           if (shop.script != null && shop.scriptId != null) ...[
-            CustomTableRow.fromTexts(
-                texts: [S.current.script_story], isHeader: true),
+            CustomTableRow.fromTexts(texts: [S.current.script_story], isHeader: true),
             TextButton(
               onPressed: () {
-                ScriptLink(scriptId: shop.scriptId!, script: shop.script!)
-                    .routeTo(region: region);
+                ScriptLink(scriptId: shop.scriptId!, script: shop.script!).routeTo(region: region);
               },
               style: kTextButtonDenseStyle,
               child: Text(shop.scriptName ?? shop.scriptId!),
             )
           ],
           if (shop.releaseConditions.isNotEmpty) ...[
-            CustomTableRow.fromTexts(
-                texts: [S.current.open_condition], isHeader: true),
+            CustomTableRow.fromTexts(texts: [S.current.open_condition], isHeader: true),
             CustomTableRow(children: [
               TableCellData(
                 child: Column(
@@ -136,10 +125,7 @@ class _ShopDetailPageState extends State<ShopDetailPage>
                       if (cond.closedMessage.isNotEmpty)
                         Text(
                           cond.closedMessage,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(fontStyle: FontStyle.italic),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
                         )
                     ]
                   ],
@@ -148,10 +134,8 @@ class _ShopDetailPageState extends State<ShopDetailPage>
               ),
             ]),
             if (shop.warningMessage.isNotEmpty) ...[
-              CustomTableRow.fromTexts(
-                  texts: [S.current.warning], isHeader: true),
-              CustomTableRow.fromTexts(
-                  texts: [shop.warningMessage.replaceAll('{0}', shop.name)]),
+              CustomTableRow.fromTexts(texts: [S.current.warning], isHeader: true),
+              CustomTableRow.fromTexts(texts: [shop.warningMessage.replaceAll('{0}', shop.name)]),
             ],
           ]
         ]),
@@ -164,8 +148,7 @@ class _ShopDetailPageState extends State<ShopDetailPage>
     List<Widget> children = [];
     for (final reward in rewards) {
       children.add(Text.rich(TextSpan(text: kULLeading, children: [
-        if (reward.item1 != null)
-          CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),
+        if (reward.item1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),
         reward.item2,
       ])));
     }
@@ -201,8 +184,7 @@ class _ShopDetailPageState extends State<ShopDetailPage>
 
 class ShopHelper {
   const ShopHelper._();
-  static List<InlineSpan> cost(BuildContext context, NiceShop shop,
-      {double iconSize = 24}) {
+  static List<InlineSpan> cost(BuildContext context, NiceShop shop, {double iconSize = 24}) {
     List<InlineSpan> children = [];
     if (shop.payType == PayType.free) {
       children.add(const TextSpan(text: 'FREE!'));
@@ -255,10 +237,7 @@ class ShopHelper {
           null,
           TextSpan(
             text: '${S.current.unlock_quest}:',
-            children: [
-              ...MultiDescriptor.quests(context, shop.targetIds),
-              if (showSpecialName) shopName
-            ],
+            children: [...MultiDescriptor.quests(context, shop.targetIds), if (showSpecialName) shopName],
           ),
         );
         return;
@@ -273,26 +252,21 @@ class ShopHelper {
         return;
       case PurchaseType.setItem:
         for (final set in shop.itemSet) {
-          final rewards = onePurchase(context, shop, set.purchaseType,
-              set.targetId, set.setNum, set.gifts);
+          final rewards = onePurchase(context, shop, set.purchaseType, set.targetId, set.setNum, set.gifts);
           if (shop.setNum == 1) {
             yield* rewards;
           } else {
             for (final reward in rewards) {
               yield Tuple2(
                 reward.item1,
-                TextSpan(children: [
-                  reward.item2,
-                  TextSpan(text: '(×${shop.setNum.format()})')
-                ]),
+                TextSpan(children: [reward.item2, TextSpan(text: '(×${shop.setNum.format()})')]),
               );
             }
           }
         }
         return;
       default:
-        yield* onePurchase(context, shop, shop.purchaseType,
-            shop.targetIds.getOrNull(0) ?? 0, shop.setNum, shop.gifts);
+        yield* onePurchase(context, shop, shop.purchaseType, shop.targetIds.getOrNull(0) ?? 0, shop.setNum, shop.gifts);
     }
   }
 
@@ -320,8 +294,7 @@ class ShopHelper {
       case PurchaseType.commandCode:
       case PurchaseType.costumeRelease:
         String? text;
-        if (shop.shopType == ShopType.startUpSummon &&
-            purchaseType == PurchaseType.servant) {
+        if (shop.shopType == ShopType.startUpSummon && purchaseType == PurchaseType.servant) {
           final svt = db.gameData.servantsById[targetId];
           if (svt != null) {
             final status = db.curUser.svtStatusOf(svt.collectionNo);
@@ -336,21 +309,16 @@ class ShopHelper {
             id: targetId,
             text: text,
           ),
-          TextSpan(
-              text: GameCardMixin.anyCardItemName(targetId).l +
-                  (targetNum == 1 ? "" : " ×${targetNum.format()}")),
+          TextSpan(text: GameCardMixin.anyCardItemName(targetId).l + (targetNum == 1 ? "" : " ×${targetNum.format()}")),
         );
         return;
       case PurchaseType.equip:
         final equip = db.gameData.mysticCodes[targetId];
-        yield Tuple2(
-            equip?.iconBuilder(context: context),
-            TextSpan(
-                text: equip?.lName.l ?? '${S.current.mystic_code} $targetId'));
+        yield Tuple2(equip?.iconBuilder(context: context),
+            TextSpan(text: equip?.lName.l ?? '${S.current.mystic_code} $targetId'));
         return;
       case PurchaseType.friendGacha:
-        yield Tuple2(
-            Item.iconBuilder(context: context, item: Items.friendPoint),
+        yield Tuple2(Item.iconBuilder(context: context, item: Items.friendPoint),
             TextSpan(text: Transl.itemNames('フレンドポイント').l));
         return;
       case PurchaseType.setItem:
@@ -381,10 +349,7 @@ class ShopHelper {
         yield Tuple2(
           svt?.iconBuilder(context: context),
           TextSpan(
-              text: (svt?.lName.l ?? 'Svt $targetId') +
-                  (purchaseType == PurchaseType.eventSvtJoin
-                      ? ' Join'
-                      : ' Get')),
+              text: (svt?.lName.l ?? 'Svt $targetId') + (purchaseType == PurchaseType.eventSvtJoin ? ' Join' : ' Get')),
         );
         return;
       case PurchaseType.manaShop:
@@ -397,12 +362,8 @@ class ShopHelper {
         yield Tuple2(
           null,
           TextSpan(
-            text: Transl.enums(
-                PurchaseType.manaShop, (enums) => enums.purchaseType).l,
-            children: [
-              ...MultiDescriptor.shops(context, manaShops),
-              if (showSpecialName) shopName
-            ],
+            text: Transl.enums(PurchaseType.manaShop, (enums) => enums.purchaseType).l,
+            children: [...MultiDescriptor.shops(context, manaShops), if (showSpecialName) shopName],
           ),
         );
         return;
@@ -411,16 +372,14 @@ class ShopHelper {
         yield Tuple2(
           null,
           TextSpan(
-            text:
-                '${Transl.enums(purchaseType, (enums) => enums.purchaseType).l}'
+            text: '${Transl.enums(purchaseType, (enums) => enums.purchaseType).l}'
                 ' ×$targetNum',
           ),
         );
         return;
       case PurchaseType.bgm:
       case PurchaseType.bgmRelease:
-        final bgm = db.gameData.bgms.values
-            .firstWhereOrNull((e) => e.shop?.id == shop.id);
+        final bgm = db.gameData.bgms.values.firstWhereOrNull((e) => e.shop?.id == shop.id);
         yield Tuple2(
           bgm?.logo == null ? null : db.getIconImage(bgm?.logo),
           SharedBuilder.textButtonSpan(
@@ -434,8 +393,7 @@ class ShopHelper {
         yield Tuple2(null, TextSpan(text: 'A random shop ${shop.name}'));
         return;
       case PurchaseType.eventFactory:
-        yield Tuple2(
-            null, TextSpan(text: 'Event Factory $targetId: ${shop.name}'));
+        yield Tuple2(null, TextSpan(text: 'Event Factory $targetId: ${shop.name}'));
         return;
       case PurchaseType.gift:
         for (final gift in gifts) {

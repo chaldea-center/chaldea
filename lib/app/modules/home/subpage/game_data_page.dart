@@ -72,8 +72,7 @@ class _GameDataPageState extends State<GameDataPage> {
                     }
                     String? newVersion;
                     if (db.runtimeData.upgradableDataVersion != null &&
-                        db.runtimeData.upgradableDataVersion!.timestamp >
-                            db.gameData.version.timestamp) {
+                        db.runtimeData.upgradableDataVersion!.timestamp > db.gameData.version.timestamp) {
                       newVersion = db.runtimeData.upgradableDataVersion!.text();
                     }
                     return ListTile(
@@ -94,11 +93,9 @@ class _GameDataPageState extends State<GameDataPage> {
                           builder: (context) {
                             return SimpleCancelOkDialog(
                               title: Text(S.current.update_dataset),
-                              content: Text(
-                                  'Current: ${db.gameData.version.text(false)}\n'
+                              content: Text('Current: ${db.gameData.version.text(false)}\n'
                                   'Latest : ${data.version.text(false)}'),
-                              hideOk: data.version.timestamp <=
-                                  db.gameData.version.timestamp,
+                              hideOk: data.version.timestamp <= db.gameData.version.timestamp,
                               onTapOk: () async {
                                 db.gameData = data;
                                 db.notifyAppUpdate();
@@ -120,14 +117,10 @@ class _GameDataPageState extends State<GameDataPage> {
                 },
               ),
               SwitchListTile.adaptive(
-                value: kIsWeb
-                    ? db.settings.autoUpdateData
-                    : db.settings.updateDataBeforeStart,
+                value: kIsWeb ? db.settings.autoUpdateData : db.settings.updateDataBeforeStart,
                 title: Text(S.current.update_data_at_start),
                 subtitle: Text(
-                  (kIsWeb
-                          ? db.settings.autoUpdateData
-                          : db.settings.updateDataBeforeStart)
+                  (kIsWeb ? db.settings.autoUpdateData : db.settings.updateDataBeforeStart)
                       ? S.current.update_data_at_start_on_hint
                       : S.current.update_data_at_start_off_hint,
                   textScaleFactor: 0.8,
@@ -326,8 +319,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
             value: app,
             controlAffinity: ListTileControlAffinity.leading,
             title: const Text('Image Cache'),
-            subtitle:
-                const Text('Network images, including event/summon banners'),
+            subtitle: const Text('Network images, including event/summon banners'),
             onChanged: (v) {
               setState(() {
                 app = !app;

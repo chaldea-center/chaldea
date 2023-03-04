@@ -20,8 +20,7 @@ class TraitEventTab extends StatelessWidget {
         final cm = CustomMission.fromEventMission(mission);
         if (cm == null) continue;
         if (cm.conds.any((cond) =>
-            const [CustomMissionType.trait, CustomMissionType.questTrait]
-                .contains(cond.type) &&
+            const [CustomMissionType.trait, CustomMissionType.questTrait].contains(cond.type) &&
             cond.targetIds.contains(id))) {
           events.add(event);
           break;
@@ -47,8 +46,7 @@ class TraitEventTab extends StatelessWidget {
                 ListTile(
                   dense: true,
                   title: Text(event.lName.l.setMaxLines(1)),
-                  trailing:
-                      Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                   onTap: event.routeTo,
                 )
             ],

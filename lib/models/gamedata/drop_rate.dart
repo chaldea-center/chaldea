@@ -17,8 +17,7 @@ class DropRateData {
   })  : newData = newData ?? DropRateSheet(),
         legacyData = legacyData ?? DropRateSheet();
 
-  factory DropRateData.fromJson(Map<String, dynamic> json) =>
-      _$DropRateDataFromJson(json);
+  factory DropRateData.fromJson(Map<String, dynamic> json) => _$DropRateDataFromJson(json);
 
   DropRateSheet getSheet(bool use6th) {
     return use6th ? newData : legacyData;
@@ -49,12 +48,9 @@ class DropRateSheet {
     this.exps = const [],
     this.sparseMatrix = const {},
   }) : matrix = List.generate(
-            itemIds.length,
-            (i) => List.generate(
-                questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
+            itemIds.length, (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
 
-  factory DropRateSheet.fromJson(Map<String, dynamic> json) =>
-      _$DropRateSheetFromJson(json);
+  factory DropRateSheet.fromJson(Map<String, dynamic> json) => _$DropRateSheetFromJson(json);
 
   DropRateSheet copy() {
     return DropRateSheet(
@@ -64,10 +60,8 @@ class DropRateSheet {
       runs: List.of(runs),
       bonds: List.of(bonds),
       exps: List.of(exps),
-      sparseMatrix:
-          sparseMatrix.map((key, value) => MapEntry(key, Map.of(value))),
-    )..matrix = List.generate(matrix.length,
-        (i) => List.generate(matrix[i].length, (j) => matrix[i][j]));
+      sparseMatrix: sparseMatrix.map((key, value) => MapEntry(key, Map.of(value))),
+    )..matrix = List.generate(matrix.length, (i) => List.generate(matrix[i].length, (j) => matrix[i][j]));
   }
 
   Map<int, double> getQuestDropRate(int questId) {
@@ -75,16 +69,13 @@ class DropRateSheet {
     if (questIndex < 0) return {};
     return {
       for (int itemIndex = 0; itemIndex < itemIds.length; itemIndex++)
-        if (matrix[itemIndex][questIndex] > 0)
-          itemIds[itemIndex]: matrix[itemIndex][questIndex]
+        if (matrix[itemIndex][questIndex] > 0) itemIds[itemIndex]: matrix[itemIndex][questIndex]
     };
   }
 
   Map<int, double> getQuestApRate(int questId) {
-    final ap = db.gameData.quests[questId]?.consume ??
-        apCosts[questIds.indexOf(questId)];
-    return getQuestDropRate(questId)
-        .map((key, value) => MapEntry(key, ap / value));
+    final ap = db.gameData.quests[questId]?.consume ?? apCosts[questIds.indexOf(questId)];
+    return getQuestDropRate(questId).map((key, value) => MapEntry(key, ap / value));
   }
 
   /// DON'T call the following methods on original data

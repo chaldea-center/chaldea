@@ -84,8 +84,7 @@ class _GalleryPageState extends State<GalleryPage> {
               icon: const Icon(Icons.refresh),
               tooltip: S.current.tooltip_refresh_sliders,
               onPressed: () async {
-                EasyLoading.showToast(
-                    '${S.current.tooltip_refresh_sliders} ...');
+                EasyLoading.showToast('${S.current.tooltip_refresh_sliders} ...');
                 await AppNewsCarousel.resolveSliderImageUrls(true);
                 if (mounted) setState(() {});
               },
@@ -112,21 +111,16 @@ class _GalleryPageState extends State<GalleryPage> {
           controller: _scrollController,
           children: <Widget>[
             ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight:
-                      PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
+              constraints: BoxConstraints(minHeight: PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
               child: Column(
                 children: [
-                  if (db.settings.carousel.enabled)
-                    AppNewsCarousel(maxWidth: constraints.maxWidth),
-                  if (db.settings.carousel.enabled)
-                    const Divider(height: 0.5, thickness: 0.5),
+                  if (db.settings.carousel.enabled) AppNewsCarousel(maxWidth: constraints.maxWidth),
+                  if (db.settings.carousel.enabled) const Divider(height: 0.5, thickness: 0.5),
                   GridGallery(
                     isHome: true,
                     maxWidth: constraints.maxWidth,
                   ),
-                  if (dataVersion != null &&
-                      dataVersion.timestamp > db.gameData.version.timestamp)
+                  if (dataVersion != null && dataVersion.timestamp > db.gameData.version.timestamp)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: _dataUpdate(),
@@ -161,8 +155,7 @@ class _GalleryPageState extends State<GalleryPage> {
               EasyLoading.showError(S.current.failed);
               return;
             }
-            EasyLoading.showSuccess(
-                '${S.current.success}\n${data.version.text()}');
+            EasyLoading.showSuccess('${S.current.success}\n${data.version.text()}');
             db.gameData = data;
             if (mounted) setState(() {});
           },
@@ -184,9 +177,7 @@ class _GalleryPageState extends State<GalleryPage> {
     List<Widget> children = [];
 
     final path = db.paths.appPath.toLowerCase();
-    if (PlatformU.isWindows &&
-        (path.contains(r'appdata\local\temp') ||
-            path.contains(r'c:\program files'))) {
+    if (PlatformU.isWindows && (path.contains(r'appdata\local\temp') || path.contains(r'c:\program files'))) {
       children.add(SimpleAccordion(
         expanded: true,
         headerBuilder: (_, __) => ListTile(
@@ -214,8 +205,7 @@ class _GalleryPageState extends State<GalleryPage> {
         children: divideTiles(<Widget>[
           ListTile(
             title: Center(
-              child: Text(S.current.test_info_pad,
-                  style: const TextStyle(fontSize: 18)),
+              child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18)),
             ),
           ),
           ListTile(
@@ -228,8 +218,7 @@ class _GalleryPageState extends State<GalleryPage> {
           ),
           ListTile(
             title: Text(S.current.dataset_version),
-            trailing:
-                Text(db.gameData.version.text(), textAlign: TextAlign.end),
+            trailing: Text(db.gameData.version.text(), textAlign: TextAlign.end),
           ),
         ]),
       ),

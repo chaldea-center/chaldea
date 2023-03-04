@@ -23,16 +23,12 @@ class _TranslationSettingState extends State<TranslationSetting> {
             TextSpan(children: [
               TextSpan(
                 text: 'Auto',
-                style: db.settings.preferredRegions == null
-                    ? null
-                    : Theme.of(context).textTheme.bodySmall,
+                style: db.settings.preferredRegions == null ? null : Theme.of(context).textTheme.bodySmall,
               ),
               const TextSpan(text: ' / '),
               TextSpan(
                 text: 'Fixed',
-                style: db.settings.preferredRegions == null
-                    ? Theme.of(context).textTheme.bodySmall
-                    : null,
+                style: db.settings.preferredRegions == null ? Theme.of(context).textTheme.bodySmall : null,
               ),
             ]),
             textAlign: TextAlign.center,
@@ -65,8 +61,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
         final region = regions[index];
         return DecoratedBox(
           key: Key(region.toString()),
-          decoration: BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context))),
+          decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
             leading: Text((index + 1).toString()),
             horizontalTitleGap: 0,

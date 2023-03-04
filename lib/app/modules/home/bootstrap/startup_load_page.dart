@@ -9,8 +9,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class StartupLoadingPage extends StatefulWidget {
   final VoidCallback onSuccess;
   final VoidCallback onFailed;
-  StartupLoadingPage(
-      {super.key, required this.onSuccess, required this.onFailed});
+  StartupLoadingPage({super.key, required this.onSuccess, required this.onFailed});
 
   @override
   State<StartupLoadingPage> createState() => _StartupLoadingPageState();
@@ -21,10 +20,8 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   String? hint;
   DateTime startTime = DateTime.now();
 
-  bool onlineUpdate = network.available &&
-      !kDebugMode &&
-      db.settings.autoUpdateData &&
-      (db.settings.updateDataBeforeStart || kIsWeb);
+  bool onlineUpdate =
+      network.available && !kDebugMode && db.settings.autoUpdateData && (db.settings.updateDataBeforeStart || kIsWeb);
   bool needBackgroundUpdate = !kIsWeb && db.settings.autoUpdateData;
 
   @override
@@ -77,9 +74,7 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
         ValueListenableBuilder<int>(
           valueListenable: _loader.downloading,
           builder: ((context, value, child) {
-            bool showHint = onlineUpdate &&
-                value > 0 &&
-                DateTime.now().difference(startTime).inSeconds > 30;
+            bool showHint = onlineUpdate && value > 0 && DateTime.now().difference(startTime).inSeconds > 30;
             showHint = showHint || hint != null;
             return Text.rich(
               TextSpan(
@@ -92,8 +87,7 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
                               _loader.interrupt();
                               setState(() {});
                             },
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
+                            color: Theme.of(context).colorScheme.primaryContainer,
                             icon: const Icon(Icons.clear),
                             iconSize: 12,
                           ),

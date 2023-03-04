@@ -26,8 +26,7 @@ class BootstrapPage extends StatefulWidget {
   _BootstrapPageState createState() => _BootstrapPageState();
 }
 
-class _BootstrapPageState extends State<BootstrapPage>
-    with SingleTickerProviderStateMixin {
+class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late TextEditingController _accountEditing;
   int page = 0;
@@ -43,8 +42,7 @@ class _BootstrapPageState extends State<BootstrapPage>
 
     if (PlatformU.isWindows) {
       final startupPath = db.paths.appPath.toLowerCase();
-      if (startupPath.contains(r'appdata\local\temp') ||
-          startupPath.contains(r'c:\program files')) {
+      if (startupPath.contains(r'appdata\local\temp') || startupPath.contains(r'c:\program files')) {
         invalidStartup = true;
       }
       try {
@@ -99,8 +97,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       controller: _pageController,
       children: pages,
       onPageChanged: (i) {
-        FocusScope.of(context)
-            .requestFocus(FocusNode()); //Dismiss keyboard on page change
+        FocusScope.of(context).requestFocus(FocusNode()); //Dismiss keyboard on page change
         setState(() {
           page = i;
         });
@@ -162,9 +159,8 @@ class _BootstrapPageState extends State<BootstrapPage>
         itemBuilder: (context, index) {
           final lang = Language.supportLanguages[index];
           return ListTile(
-            leading: Language.getLanguage(db.settings.language) == lang
-                ? const Icon(Icons.done_rounded)
-                : const SizedBox(),
+            leading:
+                Language.getLanguage(db.settings.language) == lang ? const Icon(Icons.done_rounded) : const SizedBox(),
             title: Text(lang.name),
             horizontalTitleGap: 0,
             onTap: () {
@@ -185,16 +181,13 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   Widget get webDomainPage {
-    final cnDomain = Uri.parse('https://cn.chaldea.center'),
-        globalDomain = Uri.parse('https://chaldea.center');
+    final cnDomain = Uri.parse('https://cn.chaldea.center'), globalDomain = Uri.parse('https://chaldea.center');
     Widget _tile(bool isCN) {
       final domain = isCN ? cnDomain : globalDomain;
       bool selected = Uri.base.host == domain.host;
       return ListTile(
         leading: selected ? const Icon(Icons.done_rounded) : const SizedBox(),
-        title: Text(isCN
-            ? S.current.chaldea_server_cn
-            : S.current.chaldea_server_global),
+        title: Text(isCN ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
         subtitle: Text(domain.toString()),
         horizontalTitleGap: 0,
         trailing: selected ? null : const Icon(Icons.open_in_new),
@@ -255,9 +248,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         itemBuilder: (context, index) {
           final mode = ThemeMode.values[index];
           return ListTile(
-            leading: db.settings.themeMode == mode
-                ? const Icon(Icons.done_rounded)
-                : const SizedBox(),
+            leading: db.settings.themeMode == mode ? const Icon(Icons.done_rounded) : const SizedBox(),
             title: Text(_themeModeName(mode)),
             horizontalTitleGap: 0,
             onTap: () {
@@ -304,9 +295,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             List.generate(Region.values.length, (index) {
               final region = Region.values[index];
               return ListTile(
-                leading: region == db.curUser.region
-                    ? const Icon(Icons.done)
-                    : const SizedBox(),
+                leading: region == db.curUser.region ? const Icon(Icons.done) : const SizedBox(),
                 title: Text(region.localName),
                 horizontalTitleGap: 0,
                 onTap: () {
@@ -356,8 +345,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         child: SmoothPageIndicator(
           controller: _pageController,
           count: pages.length,
-          effect: const WormEffect(
-              dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
+          effect: const WormEffect(dotHeight: 10, dotWidth: 10, activeDotColor: Colors.blue),
           onDotClicked: (i) {
             setState(() {
               page = i;
@@ -446,10 +434,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           trailing: DropdownButton<bool>(
             value: db.settings.proxyServer,
             items: [
-              DropdownMenuItem(
-                  value: false, child: Text(S.current.chaldea_server_global)),
-              DropdownMenuItem(
-                  value: true, child: Text(S.current.chaldea_server_cn)),
+              DropdownMenuItem(value: false, child: Text(S.current.chaldea_server_global)),
+              DropdownMenuItem(value: true, child: Text(S.current.chaldea_server_cn)),
             ],
             onChanged: (v) {
               setState(() {
@@ -465,8 +451,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           title: Text(S.current.current_version),
           trailing: Text(
             db.gameData.version.timestamp > 0
-                ? DateTime.fromMillisecondsSinceEpoch(
-                        db.gameData.version.timestamp * 1000)
+                ? DateTime.fromMillisecondsSinceEpoch(db.gameData.version.timestamp * 1000)
                     .toStringShort()
                     .replaceFirst(' ', '\n')
                 : S.current.not_found,
@@ -536,9 +521,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   height: 120,
                   child: CircularProgressIndicator(
                     value: progress ?? 0,
-                    color: _loader.error != null
-                        ? Theme.of(context).colorScheme.error
-                        : null,
+                    color: _loader.error != null ? Theme.of(context).colorScheme.error : null,
                     backgroundColor: Theme.of(context).colorScheme.background,
                   ),
                 ),
@@ -568,9 +551,7 @@ class _IntroPage extends StatelessWidget {
           FaIcon(
             icon!,
             size: 80,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? null
-                : Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).brightness == Brightness.dark ? null : Theme.of(context).colorScheme.secondary,
           ),
         if (title != null)
           Padding(

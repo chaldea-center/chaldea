@@ -22,10 +22,7 @@ void loadSvtIconRemap() async {
   Map<int, List<int>> mapping = {};
   for (final fp in _openedFiles) {
     final html = File(fp).readAsStringSync();
-    for (final reg in [
-      RegExp(r'JP/Faces/f_(\d+).png'),
-      RegExp(r'JP/Enemys/(\d+).png')
-    ]) {
+    for (final reg in [RegExp(r'JP/Faces/f_(\d+).png'), RegExp(r'JP/Enemys/(\d+).png')]) {
       for (final match in reg.allMatches(html)) {
         final iconId = int.parse(match.group(1)!);
         mapping.putIfAbsent(iconId ~/ 10, () => []).add(iconId);
@@ -48,8 +45,7 @@ void loadSvtIconRemap() async {
   remap = sortDict(remap);
   final buffer = StringBuffer();
   for (final svtId in remap.keys) {
-    buffer.writeln(
-        '  $svtId: ${remap[svtId]}, // ${db.gameData.entities[svtId]!.name}');
+    buffer.writeln('  $svtId: ${remap[svtId]}, // ${db.gameData.entities[svtId]!.name}');
   }
   print(buffer);
   Clipboard.setData(ClipboardData(text: buffer.toString()));

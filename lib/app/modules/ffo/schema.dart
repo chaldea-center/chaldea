@@ -46,15 +46,13 @@ class FfoDB {
   }
 
   Future<void> load(bool force) async {
-    for (final data
-        in jsonDecode(await _readFile('FFOSpriteParts.json', force))) {
+    for (final data in jsonDecode(await _readFile('FFOSpriteParts.json', force))) {
       final svt = FfoSvt.fromJson(data);
       servants[svt.collectionNo] = svt;
     }
 
-    final csvrows = const CsvToListConverter(eol: '\n').convert(
-        (await _readFile('CSV/ServantDB-Parts.csv', force))
-            .replaceAll('\r\n', '\n'));
+    final csvrows = const CsvToListConverter(eol: '\n')
+        .convert((await _readFile('CSV/ServantDB-Parts.csv', force)).replaceAll('\r\n', '\n'));
     for (final row in csvrows) {
       if (row[0] == 'id') {
         assert(row.length == 10, row.toString());
@@ -78,8 +76,7 @@ class FfoDB {
       }
     }
     print('downloading: $url');
-    final resp = await DioE()
-        .get(url, options: Options(responseType: ResponseType.plain));
+    final resp = await DioE().get(url, options: Options(responseType: ResponseType.plain));
     await file.create(recursive: true);
     await file.writeAsString(resp.data as String);
     return resp.data;
@@ -128,11 +125,7 @@ class FfoSvt {
   }
 
   bool get hasHead => headBack != null || headFront != null;
-  bool get hasBody =>
-      bodyBack != null ||
-      bodyBack2 != null ||
-      bodyMiddle != null ||
-      bodyFront != null;
+  bool get hasBody => bodyBack != null || bodyBack2 != null || bodyMiddle != null || bodyFront != null;
   bool get hasLandscape => bg != null || bgFront != null;
   bool has(FfoPartWhere where) {
     switch (where) {
@@ -310,8 +303,7 @@ class FFOParams {
 
   bool get isEmpty => parts.every((e) => e == null);
 
-  Size get canvasSize =>
-      cropNormalizedSize ? const Size(512, 720) : const Size(1024, 1024);
+  Size get canvasSize => cropNormalizedSize ? const Size(512, 720) : const Size(1024, 1024);
 }
 
 const _kSvtClassMapping = {

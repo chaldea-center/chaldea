@@ -38,9 +38,7 @@ class ImageWithTextOption {
       outlined: other.outlined ?? outlined,
       fontSize: other.fontSize ?? fontSize,
       textAlign: other.textAlign ?? textAlign,
-      textStyle: textStyle == null
-          ? other.textStyle
-          : textStyle?.merge(other.textStyle),
+      textStyle: textStyle == null ? other.textStyle : textStyle?.merge(other.textStyle),
       shadowSize: other.shadowSize ?? shadowSize,
       shadowColor: other.shadowColor ?? shadowColor,
     );
@@ -69,8 +67,7 @@ class ImageWithText extends StatelessWidget {
     TextStyle _style = const TextStyle().merge(option?.textStyle);
     double? fontSize = option?.fontSize ??
         (option?.height != null && option!.height!.isFinite
-            ? option!.height! *
-                ((text?.split('\n').length ?? 1) > 1 ? 0.24 : 0.3)
+            ? option!.height! * ((text?.split('\n').length ?? 1) > 1 ? 0.24 : 0.3)
             : null);
     _style = _style.copyWith(
       fontSize: fontSize,
@@ -84,28 +81,21 @@ class ImageWithText extends StatelessWidget {
       children: <Widget>[
         applyConstraints(Padding(
           padding: EdgeInsets.fromLTRB(
-              -min(0.0, padding.left),
-              -min(0.0, padding.top),
-              -min(0.0, padding.right),
-              -min(0.0, padding.bottom)),
+              -min(0.0, padding.left), -min(0.0, padding.top), -min(0.0, padding.right), -min(0.0, padding.bottom)),
           child: image,
         )),
         if (text?.isNotEmpty == true || textBuilder != null)
           applyConstraints(
             Padding(
               padding: EdgeInsets.fromLTRB(
-                  max(0.0, padding.left),
-                  max(0.0, padding.top),
-                  max(0.0, padding.right),
-                  max(0.0, padding.bottom)),
+                  max(0.0, padding.left), max(0.0, padding.top), max(0.0, padding.right), max(0.0, padding.bottom)),
               child: paintOutline(
                 text: text,
                 builder: textBuilder,
                 textAlign: option?.textAlign ?? TextAlign.end,
                 textStyle: _style,
                 shadowSize: fontSize == null ? 3 : fontSize * 0.2,
-                shadowColor: option?.shadowColor ??
-                    Theme.of(context).scaffoldBackgroundColor,
+                shadowColor: option?.shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
             boxFit: BoxFit.scaleDown,
@@ -137,8 +127,7 @@ class ImageWithText extends StatelessWidget {
     return child;
   }
 
-  static TextStyle toGlowStyle(
-      [TextStyle? style, double? shadowSize, Color? shadowColor]) {
+  static TextStyle toGlowStyle([TextStyle? style, double? shadowSize, Color? shadowColor]) {
     style ??= const TextStyle();
     if (shadowSize == null) {
       return style;
@@ -179,9 +168,7 @@ class ImageWithText extends StatelessWidget {
         Text(
           text,
           textAlign: textAlign,
-          style: _style.foreground == null
-              ? _style
-              : _style.copyWith(foreground: null),
+          style: _style.foreground == null ? _style : _style.copyWith(foreground: null),
         )
       ];
     }

@@ -19,8 +19,7 @@ class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
-class _CmdCodeFilterPageState
-    extends FilterPageState<CmdCodeFilterData, CmdCodeFilterPage> {
+class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData, CmdCodeFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -95,8 +94,7 @@ class _CmdCodeFilterPageState
             update();
           },
         ),
-        EffectFilterUtil.buildTraitFilter(
-            context, filterData.targetTrait, update),
+        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update),
         FilterGroup<SkillEffect>(
           title: Text(S.current.effect_type),
           options: _getValidEffects(SkillEffect.kAttack),

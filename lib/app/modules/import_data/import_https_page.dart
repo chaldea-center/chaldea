@@ -59,8 +59,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   UserMstData? get mstData => topLogin?.mstData;
 
-  String tmpPath =
-      joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
+  String tmpPath = joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
 
   @override
   void initState() {
@@ -177,8 +176,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             child: MultiSliver(children: [
               ListTile(
                 title: Text(S.current.obtain_time),
-                trailing:
-                    Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
+                trailing: Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
               ),
               ListTile(
                 title: Text(S.current.login_username),
@@ -186,9 +184,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ),
               ListTile(
                 title: Text(S.current.gender),
-                trailing: Text(user.genderType == 1
-                    ? '♂ ${S.current.guda_male}'
-                    : '♀ ${S.current.guda_female}'),
+                trailing: Text(user.genderType == 1 ? '♂ ${S.current.guda_male}' : '♀ ${S.current.guda_female}'),
               ),
               ListTile(
                 title: const Text('ID'),
@@ -196,18 +192,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               ),
               ListTile(
                 title: Text(Items.qp?.lName.l ?? "QP"),
-                trailing:
-                    Text(user.qp.format(compact: false, groupSeparator: ',')),
+                trailing: Text(user.qp.format(compact: false, groupSeparator: ',')),
               ),
               ListTile(
                 title: Text(Items.manaPrism?.lName.l ?? "Mana Prism"),
-                trailing:
-                    Text(user.mana.format(compact: false, groupSeparator: ',')),
+                trailing: Text(user.mana.format(compact: false, groupSeparator: ',')),
               ),
               ListTile(
                 title: Text(Items.rarePrism?.lName.l ?? "Rare Prism"),
-                trailing: Text(
-                    user.rarePri.format(compact: false, groupSeparator: ',')),
+                trailing: Text(user.rarePri.format(compact: false, groupSeparator: ',')),
               ),
             ]),
           )
@@ -280,8 +273,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         Widget _wrapCellStyle(List<String> texts) {
           return CustomTableRow.fromTexts(
             texts: texts,
-            defaults: TableCellData(
-                padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
+            defaults: TableCellData(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
             divider: null,
           );
         }
@@ -336,8 +328,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 6, top: 2),
-                child: db.gameData.servantsById[svt.svtId]
-                    ?.iconBuilder(context: context, height: 56),
+                child: db.gameData.servantsById[svt.svtId]?.iconBuilder(context: context, height: 56),
               ),
               if (svt.locked)
                 const Icon(
@@ -357,10 +348,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12),
               child: CustomTable(
                 hideOutline: true,
-                verticalDivider:
-                    const VerticalDivider(width: 0, color: Colors.transparent),
-                horizontalDivider:
-                    const Divider(height: 0, color: Colors.transparent),
+                verticalDivider: const VerticalDivider(width: 0, color: Colors.transparent),
+                horizontalDivider: const Divider(height: 0, color: Colors.transparent),
                 children: infoRows,
               )),
           onTap: _onTapSvt,
@@ -396,9 +385,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SliverPinnedHeader(
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
-            title: Text(inStorage
-                ? '${S.current.servant}(${S.current.svt_second_archive})'
-                : S.current.servant),
+            title: Text(inStorage ? '${S.current.servant}(${S.current.svt_second_archive})' : S.current.servant),
             leading: Checkbox(
               value: inStorage ? _includeSvtStorage : _includeSvt,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -444,11 +431,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get craftSliver {
-    int owned =
-            crafts.values.where((e) => e.status == CraftStatus.owned).length,
+    int owned = crafts.values.where((e) => e.status == CraftStatus.owned).length,
         met = crafts.values.where((e) => e.status == CraftStatus.met).length,
-        notMet =
-            crafts.values.where((e) => e.status == CraftStatus.notMet).length;
+        notMet = crafts.values.where((e) => e.status == CraftStatus.notMet).length;
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
@@ -477,8 +462,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               children: [
                 ListTile(
                   leading: const Text(''),
-                  title: Text(
-                      '${CraftStatus.shownText(CraftStatus.owned)}: $owned\n'
+                  title: Text('${CraftStatus.shownText(CraftStatus.owned)}: $owned\n'
                       '${CraftStatus.shownText(CraftStatus.met)}: $met\n'
                       '${CraftStatus.shownText(CraftStatus.notMet)}: $notMet\n'
                       'ALL:   ${crafts.length}'),
@@ -491,14 +475,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get cmdCodeSliver {
-    int owned = cmdCodes.values
-            .where((e) => e.status == CmdCodeStatus.owned)
-            .length,
-        met =
-            cmdCodes.values.where((e) => e.status == CmdCodeStatus.met).length,
-        notMet = cmdCodes.values
-            .where((e) => e.status == CmdCodeStatus.notMet)
-            .length;
+    int owned = cmdCodes.values.where((e) => e.status == CmdCodeStatus.owned).length,
+        met = cmdCodes.values.where((e) => e.status == CmdCodeStatus.met).length,
+        notMet = cmdCodes.values.where((e) => e.status == CmdCodeStatus.notMet).length;
     int svtCount = 0, ccCount = 0;
     if (mstData != null) {
       for (final svtcc in mstData!.userSvtCommandCode) {
@@ -535,8 +514,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               children: [
                 ListTile(
                   leading: const Text(''),
-                  title: Text(
-                      '${CmdCodeStatus.shownText(CmdCodeStatus.owned)}: $owned\n'
+                  title: Text('${CmdCodeStatus.shownText(CmdCodeStatus.owned)}: $owned\n'
                       '${CmdCodeStatus.shownText(CmdCodeStatus.met)}: $met\n'
                       '${CmdCodeStatus.shownText(CmdCodeStatus.notMet)}: $notMet\n'
                       'ALL:   ${cmdCodes.length}\n'
@@ -646,18 +624,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       user.cmdCodes.addAll(Map.of(cmdCodes));
 
       if (mstData != null) {
-        final userCCMap = <int, int>{
-          for (final cc in mstData!.userCommandCode) cc.id: cc.commandCodeId
-        };
+        final userCCMap = <int, int>{for (final cc in mstData!.userCommandCode) cc.id: cc.commandCodeId};
         for (final svtcc in mstData!.userSvtCommandCode) {
           final svtNo = db.gameData.servantsById[svtcc.svtId]?.collectionNo;
           if (svtNo == null || svtNo == 0) continue;
           final status = user.svtStatusOf(svtNo);
-          for (int index = 0;
-              index < svtcc.userCommandCodeIds.length;
-              index++) {
-            final cc = db.gameData
-                .commandCodesById[userCCMap[svtcc.userCommandCodeIds[index]]];
+          for (int index = 0; index < svtcc.userCommandCodeIds.length; index++) {
+            final cc = db.gameData.commandCodesById[userCCMap[svtcc.userCommandCodeIds[index]]];
             status.setCmdCode(index, cc?.collectionNo);
           }
         }
@@ -675,9 +648,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SvtStatus status = SvtStatus();
         UserSvtCollection collection = cardCollections[svt.svtId]!;
         final dbSvt = svt.dbSvt;
-        if (_alreadyAdded.contains(svt.svtId) &&
-            dbSvt != null &&
-            dbSvt.collectionNo > 0) {
+        if (_alreadyAdded.contains(svt.svtId) && dbSvt != null && dbSvt.collectionNo > 0) {
           user.dupServantMapping[svt.id] = dbSvt.collectionNo;
           status = user.svtStatusOf(svt.id);
         } else if (dbSvt != null) {
@@ -695,8 +666,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..fouAtk3 = min(100, svt.adjustAtk ~/ 5)
           ..fouHp = max(0, (svt.adjustHp - 100) ~/ 2)
           ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2)
-          ..bondLimit = min(collection.friendshipRank + 1,
-              collection.friendshipExceedCount + 10);
+          ..bondLimit = min(collection.friendshipRank + 1, collection.friendshipExceedCount + 10);
         if (svt.appendLvs != null) {
           status.cur.appendSkills = svt.appendLvs!;
         }
@@ -785,27 +755,22 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     _validSvts.clear();
     cardCollections.clear();
     servants.clear();
-    items = body.userItem
-        .where((e) =>
-            e.num >= 0 &&
-            db.gameData.items[e.itemId]?.category != ItemCategory.other)
-        .toList();
+    items =
+        body.userItem.where((e) => e.num >= 0 && db.gameData.items[e.itemId]?.category != ItemCategory.other).toList();
     crafts.clear();
     cmdCodes.clear();
 
     items.sort2((e) => db.gameData.items[e.itemId]?.priority ?? e.itemId);
 
     // collections
-    cardCollections = Map.fromEntries(
-        body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
+    cardCollections = Map.fromEntries(body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
 
     // svt
     for (final svt in body.userSvt) {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = false;
       svt.appendLvs = body.getSvtAppendSkillLv(svt);
-      final group = servants.firstWhereOrNull(
-          (group) => group.any((element) => element.svtId == svt.svtId));
+      final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
       } else {
@@ -817,8 +782,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       if ((svt.dbSvt?.collectionNo ?? 0) <= 0) continue;
       svt.inStorage = true;
       svt.appendLvs = body.getSvtAppendSkillLv(svt);
-      final group = servants.firstWhereOrNull(
-          (group) => group.any((element) => element.svtId == svt.svtId));
+      final group = servants.firstWhereOrNull((group) => group.any((element) => element.svtId == svt.svtId));
       if (group == null) {
         servants.add([svt]);
       } else {
@@ -835,18 +799,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final group in servants) {
       group.sort((a, b) {
         // lv higher, active skills higher, created earlier, id
-        final aa = [
-          a.lv,
-          a.skillLv1 + a.skillLv2 + a.skillLv3,
-          -a.createdAt.microsecondsSinceEpoch,
-          a.id
-        ];
-        final bb = [
-          b.lv,
-          b.skillLv1 + b.skillLv2 + b.skillLv3,
-          -b.createdAt.microsecondsSinceEpoch,
-          b.id
-        ];
+        final aa = [a.lv, a.skillLv1 + a.skillLv2 + a.skillLv3, -a.createdAt.microsecondsSinceEpoch, a.id];
+        final bb = [b.lv, b.skillLv1 + b.skillLv2 + b.skillLv3, -b.createdAt.microsecondsSinceEpoch, b.id];
         for (int i = 0; i < aa.length; i++) {
           final ia = aa[i], ib = bb[i];
           if (ia != ib) return ib - ia;
@@ -859,16 +813,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final card in cardCollections.values) {
       final ce = db.gameData.craftEssencesById[card.svtId];
       if (ce == null) continue;
-      crafts.putIfAbsent(ce.collectionNo, () => CraftStatus()).status =
-          card.status;
+      crafts.putIfAbsent(ce.collectionNo, () => CraftStatus()).status = card.status;
     }
 
     for (final ce in [...body.userSvt, ...body.userSvtStorage]) {
       if (ce.dbCE == null) continue;
-      final status =
-          crafts.putIfAbsent(ce.dbCE!.collectionNo, () => CraftStatus());
-      if (status.lv < ce.lv ||
-          (status.lv == ce.lv && status.limitCount < ce.limitCount)) {
+      final status = crafts.putIfAbsent(ce.dbCE!.collectionNo, () => CraftStatus());
+      if (status.lv < ce.lv || (status.lv == ce.lv && status.limitCount < ce.limitCount)) {
         status.lv = ce.lv;
         status.limitCount = ce.limitCount;
       }
@@ -876,15 +827,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final code in body.userCommandCodeCollection) {
       final cc = code.dbCC;
       if (cc == null) continue;
-      final status =
-          cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
+      final status = cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
       status.status = code.status;
     }
     for (final code in body.userCommandCode) {
       final cc = code.dbCC;
       if (cc == null) continue;
-      final status =
-          cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
+      final status = cmdCodes.putIfAbsent(cc.collectionNo, () => CmdCodeStatus());
       status.count += 1;
     }
 

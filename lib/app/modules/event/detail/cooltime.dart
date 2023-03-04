@@ -20,8 +20,7 @@ class EventCooltimePage extends HookWidget {
     final keys = grouped.keys.toList();
     return ListView.separated(
       controller: useScrollController(),
-      itemBuilder: (context, index) =>
-          itemBuilder(context, grouped[keys[index]]!),
+      itemBuilder: (context, index) => itemBuilder(context, grouped[keys[index]]!),
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemCount: keys.length,
     );
@@ -43,18 +42,13 @@ class EventCooltimePage extends HookWidget {
           contentPadding: const EdgeInsetsDirectional.only(start: 8),
           horizontalTitleGap: 8,
           dense: true,
-          leading: spot?.shownImage == null
-              ? null
-              : db.getIconImage(spot?.shownImage),
+          leading: spot?.shownImage == null ? null : db.getIconImage(spot?.shownImage),
           title: Text(Transl.spotNames(first.name).l),
-          subtitle: Text(
-              '${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'
+          subtitle: Text('${_fmtCooltime(rewards.first.cooltime)}→${_fmtCooltime(rewards.last.cooltime)},'
               ' +${(maxPointRate / 1000).toStringAsFixed(1)}'),
           trailing: Text.rich(
             TextSpan(children: [
-              for (final gift in first.gifts)
-                CenterWidgetSpan(
-                    child: gift.iconBuilder(context: context, width: 28)),
+              for (final gift in first.gifts) CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28)),
               TextSpan(text: '×${first.upperLimitGiftNum.format()}')
             ]),
             textScaleFactor: 0.9,
@@ -63,8 +57,7 @@ class EventCooltimePage extends HookWidget {
       },
       contentBuilder: (context) {
         return CustomTable(children: [
-          CustomTableRow.fromTexts(
-              texts: const ['Lv.', 'Cooltime', 'Point Rate'], isHeader: true),
+          CustomTableRow.fromTexts(texts: const ['Lv.', 'Cooltime', 'Point Rate'], isHeader: true),
           for (final reward in rewards)
             CustomTableRow.fromTexts(texts: [
               reward.lv.toString(),

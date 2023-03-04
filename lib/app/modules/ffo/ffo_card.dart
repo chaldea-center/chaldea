@@ -82,22 +82,20 @@ class _FfoCardState extends State<FfoCard> {
     );
     if (widget.showSave || widget.showFullScreen) {
       child = GestureDetector(
-        onTap:
-            widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
-                ? () => Navigator.of(context).push(
-                      PageRouteBuilder(
-                        opaque: false,
-                        pageBuilder: (context, _, __) =>
-                            FullscreenImageViewer(children: [
-                          FfoCard(
-                            params: widget.params,
-                            showSave: true,
-                            enableZoom: true,
-                          )
-                        ]),
-                      ),
-                    )
-                : null,
+        onTap: widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
+            ? () => Navigator.of(context).push(
+                  PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (context, _, __) => FullscreenImageViewer(children: [
+                      FfoCard(
+                        params: widget.params,
+                        showSave: true,
+                        enableZoom: true,
+                      )
+                    ]),
+                  ),
+                )
+            : null,
         onLongPress: widget.showSave
             ? () async {
                 final data = await FFOUtil.toBinary(widget.params);
@@ -106,8 +104,7 @@ class _FfoCardState extends State<FfoCard> {
                   return;
                 }
                 if (mounted) {
-                  FFOUtil.showSaveShare(
-                      context: context, params: widget.params, data: data);
+                  FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
                 }
               }
             : null,
@@ -181,8 +178,7 @@ abstract class FFOUtil {
     return imgUrl(path);
   }
 
-  static Future<void> setPart(
-      FfoCanvasImages images, FfoSvtPart? coord, FfoPartWhere where) async {
+  static Future<void> setPart(FfoCanvasImages images, FfoSvtPart? coord, FfoPartWhere where) async {
     // wait the previous render completed
     if (coord == null) {
       switch (where) {
@@ -236,11 +232,9 @@ abstract class FFOUtil {
     return ImageActions.resolveImage(provider);
   }
 
-  static void drawCanvas(
-      Canvas canvas, FFOParams params, FfoCanvasImages images) {
+  static void drawCanvas(Canvas canvas, FFOParams params, FfoCanvasImages images) {
     const double w0 = 1024, h0 = 1024, w1 = 512, h1 = 720;
-    final centerRect = Rect.fromCenter(
-        center: const Offset(w0 / 2, h0 / 2), width: w1, height: h1);
+    final centerRect = Rect.fromCenter(center: const Offset(w0 / 2, h0 / 2), width: w1, height: h1);
     if (params.cropNormalizedSize) {
       canvas.save();
       canvas.translate(-(w0 - w1) / 2, -(h0 - h1) / 2);
@@ -274,8 +268,7 @@ abstract class FFOUtil {
       );
     }
 
-    bool flipHead = (head?.direction == 0 && body?.direction == 2) ||
-        (head?.direction == 2 && body?.direction == 0);
+    bool flipHead = (head?.direction == 0 && body?.direction == 2) || (head?.direction == 2 && body?.direction == 0);
 
     void _drawHead(ui.Image? img, bool use2) {
       if (img == null) return;
@@ -284,8 +277,7 @@ abstract class FFOUtil {
       if (body.headX2 == 0 && body.headY2 == 0) {
         use2 = false;
       }
-      int headX = use2 ? body.headX2 : body.headX,
-          headY = use2 ? body.headY2 : body.headY;
+      int headX = use2 ? body.headX2 : body.headX, headY = use2 ? body.headY2 : body.headY;
       canvas.translate(headX.toDouble(), headY.toDouble());
       if (flipHead) canvas.scale(-1, 1);
       double scale = body.scale / head.scale;
@@ -342,18 +334,13 @@ abstract class FFOUtil {
     bool share = true,
     String? shareText,
   }) {
-    String fn =
-        'ffo-${params.parts.map((e) => e?.collectionNo ?? 0).join('-')}.png';
+    String fn = 'ffo-${params.parts.map((e) => e?.collectionNo ?? 0).join('-')}.png';
     destFp ??= joinPaths(db.paths.appPath, 'ffo_output', fn);
     List<String> parts = [];
     for (int index = 0; index < 3; index++) {
       final part = params.parts[index];
       if (part != null) {
-        String partName = [
-          S.current.ffo_head,
-          S.current.ffo_body,
-          S.current.background
-        ][index];
+        String partName = [S.current.ffo_head, S.current.ffo_body, S.current.background][index];
         parts.add('$partName: No.${part.collectionNo}-${part.svt?.shownName}');
       }
     }

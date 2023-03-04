@@ -102,8 +102,7 @@ class Event {
     return lName;
   }
 
-  EventExtra get extra => db.gameData.wiki.events
-      .putIfAbsent(id, () => EventExtra(id: id, name: name));
+  EventExtra get extra => db.gameData.wiki.events.putIfAbsent(id, () => EventExtra(id: id, name: name));
 
   /// Check valuable "content", campaigns are not considered as "event" usually
   bool get isEmpty =>
@@ -129,18 +128,12 @@ class Event {
 
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
-      return DateTime.now().difference(startedAt.sec2date()) >
-          const Duration(days: 31 * 13);
+      return DateTime.now().difference(startedAt.sec2date()) > const Duration(days: 31 * 13);
     }
-    int? _end = db.curUser.region == Region.jp
-        ? endedAt
-        : extra.endTime.ofRegion(db.curUser.region);
-    final neverClosed =
-        DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
+    int? _end = db.curUser.region == Region.jp ? endedAt : extra.endTime.ofRegion(db.curUser.region);
+    final neverClosed = DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
     if (_end != null && _end > neverClosed) {
-      final _start = db.curUser.region == Region.jp
-          ? startedAt
-          : extra.startTime.ofRegion(db.curUser.region);
+      final _start = db.curUser.region == Region.jp ? startedAt : extra.startTime.ofRegion(db.curUser.region);
       if (_start != null) {
         _end = _start + const Duration(days: 30).inSeconds;
       }
@@ -157,9 +150,7 @@ class Event {
         }[db.curUser.region] ??
         12;
     final days = months * 31 + 360 + diff.inDays;
-    return endedAt
-        .sec2date()
-        .isBefore(DateTime.now().subtract(Duration(days: days)));
+    return endedAt.sec2date().isBefore(DateTime.now().subtract(Duration(days: days)));
   }
 
   int? startTimeOf(Region? region) {
@@ -174,15 +165,9 @@ class Event {
 
   bool isOnGoing(Region? region) {
     int now = DateTime.now().timestamp;
-    int neverEndTime = region == Region.cn || region == Region.tw
-        ? kNeverClosedTimestampCN
-        : kNeverClosedTimestamp;
-    final starts = region == null
-        ? [startedAt, ...extra.startTime.values]
-        : [startTimeOf(region)];
-    final ends = region == null
-        ? [endedAt, ...extra.endTime.values]
-        : [endTimeOf(region)];
+    int neverEndTime = region == Region.cn || region == Region.tw ? kNeverClosedTimestampCN : kNeverClosedTimestamp;
+    final starts = region == null ? [startedAt, ...extra.startTime.values] : [startTimeOf(region)];
+    final ends = region == null ? [endedAt, ...extra.endTime.values] : [endTimeOf(region)];
     for (int index = 0; index < starts.length; index++) {
       int? start = starts[index], end = ends[index];
       if (start != null && end != null) {
@@ -278,31 +263,25 @@ class Event {
       final _items = itemShop[shopItem.id] = {};
       if (shopItem.purchaseType == PurchaseType.setItem) {
         for (final set in shopItem.itemSet) {
-          if (set.purchaseType == PurchaseType.item ||
-              set.purchaseType == PurchaseType.servant) {
-            if (gameData.craftEssencesById[set.targetId]?.flag ==
-                SvtFlag.svtEquipChocolate) {
+          if (set.purchaseType == PurchaseType.item || set.purchaseType == PurchaseType.servant) {
+            if (gameData.craftEssencesById[set.targetId]?.flag == SvtFlag.svtEquipChocolate) {
               continue;
             }
             _items.addNum(set.targetId, set.setNum * shopItem.setNum);
-            statItemFixed.addNum(
-                set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
+            statItemFixed.addNum(set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
-          _items
-              .addDict({for (final gift in set.gifts) gift.objectId: gift.num});
+          _items.addDict({for (final gift in set.gifts) gift.objectId: gift.num});
         }
       } else {
         for (final id in shopItem.targetIds) {
-          if (gameData.craftEssencesById[id]?.flag ==
-              SvtFlag.svtEquipChocolate) {
+          if (gameData.craftEssencesById[id]?.flag == SvtFlag.svtEquipChocolate) {
             continue;
           }
           _items.addNum(id, shopItem.setNum);
           statItemFixed.addNum(id, shopItem.setNum * shopItem.limitNum);
         }
       }
-      _items.addDict(
-          {for (final gift in shopItem.gifts) gift.objectId: gift.num});
+      _items.addDict({for (final gift in shopItem.gifts) gift.objectId: gift.num});
     }
 
     // point rewards
@@ -341,9 +320,7 @@ class Event {
       }
       for (final box in lottery.boxes) {
         for (final gift in box.gifts) {
-          final itemLotBox = itemLottery
-              .putIfAbsent(lottery.id, () => {})
-              .putIfAbsent(box.boxIndex, () => {});
+          final itemLotBox = itemLottery.putIfAbsent(lottery.id, () => {}).putIfAbsent(box.boxIndex, () => {});
           Gift.checkAddGifts(itemLotBox, box.gifts, box.maxNum);
           if (gift.isStatItem) {
             if (lottery.limited || !_lastBoxItems.containsKey(gift.objectId)) {
@@ -408,8 +385,7 @@ class MasterMission {
     this.quests = const [],
   });
 
-  factory MasterMission.fromJson(Map<String, dynamic> json) =>
-      _$MasterMissionFromJson(json);
+  factory MasterMission.fromJson(Map<String, dynamic> json) => _$MasterMissionFromJson(json);
 
   bool get isWeekly => id >= 1e5 && id < 2e5;
   bool get isLimited => id >= 2e5 && id < 3e5;
@@ -431,8 +407,7 @@ class ItemSet {
     this.gifts = const [],
   });
 
-  factory ItemSet.fromJson(Map<String, dynamic> json) =>
-      _$ItemSetFromJson(json);
+  factory ItemSet.fromJson(Map<String, dynamic> json) => _$ItemSetFromJson(json);
 }
 
 @JsonSerializable()
@@ -502,8 +477,7 @@ class NiceShop with RouteInfo {
     this.closedAt = 0,
   }) : cost = cost == null || cost.itemId == 0 ? null : cost;
 
-  factory NiceShop.fromJson(Map<String, dynamic> json) =>
-      _$NiceShopFromJson(json);
+  factory NiceShop.fromJson(Map<String, dynamic> json) => _$NiceShopFromJson(json);
 
   @override
   String get route => Routes.shopI(id);
@@ -539,8 +513,7 @@ class ShopRelease {
     this.closedItemName = "",
   });
 
-  factory ShopRelease.fromJson(Map<String, dynamic> json) =>
-      _$ShopReleaseFromJson(json);
+  factory ShopRelease.fromJson(Map<String, dynamic> json) => _$ShopReleaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -560,8 +533,7 @@ class EventPointReward {
     // required this.bgImageGet,
   });
 
-  factory EventPointReward.fromJson(Map<String, dynamic> json) =>
-      _$EventPointRewardFromJson(json);
+  factory EventPointReward.fromJson(Map<String, dynamic> json) => _$EventPointRewardFromJson(json);
 }
 
 @JsonSerializable()
@@ -576,8 +548,7 @@ class EventPointGroup {
     required this.icon,
   });
 
-  factory EventPointGroup.fromJson(Map<String, dynamic> json) =>
-      _$EventPointGroupFromJson(json);
+  factory EventPointGroup.fromJson(Map<String, dynamic> json) => _$EventPointGroupFromJson(json);
 }
 
 @JsonSerializable()
@@ -605,8 +576,7 @@ class EventPointBuff {
     required this.value,
   });
 
-  factory EventPointBuff.fromJson(Map<String, dynamic> json) =>
-      _$EventPointBuffFromJson(json);
+  factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
 }
 
 @JsonSerializable()
@@ -674,8 +644,7 @@ class EventMissionCondition {
     this.details,
   });
 
-  factory EventMissionCondition.fromJson(Map<String, dynamic> json) =>
-      _$EventMissionConditionFromJson(json);
+  factory EventMissionCondition.fromJson(Map<String, dynamic> json) => _$EventMissionConditionFromJson(json);
 }
 
 @JsonSerializable()
@@ -724,8 +693,7 @@ class EventMission {
     this.conds = const [],
   });
 
-  factory EventMission.fromJson(Map<String, dynamic> json) =>
-      _$EventMissionFromJson(json);
+  factory EventMission.fromJson(Map<String, dynamic> json) => _$EventMissionFromJson(json);
 }
 
 @JsonSerializable()
@@ -746,8 +714,7 @@ class EventRandomMission {
     required this.condNum,
   });
 
-  factory EventRandomMission.fromJson(Map<String, dynamic> json) =>
-      _$EventRandomMissionFromJson(json);
+  factory EventRandomMission.fromJson(Map<String, dynamic> json) => _$EventRandomMissionFromJson(json);
 }
 
 @JsonSerializable()
@@ -767,8 +734,7 @@ class EventTowerReward {
     // required this.banner,
   });
 
-  factory EventTowerReward.fromJson(Map<String, dynamic> json) =>
-      _$EventTowerRewardFromJson(json);
+  factory EventTowerReward.fromJson(Map<String, dynamic> json) => _$EventTowerRewardFromJson(json);
 }
 
 @JsonSerializable()
@@ -783,8 +749,7 @@ class EventTower {
     required this.rewards,
   });
 
-  factory EventTower.fromJson(Map<String, dynamic> json) =>
-      _$EventTowerFromJson(json);
+  factory EventTower.fromJson(Map<String, dynamic> json) => _$EventTowerFromJson(json);
 }
 
 @JsonSerializable()
@@ -819,8 +784,7 @@ class EventLotteryBox {
     // required this.banner,
   });
 
-  factory EventLotteryBox.fromJson(Map<String, dynamic> json) =>
-      _$EventLotteryBoxFromJson(json);
+  factory EventLotteryBox.fromJson(Map<String, dynamic> json) => _$EventLotteryBoxFromJson(json);
 }
 
 @JsonSerializable()
@@ -845,11 +809,9 @@ class EventLottery {
     this.talks = const [],
   });
 
-  factory EventLottery.fromJson(Map<String, dynamic> json) =>
-      _$EventLotteryFromJson(json);
+  factory EventLottery.fromJson(Map<String, dynamic> json) => _$EventLotteryFromJson(json);
 
-  int get maxBoxIndex =>
-      _maxBoxIndex ??= Maths.max(boxes.map((e) => e.boxIndex), 0);
+  int get maxBoxIndex => _maxBoxIndex ??= Maths.max(boxes.map((e) => e.boxIndex), 0);
   int? _maxBoxIndex;
 
   Map<int, int> get lastBoxItems {
@@ -888,8 +850,7 @@ class EventLotteryTalk {
     required this.isRare,
   });
 
-  factory EventLotteryTalk.fromJson(Map<String, dynamic> json) =>
-      _$EventLotteryTalkFromJson(json);
+  factory EventLotteryTalk.fromJson(Map<String, dynamic> json) => _$EventLotteryTalkFromJson(json);
 }
 
 @JsonSerializable()
@@ -908,8 +869,7 @@ class CommonConsume {
     required this.num,
   });
 
-  factory CommonConsume.fromJson(Map<String, dynamic> json) =>
-      _$CommonConsumeFromJson(json);
+  factory CommonConsume.fromJson(Map<String, dynamic> json) => _$CommonConsumeFromJson(json);
 }
 
 @JsonSerializable()
@@ -926,8 +886,7 @@ class EventTreasureBoxGift {
     required this.collateralUpperLimit,
   });
 
-  factory EventTreasureBoxGift.fromJson(Map<String, dynamic> json) =>
-      _$EventTreasureBoxGiftFromJson(json);
+  factory EventTreasureBoxGift.fromJson(Map<String, dynamic> json) => _$EventTreasureBoxGiftFromJson(json);
 }
 
 @JsonSerializable()
@@ -950,8 +909,7 @@ class EventTreasureBox {
     this.consumes = const [],
   });
 
-  factory EventTreasureBox.fromJson(Map<String, dynamic> json) =>
-      _$EventTreasureBoxFromJson(json);
+  factory EventTreasureBox.fromJson(Map<String, dynamic> json) => _$EventTreasureBoxFromJson(json);
 }
 
 @JsonSerializable()
@@ -974,8 +932,7 @@ class EventRewardSceneGuide {
     this.unselectedMax,
   });
 
-  factory EventRewardSceneGuide.fromJson(Map<String, dynamic> json) =>
-      _$EventRewardSceneGuideFromJson(json);
+  factory EventRewardSceneGuide.fromJson(Map<String, dynamic> json) => _$EventRewardSceneGuideFromJson(json);
 }
 
 @JsonSerializable()
@@ -1006,8 +963,7 @@ class EventRewardScene {
     this.flags = const [],
   });
 
-  factory EventRewardScene.fromJson(Map<String, dynamic> json) =>
-      _$EventRewardSceneFromJson(json);
+  factory EventRewardScene.fromJson(Map<String, dynamic> json) => _$EventRewardSceneFromJson(json);
 }
 
 @JsonSerializable()
@@ -1034,8 +990,7 @@ class EventVoicePlay {
     required this.endedAt,
   });
 
-  factory EventVoicePlay.fromJson(Map<String, dynamic> json) =>
-      _$EventVoicePlayFromJson(json);
+  factory EventVoicePlay.fromJson(Map<String, dynamic> json) => _$EventVoicePlayFromJson(json);
 }
 
 @JsonSerializable()
@@ -1058,8 +1013,7 @@ class EventDigging {
     this.rewards = const [],
   });
 
-  factory EventDigging.fromJson(Map<String, dynamic> json) =>
-      _$EventDiggingFromJson(json);
+  factory EventDigging.fromJson(Map<String, dynamic> json) => _$EventDiggingFromJson(json);
 }
 
 @JsonSerializable()
@@ -1080,8 +1034,7 @@ class EventDiggingBlock {
     required this.blockNum,
   });
 
-  factory EventDiggingBlock.fromJson(Map<String, dynamic> json) =>
-      _$EventDiggingBlockFromJson(json);
+  factory EventDiggingBlock.fromJson(Map<String, dynamic> json) => _$EventDiggingBlockFromJson(json);
 }
 
 @JsonSerializable()
@@ -1096,8 +1049,7 @@ class EventDiggingReward {
     required this.rewardSize,
   });
 
-  factory EventDiggingReward.fromJson(Map<String, dynamic> json) =>
-      _$EventDiggingRewardFromJson(json);
+  factory EventDiggingReward.fromJson(Map<String, dynamic> json) => _$EventDiggingRewardFromJson(json);
 }
 
 @JsonSerializable()
@@ -1123,8 +1075,7 @@ class EventCooltimeReward {
     required this.upperLimitGiftNum,
   });
 
-  factory EventCooltimeReward.fromJson(Map<String, dynamic> json) =>
-      _$EventCooltimeRewardFromJson(json);
+  factory EventCooltimeReward.fromJson(Map<String, dynamic> json) => _$EventCooltimeRewardFromJson(json);
 }
 
 @JsonSerializable()
@@ -1135,8 +1086,7 @@ class EventCooltime {
     this.rewards = const [],
   });
 
-  factory EventCooltime.fromJson(Map<String, dynamic> json) =>
-      _$EventCooltimeFromJson(json);
+  factory EventCooltime.fromJson(Map<String, dynamic> json) => _$EventCooltimeFromJson(json);
 }
 
 @JsonSerializable()
@@ -1153,8 +1103,7 @@ class EventRecipeGift {
     this.gifts = const [],
   });
 
-  factory EventRecipeGift.fromJson(Map<String, dynamic> json) =>
-      _$EventRecipeGiftFromJson(json);
+  factory EventRecipeGift.fromJson(Map<String, dynamic> json) => _$EventRecipeGiftFromJson(json);
 }
 
 @JsonSerializable()
@@ -1183,8 +1132,7 @@ class EventRecipe {
     this.recipeGifts = const [],
   });
 
-  factory EventRecipe.fromJson(Map<String, dynamic> json) =>
-      _$EventRecipeFromJson(json);
+  factory EventRecipe.fromJson(Map<String, dynamic> json) => _$EventRecipeFromJson(json);
 }
 
 @JsonSerializable()
@@ -1201,8 +1149,7 @@ class EventFortificationDetail {
     this.releaseConditions = const [],
   });
 
-  factory EventFortificationDetail.fromJson(Map<String, dynamic> json) =>
-      _$EventFortificationDetailFromJson(json);
+  factory EventFortificationDetail.fromJson(Map<String, dynamic> json) => _$EventFortificationDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -1223,8 +1170,7 @@ class EventFortificationSvt {
     this.releaseConditions = const [],
   });
 
-  factory EventFortificationSvt.fromJson(Map<String, dynamic> json) =>
-      _$EventFortificationSvtFromJson(json);
+  factory EventFortificationSvt.fromJson(Map<String, dynamic> json) => _$EventFortificationSvtFromJson(json);
 }
 
 @JsonSerializable()
@@ -1257,8 +1203,7 @@ class EventFortification {
     this.servants = const [],
   });
 
-  factory EventFortification.fromJson(Map<String, dynamic> json) =>
-      _$EventFortificationFromJson(json);
+  factory EventFortification.fromJson(Map<String, dynamic> json) => _$EventFortificationFromJson(json);
 }
 
 @JsonSerializable()
@@ -1275,8 +1220,7 @@ class EventBulletinBoard {
     this.releaseConditions = const [],
   });
 
-  factory EventBulletinBoard.fromJson(Map<String, dynamic> json) =>
-      _$EventBulletinBoardFromJson(json);
+  factory EventBulletinBoard.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardFromJson(json);
 }
 
 @JsonSerializable()
@@ -1294,8 +1238,7 @@ class EventBulletinBoardRelease {
     required this.condNum,
   });
 
-  factory EventBulletinBoardRelease.fromJson(Map<String, dynamic> json) =>
-      _$EventBulletinBoardReleaseFromJson(json);
+  factory EventBulletinBoardRelease.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardReleaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -1318,8 +1261,7 @@ class EventCampaign {
     // this.entryCondMessage = '',
   });
 
-  factory EventCampaign.fromJson(Map<String, dynamic> json) =>
-      _$EventCampaignFromJson(json);
+  factory EventCampaign.fromJson(Map<String, dynamic> json) => _$EventCampaignFromJson(json);
 }
 
 /// If [questId]=0 and [phase]=0, means all quests
@@ -1333,8 +1275,7 @@ class EventQuest {
     // this.phase = 0,
   });
 
-  factory EventQuest.fromJson(Map<String, dynamic> json) =>
-      _$EventQuestFromJson(json);
+  factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
 }
 
 enum PurchaseType {
@@ -1488,15 +1429,13 @@ class DetailCondType {
   static const int friendPointSummon = 21;
   static const int battleSvtIdInDeck1 = 22;
   static const int battleSvtIdInDeck2 = 23; // Filter by svt ID
-  static const int questClearNum2 =
-      24; // Not sure what's the difference QUEST_CLEAR_NUM_1
+  static const int questClearNum2 = 24; // Not sure what's the difference QUEST_CLEAR_NUM_1
   static const int diceUse = 25; // Probably Fate/Requiem event
   static const int squareAdvanced = 26;
   static const int moreFriendFollower = 27; // 5th Anniversary missions
   static const int questTypeClear = 28; // 22M Download Campaign
   static const int questClearNumIncludingGrailFront = 31;
-  static const int warMainQuestClear =
-      32; // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
+  static const int warMainQuestClear = 32; // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
 
   /// custom, only used in app
   static const int questClearIndividuality = 999;

@@ -10,8 +10,7 @@ void main() async {
   });
   temp.save();
   // flutter pub run intl_utils:generate
-  final result =
-      await Process.run('flutter', ['pub', 'run', 'intl_utils:generate']);
+  final result = await Process.run('flutter', ['pub', 'run', 'intl_utils:generate']);
   print(result.stdout);
   origin.save();
   if (result.exitCode != 0) {

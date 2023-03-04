@@ -47,8 +47,7 @@ class CampaignEventTab extends StatelessWidget {
     Widget tile = ListTile(
       title: AutoSizeText.rich(
         TextSpan(children: [
-          if (event.isOnGoing(null))
-            const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+          if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
           TextSpan(text: event.shownName)
         ]),
         maxFontSize: 14,
@@ -58,8 +57,7 @@ class CampaignEventTab extends StatelessWidget {
       subtitle: AutoSizeText(
         subtitle,
         maxLines: 1,
-        style:
-            outdated ? TextStyle(color: _outdatedColor?.withAlpha(200)) : null,
+        style: outdated ? TextStyle(color: _outdatedColor?.withAlpha(200)) : null,
         textScaleFactor: 0.9,
       ),
       onTap: () {

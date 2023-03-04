@@ -34,8 +34,7 @@ class WikiData {
         summons = summons ?? {},
         wars = wars ?? {};
 
-  factory WikiData.fromJson(Map<String, dynamic> json) =>
-      _$WikiDataFromJson(json);
+  factory WikiData.fromJson(Map<String, dynamic> json) => _$WikiDataFromJson(json);
 }
 
 @JsonSerializable()
@@ -69,8 +68,7 @@ class ServantExtra {
   })  : nicknames = nicknames ?? MappingList(),
         aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
-  factory ServantExtra.fromJson(Map<String, dynamic> json) =>
-      _$ServantExtraFromJson(json);
+  factory ServantExtra.fromJson(Map<String, dynamic> json) => _$ServantExtraFromJson(json);
 }
 
 @JsonSerializable()
@@ -85,8 +83,7 @@ class BiliVideo {
     this.bv,
   });
 
-  factory BiliVideo.fromJson(Map<String, dynamic> json) =>
-      _$BiliVideoFromJson(json);
+  factory BiliVideo.fromJson(Map<String, dynamic> json) => _$BiliVideoFromJson(json);
 
   bool get valid => av != null || bv != null;
 
@@ -125,8 +122,7 @@ class CraftEssenceExtra {
     this.fandomLink,
   }) : profile = profile ?? MappingBase();
 
-  factory CraftEssenceExtra.fromJson(Map<String, dynamic> json) =>
-      _$CraftEssenceExtraFromJson(json);
+  factory CraftEssenceExtra.fromJson(Map<String, dynamic> json) => _$CraftEssenceExtraFromJson(json);
 }
 
 @JsonSerializable()
@@ -147,8 +143,7 @@ class CommandCodeExtra {
     this.fandomLink,
   }) : profile = profile ?? MappingBase();
 
-  factory CommandCodeExtra.fromJson(Map<String, dynamic> json) =>
-      _$CommandCodeExtraFromJson(json);
+  factory CommandCodeExtra.fromJson(Map<String, dynamic> json) => _$CommandCodeExtraFromJson(json);
 }
 
 @JsonSerializable()
@@ -162,11 +157,9 @@ class EventExtraItems {
     MappingBase<String>? detail,
     Map<int, MappingBase<String>?> items = const {},
   })  : detail = detail ?? MappingBase(),
-        items =
-            items.map((key, value) => MapEntry(key, value ?? MappingBase()));
+        items = items.map((key, value) => MapEntry(key, value ?? MappingBase()));
 
-  factory EventExtraItems.fromJson(Map<String, dynamic> json) =>
-      _$EventExtraItemsFromJson(json);
+  factory EventExtraItems.fromJson(Map<String, dynamic> json) => _$EventExtraItemsFromJson(json);
 }
 
 @JsonSerializable()
@@ -182,8 +175,7 @@ class EventExtraFixedItems {
   })  : detail = detail ?? MappingBase(),
         items = items ?? {};
 
-  factory EventExtraFixedItems.fromJson(Map<String, dynamic> json) =>
-      _$EventExtraFixedItemsFromJson(json);
+  factory EventExtraFixedItems.fromJson(Map<String, dynamic> json) => _$EventExtraFixedItemsFromJson(json);
 }
 
 @JsonSerializable()
@@ -241,8 +233,7 @@ class EventExtra {
     return _banners.whereType<String>().toList();
   }
 
-  factory EventExtra.fromJson(Map<String, dynamic> json) =>
-      _$EventExtraFromJson(json);
+  factory EventExtra.fromJson(Map<String, dynamic> json) => _$EventExtraFromJson(json);
 }
 
 @JsonSerializable()
@@ -279,8 +270,7 @@ class WarExtra {
     return _banners.whereType<String>().toList();
   }
 
-  factory WarExtra.fromJson(Map<String, dynamic> json) =>
-      _$WarExtraFromJson(json);
+  factory WarExtra.fromJson(Map<String, dynamic> json) => _$WarExtraFromJson(json);
 }
 
 @JsonSerializable()
@@ -301,8 +291,7 @@ class ExchangeTicket {
     this.multiplier = 1,
   }) : replaced = replaced ?? MappingList();
 
-  factory ExchangeTicket.fromJson(Map<String, dynamic> json) =>
-      _$ExchangeTicketFromJson(json);
+  factory ExchangeTicket.fromJson(Map<String, dynamic> json) => _$ExchangeTicketFromJson(json);
 
   List<int> of(Region region) => replaced.ofRegion(region) ?? items;
 
@@ -353,8 +342,7 @@ class FixedDrop {
     required this.items,
   });
 
-  factory FixedDrop.fromJson(Map<String, dynamic> json) =>
-      _$FixedDropFromJson(json);
+  factory FixedDrop.fromJson(Map<String, dynamic> json) => _$FixedDropFromJson(json);
 }
 
 @JsonSerializable()
@@ -392,8 +380,7 @@ class LimitedSummon with RouteInfo {
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
 
-  factory LimitedSummon.fromJson(Map<String, dynamic> json) =>
-      _$LimitedSummonFromJson(json);
+  factory LimitedSummon.fromJson(Map<String, dynamic> json) => _$LimitedSummonFromJson(json);
 
   bool get isLuckyBag => type == SummonType.gssr || type == SummonType.gssrsr;
 
@@ -485,8 +472,7 @@ class SubSummon {
     this.probs = const [],
   });
 
-  factory SubSummon.fromJson(Map<String, dynamic> json) =>
-      _$SubSummonFromJson(json);
+  factory SubSummon.fromJson(Map<String, dynamic> json) => _$SubSummonFromJson(json);
 
   Iterable<ProbGroup> get svts => probs.where((e) => e.isSvt);
   Iterable<ProbGroup> get crafts => probs.where((e) => !e.isSvt);
@@ -508,8 +494,7 @@ class ProbGroup {
     this.ids = const [],
   }) : assert(ids.isNotEmpty);
 
-  factory ProbGroup.fromJson(Map<String, dynamic> json) =>
-      _$ProbGroupFromJson(json);
+  factory ProbGroup.fromJson(Map<String, dynamic> json) => _$ProbGroupFromJson(json);
 }
 
 enum SummonType {

@@ -27,8 +27,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
   late final _codeCtrl = TextEditingController(text: widget.auth?.code);
   late final _userIdCtrl = TextEditingController(text: widget.auth?.userId);
   late final _authKeyCtrl = TextEditingController(text: widget.auth?.authKey);
-  late final _secretKeyCtrl =
-      TextEditingController(text: widget.auth?.secretKey);
+  late final _secretKeyCtrl = TextEditingController(text: widget.auth?.secretKey);
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +41,8 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       if (code == null) {
         buffer.write('null');
       } else {
-        buffer.writeAll([
-          code.substring(0, min(8, code.length)),
-          '****',
-          code.substring(max(0, code.length - 8), code.length)
-        ]);
+        buffer.writeAll(
+            [code.substring(0, min(8, code.length)), '****', code.substring(max(0, code.length - 8), code.length)]);
         if (!code.startsWith('ZSv/')) {
           buffer.write('\n> Warning: should start with ZSv/');
         }
@@ -82,17 +78,15 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       ),
       SFooter(S.current.auth_data_hints),
     ];
-    Widget _divider(String text) =>
-        DividerWithTitle(title: text, endIndent: 8, height: 16);
+    Widget _divider(String text) => DividerWithTitle(title: text, endIndent: 8, height: 16);
 
     children.add(_divider('1'));
     final _docLink = ChaldeaUrl.doc('import_https/auto_login');
     children.add(TileGroup(
       header: 'Method 1',
-      footerWidget: SFooter.rich(TextSpan(text: 'more: ', children: [
-        SharedBuilder.textButtonSpan(
-            context: context, text: _docLink, onTap: () => launch(_docLink))
-      ])),
+      footerWidget: SFooter.rich(TextSpan(
+          text: 'more: ',
+          children: [SharedBuilder.textButtonSpan(context: context, text: _docLink, onTap: () => launch(_docLink))])),
       children: [
         ListTile(
           title: Text(S.current.import_from_file),
@@ -115,19 +109,14 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
               label: const Text('Auth File Code'),
               border: const OutlineInputBorder(),
               hintText: 'start from ZSv/ (include ZSv/)',
-              errorText:
-                  _codeCtrl.text.isEmpty || UserAuth.isValidCode(_codeCtrl.text)
-                      ? null
-                      : "Invalid",
+              errorText: _codeCtrl.text.isEmpty || UserAuth.isValidCode(_codeCtrl.text) ? null : "Invalid",
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             contextMenuBuilder: (context, editableTextState) =>
-                AdaptiveTextSelectionToolbar.editableText(
-                    editableTextState: editableTextState),
+                AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
             maxLines: 4,
             onChanged: (v) {
-              EasyDebounce.debounce(
-                  '_auth_code_', const Duration(milliseconds: 300), () {
+              EasyDebounce.debounce('_auth_code_', const Duration(milliseconds: 300), () {
                 if (mounted) setState(() {});
               });
             },
@@ -167,10 +156,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       footerWidget: SFooter.rich(TextSpan(
           text: 'Warning: no extra verification!'
               ' About how to get above values, check <step 0> from:\n',
-          children: [
-            SharedBuilder.textButtonSpan(
-                context: context, text: _link2, onTap: () => launch(_link2))
-          ])),
+          children: [SharedBuilder.textButtonSpan(context: context, text: _link2, onTap: () => launch(_link2))])),
       children: [
         _buildTextField(_userIdCtrl, 'userId'),
         _buildTextField(_authKeyCtrl, 'authKey'),
@@ -188,9 +174,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
                 return;
               }
               List<String> hints = [];
-              if (_auth.userId.isEmpty ||
-                  _auth.authKey.isEmpty ||
-                  _auth.secretKey.isEmpty) {
+              if (_auth.userId.isEmpty || _auth.authKey.isEmpty || _auth.secretKey.isEmpty) {
                 EasyLoading.showError('Empty');
                 return;
               }
@@ -254,8 +238,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
         contextMenuBuilder: (context, editableTextState) =>
-            AdaptiveTextSelectionToolbar.editableText(
-                editableTextState: editableTextState),
+            AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
       ),
     );
   }
@@ -319,8 +302,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       paddingType: DESPaddingType.PKCS7,
     );
     var bytes = des3CBC.decrypt(base64.decode(code));
-    assert(bytes.first == 0x7b && bytes.last == 0x7d,
-        bytes.map((e) => e.toRadixString(16).padLeft(2, '0')).join());
+    assert(bytes.first == 0x7b && bytes.last == 0x7d, bytes.map((e) => e.toRadixString(16).padLeft(2, '0')).join());
     // '{'=0x7b, '}'=0x7d
     bytes = bytes.sublist(bytes.indexOf(0x7b), bytes.indexOf(0x7d) + 1);
     final decrypted = utf8.decode(bytes);

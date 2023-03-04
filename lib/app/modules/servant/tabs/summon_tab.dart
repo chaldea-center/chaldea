@@ -20,9 +20,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
-      if (summon
-              .allCards(svt: true, includeGSSR: includeGSSR)
-              .contains(widget.svt.collectionNo) &&
+      if (summon.allCards(svt: true, includeGSSR: includeGSSR).contains(widget.svt.collectionNo) &&
           summon.startTime.jp != null) {
         summons.add(summon);
       }
@@ -37,9 +35,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
             RadioWithLabel<bool>(
               value: include,
               groupValue: includeGSSR,
-              label: Text(include
-                  ? '${S.current.lucky_bag} ✓'
-                  : '${S.current.lucky_bag} ×'),
+              label: Text(include ? '${S.current.lucky_bag} ✓' : '${S.current.lucky_bag} ×'),
               onChanged: (v) {
                 if (v != null) {
                   includeGSSR = v;
@@ -62,8 +58,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
   Widget summonTile(BuildContext context, LimitedSummon summon) {
     final outdated = db.curUser.region != Region.jp && summon.isOutdated();
     String subtitle = 'JP: ${summon.startTime.jp?.sec2date().toDateString()}';
-    final localDate =
-        summon.startTime.ofRegion(db.curUser.region)?.sec2date().toDateString();
+    final localDate = summon.startTime.ofRegion(db.curUser.region)?.sec2date().toDateString();
     if (db.curUser.region != Region.jp && localDate != null) {
       subtitle = '$subtitle / ${db.curUser.region.upper}: $localDate';
     }
@@ -72,13 +67,10 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
       title: Text.rich(
         TextSpan(children: [
           if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
-            TextSpan(
-                text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
+            TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
           TextSpan(
             text: summon.name.l ?? summon.id,
-            style: outdated
-                ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
-                : null,
+            style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,
           )
         ]),
         maxLines: 1,

@@ -14,8 +14,7 @@ class SkillListPage extends StatefulWidget {
   _SkillListPageState createState() => _SkillListPageState();
 }
 
-class _SkillListPageState extends State<SkillListPage>
-    with SearchableListState<BaseSkill?, SkillListPage> {
+class _SkillListPageState extends State<SkillListPage> with SearchableListState<BaseSkill?, SkillListPage> {
   final filterData = SkillFilterData();
 
   int? get _searchSkillId {
@@ -73,16 +72,14 @@ class _SkillListPageState extends State<SkillListPage>
     if (!filterData.type.matchOne(skill.type)) {
       return false;
     }
-    if (!filterData.funcTargetType
-        .matchAny(skill.functions.map((e) => e.funcTargetType))) {
+    if (!filterData.funcTargetType.matchAny(skill.functions.map((e) => e.funcTargetType))) {
       return false;
     }
     if (!filterData.funcType.matchAny(skill.functions.map((e) => e.funcType))) {
       return false;
     }
-    if (!filterData.buffType.matchAny(skill.functions
-        .where((e) => e.buffs.isNotEmpty)
-        .map((e) => e.buffs.first.type))) {
+    if (!filterData.buffType
+        .matchAny(skill.functions.where((e) => e.buffs.isNotEmpty).map((e) => e.buffs.first.type))) {
       return false;
     }
 
@@ -103,18 +100,14 @@ class _SkillListPageState extends State<SkillListPage>
   Widget listItemBuilder(BaseSkill? skill) {
     return ListTile(
       dense: true,
-      leading: skill?.icon == null
-          ? const SizedBox(height: 28, width: 28)
-          : db.getIconImage(skill?.icon, height: 28),
+      leading: skill?.icon == null ? const SizedBox(height: 28, width: 28) : db.getIconImage(skill?.icon, height: 28),
       horizontalTitleGap: 8,
       title: Text.rich(
         TextSpan(
           text: skill?.lName.l ?? "Skill $_searchSkillId",
           children: [
             if (skill != null)
-              TextSpan(
-                  text: '\n${skill.id} ${skill.type.name}',
-                  style: Theme.of(context).textTheme.bodySmall)
+              TextSpan(text: '\n${skill.id} ${skill.type.name}', style: Theme.of(context).textTheme.bodySmall)
           ],
         ),
       ),
@@ -126,6 +119,5 @@ class _SkillListPageState extends State<SkillListPage>
   }
 
   @override
-  Widget gridItemBuilder(BaseSkill? skill) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(BaseSkill? skill) => throw UnimplementedError('GridView not designed');
 }

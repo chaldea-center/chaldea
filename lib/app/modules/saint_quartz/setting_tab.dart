@@ -29,12 +29,10 @@ class _SQSettingTabState extends State<SQSettingTab> {
     super.initState();
     _scrollController = ScrollController();
     _curSQController = TextEditingController(text: plan.curSQ.toString());
-    _curTicketController =
-        TextEditingController(text: plan.curTicket.toString());
+    _curTicketController = TextEditingController(text: plan.curTicket.toString());
     _curAppleController = TextEditingController(text: plan.curApple.toString());
     _accLoginController = TextEditingController(text: plan.accLogin.toString());
-    _eventDiffController =
-        TextEditingController(text: plan.eventDateDelta.toString());
+    _eventDiffController = TextEditingController(text: plan.eventDateDelta.toString());
   }
 
   @override
@@ -53,8 +51,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
       controller: _scrollController,
       children: [
         ListTile(
-          title: Text(LocalizedText.of(
-              chs: '持有圣晶石', jpn: '所持聖晶石', eng: 'Held SQ', kor: '가지고 있는 성정석')),
+          title: Text(LocalizedText.of(chs: '持有圣晶石', jpn: '所持聖晶石', eng: 'Held SQ', kor: '가지고 있는 성정석')),
           trailing: SizedBox(
             width: 60,
             child: TextFormField(
@@ -71,8 +68,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
-          title: Text(LocalizedText.of(
-              chs: '持有呼符', jpn: '所持呼符', eng: 'Held Ticket', kor: '가지고 있는 호부')),
+          title: Text(LocalizedText.of(chs: '持有呼符', jpn: '所持呼符', eng: 'Held Ticket', kor: '가지고 있는 호부')),
           trailing: SizedBox(
             width: 60,
             child: TextFormField(
@@ -89,8 +85,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
-          title: Text(LocalizedText.of(
-              chs: '持有苹果', jpn: '所持果実', eng: 'Held Apple', kor: '가지고 있는 사과')),
+          title: Text(LocalizedText.of(chs: '持有苹果', jpn: '所持果実', eng: 'Held Apple', kor: '가지고 있는 사과')),
           trailing: SizedBox(
             width: 60,
             child: TextFormField(
@@ -107,8 +102,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
-          title: Text(LocalizedText.of(
-              chs: '起始日期', jpn: '開始日', eng: 'Start Date', kor: '시작일')),
+          title: Text(LocalizedText.of(chs: '起始日期', jpn: '開始日', eng: 'Start Date', kor: '시작일')),
           trailing: TextButton(
             onPressed: () async {
               final newDate = await showDatePicker(
@@ -126,8 +120,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
           ),
         ),
         ListTile(
-          title: Text(LocalizedText.of(
-              chs: '结束日期', jpn: '最終日', eng: 'End Date', kor: '마지막 일')),
+          title: Text(LocalizedText.of(chs: '结束日期', jpn: '最終日', eng: 'End Date', kor: '마지막 일')),
           trailing: TextButton(
             onPressed: () async {
               final newDate = await showDatePicker(
@@ -223,8 +216,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
 連続ログイン報酬、毎月のプリスマショップの呼符、および期間限定イベントのクエスト報酬のみが計算されます。
 エクストラマスターミッション報酬は最終日に決済されます。
 その他の記念イベント、メンテナンス補償、メールボックスに直接配布されるものは計算されず、自動的に数えられないからです。""",
-                eng:
-                    """Actual obtained resources should be MUCH MORE than calculated.
+                eng: """Actual obtained resources should be MUCH MORE than calculated.
 
 Only the continuous login rewards, monthly prism store tickets, and quest rewards of limited events are calculated.
 

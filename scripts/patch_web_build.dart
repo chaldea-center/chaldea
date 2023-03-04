@@ -69,18 +69,15 @@ void main() {
   sw.content = sw.content.replaceFirst('"assets/NOTICES",\n', '');
 
   // update all cache hash
-  sw.content = sw.content
-      .replaceAllMapped(RegExp(r'"([^"]+)":\s*"([0-9a-f]{32})"'), (match) {
+  sw.content = sw.content.replaceAllMapped(RegExp(r'"([^"]+)":\s*"([0-9a-f]{32})"'), (match) {
     final fn = match.group(1)!;
     final oldHash = match.group(2)!;
     if (fn == 'index.html' || fn == '/') {
-      print(
-          'Updating hash "${fn.padRight(21)}": $oldHash -> ${indexHtml.newHash}');
+      print('Updating hash "${fn.padRight(21)}": $oldHash -> ${indexHtml.newHash}');
       assert(oldHash == indexHtml.initHash);
       return '"$fn": "${indexHtml.newHash}"';
     } else if (fn == newMainJsFn) {
-      print(
-          'Updating hash "${fn.padRight(21)}": $oldHash -> ${mainJs.newHash}');
+      print('Updating hash "${fn.padRight(21)}": $oldHash -> ${mainJs.newHash}');
       assert(oldHash == mainJs.initHash);
       return '"$fn": "${mainJs.newHash}"';
     }

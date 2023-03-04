@@ -78,8 +78,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                     final user = allData[index];
                     String text = '[${user.region.upper}] ${user.auth?.userId}';
                     if (user.auth?.friendCode != null) {
-                      text +=
-                          '\n (${user.auth?.friendCode} ${user.auth?.name})';
+                      text += '\n (${user.auth?.friendCode} ${user.auth?.name})';
                     }
                     return DropdownMenuItem(
                       value: index,
@@ -184,8 +183,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             selected: args.auth?.userId == null,
           ),
           if (args.auth?.userCreateServer != null &&
-              !UserAuth.checkGameServer(
-                  args.region, args.auth!.userCreateServer!))
+              !UserAuth.checkGameServer(args.region, args.auth!.userCreateServer!))
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Padding(
@@ -279,9 +277,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               margin: const EdgeInsets.all(8),
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: DefaultTextStyle.merge(
-                    child: buildResp(),
-                    style: Theme.of(context).textTheme.bodySmall),
+                child: DefaultTextStyle.merge(child: buildResp(), style: Theme.of(context).textTheme.bodySmall),
               ),
             ),
         ],
@@ -289,8 +285,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     );
   }
 
-  void onEditArg(String title, String value, ValueChanged<String> onSubmit,
-      bool Function(String v)? validate) {
+  void onEditArg(String title, String value, ValueChanged<String> onSubmit, bool Function(String v)? validate) {
     showDialog(
       context: context,
       useRootNavigator: false,
@@ -333,9 +328,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ElevatedButton(
-          onPressed: response?.success == true
-              ? () => _doImport(response!.text)
-              : null,
+          onPressed: response?.success == true ? () => _doImport(response!.text) : null,
           child: Text(S.current.import_data),
         ),
         const SizedBox(height: 8),

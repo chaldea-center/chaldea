@@ -17,8 +17,7 @@ class FfoPartFilterPage extends FilterPage<FfoPartFilterData> {
   _FfoPartFilterPageState createState() => _FfoPartFilterPageState();
 }
 
-class _FfoPartFilterPageState
-    extends FilterPageState<FfoPartFilterData, FfoPartFilterPage> {
+class _FfoPartFilterPageState extends FilterPageState<FfoPartFilterData, FfoPartFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -44,9 +43,7 @@ class _FfoPartFilterPageState
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: {
-                for (final e in FfoPartFilterData.kSortKeys) e: e.showName
-              },
+              items: {for (final e in FfoPartFilterData.kSortKeys) e: e.showName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();

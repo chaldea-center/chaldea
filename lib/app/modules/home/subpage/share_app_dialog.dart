@@ -24,8 +24,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
   @override
   void initState() {
     super.initState();
-    String msg = S.current.chaldea_share_msg(
-        Language.isZH ? '$kProjectDocRoot/zh/' : kProjectDocRoot);
+    String msg = S.current.chaldea_share_msg(Language.isZH ? '$kProjectDocRoot/zh/' : kProjectDocRoot);
     _controller = TextEditingController(text: msg);
   }
 
@@ -39,8 +38,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
   Widget build(BuildContext context) {
     return SimpleCancelOkDialog(
       title: Text(S.current.share),
-      contentPadding:
-          const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(24.0, 10.0, 24.0, 12.0),
       content: TextFormField(
         controller: _controller,
         maxLines: null,
@@ -49,12 +47,8 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
           filled: true,
           fillColor: Theme.of(context).highlightColor,
           focusColor: Theme.of(context).highlightColor,
-          enabledBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Theme.of(context).dialogBackgroundColor)),
-          focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Theme.of(context).dialogBackgroundColor)),
+          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).dialogBackgroundColor)),
+          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).dialogBackgroundColor)),
         ),
       ),
       hideOk: true,

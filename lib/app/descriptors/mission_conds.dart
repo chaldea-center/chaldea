@@ -23,8 +23,7 @@ class MissionCondsDescriptor extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     for (final cond in mission.conds) {
-      if (onlyShowClear &&
-          cond.missionProgressType != MissionProgressType.clear) {
+      if (onlyShowClear && cond.missionProgressType != MissionProgressType.clear) {
         continue;
       }
       if (!onlyShowClear) {
@@ -58,8 +57,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         textScaleFactor: 0.9,
         style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ));
-      children
-          .add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));
+      children.add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));
     }
     if (!onlyShowClear) {
       children.add(const SizedBox(height: 10));

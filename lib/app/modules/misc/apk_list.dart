@@ -45,8 +45,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxyServer;
-  String get apkHost =>
-      proxy ? '${Hosts.kWorkerHostCN}/proxy' : 'https://fgo.square.ovh';
+  String get apkHost => proxy ? '${Hosts.kWorkerHostCN}/proxy' : 'https://fgo.square.ovh';
 
   @override
   void initState() {
@@ -68,22 +67,16 @@ class _ApkListPageState extends State<ApkListPage> {
       if (mounted) setState(() {});
       String? url;
       if (data.region == Region.cn) {
-        final resp =
-            await Dio().get('https://static.biligame.com/config/fgo.config.js');
+        final resp = await Dio().get('https://static.biligame.com/config/fgo.config.js');
         // "android_link": "https://pkg.biligame.com/games/my-gwzdFateGO_2.57.0_1_20221227_023526_aeba0.apk",
-        url = RegExp(r"""android_link["']?:\s*["']([^"']+)["']""")
-            .firstMatch(resp.data.toString())
-            ?.group(1);
+        url = RegExp(r"""android_link["']?:\s*["']([^"']+)["']""").firstMatch(resp.data.toString())?.group(1);
         if (url != null) {
           data.url = url;
-          data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]')
-              .firstMatch(url)
-              ?.group(1);
+          data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]').firstMatch(url)?.group(1);
         }
       } else {
         // 'https://gplay-ver.atlasacademy.workers.dev/'
-        final resp = await DioE()
-            .get('${Hosts.kWorkerHostCN}/proxy/gplay-ver/', queryParameters: {
+        final resp = await DioE().get('${Hosts.kWorkerHostCN}/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,
           // "t": (DateTime.now().timestamp ~/ 1000).toString()
         });
@@ -107,8 +100,7 @@ class _ApkListPageState extends State<ApkListPage> {
       }
     } catch (e) {
       data.error = e;
-      EasyLoading.showError(
-          '${data.region?.localName ?? "Chaldea"}: ${S.current.failed}');
+      EasyLoading.showError('${data.region?.localName ?? "Chaldea"}: ${S.current.failed}');
     } finally {
       data.loading = false;
       if (mounted) setState(() {});
@@ -117,11 +109,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final regions = {
-      Region.jp,
-      ...db.settings.resolvedPreferredRegions,
-      ...Region.values
-    }.toList();
+    final regions = {Region.jp, ...db.settings.resolvedPreferredRegions, ...Region.values}.toList();
     final _dataList = apks.toList();
     _dataList.sort2((e) => e.region == null ? -1 : regions.indexOf(e.region!));
     return Scaffold(
@@ -152,9 +140,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       RadioWithLabel<bool>(
                         value: v,
                         groupValue: proxy,
-                        label: Text(v
-                            ? S.current.chaldea_server_cn
-                            : S.current.chaldea_server_global),
+                        label: Text(v ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
                         onChanged: (v) {
                           setState(() {
                             if (v != null) proxy = v;
@@ -204,8 +190,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       // subtitle: Text('$apkHost/apk/'),
                       trailing: const Icon(Icons.open_in_new, size: 18),
                       onTap: () {
-                        launch('$apkHost/apk/?sort=time&order=desc',
-                            external: true);
+                        launch('$apkHost/apk/?sort=time&order=desc', external: true);
                       },
                     ),
                   ],
@@ -226,11 +211,8 @@ class _ApkListPageState extends State<ApkListPage> {
         children: [
           IconButton(
             onPressed: () {
-              final appname =
-                  data.region == null ? 'Chaldea' : 'fate-grand-order';
-              launch(
-                  'https://apps.apple.com/${data.countryCode}/app/$appname/id${data.bundleId}',
-                  external: true);
+              final appname = data.region == null ? 'Chaldea' : 'fate-grand-order';
+              launch('https://apps.apple.com/${data.countryCode}/app/$appname/id${data.bundleId}', external: true);
             },
             icon: const FaIcon(FontAwesomeIcons.appStore),
             tooltip: 'App Store',
@@ -239,9 +221,7 @@ class _ApkListPageState extends State<ApkListPage> {
           if (data.region != Region.cn)
             IconButton(
               onPressed: () {
-                launch(
-                    'https://play.google.com/store/apps/details?id=${data.packageId}',
-                    external: true);
+                launch('https://play.google.com/store/apps/details?id=${data.packageId}', external: true);
               },
               icon: const FaIcon(FontAwesomeIcons.googlePlay),
               tooltip: 'Google Play',
@@ -269,10 +249,8 @@ class _ApkListPageState extends State<ApkListPage> {
       }
     } else {
       children.addAll([
-        if (data.url != null)
-          downloadTile(data.region, data.version, data.url!, false),
-        if (data.url32 != null)
-          downloadTile(data.region, data.version, data.url32!, true),
+        if (data.url != null) downloadTile(data.region, data.version, data.url!, false),
+        if (data.url32 != null) downloadTile(data.region, data.version, data.url32!, true),
       ]);
     }
     if (data.error != null) {
@@ -310,8 +288,7 @@ class _ApkListPageState extends State<ApkListPage> {
       dense: true,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 0),
       title: Text(titles.join('  ')),
-      subtitle:
-          Text(url.breakWord, maxLines: 2, overflow: TextOverflow.ellipsis),
+      subtitle: Text(url.breakWord, maxLines: 2, overflow: TextOverflow.ellipsis),
       onTap: () {
         launch(url, external: true);
       },
@@ -332,8 +309,7 @@ class _ApkListPageState extends State<ApkListPage> {
       dense: true,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 0),
       title: Text('${platform.toTitle()}  v$ver'),
-      subtitle: Text(url.split('/').last.breakWord,
-          maxLines: 2, overflow: TextOverflow.ellipsis),
+      subtitle: Text(url.split('/').last.breakWord, maxLines: 2, overflow: TextOverflow.ellipsis),
       onTap: () {
         launch(url, external: true);
       },

@@ -22,8 +22,7 @@ class CmdCodeListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CmdCodeListPageState extends State<CmdCodeListPage>
-    with SearchableListState<CommandCode, CmdCodeListPage> {
+class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListState<CommandCode, CmdCodeListPage> {
   @override
   Iterable<CommandCode> get wholeData => db.gameData.commandCodes.values;
 
@@ -46,8 +45,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => CmdCodeFilterData.compare(a, b,
-          keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare: (a, b) => CmdCodeFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -105,10 +103,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         children: [
           if (!Language.isJP) AutoSizeText(cc.name, maxLines: 1),
           Row(
-            children: [
-              Expanded(child: Text('No.${cc.collectionNo}')),
-              if (status != null) Text(status)
-            ],
+            children: [Expanded(child: Text('No.${cc.collectionNo}')), if (status != null) Text(status)],
           ),
         ],
       ),
@@ -153,33 +148,26 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
       return false;
     }
 
-    if (filterData.effectType.isNotEmpty ||
-        filterData.effectTarget.isNotEmpty ||
-        filterData.targetTrait.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty || filterData.effectTarget.isNotEmpty || filterData.targetTrait.isNotEmpty) {
       List<BaseFunction> funcs = [
-        for (final skill in cc.skills)
-          ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in cc.skills) ...skill.filteredFunction(includeTrigger: true),
       ];
       if (filterData.effectTarget.isNotEmpty) {
         funcs.retainWhere((func) {
-          return filterData.effectTarget
-              .matchOne(EffectTarget.fromFunc(func.funcTargetType));
+          return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
       if (filterData.targetTrait.isNotEmpty) {
-        funcs.retainWhere((func) =>
-            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+        funcs.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
       }
       if (funcs.isEmpty) return false;
       if (filterData.effectType.isEmpty) return true;
       if (filterData.effectType.matchAll) {
-        if (!filterData.effectType.options
-            .every((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.every((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       } else {
-        if (!filterData.effectType.options
-            .any((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.any((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       }
@@ -249,8 +237,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       yield SearchUtil.getJP(code.ruby);
       yield* getAllKeys(Transl.illustratorNames(code.illustrator));
       for (final svtId in code.extra.characters) {
-        final svt =
-            db.gameData.servantsById[svtId] ?? db.gameData.servantsNoDup[svtId];
+        final svt = db.gameData.servantsById[svtId] ?? db.gameData.servantsNoDup[svtId];
         if (svt == null) continue;
         for (final name in svt.allNames) {
           yield* getAllKeys(Transl.svtNames(name));

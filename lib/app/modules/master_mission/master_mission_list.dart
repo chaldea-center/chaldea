@@ -39,8 +39,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         selected.clear();
       });
     }
-    final missions = await AtlasApi.masterMissions(
-        region: region, expireAfter: force ? Duration.zero : null);
+    final missions = await AtlasApi.masterMissions(region: region, expireAfter: force ? Duration.zero : null);
     if (missions == null || missions.isEmpty) {
       errorMsg = 'Nothing found';
     } else {
@@ -60,8 +59,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   Widget build(BuildContext context) {
     final missions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
     final now = DateTime.now().timestamp;
-    final curWeekly = missions.firstWhereOrNull(
-        (mm) => mm.isWeekly && mm.startedAt <= now && mm.endedAt > now);
+    final curWeekly = missions.firstWhereOrNull((mm) => mm.isWeekly && mm.startedAt <= now && mm.endedAt > now);
     missions.retainWhere((mission) {
       if (selected.contains(mission.id)) return true;
       if (!showOutdated) {
@@ -74,8 +72,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           return false;
         }
       }
-      return typeOptions.matchAny(mission.missions
-          .map((e) => _allMissionTypes.contains(e.type) ? e.type : null));
+      return typeOptions.matchAny(mission.missions.map((e) => _allMissionTypes.contains(e.type) ? e.type : null));
     });
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
@@ -103,8 +100,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                 DropdownMenuItem(
                   child: Text(
                     region.localName,
-                    style: TextStyle(
-                        color: SharedBuilder.appBarForeground(context)),
+                    style: TextStyle(color: SharedBuilder.appBarForeground(context)),
                   ),
                 )
             ],
@@ -124,8 +120,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
               showOutdated = !showOutdated;
             },
             tooltip: S.current.outdated,
-            icon: Icon(
-                showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
+            icon: Icon(showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
           ),
           IconButton(
             onPressed: () {
@@ -194,9 +189,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
             }
             router.push(child: CustomMissionPage(initMissions: customMissions));
           },
-          child: Text(selected.isEmpty
-              ? S.current.custom_mission
-              : S.current.drop_calc_solve),
+          child: Text(selected.isEmpty ? S.current.custom_mission : S.current.drop_calc_solve),
         )
       ],
     );
@@ -209,8 +202,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     }
     String subtitle = 'ID ${masterMission.id}: ';
     categorized.forEach((key, value) {
-      subtitle +=
-          ' $value ${Transl.enums(key, (enums) => enums.missionType).l}';
+      subtitle += ' $value ${Transl.enums(key, (enums) => enums.missionType).l}';
     });
     final now = DateTime.now().timestamp;
     return ListTile(
@@ -220,8 +212,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            child:
-                Text(_showTime(masterMission.startedAt), textScaleFactor: 0.9),
+            child: Text(_showTime(masterMission.startedAt), textScaleFactor: 0.9),
           ),
           const Text(' ~ '),
           Flexible(
@@ -240,8 +231,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
         router.push(
-          child:
-              MasterMissionPage(masterMission: masterMission, region: _region),
+          child: MasterMissionPage(masterMission: masterMission, region: _region),
           detail: true,
         );
       },
@@ -249,7 +239,6 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   }
 
   String _showTime(int t) {
-    return DateTime.fromMillisecondsSinceEpoch(t * 1000)
-        .toStringShort(omitSec: true);
+    return DateTime.fromMillisecondsSinceEpoch(t * 1000).toStringShort(omitSec: true);
   }
 }

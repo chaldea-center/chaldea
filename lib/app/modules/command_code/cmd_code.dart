@@ -41,9 +41,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   Future<void> fetchData() async {
     _loading = true;
     if (mounted) setState(() {});
-    _cc = widget.cc ??
-        db.gameData.commandCodes[widget.id] ??
-        db.gameData.commandCodesById[widget.id];
+    _cc = widget.cc ?? db.gameData.commandCodes[widget.id] ?? db.gameData.commandCodesById[widget.id];
     final id = widget.cc?.id ?? widget.id;
     if (id == null || _cc != null) return;
     _cc = await AtlasApi.cc(id);
@@ -139,8 +137,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                       // if navigated from filter list, let filter list decide which is the next one
                       nextCc = widget.onSwitch!(cc, i == 0);
                     } else {
-                      nextCc = db
-                          .gameData.commandCodes[cc.collectionNo + [-1, 1][i]];
+                      nextCc = db.gameData.commandCodes[cc.collectionNo + [-1, 1][i]];
                     }
                     if (nextCc == null) {
                       EasyLoading.showToast(S.current.list_end_hint(i == 0));
@@ -150,11 +147,8 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                       });
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                      textStyle:
-                          const TextStyle(fontWeight: FontWeight.normal)),
-                  child:
-                      Text([S.current.previous_card, S.current.next_card][i]),
+                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
+                  child: Text([S.current.previous_card, S.current.next_card][i]),
                 ),
             ]),
           )
@@ -214,14 +208,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: cc.lName.l, textAlign: TextAlign.center)
-          ]),
-        if (!Transl.isEN)
-          CustomTableRow(children: [
-            TableCellData(text: cc.lName.na, textAlign: TextAlign.center)
-          ]),
+        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: cc.lName.l, textAlign: TextAlign.center)]),
+        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: cc.lName.na, textAlign: TextAlign.center)]),
         CustomTableRow(
           children: [
             TableCellData(
@@ -244,8 +232,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               child: CustomTable(
                 hideOutline: true,
                 children: <Widget>[
-                  CustomTableRow.fromTexts(
-                      texts: ['No. ${cc.collectionNo}', 'No. ${cc.id}']),
+                  CustomTableRow.fromTexts(texts: ['No. ${cc.collectionNo}', 'No. ${cc.id}']),
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
@@ -253,8 +240,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                         context: context,
                         text: Transl.illustratorNames(cc.illustrator).l,
                         onTap: () {
-                          router.pushPage(
-                              CreatorDetail.illust(name: cc.illustrator));
+                          router.pushPage(CreatorDetail.illust(name: cc.illustrator));
                         },
                       )),
                       flex: 3,
@@ -287,18 +273,11 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        CustomTableRow(
-            children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        for (final skill in cc.skills..sort2((e) => e.num * 100 + e.priority))
-          SkillDescriptor(skill: skill),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.characters_in_card, isHeader: true)
-        ]),
-        CustomTableRow(
-            children: [TableCellData(child: localizeCharacters(context))]),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.card_description, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
+        for (final skill in cc.skills..sort2((e) => e.num * 100 + e.priority)) SkillDescriptor(skill: skill),
+        CustomTableRow(children: [TableCellData(text: S.current.characters_in_card, isHeader: true)]),
+        CustomTableRow(children: [TableCellData(child: localizeCharacters(context))]),
+        CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           child: Column(

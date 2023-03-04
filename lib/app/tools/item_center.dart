@@ -30,8 +30,7 @@ class ItemCenter {
   List<int> _validItems = [];
   List<int> get validItems => List.unmodifiable(_validItems);
   late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtCur; //0->cur
-  late _MatrixManager<int, int, SvtMatCostDetail<int>>
-      _svtDemands; //cur->target
+  late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtDemands; //cur->target
   late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtFull; //0->max
   late _MatrixManager<int, int, int> _eventItem;
 
@@ -63,18 +62,9 @@ class ItemCenter {
     for (final svt in db.gameData.servantsWithDup.values) {
       if (svt.isUserSvt) _svtIds.add(svt.collectionNo);
     }
-    _svtCur = _MatrixManager(
-        dim1: _svtIds,
-        dim2: _validItems,
-        init: () => SvtMatCostDetail(() => 0));
-    _svtDemands = _MatrixManager(
-        dim1: _svtIds,
-        dim2: _validItems,
-        init: () => SvtMatCostDetail(() => 0));
-    _svtFull = _MatrixManager(
-        dim1: _svtIds,
-        dim2: _validItems,
-        init: () => SvtMatCostDetail(() => 0));
+    _svtCur = _MatrixManager(dim1: _svtIds, dim2: _validItems, init: () => SvtMatCostDetail(() => 0));
+    _svtDemands = _MatrixManager(dim1: _svtIds, dim2: _validItems, init: () => SvtMatCostDetail(() => 0));
+    _svtFull = _MatrixManager(dim1: _svtIds, dim2: _validItems, init: () => SvtMatCostDetail(() => 0));
     // events
     _eventItem = _MatrixManager(
       dim1: db.gameData.events.keys.toList(),
@@ -92,8 +82,7 @@ class ItemCenter {
     updateLeftItems();
   }
 
-  void updateSvts(
-      {List<Servant> svts = const [], bool all = false, bool notify = true}) {
+  void updateSvts({List<Servant> svts = const [], bool all = false, bool notify = true}) {
     for (final svt in svts) {
       _updateOneSvt(svt.collectionNo);
     }
@@ -111,8 +100,7 @@ class ItemCenter {
     }
   }
 
-  void _updateSvtStat(_MatrixManager<int, int, SvtMatCostDetail<int>> detail,
-      Map<int, int> stat) {
+  void _updateSvtStat(_MatrixManager<int, int, SvtMatCostDetail<int>> detail, Map<int, int> stat) {
     stat.clear();
     List<int> itemSum = List.generate(detail.dim2.length, (index) => 0);
     for (int itemIndex = 0; itemIndex < itemSum.length; itemIndex++) {
@@ -128,68 +116,53 @@ class ItemCenter {
     final svt = db.gameData.servantsWithDup[svtId];
     if (svt == null || svtIndex == null) return;
     final cur = user.svtStatusOf(svtId).cur;
-    final consumed = calcOneSvt(
-        svt, SvtPlan.empty()..favorite = cur.favorite, cur,
-        priorityFiltered: true);
-    final demands =
-        calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
+    final consumed = calcOneSvt(svt, SvtPlan.empty()..favorite = cur.favorite, cur, priorityFiltered: true);
+    final demands = calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
 
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-      _svtCur._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-          consumed, (_, part) => part[_validItems[itemIndex]] ?? 0);
-      _svtDemands._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-          demands, (_, part) => part[_validItems[itemIndex]] ?? 0);
+      _svtCur._matrix[svtIndex][itemIndex]
+          .updateFrom<Map<int, int>>(consumed, (_, part) => part[_validItems[itemIndex]] ?? 0);
+      _svtDemands._matrix[svtIndex][itemIndex]
+          .updateFrom<Map<int, int>>(demands, (_, part) => part[_validItems[itemIndex]] ?? 0);
     }
     if (max) {
-      final allDemands =
-          calcOneSvt(svt, SvtPlan.empty()..favorite = true, SvtPlan.max(svt));
+      final allDemands = calcOneSvt(svt, SvtPlan.empty()..favorite = true, SvtPlan.max(svt));
       for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-        _svtFull._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-            allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);
+        _svtFull._matrix[svtIndex][itemIndex]
+            .updateFrom<Map<int, int>>(allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);
       }
     }
   }
 
-  SvtMatCostDetail<Map<int, int>> calcOneSvt(
-      Servant svt, SvtPlan cur, SvtPlan target,
+  SvtMatCostDetail<Map<int, int>> calcOneSvt(Servant svt, SvtPlan cur, SvtPlan target,
       {bool priorityFiltered = false}) {
     final detail = SvtMatCostDetail<Map<int, int>>(() => {});
     if (!cur.favorite) {
       return detail;
     }
-    if (priorityFiltered &&
-        !db.settings.svtFilterData.priority
-            .matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
+    if (priorityFiltered && !db.settings.svtFilterData.priority.matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
       return detail;
     }
-    detail.ascension = _sumMat(svt.ascensionMaterials,
-        [for (int lv = cur.ascension; lv < target.ascension; lv++) lv]);
+    detail.ascension = _sumMat(svt.ascensionMaterials, [for (int lv = cur.ascension; lv < target.ascension; lv++) lv]);
 
     for (int skill = 0; skill < 3; skill++) {
       Maths.sumDict([
         detail.activeSkill,
-        _sumMat(svt.skillMaterials, [
-          for (int lv = cur.skills[skill]; lv < target.skills[skill]; lv++) lv
-        ])
+        _sumMat(svt.skillMaterials, [for (int lv = cur.skills[skill]; lv < target.skills[skill]; lv++) lv])
       ], inPlace: true);
     }
 
     for (int skill = 0; skill < 3; skill++) {
       Maths.sumDict([
         detail.appendSkill,
-        _sumMat(svt.appendSkillMaterials, [
-          for (int lv = cur.appendSkills[skill];
-              lv < target.appendSkills[skill];
-              lv++)
-            lv
-        ])
+        _sumMat(svt.appendSkillMaterials,
+            [for (int lv = cur.appendSkills[skill]; lv < target.appendSkills[skill]; lv++) lv])
       ], inPlace: true);
     }
 
     detail.costume = _sumMat(svt.costumeMaterials, [
       for (final charaId in target.costumes.keys)
-        if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0)
-          charaId
+        if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId
     ]);
     final coinId = svt.coin?.item.id;
     int coin = 0;
@@ -199,8 +172,7 @@ class ItemCenter {
           coin += 120;
         }
       }
-      final grailLvs =
-          (svt.grailedLv(target.grail) - max(svt.grailedLv(cur.grail), 100));
+      final grailLvs = (svt.grailedLv(target.grail) - max(svt.grailedLv(cur.grail), 100));
       coin += (max(0, grailLvs) ~/ 2) * 30;
     }
 
@@ -211,8 +183,7 @@ class ItemCenter {
       Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
       Items.grailId: max(0, target.grail - cur.grail),
       Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
-      Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) +
-          QpCost.bondLimit(cur.bondLimit, target.bondLimit),
+      Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
       if (coinId != null) coinId: coin,
     };
 
@@ -226,13 +197,11 @@ class ItemCenter {
     if (eventIndex == null || event == null) return;
     final eventItems = calcOneEvent(event, user.limitEventPlanOf(event.id));
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
-      _eventItem._matrix[eventIndex][itemIndex] =
-          eventItems[_validItems[itemIndex]] ?? 0;
+      _eventItem._matrix[eventIndex][itemIndex] = eventItems[_validItems[itemIndex]] ?? 0;
     }
   }
 
-  void updateEvents(
-      {List<Event> events = const [], bool all = false, bool notify = true}) {
+  void updateEvents({List<Event> events = const [], bool all = false, bool notify = true}) {
     for (final event in events) {
       _updateOneEvent(event.id);
     }
@@ -244,9 +213,7 @@ class ItemCenter {
     _statEvent.clear();
     List<int> itemSum = List.generate(_eventItem.dim2.length, (index) => 0);
     for (int itemIndex = 0; itemIndex < itemSum.length; itemIndex++) {
-      for (int eventIndex = 0;
-          eventIndex < _eventItem.dim1.length;
-          eventIndex++) {
+      for (int eventIndex = 0; eventIndex < _eventItem.dim1.length; eventIndex++) {
         itemSum[itemIndex] += _eventItem._matrix[eventIndex][itemIndex];
       }
     }
@@ -257,15 +224,13 @@ class ItemCenter {
   }
 
   /// shop/point rewards/mission rewards/Tower rewards/lottery/treasureBox/fixedDrop/wars rewards
-  Map<int, int> calcOneEvent(Event event, LimitEventPlan plan,
-      {bool includingGrailToLore = true}) {
+  Map<int, int> calcOneEvent(Event event, LimitEventPlan plan, {bool includingGrailToLore = true}) {
     Map<int, int> result = {};
     // shop
     if (!plan.enabled) return result;
     if (plan.shop) {
       for (final shop in event.shop) {
-        final counts = event.itemShop[shop.id]
-            ?.multiple(plan.shopBuyCount[shop.id] ?? shop.limitNum);
+        final counts = event.itemShop[shop.id]?.multiple(plan.shopBuyCount[shop.id] ?? shop.limitNum);
         if (counts != null) {
           result.addDict(counts);
         }
@@ -291,15 +256,12 @@ class ItemCenter {
       }
       int maxBoxIndex = Maths.max(boxItems.keys, 0); //0-9,10
       if (!lottery.limited && planBoxNum > maxBoxIndex) {
-        result.addDict(
-            boxItems[maxBoxIndex]?.multiple(planBoxNum - maxBoxIndex - 1) ??
-                {});
+        result.addDict(boxItems[maxBoxIndex]?.multiple(planBoxNum - maxBoxIndex - 1) ?? {});
       }
     }
     for (final box in event.treasureBoxes) {
       event.itemTreasureBox[box.id]?.forEach((itemId, setNum) {
-        result.addNum(
-            itemId, setNum * (plan.treasureBoxItems[box.id]?[itemId] ?? 0));
+        result.addNum(itemId, setNum * (plan.treasureBoxItems[box.id]?[itemId] ?? 0));
       });
     }
     if (event.digging != null) {
@@ -320,8 +282,7 @@ class ItemCenter {
     }
     for (final extraItems in event.extra.extraItems) {
       result.addDict({
-        for (final itemId in extraItems.items.keys)
-          itemId: plan.extraItems[extraItems.id]?[itemId] ?? 0,
+        for (final itemId in extraItems.items.keys) itemId: plan.extraItems[extraItems.id]?[itemId] ?? 0,
       });
     }
     if (!event.isEmpty) {
@@ -380,8 +341,7 @@ class ItemCenter {
     db.notifyUserdata();
   }
 
-  Map<int, SvtMatCostDetail<int>> getItemCostDetail(
-      int itemId, SvtMatCostDetailType type) {
+  Map<int, SvtMatCostDetail<int>> getItemCostDetail(int itemId, SvtMatCostDetailType type) {
     Map<int, SvtMatCostDetail<int>> details = {};
     final target = getSvtMatrix(type);
     int? itemIndex = target._dim2Map[itemId];
@@ -395,8 +355,7 @@ class ItemCenter {
     return details;
   }
 
-  _MatrixManager<int, int, SvtMatCostDetail<int>> getSvtMatrix(
-      SvtMatCostDetailType type) {
+  _MatrixManager<int, int, SvtMatCostDetail<int>> getSvtMatrix(SvtMatCostDetailType type) {
     return type == SvtMatCostDetailType.consumed
         ? _svtCur
         : type == SvtMatCostDetailType.demands
@@ -404,8 +363,7 @@ class ItemCenter {
             : _svtFull;
   }
 
-  SvtMatCostDetail<Map<int, int>> getSvtCostDetail(
-      int svtId, SvtMatCostDetailType type) {
+  SvtMatCostDetail<Map<int, int>> getSvtCostDetail(int svtId, SvtMatCostDetailType type) {
     final target = getSvtMatrix(type);
     final svtIndex = target._dim1Map[svtId];
     final details = SvtMatCostDetail<Map<int, int>>(() => {});
@@ -437,8 +395,7 @@ class _MatrixManager<K1, K2, V> {
         _dim2Map = {
           for (int index = 0; index < dim2.length; index++) dim2[index]: index,
         },
-        _matrix = List.generate(
-            dim1.length, (_) => List.generate(dim2.length, (__) => init()));
+        _matrix = List.generate(dim1.length, (_) => List.generate(dim2.length, (__) => init()));
 
   void addDim1(K1 k1) {
     if (dim1.contains(k1)) return;
@@ -486,8 +443,7 @@ class SvtMatCostDetail<T> {
 
   List<T> get parts => [ascension, activeSkill, appendSkill, costume, special];
 
-  void updateFrom<S>(
-      SvtMatCostDetail<S> other, T Function(T p1, S p2) converter) {
+  void updateFrom<S>(SvtMatCostDetail<S> other, T Function(T p1, S p2) converter) {
     ascension = converter(ascension, other.ascension);
     activeSkill = converter(activeSkill, other.activeSkill);
     appendSkill = converter(appendSkill, other.appendSkill);

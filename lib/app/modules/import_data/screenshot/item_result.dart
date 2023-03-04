@@ -20,8 +20,7 @@ class ItemResultTab extends StatefulWidget {
   State<ItemResultTab> createState() => _ItemResultTabState();
 }
 
-class _ItemResultTabState extends State<ItemResultTab>
-    with ScrollControllerMixin {
+class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixin {
   final Map<int, TextEditingController> _controllers = {};
   ItemResult get result => widget.result!;
   @override
@@ -47,9 +46,7 @@ class _ItemResultTabState extends State<ItemResultTab>
     keys.sort2((e) => db.gameData.items[e]?.priority ?? -1);
     countUnknown = items[-1]?.length ?? 0;
     countValid = keys.where((e) => e > 0).length;
-    countSelected = items.values
-        .where((itemList) => itemList.any((e) => e.checked && e.itemId > 0))
-        .length;
+    countSelected = items.values.where((itemList) => itemList.any((e) => e.checked && e.itemId > 0)).length;
     countDup = result.details.length - countUnknown - countValid;
 
     for (final itemId in keys) {
@@ -66,8 +63,7 @@ class _ItemResultTabState extends State<ItemResultTab>
       children: [
         ListTile(
           title: Text(
-            S.current.recognizer_result_count(countUnknown, countDup,
-                countValid, result.details.length, countSelected),
+            S.current.recognizer_result_count(countUnknown, countDup, countValid, result.details.length, countSelected),
             textAlign: TextAlign.center,
           ),
         ),
@@ -84,8 +80,7 @@ class _ItemResultTabState extends State<ItemResultTab>
   }
 
   Widget _buildDetailRow(ItemDetail item) {
-    final _ctrl =
-        _controllers.putIfAbsent(item.hashCode, () => TextEditingController());
+    final _ctrl = _controllers.putIfAbsent(item.hashCode, () => TextEditingController());
     if (_ctrl.text != item.count.toString()) {
       _ctrl.text = item.count.toString();
     }
@@ -96,8 +91,7 @@ class _ItemResultTabState extends State<ItemResultTab>
             ? const SizedBox(width: 56, height: 56)
             : Image.memory(item.imgThumb!, width: 56, height: 48),
         const SizedBox(width: 8),
-        Item.iconBuilder(
-            context: context, item: null, itemId: item.itemId, width: 48),
+        Item.iconBuilder(context: context, item: null, itemId: item.itemId, width: 48),
         Expanded(
           child: TextButton(
             onPressed: () {
@@ -119,17 +113,13 @@ class _ItemResultTabState extends State<ItemResultTab>
               textAlign: TextAlign.center,
               maxLines: 2,
               style: TextStyle(
-                color: item.valid && item.checked
-                    ? null
-                    : Theme.of(context).colorScheme.error,
+                color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error,
               ),
             ),
           ),
         ),
         const SizedBox(width: 8),
-        item.imgNum == null
-            ? const SizedBox(width: 56)
-            : Image.memory(item.imgNum!, width: 56),
+        item.imgNum == null ? const SizedBox(width: 56) : Image.memory(item.imgNum!, width: 56),
         const SizedBox(width: 8),
         SizedBox(
           width: 50,
@@ -170,9 +160,7 @@ class _ItemResultTabState extends State<ItemResultTab>
       alignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-          onPressed: widget.result?.details.isNotEmpty == true
-              ? _doImportResult
-              : null,
+          onPressed: widget.result?.details.isNotEmpty == true ? _doImportResult : null,
           child: Text(S.current.update),
         ),
       ],

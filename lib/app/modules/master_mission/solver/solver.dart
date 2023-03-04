@@ -8,8 +8,7 @@ class MissionSolver extends BaseLPSolver {
     required List<QuestPhase> quests,
     required List<CustomMission> missions,
   }) async {
-    final result =
-        await callSolver(convertLP(quests: quests, missions: missions));
+    final result = await callSolver(convertLP(quests: quests, missions: missions));
     return result.map((key, value) => MapEntry(key, value.round()));
   }
 
@@ -18,14 +17,12 @@ class MissionSolver extends BaseLPSolver {
     required List<CustomMission> missions,
   }) {
     missions = List.of(missions);
-    missions.removeWhere((mission) =>
-        mission.conds.every((e) => e.targetIds.isEmpty) || mission.count <= 0);
+    missions.removeWhere((mission) => mission.conds.every((e) => e.targetIds.isEmpty) || mission.count <= 0);
     List<List<num>> matA = [];
     for (final mission in List.of(missions)) {
       if (!(mission.conds.every((cond) => cond.type.isQuestType) ||
           mission.conds.every((cond) => cond.type.isEnemyType))) {
-        throw ArgumentError(
-            'Quest type and Enemy type conditions must not be mixed');
+        throw ArgumentError('Quest type and Enemy type conditions must not be mixed');
       }
       final row = <int>[];
       for (final quest in quests) {
@@ -54,8 +51,7 @@ class MissionSolver extends BaseLPSolver {
     );
   }
 
-  static int countMissionTarget(CustomMission mission, QuestPhase quest,
-      {bool includeRare = true}) {
+  static int countMissionTarget(CustomMission mission, QuestPhase quest, {bool includeRare = true}) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {
       List<bool> results = mission.conds.map((cond) {
@@ -101,8 +97,7 @@ class MissionSolver extends BaseLPSolver {
                   cond.targetIds.contains(enemy.svt.className.id);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
-              return enemy.traits
-                      .any((t) => t.name == Trait.notBasedOnServant) &&
+              return enemy.traits.any((t) => t.name == Trait.notBasedOnServant) &&
                   cond.targetIds.contains(enemy.svt.className.id);
             default:
               return false;

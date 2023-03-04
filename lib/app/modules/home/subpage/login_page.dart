@@ -33,11 +33,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController =
-        TextEditingController(text: db.security.get('chaldea_user')?.toString())
-          ..addListener(() {
-            setState(() {});
-          });
+    _nameController = TextEditingController(text: db.security.get('chaldea_user')?.toString())
+      ..addListener(() {
+        setState(() {});
+      });
     _pwdController = TextEditingController()
       ..addListener(() {
         setState(() {});
@@ -192,8 +191,7 @@ class _LoginPageState extends State<LoginPage> {
             useRootNavigator: false,
             builder: (context) => SimpleCancelOkDialog(
               title: Text(S.current.login_forget_pwd),
-              content:
-                  const Text('Contact via Email or Feedback, check <FAQ>.'),
+              content: const Text('Contact via Email or Feedback, check <FAQ>.'),
               scrollable: true,
               hideOk: true,
               actions: [
@@ -330,9 +328,7 @@ class _LoginPageState extends State<LoginPage> {
           });
         },
         icon: FaIcon(
-          obscurePwd
-              ? FontAwesomeIcons.solidEyeSlash
-              : FontAwesomeIcons.solidEye,
+          obscurePwd ? FontAwesomeIcons.solidEyeSlash : FontAwesomeIcons.solidEye,
           size: 20,
         ),
       );
@@ -393,10 +389,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoginAvailable([String? name, String? pwd]) {
     name ??= _nameController.text;
     pwd ??= _pwdController.text;
-    return name.isNotEmpty &&
-        _validateName(name) == null &&
-        pwd.isNotEmpty &&
-        _validatePwd(pwd) == null;
+    return name.isNotEmpty && _validateName(name) == null && pwd.isNotEmpty && _validatePwd(pwd) == null;
   }
 
   bool isSignUpAvailable([String? name, String? pwd, String? confirmPwd]) {
@@ -410,18 +403,14 @@ class _LoginPageState extends State<LoginPage> {
     name ??= _nameController.text;
     pwd ??= _pwdController.text;
     newPwd ??= _newPwdController.text;
-    return isLoginAvailable(name, pwd) &&
-        newPwd.isNotEmpty &&
-        _validateNewPwd(newPwd) == null;
+    return isLoginAvailable(name, pwd) && newPwd.isNotEmpty && _validateNewPwd(newPwd) == null;
   }
 
   bool isChangeNameAvailable([String? name, String? pwd, String? newName]) {
     name ??= _nameController.text;
     pwd ??= _pwdController.text;
     newName ??= _newNameController.text;
-    return isLoginAvailable(name, pwd) &&
-        newName.isNotEmpty &&
-        _validateNewName(newName) == null;
+    return isLoginAvailable(name, pwd) && newName.isNotEmpty && _validateNewName(newName) == null;
   }
 
   Future<void> doLogin() async {
@@ -429,8 +418,7 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
     ChaldeaResponse.request(
-      caller: (dio) =>
-          dio.post('/account/login', data: {'username': name, 'pwd': pwd}),
+      caller: (dio) => dio.post('/account/login', data: {'username': name, 'pwd': pwd}),
       onSuccess: (resp) {
         _saveUserInfo(name, resp.body());
       },
@@ -443,8 +431,7 @@ class _LoginPageState extends State<LoginPage> {
     _nameController.text = '';
     _pwdController.text = '';
     _newPwdController.text = '';
-    const SimpleCancelOkDialog(content: Text('Cleared local login info'))
-        .showDialog(context);
+    const SimpleCancelOkDialog(content: Text('Cleared local login info')).showDialog(context);
   }
 
   void doDelete() {
@@ -475,8 +462,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     ChaldeaResponse.request(
-      caller: (dio) =>
-          dio.post('/account/create', data: {'username': name, 'pwd': pwd}),
+      caller: (dio) => dio.post('/account/create', data: {'username': name, 'pwd': pwd}),
       onSuccess: (resp) {
         _saveUserInfo(name, resp.body());
       },

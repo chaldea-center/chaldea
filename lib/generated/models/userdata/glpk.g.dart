@@ -12,25 +12,17 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = FreeLPParams(
           use6th: $checkedConvert('use6th', (v) => v as bool? ?? true),
-          rows: $checkedConvert('rows',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          rows: $checkedConvert('rows', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           progress: $checkedConvert('progress', (v) => v as int? ?? -1),
-          blacklist: $checkedConvert('blacklist',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          blacklist: $checkedConvert('blacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           minCost: $checkedConvert('minCost', (v) => v as int? ?? 0),
-          costMinimize:
-              $checkedConvert('costMinimize', (v) => v as bool? ?? true),
-          extraCols: $checkedConvert('extraCols',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          integerResult:
-              $checkedConvert('integerResult', (v) => v as bool? ?? false),
+          costMinimize: $checkedConvert('costMinimize', (v) => v as bool? ?? true),
+          extraCols: $checkedConvert('extraCols', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          integerResult: $checkedConvert('integerResult', (v) => v as bool? ?? false),
           useAP20: $checkedConvert('useAP20', (v) => v as bool? ?? true),
-          dailyCostHalf:
-              $checkedConvert('dailyCostHalf', (v) => v as bool? ?? false),
-          bondBonusPercent:
-              $checkedConvert('bondBonusPercent', (v) => v as int? ?? 0),
-          bondBonusCount:
-              $checkedConvert('bondBonusCount', (v) => v as int? ?? 0),
+          dailyCostHalf: $checkedConvert('dailyCostHalf', (v) => v as bool? ?? false),
+          bondBonusPercent: $checkedConvert('bondBonusPercent', (v) => v as int? ?? 0),
+          bondBonusCount: $checkedConvert('bondBonusCount', (v) => v as int? ?? 0),
           planItemCounts: $checkedConvert(
               'planItemCounts',
               (v) => (v as Map?)?.map(
@@ -39,22 +31,18 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
           planItemWeights: $checkedConvert(
               'planItemWeights',
               (v) => (v as Map?)?.map(
-                    (k, e) =>
-                        MapEntry(int.parse(k as String), (e as num).toDouble()),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toDouble()),
                   )),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) => <String, dynamic>{
       'use6th': instance.use6th,
       'rows': instance.rows,
-      'planItemCounts':
-          instance.planItemCounts.map((k, e) => MapEntry(k.toString(), e)),
-      'planItemWeights':
-          instance.planItemWeights.map((k, e) => MapEntry(k.toString(), e)),
+      'planItemCounts': instance.planItemCounts.map((k, e) => MapEntry(k.toString(), e)),
+      'planItemWeights': instance.planItemWeights.map((k, e) => MapEntry(k.toString(), e)),
       'progress': instance.progress,
       'blacklist': instance.blacklist.toList(),
       'minCost': instance.minCost,
@@ -73,29 +61,25 @@ LPSolution _$LPSolutionFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = LPSolution(
           destination: $checkedConvert('destination', (v) => v as int? ?? 0),
-          originalItems: $checkedConvert('originalItems',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          originalItems: $checkedConvert('originalItems', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           totalCost: $checkedConvert('totalCost', (v) => v as int?),
           totalNum: $checkedConvert('totalNum', (v) => v as int?),
           countVars: $checkedConvert(
               'countVars',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => LPVariable<dynamic>.fromJson(
-                      Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => LPVariable<dynamic>.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
           weightVars: $checkedConvert(
               'weightVars',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => LPVariable<dynamic>.fromJson(
-                      Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => LPVariable<dynamic>.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$LPSolutionToJson(LPSolution instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LPSolutionToJson(LPSolution instance) => <String, dynamic>{
       'destination': instance.destination,
       'originalItems': instance.originalItems,
       'totalCost': instance.totalCost,
@@ -119,8 +103,7 @@ LPVariable<T> _$LPVariableFromJson<T>(
           detail: $checkedConvert(
               'detail',
               (v) => (v as Map?)?.map(
-                    (k, e) =>
-                        MapEntry(int.parse(k as String), (e as num).toDouble()),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toDouble()),
                   )),
         );
         return val;
@@ -143,28 +126,19 @@ BasicLPParams _$BasicLPParamsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BasicLPParams(
-          colNames: $checkedConvert('colNames',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          rowNames: $checkedConvert('rowNames',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          matA: $checkedConvert(
-              'matA',
-              (v) => (v as List<dynamic>?)
-                  ?.map(
-                      (e) => (e as List<dynamic>).map((e) => e as num).toList())
-                  .toList()),
-          bVec: $checkedConvert('bVec',
-              (v) => (v as List<dynamic>?)?.map((e) => e as num).toList()),
-          cVec: $checkedConvert('cVec',
-              (v) => (v as List<dynamic>?)?.map((e) => e as num).toList()),
+          colNames: $checkedConvert('colNames', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          rowNames: $checkedConvert('rowNames', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          matA: $checkedConvert('matA',
+              (v) => (v as List<dynamic>?)?.map((e) => (e as List<dynamic>).map((e) => e as num).toList()).toList()),
+          bVec: $checkedConvert('bVec', (v) => (v as List<dynamic>?)?.map((e) => e as num).toList()),
+          cVec: $checkedConvert('cVec', (v) => (v as List<dynamic>?)?.map((e) => e as num).toList()),
           integer: $checkedConvert('integer', (v) => v as bool?),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$BasicLPParamsToJson(BasicLPParams instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$BasicLPParamsToJson(BasicLPParams instance) => <String, dynamic>{
       'colNames': instance.colNames,
       'rowNames': instance.rowNames,
       'matA': instance.matA,

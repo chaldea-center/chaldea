@@ -9,8 +9,7 @@ class ClassFilterStyleSetting extends StatefulWidget {
   ClassFilterStyleSetting({super.key});
 
   @override
-  _ClassFilterStyleSettingState createState() =>
-      _ClassFilterStyleSettingState();
+  _ClassFilterStyleSettingState createState() => _ClassFilterStyleSettingState();
 }
 
 class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
@@ -56,9 +55,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
           ),
           Center(
             child: ElevatedButton(
-              onPressed: db.gameData.isValid
-                  ? () => router.push(url: Routes.servants)
-                  : null,
+              onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),
           )

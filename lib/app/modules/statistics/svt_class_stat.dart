@@ -49,8 +49,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   }
 
   void _calcServantClass() {
-    svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA],
-        value: (_) => 0);
+    svtClassCount = Map.fromIterable([...SvtClassX.regular, SvtClass.EXTRA], value: (_) => 0);
     for (final svt in db.gameData.servantsNoDup.values) {
       final status = db.curUser.svtStatusOf(svt.collectionNo);
       if (!status.favorite) continue;
@@ -61,8 +60,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       if (svtClassCount.containsKey(svt.className)) {
         svtClassCount[svt.className] = (svtClassCount[svt.className] ?? 0) + 1;
       } else {
-        svtClassCount[SvtClass.EXTRA] =
-            (svtClassCount[SvtClass.EXTRA] ?? 0) + 1;
+        svtClassCount[SvtClass.EXTRA] = (svtClassCount[SvtClass.EXTRA] ?? 0) + 1;
       }
     }
     svtClassCount.removeWhere((key, value) => value <= 0);
@@ -93,9 +91,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           S.current.priority,
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        trailing: Text(priority.options.isEmpty
-            ? S.current.general_all
-            : (priority.options.toList()..sort()).join(', ')),
+        trailing:
+            Text(priority.options.isEmpty ? S.current.general_all : (priority.options.toList()..sort()).join(', ')),
       )
     ];
     children.add(pieChart());
@@ -232,12 +229,10 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           child: PieChart(PieChartData(
             sections: List.generate(svtClassCount.length, (index) {
               final entry = svtClassCount.entries.elementAt(index);
-              return _pieSection(
-                  entry.key, entry.value, total, mag, palette[index]);
+              return _pieSection(entry.key, entry.value, total, mag, palette[index]);
             }),
             centerSpaceRadius: 0,
-            pieTouchData:
-                PieTouchData(touchCallback: (event, pieTouchResponse) {
+            pieTouchData: PieTouchData(touchCallback: (event, pieTouchResponse) {
               if (pieTouchResponse == null) return;
               bool _needsBuild = false;
               if (event is FlTapUpEvent &&
@@ -248,12 +243,10 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
               if (event is FlTapUpEvent || event is FlTapCancelEvent) {
                 _needsBuild = true;
               }
-              final desiredTouch =
-                  event is! FlTapUpEvent && event is! FlTapCancelEvent;
+              final desiredTouch = event is! FlTapUpEvent && event is! FlTapCancelEvent;
               if (desiredTouch && pieTouchResponse.touchedSection != null) {
                 SvtClass? _newSelected;
-                int index =
-                    pieTouchResponse.touchedSection!.touchedSectionIndex;
+                int index = pieTouchResponse.touchedSection!.touchedSectionIndex;
                 if (index >= 0 && index < svtClassCount.length) {
                   _newSelected = svtClassCount.keys.elementAt(index);
                 } else {
@@ -274,18 +267,14 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     );
   }
 
-  PieChartSectionData _pieSection(
-      SvtClass clsName, int count, int total, double mag, Color? color) {
+  PieChartSectionData _pieSection(SvtClass clsName, int count, int total, double mag, Color? color) {
     bool selected = selectedPie == clsName;
     double ratio = count / total;
     double posRatio = ratio < 0.05 ? 1.2 : 1;
     return PieChartSectionData(
       value: count.toDouble(),
-      title: selected
-          ? '$count\n(${'${(ratio * 100).toStringAsFixed(0)}%'})'
-          : count.toString(),
-      titleStyle: TextStyle(
-          color: Colors.white, fontSize: 16 * mag, fontWeight: FontWeight.bold),
+      title: selected ? '$count\n(${'${(ratio * 100).toStringAsFixed(0)}%'})' : count.toString(),
+      titleStyle: TextStyle(color: Colors.white, fontSize: 16 * mag, fontWeight: FontWeight.bold),
       radius: (selected ? 120 : 100) * mag,
       badgeWidget: db.getIconImage(
         clsName.icon(5),

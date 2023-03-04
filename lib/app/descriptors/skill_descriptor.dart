@@ -103,8 +103,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
               onTap: () => showDialog(
                 context: context,
                 useRootNavigator: false,
-                builder: (context) =>
-                    _extraPassiveDialog(context, skill as NiceSkill),
+                builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
               ),
               child: Icon(
                 Icons.info_outline,
@@ -114,9 +113,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
             ),
           ),
       ])),
-      subtitle: Transl.isJP ||
-              hideDetail ||
-              (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
+      subtitle: Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
           ? null
           : Text(skill.name),
       trailing: cd0 <= 0 && cd1 <= 0
@@ -134,8 +131,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         if (!hideDetail) ...[
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-            child:
-                Text(detailText, style: Theme.of(context).textTheme.bodySmall),
+            child: Text(detailText, style: Theme.of(context).textTheme.bodySmall),
           ),
           divider,
         ],
@@ -163,9 +159,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     for (final skillAdd in skill.skillAdd) {
       children.add(ListTile(
         title: Text(Transl.skillNames(skillAdd.name).l),
-        subtitle: Transl.isJP
-            ? Text(skillAdd.ruby)
-            : Text('${skillAdd.ruby}\n${skillAdd.name}'),
+        subtitle: Transl.isJP ? Text(skillAdd.ruby) : Text('${skillAdd.ruby}\n${skillAdd.name}'),
         dense: true,
         contentPadding: EdgeInsets.zero,
       ));
@@ -194,8 +188,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
 
   Widget _extraPassiveDialog(BuildContext context, NiceSkill skill) {
     List<Widget> children = [];
-    skill.extraPassive.sort(
-        (a, b) => a.num == b.num ? a.priority - b.priority : a.num - b.num);
+    skill.extraPassive.sort((a, b) => a.num == b.num ? a.priority - b.priority : a.num - b.num);
     final style = Theme.of(context).textTheme.bodySmall;
     for (int index = 0; index < skill.extraPassive.length; index++) {
       final cond = skill.extraPassive[index];
@@ -213,18 +206,14 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         condDetails.add(Text(' ꔷ Servant Level ${cond.condLv}', style: style));
       }
       if (cond.condLimitCount != 0) {
-        condDetails.add(Text(' ꔷ ${S.current.ascension} ${cond.condLimitCount}',
-            style: style));
+        condDetails.add(Text(' ꔷ ${S.current.ascension} ${cond.condLimitCount}', style: style));
       }
       if (cond.condFriendshipRank != 0) {
-        condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condLimitCount}',
-            style: style));
+        condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condLimitCount}', style: style));
       }
       if (cond.eventId != 0) {
         final event = db.gameData.events[cond.eventId];
-        condDetails.add(Text(
-            ' ꔷ ${S.current.event} ${event?.lName.l ?? cond.eventId}',
-            style: style));
+        condDetails.add(Text(' ꔷ ${S.current.event} ${event?.lName.l ?? cond.eventId}', style: style));
       }
       children.add(Column(
         mainAxisSize: MainAxisSize.min,
@@ -284,8 +273,7 @@ class OverrideTDData {
     return tds;
   }
 
-  int get _hashCode =>
-      Object.hash(tdName, tdRuby, tdFileName, tdRank, tdTypeText);
+  int get _hashCode => Object.hash(tdName, tdRuby, tdFileName, tdRank, tdTypeText);
 }
 
 class TdDescriptor extends StatelessWidget with FuncsDescriptor {
@@ -339,8 +327,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       if (td.individuality.every((e) => e.name != Trait.cardNP)) {
         ref.add('cardNP');
       }
-      if (cardMap.containsKey(td.card) &&
-          td.individuality.every((e) => e.name != cardMap[td.card])) {
+      if (cardMap.containsKey(td.card) && td.individuality.every((e) => e.name != cardMap[td.card])) {
         ref.add('cardQAB');
       }
     }
@@ -378,11 +365,9 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             Text(
               tdRuby.jp,
               textScaleFactor: 0.95,
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.bodySmall?.color),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
             ),
-            Text(tdName.jp,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(tdName.jp, style: const TextStyle(fontWeight: FontWeight.w600)),
           ]
         ],
       ),
@@ -424,10 +409,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           ),
           CustomTableRow(children: [
             TableCellData(
-              child: Text.rich(TextSpan(text: 'Hits', children: [
-                if (isBaseTd)
-                  SpecialTextSpan.superscript('[${ref.add("base")}]')
-              ])),
+              child: Text.rich(TextSpan(
+                  text: 'Hits', children: [if (isBaseTd) SpecialTextSpan.superscript('[${ref.add("base")}]')])),
               isHeader: true,
             ),
             TableCellData(
@@ -439,9 +422,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
               alignment: Alignment.centerLeft,
               style: TextStyle(
                 fontStyle: isBaseTd ? FontStyle.italic : null,
-                decoration: td.damageType == TdEffectFlag.support
-                    ? TextDecoration.lineThrough
-                    : null,
+                decoration: td.damageType == TdEffectFlag.support ? TextDecoration.lineThrough : null,
               ),
             )
           ]),

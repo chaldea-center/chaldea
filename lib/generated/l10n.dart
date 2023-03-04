@@ -33,8 +33,8 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+        _current != null, 'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
@@ -141,8 +141,7 @@ class S {
   }
 
   /// `Current version: {curVersion}\nLatest version: {newVersion}\nRelease Note:\n{releaseNote}`
-  String about_update_app_detail(
-      Object curVersion, Object newVersion, Object releaseNote) {
+  String about_update_app_detail(Object curVersion, Object newVersion, Object releaseNote) {
     return Intl.message(
       'Current version: $curVersion\nLatest version: $newVersion\nRelease Note:\n$releaseNote',
       name: 'about_update_app_detail',
@@ -2694,8 +2693,7 @@ class S {
   }
 
   /// `File {filename} not found or mismatched hash: {hash} - {localHash}`
-  String file_not_found_or_mismatched_hash(
-      Object filename, Object hash, Object localHash) {
+  String file_not_found_or_mismatched_hash(Object filename, Object hash, Object localHash) {
     return Intl.message(
       'File $filename not found or mismatched hash: $hash - $localHash',
       name: 'file_not_found_or_mismatched_hash',
@@ -4499,8 +4497,7 @@ class S {
   }
 
   /// `{shown} shown, {ignore} ignored (total {total})`
-  String list_count_shown_hidden_all(
-      Object shown, Object ignore, Object total) {
+  String list_count_shown_hidden_all(Object shown, Object ignore, Object total) {
     return Intl.message(
       '$shown shown, $ignore ignored (total $total)',
       name: 'list_count_shown_hidden_all',
@@ -6078,8 +6075,7 @@ class S {
   }
 
   /// `{unknown} unknown, {dup} dup, {valid}/{total} valid, {selected} selected`
-  String recognizer_result_count(
-      Object unknown, Object dup, Object valid, Object total, Object selected) {
+  String recognizer_result_count(Object unknown, Object dup, Object valid, Object total, Object selected) {
     return Intl.message(
       '$unknown unknown, $dup dup, $valid/$total valid, $selected selected',
       name: 'recognizer_result_count',

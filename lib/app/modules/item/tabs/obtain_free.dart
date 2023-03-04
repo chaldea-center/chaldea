@@ -64,12 +64,10 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           child: InheritSelectionArea(
             child: ListView(children: [
               ...buildQuests(),
-              const Divider(
-                  height: 16, thickness: 0.5, indent: 16, endIndent: 16),
+              const Divider(height: 16, thickness: 0.5, indent: 16, endIndent: 16),
               const ListTile(
                 subtitle: Center(
-                  child:
-                      Text('Drop rate has been adjusted after 6th anniversary'),
+                  child: Text('Drop rate has been adjusted after 6th anniversary'),
                 ),
               )
             ]),
@@ -85,9 +83,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
       groupValue: sortByAP,
       label: Text(
         value ? S.current.ap_efficiency : S.current.drop_rate,
-        style: value == sortByAP
-            ? null
-            : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+        style: value == sortByAP ? null : TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ),
       onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
     );
@@ -104,10 +100,8 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     for (var i = 0; i < dropRateData.questIds.length; i++) {
       if (dropMatrix[i] <= 0) continue;
       int questId = dropRateData.questIds[i];
-      final apRate = dropRateData.apCosts[i] / dropMatrix[i],
-          dropRate = dropMatrix[i];
-      final dropRateString = (dropRate * 100).toStringAsFixed(2),
-          apRateString = apRate.toStringAsFixed(2);
+      final apRate = dropRateData.apCosts[i] / dropMatrix[i], dropRate = dropMatrix[i];
+      final dropRateString = (dropRate * 100).toStringAsFixed(2), apRateString = apRate.toStringAsFixed(2);
       final quest = db.gameData.quests[questId];
 
       final child = ValueStatefulBuilder<bool>(
@@ -121,16 +115,14 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                   title: Text(quest?.lDispName ?? 'Quest $questId'),
                   subtitle: Text(
                       'Cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
-                  trailing:
-                      Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
+                  trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
                   onTap: quest == null
                       ? null
                       : () => state.setState(() {
                             state.value = !state.value;
                           }),
                 ),
-                if (state.value && quest != null)
-                  QuestCard(quest: quest, use6th: use6th),
+                if (state.value && quest != null) QuestCard(quest: quest, use6th: use6th),
               ],
             );
           });

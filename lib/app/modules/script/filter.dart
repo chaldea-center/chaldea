@@ -15,8 +15,7 @@ class ScriptReaderFilterPage extends FilterPage<ScriptReaderFilterData> {
   _ScriptReaderFilterPageState createState() => _ScriptReaderFilterPageState();
 }
 
-class _ScriptReaderFilterPageState
-    extends FilterPageState<ScriptReaderFilterData, ScriptReaderFilterPage> {
+class _ScriptReaderFilterPageState extends FilterPageState<ScriptReaderFilterData, ScriptReaderFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

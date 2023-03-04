@@ -13,10 +13,8 @@ class MyCacheManager extends CacheManager with ImageCacheManager {
   }
 
   @override
-  Future<FileInfo?> getFileFromCache(String key,
-      {bool ignoreMemCache = false}) async {
-    final info =
-        await super.getFileFromCache(key, ignoreMemCache: ignoreMemCache);
+  Future<FileInfo?> getFileFromCache(String key, {bool ignoreMemCache = false}) async {
+    final info = await super.getFileFromCache(key, ignoreMemCache: ignoreMemCache);
     if (info == null && delay != null) {
       await Future.delayed(delay!);
     }

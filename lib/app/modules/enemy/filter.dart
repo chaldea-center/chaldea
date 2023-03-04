@@ -15,8 +15,7 @@ class EnemyFilterPage extends FilterPage<EnemyFilterData> {
   _EnemyFilterPageState createState() => _EnemyFilterPageState();
 }
 
-class _EnemyFilterPageState
-    extends FilterPageState<EnemyFilterData, EnemyFilterPage> {
+class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -40,9 +39,7 @@ class _EnemyFilterPageState
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: {
-                for (final e in EnemyFilterData.enemyCompares) e: e.showName
-              },
+              items: {for (final e in EnemyFilterData.enemyCompares) e: e.showName},
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();
@@ -95,8 +92,7 @@ class _EnemyFilterPageState
                   SvtType.commandCode
                 ].contains(e)),
           values: filterData.svtType,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.svtType).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.svtType).l),
           onFilterChanged: (value, _) {
             update();
           },

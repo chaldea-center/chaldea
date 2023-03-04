@@ -33,10 +33,7 @@ class _AccountPageState extends State<AccountPage> {
                   return InputCancelOkDialog(
                     title: S.current.new_account,
                     errorText: S.current.input_invalid_hint,
-                    validate: (v) =>
-                        v == v.trim() &&
-                        v.isNotEmpty &&
-                        users.every((e) => e.name != v),
+                    validate: (v) => v == v.trim() && v.isNotEmpty && users.every((e) => e.name != v),
                     onSubmit: addUser,
                   );
                 },
@@ -116,9 +113,7 @@ class _AccountPageState extends State<AccountPage> {
         text: user.name,
         errorText: S.current.input_invalid_hint,
         validate: (v) {
-          return v == v.trim() &&
-              v.isNotEmpty &&
-              users.every((e) => e.name != v);
+          return v == v.trim() && v.isNotEmpty && users.every((e) => e.name != v);
         },
         onSubmit: (v) {
           user.name = v;

@@ -72,8 +72,7 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
           title: Text(S.current.opening_time),
           options: const [true, false],
           values: filterData.permanent,
-          optionBuilder: (v) =>
-              Text(v ? S.current.permanent : S.current.limited_time),
+          optionBuilder: (v) => Text(v ? S.current.permanent : S.current.limited_time),
           onFilterChanged: (value, _) {
             update();
           },
@@ -84,8 +83,7 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
               ? PurchaseType.values
               : (widget.purchaseTypes.toList()..sort2((e) => e.index)),
           values: filterData.purchaseType,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.purchaseType).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.purchaseType).l),
           onFilterChanged: (value, _) {
             update();
           },

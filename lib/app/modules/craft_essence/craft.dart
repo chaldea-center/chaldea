@@ -37,17 +37,13 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   void initState() {
     super.initState();
     fetchData();
-    _ce = widget.ce ??
-        db.gameData.craftEssences[widget.id] ??
-        db.gameData.craftEssencesById[widget.id];
+    _ce = widget.ce ?? db.gameData.craftEssences[widget.id] ?? db.gameData.craftEssencesById[widget.id];
   }
 
   Future<void> fetchData() async {
     _loading = true;
     if (mounted) setState(() {});
-    _ce = widget.ce ??
-        db.gameData.craftEssences[widget.id] ??
-        db.gameData.craftEssencesById[widget.id];
+    _ce = widget.ce ?? db.gameData.craftEssences[widget.id] ?? db.gameData.craftEssencesById[widget.id];
     final id = widget.ce?.id ?? widget.id;
     if (id == null || _ce != null) return;
     _ce = await AtlasApi.ce(id);
@@ -107,8 +103,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   isDense: true,
                   value: status.limitCount,
                   items: [
-                    for (int asc = 0; asc <= 4; asc++)
-                      DropdownMenuItem(value: asc, child: Text(asc.toString())),
+                    for (int asc = 0; asc <= 4; asc++) DropdownMenuItem(value: asc, child: Text(asc.toString())),
                   ],
                   onChanged: (v) {
                     setState(() {
@@ -154,8 +149,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                         // if navigated from filter list, let filter list decide which is the next one
                         nextCe = widget.onSwitch!(ce, i == 0);
                       } else {
-                        nextCe = db.gameData
-                            .craftEssences[ce.collectionNo + [-1, 1][i]];
+                        nextCe = db.gameData.craftEssences[ce.collectionNo + [-1, 1][i]];
                       }
                       if (nextCe == null) {
                         EasyLoading.showToast(S.current.list_end_hint(i == 0));
@@ -165,11 +159,8 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                         });
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                        textStyle:
-                            const TextStyle(fontWeight: FontWeight.normal)),
-                    child:
-                        Text([S.current.previous_card, S.current.next_card][i]),
+                    style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
+                    child: Text([S.current.previous_card, S.current.next_card][i]),
                   ),
               ],
             ),
@@ -231,14 +222,8 @@ class CraftDetailBasePage extends StatelessWidget {
             padding: enableLink ? EdgeInsets.zero : const EdgeInsets.all(4),
           )
         ]),
-        if (!Transl.isJP)
-          CustomTableRow(children: [
-            TableCellData(text: ce.lName.l, textAlign: TextAlign.center)
-          ]),
-        if (!Transl.isEN)
-          CustomTableRow(children: [
-            TableCellData(text: ce.lName.na, textAlign: TextAlign.center)
-          ]),
+        if (!Transl.isJP) CustomTableRow(children: [TableCellData(text: ce.lName.l, textAlign: TextAlign.center)]),
+        if (!Transl.isEN) CustomTableRow(children: [TableCellData(text: ce.lName.na, textAlign: TextAlign.center)]),
         CustomTableRow(
           children: [
             TableCellData(
@@ -261,8 +246,7 @@ class CraftDetailBasePage extends StatelessWidget {
               child: CustomTable(
                 hideOutline: true,
                 children: <Widget>[
-                  CustomTableRow.fromTexts(
-                      texts: ['No. ${ce.collectionNo}', 'No. ${ce.id}']),
+                  CustomTableRow.fromTexts(texts: ['No. ${ce.collectionNo}', 'No. ${ce.id}']),
                   CustomTableRow(children: [
                     TableCellData(text: S.current.illustrator, isHeader: true),
                     TableCellData(
@@ -270,8 +254,7 @@ class CraftDetailBasePage extends StatelessWidget {
                         context: context,
                         text: Transl.illustratorNames(ce.profile.illustrator).l,
                         onTap: () {
-                          router.pushPage(CreatorDetail.illust(
-                              name: ce.profile.illustrator));
+                          router.pushPage(CreatorDetail.illust(name: ce.profile.illustrator));
                         },
                       )),
                       flex: 3,
@@ -289,8 +272,7 @@ class CraftDetailBasePage extends StatelessWidget {
                           context: context,
                           text: Transl.cvNames(ce.profile.cv).l,
                           onTap: () {
-                            router.pushPage(
-                                CreatorDetail.cv(name: ce.profile.cv));
+                            router.pushPage(CreatorDetail.cv(name: ce.profile.cv));
                           },
                         )),
                         flex: 3,
@@ -311,18 +293,14 @@ class CraftDetailBasePage extends StatelessWidget {
                         text: '${ce.atkBase}/${ce.atkMax}',
                         maxLines: 1,
                         style: TextStyle(
-                          color: hasGrowth
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
+                          color: hasGrowth ? Theme.of(context).colorScheme.primary : null,
                         ),
                       ),
                       TableCellData(text: 'HP', isHeader: true),
                       TableCellData(
                         text: '${ce.hpBase}/${ce.hpMax}',
                         style: TextStyle(
-                          color: hasGrowth
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
+                          color: hasGrowth ? Theme.of(context).colorScheme.primary : null,
                         ),
                         maxLines: 1,
                       ),
@@ -351,13 +329,10 @@ class CraftDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.filter_category, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.filter_category, isHeader: true)]),
         CustomTableRow(children: [
           TableCellData(
-            child:
-                Text(Transl.ceObtain(ce.obtain).l, textAlign: TextAlign.center),
+            child: Text(Transl.ceObtain(ce.obtain).l, textAlign: TextAlign.center),
           )
         ]),
         ..._relatedSvt(context),
@@ -375,10 +350,8 @@ class CraftDetailBasePage extends StatelessWidget {
                   builder: (context) {
                     List<Widget> children = [];
                     for (final region in Region.values) {
-                      final ceRelease =
-                          db.gameData.mappingData.ceRelease.ofRegion(region);
-                      final released = region == Region.jp ||
-                          ceRelease?.contains(ce.collectionNo) == true;
+                      final ceRelease = db.gameData.mappingData.ceRelease.ofRegion(region);
+                      final released = region == Region.jp || ceRelease?.contains(ce.collectionNo) == true;
                       children.add(SimpleDialogOption(
                         onPressed: released
                             ? () {
@@ -407,18 +380,11 @@ class CraftDetailBasePage extends StatelessWidget {
               ),
             )
         ],
-        CustomTableRow(
-            children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority))
-          SkillDescriptor(skill: skill),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.characters_in_card, isHeader: true)
-        ]),
-        CustomTableRow(
-            children: [TableCellData(child: localizeCharacters(context))]),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.card_description, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
+        for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority)) SkillDescriptor(skill: skill),
+        CustomTableRow(children: [TableCellData(text: S.current.characters_in_card, isHeader: true)]),
+        CustomTableRow(children: [TableCellData(child: localizeCharacters(context))]),
+        CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           child: Column(
@@ -436,9 +402,7 @@ class CraftDetailBasePage extends StatelessWidget {
           charaGraphPlaceholder: (_, __) => db.getIconImage(ce.cardBack),
         ),
         if (showExtra && summons.isNotEmpty) ...[
-          CustomTableRow(children: [
-            TableCellData(text: S.current.summon, isHeader: true)
-          ]),
+          CustomTableRow(children: [TableCellData(text: S.current.summon, isHeader: true)]),
           CustomTableRow(children: [
             TableCellData(
                 child: Column(

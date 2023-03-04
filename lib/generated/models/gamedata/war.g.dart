@@ -9,15 +9,12 @@ part of '../../../models/gamedata/war.dart';
 NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       id: json['id'] as int,
       coordinates: (json['coordinates'] as List<dynamic>)
-          .map((e) =>
-              (e as List<dynamic>).map((e) => (e as num).toDouble()).toList())
+          .map((e) => (e as List<dynamic>).map((e) => (e as num).toDouble()).toList())
           .toList(),
       age: json['age'] as String,
       name: json['name'] as String,
       longName: json['longName'] as String,
-      flags: (json['flags'] as List<dynamic>?)
-              ?.map((e) => const WarFlagConverter().fromJson(e as String))
-              .toList() ??
+      flags: (json['flags'] as List<dynamic>?)?.map((e) => const WarFlagConverter().fromJson(e as String)).toList() ??
           const [],
       banner: json['banner'] as String?,
       headerImage: json['headerImage'] as String?,
@@ -37,23 +34,19 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
               ?.map((e) => WarAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      maps: (json['maps'] as List<dynamic>?)
-              ?.map((e) => WarMap.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      maps:
+          (json['maps'] as List<dynamic>?)?.map((e) => WarMap.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
       spots: (json['spots'] as List<dynamic>?)
-              ?.map(
-                  (e) => NiceSpot.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceSpot.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       spotRoads: (json['spotRoads'] as List<dynamic>?)
-              ?.map(
-                  (e) => SpotRoad.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SpotRoad.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       questSelections: (json['questSelections'] as List<dynamic>?)
-              ?.map((e) => WarQuestSelection.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => WarQuestSelection.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -70,8 +63,7 @@ WarMap _$WarMapFromJson(Map json) => WarMap(
       mapImageW: json['mapImageW'] as int? ?? 0,
       mapImageH: json['mapImageH'] as int? ?? 0,
       mapGimmicks: (json['mapGimmicks'] as List<dynamic>?)
-              ?.map((e) =>
-                  MapGimmick.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => MapGimmick.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       headerImage: json['headerImage'] as String?,
@@ -99,10 +91,7 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       id: json['id'] as int,
-      joinSpotIds: (json['joinSpotIds'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
+      joinSpotIds: (json['joinSpotIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       mapId: json['mapId'] as int,
       name: json['name'] as String,
       image: json['image'] as String?,
@@ -118,8 +107,7 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       nextOfsY: json['nextOfsY'] as int? ?? 0,
       closedMessage: json['closedMessage'] as String? ?? "",
       spotAdds: (json['spotAdds'] as List<dynamic>?)
-              ?.map(
-                  (e) => SpotAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SpotAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       quests: (json['quests'] as List<dynamic>?)
@@ -130,14 +118,11 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
 
 SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
       priority: json['priority'] as int? ?? 0,
-      overrideType: $enumDecodeNullable(
-              _$SpotOverwriteTypeEnumMap, json['overrideType']) ??
-          SpotOverwriteType.none,
+      overrideType: $enumDecodeNullable(_$SpotOverwriteTypeEnumMap, json['overrideType']) ?? SpotOverwriteType.none,
       targetId: json['targetId'] as int? ?? 0,
       targetText: json['targetText'] as String? ?? "",
-      condType: json['condType'] == null
-          ? CondType.none
-          : const CondTypeConverter().fromJson(json['condType'] as String),
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int? ?? 0,
     );
@@ -171,16 +156,14 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       dispTargetValue2: json['dispTargetValue2'] as int? ?? 0,
       activeCondType: json['activeCondType'] == null
           ? CondType.none
-          : const CondTypeConverter()
-              .fromJson(json['activeCondType'] as String),
+          : const CondTypeConverter().fromJson(json['activeCondType'] as String),
       activeTargetId: json['activeTargetId'] as int? ?? 0,
       activeTargetValue: json['activeTargetValue'] as int? ?? 0,
     );
 
 WarAdd _$WarAddFromJson(Map json) => WarAdd(
       warId: json['warId'] as int,
-      type: $enumDecodeNullable(_$WarOverwriteTypeEnumMap, json['type']) ??
-          WarOverwriteType.unknown,
+      type: $enumDecodeNullable(_$WarOverwriteTypeEnumMap, json['type']) ?? WarOverwriteType.unknown,
       priority: json['priority'] as int,
       overwriteId: json['overwriteId'] as int,
       overwriteStr: json['overwriteStr'] as String? ?? "",

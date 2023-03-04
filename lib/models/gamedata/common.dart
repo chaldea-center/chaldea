@@ -54,17 +54,14 @@ class NiceTrait with RouteInfo {
   factory NiceTrait({required int id, bool negative = false}) {
     negative = negative || id < 0;
     id = id.abs();
-    return _instances.putIfAbsent(
-        negative ? -id : id, () => NiceTrait._(id: id, negative: negative));
+    return _instances.putIfAbsent(negative ? -id : id, () => NiceTrait._(id: id, negative: negative));
   }
 
-  factory NiceTrait.signed(int sid) => _instances.putIfAbsent(
-      sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));
+  factory NiceTrait.signed(int sid) => _instances.putIfAbsent(sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));
 
   int get signedId => negative ? -id : id;
 
-  factory NiceTrait.fromJson(Map<String, dynamic> json) =>
-      _$NiceTraitFromJson(json);
+  factory NiceTrait.fromJson(Map<String, dynamic> json) => _$NiceTraitFromJson(json);
 
   @override
   String toString() {
@@ -82,8 +79,7 @@ class NiceTrait with RouteInfo {
   static bool hasAllTraits(List<NiceTrait> traits, List<int> targets) {
     assert(targets.isNotEmpty);
     if (targets.isEmpty) return true;
-    return targets
-        .every((traitId) => traits.any((trait) => trait.id == traitId));
+    return targets.every((traitId) => traits.any((trait) => trait.id == traitId));
   }
 
   static bool hasAnyTrait(List<NiceTrait> traits, List<int> targets) {
@@ -99,8 +95,7 @@ class NiceTrait with RouteInfo {
 mixin DataScriptBase {
   Map<String, dynamic> _source = {};
   Map<String, dynamic> get source => _source;
-  void setSource(Map<String, dynamic>? json) =>
-      json == null ? null : _source = Map.from(json);
+  void setSource(Map<String, dynamic>? json) => json == null ? null : _source = Map.from(json);
   List<T>? list<T>(String key) => (_source[key] as List<dynamic>?)?.cast();
 }
 
@@ -125,8 +120,7 @@ class BgmRelease {
     required this.closedMessage,
   });
 
-  factory BgmRelease.fromJson(Map<String, dynamic> json) =>
-      _$BgmReleaseFromJson(json);
+  factory BgmRelease.fromJson(Map<String, dynamic> json) => _$BgmReleaseFromJson(json);
 }
 
 @JsonSerializable()
@@ -150,8 +144,7 @@ class BgmEntity extends Bgm {
     this.releaseConditions = const [],
   });
 
-  factory BgmEntity.fromJson(Map<String, dynamic> json) =>
-      _$BgmEntityFromJson(json);
+  factory BgmEntity.fromJson(Map<String, dynamic> json) => _$BgmEntityFromJson(json);
 }
 
 @JsonSerializable()
@@ -175,8 +168,7 @@ class Bgm with RouteInfo {
   String get tooltip => name.isEmpty ? fileName : lName.l;
 
   factory Bgm.fromJson(Map<String, dynamic> json) {
-    final bgm =
-        GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
+    final bgm = GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
     if (bgm != null) {
       json.addAll(Map.from(bgm));
     }
@@ -393,8 +385,7 @@ const kSvtClassSupportGroupIds = <int, SvtClassSupportGroupType>{
   9: SvtClassSupportGroupType.mix,
   999: SvtClassSupportGroupType.notSupport,
 };
-final kSvtClassSupportGroupIdsReverse =
-    kSvtClassSupportGroupIds.map((k, v) => MapEntry(v, k));
+final kSvtClassSupportGroupIdsReverse = kSvtClassSupportGroupIds.map((k, v) => MapEntry(v, k));
 
 /// Add new entry to common_helper [kTraitIdMapping]
 enum Trait {

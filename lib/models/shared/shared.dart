@@ -25,8 +25,7 @@ T $checkedCreate<T>(
     Object? Function(Map, String)? readValue,
   }) {
     try {
-      return json_annotation.$checkedConvert<Q>(map, key, convertFunction,
-          readValue: readValue);
+      return json_annotation.$checkedConvert<Q>(map, key, convertFunction, readValue: readValue);
     } catch (e, s) {
       logger.e('[$className.$key] checkedConvert error, return null', e, s);
       return null as Q;
@@ -49,8 +48,7 @@ K? $enumDecodeNullable<K extends Enum, V>(
   return json_annotation.$enumDecodeNullable(
     enumValues,
     source,
-    unknownValue:
-        unknownValue ?? json_annotation.JsonKey.nullForUndefinedEnumValue,
+    unknownValue: unknownValue ?? json_annotation.JsonKey.nullForUndefinedEnumValue,
   );
 }
 

@@ -62,19 +62,14 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     children: <Widget>[
                       CustomTableRow(children: [
                         TableCellData(
-                          child: Text(item.lName.l,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text(item.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
                           isHeader: true,
                           textAlign: TextAlign.center,
                         )
                       ]),
-                      if (!Transl.isJP)
-                        CustomTableRow.fromTexts(texts: [item.name]),
-                      if (!Transl.isEN)
-                        CustomTableRow.fromTexts(texts: [item.lName.na]),
-                      CustomTableRow.fromTexts(
-                          texts: ['No.${item.id}', item.type.name]),
+                      if (!Transl.isJP) CustomTableRow.fromTexts(texts: [item.name]),
+                      if (!Transl.isEN) CustomTableRow.fromTexts(texts: [item.lName.na]),
+                      CustomTableRow.fromTexts(texts: ['No.${item.id}', item.type.name]),
                     ],
                   ),
                 ),
@@ -87,22 +82,17 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 child: Text(svtCoinOwner!.lName.l),
               ),
             if (item.individuality.isNotEmpty) ...[
-              CustomTableRow.fromTexts(
-                  texts: [S.current.trait], isHeader: true),
-              CustomTableRow.fromChildren(children: [
-                SharedBuilder.traitList(
-                    context: context, traits: item.individuality)
-              ])
+              CustomTableRow.fromTexts(texts: [S.current.trait], isHeader: true),
+              CustomTableRow.fromChildren(
+                  children: [SharedBuilder.traitList(context: context, traits: item.individuality)])
             ],
-            CustomTableRow.fromTexts(
-                texts: [S.current.card_description], isHeader: true),
+            CustomTableRow.fromTexts(texts: [S.current.card_description], isHeader: true),
             CustomTableRow(
               children: [
                 TableCellData(
                   text: item.detail,
                   alignment: Alignment.centerLeft,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 )
               ],
             ),
@@ -113,12 +103,10 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                 isHeader: true,
               ),
               CustomTableRow.fromChildren(children: [
-                SharedBuilder.giftGrid(context: context, gifts: [
-                  for (final select in item.itemSelects) ...select.gifts
-                ])
+                SharedBuilder.giftGrid(
+                    context: context, gifts: [for (final select in item.itemSelects) ...select.gifts])
               ]),
-              CustomTableRow.fromTexts(
-                  texts: const ['Warning: JP info only!!!']),
+              CustomTableRow.fromTexts(texts: const ['Warning: JP info only!!!']),
             ],
           ],
         ),
@@ -129,8 +117,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
   @override
   void initState() {
     super.initState();
-    svtCoinOwner = db.gameData.servantsNoDup.values
-        .firstWhereOrNull((svt) => svt.coin?.item.id == itemId);
+    svtCoinOwner = db.gameData.servantsNoDup.values.firstWhereOrNull((svt) => svt.coin?.item.id == itemId);
     if (svtCoinOwner != null) {
       _summonCoin = svtCoinOwner!.coin!.summonNum;
     }
@@ -170,16 +157,9 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                     '${validCoins[index]}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: _summonCoin == validCoins[index]
-                          ? Theme.of(context).colorScheme.error
-                          : null,
-                      fontWeight: _summonCoin == validCoins[index]
-                          ? FontWeight.bold
-                          : null,
-                      decoration:
-                          svtCoinOwner?.coin?.summonNum == validCoins[index]
-                              ? TextDecoration.underline
-                              : null,
+                      color: _summonCoin == validCoins[index] ? Theme.of(context).colorScheme.error : null,
+                      fontWeight: _summonCoin == validCoins[index] ? FontWeight.bold : null,
+                      decoration: svtCoinOwner?.coin?.summonNum == validCoins[index] ? TextDecoration.underline : null,
                     ),
                     maxLines: 1,
                   ),
@@ -192,8 +172,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
       SizedBox(
         height: 36,
         child: CustomTableRow.fromChildren(
-          defaults:
-              TableCellData(padding: const EdgeInsets.symmetric(vertical: 4)),
+          defaults: TableCellData(padding: const EdgeInsets.symmetric(vertical: 4)),
           children: [
             const Text('Range'),
             ...List.generate(
@@ -245,8 +224,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               if (np == 0) {
                 return TableCellData(text: 'Lv.$index');
               }
-              int coins = Maths.sum(bondCoins.sublist(0, index)) +
-                  (np + _baseNp - 1) * _summonCoin;
+              int coins = Maths.sum(bondCoins.sublist(0, index)) + (np + _baseNp - 1) * _summonCoin;
               return TableCellData(
                 text: coins.toString(),
                 style: coins > 660

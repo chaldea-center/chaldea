@@ -30,9 +30,7 @@ class MyMarkdownWidget extends StatefulWidget {
     this.extensionSet,
     this.disableMd = false,
   }) : assert(
-            (data != null || assetKey != null) &&
-                (data == null || assetKey == null),
-            'Must provide data or assetKey');
+            (data != null || assetKey != null) && (data == null || assetKey == null), 'Must provide data or assetKey');
 
   @override
   _MyMarkdownWidgetState createState() => _MyMarkdownWidgetState();
@@ -45,10 +43,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
   void initState() {
     super.initState();
     if (widget.assetKey != null) {
-      rootBundle
-          .loadString(widget.assetKey!, cache: false)
-          .then((value) => assetData = value)
-          .catchError((e, s) async {
+      rootBundle.loadString(widget.assetKey!, cache: false).then((value) => assetData = value).catchError((e, s) async {
         logger.e('error loading markdown asset ${widget.assetKey}', e, s);
         return 'Loading error';
       }).whenComplete(
@@ -98,8 +93,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
     return CachedImage(
       imageUrl: uri.toString(),
       placeholder: (_, __) => Container(),
-      cachedOption: CachedImageOption(
-          errorWidget: (ctx, url, e) => Text("[${title ?? alt ?? ''}]")),
+      cachedOption: CachedImageOption(errorWidget: (ctx, url, e) => Text("[${title ?? alt ?? ''}]")),
     );
   }
 
@@ -109,9 +103,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
     try {
       await launch(href!);
     } catch (e) {
-      logger.e(
-          'Markdown link: cannot launch "$href", text="$text", title="$title"',
-          e);
+      logger.e('Markdown link: cannot launch "$href", text="$text", title="$title"', e);
       EasyLoading.showError('Cannot launch url:\n$href');
     }
   }
@@ -140,10 +132,7 @@ class MarkdownHelpPage extends StatefulWidget {
     this.leading = const BackButton(),
     this.title,
     this.actions = const [],
-  }) : assert(data != null ||
-            asset != null ||
-            assetJp != null ||
-            assetEn != null);
+  }) : assert(data != null || asset != null || assetJp != null || assetEn != null);
 
   const MarkdownHelpPage.localized({
     super.key,
@@ -167,15 +156,13 @@ class MarkdownHelpPage extends StatefulWidget {
     for (final region in db.settings.resolvedPreferredRegions) {
       switch (region) {
         case Region.jp:
-          content = await _loadAsset(
-              joinPaths(dir, assetJp ?? joinPaths('jp', asset)));
+          content = await _loadAsset(joinPaths(dir, assetJp ?? joinPaths('jp', asset)));
           break;
         case Region.cn:
           content = await _loadAsset(joinPaths(dir, asset));
           break;
         case Region.na:
-          content = await _loadAsset(
-              joinPaths(dir, assetEn ?? joinPaths('en', asset)));
+          content = await _loadAsset(joinPaths(dir, assetEn ?? joinPaths('en', asset)));
           break;
         default:
           break;

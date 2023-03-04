@@ -12,7 +12,7 @@ Make sure your flutter version is compatible with the version used in production
 sh ./scripts/format.sh
 ```
 
-It will sort imports and format dart codes. `line-length` is kept default(80) yet. You might need to configure your IDE with proper settings.
+It will sort imports and format dart codes. `line-length` is set to 120. You might need to configure your IDE with proper settings.
 
 Comments on imports may be messed up because of sorting imports.
 

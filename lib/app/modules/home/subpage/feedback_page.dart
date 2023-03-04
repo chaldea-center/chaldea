@@ -58,8 +58,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<bool> _alertPopPage() async {
-    if (subjectController.text.trim().isNotEmpty ||
-        bodyController.text.trim().isNotEmpty) {
+    if (subjectController.text.trim().isNotEmpty || bodyController.text.trim().isNotEmpty) {
       final r = await SimpleCancelOkDialog(
         title: Text(S.current.warning),
         content: Text(S.current.feedback_form_alert),
@@ -124,10 +123,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   String body = "OS: ${PlatformU.operatingSystem}"
                       " ${PlatformU.operatingSystemVersion}\n\n"
                       "Please attach logs(${db.paths.convertIosPath(db.paths.logDir)})";
-                  final uri = Uri(
-                      scheme: 'mailto',
-                      path: kSupportTeamEmailAddress,
-                      query: 'subject=$subject&body=$body');
+                  final uri =
+                      Uri(scheme: 'mailto', path: kSupportTeamEmailAddress, query: 'subject=$subject&body=$body');
                   print(uri);
                   if (await canLaunch(uri.toString())) {
                     launch(uri.toString());
@@ -164,8 +161,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             children: [
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: contactController,
                   decoration: InputDecoration(
@@ -182,8 +178,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextFormField(
                   controller: subjectController,
                   decoration: InputDecoration(
@@ -194,8 +189,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 height: 200,
                 child: TextFormField(
                   controller: bodyController,
@@ -234,8 +228,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
                     onPressed: sendEmail,
                     child: Text(S.current.feedback_send),
@@ -254,8 +247,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Map<String, Uint8List> attachFiles = {};
 
   void _addAttachments() async {
-    final result = await SharedBuilder.pickImageOrFiles(
-            context: context, allowMultiple: true, withData: true)
+    final result = await SharedBuilder.pickImageOrFiles(context: context, allowMultiple: true, withData: true)
         .catchError((e, s) async {
       logger.e('pick attachment failed', e, s);
       EasyLoading.showError(e.toString());
@@ -284,8 +276,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showInfo(S.current.contact_information_not_filled);
       return;
     }
-    EasyLoading.show(
-        status: S.current.sending, maskType: EasyLoadingMaskType.clear);
+    EasyLoading.show(status: S.current.sending, maskType: EasyLoadingMaskType.clear);
     try {
       String subject = subjectController.text.trim();
       if (subject.isEmpty) subject = defaultSubject;
@@ -303,8 +294,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       );
 
       if (!kDebugMode) {
-        final result = await handler.handle(
-            FeedbackReport(contactController.text, bodyController.text), null);
+        final result = await handler.handle(FeedbackReport(contactController.text, bodyController.text), null);
         if (!result) {
           throw S.current.sending_failed;
         }

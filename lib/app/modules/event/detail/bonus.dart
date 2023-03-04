@@ -11,10 +11,8 @@ class EventBonusTab extends HookWidget {
 
   Widget ceDetail(BuildContext context, CraftEssence ce) {
     StringBuffer subtitle = StringBuffer(Transl.ceObtain(ce.extra.obtain).l);
-    subtitle.write(
-        ' HP ${ce.hpBase == ce.hpMax ? ce.hpBase.toString() : '${ce.hpBase}/${ce.hpMax}'}');
-    subtitle.write(
-        ' ATK ${ce.atkBase == ce.atkMax ? ce.atkBase.toString() : '${ce.atkBase}/${ce.atkMax}'}');
+    subtitle.write(' HP ${ce.hpBase == ce.hpMax ? ce.hpBase.toString() : '${ce.hpBase}/${ce.hpMax}'}');
+    subtitle.write(' ATK ${ce.atkBase == ce.atkMax ? ce.atkBase.toString() : '${ce.atkBase}/${ce.atkMax}'}');
     List<Widget> children = [
       ListTile(
         leading: ce.iconBuilder(context: context),
@@ -52,9 +50,7 @@ class EventBonusTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> ceWidgets = [], svtWidgets = [];
-    final eventCEs = db.gameData.craftEssences.values
-        .where((e) => e.eventSkills(event).isNotEmpty)
-        .toList();
+    final eventCEs = db.gameData.craftEssences.values.where((e) => e.eventSkills(event).isNotEmpty).toList();
     eventCEs.sort2((e) => e.collectionNo);
 
     for (final ce in eventCEs) {
@@ -77,8 +73,7 @@ class EventBonusTab extends HookWidget {
     for (final skillId in svts.keys) {
       final group = svts[skillId]!
         ..sort((a, b) => SvtFilterData.compare(a, b,
-            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
-            reversed: [false, true, true]));
+            keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no], reversed: [false, true, true]));
       svtWidgets.add(TileGroup(
         children: [
           SkillDescriptor(
@@ -93,8 +88,7 @@ class EventBonusTab extends HookWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsetsDirectional.only(start: 16, end: 10),
-            children:
-                group.map((e) => e.iconBuilder(context: context)).toList(),
+            children: group.map((e) => e.iconBuilder(context: context)).toList(),
           ),
         ],
       ));
@@ -102,13 +96,11 @@ class EventBonusTab extends HookWidget {
     List<Widget> tabs = [
       if (ceWidgets.isNotEmpty)
         Tab(
-          child: Text(S.current.craft_essence,
-              style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(S.current.craft_essence, style: Theme.of(context).textTheme.bodyMedium),
         ),
       if (svtWidgets.isNotEmpty)
         Tab(
-          child: Text(S.current.servant,
-              style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(S.current.servant, style: Theme.of(context).textTheme.bodyMedium),
         )
     ];
     if (tabs.isEmpty) return const SizedBox();
@@ -120,8 +112,7 @@ class EventBonusTab extends HookWidget {
           Expanded(
             child: TabBarView(
               children: [
-                for (var children
-                    in [ceWidgets, svtWidgets].where((e) => e.isNotEmpty))
+                for (var children in [ceWidgets, svtWidgets].where((e) => e.isNotEmpty))
                   ListView.builder(
                     controller: useScrollController(),
                     itemBuilder: (context, index) => children[index],

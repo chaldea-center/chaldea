@@ -17,8 +17,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(S.current.setting_setting_favorite_button_default)),
+      appBar: AppBar(title: Text(S.current.setting_setting_favorite_button_default)),
       body: ListView(
         children: [
           TileGroup(
@@ -62,9 +61,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
           ),
           Center(
             child: ElevatedButton(
-              onPressed: db.gameData.isValid
-                  ? () => router.push(url: Routes.servants)
-                  : null,
+              onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),
           )

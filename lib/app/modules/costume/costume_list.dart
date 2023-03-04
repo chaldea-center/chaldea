@@ -14,24 +14,19 @@ class CostumeListPage extends StatefulWidget {
   _CostumeListPageState createState() => _CostumeListPageState();
 }
 
-class _CostumeListPageState extends State<CostumeListPage>
-    with SearchableListState<NiceCostume, CostumeListPage> {
+class _CostumeListPageState extends State<CostumeListPage> with SearchableListState<NiceCostume, CostumeListPage> {
   bool reversed = false;
 
   @override
-  Iterable<NiceCostume> get wholeData => [
-        for (final svt in db.gameData.servantsById.values)
-          ...svt.profile.costume.values
-      ];
+  Iterable<NiceCostume> get wholeData =>
+      [for (final svt in db.gameData.servantsById.values) ...svt.profile.costume.values];
 
   bool useGrid = false;
 
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) =>
-          a.costumeCollectionNo.compareTo(b.costumeCollectionNo) *
-          (reversed ? -1 : 1),
+      compare: (a, b) => a.costumeCollectionNo.compareTo(b.costumeCollectionNo) * (reversed ? -1 : 1),
     );
     return scrollListener(
       useGrid: useGrid,
@@ -46,9 +41,7 @@ class _CostumeListPageState extends State<CostumeListPage>
         actions: [
           IconButton(
             icon: FaIcon(
-              reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
+              reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: S.current.sort_order,
@@ -85,8 +78,7 @@ class _CostumeListPageState extends State<CostumeListPage>
 
   @override
   Widget gridItemBuilder(NiceCostume costume) {
-    return db.getIconImage(costume.icon,
-        aspectRatio: 132 / 144, onTap: () => costume.routeTo(popDetails: true));
+    return db.getIconImage(costume.icon, aspectRatio: 132 / 144, onTap: () => costume.routeTo(popDetails: true));
   }
 
   @override
@@ -98,8 +90,7 @@ class _CostumeListPageState extends State<CostumeListPage>
         // padding: const EdgeInsets.symmetric(vertical: 0),
       ),
       title: Text(costume.lName.l),
-      subtitle:
-          Text('No.${costume.costumeCollectionNo} / ${costume.owner?.lName.l}'),
+      subtitle: Text('No.${costume.costumeCollectionNo} / ${costume.owner?.lName.l}'),
       onTap: () {
         costume.routeTo(popDetails: true);
       },

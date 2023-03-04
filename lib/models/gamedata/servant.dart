@@ -32,8 +32,7 @@ class BasicCostume {
     required this.shortName,
   });
 
-  factory BasicCostume.fromJson(Map<String, dynamic> json) =>
-      _$BasicCostumeFromJson(json);
+  factory BasicCostume.fromJson(Map<String, dynamic> json) => _$BasicCostumeFromJson(json);
 }
 
 const kSvtDefAscenRemap = <int, int>{
@@ -137,11 +136,9 @@ class BasicServant with GameCardMixin {
     this.costume = const {},
   });
 
-  factory BasicServant.fromJson(Map<String, dynamic> json) =>
-      _$BasicServantFromJson(json);
+  factory BasicServant.fromJson(Map<String, dynamic> json) => _$BasicServantFromJson(json);
 
-  bool get isUserSvt =>
-      (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
+  bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
   @override
   Transl<String, String> get lName => Transl.svtNames(name);
@@ -165,8 +162,7 @@ class BasicServant with GameCardMixin {
   }
 
   @override
-  String get route =>
-      collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
+  String get route => collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
 
   String get routeIfItem {
     if (Items.specialSvtMat.contains(id)) return Routes.itemI(id);
@@ -235,12 +231,8 @@ class Servant with GameCardMixin {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final int originalCollectionNo;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late SvtExpData curveData = SvtExpData.from(
-      type: growthCurve,
-      atkBase: atkBase,
-      atkMax: atkMax,
-      hpBase: hpBase,
-      hpMax: hpMax);
+  late SvtExpData curveData =
+      SvtExpData.from(type: growthCurve, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax);
   List<int> get atkGrowth => curveData.atk;
   List<int> get hpGrowth => curveData.hp;
   List<int> get expGrowth => curveData.exp;
@@ -361,8 +353,7 @@ class Servant with GameCardMixin {
     );
   }
 
-  factory Servant.fromJson(Map<String, dynamic> json) =>
-      _$ServantFromJson(json);
+  factory Servant.fromJson(Map<String, dynamic> json) => _$ServantFromJson(json);
   @JsonKey(includeFromJson: false, includeToJson: false)
   late List<List<NiceSkill>> groupedActiveSkills;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -376,8 +367,7 @@ class Servant with GameCardMixin {
       dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
     }
     groupedActiveSkills = [
-      for (final key in dividedSkills.keys.toList()..sort())
-        dividedSkills[key]!..sort2((e) => e.priority)
+      for (final key in dividedSkills.keys.toList()..sort()) dividedSkills[key]!..sort2((e) => e.priority)
     ];
     // groupedNoblePhantasms
     Map<int, List<NiceTd>> dividedTds = {};
@@ -385,17 +375,14 @@ class Servant with GameCardMixin {
       dividedTds.putIfAbsent(td.num, () => []).add(td);
     }
     groupedNoblePhantasms = [
-      for (final key in dividedTds.keys.toList()..sort())
-        dividedTds[key]!..sort2((e) => e.priority)
+      for (final key in dividedTds.keys.toList()..sort()) dividedTds[key]!..sort2((e) => e.priority)
     ];
   }
 
   @override
   String get route => Routes.servantI(collectionNo > 0 ? collectionNo : id);
 
-  bool get isUserSvt =>
-      (type == SvtType.normal || type == SvtType.heroine) &&
-      originalCollectionNo > 0;
+  bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && originalCollectionNo > 0;
 
   bool get isNormalSvt => [
         SvtType.normal,
@@ -415,15 +402,13 @@ class Servant with GameCardMixin {
     ];
     String? _icon;
     if (_remapId != null) {
-      _icon = _icons.firstWhereOrNull(
-          (e) => e.contains(id.toString()) && e.endsWith('$_remapId.png'));
+      _icon = _icons.firstWhereOrNull((e) => e.contains(id.toString()) && e.endsWith('$_remapId.png'));
     }
     return _icon ?? _icons.getOrNull(0);
   }
 
   @override
-  String? get borderedIcon => originalCollectionNo > 0 ||
-          (type == SvtType.combineMaterial || type == SvtType.statusUp)
+  String? get borderedIcon => originalCollectionNo > 0 || (type == SvtType.combineMaterial || type == SvtType.statusUp)
       ? super.borderedIcon
       : icon;
 
@@ -464,10 +449,9 @@ class Servant with GameCardMixin {
   }
 
   String get classCard {
-    int imageId =
-        db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
-            db.gameData.constData.classInfo[className.id]?.imageId ??
-            13;
+    int imageId = db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
+        db.gameData.constData.classInfo[className.id]?.imageId ??
+        13;
     int subId = 1;
     if (imageId == 9999) imageId = 13;
     if (imageId.isEven) {
@@ -518,8 +502,7 @@ class Servant with GameCardMixin {
   }
 
   @override
-  Transl<String, String> get lName =>
-      Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
+  Transl<String, String> get lName => Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 
   Set<String> get allNames {
     return <String>{
@@ -534,8 +517,7 @@ class Servant with GameCardMixin {
 
   ServantExtra get extra {
     if (isNormalSvt && collectionNo > 0) {
-      return db.gameData.wiki.servants[originalCollectionNo] ??=
-          ServantExtra(collectionNo: originalCollectionNo);
+      return db.gameData.wiki.servants[originalCollectionNo] ??= ServantExtra(collectionNo: originalCollectionNo);
     }
     return ServantExtra(collectionNo: originalCollectionNo);
   }
@@ -572,8 +554,7 @@ class Servant with GameCardMixin {
         materials[endLv - 1] = LvlUpMaterial(
           items: [
             ItemAmount(amount: 1, item: Items.grail),
-            if (lvMax + costs[endLv]!.addLvMax > 100)
-              ItemAmount(amount: 30, item: coin!.item)
+            if (lvMax + costs[endLv]!.addLvMax > 100) ItemAmount(amount: 30, item: coin!.item)
           ],
           qp: costs[endLv]!.qp,
         );
@@ -587,14 +568,12 @@ class Servant with GameCardMixin {
   }
 
   Iterable<NiceSkill> eventSkills(int eventId) {
-    return extraPassive.where((skill) => skill.functions
-        .any((func) => func.svals.getOrNull(0)?.EventId == eventId));
+    return extraPassive.where((skill) => skill.functions.any((func) => func.svals.getOrNull(0)?.EventId == eventId));
   }
 
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
     skills = skills.where((e) => e.num > 0).toList();
-    final priorities =
-        db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
+    final priorities = db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
     if (originalCollectionNo == 1) {
       skills = skills.where((e) => priorities?[e.id] != null).toList();
     }
@@ -602,8 +581,7 @@ class Servant with GameCardMixin {
     if (region == Region.jp) {
       return Maths.findMax<NiceSkill, int>(skills, (e) => e.priority);
     } else {
-      return Maths.findMax<NiceSkill, int>(
-          skills, (e) => priorities?[e.id] ?? -1);
+      return Maths.findMax<NiceSkill, int>(skills, (e) => priorities?[e.id] ?? -1);
     }
   }
 
@@ -639,8 +617,7 @@ class BasicCraftEssence with GameCardMixin {
     required this.face,
   });
 
-  factory BasicCraftEssence.fromJson(Map<String, dynamic> json) =>
-      _$BasicCraftEssenceFromJson(json);
+  factory BasicCraftEssence.fromJson(Map<String, dynamic> json) => _$BasicCraftEssenceFromJson(json);
 
   @override
   String get icon => face;
@@ -683,12 +660,8 @@ class CraftEssence with GameCardMixin {
   NiceLore profile;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late SvtExpData curveData = SvtExpData.from(
-      type: growthCurve,
-      atkBase: atkBase,
-      atkMax: atkMax,
-      hpBase: hpBase,
-      hpMax: hpMax);
+  late SvtExpData curveData =
+      SvtExpData.from(type: growthCurve, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax);
   List<int> get atkGrowth => curveData.atk;
   List<int> get hpGrowth => curveData.hp;
   List<int> get expGrowth => curveData.exp;
@@ -721,17 +694,13 @@ class CraftEssence with GameCardMixin {
         ascensionAdd = ascensionAdd ?? AscensionAdd(),
         profile = profile ?? NiceLore();
 
-  factory CraftEssence.fromJson(Map<String, dynamic> json) =>
-      _$CraftEssenceFromJson(json);
+  factory CraftEssence.fromJson(Map<String, dynamic> json) => _$CraftEssenceFromJson(json);
 
   @override
   String? get icon => extraAssets.faces.equip?[id];
 
   @override
-  String? get borderedIcon =>
-      collectionNo > 0 && !db.gameData.isJustAddedCard(id)
-          ? super.borderedIcon
-          : icon;
+  String? get borderedIcon => collectionNo > 0 && !db.gameData.isJustAddedCard(id) ? super.borderedIcon : icon;
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
 
@@ -739,8 +708,7 @@ class CraftEssence with GameCardMixin {
   Transl<String, String> get lName => Transl.ceNames(name);
 
   CraftEssenceExtra get extra =>
-      db.gameData.wiki.craftEssences[collectionNo] ??=
-          CraftEssenceExtra(collectionNo: collectionNo);
+      db.gameData.wiki.craftEssences[collectionNo] ??= CraftEssenceExtra(collectionNo: collectionNo);
 
   CEObtain get obtain {
     switch (flag) {
@@ -776,8 +744,7 @@ class CraftEssence with GameCardMixin {
     return skills.where((skill) => skill.functions.any((func) {
           if (func.svals.getOrNull(0)?.EventId == event.id) return true;
           if (event.statItemFixed.containsKey(id)) {
-            return func.funcquestTvals
-                .any((trait) => trait.id >= 94000000 && trait.id < 95000000);
+            return func.funcquestTvals.any((trait) => trait.id >= 94000000 && trait.id < 95000000);
           }
           return false;
         }));
@@ -818,8 +785,7 @@ class ExtraAssetsUrl {
     if (story != null) yield* story!.values;
   }
 
-  factory ExtraAssetsUrl.fromJson(Map<String, dynamic> json) =>
-      _$ExtraAssetsUrlFromJson(json);
+  factory ExtraAssetsUrl.fromJson(Map<String, dynamic> json) => _$ExtraAssetsUrlFromJson(json);
 }
 
 @JsonSerializable()
@@ -832,8 +798,7 @@ class ExtraCCAssets {
     required this.faces,
   });
 
-  factory ExtraCCAssets.fromJson(Map<String, dynamic> json) =>
-      _$ExtraCCAssetsFromJson(json);
+  factory ExtraCCAssets.fromJson(Map<String, dynamic> json) => _$ExtraCCAssetsFromJson(json);
 }
 
 @JsonSerializable()
@@ -872,8 +837,7 @@ class ExtraAssets extends ExtraCCAssets {
     this.facesChange = const ExtraAssetsUrl(),
   });
 
-  factory ExtraAssets.fromJson(Map<String, dynamic> json) =>
-      _$ExtraAssetsFromJson(json);
+  factory ExtraAssets.fromJson(Map<String, dynamic> json) => _$ExtraAssetsFromJson(json);
 }
 
 @JsonSerializable()
@@ -896,8 +860,7 @@ class CardDetail {
     this.dropStarRate,
   });
 
-  factory CardDetail.fromJson(Map<String, dynamic> json) =>
-      _$CardDetailFromJson(json);
+  factory CardDetail.fromJson(Map<String, dynamic> json) => _$CardDetailFromJson(json);
 }
 
 @JsonSerializable(genericArgumentFactories: true)
@@ -913,8 +876,7 @@ class AscensionAddEntry<T> {
     this.costume = const {},
   });
 
-  factory AscensionAddEntry.fromJson(Map<String, dynamic> json) =>
-      _$AscensionAddEntryFromJson(json, _fromJsonT<T>);
+  factory AscensionAddEntry.fromJson(Map<String, dynamic> json) => _$AscensionAddEntryFromJson(json, _fromJsonT<T>);
 
   static T _fromJsonT<T>(Object? obj) {
     if (obj == null) {
@@ -922,14 +884,10 @@ class AscensionAddEntry<T> {
     } else if (obj is int || obj is double || obj is String) {
       return obj as T;
     } else if (T == List<NiceTrait>) {
-      return (obj as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() as T;
+      return (obj as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList() as T;
     } else if (T == List<CommonRelease>) {
-      return (obj as List<dynamic>)
-          .map((e) =>
-              CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() as T;
+      return (obj as List<dynamic>).map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map))).toList()
+          as T;
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
   }
@@ -969,8 +927,7 @@ class AscensionAdd {
     this.faceChangeCommonRelease = const AscensionAddEntry(),
   });
 
-  factory AscensionAdd.fromJson(Map<String, dynamic> json) =>
-      _$AscensionAddFromJson(json);
+  factory AscensionAdd.fromJson(Map<String, dynamic> json) => _$AscensionAddFromJson(json);
 }
 
 @JsonSerializable()
@@ -1008,8 +965,7 @@ class ServantChange {
     required this.battleSvtId,
   });
 
-  factory ServantChange.fromJson(Map<String, dynamic> json) =>
-      _$ServantChangeFromJson(json);
+  factory ServantChange.fromJson(Map<String, dynamic> json) => _$ServantChangeFromJson(json);
 }
 
 @JsonSerializable()
@@ -1031,8 +987,7 @@ class ServantLimitImage {
     required this.condNum,
   });
 
-  factory ServantLimitImage.fromJson(Map<String, dynamic> json) =>
-      _$ServantLimitImageFromJson(json);
+  factory ServantLimitImage.fromJson(Map<String, dynamic> json) => _$ServantLimitImageFromJson(json);
 }
 
 @JsonSerializable()
@@ -1049,8 +1004,7 @@ class ServantAppendPassiveSkill {
     required this.unlockMaterials,
   });
 
-  factory ServantAppendPassiveSkill.fromJson(Map<String, dynamic> json) =>
-      _$ServantAppendPassiveSkillFromJson(json);
+  factory ServantAppendPassiveSkill.fromJson(Map<String, dynamic> json) => _$ServantAppendPassiveSkillFromJson(json);
 }
 
 @JsonSerializable()
@@ -1063,8 +1017,7 @@ class ServantCoin {
     required this.item,
   });
 
-  factory ServantCoin.fromJson(Map<String, dynamic> json) =>
-      _$ServantCoinFromJson(json);
+  factory ServantCoin.fromJson(Map<String, dynamic> json) => _$ServantCoinFromJson(json);
 }
 
 @JsonSerializable()
@@ -1086,8 +1039,7 @@ class ServantTrait {
     this.condNum,
   });
 
-  factory ServantTrait.fromJson(Map<String, dynamic> json) =>
-      _$ServantTraitFromJson(json);
+  factory ServantTrait.fromJson(Map<String, dynamic> json) => _$ServantTraitFromJson(json);
 }
 
 @JsonSerializable()
@@ -1105,8 +1057,7 @@ class LoreCommentAdd {
     this.condValue2 = 0,
   });
 
-  factory LoreCommentAdd.fromJson(Map<String, dynamic> json) =>
-      _$LoreCommentAddFromJson(json);
+  factory LoreCommentAdd.fromJson(Map<String, dynamic> json) => _$LoreCommentAddFromJson(json);
 }
 
 @JsonSerializable()
@@ -1132,8 +1083,7 @@ class LoreComment {
     this.additionalConds = const [],
   });
 
-  factory LoreComment.fromJson(Map<String, dynamic> json) =>
-      _$LoreCommentFromJson(json);
+  factory LoreComment.fromJson(Map<String, dynamic> json) => _$LoreCommentFromJson(json);
 }
 
 @JsonSerializable()
@@ -1160,8 +1110,7 @@ class LoreStatus {
     this.deity,
   });
 
-  factory LoreStatus.fromJson(Map<String, dynamic> json) =>
-      _$LoreStatusFromJson(json);
+  factory LoreStatus.fromJson(Map<String, dynamic> json) => _$LoreStatusFromJson(json);
 }
 
 @JsonSerializable()
@@ -1184,21 +1133,18 @@ class NiceCostume with RouteInfo {
     required this.priority,
   });
 
-  factory NiceCostume.fromJson(Map<String, dynamic> json) =>
-      _$NiceCostumeFromJson(json);
+  factory NiceCostume.fromJson(Map<String, dynamic> json) => _$NiceCostumeFromJson(json);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
   Transl<int, String> get lDetail => Transl.costumeDetail(costumeCollectionNo);
 
-  String get face =>
-      'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
+  String get face => 'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
 
   String get icon => face;
 
   String get borderedIcon => icon.replaceAll('.png', '_bordered.png');
 
-  String get charaGraph =>
-      'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
+  String get charaGraph => 'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
 
   Servant? get owner => db.gameData.others.costumeSvtMap[costumeCollectionNo];
 
@@ -1220,8 +1166,7 @@ class VoiceCond {
     this.eventId = 0,
   });
 
-  factory VoiceCond.fromJson(Map<String, dynamic> json) =>
-      _$VoiceCondFromJson(json);
+  factory VoiceCond.fromJson(Map<String, dynamic> json) => _$VoiceCondFromJson(json);
 }
 
 @JsonSerializable()
@@ -1241,8 +1186,7 @@ class VoicePlayCond {
     this.condValues = const [],
   });
 
-  factory VoicePlayCond.fromJson(Map<String, dynamic> json) =>
-      _$VoicePlayCondFromJson(json);
+  factory VoicePlayCond.fromJson(Map<String, dynamic> json) => _$VoicePlayCondFromJson(json);
 }
 
 @JsonSerializable()
@@ -1284,8 +1228,7 @@ class VoiceLine {
     this.playConds = const [],
   });
 
-  factory VoiceLine.fromJson(Map<String, dynamic> json) =>
-      _$VoiceLineFromJson(json);
+  factory VoiceLine.fromJson(Map<String, dynamic> json) => _$VoiceLineFromJson(json);
 }
 
 @JsonSerializable()
@@ -1302,8 +1245,7 @@ class VoiceGroup {
     this.voiceLines = const [],
   });
 
-  factory VoiceGroup.fromJson(Map<String, dynamic> json) =>
-      _$VoiceGroupFromJson(json);
+  factory VoiceGroup.fromJson(Map<String, dynamic> json) => _$VoiceGroupFromJson(json);
 }
 
 @JsonSerializable()
@@ -1324,8 +1266,7 @@ class NiceLore {
     this.voices = const [],
   });
 
-  factory NiceLore.fromJson(Map<String, dynamic> json) =>
-      _$NiceLoreFromJson(json);
+  factory NiceLore.fromJson(Map<String, dynamic> json) => _$NiceLoreFromJson(json);
 }
 
 @JsonSerializable()
@@ -1339,8 +1280,7 @@ class ServantScript with DataScriptBase {
     this.svtBuffTurnExtend,
   });
 
-  factory ServantScript.fromJson(Map<String, dynamic> json) =>
-      _$ServantScriptFromJson(json)..setSource(json);
+  factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);
 }
 
 enum SvtType {

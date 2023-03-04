@@ -46,8 +46,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     _war = null;
     _loading = true;
     if (mounted) setState(() {});
-    _war =
-        widget.war ?? db.gameData.wars[widget.warId] ?? await AtlasApi.war(id);
+    _war = widget.war ?? db.gameData.wars[widget.warId] ?? await AtlasApi.war(id);
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -67,9 +66,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
           title: Text('${S.current.war} $id'),
         ),
         body: Center(
-          child: _loading
-              ? const CircularProgressIndicator()
-              : RefreshButton(onPressed: fetchWar),
+          child: _loading ? const CircularProgressIndicator() : RefreshButton(onPressed: fetchWar),
         ),
       );
     }
@@ -82,26 +79,20 @@ class _WarDetailPageState extends State<WarDetailPage> {
     warBanners = {
       war.shownBanner,
       war.banner,
-      ...warBanners.reversed
-          .take(war.id == WarId.chaldeaGate ? 2 : 6)
-          .toList()
-          .reversed
+      ...warBanners.reversed.take(war.id == WarId.chaldeaGate ? 2 : 6).toList().reversed
     }.whereType<String>().toList();
 
     List<Widget> children = [
-      if (banners.isNotEmpty)
-        CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
+      if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
 
     List<String> shortNames = [war.lName.jp];
     List<String> longNames = [war.lLongName.jp];
     for (final warAdd in war.warAdds) {
-      if (warAdd.type == WarOverwriteType.name &&
-          !shortNames.contains(warAdd.overwriteStr)) {
+      if (warAdd.type == WarOverwriteType.name && !shortNames.contains(warAdd.overwriteStr)) {
         shortNames.add(warAdd.overwriteStr);
       }
-      if (warAdd.type == WarOverwriteType.longName &&
-          !longNames.contains(warAdd.overwriteStr)) {
+      if (warAdd.type == WarOverwriteType.longName && !longNames.contains(warAdd.overwriteStr)) {
         longNames.add(warAdd.overwriteStr);
       }
     }
@@ -130,10 +121,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
               color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
             )
           ]),
-        if (lShortName != lLongName)
-          CustomTableRow.fromTexts(texts: [lShortName]),
-        if (shortNameJp != longNameJp && !Transl.isJP)
-          CustomTableRow.fromTexts(texts: [shortNameJp]),
+        if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),
+        if (shortNameJp != longNameJp && !Transl.isJP) CustomTableRow.fromTexts(texts: [shortNameJp]),
         CustomTableRow(children: [
           TableCellData(text: S.current.war_age, isHeader: true),
           TableCellData(text: war.age, flex: 3),
@@ -198,9 +187,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
     Set<int> bgms = {
       war.bgm.id,
-      ...war.warAdds
-          .where((e) => e.type == WarOverwriteType.bgm)
-          .map((e) => e.overwriteId),
+      ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
       ...war.maps.map((e) => e.bgm.id),
     }.where((e) => e != 0).toSet();
     if (bgms.isNotEmpty) {
@@ -221,8 +208,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ));
       }
     }
-    final maps =
-        war.maps.where((e) => e.mapImageW > 0 && e.mapImageH > 0).toList();
+    final maps = war.maps.where((e) => e.mapImageW > 0 && e.mapImageH > 0).toList();
     if (maps.isNotEmpty) {
       if (maps.length == 1) {
         final map = maps.first;
@@ -248,12 +234,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
     final subWars = db.gameData.wars.values.where((w) {
       if (w.parentWarId == war.id) return true;
       for (final warAdd in w.warAdds) {
-        if (warAdd.type == WarOverwriteType.parentWar &&
-            warAdd.overwriteId == war.id) {
+        if (warAdd.type == WarOverwriteType.parentWar && warAdd.overwriteId == war.id) {
           return true;
         }
-        if (warAdd.type == WarOverwriteType.materialParentWar &&
-            warAdd.overwriteId == war.id) {
+        if (warAdd.type == WarOverwriteType.materialParentWar && warAdd.overwriteId == war.id) {
           return true;
         }
       }
@@ -268,9 +252,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
           return ListTile(
             leading: _w.shownBanner == null
                 ? null
-                : db.getIconImage(_w.shownBanner,
-                    height: min(constraints.maxWidth / 2, 164.0),
-                    aspectRatio: 450 / 134),
+                : db.getIconImage(_w.shownBanner, height: min(constraints.maxWidth / 2, 164.0), aspectRatio: 450 / 134),
             horizontalTitleGap: 8,
             title: Text(
               title,
@@ -354,8 +336,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
               PopupMenuItem(
                 enabled: false,
                 height: 32,
-                child: Text('No.${widget.war?.id ?? widget.warId}',
-                    textScaleFactor: 0.9),
+                child: Text('No.${widget.war?.id ?? widget.warId}', textScaleFactor: 0.9),
               ),
               const PopupMenuDivider(),
               ...SharedBuilder.websitesPopupMenuItems(
@@ -381,15 +362,13 @@ class _WarDetailPageState extends State<WarDetailPage> {
       firstMainQuest = war.quests.firstWhereOrNull((q) => q.id == war.targetId);
     }
     if (firstMainQuest == null) {
-      final mainQuests =
-          war.quests.where((e) => e.type == QuestType.main).toList();
+      final mainQuests = war.quests.where((e) => e.type == QuestType.main).toList();
       mainQuests.sort2((e) => -e.priority);
       firstMainQuest = mainQuests.getOrNull(0);
     }
     if (firstMainQuest != null) {
-      final targetId = firstMainQuest.releaseConditions
-          .firstWhereOrNull((cond) => cond.type == CondType.questClear)
-          ?.targetId;
+      final targetId =
+          firstMainQuest.releaseConditions.firstWhereOrNull((cond) => cond.type == CondType.questClear)?.targetId;
       final condQuest = db.gameData.quests[targetId];
       if (targetId == condQuest?.war?.lastQuestId) {
         // usually only main story use the lastQuestId
@@ -434,8 +413,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       } else if (quest.type == QuestType.friendship) {
         interludeQuests.add(quest);
       } else if (quest.type == QuestType.free ||
-          (quest.type == QuestType.event &&
-              quest.afterClear == QuestAfterClearType.repeatLast)) {
+          (quest.type == QuestType.event && quest.afterClear == QuestAfterClearType.repeatLast)) {
         if (quest.afterClear != QuestAfterClearType.repeatLast) {
           oneOffQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.raid)) {
@@ -477,8 +455,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
           router.push(
-            child:
-                QuestListPage(title: name, quests: quests, needSort: needSort),
+            child: QuestListPage(title: name, quests: quests, needSort: needSort),
           );
         },
       ));
@@ -491,15 +468,12 @@ class _WarDetailPageState extends State<WarDetailPage> {
     } else {
       _addTile(S.current.free_quest, freeQuests);
     }
-    if (freeQuests.isNotEmpty &&
-        war.id != WarId.daily &&
-        war.id != WarId.chaldeaGate) {
+    if (freeQuests.isNotEmpty && war.id != WarId.daily && war.id != WarId.chaldeaGate) {
       children.add(ListTile(
         title: Text("${S.current.item} (${S.current.free_quest})"),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
-          router.pushPage(FreeQuestOverview(
-              quests: freeQuests, isMainStory: war.isMainStory));
+          router.pushPage(FreeQuestOverview(quests: freeQuests, isMainStory: war.isMainStory));
         },
       ));
     }

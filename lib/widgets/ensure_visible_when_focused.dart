@@ -53,15 +53,13 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
   final Duration duration;
 
   @override
-  _EnsureVisibleWhenFocusedState createState() =>
-      _EnsureVisibleWhenFocusedState();
+  _EnsureVisibleWhenFocusedState createState() => _EnsureVisibleWhenFocusedState();
 }
 
 ///
 /// We implement the WidgetsBindingObserver to be notified of any change to the window metrics
 ///
-class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused>
-    with WidgetsBindingObserver {
+class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -110,10 +108,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused>
 
   Future<void> _ensureVisible() async {
     // Wait for the keyboard to come into view
-    await Future.any([
-      Future.delayed(const Duration(milliseconds: 300)),
-      _keyboardToggled()
-    ]);
+    await Future.any([Future.delayed(const Duration(milliseconds: 300)), _keyboardToggled()]);
 
     // No need to go any further if the node has not the focus
     if (!widget.focusNode.hasFocus) {
@@ -123,8 +118,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused>
 
     // Find the object which has the focus
     final RenderObject? object = context.findRenderObject();
-    final RenderAbstractViewport? viewport =
-        RenderAbstractViewport.maybeOf(object);
+    final RenderAbstractViewport? viewport = RenderAbstractViewport.maybeOf(object);
 
     // If we are not working in a Scrollable, skip this routine
     if (viewport == null) {
@@ -142,8 +136,7 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused>
     if (position.pixels > viewport.getOffsetToReveal(object!, 0.0).offset) {
       // Move down to the top of the viewport
       alignment = 0.0;
-    } else if (position.pixels <
-        viewport.getOffsetToReveal(object, 1.0).offset) {
+    } else if (position.pixels < viewport.getOffsetToReveal(object, 1.0).offset) {
       // Move up to the bottom of the viewport
       alignment = 1.0;
     } else {

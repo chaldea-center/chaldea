@@ -108,15 +108,13 @@ class GameDataLoader {
     return completer.future;
   }
 
-  Future<GameData> _loadJson(
-      bool offline, bool force, Duration? connectTimeout) async {
+  Future<GameData> _loadJson(bool offline, bool force, Duration? connectTimeout) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
     try {
       if (_versionFile.existsSync()) {
-        oldVersion =
-            DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
+        oldVersion = DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
       }
     } catch (e, s) {
       logger.e('read old version failed', e, s);
@@ -129,8 +127,7 @@ class GameDataLoader {
       newVersion = oldVersion;
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson(
-          (await _downFile('version.json', timeout: connectTimeout)).json());
+      newVersion = DataVersion.fromJson((await _downFile('version.json', timeout: connectTimeout)).json());
     }
     if (!force) {
       if (newVersion.appVersion > AppInfo.version) {
@@ -147,8 +144,7 @@ class GameDataLoader {
     Map<String, dynamic> _gameJson = {};
     Map<FilePlus, List<int>> _dataToWrite = {};
     int finished = 0;
-    Future<void> _downloadCheck(FileVersion fv,
-        {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
+    Future<void> _downloadCheck(FileVersion fv, {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
       final _file = FilePlus(joinPaths(db.paths.gameDir, fv.filename));
       Uint8List? bytes;
       String? _localHash;
@@ -158,12 +154,10 @@ class GameDataLoader {
       if (bytes != null) {
         _localHash = md5.convert(bytes).toString().toLowerCase();
       }
-      bool hashMismatch = _localHash == null ||
-          (db.settings.checkDataHash && !_localHash.startsWith(fv.hash));
+      bool hashMismatch = _localHash == null || (db.settings.checkDataHash && !_localHash.startsWith(fv.hash));
       if (hashMismatch) {
         if (offline) {
-          throw S.current.file_not_found_or_mismatched_hash(
-              fv.filename, fv.hash, _localHash ?? '');
+          throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash ?? '');
         }
         downloading.value += 1;
         var resp = await _downFile(
@@ -179,8 +173,7 @@ class GameDataLoader {
           );
           _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
           if (!_hash.startsWith(fv.hash)) {
-            throw S.current
-                .file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
+            throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
           }
         }
         _dataToWrite[_file] = List.from(resp.data);
@@ -196,9 +189,8 @@ class GameDataLoader {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
         fileJson = Map.fromIterable(fileJson, key: l2mFn);
       }
-      Map<dynamic, dynamic> targetJson = fv.key.startsWith('wiki.')
-          ? _gameJson.putIfAbsent('wiki', () => {})
-          : _gameJson;
+      Map<dynamic, dynamic> targetJson =
+          fv.key.startsWith('wiki.') ? _gameJson.putIfAbsent('wiki', () => {}) : _gameJson;
       String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
       if (targetJson[key] == null) {
         targetJson[key] = fileJson;
@@ -255,8 +247,7 @@ class GameDataLoader {
       if (fv.key == 'questPhases') {
         l2mFn = (e) => (e['id'] * 100 + e['phase']).toString();
       }
-      futures.add(_pool.withResource(
-          () => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
+      futures.add(_pool.withResource(() => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
     _patchMappings(_gameJson);
@@ -267,8 +258,7 @@ class GameDataLoader {
     tmp.reset();
     _gameJson["version"] = newVersion.toJson();
     if (db.settings.spoilerRegion != Region.jp) {
-      _gameJson['spoilerRegion'] =
-          const RegionConverter().toJson(db.settings.spoilerRegion);
+      _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.spoilerRegion);
     }
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
@@ -291,8 +281,7 @@ class GameDataLoader {
   }
 
   void _patchMappings(Map<String, dynamic> gamedata) {
-    final Map? data = gamedata['mappingData'],
-        patches = gamedata['mappingPatch'];
+    final Map? data = gamedata['mappingData'], patches = gamedata['mappingPatch'];
     if (data == null || patches == null) return;
 
     void _applyPatch(Map old, Map patch) {
@@ -312,11 +301,7 @@ class GameDataLoader {
   }
 
   static bool checkHash(List<int> bytes, String hash) {
-    return md5
-        .convert(bytes)
-        .toString()
-        .toLowerCase()
-        .startsWith(hash.toLowerCase());
+    return md5.convert(bytes).toString().toLowerCase().startsWith(hash.toLowerCase());
   }
 
   static Future<Response<T>> _downFile<T>(
@@ -333,8 +318,7 @@ class GameDataLoader {
         't': DateTime.now().timestamp.toString(),
       }).toString();
     }
-    if (AppInfo.packageName
-        .startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
+    if (AppInfo.packageName.startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = 'https://$filename';
     }
     final future = DioE().get<T>(url, options: options);
@@ -392,14 +376,12 @@ class GameDataLoader {
 
     // svts
     int _addedSvt = 0;
-    futures.add(AtlasApi.basicServants(expireAfter: Duration.zero)
-        .then((servants) async {
+    futures.add(AtlasApi.basicServants(expireAfter: Duration.zero).then((servants) async {
       if (servants == null) return;
       for (final basicSvt in servants) {
         if (db.gameData.servantsNoDup.containsKey(basicSvt.collectionNo) ||
             basicSvt.collectionNo == 0 ||
-            ![SvtType.normal, SvtType.enemyCollectionDetail]
-                .contains(basicSvt.type)) {
+            ![SvtType.normal, SvtType.enemyCollectionDetail].contains(basicSvt.type)) {
           continue;
         }
         final svt = await AtlasApi.svt(basicSvt.id);
@@ -410,8 +392,7 @@ class GameDataLoader {
     }));
 
     int _addedCE = 0;
-    futures.add(AtlasApi.basicCraftEssences(expireAfter: Duration.zero)
-        .then((crafts) async {
+    futures.add(AtlasApi.basicCraftEssences(expireAfter: Duration.zero).then((crafts) async {
       if (crafts == null) return;
       for (final basicCard in crafts) {
         if (db.gameData.craftEssences.containsKey(basicCard.collectionNo)) {
@@ -425,8 +406,7 @@ class GameDataLoader {
     }));
 
     int _addedCC = 0;
-    futures.add(AtlasApi.basicCommandCodes(expireAfter: Duration.zero)
-        .then((codes) async {
+    futures.add(AtlasApi.basicCommandCodes(expireAfter: Duration.zero).then((codes) async {
       if (codes == null) return;
       for (final basicCard in codes) {
         if (db.gameData.commandCodes.containsKey(basicCard.collectionNo)) {

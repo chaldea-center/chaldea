@@ -12,18 +12,15 @@ class CostumeDetailPage extends StatelessWidget {
   final int? id;
   final NiceCostume? _costume;
 
-  const CostumeDetailPage({super.key, this.id, NiceCostume? costume})
-      : _costume = costume;
+  const CostumeDetailPage({super.key, this.id, NiceCostume? costume}) : _costume = costume;
 
   @override
   Widget build(BuildContext context) {
     final costume = _costume ??
         db.gameData.costumes[id] ??
-        db.gameData.costumes.values
-            .firstWhereOrNull((e) => e.battleCharaId == id);
+        db.gameData.costumes.values.firstWhereOrNull((e) => e.battleCharaId == id);
     if (costume == null) {
-      return NotFoundPage(
-          url: Routes.costumeI(id ?? 0), title: S.current.costume);
+      return NotFoundPage(url: Routes.costumeI(id ?? 0), title: S.current.costume);
     }
     final svt = costume.owner;
     final unlockMats = svt?.costumeMaterials[costume.battleCharaId];
@@ -54,19 +51,11 @@ class CostumeDetailPage extends StatelessWidget {
                     )
                   ]),
                   if (!Transl.isJP)
-                    CustomTableRow(children: [
-                      TableCellData(
-                          text: costume.name, textAlign: TextAlign.center)
-                    ]),
+                    CustomTableRow(children: [TableCellData(text: costume.name, textAlign: TextAlign.center)]),
                   if (!Transl.isEN)
-                    CustomTableRow(children: [
-                      TableCellData(
-                          text: costume.lName.na, textAlign: TextAlign.center)
-                    ]),
-                  CustomTableRow.fromTexts(texts: [
-                    'No. ${costume.costumeCollectionNo}',
-                    'No. ${costume.battleCharaId}'
-                  ])
+                    CustomTableRow(children: [TableCellData(text: costume.lName.na, textAlign: TextAlign.center)]),
+                  CustomTableRow.fromTexts(
+                      texts: ['No. ${costume.costumeCollectionNo}', 'No. ${costume.battleCharaId}'])
                 ],
               ),
             ),
@@ -77,8 +66,7 @@ class CostumeDetailPage extends StatelessWidget {
           style: kTextButtonDenseStyle,
           child: Text(svt?.lName.l ?? '-'),
         ),
-        CustomTableRow(
-            children: [TableCellData(text: S.current.item, isHeader: true)]),
+        CustomTableRow(children: [TableCellData(text: S.current.item, isHeader: true)]),
         CustomTableRow(children: [
           TableCellData(
             child: unlockMats == null
@@ -106,17 +94,14 @@ class CostumeDetailPage extends StatelessWidget {
         // ]),
         // CustomTableRow(
         //     children: [TableCellData(child: Text(costume.lObtain))]),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.card_description, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),
         if (costume.lDetail.l != costume.detail)
           CustomTableRow(
             children: [
               TableCellData(
                 text: costume.lDetail.l,
                 alignment: Alignment.centerLeft,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
             ],
           ),
@@ -129,9 +114,7 @@ class CostumeDetailPage extends StatelessWidget {
             )
           ],
         ),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.illustration, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.illustration, isHeader: true)]),
         if (svt != null)
           ExtraAssetsPage(
             scrollable: false,
@@ -145,8 +128,7 @@ class CostumeDetailPage extends StatelessWidget {
       ],
     );
     return Scaffold(
-      appBar: AppBar(
-          title: AutoSizeText(costume.lName.l, minFontSize: 10, maxLines: 1)),
+      appBar: AppBar(title: AutoSizeText(costume.lName.l, minFontSize: 10, maxLines: 1)),
       body: SingleChildScrollView(child: SafeArea(child: table)),
     );
   }

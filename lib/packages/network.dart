@@ -8,9 +8,7 @@ class _NetworkStat {
   ConnectivityResult? _connectivity;
   ConnectivityResult? get connectivity => _connectivity;
 
-  bool get available =>
-      db.settings.forceOnline ||
-      (_connectivity != null && _connectivity != ConnectivityResult.none);
+  bool get available => db.settings.forceOnline || (_connectivity != null && _connectivity != ConnectivityResult.none);
 
   bool get unavailable => !available;
 
@@ -19,10 +17,7 @@ class _NetworkStat {
   Future<void> init() async {
     await check();
     _subscription?.cancel();
-    _subscription = Connectivity()
-        .onConnectivityChanged
-        .asBroadcastStream()
-        .listen((result) {
+    _subscription = Connectivity().onConnectivityChanged.asBroadcastStream().listen((result) {
       _connectivity = result;
     });
   }

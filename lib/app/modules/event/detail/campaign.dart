@@ -25,9 +25,7 @@ class EventCampaignDetailPage extends StatelessWidget {
         children.add(ListTile(
           dense: true,
           title: const Text('Target Quests'),
-          subtitle: Text(counts.entries
-              .map((e) => '${e.value} ${getQuestTypeName(e.key)}')
-              .join(', ')),
+          subtitle: Text(counts.entries.map((e) => '${e.value} ${getQuestTypeName(e.key)}').join(', ')),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             router.pushPage(QuestListPage.ids(ids: questIds));
@@ -43,29 +41,22 @@ class EventCampaignDetailPage extends StatelessWidget {
     return TileGroup(header: S.current.event_campaign, children: children);
   }
 
-  List<Widget> itemBuilder(
-      BuildContext context, EventCampaign campaign, int index) {
+  List<Widget> itemBuilder(BuildContext context, EventCampaign campaign, int index) {
     List<Widget> children = [
       const SizedBox(height: 8),
       Row(
         children: [
-          const Expanded(
-              child:
-                  Divider(indent: 16, endIndent: 8, thickness: 1, height: 16)),
+          const Expanded(child: Divider(indent: 16, endIndent: 8, thickness: 1, height: 16)),
           Text(
             '${S.current.event_campaign} ${index + 1}',
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          const Expanded(
-              child:
-                  Divider(indent: 8, endIndent: 16, thickness: 1, height: 16)),
+          const Expanded(child: Divider(indent: 8, endIndent: 16, thickness: 1, height: 16)),
         ],
       ),
       ListTile(
         title: Text(S.current.general_type),
-        trailing: Text(
-            Transl.enums(campaign.target, (enums) => enums.combineAdjustTarget)
-                .l),
+        trailing: Text(Transl.enums(campaign.target, (enums) => enums.combineAdjustTarget).l),
         dense: true,
       ),
       ListTile(
@@ -92,11 +83,11 @@ class EventCampaignDetailPage extends StatelessWidget {
         ));
       }
     }
-    bool targetSame = campaign.target == CombineAdjustTarget.questAp &&
-        campaign.targetIds.length == event.campaignQuests.length;
+    bool targetSame =
+        campaign.target == CombineAdjustTarget.questAp && campaign.targetIds.length == event.campaignQuests.length;
     if (targetSame) {
-      targetSame = (campaign.targetIds..sort()).join() ==
-          (event.campaignQuests.map((e) => e.questId).toList()..sort()).join();
+      targetSame =
+          (campaign.targetIds..sort()).join() == (event.campaignQuests.map((e) => e.questId).toList()..sort()).join();
     }
 
     if (campaign.targetIds.isNotEmpty && !targetSame) {
@@ -106,10 +97,7 @@ class EventCampaignDetailPage extends StatelessWidget {
         child: Wrap(
           spacing: 2,
           runSpacing: 2,
-          children: [
-            for (final id in campaign.targetIds)
-              getTarget(context, campaign, id)
-          ],
+          children: [for (final id in campaign.targetIds) getTarget(context, campaign, id)],
         ),
       ));
     }
@@ -139,8 +127,7 @@ class EventCampaignDetailPage extends StatelessWidget {
           children: [
             if (item != null)
               CenterWidgetSpan(
-                child:
-                    Item.iconBuilder(context: context, item: item, width: 36),
+                child: Item.iconBuilder(context: context, item: item, width: 36),
               ),
             TextSpan(text: ' ${Item.getName(campaign.value)}')
           ],
@@ -209,8 +196,7 @@ class EventCampaignDetailPage extends StatelessWidget {
     final entity = db.gameData.servantsById[id];
     if (entity != null) return entity.iconBuilder(context: context, width: 48);
     final item = db.gameData.items[id];
-    if (item != null &&
-        campaign.target == CombineAdjustTarget.questUseFriendshipUpItem) {
+    if (item != null && campaign.target == CombineAdjustTarget.questUseFriendshipUpItem) {
       return Item.iconBuilder(context: context, item: item, width: 48);
     }
     return Text(id.toString());

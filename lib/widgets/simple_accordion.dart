@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-typedef AccordionHeaderBuilder = Widget Function(
-    BuildContext context, bool expanded);
+typedef AccordionHeaderBuilder = Widget Function(BuildContext context, bool expanded);
 
 class SimpleAccordion extends StatefulWidget {
   final bool expanded;
@@ -75,8 +74,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     }
     Widget content;
     if (expanded) _onceLoaded = true;
-    Widget secondChild =
-        _onceLoaded ? widget.contentBuilder(context) : Container();
+    Widget secondChild = _onceLoaded ? widget.contentBuilder(context) : Container();
     if (widget.disableAnimation) {
       content = expanded ? secondChild : Container();
     } else {
@@ -86,8 +84,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
         firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
         secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
         sizeCurve: Curves.fastOutSlowIn,
-        crossFadeState:
-            expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        crossFadeState: expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         duration: kThemeAnimationDuration,
       );
     }
@@ -95,8 +92,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     return Padding(
       padding: expanded ? const EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
-        elevation:
-            expanded ? (widget.expandElevation ?? 2) : (widget.elevation ?? 0),
+        elevation: expanded ? (widget.expandElevation ?? 2) : (widget.elevation ?? 0),
         color: Material.maybeOf(context)?.color,
         child: DecoratedBox(
           decoration: BoxDecoration(border: Border(top: widget.topBorderSide)),

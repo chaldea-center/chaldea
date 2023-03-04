@@ -116,8 +116,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
                 functions: functions,
               ));
 
-  factory BaseSkill.fromJson(Map<String, dynamic> json) =>
-      _$BaseSkillFromJson(json);
+  factory BaseSkill.fromJson(Map<String, dynamic> json) => _$BaseSkillFromJson(json);
 
   @override
   Transl<String, String> get lName => Transl.skillNames(name);
@@ -254,8 +253,7 @@ class NiceSkill extends BaseSkill {
 
   factory NiceSkill.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
-      final baseSkill = GameDataLoader
-          .instance.tmp.gameJson!['baseSkills']![json['id'].toString()]!;
+      final baseSkill = GameDataLoader.instance.tmp.gameJson!['baseSkills']![json['id'].toString()]!;
       json.addAll(Map.from(baseSkill));
     }
     return _$NiceSkillFromJson(json);
@@ -472,8 +470,7 @@ class NiceTd extends BaseTd {
 
   factory NiceTd.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
-      final baseTd = GameDataLoader
-          .instance.tmp.gameJson!['baseTds']![json['id'].toString()]!;
+      final baseTd = GameDataLoader.instance.tmp.gameJson!['baseTds']![json['id'].toString()]!;
       json = Map.from(baseTd)..addAll(json);
     }
     return _$NiceTdFromJson(json);
@@ -499,8 +496,7 @@ class CommonRelease with RouteInfo {
     required this.condNum,
   });
 
-  factory CommonRelease.fromJson(Map<String, dynamic> json) =>
-      _$CommonReleaseFromJson(json);
+  factory CommonRelease.fromJson(Map<String, dynamic> json) => _$CommonReleaseFromJson(json);
 
   @override
   String get route => Routes.commonRelease(id);
@@ -534,8 +530,7 @@ class ExtraPassive {
     required this.endedAt,
   });
 
-  factory ExtraPassive.fromJson(Map<String, dynamic> json) =>
-      _$ExtraPassiveFromJson(json);
+  factory ExtraPassive.fromJson(Map<String, dynamic> json) => _$ExtraPassiveFromJson(json);
 }
 
 @JsonSerializable()
@@ -588,8 +583,7 @@ class SkillScript with DataScriptBase {
     this.SelectAddInfo,
   });
 
-  factory SkillScript.fromJson(Map<String, dynamic> json) =>
-      _$SkillScriptFromJson(json)..setSource(json);
+  factory SkillScript.fromJson(Map<String, dynamic> json) => _$SkillScriptFromJson(json)..setSource(json);
 }
 
 @JsonSerializable()
@@ -602,8 +596,7 @@ class SkillSelectAddInfo {
     this.btn = const [],
   });
 
-  factory SkillSelectAddInfo.fromJson(Map<String, dynamic> json) =>
-      _$SkillSelectAddInfoFromJson(json);
+  factory SkillSelectAddInfo.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoFromJson(json);
 }
 
 @JsonSerializable()
@@ -616,8 +609,7 @@ class SkillSelectAddInfoBtn {
     this.conds = const [],
   });
 
-  factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) =>
-      _$SkillSelectAddInfoBtnFromJson(json);
+  factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnFromJson(json);
 }
 
 @JsonSerializable()
@@ -630,8 +622,7 @@ class SkillSelectAddInfoBtnCond {
     this.value,
   });
 
-  factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) =>
-      _$SkillSelectAddInfoBtnCondFromJson(json);
+  factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnCondFromJson(json);
 }
 
 @JsonSerializable()
@@ -648,8 +639,7 @@ class SkillAdd {
     required this.ruby,
   });
 
-  factory SkillAdd.fromJson(Map<String, dynamic> json) =>
-      _$SkillAddFromJson(json);
+  factory SkillAdd.fromJson(Map<String, dynamic> json) => _$SkillAddFromJson(json);
 }
 
 @JsonSerializable()

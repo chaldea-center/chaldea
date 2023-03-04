@@ -114,9 +114,7 @@ class LocalSettings {
   })  : _language = language,
         preferredRegions = preferredRegions == null
             ? null
-            : (List.of(Region.values)
-              ..sort2(
-                  (e) => preferredRegions.indexOf(e) % Region.values.length)),
+            : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
         priorityTags = priorityTags ?? {},
         galleries = galleries ?? {},
         display = display ?? DisplaySettings(),
@@ -128,11 +126,9 @@ class LocalSettings {
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData(),
-        scriptReaderFilterData =
-            scriptReaderFilterData ?? ScriptReaderFilterData(),
+        scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
         autologins = autologins ?? [] {
-    this.galleries.removeWhere(
-        (key, value) => GalleryItem.allItems.every((item) => item.name != key));
+    this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
   String? get language => _language;
@@ -162,15 +158,13 @@ class LocalSettings {
     }
   }
 
-  factory LocalSettings.fromJson(Map<String, dynamic> json) =>
-      _$LocalSettingsFromJson(json);
+  factory LocalSettings.fromJson(Map<String, dynamic> json) => _$LocalSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocalSettingsToJson(this);
 
   bool get isResolvedDarkMode {
     if (themeMode == ThemeMode.system) {
-      return SchedulerBinding.instance.window.platformBrightness ==
-          Brightness.dark;
+      return SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
     }
     return themeMode == ThemeMode.dark;
   }
@@ -206,10 +200,8 @@ class DisplaySettings {
     this.planPageFullScreen = false,
     List<SvtTab?>? sortedSvtTabs,
     List<SvtPlanDetail?>? hideSvtPlanDetails,
-  })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
-            List.of(SvtTab.values),
-        hideSvtPlanDetails =
-            hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
+  })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
+        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();
   }
   void validateSvtTabs() {
@@ -223,8 +215,7 @@ class DisplaySettings {
     hideSvtPlanDetails.remove(SvtPlanDetail.appendSkill);
   }
 
-  factory DisplaySettings.fromJson(Map<String, dynamic> data) =>
-      _$DisplaySettingsFromJson(data);
+  factory DisplaySettings.fromJson(Map<String, dynamic> data) => _$DisplaySettingsFromJson(data);
 
   Map<String, dynamic> toJson() => _$DisplaySettingsToJson(this);
 }
@@ -258,36 +249,24 @@ class CarouselSetting {
     this.enableKR = false,
   }) : items = items ?? [];
 
-  List<bool> get options => [
-        enableChaldea,
-        enableMooncell,
-        enableJP,
-        enableCN,
-        enableNA,
-        enableTW,
-        enableKR
-      ];
+  List<bool> get options => [enableChaldea, enableMooncell, enableJP, enableCN, enableNA, enableTW, enableKR];
 
   bool get shouldUpdate {
     if (updateTime == null) return true;
     if (items.isEmpty && options.contains(true)) {
       return true;
     }
-    DateTime lastTime =
-            DateTime.fromMillisecondsSinceEpoch(updateTime! * 1000).toUtc(),
-        now = DateTime.now().toUtc();
+    DateTime lastTime = DateTime.fromMillisecondsSinceEpoch(updateTime! * 1000).toUtc(), now = DateTime.now().toUtc();
     int hours = now.difference(lastTime).inHours;
     if (hours > 24 || hours < 0) return true;
     // update at 17:00(+08), 18:00(+09) => 9:00(+00)
     int hour = (9 - lastTime.hour) % 24 + lastTime.hour;
-    final time1 =
-        DateTime.utc(lastTime.year, lastTime.month, lastTime.day, hour, 10);
+    final time1 = DateTime.utc(lastTime.year, lastTime.month, lastTime.day, hour, 10);
     if (now.isAfter(time1)) return true;
     return false;
   }
 
-  factory CarouselSetting.fromJson(Map<String, dynamic> data) =>
-      _$CarouselSettingFromJson(data);
+  factory CarouselSetting.fromJson(Map<String, dynamic> data) => _$CarouselSettingFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselSettingToJson(this);
 }
@@ -325,8 +304,7 @@ class CarouselItem {
   })  : startTime = DateTime.tryParse(startTime) ?? DateTime(2000),
         endTime = DateTime.tryParse(endTime) ?? DateTime(2099);
 
-  factory CarouselItem.fromJson(Map<String, dynamic> data) =>
-      _$CarouselItemFromJson(data);
+  factory CarouselItem.fromJson(Map<String, dynamic> data) => _$CarouselItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselItemToJson(this);
 }
@@ -341,8 +319,7 @@ class RemoteConfig {
     this.blockedErrors = const [],
   });
 
-  factory RemoteConfig.fromJson(Map<String, dynamic> data) =>
-      _$RemoteConfigFromJson(data);
+  factory RemoteConfig.fromJson(Map<String, dynamic> data) => _$RemoteConfigFromJson(data);
 
   Map<String, dynamic> toJson() => _$RemoteConfigToJson(this);
 }
@@ -368,8 +345,7 @@ class GithubSetting {
     this.indent = false,
   });
 
-  factory GithubSetting.fromJson(Map<String, dynamic> data) =>
-      _$GithubSettingFromJson(data);
+  factory GithubSetting.fromJson(Map<String, dynamic> data) => _$GithubSettingFromJson(data);
 
   Map<String, dynamic> toJson() => _$GithubSettingToJson(this);
 
@@ -397,8 +373,7 @@ class TipsSetting {
     this.servantDetail = 2,
   });
 
-  factory TipsSetting.fromJson(Map<String, dynamic> json) =>
-      _$TipsSettingFromJson(json);
+  factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
 }

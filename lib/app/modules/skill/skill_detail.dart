@@ -18,15 +18,13 @@ class SkillDetailPage extends StatefulWidget {
   final int? id;
   final BaseSkill? skill;
   final Region? region;
-  const SkillDetailPage({super.key, this.id, this.skill, this.region})
-      : assert(id != null || skill != null);
+  const SkillDetailPage({super.key, this.id, this.skill, this.region}) : assert(id != null || skill != null);
 
   @override
   State<SkillDetailPage> createState() => _SkillDetailPageState();
 }
 
-class _SkillDetailPageState extends State<SkillDetailPage>
-    with RegionBasedState<BaseSkill, SkillDetailPage> {
+class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState<BaseSkill, SkillDetailPage> {
   int get id => widget.skill?.id ?? widget.id ?? data?.id ?? -1;
   BaseSkill get skill => data!;
 
@@ -71,15 +69,11 @@ class _SkillDetailPageState extends State<SkillDetailPage>
 
   @override
   Widget buildContent(BuildContext context, BaseSkill skill) {
-    final svts = ReverseGameData.skill2Svt(id).toList()
-      ..sort2((e) => e.collectionNo);
-    final ces = ReverseGameData.skill2CE(id).toList()
-      ..sort2((e) => e.collectionNo);
-    final ccs = ReverseGameData.skill2CC(id).toList()
-      ..sort2((e) => e.collectionNo);
+    final svts = ReverseGameData.skill2Svt(id).toList()..sort2((e) => e.collectionNo);
+    final ces = ReverseGameData.skill2CE(id).toList()..sort2((e) => e.collectionNo);
+    final ccs = ReverseGameData.skill2CC(id).toList()..sort2((e) => e.collectionNo);
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
-    final enemies =
-        ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id));
+    final enemies = ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id));
 
     return ListView(
       children: [
@@ -138,8 +132,7 @@ class _SkillDetailPageState extends State<SkillDetailPage>
         leading: enemy.iconBuilder(context: context),
         title: Text(enemy.lName.l),
         onTap: () {
-          router.pushPage(
-              QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
+          router.pushPage(QuestEnemySummaryPage(svt: enemy.svt, enemies: enemies));
         },
       ));
     }
@@ -151,8 +144,7 @@ class _SkillDetailPageState extends State<SkillDetailPage>
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
     );
   }
 }

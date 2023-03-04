@@ -16,8 +16,7 @@ class FuncFilterData {
 
   FuncFilterData();
 
-  List<FilterGroupData> get groups =>
-      [funcTargetType, funcTargetTeam, funcType, buffType, targetTrait];
+  List<FilterGroupData> get groups => [funcTargetType, funcTargetTeam, funcType, buffType, targetTrait];
 
   void reset() {
     for (final group in groups) {
@@ -37,8 +36,7 @@ class FuncFilter extends FilterPage<FuncFilterData> {
   _FuncFilterState createState() => _FuncFilterState();
 }
 
-class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter>
-    with FuncFilterMixin {
+class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter> with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -66,8 +64,7 @@ class _FuncFilterState extends FilterPageState<FuncFilterData, FuncFilter>
             update();
           },
         ),
-        EffectFilterUtil.buildTraitFilter(
-            context, filterData.targetTrait, update,
+        EffectFilterUtil.buildTraitFilter(context, filterData.targetTrait, update,
             addTraits: [Trait.cardExtra, Trait.faceCard, Trait.cardNP]),
         const Divider(height: 16),
         FilterGroup<FuncType>(
@@ -108,9 +105,7 @@ mixin FuncFilterMixin {
 
   Map<FuncType, String> _getFuncTypes() {
     var types = {
-      for (final func in getAllFuncs())
-        func.funcType:
-            SearchUtil.getSortAlphabet(Transl.funcType(func.funcType).l),
+      for (final func in getAllFuncs()) func.funcType: SearchUtil.getSortAlphabet(Transl.funcType(func.funcType).l),
     };
     return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
   }
@@ -118,16 +113,14 @@ mixin FuncFilterMixin {
   Map<FuncTargetType, String> _getFuncTargetTypes() {
     var types = {
       for (final func in getAllFuncs())
-        func.funcTargetType: SearchUtil.getSortAlphabet(
-            Transl.funcTargetType(func.funcTargetType).l),
+        func.funcTargetType: SearchUtil.getSortAlphabet(Transl.funcTargetType(func.funcTargetType).l),
     };
     return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
   }
 
   Map<BuffType, String> _getBuffTypes() {
     var types = {
-      for (final buff in getAllBuffs())
-        buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
+      for (final buff in getAllBuffs()) buff.type: SearchUtil.getSortAlphabet(Transl.buffType(buff.type).l),
     };
     return Map.fromEntries(types.entries.toList()..sort2((e) => e.value));
   }

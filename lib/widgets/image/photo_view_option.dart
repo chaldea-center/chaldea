@@ -82,8 +82,7 @@ class PhotoViewOption {
     return PhotoViewOption(
       backgroundDecoration: backgroundDecoration ?? this.backgroundDecoration,
       heroAttributes: heroAttributes ?? this.heroAttributes,
-      scaleStateChangedCallback:
-          scaleStateChangedCallback ?? this.scaleStateChangedCallback,
+      scaleStateChangedCallback: scaleStateChangedCallback ?? this.scaleStateChangedCallback,
       enableRotation: enableRotation ?? this.enableRotation,
       controller: controller ?? this.controller,
       scaleStateController: scaleStateController ?? this.scaleStateController,
@@ -95,8 +94,7 @@ class PhotoViewOption {
       onTapUp: onTapUp ?? this.onTapUp,
       onTapDown: onTapDown ?? this.onTapDown,
       customSize: customSize ?? this.customSize,
-      gestureDetectorBehavior:
-          gestureDetectorBehavior ?? this.gestureDetectorBehavior,
+      gestureDetectorBehavior: gestureDetectorBehavior ?? this.gestureDetectorBehavior,
       tightMode: tightMode ?? this.tightMode,
       filterQuality: filterQuality ?? this.filterQuality,
       disableGestures: disableGestures ?? this.disableGestures,
@@ -125,8 +123,7 @@ class PhotoViewOption {
     );
   }
 
-  PhotoViewGalleryPageOptions toOriginalWithChild(Widget child,
-      [Size? childSize]) {
+  PhotoViewGalleryPageOptions toOriginalWithChild(Widget child, [Size? childSize]) {
     return PhotoViewGalleryPageOptions.customChild(
       child: child,
       childSize: childSize,
@@ -198,8 +195,7 @@ class PhotoViewGalleryOption {
       reverse: reverse ?? this.reverse,
       pageController: pageController ?? this.pageController,
       onPageChanged: onPageChanged ?? this.onPageChanged,
-      scaleStateChangedCallback:
-          scaleStateChangedCallback ?? this.scaleStateChangedCallback,
+      scaleStateChangedCallback: scaleStateChangedCallback ?? this.scaleStateChangedCallback,
       enableRotation: enableRotation ?? this.enableRotation,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       scrollDirection: scrollDirection ?? this.scrollDirection,

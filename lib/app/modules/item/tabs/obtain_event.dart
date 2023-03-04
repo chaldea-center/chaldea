@@ -11,8 +11,7 @@ class ItemObtainEventTab extends StatefulWidget {
   final int itemId;
   final bool showOutdated;
 
-  const ItemObtainEventTab(
-      {super.key, required this.itemId, this.showOutdated = false});
+  const ItemObtainEventTab({super.key, required this.itemId, this.showOutdated = false});
 
   @override
   _ItemObtainEventTabState createState() => _ItemObtainEventTabState();
@@ -59,8 +58,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
   Widget get _limitEventAccordion {
     List<Widget> children = [];
     final limitEvents = db.gameData.events.values
-        .where((event) => _whetherToShow(
-            db.curUser.limitEventPlanOf(event.id).enabled, event.isOutdated()))
+        .where((event) => _whetherToShow(db.curUser.limitEventPlanOf(event.id).enabled, event.isOutdated()))
         .toList();
     limitEvents.sort2((e) => e.startedAt);
     int count = 0;
@@ -69,11 +67,8 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       List<Widget> texts = [];
       int itemFixed = event.statItemFixed[widget.itemId] ?? 0;
       bool hasExtra = event.statItemExtra.contains(widget.itemId);
-      bool hasLottery =
-          event.statItemLottery.values.any((e) => (e[widget.itemId] ?? 0) > 0);
-      bool hasCustom = plan.enabled &&
-          !event.isEmpty &&
-          plan.customItems.containsKey(widget.itemId);
+      bool hasLottery = event.statItemLottery.values.any((e) => (e[widget.itemId] ?? 0) > 0);
+      bool hasCustom = plan.enabled && !event.isEmpty && plan.customItems.containsKey(widget.itemId);
       if (itemFixed <= 0 && !hasLottery && !hasExtra && !hasCustom) {
         continue;
       }
@@ -81,14 +76,11 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
       int itemGot = db.itemCenter.calcOneEvent(event, plan)[widget.itemId] ?? 0;
-      TextStyle style = TextStyle(
-          color: plan.enabled
-              ? Theme.of(context).colorScheme.secondaryContainer
-              : null);
+      TextStyle style = TextStyle(color: plan.enabled ? Theme.of(context).colorScheme.secondaryContainer : null);
       int addNum = 0;
       if (widget.itemId == Items.grailId) {
-        addNum = (event.statItemFixed[Items.grailToCrystalId] ?? 0) +
-            (event.statItemFixed[Items.grailFragId] ?? 0) ~/ 7;
+        addNum =
+            (event.statItemFixed[Items.grailToCrystalId] ?? 0) + (event.statItemFixed[Items.grailFragId] ?? 0) ~/ 7;
       } else if (widget.itemId == Items.crystalId) {
         addNum = event.statItemFixed[Items.grailToCrystalId] ?? 0;
       }
@@ -96,11 +88,10 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       if (addNum > 0) {
         suffix += '+$addNum';
       }
-      texts.add(Text('${itemGot.format()}/${itemFixed.format()}$suffix',
-          style: style.copyWith(fontWeight: FontWeight.w500)));
+      texts.add(
+          Text('${itemGot.format()}/${itemFixed.format()}$suffix', style: style.copyWith(fontWeight: FontWeight.w500)));
       for (final lotteryId in event.statItemLottery.keys) {
-        int itemPerLottery =
-            event.statItemLottery[lotteryId]![widget.itemId] ?? 0;
+        int itemPerLottery = event.statItemLottery[lotteryId]![widget.itemId] ?? 0;
         if (itemPerLottery > 0) {
           texts.add(Text(
               '${S.current.event_lottery_unlimited} ${plan.lotteries[lotteryId] ?? 0} ×${itemPerLottery.format()}',
@@ -110,10 +101,8 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
 
       count += itemGot;
       children.add(ListTile(
-        title: AutoSizeText(event.shownName,
-            maxFontSize: 14,
-            maxLines: 2,
-            style: _textStyle(false, event.isOutdated())),
+        title:
+            AutoSizeText(event.shownName, maxFontSize: 14, maxLines: 2, style: _textStyle(false, event.isOutdated())),
         onTap: () {
           router.push(url: event.route);
         },
@@ -161,11 +150,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
             style: _textStyle(false, ticket.isOutdated()),
             textScaleFactor: 0.9,
           ),
-          subtitle: AutoSizeText(
-              ticket
-                  .of(db.curUser.region)
-                  .map((e) => GameCardMixin.anyCardItemName(e).l)
-                  .join('/'),
+          subtitle: AutoSizeText(ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
               maxLines: 1),
           trailing: Text(
             '$itemNum/${ticket.maxCount}',

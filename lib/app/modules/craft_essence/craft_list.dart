@@ -22,8 +22,7 @@ class CraftListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
-class CraftListPageState extends State<CraftListPage>
-    with SearchableListState<CraftEssence, CraftListPage> {
+class CraftListPageState extends State<CraftListPage> with SearchableListState<CraftEssence, CraftListPage> {
   @override
   Iterable<CraftEssence> get wholeData => db.gameData.craftEssences.values;
 
@@ -46,8 +45,7 @@ class CraftListPageState extends State<CraftListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => CraftFilterData.compare(a, b,
-          keys: filterData.sortKeys, reversed: filterData.sortReversed),
+      compare: (a, b) => CraftFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
     return scrollListener(
       useGrid: filterData.useGrid,
@@ -116,10 +114,7 @@ class CraftListPageState extends State<CraftListPage>
         children: [
           if (!Language.isJP) AutoSizeText(ce.name, maxLines: 1),
           Row(
-            children: [
-              Expanded(child: Text('No.${ce.collectionNo}$additionalText')),
-              if (status != null) Text(status)
-            ],
+            children: [Expanded(child: Text('No.${ce.collectionNo}$additionalText')), if (status != null) Text(status)],
           ),
         ],
       ),
@@ -173,33 +168,26 @@ class CraftListPageState extends State<CraftListPage>
       return false;
     }
 
-    if (filterData.effectType.isNotEmpty ||
-        filterData.targetTrait.isNotEmpty ||
-        filterData.effectTarget.isNotEmpty) {
+    if (filterData.effectType.isNotEmpty || filterData.targetTrait.isNotEmpty || filterData.effectTarget.isNotEmpty) {
       List<BaseFunction> funcs = [
-        for (final skill in ce.skills)
-          ...skill.filteredFunction(includeTrigger: true),
+        for (final skill in ce.skills) ...skill.filteredFunction(includeTrigger: true),
       ];
       if (filterData.effectTarget.options.isNotEmpty) {
         funcs.retainWhere((func) {
-          return filterData.effectTarget
-              .matchOne(EffectTarget.fromFunc(func.funcTargetType));
+          return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
         });
       }
       if (filterData.targetTrait.isNotEmpty) {
-        funcs.retainWhere((func) =>
-            EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+        funcs.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
       }
       if (funcs.isEmpty) return false;
       if (filterData.effectType.options.isEmpty) return true;
       if (filterData.effectType.matchAll) {
-        if (!filterData.effectType.options
-            .every((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.every((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       } else {
-        if (!filterData.effectType.options
-            .any((effect) => funcs.any((func) => effect.match(func)))) {
+        if (!filterData.effectType.options.any((effect) => funcs.any((func) => effect.match(func)))) {
           return false;
         }
       }
@@ -269,13 +257,8 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
       yield SearchUtil.getJP(ce.ruby);
       yield* getAllKeys(Transl.cvNames(ce.profile.cv));
       yield* getAllKeys(Transl.illustratorNames(ce.profile.illustrator));
-      for (final svtId in [
-        ce.bondEquipOwner,
-        ce.valentineEquipOwner,
-        ...ce.extra.characters
-      ]) {
-        final svt = db.gameData.servantsById[svtId] ??
-            db.gameData.servantsWithDup[svtId];
+      for (final svtId in [ce.bondEquipOwner, ce.valentineEquipOwner, ...ce.extra.characters]) {
+        final svt = db.gameData.servantsById[svtId] ?? db.gameData.servantsWithDup[svtId];
         if (svt == null) continue;
         for (final name in svt.allNames) {
           yield* getAllKeys(Transl.svtNames(name));

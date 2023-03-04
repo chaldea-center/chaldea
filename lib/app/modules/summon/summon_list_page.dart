@@ -19,8 +19,7 @@ class SummonListPage extends StatefulWidget {
   _SummonListPageState createState() => _SummonListPageState();
 }
 
-class _SummonListPageState extends State<SummonListPage>
-    with SearchableListState<LimitedSummon, SummonListPage> {
+class _SummonListPageState extends State<SummonListPage> with SearchableListState<LimitedSummon, SummonListPage> {
   @override
   Iterable<LimitedSummon> get wholeData => db.gameData.wiki.summons.values;
 
@@ -55,9 +54,7 @@ class _SummonListPageState extends State<SummonListPage>
         actions: [
           IconButton(
             icon: FaIcon(
-              filterData.reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
+              filterData.reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: S.current.sort_order,
@@ -81,8 +78,7 @@ class _SummonListPageState extends State<SummonListPage>
             ),
           ),
           IconButton(
-            icon: Icon(
-                filterData.favorite ? Icons.favorite : Icons.favorite_outline),
+            icon: Icon(filterData.favorite ? Icons.favorite : Icons.favorite_outline),
             tooltip: S.current.favorite,
             onPressed: () {
               setState(() {
@@ -127,8 +123,7 @@ class _SummonListPageState extends State<SummonListPage>
             padding: const EdgeInsetsDirectional.only(start: 16),
             child: Text(summon.lName, textScaleFactor: 0.9),
           ),
-          cachedOption: CachedImageOption(
-              errorWidget: (ctx, url, error) => Text(summon.lName)),
+          cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName)),
         ),
       );
       title = Column(
@@ -137,8 +132,10 @@ class _SummonListPageState extends State<SummonListPage>
           title,
           Text(
             summon.lName,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontStyle: summon.isOutdated() ? FontStyle.italic : null),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(fontStyle: summon.isOutdated() ? FontStyle.italic : null),
             textAlign: TextAlign.center,
           )
         ],
@@ -164,9 +161,7 @@ class _SummonListPageState extends State<SummonListPage>
     return ListTile(
       title: title,
       subtitle: subtitle,
-      contentPadding: filterData.showBanner
-          ? EdgeInsets.zero
-          : const EdgeInsetsDirectional.only(start: 16),
+      contentPadding: filterData.showBanner ? EdgeInsets.zero : const EdgeInsetsDirectional.only(start: 16),
       minVerticalPadding: filterData.showBanner ? 0 : null,
       trailing: db.onUserData(
         (context, snapshot) {

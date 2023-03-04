@@ -16,17 +16,14 @@ class BuffDetailPage extends StatefulWidget {
   final int? id;
   final Buff? buff;
   final Region? region;
-  const BuffDetailPage({super.key, this.id, this.buff, this.region})
-      : assert(id != null || buff != null);
+  const BuffDetailPage({super.key, this.id, this.buff, this.region}) : assert(id != null || buff != null);
 
   @override
   State<BuffDetailPage> createState() => _BuffDetailPageState();
 }
 
 class _BuffDetailPageState extends State<BuffDetailPage>
-    with
-        SingleTickerProviderStateMixin,
-        RegionBasedState<Buff, BuffDetailPage> {
+    with SingleTickerProviderStateMixin, RegionBasedState<Buff, BuffDetailPage> {
   late final controller = TabController(length: 2, vsync: this);
   int get id => widget.buff?.id ?? widget.id ?? data?.id ?? 0;
   Buff get buff => data!;
@@ -59,8 +56,8 @@ class _BuffDetailPageState extends State<BuffDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText('Buff $id ${data?.lName.l ?? ""}',
-            maxLines: 1, minFontSize: 10, overflow: TextOverflow.fade),
+        title:
+            AutoSizeText('Buff $id ${data?.lName.l ?? ""}', maxLines: 1, minFontSize: 10, overflow: TextOverflow.fade),
         actions: [
           dropdownRegion(shownNone: widget.buff != null),
           popupMenu,
@@ -110,8 +107,7 @@ class _BuffDetailPageState extends State<BuffDetailPage>
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).hintColor, width: 0.75),
+                        border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
                         borderRadius: BorderRadius.circular(5)),
                     position: DecorationPosition.foreground,
                     child: BuffActionInfoTable(action: buffAction),
@@ -128,8 +124,7 @@ class _BuffDetailPageState extends State<BuffDetailPage>
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbBuff(id, region ?? Region.jp)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbBuff(id, region ?? Region.jp)),
     );
   }
 }
@@ -144,8 +139,7 @@ class BuffInfoTable extends StatelessWidget {
       CustomTableRow(children: [
         TableCellData(
           child: Text.rich(TextSpan(children: [
-            if (buff.icon != null)
-              CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 24)),
+            if (buff.icon != null) CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 24)),
             TextSpan(text: ' ${buff.lName.l}')
           ])),
           isHeader: true,
@@ -194,9 +188,7 @@ class BuffInfoTable extends StatelessWidget {
         isHeader: true,
       ),
       CustomTableRow.fromChildren(children: [
-        buff.vals.isEmpty
-            ? const Text('-')
-            : SharedBuilder.traitList(context: context, traits: buff.vals)
+        buff.vals.isEmpty ? const Text('-') : SharedBuilder.traitList(context: context, traits: buff.vals)
       ]),
       CustomTableRow.fromTexts(
         texts: [S.current.effective_condition],
@@ -232,8 +224,7 @@ class BuffInfoTable extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: "Owner", isHeader: true),
           TableCellData(
-            child: SharedBuilder.trait(
-                context: context, trait: buff.script!.INDIVIDUALITIE!),
+            child: SharedBuilder.trait(context: context, trait: buff.script!.INDIVIDUALITIE!),
             flex: 3,
           )
         ]),
@@ -241,8 +232,7 @@ class BuffInfoTable extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: "Buff Boost", isHeader: true),
           TableCellData(
-            child: SharedBuilder.traitList(
-                context: context, traits: buff.script!.UpBuffRateBuffIndiv!),
+            child: SharedBuilder.traitList(context: context, traits: buff.script!.UpBuffRateBuffIndiv!),
             flex: 3,
           )
         ]),
@@ -272,16 +262,13 @@ class BuffInfoTable extends StatelessWidget {
           TableCellData(
             child: Text.rich(TextSpan(
               children: divideList(
-                buff.script!.CheckOpponentBuffTypes!
-                    .map((e) => SharedBuilder.textButtonSpan(
-                          context: context,
-                          text: Transl.buffType(e).l,
-                          onTap: () {
-                            router.push(
-                                url: Routes.buffs,
-                                child: BuffListPage(type: e));
-                          },
-                        )),
+                buff.script!.CheckOpponentBuffTypes!.map((e) => SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: Transl.buffType(e).l,
+                      onTap: () {
+                        router.push(url: Routes.buffs, child: BuffListPage(type: e));
+                      },
+                    )),
                 const TextSpan(text: ' / '),
               ),
             )),
@@ -302,15 +289,12 @@ class BuffInfoTable extends StatelessWidget {
           relationId(context, buff.script!.relationId!.defSide),
         ],
       ],
-      if (buff.script?.convert != null)
-        ...buildBuffConvert(context, buff.script!.convert!),
-      if (buff.script?.source.isNotEmpty == true)
-        ..._sourceScript(context, buff.script!),
+      if (buff.script?.convert != null) ...buildBuffConvert(context, buff.script!.convert!),
+      if (buff.script?.source.isNotEmpty == true) ..._sourceScript(context, buff.script!),
     ]);
   }
 
-  Widget relationId(BuildContext context,
-      Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> data) {
+  Widget relationId(BuildContext context, Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> data) {
     // data[attacker][defender]
     final attackers = data.keys.toList();
     final defenders = {for (final v in data.values) ...v.keys};
@@ -353,14 +337,12 @@ class BuffInfoTable extends StatelessWidget {
               )
           ])
       ],
-      border: TableBorder.all(
-          color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
+      border: TableBorder.all(color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
     );
   }
 
-  Iterable<Widget> buildBuffConvert(
-      BuildContext context, BuffConvert convert) sync* {
+  Iterable<Widget> buildBuffConvert(BuildContext context, BuffConvert convert) sync* {
     for (int index = 0; index < convert.convertBuffs.length; index++) {
       final cvtBuff = convert.convertBuffs[index];
       final text = convert.script?.OverwritePopupText?.getOrNull(index);
@@ -371,8 +353,7 @@ class BuffInfoTable extends StatelessWidget {
       if (text != null && text.isNotEmpty) {
         header.write(': $text');
       }
-      yield CustomTableRow.fromTexts(
-          texts: [header.toString()], isHeader: true);
+      yield CustomTableRow.fromTexts(texts: [header.toString()], isHeader: true);
 
       List<Widget> children = [];
       switch (convert.convertType) {
@@ -406,9 +387,7 @@ class BuffInfoTable extends StatelessWidget {
       spans.add(const TextSpan(text: 'Buff ???'));
     } else {
       spans.addAll([
-        if (buff.icon != null)
-          CenterWidgetSpan(
-              child: db.getIconImage(buff.icon, width: 18, aspectRatio: 1)),
+        if (buff.icon != null) CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 18, aspectRatio: 1)),
         TextSpan(text: '[${buff.id}] ${buff.lName.l}')
       ]);
     }
@@ -416,8 +395,7 @@ class BuffInfoTable extends StatelessWidget {
       onTap: buff?.routeTo,
       child: Text.rich(
         TextSpan(children: spans),
-        style:
-            TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+        style: TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
       ),
     );
   }
@@ -427,16 +405,13 @@ class BuffInfoTable extends StatelessWidget {
       onTap: trait?.routeTo,
       child: Text.rich(
         TextSpan(text: 'Buff with ', children: [
-          trait == null
-              ? const TextSpan(text: 'Trait ???')
-              : SharedBuilder.traitSpan(context: context, trait: trait)
+          trait == null ? const TextSpan(text: 'Trait ???') : SharedBuilder.traitSpan(context: context, trait: trait)
         ]),
       ),
     );
   }
 
-  Iterable<Widget> _sourceScript(
-      BuildContext context, BuffScript script) sync* {
+  Iterable<Widget> _sourceScript(BuildContext context, BuffScript script) sync* {
     yield CustomTableRow.fromTexts(
       texts: const ['Source Script'],
       isHeader: true,
@@ -456,9 +431,7 @@ class _FuncTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final funcs = db.gameData.baseFunctions.values
-        .where((e) => e.buffs.any((e) => e.id == buff.id))
-        .toList();
+    final funcs = db.gameData.baseFunctions.values.where((e) => e.buffs.any((e) => e.id == buff.id)).toList();
     funcs.sort2((e) => e.funcId);
     if (funcs.isEmpty) {
       return const Center(child: Text('No local record'));
@@ -471,12 +444,9 @@ class _FuncTab extends StatelessWidget {
             final func = funcs[index];
             return ListTile(
               dense: true,
-              leading: func.funcPopupIcon == null
-                  ? const SizedBox()
-                  : db.getIconImage(func.funcPopupIcon, width: 28),
+              leading: func.funcPopupIcon == null ? const SizedBox() : db.getIconImage(func.funcPopupIcon, width: 28),
               horizontalTitleGap: 6,
-              contentPadding:
-                  const EdgeInsetsDirectional.only(start: 10, end: 16),
+              contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
               title: Text('${func.funcId} ${func.lPopupText.l}'),
               onTap: func.routeTo,
             );
@@ -512,13 +482,11 @@ class BuffActionInfoTable extends StatelessWidget {
 
     if (action == BuffAction.unknown || detail == null) {
       return CustomTable(children: [
-        CustomTableRow.fromTexts(
-            texts: const ['Unknown BuffAction'], isHeader: true)
+        CustomTableRow.fromTexts(texts: const ['Unknown BuffAction'], isHeader: true)
       ]);
     }
 
-    final plusAction =
-        BuffAction.values.firstWhereOrNull((e) => e.id == detail.plusAction);
+    final plusAction = BuffAction.values.firstWhereOrNull((e) => e.id == detail.plusAction);
 
     int? valueBase = kBuffActionPercentTypes[action];
 
@@ -535,8 +503,7 @@ class BuffActionInfoTable extends StatelessWidget {
     }
     formula = '$formula - baseValue';
     if (const [BuffLimit.normal, BuffLimit.upper].contains(detail.limit)) {
-      limitText +=
-          ' ≤ ${detail.maxRate.map((e) => fmtBuffValue(e)).join(' or ')}';
+      limitText += ' ≤ ${detail.maxRate.map((e) => fmtBuffValue(e)).join(' or ')}';
       formula = 'min($formula, maxRate)';
     }
 
@@ -545,11 +512,8 @@ class BuffActionInfoTable extends StatelessWidget {
       CustomTableRow.fromTexts(texts: ['${action.id} - ${action.name}']),
       ...buffTypes(context, 'Plus Buffs', detail.plusTypes),
       ...buffTypes(context, 'Minus Buffs', detail.minusTypes),
-      if (plusAction != null &&
-          plusAction != BuffAction.none &&
-          plusAction != BuffAction.unknown) ...[
-        CustomTableRow.fromTexts(
-            texts: const ['Plus Buff Action'], isHeader: true),
+      if (plusAction != null && plusAction != BuffAction.none && plusAction != BuffAction.unknown) ...[
+        CustomTableRow.fromTexts(texts: const ['Plus Buff Action'], isHeader: true),
         CustomTableRow.fromChildren(children: [
           Text.rich(SharedBuilder.textButtonSpan(
             context: context,
@@ -592,16 +556,14 @@ class BuffActionInfoTable extends StatelessWidget {
     ]);
   }
 
-  Iterable<Widget> buffTypes(
-      BuildContext context, String header, List<BuffType> buffTypes) sync* {
+  Iterable<Widget> buffTypes(BuildContext context, String header, List<BuffType> buffTypes) sync* {
     if (buffTypes.isEmpty) return;
     yield CustomTableRow.fromTexts(texts: [header], isHeader: true);
     List<InlineSpan> spans = [];
     for (final type in buffTypes) {
       final icons = getBuffIcons(type);
       spans.add(TextSpan(children: [
-        for (final icon in icons)
-          CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
+        for (final icon in icons) CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
         SharedBuilder.textButtonSpan(
           context: context,
           text: ' [${type.name}] ${Transl.buffType(type).l}',

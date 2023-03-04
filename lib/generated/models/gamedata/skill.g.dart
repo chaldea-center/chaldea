@@ -13,30 +13,21 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       type: $enumDecode(_$SkillTypeEnumMap, json['type']),
       icon: json['icon'] as String?,
-      coolDown:
-          (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ??
-              const [],
+      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       actIndividuality: (json['actIndividuality'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      script: json['script'] == null
-          ? null
-          : SkillScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       skillAdd: (json['skillAdd'] as List<dynamic>?)
-              ?.map(
-                  (e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       aiIds: (json['aiIds'] as Map?)?.map(
-        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k),
-            (e as List<dynamic>).map((e) => e as int).toList()),
+        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
       functions: (json['functions'] as List<dynamic>)
-          .map(
-              (e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -57,35 +48,25 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       type: $enumDecode(_$SkillTypeEnumMap, json['type']),
       icon: json['icon'] as String?,
-      coolDown:
-          (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ??
-              const [],
+      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       actIndividuality: (json['actIndividuality'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      script: json['script'] == null
-          ? null
-          : SkillScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       extraPassive: (json['extraPassive'] as List<dynamic>?)
-              ?.map((e) =>
-                  ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       skillAdd: (json['skillAdd'] as List<dynamic>?)
-              ?.map(
-                  (e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       aiIds: (json['aiIds'] as Map?)?.map(
-        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k),
-            (e as List<dynamic>).map((e) => e as int).toList()),
+        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
       functions: (json['functions'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       num: json['num'] as int? ?? 0,
@@ -105,27 +86,19 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,
-      effectFlags: (json['effectFlags'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e))
-              .toList() ??
-          const [],
+      effectFlags:
+          (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ??
+              const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-      npDistribution: (json['npDistribution'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
+      npDistribution: (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
       individuality: (json['individuality'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      script: json['script'] == null
-          ? null
-          : SkillScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       functions: (json['functions'] as List<dynamic>)
-          .map(
-              (e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -155,27 +128,19 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       icon: json['icon'] as String?,
       rank: json['rank'] as String,
       type: json['type'] as String,
-      effectFlags: (json['effectFlags'] as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e))
-              .toList() ??
-          const [],
+      effectFlags:
+          (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ??
+              const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-      npDistribution: (json['npDistribution'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
+      npDistribution: (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
       individuality: (json['individuality'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      script: json['script'] == null
-          ? null
-          : SkillScript.fromJson(
-              Map<String, dynamic>.from(json['script'] as Map)),
+      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       functions: (json['functions'] as List<dynamic>)
-          .map(
-              (e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       strengthStatus: json['strengthStatus'] as int? ?? 0,
       priority: json['priority'] as int,
@@ -207,72 +172,42 @@ ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
     );
 
 SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
-      NP_HIGHER:
-          (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      NP_LOWER:
-          (json['NP_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      STAR_HIGHER: (json['STAR_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      STAR_LOWER:
-          (json['STAR_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      HP_VAL_HIGHER: (json['HP_VAL_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      additionalSkillActorType:
-          (json['additionalSkillActorType'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList(),
-      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
+      NP_HIGHER: (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      NP_LOWER: (json['NP_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      STAR_HIGHER: (json['STAR_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      STAR_LOWER: (json['STAR_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      HP_VAL_HIGHER: (json['HP_VAL_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      additionalSkillActorType: (json['additionalSkillActorType'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)?.map((e) => e as int).toList(),
       SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
-          ?.map((e) =>
-              SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
 SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
       title: json['title'] as String? ?? '',
       btn: (json['btn'] as List<dynamic>?)
-              ?.map((e) => SkillSelectAddInfoBtn.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SkillSelectAddInfoBtn.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
 
-SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) =>
-    SkillSelectAddInfoBtn(
+SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) => SkillSelectAddInfoBtn(
       name: json['name'] as String? ?? '',
       conds: (json['conds'] as List<dynamic>?)
-              ?.map((e) => SkillSelectAddInfoBtnCond.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
 
-SkillSelectAddInfoBtnCond _$SkillSelectAddInfoBtnCondFromJson(Map json) =>
-    SkillSelectAddInfoBtnCond(
-      cond: $enumDecodeNullable(_$SkillScriptCondEnumMap, json['cond']) ??
-          SkillScriptCond.none,
+SkillSelectAddInfoBtnCond _$SkillSelectAddInfoBtnCondFromJson(Map json) => SkillSelectAddInfoBtnCond(
+      cond: $enumDecodeNullable(_$SkillScriptCondEnumMap, json['cond']) ?? SkillScriptCond.none,
       value: json['value'] as int?,
     );
 
@@ -291,8 +226,7 @@ const _$SkillScriptCondEnumMap = {
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
       priority: json['priority'] as int,
       releaseConditions: (json['releaseConditions'] as List<dynamic>)
-          .map((e) =>
-              CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       name: json['name'] as String,
       ruby: json['ruby'] as String,

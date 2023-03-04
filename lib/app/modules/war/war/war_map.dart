@@ -108,8 +108,7 @@ class _WarMapPageState extends State<WarMapPage> {
                     ImageActions.showSaveShare(
                       context: context,
                       data: bytes,
-                      destFp: joinPaths(db.paths.downloadDir,
-                          'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png'),
+                      destFp: joinPaths(db.paths.downloadDir, 'WarMap${map.id}-${DateTime.now().toSafeFileName()}.png'),
                     );
                   },
             icon: const Icon(Icons.save_outlined),
@@ -137,8 +136,7 @@ class _WarMapPageState extends State<WarMapPage> {
   }
 
   bool isInMap(int mapId) {
-    return (_overwriteMapIds[map.id] ?? map.id) ==
-        (_overwriteMapIds[mapId] ?? mapId);
+    return (_overwriteMapIds[map.id] ?? map.id) == (_overwriteMapIds[mapId] ?? mapId);
   }
 
   Map<int, NiceSpot> getSpots() {
@@ -190,8 +188,7 @@ class _WarMapPageState extends State<WarMapPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (_showFilter) {
-          constraints =
-              constraints.copyWith(maxHeight: constraints.maxHeight * 2 / 3);
+          constraints = constraints.copyWith(maxHeight: constraints.maxHeight * 2 / 3);
         }
         final ratio = map.mapImageW / map.mapImageH;
         final Size size;
@@ -208,8 +205,7 @@ class _WarMapPageState extends State<WarMapPage> {
         mapWidget = PhotoView.customChild(
           childSize: size,
           minScale: 1.0,
-          backgroundDecoration:
-              BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+          backgroundDecoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
           child: mapWidget,
         );
         if (!_showFilter) return mapWidget;
@@ -415,8 +411,7 @@ class _WarMapPainter extends CustomPainter {
       );
       canvas.drawImageRect(
         headerImage,
-        Rect.fromLTWH(
-            0, 0, headerImage.width.toDouble(), headerImage.height.toDouble()),
+        Rect.fromLTWH(0, 0, headerImage.width.toDouble(), headerImage.height.toDouble()),
         Rect.fromLTWH(size.width / 2, 0, size.width / 2, h),
         painter,
       );

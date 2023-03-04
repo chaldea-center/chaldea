@@ -43,10 +43,8 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
                       int? warId;
                       final region = widget.region ?? Region.jp;
                       if (region != Region.jp) {
-                        final wars = db.gameData.mappingData.warRelease
-                            .ofRegion(region)
-                            ?.where((e) => e < 1000)
-                            .toList();
+                        final wars =
+                            db.gameData.mappingData.warRelease.ofRegion(region)?.where((e) => e < 1000).toList();
                         if (wars != null && wars.isNotEmpty) {
                           warId = Maths.max(wars);
                         }
@@ -97,8 +95,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
           dense: true,
           title: Text(S.current.mission),
           trailing: Text(categorized.entries
-              .map((e) =>
-                  '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
+              .map((e) => '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
               .join('\n')),
         ),
         const Divider(thickness: 1),
@@ -117,8 +114,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
             ? null
             : IconButton(
                 onPressed: () {
-                  router.push(
-                      child: CustomMissionPage(initMissions: [customMission]));
+                  router.push(child: CustomMissionPage(initMissions: [customMission]));
                 },
                 icon: const Icon(Icons.search),
                 color: Theme.of(context).colorScheme.secondary,
@@ -128,8 +124,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
       ),
       contentBuilder: (context) => Padding(
         padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: MissionCondsDescriptor(
-            mission: mission, missions: masterMission.missions),
+        child: MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
       ),
     );
   }

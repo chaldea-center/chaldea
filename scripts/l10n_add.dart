@@ -26,8 +26,7 @@ void main(List<String> args) async {
       String? v = result[lang.name];
       if (v?.isEmpty == true) v = null;
       data[addKey] = v ?? data[addKey];
-    } else if (result.arguments.isNotEmpty &&
-        result.arguments.first == 'replace') {
+    } else if (result.arguments.isNotEmpty && result.arguments.first == 'replace') {
       final keys = result.arguments.sublist(1);
       assert(keys.length == 2, keys);
       data[keys[1]] = data.remove(keys[0]);

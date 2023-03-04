@@ -30,8 +30,7 @@ class LimitEventTab extends StatelessWidget {
     }).toList();
 
     if (!showOutdated) {
-      events.removeWhere(
-          (e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
+      events.removeWhere((e) => e.isOutdated() && !db.curUser.limitEventPlanOf(e.id).enabled);
     }
 
     events.sort2((e) => e.startedAt, reversed: reversed);
@@ -59,8 +58,7 @@ class LimitEventTab extends StatelessWidget {
     Widget tile = ListTile(
       title: AutoSizeText.rich(
         TextSpan(children: [
-          if (event.isOnGoing(null))
-            const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+          if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
           TextSpan(text: event.shownName),
         ]),
         maxFontSize: 14,
@@ -70,16 +68,13 @@ class LimitEventTab extends StatelessWidget {
       subtitle: AutoSizeText(
         subtitle,
         maxLines: 1,
-        style:
-            outdated ? TextStyle(color: _outdatedColor?.withAlpha(200)) : null,
+        style: outdated ? TextStyle(color: _outdatedColor?.withAlpha(200)) : null,
         textScaleFactor: 0.9,
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (event.extra.extraItems.isNotEmpty ||
-              event.lotteries.isNotEmpty ||
-              event.treasureBoxes.isNotEmpty)
+          if (event.extra.extraItems.isNotEmpty || event.lotteries.isNotEmpty || event.treasureBoxes.isNotEmpty)
             Icon(Icons.star, color: Colors.yellow[700]),
           if (!event.isEmpty)
             Switch.adaptive(
@@ -101,8 +96,7 @@ class LimitEventTab extends StatelessWidget {
       entries.sort((a, b) {
         final ia = db.gameData.items[a.key], ib = db.gameData.items[b.key];
         if (ia != null && ib != null) return ia.priority.compareTo(ib.priority);
-        final sa = db.gameData.entities[a.key],
-            sb = db.gameData.entities[b.key];
+        final sa = db.gameData.entities[a.key], sb = db.gameData.entities[b.key];
         if (sa != null && sb != null) {
           if (sa.collectionNo != sb.collectionNo) {
             return sb.collectionNo - sa.collectionNo;
@@ -133,13 +127,11 @@ class LimitEventTab extends StatelessWidget {
         }
         final svt = db.gameData.servantsById[objectId];
         if (svt != null && svt.isUserSvt) {
-          rewards.add(svt.iconBuilder(
-              context: context, width: 32, text: entry.value.format()));
+          rewards.add(svt.iconBuilder(context: context, width: 32, text: entry.value.format()));
         }
         final svtTd = db.gameData.entities[objectId];
         if (svtTd != null && svtTd.type == SvtType.svtMaterialTd) {
-          rewards.add(svtTd.iconBuilder(
-              context: context, width: 32, text: entry.value.format()));
+          rewards.add(svtTd.iconBuilder(context: context, width: 32, text: entry.value.format()));
         }
       }
 

@@ -15,8 +15,7 @@ class TdListPage extends StatefulWidget {
   _TdListPageState createState() => _TdListPageState();
 }
 
-class _TdListPageState extends State<TdListPage>
-    with SearchableListState<BaseTd?, TdListPage> {
+class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd?, TdListPage> {
   final filterData = TdFilterData();
 
   int? get _searchTdId {
@@ -77,16 +76,13 @@ class _TdListPageState extends State<TdListPage>
     if (!filterData.type.matchOne(td.damageType)) {
       return false;
     }
-    if (!filterData.funcTargetType
-        .matchAny(td.functions.map((e) => e.funcTargetType))) {
+    if (!filterData.funcTargetType.matchAny(td.functions.map((e) => e.funcTargetType))) {
       return false;
     }
     if (!filterData.funcType.matchAny(td.functions.map((e) => e.funcType))) {
       return false;
     }
-    if (!filterData.buffType.matchAny(td.functions
-        .where((e) => e.buffs.isNotEmpty)
-        .map((e) => e.buffs.first.type))) {
+    if (!filterData.buffType.matchAny(td.functions.where((e) => e.buffs.isNotEmpty).map((e) => e.buffs.first.type))) {
       return false;
     }
     return true;
@@ -106,9 +102,7 @@ class _TdListPageState extends State<TdListPage>
   Widget listItemBuilder(BaseTd? td) {
     return ListTile(
       dense: true,
-      leading: td == null
-          ? const SizedBox(width: 36, height: 36)
-          : CommandCardWidget(card: td.card, width: 36),
+      leading: td == null ? const SizedBox(width: 36, height: 36) : CommandCardWidget(card: td.card, width: 36),
       horizontalTitleGap: 6,
       contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
       title: Text.rich(
@@ -117,8 +111,7 @@ class _TdListPageState extends State<TdListPage>
           children: [
             if (td != null)
               TextSpan(
-                  text:
-                      '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
+                  text: '\n${td.id} ${Transl.enums(td.damageType, (enums) => enums.tdEffectFlag).l}',
                   style: Theme.of(context).textTheme.bodySmall)
           ],
         ),
@@ -131,6 +124,5 @@ class _TdListPageState extends State<TdListPage>
   }
 
   @override
-  Widget gridItemBuilder(BaseTd? td) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(BaseTd? td) => throw UnimplementedError('GridView not designed');
 }

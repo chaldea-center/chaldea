@@ -48,12 +48,9 @@ class _MysticCodePageState extends State<MysticCodePage> {
         title: Text(S.current.mystic_code),
         actions: [
           IconButton(
-            onPressed: () =>
-                setState(() => db.curUser.isGirl = !db.curUser.isGirl),
+            onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
             icon: FaIcon(
-              db.curUser.isGirl
-                  ? FontAwesomeIcons.venus
-                  : FontAwesomeIcons.mars,
+              db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
             ),
           )
         ],
@@ -75,15 +72,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
   Widget get levelSlider {
     return Row(
       children: [
-        Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16, end: 2),
-            child: Text(S.current.level)),
+        Padding(padding: const EdgeInsetsDirectional.only(start: 16, end: 2), child: Text(S.current.level)),
         SizedBox(width: 20, child: Center(child: Text(_level.toString()))),
         Expanded(
           child: Slider(
             value: _level.toDouble(),
-            onChanged: (v) =>
-                setState(() => db.curUser.mysticCodes[_selected!] = v.toInt()),
+            onChanged: (v) => setState(() => db.curUser.mysticCodes[_selected!] = v.toInt()),
             min: 1.0,
             max: 10.0,
             divisions: 9,
@@ -112,14 +106,10 @@ class _MysticCodePageState extends State<MysticCodePage> {
               children: codes.entries.map((e) {
                 final code = e.value;
                 return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                   child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: _selected == e.key
-                                ? Colors.blue
-                                : Colors.transparent)),
+                    decoration:
+                        BoxDecoration(border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent)),
                     child: GestureDetector(
                       onTap: () => setState(() => _selected = e.key),
                       child: db.getIconImage(code.icon, width: 50, height: 50),
@@ -147,12 +137,9 @@ class _MysticCodePageState extends State<MysticCodePage> {
       _selected = keys[_curIndex];
     });
     if (codes.length > 1 && _scrollController.hasClients) {
-      final length = _scrollController.position.maxScrollExtent -
-          _scrollController.position.minScrollExtent;
-      final offset = length / (codes.length - 1) * _curIndex +
-          _scrollController.position.minScrollExtent;
-      _scrollController.animateTo(offset,
-          duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      final length = _scrollController.position.maxScrollExtent - _scrollController.position.minScrollExtent;
+      final offset = length / (codes.length - 1) * _curIndex + _scrollController.position.minScrollExtent;
+      _scrollController.animateTo(offset, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
     }
   }
 
@@ -163,8 +150,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       children: <Widget>[
         CustomTableRow(children: [
           TableCellData(
-            child: Text(mysticCode.lName.l,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(mysticCode.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
             isHeader: true,
           )
         ]),
@@ -172,8 +158,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Text(mysticCode.name,
-                    style: const TextStyle(fontWeight: FontWeight.w500)),
+                child: Text(mysticCode.name, style: const TextStyle(fontWeight: FontWeight.w500)),
               )
             ],
           ),
@@ -181,16 +166,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Text(mysticCode.lName.na,
-                    style: const TextStyle(fontWeight: FontWeight.w500)),
+                child: Text(mysticCode.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
               )
             ],
             // color: TableCellData.headerColor.withAlpha(120),
           ),
-        for (final detail in {
-          Transl.mcDetail(mysticCode.id).l,
-          mysticCode.detail
-        })
+        for (final detail in {Transl.mcDetail(mysticCode.id).l, mysticCode.detail})
           CustomTableRow(children: [
             TableCellData(
               text: detail,
@@ -198,23 +179,13 @@ class _MysticCodePageState extends State<MysticCodePage> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             ),
           ]),
-        CustomTableRow(
-            children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        for (final skill in mysticCode.skills)
-          SkillDescriptor(skill: skill, level: _level),
-        CustomTableRow(children: [
-          TableCellData(text: S.current.game_experience, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
+        for (final skill in mysticCode.skills) SkillDescriptor(skill: skill, level: _level),
+        CustomTableRow(children: [TableCellData(text: S.current.game_experience, isHeader: true)]),
         for (int row = 0; row < expRequired.length / 5; row++) ...[
           CustomTableRow.fromTexts(
-            texts: [
-              'Lv.',
-              for (int i = row * 5; i < row * 5 + 5; i++)
-                i == 9 ? '-' : '${i + 1}→${i + 2}'
-            ],
-            defaults: TableCellData(
-                color:
-                    TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
+            texts: ['Lv.', for (int i = row * 5; i < row * 5 + 5; i++) i == 9 ? '-' : '${i + 1}→${i + 2}'],
+            defaults: TableCellData(color: TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
           ),
           CustomTableRow.fromTexts(
             texts: [
@@ -222,9 +193,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
               for (int i = row * 5; i < row * 5 + 5; i++)
                 i + 1 >= expRequired.length
                     ? '-'
-                    : ((expRequired.getOrNull(i + 1) ?? 0) -
-                            (expRequired.getOrNull(i) ?? 0))
-                        .format(compact: false),
+                    : ((expRequired.getOrNull(i + 1) ?? 0) - (expRequired.getOrNull(i) ?? 0)).format(compact: false),
             ],
             defaults: TableCellData(maxLines: 1),
           ),
@@ -232,16 +201,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
             texts: [
               S.current.info_bond_points_sum,
               for (int i = row * 5; i < row * 5 + 5; i++)
-                i + 1 >= expRequired.length
-                    ? '-'
-                    : expRequired[i + 1].format(compact: false),
+                i + 1 >= expRequired.length ? '-' : expRequired[i + 1].format(compact: false),
             ],
             defaults: TableCellData(maxLines: 1),
           ),
         ],
-        CustomTableRow(children: [
-          TableCellData(text: S.current.illustration, isHeader: true)
-        ]),
+        CustomTableRow(children: [TableCellData(text: S.current.illustration, isHeader: true)]),
         ...buildCodeImages(mysticCode)
       ],
     );
@@ -250,14 +215,10 @@ class _MysticCodePageState extends State<MysticCodePage> {
   List<Widget> buildCodeImages(MysticCode mysticCode) {
     List<Widget> children = [];
     List<String> items = [], masterFaces = [], masterFigures = [];
-    for (final assets in [
-      mysticCode.extraAssets,
-      ...mysticCode.costumes.map((e) => e.extraAssets)
-    ]) {
+    for (final assets in [mysticCode.extraAssets, ...mysticCode.costumes.map((e) => e.extraAssets)]) {
       items.addAll([assets.item.female, assets.item.male]);
       masterFaces.addAll([assets.masterFace.female, assets.masterFace.male]);
-      masterFigures
-          .addAll([assets.masterFigure.female, assets.masterFigure.male]);
+      masterFigures.addAll([assets.masterFigure.female, assets.masterFigure.male]);
     }
     children.addAll([
       _oneGroup(S.current.icons, items, 80),
@@ -268,8 +229,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return children;
   }
 
-  Widget? _oneGroup(String title, List<String> urls, double height,
-      [bool expanded = true]) {
+  Widget? _oneGroup(String title, List<String> urls, double height, [bool expanded = true]) {
     urls = urls.toSet().toList();
     if (urls.isEmpty) return null;
     return SimpleAccordion(
@@ -288,8 +248,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
             itemBuilder: (context, index) => CachedImage(
               imageUrl: urls[index],
               onTap: () {
-                FullscreenImageViewer.show(
-                    context: context, urls: urls, initialPage: index);
+                FullscreenImageViewer.show(context: context, urls: urls, initialPage: index);
               },
               showSaveOnLongPress: true,
             ),

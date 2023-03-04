@@ -26,17 +26,14 @@ void _patchFlutter() {
 // ignore: unused_element
 void _replaceFlutterFile(String fp, String s1, String s2) {
   final dartFp = Uri.file(Platform.resolvedExecutable);
-  final targetFp = dartFp.replace(pathSegments: [
-    ...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5),
-    ...fp.split('/')
-  ]);
+  final targetFp = dartFp
+      .replace(pathSegments: [...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5), ...fp.split('/')]);
   print(targetFp.toFilePath());
   final targetFile = File(targetFp.toFilePath());
   assert(targetFile.existsSync());
   String content = targetFile.readAsStringSync();
   assert(content.contains(s1));
-  targetFile
-      .writeAsStringSync(targetFile.readAsStringSync().replaceFirst(s1, s2));
+  targetFile.writeAsStringSync(targetFile.readAsStringSync().replaceFirst(s1, s2));
   return;
 }
 
@@ -46,10 +43,7 @@ void _patchAndroidPreview() {
   print('Patching ${buildFile.path}...');
   String contents = buildFile.readAsStringSync();
   // all patches start with "// "
-  List<String> patches = [
-    '// applicationIdSuffix ".preview"',
-    '// resValue "string", "app_name", "Chaldea Preview"'
-  ];
+  List<String> patches = ['// applicationIdSuffix ".preview"', '// resValue "string", "app_name", "Chaldea Preview"'];
   for (final patch in patches) {
     if (!contents.contains(patch)) {
       throw "app/build.gradle doesn't contain '$patch'";

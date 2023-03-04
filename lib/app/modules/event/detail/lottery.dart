@@ -6,8 +6,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class EventLotteryTab extends StatefulWidget {
   final Event event;
   final EventLottery lottery;
-  const EventLotteryTab(
-      {super.key, required this.event, required this.lottery});
+  const EventLotteryTab({super.key, required this.event, required this.lottery});
 
   @override
   State<EventLotteryTab> createState() => _EventLotteryTabState();
@@ -68,10 +67,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
           child: DropdownButton<int>(
             value: selected,
             isExpanded: true,
-            items: [
-              for (final index in boxIndices)
-                DropdownMenuItem(value: index, child: Text('Box ${index + 1}'))
-            ],
+            items: [for (final index in boxIndices) DropdownMenuItem(value: index, child: Text('Box ${index + 1}'))],
             onChanged: (v) {
               setState(() {
                 selected = v;
@@ -89,10 +85,8 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     Widget? title;
 
     if (box.gifts.length == 1) {
-      leading =
-          box.gifts.first.iconBuilder(context: context, width: 42, text: '');
-      String titleText =
-          GameCardMixin.anyCardItemName(box.gifts.first.objectId).l;
+      leading = box.gifts.first.iconBuilder(context: context, width: 42, text: '');
+      String titleText = GameCardMixin.anyCardItemName(box.gifts.first.objectId).l;
       if (box.gifts.first.num != 1) {
         titleText += ' ×${box.gifts.first.num.format()}';
       }
@@ -100,8 +94,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     } else {
       title = Text.rich(TextSpan(children: [
         for (final gift in box.gifts) ...[
-          CenterWidgetSpan(
-              child: gift.iconBuilder(context: context, width: 42, text: '')),
+          CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 42, text: '')),
           TextSpan(text: '×${gift.num.format()} ')
         ],
       ]));

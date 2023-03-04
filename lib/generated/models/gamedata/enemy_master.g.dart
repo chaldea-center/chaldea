@@ -10,8 +10,7 @@ EnemyMaster _$EnemyMasterFromJson(Map json) => EnemyMaster(
       id: json['id'] as int,
       name: json['name'] as String? ?? "",
       battles: (json['battles'] as List<dynamic>?)
-              ?.map((e) => EnemyMasterBattle.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => EnemyMasterBattle.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
@@ -22,7 +21,5 @@ EnemyMasterBattle _$EnemyMasterBattleFromJson(Map json) => EnemyMasterBattle(
       figure: json['figure'] as String,
       commandSpellIcon: json['commandSpellIcon'] as String,
       maxCommandSpell: json['maxCommandSpell'] as int,
-      cutin:
-          (json['cutin'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              const [],
+      cutin: (json['cutin'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );

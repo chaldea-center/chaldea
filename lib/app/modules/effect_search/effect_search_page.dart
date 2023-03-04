@@ -17,9 +17,7 @@ class EffectSearchPage extends StatefulWidget {
 }
 
 class _EffectSearchPageState extends State<EffectSearchPage>
-    with
-        SearchableListState<GameCardMixin, EffectSearchPage>,
-        SingleTickerProviderStateMixin {
+    with SearchableListState<GameCardMixin, EffectSearchPage>, SingleTickerProviderStateMixin {
   late TabController _tabController;
   final filterData = BuffFuncFilterData();
 
@@ -47,9 +45,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        (options as _BuffOptions).type =
-            SearchCardType.values.getOrNull(_tabController.index) ??
-                SearchCardType.svt;
+        (options as _BuffOptions).type = SearchCardType.values.getOrNull(_tabController.index) ?? SearchCardType.svt;
         setState(() {});
       }
     });
@@ -128,8 +124,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
       }
     }
     if (card is Servant) {
-      if (!filterData.svtClass
-          .matchOne(card.className, compare: SvtClassX.match)) {
+      if (!filterData.svtClass.matchOne(card.className, compare: SvtClassX.match)) {
         return false;
       }
     }
@@ -145,17 +140,13 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     if (card is Servant) {
       bool _isScopeEmpty = filterData.effectScope.options.isEmpty;
       functions = [
-        if (_isScopeEmpty ||
-            filterData.effectScope.options.contains(SvtEffectScope.active))
+        if (_isScopeEmpty || filterData.effectScope.options.contains(SvtEffectScope.active))
           for (final skill in card.skills) ..._filterFunc(skill),
-        if (_isScopeEmpty ||
-            filterData.effectScope.options.contains(SvtEffectScope.td))
+        if (_isScopeEmpty || filterData.effectScope.options.contains(SvtEffectScope.td))
           for (final np in card.noblePhantasms) ..._filterFunc(np),
-        if (_isScopeEmpty ||
-            filterData.effectScope.options.contains(SvtEffectScope.append))
+        if (_isScopeEmpty || filterData.effectScope.options.contains(SvtEffectScope.append))
           for (final skill in card.appendPassive) ..._filterFunc(skill.skill),
-        if (_isScopeEmpty ||
-            filterData.effectScope.options.contains(SvtEffectScope.passive))
+        if (_isScopeEmpty || filterData.effectScope.options.contains(SvtEffectScope.passive))
           for (final skill in card.classPassive) ..._filterFunc(skill),
       ];
     } else if (card is CraftEssence) {
@@ -171,13 +162,9 @@ class _EffectSearchPageState extends State<EffectSearchPage>
         for (final skill in card.skills) ..._filterFunc(skill),
       ];
     }
-    functions.retainWhere((func) => filterData.effectTarget
-            .matchOne(func.funcTargetType, compares: {
-          null: (value, option) =>
-              BuffFuncFilterData.specialFuncTarget.contains(value)
-        }));
-    functions.retainWhere((func) =>
-        EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+    functions.retainWhere((func) => filterData.effectTarget.matchOne(func.funcTargetType,
+        compares: {null: (value, option) => BuffFuncFilterData.specialFuncTarget.contains(value)}));
+    functions.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
     if (functions.isEmpty) return false;
 
     Set<FuncType> funcTypes = {

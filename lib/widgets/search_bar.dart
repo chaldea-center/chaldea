@@ -52,9 +52,7 @@ class _SearchBarState extends State<SearchBar> {
       color: textStyle.color ?? Theme.of(context).hintColor,
     );
     final colorScheme = Theme.of(context).colorScheme;
-    final iconColor = colorScheme.brightness == Brightness.dark
-        ? colorScheme.onSurface
-        : colorScheme.onPrimary;
+    final iconColor = colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
         16,
@@ -85,8 +83,7 @@ class _SearchBarState extends State<SearchBar> {
               onTap: () {
                 showModalBottomSheet(
                   context: context,
-                  builder: (context) =>
-                      SafeArea(child: _optionBuilder(context)),
+                  builder: (context) => SafeArea(child: _optionBuilder(context)),
                 );
               },
               child: Tooltip(
@@ -146,22 +143,18 @@ abstract class SearchOptionsMixin<T> {
 
   String getCache(T datum, String subKey, List<String?> Function() ifAbsent) {
     int key = Object.hash(datum, subKey);
-    return _caches[key] ??=
-        '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
+    return _caches[key] ??= '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
   }
 
-  Iterable<String?> getAllKeys(Transl<dynamic, String> transl,
-          {Region? dft = Region.jp}) =>
+  Iterable<String?> getAllKeys(Transl<dynamic, String> transl, {Region? dft = Region.jp}) =>
       SearchUtil.getAllKeys(transl, dft: dft);
 
-  Iterable<String?> getListKeys(
-      List<String>? items, String? Function(String word) getter) sync* {
+  Iterable<String?> getListKeys(List<String>? items, String? Function(String word) getter) sync* {
     if (items == null) return;
     for (final item in items) {
       yield getter(item);
     }
   }
 
-  Iterable<String?> getSkillKeys(SkillOrTd skill) =>
-      SearchUtil.getSkillKeys(skill);
+  Iterable<String?> getSkillKeys(SkillOrTd skill) => SearchUtil.getSkillKeys(skill);
 }

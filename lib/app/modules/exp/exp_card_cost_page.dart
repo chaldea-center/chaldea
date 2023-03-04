@@ -195,8 +195,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
   }
 
   void _onChanged() {
-    int? a = int.tryParse(_startController.text),
-        b = int.tryParse(_endController.text);
+    int? a = int.tryParse(_startController.text), b = int.tryParse(_endController.text);
     if (a != null && a >= 1 && a <= 120) {
       data.startLv = a;
     }
@@ -291,8 +290,7 @@ class ExpUpData {
   List<int> grailStages = [];
   List<int> coinStages = [];
 
-  ExpUpData({this.rarity = 5, this.startLv = 1, this.endLv = 90, this.next = 0})
-      : assert(rarity >= 0 && rarity <= 5);
+  ExpUpData({this.rarity = 5, this.startLv = 1, this.endLv = 90, this.next = 0}) : assert(rarity >= 0 && rarity <= 5);
 
   void calculate({int expCardRarity = 4, bool sameClass = true}) {
     int expPerCard = [0, 1000, 3000, 9000, 27000, 81000][expCardRarity];
@@ -303,17 +301,15 @@ class ExpUpData {
     grailStages.clear();
     coinStages.clear();
 
-    final svt = db.gameData.servantsNoDup.values.firstWhere((svt) =>
-        svt.rarity == rarity && svt.isUserSvt && svt.originalCollectionNo > 1);
+    final svt = db.gameData.servantsNoDup.values
+        .firstWhere((svt) => svt.rarity == rarity && svt.isUserSvt && svt.originalCollectionNo > 1);
 
     // level->ascension
-    final ascensionLevels = svt.ascensionAdd.lvMax.ascension
-        .map((key, value) => MapEntry(value, key));
+    final ascensionLevels = svt.ascensionAdd.lvMax.ascension.map((key, value) => MapEntry(value, key));
     int maxAscensionLv = Maths.max(ascensionLevels.keys, 0);
     final grailCost = db.gameData.constData.svtGrailCost[svt.rarity]!;
-    Map<int, int> grailLvQp = grailCost.map((key, value) => MapEntry(
-        maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0),
-        grailCost[key]?.qp ?? 0));
+    Map<int, int> grailLvQp = grailCost
+        .map((key, value) => MapEntry(maxAscensionLv + (grailCost[key - 1]?.addLvMax ?? 0), grailCost[key]?.qp ?? 0));
     int lv = startLv;
     List<int> addedLvs = [];
     int _nextExp = next;
@@ -332,9 +328,7 @@ class ExpUpData {
         addedLvs.add(lv);
         stageName = lv.toString();
       } else {
-        int nextUpgrade = Maths.min(
-            [...grailLvQp.keys, ...ascensionLevels.keys].where((e) => e > lv),
-            120);
+        int nextUpgrade = Maths.min([...grailLvQp.keys, ...ascensionLevels.keys].where((e) => e > lv), 120);
         if (nextUpgrade > endLv) {
           nextUpgrade = endLv;
         }
@@ -356,8 +350,7 @@ class ExpUpData {
           int _cards = min(20, cards - usedCards);
           usedCards += _cards;
           // use ★1 servant data, ★5=6	★4=4	★3=2	★2=1.5  ★1=1
-          qp += (lvQpCostList[lv] * _cards * [1.5, 1, 1.5, 2, 4, 6][rarity])
-              .toInt();
+          qp += (lvQpCostList[lv] * _cards * [1.5, 1, 1.5, 2, 4, 6][rarity]).toInt();
           int nextExp = curExp + usedCards * expPerCard;
           lv = svt.expGrowth.indexWhere((e) => e > nextExp);
           if (lv < 0) lv = 120;
@@ -631,81 +624,10 @@ class ExpUpData {
   // including Ascension and Palingenesis QP cost
   // unit: k
   static List<List<int>> ascensionQpList = [
-    [
-      10,
-      30,
-      90,
-      300,
-      400,
-      600,
-      800,
-      1000,
-      2000,
-      3000,
-      4000,
-      5000,
-      6000,
-      7000,
-      ...List.generate(10, (index) => 8000)
-    ],
-    [
-      15,
-      45,
-      150,
-      450,
-      600,
-      800,
-      1000,
-      2000,
-      3000,
-      4000,
-      5000,
-      6000,
-      7000,
-      8000,
-      ...List.generate(10, (index) => 8000)
-    ],
-    [
-      30,
-      100,
-      300,
-      900,
-      1000,
-      2000,
-      3000,
-      4000,
-      5000,
-      6000,
-      7000,
-      8000,
-      9000,
-      ...List.generate(10, (index) => 8000)
-    ],
-    [
-      50,
-      150,
-      500,
-      1500,
-      4000,
-      5000,
-      6000,
-      7000,
-      8000,
-      9000,
-      10000,
-      ...List.generate(10, (index) => 8000)
-    ],
-    [
-      100,
-      300,
-      1000,
-      3000,
-      9000,
-      10000,
-      11000,
-      12000,
-      13000,
-      ...List.generate(10, (index) => 8000)
-    ],
+    [10, 30, 90, 300, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, ...List.generate(10, (index) => 8000)],
+    [15, 45, 150, 450, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, ...List.generate(10, (index) => 8000)],
+    [30, 100, 300, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, ...List.generate(10, (index) => 8000)],
+    [50, 150, 500, 1500, 4000, 5000, 6000, 7000, 8000, 9000, 10000, ...List.generate(10, (index) => 8000)],
+    [100, 300, 1000, 3000, 9000, 10000, 11000, 12000, 13000, ...List.generate(10, (index) => 8000)],
   ];
 }

@@ -54,9 +54,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           }
         }
         for (int phase in quest.phases) {
-          itemCount += db.gameData.fixedDrops[questId * 100 + phase]
-                  ?.items[widget.itemId] ??
-              0;
+          itemCount += db.gameData.fixedDrops[questId * 100 + phase]?.items[widget.itemId] ?? 0;
         }
         if (itemCount > 0) {
           children.add(_buildOneQuest(
@@ -71,8 +69,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     if (children.isEmpty) {
       children.add(ListTile(
         title: Text(S.current.no_servant_quest_hint),
-        subtitle:
-            _favorite ? Text(S.current.no_servant_quest_hint_subtitle) : null,
+        subtitle: _favorite ? Text(S.current.no_servant_quest_hint_subtitle) : null,
       ));
     }
     return ListView.separated(
@@ -96,8 +93,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           subtitle: Row(
             children: [
               Expanded(child: Text(quest.lName.l)),
-              Text(itemCount,
-                  style: TextStyle(color: favorite ? Colors.blue : null))
+              Text(itemCount, style: TextStyle(color: favorite ? Colors.blue : null))
             ],
           ),
         );
@@ -123,8 +119,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
         sortReversed = [true, false, true];
         break;
     }
-    svts.sort((a, b) =>
-        SvtFilterData.compare(a, b, keys: sortKeys, reversed: sortReversed));
+    svts.sort((a, b) => SvtFilterData.compare(a, b, keys: sortKeys, reversed: sortReversed));
     return svts;
   }
 }

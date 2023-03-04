@@ -27,10 +27,7 @@ import '../../utils/constants.dart' show kAppKey;
 import '../logger.dart';
 
 import 'package:flutter/cupertino.dart'
-    show
-        CupertinoFullscreenDialogTransition,
-        CupertinoPageTransition,
-        CupertinoRouteTransitionMixin;
+    show CupertinoFullscreenDialogTransition, CupertinoPageTransition, CupertinoRouteTransitionMixin;
 
 part 'master_back_button.dart';
 
@@ -40,8 +37,7 @@ const int _kSplitMasterRatio = 38;
 const double _kSplitDividerWidth = 0.5;
 const Duration kSplitRouteDuration = Duration(milliseconds: 400);
 
-typedef SplitPageBuilder = Widget Function(
-    BuildContext context, SplitLayout layout);
+typedef SplitPageBuilder = Widget Function(BuildContext context, SplitLayout layout);
 
 /// Layout type for [SplitRoute] when build widget
 enum SplitLayout {
@@ -59,8 +55,7 @@ enum SplitLayout {
 class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   static int _defaultMasterRatio = _kSplitMasterRatio;
   static int get defaultMasterRatio => _defaultMasterRatio;
-  static set defaultMasterRatio(int? v) =>
-      _defaultMasterRatio = v == null ? _kSplitMasterRatio : v.clamp(30, 60);
+  static set defaultMasterRatio(int? v) => _defaultMasterRatio = v == null ? _kSplitMasterRatio : v.clamp(30, 60);
 
   /// Expose BuildContext and SplitLayout to builder
   final SplitPageBuilder builder;
@@ -117,9 +112,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         _detail = detail,
         _masterRatio = masterRatio,
         transitionDuration = transitionDuration ?? kSplitRouteDuration,
-        reverseTransitionDuration = reverseTransitionDuration ??
-            transitionDuration ??
-            kSplitRouteDuration,
+        reverseTransitionDuration = reverseTransitionDuration ?? transitionDuration ?? kSplitRouteDuration,
         opaque = opaque ?? detail != true;
 
   /// define your own builder for right space of master page
@@ -136,10 +129,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     final layout = getLayout(context);
     switch (layout) {
       case SplitLayout.master:
-        child = createMasterWidget(
-            context: context,
-            child: builder(context, layout),
-            masterRatio: masterRatio);
+        child = createMasterWidget(context: context, child: builder(context, layout), masterRatio: masterRatio);
         break;
       case SplitLayout.detail:
         child = builder(context, layout);
@@ -151,10 +141,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
     bool? _last = _lastSplitCache;
     bool _current = _lastSplitCache = isSplit(context);
-    if (!isCurrent &&
-        _last == false &&
-        _current == true &&
-        _nextRouteCache != null) {
+    if (!isCurrent && _last == false && _current == true && _nextRouteCache != null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         didChangeNext(_nextRouteCache!);
         _nextRouteCache!.didChangePrevious(this);
@@ -239,17 +226,15 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionFrom(TransitionRoute previousRoute) {
-    if (isSplit(null) &&
-        previousRoute is SplitRoute &&
-        previousRoute.detail == true) {
+    if (isSplit(null) && previousRoute is SplitRoute && previousRoute.detail == true) {
       return false;
     }
     return super.canTransitionFrom(previousRoute);
   }
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     if (kIsWeb || !PlatformU.isTargetMobile) {
       const bool linearTransition = false;
       if (fullscreenDialog) {
@@ -305,12 +290,10 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
             decoration: BoxDecoration(
               border: Border(
                 left: Divider.createBorderSide(context,
-                    width: _kSplitDividerWidth,
-                    color: Theme.of(context).dividerColor),
+                    width: _kSplitDividerWidth, color: Theme.of(context).dividerColor),
               ),
             ),
-            child:
-                defaultMasterFillPageBuilder?.call(context) ?? const Scaffold(),
+            child: defaultMasterFillPageBuilder?.call(context) ?? const Scaffold(),
           ),
         ),
       ],
@@ -342,8 +325,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     final isMaster = curRoute?.detail == false;
     assert(() {
       if (!isMaster) {
-        throw StateError(
-            'DO NOT call popDetails outside SplitRoute or inside detail page');
+        throw StateError('DO NOT call popDetails outside SplitRoute or inside detail page');
       }
       return true;
     }());
@@ -392,9 +374,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       builder: builder,
       detail: detail,
       masterRatio: masterRatio,
-      transitionDuration: (detail == true && popDetail && n > 0)
-          ? const Duration()
-          : kSplitRouteDuration,
+      transitionDuration: (detail == true && popDetail && n > 0) ? const Duration() : kSplitRouteDuration,
       reverseTransitionDuration: kSplitRouteDuration,
       settings: settings,
       title: title,

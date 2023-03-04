@@ -74,8 +74,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 SizedBox(
                   width: 65,
                   child: Center(
-                    child: Text(
-                        planOrEff ? S.current.counts : S.current.calc_weight),
+                    child: Text(planOrEff ? S.current.counts : S.current.calc_weight),
                   ),
                 ),
                 IconButton(
@@ -95,8 +94,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             ),
           ),
         ),
-        if (params.rows.isEmpty)
-          ListTile(title: Center(child: Text(S.current.drop_calc_empty_hint))),
+        if (params.rows.isEmpty) ListTile(title: Center(child: Text(S.current.drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
         kDefaultDivider,
         SafeArea(child: _buildButtonBar())
@@ -136,9 +134,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           style: TextButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             minimumSize: const Size(48, 28),
-            padding: PlatformU.isMobile
-                ? const EdgeInsets.symmetric(horizontal: 8)
-                : null,
+            padding: PlatformU.isMobile ? const EdgeInsets.symmetric(horizontal: 8) : null,
           ),
           child: Text(_getItemName(itemId, item)),
           onPressed: () {
@@ -148,8 +144,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 disabledItems: params.rows.toList(),
                 onSelected: (v) {
                   if (params.rows.contains(v)) {
-                    EasyLoading.showInfo(
-                        S.current.item_already_exist_hint(_getItemName(v)));
+                    EasyLoading.showInfo(S.current.item_already_exist_hint(_getItemName(v)));
                   } else if (index < params.rows.length) {
                     params.rows[index] = v;
                   }
@@ -163,15 +158,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           padding: const EdgeInsetsDirectional.only(start: 8),
           child: Text(
             planOrEff
-                ? S.current.words_separate(
-                    S.current.calc_weight, params.getPlanItemWeight(itemId))
-                : S.current.words_separate(
-                    S.current.counts, params.getPlanItemCount(itemId)),
+                ? S.current.words_separate(S.current.calc_weight, params.getPlanItemWeight(itemId))
+                : S.current.words_separate(S.current.counts, params.getPlanItemCount(itemId)),
           ),
         );
         return CustomTile(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           titlePadding: const EdgeInsetsDirectional.only(end: 6),
           leading: leading,
           title: title,
@@ -187,8 +179,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       text: planOrEff
                           ? params.getPlanItemCount(itemId).toString()
                           : params.getPlanItemWeight(itemId).toString()),
-                  keyboardType: const TextInputType.numberWithOptions(
-                      signed: true, decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
                   textAlign: TextAlign.center,
                   // textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(isDense: true),
@@ -205,8 +196,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 ),
               ),
               IconButton(
-                  icon:
-                      const Icon(Icons.delete_outline, color: Colors.redAccent),
+                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                   focusNode: FocusNode(skipTraversal: true),
                   onPressed: () {
                     setState(() {
@@ -239,8 +229,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   isDense: true,
                   items: [
                     DropdownMenuItem(value: true, child: Text(S.current.plan)),
-                    DropdownMenuItem(
-                        value: false, child: Text(S.current.efficiency))
+                    DropdownMenuItem(value: false, child: Text(S.current.efficiency))
                   ],
                   onChanged: (v) => setState(() => planOrEff = v ?? planOrEff),
                 ),
@@ -292,8 +281,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                         disabledItems: params.rows.toList(),
                         onSelected: (v) {
                           if (params.rows.contains(v)) {
-                            EasyLoading.showInfo(S.current
-                                .item_already_exist_hint(_getItemName(v)));
+                            EasyLoading.showInfo(S.current.item_already_exist_hint(_getItemName(v)));
                           } else {
                             params.rows.add(v);
                           }
@@ -316,8 +304,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   void addAnItemNotInList() {
-    final itemId =
-        params.sheet.itemIds.firstWhereOrNull((e) => !params.rows.contains(e));
+    final itemId = params.sheet.itemIds.firstWhereOrNull((e) => !params.rows.contains(e));
     if (itemId != null) params.rows.add(itemId);
   }
 

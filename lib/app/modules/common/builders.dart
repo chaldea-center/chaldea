@@ -53,9 +53,7 @@ class SharedBuilder {
   static Color? appBarForeground(BuildContext context) {
     final theme = Theme.of(context);
     return theme.appBarTheme.foregroundColor ??
-        (theme.colorScheme.brightness == Brightness.dark
-            ? theme.colorScheme.onSurface
-            : theme.colorScheme.onPrimary);
+        (theme.colorScheme.brightness == Brightness.dark ? theme.colorScheme.onSurface : theme.colorScheme.onPrimary);
   }
 
   static Widget groupItems({
@@ -120,8 +118,7 @@ class SharedBuilder {
       width = 48;
     }
     if (sort) {
-      items = items.toList()
-        ..sort2((e) => db.gameData.items[e.key]?.priority ?? e.key);
+      items = items.toList()..sort2((e) => db.gameData.items[e.key]?.priority ?? e.key);
     }
     return Wrap(
       spacing: 1,
@@ -219,8 +216,7 @@ class SharedBuilder {
     return items;
   }
 
-  static Future showSwitchPlanDialog(
-      {required BuildContext context, ValueChanged<int>? onChange}) {
+  static Future showSwitchPlanDialog({required BuildContext context, ValueChanged<int>? onChange}) {
     return showDialog(
       context: context,
       useRootNavigator: false,
@@ -240,9 +236,7 @@ class SharedBuilder {
               for (int index = 0; index < db.curUser.plans.length; index++)
                 ListTile(
                   title: Text(db.curUser.getFriendlyPlanName(index)),
-                  subtitle: db.curUser.sameEventPlan && index == 0
-                      ? Text(S.current.event)
-                      : null,
+                  subtitle: db.curUser.sameEventPlan && index == 0 ? Text(S.current.event) : null,
                   selected: index == db.curUser.curSvtPlanNo,
                   onTap: () {
                     Navigator.of(context).pop();
@@ -258,8 +252,7 @@ class SharedBuilder {
     );
   }
 
-  static Widget buildSwitchPlanButton(
-      {required BuildContext context, ValueChanged<int>? onChange}) {
+  static Widget buildSwitchPlanButton({required BuildContext context, ValueChanged<int>? onChange}) {
     final colorScheme = Theme.of(context).colorScheme;
     return IconButton(
       onPressed: () {
@@ -275,9 +268,7 @@ class SharedBuilder {
             ImageWithText.paintOutline(
               text: (db.curUser.curSvtPlanNo + 1).toString(),
               shadowSize: 5,
-              shadowColor: colorScheme.brightness == Brightness.light
-                  ? colorScheme.primary
-                  : colorScheme.surface,
+              shadowColor: colorScheme.brightness == Brightness.light ? colorScheme.primary : colorScheme.surface,
             )
           ],
         ),
@@ -290,10 +281,7 @@ class SharedBuilder {
       (context, _) => IconButton(
         icon: Icon(
           Icons.low_priority,
-          color: db.settings.svtFilterData.priority
-                  .isEmptyOrContain([1, 2, 3, 4, 5])
-              ? null
-              : Colors.yellowAccent,
+          color: db.settings.svtFilterData.priority.isEmptyOrContain([1, 2, 3, 4, 5]) ? null : Colors.yellowAccent,
         ),
         tooltip: S.current.priority,
         onPressed: () {
@@ -318,10 +306,8 @@ class SharedBuilder {
     return TextSpan(
       text: text,
       children: children,
-      style: style ??
-          TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
-      recognizer: recognizer ??
-          (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
+      style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+      recognizer: recognizer ?? (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
     );
   }
 
@@ -339,9 +325,7 @@ class SharedBuilder {
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
           trait.shownName(),
-          style: style ??
-              TextStyle(
-                  color: Theme.of(context).colorScheme.secondaryContainer),
+          style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
           textScaleFactor: textScaleFactor,
         ),
       ),
@@ -356,8 +340,7 @@ class SharedBuilder {
     return textButtonSpan(
       context: context,
       text: trait.shownName(),
-      style: style ??
-          TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+      style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
       onTap: () {
         router.push(url: Routes.traitI(trait.id));
       },
@@ -442,8 +425,7 @@ class SharedBuilder {
       ),
     );
     if (fileType == null) return null;
-    return FilePicker.platform.pickFiles(
-        type: fileType!, allowMultiple: allowMultiple, withData: withData);
+    return FilePicker.platform.pickFiles(type: fileType!, allowMultiple: allowMultiple, withData: withData);
   }
 
   static Widget topSvtClassFilter({
@@ -457,10 +439,8 @@ class SharedBuilder {
       final extraClasses = [...SvtClassX.extra, SvtClassX.beast];
       int rarity = 1;
       if (clsName == SvtClass.ALL) {
-        rarity = data.isEmptyOrContain(SvtClassX.regularAllWithOlga) ||
-                data.isAll(SvtClassX.regularAllWithOlga)
-            ? 5
-            : 1;
+        rarity =
+            data.isEmptyOrContain(SvtClassX.regularAllWithOlga) || data.isAll(SvtClassX.regularAllWithOlga) ? 5 : 1;
       } else if (clsName == SvtClass.EXTRA) {
         if (data.isAll(extraClasses)) {
           rarity = 5;
@@ -507,8 +487,7 @@ class SharedBuilder {
       for (var clsName in SvtClassX.regular) _oneClsBtn(clsName),
     ];
     final clsExtraBtns = [
-      for (var clsName in [...SvtClassX.extra, SvtClassX.beast])
-        _oneClsBtn(clsName),
+      for (var clsName in [...SvtClassX.extra, SvtClassX.beast]) _oneClsBtn(clsName),
     ];
     final extraBtn = _oneClsBtn(SvtClass.EXTRA);
     final unknownBtn = _oneClsBtn(SvtClass.unknown);
@@ -547,17 +526,12 @@ class SharedBuilder {
           constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [...clsRegularBtns, extraBtn, if (showUnknown) unknownBtn]
-                .map((e) => Expanded(child: e))
-                .toList(),
+            children:
+                [...clsRegularBtns, extraBtn, if (showUnknown) unknownBtn].map((e) => Expanded(child: e)).toList(),
           ),
         );
       case SvtListClassFilterStyle.singleRowExpanded:
-        final allBtns = [
-          ...clsRegularBtns,
-          ...clsExtraBtns,
-          if (showUnknown) unknownBtn
-        ];
+        final allBtns = [...clsRegularBtns, ...clsExtraBtns, if (showUnknown) unknownBtn];
         return SizedBox(
           height: 40,
           child: Row(
@@ -582,10 +556,8 @@ class SharedBuilder {
       case SvtListClassFilterStyle.twoRow:
         if (showUnknown) clsExtraBtns.add(unknownBtn);
         int crossCount = max(clsRegularBtns.length, clsExtraBtns.length);
-        clsRegularBtns.addAll(List.generate(
-            crossCount - clsRegularBtns.length, (index) => Container()));
-        clsExtraBtns.addAll(List.generate(
-            crossCount - clsExtraBtns.length, (index) => Container()));
+        clsRegularBtns.addAll(List.generate(crossCount - clsRegularBtns.length, (index) => Container()));
+        clsExtraBtns.addAll(List.generate(crossCount - clsExtraBtns.length, (index) => Container()));
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -604,8 +576,7 @@ class SharedBuilder {
     }
   }
 
-  static List<InlineSpan> replaceSpan(
-      String text, Pattern pattern, List<InlineSpan> replace,
+  static List<InlineSpan> replaceSpan(String text, Pattern pattern, List<InlineSpan> replace,
       {bool appendIfAbsent = true}) {
     final parts = text.split(pattern);
     if (parts.length == 1) {
@@ -626,8 +597,7 @@ class SharedBuilder {
     }
   }
 
-  static List<InlineSpan> replaceSpanMap(String text, Pattern pattern,
-      List<InlineSpan> Function(Match match) replace) {
+  static List<InlineSpan> replaceSpanMap(String text, Pattern pattern, List<InlineSpan> Function(Match match) replace) {
     List<InlineSpan> spans = [];
     List<String> textParts = text.split(pattern);
     bool mapped = false;

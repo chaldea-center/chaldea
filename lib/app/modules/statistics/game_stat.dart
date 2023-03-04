@@ -13,8 +13,7 @@ class GameStatisticsPage extends StatefulWidget {
   _GameStatisticsPageState createState() => _GameStatisticsPageState();
 }
 
-class _GameStatisticsPageState extends State<GameStatisticsPage>
-    with SingleTickerProviderStateMixin {
+class _GameStatisticsPageState extends State<GameStatisticsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -65,10 +64,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         body: TabBarView(
           controller: _tabController,
           children: [
-            KeepAliveBuilder(
-                builder: (context) => ItemStatTab(demandMode: true)),
-            KeepAliveBuilder(
-                builder: (context) => ItemStatTab(demandMode: false)),
+            KeepAliveBuilder(builder: (context) => ItemStatTab(demandMode: true)),
+            KeepAliveBuilder(builder: (context) => ItemStatTab(demandMode: false)),
             ServantDemandDetailStat(),
             KeepAliveBuilder(builder: (context) => StatisticServantTab())
           ],

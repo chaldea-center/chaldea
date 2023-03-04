@@ -25,64 +25,50 @@ class FilePlusNative implements FilePlus {
   Uint8List readAsBytesSync() => _file.readAsBytesSync();
 
   @override
-  Future<List<String>> readAsLines({Encoding encoding = utf8}) =>
-      _file.readAsLines(encoding: encoding);
+  Future<List<String>> readAsLines({Encoding encoding = utf8}) => _file.readAsLines(encoding: encoding);
 
   @override
-  List<String> readAsLinesSync({Encoding encoding = utf8}) =>
-      _file.readAsLinesSync(encoding: encoding);
+  List<String> readAsLinesSync({Encoding encoding = utf8}) => _file.readAsLinesSync(encoding: encoding);
 
   @override
-  Future<String> readAsString({Encoding encoding = utf8}) =>
-      _file.readAsString(encoding: encoding);
+  Future<String> readAsString({Encoding encoding = utf8}) => _file.readAsString(encoding: encoding);
 
   @override
-  String readAsStringSync({Encoding encoding = utf8}) =>
-      _file.readAsStringSync(encoding: encoding);
+  String readAsStringSync({Encoding encoding = utf8}) => _file.readAsStringSync(encoding: encoding);
 
   @override
-  Future<FilePlus> writeAsBytes(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) async {
+  Future<FilePlus> writeAsBytes(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false}) async {
     await create(recursive: true);
     await _file.writeAsBytes(bytes, mode: mode, flush: flush);
     return this;
   }
 
   @override
-  void writeAsBytesSync(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) {
+  void writeAsBytesSync(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false}) {
     createSync(recursive: true);
     _file.writeAsBytesSync(bytes, mode: mode, flush: flush);
   }
 
   @override
   Future<FilePlus> writeAsString(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false}) async {
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) async {
     await create(recursive: true);
-    await _file.writeAsString(contents,
-        mode: mode, encoding: encoding, flush: flush);
+    await _file.writeAsString(contents, mode: mode, encoding: encoding, flush: flush);
     return this;
   }
 
   @override
   void writeAsStringSync(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false}) {
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) {
     createSync(recursive: true);
-    _file.writeAsStringSync(contents,
-        mode: mode, encoding: encoding, flush: flush);
+    _file.writeAsStringSync(contents, mode: mode, encoding: encoding, flush: flush);
   }
 
   @override
-  Future<void> create({bool recursive = false}) =>
-      _file.create(recursive: recursive);
+  Future<void> create({bool recursive = false}) => _file.create(recursive: recursive);
 
   @override
-  void createSync({bool recursive = false}) =>
-      _file.createSync(recursive: recursive);
+  void createSync({bool recursive = false}) => _file.createSync(recursive: recursive);
 
   @override
   Future<void> delete() => _file.delete();

@@ -33,8 +33,7 @@ class CarouselUtil {
   }) {
     // the critical height is larger than maxHeight
     double criticalWidth = maxHeight * aspectRatio / maxViewport;
-    bool limited =
-        width != null && width != double.infinity && width >= criticalWidth;
+    bool limited = width != null && width != double.infinity && width >= criticalWidth;
     if (limited) {
       return CarouselLimitHeightOption(
         height: maxHeight,
@@ -108,17 +107,14 @@ class CarouselUtil {
         .map((e) => CachedImage(
               imageUrl: e,
               cachedOption: CachedImageOption(
-                imageBuilder: (context, image) =>
-                    FittedBox(child: Image(image: image)),
+                imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
                 errorWidget: (context, url, error) => const SizedBox(),
               ),
               placeholder: (_, __) => const SizedBox(),
             ))
         .toList();
     if (items.isEmpty) return const SizedBox();
-    baseOption ??= CarouselOptions(
-        autoPlay: items.length > 1,
-        autoPlayInterval: const Duration(seconds: 6));
+    baseOption ??= CarouselOptions(autoPlay: items.length > 1, autoPlayInterval: const Duration(seconds: 6));
     return LayoutTryBuilder(builder: (context, constraints) {
       return CarouselSlider(
         items: items,

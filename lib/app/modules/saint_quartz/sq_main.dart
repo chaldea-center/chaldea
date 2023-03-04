@@ -15,8 +15,7 @@ class SaintQuartzPlanning extends StatefulWidget {
   _SaintQuartzPlanningState createState() => _SaintQuartzPlanningState();
 }
 
-class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
-    with SingleTickerProviderStateMixin {
+class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -28,8 +27,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
       if (mounted) setState(() {});
     };
     _tabController.addListener(() {
-      if (!_tabController.indexIsChanging &&
-          _tabController.index == _tabController.length - 1) {
+      if (!_tabController.indexIsChanging && _tabController.index == _tabController.length - 1) {
         db.curUser.saintQuartzPlan.solve();
       }
     });
@@ -53,15 +51,10 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
           tabs: [
             Tab(text: S.current.settings_tab_name),
             Tab(
-              text: LocalizedText.of(
-                  chs: '特殊御主任务',
-                  jpn: 'エクストラミッション',
-                  eng: 'Extra Mission',
-                  kor: '엑스트라 미션'),
+              text: LocalizedText.of(chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
             ),
             Tab(
-              text: LocalizedText.of(
-                  chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
+              text: LocalizedText.of(chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
             ),
           ],
         )),

@@ -72,17 +72,10 @@ abstract class DescriptorBase {
       emptyHint(MultiDescriptor.svtClass(context, targetIds, useAnd: useAnd));
   List<InlineSpan> servants(BuildContext context) =>
       emptyHint(MultiDescriptor.servants(context, targetIds, useAnd: useAnd));
-  List<InlineSpan> items(BuildContext context) =>
-      emptyHint(MultiDescriptor.items(context, targetIds, useAnd: useAnd));
-  List<InlineSpan> missionList(
-          BuildContext context, Map<int, EventMission> missions,
-          {bool sort = true}) =>
-      emptyHint(MultiDescriptor.missions(context, targetIds, missions,
-          useAnd: useAnd, sort: sort));
-  List<InlineSpan> events(BuildContext context) =>
-      emptyHint(MultiDescriptor.events(context, targetIds));
-  List<InlineSpan> wars(BuildContext context) =>
-      emptyHint(MultiDescriptor.wars(context, targetIds));
-  List<InlineSpan> shops(BuildContext context) =>
-      emptyHint(MultiDescriptor.shops(context, targetIds));
+  List<InlineSpan> items(BuildContext context) => emptyHint(MultiDescriptor.items(context, targetIds, useAnd: useAnd));
+  List<InlineSpan> missionList(BuildContext context, Map<int, EventMission> missions, {bool sort = true}) =>
+      emptyHint(MultiDescriptor.missions(context, targetIds, missions, useAnd: useAnd, sort: sort));
+  List<InlineSpan> events(BuildContext context) => emptyHint(MultiDescriptor.events(context, targetIds));
+  List<InlineSpan> wars(BuildContext context) => emptyHint(MultiDescriptor.wars(context, targetIds));
+  List<InlineSpan> shops(BuildContext context) => emptyHint(MultiDescriptor.shops(context, targetIds));
 }

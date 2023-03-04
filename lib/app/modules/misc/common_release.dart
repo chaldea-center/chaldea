@@ -18,11 +18,8 @@ class CommonReleasesPage extends StatefulWidget {
   final List<CommonRelease>? releases;
   final Region? region;
   @protected
-  const CommonReleasesPage(
-      {super.key, required List<CommonRelease> this.releases, this.region})
-      : id = null;
-  const CommonReleasesPage.id({super.key, required int this.id, this.region})
-      : releases = null;
+  const CommonReleasesPage({super.key, required List<CommonRelease> this.releases, this.region}) : id = null;
+  const CommonReleasesPage.id({super.key, required int this.id, this.region}) : releases = null;
 
   @override
   State<CommonReleasesPage> createState() => _CommonReleasesPageState();
@@ -91,22 +88,16 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
         ));
       }
       children.addAll(divideList(
-        List.generate(rs.length,
-            (index) => buildRelease(context, index, rs[index], !useId)),
-        const DividerWithTitle(
-            height: 16, title: '·  ·  ·  ·  ·  ·', indent: 64),
+        List.generate(rs.length, (index) => buildRelease(context, index, rs[index], !useId)),
+        const DividerWithTitle(height: 16, title: '·  ·  ·  ·  ·  ·', indent: 64),
       ));
     }
-    children.add(SafeArea(
-        child: grouped.length > 1
-            ? SFooter(S.current.common_release_group_hint)
-            : const SizedBox()));
+    children.add(SafeArea(child: grouped.length > 1 ? SFooter(S.current.common_release_group_hint) : const SizedBox()));
 
     return ListView(children: children);
   }
 
-  Widget buildRelease(
-      BuildContext context, int index, CommonRelease release, bool enableLink) {
+  Widget buildRelease(BuildContext context, int index, CommonRelease release, bool enableLink) {
     final title = '${release.condGroup}.${index + 1}  -  ${release.id}';
     return CustomTable(children: [
       enableLink
@@ -168,8 +159,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
   Widget get popupMenu {
     return PopupMenuButton(
       itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas:
-              'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}'),
+          atlas: 'https://api.atlasacademy.io/nice/JP/common-release/${widget.id}'),
     );
   }
 }

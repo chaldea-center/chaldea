@@ -103,8 +103,7 @@ class NpChargeFilterPage extends FilterPage<NpFilterData> {
   _NpChargeFilterPageState createState() => _NpChargeFilterPageState();
 }
 
-class _NpChargeFilterPageState
-    extends FilterPageState<NpFilterData, NpChargeFilterPage> {
+class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -113,17 +112,14 @@ class _NpChargeFilterPageState
         filterData.reset();
         update();
       }),
-      content:
-          getListViewBody(restorationId: 'np_charge_list_filter', children: [
+      content: getListViewBody(restorationId: 'np_charge_list_filter', children: [
         FilterGroup<bool>(
           options: const [true, false],
           values: FilterRadioData.nonnull(filterData.isSvt),
-          optionBuilder: (v) =>
-              Text(v ? S.current.servant : S.current.craft_essence),
+          optionBuilder: (v) => Text(v ? S.current.servant : S.current.craft_essence),
           onFilterChanged: (v, _) {
             filterData.isSvt = v.radioValue ?? true;
-            if (v.radioValue == false &&
-                filterData.type.radioValue == NpChargeType.instantSum) {
+            if (v.radioValue == false && filterData.type.radioValue == NpChargeType.instantSum) {
               filterData.type.toggle(NpChargeType.instant);
             }
             update();
@@ -167,9 +163,7 @@ class _NpChargeFilterPageState
           title: Text(S.current.general_type, style: textStyle),
           options: filterData.isSvt
               ? NpChargeType.values
-              : NpChargeType.values
-                  .where((e) => e != NpChargeType.instantSum)
-                  .toList(),
+              : NpChargeType.values.where((e) => e != NpChargeType.instantSum).toList(),
           values: filterData.type,
           optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (v, _) {
@@ -201,9 +195,7 @@ class _NpChargeFilterPageState
               },
             ),
             DropdownButton<int>(
-              value: filterData.skillCD >= 3 && filterData.skillCD <= 8
-                  ? filterData.skillCD
-                  : 0,
+              value: filterData.skillCD >= 3 && filterData.skillCD <= 8 ? filterData.skillCD : 0,
               items: [
                 const DropdownMenuItem(
                   value: 0,
@@ -270,9 +262,7 @@ class _NpChargeFilterPageState
             title: Text(S.current.ce_max_limit_break),
             options: const [false, true],
             values: filterData.ceMax,
-            optionBuilder: (v) => Text(v
-                ? S.current.ce_max_limit_break
-                : 'NOT ${S.current.ce_max_limit_break}'),
+            optionBuilder: (v) => Text(v ? S.current.ce_max_limit_break : 'NOT ${S.current.ce_max_limit_break}'),
             onFilterChanged: (value, _) {
               update();
             },
@@ -340,8 +330,7 @@ class _NpChargeFilterPageState
           FilterGroup<TdEffectFlag>(
             values: filterData.tdType,
             options: TdEffectFlag.values,
-            optionBuilder: (v) =>
-                Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+            optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
             onFilterChanged: (value, _) {
               update();
             },

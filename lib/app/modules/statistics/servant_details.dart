@@ -13,13 +13,11 @@ class ServantDemandDetailStat extends StatefulWidget {
   ServantDemandDetailStat({super.key});
 
   @override
-  State<ServantDemandDetailStat> createState() =>
-      _ServantDemandDetailStatState();
+  State<ServantDemandDetailStat> createState() => _ServantDemandDetailStatState();
 }
 
 class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
-  final typeFilter = FilterRadioData<SvtMatCostDetailType>.nonnull(
-      SvtMatCostDetailType.demands);
+  final typeFilter = FilterRadioData<SvtMatCostDetailType>.nonnull(SvtMatCostDetailType.demands);
   SvtCompare sortOrder = SvtCompare.no;
   bool sortReversed = true;
 
@@ -27,8 +25,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
   Widget build(BuildContext context) {
     final data = {
       for (final svt in db.gameData.servantsWithDup.values)
-        svt: db.itemCenter.getSvtCostDetail(svt.collectionNo,
-            typeFilter.radioValue ?? SvtMatCostDetailType.demands)
+        svt: db.itemCenter.getSvtCostDetail(svt.collectionNo, typeFilter.radioValue ?? SvtMatCostDetailType.demands)
     };
     data.removeWhere((key, value) => value.all.values.every((v) => v <= 0));
     final servants = data.keys.toList();
@@ -44,26 +41,19 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
         reversed = [sortReversed, false, false];
         break;
       case SvtCompare.priority:
-        orders = [
-          sortOrder,
-          SvtCompare.rarity,
-          SvtCompare.className,
-          SvtCompare.no
-        ];
+        orders = [sortOrder, SvtCompare.rarity, SvtCompare.className, SvtCompare.no];
         reversed = [sortReversed, true, false, false];
         break;
       default:
         orders = [sortOrder];
         reversed = [sortReversed];
     }
-    servants.sort((a, b) =>
-        SvtFilterData.compare(a, b, keys: orders, reversed: reversed));
+    servants.sort((a, b) => SvtFilterData.compare(a, b, keys: orders, reversed: reversed));
     return Column(
       children: [
         Expanded(
           child: ListView.separated(
-            itemBuilder: (context, index) =>
-                buildOne(servants[index], data[servants[index]]!),
+            itemBuilder: (context, index) => buildOne(servants[index], data[servants[index]]!),
             separatorBuilder: (_, __) => kDefaultDivider,
             itemCount: servants.length,
           ),
@@ -79,8 +69,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
     return SimpleAccordion(
       key: ValueKey(svt),
       headerBuilder: (context, _) {
-        final items =
-            Item.sortMapByPriority(detail.all, reversed: true).entries;
+        final items = Item.sortMapByPriority(detail.all, reversed: true).entries;
         Widget child = Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -113,9 +102,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
         void _addPart(Map<int, int> items, String title) {
           items = Map.of(items)..removeWhere((key, value) => value <= 0);
           if (items.isEmpty) return;
-          children.add(SHeader(title,
-              padding: const EdgeInsetsDirectional.only(
-                  start: 0, top: 8.0, bottom: 4.0)));
+          children.add(SHeader(title, padding: const EdgeInsetsDirectional.only(start: 0, top: 8.0, bottom: 4.0)));
           children.add(SharedBuilder.itemGrid(
             context: context,
             items: Item.sortMapByPriority(items, reversed: true).entries,
@@ -145,10 +132,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
     return ButtonBar(
       children: [
         FilterGroup<SvtMatCostDetailType>(
-          options: const [
-            SvtMatCostDetailType.consumed,
-            SvtMatCostDetailType.demands
-          ],
+          options: const [SvtMatCostDetailType.consumed, SvtMatCostDetailType.demands],
           values: typeFilter,
           combined: true,
           optionBuilder: (v) => Text({
@@ -168,12 +152,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
             DropdownButton<SvtCompare>(
               value: sortOrder,
               items: [
-                for (final order in [
-                  SvtCompare.no,
-                  SvtCompare.className,
-                  SvtCompare.rarity,
-                  SvtCompare.priority
-                ])
+                for (final order in [SvtCompare.no, SvtCompare.className, SvtCompare.rarity, SvtCompare.priority])
                   DropdownMenuItem(
                     value: order,
                     child: Text(order.showName),
@@ -192,9 +171,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
                 });
               },
               icon: FaIcon(
-                sortReversed
-                    ? FontAwesomeIcons.arrowDownWideShort
-                    : FontAwesomeIcons.arrowUpWideShort,
+                sortReversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               ),
               tooltip: S.current.sort_order,
             )

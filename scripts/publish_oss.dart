@@ -18,8 +18,7 @@ void main(List<String> args) async {
     throw 'Failed to list bucket objects.\n${listResult.stderr}\n${listResult.stdout}';
   }
 
-  final regex =
-      RegExp(r'(?<=\n)(.{29})\s+(\d+)\s+(.+)\s+([0-9A-Z]{32})\s+(oss://.+)\n');
+  final regex = RegExp(r'(?<=\n)(.{29})\s+(\d+)\s+(.+)\s+([0-9A-Z]{32})\s+(oss://.+)\n');
 
   const exclude = ['main.dart.js.map']; // and hidden files
   const buildDir = 'build/web/';
@@ -28,11 +27,9 @@ void main(List<String> args) async {
   int uploaded = 0, deleted = 0, remained = 0;
 
   for (final match in regex.allMatches(listResult.stdout.toString())) {
-    remoteFiles[match[5]!.substring('oss://$bucketName/'.length)] =
-        match[4]!.toUpperCase();
+    remoteFiles[match[5]!.substring('oss://$bucketName/'.length)] = match[4]!.toUpperCase();
   }
-  final _excludedFiles =
-      exclude.map((e) => File(pathlib.join(buildDir, e)).absolute).toList();
+  final _excludedFiles = exclude.map((e) => File(pathlib.join(buildDir, e)).absolute).toList();
   if (!File(pathlib.join(buildDir, 'index.html')).existsSync()) {
     throw 'index.html not found';
   }
@@ -40,8 +37,7 @@ void main(List<String> args) async {
   for (final file in Directory(buildDir).listSync(recursive: true)) {
     if (file is! File) continue;
     if (pathlib.basename(file.path).startsWith('.')) continue;
-    if (_excludedFiles.any((e) =>
-        e.existsSync() && FileSystemEntity.identicalSync(file.path, e.path))) {
+    if (_excludedFiles.any((e) => e.existsSync() && FileSystemEntity.identicalSync(file.path, e.path))) {
       continue;
     }
 

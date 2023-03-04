@@ -46,24 +46,17 @@ class SystemTrayUtil {
       _systemTray.registerSystemTrayEventHandler((eventName) {
         debugPrint("eventName: $eventName");
         if (eventName == kSystemTrayEventClick) {
-          PlatformU.isWindows
-              ? appWindow.show()
-              : _systemTray.popUpContextMenu();
+          PlatformU.isWindows ? appWindow.show() : _systemTray.popUpContextMenu();
         } else if (eventName == kSystemTrayEventRightClick) {
-          PlatformU.isWindows
-              ? _systemTray.popUpContextMenu()
-              : appWindow.show();
+          PlatformU.isWindows ? _systemTray.popUpContextMenu() : appWindow.show();
         }
       });
 
       await _menuMain.buildFrom([
-        MenuItemLabel(
-            label: '$kAppName v${AppInfo.versionString}', enabled: false),
+        MenuItemLabel(label: '$kAppName v${AppInfo.versionString}', enabled: false),
         MenuSeparator(),
-        MenuItemLabel(
-            label: S.current.show, onClicked: (menuItem) => appWindow.show()),
-        MenuItemLabel(
-            label: S.current.hide, onClicked: (menuItem) => appWindow.hide()),
+        MenuItemLabel(label: S.current.show, onClicked: (menuItem) => appWindow.show()),
+        MenuItemLabel(label: S.current.hide, onClicked: (menuItem) => appWindow.hide()),
         MenuItemLabel(
           label: S.current.quit,
           onClicked: (menuItem) async {
@@ -76,8 +69,7 @@ class SystemTrayUtil {
       _installed = true;
     } catch (e, s) {
       logger.e('init system tray failed', e, s);
-      EasyLoading.showError(
-          '${S.current.failed}: ${S.current.show_system_tray}');
+      EasyLoading.showError('${S.current.failed}: ${S.current.show_system_tray}');
     }
   }
 }

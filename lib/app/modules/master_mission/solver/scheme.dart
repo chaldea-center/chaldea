@@ -77,20 +77,16 @@ class CustomMission {
       for (final detail in cond.details!) {
         final type = kDetailCondMapping[detail.missionCondType];
         if (type == null) continue;
-        if (type == CustomMissionType.quest &&
-            detail.targetIds.length == 1 &&
-            detail.targetIds.first == 0) {
+        if (type == CustomMissionType.quest && detail.targetIds.length == 1 && detail.targetIds.first == 0) {
           // any quest
           continue;
         }
         bool useAnd;
         switch (type) {
           case CustomMissionType.trait:
-            if (detail.missionCondType ==
-                DetailCondType.enemyIndividualityKillNum) {
+            if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum) {
               useAnd = false;
-            } else if (detail.missionCondType ==
-                DetailCondType.defeatEnemyIndividuality) {
+            } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality) {
               useAnd = true;
             } else {
               useAnd = true;
@@ -107,8 +103,7 @@ class CustomMission {
             useAnd = false;
             break;
         }
-        conds.add(CustomMissionCond(
-            type: type, targetIds: detail.targetIds, useAnd: useAnd));
+        conds.add(CustomMissionCond(type: type, targetIds: detail.targetIds, useAnd: useAnd));
       }
       if (conds.isEmpty) continue;
 
@@ -161,12 +156,10 @@ class CustomMission {
     DetailCondType.targetQuestEnemyKillNum: CustomMissionType.enemy,
     DetailCondType.defeatEnemyIndividuality: CustomMissionType.trait,
     DetailCondType.enemyIndividualityKillNum: CustomMissionType.trait,
-    DetailCondType.targetQuestEnemyIndividualityKillNum:
-        CustomMissionType.enemy,
+    DetailCondType.targetQuestEnemyIndividualityKillNum: CustomMissionType.enemy,
     DetailCondType.defeatServantClass: CustomMissionType.servantClass,
     DetailCondType.defeatEnemyClass: CustomMissionType.enemyClass,
-    DetailCondType.defeatEnemyNotServantClass:
-        CustomMissionType.enemyNotServantClass,
+    DetailCondType.defeatEnemyNotServantClass: CustomMissionType.enemyNotServantClass,
   };
 
   static final kDetailCondMappingReverse = {
@@ -175,8 +168,7 @@ class CustomMission {
     CustomMissionType.trait: DetailCondType.defeatEnemyIndividuality,
     CustomMissionType.servantClass: DetailCondType.defeatServantClass,
     CustomMissionType.enemyClass: DetailCondType.defeatEnemyClass,
-    CustomMissionType.enemyNotServantClass:
-        DetailCondType.defeatEnemyNotServantClass,
+    CustomMissionType.enemyNotServantClass: DetailCondType.defeatEnemyNotServantClass,
     CustomMissionType.questTrait: DetailCondType.questClearIndividuality,
   };
 }
@@ -204,9 +196,7 @@ enum CustomMissionType {
   questTrait,
   ;
 
-  bool get isQuestType =>
-      this == CustomMissionType.questTrait || this == CustomMissionType.quest;
+  bool get isQuestType => this == CustomMissionType.questTrait || this == CustomMissionType.quest;
   bool get isEnemyType => !isQuestType;
-  bool get isTraitType =>
-      this == CustomMissionType.trait || this == CustomMissionType.questTrait;
+  bool get isTraitType => this == CustomMissionType.trait || this == CustomMissionType.questTrait;
 }

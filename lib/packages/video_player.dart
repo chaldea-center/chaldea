@@ -28,8 +28,7 @@ class MyVideoPlayer extends StatefulWidget {
   final EdgeInsets indicatorPadding;
   final double indicatorHeight;
   final bool indicatorBelow;
-  final Widget Function(BuildContext context, String? url, dynamic reason)
-      onFailed;
+  final Widget Function(BuildContext context, String? url, dynamic reason) onFailed;
 
   const MyVideoPlayer({
     super.key,
@@ -56,8 +55,7 @@ class MyVideoPlayer extends StatefulWidget {
   @override
   State<MyVideoPlayer> createState() => _MyVideoPlayerState();
 
-  static Widget defaultFailedBuilder(
-      BuildContext context, String? url, dynamic error) {
+  static Widget defaultFailedBuilder(BuildContext context, String? url, dynamic error) {
     String? name;
     if (url != null) {
       final segs = Uri.tryParse(url)?.pathSegments;
@@ -66,13 +64,11 @@ class MyVideoPlayer extends StatefulWidget {
     String errorStr = error?.toString() ?? 'Error';
     name ??= String.fromCharCodes(errorStr.runes.take(50));
     return Text.rich(TextSpan(children: [
-      const TextSpan(
-          text: 'Video  ', style: TextStyle(fontWeight: FontWeight.bold)),
+      const TextSpan(text: 'Video  ', style: TextStyle(fontWeight: FontWeight.bold)),
       SharedBuilder.textButtonSpan(
         context: context,
         text: '▶ $name',
-        style:
-            TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+        style: TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
         onTap: () {
           if (url != null) launch(url);
         },
@@ -84,8 +80,7 @@ class MyVideoPlayer extends StatefulWidget {
 class _MyVideoPlayerState extends State<MyVideoPlayer> {
   VideoPlayerController? _fallbackController;
 
-  VideoPlayerController? get effectiveController =>
-      widget.controller ?? _fallbackController;
+  VideoPlayerController? get effectiveController => widget.controller ?? _fallbackController;
 
   bool _loading = false;
   dynamic error;
@@ -134,11 +129,11 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     final fp = kIsWeb ? null : await AtlasIconLoader.i.get(url);
     if (!mounted) return;
     if (fp != null) {
-      _fallbackController = VideoPlayerController.file(File(fp),
-          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+      _fallbackController =
+          VideoPlayerController.file(File(fp), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     } else {
-      _fallbackController = VideoPlayerController.network(url,
-          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+      _fallbackController =
+          VideoPlayerController.network(url, videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     }
     try {
       await _fallbackController!.initialize();
@@ -181,8 +176,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     final themeData = Theme.of(context);
     progressIndicator = Theme(
       data: themeData.copyWith(
-          progressIndicatorTheme: themeData.progressIndicatorTheme
-              .copyWith(linearMinHeight: widget.indicatorHeight)),
+          progressIndicatorTheme: themeData.progressIndicatorTheme.copyWith(linearMinHeight: widget.indicatorHeight)),
       child: progressIndicator,
     );
 
@@ -191,14 +185,10 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
       children: [
         Padding(
           padding: widget.indicatorBelow
-              ? EdgeInsets.only(
-                  bottom:
-                      widget.indicatorHeight + widget.indicatorPadding.bottom)
+              ? EdgeInsets.only(bottom: widget.indicatorHeight + widget.indicatorPadding.bottom)
               : EdgeInsets.zero,
           child: AspectRatio(
-            aspectRatio: controller.value.isInitialized
-                ? controller.value.aspectRatio
-                : widget.initAspectRatio,
+            aspectRatio: controller.value.isInitialized ? controller.value.aspectRatio : widget.initAspectRatio,
             child: player,
           ),
         ),
@@ -206,8 +196,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 50),
             reverseDuration: const Duration(milliseconds: 200),
-            child: !controller.value.isPlaying &&
-                    controller.value.position == Duration.zero
+            child: !controller.value.isPlaying && controller.value.position == Duration.zero
                 ? Container(
                     color: Colors.black26,
                     child: const Center(

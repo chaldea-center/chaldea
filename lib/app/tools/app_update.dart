@@ -41,14 +41,13 @@ class AppUpdater {
     // use https and set UA, or the fetched info may be outdated
     // this http request always return iOS version result
     try {
-      final response = await Dio()
-          .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
-              options: Options(responseType: ResponseType.plain, headers: {
-                'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
-                    " AppleWebKit/537.36 (KHTML, like Gecko)"
-                    " Chrome/88.0.4324.146"
-                    " Safari/537.36 Edg/88.0.705.62"
-              }));
+      final response = await Dio().get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
+          options: Options(responseType: ResponseType.plain, headers: {
+            'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+                " AppleWebKit/537.36 (KHTML, like Gecko)"
+                " Chrome/88.0.4324.146"
+                " Safari/537.36 Edg/88.0.705.62"
+          }));
       // print(response.data);
       final jsonData = jsonDecode(response.data.toString().trim());
       // logger.d(jsonData);
@@ -122,9 +121,7 @@ class AppUpdater {
   static Future<AppUpdateDetail?> check() async {
     if (_checkCmpl != null) return _checkCmpl!.future;
     _checkCmpl = Completer();
-    latestAppRelease()
-        .then((value) => _checkCmpl!.complete(value))
-        .catchError((e, s) {
+    latestAppRelease().then((value) => _checkCmpl!.complete(value)).catchError((e, s) {
       logger.e('check app update failed', e, s);
       _checkCmpl!.complete(null);
     }).whenComplete(() => _checkCmpl = null);
@@ -135,9 +132,7 @@ class AppUpdater {
     if (_downloadCmpl != null) return _downloadCmpl!.future;
     if (PlatformU.isAndroid) return null;
     _downloadCmpl = Completer();
-    _downloadFileWithCheck(detail)
-        .then((value) => _downloadCmpl!.complete(value))
-        .catchError((e, s) {
+    _downloadFileWithCheck(detail).then((value) => _downloadCmpl!.complete(value)).catchError((e, s) {
       logger.e('download app release failed', e, s);
       _downloadCmpl!.complete(null);
     }).whenComplete(() => _downloadCmpl = null);
@@ -172,18 +167,14 @@ class AppUpdater {
     final releases = await _githubReleases('chaldea-center', 'chaldea');
     AppUpdateDetail? _latest;
     for (final release in releases) {
-      if (release.version == null ||
-          (release.version! <= AppInfo.version && !kDebugMode)) {
+      if (release.version == null || (release.version! <= AppInfo.version && !kDebugMode)) {
         continue;
       }
-      final installer = release.assets.firstWhereOrNull(
-          (e) => e.name.contains(os!) && !e.name.contains('sha1'));
-      final checksum = release.assets.firstWhereOrNull(
-          (e) => e.name.contains(os!) && e.name.contains('sha1'));
+      final installer = release.assets.firstWhereOrNull((e) => e.name.contains(os!) && !e.name.contains('sha1'));
+      final checksum = release.assets.firstWhereOrNull((e) => e.name.contains(os!) && e.name.contains('sha1'));
       if (installer == null || checksum == null) continue;
       if (_latest == null || _latest.release.version! < release.version!) {
-        _latest = AppUpdateDetail(
-            release: release, installer: installer, checksum: checksum);
+        _latest = AppUpdateDetail(release: release, installer: installer, checksum: checksum);
       }
     }
     db.runtimeData.releaseDetail = _latest;
@@ -191,20 +182,16 @@ class AppUpdater {
   }
 
   static Future<String?> _downloadFileWithCheck(AppUpdateDetail detail) async {
-    String checksum = (await DioE().get(detail.checksum.downloadUrl,
-            options: Options(responseType: ResponseType.plain)))
-        .data;
+    String checksum =
+        (await DioE().get(detail.checksum.downloadUrl, options: Options(responseType: ResponseType.plain))).data;
     checksum = checksum.toLowerCase();
-    String savePath =
-        joinPaths(db.paths.tempDir, 'installer', detail.installer.name);
+    String savePath = joinPaths(db.paths.tempDir, 'installer', detail.installer.name);
     final file = File(savePath);
     if (await file.exists()) {
-      final localChecksum =
-          sha1.convert(await file.readAsBytes()).toString().toLowerCase();
+      final localChecksum = sha1.convert(await file.readAsBytes()).toString().toLowerCase();
       if (localChecksum == checksum) return savePath;
     }
-    final resp = await DioE().get(detail.installer.downloadUrl,
-        options: Options(responseType: ResponseType.bytes));
+    final resp = await DioE().get(detail.installer.downloadUrl, options: Options(responseType: ResponseType.bytes));
     final data = List<int>.from(resp.data);
     if (sha1.convert(data).toString().toLowerCase() == checksum) {
       file.parent.createSync(recursive: true);
@@ -231,9 +218,8 @@ class AppUpdateDetail {
 
 Future<List<_Release>> _githubReleases(String org, String repo) async {
   final dio = DioE();
-  final root = db.settings.proxyServer
-      ? '${Hosts.kWorkerHostCN}/proxy/github/api.github.com'
-      : 'https://api.github.com';
+  final root =
+      db.settings.proxyServer ? '${Hosts.kWorkerHostCN}/proxy/github/api.github.com' : 'https://api.github.com';
   final resp = await dio.get('$root/repos/$org/$repo/releases');
   return (resp.data as List).map((e) => _Release.fromJson(e)).toList();
 }
@@ -285,14 +271,10 @@ class _Asset {
   }
 
   String get proxyUrl {
-    return browserDownloadUrl.replaceFirst('https://github.com/',
-        '${Hosts.kWorkerHostCN}/proxy/github/github.com/');
+    return browserDownloadUrl.replaceFirst('https://github.com/', '${Hosts.kWorkerHostCN}/proxy/github/github.com/');
   }
 
   factory _Asset.fromJson(Map data) {
-    return _Asset(
-        name: data['name'],
-        size: data['size'],
-        browserDownloadUrl: data['browser_download_url']);
+    return _Asset(name: data['name'], size: data['size'], browserDownloadUrl: data['browser_download_url']);
   }
 }

@@ -7,8 +7,7 @@ void main() async {
   await initiateForTest();
   test('Load Game Data', () async {
     // test without ui, [silent] must set to silent
-    final data =
-        await GameDataLoader.instance.reload(offline: true, silent: true);
+    final data = await GameDataLoader.instance.reload(offline: true, silent: true);
     print(data?.version.dateTime.toString());
     expect(data, isNotNull);
   });

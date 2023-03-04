@@ -129,8 +129,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
               trailing: FilterGroup<bool>(
                 options: const [true, false],
                 values: FilterRadioData.nonnull(mission.condAnd),
-                optionBuilder: (v) => Text(
-                    v ? S.current.logic_type_and : S.current.logic_type_or),
+                optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
                 combined: true,
                 padding: EdgeInsets.zero,
                 onFilterChanged: (v, _) {
@@ -175,23 +174,19 @@ class _MissionInputTabState extends State<MissionInputTab> {
             DividerWithTitle(
               indent: 12,
               titleWidget: Text.rich(
-                TextSpan(
-                    text:
-                        '${S.current.condition} ${mission.conds.indexOf(cond) + 1}',
-                    children: [
-                      if (mission.conds.length > 1)
-                        TextSpan(
-                          text: '(${S.current.delete})',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.error),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                mission.conds.remove(cond);
-                              });
-                            },
-                        )
-                    ]),
+                TextSpan(text: '${S.current.condition} ${mission.conds.indexOf(cond) + 1}', children: [
+                  if (mission.conds.length > 1)
+                    TextSpan(
+                      text: '(${S.current.delete})',
+                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          setState(() {
+                            mission.conds.remove(cond);
+                          });
+                        },
+                    )
+                ]),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
@@ -205,8 +200,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                     DropdownMenuItem(
                       value: type,
                       child: Text(
-                        Transl.enums(type, (enums) => enums.customMissionType)
-                            .l,
+                        Transl.enums(type, (enums) => enums.customMissionType).l,
                         textScaleFactor: 0.8,
                       ),
                     ),
@@ -217,14 +211,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
                     if (mission.conds.length > 1) {
                       final types = <bool>{
                         v.isEnemyType,
-                        ...mission.conds
-                            .where((e) => e != cond)
-                            .map((e) => e.type.isEnemyType)
+                        ...mission.conds.where((e) => e != cond).map((e) => e.type.isEnemyType)
                       };
                       bool mixed = types.length > 1;
                       if (mixed) {
-                        EasyLoading.showError(
-                            S.current.custom_mission_mixed_type_hint);
+                        EasyLoading.showError(S.current.custom_mission_mixed_type_hint);
                         return;
                       }
                     }
@@ -240,8 +231,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                 options: const [true, false],
                 values: FilterRadioData.nonnull(cond.useAnd),
                 enabled: cond.fixedLogicType == null,
-                optionBuilder: (v) => Text(
-                    v ? S.current.logic_type_and : S.current.logic_type_or),
+                optionBuilder: (v) => Text(v ? S.current.logic_type_and : S.current.logic_type_or),
                 combined: true,
                 padding: EdgeInsets.zero,
                 onFilterChanged: (v, _) {
@@ -318,8 +308,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     }
     title = '[$warId] $title';
     void _onTap() async {
-      final result = await SplitRoute.push<int?>(
-          context, EventChooser(initTab: warId < 1000 ? 0 : 1));
+      final result = await SplitRoute.push<int?>(context, EventChooser(initTab: warId < 1000 ? 0 : 1));
       if (result != null) {
         warId = result;
       }
@@ -440,9 +429,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         //   phases[id] = 1;
         // }
       } else {
-        NiceWar? war = isRegionNA
-            ? await AtlasApi.war(warId, region: Region.na)
-            : db.gameData.wars[warId];
+        NiceWar? war = isRegionNA ? await AtlasApi.war(warId, region: Region.na) : db.gameData.wars[warId];
         if (war == null) {
           EasyLoading.showError('War $warId not found');
           return;
@@ -487,8 +474,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           context: context,
           builder: (context) => SimpleCancelOkDialog(
             title: Text(S.current.warning),
-            content: Text(
-                'Resolve Quests: total ${phases.length + countNoEnemy},'
+            content: Text('Resolve Quests: total ${phases.length + countNoEnemy},'
                 ' $countSuccess success, $countError error, $countNoEnemy no data\n'
                 'Still Continue?'),
           ),
@@ -560,24 +546,18 @@ class __SearchViewState extends State<_SearchView> {
   Widget build(BuildContext context) {
     List<int> ids = [];
     Widget Function(int id) tileBuilder;
-    if ([CustomMissionType.trait, CustomMissionType.questTrait]
-        .contains(widget.targetType)) {
+    if ([CustomMissionType.trait, CustomMissionType.questTrait].contains(widget.targetType)) {
       ids = _searchTraits();
       tileBuilder = (id) {
         final names = {Transl.trait(id).l, Transl.trait(id).jp};
-        return _buildTile(id, '$id - ${names.join("/")}',
-            kTraitIdMapping[id]?.name ?? 'Unknown');
+        return _buildTile(id, '$id - ${names.join("/")}', kTraitIdMapping[id]?.name ?? 'Unknown');
       };
-    } else if ([
-      CustomMissionType.servantClass,
-      CustomMissionType.enemyClass,
-      CustomMissionType.enemyNotServantClass
-    ].contains(widget.targetType)) {
+    } else if ([CustomMissionType.servantClass, CustomMissionType.enemyClass, CustomMissionType.enemyNotServantClass]
+        .contains(widget.targetType)) {
       ids = _searchSvtClasses();
       tileBuilder = (id) {
         final names = {Transl.svtClassId(id).l, Transl.svtClassId(id).jp};
-        return _buildTile(id, '$id - ${names.join("/")}',
-            kSvtClassIds[id]?.name ?? 'Unknown');
+        return _buildTile(id, '$id - ${names.join("/")}', kSvtClassIds[id]?.name ?? 'Unknown');
       };
     } else {
       int? queryId = int.tryParse(query);
@@ -586,22 +566,19 @@ class __SearchViewState extends State<_SearchView> {
         return _buildTile(id, id.toString(), null);
       };
     }
-    final searchTextStyle = Theme.of(context).isDarkMode
-        ? null
-        : TextStyle(color: Theme.of(context).colorScheme.onPrimary);
+    final searchTextStyle =
+        Theme.of(context).isDarkMode ? null : TextStyle(color: Theme.of(context).colorScheme.onPrimary);
     return Scaffold(
       appBar: AppBar(
         title: TextFormField(
           controller: _textEditingController,
           decoration: InputDecoration(
             hintText: S.current.search,
-            hintStyle: searchTextStyle?.copyWith(
-                color: searchTextStyle.color?.withOpacity(0.8)),
+            hintStyle: searchTextStyle?.copyWith(color: searchTextStyle.color?.withOpacity(0.8)),
           ),
           style: searchTextStyle,
           onChanged: (s) {
-            EasyDebounce.debounce('search_${widget.targetType}',
-                const Duration(milliseconds: 500), () {
+            EasyDebounce.debounce('search_${widget.targetType}', const Duration(milliseconds: 500), () {
               if (mounted) setState(() {});
             });
           },
@@ -620,8 +597,7 @@ class __SearchViewState extends State<_SearchView> {
                     child: FilterGroup<int>(
                       options: selected.toList(),
                       values: FilterGroupData(),
-                      optionBuilder: (v) => Text(
-                          _idDescriptor(widget.targetType, v, prefixId: true)),
+                      optionBuilder: (v) => Text(_idDescriptor(widget.targetType, v, prefixId: true)),
                       onFilterChanged: (_, last) {
                         if (last != null) onChanged(last);
                       },
@@ -647,9 +623,7 @@ class __SearchViewState extends State<_SearchView> {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
     if (queryId != null) {
-      ids = kTraitIdMapping.keys
-          .where((e) => e.toString().contains(query))
-          .toList();
+      ids = kTraitIdMapping.keys.where((e) => e.toString().contains(query)).toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
     } else {
       for (final id in kTraitIdMapping.keys) {
@@ -662,8 +636,7 @@ class __SearchViewState extends State<_SearchView> {
       }
     }
     if (ids.length > 5) {
-      ids.insertAll(0,
-          _preferredTraits.where((e) => ids.contains(e.id)).map((e) => e.id));
+      ids.insertAll(0, _preferredTraits.where((e) => ids.contains(e.id)).map((e) => e.id));
     }
     ids.remove(Trait.unknown.id);
 
@@ -680,10 +653,7 @@ class __SearchViewState extends State<_SearchView> {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
     if (queryId != null) {
-      ids = SvtClass.values
-          .where((e) => e.id < 97 && e.id.toString().contains(query))
-          .map((e) => e.id)
-          .toList();
+      ids = SvtClass.values.where((e) => e.id < 97 && e.id.toString().contains(query)).map((e) => e.id).toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
       return ids;
     }
@@ -749,16 +719,12 @@ class EventChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainStories = db.gameData.mainStories.values
-        .where((war) => war.quests.any((quest) => quest.isMainStoryFree))
-        .toList();
+    final mainStories =
+        db.gameData.mainStories.values.where((war) => war.quests.any((quest) => quest.isMainStoryFree)).toList();
     mainStories.sort2((e) => -e.id);
-    final eventWars = db.gameData.wars.values
-        .where((war) =>
-            !war.isMainStory && war.quests.any((quest) => quest.isAnyFree))
-        .toList();
-    eventWars.sort2(
-        (war) => -(db.gameData.events[war.eventId]?.startedAt ?? war.id));
+    final eventWars =
+        db.gameData.wars.values.where((war) => !war.isMainStory && war.quests.any((quest) => quest.isAnyFree)).toList();
+    eventWars.sort2((war) => -(db.gameData.events[war.eventId]?.startedAt ?? war.id));
     return DefaultTabController(
       length: 2,
       initialIndex: initTab,
@@ -791,8 +757,7 @@ class EventChooser extends StatelessWidget {
                   ListTile(
                     dense: true,
                     title: Text(Transl.eventNames(war.eventName).l),
-                    subtitle: Text(
-                        'War ${war.id}: ${war.event?.startedAt.sec2date().toDateString()} (JP)'),
+                    subtitle: Text('War ${war.id}: ${war.event?.startedAt.sec2date().toDateString()} (JP)'),
                     onTap: () {
                       Navigator.pop(context, war.id);
                     },
@@ -817,9 +782,7 @@ String _idDescriptor(CustomMissionType type, int id, {bool prefixId = false}) {
       text = db.gameData.quests[id]?.lName.l ?? id.toString();
       break;
     case CustomMissionType.enemy:
-      text = db.gameData.servantsById[id]?.lName.l ??
-          db.gameData.entities[id]?.lName.l ??
-          id.toString();
+      text = db.gameData.servantsById[id]?.lName.l ?? db.gameData.entities[id]?.lName.l ?? id.toString();
       break;
     case CustomMissionType.servantClass:
     case CustomMissionType.enemyClass:

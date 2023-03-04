@@ -15,8 +15,7 @@ import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_
 /// default logger
 Logger _logger = Logger(
   filter: ProductionFilter(),
-  printer: _CustomPrettyPrinter(
-      methodCount: 2, colors: false, printEmojis: false, printTime: true),
+  printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
 );
 
 Logger get logger => _logger;
@@ -79,9 +78,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     String messageStr = stringifyMessage(event.message);
     StackTrace _fmtStackTrace(Object? s) {
       final lines = (s ?? StackTrace.current).toString().split('\n');
-      lines.removeWhere((line) =>
-          line.contains('chaldea/packages/logger.dart') ||
-          line == '<asynchronous suspension>');
+      lines.removeWhere((line) => line.contains('chaldea/packages/logger.dart') || line == '<asynchronous suspension>');
       if (kIsWeb && lines.isNotEmpty && lines.first.trim() == "Error") {
         lines.removeAt(0);
       }
@@ -91,12 +88,10 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     String? stackTraceStr;
     if (event.stackTrace == null) {
       if (methodCount > 0) {
-        stackTraceStr =
-            formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
+        stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
       }
     } else if (errorMethodCount > 0) {
-      stackTraceStr =
-          formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
+      stackTraceStr = formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
     dynamic error = event.error;
     if (error is DioError) {
@@ -104,8 +99,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       if (detail.length > 1000) detail = "\n${detail.substring(0, 1000)}";
 
       List<String> lines = error.stackTrace.toString().split('\n');
-      while (lines.isNotEmpty && lines.last.contains('package:flutter/src') ||
-          lines.last.contains('(dart:')) {
+      while (lines.isNotEmpty && lines.last.contains('package:flutter/src') || lines.last.contains('(dart:')) {
         lines.removeLast();
       }
       lines.insertAll(0, {
@@ -119,9 +113,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     }
     String? errorStr = error?.toString();
 
-    String timeStr = DateTime.fromMillisecondsSinceEpoch(
-            DateTime.now().millisecondsSinceEpoch)
-        .toString();
+    String timeStr = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString();
 
     List<String> buffer = [];
 

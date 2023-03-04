@@ -12,8 +12,7 @@ class CharaListPage extends StatefulWidget {
   _CharaListPageState createState() => _CharaListPageState();
 }
 
-class _CharaListPageState extends State<CharaListPage>
-    with SearchableListState<String, CharaListPage> {
+class _CharaListPageState extends State<CharaListPage> with SearchableListState<String, CharaListPage> {
   @override
   Iterable<String> get wholeData => charas;
 
@@ -40,10 +39,7 @@ class _CharaListPageState extends State<CharaListPage>
     }
 
     charas = {...ceMap.keys, ...ccMap.keys}.toList();
-    final sortKeys = {
-      for (final c in charas)
-        c: SearchUtil.getLocalizedSort(Transl.charaNames(c))
-    };
+    final sortKeys = {for (final c in charas) c: SearchUtil.getLocalizedSort(Transl.charaNames(c))};
     charas.sort((a, b) => sortKeys[a]!.compareTo(sortKeys[b]!));
 
     if (mounted) {
@@ -127,8 +123,7 @@ class _CharaListPageState extends State<CharaListPage>
   }
 
   @override
-  Widget gridItemBuilder(String chara) =>
-      throw UnimplementedError('GridView not designed');
+  Widget gridItemBuilder(String chara) => throw UnimplementedError('GridView not designed');
 }
 
 class _CharaOptions with SearchOptionsMixin<String> {

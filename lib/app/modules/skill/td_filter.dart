@@ -14,8 +14,7 @@ class TdFilterData {
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
 
-  List<FilterGroupData> get groups =>
-      [card, type, funcTargetType, funcType, buffType];
+  List<FilterGroupData> get groups => [card, type, funcTargetType, funcType, buffType];
 
   void reset() {
     for (final group in groups) {
@@ -35,8 +34,7 @@ class TdFilter extends FilterPage<TdFilterData> {
   _TdFilterState createState() => _TdFilterState();
 }
 
-class _TdFilterState extends FilterPageState<TdFilterData, TdFilter>
-    with FuncFilterMixin {
+class _TdFilterState extends FilterPageState<TdFilterData, TdFilter> with FuncFilterMixin {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -58,8 +56,7 @@ class _TdFilterState extends FilterPageState<TdFilterData, TdFilter>
         FilterGroup<TdEffectFlag>(
           options: TdEffectFlag.values,
           values: filterData.type,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
           onFilterChanged: (value, _) {
             update();
           },

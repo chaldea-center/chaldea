@@ -41,23 +41,19 @@ class _QuestListPageState extends State<QuestListPage> {
       // override
       allQuestsMap[q.id] = q;
     }
-    final questIds = widget.quests.isEmpty
-        ? widget.ids.toList()
-        : widget.quests.map((e) => e.id).toList();
+    final questIds = widget.quests.isEmpty ? widget.ids.toList() : widget.quests.map((e) => e.id).toList();
     if (widget.needSort) {
       questIds.sort(Quest.compareId);
     }
 
-    final hasSpot =
-        questIds.any((q) => allQuestsMap[q]?.spot?.shownImage != null);
+    final hasSpot = questIds.any((q) => allQuestsMap[q]?.spot?.shownImage != null);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
       ),
       body: ListView.separated(
-        separatorBuilder: (context, index) =>
-            const Divider(indent: 16, endIndent: 16, height: 4),
+        separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16, height: 4),
         itemBuilder: (context, index) {
           final questId = questIds[index];
           final quest = allQuestsMap[questId];
@@ -72,9 +68,7 @@ class _QuestListPageState extends State<QuestListPage> {
               leading: leading,
               // minLeadingWidth: 16,
               title: Text('Quest $questId', textScaleFactor: 0.85),
-              contentPadding: leading == null
-                  ? null
-                  : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
+              contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
               horizontalTitleGap: 8,
               onTap: () {
                 router.push(url: Routes.questI(questId), detail: true);
@@ -83,8 +77,7 @@ class _QuestListPageState extends State<QuestListPage> {
           }
           bool isMainFree = quest.isMainStoryFree;
           List<InlineSpan> trailings = [];
-          if (quest.consumeType == ConsumeType.ap ||
-              quest.consumeType == ConsumeType.apAndItem) {
+          if (quest.consumeType == ConsumeType.ap || quest.consumeType == ConsumeType.apAndItem) {
             trailings.add(TextSpan(text: 'AP${quest.consume} '));
           }
           if (quest.consumeType == ConsumeType.apAndItem) {
@@ -104,8 +97,7 @@ class _QuestListPageState extends State<QuestListPage> {
           if (phase != null) {
             trailings.add(const TextSpan(text: '\n'));
             for (final cls in phase.className) {
-              trailings.add(
-                  WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)));
+              trailings.add(WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)));
             }
           }
           Widget trailing = trailings.isEmpty
@@ -134,11 +126,9 @@ class _QuestListPageState extends State<QuestListPage> {
             );
           }
           String chapter = quest.chapter;
-          final title =
-              chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
+          final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
           final interludeOwner = quest.type == QuestType.friendship
-              ? db.gameData.servantsById.values.firstWhereOrNull(
-                  (svt) => svt.relateQuestIds.contains(quest.id))
+              ? db.gameData.servantsById.values.firstWhereOrNull((svt) => svt.relateQuestIds.contains(quest.id))
               : null;
 
           String subtitle;
@@ -161,17 +151,13 @@ class _QuestListPageState extends State<QuestListPage> {
                 : Text.rich(
                     TextSpan(children: [
                       if (interludeOwner != null)
-                        CenterWidgetSpan(
-                            child: interludeOwner.iconBuilder(
-                                context: context, height: 32)),
+                        CenterWidgetSpan(child: interludeOwner.iconBuilder(context: context, height: 32)),
                       TextSpan(text: subtitle),
                     ]),
                     textScaleFactor: 0.85,
                   ),
             trailing: trailing,
-            contentPadding: leading == null
-                ? null
-                : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
+            contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
             horizontalTitleGap: 8,
             onTap: () {
               router.push(
@@ -192,8 +178,7 @@ class LoopGift extends StatefulWidget {
   final List<Gift> gifts;
   final double size;
   final String? giftIcon;
-  const LoopGift(
-      {super.key, required this.gifts, this.size = 32, this.giftIcon});
+  const LoopGift({super.key, required this.gifts, this.size = 32, this.giftIcon});
 
   @override
   State<LoopGift> createState() => _LoopGiftState();
@@ -251,8 +236,7 @@ class _LoopGiftState extends State<LoopGift> {
       child = AnimatedCrossFade(
         firstChild: _buildGift(first),
         secondChild: _buildGift(second),
-        crossFadeState:
-            showFirst ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        crossFadeState: showFirst ? CrossFadeState.showFirst : CrossFadeState.showSecond,
         duration: const Duration(milliseconds: 600),
       );
     }
@@ -266,7 +250,6 @@ class _LoopGiftState extends State<LoopGift> {
       }
       index -= 1;
     }
-    return widget.gifts[index % widget.gifts.length]
-        .iconBuilder(context: context, width: widget.size, showOne: false);
+    return widget.gifts[index % widget.gifts.length].iconBuilder(context: context, width: widget.size, showOne: false);
   }
 }

@@ -65,8 +65,7 @@ class ShareX {
         file = XFile.fromData(await FilePlus(fp).readAsBytes());
       } catch (e) {
         EasyLoading.showError(e.toString());
-        return ShareResult(
-            'read file failed ($fp): $e', ShareResultStatus.unavailable);
+        return ShareResult('read file failed ($fp): $e', ShareResultStatus.unavailable);
       }
     } else {
       file = XFile(fp);

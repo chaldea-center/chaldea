@@ -25,8 +25,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
     if (war.startScript != null) {
       mainPart.add(ListTile(
         dense: true,
-        title: Text('Start Script ${war.startScript?.scriptId}',
-            textScaleFactor: 1.1),
+        title: Text('Start Script ${war.startScript?.scriptId}', textScaleFactor: 1.1),
         contentPadding: EdgeInsets.zero,
         onTap: () => onTap(war.startScript!),
       ));
@@ -36,9 +35,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
     for (final quest in quests) {
       List<TextSpan> spans = [];
       for (final phase in quest.phaseScripts) {
-        final validScripts = phase.scripts
-            .where((e) => e.scriptId.isNotEmpty && e.script != 'NONE')
-            .toList();
+        final validScripts = phase.scripts.where((e) => e.scriptId.isNotEmpty && e.script != 'NONE').toList();
         if (validScripts.isEmpty) continue;
         if (spans.isNotEmpty) spans.add(const TextSpan(text: ' \n'));
         spans.addAll([
@@ -57,8 +54,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
       spans.add(const TextSpan(text: ' '));
       final target = quest.type == QuestType.main ? mainPart : eventPart;
       String chapter = quest.chapter;
-      final title =
-          chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
+      final title = chapter.isEmpty ? quest.lDispName : '$chapter ${quest.lDispName}';
       target.addAll([
         ListTile(
           dense: true,
@@ -66,8 +62,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
           contentPadding: EdgeInsets.zero,
           trailing: IconButton(
             onPressed: () {
-              router.push(
-                  url: quest.route, child: QuestDetailPage(quest: quest));
+              router.push(url: quest.route, child: QuestDetailPage(quest: quest));
             },
             icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),
@@ -109,8 +104,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(war.lLongName.l.setMaxLines(1)),
-          bottom:
-              tabs.length > 1 ? FixedHeight.tabBar(TabBar(tabs: tabs)) : null,
+          bottom: tabs.length > 1 ? FixedHeight.tabBar(TabBar(tabs: tabs)) : null,
         ),
         body: TabBarView(children: views),
       ),
@@ -121,8 +115,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
     Region? region;
     if (script.script.contains('/JP/')) {
       region = db.settings.resolvedPreferredRegions.first;
-      bool? released =
-          db.gameData.mappingData.warRelease.ofRegion(region)?.contains(war.id);
+      bool? released = db.gameData.mappingData.warRelease.ofRegion(region)?.contains(war.id);
       released = region == Region.jp || released == true;
       if (!released) region = Region.jp;
     }

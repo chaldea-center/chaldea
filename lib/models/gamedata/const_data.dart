@@ -16,17 +16,10 @@ class ConstGameData {
   final Map<int, SvtClassInfo> classInfo;
   final Map<int, Map<int, int>> classRelation;
   final GameConstants constants;
-  final Map<int, Map<int, GrailCostDetail>>
-      svtGrailCost; // <rarity, <grail_count, detail>>
+  final Map<int, Map<int, GrailCostDetail>> svtGrailCost; // <rarity, <grail_count, detail>>
   final Map<int, MasterUserLvDetail> userLevel;
   final Map<int, SvtExpCurve> svtExp;
-  final Map<int, int> bondLimitQp = {
-    10: 10000000,
-    11: 12000000,
-    12: 14000000,
-    13: 16000000,
-    14: 18000000
-  };
+  final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
   final Map<BuffType, BuffAction> buffTypeActionMap;
 
   final Map<int, int> svtClassCardImageIdRemap = {
@@ -46,11 +39,7 @@ class ConstGameData {
     this.svtExp = const {},
   }) : buffTypeActionMap = {
           for (final entry in buffActions.entries)
-            for (final type in [
-              ...entry.value.plusTypes,
-              ...entry.value.minusTypes
-            ])
-              type: entry.key
+            for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) type: entry.key
         };
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
@@ -59,21 +48,16 @@ class ConstGameData {
     return _$ConstGameDataFromJson(json);
   }
 
-  List<int> getSvtCurve(
-      int growthCurve, int baseValue, int maxValue, int? maxLv) {
+  List<int> getSvtCurve(int growthCurve, int baseValue, int maxValue, int? maxLv) {
     final expData = svtExp[growthCurve];
     if (expData == null) return [];
     // atkBase + (atkMax - atkBase) * exp.curve // 1000
     if (maxLv == null) {
-      return expData.curve
-          .skip(1)
-          .map((e) => baseValue + (maxValue - baseValue) * e ~/ 1000)
-          .toList();
+      return expData.curve.skip(1).map((e) => baseValue + (maxValue - baseValue) * e ~/ 1000).toList();
     }
     return [
       for (int index = 1; index < expData.lv.length; index++)
-        if (expData.lv[index] <= maxLv)
-          baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000
+        if (expData.lv[index] <= maxLv) baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000
     ];
   }
 
@@ -104,8 +88,7 @@ class BuffActionDetail {
     required this.maxRate,
   });
 
-  factory BuffActionDetail.fromJson(Map<String, dynamic> json) =>
-      _$BuffActionDetailFromJson(json);
+  factory BuffActionDetail.fromJson(Map<String, dynamic> json) => _$BuffActionDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -141,8 +124,7 @@ class SvtClassInfo {
     required this.autoSelSupportType,
   });
 
-  factory SvtClassInfo.fromJson(Map<String, dynamic> json) =>
-      _$SvtClassInfoFromJson(json);
+  factory SvtClassInfo.fromJson(Map<String, dynamic> json) => _$SvtClassInfoFromJson(json);
 }
 
 @JsonSerializable()
@@ -165,8 +147,7 @@ class CardInfo {
     required this.addCritical,
   });
 
-  factory CardInfo.fromJson(Map<String, dynamic> json) =>
-      _$CardInfoFromJson(json);
+  factory CardInfo.fromJson(Map<String, dynamic> json) => _$CardInfoFromJson(json);
 }
 
 @JsonSerializable()
@@ -181,8 +162,7 @@ class GrailCostDetail {
     this.frameType = SvtFrameType.gold,
   });
 
-  factory GrailCostDetail.fromJson(Map<String, dynamic> json) =>
-      _$GrailCostDetailFromJson(json);
+  factory GrailCostDetail.fromJson(Map<String, dynamic> json) => _$GrailCostDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -201,8 +181,7 @@ class MasterUserLvDetail {
     this.gift,
   });
 
-  factory MasterUserLvDetail.fromJson(Map<String, dynamic> json) =>
-      _$MasterUserLvDetailFromJson(json);
+  factory MasterUserLvDetail.fromJson(Map<String, dynamic> json) => _$MasterUserLvDetailFromJson(json);
 }
 
 @JsonSerializable()
@@ -219,8 +198,7 @@ class SvtExpCurve {
     required this.curve,
   });
 
-  factory SvtExpCurve.fromJson(Map<String, dynamic> json) =>
-      _$SvtExpCurveFromJson(json);
+  factory SvtExpCurve.fromJson(Map<String, dynamic> json) => _$SvtExpCurveFromJson(json);
 }
 
 class SvtExpData {
@@ -251,16 +229,8 @@ class SvtExpData {
       type: type,
       lv: curve?.lv.skip(skip).toList() ?? [],
       exp: curve?.exp.skip(skip).toList() ?? [],
-      hp: curve?.curve
-              .skip(skip)
-              .map((e) => hpBase + (hpMax - hpBase) * e ~/ 1000)
-              .toList() ??
-          [],
-      atk: curve?.curve
-              .skip(skip)
-              .map((e) => atkBase + (atkMax - atkBase) * e ~/ 1000)
-              .toList() ??
-          [],
+      hp: curve?.curve.skip(skip).map((e) => hpBase + (hpMax - hpBase) * e ~/ 1000).toList() ?? [],
+      atk: curve?.curve.skip(skip).map((e) => atkBase + (atkMax - atkBase) * e ~/ 1000).toList() ?? [],
     );
   }
 }
@@ -495,8 +465,7 @@ enum SvtFrameType {
 class BuffActionConverter extends JsonConverter<BuffAction, String> {
   const BuffActionConverter();
   @override
-  BuffAction fromJson(String value) =>
-      decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+  BuffAction fromJson(String value) => decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
   @override
   String toJson(BuffAction obj) => _$BuffActionEnumMap[obj] ?? obj.name;
 }

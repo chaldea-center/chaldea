@@ -36,15 +36,8 @@ void main() async {
       feedbackHandler: ServerFeedbackHandler(
         screenshotController: db.runtimeData.screenshotController,
         screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
-        attachments: [
-          db.paths.appLog,
-          db.paths.crashLog,
-          db.paths.userDataPath
-        ],
-        onGenerateAttachments: () => {
-          'userdata.memory.json':
-              Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))
-        },
+        attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],
+        onGenerateAttachments: () => {'userdata.memory.json': Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))},
       ),
     );
   } catch (e, s) {
@@ -57,10 +50,7 @@ void main() async {
       print(s);
     }
   }
-  final app = initError == null
-      ? Chaldea()
-      : StartupFailedPage(
-          error: initError, stackTrace: initStack, wrapApp: true);
+  final app = initError == null ? Chaldea() : StartupFailedPage(error: initError, stackTrace: initStack, wrapApp: true);
   if (kDebugMode) {
     runApp(app);
   } else {
@@ -92,8 +82,7 @@ Future<void> _initiateCommon() async {
       'Atlas Academy': 'doc/license/ODC-BY 1.0.txt',
     };
     for (final entry in licenses.entries) {
-      String license =
-          await rootBundle.loadString(entry.value).catchError((e, s) async {
+      String license = await rootBundle.loadString(entry.value).catchError((e, s) async {
         logger.e('load license(${entry.key}, ${entry.value}) failed.', e, s);
         return 'load license failed';
       });

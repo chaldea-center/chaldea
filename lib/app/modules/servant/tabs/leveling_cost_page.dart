@@ -35,10 +35,8 @@ class LevelingCostPageState extends State<LevelingCostPage> {
   Widget build(BuildContext context) {
     // final int offset = widget.costList.length == 9 ? -1 : 0;
     final bool _showAll = showAll || widget.curLv >= widget.targetLv;
-    final int lva =
-            _showAll ? Maths.min(widget.costList.keys, 0) : widget.curLv,
-        lvb =
-            _showAll ? Maths.max(widget.costList.keys, 0) + 1 : widget.targetLv;
+    final int lva = _showAll ? Maths.min(widget.costList.keys, 0) : widget.curLv,
+        lvb = _showAll ? Maths.max(widget.costList.keys, 0) + 1 : widget.targetLv;
     final size = MediaQuery.of(context).size;
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
@@ -81,10 +79,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
   Widget buildOneLevel(String title, LvlUpMaterial? lvCost) {
     List<Widget> items = [];
     if (lvCost != null) {
-      for (final itemAmount in [
-        ...lvCost.items,
-        ItemAmount(amount: lvCost.qp, item: Items.qp)
-      ]) {
+      for (final itemAmount in [...lvCost.items, ItemAmount(amount: lvCost.qp, item: Items.qp)]) {
         if (itemAmount.amount > 0) {
           items.add(Item.iconBuilder(
             context: context,

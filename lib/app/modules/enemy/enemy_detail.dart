@@ -41,8 +41,7 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
     if (ce != null) {
       return CraftDetailPage(ce: ce!);
     }
-    final _svt =
-        db.gameData.servantsById[widget.id] ?? db.gameData.entities[widget.id];
+    final _svt = db.gameData.servantsById[widget.id] ?? db.gameData.entities[widget.id];
     if (_svt == null) return ServantDetailPage(id: widget.id); // NotFound
     return Scaffold(
       appBar: AppBar(title: Text(_svt.lName.l)),

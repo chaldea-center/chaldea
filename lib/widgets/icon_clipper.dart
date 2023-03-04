@@ -43,7 +43,6 @@ class TopCornerClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return oldClipper is! TopCornerClipper ||
-        oldClipper.clip != oldClipper.clip;
+    return oldClipper is! TopCornerClipper || oldClipper.clip != oldClipper.clip;
   }
 }

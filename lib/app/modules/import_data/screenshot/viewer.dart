@@ -112,10 +112,9 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   Future<void> loadList() async {
     try {
       EasyLoading.show();
-      recentFiles = List.from((await ChaldeaApi.dio.get(
-              '/recognizer/viewer/${widget.type.name}/list',
-              queryParameters: {"count": count}))
-          .data);
+      recentFiles = List.from(
+          (await ChaldeaApi.dio.get('/recognizer/viewer/${widget.type.name}/list', queryParameters: {"count": count}))
+              .data);
       EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('read recognizer skill list failed', e, s);
@@ -127,9 +126,8 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   Future<void> loadOne(String filename) async {
     try {
       EasyLoading.show();
-      final resp = await ChaldeaApi.dio.get(
-          '/recognizer/viewer/${widget.type.name}/result',
-          queryParameters: {"filename": filename});
+      final resp = await ChaldeaApi.dio
+          .get('/recognizer/viewer/${widget.type.name}/result', queryParameters: {"filename": filename});
       switch (widget.type) {
         case RecognizerType.item:
           result = ItemResult.fromJson(resp.data);

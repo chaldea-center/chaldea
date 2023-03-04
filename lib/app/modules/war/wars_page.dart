@@ -14,8 +14,7 @@ class WarsPage extends StatefulWidget {
   State<WarsPage> createState() => _WarsPageState();
 }
 
-class _WarsPageState extends State<WarsPage>
-    with SingleTickerProviderStateMixin {
+class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 3, vsync: this);
   bool reversed = true;
 
@@ -46,9 +45,7 @@ class _WarsPageState extends State<WarsPage>
         actions: [
           IconButton(
             icon: FaIcon(
-              reversed
-                  ? FontAwesomeIcons.arrowDownWideShort
-                  : FontAwesomeIcons.arrowUpWideShort,
+              reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
               size: 20,
             ),
             tooltip: S.current.sort_order,
@@ -96,8 +93,7 @@ class WarListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final wars = this.wars.toList();
     if (sortByEvent) {
-      wars.sort2((war) => war.event?.startedAt ?? war.priority,
-          reversed: reversed);
+      wars.sort2((war) => war.event?.startedAt ?? war.priority, reversed: reversed);
     } else {
       wars.sort2((e) => e.priority, reversed: reversed);
     }
@@ -116,9 +112,7 @@ class WarListPage extends StatelessWidget {
           title = war.lLongName.l.setMaxLines(2);
         }
         return ListTile(
-          leading: war.shownBanner == null
-              ? null
-              : db.getIconImage(war.shownBanner, width: 150),
+          leading: war.shownBanner == null ? null : db.getIconImage(war.shownBanner, width: 150),
           title: AutoSizeText(
             title,
             maxLines: subtitle == null ? 2 : 1,

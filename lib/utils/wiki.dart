@@ -10,15 +10,14 @@ class WikiTool {
     return Uri.parse('$mcDomain/w/$title').toString();
   }
 
-  static String mcFileUrl(String filename) =>
-      _fileUrl(filename, 'https://fgo.wiki/images');
+  static String mcFileUrl(String filename) => _fileUrl(filename, 'https://fgo.wiki/images');
 
   static String fandomFullLink(String title) {
     return Uri.parse('$fandomDomain/wiki/$title').toString();
   }
 
-  static String fandomFileUrl(String filename) => _fileUrl(
-      filename, 'https://static.wikia.nocookie.net/fategrandorder/images');
+  static String fandomFileUrl(String filename) =>
+      _fileUrl(filename, 'https://static.wikia.nocookie.net/fategrandorder/images');
 
   static String _fileUrl(String filename, String prefix) {
     if (filename.startsWith(RegExp(r'http(s)?://'))) {

@@ -7,9 +7,8 @@ class LayoutTryBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool hasIntrinsic =
-        context.findAncestorWidgetOfExactType<IntrinsicHeight>() != null ||
-            context.findAncestorWidgetOfExactType<IntrinsicWidth>() != null;
+    bool hasIntrinsic = context.findAncestorWidgetOfExactType<IntrinsicHeight>() != null ||
+        context.findAncestorWidgetOfExactType<IntrinsicWidth>() != null;
     if (hasIntrinsic || DisableLayoutBuilder.of(context)) {
       return builder(context, const BoxConstraints.tightForFinite());
     }
@@ -20,8 +19,7 @@ class LayoutTryBuilder extends StatelessWidget {
 class DisableLayoutBuilder extends StatelessWidget {
   final bool disabled;
   final Widget child;
-  const DisableLayoutBuilder(
-      {super.key, required this.child, this.disabled = true});
+  const DisableLayoutBuilder({super.key, required this.child, this.disabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +27,7 @@ class DisableLayoutBuilder extends StatelessWidget {
   }
 
   static bool of(BuildContext context) {
-    return context
-            .dependOnInheritedWidgetOfExactType<_DisableLayout>()
-            ?.disabled ??
-        false;
+    return context.dependOnInheritedWidgetOfExactType<_DisableLayout>()?.disabled ?? false;
   }
 }
 

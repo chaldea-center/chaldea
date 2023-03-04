@@ -54,22 +54,13 @@ mixin GameCardMixin implements RouteInfo {
     if (onTap == null && jumpToDetail) {
       if (this is Servant) {
         final instance = this as Servant;
-        onTap = () => router.push(
-            url: instance.route,
-            child: ServantDetailPage(svt: instance),
-            detail: true);
+        onTap = () => router.push(url: instance.route, child: ServantDetailPage(svt: instance), detail: true);
       } else if (this is CraftEssence) {
         final instance = this as CraftEssence;
-        onTap = () => router.push(
-            url: instance.route,
-            child: CraftDetailPage(ce: instance),
-            detail: true);
+        onTap = () => router.push(url: instance.route, child: CraftDetailPage(ce: instance), detail: true);
       } else if (this is CommandCode) {
         final instance = this as CommandCode;
-        onTap = () => router.push(
-            url: instance.route,
-            child: CmdCodeDetailPage(cc: instance),
-            detail: true);
+        onTap = () => router.push(url: instance.route, child: CmdCodeDetailPage(cc: instance), detail: true);
       } else if (this is BasicServant) {
         final instance = this as BasicServant;
         onTap = () => router.push(url: instance.routeIfItem);
@@ -110,8 +101,7 @@ mixin GameCardMixin implements RouteInfo {
     EdgeInsets? textPadding;
     if (size != null) {
       textPadding ??= EdgeInsets.only(
-          right: size.key == null ? 0 : size.key! / 22,
-          bottom: size.value == null ? 0 : size.value! / 12);
+          right: size.key == null ? 0 : size.key! / 22, bottom: size.value == null ? 0 : size.value! / 12);
     }
 
     var extraOption = ImageWithTextOption(
@@ -133,10 +123,7 @@ mixin GameCardMixin implements RouteInfo {
       option: option,
     );
     if (name != null) {
-      child = Text.rich(TextSpan(children: [
-        CenterWidgetSpan(child: child),
-        TextSpan(text: ' $name ')
-      ]));
+      child = Text.rich(TextSpan(children: [CenterWidgetSpan(child: child), TextSpan(text: ' $name ')]));
     }
     if (onTap != null) {
       child = InkWell(
@@ -379,8 +366,7 @@ mixin GameCardMixin implements RouteInfo {
     } else {
       int svtId = id ~/ 100, costumeId = id % 100;
       final svt = gamedata.servantsById[svtId];
-      final costume = svt?.profile.costume.values
-          .firstWhereOrNull((e) => e.id == costumeId);
+      final costume = svt?.profile.costume.values.firstWhereOrNull((e) => e.id == costumeId);
       if (svt != null && costume != null) {
         result = onCostume?.call(svt, costume);
       }

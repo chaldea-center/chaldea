@@ -28,9 +28,7 @@ class _GridGalleryState extends State<GridGallery> {
   @override
   Widget build(BuildContext context) {
     int crossCount;
-    if (widget.maxWidth != null &&
-        widget.maxWidth! > 0 &&
-        widget.maxWidth != double.infinity) {
+    if (widget.maxWidth != null && widget.maxWidth! > 0 && widget.maxWidth != double.infinity) {
       crossCount = widget.maxWidth! ~/ 80;
       crossCount = crossCount.clamp(2, 8);
     } else {
@@ -79,10 +77,7 @@ class _GridGalleryState extends State<GridGallery> {
     }).toList();
 
     if (widget.isHome && active) {
-      items.addAll([
-        GalleryItem.lostRoom,
-        _editMode ? GalleryItem.done : GalleryItem.edit
-      ]);
+      items.addAll([GalleryItem.lostRoom, _editMode ? GalleryItem.done : GalleryItem.edit]);
     }
     if (!widget.isHome && active) {
       items.add(GalleryItem.chaldeas);
@@ -90,8 +85,7 @@ class _GridGalleryState extends State<GridGallery> {
 
     List<Widget> children = List.generate(items.length, (index) {
       final item = items[index];
-      Widget child = item.buildIcon(context,
-          color: active ? null : themeData.disabledColor);
+      Widget child = item.buildIcon(context, color: active ? null : themeData.disabledColor);
       if (item.titleBuilder == null) {
         child = Center(child: child);
       } else {
@@ -128,11 +122,8 @@ class _GridGalleryState extends State<GridGallery> {
       if (_editMode && !item.persist) {
         final editIcon = active
             ? Icon(Icons.remove_circle,
-                color: themeData.isDarkMode
-                    ? themeData.disabledColor
-                    : themeData.colorScheme.secondary)
-            : Icon(Icons.add_circle,
-                color: themeData.colorScheme.secondaryContainer);
+                color: themeData.isDarkMode ? themeData.disabledColor : themeData.colorScheme.secondary)
+            : Icon(Icons.add_circle, color: themeData.colorScheme.secondaryContainer);
         child = Stack(
           alignment: Alignment.topRight,
           children: [

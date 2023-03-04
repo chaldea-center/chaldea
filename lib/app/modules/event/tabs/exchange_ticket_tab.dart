@@ -109,8 +109,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           child: Align(
             alignment: AlignmentDirectional.centerEnd,
             child: LayoutBuilder(
-              builder: (context, constraints) =>
-                  buildItems(ticket, constraints.maxWidth),
+              builder: (context, constraints) => buildItems(ticket, constraints.maxWidth),
             ),
           ),
         )
@@ -150,10 +149,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       child: Text.rich(TextSpan(children: [
         TextSpan(
           text: ticket.dateStr,
-          children: [
-            if (hasAnyReplaced)
-              const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18))
-          ],
+          children: [if (hasAnyReplaced) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18))],
           style: TextStyle(
             color: planned
                 ? _plannedColor
@@ -165,9 +161,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         ),
         const TextSpan(text: '\n'),
         TextSpan(
-            text: db.curUser.region == Region.jp
-                ? maxHint
-                : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
+            text: db.curUser.region == Region.jp ? maxHint : 'JP ${ticket.year}-${ticket.month}\n$maxHint',
             children: [
               if (ticket.multiplier != 1)
                 TextSpan(
@@ -179,9 +173,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 )
             ],
             style: TextStyle(
-              color: isThisMonth
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).textTheme.bodySmall?.color,
+              color: isThisMonth ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodySmall?.color,
               fontSize: 12,
             )),
       ])),
@@ -197,8 +189,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       final item = db.gameData.items[itemId];
       int leftNum = db.itemCenter.itemLeft[itemId] ?? 0;
       monthPlan[index] = monthPlan[index].clamp2(0, ticket.days);
-      final int maxValue =
-          ticket.days - Maths.sum(monthPlan.getRange(0, index));
+      final int maxValue = ticket.days - Maths.sum(monthPlan.getRange(0, index));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -218,17 +209,17 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               padding: const EdgeInsets.symmetric(),
               child: Column(
                 children: <Widget>[
-                  Text(monthPlan[index] == 0
-                      ? ''
-                      : (monthPlan[index] * ticket.multiplier).toString()),
+                  Text(monthPlan[index] == 0 ? '' : (monthPlan[index] * ticket.multiplier).toString()),
                   const Divider(height: 1),
                   AutoSizeText(
                     leftNum.format(),
                     maxLines: 1,
                     minFontSize: 6,
                     group: _autoSizeGroup,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                   )
                 ],
               ),
@@ -245,13 +236,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   adapter: NumberPickerAdapter(
                     data: [
                       NumberPickerColumn(
-                        items: List.generate(
-                            maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
+                        items: List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
                         initValue: monthPlan[index],
                         onFormatValue: (v) {
-                          return ticket.multiplier == 1
-                              ? v.toString()
-                              : '$v×${ticket.multiplier}';
+                          return ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}';
                         },
                       ),
                     ],
@@ -259,8 +247,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   onConfirm: (picker, values) {
                     monthPlan[index] = picker.getSelectedValues()[0];
                     for (var j = 0; j < 3; j++) {
-                      final int v = min(monthPlan[j],
-                          ticket.days - Maths.sum(monthPlan.getRange(0, j)));
+                      final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
                       monthPlan[j] = v;
                     }
                     db.itemCenter.updateExchangeTickets();
@@ -297,9 +284,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       builder: (context) {
         List<Widget> children = [];
         for (final region in Region.values) {
-          final items = region == Region.jp
-              ? ticket.items
-              : ticket.replaced.ofRegion(region);
+          final items = region == Region.jp ? ticket.items : ticket.replaced.ofRegion(region);
           if (items == null) continue;
           children.add(ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -307,9 +292,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                for (final itemId in items)
-                  Item.iconBuilder(
-                      context: context, item: null, itemId: itemId),
+                for (final itemId in items) Item.iconBuilder(context: context, item: null, itemId: itemId),
               ],
             ),
           ));

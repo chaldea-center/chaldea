@@ -28,9 +28,7 @@ class JsonHelper {
     }
     try {
       final content = await file.readAsString();
-      final decoded = content.length < 10e5
-          ? jsonDecode(content)
-          : await decodeString(content);
+      final decoded = content.length < 10e5 ? jsonDecode(content) : await decodeString(content);
       return fromJson(decoded);
     } catch (e, s) {
       logger.e('failed to load $T json model', e, s);

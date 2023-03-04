@@ -93,8 +93,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
         svals = svals ?? [];
 
   static String normFuncPopupText(String text) {
-    if (const <String>{'', '-', 'なし', 'None', 'none', '无', '無', '없음'}
-        .contains(text)) {
+    if (const <String>{'', '-', 'なし', 'None', 'none', '无', '無', '없음'}.contains(text)) {
       return '';
     }
     return text;
@@ -106,8 +105,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
   void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
       _baseFunc.routeTo(child: child, popDetails: popDetails, region: region);
 
-  List<List<DataVals>?> get svalsList =>
-      [svals, svals2, svals3, svals4, svals5];
+  List<List<DataVals>?> get svalsList => [svals, svals2, svals3, svals4, svals5];
 
   Iterable<DataVals> get allDataVals sync* {
     yield* svals;
@@ -119,10 +117,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
   List<DataVals> get crossVals {
     if (svals.length != 5) return svals;
-    return [
-      for (int i = 0; i < svals.length; i++)
-        svalsList.getOrNull(i)?[i] ?? svals[i]
-    ];
+    return [for (int i = 0; i < svals.length; i++) svalsList.getOrNull(i)?[i] ?? svals[i]];
   }
 
   DataVals getStaticVal({bool levelOnly = false, bool ocOnly = false}) {
@@ -142,8 +137,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
         final l = x.putIfAbsent(key, () => {});
         if (value is List && l.any((e) => e.toString() == value.toString())) {
           //
-        } else if (value is Map &&
-            l.any((e) => e.toString() == value.toString())) {
+        } else if (value is Map && l.any((e) => e.toString() == value.toString())) {
         } else {
           l.add(value);
         }
@@ -153,8 +147,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     return DataVals.fromJson(x.map((key, value) => MapEntry(key, value.first)));
   }
 
-  List<DataVals> getMutatingVals(DataVals? staticVals,
-      {bool levelOnly = false, bool ocOnly = false}) {
+  List<DataVals> getMutatingVals(DataVals? staticVals, {bool levelOnly = false, bool ocOnly = false}) {
     assert(!levelOnly || !ocOnly);
     staticVals ??= getStaticVal(levelOnly: levelOnly, ocOnly: ocOnly);
     final staticKeys = staticVals.toJson().keys.toSet();
@@ -167,8 +160,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     for (int i = 0; i < svals.length; i++) {
       final val = _svals.getOrNull(i);
       if (val != null) {
-        final valJson = val.toJson()
-          ..removeWhere((key, value) => staticKeys.contains(key));
+        final valJson = val.toJson()..removeWhere((key, value) => staticKeys.contains(key));
         if (valJson.isEmpty) continue;
         valList.add(DataVals.fromJson(valJson));
       }
@@ -188,8 +180,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
   factory NiceFunction.fromJson(Map<String, dynamic> json) {
     _$NiceFunctionFromJson; // avoid unused warning
     if (json['funcType'] == null) {
-      final baseFunction = GameDataLoader
-          .instance.tmp.gameJson!['baseFunctions']![json['funcId'].toString()]!;
+      final baseFunction = GameDataLoader.instance.tmp.gameJson!['baseFunctions']![json['funcId'].toString()]!;
       json.addAll(Map.from(baseFunction));
     }
     final first = (json['svals'] as List?)?.getOrNull(0);
@@ -212,56 +203,37 @@ class NiceFunction with RouteInfo implements BaseFunction {
 
     return NiceFunction(
       funcId: json['funcId'] as int,
-      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ??
-          FuncType.unknown,
-      funcTargetType:
-          $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam:
-          $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
+      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals: (json['functvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList(growable: false) ??
           const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList(growable: false) ??
           const [],
       funcGroup: (json['funcGroup'] as List<dynamic>?)
-              ?.map((e) =>
-                  FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList(growable: false) ??
           const [],
       traitVals: (json['traitVals'] as List<dynamic>?)
-              ?.map((e) =>
-                  NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList(growable: false) ??
           const [],
       buffs: (json['buffs'] as List<dynamic>?)
               ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList(growable: false) ??
           const [],
-      svals: (json['svals'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
-      svals2: (json['svals2'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
-      svals3: (json['svals3'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
-      svals4: (json['svals4'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
-      svals5: (json['svals5'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
-      followerVals: (json['followerVals'] as List<dynamic>?)
-          ?.map(_toVals)
-          .toList(growable: false),
+      svals: (json['svals'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
+      svals2: (json['svals2'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
+      svals3: (json['svals3'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
+      svals4: (json['svals4'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
+      svals5: (json['svals5'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
+      followerVals: (json['followerVals'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
     );
   }
 
@@ -315,20 +287,17 @@ class NiceFunction with RouteInfo implements BaseFunction {
     gameData ??= db.gameData;
     if (T == BaseFunction) {
       if (func.svals.first.DependFuncId != null) {
-        final dependFunc =
-            db.gameData.baseFunctions[func.svals.first.DependFuncId];
+        final dependFunc = db.gameData.baseFunctions[func.svals.first.DependFuncId];
         if (dependFunc != null) {
           yield dependFunc as T;
         }
       }
     }
     if (func.buffs.isEmpty) return;
-    final trigger =
-        kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
+    final trigger = kBuffValueTriggerTypes[func.buffs.first.type]?.call(func.svals.first);
     if (trigger == null) return;
-    final SkillOrTd? skill = func.svals.first.UseTreasureDevice == 1
-        ? gameData.baseTds[trigger.skill]
-        : gameData.baseSkills[trigger.skill];
+    final SkillOrTd? skill =
+        func.svals.first.UseTreasureDevice == 1 ? gameData.baseTds[trigger.skill] : gameData.baseSkills[trigger.skill];
     if (skill == null) return;
     yield* filterFuncs<T>(
       funcs: skill.functions.cast(),
@@ -397,8 +366,7 @@ class BaseFunction with RouteInfo {
                 buffs: buffs,
               ));
 
-  factory BaseFunction.fromJson(Map<String, dynamic> json) =>
-      _$BaseFunctionFromJson(json);
+  factory BaseFunction.fromJson(Map<String, dynamic> json) => _$BaseFunctionFromJson(json);
 
   Buff? get buff => buffs.isEmpty ? null : buffs.first;
 
@@ -413,8 +381,7 @@ class BaseFunction with RouteInfo {
     );
   }
 
-  Transl<String, String> get lPopupText =>
-      Transl.funcPopuptextBase(funcPopupText, funcType);
+  Transl<String, String> get lPopupText => Transl.funcPopuptextBase(funcPopupText, funcType);
 
   bool get isPlayerOnlyFunc =>
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||
@@ -445,8 +412,7 @@ class FuncGroup {
     required this.isDispValue,
   });
 
-  factory FuncGroup.fromJson(Map<String, dynamic> json) =>
-      _$FuncGroupFromJson(json);
+  factory FuncGroup.fromJson(Map<String, dynamic> json) => _$FuncGroupFromJson(json);
 }
 
 const kEventFuncTypes = [

@@ -33,12 +33,7 @@ enum _TabType {
 }
 
 const _kEventTabs = [_TabType.event];
-const _kStatTabs = [
-  _TabType.demand,
-  _TabType.consumed,
-  _TabType.free,
-  _TabType.interlude
-];
+const _kStatTabs = [_TabType.demand, _TabType.consumed, _TabType.free, _TabType.interlude];
 
 class _TabInfo {
   final Widget header;
@@ -51,8 +46,7 @@ class _TabInfo {
   });
 }
 
-class _ItemDetailPageState extends State<ItemDetailPage>
-    with SingleTickerProviderStateMixin {
+class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   int get curTab => _tabController.index;
@@ -86,8 +80,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         break;
       case ItemCategory.special:
         _shownTabs.addAll(_kEventTabs);
-        if (<int>[Items.qpId, Items.grailId, Items.lanternId]
-            .contains(widget.itemId)) {
+        if (<int>[Items.qpId, Items.grailId, Items.lanternId].contains(widget.itemId)) {
           _shownTabs.addAll(_kStatTabs);
         } else if (<int>[Items.stoneId].contains(widget.itemId)) {
           _shownTabs.addAll([_TabType.interlude]);
@@ -125,8 +118,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       if (_shownTabs.contains(_TabType.demand))
         _TabInfo(
           header: Tab(text: S.current.demands),
-          view: db.onUserData((context, _) =>
-              ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
+          view: db.onUserData((context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
           actions: [viewTypeButton, sortButton, popupMenu],
         ),
       if (_shownTabs.contains(_TabType.consumed))
@@ -147,8 +139,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       if (_shownTabs.contains(_TabType.event))
         _TabInfo(
           header: Tab(text: S.current.event),
-          view: ItemObtainEventTab(
-              itemId: widget.itemId, showOutdated: showOutdated),
+          view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
           actions: [filterOutdatedButton, popupMenu],
         ),
       if (_shownTabs.contains(_TabType.interlude))
@@ -198,8 +189,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
             child: Text('No.${widget.itemId}', textScaleFactor: 0.9),
           ),
           const PopupMenuDivider(),
-          if (_shownTabs.length > 1 ||
-              db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
+          if (_shownTabs.length > 1 || db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
             PopupMenuItem(
               child: Text(S.current.item_edit_owned_amount),
               onTap: () async {
@@ -229,9 +219,8 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       tooltip: S.current.filter_shown_type,
       onPressed: () {
         setState(() {
-          db.settings.display.itemDetailViewType = EnumUtil.next(
-              ItemDetailViewType.values,
-              db.settings.display.itemDetailViewType);
+          db.settings.display.itemDetailViewType =
+              EnumUtil.next(ItemDetailViewType.values, db.settings.display.itemDetailViewType);
           db.saveSettings();
         });
       },
@@ -244,11 +233,10 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       tooltip: _getSortTypeText(db.settings.display.itemDetailSvtSort),
       onPressed: () {
         setState(() {
-          db.settings.display.itemDetailSvtSort = EnumUtil.next(
-              ItemDetailSvtSort.values, db.settings.display.itemDetailSvtSort);
+          db.settings.display.itemDetailSvtSort =
+              EnumUtil.next(ItemDetailSvtSort.values, db.settings.display.itemDetailSvtSort);
           db.saveSettings();
-          EasyLoading.showToast(
-              _getSortTypeText(db.settings.display.itemDetailSvtSort));
+          EasyLoading.showToast(_getSortTypeText(db.settings.display.itemDetailSvtSort));
         });
       },
     );
@@ -264,8 +252,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   Widget get filterOutdatedButton {
     return IconButton(
-      icon:
-          Icon(showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
+      icon: Icon(showOutdated ? Icons.timer_off_outlined : Icons.timer_outlined),
       tooltip: S.current.outdated,
       onPressed: () {
         setState(() {

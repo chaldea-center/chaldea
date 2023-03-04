@@ -7,8 +7,7 @@ import 'package:catcher/catcher.dart';
 class CatcherUtil {
   CatcherUtil._();
 
-  static CatcherOptions getOptions(
-      {String? logPath, ReportHandler? feedbackHandler}) {
+  static CatcherOptions getOptions({String? logPath, ReportHandler? feedbackHandler}) {
     return CatcherOptions(
       // when error occurs when building:
       // DialogReportMode will keep generating error and you can do nothing

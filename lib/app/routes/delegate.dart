@@ -25,9 +25,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
-    final childBackButtonDispatcher = Router.of(context)
-        .backButtonDispatcher
-        ?.createChildBackButtonDispatcher();
+    final childBackButtonDispatcher = Router.of(context).backButtonDispatcher?.createChildBackButtonDispatcher();
     childBackButtonDispatcher?.takePriority();
     return Router(
       routerDelegate: widget.routerDelegate,
@@ -52,10 +50,9 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   List<Page> get pages => List.unmodifiable(_pages);
 
   @override
-  RouteConfiguration? get currentConfiguration =>
-      _pages.isNotEmpty && _pages.last.arguments is RouteConfiguration
-          ? _pages.last.arguments as RouteConfiguration
-          : null;
+  RouteConfiguration? get currentConfiguration => _pages.isNotEmpty && _pages.last.arguments is RouteConfiguration
+      ? _pages.last.arguments as RouteConfiguration
+      : null;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();

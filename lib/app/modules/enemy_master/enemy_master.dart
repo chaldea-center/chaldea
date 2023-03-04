@@ -34,16 +34,14 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
         CustomTableRow.fromTexts(texts: ['No.${master.id}'], isHeader: true),
         CustomTableRow(children: [
           TableCellData(
-            child: Text(master.lName.l,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(master.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),
           )
         ]),
         if (!Transl.isJP)
           CustomTableRow(
             children: [
               TableCellData(
-                child: Text(master.lName.jp,
-                    style: const TextStyle(fontWeight: FontWeight.w500)),
+                child: Text(master.lName.jp, style: const TextStyle(fontWeight: FontWeight.w500)),
               )
             ],
           ),
@@ -51,13 +49,11 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Text(master.lName.na,
-                    style: const TextStyle(fontWeight: FontWeight.w500)),
+                child: Text(master.lName.na, style: const TextStyle(fontWeight: FontWeight.w500)),
               )
             ],
           ),
-        CustomTableRow.fromTexts(
-            texts: [S.current.illustration], isHeader: true),
+        CustomTableRow.fromTexts(texts: [S.current.illustration], isHeader: true),
         ...[
           ExtraAssetsPage.oneGroup(
             S.current.card_asset_face,
@@ -73,8 +69,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
               );
             },
           ),
-          ExtraAssetsPage.oneGroup(S.current.command_spell,
-              master.battles.map((e) => e.commandSpellIcon).toSet(), 160),
+          ExtraAssetsPage.oneGroup(S.current.command_spell, master.battles.map((e) => e.commandSpellIcon).toSet(), 160),
           ExtraAssetsPage.oneGroup(
               S.current.card_asset_chara_figure,
               {
@@ -84,8 +79,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
                 ],
               }.whereType<String>().toSet(),
               300),
-        ].whereType<Widget>().map((e) => Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16), child: e))
+        ].whereType<Widget>().map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e))
       ],
     );
   }

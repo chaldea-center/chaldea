@@ -99,9 +99,7 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
 
     return ListTile(
       dense: true,
-      leading: buff.icon == null
-          ? const SizedBox()
-          : db.getIconImage(buff.icon, height: 32),
+      leading: buff.icon == null ? const SizedBox() : db.getIconImage(buff.icon, height: 32),
       title: Text('${buff.id} ${Transl.buffNames(buff.name).l}'),
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
@@ -109,14 +107,10 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
         children: [
           Text('[${buff.type.name}] ${Transl.buffType(buff.type).l}'),
           Text(Transl.buffDetail(buff.detail).l),
-          if (positions.contains(_BuffCheckPos.vals))
-            _traits('vals', buff.vals),
-          if (positions.contains(_BuffCheckPos.ckSelf))
-            _traits('ckSelf', buff.ckSelfIndv),
-          if (positions.contains(_BuffCheckPos.ckOpp))
-            _traits('ckOpp', buff.ckOpIndv),
-          if (buff.script?.INDIVIDUALITIE?.id == id)
-            _traits('owner', [buff.script!.INDIVIDUALITIE!]),
+          if (positions.contains(_BuffCheckPos.vals)) _traits('vals', buff.vals),
+          if (positions.contains(_BuffCheckPos.ckSelf)) _traits('ckSelf', buff.ckSelfIndv),
+          if (positions.contains(_BuffCheckPos.ckOpp)) _traits('ckOpp', buff.ckOpIndv),
+          if (buff.script?.INDIVIDUALITIE?.id == id) _traits('owner', [buff.script!.INDIVIDUALITIE!]),
           if (buff.script?.UpBuffRateBuffIndiv?.isNotEmpty == true)
             _traits('UpBuffRate', buff.script!.UpBuffRateBuffIndiv!),
         ],

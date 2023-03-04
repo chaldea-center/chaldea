@@ -14,8 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
   final bool isMainStory;
-  const FreeQuestOverview(
-      {super.key, required this.quests, required this.isMainStory});
+  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -52,11 +51,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   @override
   Widget build(BuildContext context) {
     final data = getInfo();
-    int maxCount = Maths.max(data.map((info) => Maths.max([
-          info.domusItems.length,
-          info.eventItems.length,
-          info.normalItems.length
-        ])));
+    int maxCount = Maths.max(
+        data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])));
     maxCount = maxCount.clamp(3, 8);
     return Scaffold(
       appBar: AppBar(title: Text(S.current.free_quest)),
@@ -78,24 +74,15 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                 child: DataTable2(
                   columns: [
                     DataColumn2(
-                      label: Text(
-                          '${S.current.quest} (${phases.length}/${widget.quests.length})'),
+                      label: Text('${S.current.quest} (${phases.length}/${widget.quests.length})'),
                       fixedWidth: 150,
                     ),
-                    const DataColumn2(
-                        label: Text('Lv/AP', textScaleFactor: 0.9),
-                        fixedWidth: 48),
+                    const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 48),
+                    DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
                     DataColumn2(
-                        label: Text(S.current.svt_class), fixedWidth: 64),
-                    DataColumn2(
-                        label: Text(widget.isMainStory
-                            ? S.current.fgo_domus_aurea
-                            : S.current.item),
+                        label: Text(widget.isMainStory ? S.current.fgo_domus_aurea : S.current.item),
                         size: ColumnSize.L),
-                    DataColumn2(
-                        label: Text(
-                            widget.isMainStory ? 'Rayshift' : S.current.item),
-                        size: ColumnSize.L),
+                    DataColumn2(label: Text(widget.isMainStory ? 'Rayshift' : S.current.item), size: ColumnSize.L),
                   ],
                   rows: data.map((info) => buildRow(info, maxCount)).toList(),
                   fixedLeftColumns: 1,
@@ -142,8 +129,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     cells.add(DataCell(AutoSizeText(
       [
         'Lv.${(phase ?? quest).recommendLv}',
-        if ((phase ?? quest).consumeType == ConsumeType.ap)
-          '${(phase ?? quest).consume}AP'
+        if ((phase ?? quest).consumeType == ConsumeType.ap) '${(phase ?? quest).consume}AP'
       ].join('\n'),
       maxLines: 2,
       minFontSize: 10,
@@ -158,15 +144,12 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     DataCell clsIcons;
     if (phase == null) {
       clsIcons = DataCell(
-        _loading
-            ? const CupertinoActivityIndicator(radius: 8)
-            : const Text(' - '),
+        _loading ? const CupertinoActivityIndicator(radius: 8) : const Text(' - '),
         placeholder: true,
       );
     } else {
-      clsIcons = DataCell(wrap(phase.className
-          .take(2)
-          .map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))));
+      clsIcons =
+          DataCell(wrap(phase.className.take(2).map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))));
     }
     cells.add(clsIcons);
 
@@ -199,10 +182,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       final info = _DropInfo(quest);
       data.add(info);
       // domus
-      final drops =
-          db.gameData.dropRate.getSheet(true).getQuestDropRate(quest.id);
-      drops.removeWhere((id, value) =>
-          db.gameData.items[id]?.category != ItemCategory.normal);
+      final drops = db.gameData.dropRate.getSheet(true).getQuestDropRate(quest.id);
+      drops.removeWhere((id, value) => db.gameData.items[id]?.category != ItemCategory.normal);
       for (final id in drops.keys) {
         if (db.gameData.items[id]?.category != ItemCategory.normal) continue;
         info.domusItems[id] = Item.iconBuilder(
@@ -255,8 +236,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
               context: context,
               item: item,
               width: iconWidth,
-              text:
-                  '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}B',
+              text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}B',
               option: ImageWithTextOption(textAlign: TextAlign.end),
             );
             break;

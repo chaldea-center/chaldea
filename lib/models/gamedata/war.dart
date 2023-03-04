@@ -82,10 +82,7 @@ class NiceWar with RouteInfo {
   }
 
   ScriptLink? get startScript {
-    if (script != null &&
-        scriptId != null &&
-        scriptId!.isNotEmpty &&
-        scriptId != 'NONE') {
+    if (script != null && scriptId != null && scriptId!.isNotEmpty && scriptId != 'NONE') {
       return ScriptLink(scriptId: scriptId!, script: script!);
     }
     return null;
@@ -121,8 +118,7 @@ class NiceWar with RouteInfo {
         _longName = ['', '-'].contains(longName) ? null : longName,
         _eventId = eventId;
 
-  factory NiceWar.fromJson(Map<String, dynamic> json) =>
-      _$NiceWarFromJson(json);
+  factory NiceWar.fromJson(Map<String, dynamic> json) => _$NiceWarFromJson(json);
 
   String get name => lName.jp;
   String get longName => lLongName.jp;
@@ -138,8 +134,7 @@ class NiceWar with RouteInfo {
   }
 
   Transl<String, String> get lLongName {
-    final warName =
-        (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
+    final warName = (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
     return Transl.warNames(warName);
   }
 
@@ -163,8 +158,7 @@ class NiceWar with RouteInfo {
 
   List<Quest> get quests => [for (final spot in spots) ...spot.quests];
 
-  WarExtra get extra =>
-      db.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
+  WarExtra get extra => db.gameData.wiki.wars.putIfAbsent(id, () => WarExtra(id: id));
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemReward = {};
@@ -179,9 +173,7 @@ class NiceWar with RouteInfo {
       for (final quest in spot.quests) {
         // special cases
         // 1 - 復刻:Servant・Summer・Festival！ ライト版
-        if (id == 9069 &&
-            quest.releaseConditions
-                .any((cond) => cond.type == CondType.notQuestClearPhase)) {
+        if (id == 9069 && quest.releaseConditions.any((cond) => cond.type == CondType.notQuestClearPhase)) {
           continue;
         }
         // Interlude in main story
@@ -193,8 +185,7 @@ class NiceWar with RouteInfo {
         }
         if (quest.warId < 1000 &&
             quest.type == QuestType.event &&
-            quest.closedAt - quest.openedAt <
-                const Duration(days: 365).inSeconds) {
+            quest.closedAt - quest.openedAt < const Duration(days: 365).inSeconds) {
           continue;
         }
         // 1000825: 终局特异点 section 12
@@ -314,8 +305,7 @@ class MapGimmick {
     this.dispTargetValue2 = 0,
   });
 
-  factory MapGimmick.fromJson(Map<String, dynamic> json) =>
-      _$MapGimmickFromJson(json);
+  factory MapGimmick.fromJson(Map<String, dynamic> json) => _$MapGimmickFromJson(json);
 }
 
 @JsonSerializable()
@@ -361,8 +351,7 @@ class NiceSpot {
     this.quests = const [],
   });
 
-  factory NiceSpot.fromJson(Map<String, dynamic> json) =>
-      _$NiceSpotFromJson(json);
+  factory NiceSpot.fromJson(Map<String, dynamic> json) => _$NiceSpotFromJson(json);
 
   WarMap? get map => db.gameData.maps[mapId];
 
@@ -394,8 +383,7 @@ class SpotAdd {
     this.condNum = 0,
   });
 
-  factory SpotAdd.fromJson(Map<String, dynamic> json) =>
-      _$SpotAddFromJson(json);
+  factory SpotAdd.fromJson(Map<String, dynamic> json) => _$SpotAddFromJson(json);
 
   String? get overwriteSpotName {
     if (overrideType == SpotOverwriteType.name && targetText.isNotEmpty) {
@@ -441,8 +429,7 @@ class SpotRoad {
     this.activeTargetValue = 0,
   });
 
-  factory SpotRoad.fromJson(Map<String, dynamic> json) =>
-      _$SpotRoadFromJson(json);
+  factory SpotRoad.fromJson(Map<String, dynamic> json) => _$SpotRoadFromJson(json);
 }
 
 @JsonSerializable()
@@ -489,15 +476,13 @@ class WarQuestSelection {
     required this.priority,
   });
 
-  factory WarQuestSelection.fromJson(Map<String, dynamic> json) =>
-      _$WarQuestSelectionFromJson(json);
+  factory WarQuestSelection.fromJson(Map<String, dynamic> json) => _$WarQuestSelectionFromJson(json);
 }
 
 class WarFlagConverter extends JsonConverter<WarFlag, String> {
   const WarFlagConverter();
   @override
-  WarFlag fromJson(String value) =>
-      decodeEnum(_$WarFlagEnumMap, value, WarFlag.none);
+  WarFlag fromJson(String value) => decodeEnum(_$WarFlagEnumMap, value, WarFlag.none);
   @override
   String toJson(WarFlag obj) => _$WarFlagEnumMap[obj] ?? obj.name;
 }
@@ -587,8 +572,7 @@ const Map<int, String> _warMCBanner = {
   8351: '圣诞节2019_南丁格尔的圣诞颂歌_关卡标题_jp.png',
   9073: 'Saber_Wars_2_关卡标题_jp.png',
   9072: '神秘之国的ONILAND!!复刻_关卡标题_jp.png',
-  8350:
-      'BATTLE_IN_NEWYORK_2019_v2_关卡标题_jp.png', // 'BATTLE_IN_NEWYORK_2019_关卡标题_jp.png'
+  8350: 'BATTLE_IN_NEWYORK_2019_v2_关卡标题_jp.png', // 'BATTLE_IN_NEWYORK_2019_关卡标题_jp.png'
   9071: '拜见！_拉斯维加斯御前比试_关卡标题_jp.png',
   9069: '从者·夏日·庆典！复刻_关卡标题_jp.png',
   9068: '唠唠叨叨最终本能寺2019_关卡标题_jp.png',
@@ -608,8 +592,7 @@ const Map<int, String> _warMCBanner = {
   8290: 'BATTLE_IN_NEWYORK_2018_关卡标题_jp.png',
   9048: 'Fate_Accel_Zero_Order复刻_关卡标题.png',
   9046: '从者·夏日·庆典！_关卡标题.png',
-  8273:
-      'https://fgo.wiki/images/4/46/复刻：All_The_States%27Men%21_～从漫画了解合众国开拓史～_关卡标题.png',
+  8273: 'https://fgo.wiki/images/4/46/复刻：All_The_States%27Men%21_～从漫画了解合众国开拓史～_关卡标题.png',
   9040: '夏日2018第二部复刻_关卡标题.png',
   9035: '夏日2018第一部复刻_关卡标题.png',
   9033: '唠唠叨叨帝都圣杯奇谭_关卡标题.png',

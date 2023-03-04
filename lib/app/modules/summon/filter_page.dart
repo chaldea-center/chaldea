@@ -16,8 +16,7 @@ class SummonFilterPage extends FilterPage<SummonFilterData> {
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
-class _CmdCodeFilterPageState
-    extends FilterPageState<SummonFilterData, SummonFilterPage> {
+class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData, SummonFilterPage> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -49,8 +48,7 @@ class _CmdCodeFilterPageState
           title: Text(S.current.filter_category),
           options: List.of(SummonType.values),
           values: filterData.category,
-          optionBuilder: (v) =>
-              Text(Transl.enums(v, (enums) => enums.summonType).l),
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.summonType).l),
           onFilterChanged: (value, _) {
             // filterData.category = value;
             update();

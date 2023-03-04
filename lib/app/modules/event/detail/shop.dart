@@ -30,9 +30,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
   @override
   void initState() {
     super.initState();
-    plan = event == null
-        ? LimitEventPlan()
-        : db.curUser.limitEventPlanOf(event!.id);
+    plan = event == null ? LimitEventPlan() : db.curUser.limitEventPlanOf(event!.id);
   }
 
   @override
@@ -50,16 +48,13 @@ class _EventShopsPageState extends State<EventShopsPage> {
         headers.add(Tab(child: Text(S.current.general_all, style: style)));
         views.add(shopList(context, shops, plan));
         // valentine shop
-        if (payItems.length > 1 &&
-            (payItems.length > 2 ||
-                payItems.values.every((e) => e.length > 1))) {
+        if (payItems.length > 1 && (payItems.length > 2 || payItems.values.every((e) => e.length > 1))) {
           final itemIds = payItems.keys.toList();
           itemIds.sort2((e) => db.gameData.items[e]?.priority ?? 999999);
           for (final itemId in itemIds) {
             views.add(shopList(context, payItems[itemId]!, plan));
             if (itemId == -1) {
-              headers.add(
-                  Tab(child: Text(S.current.general_others, style: style)));
+              headers.add(Tab(child: Text(S.current.general_others, style: style)));
             } else {
               headers.add(Tab(
                 child: Text.rich(
@@ -86,18 +81,14 @@ class _EventShopsPageState extends State<EventShopsPage> {
           length: views.length,
           child: Column(
             children: [
-              if (views.length > 1)
-                FixedHeight.tabBar(TabBar(tabs: headers, isScrollable: true)),
+              if (views.length > 1) FixedHeight.tabBar(TabBar(tabs: headers, isScrollable: true)),
               Expanded(
-                child: views.length == 1
-                    ? views.single
-                    : TabBarView(children: views),
+                child: views.length == 1 ? views.single : TabBarView(children: views),
               ),
               kDefaultDivider,
               SafeArea(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: getEventItemCost(),
                 ),
               )
@@ -108,20 +99,16 @@ class _EventShopsPageState extends State<EventShopsPage> {
     );
   }
 
-  Widget shopList(
-      BuildContext context, List<NiceShop> shops, LimitEventPlan plan) {
+  Widget shopList(BuildContext context, List<NiceShop> shops, LimitEventPlan plan) {
     return ListView.separated(
-      itemBuilder: (context, index) =>
-          shopItemBuilder(context, shops[index], plan),
+      itemBuilder: (context, index) => shopItemBuilder(context, shops[index], plan),
       separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
       itemCount: shops.length,
     );
   }
 
-  Widget shopItemBuilder(
-      BuildContext context, NiceShop shop, LimitEventPlan plan) {
-    final rewards =
-        ShopHelper.purchases(context, shop, showSpecialName: true).toList();
+  Widget shopItemBuilder(BuildContext context, NiceShop shop, LimitEventPlan plan) {
+    final rewards = ShopHelper.purchases(context, shop, showSpecialName: true).toList();
     Widget? leading;
     Widget title;
     if (rewards.length == 1) {
@@ -132,8 +119,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
       for (int index = 0; index < rewards.length; index++) {
         final reward = rewards[index];
         if (reward.item1 != null) {
-          spans.add(CenterWidgetSpan(
-              child: SizedBox(height: 28, child: reward.item1)));
+          spans.add(CenterWidgetSpan(child: SizedBox(height: 28, child: reward.item1)));
         }
         spans.add(reward.item2);
         if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
@@ -178,9 +164,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
           ),
           child: Text(
             '${planCount.format()}/$limitCount',
-            style: planCount == shop.limitNum
-                ? null
-                : TextStyle(color: Theme.of(context).colorScheme.error),
+            style: planCount == shop.limitNum ? null : TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
         IconButton(
@@ -279,8 +263,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
                   title: Text(S.current.cost),
                   scrollable: true,
                   hideCancel: true,
-                  content: SharedBuilder.itemGrid(
-                      context: context, items: items.entries),
+                  content: SharedBuilder.itemGrid(context: context, items: items.entries),
                 );
               },
             );
@@ -333,8 +316,7 @@ class __EditShopNumDialogState extends State<_EditShopNumDialog> {
 
   @override
   Widget build(BuildContext context) {
-    bool invalid = buyCount != null &&
-        (buyCount! < 0 || (widget.limitNum > 0 && buyCount! > widget.limitNum));
+    bool invalid = buyCount != null && (buyCount! < 0 || (widget.limitNum > 0 && buyCount! > widget.limitNum));
     final limitText = widget.limitNum == 0 ? 'Max ∞' : 'Max ${widget.limitNum}';
     return AlertDialog(
       title: widget.title,

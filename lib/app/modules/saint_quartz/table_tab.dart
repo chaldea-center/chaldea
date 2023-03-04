@@ -60,31 +60,19 @@ class _SQTableTabState extends State<SQTableTab> {
       cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
         columnWidths: [50, 50, 50, 500],
         rowHeights: plan.solution
-            .map((e) => max(
-                    48,
-                    e.events.length * _eventHeight +
-                        e.summons.length * _summonHeight +
-                        4)
-                .toDouble())
+            .map((e) => max(48, e.events.length * _eventHeight + e.summons.length * _summonHeight + 4).toDouble())
             .toList(),
         stickyLegendWidth: 120,
         stickyLegendHeight: 36,
       ),
       cellAlignments: CellAlignments.variableColumnAlignment(
-        columnAlignments: List.generate(
-            4, (index) => index == 3 ? Alignment.centerLeft : Alignment.center),
-        stickyRowAlignments: List.generate(
-            4, (index) => index == 3 ? Alignment.centerLeft : Alignment.center),
+        columnAlignments: List.generate(4, (index) => index == 3 ? Alignment.centerLeft : Alignment.center),
+        stickyRowAlignments: List.generate(4, (index) => index == 3 ? Alignment.centerLeft : Alignment.center),
         stickyColumnAlignment: Alignment.center,
         stickyLegendAlignment: Alignment.center,
       ),
       columnsTitleBuilder: (col) => Text(
-        [
-          S.current.sq_short,
-          S.current.summon_ticket_short,
-          S.current.item_apple,
-          S.current.event
-        ][col],
+        [S.current.sq_short, S.current.summon_ticket_short, S.current.item_apple, S.current.event][col],
         textAlign: col != 3 ? TextAlign.center : null,
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
@@ -99,22 +87,14 @@ class _SQTableTabState extends State<SQTableTab> {
       contentCellBuilder: (col, row) {
         final detail = plan.solution[row];
         if (col == 0) {
-          return _accWithAdd(
-              '${detail.accSQ}', detail.addSQ == 0 ? '' : '+${detail.addSQ}');
+          return _accWithAdd('${detail.accSQ}', detail.addSQ == 0 ? '' : '+${detail.addSQ}');
         } else if (col == 1) {
-          return _accWithAdd('${detail.accTicket}',
-              detail.addTicket == 0 ? '' : '+${detail.addTicket}');
+          return _accWithAdd('${detail.accTicket}', detail.addTicket == 0 ? '' : '+${detail.addTicket}');
         } else if (col == 2) {
-          return _accWithAdd(
-              detail.accApple.format(compact: false, precision: 1),
-              detail.addApple == 0.0
-                  ? ''
-                  : ('+${detail.addApple.format(compact: false, precision: 1)}'));
+          return _accWithAdd(detail.accApple.format(compact: false, precision: 1),
+              detail.addApple == 0.0 ? '' : ('+${detail.addApple.format(compact: false, precision: 1)}'));
         } else if (col == 3) {
-          Widget _wrap(
-              {required Widget child,
-              required VoidCallback? onTap,
-              double height = _eventHeight}) {
+          Widget _wrap({required Widget child, required VoidCallback? onTap, double height = _eventHeight}) {
             return InkWell(
               onTap: onTap,
               child: SizedBox(

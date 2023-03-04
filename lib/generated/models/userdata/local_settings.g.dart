@@ -12,60 +12,36 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = LocalSettings(
           beta: $checkedConvert('beta', (v) => v as bool? ?? false),
-          showDebugFab:
-              $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
-          alwaysOnTop:
-              $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
-          windowPosition: $checkedConvert('windowPosition',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          showSystemTray:
-              $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
+          showDebugFab: $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
+          alwaysOnTop: $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
+          windowPosition:
+              $checkedConvert('windowPosition', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          showSystemTray: $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 0),
           lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
-          themeMode: $checkedConvert(
-              'themeMode',
-              (v) =>
-                  $enumDecodeNullable(_$ThemeModeEnumMap, v) ??
-                  ThemeMode.system),
-          enableMouseDrag:
-              $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
-          splitMasterRatio:
-              $checkedConvert('splitMasterRatio', (v) => v as int?),
-          globalSelection:
-              $checkedConvert('globalSelection', (v) => v as bool? ?? false),
+          themeMode:
+              $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
+          enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
+          splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
+          globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
           language: $checkedConvert('language', (v) => v as String?),
-          preferredRegions: $checkedConvert(
-              'preferredRegions',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => const RegionConverter().fromJson(e as String))
-                  .toList()),
-          autoUpdateData:
-              $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
-          updateDataBeforeStart: $checkedConvert(
-              'updateDataBeforeStart', (v) => v as bool? ?? false),
-          checkDataHash:
-              $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
-          proxyServer:
-              $checkedConvert('proxyServer', (v) => v as bool? ?? false),
-          autoUpdateApp:
-              $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
+          preferredRegions: $checkedConvert('preferredRegions',
+              (v) => (v as List<dynamic>?)?.map((e) => const RegionConverter().fromJson(e as String)).toList()),
+          autoUpdateData: $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
+          updateDataBeforeStart: $checkedConvert('updateDataBeforeStart', (v) => v as bool? ?? false),
+          checkDataHash: $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
+          proxyServer: $checkedConvert('proxyServer', (v) => v as bool? ?? false),
+          autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
-          autoResetFilter:
-              $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
-          hideUnreleasedCard:
-              $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
-          favoritePreferred: $checkedConvert('favoritePreferred',
-              (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
-          preferApRate:
-              $checkedConvert('preferApRate', (v) => v as bool? ?? true),
-          preferredQuestRegion: $checkedConvert(
-              'preferredQuestRegion',
-              (v) => _$JsonConverterFromJson<String, Region>(
-                  v, const RegionConverter().fromJson)),
-          alertUploadUserData: $checkedConvert(
-              'alertUploadUserData', (v) => v as bool? ?? false),
-          forceOnline:
-              $checkedConvert('forceOnline', (v) => v as bool? ?? false),
+          autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
+          hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
+          favoritePreferred:
+              $checkedConvert('favoritePreferred', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
+          preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
+          preferredQuestRegion: $checkedConvert('preferredQuestRegion',
+              (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
+          alertUploadUserData: $checkedConvert('alertUploadUserData', (v) => v as bool? ?? false),
+          forceOnline: $checkedConvert('forceOnline', (v) => v as bool? ?? false),
           priorityTags: $checkedConvert(
               'priorityTags',
               (v) => (v as Map?)?.map(
@@ -77,84 +53,39 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(k as String, e as bool),
                   )),
           display: $checkedConvert(
-              'display',
-              (v) => v == null
-                  ? null
-                  : DisplaySettings.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
+              'display', (v) => v == null ? null : DisplaySettings.fromJson(Map<String, dynamic>.from(v as Map))),
           carousel: $checkedConvert(
-              'carousel',
-              (v) => v == null
-                  ? null
-                  : CarouselSetting.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
+              'carousel', (v) => v == null ? null : CarouselSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           github: $checkedConvert(
-              'github',
-              (v) => v == null
-                  ? null
-                  : GithubSetting.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
+              'github', (v) => v == null ? null : GithubSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           tips: $checkedConvert(
-              'tips',
-              (v) => v == null
-                  ? null
-                  : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+              'tips', (v) => v == null ? null : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           spoilerRegion: $checkedConvert(
-              'spoilerRegion',
-              (v) => v == null
-                  ? Region.jp
-                  : const RegionConverter().fromJson(v as String)),
+              'spoilerRegion', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
           svtFilterData: $checkedConvert(
-              'svtFilterData',
-              (v) => v == null
-                  ? null
-                  : SvtFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
-          craftFilterData: $checkedConvert(
-              'craftFilterData',
-              (v) => v == null
-                  ? null
-                  : CraftFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
-          cmdCodeFilterData: $checkedConvert(
-              'cmdCodeFilterData',
-              (v) => v == null
-                  ? null
-                  : CmdCodeFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
-          eventFilterData: $checkedConvert(
-              'eventFilterData',
-              (v) => v == null
-                  ? null
-                  : EventFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
-          summonFilterData: $checkedConvert(
-              'summonFilterData',
-              (v) => v == null
-                  ? null
-                  : SummonFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
-          scriptReaderFilterData: $checkedConvert(
-              'scriptReaderFilterData',
-              (v) => v == null
-                  ? null
-                  : ScriptReaderFilterData.fromJson(
-                      Map<String, dynamic>.from(v as Map))),
+              'svtFilterData', (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          craftFilterData: $checkedConvert('craftFilterData',
+              (v) => v == null ? null : CraftFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          cmdCodeFilterData: $checkedConvert('cmdCodeFilterData',
+              (v) => v == null ? null : CmdCodeFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          eventFilterData: $checkedConvert('eventFilterData',
+              (v) => v == null ? null : EventFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          summonFilterData: $checkedConvert('summonFilterData',
+              (v) => v == null ? null : SummonFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          scriptReaderFilterData: $checkedConvert('scriptReaderFilterData',
+              (v) => v == null ? null : ScriptReaderFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           autologins: $checkedConvert(
               'autologins',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => AutoLoginData.fromJson(
-                      Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => AutoLoginData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
         );
-        $checkedConvert(
-            'useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
+        $checkedConvert('useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
         return val;
       },
     );
 
-Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, dynamic>{
       'beta': instance.beta,
       'showDebugFab': instance.showDebugFab,
       'alwaysOnTop': instance.alwaysOnTop,
@@ -166,9 +97,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'enableMouseDrag': instance.enableMouseDrag,
       'splitMasterRatio': instance.splitMasterRatio,
       'globalSelection': instance.globalSelection,
-      'preferredRegions': instance.preferredRegions
-          ?.map(const RegionConverter().toJson)
-          .toList(),
+      'preferredRegions': instance.preferredRegions?.map(const RegionConverter().toJson).toList(),
       'autoUpdateData': instance.autoUpdateData,
       'updateDataBeforeStart': instance.updateDataBeforeStart,
       'checkDataHash': instance.checkDataHash,
@@ -179,12 +108,11 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'preferApRate': instance.preferApRate,
-      'preferredQuestRegion': _$JsonConverterToJson<String, Region>(
-          instance.preferredQuestRegion, const RegionConverter().toJson),
+      'preferredQuestRegion':
+          _$JsonConverterToJson<String, Region>(instance.preferredQuestRegion, const RegionConverter().toJson),
       'alertUploadUserData': instance.alertUploadUserData,
       'forceOnline': instance.forceOnline,
-      'priorityTags':
-          instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
+      'priorityTags': instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
       'galleries': instance.galleries,
       'display': instance.display.toJson(),
       'carousel': instance.carousel.toJson(),
@@ -231,76 +159,44 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = DisplaySettings(
-          showAccountAtHome:
-              $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
-          showWindowFab:
-              $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
-          svtPlanInputMode: $checkedConvert(
-              'svtPlanInputMode',
-              (v) =>
-                  $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ??
-                  SvtPlanInputMode.dropdown),
-          itemDetailViewType: $checkedConvert(
-              'itemDetailViewType',
-              (v) =>
-                  $enumDecodeNullable(_$ItemDetailViewTypeEnumMap, v) ??
-                  ItemDetailViewType.separated),
-          itemDetailSvtSort: $checkedConvert(
-              'itemDetailSvtSort',
-              (v) =>
-                  $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ??
-                  ItemDetailSvtSort.collectionNo),
-          itemQuestsSortByAp:
-              $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
-          autoTurnOnPlanNotReach: $checkedConvert(
-              'autoTurnOnPlanNotReach', (v) => v as bool? ?? false),
-          classFilterStyle: $checkedConvert(
-              'classFilterStyle',
-              (v) =>
-                  $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ??
-                  SvtListClassFilterStyle.auto),
-          onlyAppendSkillTwo:
-              $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
-          onlyAppendUnlocked:
-              $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
-          planPageFullScreen:
-              $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
-          sortedSvtTabs: $checkedConvert(
-              'sortedSvtTabs',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e))
-                  .toList()),
-          hideSvtPlanDetails: $checkedConvert(
-              'hideSvtPlanDetails',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e))
-                  .toList()),
+          showAccountAtHome: $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
+          showWindowFab: $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
+          svtPlanInputMode: $checkedConvert('svtPlanInputMode',
+              (v) => $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ?? SvtPlanInputMode.dropdown),
+          itemDetailViewType: $checkedConvert('itemDetailViewType',
+              (v) => $enumDecodeNullable(_$ItemDetailViewTypeEnumMap, v) ?? ItemDetailViewType.separated),
+          itemDetailSvtSort: $checkedConvert('itemDetailSvtSort',
+              (v) => $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ?? ItemDetailSvtSort.collectionNo),
+          itemQuestsSortByAp: $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
+          autoTurnOnPlanNotReach: $checkedConvert('autoTurnOnPlanNotReach', (v) => v as bool? ?? false),
+          classFilterStyle: $checkedConvert('classFilterStyle',
+              (v) => $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ?? SvtListClassFilterStyle.auto),
+          onlyAppendSkillTwo: $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
+          onlyAppendUnlocked: $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
+          planPageFullScreen: $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
+          sortedSvtTabs: $checkedConvert('sortedSvtTabs',
+              (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e)).toList()),
+          hideSvtPlanDetails: $checkedConvert('hideSvtPlanDetails',
+              (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <String, dynamic>{
       'showAccountAtHome': instance.showAccountAtHome,
       'showWindowFab': instance.showWindowFab,
       'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode]!,
-      'itemDetailViewType':
-          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType]!,
-      'itemDetailSvtSort':
-          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort]!,
+      'itemDetailViewType': _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType]!,
+      'itemDetailSvtSort': _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort]!,
       'itemQuestsSortByAp': instance.itemQuestsSortByAp,
       'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
-      'classFilterStyle':
-          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle]!,
+      'classFilterStyle': _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle]!,
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
       'onlyAppendUnlocked': instance.onlyAppendUnlocked,
       'planPageFullScreen': instance.planPageFullScreen,
-      'sortedSvtTabs':
-          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
-      'hideSvtPlanDetails': instance.hideSvtPlanDetails
-          .map((e) => _$SvtPlanDetailEnumMap[e]!)
-          .toList(),
+      'sortedSvtTabs': instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
+      'hideSvtPlanDetails': instance.hideSvtPlanDetails.map((e) => _$SvtPlanDetailEnumMap[e]!).toList(),
     };
 
 const _$SvtPlanInputModeEnumMap = {
@@ -365,14 +261,11 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
           items: $checkedConvert(
               'items',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => CarouselItem.fromJson(
-                      Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => CarouselItem.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
-          enableChaldea:
-              $checkedConvert('enableChaldea', (v) => v as bool? ?? true),
-          enableMooncell:
-              $checkedConvert('enableMooncell', (v) => v as bool? ?? true),
+          enableChaldea: $checkedConvert('enableChaldea', (v) => v as bool? ?? true),
+          enableMooncell: $checkedConvert('enableMooncell', (v) => v as bool? ?? true),
           enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? true),
           enableCN: $checkedConvert('enableCN', (v) => v as bool? ?? true),
           enableNA: $checkedConvert('enableNA', (v) => v as bool? ?? true),
@@ -383,8 +276,7 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) => <String, dynamic>{
       'updateTime': instance.updateTime,
       'items': instance.items.map((e) => e.toJson()).toList(),
       'enabled': instance.enabled,
@@ -412,20 +304,15 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
           image: $checkedConvert('image', (v) => v as String?),
           link: $checkedConvert('link', (v) => v as String?),
           verMin: $checkedConvert(
-              'verMin',
-              (v) => _$JsonConverterFromJson<String, AppVersion>(
-                  v, const AppVersionConverter().fromJson)),
+              'verMin', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
           verMax: $checkedConvert(
-              'verMax',
-              (v) => _$JsonConverterFromJson<String, AppVersion>(
-                  v, const AppVersionConverter().fromJson)),
+              'verMax', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) => <String, dynamic>{
       'type': instance.type,
       'priority': instance.priority,
       'startTime': instance.startTime.toIso8601String(),
@@ -435,10 +322,8 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) =>
       'md': instance.md,
       'image': instance.image,
       'link': instance.link,
-      'verMin': _$JsonConverterToJson<String, AppVersion>(
-          instance.verMin, const AppVersionConverter().toJson),
-      'verMax': _$JsonConverterToJson<String, AppVersion>(
-          instance.verMax, const AppVersionConverter().toJson),
+      'verMin': _$JsonConverterToJson<String, AppVersion>(instance.verMin, const AppVersionConverter().toJson),
+      'verMax': _$JsonConverterToJson<String, AppVersion>(instance.verMax, const AppVersionConverter().toJson),
     };
 
 RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
@@ -447,22 +332,15 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = RemoteConfig(
           blockedCarousels: $checkedConvert(
-              'blockedCarousels',
-              (v) =>
-                  (v as List<dynamic>?)?.map((e) => e as String).toList() ??
-                  const []),
+              'blockedCarousels', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
           blockedErrors: $checkedConvert(
-              'blockedErrors',
-              (v) =>
-                  (v as List<dynamic>?)?.map((e) => e as String).toList() ??
-                  const []),
+              'blockedErrors', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dynamic>{
       'blockedCarousels': instance.blockedCarousels,
       'blockedErrors': instance.blockedErrors,
     };
@@ -475,8 +353,7 @@ GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
           owner: $checkedConvert('owner', (v) => v as String? ?? ''),
           repo: $checkedConvert('repo', (v) => v as String? ?? ''),
           path: $checkedConvert('path', (v) => v as String? ?? ''),
-          token: $checkedConvert('token',
-              (v) => v == null ? '' : GithubSetting._readToken(v as String)),
+          token: $checkedConvert('token', (v) => v == null ? '' : GithubSetting._readToken(v as String)),
           branch: $checkedConvert('branch', (v) => v as String? ?? ''),
           sha: $checkedConvert('sha', (v) => v as String?),
           indent: $checkedConvert('indent', (v) => v as bool? ?? false),
@@ -485,8 +362,7 @@ GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$GithubSettingToJson(GithubSetting instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GithubSettingToJson(GithubSetting instance) => <String, dynamic>{
       'owner': instance.owner,
       'repo': instance.repo,
       'path': instance.path,
@@ -503,15 +379,13 @@ TipsSetting _$TipsSettingFromJson(Map json) => $checkedCreate(
         final val = TipsSetting(
           starter: $checkedConvert('starter', (v) => v as bool? ?? true),
           servantList: $checkedConvert('servantList', (v) => v as int? ?? 2),
-          servantDetail:
-              $checkedConvert('servantDetail', (v) => v as int? ?? 2),
+          servantDetail: $checkedConvert('servantDetail', (v) => v as int? ?? 2),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynamic>{
       'starter': instance.starter,
       'servantList': instance.servantList,
       'servantDetail': instance.servantDetail,

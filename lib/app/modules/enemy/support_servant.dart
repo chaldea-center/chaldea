@@ -24,8 +24,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '[${S.current.support_servant_short}] ${Transl.svtNames(svt.shownName).l}'),
+        title: Text('[${S.current.support_servant_short}] ${Transl.svtNames(svt.shownName).l}'),
       ),
       body: ListView(
         children: [
@@ -52,8 +51,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
             : '${S.current.enemy} No.${svt.svt.id} - ${svt.svt.lName.l}'),
       ),
       if (svt.script?.eventDeckIndex != null)
-        CustomTableRow.fromTexts(
-            texts: ['Event Deck Index: ${svt.script!.eventDeckIndex}']),
+        CustomTableRow.fromTexts(texts: ['Event Deck Index: ${svt.script!.eventDeckIndex}']),
       CustomTableRow(children: [
         TableCellData(
           child: svt.svt.iconBuilder(context: context, height: 64),
@@ -106,12 +104,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
                 isHeaders: const [true, false, true, false],
               ),
               CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'HP',
-                  svt.hp.format(compact: false),
-                  'ATK',
-                  svt.atk.format(compact: false)
-                ],
+                texts: ['HP', svt.hp.format(compact: false), 'ATK', svt.atk.format(compact: false)],
                 isHeaders: const [true, false, true, false],
               ),
             ],
@@ -122,13 +115,9 @@ class _SupportServantPageState extends State<SupportServantPage> {
         texts: [S.current.trait],
         isHeader: true,
       ),
-      CustomTableRow.fromChildren(children: [
-        SharedBuilder.traitList(
-            context: context, traits: svt.traits.toList()..sort2((e) => e.id))
-      ]),
-      if (svt.skills.skill1 != null ||
-          svt.skills.skill2 != null ||
-          svt.skills.skill3 != null)
+      CustomTableRow.fromChildren(
+          children: [SharedBuilder.traitList(context: context, traits: svt.traits.toList()..sort2((e) => e.id))]),
+      if (svt.skills.skill1 != null || svt.skills.skill2 != null || svt.skills.skill3 != null)
         CustomTableRow.fromTexts(
           texts: [S.current.skill],
           isHeader: true,
@@ -206,17 +195,13 @@ class _SupportServantPageState extends State<SupportServantPage> {
       children.add(ListTile(
         leading: ce.equip.iconBuilder(context: context, width: 48),
         title: Text(ce.equip.lName.l),
-        subtitle: Text(
-            'Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.ce_max_limit_break : ""}'),
+        subtitle: Text('Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.ce_max_limit_break : ""}'),
         onTap: () {
-          router.push(
-              url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
+          router.push(url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
         },
       ));
-      final skills = ce.equip.skills
-          .where((skill) => skill.condLimitCount == ce.limitCount);
-      children.addAll(
-          skills.map((e) => SkillDescriptor(skill: e, region: widget.region)));
+      final skills = ce.equip.skills.where((skill) => skill.condLimitCount == ce.limitCount);
+      children.addAll(skills.map((e) => SkillDescriptor(skill: e, region: widget.region)));
     }
 
     return children;

@@ -79,12 +79,10 @@ class ServerFeedbackHandler extends ReportHandler {
   @override
   Future<bool> handle(Report report, BuildContext? context) async {
     Uint8List? screenshotBytes = await _captureScreenshot();
-    Map<String, Uint8List> generatedAttachments =
-        onGenerateAttachments == null ? {} : onGenerateAttachments!();
+    Map<String, Uint8List> generatedAttachments = onGenerateAttachments == null ? {} : onGenerateAttachments!();
 
-    return _pool.withResource<bool>(() => _sendMail(report,
-        screenshotBytes: screenshotBytes,
-        generatedAttachments: generatedAttachments));
+    return _pool.withResource<bool>(
+        () => _sendMail(report, screenshotBytes: screenshotBytes, generatedAttachments: generatedAttachments));
   }
 
   /// store html message that has already be sent
@@ -106,8 +104,7 @@ class ServerFeedbackHandler extends ReportHandler {
     }
 
     if (_sentReports.length > _maxEmailCount) {
-      logger.warning(
-          'Already reach maximum limit($_maxEmailCount) of sent email, skip');
+      logger.warning('Already reach maximum limit($_maxEmailCount) of sent email, skip');
       return false;
     }
 
@@ -172,8 +169,7 @@ class ServerFeedbackHandler extends ReportHandler {
       }
     }
     if (!kIsWeb) {
-      if (report.stackTrace != null &&
-          !report.stackTrace.toString().contains('chaldea')) {
+      if (report.stackTrace != null && !report.stackTrace.toString().contains('chaldea')) {
         return true;
       }
     }
@@ -185,8 +181,7 @@ class ServerFeedbackHandler extends ReportHandler {
 
     final error = report.shownError;
     final stackTrace = report.stackTrace.toString();
-    bool? shouldIgnore =
-        _blockedErrors?.any((e) => error.contains(e) || stackTrace.contains(e));
+    bool? shouldIgnore = _blockedErrors?.any((e) => error.contains(e) || stackTrace.contains(e));
     if (shouldIgnore == true) {
       // logger_.logger.e('don\'t send blocked error', report.error, report.stackTrace);
       return true;
@@ -255,27 +250,23 @@ class ServerFeedbackHandler extends ReportHandler {
 
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
-      'app':
-          '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commitHash}-${AppInfo.commitDate}',
+      'app': '${AppInfo.appName} v${AppInfo.fullVersion2} ${AppInfo.commitHash}-${AppInfo.commitDate}',
       'dataset': db.gameData.version.utc,
       'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
-      if (kIsWeb)
-        'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
+      if (kIsWeb) 'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
     };
     for (var entry in summary.entries) {
-      buffer
-          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
+      buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
     }
     buffer.write('<hr>');
 
     if (report is! FeedbackReport) {
       buffer.write("<h3>Error:</h3>");
       buffer.write(escapeCode(report.error.toString()));
-      if (report.error.toString().trim().isEmpty &&
-          report.errorDetails != null) {
+      if (report.error.toString().trim().isEmpty && report.errorDetails != null) {
         buffer.write(escapeCode(report.errorDetails!.exceptionAsString()));
       }
       final error = (report.error ?? report.errorDetails?.exception).toString();
@@ -317,8 +308,7 @@ class ServerFeedbackHandler extends ReportHandler {
         buffer.write("<h3>Stack trace:</h3>");
         buffer.write(escapeCode(report.stackTrace.toString()));
 
-        if (report.stackTrace?.toString().trim().isNotEmpty != true &&
-            report.errorDetails != null) {
+        if (report.stackTrace?.toString().trim().isNotEmpty != true && report.errorDetails != null) {
           buffer.write(escapeCode(report.errorDetails!.stack.toString()));
         }
         buffer.write("<hr>");
@@ -335,16 +325,14 @@ class ServerFeedbackHandler extends ReportHandler {
     if (enableDeviceParameters) {
       buffer.write("<h3>Device parameters:</h3>");
       for (var entry in report.deviceParameters.entries) {
-        buffer.write(
-            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }
     if (enableApplicationParameters) {
       buffer.write("<h3>Application parameters:</h3>");
       for (var entry in report.applicationParameters.entries) {
-        buffer.write(
-            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }
@@ -352,8 +340,7 @@ class ServerFeedbackHandler extends ReportHandler {
     if (enableCustomParameters && report.customParameters.isNotEmpty) {
       buffer.write("<h3>Custom parameters:</h3>");
       for (var entry in report.customParameters.entries) {
-        buffer.write(
-            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }
@@ -367,8 +354,7 @@ class FeedbackReport extends Report {
   final String body;
 
   FeedbackReport(this.contactInfo, this.body)
-      : super(null, '', DateTime.now(), AppInfo.deviceParams, AppInfo.appParams,
-            {}, null, PlatformType.unknown, null);
+      : super(null, '', DateTime.now(), AppInfo.deviceParams, AppInfo.appParams, {}, null, PlatformType.unknown, null);
 }
 
 extension _ReportX on Report {

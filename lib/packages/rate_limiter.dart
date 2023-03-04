@@ -25,8 +25,7 @@ class RateLimiter {
 
   bool get isIdle => _allTasks.isEmpty;
 
-  Future<T> limited<T>(Future<T> Function() func,
-      {Future<T> Function()? onCanceled}) async {
+  Future<T> limited<T>(Future<T> Function() func, {Future<T> Function()? onCanceled}) async {
     final task = _RateLimitTask<T>(Completer(), onCanceled);
 
     _allTasks.add(task);
@@ -69,8 +68,7 @@ class RateLimiter {
       if (task.onCanceled != null) {
         task.completer.complete(task.onCanceled!());
       } else {
-        task.completer
-            .completeError(RateLimitCancelError(), StackTrace.current);
+        task.completer.completeError(RateLimitCancelError(), StackTrace.current);
       }
     }
     _allTasks.clear();

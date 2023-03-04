@@ -31,11 +31,7 @@ class FilePlusWeb implements FilePlus {
   static Iterable<String> list() => _defaultBox.keys.whereType<String>();
 
   static String normalizePath(String fp) {
-    return fp
-        .split(RegExp(r'[/\\]+'))
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .join('/');
+    return fp.split(RegExp(r'[/\\]+')).map((e) => e.trim()).where((e) => e.isNotEmpty).join('/');
   }
 
   @override
@@ -69,21 +65,17 @@ class FilePlusWeb implements FilePlus {
 
   /// failed
   @override
-  List<String> readAsLinesSync({Encoding encoding = utf8}) =>
-      readAsStringSync(encoding: encoding).split('\n');
+  List<String> readAsLinesSync({Encoding encoding = utf8}) => readAsStringSync(encoding: encoding).split('\n');
 
   @override
-  Future<String> readAsString({Encoding encoding = utf8}) =>
-      readAsBytes().then((value) => encoding.decode(value));
+  Future<String> readAsString({Encoding encoding = utf8}) => readAsBytes().then((value) => encoding.decode(value));
 
   /// failed
   @override
-  String readAsStringSync({Encoding encoding = utf8}) =>
-      encoding.decode(readAsBytesSync());
+  String readAsStringSync({Encoding encoding = utf8}) => encoding.decode(readAsBytesSync());
 
   @override
-  Future<FilePlus> writeAsBytes(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) async {
+  Future<FilePlus> writeAsBytes(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false}) async {
     if (mode == FileMode.append) {
       final previous = await effectiveBox.get(_path);
       if (previous != null) {
@@ -97,25 +89,20 @@ class FilePlusWeb implements FilePlus {
 
   /// not sync
   @override
-  void writeAsBytesSync(List<int> bytes,
-      {FileMode mode = FileMode.write, bool flush = false}) {
+  void writeAsBytesSync(List<int> bytes, {FileMode mode = FileMode.write, bool flush = false}) {
     writeAsBytes(bytes);
   }
 
   @override
   Future<FilePlus> writeAsString(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false}) async {
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) async {
     return writeAsBytes(encoding.encode(contents), mode: mode, flush: flush);
   }
 
   /// not sync
   @override
   void writeAsStringSync(String contents,
-      {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false}) {
+      {FileMode mode = FileMode.write, Encoding encoding = utf8, bool flush = false}) {
     writeAsString(contents, mode: mode, encoding: encoding, flush: flush);
   }
 

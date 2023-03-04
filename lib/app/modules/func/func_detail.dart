@@ -18,19 +18,15 @@ class FuncDetailPage extends StatefulWidget {
   final int? id;
   final BaseFunction? func;
   final Region? region;
-  const FuncDetailPage({super.key, this.id, this.func, this.region})
-      : assert(id != null || func != null);
+  const FuncDetailPage({super.key, this.id, this.func, this.region}) : assert(id != null || func != null);
 
   @override
   State<FuncDetailPage> createState() => _FuncDetailPageState();
 }
 
 class _FuncDetailPageState extends State<FuncDetailPage>
-    with
-        SingleTickerProviderStateMixin,
-        RegionBasedState<BaseFunction, FuncDetailPage> {
-  late final TabController _tabController =
-      TabController(length: 3, vsync: this);
+    with SingleTickerProviderStateMixin, RegionBasedState<BaseFunction, FuncDetailPage> {
+  late final TabController _tabController = TabController(length: 3, vsync: this);
   int get id => widget.func?.funcId ?? widget.id ?? data?.funcId ?? -1;
   BaseFunction get func => data!;
 
@@ -86,8 +82,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbFunc(id, region ?? Region.jp)),
+      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbFunc(id, region ?? Region.jp)),
     );
   }
 
@@ -109,9 +104,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         TableCellData(
           child: Text.rich(
             TextSpan(children: [
-              if (func.funcPopupIcon != null)
-                CenterWidgetSpan(
-                    child: db.getIconImage(func.funcPopupIcon, width: 24)),
+              if (func.funcPopupIcon != null) CenterWidgetSpan(child: db.getIconImage(func.funcPopupIcon, width: 24)),
               TextSpan(text: ' ${func.lPopupText.l}'),
             ]),
             textAlign: TextAlign.center,
@@ -120,9 +113,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         )
       ]),
       if (!Transl.isJP)
-        CustomTableRow(children: [
-          TableCellData(text: func.lPopupText.jp, textAlign: TextAlign.center)
-        ]),
+        CustomTableRow(children: [TableCellData(text: func.lPopupText.jp, textAlign: TextAlign.center)]),
       CustomTableRow(children: [
         TableCellData(
           text: 'ID',
@@ -144,8 +135,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           child: Text.rich(
             SharedBuilder.textButtonSpan(
               context: context,
-              text:
-                  '${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
+              text: '${func.funcType.name}\n${Transl.funcType(func.funcType).l}',
               onTap: () {
                 router.push(
                   url: Routes.funcs,
@@ -171,8 +161,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           alignment: AlignmentDirectional.centerEnd,
         ),
       ]),
-      CustomTableRow.fromTexts(
-          texts: [S.current.effective_condition], isHeader: true),
+      CustomTableRow.fromTexts(texts: [S.current.effective_condition], isHeader: true),
       CustomTableRow(children: [
         TableCellData(
           text: "Target Team",
@@ -192,8 +181,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         TableCellData(
           child: func.functvals.isEmpty
               ? const Text('-')
-              : SharedBuilder.traitList(
-                  context: context, traits: func.functvals),
+              : SharedBuilder.traitList(context: context, traits: func.functvals),
           flex: 3,
           alignment: AlignmentDirectional.centerEnd,
         )
@@ -205,8 +193,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
             isHeader: true,
           ),
           TableCellData(
-            child: SharedBuilder.traitList(
-                context: context, traits: func.funcquestTvals),
+            child: SharedBuilder.traitList(context: context, traits: func.funcquestTvals),
             flex: 3,
             alignment: AlignmentDirectional.centerEnd,
           )
@@ -218,8 +205,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
             isHeader: true,
           ),
           TableCellData(
-            child: SharedBuilder.traitList(
-                context: context, traits: func.traitVals),
+            child: SharedBuilder.traitList(context: context, traits: func.traitVals),
             flex: 3,
             alignment: AlignmentDirectional.centerEnd,
           )
@@ -245,8 +231,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context).hintColor, width: 0.75),
+                  border: Border.all(color: Theme.of(context).hintColor, width: 0.75),
                   borderRadius: BorderRadius.circular(5)),
               position: DecorationPosition.foreground,
               child: BuffInfoTable(buff: func.buffs.first),
@@ -264,16 +249,13 @@ class _SkillTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skills = db.gameData.baseSkills.values
-        .where((e) => e.functions.any((f) => f.funcId == func.funcId))
-        .toList();
+    final skills = db.gameData.baseSkills.values.where((e) => e.functions.any((f) => f.funcId == func.funcId)).toList();
     skills.sort2((e) => e.id);
     if (skills.isEmpty) {
       return const Center(child: Text('No local record'));
     }
     Map<int, List<GameCardMixin>> allCards = {
-      for (final skill in skills)
-        skill.id: ReverseGameData.skill2All(skill.id).toList()
+      for (final skill in skills) skill.id: ReverseGameData.skill2All(skill.id).toList()
     };
 
     return ScrollControlWidget(
@@ -284,9 +266,7 @@ class _SkillTab extends StatelessWidget {
             final cards = allCards[skill.id] ?? [];
             return ListTile(
               dense: true,
-              leading: skill.icon == null
-                  ? const SizedBox()
-                  : db.getIconImage(skill.icon, width: 28),
+              leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, width: 28),
               horizontalTitleGap: 0,
               title: Text('${skill.id} ${skill.lName.l}'),
               trailing: cards.isEmpty
@@ -294,8 +274,7 @@ class _SkillTab extends StatelessWidget {
                   : Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        ...cards.take(3).map(
-                            (e) => e.iconBuilder(context: context, width: 32)),
+                        ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
                         if (cards.length > 3)
                           Text(
                             '+${cards.length - 3}',
@@ -319,16 +298,12 @@ class _TdTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tds = db.gameData.baseTds.values
-        .where((e) => e.functions.any((f) => f.funcId == func.funcId))
-        .toList();
+    final tds = db.gameData.baseTds.values.where((e) => e.functions.any((f) => f.funcId == func.funcId)).toList();
     tds.sort2((e) => e.id);
     if (tds.isEmpty) {
       return const Center(child: Text('No local record'));
     }
-    Map<int, List<GameCardMixin>> allCards = {
-      for (final td in tds) td.id: ReverseGameData.td2Svt(td.id).toList()
-    };
+    Map<int, List<GameCardMixin>> allCards = {for (final td in tds) td.id: ReverseGameData.td2Svt(td.id).toList()};
 
     return ScrollControlWidget(
       builder: (context, controller) {
@@ -341,16 +316,14 @@ class _TdTab extends StatelessWidget {
               dense: true,
               leading: CommandCardWidget(card: td.card, width: 32),
               horizontalTitleGap: 6,
-              contentPadding:
-                  const EdgeInsetsDirectional.only(start: 10, end: 16),
+              contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
               title: Text('${td.id} ${td.lName.l}'),
               trailing: cards.isEmpty
                   ? null
                   : Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        ...cards.take(3).map(
-                            (e) => e.iconBuilder(context: context, width: 32)),
+                        ...cards.take(3).map((e) => e.iconBuilder(context: context, width: 32)),
                         if (cards.length > 3)
                           Text(
                             '+${cards.length - 3}',

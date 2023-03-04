@@ -39,9 +39,7 @@ class ChaldeaResponse {
       return _cachedJson = response!.data;
     }
     try {
-      var plain = response!.data is List<int>
-          ? utf8.decode(response!.data)
-          : response!.data;
+      var plain = response!.data is List<int> ? utf8.decode(response!.data) : response!.data;
       return _cachedJson = jsonDecode(plain);
     } catch (e) {
       return null;
@@ -110,8 +108,7 @@ class ChaldeaApi {
     ));
   }
 
-  static Future<ChaldeaResponse> wrap(
-      Future<Response> Function(Dio dio) callback) async {
+  static Future<ChaldeaResponse> wrap(Future<Response> Function(Dio dio) callback) async {
     return ChaldeaResponse(await callback(dio));
   }
 
@@ -129,8 +126,7 @@ class ChaldeaApi {
       if (subject != null) 'subject': subject,
       if (senderName != null) 'sender': senderName,
       'files': [
-        for (final file in files.entries)
-          MultipartFile.fromBytes(file.value, filename: file.key),
+        for (final file in files.entries) MultipartFile.fromBytes(file.value, filename: file.key),
       ]
     });
     return wrap((dio) => dio.post('/feedback', data: formData));

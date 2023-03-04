@@ -1,10 +1,10 @@
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import '../../../test_init.dart';
 
 void main() async {
@@ -31,7 +31,8 @@ void main() async {
 
       test('NP 1 OC 1 no fou as base', () {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null); // this stage has a sky caster in wave 1 at index 1
+        battle.init(db.gameData.questPhases[9300040603]!, altriaSettings,
+            null); // this stage has a sky caster in wave 1 at index 1
 
         final altria = battle.targetedAlly!;
         altria.np = 10000;

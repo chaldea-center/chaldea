@@ -141,8 +141,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.limitCountAbove:
         return text('${S.current.ascension} $value');
       case VoiceCondType.costume:
-        return text(
-            '${S.current.costume} ${db.gameData.costumes[value]?.lName.l ?? value}');
+        return text('${S.current.costume} ${db.gameData.costumes[value]?.lName.l ?? value}');
       case VoiceCondType.isnewWar:
         final war = db.gameData.wars[value];
         final warName = war?.lLongName.l ?? value.toString();
@@ -180,11 +179,9 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.svtGroup:
         return localized(
           jp: null,
-          cn: () => combineToRich(context, '持有任意一个: ',
-              MultiDescriptor.servants(context, valueList)),
+          cn: () => combineToRich(context, '持有任意一个: ', MultiDescriptor.servants(context, valueList)),
           tw: null,
-          na: () => combineToRich(context, 'Presence any of following: ',
-              MultiDescriptor.servants(context, valueList)),
+          na: () => combineToRich(context, 'Presence any of following: ', MultiDescriptor.servants(context, valueList)),
           kr: null,
         );
       default:

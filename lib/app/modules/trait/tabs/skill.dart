@@ -17,10 +17,7 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (final skill in [
-      ...db.gameData.baseSkills.values,
-      ...db.gameData.baseTds.values
-    ]) {
+    for (final skill in [...db.gameData.baseSkills.values, ...db.gameData.baseTds.values]) {
       List<NiceFunction> funcs = [];
       for (final func in skill.functions) {
         if (func.funcType == FuncType.eventFortificationPointUp) continue;
@@ -50,9 +47,7 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
       if (funcs.isNotEmpty) {
         children.add(ListTile(
           dense: true,
-          leading: skill.icon == null
-              ? const SizedBox()
-              : db.getIconImage(skill.icon, height: 28),
+          leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, height: 28),
           title: Text(skill.lName.l),
           onTap: skill.routeTo,
           subtitle: Text(funcs.map((e) => e.lPopupText.l).join('\n')),

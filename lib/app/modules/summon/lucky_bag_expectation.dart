@@ -19,8 +19,7 @@ class LuckyBagExpectation extends StatefulWidget {
   _LuckyBagExpectationState createState() => _LuckyBagExpectationState();
 }
 
-class _LuckyBagExpectationState extends State<LuckyBagExpectation>
-    with SingleTickerProviderStateMixin {
+class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late final ScrollController _scrollController1 = ScrollController();
   late final ScrollController _scrollController2 = ScrollController();
@@ -64,8 +63,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                       ),
                       SimpleDialogOption(
                         onPressed: () => reset(context, null),
-                        child: Text(
-                            '${FavoriteState.owned.shownName}→$_kScoreMin,'
+                        child: Text('${FavoriteState.owned.shownName}→$_kScoreMin,'
                             ' ${FavoriteState.other.shownName}→$_kScoreMax'),
                       ),
                     ],
@@ -79,10 +77,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
-          tabs: [
-            Tab(text: S.current.lucky_bag_rating),
-            Tab(text: S.current.lucky_bag_expectation)
-          ],
+          tabs: [Tab(text: S.current.lucky_bag_rating), Tab(text: S.current.lucky_bag_expectation)],
         )),
       ),
       body: TabBarView(
@@ -95,12 +90,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     );
   }
 
-  Map<int, int> get _svtScores =>
-      db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
+  Map<int, int> get _svtScores => db.curUser.luckyBagSvtScores.putIfAbsent(widget.summon.id, () => {});
 
   int scoreOf(int id) {
-    return _svtScores[id] ??
-        (db.curUser.svtStatusOf(id).favorite ? _kScoreMin : _kScoreMax);
+    return _svtScores[id] ?? (db.curUser.svtStatusOf(id).favorite ? _kScoreMin : _kScoreMax);
   }
 
   Widget get inputTab {
@@ -115,11 +108,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
             children.add(ListTile(
               leading: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child: SummonUtil.svtAvatar(
-                    context: context,
-                    card: svt,
-                    category: false,
-                    favorite: svt.status.favorite),
+                child:
+                    SummonUtil.svtAvatar(context: context, card: svt, category: false, favorite: svt.status.favorite),
               ),
               horizontalTitleGap: 0,
               title: Row(
@@ -149,15 +139,12 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           leading: db.getIconImage(null, width: 40),
           tileColor: Theme.of(context).highlightColor,
           horizontalTitleGap: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: List.generate(
               _kScoreMax - _kScoreMin + 1,
               (index) => Expanded(
-                child: Center(
-                    child: Tooltip(
-                        message: _scoreTooltip(index), child: Text('$index'))),
+                child: Center(child: Tooltip(message: _scoreTooltip(index), child: Text('$index'))),
               ),
             ),
           ),
@@ -214,8 +201,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       final block = data.svts.firstWhereOrNull((e) => e.rarity == 5);
       if (block == null || block.ids.isEmpty) continue;
       _ExpResult _result = _ExpResult(data, block);
-      _result.exp =
-          Maths.sum(block.ids.map((id) => scoreOf(id))) / block.ids.length;
+      _result.exp = Maths.sum(block.ids.map((id) => scoreOf(id))) / block.ids.length;
       if (block.ids.length < 2) {
         _result.sd = 0;
       } else {
@@ -231,12 +217,9 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
 
       // return temp / (a.length - 1);
       _result.best5 = block.ids.where((id) => scoreOf(id) == _kScoreMax).length;
-      _result.worst0 =
-          block.ids.where((id) => scoreOf(id) == _kScoreMin).length;
-      _result.moreThan =
-          block.ids.where((id) => scoreOf(id) >= minScore).length;
-      _result.lessThan =
-          block.ids.where((id) => scoreOf(id) <= maxScore).length;
+      _result.worst0 = block.ids.where((id) => scoreOf(id) == _kScoreMin).length;
+      _result.moreThan = block.ids.where((id) => scoreOf(id) >= minScore).length;
+      _result.lessThan = block.ids.where((id) => scoreOf(id) <= maxScore).length;
       results.add(_result);
     }
     switch (_sortType) {
@@ -335,9 +318,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: underline
-                  ? Theme.of(context).colorScheme.secondary
-                  : Colors.transparent,
+              color: underline ? Theme.of(context).colorScheme.secondary : Colors.transparent,
             ),
           ),
         ),
@@ -349,8 +330,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       children: [
         ListTile(
           tileColor: Theme.of(context).highlightColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: [
               for (final entry in {
@@ -386,9 +366,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     child: DropdownButton<int>(
                       value: minScore,
                       items: [
-                        for (int score = _kScoreMin + 1;
-                            score <= _kScoreMax - 1;
-                            score++)
+                        for (int score = _kScoreMin + 1; score <= _kScoreMax - 1; score++)
                           DropdownMenuItem(value: score, child: Text('≥$score'))
                       ],
                       onChanged: (v) {
@@ -410,9 +388,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                     child: DropdownButton<int>(
                       value: maxScore,
                       items: [
-                        for (int score = _kScoreMin + 1;
-                            score <= _kScoreMax - 1;
-                            score++)
+                        for (int score = _kScoreMin + 1; score <= _kScoreMax - 1; score++)
                           DropdownMenuItem(value: score, child: Text('≤$score'))
                       ],
                       onChanged: (v) {

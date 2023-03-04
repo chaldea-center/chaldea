@@ -13,8 +13,7 @@ class EnemyMaster {
     this.name = "",
     this.battles = const [],
   });
-  factory EnemyMaster.fromJson(Map<String, dynamic> json) =>
-      _$EnemyMasterFromJson(json);
+  factory EnemyMaster.fromJson(Map<String, dynamic> json) => _$EnemyMasterFromJson(json);
 
   Transl<String, String> get lName {
     String name = this.name;
@@ -44,6 +43,5 @@ class EnemyMasterBattle {
     this.cutin = const [],
   });
 
-  factory EnemyMasterBattle.fromJson(Map<String, dynamic> json) =>
-      _$EnemyMasterBattleFromJson(json);
+  factory EnemyMasterBattle.fromJson(Map<String, dynamic> json) => _$EnemyMasterBattleFromJson(json);
 }

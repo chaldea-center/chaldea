@@ -60,9 +60,7 @@ class UserData {
   })  : version = UserData.modelVersion,
         _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
         users = users?.isNotEmpty == true ? users! : <User>[User()],
-        itemAbundantValue = List.generate(
-            3, (index) => itemAbundantValue?.getOrNull(index) ?? 0,
-            growable: false),
+        itemAbundantValue = List.generate(3, (index) => itemAbundantValue?.getOrNull(index) ?? 0, growable: false),
         customSvtIcon = customSvtIcon ?? {} {
     validate();
   }
@@ -112,50 +110,38 @@ class UserData {
     for (final item in db.gameData.items.values) {
       itemNameMap[item.lName.cn] = item.id;
     }
-    for (final oldUser
-        in Map<String, Map<String, dynamic>>.from(oldData['users']!).values) {
+    for (final oldUser in Map<String, Map<String, dynamic>>.from(oldData['users']!).values) {
       Map<int, SvtStatus> statuses = {};
       List<UserPlan> plans = [];
       for (final String idStr in Map.from(oldUser['servants'] ?? {}).keys) {
         final id = int.parse(idStr);
-        final oldStatus =
-            Map<String, dynamic>.from(oldUser['servants']?[idStr]);
+        final oldStatus = Map<String, dynamic>.from(oldUser['servants']?[idStr]);
         statuses[id] = SvtStatus(
           cur: _convertLegacyPlan(oldStatus['curVal'], oldStatus['npLv']),
           priority: (oldStatus['priority'] as int?) ?? 1,
           equipCmdCodes: List.from((oldStatus['equipCmdCodes'] as List?) ?? []),
         );
       }
-      print(
-          'user ${oldUser['name']}: ${oldUser['servantPlans']?.length} plans');
-      for (final svtPlans
-          in List<Map<String, dynamic>>.from((oldUser['servantPlans'] ?? []))) {
+      print('user ${oldUser['name']}: ${oldUser['servantPlans']?.length} plans');
+      for (final svtPlans in List<Map<String, dynamic>>.from((oldUser['servantPlans'] ?? []))) {
         plans.add(UserPlan(
-            servants: svtPlans.map((key, value) =>
-                MapEntry(int.parse(key), _convertLegacyPlan(value, null)))));
+            servants: svtPlans.map((key, value) => MapEntry(int.parse(key), _convertLegacyPlan(value, null)))));
       }
       final user = User(
         name: oldUser['name'] ?? 'unknown',
         isGirl: (oldUser['isMasterGirl'] as bool?) ?? true,
-        region: {
-              'jp': Region.jp,
-              'cn': Region.cn,
-              'tw': Region.tw,
-              'en': Region.na
-            }[oldUser['server']] ??
-            Region.jp,
+        region: {'jp': Region.jp, 'cn': Region.cn, 'tw': Region.tw, 'en': Region.na}[oldUser['server']] ?? Region.jp,
         servants: statuses,
         plans: plans,
         curSvtPlanNo: 0,
         items: {},
-        craftEssences: Map<String, int>.from(oldUser['crafts'] ?? {})
-            .map((key, value) => MapEntry(int.parse(key), value)),
+        craftEssences:
+            Map<String, int>.from(oldUser['crafts'] ?? {}).map((key, value) => MapEntry(int.parse(key), value)),
         mysticCodes: null,
         summons: null,
         freeLPParams: null,
       );
-      for (final entry
-          in Map<String, int>.from(oldUser['items'] ?? {}).entries) {
+      for (final entry in Map<String, int>.from(oldUser['items'] ?? {}).entries) {
         if (itemNameMap.containsKey(entry.key)) {
           user.items[itemNameMap[entry.key]!] = entry.value;
         }
@@ -171,10 +157,8 @@ class UserData {
     return SvtPlan(
       favorite: (oldPlan['favorite'] as bool?) ?? false,
       ascension: (oldPlan['ascension'] as int?) ?? 0,
-      skills: List.generate(
-          3, (index) => (oldPlan['skills'] as List?)?.getOrNull(index) ?? 0),
-      appendSkills: List.generate(3,
-          (index) => (oldPlan['appendSkills'] as List?)?.getOrNull(index) ?? 0),
+      skills: List.generate(3, (index) => (oldPlan['skills'] as List?)?.getOrNull(index) ?? 0),
+      appendSkills: List.generate(3, (index) => (oldPlan['appendSkills'] as List?)?.getOrNull(index) ?? 0),
       costumes: null,
       grail: (oldPlan['grail'] as int?) ?? 0,
       fouHp: (oldPlan['fouHp'] as int?) ?? 0,
@@ -261,8 +245,7 @@ class User {
     SaintQuartzPlan? saintQuartzPlan,
   })  : servants = servants ?? {},
         dupServantMapping = dupServantMapping ?? {},
-        plans = List.generate(
-            kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
+        plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
         _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
         items = items ?? {},
         craftEssences = {
@@ -292,27 +275,22 @@ class User {
     });
   }
 
-  SvtPlan svtPlanOf(int no) =>
-      curSvtPlan.putIfAbsent(no, () => SvtPlan())..validate();
+  SvtPlan svtPlanOf(int no) => curSvtPlan.putIfAbsent(no, () => SvtPlan())..validate();
 
   SvtStatus svtStatusOf(int no) {
     final status = servants.putIfAbsent(no, () => SvtStatus())..cur.validate();
     return status;
   }
 
-  CraftStatus ceStatusOf(int no) =>
-      craftEssences.putIfAbsent(no, () => CraftStatus());
-  CmdCodeStatus ccStatusOf(int no) =>
-      cmdCodes.putIfAbsent(no, () => CmdCodeStatus());
+  CraftStatus ceStatusOf(int no) => craftEssences.putIfAbsent(no, () => CraftStatus());
+  CmdCodeStatus ccStatusOf(int no) => cmdCodes.putIfAbsent(no, () => CmdCodeStatus());
 
   LimitEventPlan limitEventPlanOf(int eventId) =>
       _curEventPlan.limitEvents.putIfAbsent(eventId, () => LimitEventPlan());
 
-  MainStoryPlan mainStoryOf(int warId) =>
-      _curEventPlan.mainStories.putIfAbsent(warId, () => MainStoryPlan());
+  MainStoryPlan mainStoryOf(int warId) => _curEventPlan.mainStories.putIfAbsent(warId, () => MainStoryPlan());
 
-  ExchangeTicketPlan ticketOf(int key) =>
-      _curEventPlan.tickets.putIfAbsent(key, () => ExchangeTicketPlan());
+  ExchangeTicketPlan ticketOf(int key) => _curEventPlan.tickets.putIfAbsent(key, () => ExchangeTicketPlan());
 
   void validate() {
     if (plans.isEmpty) {
@@ -325,8 +303,7 @@ class User {
     }
     for (final group in plans) {
       for (final plan in group.servants.entries) {
-        plan.value.validate(
-            servants[plan.key]?.cur, db.gameData.servantsWithDup[plan.key]);
+        plan.value.validate(servants[plan.key]?.cur, db.gameData.servantsWithDup[plan.key]);
       }
     }
     craftEssences.forEach((key, value) {
@@ -393,11 +370,9 @@ class SvtStatus {
     this.bond = 0,
     List<int?>? equipCmdCodes,
   })  : cur = cur ?? SvtPlan(),
-        equipCmdCodes =
-            List.generate(5, (index) => equipCmdCodes?.getOrNull(index));
+        equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index));
 
-  factory SvtStatus.fromJson(Map<String, dynamic> json) =>
-      _$SvtStatusFromJson(json);
+  factory SvtStatus.fromJson(Map<String, dynamic> json) => _$SvtStatusFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtStatusToJson(this);
 
@@ -444,8 +419,7 @@ class UserPlan {
         mainStories = mainStories ?? {},
         tickets = tickets ?? {};
 
-  factory UserPlan.fromJson(Map<String, dynamic> json) =>
-      _$UserPlanFromJson(json);
+  factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserPlanToJson(this);
 
@@ -504,12 +478,9 @@ class SvtPlan {
     this.fouAtk3 = 20,
     this.bondLimit = 10,
     int? npLv,
-  })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1,
-            growable: false),
+  })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1, growable: false),
         costumes = costumes ?? {},
-        appendSkills = List.generate(
-            3, (index) => appendSkills?.getOrNull(index) ?? 0,
-            growable: false),
+        appendSkills = List.generate(3, (index) => appendSkills?.getOrNull(index) ?? 0, growable: false),
         _npLv = npLv {
     validate();
   }
@@ -531,8 +502,7 @@ class SvtPlan {
         _npLv = 5;
   static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
 
-  factory SvtPlan.fromJson(Map<String, dynamic> json) =>
-      _$SvtPlanFromJson(json);
+  factory SvtPlan.fromJson(Map<String, dynamic> json) => _$SvtPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtPlanToJson(this);
 
@@ -549,8 +519,7 @@ class SvtPlan {
       appendSkills[i] = appendSkills[i].clamp2(lower?.appendSkills[i] ?? 0, 10);
     }
     if (svt != null) {
-      costumes
-          .removeWhere((key, value) => !svt.profile.costume.keys.contains(key));
+      costumes.removeWhere((key, value) => !svt.profile.costume.keys.contains(key));
     }
     for (final id in costumes.keys.toList()) {
       costumes[id] = costumes[id] == 1 ? 1 : 0;
@@ -561,8 +530,7 @@ class SvtPlan {
       }
     }
     final _grailLvs = db.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
-    grail = grail.clamp2(
-        lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
+    grail = grail.clamp2(lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
     fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);
     fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
     fouHp3 = fouHp3.clamp2(lower?.fouHp3 ?? 0, 20);
@@ -570,8 +538,7 @@ class SvtPlan {
     bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);
 
     if (_npLv == null && svt != null) {
-      if (svt.rarity <= 3 ||
-          svt.extra.obtains.contains(SvtObtain.eventReward)) {
+      if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
         _npLv = 5;
       }
     }
@@ -652,8 +619,7 @@ class LimitEventPlan {
         extraItems = extraItems ?? {},
         customItems = customItems ?? {};
 
-  factory LimitEventPlan.fromJson(Map<String, dynamic> json) =>
-      _$LimitEventPlanFromJson(json);
+  factory LimitEventPlan.fromJson(Map<String, dynamic> json) => _$LimitEventPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
 
@@ -698,8 +664,7 @@ class LimitEventPlan {
       mission: mission,
       tower: tower,
       lotteries: Map.of(lotteries),
-      treasureBoxItems:
-          treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
+      treasureBoxItems: treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
       digging: Map.of(digging),
       fixedDrop: fixedDrop,
       questReward: questReward,
@@ -720,8 +685,7 @@ class MainStoryPlan {
     this.questReward = false,
   });
 
-  factory MainStoryPlan.fromJson(Map<String, dynamic> json) =>
-      _$MainStoryPlanFromJson(json);
+  factory MainStoryPlan.fromJson(Map<String, dynamic> json) => _$MainStoryPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$MainStoryPlanToJson(this);
 
@@ -743,11 +707,9 @@ class ExchangeTicketPlan {
   Iterable<int> getRange(int start, int end) => counts.getRange(start, end);
 
   ExchangeTicketPlan({List<int>? counts})
-      : counts = List.generate(max(3, counts?.length ?? 0),
-            (index) => counts?.getOrNull(index) ?? 0);
+      : counts = List.generate(max(3, counts?.length ?? 0), (index) => counts?.getOrNull(index) ?? 0);
 
-  factory ExchangeTicketPlan.fromJson(Map<String, dynamic> json) =>
-      _$ExchangeTicketPlanFromJson(json);
+  factory ExchangeTicketPlan.fromJson(Map<String, dynamic> json) => _$ExchangeTicketPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExchangeTicketPlanToJson(this);
 
@@ -768,11 +730,7 @@ class CraftStatus {
 
   static String shownText(int status) {
     assert(values.contains(status), status);
-    return [
-          S.current.card_status_not_met,
-          S.current.card_status_met,
-          S.current.card_status_owned
-        ].getOrNull(status) ??
+    return [S.current.card_status_not_met, S.current.card_status_met, S.current.card_status_owned].getOrNull(status) ??
         status.toString();
   }
 
@@ -834,8 +792,7 @@ class CmdCodeStatus {
     count = count.clamp2(0);
   }
 
-  factory CmdCodeStatus.fromJson(dynamic json) =>
-      _$CmdCodeStatusFromJson(Map<String, dynamic>.from(json));
+  factory CmdCodeStatus.fromJson(dynamic json) => _$CmdCodeStatusFromJson(Map<String, dynamic>.from(json));
 
   Map<String, dynamic> toJson() => _$CmdCodeStatusToJson(this);
 }

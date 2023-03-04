@@ -71,8 +71,7 @@ void fillListValue<T>(List<T> list, int length, T Function(int index) fill) {
   if (length <= list.length) {
     list.length = length;
   } else {
-    list.addAll(
-        List.generate(length - list.length, (i) => fill(list.length + i)));
+    list.addAll(List.generate(length - list.length, (i) => fill(list.length + i)));
   }
   // fill null if T is nullable
   for (int i = 0; i < length; i++) {
@@ -104,19 +103,16 @@ class Maths {
     return iterable.reduce((v, e) => math.min(v, e));
   }
 
-  static T findMax<T, S extends num>(
-      Iterable<T> iterable, S Function(T e) key) {
+  static T findMax<T, S extends num>(Iterable<T> iterable, S Function(T e) key) {
     assert(iterable.isNotEmpty);
     return iterable.reduce((v, e) => key(e) > key(v) ? e : v);
   }
 
   static T sum<T extends num>(Iterable<T?> iterable) {
-    return iterable.fold<T>(
-        _convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
+    return iterable.fold<T>(_convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
   }
 
-  static bool inRange<T extends Comparable>(T? value, T lower, T upper,
-      [bool includeEnds = true]) {
+  static bool inRange<T extends Comparable>(T? value, T lower, T upper, [bool includeEnds = true]) {
     if (value == null) return false;
     if (includeEnds) {
       return value.compareTo(lower) >= 0 && value.compareTo(upper) <= 0;
@@ -125,8 +121,7 @@ class Maths {
     }
   }
 
-  static MapEntry<double?, double?>? fitSize(
-      double? width, double? height, double? aspectRatio) {
+  static MapEntry<double?, double?>? fitSize(double? width, double? height, double? aspectRatio) {
     if ((width == null && height == null)) return null;
     if (aspectRatio == null) return MapEntry(width, height);
     if (width != null && height != null) {
@@ -145,8 +140,7 @@ class Maths {
   /// iI [inPlace], the result is saved to the first map.
   /// null elements will be skipped.
   /// throw error if sum an empty list in place.
-  static Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>?> operands,
-      {bool inPlace = false}) {
+  static Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>?> operands, {bool inPlace = false}) {
     final _operands = operands.toList();
 
     Map<K, V> res;
@@ -166,8 +160,7 @@ class Maths {
   }
 
   /// Multiply the values of map with a number.
-  static Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier,
-      {bool inPlace = false}) {
+  static Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier, {bool inPlace = false}) {
     Map<K, V> res = inPlace ? d : {};
     d.forEach((k, v) {
       res[k] = (v * multiplier) as V;
@@ -178,8 +171,7 @@ class Maths {
 
 class NumberInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
@@ -188,9 +180,7 @@ class NumberInputFormatter extends TextInputFormatter {
       return newValue;
     }
     String newText = value.format();
-    return newValue.copyWith(
-        text: newText,
-        selection: TextSelection.collapsed(offset: newText.length));
+    return newValue.copyWith(text: newText, selection: TextSelection.collapsed(offset: newText.length));
   }
 }
 

@@ -30,8 +30,7 @@ class _AboutPageState extends State<AboutPage> {
         'Mooncell': 'https://fgo.wiki',
         'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki/',
         'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
-        S.current.fgo_domus_aurea:
-            'https://sites.google.com/view/fgo-domus-aurea',
+        S.current.fgo_domus_aurea: 'https://sites.google.com/view/fgo-domus-aurea',
         '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/'
       };
 
@@ -41,8 +40,7 @@ class _AboutPageState extends State<AboutPage> {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Scaffold(
       appBar: AppBar(
-        title: Text(MaterialLocalizations.of(context)
-            .aboutListTileTitle(AppInfo.appName)),
+        title: Text(MaterialLocalizations.of(context).aboutListTileTitle(AppInfo.appName)),
         actions: [
           IconButton(
             onPressed: () {
@@ -61,8 +59,7 @@ class _AboutPageState extends State<AboutPage> {
               version: AppInfo.fullVersion2,
               icon: SizedBox(
                 height: 120,
-                child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
-                    height: 120),
+                child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
               ),
               legalese: 'Copyright © 2023 cc.narumi.\nAll rights reserved.',
               debugInfo: showDebugInfo
@@ -78,8 +75,7 @@ class _AboutPageState extends State<AboutPage> {
                 setState(() {
                   showDebugInfo = true;
                   db.runtimeData.enableDebugTools = true;
-                  Future.delayed(
-                      const Duration(seconds: 1), db.notifyAppUpdate);
+                  Future.delayed(const Duration(seconds: 1), db.notifyAppUpdate);
                 });
                 await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
                 EasyLoading.showToast('UUID ${S.current.copied}');
@@ -89,14 +85,11 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: S.current.about_app,
             children: [
-              if (!AppInfo.isMacStoreApp &&
-                  (!PlatformU.isIOS ||
-                      db.runtimeData.upgradableVersion != null))
+              if (!AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
                   trailing: db.runtimeData.upgradableVersion != null
-                      ? Text(
-                          '${db.runtimeData.upgradableVersion!.versionString}↑',
+                      ? Text('${db.runtimeData.upgradableVersion!.versionString}↑',
                           style: const TextStyle(color: Colors.redAccent))
                       : null,
                   onTap: () async {
@@ -104,8 +97,7 @@ class _AboutPageState extends State<AboutPage> {
                       launch(kAppStoreLink);
                       return;
                     } else if (AppInfo.isFDroid) {
-                      launch(
-                          'https://f-droid.org/packages/$kPackageNameFDroid');
+                      launch('https://f-droid.org/packages/$kPackageNameFDroid');
                       return;
                     }
                     AppUpdateDetail? detail = db.runtimeData.releaseDetail;
@@ -124,15 +116,12 @@ class _AboutPageState extends State<AboutPage> {
                     if (savePath == null && !PlatformU.isAndroid) {
                       EasyLoading.showError('Download app update failed');
                     }
-                    final install = await AppUpdater.showInstallAlert(
-                        detail.release.version!);
+                    final install = await AppUpdater.showInstallAlert(detail.release.version!);
                     if (install != true) return;
                     await AppUpdater.installUpdate(detail, savePath);
                   },
                 ),
-              if (!PlatformU.isIOS &&
-                  !AppInfo.isMacStoreApp &&
-                  !AppInfo.isFDroid)
+              if (!PlatformU.isIOS && !AppInfo.isMacStoreApp && !AppInfo.isFDroid)
                 SwitchListTile.adaptive(
                   value: db.settings.autoUpdateApp,
                   title: Text(S.current.auto_update),
@@ -211,8 +200,7 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               ListTile(
-                title: Text(
-                    MaterialLocalizations.of(context).viewLicensesButtonLabel),
+                title: Text(MaterialLocalizations.of(context).viewLicensesButtonLabel),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -224,8 +212,7 @@ class _AboutPageState extends State<AboutPage> {
                           'res/img/launcher_icon/app_icon_logo.png',
                           height: 120,
                         ),
-                        applicationLegalese:
-                            'Copyright © 2023 cc.narumi.\nAll rights reserved.',
+                        applicationLegalese: 'Copyright © 2023 cc.narumi.\nAll rights reserved.',
                       ),
                     ),
                   );
@@ -276,8 +263,7 @@ class _AboutProgram extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
       child: Column(
         children: <Widget>[
-          if (icon != null)
-            IconTheme(data: Theme.of(context).iconTheme, child: icon!),
+          if (icon != null) IconTheme(data: Theme.of(context).iconTheme, child: icon!),
           Text(
             name,
             style: Theme.of(context).textTheme.headlineSmall,

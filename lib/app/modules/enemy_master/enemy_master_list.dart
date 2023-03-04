@@ -74,8 +74,7 @@ class _EnemyMasterListPageState extends State<EnemyMasterListPage>
                     child: Transform.scale(
                       scale: 2.0,
                       alignment: Alignment.topLeft,
-                      child: db.getIconImage(battle.commandSpellIcon,
-                          width: 36, aspectRatio: 1),
+                      child: db.getIconImage(battle.commandSpellIcon, width: 36, aspectRatio: 1),
                     ),
                   ),
                 ),

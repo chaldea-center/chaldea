@@ -23,23 +23,18 @@ class ImportSkillScreenshotPage extends StatefulWidget {
   ImportSkillScreenshotPage({super.key, this.isAppend = false});
 
   @override
-  ImportSkillScreenshotPageState createState() =>
-      ImportSkillScreenshotPageState();
+  ImportSkillScreenshotPageState createState() => ImportSkillScreenshotPageState();
 }
 
-class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
-    with SingleTickerProviderStateMixin {
+class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   SkillResult? output;
   late Dio _dio;
 
-  Set<Uint8List> get imageFiles => widget.isAppend
-      ? db.runtimeData.recognizerAppend
-      : db.runtimeData.recognizerActive;
+  Set<Uint8List> get imageFiles => widget.isAppend ? db.runtimeData.recognizerAppend : db.runtimeData.recognizerActive;
 
-  SkillResult? get result => widget.isAppend
-      ? db.runtimeData.recognizerAppendResult
-      : db.runtimeData.recognizerActiveResult;
+  SkillResult? get result =>
+      widget.isAppend ? db.runtimeData.recognizerAppendResult : db.runtimeData.recognizerActiveResult;
   set result(SkillResult? v) {
     if (widget.isAppend) {
       db.runtimeData.recognizerAppendResult = v;
@@ -51,8 +46,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _tabController = TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) setState(() {});
     });
@@ -74,12 +68,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Text(widget.isAppend
-            ? S.current.import_append_skill_screenshots
-            : S.current.import_active_skill_screenshots),
+        title: Text(
+            widget.isAppend ? S.current.import_append_skill_screenshots : S.current.import_active_skill_screenshots),
         actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#active-append-skill-recognition',
-              zhPath: 'import_data#主动-被动技能截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#active-append-skill-recognition', zhPath: 'import_data#主动-被动技能截图解析'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
@@ -100,9 +92,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
               debugServerRoot: _dio.options.baseUrl,
             ),
           ),
-          KeepAliveBuilder(
-              builder: (ctx) =>
-                  SkillResultTab(isAppend: widget.isAppend, result: output)),
+          KeepAliveBuilder(builder: (ctx) => SkillResultTab(isAppend: widget.isAppend, result: output)),
           if (AppInfo.isDebugDevice)
             KeepAliveBuilder(
               builder: (ctx) => RecognizerViewerTab(type: RecognizerType.skill),
@@ -117,8 +107,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       return;
     }
     try {
-      EasyLoading.show(
-          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
+      EasyLoading.show(status: 'Uploading', maskType: EasyLoadingMaskType.clear);
 
       final Map<String, dynamic> map = {};
       List<MultipartFile> files = [];
@@ -126,8 +115,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         var bytes = imageFiles.elementAt(index);
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {
-          bytes = await compressToJpgAsync(
-              src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
+          bytes = await compressToJpgAsync(src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
         } else {
           bytes = await compressToJpgAsync(src: bytes, quality: 90);
         }

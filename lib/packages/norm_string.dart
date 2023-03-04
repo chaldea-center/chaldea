@@ -6,8 +6,7 @@ extension Normalizer on String {
     //Avoid unnecessary recursion on empty strings
     if (normalizedString.isNotEmpty) {
       for (String uneditedCharacter in _diacritics.keys) {
-        normalizedString = normalizedString.replaceAll(
-            uneditedCharacter, _diacritics[uneditedCharacter]!);
+        normalizedString = normalizedString.replaceAll(uneditedCharacter, _diacritics[uneditedCharacter]!);
       }
     }
     return normalizedString;

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class UserScrollListener extends StatefulWidget {
-  final Widget Function(BuildContext context, AnimationController controller)
-      builder;
+  final Widget Function(BuildContext context, AnimationController controller) builder;
   final bool Function(UserScrollNotification userScroll)? shouldAnimate;
   final bool initForward;
 
@@ -18,15 +17,13 @@ class UserScrollListener extends StatefulWidget {
   _UserScrollListenerState createState() => _UserScrollListenerState();
 }
 
-class _UserScrollListenerState extends State<UserScrollListener>
-    with TickerProviderStateMixin {
+class _UserScrollListenerState extends State<UserScrollListener> with TickerProviderStateMixin {
   late AnimationController controller;
 
   @override
   void initState() {
     super.initState();
-    controller =
-        AnimationController(vsync: this, duration: kThemeAnimationDuration);
+    controller = AnimationController(vsync: this, duration: kThemeAnimationDuration);
     if (widget.initForward) controller.forward();
   }
 
@@ -62,10 +59,8 @@ class _UserScrollListenerState extends State<UserScrollListener>
 
   bool shouldAnimate(UserScrollNotification userScroll) {
     if (userScroll.depth != 0) return false;
-    if (userScroll.metrics.maxScrollExtent ==
-        userScroll.metrics.minScrollExtent) return false;
-    if ((controller.status == AnimationStatus.forward ||
-        controller.status == AnimationStatus.reverse)) return false;
+    if (userScroll.metrics.maxScrollExtent == userScroll.metrics.minScrollExtent) return false;
+    if ((controller.status == AnimationStatus.forward || controller.status == AnimationStatus.reverse)) return false;
     if (widget.shouldAnimate != null) {
       return widget.shouldAnimate!(userScroll);
     }

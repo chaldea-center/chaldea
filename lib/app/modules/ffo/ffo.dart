@@ -154,8 +154,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                       return;
                     }
                     if (mounted) {
-                      FFOUtil.showSaveShare(
-                          context: context, params: params, data: data);
+                      FFOUtil.showSaveShare(context: context, params: params, data: data);
                     }
                   },
             child: Text(S.current.save),

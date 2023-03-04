@@ -44,9 +44,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
         child: Text.rich(TextSpan(text: 'Slot ${scene.slot} ', children: [
           CenterWidgetSpan(
             child: db.getIconImage(
-              Theme.of(context).isDarkMode
-                  ? scene.tabOnImage
-                  : scene.tabOffImage,
+              Theme.of(context).isDarkMode ? scene.tabOnImage : scene.tabOffImage,
               height: 20,
             ),
           )
@@ -57,8 +55,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
           ListTile(
             title: const Text('Logo'),
             trailing: db.getIconImage(scene.image),
-            onTap: () => FullscreenImageViewer.show(
-                context: context, urls: [scene.image]),
+            onTap: () => FullscreenImageViewer.show(context: context, urls: [scene.image]),
           ),
         ListTile(
           title: Text(S.current.background),
@@ -66,8 +63,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
             constraints: const BoxConstraints(maxWidth: 240),
             child: db.getIconImage(scene.bg),
           ),
-          onTap: () =>
-              FullscreenImageViewer.show(context: context, urls: [scene.bg]),
+          onTap: () => FullscreenImageViewer.show(context: context, urls: [scene.bg]),
         ),
         getBgm(scene.bgm),
         if (scene.afterBgm.id != scene.bgm.id) getBgm(scene.afterBgm),
@@ -94,9 +90,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
 
   Widget getGuide(EventRewardSceneGuide guide) {
     final svtId = db.gameData.storyCharaFigures[guide.imageId] ?? guide.imageId;
-    String name = guide.displayName ??
-        db.gameData.servantsById[svtId]?.lName.jp ??
-        guide.imageId.toString();
+    String name = guide.displayName ?? db.gameData.servantsById[svtId]?.lName.jp ?? guide.imageId.toString();
     return ListTile(
       title: Text(Transl.svtNames(name).l),
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -110,8 +104,7 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
           ),
         ),
       ),
-      onTap: () =>
-          FullscreenImageViewer.show(context: context, urls: [guide.image]),
+      onTap: () => FullscreenImageViewer.show(context: context, urls: [guide.image]),
     );
   }
 }

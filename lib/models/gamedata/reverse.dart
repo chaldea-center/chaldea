@@ -60,8 +60,7 @@ class ReverseGameData {
     }
   }
 
-  static Map<int, List<QuestEnemy>> questEnemies(
-      bool Function(QuestEnemy enemy) test) {
+  static Map<int, List<QuestEnemy>> questEnemies(bool Function(QuestEnemy enemy) test) {
     Map<int, QuestEnemy> npcs = {};
     for (final quest in db.gameData.questPhases.values) {
       for (final enemy in quest.allEnemies) {

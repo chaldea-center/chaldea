@@ -95,8 +95,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.import_active_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.pushPage(ImportSkillScreenshotPage(isAppend: false),
-                  popDetail: true);
+              router.pushPage(ImportSkillScreenshotPage(isAppend: false), popDetail: true);
             },
           ),
           ListTile(
@@ -105,8 +104,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             subtitle: Text(S.current.import_append_skill_hint),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              router.pushPage(ImportSkillScreenshotPage(isAppend: true),
-                  popDetail: true);
+              router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
             },
           ),
           ListTile(
@@ -122,8 +120,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             leading: const Icon(Icons.manage_accounts),
             title: Text(S.current.import_auth_file),
             trailing: const Icon(Icons.keyboard_arrow_right),
-            subtitle:
-                Text(['JP/NA', if (kIsWeb) 'web is not supported'].join(', ')),
+            subtitle: Text(['JP/NA', if (kIsWeb) 'web is not supported'].join(', ')),
             enabled: !kIsWeb,
             onTap: kIsWeb
                 ? null

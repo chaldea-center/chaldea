@@ -25,8 +25,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   @override
   Widget build(BuildContext context) {
     final info = db.gameData.constData.classInfo[clsId];
-    final rarities =
-        cls == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
+    final rarities = cls == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
     Set<String> cardImages = {};
     if (info != null) {
       cardImages.addAll(rarities.map((e) => Atlas.classCard(e, info.imageId)));
@@ -60,14 +59,12 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             ),
           ),
           CustomTable(children: [
-            CustomTableRow.fromTexts(
-                texts: const ['ID', 'Class'], isHeader: true),
+            CustomTableRow.fromTexts(texts: const ['ID', 'Class'], isHeader: true),
             CustomTableRow(children: [
               TableCellData(text: clsId.toString()),
               TableCellData(text: cls?.lName ?? Transl.svtClassId(clsId).l),
             ]),
-            CustomTableRow.fromTexts(
-                texts: const ['Attack Rate', 'Trait'], isHeader: true),
+            CustomTableRow.fromTexts(texts: const ['Attack Rate', 'Trait'], isHeader: true),
             CustomTableRow(children: [
               TableCellData(text: _fmt(info?.attackRate)),
               TableCellData(
@@ -77,8 +74,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
                         SharedBuilder.textButtonSpan(
                             context: context,
                             text: Transl.trait(info.individuality).l,
-                            onTap: () => router.push(
-                                url: Routes.traitI(info.individuality))),
+                            onTap: () => router.push(url: Routes.traitI(info.individuality))),
                       ),
               )
             ]),
@@ -154,13 +150,9 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
       for (final key in relations.keys)
         if (relations[key]![clsId] != null) key: relations[key]![clsId]!
     };
-    final allClasses = <int>{
-      ...attackRates.keys,
-      ...defenseRates.keys,
-      ...SvtClassX.regularAll.map((e) => e.id)
-    }.toList();
-    allClasses
-        .sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
+    final allClasses =
+        <int>{...attackRates.keys, ...defenseRates.keys, ...SvtClassX.regularAll.map((e) => e.id)}.toList();
+    allClasses.sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
     return LayoutBuilder(builder: (context, constraints) {
       int crossCount = constraints.maxWidth ~/ 42;
       if (crossCount < 8) crossCount = 8;
@@ -172,13 +164,10 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
         for (int col = 0; col < crossCount; col++) {
           if (col == 0) {
             rows[0].add(null);
-            rows[1]
-                .add(const AutoSizeText('Attack', maxLines: 1, minFontSize: 6));
-            rows[2].add(
-                const AutoSizeText('Defense', maxLines: 1, minFontSize: 6));
+            rows[1].add(const AutoSizeText('Attack', maxLines: 1, minFontSize: 6));
+            rows[2].add(const AutoSizeText('Defense', maxLines: 1, minFontSize: 6));
           } else {
-            final oppCls =
-                allClasses.getOrNull(row * clsCountPerLine + col - 1);
+            final oppCls = allClasses.getOrNull(row * clsCountPerLine + col - 1);
             rows[0].add(oppCls == null ? null : clsIcon(oppCls));
             final atk = attackRates[oppCls], def = defenseRates[oppCls];
             rows[1].add(_fmtColor(atk));
@@ -189,11 +178,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
           for (int col = 0; col < crossCount; col++) {
             children.add(Container(
               decoration: BoxDecoration(
-                border:
-                    Border.fromBorderSide(Divider.createBorderSide(context)),
-                color: row == 0 || col == 0
-                    ? Theme.of(context).highlightColor
-                    : null,
+                border: Border.fromBorderSide(Divider.createBorderSide(context)),
+                color: row == 0 || col == 0 ? Theme.of(context).highlightColor : null,
               ),
               child: Center(child: rows[row][col] ?? const SizedBox()),
             ));

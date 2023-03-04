@@ -29,10 +29,7 @@ class _NpChargePageState extends State<NpChargePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children =
-        filterData.type.radioValue == NpChargeType.instantSum
-            ? sumType()
-            : normalType();
+    List<Widget> children = filterData.type.radioValue == NpChargeType.instantSum ? sumType() : normalType();
     return Scaffold(
       appBar: AppBar(title: Text(S.current.np_charge)),
       body: Column(
@@ -40,11 +37,9 @@ class _NpChargePageState extends State<NpChargePage> {
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) => DecoratedBox(
-                decoration: BoxDecoration(
-                    color: index.isEven ? null : Theme.of(context).cardColor),
+                decoration: BoxDecoration(color: index.isEven ? null : Theme.of(context).cardColor),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   child: children[index],
                 ),
               ),
@@ -87,8 +82,7 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: Theme.of(context).colorScheme.secondary),
+              border: Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(6),
             ),
             child: SizedBox(
@@ -175,11 +169,9 @@ class _NpChargePageState extends State<NpChargePage> {
     Map<int, Map<String, List<int>>> svtDetails = {};
     for (final details in groupedData.values) {
       for (final detail in details) {
-        final svtDetail =
-            svtDetails.putIfAbsent(detail.svt.collectionNo, () => {});
+        final svtDetail = svtDetails.putIfAbsent(detail.svt.collectionNo, () => {});
         final nps = svtDetail[detail.pos] ??= [0, 0, 0, 0];
-        final skillNps =
-            skillDetails[detail.svt.collectionNo]![detail.skill.id]!;
+        final skillNps = skillDetails[detail.svt.collectionNo]![detail.skill.id]!;
         for (int index = 0; index < nps.length; index++) {
           nps[index] = max(nps[index], skillNps[index]);
         }
@@ -207,8 +199,7 @@ class _NpChargePageState extends State<NpChargePage> {
       groupedServants.putIfAbsent(svtNps[svtId]!, () => []).add(svtId);
     }
     for (final svts in groupedServants.values) {
-      svts.sort((a, b) => SvtFilterData.compare(
-          db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b],
+      svts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsNoDup[a], db.gameData.servantsNoDup[b],
           keys: filterData.svtSortKeys, reversed: filterData.sortReversed));
     }
     List<Widget> children = [];
@@ -222,8 +213,7 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: Theme.of(context).colorScheme.secondary),
+              border: Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(6),
             ),
             child: SizedBox(
@@ -242,9 +232,7 @@ class _NpChargePageState extends State<NpChargePage> {
             ),
           ),
           for (final svtId in svtIds)
-            db.gameData.servantsNoDup[svtId]
-                    ?.iconBuilder(context: context, width: 45) ??
-                Text(svtId.toString()),
+            db.gameData.servantsNoDup[svtId]?.iconBuilder(context: context, width: 45) ?? Text(svtId.toString()),
         ],
       ));
     }
@@ -288,9 +276,7 @@ class _NpChargePageState extends State<NpChargePage> {
                     ? CommandCardWidget(card: skill.card, width: 42)
                     : db.getIconImage(skill.icon, width: 24, aspectRatio: 1)),
             TextSpan(text: '  ${skill.lName.l}'),
-            if (skill is BaseSkill &&
-                skill.type == SkillType.active &&
-                skill.coolDown.isNotEmpty)
+            if (skill is BaseSkill && skill.type == SkillType.active && skill.coolDown.isNotEmpty)
               TextSpan(
                 text: '     CD ${skill.coolDown.first}→${skill.coolDown.last}',
                 style: Theme.of(context).textTheme.bodySmall,
@@ -298,8 +284,7 @@ class _NpChargePageState extends State<NpChargePage> {
           ]),
         ),
         const SizedBox(height: 2),
-        Text(skill.lDetail ?? '???',
-            style: Theme.of(context).textTheme.bodySmall),
+        Text(skill.lDetail ?? '???', style: Theme.of(context).textTheme.bodySmall),
         const Divider(height: 6, thickness: 1),
         FuncDescriptor(
           func: detail.triggerFunc ?? detail.func,
@@ -331,24 +316,18 @@ class _NpChargePageState extends State<NpChargePage> {
       alignment: WrapAlignment.start,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        optionBuilder(
-            text:
-                '${S.current.general_type}: ${filterData.type.radioValue!.shownName}'),
+        optionBuilder(text: '${S.current.general_type}: ${filterData.type.radioValue!.shownName}'),
         if (!filterData.isSvt) ...[
           if (filterData.ceMax.options.isNotEmpty)
             optionBuilder(
               text: [
-                if (filterData.ceMax.options.contains(false))
-                  'NOT ${S.current.ce_max_limit_break}',
-                if (filterData.ceMax.options.contains(true))
-                  S.current.ce_max_limit_break
+                if (filterData.ceMax.options.contains(false)) 'NOT ${S.current.ce_max_limit_break}',
+                if (filterData.ceMax.options.contains(true)) S.current.ce_max_limit_break
               ].join(' & '),
             ),
           if (filterData.ceAtkType.options.isNotEmpty)
             optionBuilder(
-              text: filterData.ceAtkType.options
-                  .map((e) => e.shownName)
-                  .join('/'),
+              text: filterData.ceAtkType.options.map((e) => e.shownName).join('/'),
             ),
         ],
         if (filterData.isSvt) ...[
@@ -356,12 +335,9 @@ class _NpChargePageState extends State<NpChargePage> {
             optionBuilder(
               text: NpFilterData.textSkillLv(filterData.skillLv),
             ),
-          if (filterData.skillCD > 0 && filterData.skillLv >= 1)
-            optionBuilder(text: 'CD≤${filterData.skillCD}'),
-          if (filterData.tdLv != 0)
-            optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
-          if (filterData.tdLv != 0)
-            optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
+          if (filterData.skillCD > 0 && filterData.skillLv >= 1) optionBuilder(text: 'CD≤${filterData.skillCD}'),
+          if (filterData.tdLv != 0) optionBuilder(text: NpFilterData.textTdLv(filterData.tdLv)),
+          if (filterData.tdLv != 0) optionBuilder(text: NpFilterData.textTdOC(filterData.tdOC)),
           if (filterData.favorite.radioValue! != FavoriteState.all)
             optionBuilder(
                 child: Text.rich(TextSpan(children: [
@@ -382,26 +358,19 @@ class _NpChargePageState extends State<NpChargePage> {
           optionBuilder(
               text: '${S.current.svt_class}:'
                   '${filterData.svtClass.options.map((e) => e.lName).join("/")}'),
-        if (filterData.region.radioValue != null)
-          optionBuilder(text: (filterData.region.radioValue!).localName),
+        if (filterData.region.radioValue != null) optionBuilder(text: (filterData.region.radioValue!).localName),
         if (filterData.isSvt) ...[
           if (filterData.tdColor.radioValue != null)
-            optionBuilder(
-                text:
-                    '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
+            optionBuilder(text: '${S.current.np_short}:${filterData.tdColor.radioValue!.name.toTitle()}'),
           if (filterData.tdType.radioValue != null)
             optionBuilder(
                 text: [
               '${S.current.np_short}:',
-              Transl.enums(filterData.tdType.radioValue!,
-                  (enums) => enums.tdEffectFlag).l
+              Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l
             ].join()),
         ],
         if (filterData.effectTarget.options.isNotEmpty)
-          optionBuilder(
-              text: filterData.effectTarget.options
-                  .map((e) => e.shownName)
-                  .join('/')),
+          optionBuilder(text: filterData.effectTarget.options.map((e) => e.shownName).join('/')),
       ],
     );
 
@@ -424,8 +393,7 @@ class _NpChargePageState extends State<NpChargePage> {
     assert(text != null || child != null);
     return DecoratedBox(
       decoration: BoxDecoration(
-        border:
-            Border.all(color: Theme.of(context).colorScheme.primaryContainer),
+        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Padding(
@@ -444,17 +412,14 @@ class _NpChargePageState extends State<NpChargePage> {
       if (!filterData.rarity.matchOne(ce.rarity)) continue;
       if (!filterData.ceAtkType.matchOne(ce.atkType)) continue;
       final region = filterData.region.radioValue ?? Region.jp;
-      final released = db.gameData.mappingData.ceRelease
-          .ofRegion(region)
-          ?.contains(ce.collectionNo);
+      final released = db.gameData.mappingData.ceRelease.ofRegion(region)?.contains(ce.collectionNo);
       if (region != Region.jp && released != true) continue;
 
       final skills = ce.skills.where((e) => e.num == 1).toList();
       for (final skill in skills) {
         // some CE has the same skill for all ascensions
         // such as bond CE or campaign CE, though no one yet
-        if (skills.length > 1 &&
-            !filterData.ceMax.matchOne(skill.priority > 1)) {
+        if (skills.length > 1 && !filterData.ceMax.matchOne(skill.priority > 1)) {
           continue;
         }
         details.addAll(checkSkill(ce, skill, 1, 1));
@@ -462,19 +427,16 @@ class _NpChargePageState extends State<NpChargePage> {
     }
     for (final svt in db.gameData.servantsNoDup.values) {
       if (!filterData.isSvt) break;
-      if (!filterData.favorite.radioValue!
-          .check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
+      if (!filterData.favorite.radioValue!.check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
         continue;
       }
       if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.card))) {
         continue;
       }
-      if (!filterData.tdType
-          .matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
+      if (!filterData.tdType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
         continue;
       }
-      if (!filterData.svtClass
-          .matchOne(svt.className, compare: SvtClassX.match)) {
+      if (!filterData.svtClass.matchOne(svt.className, compare: SvtClassX.match)) {
         continue;
       }
       if (!filterData.rarity.matchOne(svt.rarity)) continue;
@@ -484,15 +446,12 @@ class _NpChargePageState extends State<NpChargePage> {
       if (filterData.skillLv >= 0) {
         List<BaseSkill> skills = [];
         if (filterData.skillLv == 0) {
-          final released = db.gameData.mappingData.svtRelease
-              .ofRegion(region)
-              ?.indexOf(svt.collectionNo);
+          final released = db.gameData.mappingData.svtRelease.ofRegion(region)?.indexOf(svt.collectionNo);
           if (region == Region.jp || (released != null && released >= 0)) {
             skills.addAll(svt.classPassive);
           }
         } else {
-          final skillRelease =
-              db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region);
+          final skillRelease = db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region);
           for (var skill in svt.skills) {
             final priority = skillRelease?[skill.id];
             if (region != Region.jp && priority == null) {
@@ -517,15 +476,13 @@ class _NpChargePageState extends State<NpChargePage> {
           }
         }
         for (final skill in skills) {
-          details.addAll(checkSkill(
-              svt, skill, filterData.skillLv == 0 ? 1 : filterData.skillLv, 1));
+          details.addAll(checkSkill(svt, skill, filterData.skillLv == 0 ? 1 : filterData.skillLv, 1));
         }
       }
       if (filterData.tdLv > 0) {
         for (final td in svt.noblePhantasms) {
           if (region != Region.jp) {
-            final priority = db.gameData.mappingData.tdPriority[svt.id]
-                ?.ofRegion(region)?[td.id];
+            final priority = db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(region)?[td.id];
             if (priority == null) {
               continue;
             }
@@ -544,8 +501,7 @@ class _NpChargePageState extends State<NpChargePage> {
           return SvtFilterData.compare(a.svt as Servant, b.svt as Servant,
               keys: filterData.svtSortKeys, reversed: filterData.sortReversed);
         } else if (a.svt is CraftEssence && b.svt is CraftEssence) {
-          return CraftFilterData.compare(
-              a.svt as CraftEssence, b.svt as CraftEssence);
+          return CraftFilterData.compare(a.svt as CraftEssence, b.svt as CraftEssence);
         } else {
           return a.svt.toString().compareTo(b.svt.toString());
         }
@@ -553,15 +509,11 @@ class _NpChargePageState extends State<NpChargePage> {
     }
   }
 
-  Iterable<_ChargeData> checkSkill(
-      GameCardMixin svt, SkillOrTd skill, int lv, int oc) sync* {
+  Iterable<_ChargeData> checkSkill(GameCardMixin svt, SkillOrTd skill, int lv, int oc) sync* {
     final directFuncs = skill.filteredFunction<NiceFunction>();
-    yield* directFuncs
-        .map((func) => checkFunc(svt, skill, func, lv, oc, null))
-        .whereType();
+    yield* directFuncs.map((func) => checkFunc(svt, skill, func, lv, oc, null)).whereType();
     for (final func in directFuncs) {
-      for (final tFunc
-          in NiceFunction.getTriggerFuncs<NiceFunction>(func: func)) {
+      for (final tFunc in NiceFunction.getTriggerFuncs<NiceFunction>(func: func)) {
         final d = checkFunc(svt, skill, tFunc, lv, oc, func);
         if (d == null) continue;
         yield d;
@@ -596,9 +548,7 @@ class _NpChargePageState extends State<NpChargePage> {
       sortValue = sval.Value!;
       value = _fmt(sortValue);
       type = NpChargeType.instant;
-    } else if (func.buffs.isNotEmpty &&
-        func.buffs.first.type == BuffType.regainNp &&
-        sval.Value != null) {
+    } else if (func.buffs.isNotEmpty && func.buffs.first.type == BuffType.regainNp && sval.Value != null) {
       sortValue = sval.Value!;
       value = _fmt(sortValue);
       type = NpChargeType.perTurn;
@@ -620,8 +570,7 @@ class _NpChargePageState extends State<NpChargePage> {
     if (triggerFunc != null) type = NpChargeType.special;
     final requiredType = filterData.type.radioValue!;
     if (requiredType != type) {
-      if (requiredType == NpChargeType.instantSum &&
-          type == NpChargeType.instant) {
+      if (requiredType == NpChargeType.instantSum && type == NpChargeType.instant) {
         // pass
       } else {
         return null;
@@ -640,8 +589,7 @@ class _NpChargePageState extends State<NpChargePage> {
       final rankups = svt.script?.skillRankUp ?? {};
       for (final srcSkillId in rankups.keys) {
         if (rankups[srcSkillId]!.contains(skill.id)) {
-          final srcSkill =
-              svt.skills.firstWhereOrNull((s) => s.id == srcSkillId);
+          final srcSkill = svt.skills.firstWhereOrNull((s) => s.id == srcSkillId);
           if (srcSkill != null) {
             pos = srcSkill.num.toString();
           }
@@ -691,8 +639,7 @@ class _ChargeData {
 
   bool get isTd => skill is BaseTd;
   bool get isSkill => skill is BaseSkill;
-  bool get isPassive =>
-      skill is BaseSkill && (skill as BaseSkill).type == SkillType.passive;
+  bool get isPassive => skill is BaseSkill && (skill as BaseSkill).type == SkillType.passive;
 }
 
 // class _ChargeSkill{
