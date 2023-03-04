@@ -174,6 +174,9 @@ class Event {
 
   bool isOnGoing(Region? region) {
     int now = DateTime.now().timestamp;
+    int neverEndTime = region == Region.cn || region == Region.tw
+        ? kNeverClosedTimestampCN
+        : kNeverClosedTimestamp;
     final starts = region == null
         ? [startedAt, ...extra.startTime.values]
         : [startTimeOf(region)];
@@ -182,11 +185,13 @@ class Event {
         : [endTimeOf(region)];
     for (int index = 0; index < starts.length; index++) {
       int? start = starts[index], end = ends[index];
-      if (start != null && end != null && end > kNeverClosedTimestamp) {
-        end = start + 31 * 24 * 3600;
-      }
-      if (start != null && end != null && now > start && end > now) {
-        return true;
+      if (start != null && end != null) {
+        if (end > neverEndTime) {
+          end = start + 31 * 24 * 3600;
+        }
+        if (now > start && end > now) {
+          return true;
+        }
       }
     }
     return false;

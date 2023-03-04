@@ -32,3 +32,5 @@ final kOnePixel = base64.decode(
 const kDWCharReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
 // 2027-01-15
 const int kNeverClosedTimestamp = 1800000000;
+// 2025-07-01, 1751299200
+const int kNeverClosedTimestampCN = 1751299000;
