@@ -139,6 +139,17 @@ class BattleData {
     lastActId = 0;
     prevTargetId = 0;
 
+    previousFunctionResult = true;
+    uniqueIndex = 1;
+    fixedRandom = ConstData.constants.attackRateRandomMin;
+    probabilityThreshold = 1000;
+    isAfter7thAnni = true;
+    enemyDecks.clear();
+    enemyTargetIndex = 0;
+    allyTargetIndex = 0;
+
+    onFieldAllyServants.clear();
+    onFieldEnemies.clear();
     playerDataList = playerSettings
         .map((svtSetting) => svtSetting == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
         .toList();
@@ -290,9 +301,11 @@ class BattleData {
       return true;
     }
 
-    return (target?.checkTraits(requiredTraits) ?? false) ||
-        (currentBuff?.checkTraits(requiredTraits) ?? false) ||
-        (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (currentBuff != null) {
+      return currentBuff!.checkTraits(requiredTraits);
+    }
+
+    return (target?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
   }
 
   bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits) {
@@ -300,9 +313,11 @@ class BattleData {
       return true;
     }
 
-    return (activator?.checkTraits(requiredTraits) ?? false) ||
-        (currentBuff?.checkTraits(requiredTraits) ?? false) ||
-        (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (currentBuff != null) {
+      return currentBuff!.checkTraits(requiredTraits);
+    }
+
+    return (activator?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
   }
 
   bool isActorOnField(final int actorUniqueId) {

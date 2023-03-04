@@ -24,6 +24,16 @@ int capBuffValue(final BuffActionDetail buffAction, final int totalVal, final in
   return adjustValue;
 }
 
+bool containsAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> requiredTraits) {
+  if (requiredTraits.isEmpty) {
+    return true;
+  }
+
+  final Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
+  return requiredTraits
+      .any((trait) => myTraitIds.contains(trait.signedId) || (trait.negative && !myTraitIds.contains(trait.id)));
+}
+
 bool containsAllTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> requiredTraits) {
   final Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
   return requiredTraits

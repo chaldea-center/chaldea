@@ -268,12 +268,12 @@ class BattleServantData {
     return results;
   }
 
-  bool checkTrait(final NiceTrait requiredTrait) {
-    return checkTraits([requiredTrait]);
+  bool checkTrait(final NiceTrait requiredTrait, {final bool checkBuff = false}) {
+    return checkTraits([requiredTrait], checkBuff: checkBuff);
   }
 
-  bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
-    return containsAllTraits(getTraits(), requiredTraits) || battleBuff.checkTraits(requiredTraits);
+  bool checkTraits(final Iterable<NiceTrait> requiredTraits, {final bool checkBuff = false}) {
+    return containsAllTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
   }
 
   void changeNP(final int change) {

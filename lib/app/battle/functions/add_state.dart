@@ -52,13 +52,13 @@ bool shouldAddState(
     return false;
   }
 
-  final buffResist = target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
+  final buffReceiveChance = target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
   final buffChanceDetails = ConstData.buffActions[BuffAction.resistanceState]!;
   final buffChance = activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
       capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
 
   final functionRate = dataVals.Rate ?? 1000;
-  final activationProbability = functionRate + buffChance - buffResist;
+  final activationProbability = functionRate + buffChance + buffReceiveChance;
 
   return activationProbability >= battleData.probabilityThreshold;
 }

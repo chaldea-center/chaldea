@@ -10,7 +10,7 @@ class BattleBuff {
   List<BuffData> get allBuffs => [...passiveList, ...activeList];
 
   bool get isSelectable =>
-      allBuffs.any((buff) => buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
+      allBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
   bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return allBuffs.any((buff) => buff.checkTraits(requiredTraits));

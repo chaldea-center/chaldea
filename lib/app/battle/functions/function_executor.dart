@@ -21,17 +21,16 @@ void executeFunction(
   final bool isPassive = false,
   final bool notActorFunction = false,
 }) {
-  BattleServantData? activator = battleData.activator;
-  if (!validateFunctionTargetTeam(function, activator)) {
-    return;
-  }
-
-  if (!containsAllTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
+  final BattleServantData? activator = battleData.activator;
+  if (!validateFunctionTargetTeam(function, activator) ||
+      !containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
+    battleData.previousFunctionResult = false;
     return;
   }
 
   final dataVals = getDataVals(function, skillLevel, overchargeLvl);
-  List<BattleServantData> targets = acquireFunctionTarget(battleData, function, activator);
+  final List<BattleServantData> targets =
+      acquireFunctionTarget(battleData, function.funcTargetType, function.funcId, activator);
 
   final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
   targets.retainWhere((svt) => (svt.isAlive() || checkDead) && svt.checkTraits(function.functvals));
@@ -55,11 +54,19 @@ void executeFunction(
     case FuncType.damage:
     case FuncType.damageNp:
     case FuncType.damageNpIndividual:
+      functionSuccess = damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+      break;
     case FuncType.damageNpStateIndividualFix:
-      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+      functionSuccess = damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType,
+          checkBuffTraits: true);
       break;
     case FuncType.damageNpPierce:
-      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType, isPierceDefense: true);
+      functionSuccess = damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType,
+          isPierceDefense: true);
+      break;
+    case FuncType.servantFriendshipUp:
+    case FuncType.eventDropUp:
+    case FuncType.eventPointUp:
       break;
     default:
       print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
@@ -105,7 +112,8 @@ DataVals getDataVals(
 
 List<BattleServantData> acquireFunctionTarget(
   final BattleData battleData,
-  final BaseFunction function,
+  final FuncTargetType funcTargetType,
+  final int funcId,
   final BattleServantData? activator,
 ) {
   final List<BattleServantData> targets = [];
@@ -121,9 +129,11 @@ List<BattleServantData> acquireFunctionTarget(
   final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
   final BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
 
-  switch (function.funcTargetType) {
+  switch (funcTargetType) {
     case FuncTargetType.self:
-      targets.add(activator!);
+      if (activator != null) {
+        targets.add(activator);
+      }
       break;
     case FuncTargetType.ptOne:
     case FuncTargetType.ptselectOneSub:
@@ -131,13 +141,13 @@ List<BattleServantData> acquireFunctionTarget(
         targets.add(targetedAlly);
       }
       break;
-    case FuncTargetType.ptAll:
-      targets.addAll(aliveAllies);
-      break;
     case FuncTargetType.enemy:
       if (targetedEnemy != null) {
         targets.add(targetedEnemy);
       }
+      break;
+    case FuncTargetType.ptAll:
+      targets.addAll(aliveAllies);
       break;
     case FuncTargetType.enemyAll:
       targets.addAll(aliveEnemies);
@@ -211,10 +221,10 @@ List<BattleServantData> acquireFunctionTarget(
       targets.add(hpLowestRate);
       break;
     case FuncTargetType.ptselectSub:
-      if (activator == null) {
-        targets.add(aliveAllies.first);
-      } else {
+      if (activator != null) {
         targets.add(activator);
+      } else if (aliveAllies.isNotEmpty) {
+        targets.add(aliveAllies.first);
       }
       break;
     case FuncTargetType.ptAnother:
@@ -229,7 +239,7 @@ List<BattleServantData> acquireFunctionTarget(
     case FuncTargetType.ptSelfAnotherRandom:
     case FuncTargetType.enemyOneAnotherRandom:
     case FuncTargetType.commandTypeSelfTreasureDevice:
-      print('Unimplemented FuncTargetType: ${function.funcTargetType}, function ID: ${function.funcId}, '
+      print('Unimplemented FuncTargetType: $funcTargetType, function ID: $funcId, '
           'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
       break;
   }

@@ -22,6 +22,7 @@ bool damage(
   final bool isMightyChain,
   final CardType firstCardType, {
   final bool isPierceDefense = false,
+  final bool checkBuffTraits = false,
 }) {
   final functionRate = dataVals.Rate ?? 1000;
   if (functionRate < battleData.probabilityThreshold) {
@@ -41,7 +42,9 @@ bool damage(
       ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
       ..damageRate = currentCard.isNP ? dataVals.Value! : 1000
       ..npSpecificAttackRate =
-          dataVals.Target != null && target.checkTrait(NiceTrait(id: dataVals.Target!)) ? dataVals.Correction! : 1000
+          dataVals.Target != null && target.checkTrait(NiceTrait(id: dataVals.Target!), checkBuff: checkBuffTraits)
+              ? dataVals.Correction!
+              : 1000
       ..attackerClass = activator.svtClass
       ..defenderClass = target.svtClass
       ..classAdvantage = classAdvantage
