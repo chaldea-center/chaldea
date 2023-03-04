@@ -2,6 +2,8 @@ name: Deploy web
 
 on:
   push:
+    tags-ignore:
+      - '**'
   workflow_dispatch:
 
 jobs:
