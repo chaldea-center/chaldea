@@ -35,7 +35,7 @@ bool damage(
     battleData.setTarget(target);
 
     final classAdvantage = db.gameData.constData
-        .classRelation[activator.svtClass.id]![target.svtClass.id]!;
+        .getClassRelation(activator.svtClass, target.svtClass);
 
     final damageParameters = DamageParameters()
       ..attack = activator.attack + currentCard.cardStrengthen
@@ -252,6 +252,6 @@ int getClassRelation(
   BattleServantData target,
   CommandCardData currentCard,
 ) {
-  return db
-      .gameData.constData.classRelation[activator.svtClass]![target.svtClass]!;
+  return db.gameData.constData
+      .getClassRelation(activator.svtClass, target.svtClass);
 }

@@ -62,5 +62,5 @@ List<BuffData> collectBuffsPerActions(
 
 List<BuffData> collectBuffsPerTypes(
     Iterable<BuffData> buffs, Iterable<BuffType> buffTypes) {
-  return buffs.where((buff) => buffTypes.contains(buff.buff!.type)).toList();
+  return buffs.where((buff) => buffTypes.contains(buff.buff.type)).toList();
 }

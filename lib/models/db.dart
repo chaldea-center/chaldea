@@ -344,3 +344,5 @@ class _Database {
 }
 
 final db = _Database();
+// ignore: non_constant_identifier_names
+ConstGameData get ConstData => db.gameData.constData;
