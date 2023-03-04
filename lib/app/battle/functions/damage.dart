@@ -14,14 +14,14 @@ final List<BuffAction> powerMods = [
 ];
 
 bool damage(
-  BattleData battleData,
-  DataVals dataVals,
-  Iterable<BattleServantData> targets,
-  int chainPos,
-  bool isTypeChain,
-  bool isMightyChain,
-  CardType firstCardType, {
-  bool isPierceDefense = false,
+  final BattleData battleData,
+  final DataVals dataVals,
+  final Iterable<BattleServantData> targets,
+  final int chainPos,
+  final bool isTypeChain,
+  final bool isMightyChain,
+  final CardType firstCardType, {
+  final bool isPierceDefense = false,
 }) {
   final functionRate = dataVals.Rate ?? 1000;
   if (functionRate < battleData.probabilityThreshold) {
@@ -128,13 +128,13 @@ bool damage(
     }
 
     final totalDamage = calculateDamage(damageParameters);
-    var remainingDamage = totalDamage;
+    int remainingDamage = totalDamage;
 
     // Future logging
-    var totalNp = 0;
-    var defTotalNp = 0;
-    var totalStars = 0;
-    var overkillCount = 0;
+    int totalNp = 0;
+    int defTotalNp = 0;
+    int totalStars = 0;
+    int overkillCount = 0;
     for (int i = 0; i < currentCard.cardDetail.hitsDistribution.length; i += 1) {
       if (!skipDamage) {
         final hitsPercentage = currentCard.cardDetail.hitsDistribution[i];
@@ -194,10 +194,10 @@ bool damage(
 }
 
 bool shouldSkipDamage(
-  BattleData battleData,
-  BattleServantData activator,
-  BattleServantData target,
-  CommandCardData currentCard,
+  final BattleData battleData,
+  final BattleServantData activator,
+  final BattleServantData target,
+  final CommandCardData currentCard,
 ) {
   final hasSpecialInvincible = target.hasBuffOnAction(battleData, BuffAction.specialInvincible);
   final hasPierceInvincible =
@@ -220,10 +220,10 @@ bool shouldSkipDamage(
 }
 
 int getClassRelation(
-  BattleData battleData,
-  BattleServantData activator,
-  BattleServantData target,
-  CommandCardData currentCard,
+  final BattleData battleData,
+  final BattleServantData activator,
+  final BattleServantData target,
+  final CommandCardData currentCard,
 ) {
   return ConstData.getClassRelation(activator.svtClass, target.svtClass);
 }

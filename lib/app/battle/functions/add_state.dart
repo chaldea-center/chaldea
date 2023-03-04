@@ -7,17 +7,17 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 
 bool addState(
-  BattleData battleData,
-  Buff buff,
-  DataVals dataVals,
-  List<BattleServantData> targets, {
-  bool isPassive = false,
-  bool notActorPassive = false,
-  bool isShortBuff = false,
+  final BattleData battleData,
+  final Buff buff,
+  final DataVals dataVals,
+  final List<BattleServantData> targets, {
+  final bool isPassive = false,
+  final bool notActorPassive = false,
+  final bool isShortBuff = false,
 }) {
   final activator = battleData.activator;
-  var buffAdded = false;
-  for (BattleServantData target in targets) {
+  bool buffAdded = false;
+  for (final target in targets) {
     final buffData = BuffData(buff, dataVals)
       ..actorUniqueId = activator?.uniqueId ?? 0
       ..notActorPassive = notActorPassive
@@ -38,11 +38,11 @@ bool addState(
 }
 
 bool shouldAddState(
-  BattleData battleData,
-  DataVals dataVals,
-  BattleServantData? activator,
-  BattleServantData target,
-  BuffData buffData,
+  final BattleData battleData,
+  final DataVals dataVals,
+  final BattleServantData? activator,
+  final BattleServantData target,
+  final BuffData buffData,
 ) {
   if (dataVals.ForceAddState == 1) {
     return true;

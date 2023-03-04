@@ -9,17 +9,17 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 
 void executeFunction(
-  BattleData battleData,
-  NiceFunction function,
-  int skillLevel, {
-  int overchargeLvl = 1,
-  int chainPos = 1,
-  bool isTypeChain = false,
-  bool isMightyChain = false,
-  CardType firstCardType = CardType.none,
-  bool isDefensePierce = false,
-  bool isPassive = false,
-  bool notActorFunction = false,
+  final BattleData battleData,
+  final NiceFunction function,
+  final int skillLevel, {
+  final int overchargeLvl = 1,
+  final int chainPos = 1,
+  final bool isTypeChain = false,
+  final bool isMightyChain = false,
+  final CardType firstCardType = CardType.none,
+  final bool isDefensePierce = false,
+  final bool isPassive = false,
+  final bool notActorFunction = false,
 }) {
   BattleServantData? activator = battleData.activator;
   if (!validateFunctionTargetTeam(function, activator)) {
@@ -69,8 +69,8 @@ void executeFunction(
 }
 
 bool validateFunctionTargetTeam(
-  BaseFunction function,
-  BattleServantData? activator,
+  final BaseFunction function,
+  final BattleServantData? activator,
 ) {
   switch (function.funcTargetTeam) {
     case FuncApplyTarget.player:
@@ -83,9 +83,9 @@ bool validateFunctionTargetTeam(
 }
 
 DataVals getDataVals(
-  NiceFunction function,
-  int skillLevel,
-  int overchargeLevel,
+  final NiceFunction function,
+  final int skillLevel,
+  final int overchargeLevel,
 ) {
   switch (overchargeLevel) {
     case 1:
@@ -104,20 +104,22 @@ DataVals getDataVals(
 }
 
 List<BattleServantData> acquireFunctionTarget(
-  BattleData battleData,
-  BaseFunction function,
-  BattleServantData? activator,
+  final BattleData battleData,
+  final BaseFunction function,
+  final BattleServantData? activator,
 ) {
-  List<BattleServantData> targets = [];
+  final List<BattleServantData> targets = [];
 
-  bool isAlly = activator?.isPlayer ?? true;
-  List<BattleServantData> backupAllies = isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
-  List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
-  BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
+  final isAlly = activator?.isPlayer ?? true;
+  final List<BattleServantData> backupAllies =
+      isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
+  final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
+  final BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
 
-  List<BattleServantData> backupEnemies = isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
-  List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
-  BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
+  final List<BattleServantData> backupEnemies =
+      isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
+  final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
+  final BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
 
   switch (function.funcTargetType) {
     case FuncTargetType.self:
@@ -183,8 +185,12 @@ List<BattleServantData> acquireFunctionTarget(
       }
       break;
     case FuncTargetType.ptOneHpLowestValue:
+      if (aliveAllies.isEmpty) {
+        break;
+      }
+
       BattleServantData hpLowestValue = aliveAllies.first;
-      for (BattleServantData svt in aliveAllies) {
+      for (final svt in aliveAllies) {
         if (svt.hp < hpLowestValue.hp) {
           hpLowestValue = svt;
         }
@@ -192,8 +198,12 @@ List<BattleServantData> acquireFunctionTarget(
       targets.add(hpLowestValue);
       break;
     case FuncTargetType.ptOneHpLowestRate:
+      if (aliveAllies.isEmpty) {
+        break;
+      }
+
       BattleServantData hpLowestRate = aliveAllies.first;
-      for (BattleServantData svt in aliveAllies) {
+      for (final svt in aliveAllies) {
         if (svt.hp / svt.maxHp < hpLowestRate.hp / hpLowestRate.maxHp) {
           hpLowestRate = svt;
         }

@@ -12,7 +12,7 @@ class BattleBuff {
   bool get isSelectable =>
       allBuffs.any((buff) => buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
-  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+  bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return allBuffs.any((buff) => buff.checkTraits(requiredTraits));
   }
 
@@ -91,19 +91,19 @@ class BuffData {
 
   List<NiceTrait> get traits => buff.vals;
 
-  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+  bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return containsAllTraits(traits, requiredTraits);
   }
 
-  bool shouldApplyAsTarget(BattleData battleData) {
+  bool shouldApplyAsTarget(final BattleData battleData) {
     return battleData.checkActivatorTraits(buff.ckOpIndv) && battleData.checkTargetTraits(buff.ckSelfIndv);
   }
 
-  bool shouldApplyAsActivator(BattleData battleData) {
+  bool shouldApplyAsActivator(final BattleData battleData) {
     return battleData.checkTargetTraits(buff.ckOpIndv) && battleData.checkActivatorTraits(buff.ckSelfIndv);
   }
 
-  bool shouldApplyBuff(BattleData battleData, bool isTarget) {
+  bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
     final targetCheck =
         (isTarget && shouldApplyAsTarget(battleData)) || (!isTarget && shouldApplyAsActivator(battleData));
 
@@ -116,7 +116,7 @@ class BuffData {
     return targetCheck && onFieldCheck && probabilityCheck && scriptCheck;
   }
 
-  bool checkScript(BattleData battleData, bool isTarget) {
+  bool checkScript(final BattleData battleData, final bool isTarget) {
     if (buff.script == null) {
       return true;
     }
@@ -131,7 +131,7 @@ class BuffData {
     return true;
   }
 
-  bool canStack(int buffGroup) {
+  bool canStack(final int buffGroup) {
     return buffGroup == 0 || buffGroup != buff.buffGroup;
   }
 

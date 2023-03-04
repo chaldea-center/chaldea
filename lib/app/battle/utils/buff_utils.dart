@@ -4,8 +4,8 @@ import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
-int capBuffValue(BuffActionDetail buffAction, int totalVal, int maxRate) {
-  var adjustValue = buffAction.baseParam + totalVal;
+int capBuffValue(final BuffActionDetail buffAction, final int totalVal, final int maxRate) {
+  int adjustValue = buffAction.baseParam + totalVal;
 
   if (buffAction.limit == BuffLimit.normal || buffAction.limit == BuffLimit.lower) {
     if (adjustValue < 0) {
@@ -24,21 +24,21 @@ int capBuffValue(BuffActionDetail buffAction, int totalVal, int maxRate) {
   return adjustValue;
 }
 
-bool containsAllTraits(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> requiredTraits) {
-  Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
+bool containsAllTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> requiredTraits) {
+  final Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
   return requiredTraits
       .every((trait) => myTraitIds.contains(trait.signedId) || (trait.negative && !myTraitIds.contains(trait.id)));
 }
 
-List<BuffData> collectBuffsPerAction(Iterable<BuffData> buffs, BuffAction buffAction) {
+List<BuffData> collectBuffsPerAction(final Iterable<BuffData> buffs, final BuffAction buffAction) {
   return collectBuffsPerActions(buffs, [buffAction]);
 }
 
-List<BuffData> collectBuffsPerType(Iterable<BuffData> buffs, BuffType buffType) {
+List<BuffData> collectBuffsPerType(final Iterable<BuffData> buffs, final BuffType buffType) {
   return collectBuffsPerTypes(buffs, [buffType]);
 }
 
-List<BuffData> collectBuffsPerActions(Iterable<BuffData> buffs, Iterable<BuffAction> buffActions) {
+List<BuffData> collectBuffsPerActions(final Iterable<BuffData> buffs, final Iterable<BuffAction> buffActions) {
   final allBuffTypes = HashSet<BuffType>();
   for (final buffAction in buffActions) {
     final actionDetails = ConstData.buffActions[buffAction];
@@ -53,6 +53,6 @@ List<BuffData> collectBuffsPerActions(Iterable<BuffData> buffs, Iterable<BuffAct
   return collectBuffsPerTypes(buffs, allBuffTypes);
 }
 
-List<BuffData> collectBuffsPerTypes(Iterable<BuffData> buffs, Iterable<BuffType> buffTypes) {
+List<BuffData> collectBuffsPerTypes(final Iterable<BuffData> buffs, final Iterable<BuffType> buffTypes) {
   return buffs.where((buff) => buffTypes.contains(buff.buff.type)).toList();
 }

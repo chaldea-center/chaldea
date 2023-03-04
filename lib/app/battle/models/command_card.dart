@@ -45,7 +45,7 @@ class CommandCardData {
 
   CommandCardData(this.cardType, this.cardDetail);
 
-  bool checkTraits(Iterable<NiceTrait> requiredTraits) {
+  bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return containsAllTraits(traits, requiredTraits);
   }
 }

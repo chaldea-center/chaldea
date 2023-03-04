@@ -31,7 +31,7 @@ class BattleSkillInfoData {
     }
   }
 
-  void activate(BattleData battleData) {
+  void activate(final BattleData battleData) {
     if (chargeTurn > 0) {
       return;
     }
@@ -40,11 +40,11 @@ class BattleSkillInfoData {
   }
 
   static void activateSkill(
-    BattleData battleData,
-    BaseSkill skill,
-    int skillLevel, {
-    bool isPassive = false,
-    bool notActorSkill = false,
+    final BattleData battleData,
+    final BaseSkill skill,
+    final int skillLevel, {
+    final bool isPassive = false,
+    final bool notActorSkill = false,
   }) {
     // TODO (battle): account for random skills (check func.svals.ActSet)
     for (final func in skill.functions) {

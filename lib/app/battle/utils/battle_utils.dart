@@ -111,7 +111,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final cardResist = toModifier(param.cardResist);
   final npGainBuff = toModifier(param.npGainBuff);
 
-  ByteData float = ByteData(4);
+  final ByteData float = ByteData(4);
   float.setFloat32(0, cardBuff - cardResist);
   float.setFloat32(0, max(1 + float.getFloat32(0), 0));
   float.setFloat32(0, cardCorrection * float.getFloat32(0));
@@ -143,7 +143,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
   final npGainBuff = toModifier(param.npGainBuff);
   final defenseNpGainBuff = toModifier(param.defenseNpGainBuff);
 
-  ByteData float = ByteData(4);
+  final ByteData float = ByteData(4);
   float.setFloat32(0, npGainBuff);
   final npBonusGain = float.getFloat32(0);
 
