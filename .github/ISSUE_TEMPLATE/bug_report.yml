@@ -23,6 +23,7 @@ body:
       description: Which platform(s) the app is running on?
       multiple: true
       options:
+        - All
         - web
         - iOS
         - Android
@@ -51,8 +52,8 @@ body:
     id: version
     attributes:
       label: App Version
-      description: The full version with build number(1.7.0+700) in About page. For web, also paste the commit hash please.
-      placeholder: "1.7.0+700 9d3e35"
+      description: The full version with build number(2.2.2+918) in About page. For web, also paste the commit hash please.
+      placeholder: "2.2.2+918 31d7a1a"
     validations:
       required: true
   - type: textarea

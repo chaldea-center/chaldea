@@ -4,7 +4,7 @@
 
 ### Flutter Version
 
-Make sure your flutter version is compatible with the version used in production. Check the deploy workflow for [web](./.github/workflows/deploy-web.yml) and [Github Release](./.github/workflows/deploy-github-release.yml)
+Make sure your flutter version is compatible with the version used in production. Check the deploy workflow for [web](./.github/workflows/deploy-web.yml) and [Github Release](./.github/workflows/deploy-github-release.yml).
 
 ### Formatting
 
