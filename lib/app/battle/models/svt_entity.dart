@@ -285,7 +285,7 @@ class BattleServantData {
 
     np.clamp(0, getNPCap(playerSvtData!.npLv));
     if (change > 0 && np > npPityThreshold) {
-      np = max(np, db.gameData.constData.constants.fullTdPoint);
+      np = max(np, ConstData.constants.fullTdPoint);
     }
   }
 
@@ -295,7 +295,7 @@ class BattleServantData {
         : npLevel < 5
             ? 2
             : 3;
-    return db.gameData.constData.constants.fullTdPoint * capRate;
+    return ConstData.constants.fullTdPoint * capRate;
   }
 
   bool isKilledBy(BattleServantData? activator, CommandCardData? currentCard) {
@@ -372,7 +372,7 @@ class BattleServantData {
   }
 
   bool canNP(BattleData battleData) {
-    if ((isPlayer && np < db.gameData.constData.constants.fullTdPoint) ||
+    if ((isPlayer && np < ConstData.constants.fullTdPoint) ||
         (isEnemy && (npLineCount < niceEnemy!.chargeTurn || niceEnemy!.chargeTurn == 0))) {
       return false;
     }
@@ -401,7 +401,7 @@ class BattleServantData {
 
     // TODO (battle): account for OC buff
     final overchargeLvl =
-        isPlayer ? (np / db.gameData.constData.constants.fullTdPoint).floor() + extraOverchargeLvl : 1;
+        isPlayer ? (np / ConstData.constants.fullTdPoint).floor() + extraOverchargeLvl : 1;
 
     final npLvl = isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
 
@@ -415,7 +415,7 @@ class BattleServantData {
   }
 
   int getBuffValueOnAction(BattleData battleData, BuffAction buffAction, [List<BuffData>? commandCodeBuffs]) {
-    final actionDetails = db.gameData.constData.buffActions[buffAction];
+    final actionDetails = ConstData.buffActions[buffAction];
     final isTarget = battleData.target == this;
     var totalVal = 0;
     var maxRate = Maths.min(actionDetails!.maxRate);

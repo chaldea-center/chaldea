@@ -8,47 +8,45 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
 int calculateDamage(final DamageParameters param) {
-  final constData = db.gameData.constData;
-
-  if (!constData.classInfo.containsKey(param.attackerClass.id)) {
+  if (!ConstData.classInfo.containsKey(param.attackerClass.id)) {
     throw 'Invalid class: ${param.attackerClass}';
   }
 
-  final classAttackCorrection = toModifier(constData.classInfo[param.attackerClass.id]!.attackRate);
+  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass.id]!.attackRate);
   final classAdvantage =
       toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
-  if (!constData.attributeRelation.containsKey(param.attackerAttribute) ||
-      !constData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
+  if (!ConstData.attributeRelation.containsKey(param.attackerAttribute) ||
+      !ConstData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
     throw 'Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}';
   }
   final attributeAdvantage =
-      toModifier(constData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
+      toModifier(ConstData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
 
-  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+  if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
+  final cardCorrection = toModifier(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
 
-  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
+  final firstCardBonus = param.isNp || !ConstData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
-          ? toModifier(constData.cardInfo[CardType.buster]![1]!.addAtk)
-          : toModifier(constData.cardInfo[param.firstCardType]![1]!.addAtk);
+          ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+          : toModifier(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
 
-  final criticalModifier = param.isCritical ? toModifier(constData.constants.criticalAttackRate) : 1;
+  final criticalModifier = param.isCritical ? toModifier(ConstData.constants.criticalAttackRate) : 1;
 
   final extraRate = param.currentCardType == CardType.extra
       ? param.isTypeChain && param.firstCardType == CardType.buster
-          ? constData.constants.extraAttackRateGrand
-          : constData.constants.extraAttackRateSingle
+          ? ConstData.constants.extraAttackRateGrand
+          : ConstData.constants.extraAttackRateSingle
       : 1000;
   final extraModifier = toModifier(extraRate);
 
   final busterChainMod = !param.isNp && param.currentCardType == CardType.buster && param.isTypeChain
-      ? toModifier(constData.constants.chainbonusBusterRate) * param.attack
+      ? toModifier(ConstData.constants.chainbonusBusterRate) * param.attack
       : 0;
 
   final damageRate = toModifier(param.damageRate);
@@ -73,7 +71,7 @@ int calculateDamage(final DamageParameters param) {
               classAdvantage *
               attributeAdvantage *
               fixedRandom *
-              toModifier(constData.constants.attackRate) *
+              toModifier(ConstData.constants.attackRate) *
               max(1 + attackBuff - defenseBuff, 0) *
               criticalModifier *
               extraModifier *
@@ -95,20 +93,19 @@ int calculateDamage(final DamageParameters param) {
 /// Float arithmetic used due to:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
 int calculateAttackNpGain(final AttackNpGainParameters param) {
-  final constData = db.gameData.constData;
-  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+  if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = toModifier(constData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
+  final cardCorrection = toModifier(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
 
-  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
+  final firstCardBonus = param.isNp || !ConstData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
-          ? toModifier(constData.cardInfo[CardType.arts]![1]!.addTdGauge)
-          : toModifier(constData.cardInfo[param.firstCardType]![1]!.addTdGauge);
-  final criticalModifier = param.isCritical ? toModifier(constData.constants.criticalTdPointRate) : 1.0;
+          ? toModifier(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge)
+          : toModifier(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
+  final criticalModifier = param.isCritical ? toModifier(ConstData.constants.criticalTdPointRate) : 1.0;
 
   final cardBuff = toModifier(param.cardBuff);
   final cardResist = toModifier(param.cardResist);
@@ -132,7 +129,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   float.setFloat32(0, npBonusGain * float.getFloat32(0));
   final beforeOverkill = float.getFloat32(0).floor();
 
-  final overkillModifier = param.isOverkill ? toModifier(constData.constants.overKillNpRate) : 1.0;
+  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate) : 1.0;
   float.setFloat32(0, beforeOverkill * overkillModifier);
   return float.getFloat32(0).floor();
 }
@@ -158,7 +155,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
   float.setFloat32(0, defNpBonusGain * float.getFloat32(0));
   final beforeOverkill = float.getFloat32(0);
 
-  final overkillModifier = param.isOverkill ? toModifier(db.gameData.constData.constants.overKillNpRate) : 1.0;
+  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate) : 1.0;
   float.setFloat32(0, beforeOverkill * overkillModifier);
   return float.getFloat32(0).floor();
 }
@@ -166,28 +163,27 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
 /// Referencing:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/critstars.html
 int calculateStar(final StarParameters param) {
-  final constData = db.gameData.constData;
-  if (!constData.cardInfo.containsKey(param.currentCardType)) {
+  if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = constData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
+  final cardCorrection = ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
 
-  final firstCardBonus = param.isNp || !constData.cardInfo.containsKey(param.firstCardType)
+  final firstCardBonus = param.isNp || !ConstData.cardInfo.containsKey(param.firstCardType)
       ? 0
       : param.isMightyChain
-          ? constData.cardInfo[CardType.quick]![1]!.addCritical
-          : constData.cardInfo[param.firstCardType]![1]!.addCritical;
-  final criticalModifier = param.isCritical ? constData.constants.criticalStarRate : 0;
+          ? ConstData.cardInfo[CardType.quick]![1]!.addCritical
+          : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
+  final criticalModifier = param.isCritical ? ConstData.constants.criticalStarRate : 0;
 
   final defenderStarRate = param.defenderStarRate;
 
   final cardBuff = toModifier(param.cardBuff);
   final cardResist = toModifier(param.cardResist);
 
-  final overkillModifier = param.isOverkill ? toModifier(constData.constants.overKillStarRate) : 1;
-  final overkillAdd = param.isOverkill ? constData.constants.overKillStarAdd : 0;
+  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillStarRate) : 1;
+  final overkillAdd = param.isOverkill ? ConstData.constants.overKillStarAdd : 0;
 
   // not converted to modifier since mostly just additions.
   final dropRate = ((param.attackerStarGen +
@@ -201,7 +197,7 @@ int calculateStar(final StarParameters param) {
           overkillAdd)
       .toInt();
 
-  return dropRate.clamp(0, constData.constants.starRateMax);
+  return dropRate.clamp(0, ConstData.constants.starRateMax);
 }
 
 double toModifier(final int value) {

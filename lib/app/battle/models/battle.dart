@@ -91,7 +91,7 @@ class BattleData {
   bool previousFunctionResult = true;
   int uniqueIndex = 1;
 
-  int fixedRandom = db.gameData.constData.constants.attackRateRandomMin;
+  int fixedRandom = ConstData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
 

@@ -41,7 +41,7 @@ List<BuffData> collectBuffsPerType(Iterable<BuffData> buffs, BuffType buffType) 
 List<BuffData> collectBuffsPerActions(Iterable<BuffData> buffs, Iterable<BuffAction> buffActions) {
   final allBuffTypes = HashSet<BuffType>();
   for (final buffAction in buffActions) {
-    final actionDetails = db.gameData.constData.buffActions[buffAction];
+    final actionDetails = ConstData.buffActions[buffAction];
     if (actionDetails == null) {
       continue;
     }

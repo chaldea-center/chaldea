@@ -23,7 +23,7 @@ void main() async {
 
       final altria = db.gameData.servantsById[100100]!;
       const level = 90;
-      final classAdvantage = db.gameData.constData.getClassRelation(altria.className, defenderClass);
+      final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
       final upgradedNp = altria.noblePhantasms.last;
       final oc1Np1DataSpec = upgradedNp.functions.first.svals.first;
@@ -300,7 +300,7 @@ void main() async {
       test('vs Sky Lancer', () {
         const defenderClass = SvtClass.lancer;
         const defenderAttribute = Attribute.sky;
-        final classAdvantage = db.gameData.constData.getClassRelation(altria.className, defenderClass);
+        final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
@@ -313,7 +313,7 @@ void main() async {
       test('vs Earth Ruler', () {
         const defenderClass = SvtClass.ruler;
         const defenderAttribute = Attribute.earth;
-        final classAdvantage = db.gameData.constData.getClassRelation(altria.className, defenderClass);
+        final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
@@ -326,7 +326,7 @@ void main() async {
       test('vs Human Archer', () {
         const defenderClass = SvtClass.archer;
         const defenderAttribute = Attribute.human;
-        final classAdvantage = db.gameData.constData.getClassRelation(altria.className, defenderClass);
+        final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
           ..defenderClass = defenderClass
@@ -340,7 +340,7 @@ void main() async {
       test('totalHits', () {
         const defenderClass = SvtClass.lancer;
         const defenderAttribute = Attribute.sky;
-        final classAdvantage = db.gameData.constData.getClassRelation(altria.className, defenderClass);
+        final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(extra.hitsDistribution)
@@ -361,7 +361,7 @@ void main() async {
 
       final yuyu = db.gameData.servantsById[2500400]!;
       const level = 90;
-      final classAdvantage = db.gameData.constData.getClassRelation(yuyu.className, defenderClass);
+      final classAdvantage = ConstData.getClassRelation(yuyu.className, defenderClass);
 
       final np = yuyu.noblePhantasms.last;
       final npDamageSpecs = np.functions.first;
@@ -807,7 +807,7 @@ void main() async {
         param
           ..starGenBuff = 50000
           ..enemyStarGenResist = 0;
-        expect(calculateStar(param).toDouble(), equals(db.gameData.constData.constants.starRateMax));
+        expect(calculateStar(param).toDouble(), equals(ConstData.constants.starRateMax));
       });
 
       test('overkill', () {
