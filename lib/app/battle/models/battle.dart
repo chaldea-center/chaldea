@@ -19,8 +19,10 @@ class BattleData {
   static const playerOnFieldCount = 3;
 
   static final DataVals artsChain = DataVals({'Rate': 5000, 'Value': 2000});
-  static final DataVals quickChainBefore7thAnni = DataVals({'Rate': 5000, 'Value': 10});
-  static final DataVals quickChainAfter7thAnni = DataVals({'Rate': 5000, 'Value': 20});
+  static final DataVals quickChainBefore7thAnni =
+      DataVals({'Rate': 5000, 'Value': 10});
+  static final DataVals quickChainAfter7thAnni =
+      DataVals({'Rate': 5000, 'Value': 20});
   static final DataVals cardDamage = DataVals({'Rate': 1000, 'Value': 1000});
 
   QuestPhase? niceQuest;
@@ -40,19 +42,28 @@ class BattleData {
   int enemyTargetIndex = 0;
   int allyTargetIndex = 0;
 
-  BattleServantData? get targetedEnemy => onFieldEnemies.length > enemyTargetIndex ? onFieldEnemies[enemyTargetIndex] : null;
+  BattleServantData? get targetedEnemy =>
+      onFieldEnemies.length > enemyTargetIndex
+          ? onFieldEnemies[enemyTargetIndex]
+          : null;
 
-  BattleServantData? get targetedAlly => onFieldAllyServants.length > allyTargetIndex ? onFieldAllyServants[allyTargetIndex] : null;
+  BattleServantData? get targetedAlly =>
+      onFieldAllyServants.length > allyTargetIndex
+          ? onFieldAllyServants[allyTargetIndex]
+          : null;
 
   List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
   List<BattleServantData> get nonnullAllies => _getNonnull(onFieldAllyServants);
 
-  List<BattleServantData> get nonnullActors => [...nonnullAllies, ...nonnullEnemies];
+  List<BattleServantData> get nonnullActors =>
+      [...nonnullAllies, ...nonnullEnemies];
 
-  List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
+  List<BattleServantData> get nonnullBackupEnemies =>
+      _getNonnull(enemyDataList);
 
-  List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
+  List<BattleServantData> get nonnullBackupAllies =>
+      _getNonnull(playerDataList);
 
   // BattleData? data;
   // BattleInfoData battleInfo;
@@ -103,7 +114,8 @@ class BattleData {
     _currentBuff.add(buff);
   }
 
-  BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
+  BuffData? get currentBuff =>
+      _currentBuff.isNotEmpty ? _currentBuff.last : null;
 
   void unsetCurrentBuff() {
     _currentBuff.removeLast();
@@ -113,7 +125,8 @@ class BattleData {
     _activator.add(svt);
   }
 
-  BattleServantData? get activator => _activator.isNotEmpty ? _activator.last : null;
+  BattleServantData? get activator =>
+      _activator.isNotEmpty ? _activator.last : null;
 
   void unsetActivator() {
     _activator.removeLast();
@@ -129,7 +142,8 @@ class BattleData {
     _target.removeLast();
   }
 
-  void init(QuestPhase quest, List<PlayerSvtData?> playerSettings, MysticCode? selectedMC) {
+  void init(QuestPhase quest, List<PlayerSvtData?> playerSettings,
+      MysticCode? selectedMC) {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -139,7 +153,9 @@ class BattleData {
     prevTargetId = 0;
 
     playerDataList = playerSettings
-        .map((svtSetting) => svtSetting == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
+        .map((svtSetting) => svtSetting == null
+            ? null
+            : BattleServantData.fromPlayerSvtData(svtSetting))
         .toList();
     _fetchWaveEnemies();
 
@@ -157,12 +173,15 @@ class BattleData {
     mysticCode = selectedMC;
     mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
     if (mysticCode != null) {
-      masterSkillInfo = mysticCode!.skills.map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv).toList();
+      masterSkillInfo = mysticCode!.skills
+          .map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv)
+          .toList();
     }
 
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
-    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    allyTargetIndex =
+        getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
     nonnullActors.forEach((element) {
@@ -252,7 +271,8 @@ class BattleData {
     }
   }
 
-  void _initOnField(List<BattleServantData?> dataList, List<BattleServantData?> onFieldList, int maxCount) {
+  void _initOnField(List<BattleServantData?> dataList,
+      List<BattleServantData?> onFieldList, int maxCount) {
     while (dataList.isNotEmpty && onFieldList.length < maxCount) {
       final svt = dataList.removeAt(0);
       svt?.deckIndex = onFieldList.length + 1;
@@ -324,7 +344,8 @@ class BattleData {
       return false;
     }
 
-    return onFieldAllyServants[servantIndex]!.canActivateSkill(this, skillIndex);
+    return onFieldAllyServants[servantIndex]!
+        .canActivateSkill(this, skillIndex);
   }
 
   void activateSvtSkill(int servantIndex, int skillIndex) {
@@ -360,7 +381,8 @@ class BattleData {
     }
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
-    final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
+    final cardTypesSet =
+        actions.map((action) => action.cardData.cardType).toSet();
     bool isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
     bool isMightyChain = cardTypesSet.length == 3;
     CardType firstCardType = actions[0].cardData.cardType;
@@ -373,19 +395,23 @@ class BattleData {
       if (nonnullEnemies.isNotEmpty) {
         final action = actions[i];
         currentCard = action.cardData;
-        allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
+        allyTargetIndex = onFieldAllyServants
+            .indexOf(action.actor); // help damageFunction identify attacker
 
         if (currentCard!.isNP && action.actor.canNP(this)) {
-          action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+          action.actor.activateBuffOnActions(this,
+              [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
           action.actor.activateNP(this, extraOvercharge);
           extraOvercharge += 1;
 
           nonnullEnemies.forEach((svt) {
-            if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
+            if (svt.attacked)
+              svt.activateBuffOnAction(this, BuffAction.functionDamage);
           });
         } else if (!currentCard!.isNP && action.actor.canCommandCard(this)) {
           extraOvercharge = 0;
-          executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+          executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain,
+              isMightyChain, firstCardType);
         }
 
         if (shouldRemoveDeadActors(actions, i)) {
@@ -402,7 +428,8 @@ class BattleData {
       final actor = actions[0].actor;
       currentCard = actor.getExtraCard();
 
-      executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+      executePlayerCard(
+          actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
 
       currentCard = null;
 
@@ -481,7 +508,8 @@ class BattleData {
     } else {
       targets.add(targetedEnemy!);
     }
-    damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain,
+        firstCardType);
 
     unsetActivator();
 
@@ -501,7 +529,8 @@ class BattleData {
 
   void applyTypeChain(CardType cardType, List<CombatAction> actions) {
     if (cardType == CardType.quick) {
-      final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
+      final dataValToUse =
+          isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
       gainStar(this, dataValToUse);
     } else if (cardType == CardType.arts) {
       final targets = actions.map((action) => action.actor).toSet();
@@ -512,7 +541,8 @@ class BattleData {
   void removeDeadActors() {
     removeDeadActorsFromList(onFieldAllyServants);
     removeDeadActorsFromList(onFieldEnemies);
-    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    allyTargetIndex =
+        getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }
 
@@ -532,7 +562,8 @@ class BattleData {
     }
   }
 
-  int getNonNullTargetIndex(List<BattleServantData?> actorList, int targetIndex) {
+  int getNonNullTargetIndex(
+      List<BattleServantData?> actorList, int targetIndex) {
     if (targetIndex >= actorList.length || actorList[targetIndex] == null) {
       for (int i = 0; i < actorList.length; i += 1) {
         if (actorList[i] != null) {
@@ -558,7 +589,8 @@ class BattleData {
   }
 
   static bool isBraveChain(List<CombatAction> actions) {
-    return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
+    return actions.length == kMaxCommand &&
+        actions.map((action) => action.actor).toSet().length == 1;
   }
 }
 

@@ -14,8 +14,7 @@ class NpDamageCalculator extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          children: [
-          ],
+          children: [],
         ),
       ),
     );

@@ -26,15 +26,18 @@ void executeFunction(
     return;
   }
 
-  if (!containsAllTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
+  if (!containsAllTraits(
+      battleData.getFieldTraits(), function.funcquestTvals)) {
     return;
   }
 
   final dataVals = getDataVals(function, skillLevel, overchargeLvl);
-  List<BattleServantData> targets = acquireFunctionTarget(battleData, function, activator);
+  List<BattleServantData> targets =
+      acquireFunctionTarget(battleData, function, activator);
 
   final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
-  targets.retainWhere((svt) => (svt.isAlive() || checkDead) && svt.checkTraits(function.functvals));
+  targets.retainWhere((svt) =>
+      (svt.isAlive() || checkDead) && svt.checkTraits(function.functvals));
 
   bool functionSuccess = true;
   switch (function.funcType) {
@@ -44,7 +47,9 @@ void executeFunction(
       break;
     case FuncType.addStateShort:
       functionSuccess = addState(battleData, function.buff!, dataVals, targets,
-          isPassive: isPassive, notActorPassive: notActorFunction, isShortBuff: true);
+          isPassive: isPassive,
+          notActorPassive: notActorFunction,
+          isShortBuff: true);
       break;
     case FuncType.gainNp:
       functionSuccess = gainNP(battleData, dataVals, targets);
@@ -56,13 +61,17 @@ void executeFunction(
     case FuncType.damageNp:
     case FuncType.damageNpIndividual:
     case FuncType.damageNpStateIndividualFix:
-      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+      damage(battleData, dataVals, targets, chainPos, isTypeChain,
+          isMightyChain, firstCardType);
       break;
     case FuncType.damageNpPierce:
-      damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType, isPierceDefense: true);
+      damage(battleData, dataVals, targets, chainPos, isTypeChain,
+          isMightyChain, firstCardType,
+          isPierceDefense: true);
       break;
     default:
-      print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
+      print(
+          'Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
           'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
@@ -111,13 +120,19 @@ List<BattleServantData> acquireFunctionTarget(
   List<BattleServantData> targets = [];
 
   bool isAlly = activator?.isPlayer ?? true;
-  List<BattleServantData> backupAllies = isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
-  List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
-  BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
+  List<BattleServantData> backupAllies =
+      isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
+  List<BattleServantData> aliveAllies =
+      isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
+  BattleServantData? targetedAlly =
+      isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
 
-  List<BattleServantData> backupEnemies = isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
-  List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
-  BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
+  List<BattleServantData> backupEnemies =
+      isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
+  List<BattleServantData> aliveEnemies =
+      isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
+  BattleServantData? targetedEnemy =
+      isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
 
   switch (function.funcTargetType) {
     case FuncTargetType.self:
@@ -171,13 +186,15 @@ List<BattleServantData> acquireFunctionTarget(
       targets.addAll(backupEnemies);
       break;
     case FuncTargetType.ptSelfAnotherFirst:
-      final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
+      final firstOtherSelectable = aliveAllies
+          .firstWhereOrNull((svt) => svt != activator && svt.selectable);
       if (firstOtherSelectable != null) {
         targets.add(firstOtherSelectable);
       }
       break;
     case FuncTargetType.ptSelfAnotherLast:
-      final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator && svt.selectable);
+      final lastOtherSelectable = aliveAllies
+          .lastWhereOrNull((svt) => svt != activator && svt.selectable);
       if (lastOtherSelectable != null) {
         targets.add(lastOtherSelectable);
       }
@@ -219,7 +236,8 @@ List<BattleServantData> acquireFunctionTarget(
     case FuncTargetType.ptSelfAnotherRandom:
     case FuncTargetType.enemyOneAnotherRandom:
     case FuncTargetType.commandTypeSelfTreasureDevice:
-      print('Unimplemented FuncTargetType: ${function.funcTargetType}, function ID: ${function.funcId}, '
+      print(
+          'Unimplemented FuncTargetType: ${function.funcTargetType}, function ID: ${function.funcId}, '
           'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
       break;
   }
