@@ -186,11 +186,11 @@ class WaveInfoPage extends StatelessWidget {
       appBar: AppBar(title: Text('Wave ${stage.wave}')),
       body: ListView(
         children: [
-          if (stage.bgm.id != 0)
+          if (stage.bgm != null && stage.bgm?.id != 0)
             ListTile(
               title: Text(S.current.bgm),
-              trailing: Text(stage.bgm.tooltip, textAlign: TextAlign.end),
-              onTap: stage.bgm.routeTo,
+              trailing: Text(stage.bgm!.tooltip, textAlign: TextAlign.end),
+              onTap: stage.bgm!.routeTo,
             ),
           if (stage.turn != null)
             ListTile(
