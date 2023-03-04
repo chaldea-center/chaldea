@@ -76,6 +76,10 @@ class ConstGameData {
           baseValue + (maxValue - baseValue) * expData.curve[index] ~/ 1000
     ];
   }
+
+  int getClassRelation(SvtClass attacker, SvtClass defender) {
+    return classRelation[attacker.id]?[defender.id] ?? 1;
+  }
 }
 
 @JsonSerializable(converters: [BuffTypeConverter()])

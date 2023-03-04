@@ -1,4 +1,7 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
+import 'np_damage_calculator.dart';
 
 class BattleHomePage extends StatelessWidget {
   BattleHomePage({super.key});
@@ -15,7 +18,9 @@ class BattleHomePage extends StatelessWidget {
         children: [
           ListTile(
             title: const Text('NP Damage'),
-            onTap: () {},
+            onTap: () {
+              router.pushPage(const NpDamageCalculator());
+            },
           ),
           ListTile(
             title: const Text('Card Damage'),

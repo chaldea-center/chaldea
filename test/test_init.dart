@@ -11,7 +11,7 @@ Future<void> initiateForTest() async {
   //    "dart.flutterTestAdditionalArgs": ["--dart-define=APP_PATH=/path/to/app"]
   // - remember to escape special chars such as Space
   String appPath = const String.fromEnvironment('APP_PATH');
-  print(appPath);
+  print('Provided appPath: $appPath');
   assert(appPath.trim().isNotEmpty, 'APP_PATH must be provided');
 
   CustomTestBindings();

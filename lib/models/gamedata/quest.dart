@@ -87,18 +87,18 @@ class Quest with RouteInfo {
   int closedAt;
 
   Quest({
-    required this.id,
-    required this.name,
-    required this.type,
+    this.id = -1,
+    this.name = '',
+    this.type = QuestType.event,
     this.flags = const [],
     this.consumeType = ConsumeType.ap,
-    required this.consume,
+    this.consume = 0,
     this.consumeItem = const [],
-    required this.afterClear,
-    required this.recommendLv,
-    required this.spotId,
-    required String spotName,
-    required this.warId,
+    this.afterClear = QuestAfterClearType.close,
+    this.recommendLv = '',
+    this.spotId = 0,
+    String spotName = '',
+    this.warId = 0,
     this.warLongName = '',
     this.chapterId = 0,
     this.chapterSubId = 0,
@@ -106,14 +106,14 @@ class Quest with RouteInfo {
     String? giftIcon,
     this.gifts = const [],
     this.releaseConditions = const [],
-    required this.phases,
+    this.phases = const [],
     this.phasesWithEnemies = const [],
     this.phasesNoBattle = const [],
     this.phaseScripts = const [],
-    required this.priority,
-    required this.noticeAt,
-    required this.openedAt,
-    required this.closedAt,
+    this.priority = 0,
+    this.noticeAt = 0,
+    this.openedAt = 0,
+    this.closedAt = 0,
   })  : spotName = spotName == '0' ? '' : spotName,
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon;
 
@@ -272,48 +272,49 @@ class QuestPhase extends Quest {
   List<EnemyDrop> drops;
 
   QuestPhase({
-    required super.id,
-    required super.name,
-    required super.type,
-    super.flags = const [],
-    super.consumeType = ConsumeType.ap,
-    required super.consume,
-    super.consumeItem = const [],
-    required super.afterClear,
-    required super.recommendLv,
-    required super.spotId,
-    required super.spotName,
-    required super.warId,
-    super.warLongName = '',
-    super.chapterId = 0,
-    super.chapterSubId = 0,
-    super.chapterSubStr = "",
-    super.gifts = const [],
-    super.releaseConditions = const [],
-    required super.phases,
-    super.phasesWithEnemies = const [],
-    super.phasesNoBattle = const [],
-    super.phaseScripts = const [],
-    required super.priority,
-    required super.noticeAt,
-    required super.openedAt,
-    required super.closedAt,
-    required this.phase,
+    super.id,
+    super.name,
+    super.type,
+    super.flags,
+    super.consumeType,
+    super.consume,
+    super.consumeItem,
+    super.afterClear,
+    super.recommendLv,
+    super.spotId,
+    super.spotName,
+    super.warId,
+    super.warLongName,
+    super.chapterId,
+    super.chapterSubId,
+    super.chapterSubStr,
+    super.gifts,
+    super.releaseConditions,
+    super.phases,
+    super.phasesWithEnemies,
+    super.phasesNoBattle,
+    super.phaseScripts,
+    super.priority,
+    super.noticeAt,
+    super.openedAt,
+    super.closedAt,
+    this.phase = 1,
     this.className = const [],
-    this.individuality = const [],
-    required this.qp,
-    required this.exp,
-    required this.bond,
+    List<NiceTrait>? individuality,
+    this.qp = 0,
+    this.exp = 0,
+    this.bond = 0,
     this.isNpcOnly = false,
-    required this.battleBgId,
+    this.battleBgId = 0,
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
     this.restrictions = const [],
     this.supportServants = const [],
-    this.stages = const [],
+    List<Stage>? stages,
     this.drops = const [],
-  });
+  })  : individuality = individuality ?? [],
+        stages = stages ?? [];
 
   int get key => getPhaseKey(phase);
 
@@ -542,7 +543,7 @@ class Gift extends BaseGift {
 @JsonSerializable()
 class Stage {
   int wave;
-  Bgm bgm;
+  Bgm? bgm;
 
   List<FieldAi> fieldAis;
   List<int> call;
@@ -555,21 +556,23 @@ class Stage {
 
   Stage({
     required this.wave,
-    required this.bgm,
-    this.fieldAis = const [],
-    this.call = const [],
+    this.bgm,
+    List<FieldAi>? fieldAis,
+    List<int>? call,
     this.turn,
     this.limitAct,
     this.enemyFieldPosCount,
     this.enemyActCount,
     this.waveStartMovies = const [],
-    this.enemies = const [],
-  });
+    List<QuestEnemy>? enemies,
+  })  : fieldAis = fieldAis ?? [],
+        call = call ?? [],
+        enemies = enemies ?? [];
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
 
   bool hasExtraInfo() {
-    return bgm.id != 0 ||
+    return (bgm != null && bgm?.id != 0) ||
         fieldAis.isNotEmpty ||
         call.isNotEmpty ||
         turn != null ||
@@ -917,12 +920,12 @@ class QuestEnemy with GameCardMixin {
   EnemyMisc? misc;
 
   QuestEnemy({
-    required this.deck,
+    this.deck = DeckType.enemy,
     required this.deckId,
-    required this.userSvtId,
-    required this.uniqueId,
-    required this.npcId,
-    required this.roleType,
+    this.userSvtId = -1,
+    this.uniqueId = -1,
+    this.npcId = -1,
+    this.roleType = EnemyRoleType.normal,
     required this.name,
     required this.svt,
     this.drops = const [],
@@ -936,11 +939,11 @@ class QuestEnemy with GameCardMixin {
     required this.criticalRate,
     this.recover = 0,
     this.chargeTurn = 0,
-    this.traits = const [],
+    List<NiceTrait>? traits,
     EnemySkill? skills,
     EnemyPassive? classPassive,
     EnemyTd? noblePhantasm,
-    required this.serverMod,
+    EnemyServerMod? serverMod,
     this.ai,
     EnemyScript? enemyScript,
     this.originalEnemyScript,
@@ -948,10 +951,13 @@ class QuestEnemy with GameCardMixin {
     this.originalInfoScript,
     this.limit,
     this.misc,
-  })  : skills = skills ?? EnemySkill(),
+  })  : traits = traits ?? [],
+        skills = skills ?? EnemySkill(),
         classPassive = classPassive ?? EnemyPassive(),
         noblePhantasm = noblePhantasm ?? EnemyTd(),
-        enemyScript = enemyScript ?? EnemyScript();
+        serverMod = serverMod ?? EnemyServerMod(),
+        enemyScript = (enemyScript ?? EnemyScript())
+          ..setSource(originalEnemyScript);
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) {
     final enemy = _$QuestEnemyFromJson(json);
@@ -1016,9 +1022,9 @@ class EnemyServerMod {
   // lots of others
 
   EnemyServerMod({
-    required this.tdRate,
-    required this.tdAttackRate,
-    required this.starRate,
+    this.tdRate = 1000,
+    this.tdAttackRate = 1000,
+    this.starRate = 0,
   });
 
   factory EnemyServerMod.fromJson(Map<String, dynamic> json) =>
@@ -1168,11 +1174,12 @@ class EnemyPassive {
   List<int>? appendPassiveSkillLvs;
 
   EnemyPassive({
-    this.classPassive = const [],
-    this.addPassive = const [],
+    List<NiceSkill>? classPassive,
+    List<NiceSkill>? addPassive,
     this.appendPassiveSkillIds,
     this.appendPassiveSkillLvs,
-  });
+  })  : classPassive = classPassive ?? [],
+        addPassive = addPassive ?? [];
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) =>
       _$EnemyPassiveFromJson(json);
