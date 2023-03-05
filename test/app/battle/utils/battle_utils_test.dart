@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/basic.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../test_init.dart';
 
 void main() async {

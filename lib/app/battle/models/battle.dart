@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
@@ -34,7 +35,7 @@ class BattleData {
   List<BattleServantData?> playerDataList = [];
   List<BattleServantData?> onFieldEnemies = [];
   List<BattleServantData?> onFieldAllyServants = [];
-  Map<DeckType, List<BattleServantData>> enemyDecks = {};
+  Map<DeckType, List<QuestEnemy>> enemyDecks = {};
 
   int enemyTargetIndex = 0;
   int allyTargetIndex = 0;
@@ -206,6 +207,15 @@ class BattleData {
     _fetchWaveEnemies();
     enemyDataList.forEach((enemy) {
       enemy?.init(this);
+      enemy?.uniqueId = uniqueIndex;
+      uniqueIndex += 1;
+    });
+
+    _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
+    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+
+    nonnullEnemies.forEach((element) {
+      element.enterField(this);
     });
   }
 
@@ -258,7 +268,7 @@ class BattleData {
           if (!enemyDecks.containsKey(enemy.deck)) {
             enemyDecks[enemy.deck] = [];
           }
-          enemyDecks[enemy.deck]!.add(BattleServantData.fromEnemy(enemy));
+          enemyDecks[enemy.deck]!.add(enemy);
         }
       }
     }

@@ -27,6 +27,10 @@ class BattleBuff {
       if (!buff.isShortBuff) buff.turnPass();
     });
   }
+
+  void clearPassive(final int uniqueId) {
+    passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
+  }
 }
 
 class BuffData {

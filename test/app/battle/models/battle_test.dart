@@ -1,10 +1,12 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../test_init.dart';
 
 void main() async {
@@ -344,6 +346,56 @@ void main() async {
         expect(okuni.np, equals(2740)); // 6 hits overkill
         expect(battle.criticalStars, moreOrLessEquals(22.49, epsilon: 0.001)); // include okuni's passive
       });
+    });
+  });
+
+  group('Method tests', () {
+    final List<PlayerSvtData> okuniWithDoubleCba = [
+      PlayerSvtData(504900)
+        ..svtId = 504900
+        ..lv = 90,
+      PlayerSvtData(503900)
+        ..svtId = 503900
+        ..lv = 90,
+      PlayerSvtData(503900)
+        ..svtId = 503900
+        ..lv = 90,
+    ];
+
+    test('Test checkTargetTraits & checkActivatorTraits', () {
+      final battle = BattleData();
+      battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+      final okuni = battle.onFieldAllyServants[0]!;
+      final cba = battle.onFieldAllyServants[1]!;
+      battle.setActivator(cba);
+      battle.setTarget(okuni);
+
+      final divinityCheck = [NiceTrait(id: Trait.divine.id)];
+      expect(battle.checkActivatorTraits(divinityCheck), isTrue);
+      expect(battle.checkTargetTraits(divinityCheck), isFalse);
+
+      final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals());
+      battle.setCurrentBuff(buff);
+      battle.setActivator(okuni);
+      expect(battle.checkActivatorTraits(divinityCheck), isTrue);
+      expect(battle.checkTargetTraits(divinityCheck), isTrue);
+
+      battle.unsetCurrentBuff();
+      expect(battle.checkActivatorTraits(divinityCheck), isFalse);
+      expect(battle.checkTargetTraits(divinityCheck), isFalse);
+    });
+
+    test('Check isActorOnField', () {
+      final battle = BattleData();
+      battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+      expect(battle.isActorOnField(1), isTrue);
+      expect(battle.isActorOnField(3), isTrue);
+      expect(battle.isActorOnField(7), isFalse);
+
+      battle.onFieldEnemies.clear();
+      battle.nextWave();
+      expect(battle.isActorOnField(7), isTrue);
+      expect(battle.isActorOnField(10), isFalse);
     });
   });
 }

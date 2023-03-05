@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/models/models.dart';
+
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -47,6 +48,10 @@ class BattleSkillInfoData {
     final bool isPassive = false,
     final bool notActorSkill = false,
   }) {
+    if (!battleData.checkActivatorTraits(skill.actIndividuality)) {
+      return;
+    }
+
     // TODO (battle): account for random skills (check func.svals.ActSet)
     for (final func in skill.functions) {
       executeFunction(battleData, func, skillLevel, isPassive: isPassive, notActorFunction: notActorSkill);

@@ -211,7 +211,6 @@ void main() async {
       final buffCountAfter = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore + 1);
 
-
       battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
       final buffCountBeforeShore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
       battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore

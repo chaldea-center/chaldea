@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
+
 import 'buff.dart';
 import 'card_dmg.dart';
 import 'skill.dart';
@@ -72,6 +73,7 @@ class BattleServantData {
   int tdLv = 0;
   BattleCEData? equip;
   BattleBuff battleBuff = BattleBuff();
+  List<int> shiftNpcIds = [];
   int shiftIndex = 0;
   bool attacked = false;
   BattleServantData? killedBy;
@@ -113,7 +115,8 @@ class BattleServantData {
       ..level = enemy.lv
       ..atk = enemy.atk
       ..deathRate = enemy.deathRate
-      ..downTdRate = enemy.serverMod.tdRate;
+      ..downTdRate = enemy.serverMod.tdRate
+      ..shiftNpcIds = enemy.enemyScript.shift ?? [];
     // TODO (battle): build enemy active skills & cards & NP
     return svt;
   }
@@ -283,8 +286,8 @@ class BattleServantData {
 
     np += change;
 
-    np.clamp(0, getNPCap(playerSvtData!.npLv));
-    if (change > 0 && np > npPityThreshold) {
+    np = np.clamp(0, getNPCap(playerSvtData!.npLv));
+    if (change > 0 && np >= npPityThreshold) {
       np = max(np, ConstData.constants.fullTdPoint);
     }
   }
@@ -304,7 +307,7 @@ class BattleServantData {
 
   void heal(final int heal) {
     hp += heal;
-    hp.clamp(0, maxHp);
+    hp = hp.clamp(0, maxHp);
   }
 
   void receiveDamage(final int hitDamage) {
@@ -326,11 +329,25 @@ class BattleServantData {
       return false;
     }
 
-    return niceEnemy!.enemyScript.shift != null && niceEnemy!.enemyScript.shift!.length > shiftIndex;
+    return shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftIndex;
   }
 
   void shift(final BattleData battleData) {
-    // TODO (battle): enemy shift
+    if (!hasNextShift()) {
+      return;
+    }
+
+    final nextShift =
+        battleData.enemyDecks[DeckType.shift]!.firstWhere((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftIndex]);
+    niceEnemy = nextShift;
+
+    atk = nextShift.atk;
+    hp = nextShift.hp;
+    maxHp = nextShift.hp;
+    level = nextShift.lv;
+    battleBuff.clearPassive(uniqueId);
+
+    init(battleData);
   }
 
   bool isAlive() {
@@ -400,7 +417,7 @@ class BattleServantData {
     battleData.setActivator(this);
 
     // TODO (battle): account for OC buff
-    final overchargeLvl = isPlayer ? (np / ConstData.constants.fullTdPoint).floor() + extraOverchargeLvl : 1;
+    final overchargeLvl = isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1;
 
     final npLvl = isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
 
@@ -501,13 +518,7 @@ class BattleServantData {
   }
 
   bool isBuffStackable(final int buffGroup) {
-    for (final buff in battleBuff.allBuffs) {
-      if (!buff.canStack(buffGroup)) {
-        return false;
-      }
-    }
-
-    return true;
+    return battleBuff.allBuffs.every((buff) => buff.canStack(buffGroup));
   }
 
   void addBuff(final BuffData buffData, {final bool isPassive = false}) {
