@@ -276,7 +276,7 @@ class BattleServantData {
   }
 
   bool checkTraits(final Iterable<NiceTrait> requiredTraits, {final bool checkBuff = false}) {
-    return containsAllTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
+    return containsAnyTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
   }
 
   void changeNP(final int change) {

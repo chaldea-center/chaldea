@@ -56,6 +56,8 @@ class BattleData {
 
   List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
 
+  bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullAllies.isEmpty;
+
   // BattleData? data;
   // BattleInfoData battleInfo;
   // QuestEntity questEnt;
@@ -202,7 +204,7 @@ class BattleData {
 
   void nextWave() {
     waveCount += 1;
-    turnCount = 0;
+    turnCount = 1;
 
     _fetchWaveEnemies();
     enemyDataList.forEach((enemy) {
@@ -211,6 +213,7 @@ class BattleData {
       uniqueIndex += 1;
     });
 
+    onFieldEnemies.clear();
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
@@ -358,7 +361,7 @@ class BattleData {
   }
 
   void activateSvtSkill(final int servantIndex, final int skillIndex) {
-    if (onFieldAllyServants[servantIndex] == null) {
+    if (onFieldAllyServants[servantIndex] == null || isBattleFinished) {
       return;
     }
 
@@ -375,7 +378,7 @@ class BattleData {
   }
 
   void activateMysticCodeSKill(final int skillIndex) {
-    if (masterSkillInfo.length <= skillIndex) {
+    if (masterSkillInfo.length <= skillIndex || isBattleFinished) {
       return;
     }
 
@@ -383,17 +386,17 @@ class BattleData {
   }
 
   void playerTurn(final List<CombatAction> actions) {
-    criticalStars = 0;
-
-    if (actions.isEmpty) {
+    if (actions.isEmpty || isBattleFinished) {
       return;
     }
+
+    criticalStars = 0;
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
     final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
     final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
-    final isMightyChain = cardTypesSet.length == 3;
-    CardType firstCardType = actions[0].cardData.cardType;
+    final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
+    final CardType firstCardType = actions[0].cardData.cardType;
     if (isTypeChain) {
       applyTypeChain(firstCardType, actions);
     }

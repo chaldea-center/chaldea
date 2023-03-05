@@ -347,6 +347,84 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(22.49, epsilon: 0.001)); // include okuni's passive
       });
     });
+
+    test('Kama 3 turn loop & double Castoria', () {
+      final List<PlayerSvtData> kamaWithDoubleCastoria = [
+        PlayerSvtData(1101100)
+          ..svtId = 1101100
+          ..npLv = 5
+          ..lv = 120
+          ..atkFou = 2000
+          ..hpFou = 2000
+          ..appendLvs = [10, 10, 10]
+          ..ceId = 9401850 // Magical Girl of Sapphire
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(504500)
+          ..svtId = 504500
+          ..lv = 90,
+        PlayerSvtData(504500)
+          ..svtId = 504500
+          ..lv = 90,
+      ];
+      final battle = BattleData();
+      battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
+
+      battle.activateSvtSkill(0, 0);
+      battle.activateSvtSkill(1, 1);
+      battle.activateSvtSkill(1, 2);
+      battle.activateSvtSkill(2, 1);
+      battle.activateSvtSkill(2, 2);
+      final kama = battle.targetedAlly!;
+      final npActions = [CombatAction(kama, kama.getNPCard()!)];
+
+      battle.enemyTargetIndex = 1;
+      final skyCaster = battle.targetedEnemy!;
+      final hpBeforeDamage = skyCaster.hp;
+      battle.playerTurn(npActions);
+      final hpAfterDamage = skyCaster.hp;
+
+      expect(hpBeforeDamage - hpAfterDamage, 82618);
+      expect(kama.np, 11987 + 380);
+      expect(battle.criticalStars, moreOrLessEquals(3.432, epsilon: 0.001));
+      expect(battle.isActorOnField(skyCaster.uniqueId), isFalse);
+      expect(battle.isBattleFinished, isFalse);
+      expect(battle.waveCount, 2);
+      expect(battle.totalTurnCount, 2);
+      expect(battle.turnCount, 1);
+
+      final wave2enemy = battle.targetedEnemy!;
+      expect(wave2enemy.uniqueId, 7);
+      final hpBeforeDamageWave2 = wave2enemy.hp;
+      battle.playerTurn(npActions);
+      final hpAfterDamageWave2 = wave2enemy.hp;
+
+      expect(hpBeforeDamageWave2 - hpAfterDamageWave2, 82618);
+      expect(kama.np, 11584 + 380);
+      expect(battle.criticalStars, moreOrLessEquals(2.532, epsilon: 0.001));
+      expect(battle.isActorOnField(wave2enemy.uniqueId), isFalse);
+      expect(battle.isBattleFinished, isFalse);
+      expect(battle.waveCount, 3);
+      expect(battle.totalTurnCount, 3);
+      expect(battle.turnCount, 1);
+
+      battle.activateSvtSkill(0, 1);
+      battle.activateSvtSkill(0, 2);
+      battle.activateSvtSkill(1, 0);
+      battle.activateSvtSkill(2, 0);
+
+      final wave3enemy = battle.targetedEnemy!;
+      expect(wave3enemy.uniqueId, 10);
+      final hpBeforeDamageWave3 = wave3enemy.hp;
+      battle.playerTurn(npActions);
+      final hpAfterDamageWave3 = wave3enemy.hp;
+
+      expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 225160);
+      expect(kama.np, 3404 + 380);
+      expect(battle.criticalStars, moreOrLessEquals(0.844, epsilon: 0.001));
+      expect(battle.isActorOnField(wave3enemy.uniqueId), isFalse);
+      expect(battle.isBattleFinished, isTrue);
+    });
   });
 
   group('Method tests', () {

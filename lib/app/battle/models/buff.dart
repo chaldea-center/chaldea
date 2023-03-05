@@ -96,7 +96,7 @@ class BuffData {
   List<NiceTrait> get traits => buff.vals;
 
   bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
-    return containsAllTraits(traits, requiredTraits);
+    return containsAnyTraits(traits, requiredTraits);
   }
 
   bool shouldApplyAsTarget(final BattleData battleData) {

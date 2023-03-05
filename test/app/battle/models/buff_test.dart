@@ -29,7 +29,11 @@ void main() async {
 
     test('target check', () {
       final buff = BuffData(
-          Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
+          Buff(id: -1, name: '', detail: '', ckOpIndv: [
+            NiceTrait(id: Trait.king.id),
+            NiceTrait(id: Trait.divine.id),
+            NiceTrait(id: Trait.demon.id),
+          ]),
           DataVals({'UseRate': 1000}));
 
       battle.setTarget(cba);

@@ -1,6 +1,7 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/extension.dart';
 
 class BattleCEData {
   CraftEssence craftEssence;
@@ -8,20 +9,22 @@ class BattleCEData {
   int level;
 
   int get atk => craftEssence.atkGrowth[level - 1];
+
   int get hp => craftEssence.hpGrowth[level - 1];
 
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
 
   void activateCE(final BattleData battleData) {
-    if (craftEssence.skills.length == 1) {
-      BattleSkillInfoData.activateSkill(battleData, craftEssence.skills[0], 1, notActorSkill: true);
+    final Map<int, List<NiceSkill>> dividedSkills = {};
+    for (final skill in craftEssence.skills) {
+      dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
     }
 
-    for (int i = 0; i < craftEssence.skills.length; i += 1) {
-      final shouldActivate = (i % 2 == 0 && !isLimitBreak || i % 2 == 1 && isLimitBreak);
-      if (shouldActivate) {
-        BattleSkillInfoData.activateSkill(battleData, craftEssence.skills[i], 1, notActorSkill: true);
-      }
+    final priority = isLimitBreak ? 2 : 1;
+    for (final skillNum in dividedSkills.keys.toList()..sort()) {
+      final skillsForNum = dividedSkills[skillNum]!;
+      final skillToUse = skillsForNum.firstWhereOrNull((skill) => skill.priority == priority) ?? skillsForNum.first;
+      BattleSkillInfoData.activateSkill(battleData, skillToUse, 1, notActorSkill: true);
     }
   }
 }

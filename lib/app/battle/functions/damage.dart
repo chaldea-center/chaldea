@@ -169,7 +169,6 @@ bool damage(
         starParameters.isOverkill = isOverkill;
         final hitNpGain = calculateAttackNpGain(atkNpParameters);
         totalNp += hitNpGain;
-        activator.changeNP(hitNpGain);
 
         final hitStars = calculateStar(starParameters);
         totalStars += hitStars;
@@ -184,6 +183,7 @@ bool damage(
       }
     }
 
+    activator.changeNP(totalNp);
     battleData.changeStar(toModifier(totalStars));
 
     target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
