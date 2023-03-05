@@ -43,8 +43,6 @@ class ConstGameData {
         };
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
-    jsonMigrated(json, 'classInfo', 'classInfo2');
-    jsonMigrated(json, 'classRelation', 'classRelation2');
     return _$ConstGameDataFromJson(json);
   }
 

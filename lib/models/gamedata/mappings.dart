@@ -242,6 +242,7 @@ class MappingData {
   final Map<int, MappingBase<String>> trait; // key: trait id
   // final Map<int, int> traitRedirect; // key: trait id
   final Map<int, EventTraitMapping> eventTrait; // key: trait id
+  final Map<int, List<int>> fieldTrait; // trait: warId[]
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>> skillPriority; // <svtId, <skillId, priority>>
@@ -286,6 +287,7 @@ class MappingData {
     this.voiceLineNames = const {},
     this.trait = const {},
     this.eventTrait = const {},
+    this.fieldTrait = const {},
     this.mcDetail = const {},
     this.costumeDetail = const {},
     this.skillPriority = const {},
@@ -344,7 +346,6 @@ class MappingData {
   }
 
   factory MappingData.fromJson(Map<String, dynamic> json) {
-    jsonMigrated(json, 'misc', 'misc2');
     return _$MappingDataFromJson(json);
   }
 }
@@ -582,7 +583,6 @@ class EnumMapping {
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) {
-    jsonMigrated(json, 'svt_class', 'svt_class2');
     return _$EnumMappingFromJson(json);
   }
 }

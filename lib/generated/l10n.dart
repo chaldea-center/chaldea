@@ -2307,10 +2307,10 @@ class S {
     );
   }
 
-  /// `This trait may be event only.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with 'Servant', but they may be servant only trait in event.`
+  /// `This trait may be event only servant/enemy trait or field trait.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with 'Servant', but they may be servant only trait in event.`
   String get event_only_trait_hint {
     return Intl.message(
-      'This trait may be event only.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event.',
+      'This trait may be event only servant/enemy trait or field trait.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event.',
       name: 'event_only_trait_hint',
       desc: '',
       locale: localeName,

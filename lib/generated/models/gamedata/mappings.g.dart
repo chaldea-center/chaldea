@@ -120,6 +120,10 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
             (k, e) => MapEntry(int.parse(k as String), EventTraitMapping.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      fieldTrait: (json['field_trait'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
+          ) ??
+          const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
             (k, e) =>
                 MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),

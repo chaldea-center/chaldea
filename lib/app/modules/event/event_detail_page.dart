@@ -176,7 +176,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         EventShopsPage(event: event, shops: shops),
       );
     }
-    if (db.gameData.craftEssences.values.any((ce) => ce.eventSkills(event).isNotEmpty) ||
+    if (db.gameData.craftEssences.values.any((ce) => ce.skills.any((skill) => skill.isEventSkill(event))) ||
         db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }

@@ -842,14 +842,16 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (func.funcquestTvals.isNotEmpty) {
-      _condSpans.add(SharedBuilder.replaceSpan(
-        Transl.special.funcTraitOnField,
-        '{0}',
-        SharedBuilder.traitSpans(
-          context: context,
-          traits: func.funcquestTvals,
-        ),
-      ));
+      if (showEvent || func.funcquestTvals.any((e) => !db.gameData.mappingData.fieldTrait.containsKey(e.id))) {
+        _condSpans.add(SharedBuilder.replaceSpan(
+          Transl.special.funcTraitOnField,
+          '{0}',
+          SharedBuilder.traitSpans(
+            context: context,
+            traits: func.funcquestTvals,
+          ),
+        ));
+      }
     }
     if (vals?.EventId != null && vals?.EventId != 0 && showEvent) {
       final eventName =
