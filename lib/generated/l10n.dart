@@ -5964,6 +5964,17 @@ class S {
     );
   }
 
+  /// `Version {index}/{total} ({enemy} enemies)`
+  String quest_version(Object index, Object total, Object enemy) {
+    return Intl.message(
+      'Version $index/$total ($enemy enemies)',
+      name: 'quest_version',
+      desc: '',
+      locale: localeName,
+      args: [index, total, enemy],
+    );
+  }
+
   /// `Quit`
   String get quit {
     return Intl.message(

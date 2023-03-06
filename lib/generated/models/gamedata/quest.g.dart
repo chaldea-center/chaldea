@@ -141,6 +141,8 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       bond: json['bond'] as int? ?? 0,
       isNpcOnly: json['isNpcOnly'] as bool? ?? false,
       battleBgId: json['battleBgId'] as int? ?? 0,
+      enemyHash: json['enemyHash'] as String?,
+      enemyHashes: (json['availableEnemyHashes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       extraDetail: json['extraDetail'] == null
           ? null
           : QuestPhaseExtraDetail.fromJson(Map<String, dynamic>.from(json['extraDetail'] as Map)),
@@ -150,6 +152,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
           const [],
       messages: (json['messages'] as List<dynamic>?)
               ?.map((e) => QuestMessage.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      hints: (json['hints'] as List<dynamic>?)
+              ?.map((e) => QuestHint.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       restrictions: (json['restrictions'] as List<dynamic>?)
@@ -260,6 +266,12 @@ QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
       condType: const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int,
       targetNum: json['targetNum'] as int,
+    );
+
+QuestHint _$QuestHintFromJson(Map json) => QuestHint(
+      title: json['title'] as String? ?? '',
+      message: json['message'] as String? ?? '',
+      leftIndent: json['leftIndent'] as int? ?? 0,
     );
 
 NpcServant _$NpcServantFromJson(Map json) => NpcServant(

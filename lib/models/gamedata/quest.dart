@@ -250,9 +250,14 @@ class QuestPhase extends Quest {
   int bond;
   bool isNpcOnly;
   int battleBgId;
+  // v1 `1_{enemy_count_hash:>02}{npc_id_hash:>02}_{sha1_hash}`
+  String? enemyHash;
+  @JsonKey(name: 'availableEnemyHashes')
+  List<String> enemyHashes;
   QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
+  List<QuestHint> hints;
   List<QuestPhaseRestriction> restrictions;
   List<SupportServant> supportServants;
   List<Stage> stages;
@@ -293,9 +298,12 @@ class QuestPhase extends Quest {
     this.bond = 0,
     this.isNpcOnly = false,
     this.battleBgId = 0,
+    this.enemyHash,
+    this.enemyHashes = const [],
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
+    this.hints = const [],
     this.restrictions = const [],
     this.supportServants = const [],
     List<Stage>? stages,
@@ -618,6 +626,21 @@ class QuestMessage {
   });
 
   factory QuestMessage.fromJson(Map<String, dynamic> json) => _$QuestMessageFromJson(json);
+}
+
+@JsonSerializable()
+class QuestHint {
+  String title;
+  String message;
+  int leftIndent;
+
+  QuestHint({
+    this.title = '',
+    this.message = '',
+    this.leftIndent = 0,
+  });
+
+  factory QuestHint.fromJson(Map<String, dynamic> json) => _$QuestHintFromJson(json);
 }
 
 @JsonSerializable()

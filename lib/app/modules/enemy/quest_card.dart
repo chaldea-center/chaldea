@@ -42,6 +42,7 @@ class _QuestCardState extends State<QuestCard> {
 
   Quest get quest => _quest!;
   bool showTrueName = false;
+  final Map<int, String?> _phaseHashes = {};
   // ignore: unused_field
   bool? _use6th;
   bool preferApRate = false;
@@ -84,7 +85,8 @@ class _QuestCardState extends State<QuestCard> {
     }
 
     for (final phase in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
-      AtlasApi.questPhase(questId, phase, region: region, expireAfter: expireAfter).then((_) {
+      AtlasApi.questPhase(questId, phase, hash: _phaseHashes[phase], region: region, expireAfter: expireAfter)
+          .then((_) {
         if (mounted) setState(() {});
       });
     }
@@ -257,9 +259,10 @@ class _QuestCardState extends State<QuestCard> {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
-      curPhase = db.gameData.getQuestPhase(quest.id, phase) ?? AtlasApi.questPhaseCache(quest.id, phase, widget.region);
+      curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
+          AtlasApi.questPhaseCache(quest.id, phase, _phaseHashes[phase], widget.region);
     } else {
-      curPhase = AtlasApi.questPhaseCache(quest.id, phase, widget.region);
+      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _phaseHashes[phase], widget.region);
       if (widget.region == Region.jp) {
         curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }
@@ -579,6 +582,14 @@ class _QuestCardState extends State<QuestCard> {
           textAlign: TextAlign.center,
         )
     ];
+    if (curPhase != null) {
+      if (_phaseHashes[phase] != null && !curPhase.enemyHashes.contains(_phaseHashes[phase])) {
+        _phaseHashes.remove(phase);
+      }
+      if (curPhase.enemyHashes.length > 1) {
+        headerRows.add(getQuestVersionDropdown(curPhase));
+      }
+    }
     Widget header = Column(
       mainAxisSize: MainAxisSize.min,
       children: headerRows,
@@ -606,6 +617,47 @@ class _QuestCardState extends State<QuestCard> {
       );
     }
     return header;
+  }
+
+  Widget getQuestVersionDropdown(QuestPhase curPhase) {
+    final phase = curPhase.phase;
+    String? selected = _phaseHashes[phase];
+    selected ??= curPhase.enemyHash;
+    if (selected != null && !curPhase.enemyHashes.contains(selected)) {
+      selected = null;
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(width: 48),
+        Expanded(
+          child: Center(
+            child: DropdownButton<String>(
+              isDense: true,
+              iconSize: 16,
+              value: selected,
+              items: List.generate(curPhase.enemyHashes.length, (index) {
+                final hash = curPhase.enemyHashes[index];
+                int? count = int.tryParse(hash.substring2(2, 4));
+                String text = S.current.quest_version(index + 1, curPhase.enemyHashes.length, count ?? "?");
+                return DropdownMenuItem(
+                  value: hash,
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                );
+              }),
+              onChanged: (v) {
+                _phaseHashes[phase] = v;
+                _fetchAllPhases();
+                setState(() {});
+              },
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   List<Widget> getPhaseScript(int phase) {

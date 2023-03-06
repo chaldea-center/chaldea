@@ -536,6 +536,7 @@
   "quest_reward_short": "奖励",
   "quest_timeline_sort_campaign_open": "AP消耗活动开放时间",
   "quest_timeline_sort_quest_open": "关卡开放时间",
+  "quest_version": "版本{index}/{total} ({enemy}敌人)",
   "quit": "退出",
   "raid_quest": "柱子战",
   "random": "随机",

@@ -536,6 +536,7 @@
   "quest_reward_short": "Rewards",
   "quest_timeline_sort_campaign_open": "AP Cost Event Time",
   "quest_timeline_sort_quest_open": "Quest Open Time",
+  "quest_version": "Version {index}/{total} ({enemy} enemies)",
   "quit": "Quit",
   "raid_quest": "Raid Quest",
   "random": "Random",
