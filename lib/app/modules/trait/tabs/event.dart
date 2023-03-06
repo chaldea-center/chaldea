@@ -28,7 +28,7 @@ class TraitEventTab extends StatelessWidget {
         }
       }
     }
-    List<int> warIds = db.gameData.mappingData.fieldTrait[id] ?? [];
+    List<int> warIds = db.gameData.mappingData.fieldTrait[id]?.warIds ?? [];
     return ListView(
       children: [
         const SizedBox(height: 8),

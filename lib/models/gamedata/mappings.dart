@@ -1,4 +1,5 @@
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
 import '_helper.dart';
 
@@ -74,6 +75,18 @@ class Transl<K, V> {
     if (eventTrait != null) {
       return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"$v"')}, id, '$id');
     }
+    final fieldTrait = md.fieldTrait[id];
+    if (fieldTrait != null) {
+      if (fieldTrait.warIds.isNotEmpty && fieldTrait.values.every((e) => e == null)) {
+        final warId = fieldTrait.warIds.first;
+        final lWarName = db.gameData.wars[warId]?.lName.m;
+        if (warId > 8000 && warId < 9900 && lWarName != null) {
+          return Transl({id: lWarName.convert((v, region) => v?.setMaxLines(1))}, id, '$id');
+        }
+      }
+      return Transl(md.fieldTrait, id, '$id');
+    }
+
     if (!md.trait.containsKey(id)) {
       final svt = db.gameData.servantsById[id];
       if (svt != null) {
@@ -242,7 +255,7 @@ class MappingData {
   final Map<int, MappingBase<String>> trait; // key: trait id
   // final Map<int, int> traitRedirect; // key: trait id
   final Map<int, EventTraitMapping> eventTrait; // key: trait id
-  final Map<int, List<int>> fieldTrait; // trait: warId[]
+  final Map<int, FieldTraitMapping> fieldTrait; // trait: warId[]
   final Map<int, MappingBase<String>> mcDetail; // key: mc id
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>> skillPriority; // <svtId, <skillId, priority>>
@@ -511,7 +524,7 @@ class MappingDict<V> extends MappingBase<Map<int, V>> {
 @JsonSerializable()
 class EventTraitMapping extends MappingBase<String> {
   int? eventId;
-  int? relatedTrait;
+  int? relatedTrait; // the similar normal trait, not used yet.
 
   EventTraitMapping({
     this.eventId,
@@ -524,6 +537,22 @@ class EventTraitMapping extends MappingBase<String> {
   });
 
   factory EventTraitMapping.fromJson(Map<String, dynamic> json) => _$EventTraitMappingFromJson(json);
+}
+
+@JsonSerializable()
+class FieldTraitMapping extends MappingBase<String> {
+  List<int> warIds;
+
+  FieldTraitMapping({
+    this.warIds = const [],
+    super.jp,
+    super.cn,
+    super.tw,
+    super.na,
+    super.kr,
+  });
+
+  factory FieldTraitMapping.fromJson(Map<String, dynamic> json) => _$FieldTraitMappingFromJson(json);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

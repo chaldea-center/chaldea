@@ -121,7 +121,7 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
           ) ??
           const {},
       fieldTrait: (json['field_trait'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
+            (k, e) => MapEntry(int.parse(k as String), FieldTraitMapping.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       mcDetail: (json['mc_detail'] as Map?)?.map(
@@ -260,6 +260,15 @@ MappingDict<V> _$MappingDictFromJson<V>(
 EventTraitMapping _$EventTraitMappingFromJson(Map json) => EventTraitMapping(
       eventId: json['eventId'] as int?,
       relatedTrait: json['relatedTrait'] as int?,
+      jp: json['JP'] as String?,
+      cn: json['CN'] as String?,
+      tw: json['TW'] as String?,
+      na: json['NA'] as String?,
+      kr: json['KR'] as String?,
+    );
+
+FieldTraitMapping _$FieldTraitMappingFromJson(Map json) => FieldTraitMapping(
+      warIds: (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       jp: json['JP'] as String?,
       cn: json['CN'] as String?,
       tw: json['TW'] as String?,

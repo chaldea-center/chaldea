@@ -142,7 +142,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     return functions.any((func) {
       if (func.svals.getOrNull(0)?.EventId == event.id) return true;
       if (event.warIds.isNotEmpty) {
-        if (<int>{for (final trait in func.funcquestTvals) ...?db.gameData.mappingData.fieldTrait[trait.id]}
+        if (<int>{for (final trait in func.funcquestTvals) ...?db.gameData.mappingData.fieldTrait[trait.id]?.warIds}
             .intersection(event.warIds.toSet())
             .isNotEmpty) {
           return true;
