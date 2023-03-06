@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -131,7 +130,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
 
   Future _importFile() async {
     try {
-      final result = await FilePicker.platform.pickFiles(withData: true);
+      final result = await FilePickerU.pickFiles();
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       users.clear();

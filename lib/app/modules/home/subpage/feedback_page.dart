@@ -247,8 +247,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Map<String, Uint8List> attachFiles = {};
 
   void _addAttachments() async {
-    final result = await SharedBuilder.pickImageOrFiles(context: context, allowMultiple: true, withData: true)
-        .catchError((e, s) async {
+    final result = await SharedBuilder.pickImageOrFiles(context: context, allowMultiple: true).catchError((e, s) async {
       logger.e('pick attachment failed', e, s);
       EasyLoading.showError(e.toString());
       return null;

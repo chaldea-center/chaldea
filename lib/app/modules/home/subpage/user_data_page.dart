@@ -163,8 +163,7 @@ class _UserDataPageState extends State<UserDataPage> {
 
   void importUserData() async {
     try {
-      final result =
-          await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['json'], withData: true);
+      final result = await FilePickerU.pickFiles(type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));

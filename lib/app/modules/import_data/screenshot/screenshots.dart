@@ -99,7 +99,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
   }
 
   void importImages() async {
-    SharedBuilder.pickImageOrFiles(context: context, withData: true).then((result) {
+    SharedBuilder.pickImageOrFiles(context: context).then((result) {
       final files = result?.files;
       if (files != null) {
         for (final file in files) {
