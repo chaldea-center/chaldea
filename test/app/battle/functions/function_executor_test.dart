@@ -242,4 +242,34 @@ void main() async {
       expect(buffCountAfter, buffCountBefore);
     });
   });
+
+  group('Individual function types', () {
+    test('addState', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(800100)
+          ..svtId = 800100
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 80,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final mash = battle.onFieldAllyServants[0]!;
+      expect(mash.battleBuff.activeList.length, 0);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+
+      battle.activateSvtSkill(0, 0);
+      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
+      expect(mash.battleBuff.activeList.first.turn, 3);
+
+      battle.playerTurn([CombatAction(mash, mash.getCards()[0])]);
+      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
+      expect(mash.battleBuff.activeList.first.turn, 2);
+    });
+  });
 }

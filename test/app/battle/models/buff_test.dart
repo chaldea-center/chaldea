@@ -76,4 +76,45 @@ void main() async {
     expect(stackable.canStack(300), isTrue);
     expect(stackable.canStack(0), isTrue);
   });
+
+
+  group('Individual buff types', () {
+    test('upDefence', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(800100)
+          ..svtId = 800100
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 80,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final mash = battle.onFieldAllyServants[0]!;
+      expect(mash.battleBuff.activeList.length, 0);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+
+      battle.activateSvtSkill(0, 0);
+      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.defencePierce), 1000);
+    });
+
+    test('subSelfdamage', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(800100)
+          ..svtId = 800100
+          ..skillStrengthenLvs = [2, 1, 1]
+          ..npLv = 3
+          ..lv = 80,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final mash = battle.onFieldAllyServants[0]!;
+
+      battle.activateSvtSkill(0, 0);
+      expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
+    });
+  });
 }

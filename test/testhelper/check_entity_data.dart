@@ -24,7 +24,7 @@ void main() async {
 void checkSvtData(final String path, final Servant svtData) async {
   final file = File('$path/${svtData.collectionNo}.txt');
   final List<String> checkStrings = [];
-  checkStrings.add('Checking data for servant [${svtData.collectionNo}]: ${svtData.lName.cn}');
+  checkStrings.add('Checking data for servant [${svtData.id}] - [${svtData.collectionNo}]: ${svtData.lName.cn}');
   if (svtData.script != null && svtData.script!.source.isNotEmpty) {
     checkStrings.add('Servant scripts: [${svtData.script!.source}]');
   }
