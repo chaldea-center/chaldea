@@ -61,7 +61,7 @@ class _UserDataPageState extends State<UserDataPage> {
       body: ListView(
         children: <Widget>[
           TileGroup(
-            footer: 'All data saved here.',
+            footer: ['All data saved here.', if (kIsWeb) 'Browser local data, may be cleared by browser!'].join('\n'),
             children: [
               // if (androidExternalDirs.length >= 2)
               //   SwitchListTile.adaptive(
