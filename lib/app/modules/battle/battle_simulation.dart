@@ -98,7 +98,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: widget.region,
         offline: false,
         quest: quest,
-        displayPhases: [phase.clamp(1, quest!.phases.length)],
+        displayPhases: [quest!.phases.contains(phase) ? phase : quest!.phases.first],
         battleOnly: true,
       ));
     }

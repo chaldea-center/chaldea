@@ -475,7 +475,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children: [
         Expanded(child: header),
         if (spotImage != null) db.getIconImage(spotImage, height: 42, aspectRatio: 1),
-        if (!widget.battleOnly)
+        if (curPhase != null && curPhase.stages.isNotEmpty && !widget.battleOnly)
           IconButton(
             onPressed: () {
               router.pushPage(SimulationPreview(
