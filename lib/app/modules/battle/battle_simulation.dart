@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/modules/enemy/quest_card.dart';
+import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -98,7 +98,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: widget.region,
         offline: false,
         quest: quest,
-        chosenPhase: phase.clamp(1, quest!.phases.length),
+        displayPhases: [phase.clamp(1, quest!.phases.length)],
+        battleOnly: true,
       ));
     }
 

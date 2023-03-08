@@ -77,7 +77,6 @@ void main() async {
     expect(stackable.canStack(0), isTrue);
   });
 
-
   group('Individual buff types', () {
     test('upDefence', () {
       final battle = BattleData();

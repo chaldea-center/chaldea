@@ -1,6 +1,5 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -326,7 +325,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     ];
   }
 
-  Widget getPhaseHeader(int phase, QuestPhase? curPhase, final bool shouldDirectToSim) {
+  Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
     final failed = AtlasApi.cacheManager.isFailed(AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region));
     if (effPhase == null) {
@@ -476,19 +475,20 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children: [
         Expanded(child: header),
         if (spotImage != null) db.getIconImage(spotImage, height: 42, aspectRatio: 1),
-        if (shouldDirectToSim) IconButton(
-          onPressed: () {
-            router.pushPage(SimulationPreview(
-              region: widget.region,
-              quest: quest,
-              phase: phase,
-            ));
-          },
-          icon: const Icon(Icons.calculate, size: 18),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          color: Theme.of(context).colorScheme.primaryContainer,
-        ),
+        if (!widget.battleOnly)
+          IconButton(
+            onPressed: () {
+              router.pushPage(SimulationPreview(
+                region: widget.region,
+                quest: quest,
+                phase: phase,
+              ));
+            },
+            icon: const Icon(Icons.calculate, size: 18),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
       ],
     );
 

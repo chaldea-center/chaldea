@@ -16,6 +16,8 @@ class QuestCard extends StatefulWidget {
   final int questId;
   final bool offline;
   final Region region;
+  final bool battleOnly;
+  final List<int>? displayPhases;
 
   QuestCard({
     Key? key,
@@ -23,6 +25,8 @@ class QuestCard extends StatefulWidget {
     int? questId,
     this.offline = true,
     this.region = Region.jp,
+    this.battleOnly = false,
+    this.displayPhases,
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
         super(
@@ -166,17 +170,22 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ),
       if (quest.phases.isNotEmpty)
-        for (final phase in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
+        for (final phase in (widget.displayPhases != null
+            ? widget.displayPhases!
+            : quest.isMainStoryFree
+                ? [quest.phases.last]
+                : quest.phases))
           QuestPhaseWidget(
             quest: quest,
             phase: phase,
             region: widget.region,
             offline: widget.offline,
             showTrueName: showTrueName,
+            battleOnly: widget.battleOnly,
           ),
-      if (quest.gifts.isNotEmpty || quest.giftIcon != null) _questRewards(),
-      if (!widget.offline) releaseConditions(),
-      if (widget.offline)
+      if (!widget.battleOnly && (quest.gifts.isNotEmpty || quest.giftIcon != null)) _questRewards(),
+      if (!widget.battleOnly && !widget.offline) releaseConditions(),
+      if (widget.battleOnly || widget.offline)
         TextButton(
           onPressed: () {
             router.push(
