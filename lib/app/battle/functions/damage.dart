@@ -133,11 +133,7 @@ bool damage(
     final totalDamage = calculateDamage(damageParameters);
     int remainingDamage = totalDamage;
 
-    // Future logging
-    int totalNp = 0;
-    int defTotalNp = 0;
     int totalStars = 0;
-    int overkillCount = 0;
     for (int i = 0; i < currentCard.cardDetail.hitsDistribution.length; i += 1) {
       if (!skipDamage) {
         final hitsPercentage = currentCard.cardDetail.hitsDistribution[i];
@@ -160,15 +156,12 @@ bool damage(
       }
 
       final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
-      if (isOverkill) {
-        overkillCount += 1;
-      }
 
       if (activator.isPlayer) {
         atkNpParameters.isOverkill = isOverkill;
         starParameters.isOverkill = isOverkill;
         final hitNpGain = calculateAttackNpGain(atkNpParameters);
-        totalNp += hitNpGain;
+        activator.changeNP(hitNpGain);
 
         final hitStars = calculateStar(starParameters);
         totalStars += hitStars;
@@ -178,12 +171,10 @@ bool damage(
         defNpParameters.isOverkill = isOverkill;
         final hitNpGain = calculateDefendNpGain(defNpParameters);
 
-        defTotalNp += hitNpGain;
         target.changeNP(hitNpGain);
       }
     }
 
-    activator.changeNP(totalNp);
     battleData.changeStar(toModifier(totalStars));
 
     target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));

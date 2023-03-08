@@ -399,10 +399,8 @@ class BattleServantData {
 
   bool checkNPScript(final BattleData battleData) {
     if (isPlayer) {
-      final currentNP = niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1];
       // TODO (battle): check script
     } else {
-      final currentNP = niceEnemy!.noblePhantasm;
     }
     return true;
   }

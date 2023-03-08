@@ -385,7 +385,7 @@ void main() async {
       final hpAfterDamage = skyCaster.hp;
 
       expect(hpBeforeDamage - hpAfterDamage, 82618);
-      expect(kama.np, 11987 + 380);
+      expect(kama.np, 12422); // np from each hit is added one by one, so would trigger np pity (> 9900) immediately
       expect(battle.criticalStars, moreOrLessEquals(3.432, epsilon: 0.001));
       expect(battle.isActorOnField(skyCaster.uniqueId), isFalse);
       expect(battle.isBattleFinished, isFalse);
