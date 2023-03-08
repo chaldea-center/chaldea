@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
+import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -19,6 +20,7 @@ class QuestCard extends StatefulWidget {
   final bool? use6th;
   final bool offline;
   final Region region;
+  final int? chosenPhase;
 
   QuestCard({
     Key? key,
@@ -27,6 +29,7 @@ class QuestCard extends StatefulWidget {
     this.use6th,
     this.offline = true,
     this.region = Region.jp,
+    this.chosenPhase,
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
         super(
@@ -42,6 +45,7 @@ class _QuestCardState extends State<QuestCard> {
 
   Quest get quest => _quest!;
   bool showTrueName = false;
+
   // ignore: unused_field
   bool? _use6th;
   bool preferApRate = false;
@@ -165,6 +169,17 @@ class _QuestCardState extends State<QuestCard> {
       scriptPrefix = allScriptIds.last.substring(0, allScriptIds.last.length - 2);
     }
 
+    final List<Widget> phases = [];
+    if (quest.phases.isNotEmpty) {
+      if (widget.chosenPhase != null && quest.phases.length >= widget.chosenPhase! && widget.chosenPhase! > 0) {
+        phases.add(_buildPhases(widget.chosenPhase!, scriptPrefix, shouldDirectToSim: false));
+      } else {
+        for (final phase in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases)) {
+          phases.add(_buildPhases(phase, scriptPrefix));
+        }
+      }
+    }
+
     List<Widget> children = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -211,9 +226,7 @@ class _QuestCardState extends State<QuestCard> {
           )
         ],
       ),
-      if (quest.phases.isNotEmpty)
-        for (final phase in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
-          _buildPhases(phase, scriptPrefix),
+      if (phases.isNotEmpty) ...phases,
       if (quest.gifts.isNotEmpty || quest.giftIcon != null) _questRewards(),
       if (!widget.offline) releaseConditions(),
       if (widget.offline)
@@ -253,7 +266,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget _buildPhases(int phase, String scriptPrefix) {
+  Widget _buildPhases(int phase, String scriptPrefix, {final bool shouldDirectToSim = true}) {
     List<Widget> children = [];
     QuestPhase? curPhase;
     if (widget.offline) {
@@ -265,7 +278,7 @@ class _QuestCardState extends State<QuestCard> {
       }
     }
 
-    final header = getPhaseHeader(phase, curPhase);
+    final header = getPhaseHeader(phase, curPhase, shouldDirectToSim);
     if (curPhase == null) return header;
     children.add(header);
 
@@ -447,7 +460,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
+  Widget getPhaseHeader(int phase, QuestPhase? curPhase, final bool shouldDirectToSim) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
     final failed = AtlasApi.cacheManager.isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
     if (effPhase == null) {
@@ -584,15 +597,27 @@ class _QuestCardState extends State<QuestCard> {
       children: headerRows,
     );
     final spotImage = effPhase.spot?.shownImage;
-    if (spotImage != null) {
-      header = Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(child: header),
-          db.getIconImage(spotImage, height: 42, aspectRatio: 1),
-        ],
-      );
-    }
+    header = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(child: header),
+        if (spotImage != null) db.getIconImage(spotImage, height: 42, aspectRatio: 1),
+        if (shouldDirectToSim) IconButton(
+          onPressed: () {
+            router.pushPage(SimulationPreview(
+              region: widget.region,
+              quest: quest,
+              phase: phase,
+            ));
+          },
+          icon: const Icon(Icons.calculate, size: 18),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          color: Theme.of(context).colorScheme.primaryContainer,
+        ),
+      ],
+    );
+
     if (curPhase == null && !failed) {
       header = Column(
         mainAxisSize: MainAxisSize.min,
