@@ -59,7 +59,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m22(unknown, dup, valid, total, selected) =>
+  static String m22(index, total, enemy) => "版本${index}/${total} (${enemy}敌人)";
+
+  static String m23(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m10(region) => "${region}公告";
@@ -68,13 +70,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "重置規劃${n}(已顯示)";
 
-  static String m23(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m24(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m13(n) => "個人資料${n}";
 
-  static String m24(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
+  static String m25(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
 
-  static String m25(trait) => "這是一個寶具，但不持有[${trait}]特性";
+  static String m26(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
   static String m14(a, b) => "${a}${b}";
 
@@ -286,7 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限池"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活動未列入規劃"),
         "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
-            "這可能是一個活動限定的特性。\n常規從者/敵人可能不包含此特性，但可能包含同名但不同ID的特性。\n部分特性雖未翻譯出從者，但活動中可能是從者限定特性。"),
+            "這可能是一個活動限定的從者/敵人特性或場地特性。\n常規從者/敵人可能不包含此特性，但可能包含同名但不同ID的特性。\n部分特性雖未翻譯出從者，但活動中可能是從者限定特性。"),
         "event_point": MessageLookupByLibrary.simpleMessage("活動點數"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("點數"),
         "event_progress": MessageLookupByLibrary.simpleMessage("進度"),
@@ -625,6 +627,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP消耗活動開放時間"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("關卡開放時間"),
+        "quest_version": m22,
         "quit": MessageLookupByLibrary.simpleMessage("退出"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("伐柱戰"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
@@ -635,7 +638,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play評分"),
-        "recognizer_result_count": m22,
+        "recognizer_result_count": m23,
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("無新增卡牌"),
         "region_cn": MessageLookupByLibrary.simpleMessage("簡中服"),
@@ -726,7 +729,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m23,
+        "solution_total_battles_ap": m24,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
@@ -781,8 +784,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "system_tray_close_hint": MessageLookupByLibrary.simpleMessage("關閉視窗時最小化"),
         "td_animation": MessageLookupByLibrary.simpleMessage("宝具动画"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage("同一寶具不同持有者可能擁有不同的色卡和Hit分布"),
-        "td_cardcolor_hint": m24,
-        "td_cardnp_hint": m25,
+        "td_cardcolor_hint": m25,
+        "td_cardnp_hint": m26,
         "td_rankup": MessageLookupByLibrary.simpleMessage("寶具強化"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
         "testing": MessageLookupByLibrary.simpleMessage("測試中"),

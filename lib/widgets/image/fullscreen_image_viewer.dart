@@ -118,9 +118,12 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
 
   Widget get gallery {
     return PhotoViewGallery(
-      pageOptions: widget.children
-          .map((child) => widget.photoViewOption.copyWith(disableGestures: true).toOriginalWithChild(child))
-          .toList(),
+      pageOptions: [
+        for (final child in widget.children)
+          widget.photoViewOption
+              .copyWith(onTapUp: (context, _, __) => Navigator.pop(context))
+              .toOriginalWithChild(child)
+      ],
       loadingBuilder: widget.galleryOption.loadingBuilder,
       backgroundDecoration: widget.galleryOption.backgroundDecoration,
       gaplessPlayback: widget.galleryOption.gaplessPlayback,

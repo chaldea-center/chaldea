@@ -19,7 +19,7 @@ class DropRateData {
 
   factory DropRateData.fromJson(Map<String, dynamic> json) => _$DropRateDataFromJson(json);
 
-  DropRateSheet getSheet(bool use6th) {
+  DropRateSheet getSheet([bool use6th = true]) {
     return use6th ? newData : legacyData;
   }
 }

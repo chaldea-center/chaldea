@@ -59,7 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m23(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m24(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m13(n) => "Perfil ${n}";
 
@@ -573,7 +573,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Máx(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m23,
+        "solution_total_battles_ap": m24,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),

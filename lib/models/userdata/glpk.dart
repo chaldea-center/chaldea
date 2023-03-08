@@ -8,8 +8,6 @@ part '../../generated/models/userdata/glpk.g.dart';
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class FreeLPParams {
-  bool use6th;
-
   /// items(X)-counts(b) in AX>=b, only generated before transferred to js
   List<int> rows;
 
@@ -63,7 +61,6 @@ class FreeLPParams {
   double getPlanItemWeight(int id, [double? _default]) => planItemWeights[id] ??= _default ?? 1.0;
 
   FreeLPParams({
-    this.use6th = true,
     List<int>? rows,
     this.progress = -1,
     Set<int>? blacklist,
@@ -84,8 +81,7 @@ class FreeLPParams {
         planItemWeights = planItemWeights ?? {};
 
   FreeLPParams.from(FreeLPParams other)
-      : use6th = other.use6th,
-        rows = List.of(other.rows),
+      : rows = List.of(other.rows),
         progress = other.progress,
         blacklist = Set.of(other.blacklist),
         minCost = other.minCost,
@@ -99,7 +95,7 @@ class FreeLPParams {
         planItemCounts = Map.of(other.planItemCounts),
         planItemWeights = Map.of(other.planItemWeights);
 
-  DropRateSheet get sheet => db.gameData.dropRate.getSheet(use6th);
+  DropRateSheet get sheet => db.gameData.dropRate.getSheet();
 
   void validate() {
     rows.removeWhere((e) => !sheet.itemIds.contains(e));

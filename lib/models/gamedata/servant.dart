@@ -8,7 +8,6 @@ import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'const_data.dart';
-import 'event.dart';
 import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
@@ -372,6 +371,8 @@ class Servant with GameCardMixin {
     // groupedNoblePhantasms
     Map<int, List<NiceTd>> dividedTds = {};
     for (final td in noblePhantasms) {
+      // Columbus temp td during scenario chapter 11-14
+      if (collectionNo == 172 && [402501, 402504].contains(td.id)) continue;
       dividedTds.putIfAbsent(td.num, () => []).add(td);
     }
     groupedNoblePhantasms = [
@@ -736,18 +737,6 @@ class CraftEssence with GameCardMixin {
         : hpMax > 0
             ? CraftATKType.hp
             : CraftATKType.none;
-  }
-
-  Iterable<NiceSkill> eventSkills(Event event) {
-    // event should have stat info
-    if (flag == SvtFlag.svtEquipChocolate) return [];
-    return skills.where((skill) => skill.functions.any((func) {
-          if (func.svals.getOrNull(0)?.EventId == event.id) return true;
-          if (event.statItemFixed.containsKey(id)) {
-            return func.funcquestTvals.any((trait) => trait.id >= 94000000 && trait.id < 95000000);
-          }
-          return false;
-        }));
   }
 
   String get cardBack {

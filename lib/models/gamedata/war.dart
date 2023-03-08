@@ -114,9 +114,19 @@ class NiceWar with RouteInfo {
     this.spots = const [],
     this.spotRoads = const [],
     this.questSelections = const [],
-  })  : _name = ['', '-'].contains(name) ? null : name,
-        _longName = ['', '-'].contains(longName) ? null : longName,
+  })  : _name = _fixName(name, id, eventName),
+        _longName = _fixName(longName, id, eventName),
         _eventId = eventId;
+
+  static String? _fixName(String name, int warId, String eventName) {
+    if (['', '-'].contains(name)) return null;
+    if (warId != WarId.chaldeaGate &&
+        !['', '-'].contains(eventName) &&
+        const ['カルデアゲート', '迦勒底之门', '迦勒底之門', 'Chaldea Gate', '칼데아 게이트'].contains(name)) {
+      return eventName;
+    }
+    return name;
+  }
 
   factory NiceWar.fromJson(Map<String, dynamic> json) => _$NiceWarFromJson(json);
 

@@ -18,7 +18,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(master.name)),
+      appBar: AppBar(title: Text(master.lName.l)),
       body: ListView(
         children: [
           info,

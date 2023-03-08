@@ -29,7 +29,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
     if (name != id.toString()) {
       title += ' - $name';
     }
-    bool isEventTrait = Transl.md.eventTrait.containsKey(id);
+    bool isEventTrait = Transl.md.eventTrait.containsKey(id) || Transl.md.fieldTrait.containsKey(id);
     return DefaultTabController(
       length: isEventTrait ? 7 : 6,
       child: Scaffold(

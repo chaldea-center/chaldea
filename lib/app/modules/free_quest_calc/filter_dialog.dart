@@ -24,6 +24,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
       title: Text(S.current.settings_tab_name),
       children: [
         SwitchListTile.adaptive(
+          dense: true,
           value: true, // params.use6th,
           title: Text(S.current.new_drop_data_6th),
           subtitle: const Text('6th Anniversary(~2.5.5)'),
@@ -36,9 +37,12 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           // },
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.free_progress),
           trailing: DropdownButton<NiceWar?>(
+            isDense: true,
             value: progress,
+            alignment: AlignmentDirectional.centerEnd,
             items: [
               DropdownMenuItem(
                 value: null,
@@ -60,36 +64,43 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.drop_calc_min_ap),
           trailing: DropdownButton<int>(
+            isDense: true,
             value: params.minCost,
             items: List.generate(20, (i) => DropdownMenuItem(value: i, child: Text(i.toString()))),
             onChanged: (v) => setState(() => params.minCost = v ?? params.minCost),
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.plan_objective),
           trailing: DropdownButton<bool>(
+            isDense: true,
             value: params.costMinimize,
             items: [
-              DropdownMenuItem(value: true, child: Text(S.current.ap)),
-              DropdownMenuItem(value: false, child: Text(S.current.counts))
+              DropdownMenuItem(value: true, child: Text(S.current.ap, textScaleFactor: 0.9)),
+              DropdownMenuItem(value: false, child: Text(S.current.counts, textScaleFactor: 0.9))
             ],
             onChanged: (v) => setState(() => params.costMinimize = v ?? params.costMinimize),
           ),
         ),
         ListTile(
+          dense: true,
           title: Text(S.current.efficiency_type),
           trailing: DropdownButton<bool>(
+            isDense: true,
             value: params.useAP20,
             items: [
-              DropdownMenuItem(value: true, child: Text(S.current.efficiency_type_ap)),
-              DropdownMenuItem(value: false, child: Text(S.current.efficiency_type_drop))
+              DropdownMenuItem(value: true, child: Text(S.current.efficiency_type_ap, textScaleFactor: 0.9)),
+              DropdownMenuItem(value: false, child: Text(S.current.efficiency_type_drop, textScaleFactor: 0.9))
             ],
             onChanged: (v) => setState(() => params.useAP20 = v ?? params.useAP20),
           ),
         ),
         SwitchListTile.adaptive(
+          dense: true,
           value: params.dailyCostHalf,
           title: Text(S.current.event_ap_cost_half),
           subtitle: Text(Transl.warNames('曜日クエスト').l),
@@ -102,6 +113,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         ),
         SimpleAccordion(
           headerBuilder: (context, _) => ListTile(
+            dense: true,
             title: Text(S.current.blacklist),
             trailing: Text(params.blacklist.length.toString()),
           ),
@@ -112,7 +124,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                 title: Text(shownName),
                 dense: true,
                 trailing: IconButton(
-                  icon: const Icon(Icons.clear),
+                  icon: const Icon(Icons.clear, size: 18),
                   tooltip: S.current.remove_from_blacklist,
                   onPressed: () {
                     setState(() {

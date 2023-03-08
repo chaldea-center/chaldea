@@ -237,7 +237,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               onPressed: kIsWeb
                   ? null
                   : () async {
-                      final result = await FilePicker.platform.pickFiles(type: FileType.image);
+                      final result = await FilePickerU.pickFiles(type: FileType.image, withData: false);
                       final fp = result?.files.getOrNull(0)?.path;
                       if (fp != null) {
                         _onChangeUrl(Uri.file(fp));

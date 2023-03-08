@@ -3,6 +3,7 @@ export 'basic.dart';
 export 'constants.dart';
 export 'debounce.dart';
 export 'extension.dart';
+export 'file_picker.dart';
 export 'img_util.dart';
 export 'material.dart';
 export 'search.dart';

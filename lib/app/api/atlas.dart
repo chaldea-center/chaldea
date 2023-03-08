@@ -394,14 +394,14 @@ class AtlasApi {
   }
 
   static Future<QuestPhase?> questPhase(int questId, int phase,
-      {Region region = Region.jp, Duration? expireAfter}) async {
+      {String? hash, Region region = Region.jp, Duration? expireAfter}) async {
     // free quests, only phase 3 saved in db
     if (region == Region.jp && expireAfter == null) {
       final questJP = db.gameData.quests[questId];
 
       final phaseInDb = db.gameData.questPhases[questId * 100 + phase];
 
-      if (phaseInDb != null) {
+      if (phaseInDb != null && (hash == null || hash == phaseInDb.enemyHash)) {
         return SynchronousFuture(phaseInDb);
       }
 
@@ -418,16 +418,32 @@ class AtlasApi {
         }
       }
     }
-    final url = '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase';
+    String url = questPhaseUrl(questId, phase, hash, region);
     return cacheManager.getModel(
       url,
-      (data) => cachedQuestPhases[url] = QuestPhase.fromJson(data),
+      (data) {
+        final quest = cachedQuestPhases[url] = QuestPhase.fromJson(data);
+        cachedQuestPhases[url] = quest;
+        if (hash == null && quest.enemyHash != null) {
+          final url2 = questPhaseUrl(questId, phase, quest.enemyHash, region);
+          cachedQuestPhases[url2] = quest;
+        }
+        return quest;
+      },
       expireAfter: expireAfter,
     );
   }
 
-  static QuestPhase? questPhaseCache(int questId, int phase, [Region region = Region.jp]) {
-    return cachedQuestPhases['$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase'];
+  static String questPhaseUrl(int questId, int phase, String? hash, Region region) {
+    String url = '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase';
+    if (hash != null) {
+      url += '?hash=$hash';
+    }
+    return url;
+  }
+
+  static QuestPhase? questPhaseCache(int questId, int phase, [String? hash, Region region = Region.jp]) {
+    return cachedQuestPhases[questPhaseUrl(questId, phase, hash, region)];
   }
 
   static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {

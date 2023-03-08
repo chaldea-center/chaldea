@@ -61,7 +61,7 @@ class _UserDataPageState extends State<UserDataPage> {
       body: ListView(
         children: <Widget>[
           TileGroup(
-            footer: 'All data saved here.',
+            footer: ['All data saved here.', if (kIsWeb) 'Browser local data, may be cleared by browser!'].join('\n'),
             children: [
               // if (androidExternalDirs.length >= 2)
               //   SwitchListTile.adaptive(
@@ -163,8 +163,7 @@ class _UserDataPageState extends State<UserDataPage> {
 
   void importUserData() async {
     try {
-      final result =
-          await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['json'], withData: true);
+      final result = await FilePickerU.pickFiles(type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
       final bytes = result?.files.first.bytes;
       if (bytes == null) return;
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));

@@ -138,8 +138,18 @@ class BaseSkill with SkillOrTd, RouteInfo {
     );
   }
 
-  bool isEventSkill(int eventId) {
-    return functions.any((func) => func.svals.getOrNull(0)?.EventId == eventId);
+  bool isEventSkill(Event event) {
+    return functions.any((func) {
+      if (func.svals.getOrNull(0)?.EventId == event.id) return true;
+      if (event.warIds.isNotEmpty) {
+        if (<int>{for (final trait in func.funcquestTvals) ...?db.gameData.mappingData.fieldTrait[trait.id]?.warIds}
+            .intersection(event.warIds.toSet())
+            .isNotEmpty) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   NiceSkill toNice() {

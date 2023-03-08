@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -54,7 +53,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
       children: [
         ElevatedButton(
           onPressed: () async {
-            final result = await FilePicker.platform.pickFiles(withData: true);
+            final result = await FilePickerU.pickFiles(clearCache: true);
             final bytes = result?.files.getOrNull(0)?.bytes;
             if (bytes == null) return;
             try {

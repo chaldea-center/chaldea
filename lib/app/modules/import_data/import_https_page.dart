@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -711,7 +710,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     );
     try {
       if (fromFile == true) {
-        final result = await FilePicker.platform.pickFiles(withData: true);
+        final result = await FilePickerU.pickFiles(clearCache: true);
         final bytes = result?.files.first.bytes;
         if (bytes == null) return;
         parseResponseBody(utf8.decode(bytes));

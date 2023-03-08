@@ -1,3 +1,4 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -27,6 +28,7 @@ class TraitEventTab extends StatelessWidget {
         }
       }
     }
+    List<int> warIds = db.gameData.mappingData.fieldTrait[id]?.warIds ?? [];
     return ListView(
       children: [
         const SizedBox(height: 8),
@@ -49,6 +51,21 @@ class TraitEventTab extends StatelessWidget {
                   trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                   onTap: event.routeTo,
                 )
+            ],
+          ),
+        if (warIds.isNotEmpty)
+          TileGroup(
+            header: S.current.war,
+            children: [
+              for (final warId in warIds)
+                ListTile(
+                  dense: true,
+                  title: Text(db.gameData.wars[warId]?.lLongName.l ?? 'War $warId'),
+                  trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  onTap: () {
+                    router.push(url: Routes.warI(warId));
+                  },
+                ),
             ],
           )
       ],

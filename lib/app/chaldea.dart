@@ -170,6 +170,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         AppUpdater.backgroundUpdate();
       }
     }
+    FilePickerU.clearTemporaryFiles();
   }
 
   void setOnWindowClose() {

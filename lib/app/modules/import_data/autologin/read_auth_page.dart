@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dart_des/dart_des.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -245,7 +244,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
 
   Future<UserAuth?> readAuthFile() async {
     try {
-      final result = await FilePicker.platform.pickFiles(withData: true);
+      final result = await FilePickerU.pickFiles(clearCache: true);
       if (result == null || result.files.isEmpty) return null;
       final bytes = result.files.first.bytes?.toList();
       if (bytes == null) {

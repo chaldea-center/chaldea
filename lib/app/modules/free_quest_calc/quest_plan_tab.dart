@@ -1,7 +1,7 @@
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../generated/l10n.dart';
-import '../enemy/quest_card.dart';
+import '../quest/quest_card.dart';
 
 class QuestPlanTab extends StatefulWidget {
   final LPSolution? solution;
@@ -121,12 +121,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         style: const TextStyle(color: Colors.redAccent),
                       ),
                     ),
-            if (state.value)
-              QuestCard(
-                quest: quest,
-                questId: questId,
-                use6th: widget.solution?.params?.use6th,
-              ),
+            if (state.value) QuestCard(quest: quest, questId: questId),
           ],
         );
       },
