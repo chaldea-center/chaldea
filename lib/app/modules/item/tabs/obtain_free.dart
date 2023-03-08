@@ -2,7 +2,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../enemy/quest_card.dart';
+import '../../quest/quest_card.dart';
 
 class ItemObtainFreeTab extends StatefulWidget {
   final int itemId;

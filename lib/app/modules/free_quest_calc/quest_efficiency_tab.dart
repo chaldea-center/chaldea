@@ -4,7 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../enemy/quest_card.dart';
+import '../quest/quest_card.dart';
 
 enum _EfficiencySort {
   item,

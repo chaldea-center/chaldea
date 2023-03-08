@@ -1,272 +1,123 @@
-import 'package:auto_size_text/auto_size_text.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/modules/quest/quest.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/filter_group.dart';
+import '../../enemy/support_servant.dart';
 import 'stage.dart';
-import 'support_servant.dart';
 
-class QuestCard extends StatefulWidget {
-  final Quest? quest;
-  final int questId;
-  final bool? use6th;
-  final bool offline;
+class QuestPhaseWidget extends StatefulWidget {
+  final Quest quest;
+  final QuestPhase? questPhase;
+  final int phase;
   final Region region;
+  final bool offline;
+  final bool showTrueName;
+  final bool battleOnly;
 
-  QuestCard({
-    Key? key,
+  QuestPhaseWidget({
+    super.key,
     required this.quest,
-    int? questId,
-    this.use6th,
-    this.offline = true,
+    required this.phase,
     this.region = Region.jp,
-  })  : assert(quest != null || questId != null),
-        questId = (quest?.id ?? questId)!,
-        super(
-          key: key ?? Key('QuestCard_${region.name}_${quest?.id ?? questId}'),
-        );
+    this.offline = false,
+    this.showTrueName = true,
+    this.battleOnly = false,
+  })  : assert(quest.phases.contains(phase)),
+        questPhase = null;
+
+  QuestPhaseWidget.phase({
+    super.key,
+    required QuestPhase this.questPhase,
+    this.region = Region.jp,
+    this.offline = false,
+    this.showTrueName = true,
+    this.battleOnly = false,
+  })  : quest = questPhase,
+        phase = questPhase.phase;
 
   @override
-  _QuestCardState createState() => _QuestCardState();
+  State<QuestPhaseWidget> createState() => _QuestPhaseWidgetState();
 }
 
-class _QuestCardState extends State<QuestCard> {
-  Quest? _quest;
+class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
+  Quest get quest => widget.quest;
+  int get phase => widget.phase;
 
-  Quest get quest => _quest!;
-  bool showTrueName = false;
-  final Map<int, String?> _phaseHashes = {};
-  // ignore: unused_field
-  bool? _use6th;
+  QuestPhase? questPhase;
+  String? _enemyHash;
   bool preferApRate = false;
-
-  bool get use6th => true; //  _use6th ?? db.curUser.freeLPParams.use6th;
-
-  bool get show6th {
-    return db.gameData.dropRate.getSheet(true).questIds.contains(widget.questId);
-  }
-
-  void _init() {
-    _quest = widget.quest ?? db.gameData.quests[widget.questId];
-    if (_quest == null && !widget.offline) {
-      AtlasApi.quest(widget.questId).then((value) {
-        if (value != null) {
-          _quest = value;
-          if (!widget.offline) _fetchAllPhases();
-        }
-        if (mounted) setState(() {});
-      });
-    }
-    if (!widget.offline) _fetchAllPhases();
-  }
 
   @override
   void initState() {
     super.initState();
-    _use6th = widget.use6th;
+    if (quest.isDomusQuest) preferApRate = db.settings.preferApRate;
     _init();
-    if (_quest?.isDomusQuest == true) preferApRate = db.settings.preferApRate;
-    showTrueName = !Transl.isJP;
   }
 
-  Future<void> _fetchAllPhases() async {
+  @override
+  void didUpdateWidget(covariant QuestPhaseWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.quest != widget.quest ||
+        oldWidget.phase != widget.phase ||
+        oldWidget.questPhase != widget.questPhase ||
+        oldWidget.region != widget.region ||
+        oldWidget.offline != widget.offline) {
+      _init();
+    }
+  }
+
+  void _init() async {
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    questPhase = widget.questPhase;
+    if (questPhase != null) return;
+
     final questId = quest.id;
+    final phase = widget.phase;
+    final hash = _enemyHash;
     final region = widget.region;
+
     Duration? expireAfter;
     if (quest.warId >= 1000 && quest.openedAt < DateTime.now().subtract(const Duration(days: 30)).timestamp) {
       expireAfter = const Duration(days: 7);
     }
 
-    for (final phase in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) {
-      AtlasApi.questPhase(questId, phase, hash: _phaseHashes[phase], region: region, expireAfter: expireAfter)
-          .then((_) {
-        if (mounted) setState(() {});
-      });
+    final data = await AtlasApi.questPhase(questId, phase, hash: hash, region: region, expireAfter: expireAfter);
+    if (data != null &&
+        questId == widget.quest.id &&
+        phase == widget.phase &&
+        hash == _enemyHash &&
+        region == widget.region) {
+      questPhase = data;
     }
+    if (mounted) setState(() {});
   }
 
-  @override
-  void didUpdateWidget(covariant QuestCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.use6th != widget.use6th) {
-      _use6th = widget.use6th;
-    }
-    if (oldWidget.offline != widget.offline ||
-        oldWidget.region != widget.region ||
-        oldWidget.quest != widget.quest ||
-        oldWidget.questId != widget.questId) {
-      _init();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_quest == null) {
-      return Card(
-        elevation: 0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 8),
-            AutoSizeText(
-              'Quest ${widget.questId}',
-              maxLines: 1,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            if (widget.offline)
-              TextButton(
-                onPressed: () {
-                  router.push(
-                    url: Routes.questI(widget.questId),
-                    child: QuestDetailPage(
-                      quest: _quest,
-                      id: widget.questId,
-                      region: widget.region,
-                    ),
-                    detail: true,
-                  );
-                },
-                child: Text('>>> ${S.current.quest_detail_btn} >>>'),
-              ),
-          ],
-        ),
-      );
-    }
-
-    String questName = quest.lName.l;
-    String chapter = quest.type == QuestType.main
-        ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-            ? S.current.quest_chapter_n(quest.chapterSubId)
-            : quest.chapterSubStr
-        : '';
-    if (chapter.isNotEmpty) {
-      questName = '$chapter $questName';
-    }
-    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l) quest.name]
-        .map((e) => e.replaceAll('\n', ' '))
-        .toList();
-    String shownQuestName;
-    if (names.any((s) => s.charWidth > 16)) {
-      shownQuestName = names.join('\n');
-    } else {
-      shownQuestName = names.join('/');
-    }
-    String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
-    String scriptPrefix = '';
-    final allScriptIds = quest.allScriptIds;
-    if (allScriptIds.isNotEmpty && allScriptIds.last.length > 2) {
-      scriptPrefix = allScriptIds.last.substring(0, allScriptIds.last.length - 2);
-    }
-
-    List<Widget> children = [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(width: 36),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: quest.war?.routeTo,
-                    child: AutoSizeText(
-                      warName,
-                      maxLines: 2,
-                      maxFontSize: 14,
-                      minFontSize: 6,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                    shownQuestName,
-                    textScaleFactor: 0.9,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 36,
-            child: IconButton(
-              onPressed: () => setState(() => showTrueName = !showTrueName),
-              icon: Icon(
-                Icons.remove_red_eye_outlined,
-                color: showTrueName ? Theme.of(context).indicatorColor : null,
-              ),
-              tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
-              padding: EdgeInsets.zero,
-              iconSize: 20,
-            ),
-          )
-        ],
-      ),
-      if (quest.phases.isNotEmpty)
-        for (final phase in (quest.isMainStoryFree ? [quest.phases.last] : quest.phases))
-          _buildPhases(phase, scriptPrefix),
-      if (quest.gifts.isNotEmpty || quest.giftIcon != null) _questRewards(),
-      if (!widget.offline) releaseConditions(),
-      if (widget.offline)
-        TextButton(
-          onPressed: () {
-            router.push(
-              url: Routes.questI(quest.id),
-              child: QuestDetailPage(quest: quest, region: widget.region),
-              detail: true,
-            );
-          },
-          child: Text('>>> ${S.current.quest_detail_btn} >>>'),
-        ),
-    ];
-
-    return InheritSelectionArea(
-      child: Card(
-        elevation: 0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 8),
-            ...divideTiles(
-              children.map(
-                (e) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                  child: e,
-                ),
-              ),
-              divider: const Divider(height: 8, thickness: 2),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPhases(int phase, String scriptPrefix) {
-    List<Widget> children = [];
+  QuestPhase? getCachedData() {
     QuestPhase? curPhase;
     if (widget.offline) {
       curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
-          AtlasApi.questPhaseCache(quest.id, phase, _phaseHashes[phase], widget.region);
+          AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region);
     } else {
-      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _phaseHashes[phase], widget.region);
+      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region);
       if (widget.region == Region.jp) {
         curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }
     }
+    return curPhase;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    QuestPhase? curPhase = questPhase ?? getCachedData();
 
     final header = getPhaseHeader(phase, curPhase);
     if (curPhase == null) return header;
@@ -307,7 +158,7 @@ class _QuestCardState extends State<QuestCard> {
           Expanded(
             child: QuestWave(
               stage: stage,
-              showTrueName: showTrueName,
+              showTrueName: widget.showTrueName,
               region: widget.region,
             ),
           )
@@ -329,7 +180,7 @@ class _QuestCardState extends State<QuestCard> {
             child: QuestWave(
               stage: null,
               aiNpcs: aiNpcs,
-              showTrueName: showTrueName,
+              showTrueName: widget.showTrueName,
               region: widget.region,
             ),
           )
@@ -356,10 +207,10 @@ class _QuestCardState extends State<QuestCard> {
         ),
       ));
     }
-    if (!widget.offline && curPhase.supportServants.isNotEmpty) {
+    if (!widget.battleOnly && !widget.offline && curPhase.supportServants.isNotEmpty) {
       children.add(getSupportServants(curPhase));
     }
-    if (!widget.offline && curPhase.restrictions.isNotEmpty) {
+    if (!widget.battleOnly && !widget.offline && curPhase.restrictions.isNotEmpty) {
       final shortMsg = curPhase.restrictions
           .map((e) => _QuestRestriction.getText(restriction: e, all: false, leading: false))
           .firstWhereOrNull((e) => e.isNotEmpty);
@@ -367,7 +218,7 @@ class _QuestCardState extends State<QuestCard> {
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: InkWell(
           onTap: () {
-            router.pushPage(_QuestRestriction(restrictions: curPhase?.restrictions ?? []));
+            router.pushPage(_QuestRestriction(restrictions: curPhase.restrictions));
           },
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -380,8 +231,9 @@ class _QuestCardState extends State<QuestCard> {
         ),
       ));
     }
-
-    if (show6th || curPhase.drops.isNotEmpty) {
+    final sheetData = db.gameData.dropRate.getSheet(true);
+    final _questIndex = sheetData.questIds.indexOf(quest.id);
+    if (!widget.battleOnly && (curPhase.drops.isNotEmpty || _questIndex >= 0)) {
       children.add(Wrap(
         spacing: 2,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -398,25 +250,11 @@ class _QuestCardState extends State<QuestCard> {
               });
             },
           ),
-          if (show6th)
-            FilterGroup<bool>(
-              options: const [true],
-              values: FilterRadioData(use6th ? true : null),
-              optionBuilder: (v) => const Text('6th'),
-              combined: true,
-              enabled: false,
-              // onFilterChanged: (v, _) {
-              //   setState(() {
-              //     _use6th = !use6th;
-              //   });
-              // },
-            ),
         ],
       ));
     }
-    if (show6th) {
-      final sheetData = db.gameData.dropRate.getSheet(use6th);
-      int runs = sheetData.runs.getOrNull(sheetData.questIds.indexOf(quest.id)) ?? 0;
+    if (!widget.battleOnly && _questIndex >= 0) {
+      int runs = sheetData.runs.getOrNull(_questIndex) ?? 0;
       children.add(Column(
         children: [
           const SizedBox(height: 3),
@@ -428,7 +266,7 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
 
-    if (curPhase.drops.isNotEmpty) {
+    if (!widget.battleOnly && curPhase.drops.isNotEmpty) {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
@@ -439,7 +277,9 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
-    children.addAll(getPhaseScript(phase));
+    if (!widget.battleOnly) {
+      children.addAll(getPhaseScript(phase));
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -450,9 +290,43 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
+  List<Widget> getPhaseScript(int phase) {
+    final scripts = quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
+    if (scripts == null || scripts.isEmpty) return [];
+    return [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _header(S.current.script_story),
+            Expanded(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  for (final s in scripts)
+                    Text.rich(SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: '{${s.shortId()}}',
+                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+                      onTap: () {
+                        s.routeTo(region: widget.region);
+                      },
+                    ))
+                ],
+              ),
+            )
+          ],
+        ),
+      )
+    ];
+  }
+
   Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
-    final failed = AtlasApi.cacheManager.isFailed('/nice/${widget.region.upper}/quest/${quest.id}/$phase');
+    final failed = AtlasApi.cacheManager.isFailed(AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region));
     if (effPhase == null) {
       List<Widget> rowChildren = [];
       rowChildren.add(Text('  $phase/${quest.phases.length}  '));
@@ -583,8 +457,8 @@ class _QuestCardState extends State<QuestCard> {
         )
     ];
     if (curPhase != null) {
-      if (_phaseHashes[phase] != null && !curPhase.enemyHashes.contains(_phaseHashes[phase])) {
-        _phaseHashes.remove(phase);
+      if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
+        _enemyHash = null;
       }
       if (curPhase.enemyHashes.length > 1) {
         headerRows.add(getQuestVersionDropdown(curPhase));
@@ -620,11 +494,8 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Widget getQuestVersionDropdown(QuestPhase curPhase) {
-    final phase = curPhase.phase;
-    String? selected = _phaseHashes[phase];
-    selected ??= curPhase.enemyHash;
-    if (selected != null && !curPhase.enemyHashes.contains(selected)) {
-      selected = null;
+    if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
+      _enemyHash = null;
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -635,7 +506,7 @@ class _QuestCardState extends State<QuestCard> {
             child: DropdownButton<String>(
               isDense: true,
               iconSize: 16,
-              value: selected,
+              value: _enemyHash ?? curPhase.enemyHash,
               items: List.generate(curPhase.enemyHashes.length, (index) {
                 final hash = curPhase.enemyHashes[index];
                 int? count = int.tryParse(hash.substring2(2, 4));
@@ -649,8 +520,8 @@ class _QuestCardState extends State<QuestCard> {
                 );
               }),
               onChanged: (v) {
-                _phaseHashes[phase] = v;
-                _fetchAllPhases();
+                _enemyHash = v;
+                _fetchData();
                 setState(() {});
               },
             ),
@@ -660,38 +531,11 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  List<Widget> getPhaseScript(int phase) {
-    final scripts = quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
-    if (scripts == null || scripts.isEmpty) return [];
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            _header(S.current.script_story),
-            Expanded(
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 4,
-                children: [
-                  for (final s in scripts)
-                    Text.rich(SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: '{${s.shortId()}}',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
-                      onTap: () {
-                        s.routeTo(region: widget.region);
-                      },
-                    ))
-                ],
-              ),
-            )
-          ],
-        ),
-      )
-    ];
+  Text _header(String text, [TextStyle? style]) {
+    return Text(
+      text,
+      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
+    );
   }
 
   Widget getSupportServants(QuestPhase curPhase) {
@@ -763,86 +607,18 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget getRestriction(QuestPhase curPhase) {
-    List<Widget> children = [_header(S.current.quest_restriction)];
-    for (final restriction in curPhase.restrictions) {
-      for (final msg in [restriction.noticeMessage, restriction.dialogMessage, restriction.restriction.name]) {
-        if (msg.isNotEmpty && msg != '0') {
-          children.add(Text(msg.replaceAll('\n', ' ')));
-          break;
-        }
-      }
-    }
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: InkWell(
-        onTap: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) {
-              List<Widget> rows = [];
-              for (int index = 0; index < curPhase.restrictions.length; index++) {
-                final restriction = curPhase.restrictions[index];
-                if (curPhase.restrictions.length > 1) {
-                  rows.add(SHeader('${S.current.quest_restriction} ${index + 1}'));
-                }
-                final messages = <String>{};
-                for (final msg in [
-                  restriction.title,
-                  restriction.noticeMessage,
-                  restriction.dialogMessage,
-                  restriction.restriction.name
-                ]) {
-                  if (msg.isEmpty || msg == '0') continue;
-                  messages.add(msg.replaceAll('\n', ' '));
-                }
-                if (messages.isNotEmpty) {
-                  rows.add(CustomTableRow.fromTexts(texts: [messages.join('\n')]));
-                }
-                rows.add(CustomTableRow.fromTexts(texts: [
-                  restriction.restriction.type.name,
-                  restriction.restriction.rangeType.name,
-                  if (restriction.restriction.targetVals.isNotEmpty) restriction.restriction.targetVals.join(', '),
-                  if (restriction.restriction.targetVals2.isNotEmpty) restriction.restriction.targetVals2.join(', '),
-                ]));
-              }
-              return SimpleCancelOkDialog(
-                title: Text(S.current.quest_restriction),
-                content: CustomTable(selectable: true, children: rows),
-                scrollable: true,
-                hideCancel: true,
-              );
-            },
-          );
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        ),
-      ),
-    );
-  }
-
-  Text _header(String text, [TextStyle? style]) {
-    return Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
-    );
-  }
-
   /// only drops of free quest useApRate
   Widget _getDomusAureaWidget() {
-    final dropRates = db.gameData.dropRate.getSheet(use6th);
+    final dropRates = db.gameData.dropRate.getSheet(true);
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
-      final drops = dropRates.getQuestApRate(widget.questId).entries.toList();
+      final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
       drops.sort((a, b) => Item.compare2(a.key, b.key, true));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value > 1000 ? entry.value.toInt().toString() : entry.value.format(maxDigits: 4);
       }
     } else {
-      final drops = dropRates.getQuestDropRate(widget.questId).entries.toList();
+      final drops = dropRates.getQuestDropRate(widget.quest.id).entries.toList();
       drops.sort((a, b) => Item.compare2(a.key, b.key, true));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 3);
@@ -901,54 +677,6 @@ class _QuestCardState extends State<QuestCard> {
       spacing: 3,
       runSpacing: 2,
       children: children,
-    );
-  }
-
-  Widget _questRewards() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _header(S.current.quest_reward_short),
-          Expanded(
-            child: Center(
-              child: Wrap(
-                spacing: 1,
-                runSpacing: 1,
-                children: [
-                  if (quest.giftIcon != null) db.getIconImage(quest.giftIcon, width: 36),
-                  for (final gift in quest.gifts)
-                    gift.iconBuilder(
-                      context: context,
-                      width: 36,
-                    ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget releaseConditions() {
-    final conds = quest.releaseConditions.where((cond) => !(cond.type == CondType.date && cond.value == 0)).toList();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(child: _header(S.current.quest_condition)),
-        for (final cond in conds)
-          CondTargetValueDescriptor(
-            condType: cond.type,
-            target: cond.targetId,
-            value: cond.value,
-            missions: db.gameData.wars[quest.warId]?.event?.missions ?? [],
-          ),
-        Text('${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
-        Text('${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
-      ],
     );
   }
 }

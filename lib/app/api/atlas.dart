@@ -418,14 +418,14 @@ class AtlasApi {
         }
       }
     }
-    String url = _questPhaseUrl(questId, phase, hash, region);
+    String url = questPhaseUrl(questId, phase, hash, region);
     return cacheManager.getModel(
       url,
       (data) {
         final quest = cachedQuestPhases[url] = QuestPhase.fromJson(data);
         cachedQuestPhases[url] = quest;
         if (hash == null && quest.enemyHash != null) {
-          final url2 = _questPhaseUrl(questId, phase, quest.enemyHash, region);
+          final url2 = questPhaseUrl(questId, phase, quest.enemyHash, region);
           cachedQuestPhases[url2] = quest;
         }
         return quest;
@@ -434,7 +434,7 @@ class AtlasApi {
     );
   }
 
-  static String _questPhaseUrl(int questId, int phase, String? hash, Region region) {
+  static String questPhaseUrl(int questId, int phase, String? hash, Region region) {
     String url = '$_atlasApiHost/nice/${region.upper}/quest/$questId/$phase';
     if (hash != null) {
       url += '?hash=$hash';
@@ -443,7 +443,7 @@ class AtlasApi {
   }
 
   static QuestPhase? questPhaseCache(int questId, int phase, [String? hash, Region region = Region.jp]) {
-    return cachedQuestPhases[_questPhaseUrl(questId, phase, hash, region)];
+    return cachedQuestPhases[questPhaseUrl(questId, phase, hash, region)];
   }
 
   static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {
