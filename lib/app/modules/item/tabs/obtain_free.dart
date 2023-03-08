@@ -1,4 +1,3 @@
-import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -21,8 +20,6 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     db.saveSettings();
   }
 
-  final bool use6th = true; // db.curUser.freeLPParams.use6th;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,26 +27,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         Material(
           elevation: 1,
           child: ListTile(
-            title: Wrap(
-              spacing: 4,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(S.current.quest),
-                FilterOption(
-                  selected: use6th,
-                  value: '6th',
-                  // onChanged: (v) => setState(() {
-                  //   use6th = v;
-                  // }),
-                  shrinkWrap: true,
-                  enabled: false,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text('6th'),
-                  ),
-                )
-              ],
-            ),
+            title: Text(S.current.quest),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +68,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   }
 
   List<Widget> buildQuests() {
-    final dropRateData = db.gameData.dropRate.getSheet(use6th);
+    final dropRateData = db.gameData.dropRate.getSheet();
     int rowIndex = dropRateData.itemIds.indexOf(widget.itemId);
     if (rowIndex < 0) {
       return [ListTile(title: Text(S.current.item_no_free_quests))];
@@ -105,32 +83,33 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
       final quest = db.gameData.quests[questId];
 
       final child = ValueStatefulBuilder<bool>(
-          key: quest == null ? null : Key('quest_${quest.id}'),
-          initValue: false,
-          builder: (context, state) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CustomTile(
-                  title: Text(quest?.lDispName ?? 'Quest $questId'),
-                  subtitle: Text(
-                      'Cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
-                  trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
-                  onTap: quest == null
-                      ? null
-                      : () => state.setState(() {
-                            state.value = !state.value;
-                          }),
-                ),
-                if (state.value && quest != null) QuestCard(quest: quest, use6th: use6th),
-              ],
-            );
-          });
+        key: quest == null ? null : Key('quest_${quest.id}'),
+        initValue: false,
+        builder: (context, state) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CustomTile(
+                title: Text(quest?.lDispName ?? 'Quest $questId'),
+                subtitle: Text(
+                    'Cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
+                trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
+                onTap: quest == null
+                    ? null
+                    : () => state.setState(() {
+                          state.value = !state.value;
+                        }),
+              ),
+              if (state.value && quest != null) QuestCard(quest: quest),
+            ],
+          );
+        },
+      );
       tmp.add([apRate, dropRate, child]);
     }
 
     tmp.sort((a, b) {
-      return ((sortByAP ? a[0] - b[0] : b[1] - a[1]) as double).sign.toInt();
+      return ((sortByAP ? a[0] - b[0] : b[1] - a[1]) as num).sign.toInt();
     });
     return tmp.map((e) => e.last as Widget).toList();
   }

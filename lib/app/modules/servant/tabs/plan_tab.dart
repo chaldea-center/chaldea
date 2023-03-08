@@ -851,22 +851,25 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             onTapOk: onConfirm,
             content: shownItems.isEmpty
                 ? const Text('Nothing')
-                : Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: [
-                      for (final entry in shownItems.entries)
-                        Item.iconBuilder(
-                          context: context,
-                          item: db.gameData.items[entry.key],
-                          icon: Item.getIcon(entry.key),
-                          text: entry.value.format(),
-                          width: 48,
-                          onTap: () {
-                            router.pushPage(ItemDetailPage(itemId: entry.key));
-                          },
-                        ),
-                    ],
+                : ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 360),
+                    child: Wrap(
+                      spacing: 2,
+                      runSpacing: 2,
+                      children: [
+                        for (final entry in shownItems.entries)
+                          Item.iconBuilder(
+                            context: context,
+                            item: db.gameData.items[entry.key],
+                            icon: Item.getIcon(entry.key),
+                            text: entry.value.format(),
+                            width: 48,
+                            onTap: () {
+                              router.pushPage(ItemDetailPage(itemId: entry.key));
+                            },
+                          ),
+                      ],
+                    ),
                   ),
             actions: [
               if (showSubOwned)

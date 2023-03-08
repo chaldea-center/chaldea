@@ -371,6 +371,8 @@ class Servant with GameCardMixin {
     // groupedNoblePhantasms
     Map<int, List<NiceTd>> dividedTds = {};
     for (final td in noblePhantasms) {
+      // Columbus temp td during scenario chapter 11-14
+      if (collectionNo == 172 && [402501, 402504].contains(td.id)) continue;
       dividedTds.putIfAbsent(td.num, () => []).add(td);
     }
     groupedNoblePhantasms = [

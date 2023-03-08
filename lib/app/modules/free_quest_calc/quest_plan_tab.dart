@@ -121,12 +121,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         style: const TextStyle(color: Colors.redAccent),
                       ),
                     ),
-            if (state.value)
-              QuestCard(
-                quest: quest,
-                questId: questId,
-                use6th: widget.solution?.params?.use6th,
-              ),
+            if (state.value) QuestCard(quest: quest, questId: questId),
           ],
         );
       },

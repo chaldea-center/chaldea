@@ -120,11 +120,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                             state.updateState();
                           },
                   ),
-                  if (state.value && quest != null)
-                    QuestCard(
-                      quest: quest,
-                      use6th: params.use6th,
-                    ),
+                  if (state.value && quest != null) QuestCard(quest: quest),
                 ],
               );
             },

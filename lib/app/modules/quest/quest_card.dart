@@ -14,7 +14,6 @@ import 'breakdown/quest_phase.dart';
 class QuestCard extends StatefulWidget {
   final Quest? quest;
   final int questId;
-  final bool? use6th;
   final bool offline;
   final Region region;
 
@@ -22,7 +21,6 @@ class QuestCard extends StatefulWidget {
     Key? key,
     required this.quest,
     int? questId,
-    this.use6th,
     this.offline = true,
     this.region = Region.jp,
   })  : assert(quest != null || questId != null),

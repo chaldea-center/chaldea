@@ -11,7 +11,6 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = FreeLPParams(
-          use6th: $checkedConvert('use6th', (v) => v as bool? ?? true),
           rows: $checkedConvert('rows', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           progress: $checkedConvert('progress', (v) => v as int? ?? -1),
           blacklist: $checkedConvert('blacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
@@ -39,7 +38,6 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) => <String, dynamic>{
-      'use6th': instance.use6th,
       'rows': instance.rows,
       'planItemCounts': instance.planItemCounts.map((k, e) => MapEntry(k.toString(), e)),
       'planItemWeights': instance.planItemWeights.map((k, e) => MapEntry(k.toString(), e)),
