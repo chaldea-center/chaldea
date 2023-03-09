@@ -336,10 +336,11 @@ class SharedBuilder {
     required BuildContext context,
     required NiceTrait trait,
     TextStyle? style,
+    String Function(NiceTrait trait)? format,
   }) {
     return textButtonSpan(
       context: context,
-      text: trait.shownName(),
+      text: format?.call(trait) ?? trait.shownName(),
       style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
       onTap: () {
         router.push(url: Routes.traitI(trait.id));
@@ -354,6 +355,7 @@ class SharedBuilder {
     TextStyle? style,
     double? textScaleFactor,
     TextAlign? textAlign,
+    String Function(NiceTrait trait)? format,
   }) {
     return Text.rich(
       TextSpan(
@@ -361,6 +363,7 @@ class SharedBuilder {
           context: context,
           traits: traits,
           useAndJoin: useAndJoin,
+          format: format,
         ),
       ),
       style: style,
@@ -374,9 +377,10 @@ class SharedBuilder {
     required List<NiceTrait> traits,
     bool useAndJoin = false,
     TextStyle? style,
+    String Function(NiceTrait trait)? format,
   }) {
     List<InlineSpan> children = divideList(
-      traits.map((e) => traitSpan(context: context, trait: e, style: style)),
+      traits.map((e) => traitSpan(context: context, trait: e, style: style, format: format)),
       TextSpan(
         text: useAndJoin ? ' & ' : ' / ',
         style: TextStyle(color: Theme.of(context).hintColor),

@@ -70,13 +70,13 @@ class Transl<K, V> {
       : _m = m,
         mappings = {key: m};
 
-  static Transl<int, String> trait(int id, {bool addSvtId = true}) {
+  static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = true}) {
     final eventTrait = md.eventTrait[id];
     if (eventTrait != null) {
       return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"$v"')}, id, '$id');
     }
     final fieldTrait = md.fieldTrait[id];
-    if (fieldTrait != null) {
+    if (field && fieldTrait != null) {
       if (fieldTrait.warIds.isNotEmpty && fieldTrait.values.every((e) => e == null)) {
         final warId = fieldTrait.warIds.first;
         final lWarName = db.gameData.wars[warId]?.lName.m;
