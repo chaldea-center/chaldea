@@ -558,6 +558,8 @@ class BattleData {
       final actor = actorList[i]!;
       if (actor.hp <= 0 && !actor.hasNextShift()) {
         if (!actor.activateGuts(this)) {
+          // TODO (battle): There is a bug that will reset accumulation damage when deathEffect is triggered
+          // not verified for gutsEffect
           actor.death(this);
           actorList[i] = null;
         }

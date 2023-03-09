@@ -19,6 +19,7 @@ class EnemyData {
 
 class PlayerSvtData {
   int svtId;
+  int ascension = 4;
   List<int> skillLvs = [10, 10, 10];
   List<int> skillStrengthenLvs = [1, 1, 1];
   List<int> appendLvs = [0, 0, 0];
