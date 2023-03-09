@@ -12,6 +12,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../quest/breakdown/quest_phase.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
@@ -67,6 +68,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   void dispose() {
     super.dispose();
     questIdTextController.dispose();
+    QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
   }
 
   @override
@@ -201,6 +203,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             const SizedBox(width: 0),
             TextButton(
               onPressed: () {
+                QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
                 router.push(url: Routes.events);
               },
               child: Text(S.current.event),
@@ -262,6 +265,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       errorMsg = 'Not found: /${region.upper}/quest/$questId/$phase';
       if (hash != null) errorMsg = '${errorMsg!}?hash=$hash';
     }
+  }
+
+  void _questSelectCallback(QuestPhase selected) {
+    questPhase = selected;
+    if (!mounted) return;
+    final curRoute = ModalRoute.of(context);
+    if (curRoute != null) {
+      Navigator.popUntil(context, (route) => route == curRoute);
+    }
+    setState(() {});
   }
 }
 

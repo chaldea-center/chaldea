@@ -3,12 +3,15 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../enemy/support_servant.dart';
 import 'stage.dart';
+
+typedef _QuestPhaseSelectCallback = void Function(QuestPhase quest);
 
 class QuestPhaseWidget extends StatefulWidget {
   final Quest quest;
@@ -42,6 +45,19 @@ class QuestPhaseWidget extends StatefulWidget {
 
   @override
   State<QuestPhaseWidget> createState() => _QuestPhaseWidgetState();
+
+  // select quest callback
+  static final List<_PhaseSelectCbInfo> _phaseCallbacks = [];
+
+  static void addPhaseSelectCallback(_QuestPhaseSelectCallback cb) {
+    removePhaseSelectCallback(cb);
+    _phaseCallbacks.add(_PhaseSelectCbInfo(router, cb));
+  }
+
+  static void removePhaseSelectCallback(_QuestPhaseSelectCallback cb) {
+    final index = _phaseCallbacks.lastIndexWhere((info) => info.cb == cb);
+    if (index >= 0) _phaseCallbacks.removeAt(index);
+  }
 }
 
 class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
@@ -479,10 +495,22 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         if (curPhase != null && curPhase.stages.isNotEmpty && !widget.battleOnly)
           IconButton(
             onPressed: () {
-              router.pushPage(SimulationPreview(
-                region: widget.region,
-                questPhase: questPhase,
-              ));
+              _PhaseSelectCbInfo? found;
+              for (final info in QuestPhaseWidget._phaseCallbacks) {
+                if (info.srcRouter == router) {
+                  info.cb(curPhase);
+                  found = info;
+                  break;
+                }
+              }
+              if (found != null) {
+                QuestPhaseWidget._phaseCallbacks.remove(found);
+              } else {
+                router.pushPage(SimulationPreview(
+                  region: widget.region,
+                  questPhase: questPhase,
+                ));
+              }
             },
             icon: const Icon(Icons.calculate, size: 18),
             padding: EdgeInsets.zero,
@@ -799,4 +827,10 @@ class _QuestRestriction extends StatelessWidget {
       return leading ? '$kULLeading ${messages.first}' : messages.first;
     }
   }
+}
+
+class _PhaseSelectCbInfo {
+  final AppRouterDelegate srcRouter;
+  final _QuestPhaseSelectCallback cb;
+  _PhaseSelectCbInfo(this.srcRouter, this.cb);
 }
