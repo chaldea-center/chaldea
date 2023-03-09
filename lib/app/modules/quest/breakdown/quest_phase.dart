@@ -14,7 +14,7 @@ class QuestPhaseWidget extends StatefulWidget {
   final Quest quest;
   final QuestPhase? questPhase;
   final int phase;
-  final Region region;
+  final Region? region;
   final bool offline;
   final bool showTrueName;
   final bool battleOnly;
@@ -23,7 +23,7 @@ class QuestPhaseWidget extends StatefulWidget {
     super.key,
     required this.quest,
     required this.phase,
-    this.region = Region.jp,
+    this.region,
     this.offline = false,
     this.showTrueName = true,
     this.battleOnly = false,
@@ -83,7 +83,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     final questId = quest.id;
     final phase = widget.phase;
     final hash = _enemyHash;
-    final region = widget.region;
+    final region = widget.region ?? Region.jp;
 
     Duration? expireAfter;
     if (quest.warId >= 1000 && quest.openedAt < DateTime.now().subtract(const Duration(days: 30)).timestamp) {
@@ -95,7 +95,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         questId == widget.quest.id &&
         phase == widget.phase &&
         hash == _enemyHash &&
-        region == widget.region) {
+        region == (widget.region ?? Region.jp)) {
       questPhase = data;
     }
     if (mounted) setState(() {});
@@ -105,9 +105,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     QuestPhase? curPhase;
     if (widget.offline) {
       curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
-          AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region);
+          AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
     } else {
-      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region);
+      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
       if (widget.region == Region.jp) {
         curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
       }
@@ -327,7 +327,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
     final effPhase = curPhase ?? (quest.phases.length == 1 ? quest : null);
-    final failed = AtlasApi.cacheManager.isFailed(AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region));
+    final failed =
+        AtlasApi.cacheManager.isFailed(AtlasApi.questPhaseUrl(quest.id, phase, _enemyHash, widget.region ?? Region.jp));
     if (effPhase == null) {
       List<Widget> rowChildren = [];
       rowChildren.add(Text('  $phase/${quest.phases.length}  '));
@@ -461,7 +462,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
         _enemyHash = null;
       }
-      if (curPhase.enemyHashes.length > 1) {
+      if (curPhase.enemyHashes.length > 1 && !widget.battleOnly) {
         headerRows.add(getQuestVersionDropdown(curPhase));
       }
     }
@@ -480,8 +481,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             onPressed: () {
               router.pushPage(SimulationPreview(
                 region: widget.region,
-                quest: quest,
-                phase: phase,
+                questPhase: questPhase,
               ));
             },
             icon: const Icon(Icons.calculate, size: 18),

@@ -15,22 +15,24 @@ class QuestCard extends StatefulWidget {
   final Quest? quest;
   final int questId;
   final bool offline;
-  final Region region;
+  final Region? region;
   final bool battleOnly;
   final List<int>? displayPhases;
+  final List<QuestPhase> preferredPhases;
 
   QuestCard({
     Key? key,
     required this.quest,
     int? questId,
     this.offline = true,
-    this.region = Region.jp,
+    this.region,
     this.battleOnly = false,
     this.displayPhases,
+    this.preferredPhases = const [],
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
         super(
-          key: key ?? Key('QuestCard_${region.name}_${quest?.id ?? questId}'),
+          key: key ?? Key('QuestCard_${region?.name}_${quest?.id ?? questId}'),
         );
 
   @override
@@ -39,6 +41,7 @@ class QuestCard extends StatefulWidget {
 
 class _QuestCardState extends State<QuestCard> {
   Quest? _quest;
+  Region? _region;
 
   Quest get quest => _quest!;
   bool showTrueName = false;
@@ -51,8 +54,18 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   void _init() async {
-    _quest = widget.quest ?? db.gameData.quests[widget.questId];
-    _quest ??= await AtlasApi.quest(widget.questId, region: widget.region);
+    if (widget.quest != null) {
+      _quest = widget.quest;
+      _region = null;
+    }
+    if (_quest == null) {
+      _quest = db.gameData.quests[widget.questId];
+      if (_quest != null) _region = Region.jp;
+    }
+    if (_quest == null) {
+      _quest ??= await AtlasApi.quest(widget.questId, region: widget.region ?? Region.jp);
+      if (_quest != null) _region = widget.region ?? Region.jp;
+    }
     if (mounted) setState(() {});
   }
 
@@ -91,7 +104,7 @@ class _QuestCardState extends State<QuestCard> {
                     child: QuestDetailPage(
                       quest: _quest,
                       id: widget.questId,
-                      region: widget.region,
+                      region: _region,
                     ),
                     detail: true,
                   );
@@ -122,6 +135,30 @@ class _QuestCardState extends State<QuestCard> {
       shownQuestName = names.join('/');
     }
     String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
+
+    List<Widget> phaseWidgets = [];
+    final displayPhases = widget.displayPhases ?? (quest.isMainStoryFree ? [quest.phases.last] : quest.phases);
+    for (final phase in displayPhases) {
+      final phaseData = widget.preferredPhases.firstWhereOrNull((qh) => qh.id == quest.id && qh.phase == phase);
+      if (phaseData != null) {
+        phaseWidgets.add(QuestPhaseWidget.phase(
+          questPhase: phaseData,
+          region: widget.region,
+          offline: widget.offline,
+          showTrueName: showTrueName,
+          battleOnly: widget.battleOnly,
+        ));
+      } else {
+        phaseWidgets.add(QuestPhaseWidget(
+          quest: quest,
+          phase: phase,
+          region: widget.region,
+          offline: widget.offline,
+          showTrueName: showTrueName,
+          battleOnly: widget.battleOnly,
+        ));
+      }
+    }
 
     List<Widget> children = [
       Row(
@@ -169,20 +206,7 @@ class _QuestCardState extends State<QuestCard> {
           )
         ],
       ),
-      if (quest.phases.isNotEmpty)
-        for (final phase in (widget.displayPhases != null
-            ? widget.displayPhases!
-            : quest.isMainStoryFree
-                ? [quest.phases.last]
-                : quest.phases))
-          QuestPhaseWidget(
-            quest: quest,
-            phase: phase,
-            region: widget.region,
-            offline: widget.offline,
-            showTrueName: showTrueName,
-            battleOnly: widget.battleOnly,
-          ),
+      ...phaseWidgets,
       if (!widget.battleOnly && (quest.gifts.isNotEmpty || quest.giftIcon != null)) _questRewards(),
       if (!widget.battleOnly && !widget.offline) releaseConditions(),
       if (widget.battleOnly || widget.offline)
