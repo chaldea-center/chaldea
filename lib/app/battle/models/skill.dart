@@ -1,6 +1,5 @@
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/models/models.dart';
-
 import 'battle.dart';
 
 class BattleSkillInfoData {

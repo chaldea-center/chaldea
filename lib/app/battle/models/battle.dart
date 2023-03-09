@@ -5,7 +5,6 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';

@@ -8,7 +8,6 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
-
 import 'buff.dart';
 import 'card_dmg.dart';
 import 'skill.dart';
@@ -400,8 +399,7 @@ class BattleServantData {
   bool checkNPScript(final BattleData battleData) {
     if (isPlayer) {
       // TODO (battle): check script
-    } else {
-    }
+    } else {}
     return true;
   }
 

@@ -1,3 +1,5 @@
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
@@ -5,8 +7,6 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import '../../../test_init.dart';
 
 void main() async {

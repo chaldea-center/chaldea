@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-
 import '../test_init.dart';
 
 void main() async {
