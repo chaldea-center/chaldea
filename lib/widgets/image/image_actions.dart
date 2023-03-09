@@ -75,10 +75,10 @@ class ImageActions {
                 await Permission.storage.request();
               }
               dynamic result;
-              if (data != null) {
-                result = await ImageGallerySaver.saveImage(data);
-              } else if (srcFp != null) {
+              if (srcFp != null) {
                 result = await ImageGallerySaver.saveFile(srcFp);
+              } else if (data != null) {
+                result = await ImageGallerySaver.saveImage(data, quality: 100);
               }
               if (result is Map && result['isSuccess'] == true) {
                 EasyLoading.showSuccess(S.current.saved);

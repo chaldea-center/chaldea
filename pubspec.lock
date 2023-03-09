@@ -682,11 +682,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "31b6648a6a2be85c32021f651a71a34f98ffaa67"
-      resolved-ref: "31b6648a6a2be85c32021f651a71a34f98ffaa67"
-      url: "https://github.com/artflutter/image_gallery_saver.git"
+      ref: HEAD
+      resolved-ref: df11d2f262442a398d08a504b7482087c545da9f
+      url: "https://github.com/chaldea-center/image_gallery_saver.git"
     source: git
-    version: "1.7.1"
+    version: "2.0.0"
   import_sorter:
     dependency: "direct dev"
     description:
