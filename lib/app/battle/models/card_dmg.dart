@@ -18,7 +18,7 @@ class EnemyData {
 }
 
 class PlayerSvtData {
-  int svtId;
+  Servant? svt;
   int ascension = 4;
   List<int> skillLvs = [10, 10, 10];
   List<int> skillStrengthenLvs = [1, 1, 1];
@@ -35,6 +35,15 @@ class PlayerSvtData {
 
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<int> commandCodeIds = [-1, -1, -1, -1, -1];
+
+  // this field is deprecated and used only in tests
+  int svtId = -1;
+
+  PlayerSvtData.base();
+
+  PlayerSvtData.fromSvt(final Servant fromSvt)
+      : svtId = fromSvt.id,
+        svt = fromSvt;
 
   PlayerSvtData(this.svtId);
 }

@@ -27,6 +27,16 @@ class SimulationPreview extends StatefulWidget {
 
 class _SimulationPreviewState extends State<SimulationPreview> {
   Quest? quest;
+  final List<PlayerSvtData> onFieldSvtDataList = [
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+  ];
+  final List<PlayerSvtData> backupSvtDataList = [
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+  ];
 
   late TextEditingController questIdTextController;
   late TextEditingController phaseTextController;
@@ -107,12 +117,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ));
     }
 
-    final List<ServantSelector> onFieldSvtSelectors = [
-      ServantSelector(),
-      ServantSelector(),
-      ServantSelector(),
-    ];
-
     topListChildren.add(Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -126,10 +130,47 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: onFieldSvtSelectors.map((e) => Expanded(child: e)).toList(),
+          children: onFieldSvtDataList
+              .map((playerSvtData) => Expanded(
+                    child: ServantSelector(
+                      playerSvtData: playerSvtData,
+                      onChange: (_) {
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  ))
+              .toList(),
         ),
       ],
     ));
+
+    topListChildren.add(Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Center(
+          child: Text(
+            'Select Backup Servants',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: backupSvtDataList
+              .map((playerSvtData) => Expanded(
+            child: ServantSelector(
+              playerSvtData: playerSvtData,
+              onChange: (_) {
+                if (mounted) setState(() {});
+              },
+            ),
+          ))
+              .toList(),
+        ),
+      ],
+    ));
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -160,22 +201,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 }
 
-class ServantSelector extends StatefulWidget {
-  ServantSelector({super.key});
-
-  @override
-  State<ServantSelector> createState() => _ServantSelectorState();
-
-  void getServant() {
-    // TODO: figure out how to get the selected svt from State......
-  }
-}
-
-class _ServantSelectorState extends State<ServantSelector> {
-  Servant? svt;
-  final PlayerSvtData playerSvtData = PlayerSvtData(-1);
-
+class ServantSelector extends StatelessWidget {
   static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
+  final PlayerSvtData playerSvtData;
+  final ValueChanged<Servant> onChange;
+
+  ServantSelector({super.key, required this.playerSvtData, required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -208,9 +239,9 @@ class _ServantSelectorState extends State<ServantSelector> {
       );
     }
 
-    final iconImage = svt == null
+    final iconImage = playerSvtData.svt == null
         ? db.getIconImage(emptyIconUrl, width: 72, aspectRatio: 132 / 144)
-        : svt!.iconBuilder(context: context, jumpToDetail: false, width: 72);
+        : playerSvtData.svt!.iconBuilder(context: context, jumpToDetail: false, width: 72);
 
     return Padding(
       padding: const EdgeInsets.all(3),
@@ -224,7 +255,7 @@ class _ServantSelectorState extends State<ServantSelector> {
               onLongPress: () {},
               child: ImageWithText(
                 image: iconImage,
-                textBuilder: svt != null ? textBuilder : null,
+                textBuilder: playerSvtData.svt != null ? textBuilder : null,
                 option: ImageWithTextOption(
                   shadowSize: 4,
                   textStyle: const TextStyle(fontSize: 11, color: Colors.black),
@@ -233,7 +264,6 @@ class _ServantSelectorState extends State<ServantSelector> {
                   padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
                 ),
                 onTap: () {
-                  print('I touched this');
                   router.pushPage(
                     ServantListPage(
                       planMode: false,
@@ -252,12 +282,11 @@ class _ServantSelectorState extends State<ServantSelector> {
     );
   }
 
-  void _onSelectServant(final Servant selectedSVt) {
-    svt = selectedSVt;
+  void _onSelectServant(final Servant selectedSvt) {
+    playerSvtData.svt = selectedSvt;
     // TODO: tune playerSvtData based on user setting as default
-    playerSvtData.lv = getDefaultSvtLv(selectedSVt.rarity);
-
-    if (mounted) setState(() {});
+    playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
+    onChange(selectedSvt);
   }
 
   static int getDefaultSvtLv(final int rarity) {
