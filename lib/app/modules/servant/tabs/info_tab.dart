@@ -203,10 +203,13 @@ class SvtInfoTab extends StatelessWidget {
               TableCellData(
                 child: svt.cards.isEmpty
                     ? const Text(' ')
-                    : FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
+                    : Opacity(
+                        opacity: svt.cards.any((card) => !svt.cardDetails.containsKey(card)) ? 0.6 : 1,
+                        child: FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: svt.cards.map((e) => CommandCardWidget(card: e, width: 44)).toList(),
+                          ),
                         ),
                       ),
                 flex: 4,

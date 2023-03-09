@@ -73,7 +73,8 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
     final ces = ReverseGameData.skill2CE(id).toList()..sort2((e) => e.collectionNo);
     final ccs = ReverseGameData.skill2CC(id).toList()..sort2((e) => e.collectionNo);
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
-    final enemies = ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id));
+    final enemies =
+        ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id) || e.classPassive.containSkill(id));
 
     return ListView(
       children: [

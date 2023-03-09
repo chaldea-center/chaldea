@@ -784,20 +784,6 @@ class FuncDescriptor extends StatelessWidget {
       ]);
     }
 
-    if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);
-      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
-      final script = buff.script;
-      if (script?.HP_HIGHER != null) {
-        final v = script!.HP_HIGHER!.format(percent: true, base: 10);
-        _condSpans.add([TextSpan(text: 'HP≥$v')]);
-      }
-      if (script?.HP_LOWER != null) {
-        final v = script!.HP_LOWER!.format(percent: true, base: 10);
-        _condSpans.add([TextSpan(text: 'HP≤$v')]);
-      }
-    }
-
     if (func.traitVals.isNotEmpty) {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
@@ -811,6 +797,26 @@ class FuncDescriptor extends StatelessWidget {
     if (func.funcType != FuncType.subState ||
         func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
       _addTraits(Transl.special.funcTargetVals, func.functvals);
+    }
+
+    if (buff != null) {
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);
+      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
+      final script = buff.script;
+      if (script?.TargetIndiv != null) {
+        _addTraits('Target Indiv: ', [script!.TargetIndiv!]);
+      }
+      if (buff.script?.INDIVIDUALITIE != null) {
+        _addTraits(Transl.special.buffCheckSelf, [buff.script!.INDIVIDUALITIE!]);
+      }
+      if (script?.HP_HIGHER != null) {
+        final v = script!.HP_HIGHER!.format(percent: true, base: 10);
+        _condSpans.add([TextSpan(text: 'HP≥$v')]);
+      }
+      if (script?.HP_LOWER != null) {
+        final v = script!.HP_LOWER!.format(percent: true, base: 10);
+        _condSpans.add([TextSpan(text: 'HP≤$v')]);
+      }
     }
 
     if (func.funcType == FuncType.lastUsePlayerSkillCopy) {
@@ -866,11 +872,6 @@ class FuncDescriptor extends StatelessWidget {
             },
         ),
       ]));
-    }
-
-    final ownerIndiv = buff?.script?.INDIVIDUALITIE;
-    if (ownerIndiv != null) {
-      _addTraits(Transl.special.buffCheckSelf, [ownerIndiv]);
     }
 
     for (int index = 0; index < _condSpans.length; index++) {

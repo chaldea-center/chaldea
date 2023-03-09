@@ -45,7 +45,7 @@ class PhotoViewOption {
     this.onTapDown,
     this.customSize,
     this.gestureDetectorBehavior,
-    this.tightMode,
+    this.tightMode = true,
     this.filterQuality,
     this.disableGestures,
     this.errorBuilder,
