@@ -76,6 +76,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Future<void> _fetchData() async {
+    questPhase = null;
+    if (mounted) setState(() {});
     questPhase = widget.questPhase;
     if (questPhase != null) return;
 

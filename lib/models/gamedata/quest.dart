@@ -1157,6 +1157,12 @@ class EnemyPassive {
         addPassive = addPassive ?? [];
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) => _$EnemyPassiveFromJson(json);
+
+  bool containSkill(int skillId) {
+    return classPassive.any((e) => e.id == skillId) ||
+        addPassive.any((e) => e.id == skillId) ||
+        appendPassiveSkillIds?.contains(skillId) == true;
+  }
 }
 
 // class EnemyLimit{}
