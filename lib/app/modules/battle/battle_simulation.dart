@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
+import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -12,6 +11,8 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import '../quest/breakdown/quest_phase.dart';
 
 class SimulationPreview extends StatefulWidget {
@@ -72,7 +73,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final List<Widget> topListChildren = [];
 
     topListChildren.add(questSelector());
@@ -89,12 +90,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         Row(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: onFieldSvtDataList
               .map((playerSvtData) => Expanded(
                     child: ServantSelector(
                       playerSvtData: playerSvtData,
-                      onChange: (_) {
+                      onChange: () {
                         if (mounted) setState(() {});
                       },
                     ),
@@ -121,7 +122,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               .map((playerSvtData) => Expanded(
                     child: ServantSelector(
                       playerSvtData: playerSvtData,
-                      onChange: (_) {
+                      onChange: () {
                         if (mounted) setState(() {});
                       },
                     ),
@@ -267,7 +268,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
   }
 
-  void _questSelectCallback(QuestPhase selected) {
+  void _questSelectCallback(final QuestPhase selected) {
     questPhase = selected;
     if (!mounted) return;
     final curRoute = ModalRoute.of(context);
@@ -281,12 +282,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 class ServantSelector extends StatelessWidget {
   static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
-  final ValueChanged<Servant> onChange;
+  final VoidCallback onChange;
 
   ServantSelector({super.key, required this.playerSvtData, required this.onChange});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     Widget textBuilder(TextStyle style) {
       return Text.rich(
         TextSpan(style: style, children: [
@@ -318,7 +319,12 @@ class ServantSelector extends StatelessWidget {
 
     final iconImage = playerSvtData.svt == null
         ? db.getIconImage(emptyIconUrl, width: 72, aspectRatio: 132 / 144)
-        : playerSvtData.svt!.iconBuilder(context: context, jumpToDetail: false, width: 72);
+        : playerSvtData.svt!.iconBuilder(
+            context: context,
+            jumpToDetail: false,
+            width: 72,
+            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascension),
+          );
 
     return Padding(
       padding: const EdgeInsets.all(3),
@@ -352,7 +358,41 @@ class ServantSelector extends StatelessWidget {
                   );
                 },
               ),
-            )
+            ),
+            AutoSizeText(
+              playerSvtData.svt == null ? 'Click icon to select servant' : playerSvtData.svt!.lName.l,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+            ),
+            if (playerSvtData.svt != null)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      router.pushPage(ServantOptionEditPage(
+                        playerSvtData: playerSvtData,
+                        onChange: onChange,
+                      ));
+                    },
+                    icon: const Icon(Icons.edit, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      playerSvtData.svt = null;
+                      onChange();
+                    },
+                    icon: const Icon(Icons.person_off, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -360,10 +400,12 @@ class ServantSelector extends StatelessWidget {
   }
 
   void _onSelectServant(final Servant selectedSvt) {
-    playerSvtData.svt = selectedSvt;
-    // TODO: tune playerSvtData based on user setting as default
-    playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
-    onChange(selectedSvt);
+    if (selectedSvt.type != SvtType.enemyCollectionDetail) {
+      playerSvtData.svt = selectedSvt;
+      // TODO (battle): tune playerSvtData based on user setting as default
+      playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
+      onChange();
+    }
   }
 
   static int getDefaultSvtLv(final int rarity) {
@@ -382,5 +424,17 @@ class ServantSelector extends StatelessWidget {
       default:
         return -1;
     }
+  }
+
+  static String? getSvtAscensionBorderedIconUrl(final Servant svt, final int ascension) {
+    final ascensions = svt.extraAssets.faces.ascension;
+    if (ascensions != null && ascensions.containsKey(ascension)) {
+      return svt.bordered(ascensions[ascension]);
+    }
+    final costumes = svt.extraAssets.faces.costume;
+    if (costumes != null && costumes.containsKey(ascension)) {
+      return svt.bordered(costumes[ascension]);
+    }
+    return null;
   }
 }
