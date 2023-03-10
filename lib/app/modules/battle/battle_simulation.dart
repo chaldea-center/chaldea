@@ -381,6 +381,7 @@ class ServantSelector extends StatelessWidget {
                     constraints: const BoxConstraints(),
                     color: Theme.of(context).colorScheme.primaryContainer,
                   ),
+                  const SizedBox(width: 10),
                   IconButton(
                     onPressed: () {
                       playerSvtData.svt = null;
@@ -403,6 +404,7 @@ class ServantSelector extends StatelessWidget {
     if (selectedSvt.type != SvtType.enemyCollectionDetail) {
       playerSvtData.svt = selectedSvt;
       // TODO (battle): tune playerSvtData based on user setting as default
+      playerSvtData.ascension = 4;
       playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
       onChange();
     }

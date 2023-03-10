@@ -28,6 +28,65 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget build(final BuildContext context) {
     final List<Widget> topListChildren = [];
     topListChildren.add(_header(context));
+    topListChildren.add(CustomTile(
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      titlePadding: EdgeInsets.zero,
+      leading: const Text('Lv'),
+      title: Slider(
+        min: 1,
+        max: 120,
+        divisions: 119,
+        value: playerSvtData.lv.toDouble(),
+        label: playerSvtData.lv.toString(),
+        onChanged: (v) {
+          playerSvtData.lv = v.round();
+          _updateState();
+        },
+      ),
+      trailing: SizedBox(width: 30, child: Text(playerSvtData.lv.toString())),
+    ));
+    topListChildren.add(CustomTile(
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      titlePadding: EdgeInsets.zero,
+      leading: const Text('ATK Fou'),
+      title: Slider(
+        min: 0,
+        max: 200,
+        divisions: 200,
+        value: playerSvtData.atkFou / 10,
+        onChanged: (v) {
+          final int fou = v.round() * 10;
+          if (fou > 1000 && fou % 20 == 10) {
+            playerSvtData.atkFou = fou - 10;
+          } else {
+            playerSvtData.atkFou = fou;
+          }
+          _updateState();
+        },
+      ),
+      trailing: SizedBox(width: 40, child: Text(playerSvtData.atkFou.toString())),
+    ));
+    topListChildren.add(CustomTile(
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      titlePadding: EdgeInsets.zero,
+      leading: const Text('HP Fou'),
+      title: Slider(
+        min: 0,
+        max: 200,
+        divisions: 200,
+        value: playerSvtData.hpFou / 10,
+        onChanged: (v) {
+          final int fou = v.round() * 10;
+          if (fou > 1000 && fou % 20 == 10) {
+            playerSvtData.hpFou = fou - 10;
+          } else {
+            playerSvtData.hpFou = fou;
+          }
+          _updateState();
+        },
+      ),
+      trailing: SizedBox(width: 40, child: Text(playerSvtData.hpFou.toString())),
+    ));
 
     return Scaffold(
       appBar: AppBar(
