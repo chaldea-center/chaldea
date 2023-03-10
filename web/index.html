@@ -86,10 +86,9 @@
     <script>
       // The value below is injected by flutter build, do not touch.
       var serviceWorkerVersion = null;
-      var entrypointUrl = "main.dart.js";
     </script>
     <!-- This script adds the flutter initialization JS code -->
-    <script src="flutter.js" defer></script>
+    <script src="/flutter.js" defer></script>
   </head>
   <body>
     <!-- loading indicator, ref: loading.io -->
@@ -120,6 +119,7 @@
             serviceWorker: {
               serviceWorkerVersion: serviceWorkerVersion,
             },
+            entrypointUrl: "/main.dart.js",
             onEntrypointLoaded: function (engineInitializer) {
               // config web renderer, only work when built with "auto" option
               let _renderer = window.localStorage.getItem("flutterWebRenderer");

@@ -24,6 +24,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Map<int, QuestPhase> phases = {};
   Map<int, List<Quest>> spots = {};
   bool _loading = false;
+  bool _fixFirstCol = false;
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     for (final quest in widget.quests) {
       spots.putIfAbsent(quest.spotId, () => []).add(quest);
     }
-    await Future.wait(widget.quests.map((quest) async {
+    await Future.wait(widget.quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
       if (phase != null) phases[quest.id] = phase;
@@ -55,7 +56,20 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])));
     maxCount = maxCount.clamp(3, 8);
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.free_quest)),
+      appBar: AppBar(
+        title: Text(S.current.free_quest),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _fixFirstCol = !_fixFirstCol;
+              });
+            },
+            icon: const Icon(Icons.view_column),
+            tooltip: 'Fixed 1st Column',
+          )
+        ],
+      ),
       body: Column(
         children: [
           // ListTile(
@@ -78,6 +92,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       fixedWidth: 150,
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 48),
+                    if (!widget.isMainStory)
+                      const DataColumn2(label: Text('Runs', textScaleFactor: 0.9), fixedWidth: 48),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
                     DataColumn2(
                         label: Text(widget.isMainStory ? S.current.fgo_domus_aurea : S.current.item),
@@ -85,9 +101,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     DataColumn2(label: Text(widget.isMainStory ? 'Rayshift' : S.current.item), size: ColumnSize.L),
                   ],
                   rows: data.map((info) => buildRow(info, maxCount)).toList(),
-                  fixedLeftColumns: 1,
+                  fixedLeftColumns: _fixFirstCol ? 1 : 0,
                   fixedTopRows: 1,
-                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48,
+                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48 + 48,
                   columnSpacing: 8,
                   headingRowHeight: 36,
                   horizontalMargin: 8,
@@ -129,12 +145,22 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     cells.add(DataCell(AutoSizeText(
       [
         'Lv.${(phase ?? quest).recommendLv}',
-        if ((phase ?? quest).consumeType == ConsumeType.ap) '${(phase ?? quest).consume}AP'
+        if ((phase ?? quest).consumeType == ConsumeType.ap) '${(phase ?? quest).consume}AP',
       ].join('\n'),
-      maxLines: 2,
+      maxLines: 3,
       minFontSize: 10,
       style: Theme.of(context).textTheme.bodySmall,
     )));
+    if (!widget.isMainStory) {
+      cells.add(DataCell(Center(
+        child: AutoSizeText(
+          phase?.drops.getOrNull(0)?.runs.toString() ?? '-',
+          maxLines: 1,
+          minFontSize: 10,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      )));
+    }
 
     Widget wrap(Iterable<Widget> children) {
       if (children.isEmpty) return const SizedBox.shrink();

@@ -270,31 +270,40 @@ class _CachedImageState extends State<CachedImage> {
         child: child,
         onLongPress: () async {
           Uint8List? bytes;
-          try {
-            final img = await ImageActions.resolveImage(provider);
-            bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))?.buffer.asUint8List();
-          } catch (e, s) {
-            logger.e('resolve image provider failed', e, s);
+          String? srcFp;
+          String? fn;
+          if (provider is FileImage) {
+            srcFp = provider.file.path;
+          } else {
+            try {
+              final img = await ImageActions.resolveImage(provider);
+              bytes = (await img?.toByteData(format: ui.ImageByteFormat.png))?.buffer.asUint8List();
+            } catch (e, s) {
+              logger.e('resolve image provider failed', e, s);
+            }
+            if (bytes == null) {
+              EasyLoading.showError('Failed');
+              if (widget.imageUrl != null) copyToClipboard(widget.imageUrl!);
+              return;
+            }
           }
-          if (bytes == null) {
-            EasyLoading.showError('Failed');
-            if (widget.imageUrl != null) copyToClipboard(widget.imageUrl!);
-            return;
-          }
+
           if (!mounted) return;
 
-          String? fn;
           Uri? uri;
           if (widget.imageUrl != null) uri = Uri.tryParse(widget.imageUrl!);
           if (uri != null && uri.pathSegments.isNotEmpty) {
             fn = Uri.decodeComponent(uri.pathSegments.last);
           }
-          fn ??= '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
+          fn ??= bytes == null
+              ? '${const Uuid().v4()}.png'
+              : '${const Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(bytes).toString())}.png';
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
             url: widget.imageUrl,
             destFp: joinPaths(db.paths.downloadDir, fn),
+            srcFp: srcFp,
             gallery: true,
             share: true,
             onClearCache: onClearCache,

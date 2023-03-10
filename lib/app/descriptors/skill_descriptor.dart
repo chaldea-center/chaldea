@@ -324,12 +324,12 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     final ref = RefMemo();
     if (isBaseTd) {
       ref.add('base');
-      if (td.individuality.every((e) => e.name != Trait.cardNP)) {
-        ref.add('cardNP');
-      }
-      if (cardMap.containsKey(td.card) && td.individuality.every((e) => e.name != cardMap[td.card])) {
-        ref.add('cardQAB');
-      }
+    }
+    if (td.individuality.every((e) => e.name != Trait.cardNP)) {
+      ref.add('cardNP');
+    }
+    if (cardMap.containsKey(td.card) && td.individuality.every((e) => e.name != cardMap[td.card])) {
+      ref.add('cardQAB');
     }
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
     final tdRank = overrideData?.tdRank ?? td.rank;
@@ -427,9 +427,9 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             )
           ]),
         ]),
-        if (isBaseTd)
+        if (ref._tags.isNotEmpty)
           SFooter([
-            '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
+            if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
             if (ref.contain("cardNP"))
               '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.id).l)}',
             if (ref.contain("cardQAB"))
