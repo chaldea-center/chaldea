@@ -153,7 +153,8 @@ class BattleData {
     onFieldAllyServants.clear();
     onFieldEnemies.clear();
     playerDataList = playerSettings
-        .map((svtSetting) => svtSetting == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
+        .map((svtSetting) =>
+            svtSetting == null || svtSetting.svt == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
         .toList();
     _fetchWaveEnemies();
 

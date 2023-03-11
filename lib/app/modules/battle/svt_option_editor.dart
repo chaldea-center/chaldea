@@ -12,7 +12,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 
-import 'battle_simulation.dart';
+import 'simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;

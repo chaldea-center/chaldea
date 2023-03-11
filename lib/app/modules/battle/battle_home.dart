@@ -1,5 +1,5 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/battle/battle_simulation.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'np_damage_calculator.dart';
 
