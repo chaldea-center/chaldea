@@ -405,6 +405,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       if (mounted) setState(() {});
                     },
                   ),
+                  // TODO (battle): Move random slider & 7th anni to card selection window
                   ServantOptionEditPage.buildSlider(
                     leadingText: 'Random',
                     min: ConstData.constants.attackRateRandomMin,
@@ -429,11 +430,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       children: const [
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('Before 7th Anniversary'),
+                          child: Text('Before 7th'),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('After 7th Anniversary'),
+                          child: Text('After 7th'),
                         )
                       ],
                     ),

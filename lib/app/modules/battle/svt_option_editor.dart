@@ -31,21 +31,26 @@ class ServantOptionEditPage extends StatefulWidget {
     required final String label,
     required final ValueChanged<double> onChange,
   }) {
-    return CustomTile(
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      titlePadding: EdgeInsets.zero,
-      leading: SizedBox(width: 65, child: Text(leadingText)),
-      title: Slider(
-        min: min.toDouble(),
-        max: max.toDouble(),
-        divisions: max - min,
-        value: value.toDouble(),
-        label: label,
-        onChanged: (v) {
-          onChange(v);
-        },
-      ),
-      trailing: SizedBox(width: 45, child: Text(label)),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24, top: 10),
+          child: Text('$leadingText: $label'),
+        ),
+        Slider(
+          min: min.toDouble(),
+          max: max.toDouble(),
+          divisions: max - min,
+          value: value.toDouble(),
+          label: label,
+          onChanged: (v) {
+            onChange(v);
+          },
+        ),
+      ],
     );
   }
 }
