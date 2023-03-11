@@ -405,19 +405,35 @@ class ServantSelector extends StatelessWidget {
   void _onSelectServant(final Servant selectedSvt) {
     if (selectedSvt.isUserSvt) {
       playerSvtData.svt = selectedSvt;
-      // TODO (battle): tune playerSvtData based on user setting as default
-      playerSvtData.ascensionPhase = 4;
-      playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
-      playerSvtData.npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length;
+      final status = db.curUser.svtStatusOf(selectedSvt.collectionNo).cur;
+      if (status.favorite) {
+        playerSvtData
+          ..ascensionPhase = status.ascension
+          ..lv = selectedSvt.grailedLv(status.grail)
+          ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
+          ..npLv = status.npLv
+          ..skillLvs = status.skills.toList()
+          ..appendLvs = status.appendSkills.toList()
+          ..atkFou = status.fouAtk > 0 ? 1000 + status.fouAtk * 20 : status.fouAtk3 * 50
+          ..hpFou = status.fouHp > 0 ? 1000 + status.fouHp * 20 : status.fouHp3 * 50
+          ..cardStrengthens = [0, 0, 0, 0, 0]
+          ..commandCodeIds = [-1, -1, -1, -1, -1];
+      } else {
+        playerSvtData
+          ..ascensionPhase = 4
+          ..lv = getDefaultSvtLv(selectedSvt.rarity)
+          ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
+          ..npLv = 5
+          ..skillLvs = [10, 10, 10]
+          ..appendLvs = [0, 0, 0]
+          ..atkFou = 1000
+          ..hpFou = 1000
+          ..cardStrengthens = [0, 0, 0, 0, 0]
+          ..commandCodeIds = [-1, -1, -1, -1, -1];
+      }
       for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
         playerSvtData.skillStrengthenLvs[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).length;
       }
-      playerSvtData.npLv = 5;
-      playerSvtData.skillLvs = [10, 10, 10];
-      playerSvtData.appendLvs = [0, 0, 0];
-      playerSvtData.atkFou = playerSvtData.hpFou = 1000;
-      playerSvtData.cardStrengthens = [0, 0, 0, 0, 0];
-      playerSvtData.commandCodeIds = [-1, -1, -1, -1, -1];
       onChange();
     }
   }

@@ -95,7 +95,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       body: ListView(
         children: divideTiles(
           topListChildren,
-          divider: const Divider(height: 8, thickness: 2),
+          divider: const Divider(height: 10, thickness: 4),
         ),
       ),
     );
