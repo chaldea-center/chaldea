@@ -65,6 +65,7 @@ class BattleServantData {
   int resultHp = 0;
 
   // BattleServantData.Status status
+  int ascensionPhase = 0;
   List<int> userCommandCodeIds = [];
   List<int> svtIndividuality = [];
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
@@ -84,6 +85,8 @@ class BattleServantData {
   bool get selectable => battleBuff.isSelectable;
 
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
+
+  int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
 
   SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
 
@@ -125,6 +128,7 @@ class BattleServantData {
     svt
       ..playerSvtData = settings
       ..niceSvt = settings.svt
+      ..ascensionPhase = settings.ascensionPhase
       ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..atk = settings.svt!.atkGrowth[settings.lv - 1] + settings.atkFou;

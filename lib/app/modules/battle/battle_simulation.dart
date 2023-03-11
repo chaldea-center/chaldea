@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/skill.dart';
+import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/models/db.dart';
@@ -48,8 +50,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   @override
   Widget build(final BuildContext context) {
-    final List<Widget> topListChildren = [];
-
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -59,15 +59,151 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              children: divideTiles(
-                topListChildren,
-                divider: const Divider(height: 8, thickness: 2),
-              ),
+            child: LayoutBuilder(
+              builder: (_, constraints) => buildSvts(constraints),
             ),
           ),
           buildMiscRow(),
         ],
+      ),
+    );
+  }
+
+  Widget buildSvts(final BoxConstraints boxConstraint) {
+    final List<Widget> topListChildren = [];
+    if (boxConstraint.maxWidth >= 600) {
+      topListChildren.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1)
+            Expanded(child: buildBattleSvtData(battleData.onFieldAllyServants[i], i)),
+        ],
+      ));
+      topListChildren.add(const Divider(height: 8, thickness: 2));
+      for (int i = 0; i < (battleData.onFieldEnemies.length + 2) ~/ 3; i += 1) {
+        final List<Widget> rowChildren = [];
+        for (int j = 2; j >= 0; j -= 1) {
+          final index = j + i * 3;
+          rowChildren.add(
+            Expanded(
+              child: buildBattleSvtData(
+                  battleData.onFieldEnemies.length > index ? battleData.onFieldEnemies[index] : null, index),
+            ),
+          );
+        }
+        topListChildren.add(Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rowChildren,
+        ));
+      }
+    } else {
+      topListChildren.add(const Text('Ally Servants'));
+      for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
+        topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
+      }
+      topListChildren.add(const Divider(height: 8, thickness: 2));
+      topListChildren.add(const Text('Enemies'));
+      for (int i = 0; i < battleData.onFieldEnemies.length; i += 1) {
+        topListChildren.add(buildBattleSvtData(battleData.onFieldEnemies[i], i));
+      }
+    }
+
+    return ListView(children: topListChildren);
+  }
+
+  Widget buildBattleSvtData(final BattleServantData? svt, final int index) {
+    if (svt == null) {
+      return const SizedBox();
+    }
+
+    final List<Widget> children = [];
+    children.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Radio<int>(
+          value: index,
+          groupValue: svt.isPlayer ? battleData.allyTargetIndex : battleData.enemyTargetIndex,
+          onChanged: (final int? v) {
+            if (svt.isPlayer) {
+              battleData.allyTargetIndex = v!;
+            } else {
+              battleData.enemyTargetIndex = v!;
+            }
+            if (mounted) setState(() {});
+          },
+        ),
+        AutoSizeText(svt.isPlayer
+            ? Transl.svtNames(ServantSelector.getSvtBattleName(svt.niceSvt!, svt.ascensionPhase)).l
+            : svt.niceEnemy!.lShownName),
+      ],
+    ));
+    final iconImage = svt.isPlayer
+        ? svt.niceSvt!.iconBuilder(
+            context: context,
+            jumpToDetail: false,
+            width: 72,
+            overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+          )
+        : svt.niceEnemy!.iconBuilder(
+            context: context,
+            jumpToDetail: false,
+            width: 72,
+          );
+    children.add(iconImage);
+    if (svt.isPlayer) {
+      children.add(Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < svt.skillInfoList.length; i += 1)
+              buildSkillInfo(svt.skillInfoList[i], onTap: () {
+                svt.activateSkill(battleData, i);
+                if (mounted) setState(() {});
+              }),
+          ],
+        ),
+      ));
+    }
+    children.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        db.getIconImage(svt.svtClass.icon(svt.rarity), width: 40),
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AutoSizeText('ATK: ${svt.attack}', minFontSize: 8,),
+              AutoSizeText('HP: ${svt.hp}', minFontSize: 8),
+              if (svt.isPlayer)
+                AutoSizeText('NP: ${svt.np ~/ 100}.${svt.np ~/ 10 % 10}${svt.np % 10}%', minFontSize: 8)
+              else
+                AutoSizeText('NP: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}', minFontSize: 8),
+            ],
+          ),
+        )
+      ],
+    ));
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.fromBorderSide(
+            Divider.createBorderSide(context, width: 4, color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
+        ),
       ),
     );
   }
@@ -104,7 +240,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                         children: [
                           battleData.mysticCode!.iconBuilder(context: context, width: 72, jumpToDetail: true),
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               for (final skillInfo in battleData.masterSkillInfo) buildSkillInfo(skillInfo),
                             ],
@@ -154,7 +290,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  Widget buildSkillInfo(final BattleSkillInfoData skillInfo) {
+  Widget buildSkillInfo(final BattleSkillInfoData skillInfo, {VoidCallback? onTap}) {
     final cd = skillInfo.chargeTurn;
     Widget cdTextBuilder(final TextStyle style) {
       return Text.rich(
@@ -168,7 +304,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       child: InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: db.getIconImage(skillInfo.skill.icon, width: 33, aspectRatio: 1),
+          image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
           textBuilder: skillInfo.canActivate ? null : cdTextBuilder,
           option: ImageWithTextOption(
             shadowSize: 8,
@@ -177,10 +313,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             alignment: AlignmentDirectional.center,
           ),
           onTap: skillInfo.canActivate
-              ? () {
-                  skillInfo.activate(battleData);
-                  if (mounted) setState(() {});
-                }
+              ? onTap ??
+                  () {
+                    skillInfo.activate(battleData);
+                    if (mounted) setState(() {});
+                  }
               : null,
         ),
       ),

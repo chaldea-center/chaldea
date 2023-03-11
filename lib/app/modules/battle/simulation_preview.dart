@@ -833,4 +833,16 @@ class ServantSelector extends StatelessWidget {
     }
     return svt.name;
   }
+
+  static String getSvtBattleName(final Servant svt, final int ascension) {
+    final overrideName = svt.ascensionAdd.overWriteServantBattleName;
+    if (overrideName.ascension.containsKey(ascension)) {
+      return overrideName.ascension[ascension]!;
+    }
+    final costumes = svt.profile.costume;
+    if (costumes.containsKey(ascension) && overrideName.costume.containsKey(costumes[ascension]!.id)) {
+      return overrideName.costume[costumes[ascension]!.id]!;
+    }
+    return svt.battleName;
+  }
 }
