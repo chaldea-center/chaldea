@@ -33,7 +33,7 @@ class BattleSkillInfoData {
   }
 
   void activate(final BattleData battleData) {
-    if (chargeTurn > 0) {
+    if (chargeTurn > 0 || battleData.isBattleFinished) {
       return;
     }
     chargeTurn = skill.coolDown[skillLv - 1];

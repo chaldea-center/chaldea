@@ -485,7 +485,7 @@ class ServantSelector extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    Widget svtTextBuilder(TextStyle style) {
+    Widget svtTextBuilder(final TextStyle style) {
       return Text.rich(
         TextSpan(style: style, children: [
           TextSpan(text: 'Lv${playerSvtData.lv}'),
@@ -514,7 +514,7 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    Widget ceTextBuilder(TextStyle style) {
+    Widget ceTextBuilder(final TextStyle style) {
       return Text.rich(
         TextSpan(
           style: style,
