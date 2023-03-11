@@ -117,7 +117,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         Row(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: backupSvtDataList
               .map((playerSvtData) => Expanded(
                     child: ServantSelector(
@@ -305,7 +305,7 @@ class ServantSelector extends StatelessWidget {
                   )
                 ],
               ),
-              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 13, height: 13),
+              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 15, height: 15),
             ),
           ),
           TextSpan(text: playerSvtData.npLv.toString()),
@@ -313,17 +313,17 @@ class ServantSelector extends StatelessWidget {
           if (playerSvtData.appendLvs.any((lv) => lv > 0))
             TextSpan(text: "\n${playerSvtData.appendLvs.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
         ]),
-        textScaleFactor: 0.9,
+        textScaleFactor: 1,
       );
     }
 
     final iconImage = playerSvtData.svt == null
-        ? db.getIconImage(emptyIconUrl, width: 72, aspectRatio: 132 / 144)
+        ? db.getIconImage(emptyIconUrl, width: 100, aspectRatio: 132 / 144)
         : playerSvtData.svt!.iconBuilder(
             context: context,
             jumpToDetail: false,
-            width: 72,
-            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.asensionPhase),
+            width: 100,
+            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascensionPhase),
           );
 
     return Padding(
@@ -362,7 +362,7 @@ class ServantSelector extends StatelessWidget {
             AutoSizeText(
               playerSvtData.svt == null
                   ? 'Click icon to select servant'
-                  : Transl.svtNames(getSvtName(playerSvtData.svt!, playerSvtData.asensionPhase)).l,
+                  : Transl.svtNames(getSvtName(playerSvtData.svt!, playerSvtData.ascensionPhase)).l,
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
@@ -406,9 +406,18 @@ class ServantSelector extends StatelessWidget {
     if (selectedSvt.isUserSvt) {
       playerSvtData.svt = selectedSvt;
       // TODO (battle): tune playerSvtData based on user setting as default
-      playerSvtData.asensionPhase = 4;
+      playerSvtData.ascensionPhase = 4;
       playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
-      playerSvtData.npStrengthenLv = getShownTds(selectedSvt, playerSvtData.asensionPhase).length;
+      playerSvtData.npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length;
+      for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
+        playerSvtData.skillStrengthenLvs[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).length;
+      }
+      playerSvtData.npLv = 5;
+      playerSvtData.skillLvs = [10, 10, 10];
+      playerSvtData.appendLvs = [0, 0, 0];
+      playerSvtData.atkFou = playerSvtData.hpFou = 1000;
+      playerSvtData.cardStrengthens = [0, 0, 0, 0, 0];
+      playerSvtData.commandCodeIds = [-1, -1, -1, -1, -1];
       onChange();
     }
   }
@@ -472,6 +481,48 @@ class ServantSelector extends StatelessWidget {
 
     shownTds.removeWhere((niceTd) => removeTdIdList.contains(niceTd.id));
     return shownTds;
+  }
+
+  static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillGroupIndex) {
+    final List<NiceSkill> shownSkills = [];
+    for (final skill in svt.groupedActiveSkills[skillGroupIndex]) {
+      if (shownSkills.every((storeSkill) => storeSkill.id != skill.id)) {
+        shownSkills.add(skill);
+      }
+    }
+
+    // Servant specific
+    final List<int> removeSkillIdList = [];
+    if (svt.collectionNo == 1) {
+      // Mash
+      if ([800140, 800150].contains(ascension)) {
+        if (skillGroupIndex == 0) {
+          removeSkillIdList.addAll([1000, 236000]);
+        } else if (skillGroupIndex == 1) {
+          removeSkillIdList.addAll([2000]);
+        } else {
+          removeSkillIdList.addAll([133000]);
+        }
+      } else {
+        if (skillGroupIndex == 0) {
+          removeSkillIdList.addAll([459550, 744450]);
+        } else if (skillGroupIndex == 1) {
+          removeSkillIdList.addAll([460250]);
+        } else {
+          removeSkillIdList.addAll([457000, 2162350]);
+        }
+      }
+    } else if (svt.collectionNo == 312 && skillGroupIndex == 2) {
+      // Melusine
+      if ([3, 4, 304850].contains(ascension)) {
+        removeSkillIdList.add(888550);
+      } else {
+        removeSkillIdList.add(888575);
+      }
+    }
+
+    shownSkills.removeWhere((niceSkill) => removeSkillIdList.contains(niceSkill.id));
+    return shownSkills;
   }
 
   static String getSvtName(final Servant svt, final int ascension) {

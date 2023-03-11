@@ -19,7 +19,7 @@ class EnemyData {
 
 class PlayerSvtData {
   Servant? svt;
-  int asensionPhase = 4;
+  int ascensionPhase = 4;
   List<int> skillLvs = [10, 10, 10];
   List<int> skillStrengthenLvs = [1, 1, 1];
   List<int> appendLvs = [0, 0, 0];

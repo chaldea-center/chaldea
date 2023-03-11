@@ -121,7 +121,7 @@ class SvtTdTab extends StatelessWidget {
                 onPressed: () => showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => releaseCondition(svt, td, oTdData),
+                  builder: (_) => releaseCondition(svt, td, oTdData),
                 ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
