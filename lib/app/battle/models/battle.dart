@@ -132,7 +132,7 @@ class BattleData {
     _target.removeLast();
   }
 
-  void init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCode? selectedMC) {
+  void init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCodeData? mysticCodeData) {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -168,8 +168,8 @@ class BattleData {
       uniqueIndex += 1;
     });
 
-    mysticCode = selectedMC;
-    mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
+    mysticCode = mysticCodeData?.mysticCode;
+    mysticCodeLv = mysticCodeData?.level ?? 10;
     if (mysticCode != null) {
       masterSkillInfo = mysticCode!.skills.map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv).toList();
     }

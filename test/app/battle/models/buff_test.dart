@@ -20,12 +20,8 @@ void main() async {
 
   group('Test shouldApplyBuff', () {
     final battle = BattleData();
-    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData(504900)
-      ..svtId = 504900
-      ..lv = 90);
-    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData(504900)
-      ..svtId = 503900
-      ..lv = 90);
+    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData(504900)..lv = 90);
+    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData(503900)..lv = 90);
 
     test('target check', () {
       final buff = BuffData(
@@ -82,7 +78,6 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..svtId = 800100
           ..skillStrengthenLvs = [1, 1, 1]
           ..npLv = 3
           ..lv = 80,
@@ -103,7 +98,6 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..svtId = 800100
           ..skillStrengthenLvs = [2, 1, 1]
           ..npLv = 3
           ..lv = 80,

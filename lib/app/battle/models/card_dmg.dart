@@ -36,17 +36,11 @@ class PlayerSvtData {
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<int> commandCodeIds = [-1, -1, -1, -1, -1];
 
-  // these fields are deprecated and used only in tests
-  int svtId = -1;
-  int? ceId;
-
   PlayerSvtData.base();
 
-  PlayerSvtData.fromSvt(final Servant fromSvt)
-      : svtId = fromSvt.id,
-        svt = fromSvt;
+  PlayerSvtData.fromSvt(this.svt);
 
-  PlayerSvtData(this.svtId);
+  PlayerSvtData(final int svtId) : svt = db.gameData.servantsById[svtId];
 }
 
 class MysticCodeData {

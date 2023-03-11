@@ -121,28 +121,26 @@ class BattleServantData {
   }
 
   static BattleServantData fromPlayerSvtData(final PlayerSvtData settings) {
-    final svtData = db.gameData.servantsById[settings.svtId]!;
-
     final svt = BattleServantData();
     svt
       ..playerSvtData = settings
-      ..niceSvt = svtData
-      ..hp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..maxHp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..atk = svtData.atkGrowth[settings.lv - 1] + settings.atkFou;
+      ..niceSvt = settings.svt
+      ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..atk = settings.svt!.atkGrowth[settings.lv - 1] + settings.atkFou;
 
-    final ceData = db.gameData.craftEssencesById[settings.ceId];
-    if (ceData != null) {
-      svt.equip = BattleCEData(ceData, settings.ceLimitBreak, settings.ceLv);
+    if (settings.ce != null) {
+      svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
       svt.hp += svt.equip!.hp;
       svt.maxHp += svt.equip!.hp;
     }
 
     for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
-      if (svtData.groupedActiveSkills.length > i) {
-        svt.skillInfoList.add(BattleSkillInfoData(svtData.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
-          ..skillLv = settings.skillLvs[i]
-          ..strengthStatus = settings.skillStrengthenLvs[i]);
+      if (settings.svt!.groupedActiveSkills.length > i) {
+        svt.skillInfoList
+            .add(BattleSkillInfoData(settings.svt!.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
+              ..skillLv = settings.skillLvs[i]
+              ..strengthStatus = settings.skillStrengthenLvs[i]);
       }
     }
 
