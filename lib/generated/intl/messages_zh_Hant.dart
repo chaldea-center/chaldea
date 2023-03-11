@@ -59,9 +59,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m22(index, total, enemy) => "版本${index}/${total} (${enemy}敌人)";
+  static String m22(runs) => "样本数${runs}";
 
-  static String m23(unknown, dup, valid, total, selected) =>
+  static String m23(index, total, enemy) => "版本${index}/${total} (${enemy}敌人)";
+
+  static String m24(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m10(region) => "${region}公告";
@@ -70,13 +72,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "重置規劃${n}(已顯示)";
 
-  static String m24(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m25(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m13(n) => "個人資料${n}";
 
-  static String m25(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
+  static String m26(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
 
-  static String m26(trait) => "這是一個寶具，但不持有[${trait}]特性";
+  static String m27(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
   static String m14(a, b) => "${a}${b}";
 
@@ -279,6 +281,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage("點擊+按鈕自訂可獲得素材"),
         "event_digging": MessageLookupByLibrary.simpleMessage("發掘"),
         "event_fortification": MessageLookupByLibrary.simpleMessage("強化"),
+        "event_free_quest": MessageLookupByLibrary.simpleMessage("活动Free"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外素材"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("額外固定素材"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("獎池"),
@@ -476,6 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_grail2crystal": MessageLookupByLibrary.simpleMessage("聖杯→傳承結晶"),
         "item_left": MessageLookupByLibrary.simpleMessage("剩餘"),
         "item_no_free_quests": MessageLookupByLibrary.simpleMessage("無FQ"),
+        "item_obtain_event_free_hint": MessageLookupByLibrary.simpleMessage("请留意关卡样本数，样本数过少统计数据可能不准确！"),
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("僅顯示不足"),
         "item_own": MessageLookupByLibrary.simpleMessage("擁有"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("素材截圖"),
@@ -625,9 +629,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("編成限制"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
+        "quest_runs": m22,
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP消耗活動開放時間"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("關卡開放時間"),
-        "quest_version": m22,
+        "quest_version": m23,
         "quit": MessageLookupByLibrary.simpleMessage("退出"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("伐柱戰"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
@@ -638,7 +643,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play評分"),
-        "recognizer_result_count": m23,
+        "recognizer_result_count": m24,
         "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("無新增卡牌"),
         "region_cn": MessageLookupByLibrary.simpleMessage("簡中服"),
@@ -729,7 +734,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-        "solution_total_battles_ap": m24,
+        "solution_total_battles_ap": m25,
         "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
@@ -748,6 +753,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("期待計算"),
         "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("僅供娛樂, 如有雷同, 純屬巧合"),
         "summon_gacha_result": MessageLookupByLibrary.simpleMessage("抽卡結果"),
+        "summon_info_hint": MessageLookupByLibrary.simpleMessage("卡池信息来自Mooncell，为日服信息，其他区服仅供参考。"),
         "summon_pull_unit": MessageLookupByLibrary.simpleMessage("抽"),
         "summon_show_banner": MessageLookupByLibrary.simpleMessage("顯示橫幅"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("呼符"),
@@ -784,11 +790,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "system_tray_close_hint": MessageLookupByLibrary.simpleMessage("關閉視窗時最小化"),
         "td_animation": MessageLookupByLibrary.simpleMessage("宝具动画"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage("同一寶具不同持有者可能擁有不同的色卡和Hit分布"),
-        "td_cardcolor_hint": m25,
-        "td_cardnp_hint": m26,
+        "td_cardcolor_hint": m26,
+        "td_cardnp_hint": m27,
         "td_rankup": MessageLookupByLibrary.simpleMessage("寶具強化"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("測試資訊"),
         "testing": MessageLookupByLibrary.simpleMessage("測試中"),
+        "time": MessageLookupByLibrary.simpleMessage("时间"),
         "time_close": MessageLookupByLibrary.simpleMessage("關閉"),
         "time_end": MessageLookupByLibrary.simpleMessage("結束"),
         "time_start": MessageLookupByLibrary.simpleMessage("開始"),

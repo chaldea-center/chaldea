@@ -8,6 +8,7 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -76,7 +77,8 @@ class _ApkListPageState extends State<ApkListPage> {
         }
       } else {
         // 'https://gplay-ver.atlasacademy.workers.dev/'
-        final resp = await DioE().get('${Hosts.kWorkerHostCN}/proxy/gplay-ver/', queryParameters: {
+        final workerHost = proxy || Language.isCHS ? Hosts.kWorkerHostCN : Hosts.kWorkerHostGlobal;
+        final resp = await DioE().get('$workerHost/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,
           // "t": (DateTime.now().timestamp ~/ 1000).toString()
         });

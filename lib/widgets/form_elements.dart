@@ -58,6 +58,7 @@ class RadioWithLabel<T> extends StatelessWidget {
           value: value,
           groupValue: groupValue,
           onChanged: onChanged,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         label,
       ],

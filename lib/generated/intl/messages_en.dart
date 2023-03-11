@@ -61,9 +61,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m22(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
+  static String m22(runs) => "${runs} Runs";
 
-  static String m23(unknown, dup, valid, total, selected) =>
+  static String m23(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
+
+  static String m24(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
   static String m10(region) => "${region} Notice";
@@ -72,14 +74,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Reset Plan ${n}(Shown)";
 
-  static String m24(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m25(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m13(n) => "Profile ${n}";
 
-  static String m25(color, trait) =>
+  static String m26(color, trait) =>
       "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m26(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
+  static String m27(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
 
   static String m14(a, b) => "${a} ${b}";
 
@@ -292,6 +294,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage("Click + button to customize items"),
         "event_digging": MessageLookupByLibrary.simpleMessage("Digging"),
         "event_fortification": MessageLookupByLibrary.simpleMessage("Fortification"),
+        "event_free_quest": MessageLookupByLibrary.simpleMessage("Event FQ"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),
@@ -494,6 +497,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_grail2crystal": MessageLookupByLibrary.simpleMessage("Grail → Lore"),
         "item_left": MessageLookupByLibrary.simpleMessage("Left"),
         "item_no_free_quests": MessageLookupByLibrary.simpleMessage("No Free Quests"),
+        "item_obtain_event_free_hint": MessageLookupByLibrary.simpleMessage(
+            "Pay attention to the quest runs, few runs may result inaccurate stats!"),
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("Only show lacked"),
         "item_own": MessageLookupByLibrary.simpleMessage("Owned"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("Item Screenshot"),
@@ -651,9 +656,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("Restrictions"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
+        "quest_runs": m22,
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Quest Open Time"),
-        "quest_version": m22,
+        "quest_version": m23,
         "quit": MessageLookupByLibrary.simpleMessage("Quit"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
@@ -665,7 +671,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
-        "recognizer_result_count": m23,
+        "recognizer_result_count": m24,
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("No new card found"),
         "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
@@ -757,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m24,
+        "solution_total_battles_ap": m25,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
@@ -776,6 +782,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("Expectation"),
         "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("Just for entertainment"),
         "summon_gacha_result": MessageLookupByLibrary.simpleMessage("Results"),
+        "summon_info_hint":
+            MessageLookupByLibrary.simpleMessage("JP summon data from Mooncell. Reference only for other regions."),
         "summon_pull_unit": MessageLookupByLibrary.simpleMessage("Pull(s)"),
         "summon_show_banner": MessageLookupByLibrary.simpleMessage("Show Banner"),
         "summon_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
@@ -815,11 +823,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_animation": MessageLookupByLibrary.simpleMessage("NP Animation"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
-        "td_cardcolor_hint": m25,
-        "td_cardnp_hint": m26,
+        "td_cardcolor_hint": m26,
+        "td_cardnp_hint": m27,
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
+        "time": MessageLookupByLibrary.simpleMessage("Time"),
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),
         "time_end": MessageLookupByLibrary.simpleMessage("End"),
         "time_start": MessageLookupByLibrary.simpleMessage("Start"),

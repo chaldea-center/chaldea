@@ -10,6 +10,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
 import 'tabs/obtain_event.dart';
+import 'tabs/obtain_event_free.dart';
 import 'tabs/obtain_free.dart';
 import 'tabs/obtain_interlude.dart';
 
@@ -28,6 +29,7 @@ enum _TabType {
   consumed,
   free,
   event,
+  eventFree,
   interlude,
   info,
 }
@@ -62,10 +64,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
     final item = db.gameData.items[widget.itemId];
     switch (item?.category) {
       case ItemCategory.normal:
+        _shownTabs = _TabType.values.toList();
+        break;
       case ItemCategory.ascension:
       case ItemCategory.skill:
       case ItemCategory.eventAscension:
-        _shownTabs = _TabType.values;
+        _shownTabs = _TabType.values.toList()..remove(_TabType.eventFree);
         break;
       case ItemCategory.coin:
         break;
@@ -88,7 +92,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
-          _shownTabs = _TabType.values;
+          _shownTabs = _TabType.values.toList()..remove(_TabType.eventFree);
         } else if (Items.embers.contains(widget.itemId)) {
           _shownTabs = _kEventTabs;
         }
@@ -140,6 +144,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         _TabInfo(
           header: Tab(text: S.current.event),
           view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
+          actions: [filterOutdatedButton, popupMenu],
+        ),
+      if (_shownTabs.contains(_TabType.eventFree))
+        _TabInfo(
+          header: Tab(text: S.current.event_free_quest),
+          view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
           actions: [filterOutdatedButton, popupMenu],
         ),
       if (_shownTabs.contains(_TabType.interlude))

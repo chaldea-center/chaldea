@@ -178,7 +178,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         TileGroup(
           header: S.current.event,
           children: [for (Event event in relatedEvents) associateEvent(event)],
-        )
+        ),
+      SFooter(S.current.summon_info_hint),
     ];
     return ListView(children: children);
   }

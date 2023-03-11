@@ -278,7 +278,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('${S.current.fgo_domus_aurea} ($runs runs)'),
+          Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
           const SizedBox(height: 2),
           _getDomusAureaWidget(),
           const SizedBox(height: 3),
@@ -290,7 +290,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('Rayshift Drops (${curPhase.drops.first.runs} runs)'),
+          Text('Rayshift Drops (${S.current.quest_runs(curPhase.drops.first.runs)})'),
           const SizedBox(height: 2),
           _getRayshiftDrops(curPhase.drops),
           const SizedBox(height: 3),
@@ -395,7 +395,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
     }
 
-    bool noConsume = effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0;
+    bool noConsume = effPhase.flags.contains(QuestFlag.noBattle) ||
+        (effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -426,7 +427,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
               TextSpan(children: [
-                if (effPhase.consumeType != ConsumeType.item) TextSpan(text: 'AP ${effPhase.consume}'),
+                if (effPhase.consumeType.useAp) TextSpan(text: 'AP ${effPhase.consume}'),
                 for (final itemAmount in effPhase.consumeItem)
                   WidgetSpan(
                     child: Item.iconBuilder(
@@ -695,7 +696,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
         if (preferApRate) {
-          if (quest.consumeType == ConsumeType.ap && quest.consume > 0 && dropRate != 0.0) {
+          if (quest.consume > 0 && dropRate != 0.0) {
             double apRate = quest.consume / dropRate;
             text = apRate >= 1000 ? apRate.toInt().toString() : apRate.format(precision: 3, maxDigits: 4);
           }

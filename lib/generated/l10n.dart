@@ -2219,6 +2219,17 @@ class S {
     );
   }
 
+  /// `Event FQ`
+  String get event_free_quest {
+    return Intl.message(
+      'Event FQ',
+      name: 'event_free_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Extra Items`
   String get event_item_extra {
     return Intl.message(
@@ -4342,6 +4353,17 @@ class S {
     );
   }
 
+  /// `Pay attention to the quest runs, few runs may result inaccurate stats!`
+  String get item_obtain_event_free_hint {
+    return Intl.message(
+      'Pay attention to the quest runs, few runs may result inaccurate stats!',
+      name: 'item_obtain_event_free_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only show lacked`
   String get item_only_show_lack {
     return Intl.message(
@@ -5942,6 +5964,17 @@ class S {
     );
   }
 
+  /// `{runs} Runs`
+  String quest_runs(Object runs) {
+    return Intl.message(
+      '$runs Runs',
+      name: 'quest_runs',
+      desc: '',
+      locale: localeName,
+      args: [runs],
+    );
+  }
+
   /// `AP Cost Event Time`
   String get quest_timeline_sort_campaign_open {
     return Intl.message(
@@ -7284,6 +7317,17 @@ class S {
     );
   }
 
+  /// `JP summon data from Mooncell. Reference only for other regions.`
+  String get summon_info_hint {
+    return Intl.message(
+      'JP summon data from Mooncell. Reference only for other regions.',
+      name: 'summon_info_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Pull(s)`
   String get summon_pull_unit {
     return Intl.message(
@@ -7729,6 +7773,17 @@ class S {
     return Intl.message(
       'Testing',
       name: 'testing',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Time`
+  String get time {
+    return Intl.message(
+      'Time',
+      name: 'time',
       desc: '',
       locale: localeName,
       args: [],

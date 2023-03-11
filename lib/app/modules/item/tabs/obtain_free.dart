@@ -1,5 +1,8 @@
+import 'package:tuple/tuple.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../quest/quest_card.dart';
 
@@ -40,15 +43,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         ),
         Expanded(
           child: InheritSelectionArea(
-            child: ListView(children: [
-              ...buildQuests(),
-              const Divider(height: 16, thickness: 0.5, indent: 16, endIndent: 16),
-              const ListTile(
-                subtitle: Center(
-                  child: Text('Drop rate has been adjusted after 6th anniversary'),
-                ),
-              )
-            ]),
+            child: ListView(children: buildMainFreeQuests()),
           ),
         )
       ],
@@ -67,50 +62,44 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     );
   }
 
-  List<Widget> buildQuests() {
+  List<Widget> buildMainFreeQuests() {
     final dropRateData = db.gameData.dropData.domusAurea;
     int rowIndex = dropRateData.itemIds.indexOf(widget.itemId);
     if (rowIndex < 0) {
       return [ListTile(title: Text(S.current.item_no_free_quests))];
     }
     final dropMatrix = dropRateData.matrix[rowIndex];
-    List<List> tmp = [];
+    final List<Tuple3<double, double, Widget>> tmpData = [];
     for (var i = 0; i < dropRateData.questIds.length; i++) {
       if (dropMatrix[i] <= 0) continue;
       int questId = dropRateData.questIds[i];
       final apRate = dropRateData.apCosts[i] / dropMatrix[i], dropRate = dropMatrix[i];
       final dropRateString = (dropRate * 100).toStringAsFixed(2), apRateString = apRate.toStringAsFixed(2);
       final quest = db.gameData.quests[questId];
-
-      final child = ValueStatefulBuilder<bool>(
-        key: quest == null ? null : Key('quest_${quest.id}'),
-        initValue: false,
-        builder: (context, state) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CustomTile(
-                title: Text(quest?.lDispName ?? 'Quest $questId'),
-                subtitle: Text(
-                    'Cost ${dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
-                trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
-                onTap: quest == null
-                    ? null
-                    : () => state.setState(() {
-                          state.value = !state.value;
-                        }),
-              ),
-              if (state.value && quest != null) QuestCard(quest: quest),
-            ],
+      final child = SimpleAccordion(
+        key: ValueKey('main_free_$questId'),
+        headerBuilder: (context, _) {
+          return ListTile(
+            dense: true,
+            title: Text(quest?.lDispName.setMaxLines(1) ?? 'Quest $questId'),
+            subtitle: Text(
+                'Cost ${quest?.consume ?? dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
+            trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
           );
         },
+        contentBuilder: (context) {
+          if (quest == null) return SFooter('Quest $questId not found');
+          return QuestCard(quest: quest);
+        },
+        expandIconBuilder: (context, _) => const SizedBox.shrink(),
       );
-      tmp.add([apRate, dropRate, child]);
+      tmpData.add(Tuple3(apRate, dropRate, child));
     }
-
-    tmp.sort((a, b) {
-      return ((sortByAP ? a[0] - b[0] : b[1] - a[1]) as num).sign.toInt();
-    });
-    return tmp.map((e) => e.last as Widget).toList();
+    tmpData.sort((a, b) => (sortByAP ? a.item1 - b.item1 : b.item2 - a.item2).sign.toInt());
+    return [
+      ...tmpData.map((e) => e.item3),
+      const Divider(height: 16, thickness: 0.5, indent: 16, endIndent: 16),
+      const SafeArea(child: SizedBox())
+    ];
   }
 }

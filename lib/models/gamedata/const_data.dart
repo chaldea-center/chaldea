@@ -226,7 +226,7 @@ class SvtExpData {
     return SvtExpData._(
       type: type,
       lv: curve?.lv.skip(skip).toList() ?? [],
-      exp: curve?.exp.skip(skip).toList() ?? [],
+      exp: curve?.exp.toList() ?? [],
       hp: curve?.curve.skip(skip).map((e) => hpBase + (hpMax - hpBase) * e ~/ 1000).toList() ?? [],
       atk: curve?.curve.skip(skip).map((e) => atkBase + (atkMax - atkBase) * e ~/ 1000).toList() ?? [],
     );

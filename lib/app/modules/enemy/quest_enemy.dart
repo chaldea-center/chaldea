@@ -309,7 +309,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   Iterable<Widget> enemyDrops() sync* {
     if (enemy.drops.isEmpty) return;
-    yield CustomTableRow.fromTexts(texts: ['${S.current.game_drop}(${enemy.drops.first.runs} runs)'], isHeader: true);
+    yield CustomTableRow.fromTexts(
+        texts: ['${S.current.game_drop}(${S.current.quest_runs(enemy.drops.first.runs)})'], isHeader: true);
     final drops = enemy.drops.toList();
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
     List<Widget> children = [];

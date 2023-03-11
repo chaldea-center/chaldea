@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
 
-  static String m23(unknown, dup, valid, total, selected) =>
+  static String m24(unknown, dup, valid, total, selected) =>
       "${unknown}불명, ${dup}중복, ${valid}/${total}유효, ${selected}선택된";
 
   static String m10(region) => "${region} 공고";
@@ -67,7 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m24(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m25(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
   static String m13(n) => "프로필${n}";
 
@@ -575,7 +575,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("레어도"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store에서 평가"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play에서 평가"),
-        "recognizer_result_count": m23,
+        "recognizer_result_count": m24,
         "region_cn": MessageLookupByLibrary.simpleMessage("간체 중국 서버"),
         "region_jp": MessageLookupByLibrary.simpleMessage("일본 서버"),
         "region_kr": MessageLookupByLibrary.simpleMessage("한국 서버"),
@@ -654,7 +654,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m24,
+        "solution_total_battles_ap": m25,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("음향 효과"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("특별 보상 숨기기"),

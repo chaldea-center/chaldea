@@ -233,8 +233,8 @@ class Servant with GameCardMixin {
   late SvtExpData curveData =
       SvtExpData.from(type: growthCurve, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax);
   List<int> get atkGrowth => curveData.atk;
-  List<int> get hpGrowth => curveData.hp;
-  List<int> get expGrowth => curveData.exp;
+  List<int> get hpGrowth => curveData.hp; // [1:]
+  List<int> get expGrowth => curveData.exp; // [0:]
 
   Servant({
     required this.id,

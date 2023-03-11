@@ -93,7 +93,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 48),
                     if (!widget.isMainStory)
-                      const DataColumn2(label: Text('Runs', textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
                     DataColumn2(
                         label: Text(widget.isMainStory ? S.current.fgo_domus_aurea : S.current.item),
@@ -145,7 +145,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     cells.add(DataCell(AutoSizeText(
       [
         'Lv.${(phase ?? quest).recommendLv}',
-        if ((phase ?? quest).consumeType == ConsumeType.ap) '${(phase ?? quest).consume}AP',
+        if ((phase ?? quest).consumeType.useAp) '${(phase ?? quest).consume}AP',
       ].join('\n'),
       maxLines: 3,
       minFontSize: 10,

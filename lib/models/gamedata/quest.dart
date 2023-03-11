@@ -91,7 +91,7 @@ class Quest with RouteInfo {
     this.type = QuestType.event,
     this.flags = const [],
     this.consumeType = ConsumeType.ap,
-    this.consume = 0,
+    int consume = 0,
     this.consumeItem = const [],
     this.afterClear = QuestAfterClearType.close,
     this.recommendLv = '',
@@ -114,7 +114,8 @@ class Quest with RouteInfo {
     this.openedAt = 0,
     this.closedAt = 0,
   })  : spotName = spotName == '0' ? '' : spotName,
-        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon;
+        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
+        consume = consumeType.useAp ? consume : 0;
 
   static bool _isSQGiftIcon(String? giftIcon, List<Gift> gifts) {
     return giftIcon != null &&
@@ -232,7 +233,8 @@ class Quest with RouteInfo {
       return false;
     }
     if (flags.contains(QuestFlag.noBattle)) return false;
-    return !(consumeType == ConsumeType.ap && consume <= 5);
+    if (flags.contains(QuestFlag.dropFirstTimeOnly)) return false;
+    return true;
   }
 
   List<String> get allScriptIds {
@@ -1320,7 +1322,9 @@ enum ConsumeType {
   ap,
   rp,
   item,
-  apAndItem,
+  apAndItem;
+
+  bool get useAp => this == ConsumeType.ap || this == ConsumeType.apAndItem;
 }
 
 enum QuestAfterClearType {

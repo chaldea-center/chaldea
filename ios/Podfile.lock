@@ -65,9 +65,9 @@ PODS:
   - permission_handler_apple (9.0.4):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.15.0):
-    - SDWebImage/Core (= 5.15.0)
-  - SDWebImage/Core (5.15.0)
+  - SDWebImage (5.15.5):
+    - SDWebImage/Core (= 5.15.5)
+  - SDWebImage/Core (5.15.5)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -178,7 +178,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 9bec4c5cdd9579e1f57104735ee0c37df274d593
+  SDWebImage: fd7e1a22f00303e058058278639bf6196ee431fe
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904

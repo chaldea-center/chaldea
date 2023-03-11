@@ -77,21 +77,19 @@ class _QuestListPageState extends State<QuestListPage> {
           }
           bool isMainFree = quest.isMainStoryFree;
           List<InlineSpan> trailings = [];
-          if (quest.consumeType == ConsumeType.ap || quest.consumeType == ConsumeType.apAndItem) {
+          if (quest.consumeType.useAp) {
             trailings.add(TextSpan(text: 'AP${quest.consume} '));
           }
-          if (quest.consumeType == ConsumeType.apAndItem) {
-            for (final itemAmount in quest.consumeItem) {
-              trailings.add(WidgetSpan(
-                child: Item.iconBuilder(
-                  context: context,
-                  item: itemAmount.item,
-                  text: itemAmount.amount.format(),
-                  height: 18,
-                  jumpToDetail: false,
-                ),
-              ));
-            }
+          for (final itemAmount in quest.consumeItem) {
+            trailings.add(WidgetSpan(
+              child: Item.iconBuilder(
+                context: context,
+                item: itemAmount.item,
+                text: itemAmount.amount.format(),
+                height: 18,
+                jumpToDetail: false,
+              ),
+            ));
           }
           QuestPhase? phase = db.gameData.questPhases[quest.getPhaseKey(3)];
           if (phase != null) {
