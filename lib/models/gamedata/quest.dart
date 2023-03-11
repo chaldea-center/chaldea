@@ -222,7 +222,7 @@ class Quest with RouteInfo {
 
   bool get isMainStoryFree => type == QuestType.free && afterClear == QuestAfterClearType.repeatLast && warId < 1000;
 
-  bool get isDomusQuest => isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
+  bool get isDomusQuest => isMainStoryFree || db.gameData.dropData.domusAurea.questIds.contains(id);
 
   // exclude challenge quest, raid
   bool get isAnyFree {

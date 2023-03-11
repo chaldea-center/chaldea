@@ -5,23 +5,21 @@ import '_helper.dart';
 part '../../generated/models/gamedata/drop_rate.g.dart';
 
 @JsonSerializable()
-class DropRateData {
-  final int updatedAt;
-  final DropRateSheet newData;
-  final DropRateSheet legacyData;
+class DropData {
+  int domusVer;
+  DropRateSheet domusAurea;
+  // key=questId*100+phase
+  Map<int, QuestDropData> fixedDrops; // one-off quest
+  Map<int, QuestDropData> freeDrops; // event free quest
 
-  DropRateData({
-    this.updatedAt = 0,
-    DropRateSheet? newData,
-    DropRateSheet? legacyData,
-  })  : newData = newData ?? DropRateSheet(),
-        legacyData = legacyData ?? DropRateSheet();
+  DropData({
+    this.domusVer = 0,
+    DropRateSheet? domusAurea,
+    this.fixedDrops = const {},
+    this.freeDrops = const {},
+  }) : domusAurea = domusAurea ?? DropRateSheet();
 
-  factory DropRateData.fromJson(Map<String, dynamic> json) => _$DropRateDataFromJson(json);
-
-  DropRateSheet getSheet([bool use6th = true]) {
-    return use6th ? newData : legacyData;
-  }
+  factory DropData.fromJson(Map<String, dynamic> json) => _$DropDataFromJson(json);
 }
 
 @JsonSerializable()
@@ -108,4 +106,17 @@ class DropRateSheet {
     exps.removeAt(index);
     matrix.forEach((row) => row.removeAt(index));
   }
+}
+
+@JsonSerializable()
+class QuestDropData {
+  int runs;
+  // itemId: dropCount=num*count
+  Map<int, int> items;
+  QuestDropData({
+    this.runs = 0,
+    this.items = const {},
+  });
+
+  factory QuestDropData.fromJson(Map<String, dynamic> json) => _$QuestDropDataFromJson(json);
 }

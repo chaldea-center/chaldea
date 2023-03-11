@@ -189,9 +189,19 @@ class GameDataLoader {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
         fileJson = Map.fromIterable(fileJson, key: l2mFn);
       }
-      Map<dynamic, dynamic> targetJson =
-          fv.key.startsWith('wiki.') ? _gameJson.putIfAbsent('wiki', () => {}) : _gameJson;
-      String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
+      Map<dynamic, dynamic> targetJson = _gameJson;
+      String key = fv.key;
+      if (key.contains('.')) {
+        final nodes = key.split('.');
+        for (final node in nodes.sublist(0, nodes.length - 1)) {
+          targetJson = targetJson.putIfAbsent(node, () => {});
+        }
+        key = nodes.last;
+      }
+
+      // Map<dynamic, dynamic> targetJson =
+      //     fv.key.startsWith('wiki.') ? _gameJson.putIfAbsent('wiki', () => {}) : _gameJson;
+      // String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
       if (targetJson[key] == null) {
         targetJson[key] = fileJson;
       } else {

@@ -143,7 +143,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   offline: false,
                   key: uniqueKey,
                 ),
-                if (db.gameData.dropRate.newData.questIds.contains(quest.id)) blacklistButton,
+                if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
                 ...getCampaigns(),
                 const SafeArea(child: SizedBox())

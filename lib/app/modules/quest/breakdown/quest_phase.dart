@@ -251,7 +251,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ),
       ));
     }
-    final sheetData = db.gameData.dropRate.getSheet(true);
+    final sheetData = db.gameData.dropData.domusAurea;
     final _questIndex = sheetData.questIds.indexOf(quest.id);
     if (!widget.battleOnly && (curPhase.drops.isNotEmpty || _questIndex >= 0)) {
       children.add(Wrap(
@@ -654,7 +654,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   /// only drops of free quest useApRate
   Widget _getDomusAureaWidget() {
-    final dropRates = db.gameData.dropRate.getSheet(true);
+    final dropRates = db.gameData.dropData.domusAurea;
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();

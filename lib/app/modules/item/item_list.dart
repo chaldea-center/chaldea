@@ -166,7 +166,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   void navToDropCalculator() {
     Map<int, int> _getObjective() {
       Map<int, int> objective = {};
-      final itemIds = db.gameData.dropRate.getSheet(true).itemIds;
+      final itemIds = db.gameData.dropData.domusAurea.itemIds;
       db.itemCenter.itemLeft.forEach((itemId, value) {
         final rarity = db.gameData.items[itemId]?.rarity ?? -1;
         if (rarity > 0 && rarity <= 3) {

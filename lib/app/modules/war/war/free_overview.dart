@@ -208,7 +208,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       final info = _DropInfo(quest);
       data.add(info);
       // domus
-      final drops = db.gameData.dropRate.getSheet(true).getQuestDropRate(quest.id);
+      final drops = db.gameData.dropData.domusAurea.getQuestDropRate(quest.id);
       drops.removeWhere((id, value) => db.gameData.items[id]?.category != ItemCategory.normal);
       for (final id in drops.keys) {
         if (db.gameData.items[id]?.category != ItemCategory.normal) continue;

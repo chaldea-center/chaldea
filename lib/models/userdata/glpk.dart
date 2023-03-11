@@ -95,7 +95,7 @@ class FreeLPParams {
         planItemCounts = Map.of(other.planItemCounts),
         planItemWeights = Map.of(other.planItemWeights);
 
-  DropRateSheet get sheet => db.gameData.dropRate.getSheet();
+  DropRateSheet get sheet => db.gameData.dropData.domusAurea;
 
   void validate() {
     rows.removeWhere((e) => !sheet.itemIds.contains(e));

@@ -68,7 +68,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   }
 
   List<Widget> buildQuests() {
-    final dropRateData = db.gameData.dropRate.getSheet();
+    final dropRateData = db.gameData.dropData.domusAurea;
     int rowIndex = dropRateData.itemIds.indexOf(widget.itemId);
     if (rowIndex < 0) {
       return [ListTile(title: Text(S.current.item_no_free_quests))];

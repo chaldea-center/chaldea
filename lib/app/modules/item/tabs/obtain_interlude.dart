@@ -54,7 +54,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
           }
         }
         for (int phase in quest.phases) {
-          itemCount += db.gameData.fixedDrops[questId * 100 + phase]?.items[widget.itemId] ?? 0;
+          itemCount += db.gameData.dropData.fixedDrops[questId * 100 + phase]?.items[widget.itemId] ?? 0;
         }
         if (itemCount > 0) {
           children.add(_buildOneQuest(
