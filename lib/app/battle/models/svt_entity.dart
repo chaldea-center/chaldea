@@ -405,7 +405,7 @@ class BattleServantData {
 
   NiceTd getCurrentNP() {
     return isPlayer
-        ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1]
+        ? niceSvt!.groupedNoblePhantasms[0][playerSvtData!.npStrengthenLv - 1]
         : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 

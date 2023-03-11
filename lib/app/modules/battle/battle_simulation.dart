@@ -309,7 +309,7 @@ class ServantSelector extends StatelessWidget {
             ),
           ),
           TextSpan(text: playerSvtData.npLv.toString()),
-          TextSpan(text: '\n${playerSvtData.ascension}-${playerSvtData.skillLvs.join('/')}'),
+          TextSpan(text: '\n${playerSvtData.skillLvs.join('/')}'),
           if (playerSvtData.appendLvs.any((lv) => lv > 0))
             TextSpan(text: "\n${playerSvtData.appendLvs.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
         ]),
@@ -323,7 +323,7 @@ class ServantSelector extends StatelessWidget {
             context: context,
             jumpToDetail: false,
             width: 72,
-            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascension),
+            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.asensionPhase),
           );
 
     return Padding(
@@ -360,7 +360,9 @@ class ServantSelector extends StatelessWidget {
               ),
             ),
             AutoSizeText(
-              playerSvtData.svt == null ? 'Click icon to select servant' : playerSvtData.svt!.lName.l,
+              playerSvtData.svt == null
+                  ? 'Click icon to select servant'
+                  : Transl.svtNames(getSvtName(playerSvtData.svt!, playerSvtData.asensionPhase)).l,
               maxLines: 2,
               textAlign: TextAlign.center,
             ),
@@ -401,11 +403,12 @@ class ServantSelector extends StatelessWidget {
   }
 
   void _onSelectServant(final Servant selectedSvt) {
-    if (selectedSvt.type != SvtType.enemyCollectionDetail) {
+    if (selectedSvt.isUserSvt) {
       playerSvtData.svt = selectedSvt;
       // TODO (battle): tune playerSvtData based on user setting as default
-      playerSvtData.ascension = 4;
+      playerSvtData.asensionPhase = 4;
       playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
+      playerSvtData.npStrengthenLv = getShownTds(selectedSvt, playerSvtData.asensionPhase).length;
       onChange();
     }
   }
@@ -438,5 +441,48 @@ class ServantSelector extends StatelessWidget {
       return svt.bordered(costumes[ascension]);
     }
     return null;
+  }
+
+  static List<NiceTd> getShownTds(final Servant svt, final int ascension) {
+    final List<NiceTd> shownTds = [];
+    // only case where we different groups of noblePhantasms exist are for npCardTypeChange
+    for (final td in svt.groupedNoblePhantasms.first) {
+      if (shownTds.every((storedTd) => storedTd.id != td.id)) {
+        shownTds.add(td);
+      }
+    }
+
+    // Servant specific
+    final List<int> removeTdIdList = [];
+    if (svt.collectionNo == 1) {
+      // Mash
+      if ([800140, 800150].contains(ascension)) {
+        removeTdIdList.addAll([800100, 800101, 800104]);
+      } else {
+        removeTdIdList.add(800105);
+      }
+    } else if (svt.collectionNo == 312) {
+      // Melusine
+      if ([3, 4, 304850].contains(ascension)) {
+        removeTdIdList.add(304801);
+      } else {
+        removeTdIdList.add(304802);
+      }
+    }
+
+    shownTds.removeWhere((niceTd) => removeTdIdList.contains(niceTd.id));
+    return shownTds;
+  }
+
+  static String getSvtName(final Servant svt, final int ascension) {
+    final overrideName = svt.ascensionAdd.overWriteServantName;
+    if (overrideName.ascension.containsKey(ascension)) {
+      return overrideName.ascension[ascension]!;
+    }
+    final costumes = svt.profile.costume;
+    if (costumes.containsKey(ascension) && overrideName.costume.containsKey(costumes[ascension]!.id)) {
+      return overrideName.costume[costumes[ascension]!.id]!;
+    }
+    return svt.name;
   }
 }

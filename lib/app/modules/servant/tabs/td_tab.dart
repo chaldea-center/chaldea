@@ -121,7 +121,7 @@ class SvtTdTab extends StatelessWidget {
                 onPressed: () => showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => releaseCondition(context, td, oTdData),
+                  builder: (context) => releaseCondition(svt, td, oTdData),
                 ),
                 icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
@@ -160,7 +160,7 @@ class SvtTdTab extends StatelessWidget {
     }
   }
 
-  Widget releaseCondition(BuildContext context, NiceTd td, OverrideTDData? overrideTDData) {
+  static Widget releaseCondition(final Servant svt, final NiceTd td, final OverrideTDData? overrideTDData) {
     bool notMain = ['91', '94'].contains(td.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[td.condQuestId];
     final jpTime = quest?.openedAt,

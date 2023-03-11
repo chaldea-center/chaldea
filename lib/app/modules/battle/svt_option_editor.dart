@@ -1,8 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/servant/tabs/td_tab.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/userdata/filter_data.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import 'battle_simulation.dart';
@@ -28,65 +33,50 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget build(final BuildContext context) {
     final List<Widget> topListChildren = [];
     topListChildren.add(_header(context));
-    topListChildren.add(CustomTile(
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      titlePadding: EdgeInsets.zero,
-      leading: const Text('Lv'),
-      title: Slider(
-        min: 1,
-        max: 120,
-        divisions: 119,
-        value: playerSvtData.lv.toDouble(),
-        label: playerSvtData.lv.toString(),
-        onChanged: (v) {
-          playerSvtData.lv = v.round();
-          _updateState();
-        },
-      ),
-      trailing: SizedBox(width: 30, child: Text(playerSvtData.lv.toString())),
+    topListChildren.add(_buildSlider(
+      leadingText: 'Lv',
+      min: 1,
+      max: 120,
+      value: playerSvtData.lv,
+      label: playerSvtData.lv.toString(),
+      onChange: (v) {
+        playerSvtData.lv = v.round();
+        _updateState();
+      },
     ));
-    topListChildren.add(CustomTile(
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      titlePadding: EdgeInsets.zero,
-      leading: const Text('ATK Fou'),
-      title: Slider(
-        min: 0,
-        max: 200,
-        divisions: 200,
-        value: playerSvtData.atkFou / 10,
-        onChanged: (v) {
-          final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.atkFou = fou - 10;
-          } else {
-            playerSvtData.atkFou = fou;
-          }
-          _updateState();
-        },
-      ),
-      trailing: SizedBox(width: 40, child: Text(playerSvtData.atkFou.toString())),
+    topListChildren.add(_buildSlider(
+      leadingText: 'ATK Fou',
+      min: 0,
+      max: 200,
+      value: playerSvtData.atkFou ~/ 10,
+      label: playerSvtData.atkFou.toString(),
+      onChange: (v) {
+        final int fou = v.round() * 10;
+        if (fou > 1000 && fou % 20 == 10) {
+          playerSvtData.atkFou = fou - 10;
+        } else {
+          playerSvtData.atkFou = fou;
+        }
+        _updateState();
+      },
     ));
-    topListChildren.add(CustomTile(
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      titlePadding: EdgeInsets.zero,
-      leading: const Text('HP Fou'),
-      title: Slider(
-        min: 0,
-        max: 200,
-        divisions: 200,
-        value: playerSvtData.hpFou / 10,
-        onChanged: (v) {
-          final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.hpFou = fou - 10;
-          } else {
-            playerSvtData.hpFou = fou;
-          }
-          _updateState();
-        },
-      ),
-      trailing: SizedBox(width: 40, child: Text(playerSvtData.hpFou.toString())),
+    topListChildren.add(_buildSlider(
+      leadingText: 'HP Fou',
+      min: 0,
+      max: 200,
+      value: playerSvtData.hpFou ~/ 10,
+      label: playerSvtData.hpFou.toString(),
+      onChange: (v) {
+        final int fou = v.round() * 10;
+        if (fou > 1000 && fou % 20 == 10) {
+          playerSvtData.hpFou = fou - 10;
+        } else {
+          playerSvtData.hpFou = fou;
+        }
+        _updateState();
+      },
     ));
+    topListChildren.add(_buildNPSection());
 
     return Scaffold(
       appBar: AppBar(
@@ -105,24 +95,21 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _header(final BuildContext context) {
     final faces = svt.extraAssets.faces;
-    final ascensionText = faces.ascension != null && faces.ascension!.containsKey(playerSvtData.ascension)
-        ? '${S.current.ascension} ${playerSvtData.ascension}'
-        : faces.costume != null && faces.costume!.containsKey(playerSvtData.ascension)
-            ? svt.profile.costume[playerSvtData.ascension]?.lName.l ?? '${S.current.costume} ${playerSvtData.ascension}'
-            : 'Unknown Ascension';
-
+    final ascensionText = svt.profile.costume.containsKey(playerSvtData.asensionPhase)
+        ? svt.profile.costume[playerSvtData.asensionPhase]!.lName.l
+        : '${S.current.ascension} ${playerSvtData.asensionPhase == 0 ? 1 : playerSvtData.asensionPhase}';
     return CustomTile(
       leading: playerSvtData.svt!.iconBuilder(
         context: context,
         height: 72,
         jumpToDetail: true,
-        overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascension),
+        overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.asensionPhase),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(svt.lName.l),
+          Text(Transl.svtNames(ServantSelector.getSvtName(svt, playerSvtData.asensionPhase)).l),
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}',
@@ -149,7 +136,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                       ),
                       title: Text(name),
                       onTap: () {
-                        playerSvtData.ascension = ascension;
+                        final ascensionPhase = ascension == 1 ? 0 : ascension;
+                        final List<NiceTd> previousShownTds = ServantSelector.getShownTds(svt, playerSvtData.asensionPhase);
+                        final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascensionPhase);
+                        playerSvtData.asensionPhase = ascensionPhase;
+                        if (previousShownTds.length != shownTds.length) {
+                          playerSvtData.npStrengthenLv = svt.groupedNoblePhantasms.first.indexOf(shownTds.last) + 1;
+                          logger.d('Capping npStrengthenLv: ${playerSvtData.npStrengthenLv}');
+                        }
                         Navigator.pop(context);
                       },
                     ));
@@ -171,7 +165,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   }
 
                   return SimpleCancelOkDialog(
-                    title: Text(S.current.svt_ascension_icon),
+                    title: const Text('Change Ascension'),
                     content: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -188,6 +182,140 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           const SizedBox(height: 4),
         ],
       ),
+    );
+  }
+
+  Widget _buildNPSection() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSlider(
+          leadingText: 'NP Lv',
+          min: 1,
+          max: 5,
+          value: playerSvtData.npLv,
+          label: playerSvtData.npLv.toString(),
+          onChange: (v) {
+            playerSvtData.npLv = v.round();
+            _updateState();
+          },
+        ),
+        _buildTdDescriptor(),
+      ],
+    );
+  }
+
+  Widget _buildTdDescriptor() {
+    final int ascension = playerSvtData.asensionPhase;
+    final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascension);
+    final ascensionOverride = svt.ascensionAdd.overWriteTDName.all.containsKey(ascension)
+        ? OverrideTDData(
+            tdName: svt.ascensionAdd.overWriteTDName.all[ascension],
+            tdRuby: svt.ascensionAdd.overWriteTDRuby.all[ascension],
+            tdFileName: svt.ascensionAdd.overWriteTDFileName.all[ascension],
+            tdRank: svt.ascensionAdd.overWriteTDRank.all[ascension],
+            tdTypeText: svt.ascensionAdd.overWriteTDTypeText.all[ascension],
+          )
+        : null;
+    ascensionOverride?.keys.add(ascension);
+
+    if (shownTds.length == 1 && shownTds.first.condQuestId <= 0) {
+      return TdDescriptor(
+        td: shownTds.first,
+        showEnemy: !svt.isUserSvt,
+        level: playerSvtData.npLv,
+        overrideData: ascensionOverride,
+      );
+    }
+
+    final td = svt.groupedNoblePhantasms.first[playerSvtData.npStrengthenLv - 1];
+
+    final toggle = Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: FilterGroup<NiceTd>(
+            shrinkWrap: true,
+            combined: true,
+            options: shownTds,
+            optionBuilder: (selectedTd) {
+              String name = ascensionOverride?.tdName ?? selectedTd.name;
+              name = Transl.tdNames(name).l;
+              final rank = ascensionOverride?.tdRank ?? selectedTd.rank;
+              if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
+                name = '$name $rank';
+              }
+              if (name.trim().isEmpty) name = '???';
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                child: Text(name),
+              );
+            },
+            values: FilterRadioData.nonnull(td),
+            onFilterChanged: (v, _) {
+              playerSvtData.npStrengthenLv = svt.groupedNoblePhantasms.first.indexOf(v.radioValue!) + 1;
+              logger.d('Changing npStrengthenLv: ${playerSvtData.npStrengthenLv}');
+              _updateState();
+            },
+          ),
+        ),
+        if (td.condQuestId > 0 || ascensionOverride != null)
+          IconButton(
+            padding: const EdgeInsets.all(2),
+            constraints: const BoxConstraints(
+              minWidth: 48,
+              minHeight: 24,
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => SvtTdTab.releaseCondition(svt, td, ascensionOverride),
+            ),
+            icon: const Icon(Icons.info_outline),
+            color: Theme.of(context).hintColor,
+            tooltip: S.current.open_condition,
+          ),
+      ],
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 4),
+        toggle,
+        TdDescriptor(
+          td: td,
+          showEnemy: !svt.isUserSvt,
+          level: playerSvtData.npLv,
+          overrideData: ascensionOverride,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSlider({
+    required final String leadingText,
+    required final int min,
+    required final int max,
+    required final int value,
+    required final String label,
+    required final ValueChanged<double> onChange,
+  }) {
+    return CustomTile(
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      titlePadding: EdgeInsets.zero,
+      leading: SizedBox(width: 65, child: Text(leadingText)),
+      title: Slider(
+        min: min.toDouble(),
+        max: max.toDouble(),
+        divisions: max - min,
+        value: value.toDouble(),
+        label: label,
+        onChanged: (v) {
+          onChange(v);
+        },
+      ),
+      trailing: SizedBox(width: 40, child: Text(label)),
     );
   }
 
