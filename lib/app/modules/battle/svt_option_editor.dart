@@ -22,6 +22,32 @@ class ServantOptionEditPage extends StatefulWidget {
 
   @override
   State<ServantOptionEditPage> createState() => _ServantOptionEditPageState();
+
+  static Widget buildSlider({
+    required final String leadingText,
+    required final int min,
+    required final int max,
+    required final int value,
+    required final String label,
+    required final ValueChanged<double> onChange,
+  }) {
+    return CustomTile(
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      titlePadding: EdgeInsets.zero,
+      leading: SizedBox(width: 65, child: Text(leadingText)),
+      title: Slider(
+        min: min.toDouble(),
+        max: max.toDouble(),
+        divisions: max - min,
+        value: value.toDouble(),
+        label: label,
+        onChanged: (v) {
+          onChange(v);
+        },
+      ),
+      trailing: SizedBox(width: 45, child: Text(label)),
+    );
+  }
 }
 
 class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
@@ -35,7 +61,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget build(final BuildContext context) {
     final List<Widget> topListChildren = [];
     topListChildren.add(_header(context));
-    topListChildren.add(_buildSlider(
+    topListChildren.add(ServantOptionEditPage.buildSlider(
       leadingText: 'Lv',
       min: 1,
       max: 120,
@@ -46,7 +72,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         _updateState();
       },
     ));
-    topListChildren.add(_buildSlider(
+    topListChildren.add(ServantOptionEditPage.buildSlider(
       leadingText: 'ATK Fou',
       min: 0,
       max: 200,
@@ -62,7 +88,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         _updateState();
       },
     ));
-    topListChildren.add(_buildSlider(
+    topListChildren.add(ServantOptionEditPage.buildSlider(
       leadingText: 'HP Fou',
       min: 0,
       max: 200,
@@ -107,11 +133,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ? svt.profile.costume[playerSvtData.ascensionPhase]!.lName.l
         : '${S.current.ascension} ${playerSvtData.ascensionPhase == 0 ? 1 : playerSvtData.ascensionPhase}';
     return CustomTile(
-      leading: playerSvtData.svt!.iconBuilder(
+      leading: svt.iconBuilder(
         context: context,
         height: 72,
         jumpToDetail: true,
-        overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascensionPhase),
+        overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt, playerSvtData.ascensionPhase),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
@@ -211,7 +237,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSlider(
+        ServantOptionEditPage.buildSlider(
           leadingText: 'NP Lv',
           min: 1,
           max: 5,
@@ -319,7 +345,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSlider(
+        ServantOptionEditPage.buildSlider(
           leadingText: 'Active Skill ${skillGroupIndex + 1} Lv',
           min: 1,
           max: 10,
@@ -411,7 +437,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSlider(
+        ServantOptionEditPage.buildSlider(
           leadingText: 'Append Skill ${skillGroupIndex + 1} Lv',
           min: 0,
           max: 10,
@@ -431,29 +457,103 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _buildSlider({
-    required final String leadingText,
-    required final int min,
-    required final int max,
-    required final int value,
-    required final String label,
-    required final ValueChanged<double> onChange,
-  }) {
-    return CustomTile(
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      titlePadding: EdgeInsets.zero,
-      leading: SizedBox(width: 65, child: Text(leadingText)),
-      title: Slider(
-        min: min.toDouble(),
-        max: max.toDouble(),
-        divisions: max - min,
-        value: value.toDouble(),
-        label: label,
-        onChanged: (v) {
-          onChange(v);
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+      onChange();
+    }
+  }
+}
+
+class CraftEssenceOptionEditPage extends StatefulWidget {
+  final PlayerSvtData playerSvtData;
+  final VoidCallback onChange;
+
+  CraftEssenceOptionEditPage({super.key, required this.playerSvtData, required this.onChange});
+
+  @override
+  State<CraftEssenceOptionEditPage> createState() => _CraftEssenceOptionEditPageState();
+}
+
+class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage> {
+  PlayerSvtData get playerSvtData => widget.playerSvtData;
+
+  CraftEssence get ce => playerSvtData.ce!;
+
+  VoidCallback get onChange => widget.onChange;
+
+  @override
+  Widget build(final BuildContext context) {
+    final List<Widget> topListChildren = [];
+    topListChildren.add(_header(context));
+    topListChildren.add(ServantOptionEditPage.buildSlider(
+      leadingText: 'Lv',
+      min: 1,
+      max: ce.lvMax,
+      value: playerSvtData.ceLv,
+      label: playerSvtData.ceLv.toString(),
+      onChange: (v) {
+        playerSvtData.ceLv = v.round();
+        _updateState();
+      },
+    ));
+    topListChildren.add(Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ToggleButtons(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        onPressed: (final int index) {
+          playerSvtData.ceLimitBreak = index == 1;
+          _updateState();
         },
+        isSelected: [!playerSvtData.ceLimitBreak, playerSvtData.ceLimitBreak],
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text('Not Limit Break'),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text('Limit Break'),
+          )
+        ],
       ),
-      trailing: SizedBox(width: 40, child: Text(label)),
+    ));
+
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: const AutoSizeText('Edit Craft Essence Option', maxLines: 1),
+        centerTitle: false,
+      ),
+      body: ListView(
+        children: divideTiles(
+          topListChildren,
+          divider: const Divider(height: 10, thickness: 4),
+        ),
+      ),
+    );
+  }
+
+  Widget _header(final BuildContext context) {
+    return CustomTile(
+      leading: playerSvtData.ce!.iconBuilder(
+        context: context,
+        height: 72,
+        jumpToDetail: true,
+        overrideIcon: ce.borderedIcon,
+      ),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(ce.lName.l),
+          Text(
+            'No.${ce.collectionNo > 0 ? ce.collectionNo : ce.id}'
+            '  ${Transl.ceObtain(ce.obtain).l}',
+          ),
+          const SizedBox(height: 4),
+        ],
+      ),
     );
   }
 

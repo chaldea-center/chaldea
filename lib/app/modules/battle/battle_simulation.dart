@@ -3,6 +3,8 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -12,6 +14,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../quest/breakdown/quest_phase.dart';
 
@@ -46,6 +49,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     PlayerSvtData.base(),
     PlayerSvtData.base(),
   ];
+
+  final MysticCodeData mysticCodeData = MysticCodeData();
+  int fixedRandom = ConstData.constants.attackRateRandomMin;
+  int probabilityThreshold = 1000;
+  bool isAfter7thAnni = true;
 
   @override
   void initState() {
@@ -131,6 +139,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
       ],
     ));
+    topListChildren.add(buildMiscController());
 
     return Scaffold(
       appBar: AppBar(
@@ -277,6 +286,126 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     setState(() {});
   }
+
+  Widget buildMiscController() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Center(
+          child: Text(
+            'Misc Configs',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onLongPress: () {},
+                    child: mysticCodeData.mysticCode.iconBuilder(context: context, width: 100, jumpToDetail: false),
+                    onTap: () {
+                      router.pushPage(
+                        MysticCodeListPage(
+                          onSelected: (selectedMC) {
+                            mysticCodeData.mysticCode = selectedMC;
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                        detail: true,
+                      );
+                    },
+                  ),
+                  AutoSizeText(
+                    mysticCodeData.mysticCode.lName.l,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                  IconButton(
+                    onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    icon: FaIcon(
+                      db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ServantOptionEditPage.buildSlider(
+                    leadingText: 'MC Lv',
+                    min: 1,
+                    max: 10,
+                    value: mysticCodeData.level,
+                    label: mysticCodeData.level.toString(),
+                    onChange: (v) {
+                      mysticCodeData.level = v.round();
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  ServantOptionEditPage.buildSlider(
+                    leadingText: 'Rate',
+                    min: 0,
+                    max: 10,
+                    value: probabilityThreshold ~/ 100,
+                    label: '${probabilityThreshold ~/ 10} %',
+                    onChange: (v) {
+                      probabilityThreshold = v.round() * 100;
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  ServantOptionEditPage.buildSlider(
+                    leadingText: 'Random',
+                    min: ConstData.constants.attackRateRandomMin,
+                    max: ConstData.constants.attackRateRandomMax,
+                    value: fixedRandom,
+                    label: '${fixedRandom ~/ 1000}.'
+                        '${fixedRandom ~/ 100 % 10}${fixedRandom ~/ 10 % 10}${fixedRandom % 10}',
+                    onChange: (v) {
+                      fixedRandom = v.round();
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ToggleButtons(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      onPressed: (final int index) {
+                        isAfter7thAnni = index == 1;
+                        if (mounted) setState(() {});
+                      },
+                      isSelected: [!isAfter7thAnni, isAfter7thAnni],
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('Before 7th Anniversary'),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('After 7th Anniversary'),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class ServantSelector extends StatelessWidget {
@@ -288,7 +417,7 @@ class ServantSelector extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    Widget textBuilder(TextStyle style) {
+    Widget svtTextBuilder(TextStyle style) {
       return Text.rich(
         TextSpan(style: style, children: [
           TextSpan(text: 'Lv${playerSvtData.lv}'),
@@ -317,7 +446,17 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    final iconImage = playerSvtData.svt == null
+    Widget ceTextBuilder(TextStyle style) {
+      return Text.rich(
+        TextSpan(
+          style: style,
+          text: 'Lv${playerSvtData.ceLv}-${playerSvtData.ceLimitBreak ? 'LB' : 'not LB'}',
+        ),
+        textScaleFactor: 1,
+      );
+    }
+
+    final playerIconImage = playerSvtData.svt == null
         ? db.getIconImage(emptyIconUrl, width: 100, aspectRatio: 132 / 144)
         : playerSvtData.svt!.iconBuilder(
             context: context,
@@ -325,6 +464,10 @@ class ServantSelector extends StatelessWidget {
             width: 100,
             overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascensionPhase),
           );
+
+    final ceIconImage = playerSvtData.ce == null
+        ? db.getIconImage(emptyIconUrl, width: 100, aspectRatio: 132 / 144)
+        : playerSvtData.ce!.iconBuilder(context: context, jumpToDetail: false, width: 100);
 
     return Padding(
       padding: const EdgeInsets.all(3),
@@ -337,8 +480,8 @@ class ServantSelector extends StatelessWidget {
             InkWell(
               onLongPress: () {},
               child: ImageWithText(
-                image: iconImage,
-                textBuilder: playerSvtData.svt != null ? textBuilder : null,
+                image: playerIconImage,
+                textBuilder: playerSvtData.svt != null ? svtTextBuilder : null,
                 option: ImageWithTextOption(
                   shadowSize: 4,
                   textStyle: const TextStyle(fontSize: 11, color: Colors.black),
@@ -396,10 +539,77 @@ class ServantSelector extends StatelessWidget {
                   ),
                 ],
               ),
+            InkWell(
+              onLongPress: () {},
+              child: ImageWithText(
+                image: ceIconImage,
+                textBuilder: playerSvtData.ce != null ? ceTextBuilder : null,
+                option: ImageWithTextOption(
+                  shadowSize: 4,
+                  textStyle: const TextStyle(fontSize: 11, color: Colors.black),
+                  shadowColor: Colors.white,
+                  alignment: AlignmentDirectional.bottomStart,
+                  padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
+                ),
+                onTap: () {
+                  router.pushPage(
+                    CraftListPage(
+                      onSelected: (selectedCe) {
+                        _onSelectCE(selectedCe);
+                      },
+                    ),
+                    detail: true,
+                  );
+                },
+              ),
+            ),
+            AutoSizeText(
+              playerSvtData.ce == null ? 'Click icon to select CE' : playerSvtData.ce!.lName.l,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+            ),
+            if (playerSvtData.ce != null)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      router.pushPage(CraftEssenceOptionEditPage(
+                        playerSvtData: playerSvtData,
+                        onChange: onChange,
+                      ));
+                    },
+                    icon: const Icon(Icons.edit, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: () {
+                      playerSvtData.ce = null;
+                      onChange();
+                    },
+                    icon: const Icon(Icons.extension_off_rounded, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ],
+              ),
           ],
         ),
       ),
     );
+  }
+
+  void _onSelectCE(final CraftEssence selectedCE) {
+    playerSvtData
+      ..ce = selectedCE
+      ..ceLimitBreak = true
+      ..ceLv = selectedCE.lvMax;
+    onChange();
   }
 
   void _onSelectServant(final Servant selectedSvt) {
