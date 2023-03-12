@@ -19,7 +19,7 @@ class EnemyData {
 
 class PlayerSvtData {
   Servant? svt;
-  int ascension = 4;
+  int ascensionPhase = 4;
   List<int> skillLvs = [10, 10, 10];
   List<int> skillStrengthenLvs = [1, 1, 1];
   List<int> appendLvs = [0, 0, 0];
@@ -29,23 +29,23 @@ class PlayerSvtData {
   int atkFou = 1000;
   int hpFou = 1000;
 
-  int? ceId;
+  CraftEssence? ce;
   bool ceLimitBreak = false;
   int ceLv = 0;
 
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<int> commandCodeIds = [-1, -1, -1, -1, -1];
 
-  // this field is deprecated and used only in tests
-  int svtId = -1;
-
   PlayerSvtData.base();
 
-  PlayerSvtData.fromSvt(final Servant fromSvt)
-      : svtId = fromSvt.id,
-        svt = fromSvt;
+  PlayerSvtData.fromSvt(this.svt);
 
-  PlayerSvtData(this.svtId);
+  PlayerSvtData(final int svtId) : svt = db.gameData.servantsById[svtId];
+}
+
+class MysticCodeData {
+  MysticCode mysticCode = db.gameData.mysticCodes[210]!;
+  int level = 10;
 }
 
 class BuffPreset {

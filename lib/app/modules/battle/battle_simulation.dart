@@ -1,386 +1,717 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
-import 'package:chaldea/app/modules/quest/quest_card.dart';
-import 'package:chaldea/app/modules/servant/servant_list.dart';
-import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/app/battle/models/command_card.dart';
+import 'package:chaldea/app/battle/models/skill.dart';
+import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
+import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../quest/breakdown/quest_phase.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SimulationPreview extends StatefulWidget {
-  final Region? region;
-  final QuestPhase? questPhase;
+class BattleSimulationPage extends StatefulWidget {
+  final QuestPhase questPhase;
+  final List<PlayerSvtData> onFieldSvtDataList;
+  final List<PlayerSvtData> backupSvtDataList;
+  final MysticCodeData mysticCodeData;
+  final int fixedRandom;
+  final int probabilityThreshold;
+  final bool isAfter7thAnni;
 
-  const SimulationPreview({
+  BattleSimulationPage({
     super.key,
-    this.region,
-    this.questPhase,
+    required this.questPhase,
+    required this.onFieldSvtDataList,
+    required this.backupSvtDataList,
+    required this.mysticCodeData,
+    required this.fixedRandom,
+    required this.probabilityThreshold,
+    required this.isAfter7thAnni,
   });
 
   @override
-  State<SimulationPreview> createState() => _SimulationPreviewState();
+  State<BattleSimulationPage> createState() => _BattleSimulationPageState();
 }
 
-class _SimulationPreviewState extends State<SimulationPreview> {
-  Region? region;
-  QuestPhase? questPhase;
-  String? errorMsg;
-
-  late TextEditingController questIdTextController;
-
-  final List<PlayerSvtData> onFieldSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
-  final List<PlayerSvtData> backupSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
+class _BattleSimulationPageState extends State<BattleSimulationPage> {
+  final BattleData battleData = BattleData();
 
   @override
   void initState() {
     super.initState();
-    region = widget.region;
-    questPhase = widget.questPhase;
-    String? initText;
-    if (questPhase != null) {
-      initText = '${questPhase!.id}/${questPhase!.phase}';
-      if (questPhase!.enemyHash != null && questPhase!.enemyHashes.length > 1) {
-        initText += '?hash=${questPhase!.enemyHash}';
-      }
-      if (widget.region != null) {
-        initText = '/${widget.region!.upper}/quest/$initText';
-      }
-    }
-    questIdTextController = TextEditingController(text: initText);
+
+    battleData
+      ..init(widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData)
+      ..probabilityThreshold = widget.probabilityThreshold
+      ..fixedRandom = widget.fixedRandom
+      ..isAfter7thAnni = widget.isAfter7thAnni;
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    questIdTextController.dispose();
-    QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> topListChildren = [];
-
-    topListChildren.add(questSelector());
-
-    topListChildren.add(Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Center(
-          child: Text(
-            'Select Battle Servants',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: onFieldSvtDataList
-              .map((playerSvtData) => Expanded(
-                    child: ServantSelector(
-                      playerSvtData: playerSvtData,
-                      onChange: (_) {
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
-    ));
-
-    topListChildren.add(Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Center(
-          child: Text(
-            'Select Backup Servants',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: backupSvtDataList
-              .map((playerSvtData) => Expanded(
-                    child: ServantSelector(
-                      playerSvtData: playerSvtData,
-                      onChange: (_) {
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
-    ));
-
+  Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const AutoSizeText('Battle Simulation', maxLines: 1),
+        title: AutoSizeText(widget.questPhase.lName.l, maxLines: 1),
         centerTitle: false,
       ),
-      body: ListView(
-        children: divideTiles(
-          topListChildren,
-          divider: const Divider(height: 8, thickness: 2),
+      body: Column(
+        children: [
+          Expanded(
+            child: LayoutBuilder(
+              builder: (_, constraints) => buildSvts(constraints),
+            ),
+          ),
+          buildMiscRow(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSvts(final BoxConstraints boxConstraint) {
+    final List<Widget> topListChildren = [];
+    if (boxConstraint.maxWidth >= 600) {
+      topListChildren.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1)
+            Expanded(child: buildBattleSvtData(battleData.onFieldAllyServants[i], i)),
+        ],
+      ));
+      topListChildren.add(const Divider(height: 8, thickness: 2));
+      for (int i = 0; i < (battleData.onFieldEnemies.length + 2) ~/ 3; i += 1) {
+        final List<Widget> rowChildren = [];
+        for (int j = 2; j >= 0; j -= 1) {
+          final index = j + i * 3;
+          rowChildren.add(
+            Expanded(
+              child: buildBattleSvtData(
+                  battleData.onFieldEnemies.length > index ? battleData.onFieldEnemies[index] : null, index),
+            ),
+          );
+        }
+        topListChildren.add(Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rowChildren,
+        ));
+      }
+    } else {
+      topListChildren.add(const Center(
+          child: Text(
+        'Ally Servants',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      )));
+      for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
+        topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
+      }
+      topListChildren.add(const Divider(height: 8, thickness: 2));
+      topListChildren.add(const Center(
+          child: Text(
+        'Enemies',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      )));
+      for (int i = 0; i < battleData.onFieldEnemies.length; i += 1) {
+        topListChildren.add(buildBattleSvtData(battleData.onFieldEnemies[i], i));
+      }
+    }
+
+    return ListView(children: topListChildren);
+  }
+
+  Widget buildBattleSvtData(final BattleServantData? svt, final int index) {
+    if (svt == null) {
+      return const SizedBox();
+    }
+
+    final List<Widget> children = [];
+    children.add(Text.rich(
+      TextSpan(
+        children: [
+          WidgetSpan(
+              child: Radio<int>(
+                value: index,
+                groupValue: svt.isPlayer ? battleData.allyTargetIndex : battleData.enemyTargetIndex,
+                onChanged: (final int? v) {
+                  if (svt.isPlayer) {
+                    battleData.allyTargetIndex = v!;
+                  } else {
+                    battleData.enemyTargetIndex = v!;
+                  }
+                  if (mounted) setState(() {});
+                },
+              ),
+              alignment: PlaceholderAlignment.middle),
+          TextSpan(
+              text: svt.isPlayer
+                  ? Transl.svtNames(ServantSelector.getSvtBattleName(svt.niceSvt!, svt.ascensionPhase)).l
+                  : svt.niceEnemy!.lShownName),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    ));
+    final iconImage = svt.isPlayer
+        ? svt.niceSvt!.iconBuilder(
+            context: context,
+            jumpToDetail: false,
+            width: 72,
+            overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+          )
+        : svt.niceEnemy!.iconBuilder(
+            context: context,
+            jumpToDetail: false,
+            width: 72,
+          );
+    children.add(InkWell(
+      child: iconImage,
+      onTap: () async {
+        await null;
+        if (!mounted) return;
+        await showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (context) {
+            return SimpleCancelOkDialog(
+              title: const Text('Buff Details'),
+              contentPadding: const EdgeInsets.all(8),
+              content: SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final buff in svt.battleBuff.allBuffs)
+                      ListTile(
+                        horizontalTitleGap: 5,
+                        minVerticalPadding: 0,
+                        leading: buildBuffIcon(buff),
+                        title: Text(buff.effectString()),
+                        trailing: Text(buff.durationString()),
+                      )
+                  ],
+                ),
+              ),
+              hideCancel: true,
+            );
+          },
+        );
+      },
+      onLongPress: () {},
+    ));
+    if (svt.isPlayer) {
+      children.add(Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < svt.skillInfoList.length; i += 1)
+              buildSkillInfo(
+                  skillInfo: svt.skillInfoList[i],
+                  onTap: () {
+                    battleData.activateSvtSkill(index, i);
+                    if (mounted) setState(() {});
+                  }),
+          ],
+        ),
+      ));
+    }
+    children.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        db.getIconImage(svt.svtClass.icon(svt.rarity), width: 40),
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AutoSizeText(
+                'ATK: ${svt.attack}',
+                minFontSize: 8,
+              ),
+              AutoSizeText('HP: ${svt.hp}', minFontSize: 8),
+              if (svt.isPlayer)
+                AutoSizeText('NP: ${(svt.np / 100).toStringAsFixed(2)}%', minFontSize: 8)
+              else
+                AutoSizeText('NP: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}', minFontSize: 8),
+            ],
+          ),
+        )
+      ],
+    ));
+
+    children.add(Text.rich(TextSpan(children: [
+      for (final buff in svt.battleBuff.allBuffs) WidgetSpan(child: buildBuffIcon(buff)),
+    ])));
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.fromBorderSide(
+            Divider.createBorderSide(context, width: 4, color: Theme.of(context).colorScheme.secondary),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
         ),
       ),
     );
   }
 
-  static const _validRegions = [Region.jp, Region.na];
-
-  Widget questSelector() {
-    if (region != null && !_validRegions.contains(region)) {
-      region = Region.jp;
-    }
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: TextFormField(
-            controller: questIdTextController,
-            decoration: const InputDecoration(
-              isDense: true,
-              border: OutlineInputBorder(),
-              hintText: '93031014/3 or **/JP/quest/93031014/3',
-              labelText: 'QuestId/phase or chaldea/AADB quest url',
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
+  Widget buildMiscRow() {
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              ServantOptionEditPage.buildSlider(
+                leadingText: 'Probability Threshold',
+                min: 0,
+                max: 10,
+                value: battleData.probabilityThreshold ~/ 100,
+                label: '${battleData.probabilityThreshold ~/ 10} %',
+                onChange: (v) {
+                  battleData.probabilityThreshold = v.round() * 100;
+                  if (mounted) setState(() {});
+                },
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (battleData.mysticCode != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Column(
+                        children: [
+                          battleData.mysticCode!.iconBuilder(context: context, width: 72, jumpToDetail: true),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              for (int i = 0; i < battleData.masterSkillInfo.length; i += 1)
+                                buildSkillInfo(
+                                    skillInfo: battleData.masterSkillInfo[i],
+                                    onTap: () {
+                                      battleData.activateMysticCodeSKill(i);
+                                      if (mounted) setState(() {});
+                                    }),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(TextSpan(
+                          children: [
+                            const TextSpan(text: 'Critical Star: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
+                            const TextSpan(text: 'Stage: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: '${battleData.waveCount}/${battleData.niceQuest!.stages.length}  '),
+                            const TextSpan(text: 'Enemy Remaining: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${battleData.nonnullEnemies.length + battleData.nonnullBackupEnemies.length}  '),
+                            const TextSpan(text: 'Turn: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: '${battleData.totalTurnCount}'),
+                          ],
+                        )),
+                        Text.rich(TextSpan(
+                          children: [
+                            const TextSpan(text: 'Field Traits ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                              children: SharedBuilder.traitSpans(
+                                context: context,
+                                traits: battleData.getFieldTraits(),
+                                format: (trait) => trait.shownName(field: false),
+                              ),
+                            )
+                          ],
+                        )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                showCommandCards();
+                              },
+                              icon: const Icon(
+                                FontAwesomeIcons.meteor,
+                                size: 30,
+                                color: Colors.red,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // TODO (battle): show battle log
+                              },
+                              icon: Icon(
+                                Icons.list_alt,
+                                size: 30,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                battleData.chargeAllyNP();
+                                if (mounted) setState(() {});
+                              },
+                              icon: Icon(
+                                Icons.battery_charging_full,
+                                size: 30,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                battleData.skipTurn();
+                                if (mounted) setState(() {});
+                              },
+                              icon: Icon(
+                                Icons.fast_forward,
+                                size: 30,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // TODO (battle): undo action
+                              },
+                              icon: Icon(
+                                Icons.undo,
+                                size: 30,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 8,
-          children: [
-            DropdownButton<Region>(
-              isDense: true,
-              value: region,
-              items: [
-                for (final r in _validRegions)
-                  DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
-              ],
-              hint: Text(Region.jp.localName),
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) region = v;
-                });
-              },
+      ),
+    );
+  }
+
+  Widget buildSkillInfo({required final BattleSkillInfoData skillInfo, required final VoidCallback onTap}) {
+    final cd = skillInfo.chargeTurn;
+    Widget cdTextBuilder(final TextStyle style) {
+      return Text.rich(
+        TextSpan(style: style, text: cd.toString()),
+        textScaleFactor: 1,
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: InkWell(
+        onLongPress: () {},
+        child: ImageWithText(
+          image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
+          textBuilder: skillInfo.canActivate ? null : cdTextBuilder,
+          option: ImageWithTextOption(
+            shadowSize: 8,
+            textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+            shadowColor: Colors.white,
+            alignment: AlignmentDirectional.center,
+          ),
+          onTap: skillInfo.canActivate ? onTap : null,
+        ),
+      ),
+    );
+  }
+
+  Widget buildBuffIcon(final BuffData buff) {
+    return DecoratedBox(
+      decoration: buff.irremovable
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(color: Colors.black87, width: 1),
+            )
+          : const BoxDecoration(),
+      child: db.getIconImage(buff.buff.icon, width: 18, height: 18),
+    );
+  }
+
+  void showCommandCards() async {
+    await null;
+    if (!mounted) return;
+    await showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        final List<CombatAction?> combatActions = [null, null, null];
+
+        return SimpleCancelOkDialog(
+          title: const Text('Select Card'),
+          contentPadding: const EdgeInsets.all(8),
+          content: SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            scrollDirection: Axis.horizontal,
+            child: CombatActionSelector(battleData: battleData, combatActions: combatActions),
+          ),
+          onTapOk: () {
+            final List<CombatAction> nonnullActions = [];
+            for (final action in combatActions) {
+              if (action != null) {
+                nonnullActions.add(action);
+              }
+            }
+
+            if (nonnullActions.isEmpty) {
+              return;
+            }
+
+            battleData.playerTurn(nonnullActions);
+            if (mounted) setState(() {});
+          },
+        );
+      },
+    );
+  }
+}
+
+class CombatActionSelector extends StatefulWidget {
+  final BattleData battleData;
+  final List<CombatAction?> combatActions;
+
+  CombatActionSelector({super.key, required this.battleData, required this.combatActions});
+
+  @override
+  State<CombatActionSelector> createState() => _CombatActionSelectorState();
+}
+
+class _CombatActionSelectorState extends State<CombatActionSelector> {
+  @override
+  Widget build(final BuildContext context) {
+    final List<Widget> npCardColumn = [];
+    final List<Widget> commandCardColumn = [];
+    npCardColumn.add(const Text('NP Card'));
+    commandCardColumn.add(const Text('Command Cards'));
+
+    Widget unableTextBuilder(final TextStyle style) {
+      return Text.rich(
+        TextSpan(style: style, text: 'X'),
+        textScaleFactor: 1,
+      );
+    }
+
+    for (final svt in widget.battleData.nonnullAllies) {
+      npCardColumn.add(Padding(
+        padding: const EdgeInsets.all(4),
+        child: InkWell(
+          child: ImageWithText(
+            image: svt.niceSvt!.iconBuilder(
+              context: context,
+              jumpToDetail: false,
+              height: 60,
+              overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                EasyLoading.show();
-                try {
-                  await _fetchQuestPhase();
-                } catch (e, s) {
-                  logger.e('fetch quest phase failed', e, s);
-                  errorMsg = escapeDioError(e);
-                } finally {
-                  EasyLoading.dismiss();
-                  if (mounted) setState(() {});
+            textBuilder: svt.canNP(widget.battleData) ? null : unableTextBuilder,
+            option: ImageWithTextOption(
+              shadowSize: 20,
+              textStyle: const TextStyle(fontSize: 50, color: Colors.black),
+              shadowColor: Colors.white,
+              alignment: AlignmentDirectional.center,
+            ),
+            onTap: () {
+              if (!svt.canNP(widget.battleData)) {
+                return;
+              }
+
+              final npIndex = getNpCardIndex(svt, widget.combatActions);
+              if (npIndex != -1) {
+                widget.combatActions[npIndex] = null;
+                if (mounted) setState(() {});
+              } else {
+                final nextIndex = widget.combatActions.indexOf(null);
+                if (nextIndex == -1) {
+                  return;
                 }
+
+                widget.combatActions[nextIndex] = CombatAction(svt, svt.getNPCard()!);
+                if (mounted) setState(() {});
+              }
+            },
+          ),
+          onLongPress: () {},
+        ),
+      ));
+      final npIndex = getNpCardIndex(svt, widget.combatActions);
+      npCardColumn.add(Text(npIndex == -1 ? '' : 'Card ${npIndex + 1}'));
+
+      commandCardColumn.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (final cardData in svt.getCards())
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: InkWell(
+                    child: ImageWithText(
+                      image: CommandCardWidget(card: cardData.cardType, width: 60),
+                      textBuilder: svt.canCommandCard(widget.battleData) ? null : unableTextBuilder,
+                      option: ImageWithTextOption(
+                        shadowSize: 12,
+                        textStyle: const TextStyle(fontSize: 50, color: Colors.black),
+                        shadowColor: Colors.white,
+                        alignment: AlignmentDirectional.center,
+                      ),
+                      onTap: () {
+                        if (!svt.canCommandCard(widget.battleData)) {
+                          return;
+                        }
+                        final cardIndex = getCardIndex(svt, cardData, widget.combatActions);
+                        if (cardIndex != -1) {
+                          final combatAction = widget.combatActions[cardIndex];
+                          if (combatAction!.cardData.isCritical) {
+                            widget.combatActions[cardIndex] = null;
+                          } else {
+                            combatAction.cardData.isCritical = true;
+                          }
+                          if (mounted) setState(() {});
+                        } else {
+                          final nextIndex = widget.combatActions.indexOf(null);
+                          if (nextIndex == -1) {
+                            return;
+                          }
+
+                          widget.combatActions[nextIndex] = CombatAction(svt, cardData);
+                          if (mounted) setState(() {});
+                        }
+                      },
+                    ),
+                    onLongPress: () {},
+                  ),
+                ),
+                getCardIndexWidget(svt, cardData, widget.combatActions),
+              ],
+            )
+        ],
+      ));
+    }
+
+    npCardColumn.add(Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Radio<bool>(
+              value: false,
+              groupValue: widget.battleData.isAfter7thAnni,
+              onChanged: (final bool? v) {
+                widget.battleData.isAfter7thAnni = v!;
+                if (mounted) setState(() {});
               },
-              child: const Text('Fetch'),
             ),
-            const SizedBox(width: 0),
-            TextButton(
-              onPressed: () {
-                QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-                router.push(url: Routes.events);
-              },
-              child: Text(S.current.event),
-            ),
+            const Text('Before 7th'),
           ],
         ),
-        if (errorMsg != null)
-          SFooter.rich(TextSpan(text: errorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
-        if (questPhase == null)
-          const SFooter.rich(
-            TextSpan(
-              text: 'Choose quest from Events→Wars→Quest→Calculator button',
-              children: [CenterWidgetSpan(child: Icon(Icons.calculate, size: 14))],
+        Row(
+          children: [
+            Radio<bool>(
+              value: true,
+              groupValue: widget.battleData.isAfter7thAnni,
+              onChanged: (final bool? v) {
+                widget.battleData.isAfter7thAnni = v!;
+                if (mounted) setState(() {});
+              },
+            ),
+            const Text('After 7th'),
+          ],
+        )
+      ],
+    ));
+    commandCardColumn.add(ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 350),
+      child: Row(
+        children: [
+          Expanded(
+            child: ServantOptionEditPage.buildSlider(
+              leadingText: 'Random',
+              min: ConstData.constants.attackRateRandomMin,
+              max: ConstData.constants.attackRateRandomMax,
+              value: widget.battleData.fixedRandom,
+              label: toModifier(widget.battleData.fixedRandom).toStringAsFixed(3),
+              onChange: (v) {
+                widget.battleData.fixedRandom = v.round();
+                if (mounted) setState(() {});
+              },
             ),
           ),
-        if (questPhase != null)
-          QuestCard(
-            region: region,
-            offline: false,
-            quest: questPhase,
-            displayPhases: [questPhase!.phase],
-            battleOnly: true,
-            preferredPhases: [questPhase!],
-          ),
+        ],
+      ),
+    ));
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: npCardColumn,
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: commandCardColumn,
+        ),
       ],
     );
   }
 
-  Future<void> _fetchQuestPhase() async {
-    errorMsg = null;
-    final text = questIdTextController.text.trim();
-    // quest id and phase
-    final match = RegExp(r'(\d+)(?:/(\d+))?').firstMatch(text);
-    if (match == null) {
-      errorMsg = 'Invalid quest id or url';
-      return;
-    }
-    final questId = int.parse(match.group(1)!);
-    int? phase = int.tryParse(match.group(2) ?? "");
-    // region
-    final regionText = RegExp(r'(JP|NA|CN|TW|KR)/').firstMatch(text)?.group(1);
-    Region region = this.region ??= const RegionConverter().fromJson(regionText ?? "");
-    // hash
-    final hash = RegExp(r'\?hash=([0-9a-zA-Z_\-]{14})$').firstMatch(text)?.group(1);
-
-    Quest? quest;
-    if (region == Region.jp) quest = db.gameData.quests[questId];
-    quest ??= await AtlasApi.quest(questId, region: region);
-    if (quest == null) {
-      errorMsg = 'Quest $questId not found';
-      return;
-    }
-    if (phase == null || !quest.phases.contains(phase)) {
-      // event quests released in the next day usually have no valid phase data
-      phase = quest.phases.getOrNull(0) ?? 1;
-    }
-    questPhase = await AtlasApi.questPhase(questId, phase, hash: hash, region: region);
-    if (questPhase == null) {
-      errorMsg = 'Not found: /${region.upper}/quest/$questId/$phase';
-      if (hash != null) errorMsg = '${errorMsg!}?hash=$hash';
-    }
+  static int getNpCardIndex(final BattleServantData svt, final List<CombatAction?> combatActions) {
+    return combatActions
+        .map((action) => action != null && action.cardData.isNP ? action.actor : null)
+        .toList()
+        .indexOf(svt);
   }
 
-  void _questSelectCallback(QuestPhase selected) {
-    questPhase = selected;
-    if (!mounted) return;
-    final curRoute = ModalRoute.of(context);
-    if (curRoute != null) {
-      Navigator.popUntil(context, (route) => route == curRoute);
-    }
-    setState(() {});
-  }
-}
-
-class ServantSelector extends StatelessWidget {
-  static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
-  final PlayerSvtData playerSvtData;
-  final ValueChanged<Servant> onChange;
-
-  ServantSelector({super.key, required this.playerSvtData, required this.onChange});
-
-  @override
-  Widget build(BuildContext context) {
-    Widget textBuilder(TextStyle style) {
-      return Text.rich(
-        TextSpan(style: style, children: [
-          TextSpan(text: 'Lv${playerSvtData.lv}'),
-          WidgetSpan(
-            style: style,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.white,
-                    blurRadius: 3,
-                    spreadRadius: 1,
-                  )
-                ],
-              ),
-              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 13, height: 13),
-            ),
-          ),
-          TextSpan(text: playerSvtData.npLv.toString()),
-          TextSpan(text: '\n${playerSvtData.ascension}-${playerSvtData.skillLvs.join('/')}'),
-          if (playerSvtData.appendLvs.any((lv) => lv > 0))
-            TextSpan(text: "\n${playerSvtData.appendLvs.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
-        ]),
-        textScaleFactor: 0.9,
-      );
-    }
-
-    final iconImage = playerSvtData.svt == null
-        ? db.getIconImage(emptyIconUrl, width: 72, aspectRatio: 132 / 144)
-        : playerSvtData.svt!.iconBuilder(context: context, jumpToDetail: false, width: 72);
-
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: Material(
-        borderRadius: BorderRadius.circular(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            InkWell(
-              onLongPress: () {},
-              child: ImageWithText(
-                image: iconImage,
-                textBuilder: playerSvtData.svt != null ? textBuilder : null,
-                option: ImageWithTextOption(
-                  shadowSize: 4,
-                  textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-                  shadowColor: Colors.white,
-                  alignment: AlignmentDirectional.bottomStart,
-                  padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
-                ),
-                onTap: () {
-                  router.pushPage(
-                    ServantListPage(
-                      planMode: false,
-                      onSelected: (selectedSvt) {
-                        _onSelectServant(selectedSvt);
-                      },
-                    ),
-                    detail: true,
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  static int getCardIndex(
+    final BattleServantData svt,
+    final CommandCardData cardData,
+    final List<CombatAction?> combatActions,
+  ) {
+    return combatActions
+        .map((action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isNP
+            ? action.actor
+            : null)
+        .toList()
+        .indexOf(svt);
   }
 
-  void _onSelectServant(final Servant selectedSvt) {
-    playerSvtData.svt = selectedSvt;
-    // TODO: tune playerSvtData based on user setting as default
-    playerSvtData.lv = getDefaultSvtLv(selectedSvt.rarity);
-    onChange(selectedSvt);
-  }
-
-  static int getDefaultSvtLv(final int rarity) {
-    switch (rarity) {
-      case 5:
-        return 90;
-      case 4:
-        return 80;
-      case 3:
-        return 70;
-      case 2:
-      case 0:
-        return 65;
-      case 1:
-        return 60;
-      default:
-        return -1;
-    }
+  static Widget getCardIndexWidget(
+    final BattleServantData svt,
+    final CommandCardData cardData,
+    final List<CombatAction?> combatActions,
+  ) {
+    final cardIndex = getCardIndex(svt, cardData, combatActions);
+    return cardIndex != -1
+        ? combatActions[cardIndex]!.cardData.isCritical
+            ? Text(
+                'Crit ${cardIndex + 1}',
+                style: const TextStyle(color: Colors.red),
+              )
+            : Text('Card ${cardIndex + 1}')
+        : const Text('');
   }
 }

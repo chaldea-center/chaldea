@@ -6,6 +6,7 @@ import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/craft_essence_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'buff.dart';
@@ -25,7 +26,7 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get name => isPlayer ? niceSvt!.battleName : niceEnemy!.lShownName;
+  String get battleName => isPlayer ? ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase) : niceEnemy!.lShownName;
 
   //
   int index = 0;
@@ -65,6 +66,7 @@ class BattleServantData {
   int resultHp = 0;
 
   // BattleServantData.Status status
+  int ascensionPhase = 0;
   List<int> userCommandCodeIds = [];
   List<int> svtIndividuality = [];
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
@@ -84,6 +86,8 @@ class BattleServantData {
   bool get selectable => battleBuff.isSelectable;
 
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
+
+  int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
 
   SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
 
@@ -121,28 +125,27 @@ class BattleServantData {
   }
 
   static BattleServantData fromPlayerSvtData(final PlayerSvtData settings) {
-    final svtData = db.gameData.servantsById[settings.svtId]!;
-
     final svt = BattleServantData();
     svt
       ..playerSvtData = settings
-      ..niceSvt = svtData
-      ..hp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..maxHp = svtData.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..atk = svtData.atkGrowth[settings.lv - 1] + settings.atkFou;
+      ..niceSvt = settings.svt
+      ..ascensionPhase = settings.ascensionPhase
+      ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
+      ..atk = settings.svt!.atkGrowth[settings.lv - 1] + settings.atkFou;
 
-    final ceData = db.gameData.craftEssencesById[settings.ceId];
-    if (ceData != null) {
-      svt.equip = BattleCEData(ceData, settings.ceLimitBreak, settings.ceLv);
+    if (settings.ce != null) {
+      svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
       svt.hp += svt.equip!.hp;
       svt.maxHp += svt.equip!.hp;
     }
 
     for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
-      if (svtData.groupedActiveSkills.length > i) {
-        svt.skillInfoList.add(BattleSkillInfoData(svtData.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
-          ..skillLv = settings.skillLvs[i]
-          ..strengthStatus = settings.skillStrengthenLvs[i]);
+      if (settings.svt!.groupedActiveSkills.length > i) {
+        svt.skillInfoList
+            .add(BattleSkillInfoData(settings.svt!.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
+              ..skillLv = settings.skillLvs[i]
+              ..strengthStatus = settings.skillStrengthenLvs[i]);
       }
     }
 
@@ -183,6 +186,7 @@ class BattleServantData {
     for (int i = 0; i < niceSvt!.cards.length; i += 1) {
       final cardType = niceSvt!.cards[i];
       final card = CommandCardData(cardType, niceSvt!.cardDetails[cardType]!)
+        ..cardIndex = i
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(cardType)
@@ -263,7 +267,7 @@ class BattleServantData {
   }
 
   List<NiceTrait> getTraits() {
-    // TODO (battle): account for add & remove traits
+    // TODO (battle): account for add & remove traits & ascension specific traits & extra traits
     final List<NiceTrait> results = [];
     final svtTraits = isPlayer ? niceSvt!.traits : niceEnemy!.traits;
     results.addAll(svtTraits);
@@ -405,7 +409,7 @@ class BattleServantData {
 
   NiceTd getCurrentNP() {
     return isPlayer
-        ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1]
+        ? niceSvt!.groupedNoblePhantasms[0][playerSvtData!.npStrengthenLv - 1]
         : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 

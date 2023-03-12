@@ -18,15 +18,10 @@ void main() async {
 
   final List<PlayerSvtData> okuniWithDoubleCba = [
     PlayerSvtData(504900)
-      ..svtId = 504900
       ..npLv = 3
       ..lv = 90,
-    PlayerSvtData(503900)
-      ..svtId = 503900
-      ..lv = 90,
-    PlayerSvtData(503900)
-      ..svtId = 503900
-      ..lv = 90,
+    PlayerSvtData(503900)..lv = 90,
+    PlayerSvtData(503900)..lv = 90,
   ];
 
   test('Test changeNP', () {

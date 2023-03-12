@@ -132,7 +132,7 @@ class BattleData {
     _target.removeLast();
   }
 
-  void init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCode? selectedMC) {
+  void init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCodeData? mysticCodeData) {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -153,7 +153,8 @@ class BattleData {
     onFieldAllyServants.clear();
     onFieldEnemies.clear();
     playerDataList = playerSettings
-        .map((svtSetting) => svtSetting == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
+        .map((svtSetting) =>
+            svtSetting == null || svtSetting.svt == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
         .toList();
     _fetchWaveEnemies();
 
@@ -168,8 +169,8 @@ class BattleData {
       uniqueIndex += 1;
     });
 
-    mysticCode = selectedMC;
-    mysticCodeLv = db.curUser.mysticCodes[mysticCode?.id] ?? 10;
+    mysticCode = mysticCodeData?.mysticCode;
+    mysticCodeLv = mysticCodeData?.level ?? 10;
     if (mysticCode != null) {
       masterSkillInfo = mysticCode!.skills.map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv).toList();
     }
@@ -400,6 +401,7 @@ class BattleData {
       applyTypeChain(firstCardType, actions);
     }
 
+    final previousTargetIndex = allyTargetIndex;
     int extraOvercharge = 0;
     for (int i = 0; i < actions.length; i += 1) {
       if (nonnullEnemies.isNotEmpty) {
@@ -443,6 +445,24 @@ class BattleData {
     }
 
     // end player turn
+    endPlayerTurn();
+
+    startEnemyTurn();
+    endEnemyTurn();
+
+    nextTurn();
+
+    allyTargetIndex = previousTargetIndex;
+  }
+
+  void skipTurn() {
+    if (isBattleFinished) {
+      return;
+    }
+
+    onFieldEnemies.clear();
+    enemyDataList.clear();
+
     endPlayerTurn();
 
     startEnemyTurn();
@@ -541,6 +561,13 @@ class BattleData {
     }
   }
 
+  void chargeAllyNP() {
+    if (isBattleFinished) {
+      return;
+    }
+    gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
+  }
+
   void removeDeadActors() {
     removeDeadActorsFromList(onFieldAllyServants);
     removeDeadActorsFromList(onFieldEnemies);
@@ -574,7 +601,7 @@ class BattleData {
         }
       }
     }
-    return 0;
+    return targetIndex;
   }
 
   static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {

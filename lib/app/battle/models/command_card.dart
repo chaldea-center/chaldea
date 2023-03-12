@@ -40,6 +40,7 @@ class CommandCardData {
   int npGain = 0;
   List<NiceTrait> traits = [];
   bool isNP = false;
+  int cardIndex = -1;
   bool isCritical = false;
   List<BuffData> commandCodeBuffs = [];
 

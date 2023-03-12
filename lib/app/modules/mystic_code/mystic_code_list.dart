@@ -92,6 +92,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   void _onTapCard(MysticCode mc, [bool forcePush = false]) {
     if (widget.onSelected != null && !forcePush) {
+      Navigator.pop(context);
       widget.onSelected!(mc);
     } else {
       router.popDetailAndPush(

@@ -23,23 +23,18 @@ void main() async {
   final battle = BattleData();
   final playerSettings = [
     PlayerSvtData(504900)
-      ..svtId = 504900
       ..npLv = 1
       ..lv = 90,
     PlayerSvtData(504900)
-      ..svtId = 504900
       ..npLv = 2
       ..lv = 90,
     PlayerSvtData(503900)
-      ..svtId = 503900
       ..npLv = 2
       ..lv = 90,
     PlayerSvtData(503300)
-      ..svtId = 503300
       ..npLv = 2
       ..lv = 90,
     PlayerSvtData(503200)
-      ..svtId = 503200
       ..npLv = 2
       ..lv = 90
   ];
@@ -190,16 +185,13 @@ void main() async {
     final battle = BattleData();
     final playerSettings = [
       PlayerSvtData(403700) // nemo
-        ..svtId = 403700
         ..npLv = 1
         ..lv = 90,
       PlayerSvtData(300500) // eli
-        ..svtId = 300500
         ..skillStrengthenLvs = [2, 1, 1]
         ..npLv = 2
         ..lv = 80,
       PlayerSvtData(1101100) // kama
-        ..svtId = 1101100
         ..npLv = 5
         ..lv = 120,
     ];
@@ -248,7 +240,6 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..svtId = 800100
           ..skillStrengthenLvs = [1, 1, 1]
           ..npLv = 3
           ..lv = 80,

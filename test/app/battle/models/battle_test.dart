@@ -22,7 +22,6 @@ void main() async {
     group('Altria (100100) vs Sky caster', () {
       final List<PlayerSvtData> altriaSettings = [
         PlayerSvtData(100100)
-          ..svtId = 100100
           ..skillStrengthenLvs = [1, 2, 1]
           ..npLv = 1
           ..npStrengthenLv = 2
@@ -87,7 +86,6 @@ void main() async {
       test('with 1000 Fou & double Koyanskaya of Light', () {
         final List<PlayerSvtData> altriaWithDoubleKoyan = [
           PlayerSvtData(100100)
-            ..svtId = 100100
             ..skillStrengthenLvs = [1, 2, 1]
             ..npLv = 1
             ..npStrengthenLv = 2
@@ -95,7 +93,6 @@ void main() async {
             ..atkFou = 1000
             ..hpFou = 0,
           PlayerSvtData(604200)
-            ..svtId = 604200
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -103,7 +100,6 @@ void main() async {
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(604200)
-            ..svtId = 604200
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -135,14 +131,13 @@ void main() async {
     group('Yang Guifei (2500400) vs Sky caster', () {
       final List<PlayerSvtData> yuyuSettings = [
         PlayerSvtData(2500400)
-          ..svtId = 2500400
           ..skillStrengthenLvs = [2, 1, 1]
           ..npLv = 5
           ..npStrengthenLv = 1
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
-          ..ceId = 9400340 // Kaleidoscope
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true
       ];
@@ -190,18 +185,16 @@ void main() async {
       test('with 1000 Fou & double Altria Caster', () {
         final List<PlayerSvtData> yuyuWithDoubleCastoria = [
           PlayerSvtData(2500400)
-            ..svtId = 2500400
             ..skillStrengthenLvs = [2, 1, 1]
             ..npLv = 5
             ..npStrengthenLv = 1
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
-            ..ceId = 9400340
+            ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData(504500)
-            ..svtId = 504500
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -209,7 +202,6 @@ void main() async {
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(504500)
-            ..svtId = 504500
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -244,14 +236,13 @@ void main() async {
     group('Izumo no Okuni (504900) vs Sky caster', () {
       final List<PlayerSvtData> okuniSettings = [
         PlayerSvtData(504900)
-          ..svtId = 504900
           ..skillStrengthenLvs = [1, 1, 1]
           ..npLv = 5
           ..npStrengthenLv = 1
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
-          ..ceId = 9400340 // Kaleidoscope
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true
       ];
@@ -299,18 +290,16 @@ void main() async {
       test('with 1000 Fou & double Scathach-Skadi (Caster)', () {
         final List<PlayerSvtData> okuniWithDoubleCba = [
           PlayerSvtData(504900)
-            ..svtId = 504900
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 5
             ..npStrengthenLv = 1
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
-            ..ceId = 9400340
+            ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData(503900)
-            ..svtId = 503900
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -318,7 +307,6 @@ void main() async {
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(503900)
-            ..svtId = 503900
             ..skillStrengthenLvs = [1, 1, 1]
             ..npLv = 1
             ..npStrengthenLv = 1
@@ -351,21 +339,16 @@ void main() async {
     test('Kama 3 turn loop & double Castoria', () {
       final List<PlayerSvtData> kamaWithDoubleCastoria = [
         PlayerSvtData(1101100)
-          ..svtId = 1101100
           ..npLv = 5
           ..lv = 120
           ..atkFou = 2000
           ..hpFou = 2000
           ..appendLvs = [10, 10, 10]
-          ..ceId = 9401850 // Magical Girl of Sapphire
+          ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504500)
-          ..svtId = 504500
-          ..lv = 90,
-        PlayerSvtData(504500)
-          ..svtId = 504500
-          ..lv = 90,
+        PlayerSvtData(504500)..lv = 90,
+        PlayerSvtData(504500)..lv = 90,
       ];
       final battle = BattleData();
       battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
@@ -429,15 +412,9 @@ void main() async {
 
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
-      PlayerSvtData(504900)
-        ..svtId = 504900
-        ..lv = 90,
-      PlayerSvtData(503900)
-        ..svtId = 503900
-        ..lv = 90,
-      PlayerSvtData(503900)
-        ..svtId = 503900
-        ..lv = 90,
+      PlayerSvtData(504900)..lv = 90,
+      PlayerSvtData(503900)..lv = 90,
+      PlayerSvtData(503900)..lv = 90,
     ];
 
     test('Test checkTargetTraits & checkActivatorTraits', () {

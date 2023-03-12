@@ -70,7 +70,7 @@ void executeFunction(
       break;
     default:
       print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
-          'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+          'activator: ${activator?.battleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
 }
@@ -174,13 +174,13 @@ List<BattleServantData> acquireFunctionTarget(
       break;
     case FuncTargetType.ptOtherFull:
       targets.addAll(aliveAllies);
-      targets.remove(activator);
       targets.addAll(backupAllies);
+      targets.remove(activator);
       break;
     case FuncTargetType.enemyOtherFull:
       targets.addAll(aliveEnemies);
-      targets.remove(targetedEnemy);
       targets.addAll(backupEnemies);
+      targets.remove(targetedEnemy);
       break;
     case FuncTargetType.ptSelfAnotherFirst:
       final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
@@ -240,7 +240,7 @@ List<BattleServantData> acquireFunctionTarget(
     case FuncTargetType.enemyOneAnotherRandom:
     case FuncTargetType.commandTypeSelfTreasureDevice:
       print('Unimplemented FuncTargetType: $funcTargetType, function ID: $funcId, '
-          'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+          'activator: ${activator?.battleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
       break;
   }
 

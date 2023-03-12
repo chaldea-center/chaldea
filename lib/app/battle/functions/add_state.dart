@@ -20,8 +20,10 @@ bool addState(
   for (final target in targets) {
     final buffData = BuffData(buff, dataVals)
       ..actorUniqueId = activator?.uniqueId ?? 0
+      ..actorName = activator?.battleName ?? ''
       ..notActorPassive = notActorPassive
-      ..isShortBuff = isShortBuff;
+      ..isShortBuff = isShortBuff
+      ..irremovable |= isPassive || notActorPassive;
 
     battleData.setCurrentBuff(buffData);
     battleData.setTarget(target);

@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -56,6 +57,7 @@ class BuffData {
   int onField = 0;
   int auraEffectId = -1;
   int actorUniqueId = 0;
+  String actorName = '';
   int ratioHpHigh = 0;
   int ratioHpLow = 0;
   int ratioRangeHigh = 0;
@@ -154,5 +156,29 @@ class BuffData {
     if (turn > 0) {
       turn -= 1;
     }
+  }
+
+  String effectString() {
+    return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
+        '${buff.lName.l} '
+        '${buff.ckSelfIndv.isNotEmpty ? 'for ${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
+        '${buff.ckOpIndv.isNotEmpty ? 'vs ${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
+        '${param != 0 ? buff.type == BuffType.regainStar ? param : '${(param / 10).toStringAsFixed(1)} % ' : ''}'
+        '${onField == 1 ? 'require ${Transl.svtNames(actorName).l} on field' : ''}';
+  }
+
+  String durationString() {
+    final List<String> durationString = [];
+    if (count > 0) {
+      durationString.add('$count times');
+    }
+    if (turn > 0) {
+      durationString.add('$turn turns');
+    }
+    if (durationString.isEmpty) {
+      durationString.add('Permanent');
+    }
+
+    return durationString.join(', ');
   }
 }

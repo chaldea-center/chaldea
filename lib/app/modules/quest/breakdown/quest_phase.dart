@@ -1,6 +1,6 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/battle/battle_simulation.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/routes/delegate.dart';
