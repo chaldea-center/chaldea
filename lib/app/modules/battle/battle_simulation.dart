@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -166,8 +167,41 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             jumpToDetail: false,
             width: 72,
           );
-    // TODO (battle): change iconImage to InkWell and add onTap to check detailed buff list
-    children.add(iconImage);
+    children.add(InkWell(
+      child: iconImage,
+      onTap: () async {
+        await null;
+        if (!mounted) return;
+        await showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (context) {
+            return SimpleCancelOkDialog(
+              title: const Text('Buff Details'),
+              contentPadding: const EdgeInsets.all(8),
+              content: SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final buff in svt.battleBuff.allBuffs)
+                      ListTile(
+                        horizontalTitleGap: 5,
+                        minVerticalPadding: 0,
+                        leading: buildBuffIcon(buff),
+                        title: Text(buff.effectString()),
+                        trailing: Text(buff.durationString()),
+                      )
+                  ],
+                ),
+              ),
+              hideCancel: true,
+            );
+          },
+        );
+      },
+      onLongPress: () {},
+    ));
     if (svt.isPlayer) {
       children.add(Padding(
         padding: const EdgeInsets.all(4.0),
@@ -201,7 +235,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ),
               AutoSizeText('HP: ${svt.hp}', minFontSize: 8),
               if (svt.isPlayer)
-                AutoSizeText('NP: ${svt.np ~/ 100}.${svt.np ~/ 10 % 10}${svt.np % 10}%', minFontSize: 8)
+                AutoSizeText('NP: ${(svt.np / 100).toStringAsFixed(2)}%', minFontSize: 8)
               else
                 AutoSizeText('NP: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}', minFontSize: 8),
             ],
@@ -211,7 +245,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     ));
 
     children.add(Text.rich(TextSpan(children: [
-      for (final buff in svt.battleBuff.allBuffs) buildBuffIcon(buff),
+      for (final buff in svt.battleBuff.allBuffs) WidgetSpan(child: buildBuffIcon(buff)),
     ])));
 
     return Padding(
@@ -235,7 +269,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   Widget buildMiscRow() {
-    final criticalStar = (battleData.criticalStars * 1000).toInt();
     return DecoratedBox(
       decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
       child: SafeArea(
@@ -286,9 +319,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                         Text.rich(TextSpan(
                           children: [
                             const TextSpan(text: 'Critical Star: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(
-                                text: '${criticalStar ~/ 1000}.'
-                                    '${criticalStar ~/ 100 % 10}${criticalStar ~/ 10 % 10}${criticalStar % 10}  '),
+                            TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
                             const TextSpan(text: 'Stage: ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '${battleData.waveCount}/${battleData.niceQuest!.stages.length}  '),
                             const TextSpan(text: 'Enemy Remaining: ', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -407,17 +438,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  WidgetSpan buildBuffIcon(final BuffData buff) {
-    return WidgetSpan(
-      child: DecoratedBox(
-        decoration: buff.irremovable
-            ? BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(color: Colors.black87, width: 1),
-              )
-            : const BoxDecoration(),
-        child: db.getIconImage(buff.buff.icon, width: 18, height: 18),
-      ),
+  Widget buildBuffIcon(final BuffData buff) {
+    return DecoratedBox(
+      decoration: buff.irremovable
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(color: Colors.black87, width: 1),
+            )
+          : const BoxDecoration(),
+      child: db.getIconImage(buff.buff.icon, width: 18, height: 18),
     );
   }
 
@@ -623,10 +652,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               min: ConstData.constants.attackRateRandomMin,
               max: ConstData.constants.attackRateRandomMax,
               value: widget.battleData.fixedRandom,
-              label: '${widget.battleData.fixedRandom ~/ 1000}.'
-                  '${widget.battleData.fixedRandom ~/ 100 % 10}'
-                  '${widget.battleData.fixedRandom ~/ 10 % 10}'
-                  '${widget.battleData.fixedRandom % 10}',
+              label: toModifier(widget.battleData.fixedRandom).toStringAsFixed(3),
               onChange: (v) {
                 widget.battleData.fixedRandom = v.round();
                 if (mounted) setState(() {});

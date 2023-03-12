@@ -70,7 +70,7 @@ void executeFunction(
       break;
     default:
       print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
-          'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+          'activator: ${activator?.battleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
 }
@@ -240,7 +240,7 @@ List<BattleServantData> acquireFunctionTarget(
     case FuncTargetType.enemyOneAnotherRandom:
     case FuncTargetType.commandTypeSelfTreasureDevice:
       print('Unimplemented FuncTargetType: $funcTargetType, function ID: $funcId, '
-          'activator: ${activator?.name}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+          'activator: ${activator?.battleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
       break;
   }
 
