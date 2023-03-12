@@ -25,10 +25,6 @@ class BattleData {
   QuestPhase? niceQuest;
   Stage? curStage;
 
-  int countEnemyAttack = 0;
-
-  // List<int> playerEntryIds = [-1, -1, -1]; // unique id
-  // List<int> enemyEntryIds = [-1, -1, -1]; // unique id
   int enemyOnFieldCount = 3;
   List<BattleServantData?> enemyDataList = [];
   List<BattleServantData?> playerDataList = [];
@@ -56,22 +52,35 @@ class BattleData {
   List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
 
   bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullAllies.isEmpty;
-
-  // BattleData? data;
-  // BattleInfoData battleInfo;
-  // QuestEntity questEnt;
-  // QuestPhaseEntity questPhaseEnt;
-  List<int> questIndividuality = [];
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
   int mysticCodeLv = 10;
   List<BattleSkillInfoData> masterSkillInfo = []; //BattleSkillInfoData
-  // List<BattleSkillInfoData> boostSkillInfo;
-  // List fieldDataList = []; //BattleFieldData
 
   int waveCount = 0;
   int turnCount = 1;
   int totalTurnCount = 0;
+
+  double criticalStars = 0;
+  int uniqueIndex = 1;
+
+  int fixedRandom = ConstData.constants.attackRateRandomMin;
+  int probabilityThreshold = 1000;
+  bool isAfter7thAnni = true;
+
+  // unused fields
+  // int countEnemyAttack = 0;
+  // List<int> playerEntryIds = [-1, -1, -1]; // unique id
+  // List<int> enemyEntryIds = [-1, -1, -1]; // unique id
+  // BattleData? data;
+  // BattleInfoData battleInfo;
+  // QuestEntity questEnt;
+  // QuestPhaseEntity questPhaseEnt;
+
+  // List<BattleSkillInfoData> boostSkillInfo;
+  // List fieldDataList = []; //BattleFieldData
+
+  // List<int> questIndividuality = [];
 
   // int limitTurnCount = 0;
   // int limitAct = 0;
@@ -81,22 +90,17 @@ class BattleData {
   // int lockTargetId = -1;
   // ComboData comboData;
   // List commandCodeInfos = []; //CommandCodeInfo
-  double criticalStars = 0;
 
   // int addCriticalStars = 0;
   // int subCriticalCount = 0;
   // int prevCriticalStars = 0;
   // bool isCalcCritical = true;
   // List<DataVals>performedValsList=[];
-  int lastActId = 0;
-  int prevTargetId = 0;
+
+  // int lastActId = 0;
+  // int prevTargetId = 0;
+
   bool previousFunctionResult = true;
-  int uniqueIndex = 1;
-
-  int fixedRandom = ConstData.constants.attackRateRandomMin;
-  int probabilityThreshold = 1000;
-  bool isAfter7thAnni = true;
-
   CommandCardData? currentCard;
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData> _activator = [];
@@ -138,8 +142,6 @@ class BattleData {
     turnCount = 0;
     totalTurnCount = 0;
     criticalStars = 0;
-    lastActId = 0;
-    prevTargetId = 0;
 
     previousFunctionResult = true;
     uniqueIndex = 1;
@@ -365,6 +367,7 @@ class BattleData {
       return;
     }
 
+    copy();
     onFieldAllyServants[servantIndex]!.activateSkill(this, skillIndex);
   }
 
@@ -382,6 +385,7 @@ class BattleData {
       return;
     }
 
+    copy();
     masterSkillInfo[skillIndex].activate(this);
   }
 
@@ -390,6 +394,7 @@ class BattleData {
       return;
     }
 
+    copy();
     criticalStars = 0;
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
@@ -459,6 +464,8 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
+
+    copy();
 
     onFieldEnemies.clear();
     enemyDataList.clear();
@@ -565,6 +572,9 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
+
+    copy();
+
     gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
 
@@ -594,14 +604,16 @@ class BattleData {
   }
 
   int getNonNullTargetIndex(final List<BattleServantData?> actorList, final int targetIndex) {
-    if (targetIndex >= actorList.length || actorList[targetIndex] == null) {
-      for (int i = 0; i < actorList.length; i += 1) {
-        if (actorList[i] != null) {
-          return i;
-        }
+    if (actorList.length > targetIndex && actorList[targetIndex] != null) {
+      return targetIndex;
+    }
+
+    for (int i = 0; i < actorList.length; i += 1) {
+      if (actorList[i] != null) {
+        return i;
       }
     }
-    return targetIndex;
+    return 0;
   }
 
   static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
@@ -620,6 +632,67 @@ class BattleData {
 
   static bool isBraveChain(final List<CombatAction> actions) {
     return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
+  }
+
+  final List<BattleData> copies = [];
+
+  void copy() {
+    final BattleData copy = BattleData()
+    ..niceQuest = niceQuest
+    ..curStage = curStage
+    ..enemyOnFieldCount = enemyOnFieldCount
+    ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
+    ..playerDataList = playerDataList.map((e) => e?.copy()).toList()
+    ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
+    ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
+    ..enemyDecks = enemyDecks
+    ..enemyTargetIndex = enemyTargetIndex
+    ..allyTargetIndex = allyTargetIndex
+    ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
+    ..mysticCode = mysticCode
+    ..mysticCodeLv = mysticCodeLv
+    ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+    ..waveCount = waveCount
+    ..turnCount = turnCount
+    ..totalTurnCount = totalTurnCount
+    ..criticalStars = criticalStars
+    ..uniqueIndex = uniqueIndex
+    ..fixedRandom = fixedRandom
+    ..probabilityThreshold = probabilityThreshold
+    ..isAfter7thAnni = isAfter7thAnni;
+
+    copies.add(copy);
+  }
+
+  void undo() {
+    if (copies.isEmpty) {
+      return;
+    }
+
+    final BattleData copy = copies.removeLast();
+    this
+      ..niceQuest = copy.niceQuest
+      ..curStage = copy.curStage
+      ..enemyOnFieldCount = copy.enemyOnFieldCount
+      ..enemyDataList = copy.enemyDataList
+      ..playerDataList = copy.playerDataList
+      ..onFieldEnemies = copy.onFieldEnemies
+      ..onFieldAllyServants = copy.onFieldAllyServants
+      ..enemyDecks = copy.enemyDecks
+      ..enemyTargetIndex = copy.enemyTargetIndex
+      ..allyTargetIndex = copy.allyTargetIndex
+      ..fieldBuffs = copy.fieldBuffs
+      ..mysticCode = copy.mysticCode
+      ..mysticCodeLv = copy.mysticCodeLv
+      ..masterSkillInfo = copy.masterSkillInfo
+      ..waveCount = copy.waveCount
+      ..turnCount = copy.turnCount
+      ..totalTurnCount = copy.totalTurnCount
+      ..criticalStars = copy.criticalStars
+      ..uniqueIndex = copy.uniqueIndex
+      ..fixedRandom = copy.fixedRandom
+      ..probabilityThreshold = copy.probabilityThreshold
+      ..isAfter7thAnni = copy.isAfter7thAnni;
   }
 }
 

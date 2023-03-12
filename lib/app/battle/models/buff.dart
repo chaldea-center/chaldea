@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -32,15 +31,19 @@ class BattleBuff {
   void clearPassive(final int uniqueId) {
     passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
   }
+
+  BattleBuff copy() {
+    final copy  = BattleBuff()
+      ..passiveList = passiveList.map((e) => e.copy()).toList()
+      ..activeList = activeList.map((e) => e.copy()).toList()
+      ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
+    return copy;
+  }
 }
 
 class BuffData {
   Buff buff;
 
-  // ignore: unused_field
-  DataVals? _vals;
-
-  //
   int count = -1;
   int turn = -1;
   int param = 0;
@@ -49,25 +52,28 @@ class BuffData {
   bool passive = false;
 
   bool get isActive => count != 0 && turn != 0;
-  bool isDecide = false;
-  List<int> vals = [];
   int buffRate = 1000;
-  int paramAdd = 0;
-  int paramMax = 0;
   int onField = 0;
-  int auraEffectId = -1;
   int actorUniqueId = 0;
   String actorName = '';
   int ratioHpHigh = 0;
   int ratioHpLow = 0;
   int ratioRangeHigh = 0;
   int ratioRangeLow = 0;
-  int userCommandCodeId = -1;
-  bool isActiveCC = false;
-  List<int> targetSkill = [];
-  int state = 0;
   bool irremovable = false;
   bool isShortBuff = false;
+
+  // ignore: unused_field
+  DataVals? _vals;
+  List<int> vals = [];
+  bool isDecide = false;
+  int paramAdd = 0;
+  int paramMax = 0;
+  int userCommandCodeId = -1;
+  List<int> targetSkill = [];
+  int state = 0;
+  int auraEffectId = -1;
+  bool isActiveCC = false;
 
   // may not need this field.
   // Intent is to check should remove passive when transforming servants to only remove actor's passive
@@ -76,7 +82,7 @@ class BuffData {
 
   bool get isOnField => onField == 1;
 
-  BuffData(this.buff, DataVals dataVals) {
+  BuffData(this.buff, final DataVals dataVals) {
     count = dataVals.Count ?? -1;
     turn = dataVals.Turn ?? -1;
     param = dataVals.Value ?? 0;
@@ -94,6 +100,8 @@ class BuffData {
       additionalParam = dataVals.SkillLV!;
     }
   }
+
+  BuffData.makeCopy(this.buff);
 
   List<NiceTrait> get traits => buff.vals;
 
@@ -180,5 +188,26 @@ class BuffData {
     }
 
     return durationString.join(', ');
+  }
+
+  BuffData copy() {
+    final BuffData copy = BuffData.makeCopy(buff)
+      ..count = count
+      ..turn = turn
+      ..param = param
+      ..additionalParam = additionalParam
+      ..isUsed = isUsed
+      ..passive = passive
+      ..buffRate = buffRate
+      ..onField = onField
+      ..actorUniqueId = actorUniqueId
+      ..actorName = actorName
+      ..ratioHpHigh = ratioHpHigh
+      ..ratioHpLow = ratioHpLow
+      ..ratioRangeHigh = ratioRangeHigh
+      ..ratioRangeLow = ratioRangeLow
+      ..irremovable = irremovable
+      ..isShortBuff = isShortBuff;
+    return copy;
   }
 }

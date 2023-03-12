@@ -8,19 +8,20 @@ class BattleSkillInfoData {
   BaseSkill get skill => overrideSkill ?? rawSkill;
 
   // BattleSkillType type = BattleSkillType.none;
-  late int index = rawSkill.num;
-  int svtUniqueId = 0;
+  // late int index = rawSkill.num;
+  // int svtUniqueId = 0;
+  // int priority = 0;
+  // bool isUseSkill = false;
+  // int userCommandCodeId = -1;
 
   bool get isPassive => skill.type == SkillType.passive;
 
   bool get canActivate => chargeTurn == 0;
+
   int skillId = 0;
   int skillLv = 0;
   int chargeTurn = 0;
-  int priority = 0;
-  bool isUseSkill = false;
   int strengthStatus = 0;
-  int userCommandCodeId = -1;
 
   BattleSkillInfoData(this.rawSkill) {
     skillId = rawSkill.id;
@@ -55,5 +56,14 @@ class BattleSkillInfoData {
     for (final func in skill.functions) {
       executeFunction(battleData, func, skillLevel, isPassive: isPassive, notActorFunction: notActorSkill);
     }
+  }
+
+  BattleSkillInfoData copy() {
+    return BattleSkillInfoData(rawSkill)
+      ..overrideSkill = overrideSkill
+      ..skillId = skillId
+      ..skillLv = skillLv
+      ..chargeTurn = chargeTurn
+      ..strengthStatus = strengthStatus;
   }
 }

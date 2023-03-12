@@ -388,7 +388,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                             ),
                             IconButton(
                               onPressed: () {
-                                // TODO (battle): undo action
+                                battleData.undo();
+                                if (mounted) setState(() {});
                               },
                               icon: Icon(
                                 Icons.undo,
