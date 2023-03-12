@@ -265,7 +265,7 @@ class BattleServantData {
   }
 
   List<NiceTrait> getTraits() {
-    // TODO (battle): account for add & remove traits
+    // TODO (battle): account for add & remove traits & ascension specific traits & extra traits
     final List<NiceTrait> results = [];
     final svtTraits = isPlayer ? niceSvt!.traits : niceEnemy!.traits;
     results.addAll(svtTraits);

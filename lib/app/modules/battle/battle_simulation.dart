@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
@@ -97,12 +98,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ));
       }
     } else {
-      topListChildren.add(const Center(child: Text('Ally Servants', style: TextStyle(fontWeight: FontWeight.bold),)));
+      topListChildren.add(const Center(
+          child: Text(
+        'Ally Servants',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      )));
       for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
       }
       topListChildren.add(const Divider(height: 8, thickness: 2));
-      topListChildren.add(const Center(child: Text('Enemies', style: TextStyle(fontWeight: FontWeight.bold),)));
+      topListChildren.add(const Center(
+          child: Text(
+        'Enemies',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      )));
       for (int i = 0; i < battleData.onFieldEnemies.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldEnemies[i], i));
       }
@@ -158,10 +167,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             for (int i = 0; i < svt.skillInfoList.length; i += 1)
-              buildSkillInfo(svt.skillInfoList[i], onTap: () {
-                svt.activateSkill(battleData, i);
-                if (mounted) setState(() {});
-              }),
+              buildSkillInfo(
+                  skillInfo: svt.skillInfoList[i],
+                  onTap: () {
+                    battleData.activateSvtSkill(index, i);
+                    if (mounted) setState(() {});
+                  }),
           ],
         ),
       ));
@@ -176,7 +187,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AutoSizeText('ATK: ${svt.attack}', minFontSize: 8,),
+              AutoSizeText(
+                'ATK: ${svt.attack}',
+                minFontSize: 8,
+              ),
               AutoSizeText('HP: ${svt.hp}', minFontSize: 8),
               if (svt.isPlayer)
                 AutoSizeText('NP: ${svt.np ~/ 100}.${svt.np ~/ 10 % 10}${svt.np % 10}%', minFontSize: 8)
@@ -187,6 +201,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         )
       ],
     ));
+
+    children.add(Text.rich(TextSpan(children: [
+      for (final buff in svt.battleBuff.allBuffs) buildBuffIcon(buff),
+    ])));
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -241,7 +259,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              for (final skillInfo in battleData.masterSkillInfo) buildSkillInfo(skillInfo),
+                              for (int i = 0; i < battleData.masterSkillInfo.length; i += 1)
+                                buildSkillInfo(
+                                    skillInfo: battleData.masterSkillInfo[i],
+                                    onTap: () {
+                                      battleData.activateMysticCodeSKill(i);
+                                      if (mounted) setState(() {});
+                                    }),
                             ],
                           )
                         ],
@@ -266,8 +290,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                             TextSpan(text: '${battleData.totalTurnCount}'),
                           ],
                         )),
-                        Text.rich(
-                          TextSpan(children: [
+                        Text.rich(TextSpan(
+                          children: [
                             const TextSpan(text: 'Field Traits ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(
                               children: SharedBuilder.traitSpans(
@@ -277,8 +301,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                               ),
                             )
                           ],
-                          )
-                        ),
+                        )),
                       ],
                     ),
                   ),
@@ -291,7 +314,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  Widget buildSkillInfo(final BattleSkillInfoData skillInfo, {VoidCallback? onTap}) {
+  Widget buildSkillInfo({required final BattleSkillInfoData skillInfo, required final VoidCallback onTap}) {
     final cd = skillInfo.chargeTurn;
     Widget cdTextBuilder(final TextStyle style) {
       return Text.rich(
@@ -313,14 +336,22 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             shadowColor: Colors.white,
             alignment: AlignmentDirectional.center,
           ),
-          onTap: skillInfo.canActivate
-              ? onTap ??
-                  () {
-                    skillInfo.activate(battleData);
-                    if (mounted) setState(() {});
-                  }
-              : null,
+          onTap: skillInfo.canActivate ? onTap : null,
         ),
+      ),
+    );
+  }
+
+  WidgetSpan buildBuffIcon(final BuffData buff) {
+    return WidgetSpan(
+      child: DecoratedBox(
+        decoration: buff.irremovable
+            ? BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                border: Border.all(color: Colors.black87, width: 1),
+              )
+            : const BoxDecoration(),
+        child: db.getIconImage(buff.buff.icon, width: 18, height: 18),
       ),
     );
   }

@@ -21,7 +21,8 @@ bool addState(
     final buffData = BuffData(buff, dataVals)
       ..actorUniqueId = activator?.uniqueId ?? 0
       ..notActorPassive = notActorPassive
-      ..isShortBuff = isShortBuff;
+      ..isShortBuff = isShortBuff
+      ..irremovable |= isPassive || notActorPassive;
 
     battleData.setCurrentBuff(buffData);
     battleData.setTarget(target);
