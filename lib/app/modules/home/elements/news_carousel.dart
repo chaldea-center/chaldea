@@ -17,6 +17,7 @@ import 'package:string_validator/string_validator.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
@@ -24,6 +25,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -80,7 +82,6 @@ class AppNewsCarousel extends StatefulWidget {
     List<CarouselItem> result = [];
     bool updated = false;
     try {
-      // CORS issue
       Future<List<CarouselItem>>? taskChaldea, taskMC, taskJP, taskCN, taskTW, taskNA, taskKR;
 
       final _dio = DioE();
@@ -129,6 +130,25 @@ class AppNewsCarousel extends StatefulWidget {
         );
       }
 
+      List<int> _getEvents(bool Function(Event event) test) {
+        return db.gameData.events.values.where((e) => test(e)).map((e) => e.id).toList();
+      }
+
+      List<int> _getWars(bool Function(NiceWar war) test) {
+        return db.gameData.wars.values.where((e) => test(e)).map((e) => e.id).toList();
+      }
+
+      List<String> _getSummons(bool Function(LimitedSummon summon) test) {
+        return db.gameData.wiki.summons.values.where((e) => test(e)).map((e) => e.id).toList();
+      }
+
+      bool isSameUrlPath(String? a, String? b) {
+        if (a == null || b == null) return false;
+        a = (Uri.tryParse(a)?.path ?? a).trimChar('/');
+        b = (Uri.tryParse(b)?.path ?? b).trimChar('/');
+        return a == b;
+      }
+
       // mc slides
       if (carouselSetting.enableMooncell) {
         const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
@@ -136,7 +156,16 @@ class AppNewsCarousel extends StatefulWidget {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementById('transImageBox');
           updated = true;
-          return _getImageLinks(element: ele, uri: Uri.parse('https://fgo.wiki/'));
+          final items = _getImageLinks(element: ele, uri: Uri.parse('https://fgo.wiki/'));
+          for (final item in items) {
+            final fragments = item.link?.split('fgo.wiki/w/');
+            if (fragments == null || fragments.length < 2) continue;
+            String page = fragments[1];
+            item.eventIds = _getEvents((event) => WikiTool.isSamePage(event.extra.mcLink, page));
+            item.warIds = _getWars((war) => WikiTool.isSamePage(war.extra.mcLink, page));
+            item.summonIds = _getSummons((summon) => WikiTool.isSamePage(summon.mcLink, page));
+          }
+          return items;
         }).catchError((e, s) async {
           logger.d('parse mc slides failed', e, s);
           return <CarouselItem>[];
@@ -150,7 +179,15 @@ class AppNewsCarousel extends StatefulWidget {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementsByClassName('slide').getOrNull(0);
           updated = true;
-          return _getImageLinks(element: ele, uri: Uri.parse(jpUrl));
+          final items = _getImageLinks(element: ele, uri: Uri.parse(jpUrl));
+          for (final item in items) {
+            final link = item.link;
+            if (link == null) continue;
+            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.jp, link));
+            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.jp, link));
+            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.jp, link));
+          }
+          return items;
         }).catchError((e, s) async {
           logger.d('parse JP slides failed', e, s);
           return <CarouselItem>[];
@@ -178,6 +215,9 @@ class AppNewsCarousel extends StatefulWidget {
               link: PlatformU.isTargetMobile
                   ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$id'
                   : 'https://game.bilibili.com/fgo/news.html#!news/1/1/$id',
+              eventIds: _getEvents((event) => event.extra.noticeLink.cn == id.toString()),
+              warIds: _getWars((war) => war.extra.noticeLink.cn == id.toString()),
+              summonIds: _getSummons((summon) => summon.noticeLink.cn == id.toString()),
             ));
           }
           updated = true;
@@ -211,6 +251,9 @@ class AppNewsCarousel extends StatefulWidget {
               link: PlatformU.isTargetMobile
                   ? 'https://www.fate-go.com.tw/h5/news-m.html#detailId=$id'
                   : 'https://www.fate-go.com.tw/news.html#!news/1/1/$id',
+              eventIds: _getEvents((event) => event.extra.noticeLink.tw == id.toString()),
+              warIds: _getWars((war) => war.extra.noticeLink.tw == id.toString()),
+              summonIds: _getSummons((summon) => summon.noticeLink.tw == id.toString()),
             ));
           }
           updated = true;
@@ -221,22 +264,6 @@ class AppNewsCarousel extends StatefulWidget {
         });
       }
 
-      // gitee, always
-      // taskGitee = GitTool.giteeWikiPage('Announcement', htmlFmt: true)
-      //     .then((String content) {
-      //   var announceParser = parser.parse(content);
-      //   var announceElement = announceParser.body;
-      //   updated = true;
-      //   return _getImageLinks(
-      //       element: announceElement,
-      //       uri: Uri.parse(
-      //           'https://gitee.com/chaldea-center/chaldea/wikis/Announcement'),
-      //       custom: true);
-      // }).catchError((e, s) async {
-      //   logger.e('parse gitee announce slides failed', e, s);
-      //   return <String, String>{};
-      // });
-
       // NA slides
       if (carouselSetting.enableNA) {
         const usUrl = 'https://webview.fate-go.us';
@@ -244,7 +271,15 @@ class AppNewsCarousel extends StatefulWidget {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementsByClassName('slide').getOrNull(0);
           updated = true;
-          return _getImageLinks(element: ele, uri: Uri.parse(usUrl));
+          final items = _getImageLinks(element: ele, uri: Uri.parse(usUrl));
+          for (final item in items) {
+            final link = item.link;
+            if (link == null) continue;
+            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.na, link));
+            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.na, link));
+            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.na, link));
+          }
+          return items;
         }).catchError((e, s) async {
           logger.d('parse NA slides failed', e, s);
           return <CarouselItem>[];
@@ -264,6 +299,13 @@ class AppNewsCarousel extends StatefulWidget {
               e.image!.contains('https://cafeskthumb-phinf.pstatic.net') &&
               !['http://fgo.netmarble.com/', 'https://www.facebook.com/FateGO.KR', 'https://twitter.com/FateGO_KR']
                   .contains(e.link));
+          for (final item in items) {
+            final link = item.link;
+            if (link == null) continue;
+            item.eventIds = _getEvents((event) => isSameUrlPath(event.extra.noticeLink.kr, link));
+            item.warIds = _getWars((war) => isSameUrlPath(war.extra.noticeLink.kr, link));
+            item.summonIds = _getSummons((summon) => isSameUrlPath(summon.noticeLink.kr, link));
+          }
           return items;
         }).catchError((e, s) async {
           logger.d('parse KR slides failed', e, s);
@@ -477,22 +519,104 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         }
       }
       if (child == null) continue;
-      if (item.link != null) {
+      if (item.link != null || item.eventIds.isNotEmpty || item.warIds.isNotEmpty || item.summonIds.isNotEmpty) {
         child = GestureDetector(
-          onTap: () async {
-            final link = item.link!;
-            const routePrefix = '/chaldea/route';
-            if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
-              router.push(url: link.substring(routePrefix.length));
-            } else {
-              jumpToExternalLinkAlert(url: link, content: item.title);
-            }
-          },
+          onTap: () => onTap(item),
           child: child,
         );
       }
       sliders.add(child);
     }
     return sliders;
+  }
+
+  void onTap(CarouselItem item) {
+    final link = item.link;
+    if (link != null) {
+      const routePrefix = 'chaldea://';
+      if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
+        return router.push(url: link.substring(routePrefix.length));
+      }
+    }
+    String? shownLink = link;
+    if (link != null) {
+      String? safeLink = Uri.tryParse(link)?.toString();
+      if (safeLink != null) {
+        shownLink = UriX.tryDecodeFull(safeLink);
+      }
+      shownLink ??= safeLink;
+    }
+
+    void openLink(String url) async {
+      if (await canLaunch(url)) {
+        launch(url);
+      } else {
+        EasyLoading.showError('Invalid link');
+      }
+    }
+
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        Widget _tile(String title, VoidCallback onTap) {
+          return ListTile(
+            dense: true,
+            onTap: () {
+              Navigator.pop(context);
+              onTap();
+            },
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            title: Text(title),
+            contentPadding: EdgeInsets.zero,
+          );
+        }
+
+        return SimpleCancelOkDialog(
+          title: Text(
+            item.title ?? S.current.jump_to(''),
+            maxLines: 2,
+            style: Theme.of(context).textTheme.titleSmall,
+            overflow: TextOverflow.ellipsis,
+          ),
+          scrollable: true,
+          hideOk: link == null,
+          onTapOk: link == null ? null : () => openLink(link),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text.rich(TextSpan(children: [
+                if (item.content != null) TextSpan(text: item.content!),
+                if (item.content != null && shownLink != null) const TextSpan(text: '\n\n'),
+                if (shownLink != null)
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: shownLink,
+                    onTap: () {
+                      Navigator.pop(context);
+                      openLink(shownLink!);
+                    },
+                  ),
+              ])),
+              for (final eventId in item.eventIds)
+                _tile(
+                  db.gameData.events[eventId]?.lName.l.setMaxLines(1) ?? '${S.current.event} $eventId',
+                  () => router.push(url: Routes.eventI(eventId)),
+                ),
+              for (final warId in item.warIds)
+                _tile(
+                  db.gameData.wars[warId]?.lName.l.setMaxLines(1) ?? '${S.current.war} $warId',
+                  () => router.push(url: Routes.warI(warId)),
+                ),
+              for (final summonId in item.summonIds)
+                _tile(
+                  db.gameData.wiki.summons[summonId]?.lName.setMaxLines(1) ?? '${S.current.summon} $summonId',
+                  () => router.push(url: Routes.summonI(summonId)),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

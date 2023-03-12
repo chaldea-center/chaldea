@@ -2,7 +2,11 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 
+import 'url.dart';
+
 class WikiTool {
+  const WikiTool._();
+
   static String mcDomain = 'https://fgo.wiki';
   static String fandomDomain = 'https://fategrandorder.fandom.com';
 
@@ -30,5 +34,13 @@ class WikiTool {
     final hash1 = hash.substring(0, 1), hash2 = hash.substring(0, 2);
     final url = '$prefix/$hash1/$hash2/$filename';
     return Uri.parse(url).toString();
+  }
+
+  static bool isSamePage(String? page1, String page2) {
+    if (page1 == null) return false;
+    if (page1 == page2) return true;
+    page1 = (UriX.tryDecodeComponent(page1) ?? page1).replaceAll(' ', '_');
+    page2 = (UriX.tryDecodeComponent(page2) ?? page2).replaceAll(' ', '_');
+    return page1 == page2;
   }
 }

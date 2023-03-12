@@ -285,6 +285,9 @@ class CarouselItem {
   String? link;
   AppVersion? verMin;
   AppVersion? verMax;
+  List<int> eventIds;
+  List<int> warIds;
+  List<String> summonIds;
   @JsonKey(includeFromJson: false, includeToJson: false)
   BoxFit? fit;
 
@@ -300,9 +303,15 @@ class CarouselItem {
     this.link,
     this.verMin,
     this.verMax,
+    List<int>? eventIds,
+    List<int>? warIds,
+    List<String>? summonIds,
     this.fit,
   })  : startTime = DateTime.tryParse(startTime) ?? DateTime(2000),
-        endTime = DateTime.tryParse(endTime) ?? DateTime(2099);
+        endTime = DateTime.tryParse(endTime) ?? DateTime(2099),
+        eventIds = eventIds ?? [],
+        warIds = warIds ?? [],
+        summonIds = summonIds ?? [];
 
   factory CarouselItem.fromJson(Map<String, dynamic> data) => _$CarouselItemFromJson(data);
 

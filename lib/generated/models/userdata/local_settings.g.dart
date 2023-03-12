@@ -307,6 +307,9 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
               'verMin', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
           verMax: $checkedConvert(
               'verMax', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
+          eventIds: $checkedConvert('eventIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          warIds: $checkedConvert('warIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          summonIds: $checkedConvert('summonIds', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
         );
         return val;
       },
@@ -324,6 +327,9 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) => <String, dyn
       'link': instance.link,
       'verMin': _$JsonConverterToJson<String, AppVersion>(instance.verMin, const AppVersionConverter().toJson),
       'verMax': _$JsonConverterToJson<String, AppVersion>(instance.verMax, const AppVersionConverter().toJson),
+      'eventIds': instance.eventIds,
+      'warIds': instance.warIds,
+      'summonIds': instance.summonIds,
     };
 
 RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(

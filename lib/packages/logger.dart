@@ -31,7 +31,7 @@ void initiateLoggerPath([String? fp]) {
       colors: false,
       printEmojis: false,
       printTime: true,
-      lineLength: kDebugMode ? 120 : 10,
+      lineLength: 10,
     ),
     output: MultiOutput([
       ConsoleOutput(),

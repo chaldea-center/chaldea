@@ -293,7 +293,7 @@ class _CachedImageState extends State<CachedImage> {
           Uri? uri;
           if (widget.imageUrl != null) uri = Uri.tryParse(widget.imageUrl!);
           if (uri != null && uri.pathSegments.isNotEmpty) {
-            fn = Uri.decodeComponent(uri.pathSegments.last);
+            fn = UriX.tryDecodeComponent(uri.pathSegments.last) ?? uri.pathSegments.last;
           }
           fn ??= bytes == null
               ? '${const Uuid().v4()}.png'
