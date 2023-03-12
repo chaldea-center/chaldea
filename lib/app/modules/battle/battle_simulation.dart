@@ -97,12 +97,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ));
       }
     } else {
-      topListChildren.add(const Text('Ally Servants'));
+      topListChildren.add(const Center(child: Text('Ally Servants', style: TextStyle(fontWeight: FontWeight.bold),)));
       for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
       }
       topListChildren.add(const Divider(height: 8, thickness: 2));
-      topListChildren.add(const Text('Enemies'));
+      topListChildren.add(const Center(child: Text('Enemies', style: TextStyle(fontWeight: FontWeight.bold),)));
       for (int i = 0; i < battleData.onFieldEnemies.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldEnemies[i], i));
       }
@@ -230,8 +230,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   if (battleData.mysticCode != null)
                     Padding(
@@ -267,16 +266,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                             TextSpan(text: '${battleData.totalTurnCount}'),
                           ],
                         )),
-                        Row(
-                          children: [
-                            const Text('Field Traits ', style: TextStyle(fontWeight: FontWeight.bold)),
-                            SharedBuilder.traitList(
-                              context: context,
-                              traits: battleData.getFieldTraits(),
-                              textAlign: TextAlign.left,
-                              format: (trait) => trait.shownName(field: false),
-                            ),
+                        Text.rich(
+                          TextSpan(children: [
+                            const TextSpan(text: 'Field Traits ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                              children: SharedBuilder.traitSpans(
+                                context: context,
+                                traits: battleData.getFieldTraits(),
+                                format: (trait) => trait.shownName(field: false),
+                              ),
+                            )
                           ],
+                          )
                         ),
                       ],
                     ),
