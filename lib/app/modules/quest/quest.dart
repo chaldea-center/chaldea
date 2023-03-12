@@ -113,6 +113,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   final key = '/quest/$questId/';
                   AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
                   AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
+                  if (questId != null) AtlasApi.cacheDisabledQuests.add(questId!);
                   uniqueKey = UniqueKey();
                   if (mounted) setState(() {});
                 },

@@ -1757,6 +1757,17 @@ class S {
     );
   }
 
+  /// `The quest enemies only show a certain version, but the drop data is collected from all versions.`
+  String get drop_from_all_hashes_hint {
+    return Intl.message(
+      'The quest enemies only show a certain version, but the drop data is collected from all versions.',
+      name: 'drop_from_all_hashes_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Drop rate`
   String get drop_rate {
     return Intl.message(
@@ -4424,17 +4435,6 @@ class S {
     return Intl.message(
       'Subtract Owned',
       name: 'item_stat_sub_owned',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Total`
-  String get item_total_demand {
-    return Intl.message(
-      'Total',
-      name: 'item_total_demand',
       desc: '',
       locale: localeName,
       args: [],
@@ -7850,6 +7850,17 @@ class S {
     return Intl.message(
       'Refresh slides',
       name: 'tooltip_refresh_sliders',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get total {
+    return Intl.message(
+      'Total',
+      name: 'total',
       desc: '',
       locale: localeName,
       args: [],

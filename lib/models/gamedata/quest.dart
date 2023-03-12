@@ -257,6 +257,8 @@ class QuestPhase extends Quest {
   String? enemyHash;
   @JsonKey(name: 'availableEnemyHashes')
   List<String> enemyHashes;
+  // null if no enemy data found
+  bool? dropsFromAllHashes;
   QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
@@ -303,6 +305,7 @@ class QuestPhase extends Quest {
     this.battleBgId = 0,
     this.enemyHash,
     this.enemyHashes = const [],
+    this.dropsFromAllHashes,
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
@@ -312,7 +315,15 @@ class QuestPhase extends Quest {
     List<Stage>? stages,
     this.drops = const [],
   })  : individuality = individuality ?? [],
-        stages = stages ?? [];
+        stages = stages ?? [] {
+    if (enemyHashes.length > 1) {
+      for (final stage in this.stages) {
+        for (final enemy in stage.enemies) {
+          enemy.dropsFromAllHashes = dropsFromAllHashes;
+        }
+      }
+    }
+  }
 
   int get key => getPhaseKey(phase);
 
@@ -883,6 +894,9 @@ class QuestEnemy with GameCardMixin {
   String name;
   BasicServant svt;
   List<EnemyDrop> drops;
+  // only true/false when there are multiple versions
+  @JsonKey(includeFromJson: false)
+  bool? dropsFromAllHashes;
   int lv;
   int exp;
   int atk;

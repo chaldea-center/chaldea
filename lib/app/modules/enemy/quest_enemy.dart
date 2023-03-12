@@ -336,6 +336,13 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       ));
     }
     yield CustomTableRow.fromChildren(children: [Wrap(spacing: 3, runSpacing: 2, children: children)]);
+    if (enemy.dropsFromAllHashes == true) {
+      yield CustomTableRow(
+        children: [
+          TableCellData(text: S.current.drop_from_all_hashes_hint, style: Theme.of(context).textTheme.bodySmall)
+        ],
+      );
+    }
   }
 
   List<Widget> enemyScriptInfo() {

@@ -662,7 +662,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         onPressed: () {
           final Map<int, int> items = Item.sortMapByPriority(db.itemCenter.calcOneSvt(svt, status.cur, plan).all);
           _showItemsDialog(
-            title: S.current.item_total_demand,
+            title: S.current.demands,
             items: items,
             hideCancel: true,
             showSubOwned: true,

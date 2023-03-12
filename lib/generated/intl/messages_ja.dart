@@ -402,7 +402,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("在庫を含める"),
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("活動収入を差し引く"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("在庫を差し引く"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("合計"),
         "join_beta": MessageLookupByLibrary.simpleMessage("ベータ版に参加します"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("日本語"),

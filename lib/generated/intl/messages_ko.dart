@@ -446,7 +446,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("재고 포함"),
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("이벤트 제외"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("재고 제외"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("합계"),
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("한국어"),

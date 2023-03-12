@@ -120,7 +120,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
       final child = SimpleAccordion(
         key: ValueKey('event_free_$key'),
         headerBuilder: (context, _) {
-          String subtitle = '${quest.consume}AP.  ';
+          String subtitle = 'Lv${quest.recommendLv} ${quest.consume}AP.  ';
           subtitle += sortType != _SortType.dropRate
               ? '${S.current.drop_rate} $dropRateString%.'
               : '${S.current.ap_efficiency} $apRateString AP.';

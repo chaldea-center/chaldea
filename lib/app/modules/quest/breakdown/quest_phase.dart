@@ -120,18 +120,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (mounted) setState(() {});
   }
 
-  QuestPhase? getCachedData() {
-    QuestPhase? curPhase;
-    if (widget.offline) {
-      curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
-          AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
-    } else {
-      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
-      if (widget.region == Region.jp) {
-        curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
-      }
-    }
-    return curPhase;
+  QuestPhase? getCachedData([String? overrideHash = '']) {
+    String? hash = overrideHash == '' ? _enemyHash : overrideHash?.trim();
+    return AtlasApi.questPhaseCache(quest.id, phase, hash, widget.region ?? Region.jp);
   }
 
   @override
@@ -312,10 +303,31 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
 
     if (!widget.battleOnly && curPhase.drops.isNotEmpty) {
+      final bool showDropHint = curPhase.dropsFromAllHashes == true && curPhase.enemyHashes.length > 1;
+      Widget header = Text.rich(TextSpan(
+        text: 'Rayshift Drops (',
+        children: [
+          TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
+          if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
+          const TextSpan(text: ')'),
+        ],
+      ));
+      if (showDropHint) {
+        header = InkWell(
+          child: header,
+          onTap: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.game_drop),
+              content: Text(S.current.drop_from_all_hashes_hint),
+              hideCancel: true,
+            ).showDialog(context);
+          },
+        );
+      }
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('Rayshift Drops (${S.current.quest_runs(curPhase.drops.first.runs)})'),
+          header,
           const SizedBox(height: 2),
           _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
           const SizedBox(height: 3),
@@ -565,29 +577,41 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget getQuestVersionDropdown(QuestPhase curPhase) {
-    if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
-      _enemyHash = null;
-    }
+    final hashsWithNull = [null, ...curPhase.enemyHashes];
+    final noHashPhase = getCachedData(null);
+    print(['noHashPhase.hash=', noHashPhase?.enemyHash]);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(width: 48),
         Expanded(
           child: Center(
-            child: DropdownButton<String>(
+            child: DropdownButton<String?>(
               isDense: true,
               iconSize: 16,
-              value: _enemyHash ?? curPhase.enemyHash,
-              items: List.generate(curPhase.enemyHashes.length, (index) {
-                final hash = curPhase.enemyHashes[index];
-                int? count = int.tryParse(hash.substring2(2, 4));
-                String text = S.current.quest_version(index + 1, curPhase.enemyHashes.length, count ?? "?");
+              value: _enemyHash,
+              items: List.generate(hashsWithNull.length, (index) {
+                final hash = hashsWithNull[index];
+                String text;
+                if (hash == null) {
+                  text = S.current.total;
+                  final runs = noHashPhase?.drops.getOrNull(0)?.runs;
+                  if (runs != null) {
+                    text += ' [${S.current.quest_runs(runs)}]';
+                  }
+                } else {
+                  int? count = int.tryParse(hash.substring2(2, 4));
+                  text = S.current.quest_version(index, curPhase.enemyHashes.length, count ?? "?");
+                }
+                print([index, hash, noHashPhase?.enemyHash]);
+                TextStyle? style = Theme.of(context).textTheme.bodySmall;
+                if (hash == null || hash == noHashPhase?.enemyHash) {
+                  style ??= const TextStyle();
+                  style = style.copyWith(fontWeight: FontWeight.bold);
+                }
                 return DropdownMenuItem(
                   value: hash,
-                  child: Text(
-                    text,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  child: Text(text, style: style),
                 );
               }),
               onChanged: (v) {

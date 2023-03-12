@@ -390,7 +390,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("Incluir poseídos"),
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("Restar Eventos"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("Restar poseídos"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
