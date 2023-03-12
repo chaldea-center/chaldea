@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
@@ -183,7 +184,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: divideTiles([
                     for (final buff in svt.battleBuff.allBuffs)
                       ListTile(
                         horizontalTitleGap: 5,
@@ -192,7 +193,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                         title: Text(buff.effectString()),
                         trailing: Text(buff.durationString()),
                       )
-                  ],
+                  ]),
                 ),
               ),
               hideCancel: true,
@@ -355,8 +356,16 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                               ),
                             ),
                             IconButton(
-                              onPressed: () {
-                                // TODO (battle): show battle log
+                              onPressed: () async {
+                                await null;
+                                if (!mounted) return;
+                                await showDialog(
+                                  context: context,
+                                  useRootNavigator: false,
+                                  builder: (context) {
+                                    return BattleLogViewer(logs: battleData.logger.logs);
+                                  },
+                                );
                               },
                               icon: Icon(
                                 Icons.list_alt,
@@ -377,7 +386,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                             ),
                             IconButton(
                               onPressed: () {
-                                battleData.skipTurn();
+                                battleData.skipWave();
                                 if (mounted) setState(() {});
                               },
                               icon: Icon(
@@ -714,5 +723,54 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               )
             : Text('Card ${cardIndex + 1}')
         : const Text('');
+  }
+}
+
+class BattleLogViewer extends StatefulWidget {
+  final List<BattleLog> logs;
+
+  const BattleLogViewer({super.key, required this.logs});
+
+  @override
+  State<BattleLogViewer> createState() => _BattleLogViewerState();
+}
+
+class _BattleLogViewerState extends State<BattleLogViewer> {
+  BattleLogType shownType = BattleLogType.action;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> filterActions = [];
+    filterActions.add(TextButton(
+      onPressed: () {
+        shownType = BattleLogType.values[(shownType.index + 1) % BattleLogType.values.length];
+        if (mounted) setState(() {});
+      },
+      child: Text(shownType.name.toUpperCase()),
+    ));
+
+    final List<Widget> children = [];
+    children.addAll(
+      widget.logs.where((log) => log.type.index >= shownType.index).map(
+            (log) => ListTile(
+              leading: Text(log.type.name.toUpperCase()),
+              title: Text(log.log),
+            ),
+          ),
+    );
+
+    return SimpleCancelOkDialog(
+      title: const Text('Battle Log'),
+      contentPadding: const EdgeInsets.all(8),
+      content: SingleChildScrollView(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: divideTiles(children),
+        ),
+      ),
+      actions: filterActions,
+      hideCancel: true,
+    );
   }
 }

@@ -27,7 +27,8 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get battleName => isPlayer ? ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase) : niceEnemy!.lShownName;
+  String get lBattleName =>
+      isPlayer ? Transl.svtNames(ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase)).l : niceEnemy!.lShownName;
 
   int get limitCount => niceEnemy?.limit?.limitCount ?? 0;
 
@@ -174,6 +175,14 @@ class BattleServantData {
     equip?.activateCE(battleData);
 
     battleData.unsetActivator();
+  }
+
+  String getSkillName(final int index) {
+    if (skillInfoList.length <= index || index < 0) {
+      return 'Invalid skill index: $index';
+    }
+
+    return skillInfoList[index].skill.lName.l;
   }
 
   List<CommandCardData> getCards() {

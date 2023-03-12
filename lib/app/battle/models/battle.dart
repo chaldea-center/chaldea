@@ -3,6 +3,7 @@ import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'buff.dart';
@@ -67,6 +68,8 @@ class BattleData {
   int fixedRandom = ConstData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
+
+  final BattleLogger logger = BattleLogger();
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -192,6 +195,8 @@ class BattleData {
   void nextTurn() {
     turnCount += 1;
     totalTurnCount += 1;
+
+    logger.action('Turn $totalTurnCount start');
 
     replenishActors();
 
@@ -367,8 +372,11 @@ class BattleData {
       return;
     }
 
+    final svt = onFieldAllyServants[servantIndex]!;
+    logger.action('Activate ${svt.lBattleName} (Pos ${servantIndex + 1}) skill ${skillIndex + 1}: '
+        '${svt.getSkillName(skillIndex)}');
     copy();
-    onFieldAllyServants[servantIndex]!.activateSkill(this, skillIndex);
+    svt.activateSkill(this, skillIndex);
   }
 
   bool canUseMysticCodeSkill(final int skillIndex) {
@@ -385,6 +393,7 @@ class BattleData {
       return;
     }
 
+    logger.action('Activate master skill ${skillIndex + 1}: ${masterSkillInfo[skillIndex].skill.lName.l}');
     copy();
     masterSkillInfo[skillIndex].activate(this);
   }
@@ -460,11 +469,12 @@ class BattleData {
     allyTargetIndex = previousTargetIndex;
   }
 
-  void skipTurn() {
+  void skipWave() {
     if (isBattleFinished) {
       return;
     }
 
+    logger.action('Skip current wave ($waveCount)');
     copy();
 
     onFieldEnemies.clear();
@@ -573,6 +583,7 @@ class BattleData {
       return;
     }
 
+    logger.action('CUSTOM ACTION: charge 100% NP for all allies');
     copy();
 
     gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
@@ -669,6 +680,7 @@ class BattleData {
       return;
     }
 
+    logger.action('Undo previous action');
     final BattleData copy = copies.removeLast();
     this
       ..niceQuest = copy.niceQuest

@@ -33,7 +33,7 @@ class BattleBuff {
   }
 
   BattleBuff copy() {
-    final copy  = BattleBuff()
+    final copy = BattleBuff()
       ..passiveList = passiveList.map((e) => e.copy()).toList()
       ..activeList = activeList.map((e) => e.copy()).toList()
       ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
@@ -171,8 +171,16 @@ class BuffData {
         '${buff.lName.l} '
         '${buff.ckSelfIndv.isNotEmpty ? 'for ${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
         '${buff.ckOpIndv.isNotEmpty ? 'vs ${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
-        '${param != 0 ? buff.type == BuffType.regainStar ? param : '${(param / 10).toStringAsFixed(1)} % ' : ''}'
-        '${onField == 1 ? 'require ${Transl.svtNames(actorName).l} on field' : ''}';
+        '${getParamString()}'
+        '${onField == 1 ? 'require $actorName on field' : ''}';
+  }
+
+  String getParamString() {
+    return param != 0
+        ? buff.type == BuffType.regainStar || additionalParam != 0 //  use to check skill related buff
+            ? param.toString()
+            : '${(param / 10).toStringAsFixed(1)} % '
+        : '';
   }
 
   String durationString() {

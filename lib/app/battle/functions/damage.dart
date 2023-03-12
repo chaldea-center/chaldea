@@ -133,9 +133,14 @@ bool damage(
     final totalDamage = calculateDamage(damageParameters);
     int remainingDamage = totalDamage;
 
-    int totalStars = 0;
+    int overkillCount = 0;
+    final List<int> hitDamages = [];
+    final List<int> hitNpGains = [];
+    final List<int> hitStars = [];
     for (int i = 0; i < currentCard.cardDetail.hitsDistribution.length; i += 1) {
-      if (!skipDamage) {
+      if (skipDamage) {
+        hitDamages.add(0);
+      } else {
         final hitsPercentage = currentCard.cardDetail.hitsDistribution[i];
         final int hitDamage;
         if (i < currentCard.cardDetail.hitsDistribution.length - 1) {
@@ -144,6 +149,7 @@ bool damage(
           hitDamage = remainingDamage;
         }
 
+        hitDamages.add(hitDamage);
         remainingDamage -= hitDamage;
 
         target.receiveDamage(hitDamage);
@@ -156,26 +162,57 @@ bool damage(
       }
 
       final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
+      if (isOverkill) {
+        overkillCount += 1;
+      }
 
       if (activator.isPlayer) {
         atkNpParameters.isOverkill = isOverkill;
         starParameters.isOverkill = isOverkill;
         final hitNpGain = calculateAttackNpGain(atkNpParameters);
+        final previousNP = activator.np;
         activator.changeNP(hitNpGain);
+        hitNpGains.add(activator.np - previousNP);
 
-        final hitStars = calculateStar(starParameters);
-        totalStars += hitStars;
+        final hitStar = calculateStar(starParameters);
+        hitStars.add(hitStar);
       }
 
       if (target.isPlayer) {
         defNpParameters.isOverkill = isOverkill;
         final hitNpGain = calculateDefendNpGain(defNpParameters);
 
+        final previousNP = activator.np;
         target.changeNP(hitNpGain);
+        hitNpGains.add(activator.np - previousNP);
       }
     }
 
-    battleData.changeStar(toModifier(totalStars));
+    battleData.logger.debug(damageParameters.toString());
+    if (activator.isPlayer) {
+      battleData.logger.debug(atkNpParameters.toString());
+      battleData.logger.debug(starParameters.toString());
+      battleData.logger.action('${activator.lBattleName} activates ${currentCard.cardType.name.toUpperCase()} '
+          '${currentCard.isNP ? 'NP' : ''} card, '
+          'targeting ${target.lBattleName}, '
+          'dealt $totalDamage damage, '
+          'gained ${(Maths.sum(hitNpGains) / 100).toStringAsFixed(2)} % NP, '
+          'gained ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} stars, '
+          'overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
+      battleData.logger.debug('Detailed hits: Damage: $hitDamages, NP: $hitNpGains, Star: $hitStars');
+    } else {
+      battleData.logger.debug(defNpParameters.toString());
+      battleData.logger.action('${activator.lBattleName} activates ${currentCard.cardType.name.toUpperCase()} '
+          '${currentCard.isNP ? 'NP' : ''} card, '
+          'targeting ${target.lBattleName}, '
+          'dealt $totalDamage damage, '
+          '${target.lBattleName} '
+          'gained ${Maths.sum(hitNpGains)} NP, '
+          'overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
+      battleData.logger.debug('Detailed hits: Damage: $hitDamages, NP: $hitNpGains');
+    }
+
+    battleData.changeStar(toModifier(Maths.sum(hitStars)));
 
     target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
 
