@@ -43,6 +43,7 @@ class UserData {
 
   List<User> users;
   List<int> itemAbundantValue;
+  // 1-4, -1=user svt's cur ascension
   int svtAscensionIcon;
   bool preferAprilFoolIcon;
   Map<int, String?> customSvtIcon;

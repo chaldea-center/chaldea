@@ -505,6 +505,12 @@ class Servant with GameCardMixin {
   @override
   Transl<String, String> get lName => Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 
+  Transl<String, String> get lAscName {
+    int asc = db.userData.svtAscensionIcon == -1 && isUserSvt ? status.cur.ascension : db.userData.svtAscensionIcon;
+    String _name = ascensionAdd.overWriteServantName.ascension[asc] ?? name;
+    return Transl.svtNames(_name);
+  }
+
   Set<String> get allNames {
     return <String>{
       name,
