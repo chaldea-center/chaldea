@@ -166,7 +166,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   void navToDropCalculator() {
     Map<int, int> _getObjective() {
       Map<int, int> objective = {};
-      final itemIds = db.gameData.dropRate.getSheet(true).itemIds;
+      final itemIds = db.gameData.dropData.domusAurea.itemIds;
       db.itemCenter.itemLeft.forEach((itemId, value) {
         final rarity = db.gameData.items[itemId]?.rarity ?? -1;
         if (rarity > 0 && rarity <= 3) {
@@ -624,7 +624,7 @@ class _ItemListTabState extends State<ItemListTab> {
           Expanded(
             flex: 1,
             child: AutoSizeText(
-              '${S.current.item_total_demand}'
+              '${S.current.demands}'
               ' $demand',
               maxLines: 1,
               minFontSize: 1,
@@ -678,7 +678,7 @@ class _ItemListTabState extends State<ItemListTab> {
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              '${S.current.item_total_demand}  $demandCount',
+              '${S.current.demands}  $demandCount',
               maxLines: 1,
             ),
           ),

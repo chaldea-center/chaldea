@@ -6,13 +6,19 @@ part of '../../../models/gamedata/drop_rate.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DropRateData _$DropRateDataFromJson(Map json) => DropRateData(
-      updatedAt: json['updatedAt'] as int? ?? 0,
-      newData:
-          json['newData'] == null ? null : DropRateSheet.fromJson(Map<String, dynamic>.from(json['newData'] as Map)),
-      legacyData: json['legacyData'] == null
+DropData _$DropDataFromJson(Map json) => DropData(
+      domusVer: json['domusVer'] as int? ?? 0,
+      domusAurea: json['domusAurea'] == null
           ? null
-          : DropRateSheet.fromJson(Map<String, dynamic>.from(json['legacyData'] as Map)),
+          : DropRateSheet.fromJson(Map<String, dynamic>.from(json['domusAurea'] as Map)),
+      fixedDrops: (json['fixedDrops'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), QuestDropData.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      freeDrops: (json['freeDrops'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), QuestDropData.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
@@ -28,6 +34,14 @@ DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
                 (e as Map).map(
                   (k, e) => MapEntry(int.parse(k as String), (e as num).toDouble()),
                 )),
+          ) ??
+          const {},
+    );
+
+QuestDropData _$QuestDropDataFromJson(Map json) => QuestDropData(
+      runs: json['runs'] as int? ?? 0,
+      items: (json['items'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), e as int),
           ) ??
           const {},
     );

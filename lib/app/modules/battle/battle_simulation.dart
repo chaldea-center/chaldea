@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
@@ -14,7 +16,6 @@ import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;

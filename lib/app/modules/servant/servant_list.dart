@@ -851,13 +851,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     return CustomTile(
       leading: svt.iconBuilder(context: context, height: 64),
       title: Text(
-        svt.lName.l,
+        svt.lAscName.l,
         maxLines: 1,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (!Language.isJP) Text(svt.lName.jp, maxLines: 1),
+          if (!Language.isJP) Text(svt.lAscName.jp, maxLines: 1),
           Text(
             'No.${svt.collectionNo} ${Transl.svtClassId(svt.classId).l}  $additionalText',
             maxLines: 1,

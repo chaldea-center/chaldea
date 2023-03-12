@@ -1757,6 +1757,17 @@ class S {
     );
   }
 
+  /// `The quest enemies only show a certain version, but the drop data is collected from all versions.`
+  String get drop_from_all_hashes_hint {
+    return Intl.message(
+      'The quest enemies only show a certain version, but the drop data is collected from all versions.',
+      name: 'drop_from_all_hashes_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Drop rate`
   String get drop_rate {
     return Intl.message(
@@ -2213,6 +2224,17 @@ class S {
     return Intl.message(
       'Fortification',
       name: 'event_fortification',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Event FQ`
+  String get event_free_quest {
+    return Intl.message(
+      'Event FQ',
+      name: 'event_free_quest',
       desc: '',
       locale: localeName,
       args: [],
@@ -4342,6 +4364,17 @@ class S {
     );
   }
 
+  /// `Pay attention to the quest runs, few runs may result inaccurate stats!`
+  String get item_obtain_event_free_hint {
+    return Intl.message(
+      'Pay attention to the quest runs, few runs may result inaccurate stats!',
+      name: 'item_obtain_event_free_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only show lacked`
   String get item_only_show_lack {
     return Intl.message(
@@ -4402,17 +4435,6 @@ class S {
     return Intl.message(
       'Subtract Owned',
       name: 'item_stat_sub_owned',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Total`
-  String get item_total_demand {
-    return Intl.message(
-      'Total',
-      name: 'item_total_demand',
       desc: '',
       locale: localeName,
       args: [],
@@ -5067,6 +5089,17 @@ class S {
     return Intl.message(
       'Assets',
       name: 'media_assets',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Merge Same Drop Item`
+  String get merge_same_drop {
+    return Intl.message(
+      'Merge Same Drop Item',
+      name: 'merge_same_drop',
       desc: '',
       locale: localeName,
       args: [],
@@ -5939,6 +5972,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `{runs} Runs`
+  String quest_runs(Object runs) {
+    return Intl.message(
+      '$runs Runs',
+      name: 'quest_runs',
+      desc: '',
+      locale: localeName,
+      args: [runs],
     );
   }
 
@@ -7284,6 +7328,17 @@ class S {
     );
   }
 
+  /// `JP summon data from Mooncell. Reference only for other regions.`
+  String get summon_info_hint {
+    return Intl.message(
+      'JP summon data from Mooncell. Reference only for other regions.',
+      name: 'summon_info_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Pull(s)`
   String get summon_pull_unit {
     return Intl.message(
@@ -7735,6 +7790,17 @@ class S {
     );
   }
 
+  /// `Time`
+  String get time {
+    return Intl.message(
+      'Time',
+      name: 'time',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Close`
   String get time_close {
     return Intl.message(
@@ -7784,6 +7850,17 @@ class S {
     return Intl.message(
       'Refresh slides',
       name: 'tooltip_refresh_sliders',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get total {
+    return Intl.message(
+      'Total',
+      name: 'total',
       desc: '',
       locale: localeName,
       args: [],

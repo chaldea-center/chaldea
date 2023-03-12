@@ -45,7 +45,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         style: matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
       ),
       trailing: Text(
-        '${S.current.item_total_demand} ${num2str(svtDemands.all)}\n'
+        '${S.current.demands} ${num2str(svtDemands.all)}\n'
         '${svtDemands.parts.map((e) => num2str(e)).join('/')}',
         textAlign: TextAlign.end,
       ),

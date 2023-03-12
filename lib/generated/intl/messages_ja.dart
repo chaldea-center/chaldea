@@ -61,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m24(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m25(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m13(n) => "プロフィール${n}";
 
@@ -402,7 +402,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("在庫を含める"),
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("活動収入を差し引く"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("在庫を差し引く"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("合計"),
         "join_beta": MessageLookupByLibrary.simpleMessage("ベータ版に参加します"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("日本語"),
@@ -585,7 +584,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m24,
+        "solution_total_battles_ap": m25,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),

@@ -44,9 +44,6 @@ GameData _$GameDataFromJson(Map json) => GameData(
       extraMasterMission: (json['extraMasterMission'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      fixedDrops: (json['fixedDrops'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), FixedDrop.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
       wiki: json['wiki'] == null ? null : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
       mappingData: json['mappingData'] == null
           ? null
@@ -54,8 +51,7 @@ GameData _$GameDataFromJson(Map json) => GameData(
       constData: json['constData'] == null
           ? null
           : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
-      dropRate:
-          json['dropRate'] == null ? null : DropRateData.fromJson(Map<String, dynamic>.from(json['dropRate'] as Map)),
+      dropData: json['dropData'] == null ? null : DropData.fromJson(Map<String, dynamic>.from(json['dropData'] as Map)),
       baseTds: (json['baseTds'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
       ),

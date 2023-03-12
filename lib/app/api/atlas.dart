@@ -367,6 +367,7 @@ class AtlasApi {
   const AtlasApi._();
   static final _CacheManager cacheManager = _CacheManager('atlas_api');
   static final Map<String, QuestPhase> cachedQuestPhases = {};
+  static final Set<int> cacheDisabledQuests = {};
 
   static RateLimiter get rateLimiter => cacheManager._rateLimiter;
 
@@ -395,16 +396,16 @@ class AtlasApi {
 
   static Future<QuestPhase?> questPhase(int questId, int phase,
       {String? hash, Region region = Region.jp, Duration? expireAfter}) async {
+    if (hash != null) hash = hash.trim();
+    String url = questPhaseUrl(questId, phase, hash, region);
+    QuestPhase? phaseCache;
+    if (expireAfter == null) {
+      phaseCache = questPhaseCache(questId, phase, hash, region);
+      if (phaseCache != null) return SynchronousFuture(phaseCache);
+    }
     // free quests, only phase 3 saved in db
     if (region == Region.jp && expireAfter == null) {
       final questJP = db.gameData.quests[questId];
-
-      final phaseInDb = db.gameData.questPhases[questId * 100 + phase];
-
-      if (phaseInDb != null && (hash == null || hash == phaseInDb.enemyHash)) {
-        return SynchronousFuture(phaseInDb);
-      }
-
       if (questJP != null) {
         final now = DateTime.now().timestamp;
         // main story's main quest:
@@ -418,16 +419,12 @@ class AtlasApi {
         }
       }
     }
-    String url = questPhaseUrl(questId, phase, hash, region);
     return cacheManager.getModel(
       url,
       (data) {
         final quest = cachedQuestPhases[url] = QuestPhase.fromJson(data);
-        cachedQuestPhases[url] = quest;
-        if (hash == null && quest.enemyHash != null) {
-          final url2 = questPhaseUrl(questId, phase, quest.enemyHash, region);
-          cachedQuestPhases[url2] = quest;
-        }
+        // what if multi-phases are requesting
+        cacheDisabledQuests.remove(questId);
         return quest;
       },
       expireAfter: expireAfter,
@@ -443,7 +440,12 @@ class AtlasApi {
   }
 
   static QuestPhase? questPhaseCache(int questId, int phase, [String? hash, Region region = Region.jp]) {
-    return cachedQuestPhases[questPhaseUrl(questId, phase, hash, region)];
+    if (cacheDisabledQuests.contains(questId)) return null;
+    QuestPhase? cache = cachedQuestPhases[questPhaseUrl(questId, phase, hash, region)];
+    if (cache == null && region == Region.jp && hash == null) {
+      cache = db.gameData.getQuestPhase(questId, phase);
+    }
+    return cache;
   }
 
   static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {

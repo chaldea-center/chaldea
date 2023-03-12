@@ -4,9 +4,9 @@ import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:url_launcher/url_launcher_string.dart' as launcher_string;
 
 import 'package:chaldea/app/api/hosts.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import '../generated/l10n.dart';
 import '../packages/language.dart';
+import '../packages/platform/platform.dart';
 import 'constants.dart';
 
 class ChaldeaUrl {
@@ -37,6 +37,41 @@ class ChaldeaUrl {
       icon: const Icon(Icons.help_outline),
       tooltip: tooltip ?? S.current.help,
     );
+  }
+}
+
+class UriX {
+  const UriX._();
+
+  static void _onError(String method, String uri, dynamic e, dynamic s) {
+    // logger.d('$method failed: $uri', e, s);
+  }
+
+  static String? tryDecodeFull(String uri) {
+    try {
+      return Uri.decodeFull(uri);
+    } catch (e, s) {
+      _onError('Uri.decodeFull', uri, e, s);
+      return null;
+    }
+  }
+
+  static String? tryDecodeComponent(String encodedComponent) {
+    try {
+      return Uri.decodeComponent(encodedComponent);
+    } catch (e, s) {
+      _onError('Uri.decodeComponent', encodedComponent, e, s);
+      return null;
+    }
+  }
+
+  static String? tryDecodeQueryComponent(String encodedComponent) {
+    try {
+      return Uri.decodeQueryComponent(encodedComponent);
+    } catch (e, s) {
+      _onError('Uri.decodeQueryComponent', encodedComponent, e, s);
+      return null;
+    }
   }
 }
 

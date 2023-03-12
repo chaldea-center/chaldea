@@ -10,6 +10,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
 import 'tabs/obtain_event.dart';
+import 'tabs/obtain_event_free.dart';
 import 'tabs/obtain_free.dart';
 import 'tabs/obtain_interlude.dart';
 
@@ -28,6 +29,7 @@ enum _TabType {
   consumed,
   free,
   event,
+  eventFree,
   interlude,
   info,
 }
@@ -60,12 +62,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
   void initState() {
     super.initState();
     final item = db.gameData.items[widget.itemId];
+    _shownTabs = [];
     switch (item?.category) {
       case ItemCategory.normal:
       case ItemCategory.ascension:
       case ItemCategory.skill:
       case ItemCategory.eventAscension:
-        _shownTabs = _TabType.values;
+        _shownTabs = _TabType.values.toList();
         break;
       case ItemCategory.coin:
         break;
@@ -88,11 +91,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
-          _shownTabs = _TabType.values;
+          _shownTabs = _TabType.values.toList();
         } else if (Items.embers.contains(widget.itemId)) {
           _shownTabs = _kEventTabs;
         }
         break;
+    }
+    if (_shownTabs.contains(_TabType.eventFree) &&
+        db.gameData.dropData.freeDrops.values.every((e) => !e.items.containsKey(widget.itemId))) {
+      _shownTabs.remove(_TabType.eventFree);
     }
     _shownTabs = {..._shownTabs, _TabType.info}.toList();
 
@@ -140,6 +147,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         _TabInfo(
           header: Tab(text: S.current.event),
           view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
+          actions: [filterOutdatedButton, popupMenu],
+        ),
+      if (_shownTabs.contains(_TabType.eventFree))
+        _TabInfo(
+          header: Tab(text: S.current.event_free_quest),
+          view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
           actions: [filterOutdatedButton, popupMenu],
         ),
       if (_shownTabs.contains(_TabType.interlude))

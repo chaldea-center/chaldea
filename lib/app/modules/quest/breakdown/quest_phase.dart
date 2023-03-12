@@ -67,6 +67,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   QuestPhase? questPhase;
   String? _enemyHash;
   bool preferApRate = false;
+  bool _sumEventItem = true;
 
   @override
   void initState() {
@@ -119,18 +120,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (mounted) setState(() {});
   }
 
-  QuestPhase? getCachedData() {
-    QuestPhase? curPhase;
-    if (widget.offline) {
-      curPhase = db.gameData.getQuestPhase(quest.id, phase) ??
-          AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
-    } else {
-      curPhase = AtlasApi.questPhaseCache(quest.id, phase, _enemyHash, widget.region ?? Region.jp);
-      if (widget.region == Region.jp) {
-        curPhase ??= db.gameData.getQuestPhase(quest.id, phase);
-      }
-    }
-    return curPhase;
+  QuestPhase? getCachedData([String? overrideHash = '']) {
+    String? hash = overrideHash == '' ? _enemyHash : overrideHash?.trim();
+    return AtlasApi.questPhaseCache(quest.id, phase, hash, widget.region ?? Region.jp);
   }
 
   @override
@@ -251,8 +243,20 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ),
       ));
     }
-    final sheetData = db.gameData.dropRate.getSheet(true);
+    final sheetData = db.gameData.dropData.domusAurea;
     final _questIndex = sheetData.questIds.indexOf(quest.id);
+
+    bool hasMultiEventItem = false;
+    Map<int, int> eventItems = {};
+    for (final drop in curPhase.drops) {
+      final item = db.gameData.items[drop.objectId];
+      if (drop.type == GiftType.item &&
+          (drop.objectId == Items.qpId || [ItemCategory.event, ItemCategory.other].contains(item?.category))) {
+        eventItems.addNum(drop.objectId, 1);
+      }
+    }
+    if (eventItems.values.any((e) => e > 1)) hasMultiEventItem = true;
+
     if (!widget.battleOnly && (curPhase.drops.isNotEmpty || _questIndex >= 0)) {
       children.add(Wrap(
         spacing: 2,
@@ -270,6 +274,18 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               });
             },
           ),
+          if (hasMultiEventItem)
+            IconButton(
+              icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
+              constraints: const BoxConstraints(),
+              padding: EdgeInsets.zero,
+              tooltip: S.current.merge_same_drop,
+              onPressed: () {
+                setState(() {
+                  _sumEventItem = !_sumEventItem;
+                });
+              },
+            )
         ],
       ));
     }
@@ -278,7 +294,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('${S.current.fgo_domus_aurea} ($runs runs)'),
+          Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
           const SizedBox(height: 2),
           _getDomusAureaWidget(),
           const SizedBox(height: 3),
@@ -287,12 +303,33 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
 
     if (!widget.battleOnly && curPhase.drops.isNotEmpty) {
+      final bool showDropHint = curPhase.dropsFromAllHashes == true && curPhase.enemyHashes.length > 1;
+      Widget header = Text.rich(TextSpan(
+        text: 'Rayshift Drops (',
+        children: [
+          TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
+          if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
+          const TextSpan(text: ')'),
+        ],
+      ));
+      if (showDropHint) {
+        header = InkWell(
+          child: header,
+          onTap: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.game_drop),
+              content: Text(S.current.drop_from_all_hashes_hint),
+              hideCancel: true,
+            ).showDialog(context);
+          },
+        );
+      }
       children.add(Column(
         children: [
           const SizedBox(height: 3),
-          Text('Rayshift Drops (${curPhase.drops.first.runs} runs)'),
+          header,
           const SizedBox(height: 2),
-          _getRayshiftDrops(curPhase.drops),
+          _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
           const SizedBox(height: 3),
         ],
       ));
@@ -395,7 +432,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
     }
 
-    bool noConsume = effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0;
+    bool noConsume = effPhase.flags.contains(QuestFlag.noBattle) ||
+        (effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -426,7 +464,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
               TextSpan(children: [
-                if (effPhase.consumeType != ConsumeType.item) TextSpan(text: 'AP ${effPhase.consume}'),
+                if (effPhase.consumeType.useAp) TextSpan(text: 'AP ${effPhase.consume}'),
                 for (final itemAmount in effPhase.consumeItem)
                   WidgetSpan(
                     child: Item.iconBuilder(
@@ -539,29 +577,41 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget getQuestVersionDropdown(QuestPhase curPhase) {
-    if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
-      _enemyHash = null;
-    }
+    final hashsWithNull = [null, ...curPhase.enemyHashes];
+    final noHashPhase = getCachedData(null);
+    print(['noHashPhase.hash=', noHashPhase?.enemyHash]);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(width: 48),
         Expanded(
           child: Center(
-            child: DropdownButton<String>(
+            child: DropdownButton<String?>(
               isDense: true,
               iconSize: 16,
-              value: _enemyHash ?? curPhase.enemyHash,
-              items: List.generate(curPhase.enemyHashes.length, (index) {
-                final hash = curPhase.enemyHashes[index];
-                int? count = int.tryParse(hash.substring2(2, 4));
-                String text = S.current.quest_version(index + 1, curPhase.enemyHashes.length, count ?? "?");
+              value: _enemyHash,
+              items: List.generate(hashsWithNull.length, (index) {
+                final hash = hashsWithNull[index];
+                String text;
+                if (hash == null) {
+                  text = S.current.total;
+                  final runs = noHashPhase?.drops.getOrNull(0)?.runs;
+                  if (runs != null) {
+                    text += ' [${S.current.quest_runs(runs)}]';
+                  }
+                } else {
+                  int? count = int.tryParse(hash.substring2(2, 4));
+                  text = S.current.quest_version(index, curPhase.enemyHashes.length, count ?? "?");
+                }
+                print([index, hash, noHashPhase?.enemyHash]);
+                TextStyle? style = Theme.of(context).textTheme.bodySmall;
+                if (hash == null || hash == noHashPhase?.enemyHash) {
+                  style ??= const TextStyle();
+                  style = style.copyWith(fontWeight: FontWeight.bold);
+                }
                 return DropdownMenuItem(
                   value: hash,
-                  child: Text(
-                    text,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  child: Text(text, style: style),
                 );
               }),
               onChanged: (v) {
@@ -654,7 +704,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   /// only drops of free quest useApRate
   Widget _getDomusAureaWidget() {
-    final dropRates = db.gameData.dropRate.getSheet(true);
+    final dropRates = db.gameData.dropData.domusAurea;
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
@@ -686,16 +736,16 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget _getRayshiftDrops(List<EnemyDrop> drops) {
+  Widget _getRayshiftDrops(List<EnemyDrop> drops, bool sumEventItem) {
     drops = List.of(drops);
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId, true));
     List<Widget> children = [];
-    for (final drop in drops) {
+    Widget _singleDrop(EnemyDrop drop) {
       String? text;
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
         if (preferApRate) {
-          if (quest.consumeType == ConsumeType.ap && quest.consume > 0 && dropRate != 0.0) {
+          if (quest.consume > 0 && dropRate != 0.0) {
             double apRate = quest.consume / dropRate;
             text = apRate >= 1000 ? apRate.toInt().toString() : apRate.format(precision: 3, maxDigits: 4);
           }
@@ -710,13 +760,40 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           text = '×${drop.num.format(minVal: 999)}\n$text';
         }
       }
-      children.add(GameCardMixin.anyCardItemBuilder(
+      return drop.iconBuilder(
         context: context,
-        id: drop.objectId,
         width: 42,
         text: text ?? '-',
         option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
-      ));
+      );
+    }
+
+    if (!sumEventItem) {
+      for (final drop in drops) {
+        children.add(_singleDrop(drop));
+      }
+    } else {
+      Map<String, List<EnemyDrop>> grouped = {};
+      for (final drop in drops) {
+        grouped.putIfAbsent('${drop.type}-${drop.objectId}', () => []).add(drop);
+      }
+      for (final subdrops in grouped.values) {
+        final drop = subdrops.first;
+        final item = db.gameData.items[drop.objectId];
+        bool shouldSum = [ItemCategory.event, ItemCategory.other].contains(item?.category) || subdrops.length > 1;
+        if (!shouldSum) {
+          children.add(_singleDrop(drop));
+          continue;
+        }
+        double base = Maths.sum(subdrops.map((e) => e.num * e.dropCount / e.runs));
+        double bonus = Maths.sum(subdrops.map((e) => e.dropCount / e.runs));
+        children.add(drop.iconBuilder(
+          width: 42,
+          context: context,
+          text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
+          option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+        ));
+      }
     }
     return Wrap(
       spacing: 3,

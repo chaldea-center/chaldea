@@ -21,13 +21,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
-  final bool showBattle = kDebugMode || AppInfo.isDebugDevice || (kIsWeb && kPlatformMethods.href.contains('battle.'));
+  bool get showBattle =>
+      kDebugMode ||
+      AppInfo.isDebugDevice ||
+      db.runtimeData.enableDebugTools ||
+      (kIsWeb && kPlatformMethods.href.contains('battle.'));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _curIndex,
+        index: _curIndex.clamp(0, showBattle ? 2 : 1),
         children: [
           GalleryPage(),
           if (showBattle) BattleHomePage(),

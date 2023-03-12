@@ -184,7 +184,7 @@ Future<void> jumpToExternalLinkAlert({required String url, String? name, String?
   String shownLink = url;
   String? safeLink = Uri.tryParse(url)?.toString();
   if (safeLink != null) {
-    shownLink = Uri.decodeFull(safeLink);
+    shownLink = UriX.tryDecodeFull(safeLink) ?? safeLink;
   }
   safeLink ??= url;
 

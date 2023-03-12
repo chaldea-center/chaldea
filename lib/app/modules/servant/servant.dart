@@ -109,7 +109,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     final ascension = ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
     return [
       SliverAppBar(
-        title: AutoSizeText(svt.lName.l, maxLines: 1),
+        title: AutoSizeText(svt.lAscName.l, maxLines: 1),
         actions: [
           if (svt.isUserSvt)
             db.onUserData(

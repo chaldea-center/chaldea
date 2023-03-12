@@ -143,6 +143,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       battleBgId: json['battleBgId'] as int? ?? 0,
       enemyHash: json['enemyHash'] as String?,
       enemyHashes: (json['availableEnemyHashes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      dropsFromAllHashes: json['dropsFromAllHashes'] as bool?,
       extraDetail: json['extraDetail'] == null
           ? null
           : QuestPhaseExtraDetail.fromJson(Map<String, dynamic>.from(json['extraDetail'] as Map)),

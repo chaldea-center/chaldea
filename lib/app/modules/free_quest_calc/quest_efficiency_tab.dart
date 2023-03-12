@@ -55,7 +55,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   }
 
   double getBondEff(LPVariable variable) {
-    final data = db.gameData.dropRate.newData;
+    final data = db.gameData.dropData.domusAurea;
     final index = data.questIds.indexOf(variable.name);
     int? bond = data.bonds.getOrNull(index), ap = data.apCosts.getOrNull(index);
     if (bond != null && ap != null) {

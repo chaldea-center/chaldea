@@ -216,7 +216,7 @@ class Item {
   static int compare2(int id1, int id2, [bool reversed = false]) {
     // priority越大越金
     // ce3->item2->ember1
-    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
+    return ListX.compareByList(id1, id2, (v) => <int>[-_getType(v), _getPriority(v)], reversed);
   }
 
   static Map<int, int> sortMapByPriority(

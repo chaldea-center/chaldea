@@ -48,7 +48,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text(S.current.fgo_domus_aurea),
                 trailing: db.onUserData(
                   (context, snapshot) => Text(
-                    db.gameData.dropRate.updatedAt.sec2date().toDateString(),
+                    db.gameData.dropData.domusVer.sec2date().toDateString(),
                   ),
                 ),
               ),

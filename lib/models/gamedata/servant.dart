@@ -233,8 +233,8 @@ class Servant with GameCardMixin {
   late SvtExpData curveData =
       SvtExpData.from(type: growthCurve, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax);
   List<int> get atkGrowth => curveData.atk;
-  List<int> get hpGrowth => curveData.hp;
-  List<int> get expGrowth => curveData.exp;
+  List<int> get hpGrowth => curveData.hp; // [1:]
+  List<int> get expGrowth => curveData.exp; // [0:]
 
   Servant({
     required this.id,
@@ -504,6 +504,12 @@ class Servant with GameCardMixin {
 
   @override
   Transl<String, String> get lName => Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
+
+  Transl<String, String> get lAscName {
+    int asc = db.userData.svtAscensionIcon == -1 && isUserSvt ? status.cur.ascension : db.userData.svtAscensionIcon;
+    String _name = ascensionAdd.overWriteServantName.ascension[asc] ?? name;
+    return Transl.svtNames(_name);
+  }
 
   Set<String> get allNames {
     return <String>{

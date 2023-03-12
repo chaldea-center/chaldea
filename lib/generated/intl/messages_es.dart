@@ -59,7 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m24(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m25(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m13(n) => "Perfil ${n}";
 
@@ -390,7 +390,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_include_owned": MessageLookupByLibrary.simpleMessage("Incluir poseídos"),
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("Restar Eventos"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("Restar poseídos"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("Total"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Únete al programa Beta"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("Español"),
@@ -573,7 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Máx(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m24,
+        "solution_total_battles_ap": m25,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),

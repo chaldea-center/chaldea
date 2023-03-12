@@ -113,6 +113,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   final key = '/quest/$questId/';
                   AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
                   AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
+                  if (questId != null) AtlasApi.cacheDisabledQuests.add(questId!);
                   uniqueKey = UniqueKey();
                   if (mounted) setState(() {});
                 },
@@ -143,7 +144,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   offline: false,
                   key: uniqueKey,
                 ),
-                if (db.gameData.dropRate.newData.questIds.contains(quest.id)) blacklistButton,
+                if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
                 ...getCampaigns(),
                 const SafeArea(child: SizedBox())

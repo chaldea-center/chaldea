@@ -382,7 +382,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_only_show_lack": MessageLookupByLibrary.simpleMessage("أظهر المطلوبة فقط"),
         "item_own": MessageLookupByLibrary.simpleMessage("مملوك"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("المواد"),
-        "item_total_demand": MessageLookupByLibrary.simpleMessage("الإجمالي"),
         "join_beta": MessageLookupByLibrary.simpleMessage("انضم للبيتا"),
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("عربي"),

@@ -5,6 +5,7 @@ import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/modules/enemy/quest_enemy.dart';
+import '../../widgets/image_with_text.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -91,7 +92,7 @@ class Quest with RouteInfo {
     this.type = QuestType.event,
     this.flags = const [],
     this.consumeType = ConsumeType.ap,
-    this.consume = 0,
+    int consume = 0,
     this.consumeItem = const [],
     this.afterClear = QuestAfterClearType.close,
     this.recommendLv = '',
@@ -114,7 +115,8 @@ class Quest with RouteInfo {
     this.openedAt = 0,
     this.closedAt = 0,
   })  : spotName = spotName == '0' ? '' : spotName,
-        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon;
+        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
+        consume = consumeType.useAp ? consume : 0;
 
   static bool _isSQGiftIcon(String? giftIcon, List<Gift> gifts) {
     return giftIcon != null &&
@@ -222,7 +224,7 @@ class Quest with RouteInfo {
 
   bool get isMainStoryFree => type == QuestType.free && afterClear == QuestAfterClearType.repeatLast && warId < 1000;
 
-  bool get isDomusQuest => isMainStoryFree || db.gameData.dropRate.newData.questIds.contains(id);
+  bool get isDomusQuest => isMainStoryFree || db.gameData.dropData.domusAurea.questIds.contains(id);
 
   // exclude challenge quest, raid
   bool get isAnyFree {
@@ -232,7 +234,8 @@ class Quest with RouteInfo {
       return false;
     }
     if (flags.contains(QuestFlag.noBattle)) return false;
-    return !(consumeType == ConsumeType.ap && consume <= 5);
+    if (flags.contains(QuestFlag.dropFirstTimeOnly)) return false;
+    return true;
   }
 
   List<String> get allScriptIds {
@@ -254,6 +257,8 @@ class QuestPhase extends Quest {
   String? enemyHash;
   @JsonKey(name: 'availableEnemyHashes')
   List<String> enemyHashes;
+  // null if no enemy data found
+  bool? dropsFromAllHashes;
   QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
@@ -300,6 +305,7 @@ class QuestPhase extends Quest {
     this.battleBgId = 0,
     this.enemyHash,
     this.enemyHashes = const [],
+    this.dropsFromAllHashes,
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
@@ -309,7 +315,15 @@ class QuestPhase extends Quest {
     List<Stage>? stages,
     this.drops = const [],
   })  : individuality = individuality ?? [],
-        stages = stages ?? [];
+        stages = stages ?? [] {
+    if (enemyHashes.length > 1) {
+      for (final stage in this.stages) {
+        for (final enemy in stage.enemies) {
+          enemy.dropsFromAllHashes = dropsFromAllHashes;
+        }
+      }
+    }
+  }
 
   int get key => getPhaseKey(phase);
 
@@ -376,6 +390,7 @@ class BaseGift {
     String? text,
     EdgeInsets? padding,
     VoidCallback? onTap,
+    ImageWithTextOption? option,
     bool jumpToDetail = true,
     bool popDetail = false,
     String? name,
@@ -419,6 +434,7 @@ class BaseGift {
       text: text ?? ((num > 1 || (num == 1 && showOne)) ? num.format() : null),
       padding: padding,
       onTap: onTap,
+      option: option,
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
       name: name,
@@ -878,6 +894,9 @@ class QuestEnemy with GameCardMixin {
   String name;
   BasicServant svt;
   List<EnemyDrop> drops;
+  // only true/false when there are multiple versions
+  @JsonKey(includeFromJson: false)
+  bool? dropsFromAllHashes;
   int lv;
   int exp;
   int atk;
@@ -1320,7 +1339,9 @@ enum ConsumeType {
   ap,
   rp,
   item,
-  apAndItem,
+  apAndItem;
+
+  bool get useAp => this == ConsumeType.ap || this == ConsumeType.apAndItem;
 }
 
 enum QuestAfterClearType {
