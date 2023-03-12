@@ -508,7 +508,7 @@ class BattleServantData {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skill = db.gameData.baseSkills[buff.param];
         if (skill == null) {
-          print('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
+          battleData.logger.debug('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
           continue;
         }
 

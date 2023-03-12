@@ -69,8 +69,11 @@ void executeFunction(
     case FuncType.eventPointUp:
       break;
     default:
-      print('Unimplemented FuncType: ${function.funcType}, function ID: ${function.funcId}, '
-          'activator: ${activator?.lBattleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+      battleData.logger.debug('Unimplemented FuncType: ${function.funcType}, '
+          'function ID: ${function.funcId}, '
+          'activator: ${activator?.lBattleName}, '
+          'quest ID: ${battleData.niceQuest?.id}, '
+          'phase: ${battleData.niceQuest?.phase}');
   }
   battleData.previousFunctionResult = functionSuccess;
 }
@@ -239,8 +242,11 @@ List<BattleServantData> acquireFunctionTarget(
     case FuncTargetType.ptSelfAnotherRandom:
     case FuncTargetType.enemyOneAnotherRandom:
     case FuncTargetType.commandTypeSelfTreasureDevice:
-      print('Unimplemented FuncTargetType: $funcTargetType, function ID: $funcId, '
-          'activator: ${activator?.lBattleName}, quest ID: ${battleData.niceQuest?.id}, phase: ${battleData.niceQuest?.phase}');
+      battleData.logger.debug('Unimplemented FuncTargetType: $funcTargetType, '
+          'function ID: $funcId, '
+          'activator: ${activator?.lBattleName}, '
+          'quest ID: ${battleData.niceQuest?.id}, '
+          'phase: ${battleData.niceQuest?.phase}');
       break;
   }
 
