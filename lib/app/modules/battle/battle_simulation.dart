@@ -166,6 +166,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             jumpToDetail: false,
             width: 72,
           );
+    // TODO (battle): change iconImage to InkWell and add onTap to check detailed buff list
     children.add(iconImage);
     if (svt.isPlayer) {
       children.add(Padding(
@@ -580,8 +581,65 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       ));
     }
 
+    npCardColumn.add(Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Radio<bool>(
+              value: false,
+              groupValue: widget.battleData.isAfter7thAnni,
+              onChanged: (final bool? v) {
+                widget.battleData.isAfter7thAnni = v!;
+                if (mounted) setState(() {});
+              },
+            ),
+            const Text('Before 7th'),
+          ],
+        ),
+        Row(
+          children: [
+            Radio<bool>(
+              value: true,
+              groupValue: widget.battleData.isAfter7thAnni,
+              onChanged: (final bool? v) {
+                widget.battleData.isAfter7thAnni = v!;
+                if (mounted) setState(() {});
+              },
+            ),
+            const Text('After 7th'),
+          ],
+        )
+      ],
+    ));
+    commandCardColumn.add(ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 350),
+      child: Row(
+        children: [
+          Expanded(
+            child: ServantOptionEditPage.buildSlider(
+              leadingText: 'Random',
+              min: ConstData.constants.attackRateRandomMin,
+              max: ConstData.constants.attackRateRandomMax,
+              value: widget.battleData.fixedRandom,
+              label: '${widget.battleData.fixedRandom ~/ 1000}.'
+                  '${widget.battleData.fixedRandom ~/ 100 % 10}'
+                  '${widget.battleData.fixedRandom ~/ 10 % 10}'
+                  '${widget.battleData.fixedRandom % 10}',
+              onChange: (v) {
+                widget.battleData.fixedRandom = v.round();
+                if (mounted) setState(() {});
+              },
+            ),
+          ),
+        ],
+      ),
+    ));
+
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,

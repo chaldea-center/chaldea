@@ -32,7 +32,7 @@ class ServantOptionEditPage extends StatefulWidget {
     required final ValueChanged<double> onChange,
   }) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

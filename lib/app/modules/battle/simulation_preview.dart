@@ -405,40 +405,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       if (mounted) setState(() {});
                     },
                   ),
-                  // TODO (battle): Move random slider & 7th anni to card selection window
-                  ServantOptionEditPage.buildSlider(
-                    leadingText: 'Random',
-                    min: ConstData.constants.attackRateRandomMin,
-                    max: ConstData.constants.attackRateRandomMax,
-                    value: fixedRandom,
-                    label: '${fixedRandom ~/ 1000}.'
-                        '${fixedRandom ~/ 100 % 10}${fixedRandom ~/ 10 % 10}${fixedRandom % 10}',
-                    onChange: (v) {
-                      fixedRandom = v.round();
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ToggleButtons(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      onPressed: (final int index) {
-                        isAfter7thAnni = index == 1;
-                        if (mounted) setState(() {});
-                      },
-                      isSelected: [!isAfter7thAnni, isAfter7thAnni],
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('Before 7th'),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('After 7th'),
-                        )
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
