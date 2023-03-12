@@ -185,6 +185,7 @@ class BattleServantData {
     for (int i = 0; i < niceSvt!.cards.length; i += 1) {
       final cardType = niceSvt!.cards[i];
       final card = CommandCardData(cardType, niceSvt!.cardDetails[cardType]!)
+        ..cardIndex = i
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(cardType)

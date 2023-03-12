@@ -401,6 +401,7 @@ class BattleData {
       applyTypeChain(firstCardType, actions);
     }
 
+    final previousTargetIndex = allyTargetIndex;
     int extraOvercharge = 0;
     for (int i = 0; i < actions.length; i += 1) {
       if (nonnullEnemies.isNotEmpty) {
@@ -444,6 +445,24 @@ class BattleData {
     }
 
     // end player turn
+    endPlayerTurn();
+
+    startEnemyTurn();
+    endEnemyTurn();
+
+    nextTurn();
+
+    allyTargetIndex = previousTargetIndex;
+  }
+
+  void skipTurn() {
+    if (isBattleFinished) {
+      return;
+    }
+
+    onFieldEnemies.clear();
+    enemyDataList.clear();
+
     endPlayerTurn();
 
     startEnemyTurn();
@@ -542,6 +561,13 @@ class BattleData {
     }
   }
 
+  void chargeAllyNP() {
+    if (isBattleFinished) {
+      return;
+    }
+    gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
+  }
+
   void removeDeadActors() {
     removeDeadActorsFromList(onFieldAllyServants);
     removeDeadActorsFromList(onFieldEnemies);
@@ -575,7 +601,7 @@ class BattleData {
         }
       }
     }
-    return 0;
+    return targetIndex;
   }
 
   static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
