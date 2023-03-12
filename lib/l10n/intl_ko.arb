@@ -457,6 +457,7 @@
   "max_enemy_act_count": null,
   "max_enemy_on_stage": null,
   "media_assets": null,
+  "merge_same_drop": null,
   "migrate_external_storage_btn_no": "이동시키지 않음",
   "migrate_external_storage_btn_yes": "이동",
   "migrate_external_storage_manual_warning": "데이터를 수동으로 이동시켜주세요. 그렇지않으면 기동 후에 데이터가 날아가버립니다.",

@@ -457,6 +457,7 @@
   "max_enemy_act_count": null,
   "max_enemy_on_stage": null,
   "media_assets": null,
+  "merge_same_drop": null,
   "migrate_external_storage_btn_no": null,
   "migrate_external_storage_btn_yes": null,
   "migrate_external_storage_manual_warning": null,

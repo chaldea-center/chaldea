@@ -62,14 +62,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
   void initState() {
     super.initState();
     final item = db.gameData.items[widget.itemId];
+    _shownTabs = [];
     switch (item?.category) {
       case ItemCategory.normal:
-        _shownTabs = _TabType.values.toList();
-        break;
       case ItemCategory.ascension:
       case ItemCategory.skill:
       case ItemCategory.eventAscension:
-        _shownTabs = _TabType.values.toList()..remove(_TabType.eventFree);
+        _shownTabs = _TabType.values.toList();
         break;
       case ItemCategory.coin:
         break;
@@ -92,11 +91,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
-          _shownTabs = _TabType.values.toList()..remove(_TabType.eventFree);
+          _shownTabs = _TabType.values.toList();
         } else if (Items.embers.contains(widget.itemId)) {
           _shownTabs = _kEventTabs;
         }
         break;
+    }
+    if (_shownTabs.contains(_TabType.eventFree) &&
+        db.gameData.dropData.freeDrops.values.every((e) => !e.items.containsKey(widget.itemId))) {
+      _shownTabs.remove(_TabType.eventFree);
     }
     _shownTabs = {..._shownTabs, _TabType.info}.toList();
 

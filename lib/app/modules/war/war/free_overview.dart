@@ -262,7 +262,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
               context: context,
               item: item,
               width: iconWidth,
-              text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}B',
+              text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
               option: ImageWithTextOption(textAlign: TextAlign.end),
             );
             break;

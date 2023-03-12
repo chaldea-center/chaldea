@@ -5,6 +5,7 @@ import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/modules/enemy/quest_enemy.dart';
+import '../../widgets/image_with_text.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -378,6 +379,7 @@ class BaseGift {
     String? text,
     EdgeInsets? padding,
     VoidCallback? onTap,
+    ImageWithTextOption? option,
     bool jumpToDetail = true,
     bool popDetail = false,
     String? name,
@@ -421,6 +423,7 @@ class BaseGift {
       text: text ?? ((num > 1 || (num == 1 && showOne)) ? num.format() : null),
       padding: padding,
       onTap: onTap,
+      option: option,
       jumpToDetail: jumpToDetail,
       popDetail: popDetail,
       name: name,

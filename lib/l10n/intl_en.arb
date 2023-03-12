@@ -457,6 +457,7 @@
   "max_enemy_act_count": "Max enemy act count",
   "max_enemy_on_stage": "Max enemies on stage",
   "media_assets": "Assets",
+  "merge_same_drop": "Merge Same Drop Item",
   "migrate_external_storage_btn_no": "NOT MIGRATE",
   "migrate_external_storage_btn_yes": "MIGRATE",
   "migrate_external_storage_manual_warning": "Please move the data manually, otherwise the data will be empty after startup.",

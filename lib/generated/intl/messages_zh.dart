@@ -545,6 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("敌方最多行动次数"),
         "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("场上最大敌人数"),
         "media_assets": MessageLookupByLibrary.simpleMessage("资源"),
+        "merge_same_drop": MessageLookupByLibrary.simpleMessage("合并相同掉落素材"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("不迁移"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("迁移"),
         "migrate_external_storage_manual_warning": MessageLookupByLibrary.simpleMessage("请手动移动数据，否则启动后为空数据。"),

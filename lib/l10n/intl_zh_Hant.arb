@@ -457,6 +457,7 @@
   "max_enemy_act_count": "敵方最多行動次數",
   "max_enemy_on_stage": "場上最大敵人數",
   "media_assets": "資源",
+  "merge_same_drop": null,
   "migrate_external_storage_btn_no": "不轉移",
   "migrate_external_storage_btn_yes": "轉移",
   "migrate_external_storage_manual_warning": "請手動移動數據, 否則啟動後為空數據",

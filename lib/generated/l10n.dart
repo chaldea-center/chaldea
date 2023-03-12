@@ -5095,6 +5095,17 @@ class S {
     );
   }
 
+  /// `Merge Same Drop Item`
+  String get merge_same_drop {
+    return Intl.message(
+      'Merge Same Drop Item',
+      name: 'merge_same_drop',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `NOT MIGRATE`
   String get migrate_external_storage_btn_no {
     return Intl.message(

@@ -67,6 +67,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   QuestPhase? questPhase;
   String? _enemyHash;
   bool preferApRate = false;
+  bool _sumEventItem = true;
 
   @override
   void initState() {
@@ -253,6 +254,18 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
     final sheetData = db.gameData.dropData.domusAurea;
     final _questIndex = sheetData.questIds.indexOf(quest.id);
+
+    bool hasMultiEventItem = false;
+    Map<int, int> eventItems = {};
+    for (final drop in curPhase.drops) {
+      final item = db.gameData.items[drop.objectId];
+      if (drop.type == GiftType.item &&
+          (drop.objectId == Items.qpId || [ItemCategory.event, ItemCategory.other].contains(item?.category))) {
+        eventItems.addNum(drop.objectId, 1);
+      }
+    }
+    if (eventItems.values.any((e) => e > 1)) hasMultiEventItem = true;
+
     if (!widget.battleOnly && (curPhase.drops.isNotEmpty || _questIndex >= 0)) {
       children.add(Wrap(
         spacing: 2,
@@ -270,6 +283,18 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               });
             },
           ),
+          if (hasMultiEventItem)
+            IconButton(
+              icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
+              constraints: const BoxConstraints(),
+              padding: EdgeInsets.zero,
+              tooltip: S.current.merge_same_drop,
+              onPressed: () {
+                setState(() {
+                  _sumEventItem = !_sumEventItem;
+                });
+              },
+            )
         ],
       ));
     }
@@ -292,7 +317,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           const SizedBox(height: 3),
           Text('Rayshift Drops (${S.current.quest_runs(curPhase.drops.first.runs)})'),
           const SizedBox(height: 2),
-          _getRayshiftDrops(curPhase.drops),
+          _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
           const SizedBox(height: 3),
         ],
       ));
@@ -687,11 +712,11 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget _getRayshiftDrops(List<EnemyDrop> drops) {
+  Widget _getRayshiftDrops(List<EnemyDrop> drops, bool sumEventItem) {
     drops = List.of(drops);
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId, true));
     List<Widget> children = [];
-    for (final drop in drops) {
+    Widget _singleDrop(EnemyDrop drop) {
       String? text;
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
@@ -711,13 +736,40 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           text = '×${drop.num.format(minVal: 999)}\n$text';
         }
       }
-      children.add(GameCardMixin.anyCardItemBuilder(
+      return drop.iconBuilder(
         context: context,
-        id: drop.objectId,
         width: 42,
         text: text ?? '-',
         option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
-      ));
+      );
+    }
+
+    if (!sumEventItem) {
+      for (final drop in drops) {
+        children.add(_singleDrop(drop));
+      }
+    } else {
+      Map<String, List<EnemyDrop>> grouped = {};
+      for (final drop in drops) {
+        grouped.putIfAbsent('${drop.type}-${drop.objectId}', () => []).add(drop);
+      }
+      for (final subdrops in grouped.values) {
+        final drop = subdrops.first;
+        final item = db.gameData.items[drop.objectId];
+        bool shouldSum = [ItemCategory.event, ItemCategory.other].contains(item?.category) || subdrops.length > 1;
+        if (!shouldSum) {
+          children.add(_singleDrop(drop));
+          continue;
+        }
+        double base = Maths.sum(subdrops.map((e) => e.num * e.dropCount / e.runs));
+        double bonus = Maths.sum(subdrops.map((e) => e.dropCount / e.runs));
+        children.add(drop.iconBuilder(
+          width: 42,
+          context: context,
+          text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
+          option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+        ));
+      }
     }
     return Wrap(
       spacing: 3,

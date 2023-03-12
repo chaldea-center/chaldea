@@ -569,6 +569,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("Max enemy act count"),
         "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("Max enemies on stage"),
         "media_assets": MessageLookupByLibrary.simpleMessage("Assets"),
+        "merge_same_drop": MessageLookupByLibrary.simpleMessage("Merge Same Drop Item"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("MIGRATE"),
         "migrate_external_storage_manual_warning": MessageLookupByLibrary.simpleMessage(

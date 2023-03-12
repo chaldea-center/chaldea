@@ -457,6 +457,7 @@
   "max_enemy_act_count": "敌方最多行动次数",
   "max_enemy_on_stage": "场上最大敌人数",
   "media_assets": "资源",
+  "merge_same_drop": "合并相同掉落素材",
   "migrate_external_storage_btn_no": "不迁移",
   "migrate_external_storage_btn_yes": "迁移",
   "migrate_external_storage_manual_warning": "请手动移动数据，否则启动后为空数据。",
