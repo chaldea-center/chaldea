@@ -1,4 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
@@ -14,9 +17,6 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../quest/breakdown/quest_phase.dart';
 
 class SimulationPreview extends StatefulWidget {

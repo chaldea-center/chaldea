@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -10,8 +13,6 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/foundation.dart';
-
 import 'simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {

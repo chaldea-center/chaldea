@@ -26,7 +26,8 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get battleName => isPlayer ? ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase) : niceEnemy!.lShownName;
+  String get battleName =>
+      isPlayer ? ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase) : niceEnemy!.lShownName;
 
   //
   int index = 0;
