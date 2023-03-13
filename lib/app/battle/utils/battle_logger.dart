@@ -1,7 +1,7 @@
 class BattleLogger {
   final List<BattleLog> logs = [];
 
-  void _log(final BattleLogType type, final String log){
+  void _log(final BattleLogType type, final String log) {
     logs.add(BattleLog(type, log));
   }
 
@@ -25,6 +25,4 @@ class BattleLog {
   BattleLog(this.type, this.log);
 }
 
-enum BattleLogType {
-  debug, function, action
-}
+enum BattleLogType { debug, function, action }

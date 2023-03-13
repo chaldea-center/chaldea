@@ -579,7 +579,6 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   Widget getQuestVersionDropdown(QuestPhase curPhase) {
     final hashsWithNull = [null, ...curPhase.enemyHashes];
     final noHashPhase = getCachedData(null);
-    print(['noHashPhase.hash=', noHashPhase?.enemyHash]);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -603,7 +602,6 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   int? count = int.tryParse(hash.substring2(2, 4));
                   text = S.current.quest_version(index, curPhase.enemyHashes.length, count ?? "?");
                 }
-                print([index, hash, noHashPhase?.enemyHash]);
                 TextStyle? style = Theme.of(context).textTheme.bodySmall;
                 if (hash == null || hash == noHashPhase?.enemyHash) {
                   style ??= const TextStyle();

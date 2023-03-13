@@ -122,6 +122,7 @@ const _$EventTypeEnumMap = {
   EventType.combineCosutumeItem: 'combineCosutumeItem',
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
   EventType.interludeCampaign: 'interludeCampaign',
+  EventType.myroomPhotoCampaign: 'myroomPhotoCampaign',
 };
 
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(

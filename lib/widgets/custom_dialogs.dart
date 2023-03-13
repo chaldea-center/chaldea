@@ -10,7 +10,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final String? text;
   final String? hintText;
   final String? errorText;
-  final bool Function(String)? validate;
+  final bool Function(String s)? validate;
   final ValueChanged<String>? onSubmit;
 
   const InputCancelOkDialog(

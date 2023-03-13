@@ -463,9 +463,18 @@ enum SvtFrameType {
 class BuffActionConverter extends JsonConverter<BuffAction, String> {
   const BuffActionConverter();
   @override
-  BuffAction fromJson(String value) => decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+  BuffAction fromJson(String value) {
+    return deprecatedTypes[value] ?? decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+  }
+
   @override
   String toJson(BuffAction obj) => _$BuffActionEnumMap[obj] ?? obj.name;
+
+  static Map<String, BuffAction> deprecatedTypes = {
+    "functionCommandattack": BuffAction.functionCommandattackAfter,
+    "functionAttack": BuffAction.functionAttackAfter,
+    "functionCommandcodeattack": BuffAction.functionCommandcodeattackBefore,
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
@@ -528,7 +537,9 @@ enum BuffAction {
   functionWavestart(54),
   functionSelfturnend(55),
   giveGainHp(56),
-  functionCommandattack(57),
+  // @Deprecated('use `functionCommandattackAfter`')
+  // functionCommandattack(57),
+  functionCommandattackAfter(57),
   functionDeadattack(58),
   functionEntry(59),
   chagetd(60),
@@ -551,8 +562,12 @@ enum BuffAction {
   donotActCommandtype(77),
   damageEventPoint(78),
   damageSpecial(79),
-  functionAttack(80),
-  functionCommandcodeattack(81),
+  // @Deprecated('use `functionAttackAfter`')
+  // functionAttack(80),
+  functionAttackAfter(80),
+  // @Deprecated('use `functionCommandcodeattackBefore`')
+  // functionCommandcodeattack(81),
+  functionCommandcodeattackBefore(81),
   donotNobleCondMismatch(82),
   donotSelectCommandcard(83),
   donotReplace(84),
@@ -587,6 +602,12 @@ enum BuffAction {
   masterSkillValueUp(113),
   buffConvert(114),
   subFieldIndividuality(115),
+  functionCommandcodeattackBeforeMainOnly(116),
+  functionCommandcodeattackAfterMainOnly(117),
+  functionCommandattackBeforeMainOnly(118),
+  functionCommandattackAfterMainOnly(119),
+  functionAttackBeforeMainOnly(120),
+  functionAttackAfterMainOnly(121),
   ;
 
   final int id;

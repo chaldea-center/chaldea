@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 class DirectionalIcons {
+  const DirectionalIcons._();
+
   static IconData of(
     BuildContext context, {
     required IconData ltr,

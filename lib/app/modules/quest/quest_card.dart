@@ -209,7 +209,7 @@ class _QuestCardState extends State<QuestCard> {
       ...phaseWidgets,
       if (!widget.battleOnly && (quest.gifts.isNotEmpty || quest.giftIcon != null)) _questRewards(),
       if (!widget.battleOnly && !widget.offline) releaseConditions(),
-      if (widget.battleOnly || widget.offline)
+      if (widget.offline && !widget.battleOnly)
         TextButton(
           onPressed: () {
             router.push(
