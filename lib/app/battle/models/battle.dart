@@ -538,7 +538,7 @@ class BattleData {
         [
           BuffAction.functionAttackBefore,
           BuffAction.functionCommandattackBefore,
-          BuffAction.functionCommandcodeattack,
+          BuffAction.functionCommandcodeattackBefore,
         ],
         card.commandCodeBuffs);
 
@@ -557,8 +557,8 @@ class BattleData {
     actor.activateBuffOnActions(
         this,
         [
-          BuffAction.functionAttack,
-          BuffAction.functionCommandattack,
+          BuffAction.functionAttackAfter,
+          BuffAction.functionCommandattackAfter,
           BuffAction.functionCommandcodeattackAfter,
         ],
         card.commandCodeBuffs);

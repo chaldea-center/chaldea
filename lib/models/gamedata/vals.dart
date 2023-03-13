@@ -168,6 +168,8 @@ class DataVals {
   int? get ActNoDamageBuff => _vals['ActNoDamageBuff'];
   int? get ActSelectIndex => _vals['ActSelectIndex'];
   List<int>? get CopyTargetBuffType => _list('CopyTargetBuffType');
+  List<int>? get NotSkillCopyTargetFuncIds => _list('NotSkillCopyTargetFuncIds');
+  List<int>? get NotSkillCopyTargetIndividualities => _list('NotSkillCopyTargetIndividualities');
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

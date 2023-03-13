@@ -67,6 +67,7 @@ class CustomMission {
 
   static CustomMission? fromEventMission(EventMission? eventMission) {
     if (eventMission == null) return null;
+    // only return the first clear condition
     for (final cond in eventMission.conds) {
       if (cond.missionProgressType != MissionProgressType.clear ||
           cond.condType != CondType.missionConditionDetail ||
@@ -111,7 +112,7 @@ class CustomMission {
         count: cond.targetNum,
         conds: conds,
         condAnd: false,
-        originDetail: cond.conditionMessage,
+        originDetail: '${eventMission.dispNo}. ${cond.conditionMessage}',
       );
     }
     return null;

@@ -34,7 +34,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
   List<String> links = [];
 
   bool useGrid = true;
-  Map<String, double> _scrollOffsets = {};
+  final Map<String, double> _scrollOffsets = {};
 
   @override
   void initState() {

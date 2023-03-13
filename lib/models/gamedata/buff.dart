@@ -15,14 +15,6 @@ import 'vals.dart';
 
 part '../../generated/models/gamedata/buff.g.dart';
 
-class BuffTypeConverter extends JsonConverter<BuffType, String> {
-  const BuffTypeConverter();
-  @override
-  BuffType fromJson(String value) => decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
-  @override
-  String toJson(BuffType obj) => _$BuffTypeEnumMap[obj] ?? obj.name;
-}
-
 @JsonSerializable()
 class Buff with RouteInfo {
   final int id;
@@ -251,6 +243,26 @@ enum ClassRelationOverwriteType {
   overwriteLessThanTarget,
 }
 
+class BuffTypeConverter extends JsonConverter<BuffType, String> {
+  const BuffTypeConverter();
+
+  @override
+  BuffType fromJson(String value) {
+    return deprecatedTypes[value] ?? decodeEnum(_$BuffTypeEnumMap, value, BuffType.unknown);
+  }
+
+  @override
+  String toJson(BuffType obj) => _$BuffTypeEnumMap[obj] ?? obj.name;
+
+  static Map<String, BuffType> deprecatedTypes = {
+    "commandattackFunction": BuffType.commandattackAfterFunction,
+    "upDefencecommanDamage": BuffType.upDefenceCommanddamage,
+    "downDefencecommanDamage": BuffType.downDefenceCommanddamage,
+    "attackFunction": BuffType.attackAfterFunction,
+    "commandcodeattackFunction": BuffType.commandcodeattackBeforeFunction,
+  };
+}
+
 @JsonEnum(alwaysCreate: true)
 enum BuffType {
   unknown(-1), // custom
@@ -328,7 +340,9 @@ enum BuffType {
   damageFunction(86),
   upGivegainHp(87),
   downGivegainHp(88),
-  commandattackFunction(89),
+  // @Deprecated('use `commandattackAfterFunction`')
+  // commandattackFunction(89),
+  commandattackAfterFunction(89),
   deadattackFunction(90),
   upSpecialdefence(91),
   downSpecialdefence(92),
@@ -367,8 +381,12 @@ enum BuffType {
   downFuncgainNp(125),
   upFuncHpReduce(126),
   downFuncHpReduce(127),
-  upDefencecommanDamage(128),
-  downDefencecommanDamage(129),
+  // @Deprecated('use `upDefenceCommanddamage`')
+  // upDefencecommanDamage(128),
+  upDefenceCommanddamage(128),
+  // @Deprecated('use `downDefenceCommanddamage`')
+  // downDefencecommanDamage(129),
+  downDefenceCommanddamage(129),
   npattackPrevBuff(130),
   fixCommandcard(131),
   donotGainnp(132),
@@ -376,8 +394,12 @@ enum BuffType {
   donotActCommandtype(134),
   upDamageEventPoint(135),
   upDamageSpecial(136),
-  attackFunction(137),
-  commandcodeattackFunction(138),
+  // @Deprecated('use `attackAfterFunction`')
+  // attackFunction(137),
+  attackAfterFunction(137),
+  // @Deprecated('use `commandcodeattackBeforeFunction`')
+  // commandcodeattackFunction(138),
+  commandcodeattackBeforeFunction(138),
   donotNobleCondMismatch(139),
   donotSelectCommandcard(140),
   donotReplace(141),
@@ -415,6 +437,12 @@ enum BuffType {
   masterSkillValueUp(174),
   buffConvert(175),
   subFieldIndividuality(176),
+  commandcodeattackBeforeFunctionMainOnly(177),
+  commandcodeattackAfterFunctionMainOnly(178),
+  commandattackBeforeFunctionMainOnly(179),
+  commandattackAfterFunctionMainOnly(180),
+  attackBeforeFunctionMainOnly(181),
+  attackAfterFunctionMainOnly(182),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),
@@ -429,9 +457,10 @@ enum BuffType {
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = {
   BuffType.reflectionFunction: (v) =>
       BuffValueTriggerType(BuffType.reflectionFunction, skill: v.Value, level: v.Value2),
-  BuffType.attackFunction: (v) => BuffValueTriggerType(BuffType.attackFunction, skill: v.Value, level: v.Value2),
-  BuffType.commandattackFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandattackFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
+  BuffType.attackAfterFunction: (v) =>
+      BuffValueTriggerType(BuffType.attackAfterFunction, skill: v.Value, level: v.Value2),
+  BuffType.commandattackAfterFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandattackAfterFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
   BuffType.commandattackBeforeFunction: (v) =>
       BuffValueTriggerType(BuffType.commandattackBeforeFunction, skill: v.Value, level: v.Value2),
   BuffType.damageFunction: (v) => BuffValueTriggerType(BuffType.damageFunction, skill: v.Value, level: v.Value2),
@@ -450,8 +479,8 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
   BuffType.counterFunction: (v) =>
       BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
   // ?
-  BuffType.commandcodeattackFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandcodeattackFunction, skill: v.Value, level: v.Value2),
+  BuffType.commandcodeattackBeforeFunction: (v) =>
+      BuffValueTriggerType(BuffType.commandcodeattackBeforeFunction, skill: v.Value, level: v.Value2),
   BuffType.commandcodeattackAfterFunction: (v) =>
       BuffValueTriggerType(BuffType.commandcodeattackAfterFunction, skill: v.Value, level: v.Value2),
   BuffType.gutsFunction: (v) => BuffValueTriggerType(BuffType.gutsFunction, skill: v.Value, level: v.Value2),

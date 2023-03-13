@@ -1384,12 +1384,13 @@ enum EventType {
   boxGachaPoint,
   loginCampaignStrict,
   totalLogin,
-  comebackCampaign,
+  comebackCampaign, // custom named
   locationCampaign,
   warBoard, // main
   combineCosutumeItem,
   myroomMultipleViewCampaign,
   interludeCampaign,
+  myroomPhotoCampaign,
 }
 
 enum DetailMissionCondLinkType {
