@@ -25,15 +25,19 @@ class FunctionExecutor {
     final bool notActorFunction = false,
   }) {
     final BattleServantData? activator = battleData.activator;
-    if (!validateFunctionTargetTeam(function, activator) ||
+    final List<BattleServantData> targets = acquireFunctionTarget(
+      battleData,
+      function.funcTargetType,
+      function.funcId,
+      activator,
+    );
+    if (!validateFunctionTargetTeam(function, targets) ||
         !containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
       battleData.previousFunctionResult = false;
       return;
     }
 
     final dataVals = getDataVals(function, skillLevel, overchargeLvl);
-    final List<BattleServantData> targets =
-        acquireFunctionTarget(battleData, function.funcTargetType, function.funcId, activator);
 
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     targets.retainWhere((svt) => (svt.isAlive() || checkDead) && svt.checkTraits(function.functvals));
@@ -120,13 +124,17 @@ class FunctionExecutor {
 
   static bool validateFunctionTargetTeam(
     final BaseFunction function,
-    final BattleServantData? activator,
+    final List<BattleServantData> targets,
   ) {
+    if (targets.isEmpty) {
+      return true;
+    }
+
     switch (function.funcTargetTeam) {
       case FuncApplyTarget.player:
-        return activator?.isPlayer ?? true;
+        return targets.first.isPlayer;
       case FuncApplyTarget.enemy:
-        return activator?.isEnemy ?? true;
+        return targets.first.isEnemy;
       default:
         return true;
     }

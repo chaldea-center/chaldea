@@ -48,25 +48,25 @@ void main() async {
     test('FuncApplyTarget.enemy', () {
       final BaseFunction enemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally), isFalse);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullAllies), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullEnemies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, []), isTrue);
     });
 
-    test('FuncApplyTarget.enemy', () {
+    test('FuncApplyTarget.player', () {
       final BaseFunction allyFunciton =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, ally), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, enemy), isFalse);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, battle.nonnullAllies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, battle.nonnullEnemies), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, []), isTrue);
     });
 
-    test('FuncApplyTarget.enemy', () {
+    test('FuncApplyTarget.playerAndEnemy', () {
       final BaseFunction enemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullAllies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullEnemies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, []), isTrue);
     });
   });
 

@@ -91,10 +91,15 @@ void main() async {
 
       battle.setTarget(cba);
       battle.setActivator(okuni);
+      cba.addBuff(currentBuff); // make sure we are not checking servant's buffs' traits
+
+      expect(buff.shouldApplyBuff(battle, false), isFalse);
+
       battle.setCurrentBuff(currentBuff);
 
       expect(buff.shouldApplyBuff(battle, false), isTrue);
 
+      battle.unsetCurrentBuff();
       battle.unsetTarget();
       battle.unsetActivator();
     });
