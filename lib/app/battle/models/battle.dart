@@ -4,6 +4,7 @@ import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'buff.dart';
@@ -316,28 +317,38 @@ class BattleData {
     return niceQuest?.individuality ?? [];
   }
 
-  bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits) {
+  bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
     if (requiredTraits.isEmpty) {
       return true;
     }
 
-    if (currentBuff != null) {
-      return currentBuff!.checkTraits(requiredTraits);
-    }
+    final List<NiceTrait> currentTraits = [];
+    currentTraits.addAll(target?.getTraits() ?? []);
+    currentTraits.addAll(currentBuff?.traits ?? []);
+    currentTraits.addAll(currentCard?.traits ?? []);
 
-    return (target?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (checkIndivType == 1 || checkIndivType == 3) {
+      return containsAllTraits(currentTraits, requiredTraits);
+    } else {
+      return containsAnyTraits(currentTraits, requiredTraits);
+    }
   }
 
-  bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits) {
+  bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
     if (requiredTraits.isEmpty) {
       return true;
     }
 
-    if (currentBuff != null) {
-      return currentBuff!.checkTraits(requiredTraits);
-    }
+    final List<NiceTrait> currentTraits = [];
+    currentTraits.addAll(activator?.getTraits() ?? []);
+    currentTraits.addAll(currentBuff?.traits ?? []);
+    currentTraits.addAll(currentCard?.traits ?? []);
 
-    return (activator?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (checkIndivType == 1 || checkIndivType == 3) {
+      return containsAllTraits(currentTraits, requiredTraits);
+    } else {
+      return containsAnyTraits(currentTraits, requiredTraits);
+    }
   }
 
   bool isActorOnField(final int actorUniqueId) {

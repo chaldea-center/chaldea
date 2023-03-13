@@ -42,6 +42,63 @@ void main() async {
       battle.unsetActivator();
     });
 
+    test('checkIndivType 1', () {
+      final buff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            ckOpIndv: [
+              NiceTrait(id: Trait.attributeSky.id),
+              NiceTrait(id: Trait.alignmentGood.id),
+            ],
+            script: BuffScript(checkIndvType: 1),
+          ),
+          DataVals({'UseRate': 1000}));
+
+      battle.setTarget(cba);
+      battle.setActivator(okuni);
+
+      expect(buff.shouldApplyBuff(battle, false), isTrue);
+      expect(buff.shouldApplyBuff(battle, true), isFalse);
+
+      battle.unsetTarget();
+      battle.unsetActivator();
+    });
+
+    test('checkIndivType with current buff', () {
+      final buff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            ckOpIndv: [
+              NiceTrait(id: Trait.attributeSky.id),
+              NiceTrait(id: Trait.buffNegativeEffect.id),
+            ],
+            script: BuffScript(checkIndvType: 1),
+          ),
+          DataVals({'UseRate': 1000}));
+
+      final currentBuff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]
+          ),
+          DataVals({'UseRate': 1000}));
+
+      battle.setTarget(cba);
+      battle.setActivator(okuni);
+      battle.setCurrentBuff(currentBuff);
+
+      expect(buff.shouldApplyBuff(battle, false), isTrue);
+
+      battle.unsetTarget();
+      battle.unsetActivator();
+    });
+
     test('probability check', () {
       final buff = BuffData(
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),

@@ -109,17 +109,13 @@ class BuffData {
     return containsAnyTraits(traits, requiredTraits);
   }
 
-  bool shouldApplyAsTarget(final BattleData battleData) {
-    return battleData.checkActivatorTraits(buff.ckOpIndv) && battleData.checkTargetTraits(buff.ckSelfIndv);
-  }
-
-  bool shouldApplyAsActivator(final BattleData battleData) {
-    return battleData.checkTargetTraits(buff.ckOpIndv) && battleData.checkActivatorTraits(buff.ckSelfIndv);
-  }
-
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
-    final targetCheck =
-        (isTarget && shouldApplyAsTarget(battleData)) || (!isTarget && shouldApplyAsActivator(battleData));
+    final int? checkIndvType = buff.script?.checkIndvType;
+    final targetCheck = isTarget
+        ? battleData.checkActivatorTraits(buff.ckOpIndv, checkIndivType: checkIndvType) &&
+            battleData.checkTargetTraits(buff.ckSelfIndv, checkIndivType: checkIndvType)
+        : battleData.checkTargetTraits(buff.ckOpIndv, checkIndivType: checkIndvType) &&
+            battleData.checkActivatorTraits(buff.ckSelfIndv, checkIndivType: checkIndvType);
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 
