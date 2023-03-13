@@ -52,6 +52,13 @@ class ImageActions {
                 copyToClipboard(url);
                 EasyLoading.showToast(S.current.copied);
               },
+              trailing: GestureDetector(
+                onTap: () {
+                  copyToClipboard(url);
+                  EasyLoading.showToast(S.current.copied);
+                },
+                child: const Icon(Icons.copy, size: 18),
+              ),
             )
         ];
         if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
