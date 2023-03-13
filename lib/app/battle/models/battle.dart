@@ -550,7 +550,7 @@ class BattleData {
     } else {
       targets.add(targetedEnemy!);
     }
-    damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    Damage.damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
     unsetActivator();
 
@@ -571,10 +571,10 @@ class BattleData {
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
     if (cardType == CardType.quick) {
       final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
-      gainStar(this, dataValToUse);
+      GainStar.gainStar(this, dataValToUse);
     } else if (cardType == CardType.arts) {
       final targets = actions.map((action) => action.actor).toSet();
-      gainNP(this, artsChain, targets);
+      GainNP.gainNP(this, artsChain, targets);
     }
   }
 
@@ -586,7 +586,7 @@ class BattleData {
     logger.action('CUSTOM ACTION: charge 100% NP for all allies');
     copy();
 
-    gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
+    GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
 
   void removeDeadActors() {

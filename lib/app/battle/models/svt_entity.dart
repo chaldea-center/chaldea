@@ -434,7 +434,7 @@ class BattleServantData {
 
     final niceTD = getCurrentNP();
     for (final function in niceTD.functions) {
-      executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
+      FunctionExecutor.executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
     battleData.unsetActivator();
   }
