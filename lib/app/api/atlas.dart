@@ -72,7 +72,7 @@ class _DownloadingTask {
   }
 }
 
-class _CacheManager {
+class ApiCacheManager {
   bool _initiated = false;
   final String? cacheKey;
   final List<int> statusCodes = const [200];
@@ -86,7 +86,9 @@ class _CacheManager {
       ? null
       : FilePlus(kIsWeb ? 'api_cache/$cacheKey.json' : joinPaths(db.paths.tempDir, 'api_cache/$cacheKey.json'));
 
-  _CacheManager(this.cacheKey);
+  ApiCacheManager(this.cacheKey);
+
+  Dio Function() createDio = () => DioE();
 
   Completer? _initCompleter;
 
@@ -162,7 +164,7 @@ class _CacheManager {
   Future<List<int>?> _download(String url) async {
     if (!kReleaseMode) print('fetching Atlas API: $url');
     final _t = StopwatchX(url);
-    final response = await DioE().get<List<int>>(url, options: Options(responseType: ResponseType.bytes));
+    final response = await createDio().get<List<int>>(url, options: Options(responseType: ResponseType.bytes));
     _t.log();
     if (statusCodes.contains(response.statusCode) && response.data != null) {
       try {
@@ -365,7 +367,7 @@ class _CacheManager {
 
 class AtlasApi {
   const AtlasApi._();
-  static final _CacheManager cacheManager = _CacheManager('atlas_api');
+  static final ApiCacheManager cacheManager = ApiCacheManager('atlas_api');
   static final Map<String, QuestPhase> cachedQuestPhases = {};
   static final Set<int> cacheDisabledQuests = {};
 
@@ -645,7 +647,7 @@ class AtlasApi {
 
 class CachedApi {
   const CachedApi._();
-  static final _CacheManager cacheManager = _CacheManager(null);
+  static final ApiCacheManager cacheManager = ApiCacheManager(null);
 
   static Future<Map?> biliVideoInfo({int? aid, String? bvid, Duration? expireAfter}) async {
     if (aid == null && bvid == null) return null;
