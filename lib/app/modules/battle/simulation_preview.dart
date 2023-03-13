@@ -18,6 +18,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
+import '../quest/quest.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
@@ -179,7 +180,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                             if (mounted) setState(() {});
                             return;
                           }
-
+                          QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
                           _startSimulation();
                         },
                         child: const Text('Start Simulation'),
@@ -207,17 +208,19 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: TextFormField(
             controller: questIdTextController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               isDense: true,
-              border: OutlineInputBorder(),
-              hintText: '93031014/3 or **/JP/quest/93031014/3',
-              labelText: 'QuestId/phase or chaldea/AADB quest url',
+              border: const OutlineInputBorder(),
+              hintText: '93031014/3 or **/JP/quest/93031014/3'.breakWord,
+              labelText: 'questId/phase or chaldea/AADB quest url',
+              hintStyle: const TextStyle(overflow: TextOverflow.visible),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
           ),
         ),
         Wrap(
           alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 8,
           children: [
             DropdownButton<Region>(
@@ -249,24 +252,43 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               },
               child: const Text('Fetch'),
             ),
-            const SizedBox(width: 0),
-            TextButton(
-              onPressed: () {
-                QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-                router.push(url: Routes.events);
-              },
-              child: Text(S.current.event),
-            ),
           ],
         ),
+        ListTile(
+          dense: true,
+          title: Text('From ${S.current.event}/${S.current.main_story}'),
+          subtitle: Text.rich(TextSpan(
+            text: 'Event→War→Quest→',
+            children: [
+              CenterWidgetSpan(
+                child: Icon(
+                  Icons.calculate,
+                  size: 14,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              )
+            ],
+          )),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+            router.push(url: Routes.events);
+          },
+        ),
+        kDefaultDivider,
         if (questErrorMsg != null)
           SFooter.rich(TextSpan(text: questErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
-        if (questPhase == null)
-          const SFooter.rich(
-            TextSpan(
-              text: 'Choose quest from Events→Wars→Quest→Calculator button',
-              children: [CenterWidgetSpan(child: Icon(Icons.calculate, size: 14))],
-            ),
+        if (questPhase != null)
+          TextButton(
+            onPressed: () {
+              QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+              router.push(
+                url: Routes.questI(questPhase!.id),
+                child: QuestDetailPage(quest: questPhase),
+                detail: true,
+              );
+            },
+            child: Text('>>> ${S.current.quest_detail_btn} >>>'),
           ),
         if (questPhase != null)
           QuestCard(
@@ -443,6 +465,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 }
 
 class ServantSelector extends StatelessWidget {
+  // ce empty icon
+  // https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_blankbg.png
+  // svt empty icon
+  // https://static.atlasacademy.io/JP/Faces/f_1000000.png
+  // svt/enemy unknown icon
+  // https://static.atlasacademy.io/JP/Faces/f_1000011.png
   static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
   final VoidCallback onChange;

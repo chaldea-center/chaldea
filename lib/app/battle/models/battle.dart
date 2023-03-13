@@ -649,28 +649,28 @@ class BattleData {
 
   void copy() {
     final BattleData copy = BattleData()
-    ..niceQuest = niceQuest
-    ..curStage = curStage
-    ..enemyOnFieldCount = enemyOnFieldCount
-    ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
-    ..playerDataList = playerDataList.map((e) => e?.copy()).toList()
-    ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
-    ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
-    ..enemyDecks = enemyDecks
-    ..enemyTargetIndex = enemyTargetIndex
-    ..allyTargetIndex = allyTargetIndex
-    ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
-    ..mysticCode = mysticCode
-    ..mysticCodeLv = mysticCodeLv
-    ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
-    ..waveCount = waveCount
-    ..turnCount = turnCount
-    ..totalTurnCount = totalTurnCount
-    ..criticalStars = criticalStars
-    ..uniqueIndex = uniqueIndex
-    ..fixedRandom = fixedRandom
-    ..probabilityThreshold = probabilityThreshold
-    ..isAfter7thAnni = isAfter7thAnni;
+      ..niceQuest = niceQuest
+      ..curStage = curStage
+      ..enemyOnFieldCount = enemyOnFieldCount
+      ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
+      ..playerDataList = playerDataList.map((e) => e?.copy()).toList()
+      ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
+      ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
+      ..enemyDecks = enemyDecks
+      ..enemyTargetIndex = enemyTargetIndex
+      ..allyTargetIndex = allyTargetIndex
+      ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
+      ..mysticCode = mysticCode
+      ..mysticCodeLv = mysticCodeLv
+      ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+      ..waveCount = waveCount
+      ..turnCount = turnCount
+      ..totalTurnCount = totalTurnCount
+      ..criticalStars = criticalStars
+      ..uniqueIndex = uniqueIndex
+      ..fixedRandom = fixedRandom
+      ..probabilityThreshold = probabilityThreshold
+      ..isAfter7thAnni = isAfter7thAnni;
 
     copies.add(copy);
   }
