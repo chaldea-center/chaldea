@@ -272,6 +272,33 @@ void main() async {
       expect(mash.battleBuff.activeList.first.turn, 2);
     });
 
+    test('gainStar', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
+      battle.activateSvtSkill(0, 2);
+      expect(battle.criticalStars, moreOrLessEquals(50, epsilon: 0.001));
+      battle.activateSvtSkill(1, 2);
+      expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
+      battle.activateSvtSkill(2, 2);
+      expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
+    });
+
     test('gainNpFromTargets', () {
       final battle = BattleData();
       final playerSettings = [
