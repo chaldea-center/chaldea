@@ -34,7 +34,7 @@ class PlayerSvtData {
   int ceLv = 0;
 
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
-  List<int> commandCodeIds = [-1, -1, -1, -1, -1];
+  List<CommandCode?> commandCodes = [null, null, null, null, null];
 
   PlayerSvtData.base();
 

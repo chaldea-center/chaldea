@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -62,5 +63,38 @@ void main() async {
     battle.currentCard = okuni.getNPCard();
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
     expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
+  });
+
+  test('Test commandCode', () {
+    final List<PlayerSvtData> okuniCommandCode = [
+      PlayerSvtData(100100)
+        ..npLv = 3
+        ..lv = 90
+        ..commandCodes = [
+          null,
+          null,
+          null,
+          db.gameData.commandCodesById[8400460], // Mage of Flowers on buster card
+          db.gameData.commandCodesById[8400460], // Mage of Flowers on buster card
+        ],
+    ];
+
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, okuniCommandCode, null);
+
+    final altria = battle.onFieldAllyServants[0]!;
+    expect(altria.np, 0);
+
+    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    expect(altria.np, 1000);
+
+    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    expect(altria.np, 1000);
+
+    battle.playerTurn([CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getCards()[3])]);
+    expect(altria.np, 2000);
+
+    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    expect(altria.np, 3000);
   });
 }

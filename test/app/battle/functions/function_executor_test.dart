@@ -307,6 +307,24 @@ void main() async {
       battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+
+      // kill one to remove buff
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final archType3 = battle.onFieldAllyServants[0]!;
+      final archType4 = battle.onFieldAllyServants[1]!;
+
+      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
+
+      battle.playerTurn([CombatAction(archType3, archType3.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+
+      archType3.hp = 0;
+
+      battle.playerTurn([CombatAction(archType4, archType4.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
     });
 
     test('gainStar', () {

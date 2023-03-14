@@ -42,7 +42,6 @@ class CommandCardData {
   bool isNP = false;
   int cardIndex = -1;
   bool isCritical = false;
-  List<BuffData> commandCodeBuffs = [];
 
   CommandCardData(this.cardType, this.cardDetail);
 

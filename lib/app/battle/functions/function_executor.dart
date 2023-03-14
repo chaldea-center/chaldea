@@ -26,6 +26,7 @@ class FunctionExecutor {
     final bool isDefensePierce = false,
     final bool isPassive = false,
     final bool notActorFunction = false,
+    final bool isCommandCode = false,
   }) {
     final BattleServantData? activator = battleData.activator;
     final List<BattleServantData> targets = acquireFunctionTarget(
@@ -58,6 +59,7 @@ class FunctionExecutor {
           dataVals,
           targets,
           isPassive: isPassive,
+          isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
         );
         break;
@@ -68,6 +70,7 @@ class FunctionExecutor {
           dataVals,
           targets,
           isPassive: isPassive,
+          isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
           isShortBuff: true,
         );

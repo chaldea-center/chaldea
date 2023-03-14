@@ -22,8 +22,9 @@ class BattleSkillInfoData {
   int skillLv = 0;
   int chargeTurn = 0;
   int strengthStatus = 0;
+  bool isCommandCode;
 
-  BattleSkillInfoData(this.rawSkill) {
+  BattleSkillInfoData(this.rawSkill, {this.isCommandCode = false}) {
     skillId = rawSkill.id;
   }
 
@@ -38,7 +39,7 @@ class BattleSkillInfoData {
       return;
     }
     chargeTurn = skill.coolDown[skillLv - 1];
-    activateSkill(battleData, skill, skillLv);
+    activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode);
   }
 
   static void activateSkill(
@@ -47,6 +48,7 @@ class BattleSkillInfoData {
     final int skillLevel, {
     final bool isPassive = false,
     final bool notActorSkill = false,
+    final bool isCommandCode = false,
   }) {
     if (!battleData.checkActivatorTraits(skill.actIndividuality)) {
       return;
@@ -60,6 +62,7 @@ class BattleSkillInfoData {
         skillLevel,
         isPassive: isPassive,
         notActorFunction: notActorSkill,
+        isCommandCode: isCommandCode,
       );
     }
   }
@@ -67,6 +70,7 @@ class BattleSkillInfoData {
   BattleSkillInfoData copy() {
     return BattleSkillInfoData(rawSkill)
       ..overrideSkill = overrideSkill
+      ..isCommandCode = isCommandCode
       ..skillId = skillId
       ..skillLv = skillLv
       ..chargeTurn = chargeTurn

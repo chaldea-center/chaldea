@@ -5,9 +5,10 @@ import 'package:chaldea/models/models.dart';
 class BattleBuff {
   List<BuffData> passiveList = [];
   List<BuffData> activeList = [];
+  List<BuffData> commandCodeList = [];
   List<BuffData> auraBuffList = [];
 
-  List<BuffData> get allBuffs => [...passiveList, ...activeList];
+  List<BuffData> get allBuffs => [...passiveList, ...activeList, ...commandCodeList];
 
   bool get isSelectable =>
       allBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
@@ -36,6 +37,7 @@ class BattleBuff {
     final copy = BattleBuff()
       ..passiveList = passiveList.map((e) => e.copy()).toList()
       ..activeList = activeList.map((e) => e.copy()).toList()
+      ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
       ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
     return copy;
   }

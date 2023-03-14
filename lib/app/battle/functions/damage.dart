@@ -60,19 +60,19 @@ class Damage {
         ..isTypeChain = isTypeChain
         ..isMightyChain = isMightyChain
         ..isCritical = currentCard.isCritical
-        ..cardBuff = activator.getBuffValueOnAction(battleData, BuffAction.commandAtk, currentCard.commandCodeBuffs)
-        ..attackBuff = activator.getBuffValueOnAction(battleData, BuffAction.atk, currentCard.commandCodeBuffs)
+        ..cardBuff = activator.getBuffValueOnAction(battleData, BuffAction.commandAtk)
+        ..attackBuff = activator.getBuffValueOnAction(battleData, BuffAction.atk)
         ..specificAttackBuff = Maths.sum(powerMods.map((action) => activator.getBuffValueOnAction(battleData, action)))
         ..criticalDamageBuff = currentCard.isCritical
-            ? activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage, currentCard.commandCodeBuffs)
+            ? activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage)
             : 0
         ..npDamageBuff = currentCard.isNP
-            ? activator.getBuffValueOnAction(battleData, BuffAction.npdamage, currentCard.commandCodeBuffs)
+            ? activator.getBuffValueOnAction(battleData, BuffAction.npdamage)
             : 0
         ..percentAttackBuff =
-            activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial, currentCard.commandCodeBuffs)
+            activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
         ..damageAdditionBuff =
-            activator.getBuffValueOnAction(battleData, BuffAction.givenDamage, currentCard.commandCodeBuffs)
+            activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
         ..fixedRandom = battleData.fixedRandom;
 
       final atkNpParameters = AttackNpGainParameters();
@@ -89,8 +89,8 @@ class Damage {
           ..firstCardType = firstCardType
           ..isMightyChain = isMightyChain
           ..isCritical = currentCard.isCritical
-          ..cardBuff = activator.getBuffValueOnAction(battleData, BuffAction.commandNpAtk, currentCard.commandCodeBuffs)
-          ..npGainBuff = activator.getBuffValueOnAction(battleData, BuffAction.dropNp, currentCard.commandCodeBuffs);
+          ..cardBuff = activator.getBuffValueOnAction(battleData, BuffAction.commandNpAtk)
+          ..npGainBuff = activator.getBuffValueOnAction(battleData, BuffAction.dropNp);
 
         starParameters
           ..attackerStarGen = activator.starGen
@@ -102,20 +102,20 @@ class Damage {
           ..isMightyChain = isMightyChain
           ..isCritical = currentCard.isCritical
           ..cardBuff =
-              activator.getBuffValueOnAction(battleData, BuffAction.commandStarAtk, currentCard.commandCodeBuffs)
+              activator.getBuffValueOnAction(battleData, BuffAction.commandStarAtk)
           ..starGenBuff =
-              activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint, currentCard.commandCodeBuffs);
+              activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint);
       } else {
         defNpParameters
           ..defenderNpCharge = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
-          ..npGainBuff = target.getBuffValueOnAction(battleData, BuffAction.dropNp, currentCard.commandCodeBuffs)
+          ..npGainBuff = target.getBuffValueOnAction(battleData, BuffAction.dropNp)
           ..defenseNpGainBuff =
-              target.getBuffValueOnAction(battleData, BuffAction.dropNpDamage, currentCard.commandCodeBuffs);
+              target.getBuffValueOnAction(battleData, BuffAction.dropNpDamage);
       }
 
       final hasPierceDefense =
-          activator.hasBuffOnAction(battleData, BuffAction.pierceDefence, currentCard.commandCodeBuffs);
+          activator.hasBuffOnAction(battleData, BuffAction.pierceDefence);
       final skipDamage = shouldSkipDamage(battleData, activator, target, currentCard);
       if (!skipDamage) {
         damageParameters
@@ -236,7 +236,7 @@ class Damage {
   ) {
     final hasSpecialInvincible = target.hasBuffOnAction(battleData, BuffAction.specialInvincible);
     final hasPierceInvincible =
-        activator.hasBuffOnAction(battleData, BuffAction.pierceInvincible, currentCard.commandCodeBuffs);
+        activator.hasBuffOnAction(battleData, BuffAction.pierceInvincible);
     if (hasSpecialInvincible) {
       return true;
     }
@@ -245,7 +245,7 @@ class Damage {
       return false;
     }
     final hasBreakAvoidance =
-        activator.hasBuffOnAction(battleData, BuffAction.breakAvoidance, currentCard.commandCodeBuffs);
+        activator.hasBuffOnAction(battleData, BuffAction.breakAvoidance);
     if (hasInvincible) {
       return true;
     }

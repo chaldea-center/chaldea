@@ -16,6 +16,7 @@ class AddState {
     final List<BattleServantData> targets, {
     final bool isPassive = false,
     final bool notActorPassive = false,
+    final bool isCommandCode = false,
     final bool isShortBuff = false,
   }) {
     final activator = battleData.activator;
@@ -32,7 +33,11 @@ class AddState {
       battleData.setTarget(target);
       if (shouldAddState(battleData, dataVals, activator, target, buffData) &&
           target.isBuffStackable(buffData.buff.buffGroup)) {
-        target.addBuff(buffData, isPassive: isPassive || notActorPassive);
+        target.addBuff(
+          buffData,
+          isPassive: isPassive || notActorPassive,
+          isCommandCode: isCommandCode,
+        );
         buffAdded = true;
       }
       battleData.unsetTarget();

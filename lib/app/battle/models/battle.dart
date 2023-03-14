@@ -575,14 +575,15 @@ class BattleData {
     final bool isMightyChain,
     final CardType firstCardType,
   ) {
+    actor.activateCommandCode(this, card.cardIndex);
+
     actor.activateBuffOnActions(
         this,
         [
           BuffAction.functionAttackBefore,
           BuffAction.functionCommandattackBefore,
           BuffAction.functionCommandcodeattackBefore,
-        ],
-        card.commandCodeBuffs);
+        ]);
 
     setActivator(actor);
 
@@ -602,8 +603,9 @@ class BattleData {
           BuffAction.functionAttackAfter,
           BuffAction.functionCommandattackAfter,
           BuffAction.functionCommandcodeattackAfter,
-        ],
-        card.commandCodeBuffs);
+        ]);
+
+    actor.clearCommandCodeBuffs();
 
     targets.forEach((svt) {
       svt.activateBuffOnAction(this, BuffAction.functionDamage);

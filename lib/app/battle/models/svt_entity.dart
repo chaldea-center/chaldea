@@ -77,7 +77,7 @@ class BattleServantData {
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
   BattleCEData? equip;
   BattleBuff battleBuff = BattleBuff();
-  List<List<BuffData>> commandCodeBuffs = [[], [], [], [], []];
+  List<List<BattleSkillInfoData>> commandCodeSkills = [];
 
   List<int> shiftNpcIds = [];
   int shiftIndex = 0;
@@ -149,7 +149,14 @@ class BattleServantData {
       }
     }
 
-    // TODO (battle): initialize commandCodes
+    for (final commandCode in settings.commandCodes) {
+      if (commandCode != null) {
+        svt.commandCodeSkills.add(
+            commandCode.skills.map((skill) => BattleSkillInfoData(skill, isCommandCode: true)..skillLv = 1).toList());
+      } else {
+        svt.commandCodeSkills.add([]);
+      }
+    }
     return svt;
   }
 
@@ -198,8 +205,7 @@ class BattleServantData {
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(cardType)
-        ..traits = [mapCardTypeToTrait(cardType), NiceTrait(id: Trait.faceCard.id)]
-        ..commandCodeBuffs = commandCodeBuffs[i];
+        ..traits = [mapCardTypeToTrait(cardType), NiceTrait(id: Trait.faceCard.id)];
       builtCards.add(card);
     }
     return builtCards;
@@ -396,6 +402,18 @@ class BattleServantData {
     battleData.unsetActivator();
   }
 
+  void activateCommandCode(final BattleData battleData, final int cardIndex) {
+    if (cardIndex < 0 || commandCodeSkills.length <= cardIndex) {
+      return;
+    }
+
+    battleData.setActivator(this);
+    commandCodeSkills[cardIndex].forEach((skill) {
+      skill.activate(battleData);
+    });
+    battleData.unsetActivator();
+  }
+
   bool canAttack(final BattleData battleData) {
     if (hp <= 0) {
       return false;
@@ -448,16 +466,13 @@ class BattleServantData {
     battleData.unsetActivator();
   }
 
-  int getBuffValueOnAction(final BattleData battleData, final BuffAction buffAction,
-      [final List<BuffData>? commandCodeBuffs]) {
+  int getBuffValueOnAction(final BattleData battleData, final BuffAction buffAction) {
     final actionDetails = ConstData.buffActions[buffAction];
     final isTarget = battleData.target == this;
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails!.maxRate);
 
-    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
-
-    for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
+    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         battleData.setCurrentBuff(buff);
@@ -480,17 +495,14 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
-  bool hasBuffOnAction(final BattleData battleData, final BuffAction buffAction,
-      [final List<BuffData>? commandCodeBuffs]) {
-    return hasBuffOnActions(battleData, [buffAction], commandCodeBuffs);
+  bool hasBuffOnAction(final BattleData battleData, final BuffAction buffAction) {
+    return hasBuffOnActions(battleData, [buffAction]);
   }
 
-  bool hasBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions,
-      [final List<BuffData>? commandCodeBuffs]) {
+  bool hasBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) {
     final isTarget = battleData.target == this;
 
-    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
-    for (final buff in collectBuffsPerActions(allBuffs, buffActions)) {
+    for (final buff in collectBuffsPerActions(battleBuff.allBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         return true;
@@ -499,15 +511,12 @@ class BattleServantData {
     return false;
   }
 
-  void activateBuffOnAction(final BattleData battleData, final BuffAction buffAction,
-      [final List<BuffData>? commandCodeBuffs]) {
-    activateBuffOnActions(battleData, [buffAction], commandCodeBuffs);
+  void activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) {
+    activateBuffOnActions(battleData, [buffAction]);
   }
 
-  void activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions,
-      [List<BuffData>? commandCodeBuffs]) {
-    final Iterable<BuffData> allBuffs = [...battleBuff.allBuffs, ...commandCodeBuffs ?? []];
-    return activateBuffs(battleData, collectBuffsPerActions(allBuffs, buffActions));
+  void activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) {
+    activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
   }
 
   void activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) {
@@ -539,12 +548,18 @@ class BattleServantData {
     return battleBuff.allBuffs.every((buff) => buff.canStack(buffGroup));
   }
 
-  void addBuff(final BuffData buffData, {final bool isPassive = false}) {
-    if (isPassive) {
+  void addBuff(final BuffData buffData, {final bool isPassive = false, final bool isCommandCode = false}) {
+    if (isCommandCode) {
+      battleBuff.commandCodeList.add(buffData);
+    } else if (isPassive) {
       battleBuff.passiveList.add(buffData);
     } else {
       battleBuff.activeList.add(buffData);
     }
+  }
+
+  void clearCommandCodeBuffs() {
+    battleBuff.commandCodeList.clear();
   }
 
   void checkBuffStatus() {
@@ -584,6 +599,12 @@ class BattleServantData {
           skill.turnEnd();
         });
       }
+
+      commandCodeSkills.forEach((skills) {
+        skills.forEach((skill) {
+          skill.turnEnd();
+        });
+      });
     }
 
     battleData.setActivator(this);
@@ -683,7 +704,7 @@ class BattleServantData {
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()
-      ..commandCodeBuffs = commandCodeBuffs.map((e) => e.map((buff) => buff.copy()).toList()).toList()
+      ..commandCodeSkills = commandCodeSkills.map((skills) => skills.map((skill) => skill.copy()).toList()).toList()
       ..shiftNpcIds = shiftNpcIds
       ..shiftIndex = shiftIndex; //copy
   }

@@ -689,7 +689,7 @@ class ServantSelector extends StatelessWidget {
           ..atkFou = status.fouAtk > 0 ? 1000 + status.fouAtk * 20 : status.fouAtk3 * 50
           ..hpFou = status.fouHp > 0 ? 1000 + status.fouHp * 20 : status.fouHp3 * 50
           ..cardStrengthens = [0, 0, 0, 0, 0]
-          ..commandCodeIds = [-1, -1, -1, -1, -1];
+          ..commandCodes = [null, null, null, null, null];
       } else {
         playerSvtData
           ..ascensionPhase = 4
@@ -701,7 +701,7 @@ class ServantSelector extends StatelessWidget {
           ..atkFou = 1000
           ..hpFou = 1000
           ..cardStrengthens = [0, 0, 0, 0, 0]
-          ..commandCodeIds = [-1, -1, -1, -1, -1];
+          ..commandCodes = [null, null, null, null, null];
       }
       for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
         playerSvtData.skillStrengthenLvs[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).length;
