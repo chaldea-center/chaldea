@@ -2,10 +2,10 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/models/gamedata/vals.dart';
 
-class GainNP {
-  GainNP._();
+class HastenNpturn {
+  HastenNpturn._();
 
-  static bool gainNP(
+  static bool hastenNpturn(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -19,7 +19,7 @@ class GainNP {
     targets.forEach((target) {
       battleData.setTarget(target);
 
-      target.changeNP(dataVals.Value! * (isNegative ? -1 : 1));
+      target.changeNPLineCount(dataVals.Value! * (isNegative ? -1 : 1));
 
       battleData.unsetTarget();
     });

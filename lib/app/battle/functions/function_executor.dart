@@ -1,7 +1,9 @@
 import 'package:chaldea/app/battle/functions/add_state.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
+import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
+import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -44,6 +46,10 @@ class FunctionExecutor {
 
     bool functionSuccess = true;
     switch (function.funcType) {
+      case FuncType.absorbNpturn:
+      case FuncType.gainNpFromTargets:
+        functionSuccess = GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
+        break;
       case FuncType.addState:
         functionSuccess = AddState.addState(
           battleData,
@@ -68,8 +74,20 @@ class FunctionExecutor {
       case FuncType.gainNp:
         functionSuccess = GainNP.gainNP(battleData, dataVals, targets);
         break;
+      case FuncType.lossNp:
+        functionSuccess = GainNP.gainNP(battleData, dataVals, targets, isNegative: true);
+        break;
+      case FuncType.hastenNpturn:
+        functionSuccess = HastenNpturn.hastenNpturn(battleData, dataVals, targets);
+        break;
+      case FuncType.delayNpturn:
+        functionSuccess = HastenNpturn.hastenNpturn(battleData, dataVals, targets, isNegative: true);
+        break;
       case FuncType.gainStar:
         functionSuccess = GainStar.gainStar(battleData, dataVals);
+        break;
+      case FuncType.lossStar:
+        functionSuccess = GainStar.gainStar(battleData, dataVals, isNegative: true);
         break;
       case FuncType.damage:
       case FuncType.damageNp:

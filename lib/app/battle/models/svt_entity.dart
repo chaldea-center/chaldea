@@ -290,6 +290,15 @@ class BattleServantData {
     return containsAnyTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
   }
 
+  void changeNPLineCount(final int change) {
+    if (!isEnemy) {
+      return;
+    }
+
+    npLineCount += change;
+    npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
+  }
+
   void changeNP(final int change) {
     if (!isPlayer) {
       return;
@@ -563,7 +572,7 @@ class BattleServantData {
       final npSealed = hasBuffOnActions(battleData, doNotNPTypes);
       if (!npSealed) {
         npLineCount += 1;
-        npLineCount.clamp(0, niceEnemy!.chargeTurn);
+        npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
       }
     } else {
       final skillSealed = hasBuffOnAction(battleData, BuffAction.donotSkill);

@@ -309,7 +309,7 @@ class BattleData {
 
   void changeStar(final num change) {
     criticalStars += change;
-    criticalStars.clamp(0, kValidTotalStarMax);
+    criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
 
   List<NiceTrait> getFieldTraits() {
