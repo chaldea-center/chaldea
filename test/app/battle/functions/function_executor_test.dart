@@ -272,6 +272,43 @@ void main() async {
       expect(mash.battleBuff.activeList.first.turn, 2);
     });
 
+    test('addFieldChangeToField', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(2300500)
+          ..npLv = 3
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(2300500)
+          ..npLv = 3
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final archType1 = battle.onFieldAllyServants[0]!;
+      final archType2 = battle.onFieldAllyServants[1]!;
+
+      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
+
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+
+      battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+
+      battle.activateSvtSkill(0, 1);
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+    });
+
     test('gainStar', () {
       final battle = BattleData();
       final playerSettings = [

@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
@@ -70,6 +71,9 @@ class FunctionExecutor {
           notActorPassive: notActorFunction,
           isShortBuff: true,
         );
+        break;
+      case FuncType.addFieldChangeToField:
+        functionSuccess = AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals);
         break;
       case FuncType.gainNp:
         functionSuccess = GainNP.gainNP(battleData, dataVals, targets);

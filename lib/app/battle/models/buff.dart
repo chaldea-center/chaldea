@@ -43,29 +43,25 @@ class BattleBuff {
 
 class BuffData {
   Buff buff;
+  DataVals vals;
 
+  int buffRate = 1000;
   int count = -1;
   int turn = -1;
   int param = 0;
   int additionalParam = 0;
-  bool isUsed = false;
-  bool passive = false;
 
   bool get isActive => count != 0 && turn != 0;
-  int buffRate = 1000;
-  int onField = 0;
+
   int actorUniqueId = 0;
   String actorName = '';
-  int ratioHpHigh = 0;
-  int ratioHpLow = 0;
-  int ratioRangeHigh = 0;
-  int ratioRangeLow = 0;
-  bool irremovable = false;
+  bool isUsed = false;
   bool isShortBuff = false;
 
+  bool passive = false;
+  bool irremovable = false;
+
   // ignore: unused_field
-  DataVals? _vals;
-  List<int> vals = [];
   bool isDecide = false;
   int paramAdd = 0;
   int paramMax = 0;
@@ -80,28 +76,18 @@ class BuffData {
   // Default to Hyde's passive not ever added, which means we don't do any passive cleaning logic in transform script
   bool notActorPassive = false;
 
-  bool get isOnField => onField == 1;
+  bool get isOnField =>  vals.OnField == 1;
 
-  BuffData(this.buff, final DataVals dataVals) {
-    count = dataVals.Count ?? -1;
-    turn = dataVals.Turn ?? -1;
-    param = dataVals.Value ?? 0;
-    additionalParam = dataVals.Value2 ?? 0;
-    buffRate = dataVals.UseRate ?? 1000;
-    ratioHpHigh = dataVals.RatioHPHigh ?? 0;
-    ratioHpLow = dataVals.RatioHPLow ?? 0;
-    ratioRangeHigh = dataVals.RatioHPRangeHigh ?? 0;
-    ratioRangeLow = dataVals.RatioHPRangeLow ?? 0;
-    irremovable = dataVals.UnSubState == 1; // need more sample
-    onField = dataVals.OnField ?? 0;
-
-    if (dataVals.SkillID != null) {
-      param = dataVals.SkillID!;
-      additionalParam = dataVals.SkillLV!;
-    }
+  BuffData(this.buff, this.vals) {
+    count = vals.Count ?? -1;
+    turn = vals.Turn ?? -1;
+    param = vals.Value ?? 0;
+    additionalParam = vals.Value2 ?? 0;
+    buffRate = vals.UseRate ?? 1000;
+    irremovable = vals.UnSubState == 1; // need more sample
   }
 
-  BuffData.makeCopy(this.buff);
+  BuffData.makeCopy(this.buff, this.vals);
 
   List<NiceTrait> get traits => buff.vals;
 
@@ -168,7 +154,7 @@ class BuffData {
         '${buff.ckSelfIndv.isNotEmpty ? 'for ${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
         '${buff.ckOpIndv.isNotEmpty ? 'vs ${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
-        '${onField == 1 ? 'require $actorName on field' : ''}';
+        '${isOnField ? 'require $actorName on field' : ''}';
   }
 
   String getParamString() {
@@ -195,22 +181,17 @@ class BuffData {
   }
 
   BuffData copy() {
-    final BuffData copy = BuffData.makeCopy(buff)
+    final BuffData copy = BuffData.makeCopy(buff, vals)
+      ..buffRate = buffRate
       ..count = count
       ..turn = turn
       ..param = param
       ..additionalParam = additionalParam
-      ..isUsed = isUsed
-      ..passive = passive
-      ..buffRate = buffRate
-      ..onField = onField
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
-      ..ratioHpHigh = ratioHpHigh
-      ..ratioHpLow = ratioHpLow
-      ..ratioRangeHigh = ratioRangeHigh
-      ..ratioRangeLow = ratioRangeLow
+      ..isUsed = isUsed
       ..irremovable = irremovable
+      ..passive = passive
       ..isShortBuff = isShortBuff;
     return copy;
   }

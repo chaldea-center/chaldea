@@ -156,6 +156,8 @@ class BattleData {
     enemyTargetIndex = 0;
     allyTargetIndex = 0;
 
+    fieldBuffs.clear();
+
     onFieldAllyServants.clear();
     onFieldEnemies.clear();
     playerDataList = playerSettings
@@ -313,8 +315,32 @@ class BattleData {
   }
 
   List<NiceTrait> getFieldTraits() {
-    // TODO (battle): account for add & remove field traits
-    return niceQuest?.individuality ?? [];
+    final List<NiceTrait> allTraits = [];
+    allTraits.addAll(niceQuest!.individuality);
+
+    bool fieldTraitCheck(final NiceTrait trait) {
+      // > 3000 is a buff trait
+      return trait.id < 3000;
+    }
+
+    final List<int> removeTraitIds = [];
+    for (final svt in nonnullActors) {
+      for (final buff in svt.battleBuff.allBuffs) {
+        if (buff.buff.type == BuffType.fieldIndividuality) {
+          allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
+        } else if (buff.buff.type == BuffType.subFieldIndividuality) {
+          removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
+        }
+      }
+    }
+
+    fieldBuffs
+        .where((buff) => buff.buff.type == BuffType.toFieldChangeField)
+        .forEach((buff) => allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait))));
+
+    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
+
+    return allTraits;
   }
 
   bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
@@ -534,6 +560,11 @@ class BattleData {
     });
 
     removeDeadActors();
+
+    fieldBuffs.forEach((buff) {
+      buff.turnPass();
+    });
+    fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
   void executePlayerCard(
@@ -704,7 +735,7 @@ class BattleData {
       ..enemyDecks = copy.enemyDecks
       ..enemyTargetIndex = copy.enemyTargetIndex
       ..allyTargetIndex = copy.allyTargetIndex
-      ..fieldBuffs = copy.fieldBuffs
+      ..fieldBuffs = copy.fieldBuffs.map((e) => e.copy()).toList()
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
       ..masterSkillInfo = copy.masterSkillInfo

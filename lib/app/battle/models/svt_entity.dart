@@ -561,6 +561,9 @@ class BattleServantData {
 
   void death(final BattleData battleData) {
     activateBuffOnAction(battleData, BuffAction.functionDead);
+
+    battleData.fieldBuffs
+        .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
   }
 
   void startOfMyTurn(final BattleData battleData) {

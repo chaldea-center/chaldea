@@ -10,14 +10,14 @@ class AddState {
   AddState._();
 
   static bool addState(
-      final BattleData battleData,
-      final Buff buff,
-      final DataVals dataVals,
-      final List<BattleServantData> targets, {
-        final bool isPassive = false,
-        final bool notActorPassive = false,
-        final bool isShortBuff = false,
-      }) {
+    final BattleData battleData,
+    final Buff buff,
+    final DataVals dataVals,
+    final List<BattleServantData> targets, {
+    final bool isPassive = false,
+    final bool notActorPassive = false,
+    final bool isShortBuff = false,
+  }) {
     final activator = battleData.activator;
     bool buffAdded = false;
     for (final target in targets) {
@@ -43,12 +43,12 @@ class AddState {
   }
 
   static bool shouldAddState(
-      final BattleData battleData,
-      final DataVals dataVals,
-      final BattleServantData? activator,
-      final BattleServantData target,
-      final BuffData buffData,
-      ) {
+    final BattleData battleData,
+    final DataVals dataVals,
+    final BattleServantData? activator,
+    final BattleServantData target,
+    final BuffData buffData,
+  ) {
     if (dataVals.ForceAddState == 1) {
       return true;
     }

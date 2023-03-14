@@ -171,5 +171,37 @@ void main() async {
       battle.activateSvtSkill(0, 0);
       expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
     });
+
+    test('fieldIndividuality & subFieldIndividuality', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(100700)
+          ..skillStrengthenLvs = [1, 2, 1]
+          ..npLv = 3
+          ..lv = 80,
+        PlayerSvtData(604700)
+          ..npLv = 3
+          ..lv = 90,
+      ];
+
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(0, 1);
+      expect(battle.getFieldTraits().isNotEmpty, isTrue);
+
+      battle.activateSvtSkill(1, 2);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      // reset to test order does not affect subFieldIndiv
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(1, 2);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(0, 1);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+    });
   });
 }
