@@ -4,6 +4,7 @@ import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'buff.dart';
@@ -154,6 +155,8 @@ class BattleData {
     enemyDecks.clear();
     enemyTargetIndex = 0;
     allyTargetIndex = 0;
+
+    fieldBuffs.clear();
 
     onFieldAllyServants.clear();
     onFieldEnemies.clear();
@@ -308,36 +311,70 @@ class BattleData {
 
   void changeStar(final num change) {
     criticalStars += change;
-    criticalStars.clamp(0, kValidTotalStarMax);
+    criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
 
   List<NiceTrait> getFieldTraits() {
-    // TODO (battle): account for add & remove field traits
-    return niceQuest?.individuality ?? [];
+    final List<NiceTrait> allTraits = [];
+    allTraits.addAll(niceQuest!.individuality);
+
+    bool fieldTraitCheck(final NiceTrait trait) {
+      // > 3000 is a buff trait
+      return trait.id < 3000;
+    }
+
+    final List<int> removeTraitIds = [];
+    for (final svt in nonnullActors) {
+      for (final buff in svt.battleBuff.allBuffs) {
+        if (buff.buff.type == BuffType.fieldIndividuality) {
+          allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
+        } else if (buff.buff.type == BuffType.subFieldIndividuality) {
+          removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
+        }
+      }
+    }
+
+    fieldBuffs
+        .where((buff) => buff.buff.type == BuffType.toFieldChangeField)
+        .forEach((buff) => allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait))));
+
+    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
+
+    return allTraits;
   }
 
-  bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits) {
+  bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
     if (requiredTraits.isEmpty) {
       return true;
     }
 
-    if (currentBuff != null) {
-      return currentBuff!.checkTraits(requiredTraits);
-    }
+    final List<NiceTrait> currentTraits = [];
+    currentTraits.addAll(target?.getTraits() ?? []);
+    currentTraits.addAll(currentBuff?.traits ?? []);
+    currentTraits.addAll(currentCard?.traits ?? []);
 
-    return (target?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (checkIndivType == 1 || checkIndivType == 3) {
+      return containsAllTraits(currentTraits, requiredTraits);
+    } else {
+      return containsAnyTraits(currentTraits, requiredTraits);
+    }
   }
 
-  bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits) {
+  bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
     if (requiredTraits.isEmpty) {
       return true;
     }
 
-    if (currentBuff != null) {
-      return currentBuff!.checkTraits(requiredTraits);
-    }
+    final List<NiceTrait> currentTraits = [];
+    currentTraits.addAll(activator?.getTraits() ?? []);
+    currentTraits.addAll(currentBuff?.traits ?? []);
+    currentTraits.addAll(currentCard?.traits ?? []);
 
-    return (activator?.checkTraits(requiredTraits) ?? false) || (currentCard?.checkTraits(requiredTraits) ?? false);
+    if (checkIndivType == 1 || checkIndivType == 3) {
+      return containsAllTraits(currentTraits, requiredTraits);
+    } else {
+      return containsAnyTraits(currentTraits, requiredTraits);
+    }
   }
 
   bool isActorOnField(final int actorUniqueId) {
@@ -523,6 +560,11 @@ class BattleData {
     });
 
     removeDeadActors();
+
+    fieldBuffs.forEach((buff) {
+      buff.turnPass();
+    });
+    fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
   void executePlayerCard(
@@ -550,7 +592,7 @@ class BattleData {
     } else {
       targets.add(targetedEnemy!);
     }
-    damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    Damage.damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
     unsetActivator();
 
@@ -571,10 +613,10 @@ class BattleData {
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
     if (cardType == CardType.quick) {
       final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
-      gainStar(this, dataValToUse);
+      GainStar.gainStar(this, dataValToUse);
     } else if (cardType == CardType.arts) {
       final targets = actions.map((action) => action.actor).toSet();
-      gainNP(this, artsChain, targets);
+      GainNP.gainNP(this, artsChain, targets);
     }
   }
 
@@ -586,7 +628,7 @@ class BattleData {
     logger.action('CUSTOM ACTION: charge 100% NP for all allies');
     copy();
 
-    gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
+    GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
 
   void removeDeadActors() {
@@ -693,7 +735,7 @@ class BattleData {
       ..enemyDecks = copy.enemyDecks
       ..enemyTargetIndex = copy.enemyTargetIndex
       ..allyTargetIndex = copy.allyTargetIndex
-      ..fieldBuffs = copy.fieldBuffs
+      ..fieldBuffs = copy.fieldBuffs.map((e) => e.copy()).toList()
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
       ..masterSkillInfo = copy.masterSkillInfo

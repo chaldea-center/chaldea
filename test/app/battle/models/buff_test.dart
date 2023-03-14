@@ -42,6 +42,68 @@ void main() async {
       battle.unsetActivator();
     });
 
+    test('checkIndivType 1', () {
+      final buff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            ckOpIndv: [
+              NiceTrait(id: Trait.attributeSky.id),
+              NiceTrait(id: Trait.alignmentGood.id),
+            ],
+            script: BuffScript(checkIndvType: 1),
+          ),
+          DataVals({'UseRate': 1000}));
+
+      battle.setTarget(cba);
+      battle.setActivator(okuni);
+
+      expect(buff.shouldApplyBuff(battle, false), isTrue);
+      expect(buff.shouldApplyBuff(battle, true), isFalse);
+
+      battle.unsetTarget();
+      battle.unsetActivator();
+    });
+
+    test('checkIndivType with current buff', () {
+      final buff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            ckOpIndv: [
+              NiceTrait(id: Trait.attributeSky.id),
+              NiceTrait(id: Trait.buffNegativeEffect.id),
+            ],
+            script: BuffScript(checkIndvType: 1),
+          ),
+          DataVals({'UseRate': 1000}));
+
+      final currentBuff = BuffData(
+          Buff(
+            id: -1,
+            name: '',
+            detail: '',
+            vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]
+          ),
+          DataVals({'UseRate': 1000}));
+
+      battle.setTarget(cba);
+      battle.setActivator(okuni);
+      cba.addBuff(currentBuff); // make sure we are not checking servant's buffs' traits
+
+      expect(buff.shouldApplyBuff(battle, false), isFalse);
+
+      battle.setCurrentBuff(currentBuff);
+
+      expect(buff.shouldApplyBuff(battle, false), isTrue);
+
+      battle.unsetCurrentBuff();
+      battle.unsetTarget();
+      battle.unsetActivator();
+    });
+
     test('probability check', () {
       final buff = BuffData(
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
@@ -108,6 +170,38 @@ void main() async {
 
       battle.activateSvtSkill(0, 0);
       expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
+    });
+
+    test('fieldIndividuality & subFieldIndividuality', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(100700)
+          ..skillStrengthenLvs = [1, 2, 1]
+          ..npLv = 3
+          ..lv = 80,
+        PlayerSvtData(604700)
+          ..npLv = 3
+          ..lv = 90,
+      ];
+
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(0, 1);
+      expect(battle.getFieldTraits().isNotEmpty, isTrue);
+
+      battle.activateSvtSkill(1, 2);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      // reset to test order does not affect subFieldIndiv
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(1, 2);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
+
+      battle.activateSvtSkill(0, 1);
+      expect(battle.getFieldTraits().isEmpty, isTrue);
     });
   });
 }

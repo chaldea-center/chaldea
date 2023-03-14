@@ -54,7 +54,13 @@ class BattleSkillInfoData {
 
     // TODO (battle): account for random skills (check func.svals.ActSet)
     for (final func in skill.functions) {
-      executeFunction(battleData, func, skillLevel, isPassive: isPassive, notActorFunction: notActorSkill);
+      FunctionExecutor.executeFunction(
+        battleData,
+        func,
+        skillLevel,
+        isPassive: isPassive,
+        notActorFunction: notActorSkill,
+      );
     }
   }
 

@@ -290,6 +290,15 @@ class BattleServantData {
     return containsAnyTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
   }
 
+  void changeNPLineCount(final int change) {
+    if (!isEnemy) {
+      return;
+    }
+
+    npLineCount += change;
+    npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
+  }
+
   void changeNP(final int change) {
     if (!isPlayer) {
       return;
@@ -434,7 +443,7 @@ class BattleServantData {
 
     final niceTD = getCurrentNP();
     for (final function in niceTD.functions) {
-      executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
+      FunctionExecutor.executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
     battleData.unsetActivator();
   }
@@ -552,6 +561,9 @@ class BattleServantData {
 
   void death(final BattleData battleData) {
     activateBuffOnAction(battleData, BuffAction.functionDead);
+
+    battleData.fieldBuffs
+        .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
   }
 
   void startOfMyTurn(final BattleData battleData) {
@@ -563,7 +575,7 @@ class BattleServantData {
       final npSealed = hasBuffOnActions(battleData, doNotNPTypes);
       if (!npSealed) {
         npLineCount += 1;
-        npLineCount.clamp(0, niceEnemy!.chargeTurn);
+        npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
       }
     } else {
       final skillSealed = hasBuffOnAction(battleData, BuffAction.donotSkill);

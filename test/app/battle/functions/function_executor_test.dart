@@ -44,33 +44,33 @@ void main() async {
   final BattleServantData ally = battle.targetedAlly!;
   final BattleServantData enemy = battle.targetedEnemy!;
 
-  group('Test validateFunctionTargetTeam', () {
+  group('Test FunctionExecutor.validateFunctionTargetTeam', () {
     test('FuncApplyTarget.enemy', () {
       final BaseFunction enemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
-      expect(validateFunctionTargetTeam(enemyFunction, ally), isFalse);
-      expect(validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
-      expect(validateFunctionTargetTeam(enemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullAllies), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullEnemies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, []), isTrue);
     });
 
-    test('FuncApplyTarget.enemy', () {
+    test('FuncApplyTarget.player', () {
       final BaseFunction allyFunciton =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
-      expect(validateFunctionTargetTeam(allyFunciton, ally), isTrue);
-      expect(validateFunctionTargetTeam(allyFunciton, enemy), isFalse);
-      expect(validateFunctionTargetTeam(allyFunciton, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, battle.nonnullAllies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, battle.nonnullEnemies), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, []), isTrue);
     });
 
-    test('FuncApplyTarget.enemy', () {
+    test('FuncApplyTarget.playerAndEnemy', () {
       final BaseFunction enemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
-      expect(validateFunctionTargetTeam(enemyFunction, ally), isTrue);
-      expect(validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
-      expect(validateFunctionTargetTeam(enemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullAllies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, battle.nonnullEnemies), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, []), isTrue);
     });
   });
 
-  test('Test getDataVals', () {
+  test('Test FunctionExecutor.getDataVals', () {
     final NiceFunction yuyuNpDamageFunction = db.gameData.servantsById[2500400]!.noblePhantasms.first.functions.first;
 
     final damageRates = [9000, 12000, 13500, 14250, 15000];
@@ -78,65 +78,71 @@ void main() async {
 
     for (int npLv = 1; npLv <= 5; npLv += 1) {
       for (int ocLv = 1; ocLv <= 5; ocLv += 1) {
-        expect(getDataVals(yuyuNpDamageFunction, npLv, ocLv).Value, damageRates[npLv - 1]);
-        expect(getDataVals(yuyuNpDamageFunction, npLv, ocLv).Correction, corrections[ocLv - 1]);
+        expect(FunctionExecutor.getDataVals(yuyuNpDamageFunction, npLv, ocLv).Value, damageRates[npLv - 1]);
+        expect(FunctionExecutor.getDataVals(yuyuNpDamageFunction, npLv, ocLv).Correction, corrections[ocLv - 1]);
       }
     }
   });
 
-  group('Test acquireFunctionTarget', () {
+  group('Test FunctionExecutor.acquireFunctionTarget', () {
     test('FuncTargetType.self', () {
-      final allyTargets = acquireFunctionTarget(battle, FuncTargetType.self, -1, ally);
+      final allyTargets = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.self, -1, ally);
       expect(allyTargets.length, 1);
       expect(allyTargets.first, ally);
 
-      final enemyTargets = acquireFunctionTarget(battle, FuncTargetType.self, -1, enemy);
+      final enemyTargets = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.self, -1, enemy);
       expect(enemyTargets.length, 1);
       expect(enemyTargets.first, enemy);
     });
 
     test('Targeted types', () {
-      final ptOne = acquireFunctionTarget(battle, FuncTargetType.ptOne, -1, battle.onFieldAllyServants[1]);
+      final ptOne =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOne, -1, battle.onFieldAllyServants[1]);
       expect(ptOne.length, 1);
       expect(ptOne.first, ally);
       expect(ptOne.first, isNot(battle.onFieldAllyServants[1]!));
 
-      final enemyList = acquireFunctionTarget(battle, FuncTargetType.enemy, -1, ally);
+      final enemyList = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemy, -1, ally);
       expect(enemyList.length, 1);
       expect(enemyList.first, enemy);
 
       final ptSelectOneSubOnEnemy =
-          acquireFunctionTarget(battle, FuncTargetType.ptselectOneSub, -1, battle.onFieldEnemies[1]);
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptselectOneSub, -1, battle.onFieldEnemies[1]);
       expect(ptSelectOneSubOnEnemy.length, 1);
       expect(ptSelectOneSubOnEnemy.first, enemy);
       expect(ptSelectOneSubOnEnemy.first, isNot(battle.onFieldEnemies[1]!));
     });
 
     test('Select all types', () {
-      final ptAll = acquireFunctionTarget(battle, FuncTargetType.ptAll, -1, battle.onFieldAllyServants[1]);
+      final ptAll =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptAll, -1, battle.onFieldAllyServants[1]);
       expect(ptAll, unorderedEquals(battle.nonnullAllies));
 
-      final ptFull = acquireFunctionTarget(battle, FuncTargetType.ptFull, -1, battle.onFieldAllyServants[1]);
+      final ptFull =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptFull, -1, battle.onFieldAllyServants[1]);
       expect(ptFull, unorderedEquals([...battle.nonnullAllies, ...battle.nonnullBackupAllies]));
 
-      final enemyAll = acquireFunctionTarget(battle, FuncTargetType.enemyAll, -1, ally);
+      final enemyAll = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyAll, -1, ally);
       expect(enemyAll, unorderedEquals(battle.nonnullEnemies));
 
-      final enemyFullAsEnemy = acquireFunctionTarget(battle, FuncTargetType.enemyFull, -1, enemy);
+      final enemyFullAsEnemy = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyFull, -1, enemy);
       expect(enemyFullAsEnemy, unorderedEquals([...battle.nonnullAllies, ...battle.nonnullBackupAllies]));
     });
 
     test('Select other types', () {
-      final ptOther = acquireFunctionTarget(battle, FuncTargetType.ptOther, -1, battle.onFieldAllyServants[1]);
+      final ptOther =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOther, -1, battle.onFieldAllyServants[1]);
       expect(ptOther, unorderedEquals([battle.onFieldAllyServants[0], battle.onFieldAllyServants[2]]));
 
-      final ptOneOther = acquireFunctionTarget(battle, FuncTargetType.ptOneOther, -1, battle.onFieldAllyServants[1]);
+      final ptOneOther =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOneOther, -1, battle.onFieldAllyServants[1]);
       expect(ptOneOther, unorderedEquals([battle.onFieldAllyServants[1], battle.onFieldAllyServants[2]]));
 
-      final enemyOther = acquireFunctionTarget(battle, FuncTargetType.enemyOther, -1, ally);
+      final enemyOther = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOther, -1, ally);
       expect(enemyOther, unorderedEquals([battle.onFieldEnemies[1], battle.onFieldEnemies[2]]));
 
-      final ptOtherFull = acquireFunctionTarget(battle, FuncTargetType.ptOtherFull, -1, battle.onFieldAllyServants[1]);
+      final ptOtherFull =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOtherFull, -1, battle.onFieldAllyServants[1]);
       expect(
           ptOtherFull,
           unorderedEquals([
@@ -145,7 +151,8 @@ void main() async {
             ...battle.nonnullBackupAllies,
           ]));
 
-      final enemyOtherFullAsEnemy = acquireFunctionTarget(battle, FuncTargetType.enemyOtherFull, -1, enemy);
+      final enemyOtherFullAsEnemy =
+          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOtherFull, -1, enemy);
       expect(
           enemyOtherFullAsEnemy,
           unorderedEquals([
@@ -156,26 +163,28 @@ void main() async {
     });
 
     test('Dynamic types', () {
-      final as0 = acquireFunctionTarget(battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[0]);
+      final as0 = FunctionExecutor.acquireFunctionTarget(
+          battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[0]);
       expect(as0.length, 1);
       expect(as0.first, battle.onFieldAllyServants[1]);
 
-      final as1 = acquireFunctionTarget(battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
+      final as1 = FunctionExecutor.acquireFunctionTarget(
+          battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
       expect(as1.length, 1);
       expect(as1.first, battle.onFieldAllyServants[0]);
 
       battle.onFieldAllyServants[0]!.addBuff(
           BuffData(Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.id)]), DataVals()));
 
-      final as1With0Unselectable =
-          acquireFunctionTarget(battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
+      final as1With0Unselectable = FunctionExecutor.acquireFunctionTarget(
+          battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
       expect(as1With0Unselectable.length, 1);
       expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
 
       battle.onFieldAllyServants[0]!.battleBuff.activeList.removeLast();
 
-      final as1AfterRemove =
-          acquireFunctionTarget(battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
+      final as1AfterRemove = FunctionExecutor.acquireFunctionTarget(
+          battle, FuncTargetType.ptSelfAnotherFirst, -1, battle.onFieldAllyServants[1]);
       expect(as1AfterRemove.length, 1);
       expect(as1AfterRemove.first, battle.onFieldAllyServants[0]);
     });
@@ -261,6 +270,131 @@ void main() async {
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 2);
+    });
+
+    test('addFieldChangeToField', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(2300500)
+          ..npLv = 3
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(2300500)
+          ..npLv = 3
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final archType1 = battle.onFieldAllyServants[0]!;
+      final archType2 = battle.onFieldAllyServants[1]!;
+
+      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
+
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+
+      battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+
+      battle.activateSvtSkill(0, 1);
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+    });
+
+    test('gainStar', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+        PlayerSvtData(501500)
+          ..skillStrengthenLvs = [1, 1, 1]
+          ..npLv = 3
+          ..lv = 60,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
+      battle.activateSvtSkill(0, 2);
+      expect(battle.criticalStars, moreOrLessEquals(50, epsilon: 0.001));
+      battle.activateSvtSkill(1, 2);
+      expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
+      battle.activateSvtSkill(2, 2);
+      expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
+    });
+
+    test('gainNpFromTargets', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(304000)
+          ..skillLvs = [9, 9, 9]
+          ..npLv = 3
+          ..lv = 80,
+        PlayerSvtData(2500400)
+          ..skillLvs = [9, 9, 9]
+          ..appendLvs = [0, 10, 0]
+          ..npLv = 3
+          ..lv = 90,
+        PlayerSvtData(2500400)
+          ..skillLvs = [9, 9, 9]
+          ..npLv = 3
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final lambda = battle.onFieldAllyServants[0]!;
+      final yuyu1 = battle.onFieldAllyServants[1]!;
+      final yuyu2 = battle.onFieldAllyServants[2]!;
+      final enemy = battle.onFieldEnemies[0]!;
+
+      expect(lambda.np, 0);
+      expect(yuyu1.np, 2000);
+      expect(yuyu2.np, 10000);
+      expect(enemy.npLineCount, 0);
+
+      battle.activateSvtSkill(0, 2);
+
+      expect(lambda.np, 4800);
+      expect(yuyu1.np, 0);
+      expect(yuyu2.np, 7200);
+      expect(enemy.npLineCount, 0);
+
+      battle.activateSvtSkill(1, 1);
+
+      expect(lambda.np, 4800);
+      expect(yuyu1.np, 0);
+      expect(yuyu2.np, 7200);
+      expect(enemy.npLineCount, 0);
+
+      battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards().last)]); // buster card
+
+      expect(lambda.np, 4800);
+      expect(yuyu1.np, 0);
+      expect(yuyu2.np, 7200);
+      expect(enemy.npLineCount, 1);
+
+      battle.activateSvtSkill(2, 1);
+
+      expect(lambda.np, 4800);
+      expect(yuyu1.np, 0);
+      expect(yuyu2.np, 7200 + 1800 * 3);
+      expect(enemy.npLineCount, 0);
     });
   });
 }
