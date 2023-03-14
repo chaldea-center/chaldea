@@ -81,12 +81,7 @@ void main() async {
           DataVals({'UseRate': 1000}));
 
       final currentBuff = BuffData(
-          Buff(
-            id: -1,
-            name: '',
-            detail: '',
-            vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]
-          ),
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]),
           DataVals({'UseRate': 1000}));
 
       battle.setTarget(cba);

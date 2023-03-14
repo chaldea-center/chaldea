@@ -112,6 +112,8 @@
   "cur_account": "الحساب الحالي",
   "current_": "حالي",
   "current_version": "النسخة الحالية",
+  "custom_chara_figure": null,
+  "custom_chara_figure_intro": null,
   "custom_mission": "مهمة مخصصة",
   "custom_mission_mixed_type_hint": null,
   "custom_mission_nothing_hint": "لا مهام اضغط + لأضافة مهمة",

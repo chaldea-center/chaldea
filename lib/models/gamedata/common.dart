@@ -38,6 +38,17 @@ enum Region {
         return 24;
     }
   }
+
+  @override
+  String toString() {
+    return name.toUpperCase();
+  }
+
+  static Region? fromUrl(String url) {
+    final r = Uri.tryParse(url)?.pathSegments.getOrNull(0);
+    if (r == null) return null;
+    return _$RegionEnumMap.entries.firstWhereOrNull((e) => e.value.toLowerCase() == r.toLowerCase())?.key;
+  }
 }
 
 @JsonSerializable()

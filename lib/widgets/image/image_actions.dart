@@ -13,12 +13,14 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:chaldea/app/modules/tools/custom_chara_figure.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+import '../../app/app.dart';
 import '../../packages/packages.dart';
 import '../custom_dialogs.dart';
 
@@ -59,7 +61,15 @@ class ImageActions {
                 },
                 child: const Icon(Icons.copy, size: 18),
               ),
-            )
+            ),
+          if (url != null && RegExp(r'/CharaFigure/\d+/').hasMatch(url))
+            ListTile(
+              leading: const Icon(Icons.face_retouching_natural_outlined),
+              title: Text(S.current.custom_chara_figure),
+              onTap: () async {
+                router.pushPage(CustomCharaFigurePage(figure: url));
+              },
+            ),
         ];
         if (kIsWeb && srcFp != null && !srcFp.startsWith(kStaticHostRoot)) {
           children.add(ListTile(

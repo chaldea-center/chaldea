@@ -76,7 +76,7 @@ class BuffData {
   // Default to Hyde's passive not ever added, which means we don't do any passive cleaning logic in transform script
   bool notActorPassive = false;
 
-  bool get isOnField =>  vals.OnField == 1;
+  bool get isOnField => vals.OnField == 1;
 
   BuffData(this.buff, this.vals) {
     count = vals.Count ?? -1;

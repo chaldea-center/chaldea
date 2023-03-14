@@ -197,6 +197,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("當前帳號"),
         "current_": MessageLookupByLibrary.simpleMessage("當前"),
         "current_version": MessageLookupByLibrary.simpleMessage("當前版本"),
+        "custom_chara_figure": MessageLookupByLibrary.simpleMessage("自定义立绘表情差分"),
+        "custom_chara_figure_intro": MessageLookupByLibrary.simpleMessage(
+            "长按任一带差分的立绘(url为/CharaFigure/[id]/)，可进行快速跳转。或在下方输入对应的立绘id或立绘图片地址。\n - 从者-卡面-立绘差分\n - 活动/主线的\"资源\"页面\n - 阅读剧情-菜单-资源"),
         "custom_mission": MessageLookupByLibrary.simpleMessage("自訂任務"),
         "custom_mission_mixed_type_hint": MessageLookupByLibrary.simpleMessage("同一任務中敵人類條件與關卡類條件不可一起使用"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage("無任務，點擊+添加"),

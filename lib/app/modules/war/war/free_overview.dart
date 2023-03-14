@@ -181,7 +181,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
     void _addItems(Map<int, Widget> items) {
       final ids = items.keys.toList();
-      ids.sort((a, b) => Item.compare2(a, b, true));
+      ids.sort((a, b) => Item.compare2(a, b));
       cells.add(DataCell(wrap(ids.map((e) => items[e]!))));
     }
 

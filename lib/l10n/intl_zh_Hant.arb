@@ -112,6 +112,8 @@
   "cur_account": "當前帳號",
   "current_": "當前",
   "current_version": "當前版本",
+  "custom_chara_figure": null,
+  "custom_chara_figure_intro": null,
   "custom_mission": "自訂任務",
   "custom_mission_mixed_type_hint": "同一任務中敵人類條件與關卡類條件不可一起使用",
   "custom_mission_nothing_hint": "無任務，點擊+添加",

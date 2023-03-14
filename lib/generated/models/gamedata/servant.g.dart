@@ -644,3 +644,27 @@ ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
       ),
       svtBuffTurnExtend: json['svtBuffTurnExtend'] as bool?,
     );
+
+SvtScript _$SvtScriptFromJson(Map json) => SvtScript(
+      extendData: json['extendData'] == null
+          ? null
+          : SvtScriptExtendData.fromJson(Map<String, dynamic>.from(json['extendData'] as Map)),
+      id: json['id'] as int,
+      form: json['form'] as int? ?? 0,
+      faceX: json['faceX'] as int? ?? 0,
+      faceY: json['faceY'] as int? ?? 0,
+      bgImageId: json['bgImageId'] as int? ?? 0,
+      scale: (json['scale'] as num?)?.toDouble() ?? 1.0,
+      offsetX: json['offsetX'] as int? ?? 0,
+      offsetY: json['offsetY'] as int? ?? 0,
+      offsetXMyroom: json['offsetXMyroom'] as int? ?? 0,
+      offsetYMyroom: json['offsetYMyroom'] as int? ?? 0,
+    );
+
+SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendData(
+      faceSize: json['faceSize'] as int?,
+      myroomForm: json['myroomForm'] as int?,
+      combineResultMultipleForm: json['combineResultMultipleForm'] as int?,
+      photoSvtPosition: (json['photoSvtPosition'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      photoSvtScale: (json['photoSvtScale'] as num?)?.toDouble(),
+    );

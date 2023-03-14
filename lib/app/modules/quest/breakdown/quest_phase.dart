@@ -706,13 +706,13 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     Map<int, String?> dropTexts = {};
     if (preferApRate) {
       final drops = dropRates.getQuestApRate(widget.quest.id).entries.toList();
-      drops.sort((a, b) => Item.compare2(a.key, b.key, true));
+      drops.sort((a, b) => Item.compare2(a.key, b.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value > 1000 ? entry.value.toInt().toString() : entry.value.format(maxDigits: 4);
       }
     } else {
       final drops = dropRates.getQuestDropRate(widget.quest.id).entries.toList();
-      drops.sort((a, b) => Item.compare2(a.key, b.key, true));
+      drops.sort((a, b) => Item.compare2(a.key, b.key));
       for (final entry in drops) {
         dropTexts[entry.key] = entry.value.format(percent: true, maxDigits: 3);
       }
@@ -736,7 +736,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   Widget _getRayshiftDrops(List<EnemyDrop> drops, bool sumEventItem) {
     drops = List.of(drops);
-    drops.sort((a, b) => Item.compare2(a.objectId, b.objectId, true));
+    drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
     List<Widget> children = [];
     Widget _singleDrop(EnemyDrop drop) {
       String? text;

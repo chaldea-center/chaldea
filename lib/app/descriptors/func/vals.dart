@@ -183,7 +183,9 @@ class ValDsc extends StatelessWidget {
         _addInt(v2 ~/ 100);
       }
     } else if (func.funcType == FuncType.subState) {
-      if (vals.Value2 != null) {
+      if (vals.Value != null && vals.Value! > 0) {
+        _addInt(vals.Value);
+      } else if (vals.Value2 != null && vals.Value2! > 0) {
         _addInt(vals.Value2);
       } else {
         parts.add('All');

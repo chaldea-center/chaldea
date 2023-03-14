@@ -1278,6 +1278,63 @@ class ServantScript with DataScriptBase {
   factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);
 }
 
+@JsonSerializable()
+class SvtScript {
+  SvtScriptExtendData? extendData;
+  int id;
+  int form;
+  int faceX;
+  int faceY;
+  int bgImageId;
+  double scale;
+  int offsetX;
+  int offsetY;
+  int offsetXMyroom;
+  int offsetYMyroom;
+
+  SvtScript({
+    this.extendData,
+    required this.id,
+    this.form = 0,
+    this.faceX = 0,
+    this.faceY = 0,
+    this.bgImageId = 0,
+    this.scale = 1.0,
+    this.offsetX = 0,
+    this.offsetY = 0,
+    this.offsetXMyroom = 0,
+    this.offsetYMyroom = 0,
+  });
+
+  bool get isHeight1024 => (extendData?.faceSize ?? 256) != 256;
+  bool get isHeight768 => (extendData?.faceSize ?? 256) == 256;
+
+  factory SvtScript.fromJson(Map<String, dynamic> json) => _$SvtScriptFromJson(json);
+}
+
+@JsonSerializable()
+class SvtScriptExtendData {
+  int? faceSize; // default 256
+  int? myroomForm;
+  int? combineResultMultipleForm;
+  // conds?: { condType: number; value: number }[];
+  // "photoSvtPosition": [-260, 284],
+  // "photoSvtScale": 0.85
+  List<int>? photoSvtPosition;
+  double? photoSvtScale;
+  // offsets<x,y>
+  // List<int>? TerminalOffset
+  // List<int>? BattleBondOffset
+  SvtScriptExtendData({
+    this.faceSize,
+    this.myroomForm,
+    this.combineResultMultipleForm,
+    this.photoSvtPosition,
+    this.photoSvtScale,
+  });
+  factory SvtScriptExtendData.fromJson(Map<String, dynamic> json) => _$SvtScriptExtendDataFromJson(json);
+}
+
 enum SvtType {
   normal,
   heroine,

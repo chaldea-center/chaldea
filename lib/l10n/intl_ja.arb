@@ -112,6 +112,8 @@
   "cur_account": "アカウント",
   "current_": "現在",
   "current_version": "現バージョン",
+  "custom_chara_figure": null,
+  "custom_chara_figure_intro": null,
   "custom_mission": "カスタム任務",
   "custom_mission_mixed_type_hint": null,
   "custom_mission_nothing_hint": "ミッションがありません。＋をクリックして追加しましょう。",

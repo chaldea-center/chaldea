@@ -1,3 +1,4 @@
+import 'package:chaldea/utils/utils.dart';
 import '../app/api/hosts.dart';
 import '../models/models.dart';
 
@@ -120,8 +121,9 @@ class AssetURL {
   static const baseUrl = 'https://static.atlasacademy.io';
   static final AssetURL i = AssetURL();
 
-  final String region;
-  AssetURL([Region region = Region.jp]) : region = region.upper;
+  final Region region;
+  AssetURL([this.region = Region.jp]);
+  AssetURL.parseRegion(String url) : region = Region.values.firstWhereOrNull((r) => url.contains('/$r/')) ?? Region.jp;
 
   String pad(int id, [int width = 5]) => id.toString().padLeft(width, '0');
 
@@ -157,6 +159,11 @@ class AssetURL {
   String charaGraphDefault(dynamic itemId) => "$baseUrl/$region/CharaGraph/$itemId/${itemId}a.png";
   String charaGraphName(int itemId, int i) => "$baseUrl/$region/CharaGraph/$itemId/${itemId}name@$i.png";
   String charaFigure(int itemId, int i) => "$baseUrl/$region/CharaFigure/$itemId$i/$itemId${i}_merged.png";
+  int? getCharaFigureId(String url) {
+    final charaId = RegExp(r'/CharaFigure/(\d+)/').firstMatch(url)?.group(1);
+    return charaId == null ? null : int.tryParse(charaId);
+  }
+
   String charaFigureId(dynamic figureId) => ("$baseUrl/$region/CharaFigure/$figureId/${figureId}_merged.png");
   String charaFigureForm(int formId, int svtScriptId) =>
       "$baseUrl/$region/CharaFigure/Form/$formId/$svtScriptId/${svtScriptId}_merged.png";

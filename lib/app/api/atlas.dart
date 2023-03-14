@@ -92,6 +92,10 @@ class ApiCacheManager {
 
   Completer? _initCompleter;
 
+  void clearFailed() {
+    _failed.clear();
+  }
+
   Future<void> clearCache() async {
     _memoryCache.clear();
     _data.clear();
@@ -323,7 +327,7 @@ class ApiCacheManager {
     }
   }
 
-  Future<T?> getModel<T>(String url, T Function(dynamic) fromJson,
+  Future<T?> getModel<T>(String url, T Function(dynamic data) fromJson,
       {Duration? expireAfter, bool cacheOnly = false}) async {
     try {
       final obj = await getJson(url, expireAfter: expireAfter, cacheOnly: true);
@@ -586,6 +590,15 @@ class AtlasApi {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/script/$scriptId',
       (data) => NiceScript.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<SvtScript>?> svtScript(int charaId, {Region region = Region.jp, Duration? expireAfter}) {
+    // charaId can be list
+    return cacheManager.getModel(
+      '$_atlasApiHost/raw/${region.upper}/svtScript?charaId=$charaId',
+      (data) => (data as List).map((e) => SvtScript.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }

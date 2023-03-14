@@ -1295,6 +1295,28 @@ class S {
     );
   }
 
+  /// `Custom Chara Figure Face`
+  String get custom_chara_figure {
+    return Intl.message(
+      'Custom Chara Figure Face',
+      name: 'custom_chara_figure',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Long press on any Figure(with multiple faces, url contains /CharaFigure/[id]/) will take you here. Or input the figure id/url below.\n - Servant-Illustration-Figure\n - Event/War "Assets" page\n - Story script - open menu - Assets`
+  String get custom_chara_figure_intro {
+    return Intl.message(
+      'Long press on any Figure(with multiple faces, url contains /CharaFigure/[id]/) will take you here. Or input the figure id/url below.\n - Servant-Illustration-Figure\n - Event/War "Assets" page\n - Story script - open menu - Assets',
+      name: 'custom_chara_figure_intro',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Custom Mission`
   String get custom_mission {
     return Intl.message(

@@ -112,6 +112,8 @@
   "cur_account": "계정",
   "current_": "현재",
   "current_version": "현재 버전",
+  "custom_chara_figure": null,
+  "custom_chara_figure_intro": null,
   "custom_mission": "맞춤 미션",
   "custom_mission_mixed_type_hint": null,
   "custom_mission_nothing_hint": "미션이 없습니다 +를 클릭하여 추가합시다",

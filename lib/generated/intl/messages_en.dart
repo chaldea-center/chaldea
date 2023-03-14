@@ -205,6 +205,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("Current Account"),
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
         "current_version": MessageLookupByLibrary.simpleMessage("Current Version"),
+        "custom_chara_figure": MessageLookupByLibrary.simpleMessage("Custom Chara Figure Face"),
+        "custom_chara_figure_intro": MessageLookupByLibrary.simpleMessage(
+            "Long press on any Figure(with multiple faces, url contains /CharaFigure/[id]/) will take you here. Or input the figure id/url below.\n - Servant-Illustration-Figure\n - Event/War \"Assets\" page\n - Story script - open menu - Assets"),
         "custom_mission": MessageLookupByLibrary.simpleMessage("Custom Mission"),
         "custom_mission_mixed_type_hint": MessageLookupByLibrary.simpleMessage(
             "Enemy conditions and Quest conditions must not be mixed in one mission"),

@@ -259,26 +259,19 @@ class _CombineImagePageState extends State<CombineImagePage> {
         ),
         const SFooter(
             'Click to insert new image before the selected one or add to the end.\nLong press then drag to reorder.'),
-        Center(
-          child: ElevatedButton(
-            onPressed: kIsWeb && !kPlatformMethods.rendererCanvasKit
-                ? null
-                : () {
-                    double? ratio;
-                    if (option.imgHeight != null) {
-                      ratio = option.imgHeight! / height;
-                    }
-                    if (isSelected) {
-                      // _selected = -1;
-                      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                        exportImage(ratio);
-                      });
-                    } else {
-                      exportImage(ratio);
-                    }
-                  },
-            child: Text(S.current.save),
-          ),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          children: [
+            ElevatedButton(
+              onPressed: kIsWeb && !kPlatformMethods.rendererCanvasKit ? null : () => takeScreenshot(height, false),
+              child: Text(S.current.preview),
+            ),
+            ElevatedButton(
+              onPressed: kIsWeb && !kPlatformMethods.rendererCanvasKit ? null : () => takeScreenshot(height, true),
+              child: Text(S.current.save),
+            ),
+          ],
         ),
         TileGroup(
           header: 'Save Option',
@@ -426,7 +419,22 @@ class _CombineImagePageState extends State<CombineImagePage> {
     );
   }
 
-  void exportImage(double? ratio) async {
+  void takeScreenshot(double height, bool saveOrPreview) {
+    double? ratio;
+    if (option.imgHeight != null) {
+      ratio = option.imgHeight! / height;
+    }
+    if (isSelected) {
+      // _selected = -1;
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        exportImage(ratio, saveOrPreview);
+      });
+    } else {
+      exportImage(ratio, saveOrPreview);
+    }
+  }
+
+  void exportImage(double? ratio, bool saveOrPreview) async {
     if (!mounted) return;
     EasyLoading.show(status: 'exporting...');
     try {
@@ -438,11 +446,35 @@ class _CombineImagePageState extends State<CombineImagePage> {
         return;
       }
       EasyLoading.dismiss();
-      ImageActions.showSaveShare(
-        context: kAppKey.currentContext,
-        data: data,
-        destFp: joinPaths(db.paths.downloadDir, 'Combined-${DateTime.now().toSafeFileName()}.png'),
-      );
+      if (saveOrPreview) {
+        ImageActions.showSaveShare(
+          context: kAppKey.currentContext,
+          data: data,
+          destFp: joinPaths(db.paths.downloadDir, 'Combined-${DateTime.now().toSafeFileName()}.png'),
+        );
+      } else {
+        if (!mounted) return;
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (context, _, __) => FullscreenImageViewer(
+              children: [
+                CachedImage.fromProvider(
+                  imageProvider: MemoryImage(data),
+                  showSaveOnLongPress: true,
+                  viewFullOnTap: false,
+                  onTap: null,
+                  photoViewOption: PhotoViewOption.limited(),
+                  cachedOption: const CachedImageOption(
+                    fadeOutDuration: Duration(milliseconds: 1200),
+                    fadeInDuration: Duration(milliseconds: 800),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      }
     } catch (e, s) {
       logger.e('Generate image failed', e, s);
       await EasyLoading.showError(e.toString());

@@ -200,23 +200,23 @@ class Item {
   }
 
   static int _getType(int a) {
-    if (db.gameData.craftEssencesById.containsKey(a)) return 3;
+    if (db.gameData.craftEssencesById.containsKey(a)) return 1;
     if (db.gameData.items.containsKey(a)) return 2;
-    if (db.gameData.servantsById[a]?.type == SvtType.combineMaterial) {
-      return 1;
+    if (db.gameData.entities[a]?.type == SvtType.combineMaterial) {
+      return 3;
     }
-    return 4; // unknown
+    return 0; // unknown
   }
 
   static int _getPriority(int a) {
-    return db.gameData.items[a]?.priority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a;
+    return -(db.gameData.items[a]?.priority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a);
   }
 
   // item/ce/svt
   static int compare2(int id1, int id2, [bool reversed = false]) {
     // priority越大越金
     // ce3->item2->ember1
-    return ListX.compareByList(id1, id2, (v) => <int>[-_getType(v), _getPriority(v)], reversed);
+    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
   }
 
   static Map<int, int> sortMapByPriority(
