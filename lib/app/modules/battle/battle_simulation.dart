@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -104,20 +105,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ));
       }
     } else {
-      topListChildren.add(const Center(
-          child: Text(
-        'Ally Servants',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )));
+      topListChildren
+          .add(Center(child: Text(S.current.filter_match_all, style: const TextStyle(fontWeight: FontWeight.bold))));
       for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
       }
       topListChildren.add(const Divider(height: 8, thickness: 2));
-      topListChildren.add(const Center(
-          child: Text(
-        'Enemies',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )));
+      topListChildren.add(Center(child: Text(S.current.enemy, style: const TextStyle(fontWeight: FontWeight.bold))));
       for (int i = 0; i < battleData.onFieldEnemies.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldEnemies[i], i));
       }
@@ -179,7 +173,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           useRootNavigator: false,
           builder: (context) {
             return SimpleCancelOkDialog(
-              title: const Text('Buff Details'),
+              title: Text(S.current.battle_buff_details),
               contentPadding: const EdgeInsets.all(8),
               content: SingleChildScrollView(
                 padding: const EdgeInsets.all(8),
@@ -280,7 +274,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Column(
             children: [
               ServantOptionEditPage.buildSlider(
-                leadingText: 'Probability Threshold',
+                leadingText: S.current.battle_probability_threshold,
                 min: 0,
                 max: 10,
                 value: battleData.probabilityThreshold ~/ 100,
@@ -322,20 +316,30 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                       children: [
                         Text.rich(TextSpan(
                           children: [
-                            const TextSpan(text: 'Critical Star: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${S.current.battle_critical_star}: ',
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
-                            const TextSpan(text: 'Stage: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${S.current.battle_stage}: ',
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '${battleData.waveCount}/${battleData.niceQuest!.stages.length}  '),
-                            const TextSpan(text: 'Enemy Remaining: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${S.current.battle_enemy_remaining}: ',
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(
                                 text: '${battleData.nonnullEnemies.length + battleData.nonnullBackupEnemies.length}  '),
-                            const TextSpan(text: 'Turn: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${S.current.battle_turn}: ',
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '${battleData.totalTurnCount}'),
                           ],
                         )),
                         Text.rich(TextSpan(
                           children: [
-                            const TextSpan(text: 'Field Traits ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: '${S.current.battle_field_trait} ',
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(
                               children: SharedBuilder.traitSpans(
                                 context: context,
@@ -477,7 +481,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         final List<CombatAction?> combatActions = [null, null, null];
 
         return SimpleCancelOkDialog(
-          title: const Text('Select Card'),
+          title: Text(S.current.battle_select_card),
           contentPadding: const EdgeInsets.all(8),
           content: SingleChildScrollView(
             padding: const EdgeInsets.all(8),
@@ -520,8 +524,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   Widget build(final BuildContext context) {
     final List<Widget> npCardColumn = [];
     final List<Widget> commandCardColumn = [];
-    npCardColumn.add(const Text('NP Card'));
-    commandCardColumn.add(const Text('Command Cards'));
+    npCardColumn.add(Text(S.current.battle_np_card));
+    commandCardColumn.add(Text(S.current.battle_command_card));
 
     Widget unableTextBuilder(final TextStyle style) {
       return Text.rich(
@@ -573,7 +577,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ),
       ));
       final npIndex = getNpCardIndex(svt, widget.combatActions);
-      npCardColumn.add(Text(npIndex == -1 ? '' : 'Card ${npIndex + 1}'));
+      npCardColumn.add(Text(npIndex == -1 ? '' : '${S.current.battle_action} ${npIndex + 1}'));
 
       final cards = svt.getCards();
       commandCardColumn.add(Row(
@@ -663,7 +667,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                 if (mounted) setState(() {});
               },
             ),
-            const Text('Before 7th'),
+            Text(S.current.battle_before_7th),
           ],
         ),
         Row(
@@ -676,7 +680,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                 if (mounted) setState(() {});
               },
             ),
-            const Text('After 7th'),
+            Text(S.current.battle_after_7th),
           ],
         )
       ],
@@ -687,7 +691,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         children: [
           Expanded(
             child: ServantOptionEditPage.buildSlider(
-              leadingText: 'Random',
+              leadingText: S.current.battle_random,
               min: ConstData.constants.attackRateRandomMin,
               max: ConstData.constants.attackRateRandomMax,
               value: widget.battleData.fixedRandom,
@@ -747,10 +751,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     return cardIndex != -1
         ? combatActions[cardIndex]!.cardData.isCritical
             ? Text(
-                'Crit ${cardIndex + 1}',
+                '${S.current.battle_action_crit} ${cardIndex + 1}',
                 style: const TextStyle(color: Colors.red),
               )
-            : Text('Card ${cardIndex + 1}')
+            : Text('${S.current.battle_action} ${cardIndex + 1}')
         : const Text('');
   }
 }
@@ -789,7 +793,7 @@ class _BattleLogViewerState extends State<BattleLogViewer> {
     );
 
     return SimpleCancelOkDialog(
-      title: const Text('Battle Log'),
+      title: Text(S.current.battle_battle_log),
       contentPadding: const EdgeInsets.all(8),
       content: SingleChildScrollView(
         padding: const EdgeInsets.all(8),

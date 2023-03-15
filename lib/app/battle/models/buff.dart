@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
 class BattleBuff {
@@ -153,10 +154,12 @@ class BuffData {
   String effectString() {
     return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
         '${buff.lName.l} '
-        '${buff.ckSelfIndv.isNotEmpty ? 'for ${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
-        '${buff.ckOpIndv.isNotEmpty ? 'vs ${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
+        '${buff.ckSelfIndv.isNotEmpty ? '${S.current.battle_require_self_traits} '
+        '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
+        '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
+        '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
-        '${isOnField ? 'require $actorName on field' : ''}';
+        '${isOnField ? S.current.battle_require_actor_on_field(actorName) : ''}';
   }
 
   String getParamString() {
@@ -170,13 +173,13 @@ class BuffData {
   String durationString() {
     final List<String> durationString = [];
     if (count > 0) {
-      durationString.add('$count times');
+      durationString.add('$count ${S.current.battle_buff_times}');
     }
     if (turn > 0) {
-      durationString.add('$turn turns');
+      durationString.add('$turn ${S.current.battle_buff_turns}');
     }
     if (durationString.isEmpty) {
-      durationString.add('Permanent');
+      durationString.add(S.current.battle_buff_permanent);
     }
 
     return durationString.join(', ');

@@ -514,6 +514,116 @@ class S {
     );
   }
 
+  /// `Action`
+  String get battle_action {
+    return Intl.message(
+      'Action',
+      name: 'battle_action',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Action Crit`
+  String get battle_action_crit {
+    return Intl.message(
+      'Action Crit',
+      name: 'battle_action_crit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `After 7th`
+  String get battle_after_7th {
+    return Intl.message(
+      'After 7th',
+      name: 'battle_after_7th',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ally Servants`
+  String get battle_ally_servants {
+    return Intl.message(
+      'Ally Servants',
+      name: 'battle_ally_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Battle Log`
+  String get battle_battle_log {
+    return Intl.message(
+      'Battle Log',
+      name: 'battle_battle_log',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Before 7th`
+  String get battle_before_7th {
+    return Intl.message(
+      'Before 7th',
+      name: 'battle_before_7th',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Buff Details`
+  String get battle_buff_details {
+    return Intl.message(
+      'Buff Details',
+      name: 'battle_buff_details',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Permanent`
+  String get battle_buff_permanent {
+    return Intl.message(
+      'Permanent',
+      name: 'battle_buff_permanent',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Times`
+  String get battle_buff_times {
+    return Intl.message(
+      'Times',
+      name: 'battle_buff_times',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Turns`
+  String get battle_buff_turns {
+    return Intl.message(
+      'Turns',
+      name: 'battle_buff_turns',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Change Ascension`
   String get battle_change_ascension {
     return Intl.message(
@@ -547,6 +657,28 @@ class S {
     );
   }
 
+  /// `Command Card`
+  String get battle_command_card {
+    return Intl.message(
+      'Command Card',
+      name: 'battle_command_card',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Critical Star`
+  String get battle_critical_star {
+    return Intl.message(
+      'Critical Star',
+      name: 'battle_critical_star',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Edit Craft Essence Option`
   String get battle_edit_ce_option {
     return Intl.message(
@@ -569,6 +701,17 @@ class S {
     );
   }
 
+  /// `Enemy Remaining`
+  String get battle_enemy_remaining {
+    return Intl.message(
+      'Enemy Remaining',
+      name: 'battle_enemy_remaining',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Fetch`
   String get battle_fetch {
     return Intl.message(
@@ -585,6 +728,17 @@ class S {
     return Intl.message(
       'fetch quest phase failed',
       name: 'battle_fetch_quest_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Field Traits`
+  String get battle_field_trait {
+    return Intl.message(
+      'Field Traits',
+      name: 'battle_field_trait',
       desc: '',
       locale: localeName,
       args: [],
@@ -679,6 +833,17 @@ class S {
     );
   }
 
+  /// `Command Card`
+  String get battle_np_card {
+    return Intl.message(
+      'Command Card',
+      name: 'battle_np_card',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Probability Threshold`
   String get battle_probability_threshold {
     return Intl.message(
@@ -712,6 +877,50 @@ class S {
     );
   }
 
+  /// `Random`
+  String get battle_random {
+    return Intl.message(
+      'Random',
+      name: 'battle_random',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `require {actorName} on field`
+  String battle_require_actor_on_field(Object actorName) {
+    return Intl.message(
+      'require $actorName on field',
+      name: 'battle_require_actor_on_field',
+      desc: '',
+      locale: localeName,
+      args: [actorName],
+    );
+  }
+
+  /// `Requried opponent traits`
+  String get battle_require_opponent_traits {
+    return Intl.message(
+      'Requried opponent traits',
+      name: 'battle_require_opponent_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Requried self traits`
+  String get battle_require_self_traits {
+    return Intl.message(
+      'Requried self traits',
+      name: 'battle_require_self_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Select Backup Servants`
   String get battle_select_backup_servants {
     return Intl.message(
@@ -728,6 +937,17 @@ class S {
     return Intl.message(
       'Select Battle Servants',
       name: 'battle_select_battle_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Card`
+  String get battle_select_card {
+    return Intl.message(
+      'Select Card',
+      name: 'battle_select_card',
       desc: '',
       locale: localeName,
       args: [],
@@ -756,11 +976,33 @@ class S {
     );
   }
 
+  /// `Stage`
+  String get battle_stage {
+    return Intl.message(
+      'Stage',
+      name: 'battle_stage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Start Simulation`
   String get battle_start_simulation {
     return Intl.message(
       'Start Simulation',
       name: 'battle_start_simulation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Turn`
+  String get battle_turn {
+    return Intl.message(
+      'Turn',
+      name: 'battle_turn',
       desc: '',
       locale: localeName,
       args: [],

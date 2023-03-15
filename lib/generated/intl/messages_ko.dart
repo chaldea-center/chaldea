@@ -32,11 +32,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n, total) => "전승결정으로 대체되는 성배의 개수 : ${n}/${total}";
 
-  static String m16(filename, hash, localHash) => "${filename} 파일을 찾을 수 없거나 해시가 일치하지 않습니다 : ${hash} - ${localHash}";
+  static String m17(filename, hash, localHash) => "${filename} 파일을 찾을 수 없거나 해시가 일치하지 않습니다 : ${hash} - ${localHash}";
 
-  static String m17(rarity) => "${rarity}☆ 개념예장 픽업";
+  static String m18(rarity) => "${rarity}☆ 개념예장 픽업";
 
-  static String m18(rarity) => "${rarity}☆ 서번트 픽업";
+  static String m19(rarity) => "${rarity}☆ 서번트 픽업";
 
   static String m5(error) => "불러오기 실패. Error:\n${error}";
 
@@ -44,9 +44,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "${site}(으)로 이동";
 
-  static String m19(shown, total) => "${shown} 표시 (합계 ${total})";
+  static String m20(shown, total) => "${shown} 표시 (합계 ${total})";
 
-  static String m20(shown, ignore, total) => "${shown} 표시, ${ignore} 무시 (합계 ${total})";
+  static String m21(shown, ignore, total) => "${shown} 표시, ${ignore} 무시 (합계 ${total})";
 
   static String m8(first) => "${Intl.select(first, {
             'true': '이미 첫번째입니다.',
@@ -56,9 +56,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(n) => "제${n}절";
 
-  static String m22(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
+  static String m23(region) => "문제가 발생했거나 ${region}에 이 퀘스트의 데이터가 없습니다.";
 
-  static String m25(unknown, dup, valid, total, selected) =>
+  static String m26(unknown, dup, valid, total, selected) =>
       "${unknown}불명, ${dup}중복, ${valid}/${total}유효, ${selected}선택된";
 
   static String m10(region) => "${region} 공고";
@@ -67,7 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m26(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
+  static String m27(battles, ap) => "합계 ${battles}회 전투, ${ap} AP";
 
   static String m13(n) => "프로필${n}";
 
@@ -294,7 +294,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("동일 서번트"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("도무스 아우레아"),
         "field_ai": MessageLookupByLibrary.simpleMessage("필드 AI"),
-        "file_not_found_or_mismatched_hash": m16,
+        "file_not_found_or_mismatched_hash": m17,
         "filename": MessageLookupByLibrary.simpleMessage("파일명"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage("연락처 정보가 없다면 답장이 불가능합니다."),
         "filter": MessageLookupByLibrary.simpleMessage("필터"),
@@ -319,11 +319,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("가차 확률 계산"),
-        "gacha_prob_ce_pickup": m17,
+        "gacha_prob_ce_pickup": m18,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("맞춤 확률"),
         "gacha_prob_precision_hint":
             MessageLookupByLibrary.simpleMessage("값이 너무 크거나 작으면 double 정밀도 문제로 인해 계산 결과가 부정확합니다."),
-        "gacha_prob_svt_pickup": m18,
+        "gacha_prob_svt_pickup": m19,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("홈"),
         "game_account": MessageLookupByLibrary.simpleMessage("게임 계정"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage("게임 정보를 찾을 수 없습니다. 먼저 다운로드 해 주시기 바랍니다"),
@@ -453,8 +453,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
-        "list_count_shown_all": m19,
-        "list_count_shown_hidden_all": m20,
+        "list_count_shown_all": m20,
+        "list_count_shown_hidden_all": m21,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("FFO 데이터 로드"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("그리고"),
@@ -563,7 +563,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("필드"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("드롭"),
-        "quest_not_found_error": m22,
+        "quest_not_found_error": m23,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("선호하는 지역"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage("퀘스트의 관련 이벤트가 선택된 지역에서 시작되지 않은 경우 JP로 돌아갑니다."),
         "quest_region_has_enemy_hint":
@@ -574,7 +574,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("레어도"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store에서 평가"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play에서 평가"),
-        "recognizer_result_count": m25,
+        "recognizer_result_count": m26,
         "region_cn": MessageLookupByLibrary.simpleMessage("간체 중국 서버"),
         "region_jp": MessageLookupByLibrary.simpleMessage("일본 서버"),
         "region_kr": MessageLookupByLibrary.simpleMessage("한국 서버"),
@@ -653,7 +653,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("카운트"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("목표 카운트"),
-        "solution_total_battles_ap": m26,
+        "solution_total_battles_ap": m27,
         "sort_order": MessageLookupByLibrary.simpleMessage("소트"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("음향 효과"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("특별 보상 숨기기"),
