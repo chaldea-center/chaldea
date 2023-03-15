@@ -712,44 +712,11 @@ class S {
     );
   }
 
-  /// `Fetch`
-  String get battle_fetch {
-    return Intl.message(
-      'Fetch',
-      name: 'battle_fetch',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `fetch quest phase failed`
-  String get battle_fetch_quest_failed {
-    return Intl.message(
-      'fetch quest phase failed',
-      name: 'battle_fetch_quest_failed',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Field Traits`
   String get battle_field_trait {
     return Intl.message(
       'Field Traits',
       name: 'battle_field_trait',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Invalid quest id or url`
-  String get battle_invalid_quest_input {
-    return Intl.message(
-      'Invalid quest id or url',
-      name: 'battle_invalid_quest_input',
       desc: '',
       locale: localeName,
       args: [],
@@ -811,17 +778,6 @@ class S {
     );
   }
 
-  /// `Not found`
-  String get battle_not_found {
-    return Intl.message(
-      'Not found',
-      name: 'battle_not_found',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `not LB`
   String get battle_not_limit_break {
     return Intl.message(
@@ -833,10 +789,10 @@ class S {
     );
   }
 
-  /// `Command Card`
+  /// `NP Card`
   String get battle_np_card {
     return Intl.message(
-      'Command Card',
+      'NP Card',
       name: 'battle_np_card',
       desc: '',
       locale: localeName,
@@ -863,17 +819,6 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
-    );
-  }
-
-  /// `Quest {questId} not found`
-  String battle_quest_not_found(Object questId) {
-    return Intl.message(
-      'Quest $questId not found',
-      name: 'battle_quest_not_found',
-      desc: '',
-      locale: localeName,
-      args: [questId],
     );
   }
 

@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n, total) => "聖杯は伝承結晶${n}/${total}個に置き換わります";
 
-  static String m17(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
   static String m5(error) => "インポートに失敗しました、エラー:\n${error}";
@@ -41,9 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "${site}へ";
 
-  static String m20(shown, total) => "表示${shown}/合計${total}";
+  static String m19(shown, total) => "表示${shown}/合計${total}";
 
-  static String m21(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
+  static String m20(shown, ignore, total) => "表示${shown}/無視${ignore}/合計${total}";
 
   static String m8(first) => "${Intl.select(first, {
             'true': '最初のもの',
@@ -51,7 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '最後のもの',
           })}";
 
-  static String m22(layer) => "第${layer}層";
+  static String m21(layer) => "第${layer}層";
 
   static String m9(n) => "第${n}節";
 
@@ -61,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m27(battles, ap) => "共${battles}回戦闘、${ap} AP";
+  static String m26(battles, ap) => "共${battles}回戦闘、${ap} AP";
 
   static String m13(n) => "プロフィール${n}";
 
@@ -263,7 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage("まずFFOリソースをダウンロードまたはインポートしてください↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同じ鯖"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("効率劇場"),
-        "file_not_found_or_mismatched_hash": m17,
+        "file_not_found_or_mismatched_hash": m16,
         "filename": MessageLookupByLibrary.simpleMessage("ファイル名"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage("連絡先情報がない場合は、返信することはできません。"),
         "filter": MessageLookupByLibrary.simpleMessage("フィルター"),
@@ -409,8 +409,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
+        "list_count_shown_all": m19,
+        "list_count_shown_hidden_all": m20,
         "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("ユーザー名を変更"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("パスワードを変更"),
@@ -440,7 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("メインクエスト"),
         "main_story": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("チャプター"),
-        "map_layer_n": m22,
+        "map_layer_n": m21,
         "master_detail_width": MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("関連クエスト"),
@@ -584,7 +584,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("スキルレベル最大化(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("カウント"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標カウント"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m26,
         "sort_order": MessageLookupByLibrary.simpleMessage("ソート"),
         "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21聖晶片=3聖晶石"),

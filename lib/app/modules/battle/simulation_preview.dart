@@ -243,14 +243,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 try {
                   await _fetchQuestPhase();
                 } catch (e, s) {
-                  logger.e(S.current.battle_fetch_quest_failed, e, s);
+                  logger.e('fetch quest phase failed', e, s);
                   questErrorMsg = escapeDioError(e);
                 } finally {
                   EasyLoading.dismiss();
                   if (mounted) setState(() {});
                 }
               },
-              child: Text(S.current.battle_fetch),
+              child: Text(S.current.search),
             ),
           ],
         ),
@@ -309,7 +309,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     // quest id and phase
     final match = RegExp(r'(\d+)(?:/(\d+))?').firstMatch(text);
     if (match == null) {
-      questErrorMsg = S.current.battle_invalid_quest_input;
+      questErrorMsg = S.current.invalid_input;
       return;
     }
     final questId = int.parse(match.group(1)!);
@@ -324,7 +324,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (region == Region.jp) quest = db.gameData.quests[questId];
     quest ??= await AtlasApi.quest(questId, region: region);
     if (quest == null) {
-      questErrorMsg = S.current.battle_quest_not_found(questId);
+      questErrorMsg = '${S.current.not_found}: $questId';
       return;
     }
     if (phase == null || !quest.phases.contains(phase)) {
@@ -333,7 +333,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     questPhase = await AtlasApi.questPhase(questId, phase, hash: hash, region: region);
     if (questPhase == null) {
-      questErrorMsg = '${S.current.battle_not_found}: /${region.upper}/quest/$questId/$phase';
+      questErrorMsg = '${S.current.not_found}: /${region.upper}/quest/$questId/$phase';
       if (hash != null) questErrorMsg = '${questErrorMsg!}?hash=$hash';
     }
   }
