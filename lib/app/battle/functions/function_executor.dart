@@ -35,7 +35,7 @@ class FunctionExecutor {
       function.funcId,
       activator,
     );
-    if (!validateFunctionTargetTeam(function, targets) ||
+    if (!validateFunctionTargetTeam(function, activator) ||
         !containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
       battleData.previousFunctionResult = false;
       return;
@@ -149,20 +149,13 @@ class FunctionExecutor {
 
   static bool validateFunctionTargetTeam(
     final BaseFunction function,
-    final List<BattleServantData> targets,
+    final BattleServantData? activator,
   ) {
-    if (targets.isEmpty) {
+    if (activator == null || function.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
       return true;
     }
 
-    switch (function.funcTargetTeam) {
-      case FuncApplyTarget.player:
-        return targets.first.isPlayer;
-      case FuncApplyTarget.enemy:
-        return targets.first.isEnemy;
-      default:
-        return true;
-    }
+    return function.isPlayerOnlyFunc ? activator.isPlayer : activator.isEnemy;
   }
 
   static DataVals getDataVals(
